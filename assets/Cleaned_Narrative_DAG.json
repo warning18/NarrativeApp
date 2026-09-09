@@ -570,8 +570,8 @@
     },
     "choices": [
       {
-        "text": "Start Game",
-        "next_id": "END"
+        "text": "Proceed to Chapter 2",
+        "next_id": "2001"
       }
     ]
   },
@@ -588,8 +588,8 @@
     },
     "choices": [
       {
-        "text": "Start Game",
-        "next_id": "END"
+        "text": "Proceed to Chapter 2 (The Rat Path)",
+        "next_id": "2001"
       }
     ]
   },
@@ -606,8 +606,288 @@
     },
     "choices": [
       {
-        "text": "Start Game",
-        "next_id": "END"
+        "text": "Proceed to Chapter 2 (The Broken Path)",
+        "next_id": "2001"
+      }
+    ]
+  },
+  "2001": {
+    "id": "2001",
+    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray of the harbor clears as the rusty hull of the ship pulls away from the burning docks. I stand on the deck, the weight of Chapter 1 pressing heavily on my chest. Ahead lies the Upper Tier—the last sanctuary untouched by the Crusade, guarded by towering iron gates and zealous inquisitors.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "suspense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3000"
+    },
+    "choices": [
+      {
+        "text": "Disembark at the Smuggler's Wharf",
+        "next_id": "2010"
+      },
+      {
+        "text": "Stay hidden in the cargo hold",
+        "next_id": "2020"
+      }
+    ]
+  },
+  "2010": {
+    "id": "2010",
+    "description": "The wharf is slick with fish scales and black oil. Smugglers barter in hushed tones under the flickering amber glow of lanterns. A scarred quartermaster named Vane blocks the gangplank, eyeing my gear with predatory interest.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3010"
+    },
+    "choices": [
+      {
+        "text": "Bribe Vane with information",
+        "next_id": "2030"
+      },
+      {
+        "text": "Threaten him to clear the path",
+        "next_id": "2040"
+      }
+    ]
+  },
+  "2020": {
+    "id": "2020",
+    "description": "Cramped between crates of smuggled iron, I wait out the harbor inspection. Heavy boots stamp on the deck above. The stamp of the Inquisition's seal echoes through the wood.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3020"
+    },
+    "choices": [
+      {
+        "text": "Slip out through the bilge drain",
+        "next_id": "2050"
+      }
+    ]
+  },
+  "2030": {
+    "id": "2030",
+    "description": "Vane listens closely, his eyes narrowing. 'Information about the Crusade's movements? That has currency.' He tosses a rusty iron key onto the barrel. 'Use the maintenance tunnel. It avoids the checkpoint.'",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Vane"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3030"
+    },
+    "choices": [
+      {
+        "text": "Take the maintenance tunnel",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "2040": {
+    "id": "2040",
+    "description": "My hand drops to my blade. Vane snorts, raising a heavy crossbow. 'Wrong move, rat.' Before I can react, his guards rush me from behind.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3040"
+    },
+    "choices": [
+      {
+        "text": "Fight back (Combat Encounter)",
+        "next_id": "2070"
+      }
+    ]
+  },
+  "2050": {
+    "id": "2050",
+    "description": "I plunge into the freezing bilge water, squeezing through the narrow iron grate. The current pulls me out toward the city canals, straight into the shadow of the Upper Gate.",
+    "context_taxonomy": {
+      "ui_theme": "sewers",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3050"
+    },
+    "choices": [
+      {
+        "text": "Climb up to the Upper Gate",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "2999": {
+    "id": "2999",
+    "description": "[CHAPTER 2 END] The Upper Gate opens. You stand on the threshold of the Spire district.",
+    "context_taxonomy": {
+      "ui_theme": "bridge",
+      "mood": "triumphant",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Enter Chapter 3: The Spire of Judgment",
+        "next_id": "3001"
+      }
+    ]
+  },
+  "2070": {
+    "id": "2070",
+    "description": "[COMBAT] Steel flashes in the lantern light. Vane's thugs hit hard, but survival is my only option.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3070"
+    },
+    "choices": [
+      {
+        "text": "Overpower them and force the gate",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "3001": {
+    "id": "3001",
+    "description": "[CHAPTER 3: THE SPIRE OF JUDGMENT] The massive bronze doors of the Upper Gate clang shut behind me. The air here smells of frankincense and ozone, starkly contrasting with the burning slums below. The Grand Cathedral towers above the district, its stained-glass windows bleeding purple light into the evening sky. This is where the Inquisitors hold court.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4000"
+    },
+    "choices": [
+      {
+        "text": "Infiltrate the Cathedral via the high cloisters",
+        "next_id": "3010"
+      },
+      {
+        "text": "Walk openly through the Hall of Records",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3010": {
+    "id": "3010",
+    "description": "Scrambling across the slate rooftops of the cloister, the wind howls around the gothic spires. Below me, patrol guards march with silver-plated halberds. One slip means a thousand-foot drop.",
+    "context_taxonomy": {
+      "ui_theme": "bridge",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4010"
+    },
+    "choices": [
+      {
+        "text": "Drop through the stained-glass dome",
+        "next_id": "3030"
+      }
+    ]
+  },
+  "3020": {
+    "id": "3020",
+    "description": "The Hall of Records is lined with endless shelves of parchment detailing the sins of every citizen. A senior archivist sits at a towering mahogany desk, peering over half-moon spectacles.",
+    "context_taxonomy": {
+      "ui_theme": "torture_chamber",
+      "mood": "suspense",
+      "speaker": "Archivist"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4020"
+    },
+    "choices": [
+      {
+        "text": "Bribe the archivist for the high-security pass",
+        "next_id": "3040"
+      },
+      {
+        "text": "Subdue the archivist and steal the ledger",
+        "next_id": "3050"
+      }
+    ]
+  },
+  "3030": {
+    "id": "3030",
+    "description": "Glass shatters like a cascade of diamonds. I hit the marble floor of the inner sanctum, rolling to absorb the impact. The Inquisitor's vanguard turns in shock.",
+    "context_taxonomy": {
+      "ui_theme": "hovel",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4030"
+    },
+    "choices": [
+      {
+        "text": "Stand and fight the vanguard",
+        "next_id": "4999"
+      }
+    ]
+  },
+  "3040": {
+    "id": "3040",
+    "description": "The archivist pockets the coins without a word, sliding a golden signet ring across the desk. 'Third door on the left. Don't touch the candles.'",
+    "context_taxonomy": {
+      "ui_theme": "torture_chamber",
+      "mood": "neutral",
+      "speaker": "Archivist"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4040"
+    },
+    "choices": [
+      {
+        "text": "Proceed to the inner sanctum",
+        "next_id": "4999"
+      }
+    ]
+  },
+  "3050": {
+    "id": "3050",
+    "description": "A swift strike to the neck silences the archivist before he can sound the alarm. I snatch the golden signet ring from his trembling fingers.",
+    "context_taxonomy": {
+      "ui_theme": "torture_chamber",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4050"
+    },
+    "choices": [
+      {
+        "text": "Move deeper into the cathedral",
+        "next_id": "4999"
+      }
+    ]
+  },
+  "4999": {
+    "id": "4999",
+    "description": "[FINAL CLIMAX REACHED] The High Inquisitor falls. The truth of the invasion is revealed. You have completed all three chapters.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "triumphant",
+      "speaker": "High Inquisitor"
+    },
+    "choices": [
+      {
+        "text": "Restart Journey (Node 100)",
+        "next_id": "100"
       }
     ]
   },
@@ -629,46 +909,6 @@
       }
     ]
   },
-  "2001": {
-    "id": "2001",
-    "description": "[COMBAT] You engage the rat swarm. Teeth and claws everywhere.",
-    "context_taxonomy": {
-      "ui_theme": "default",
-      "mood": "neutral",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_2001"
-    },
-    "choices": [
-      {
-        "text": "Win",
-        "next_id": "EXIT"
-      }
-    ]
-  },
-  "2010": {
-    "id": "2010",
-    "description": "2010",
-    "context_taxonomy": {
-      "ui_theme": "default",
-      "mood": "neutral",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_2010"
-    },
-    "choices": [
-      {
-        "text": "Attack",
-        "next_id": "2011"
-      },
-      {
-        "text": "Intimidate",
-        "next_id": "EXIT"
-      }
-    ]
-  },
   "2011": {
     "id": "2011",
     "description": "2011",
@@ -682,30 +922,8 @@
     },
     "choices": [
       {
-        "text": "Win",
-        "next_id": "EXIT"
-      }
-    ]
-  },
-  "2020": {
-    "id": "2020",
-    "description": "[Random_CrusadeScout] A Pale Crusade scout is patrolling this alley. He hasn't seen you yet.",
-    "context_taxonomy": {
-      "ui_theme": "default",
-      "mood": "neutral",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_2020"
-    },
-    "choices": [
-      {
-        "text": "Ambush",
-        "next_id": "2021"
-      },
-      {
-        "text": "Sneak",
-        "next_id": "EXIT"
+        "text": "Continue through the Docks",
+        "next_id": "2999"
       }
     ]
   },
@@ -722,294 +940,8 @@
     },
     "choices": [
       {
-        "text": "Win",
-        "next_id": "EXIT"
-      }
-    ]
-  },
-  "3000": {
-    "id": "3000",
-    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray of the harbor clears as the rusty hull of the ship pulls away from the burning docks. I stand on the deck, the weight of Chapter 1 pressing heavily on my chest. Ahead lies the Upper Tier—the last sanctuary untouched by the Crusade, guarded by towering iron gates and zealous inquisitors.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "suspense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3000"
-    },
-    "choices": [
-      {
-        "text": "Disembark at the Smuggler's Wharf",
-        "next_id": "3010"
-      },
-      {
-        "text": "Stay hidden in the cargo hold",
-        "next_id": "3020"
-      }
-    ]
-  },
-  "3010": {
-    "id": "3010",
-    "description": "The wharf is slick with fish scales and black oil. Smugglers barter in hushed tones under the flickering amber glow of lanterns. A scarred quartermaster named Vane blocks the gangplank, eyeing my gear with predatory interest.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3010"
-    },
-    "choices": [
-      {
-        "text": "Bribe Vane with information",
-        "next_id": "3030"
-      },
-      {
-        "text": "Threaten him to clear the path",
-        "next_id": "3040"
-      }
-    ]
-  },
-  "3020": {
-    "id": "3020",
-    "description": "Cramped between crates of smuggled iron, I wait out the harbor inspection. Heavy boots stamp on the deck above. The stamp of the Inquisition's seal echoes through the wood.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3020"
-    },
-    "choices": [
-      {
-        "text": "Slip out through the bilge drain",
-        "next_id": "3050"
-      }
-    ]
-  },
-  "3030": {
-    "id": "3030",
-    "description": "Vane listens closely, his eyes narrowing. 'Information about the Crusade's movements? That has currency.' He tosses a rusty iron key onto the barrel. 'Use the maintenance tunnel. It avoids the checkpoint.'",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "neutral",
-      "speaker": "Vane"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3030"
-    },
-    "choices": [
-      {
-        "text": "Take the maintenance tunnel",
-        "next_id": "3060"
-      }
-    ]
-  },
-  "3040": {
-    "id": "3040",
-    "description": "My hand drops to my blade. Vane snorts, raising a heavy crossbow. 'Wrong move, rat.' Before I can react, his guards rush me from behind.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3040"
-    },
-    "choices": [
-      {
-        "text": "Fight back (Combat Encounter)",
-        "next_id": "3070"
-      }
-    ]
-  },
-  "3050": {
-    "id": "3050",
-    "description": "I plunge into the freezing bilge water, squeezing through the narrow iron grate. The current pulls me out toward the city canals, straight into the shadow of the Upper Gate.",
-    "context_taxonomy": {
-      "ui_theme": "sewers",
-      "mood": "creepy",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3050"
-    },
-    "choices": [
-      {
-        "text": "Climb up to the Upper Gate",
-        "next_id": "3060"
-      }
-    ]
-  },
-  "3060": {
-    "id": "3060",
-    "description": "[CONVERGENCE] Both paths lead to the massive bronze doors of the Upper Gate. The city beyond is pristine, untouched by the fires below—yet suffocating under martial law. Chapter 2's main conflict begins here.",
-    "context_taxonomy": {
-      "ui_theme": "bridge",
-      "mood": "triumphant",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3060"
-    },
-    "choices": [
-      {
-        "text": "Proceed into the Upper Tier (End of Chapter 2 Preview)",
-        "next_id": "END"
-      }
-    ]
-  },
-  "3070": {
-    "id": "3070",
-    "description": "[COMBAT] Steel flashes in the lantern light. Vane's thugs hit hard, but survival is my only option.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3070"
-    },
-    "choices": [
-      {
-        "text": "Overpower them and force the gate",
-        "next_id": "3060"
-      }
-    ]
-  },
-  "4000": {
-    "id": "4000",
-    "description": "[CHAPTER 3: THE SPIRE OF JUDGMENT] The massive bronze doors of the Upper Gate clang shut behind me. The air here smells of frankincense and ozone, starkly contrasting with the burning slums below. The Grand Cathedral towers above the district, its stained-glass windows bleeding purple light into the evening sky. This is where the Inquisitors hold court.",
-    "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4000"
-    },
-    "choices": [
-      {
-        "text": "Infiltrate the Cathedral via the high cloisters",
-        "next_id": "4010"
-      },
-      {
-        "text": "Walk openly through the Hall of Records",
-        "next_id": "4020"
-      }
-    ]
-  },
-  "4010": {
-    "id": "4010",
-    "description": "Scrambling across the slate rooftops of the cloister, the wind howls around the gothic spires. Below me, patrol guards march with silver-plated halberds. One slip means a thousand-foot drop.",
-    "context_taxonomy": {
-      "ui_theme": "bridge",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4010"
-    },
-    "choices": [
-      {
-        "text": "Drop through the stained-glass dome",
-        "next_id": "4030"
-      }
-    ]
-  },
-  "4020": {
-    "id": "4020",
-    "description": "The Hall of Records is lined with endless shelves of parchment detailing the sins of every citizen. A senior archivist sits at a towering mahogany desk, peering over half-moon spectacles.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "suspense",
-      "speaker": "Archivist"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4020"
-    },
-    "choices": [
-      {
-        "text": "Bribe the archivist for the high-security pass",
-        "next_id": "4040"
-      },
-      {
-        "text": "Subdue the archivist and steal the ledger",
-        "next_id": "4050"
-      }
-    ]
-  },
-  "4030": {
-    "id": "4030",
-    "description": "Glass shatters like a cascade of diamonds. I hit the marble floor of the inner sanctum, rolling to absorb the impact. The Inquisitor's vanguard turns in shock.",
-    "context_taxonomy": {
-      "ui_theme": "hovel",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4030"
-    },
-    "choices": [
-      {
-        "text": "Stand and fight the vanguard",
-        "next_id": "4060"
-      }
-    ]
-  },
-  "4040": {
-    "id": "4040",
-    "description": "The archivist pockets the coins without a word, sliding a golden signet ring across the desk. 'Third door on the left. Don't touch the candles.'",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "neutral",
-      "speaker": "Archivist"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4040"
-    },
-    "choices": [
-      {
-        "text": "Proceed to the inner sanctum",
-        "next_id": "4060"
-      }
-    ]
-  },
-  "4050": {
-    "id": "4050",
-    "description": "A swift strike to the neck silences the archivist before he can sound the alarm. I snatch the golden signet ring from his trembling fingers.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4050"
-    },
-    "choices": [
-      {
-        "text": "Move deeper into the cathedral",
-        "next_id": "4060"
-      }
-    ]
-  },
-  "4060": {
-    "id": "4060",
-    "description": "[CLIMAX CONVERGENCE] All paths converge at the altar of the Spire. The High Inquisitor awaits, draped in white silk, holding the true record of the invasion. Chapter 3 culminates here.",
-    "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "triumphant",
-      "speaker": "High Inquisitor"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4060"
-    },
-    "choices": [
-      {
-        "text": "Confront the High Inquisitor (End of Chapter 3 Preview)",
-        "next_id": "END"
+        "text": "Escape into the Canals",
+        "next_id": "2999"
       }
     ]
   }
