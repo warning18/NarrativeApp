@@ -1,54 +1,55 @@
 {
   "starter_die": {
     "diceName": "starter_die",
+    "cost": 0,
     "numberOfFaces": 6,
     "faces": [
       {
         "faceName": "Slash",
         "type": "Attack",
-        "value": 4,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "None"
-      },
-      {
-        "faceName": "Guard",
-        "type": "Defend",
-        "value": 3,
-        "linkedSkillID": "",
-        "weight": 1.0,
-        "element": "None"
-      },
-      {
-        "faceName": "Fireball",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "fireball",
-        "weight": 0.5,
-        "element": "Fire"
-      },
-      {
-        "faceName": "Bandage",
-        "type": "Heal",
         "value": 5,
         "linkedSkillID": "",
-        "weight": 0.7,
-        "element": "None"
-      },
-      {
-        "faceName": "Heavy Swing",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "heavy_attack",
-        "weight": 0.5,
+        "weight": 1.0,
         "element": "None"
       },
       {
         "faceName": "Slash",
         "type": "Attack",
-        "value": 4,
+        "value": 5,
         "linkedSkillID": "",
         "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Blow",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heritage Technique",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
         "element": "None"
       }
     ]
@@ -89,7 +90,8 @@
         "weight": 1.0,
         "element": "Void"
       }
-    ]
+    ],
+    "cost": 120
   },
   "iron_die": {
     "diceName": "iron_die",
@@ -143,7 +145,8 @@
         "weight": 0.4,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 90
   },
   "flame_die": {
     "diceName": "flame_die",
@@ -197,7 +200,8 @@
         "weight": 0.5,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 110
   },
   "tide_die": {
     "diceName": "tide_die",
@@ -251,7 +255,8 @@
         "weight": 0.5,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 110
   },
   "storm_die": {
     "diceName": "storm_die",
@@ -305,7 +310,8 @@
         "weight": 0.5,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 100
   },
   "stone_die": {
     "diceName": "stone_die",
@@ -359,7 +365,8 @@
         "weight": 0.5,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 95
   },
   "shadow_die": {
     "diceName": "shadow_die",
@@ -413,7 +420,8 @@
         "weight": 0.5,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 115
   },
   "holy_die": {
     "diceName": "holy_die",
@@ -467,7 +475,8 @@
         "weight": 0.4,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 105
   },
   "berserker_die": {
     "diceName": "berserker_die",
@@ -521,7 +530,8 @@
         "weight": 0.6,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 100
   },
   "arcane_die": {
     "diceName": "arcane_die",
@@ -575,7 +585,8 @@
         "weight": 0.4,
         "element": "None"
       }
-    ]
+    ],
+    "cost": 130
   },
   "huntsman_die": {
     "diceName": "huntsman_die",
@@ -629,6 +640,7 @@
         "weight": 0.4,
         "element": "Earth"
       }
-    ]
+    ],
+    "cost": 105
   }
 }

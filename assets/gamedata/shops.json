@@ -12,7 +12,8 @@
     "merchantSpecialties": [
       "Potion",
       "Weapon"
-    ]
+    ],
+    "diceStock": []
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -29,6 +30,9 @@
       "Artifact",
       "Armor",
       "Weapon"
+    ],
+    "diceStock": [
+      "storm_die"
     ]
   },
   "weaponsmith_forge": {
@@ -50,6 +54,10 @@
     ],
     "merchantSpecialties": [
       "Weapon"
+    ],
+    "diceStock": [
+      "iron_die",
+      "berserker_die"
     ]
   },
   "shieldwrights_hall": {
@@ -67,6 +75,9 @@
     ],
     "merchantSpecialties": [
       "Weapon"
+    ],
+    "diceStock": [
+      "stone_die"
     ]
   },
   "arcane_bazaar": {
@@ -88,6 +99,10 @@
       "Weapon",
       "Scroll",
       "Artifact"
+    ],
+    "diceStock": [
+      "arcane_die",
+      "flame_die"
     ]
   },
   "apothecary_row": {
@@ -104,6 +119,10 @@
     "merchantSpecialties": [
       "Potion",
       "Material"
+    ],
+    "diceStock": [
+      "tide_die",
+      "holy_die"
     ]
   },
   "smugglers_vault": {
@@ -133,6 +152,10 @@
     "merchantSpecialties": [
       "Weapon",
       "Artifact"
+    ],
+    "diceStock": [
+      "shadow_die",
+      "void_die"
     ]
   }
 }

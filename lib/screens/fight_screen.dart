@@ -51,11 +51,12 @@ class _FightScreenState extends ConsumerState<FightScreen> {
         scaledMaxHealth((widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     _enemyHealth = _enemyMaxHealth;
     _enemyDamage = scaledDamage((widget.enemy['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+    _selectedDiceId = session.equippedDiceId ??
+        (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
   }
 
-  void _startFight(String diceId) {
+  void _startFight() {
     setState(() {
-      _selectedDiceId = diceId;
       _started = true;
       _log.add('The fight begins! ${widget.enemy['enemyName']} has $_enemyMaxHealth HP.');
     });
@@ -234,12 +235,12 @@ class _FightScreenState extends ConsumerState<FightScreen> {
   }
 
   Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
-    final diceIds = dice.keys.toList()..sort();
-    if (diceIds.isEmpty) {
-      return const Center(child: Text('No dice defined in the Data tab yet.'));
-    }
     final damageBonus = _equipmentDamageBonus(items);
     final armorBonus = _equipmentArmorBonus(items);
+    final equippedDie =
+        _selectedDiceId != null ? dice[_selectedDiceId] as Map<String, dynamic>? : null;
+    final faceCount = (equippedDie?['faces'] as List?)?.length ?? 0;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -259,19 +260,30 @@ class _FightScreenState extends ConsumerState<FightScreen> {
             ),
           ],
           const SizedBox(height: 24),
-          Text('Choose your die', style: Theme.of(context).textTheme.titleMedium),
+          Text('Equipped Die', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
-          ...diceIds.map((id) {
-            final faceCount = ((dice[id] as Map<String, dynamic>)['faces'] as List?)?.length ?? 0;
-            return Card(
+          if (equippedDie == null)
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.error_outline),
+                title: Text('No die equipped'),
+                subtitle: Text('Equip a die from Inventory before fighting.'),
+              ),
+            )
+          else
+            Card(
               child: ListTile(
                 leading: const Icon(Icons.casino),
-                title: Text(id),
+                title: Text(_selectedDiceId!),
                 subtitle: Text('$faceCount faces'),
-                onTap: () => _startFight(id),
               ),
-            );
-          }),
+            ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: equippedDie == null ? null : _startFight,
+            icon: const Icon(Icons.sports_martial_arts),
+            label: const Text('Enter Battle'),
+          ),
         ],
       ),
     );

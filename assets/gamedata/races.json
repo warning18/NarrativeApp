@@ -6,7 +6,8 @@
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
-    "startingGoldBonus": 20
+    "startingGoldBonus": 20,
+    "standardSkillID": "human_resolve"
   },
   "elf": {
     "raceID": "elf",
@@ -15,7 +16,8 @@
     "bonusMaxHealth": -10,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 0,
-    "startingGoldBonus": 0
+    "startingGoldBonus": 0,
+    "standardSkillID": "elf_arcane_focus"
   },
   "dwarf": {
     "raceID": "dwarf",
@@ -24,7 +26,8 @@
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 3,
-    "startingGoldBonus": 0
+    "startingGoldBonus": 0,
+    "standardSkillID": "dwarf_stoneskin"
   },
   "orc": {
     "raceID": "orc",
@@ -33,7 +36,8 @@
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": -2,
-    "startingGoldBonus": 0
+    "startingGoldBonus": 0,
+    "standardSkillID": "orc_berserk_rage"
   },
   "voidkin": {
     "raceID": "voidkin",
@@ -42,6 +46,7 @@
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -1,
-    "startingGoldBonus": 0
+    "startingGoldBonus": 0,
+    "standardSkillID": "voidkin_umbral_veil"
   }
 }

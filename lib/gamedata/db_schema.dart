@@ -209,6 +209,12 @@ final DbSchema racesSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
+    FieldSchema(
+      key: 'standardSkillID',
+      label: 'Standard Starter Skill',
+      type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
   ],
 );
 
@@ -252,16 +258,23 @@ final DbSchema professionsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
+    FieldSchema(
+      key: 'standardSkillID',
+      label: 'Standard Starter Skill',
+      type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
   ],
 );
 
 final DbSchema diceSchema = DbSchema(
   id: 'dice',
-  label: 'Dice',
+  label: 'Dice (Equipment)',
   assetPath: 'assets/gamedata/dice.json',
   primaryKeyField: 'diceName',
   fields: [
     FieldSchema(key: 'diceName', label: 'Dice Name', type: FieldType.text),
+    FieldSchema(key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
     FieldSchema(
       key: 'numberOfFaces',
       label: 'Number of Faces (4-12)',
@@ -445,6 +458,12 @@ final DbSchema questsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'quests',
     ),
+    FieldSchema(
+      key: 'rewardDiceID',
+      label: 'Reward Dice ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'dice',
+    ),
     FieldSchema(key: 'npcDialogueText', label: 'NPC Dialogue Text', type: FieldType.multilineText),
     FieldSchema(key: 'requiredGold', label: 'Required Gold', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'requiredFlags', label: 'Required Flags', type: FieldType.stringList),
@@ -474,6 +493,12 @@ final DbSchema shopsSchema = DbSchema(
       label: 'Initial Stock',
       type: FieldType.referenceList,
       referenceSchemaId: 'items',
+    ),
+    FieldSchema(
+      key: 'diceStock',
+      label: 'Dice For Sale',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'dice',
     ),
     FieldSchema(
       key: 'merchantSpecialties',

@@ -8,6 +8,12 @@ const String _playerSessionPrefsKey = 'player_session';
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
+/// The starter die's face indexes reserved for the player's profession and
+/// race standard skills (see assets/gamedata/dice.json's starter_die).
+const String _starterDiceId = 'starter_die';
+const int _starterDieProfessionFaceIndex = 4;
+const int _starterDieRaceFaceIndex = 5;
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -34,6 +40,8 @@ class PlayerSession {
     required this.diceSkillAssignments,
     required this.raceId,
     required this.professionId,
+    required this.ownedDiceIds,
+    required this.equippedDiceId,
   });
 
   final int level;
@@ -63,6 +71,11 @@ class PlayerSession {
 
   final String raceId;
   final String professionId;
+
+  /// Dice are equipment: dice the player owns (found, bought or granted),
+  /// and which one is currently equipped for combat.
+  final List<String> ownedDiceIds;
+  final String? equippedDiceId;
 
   int get xpToNextLevel => level * 100;
 
@@ -110,6 +123,8 @@ class PlayerSession {
     Map<String, Map<String, String>>? diceSkillAssignments,
     String? raceId,
     String? professionId,
+    List<String>? ownedDiceIds,
+    String? equippedDiceId,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -136,6 +151,8 @@ class PlayerSession {
       diceSkillAssignments: diceSkillAssignments ?? this.diceSkillAssignments,
       raceId: raceId ?? this.raceId,
       professionId: professionId ?? this.professionId,
+      ownedDiceIds: ownedDiceIds ?? this.ownedDiceIds,
+      equippedDiceId: equippedDiceId ?? this.equippedDiceId,
     );
   }
 
@@ -164,6 +181,8 @@ class PlayerSession {
         'diceSkillAssignments': diceSkillAssignments,
         'raceId': raceId,
         'professionId': professionId,
+        'ownedDiceIds': ownedDiceIds,
+        'equippedDiceId': equippedDiceId,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -208,6 +227,9 @@ class PlayerSession {
           const {},
       raceId: json['raceId'] as String? ?? '',
       professionId: json['professionId'] as String? ?? '',
+      ownedDiceIds:
+          (json['ownedDiceIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      equippedDiceId: json['equippedDiceId'] as String?,
     );
   }
 }
@@ -239,6 +261,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           diceSkillAssignments: {},
           raceId: '',
           professionId: '',
+          ownedDiceIds: [],
+          equippedDiceId: null,
         )) {
     _load();
   }
@@ -288,6 +312,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       diceSkillAssignments: const {},
       raceId: '',
       professionId: '',
+      ownedDiceIds: const [],
+      equippedDiceId: null,
     );
     await _persist();
   }
@@ -327,6 +353,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         bonus(profession, 'startingGoldBonus');
     final skillPoints = bonus(profession, 'startingSkillPoints');
 
+    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
+    final raceSkillId = race['standardSkillID']?.toString() ?? '';
+    final starterAssignments = <String, String>{
+      if (professionSkillId.isNotEmpty)
+        _starterDieProfessionFaceIndex.toString(): professionSkillId,
+      if (raceSkillId.isNotEmpty) _starterDieRaceFaceIndex.toString(): raceSkillId,
+    };
+
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       currentXP: 0,
@@ -349,9 +383,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       unlockedShopIds: const [],
       unlockedQuestIds: const [],
       unlockedEnemyIds: const [],
-      diceSkillAssignments: const {},
+      diceSkillAssignments: {
+        if (starterAssignments.isNotEmpty) _starterDiceId: starterAssignments,
+      },
       raceId: raceId,
       professionId: professionId,
+      ownedDiceIds: const [_starterDiceId],
+      equippedDiceId: _starterDiceId,
     );
     await _persist();
   }
@@ -403,6 +441,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int rewardGold = 0,
     String? rewardItemId,
     String? nextQuestId,
+    String? rewardDiceId,
   }) async {
     final newActive = state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
@@ -416,13 +455,35 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !newUnlockedQuests.contains(nextQuestId)) {
       newUnlockedQuests = [...newUnlockedQuests, nextQuestId];
     }
+    var newOwnedDice = state.ownedDiceIds;
+    if (rewardDiceId != null &&
+        rewardDiceId.isNotEmpty &&
+        !newOwnedDice.contains(rewardDiceId)) {
+      newOwnedDice = [...newOwnedDice, rewardDiceId];
+    }
     state = state.copyWith(
       gold: state.gold + rewardGold,
       activeQuestIds: newActive,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
       unlockedQuestIds: newUnlockedQuests,
+      ownedDiceIds: newOwnedDice,
     );
+    await _persist();
+  }
+
+  Future<void> buyDice(String diceId, int cost) async {
+    if (state.gold < cost || state.ownedDiceIds.contains(diceId)) return;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      ownedDiceIds: [...state.ownedDiceIds, diceId],
+    );
+    await _persist();
+  }
+
+  Future<void> equipDice(String diceId) async {
+    if (!state.ownedDiceIds.contains(diceId) || state.equippedDiceId == diceId) return;
+    state = state.copyWith(equippedDiceId: diceId);
     await _persist();
   }
 

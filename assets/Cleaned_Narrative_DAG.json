@@ -660,12 +660,8 @@
     },
     "choices": [
       {
-        "text": "Disembark at the Smuggler's Wharf",
-        "next_id": "2010"
-      },
-      {
-        "text": "Stay hidden in the cargo hold",
-        "next_id": "2020"
+        "text": "Head toward the wharf",
+        "next_id": "2005"
       },
       {
         "text": "Fight through a rat swarm on deck",
@@ -740,7 +736,7 @@
     "choices": [
       {
         "text": "Take the maintenance tunnel",
-        "next_id": "2999"
+        "next_id": "2900"
       }
     ]
   },
@@ -776,7 +772,7 @@
     "choices": [
       {
         "text": "Climb up to the Upper Gate",
-        "next_id": "2999"
+        "next_id": "2900"
       }
     ]
   },
@@ -809,7 +805,7 @@
     "choices": [
       {
         "text": "Overpower them and force the gate",
-        "next_id": "2999"
+        "next_id": "2900"
       }
     ]
   },
@@ -826,12 +822,8 @@
     },
     "choices": [
       {
-        "text": "Infiltrate the Cathedral via the high cloisters",
-        "next_id": "3010"
-      },
-      {
-        "text": "Walk openly through the Hall of Records",
-        "next_id": "3020"
+        "text": "Push deeper into the Spire",
+        "next_id": "3002"
       },
       {
         "text": "Pause to take stock of the Spire district",
@@ -1096,6 +1088,41 @@
         "text": "Face an iron golem guarding a vault",
         "next_id": "3020",
         "triggerEnemyId": "iron_golem"
+      }
+    ]
+  },
+  "2005": {
+    "description": "The gangway creaks underfoot as I step onto the ruined pier. Two ways lead deeper into the harbor district.",
+    "choices": [
+      {
+        "text": "Disembark at the Smuggler's Wharf",
+        "next_id": "2010"
+      },
+      {
+        "text": "Stay hidden in the cargo hold",
+        "next_id": "2020"
+      }
+    ]
+  },
+  "2900": {
+    "description": "Whatever path brought me here, the Upper Gate now looms just ahead, its bronze plating scorched but intact.",
+    "choices": [
+      {
+        "text": "Approach the Upper Gate",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "3002": {
+    "description": "The bronze doors seal shut behind me with a resonant clang. Two passages lead deeper into the Spire.",
+    "choices": [
+      {
+        "text": "Infiltrate the Cathedral via the high cloisters",
+        "next_id": "3010"
+      },
+      {
+        "text": "Walk openly through the Hall of Records",
+        "next_id": "3020"
       }
     ]
   }

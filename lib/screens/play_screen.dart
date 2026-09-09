@@ -141,18 +141,21 @@ class _QuestList extends ConsumerWidget {
               final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
               final rewardItemId = quest['rewardItemID']?.toString();
               final nextQuestId = quest['nextQuestID']?.toString();
+              final rewardDiceId = quest['rewardDiceID']?.toString();
               await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
                     rewardItemId: rewardItemId,
                     nextQuestId: nextQuestId,
+                    rewardDiceId: rewardDiceId,
                   );
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
                     'Quest complete: $questName (+$rewardGold gold, +$rewardXp XP'
-                    '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""})',
+                    '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
+                    '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""})',
                   ),
                 ),
               );
