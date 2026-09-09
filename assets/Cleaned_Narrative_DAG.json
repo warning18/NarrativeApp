@@ -85,6 +85,10 @@
         "text": "Refuse & Fight",
         "next_id": "265",
         "unlockQuestId": "q_first_blood"
+      },
+      {
+        "text": "Slip away toward the docks",
+        "next_id": "500"
       }
     ]
   },
@@ -152,6 +156,10 @@
       {
         "text": "Keep moving",
         "next_id": "300"
+      },
+      {
+        "text": "Take a detour through the market stalls",
+        "next_id": "151"
       }
     ]
   },
@@ -237,7 +245,7 @@
   },
   "500": {
     "id": "500",
-    "description": "500",
+    "description": "I duck away from the fight and sprint for the docks, lungs burning, leaving the thugs and the toll behind me.",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "action",
@@ -303,7 +311,7 @@
     "choices": [
       {
         "text": "Search the room (Start Quest)",
-        "next_id": "818"
+        "next_id": "817"
       }
     ]
   },
@@ -359,6 +367,10 @@
         "text": "Kill them (Start Battle)",
         "next_id": "823",
         "triggerEnemyId": "inquisition_warden"
+      },
+      {
+        "text": "Try to push past them",
+        "next_id": "822"
       }
     ]
   },
@@ -435,6 +447,10 @@
       {
         "text": "Find the Exit (Start Reach)",
         "next_id": "850"
+      },
+      {
+        "text": "Push through the muck directly",
+        "next_id": "855"
       }
     ]
   },
@@ -471,7 +487,8 @@
     "choices": [
       {
         "text": "Fight",
-        "next_id": "860"
+        "next_id": "860",
+        "triggerEnemyId": "rat_matriarch"
       }
     ]
   },
@@ -563,6 +580,16 @@
       {
         "text": "Fight!",
         "next_id": "1000"
+      },
+      {
+        "text": "End it quickly, no more suffering",
+        "next_id": "1001",
+        "alignmentMod": 5
+      },
+      {
+        "text": "Make him pay for every session",
+        "next_id": "1002",
+        "alignmentMod": -5
       }
     ]
   },
@@ -639,6 +666,10 @@
       {
         "text": "Stay hidden in the cargo hold",
         "next_id": "2020"
+      },
+      {
+        "text": "Fight through a rat swarm on deck",
+        "next_id": "2000"
       }
     ]
   },
@@ -661,6 +692,14 @@
       {
         "text": "Threaten him to clear the path",
         "next_id": "2040"
+      },
+      {
+        "text": "Push past him toward the exit",
+        "next_id": "2011"
+      },
+      {
+        "text": "Browse the harbor market before deciding",
+        "next_id": "2015"
       }
     ]
   },
@@ -679,6 +718,11 @@
       {
         "text": "Slip out through the bilge drain",
         "next_id": "2050"
+      },
+      {
+        "text": "Ambush the inspector",
+        "next_id": "2021",
+        "triggerEnemyId": "inquisition_soldier"
       }
     ]
   },
@@ -788,6 +832,10 @@
       {
         "text": "Walk openly through the Hall of Records",
         "next_id": "3020"
+      },
+      {
+        "text": "Pause to take stock of the Spire district",
+        "next_id": "3005"
       }
     ]
   },
@@ -845,7 +893,8 @@
     "choices": [
       {
         "text": "Stand and fight the vanguard",
-        "next_id": "4999"
+        "next_id": "4999",
+        "triggerEnemyId": "inquisition_high_warden"
       }
     ]
   },
@@ -914,13 +963,14 @@
     "choices": [
       {
         "text": "Attack",
-        "next_id": "2001"
+        "next_id": "2001",
+        "triggerEnemyId": "void_wisp"
       }
     ]
   },
   "2011": {
     "id": "2011",
-    "description": "2011",
+    "description": "I shove past Vane before he can react, boots slapping the wet boards as I push deeper into the docks.",
     "context_taxonomy": {
       "ui_theme": "default",
       "mood": "neutral",
@@ -932,7 +982,8 @@
     "choices": [
       {
         "text": "Continue through the Docks",
-        "next_id": "2999"
+        "next_id": "2999",
+        "triggerEnemyId": "harbor_rat"
       }
     ]
   },
@@ -951,6 +1002,100 @@
       {
         "text": "Escape into the Canals",
         "next_id": "2999"
+      }
+    ]
+  },
+  "0": {
+    "description": "Before the story begins, the darkness pauses. A single question hangs in the air: who were you, before all this?",
+    "choices": [
+      {
+        "text": "Choose who you are...",
+        "next_id": "100",
+        "opensCharacterCreation": true
+      }
+    ]
+  },
+  "151": {
+    "description": "A few stalls still operate despite the panic in the streets \u2014 a blacksmith hammering out blades, a shieldwright patching dented steel, and a bandit eyeing the crowd for an easy mark.",
+    "choices": [
+      {
+        "text": "Visit the Weaponsmith's Forge",
+        "next_id": "300",
+        "unlockShopId": "weaponsmith_forge"
+      },
+      {
+        "text": "Check the Shieldwright's Hall",
+        "next_id": "300",
+        "unlockShopId": "shieldwrights_hall"
+      },
+      {
+        "text": "Fight off a street bandit",
+        "next_id": "300",
+        "triggerEnemyId": "street_bandit"
+      },
+      {
+        "text": "Move on",
+        "next_id": "300"
+      }
+    ]
+  },
+  "2015": {
+    "description": "Even with the Inquisition patrolling, merchants still ply their trade along the wharf \u2014 and not everyone here is friendly.",
+    "choices": [
+      {
+        "text": "Visit the Arcane Bazaar",
+        "next_id": "2030",
+        "unlockShopId": "arcane_bazaar"
+      },
+      {
+        "text": "Visit Apothecary Row",
+        "next_id": "2030",
+        "unlockShopId": "apothecary_row"
+      },
+      {
+        "text": "Take the harbor master's job",
+        "next_id": "2030",
+        "unlockQuestId": "q_ch2_dockside_debts"
+      },
+      {
+        "text": "Deal with a lurking smuggler captain",
+        "next_id": "2030",
+        "triggerEnemyId": "smuggler_captain"
+      },
+      {
+        "text": "Fend off a plague hound",
+        "next_id": "2030",
+        "triggerEnemyId": "plague_hound"
+      }
+    ]
+  },
+  "3005": {
+    "description": "Before choosing a path into the cathedral, the outer district still holds a few things worth doing \u2014 and a few things worth avoiding.",
+    "choices": [
+      {
+        "text": "Take up the Ashen Oath",
+        "next_id": "3020",
+        "unlockQuestId": "q_ch3_ashen_oath"
+      },
+      {
+        "text": "Face a cultist acolyte still chanting among the ashes",
+        "next_id": "3020",
+        "triggerEnemyId": "cultist_acolyte"
+      },
+      {
+        "text": "Trade at the Smugglers' Vault, relocated here",
+        "next_id": "3020",
+        "unlockShopId": "smugglers_vault"
+      },
+      {
+        "text": "Face a void stalker lurking in the ruins",
+        "next_id": "3020",
+        "triggerEnemyId": "void_stalker"
+      },
+      {
+        "text": "Face an iron golem guarding a vault",
+        "next_id": "3020",
+        "triggerEnemyId": "iron_golem"
       }
     ]
   }

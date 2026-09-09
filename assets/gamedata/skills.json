@@ -1022,5 +1022,21 @@
     "battleMessage": "There's nothing held back now.",
     "restrictedRaceID": "",
     "restrictedProfessionID": ""
+  },
+  "heavy_attack": {
+    "id": "heavy_attack",
+    "element": "None",
+    "cost": 0,
+    "requiredSkillID": "",
+    "isUnlocked": true,
+    "description": "A heavy, telegraphed strike thrown with everything you have.",
+    "healAmount": 0,
+    "damageMod": 8,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.6,
+    "battleMessage": "You wind up and strike with everything you have.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": ""
   }
 }

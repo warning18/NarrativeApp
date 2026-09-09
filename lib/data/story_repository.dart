@@ -14,7 +14,7 @@ class StoryData {
 
 class StoryRepository {
   static const String assetPath = 'assets/Cleaned_Narrative_DAG.json';
-  static const String startNodeId = '100';
+  static const String startNodeId = '0';
 
   Future<StoryData> load() async {
     final raw = await rootBundle.loadString(assetPath);

@@ -36,11 +36,11 @@
         "element": "None"
       },
       {
-        "faceName": "Miss",
-        "type": "Empty",
+        "faceName": "Heavy Swing",
+        "type": "Skill",
         "value": 0,
-        "linkedSkillID": "",
-        "weight": 0.3,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
         "element": "None"
       },
       {
@@ -88,6 +88,546 @@
         "linkedSkillID": "void_blast",
         "weight": 1.0,
         "element": "Void"
+      }
+    ]
+  },
+  "iron_die": {
+    "diceName": "iron_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Broadsword Cut",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Shield Wall",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Pommel Strike",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Battlefield Bandage",
+        "type": "Heal",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Shield Bash",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "warrior_shield_bash",
+        "weight": 0.4,
+        "element": "None"
+      }
+    ]
+  },
+  "flame_die": {
+    "diceName": "flame_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Fireball",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "fireball",
+        "weight": 0.8,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Ember Slash",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Heat Shimmer",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Meteor",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_meteor",
+        "weight": 0.3,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Warm Embers",
+        "type": "Heal",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ]
+  },
+  "tide_die": {
+    "diceName": "tide_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Cleansing Wave",
+        "type": "Heal",
+        "value": 12,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "Water"
+      },
+      {
+        "faceName": "Riptide Slash",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Tide Wall",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Holy Light",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "cleric_holy_light",
+        "weight": 0.5,
+        "element": "Water"
+      },
+      {
+        "faceName": "Purify",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "cleric_purify",
+        "weight": 0.4,
+        "element": "Water"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ]
+  },
+  "storm_die": {
+    "diceName": "storm_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Gale Slash",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Wind Step",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Aimed Shot",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_aimed_shot",
+        "weight": 0.6,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Multi Shot",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_multi_shot",
+        "weight": 0.3,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Catch Your Breath",
+        "type": "Heal",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ]
+  },
+  "stone_die": {
+    "diceName": "stone_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Boulder Smash",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Granite Guard",
+        "type": "Defend",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Hammer Blow",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "dwarf_hammer_blow",
+        "weight": 0.5,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Forgeheart",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "dwarf_forgeheart",
+        "weight": 0.4,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Iron Resolve",
+        "type": "Heal",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ]
+  },
+  "shadow_die": {
+    "diceName": "shadow_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Shadow Stab",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Void"
+      },
+      {
+        "faceName": "Fade",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Backstab",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "rogue_backstab",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Void Blast",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "void_blast",
+        "weight": 0.4,
+        "element": "Void"
+      },
+      {
+        "faceName": "Quick Recovery",
+        "type": "Heal",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ]
+  },
+  "holy_die": {
+    "diceName": "holy_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Holy Blessing",
+        "type": "Heal",
+        "value": 14,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Righteous Strike",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Sanctuary Ward",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Smite",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "cleric_smite",
+        "weight": 0.5,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Revive Prayer",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "cleric_revive_prayer",
+        "weight": 0.3,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.4,
+        "element": "None"
+      }
+    ]
+  },
+  "berserker_die": {
+    "diceName": "berserker_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Savage Cleave",
+        "type": "Attack",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Berserk Rage",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "orc_berserk_rage",
+        "weight": 0.6,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Bloodlust",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "orc_bloodlust",
+        "weight": 0.4,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Reckless Swing",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Thick Hide",
+        "type": "Defend",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ]
+  },
+  "arcane_die": {
+    "diceName": "arcane_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Arcane Missile",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_arcane_missile",
+        "weight": 0.7,
+        "element": "Electricity"
+      },
+      {
+        "faceName": "Frost Nova",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_frost_nova",
+        "weight": 0.5,
+        "element": "Water"
+      },
+      {
+        "faceName": "Arcane Focus",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "elf_arcane_focus",
+        "weight": 0.4,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Spellblade Slash",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Mana Shield",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_mana_shield",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.4,
+        "element": "None"
+      }
+    ]
+  },
+  "huntsman_die": {
+    "diceName": "huntsman_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Quickdraw Shot",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Called Shot",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Camouflage",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_camouflage",
+        "weight": 0.4,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Trap Set",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_trap_set",
+        "weight": 0.3,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Brace",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Beast Bond",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_beast_bond",
+        "weight": 0.4,
+        "element": "Earth"
       }
     ]
   }

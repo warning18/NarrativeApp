@@ -10,6 +10,7 @@ class StoryChoice {
     this.triggerEnemyId,
     this.unlockShopId,
     this.unlockQuestId,
+    this.opensCharacterCreation = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -25,6 +26,7 @@ class StoryChoice {
       triggerEnemyId: json['triggerEnemyId'] as String?,
       unlockShopId: json['unlockShopId'] as String?,
       unlockQuestId: json['unlockQuestId'] as String?,
+      opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
     );
   }
 
@@ -38,6 +40,7 @@ class StoryChoice {
   final String? triggerEnemyId;
   final String? unlockShopId;
   final String? unlockQuestId;
+  final bool opensCharacterCreation;
 
   bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
 
