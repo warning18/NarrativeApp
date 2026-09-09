@@ -45,8 +45,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Applies to navigation, the story reader, and the two newest '
-              'chapters. Older chapters and game data stay in English for now.',
+              'Applies to navigation, the full story (reader and map), and the Legend. '
+              'Game data tables, field names, and IDs stay in English.',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),

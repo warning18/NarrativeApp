@@ -101,8 +101,8 @@ class StoryNode {
   final int? reqAlignmentScore;
   final List<String> reqFlags;
 
-  /// Optional French translation of [description]; falls back to English
-  /// when absent (most of chapters 1-3 predate French support).
+  /// French translation of [description]; falls back to English if a node
+  /// is ever added without one.
   final String? descriptionFr;
 
   String descriptionFor(bool french) =>
