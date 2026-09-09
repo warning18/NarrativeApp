@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/game_icons.dart';
 
 class ShopDetailScreen extends ConsumerWidget {
   const ShopDetailScreen({super.key, required this.shopId, required this.shop});
@@ -30,16 +31,26 @@ class ShopDetailScreen extends ConsumerWidget {
             children: stock.map((itemId) {
               final item = items[itemId] as Map<String, dynamic>?;
               final itemName = item?['itemName']?.toString() ?? itemId;
+              final itemType = item?['itemType']?.toString();
               final cost = (item?['cost'] as num?)?.toInt() ?? 0;
               final canAfford = session.gold >= cost;
               return Card(
                 child: ListTile(
+                  leading: Icon(itemTypeIcon(itemType)),
                   title: Text(itemName),
                   subtitle: Text('$cost gold'),
                   trailing: ElevatedButton(
                     onPressed: !canAfford
                         ? null
-                        : () => ref.read(playerSessionProvider.notifier).buyItem(itemId, cost),
+                        : () async {
+                            await ref
+                                .read(playerSessionProvider.notifier)
+                                .buyItem(itemId, cost);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Bought $itemName for $cost gold')),
+                            );
+                          },
                     child: const Text('Buy'),
                   ),
                 ),
