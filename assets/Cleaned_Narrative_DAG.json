@@ -1,0 +1,330 @@
+{
+  "100": {
+    "id": "100",
+    "description": "The invasion hasn't reached the slums yet, but the panic has. I run to the 'Blind Beggar,' the tavern where Lysa pours ale. The door is swinging on one hinge. There is no noise inside. No music. No laughter. Just the wet drip of spilled casks... and spilled blood.",
+    "choices": [
+      {
+        "text": "Enter the Tavern",
+        "next_id": "200"
+      },
+      {
+        "text": "Leave (End Game)",
+        "next_id": "EXIT"
+      }
+    ]
+  },
+  "200": {
+    "id": "200",
+    "description": "It is a tapestry of meat. The Pale Crusade has been here. I step over the body of the barkeep. I check the cellar. Lysa is there, curled in a ball behind the wine rack, shaking so hard her teeth rattle. She is the only thing breathing in this grave.",
+    "choices": [
+      {
+        "text": "Get her up.",
+        "next_id": "250"
+      }
+    ]
+  },
+  "250": {
+    "id": "250",
+    "description": "I drag Lysa out the back of the slaughterhouse. The air is thick with smoke. We need to reach my parents' hovel to get the Heirloom. Two paths lie ahead: The Stone Bridge, which is faster but exposed, or the Weaver's Alley, dark and twisting.",
+    "choices": [
+      {
+        "text": "Take the Bridge (Combat/Toll)",
+        "next_id": "260"
+      },
+      {
+        "text": "Take the Alley (Stealth/Rival)",
+        "next_id": "270"
+      }
+    ]
+  },
+  "260": {
+    "id": "260",
+    "description": "The stone bridge ahead spans a churning river, its worn surface guarded by several gruff soldiers wearing the crude insignia of the invading forces. They eye you and the struggling Lysa with suspicion, their weapons at the ready. A makeshift toll booth blocks your path. Lysa whimpers, stirring uncomfortably.",
+    "choices": [
+      {
+        "text": "Pay Toll (50g)",
+        "next_id": "280"
+      },
+      {
+        "text": "Refuse & Fight",
+        "next_id": "265"
+      }
+    ]
+  },
+  "400": {
+    "id": "400",
+    "description": "Wood splinters inward. The door explodes. Three White Soldiers fill the room, their porcelain masks blank and staring. There is nowhere to run. Lysa screams. The Grey Bundle in my hand begins to vibrate.",
+    "choices": [
+      {
+        "text": "Unfurl the Bundle (Guardian)",
+        "next_id": "450"
+      },
+      {
+        "text": "Surrender (Captured)",
+        "next_id": "800"
+      },
+      {
+        "text": "Surrender (Broken)",
+        "next_id": "800"
+      }
+    ]
+  },
+  "450": {
+    "id": "450",
+    "description": "[SUCCESS] Instinct takes over. I unfurl the grey wool. It isn't a flag; it's a hole in the world. A shockwave of pure void blasts the soldiers through the wall. The house collapses. We are in the street, coughing, but alive.",
+    "choices": [
+      {
+        "text": "Run for the Docks",
+        "next_id": "891"
+      }
+    ]
+  },
+  "800": {
+    "id": "800",
+    "description": "[TORTURE] I wake in the Black Hold. Lysa is dead. The Bundle is gone. For three days, a man in a porcelain mask peels me apart like a fruit. He wants to know about the Banner. I tell him nothing, because I know nothing. On the fourth day, the world explodes.",
+    "choices": [
+      {
+        "text": "Wake up",
+        "next_id": "810"
+      }
+    ]
+  },
+  "810": {
+    "id": "810",
+    "description": "The wall vanishes in a cloud of brick-dust and fire. Resistance fighters have breached the perimeter. My torturer stumbles, a piece of masonry lodged in his neck. I am unshackled, naked, and covered in filth. But I am free.",
+    "choices": [
+      {
+        "text": "Look around",
+        "next_id": "816"
+      }
+    ]
+  },
+  "816": {
+    "id": "816",
+    "description": "I can't go out there with nothing. The door is locked and the chamber is full of instruments. Sharp ones. I need to find something to pick the lock.",
+    "choices": [
+      {
+        "text": "Search the room (Start Quest)",
+        "next_id": "818"
+      }
+    ]
+  },
+  "817": {
+    "id": "817",
+    "description": "The door is still locked. I need that sharp metal shim I saw near the table.",
+    "choices": [
+      {
+        "text": "Keep looking",
+        "next_id": "818"
+      }
+    ]
+  },
+  "818": {
+    "id": "818",
+    "description": "I jam the bloodied shim into the lock. It clicks. I grab a rusty dagger from the dead guard. I am armed.",
+    "choices": [
+      {
+        "text": "Kick open the door",
+        "next_id": "820"
+      }
+    ]
+  },
+  "820": {
+    "id": "820",
+    "description": "The hallway is a meat grinder. Two Wardens block the only exit. They see me. They smile.",
+    "choices": [
+      {
+        "text": "Kill them (Start Battle)",
+        "next_id": "823"
+      }
+    ]
+  },
+  "822": {
+    "id": "822",
+    "description": "They are still standing. I cannot pass until they are dead.",
+    "choices": [
+      {
+        "text": "Back to the fight",
+        "next_id": "823"
+      }
+    ]
+  },
+  "823": {
+    "id": "823",
+    "description": "The Wardens lie in a heap. I step over them. I need a way out. Up leads to the Battlements\u2014fresh air, but arrows. Down leads to the Corpse Chute\u2014the sewers.",
+    "choices": [
+      {
+        "text": "Go Up (Battlements)",
+        "next_id": "830"
+      },
+      {
+        "text": "Go Down (Sewers)",
+        "next_id": "840"
+      }
+    ]
+  },
+  "830": {
+    "id": "830",
+    "description": "[BATTLEMENTS] The night air hits my wounds like salt. I scramble over the slate roof. Below, the city burns. A Crusade Archer spots me. He raises a crossbow. I have nowhere to dodge.",
+    "choices": [
+      {
+        "text": "Jump to the river",
+        "next_id": "891"
+      }
+    ]
+  },
+  "840": {
+    "id": "840",
+    "description": "[SEWERS] I slide down the chute, landing in a pile of soft, wet rot. The smell is a physical blow. The water is waist-deep. I need to find the main drainage pipe to reach the harbor.",
+    "choices": [
+      {
+        "text": "Find the Exit (Start Reach)",
+        "next_id": "850"
+      }
+    ]
+  },
+  "850": {
+    "id": "850",
+    "description": "I find the main pipe, but it's blocked. A Rat Matriarch, bloated on corpse-meat, hisses at me. Her brood swarms around her.",
+    "choices": [
+      {
+        "text": "Kill the Beast (Start Battle)",
+        "next_id": "860"
+      }
+    ]
+  },
+  "855": {
+    "id": "855",
+    "description": "The Matriarch blocks the path. She must die.",
+    "choices": [
+      {
+        "text": "Fight",
+        "next_id": "860"
+      }
+    ]
+  },
+  "860": {
+    "id": "860",
+    "description": "The beast floats belly-up in the muck. The path is clear. I limp toward the harbor exit.",
+    "choices": [
+      {
+        "text": "Climb out",
+        "next_id": "891"
+      }
+    ]
+  },
+  "891": {
+    "id": "891",
+    "description": "The Docks. The 'Rusty Eel' is weighing anchor. A Smuggler watches the gangplank. He looks greedy.",
+    "choices": [
+      {
+        "text": "Talk to him (Start Talk)",
+        "next_id": "895"
+      }
+    ]
+  },
+  "895": {
+    "id": "895",
+    "description": "The Smuggler shakes his head. \"No ticket, no ride. Unless you have something shiny?\"",
+    "choices": [
+      {
+        "text": "Negotiate",
+        "next_id": "955"
+      }
+    ]
+  },
+  "955": {
+    "id": "955",
+    "description": "The Smuggler steps aside, but a shadow falls over me. Inquisitor Kroll. My torturer. He holds a serrated blade. \"Leaving so soon? We haven't finished our session.\"",
+    "choices": [
+      {
+        "text": "Die Monster! (Start Boss)",
+        "next_id": "960"
+      }
+    ]
+  },
+  "960": {
+    "id": "960",
+    "description": "Kroll laughs behind his mask. \"Scream for me!\"",
+    "choices": [
+      {
+        "text": "Fight!",
+        "next_id": "1000"
+      }
+    ]
+  },
+  "1000": {
+    "id": "1000",
+    "description": "[ORIGIN: THE GUARDIAN] Kroll falls into the dark water. I climb the chain. I start with Lysa (Support Companion) and the 'Grey Shroud' (identified as a Void Banner).",
+    "choices": [
+      {
+        "text": "Start Game",
+        "next_id": "END"
+      }
+    ]
+  },
+  "1001": {
+    "id": "1001",
+    "description": "[ORIGIN: THE RAT] Kroll falls. I climb. You start Alone. You kept the 'Grey Shroud', but it remains dormant (Unknown Item). You have High Stealth and Gold, but zero Honor.",
+    "choices": [
+      {
+        "text": "Start Game",
+        "next_id": "END"
+      }
+    ]
+  },
+  "1002": {
+    "id": "1002",
+    "description": "[ORIGIN: THE BROKEN] Kroll falls. I climb. You start Alone. No Heirloom. You have massive HP and Pain Resistance, but you are slow and disfigured. You seek the Banner.",
+    "choices": [
+      {
+        "text": "Start Game",
+        "next_id": "END"
+      }
+    ]
+  },
+  "2000": {
+    "id": "2000",
+    "description": "[Random_RatSwarm] A swarm of plague rats blocks the sewer tunnel. Their eyes glow with a sick green light.",
+    "choices": [
+      {
+        "text": "Attack",
+        "next_id": "2001"
+      }
+    ]
+  },
+  "2001": {
+    "id": "2001",
+    "description": "[COMBAT] You engage the rat swarm. Teeth and claws everywhere.",
+    "choices": [
+      {
+        "text": "Win",
+        "next_id": "EXIT"
+      }
+    ]
+  },
+  "2020": {
+    "id": "2020",
+    "description": "[Random_CrusadeScout] A Pale Crusade scout is patrolling this alley. He hasn't seen you yet.",
+    "choices": [
+      {
+        "text": "Ambush",
+        "next_id": "2021"
+      },
+      {
+        "text": "Sneak",
+        "next_id": "EXIT"
+      }
+    ]
+  },
+  "2021": {
+    "id": "2021",
+    "description": "[COMBAT] You strike from the shadows, but his armor is tough.",
+    "choices": [
+      {
+        "text": "Win",
+        "next_id": "EXIT"
+      }
+    ]
+  }
+}

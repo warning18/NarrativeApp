@@ -6,6 +6,9 @@ version: 1.0.0+1
 environment:
   sdk: ^3.13.2
 
+assets:
+    - assets/Cleaned_Narrative_DAG.json
+
 dependencies:
   flutter:
     sdk: flutter
