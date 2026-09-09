@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../app_info.dart';
 import '../providers/settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -88,6 +89,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: const Text('Clear'),
                 ),
               ],
+            ),
+            const Spacer(),
+            Center(
+              child: Text(
+                AppInfo.displayName,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
             ),
           ],
         ),
