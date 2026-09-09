@@ -11,8 +11,17 @@ const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 class PlayerSession {
   const PlayerSession({
     required this.level,
+    required this.currentXP,
     required this.gold,
     required this.alignmentScore,
+    required this.maxHealth,
+    required this.currentHealth,
+    required this.baseDamage,
+    required this.baseArmor,
+    required this.potionCount,
+    required this.statPoints,
+    required this.skillPoints,
+    required this.maxSkillSlots,
     required this.flags,
     required this.activeQuestIds,
     required this.completedQuestIds,
@@ -20,12 +29,23 @@ class PlayerSession {
   });
 
   final int level;
+  final int currentXP;
   final int gold;
   final int alignmentScore;
+  final int maxHealth;
+  final int currentHealth;
+  final int baseDamage;
+  final int baseArmor;
+  final int potionCount;
+  final int statPoints;
+  final int skillPoints;
+  final int maxSkillSlots;
   final List<String> flags;
   final List<String> activeQuestIds;
   final List<String> completedQuestIds;
   final List<String> inventoryItemIds;
+
+  int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
     if (alignmentScore >= 20) return 'Good';
@@ -48,8 +68,17 @@ class PlayerSession {
 
   PlayerSession copyWith({
     int? level,
+    int? currentXP,
     int? gold,
     int? alignmentScore,
+    int? maxHealth,
+    int? currentHealth,
+    int? baseDamage,
+    int? baseArmor,
+    int? potionCount,
+    int? statPoints,
+    int? skillPoints,
+    int? maxSkillSlots,
     List<String>? flags,
     List<String>? activeQuestIds,
     List<String>? completedQuestIds,
@@ -57,8 +86,17 @@ class PlayerSession {
   }) {
     return PlayerSession(
       level: level ?? this.level,
+      currentXP: currentXP ?? this.currentXP,
       gold: gold ?? this.gold,
       alignmentScore: alignmentScore ?? this.alignmentScore,
+      maxHealth: maxHealth ?? this.maxHealth,
+      currentHealth: currentHealth ?? this.currentHealth,
+      baseDamage: baseDamage ?? this.baseDamage,
+      baseArmor: baseArmor ?? this.baseArmor,
+      potionCount: potionCount ?? this.potionCount,
+      statPoints: statPoints ?? this.statPoints,
+      skillPoints: skillPoints ?? this.skillPoints,
+      maxSkillSlots: maxSkillSlots ?? this.maxSkillSlots,
       flags: flags ?? this.flags,
       activeQuestIds: activeQuestIds ?? this.activeQuestIds,
       completedQuestIds: completedQuestIds ?? this.completedQuestIds,
@@ -68,8 +106,17 @@ class PlayerSession {
 
   Map<String, dynamic> toJson() => {
         'level': level,
+        'currentXP': currentXP,
         'gold': gold,
         'alignmentScore': alignmentScore,
+        'maxHealth': maxHealth,
+        'currentHealth': currentHealth,
+        'baseDamage': baseDamage,
+        'baseArmor': baseArmor,
+        'potionCount': potionCount,
+        'statPoints': statPoints,
+        'skillPoints': skillPoints,
+        'maxSkillSlots': maxSkillSlots,
         'flags': flags,
         'activeQuestIds': activeQuestIds,
         'completedQuestIds': completedQuestIds,
@@ -79,8 +126,17 @@ class PlayerSession {
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
     return PlayerSession(
       level: (json['level'] as num?)?.toInt() ?? 1,
+      currentXP: (json['currentXP'] as num?)?.toInt() ?? 0,
       gold: (json['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: (json['alignmentScore'] as num?)?.toInt() ?? 0,
+      maxHealth: (json['maxHealth'] as num?)?.toInt() ?? 100,
+      currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 100,
+      baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 10,
+      baseArmor: (json['baseArmor'] as num?)?.toInt() ?? 0,
+      potionCount: (json['potionCount'] as num?)?.toInt() ?? 0,
+      statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
+      skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
+      maxSkillSlots: (json['maxSkillSlots'] as num?)?.toInt() ?? 3,
       flags: (json['flags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       activeQuestIds:
           (json['activeQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
@@ -96,8 +152,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   PlayerSessionNotifier()
       : super(const PlayerSession(
           level: 1,
+          currentXP: 0,
           gold: 0,
           alignmentScore: 0,
+          maxHealth: 100,
+          currentHealth: 100,
+          baseDamage: 10,
+          baseArmor: 0,
+          potionCount: 0,
+          statPoints: 0,
+          skillPoints: 0,
+          maxSkillSlots: 3,
           flags: [],
           activeQuestIds: [],
           completedQuestIds: [],
@@ -125,10 +190,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
       defaults = json.decode(raw) as Map<String, dynamic>;
     }
+    final maxHealth = (defaults['maxHealth'] as num?)?.toInt() ?? 100;
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
+      currentXP: 0,
       gold: (defaults['gold'] as num?)?.toInt() ?? 0,
       alignmentScore: 0,
+      maxHealth: maxHealth,
+      currentHealth: maxHealth,
+      baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 10,
+      baseArmor: (defaults['baseArmor'] as num?)?.toInt() ?? 0,
+      potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
+      statPoints: 0,
+      skillPoints: 0,
+      maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
       flags: const [],
       activeQuestIds: const [],
       completedQuestIds: const [],
@@ -204,6 +279,52 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - cost,
       inventoryItemIds: [...state.inventoryItemIds, itemId],
+    );
+    await _persist();
+  }
+
+  Future<void> consumePotion() async {
+    if (state.potionCount <= 0) return;
+    state = state.copyWith(potionCount: state.potionCount - 1);
+    await _persist();
+  }
+
+  Future<void> applyCombatResult({
+    required int hpAfter,
+    int goldGain = 0,
+    int xpGain = 0,
+    List<String> itemsGained = const [],
+  }) async {
+    var newLevel = state.level;
+    var newXp = state.currentXP + xpGain;
+    var newMaxHealth = state.maxHealth;
+    var newStatPoints = state.statPoints;
+    var newSkillPoints = state.skillPoints;
+    var leveledUp = false;
+
+    while (newXp >= newLevel * 100) {
+      newXp -= newLevel * 100;
+      newLevel += 1;
+      newStatPoints += 5;
+      newSkillPoints += 1;
+      newMaxHealth += 20;
+      leveledUp = true;
+    }
+
+    final clampedHp = hpAfter < 0
+        ? 0
+        : (hpAfter > newMaxHealth ? newMaxHealth : hpAfter);
+    final newHealth = leveledUp ? newMaxHealth : clampedHp;
+
+    state = state.copyWith(
+      level: newLevel,
+      currentXP: newXp,
+      maxHealth: newMaxHealth,
+      currentHealth: newHealth,
+      statPoints: newStatPoints,
+      skillPoints: newSkillPoints,
+      gold: state.gold + goldGain,
+      inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
     );
     await _persist();
   }
