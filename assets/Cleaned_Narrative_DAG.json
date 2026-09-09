@@ -13,7 +13,8 @@
     "choices": [
       {
         "text": "Enter the Tavern",
-        "next_id": "200"
+        "next_id": "200",
+        "unlockShopId": "blind_beggar_stall"
       },
       {
         "text": "Leave (End Game)",
@@ -53,11 +54,13 @@
     "choices": [
       {
         "text": "Take the Bridge (Combat/Toll)",
-        "next_id": "260"
+        "next_id": "260",
+        "unlockQuestId": "q_retrieve_banner"
       },
       {
         "text": "Take the Alley (Stealth/Rival)",
-        "next_id": "270"
+        "next_id": "270",
+        "unlockQuestId": "q_retrieve_banner"
       }
     ]
   },
@@ -75,11 +78,13 @@
     "choices": [
       {
         "text": "Pay Toll (50g)",
-        "next_id": "280"
+        "next_id": "280",
+        "unlockQuestId": "q_first_blood"
       },
       {
         "text": "Refuse & Fight",
-        "next_id": "265"
+        "next_id": "265",
+        "unlockQuestId": "q_first_blood"
       }
     ]
   },
@@ -377,7 +382,7 @@
   },
   "823": {
     "id": "823",
-    "description": "The Wardens lie in a heap. I step over them. I need a way out. Up leads to the Battlements—fresh air, but arrows. Down leads to the Corpse Chute—the sewers.",
+    "description": "The Wardens lie in a heap. I step over them. I need a way out. Up leads to the Battlements\u2014fresh air, but arrows. Down leads to the Corpse Chute\u2014the sewers.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -502,7 +507,8 @@
     "choices": [
       {
         "text": "Talk to him (Start Talk)",
-        "next_id": "895"
+        "next_id": "895",
+        "unlockShopId": "black_market_docks"
       }
     ]
   },
@@ -616,7 +622,7 @@
   },
   "2001": {
     "id": "2001",
-    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray of the harbor clears as the rusty hull of the ship pulls away from the burning docks. I stand on the deck, the weight of Chapter 1 pressing heavily on my chest. Ahead lies the Upper Tier—the last sanctuary untouched by the Crusade, guarded by towering iron gates and zealous inquisitors.",
+    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray of the harbor clears as the rusty hull of the ship pulls away from the burning docks. I stand on the deck, the weight of Chapter 1 pressing heavily on my chest. Ahead lies the Upper Tier\u2014the last sanctuary untouched by the Crusade, guarded by towering iron gates and zealous inquisitors.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "suspense",

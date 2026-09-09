@@ -31,11 +31,10 @@ const List<String> itemTypeOptions = [
 
 const List<String> equipSlotOptions = [
   'Head',
-  'Chest',
+  'Top',
   'Weapon',
-  'Shield',
-  'Feet',
-  'Artifact',
+  'Bottom',
+  'Foot',
 ];
 
 const List<String> elementOptions = [
@@ -314,6 +313,7 @@ final DbSchema questsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'questID', label: 'Quest ID', type: FieldType.text),
     FieldSchema(key: 'questName', label: 'Quest Name', type: FieldType.text),
+    FieldSchema(key: 'chapter', label: 'Chapter', type: FieldType.integer, defaultValue: 1),
     FieldSchema(
       key: 'category',
       label: 'Category',

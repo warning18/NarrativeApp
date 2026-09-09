@@ -29,6 +29,14 @@ class _InventoryBody extends ConsumerWidget {
 
   final Map<String, dynamic> items;
 
+  String? _equippedInSlot(List<String> equippedIds, String slot) {
+    for (final id in equippedIds) {
+      final item = items[id] as Map<String, dynamic>?;
+      if ((item?['equipSlot']?.toString() ?? '') == slot) return id;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
@@ -40,55 +48,92 @@ class _InventoryBody extends ConsumerWidget {
     final ownedIds = counts.keys.toList()..sort();
     final equippedIds = session.equippedItemIds;
 
-    if (ownedIds.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text('Your inventory is empty. Buy or loot some gear!'),
-        ),
-      );
-    }
-
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (equippedIds.isNotEmpty) ...[
-          Text('Equipped', style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          ...equippedIds.map(
-            (id) => _ItemTile(
-              itemId: id,
-              item: items[id] as Map<String, dynamic>?,
-              isEquipped: true,
-              onToggle: () => ref.read(playerSessionProvider.notifier).unequipItem(id),
-            ),
-          ),
-          const Divider(height: 32),
-        ],
-        Text('All Items', style: Theme.of(context).textTheme.titleMedium),
+        Text('Equipment', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        ...ownedIds.map((id) {
-          final item = items[id] as Map<String, dynamic>?;
-          final isEquippable = item != null && (item['isEquippable'] as bool? ?? false);
-          final isEquipped = equippedIds.contains(id);
-          return _ItemTile(
-            itemId: id,
-            item: item,
-            count: counts[id],
-            isEquipped: isEquipped,
-            onToggle: !isEquippable
-                ? null
-                : () {
-                    final notifier = ref.read(playerSessionProvider.notifier);
-                    if (isEquipped) {
-                      notifier.unequipItem(id);
-                    } else {
-                      notifier.equipItem(id);
-                    }
-                  },
+        ...equipSlotOptions.map((slot) {
+          final equippedId = _equippedInSlot(equippedIds, slot);
+          final equippedItem = equippedId != null ? items[equippedId] as Map<String, dynamic>? : null;
+          final candidates = ownedIds.where((id) {
+            final item = items[id] as Map<String, dynamic>?;
+            return (item?['isEquippable'] as bool? ?? false) &&
+                (item?['equipSlot']?.toString() ?? '') == slot;
+          }).toList();
+
+          return Card(
+            child: ListTile(
+              leading: Icon(itemTypeIcon(equippedItem?['itemType']?.toString())),
+              title: Text(slot),
+              subtitle: Text(equippedItem?['itemName']?.toString() ?? '(empty)'),
+              trailing: Wrap(
+                spacing: 4,
+                children: [
+                  if (equippedId != null)
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      tooltip: 'Unequip',
+                      onPressed: () =>
+                          ref.read(playerSessionProvider.notifier).unequipItem(equippedId),
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: 'Choose item',
+                    onPressed: candidates.isEmpty
+                        ? null
+                        : () => _pickForSlot(context, ref, slot, candidates, equippedId),
+                  ),
+                ],
+              ),
+            ),
           );
         }),
+        const Divider(height: 32),
+        Text('All Items', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        if (ownedIds.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16),
+            child: Text('Your inventory is empty. Buy or loot some gear!'),
+          )
+        else
+          ...ownedIds.map((id) {
+            final item = items[id] as Map<String, dynamic>?;
+            final isEquipped = equippedIds.contains(id);
+            return _ItemTile(itemId: id, item: item, count: counts[id], isEquipped: isEquipped);
+          }),
       ],
+    );
+  }
+
+  Future<void> _pickForSlot(
+    BuildContext context,
+    WidgetRef ref,
+    String slot,
+    List<String> candidates,
+    String? currentlyEquippedId,
+  ) {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: candidates.map((id) {
+            final item = items[id] as Map<String, dynamic>?;
+            final itemName = item?['itemName']?.toString() ?? id;
+            return ListTile(
+              leading: Icon(itemTypeIcon(item?['itemType']?.toString())),
+              title: Text(itemName),
+              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              onTap: () {
+                ref.read(playerSessionProvider.notifier).equipItem(id, slot: slot, items: items);
+                Navigator.of(sheetContext).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
@@ -99,24 +144,24 @@ class _ItemTile extends StatelessWidget {
     required this.item,
     this.count,
     required this.isEquipped,
-    this.onToggle,
   });
 
   final String itemId;
   final Map<String, dynamic>? item;
   final int? count;
   final bool isEquipped;
-  final VoidCallback? onToggle;
 
   @override
   Widget build(BuildContext context) {
     final itemName = item?['itemName']?.toString() ?? itemId;
     final itemType = item?['itemType']?.toString();
+    final equipSlot = item?['equipSlot']?.toString();
     final attackDamage = (item?['attackDamage'] as num?)?.toInt() ?? 0;
     final armor = (item?['armor'] as num?)?.toInt() ?? 0;
 
     final statsParts = <String>[
       if (itemType != null) itemType,
+      if (isEquipped && equipSlot != null && equipSlot.isNotEmpty) 'Equipped: $equipSlot',
       if (attackDamage > 0) 'ATK +$attackDamage',
       if (armor > 0) 'ARM +$armor',
       if (count != null && count! > 1) 'x$count',
@@ -128,12 +173,6 @@ class _ItemTile extends StatelessWidget {
         leading: Icon(itemTypeIcon(itemType)),
         title: Text(itemName),
         subtitle: Text(statsParts.join(' · ')),
-        trailing: onToggle == null
-            ? null
-            : OutlinedButton(
-                onPressed: onToggle,
-                child: Text(isEquipped ? 'Unequip' : 'Equip'),
-              ),
       ),
     );
   }

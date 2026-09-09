@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../gamedata/quest_validation.dart';
 import '../providers/game_db_providers.dart';
 import 'game_db_record_editor_screen.dart';
 
@@ -44,10 +45,47 @@ class GameDbListScreen extends ConsumerWidget {
           if (keys.isEmpty) {
             return const Center(child: Text('No records yet. Tap + to add one.'));
           }
+          final issues = schema.id == 'quests' ? validateQuestChapters(records) : const <String>[];
           return ListView.builder(
-            itemCount: keys.length,
+            itemCount: keys.length + (issues.isEmpty ? 0 : 1),
             itemBuilder: (context, index) {
-              final key = keys[index];
+              if (issues.isNotEmpty) {
+                if (index == 0) {
+                  return Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.errorContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Chapter structure issues',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onErrorContainer,
+                              ),
+                        ),
+                        const SizedBox(height: 6),
+                        ...issues.map(
+                          (issue) => Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              '• $issue',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onErrorContainer,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              }
+              final key = keys[index - (issues.isEmpty ? 0 : 1)];
               final record = records[key] as Map<String, dynamic>;
               final subtitleValue =
                   schema.titleField != null ? record[schema.titleField]?.toString() ?? '' : '';

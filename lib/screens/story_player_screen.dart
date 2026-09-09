@@ -160,6 +160,13 @@ class _ChoiceButton extends ConsumerWidget {
                       questIDToProgress: choice.questIDToProgress,
                     );
               }
+              if (choice.hasUnlocks) {
+                ref.read(playerSessionProvider.notifier).unlockContent(
+                      shopId: choice.unlockShopId,
+                      questId: choice.unlockQuestId,
+                      enemyId: choice.triggerEnemyId,
+                    );
+              }
               if (choice.isEnding) {
                 playNotifier.restart(StoryRepository.startNodeId);
               } else {

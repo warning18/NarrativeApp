@@ -2,6 +2,7 @@ import 'dart:math';
 
 class DiceFaceResult {
   const DiceFaceResult({
+    required this.faceIndex,
     required this.faceName,
     required this.type,
     required this.value,
@@ -9,11 +10,21 @@ class DiceFaceResult {
     required this.element,
   });
 
+  final int faceIndex;
   final String faceName;
   final String type;
   final int value;
   final String linkedSkillID;
   final String element;
+
+  DiceFaceResult withLinkedSkillID(String linkedSkillID) => DiceFaceResult(
+        faceIndex: faceIndex,
+        faceName: faceName,
+        type: type,
+        value: value,
+        linkedSkillID: linkedSkillID,
+        element: element,
+      );
 }
 
 DiceFaceResult rollDie(List<Map<String, dynamic>> faces, Random random) {
@@ -24,14 +35,15 @@ DiceFaceResult rollDie(List<Map<String, dynamic>> faces, Random random) {
   for (var i = 0; i < faces.length; i++) {
     roll -= weights[i];
     if (roll <= 0) {
-      return _faceFromJson(faces[i]);
+      return _faceFromJson(faces[i], i);
     }
   }
-  return _faceFromJson(faces.last);
+  return _faceFromJson(faces.last, faces.length - 1);
 }
 
-DiceFaceResult _faceFromJson(Map<String, dynamic> face) {
+DiceFaceResult _faceFromJson(Map<String, dynamic> face, int index) {
   return DiceFaceResult(
+    faceIndex: index,
     faceName: face['faceName']?.toString() ?? '',
     type: face['type']?.toString() ?? 'Empty',
     value: (face['value'] as num?)?.toInt() ?? 0,

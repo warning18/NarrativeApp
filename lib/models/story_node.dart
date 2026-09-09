@@ -8,6 +8,8 @@ class StoryChoice {
     this.questIDToProgress,
     this.lockedText,
     this.triggerEnemyId,
+    this.unlockShopId,
+    this.unlockQuestId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,8 @@ class StoryChoice {
       questIDToProgress: json['questIDToProgress'] as String?,
       lockedText: json['lockedText'] as String?,
       triggerEnemyId: json['triggerEnemyId'] as String?,
+      unlockShopId: json['unlockShopId'] as String?,
+      unlockQuestId: json['unlockQuestId'] as String?,
     );
   }
 
@@ -32,8 +36,15 @@ class StoryChoice {
   final String? questIDToProgress;
   final String? lockedText;
   final String? triggerEnemyId;
+  final String? unlockShopId;
+  final String? unlockQuestId;
 
   bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
+
+  bool get hasUnlocks =>
+      triggersCombat ||
+      (unlockShopId != null && unlockShopId!.isNotEmpty) ||
+      (unlockQuestId != null && unlockQuestId!.isNotEmpty);
 
   static const List<String> _endMarkers = ['EXIT', 'END'];
 
