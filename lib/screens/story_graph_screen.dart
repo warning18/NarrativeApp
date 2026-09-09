@@ -1,19 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/story_providers.dart';
 
 enum _NodeKind { characterCreation, combat, shop, quest, generic }
 
 class _NodeStyle {
-  const _NodeStyle({required this.color, required this.icon, required this.label, required this.radius});
+  const _NodeStyle({required this.color, required this.icon, required this.radius});
   final Color color;
   final IconData icon;
-  final String label;
   final double radius;
 }
 
@@ -25,35 +28,45 @@ _NodeKind _classify(StoryNode node) {
   return _NodeKind.generic;
 }
 
+String _nodeKindLabelKey(_NodeKind kind) {
+  switch (kind) {
+    case _NodeKind.characterCreation:
+      return 'node_kind_character_creation';
+    case _NodeKind.combat:
+      return 'node_kind_combat';
+    case _NodeKind.shop:
+      return 'node_kind_shop';
+    case _NodeKind.quest:
+      return 'node_kind_quest';
+    case _NodeKind.generic:
+      return 'node_kind_generic';
+  }
+}
+
 Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
       _NodeKind.characterCreation: _NodeStyle(
         color: Colors.purple.shade300,
         icon: Icons.person,
-        label: 'Character Creation',
         radius: 8,
       ),
       _NodeKind.combat: _NodeStyle(
         color: Colors.red.shade300,
         icon: Icons.sports_martial_arts,
-        label: 'Combat',
         radius: 2,
       ),
       _NodeKind.shop: _NodeStyle(
         color: Colors.green.shade300,
         icon: Icons.storefront,
-        label: 'Shop',
         radius: 20,
       ),
       _NodeKind.quest: _NodeStyle(
         color: Colors.amber.shade300,
         icon: Icons.assignment,
-        label: 'Quest',
         radius: 8,
       ),
       _NodeKind.generic: _NodeStyle(
         color: colorScheme.surfaceContainerHighest,
         icon: Icons.circle_outlined,
-        label: 'Generic',
         radius: 8,
       ),
     };
@@ -78,13 +91,38 @@ class StoryGraphScreen extends ConsumerWidget {
   }
 }
 
-class _GraphView extends ConsumerWidget {
+class _GraphView extends ConsumerStatefulWidget {
   const _GraphView({required this.story});
 
   final StoryData story;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_GraphView> createState() => _GraphViewState();
+}
+
+class _GraphViewState extends ConsumerState<_GraphView> {
+  final TransformationController _transformationController = TransformationController();
+  static const double _panStep = 140;
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    super.dispose();
+  }
+
+  void _pan(double dx, double dy) {
+    final scale = _transformationController.value.getMaxScaleOnAxis();
+    final matrix = _transformationController.value.clone()..translate(dx / scale, dy / scale);
+    _transformationController.value = matrix;
+  }
+
+  void _panUp() => _pan(0, _panStep);
+
+  void _panDown() => _pan(0, -_panStep);
+
+  @override
+  Widget build(BuildContext context) {
+    final story = widget.story;
     final graph = Graph()..isTree = false;
     final nodesById = <String, Node>{
       for (final id in story.nodes.keys) id: Node.Id(id),
@@ -119,6 +157,7 @@ class _GraphView extends ConsumerWidget {
     return Stack(
       children: [
         InteractiveViewer(
+          transformationController: _transformationController,
           constrained: false,
           boundaryMargin: const EdgeInsets.all(200),
           minScale: 0.1,
@@ -183,21 +222,90 @@ class _GraphView extends ConsumerWidget {
         Positioned(
           left: 12,
           top: 12,
-          child: _Legend(styles: styles, colorScheme: colorScheme),
+          child: _Legend(styles: styles),
+        ),
+        Positioned(
+          right: 12,
+          bottom: 24,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _PanButton(icon: Icons.keyboard_arrow_up, tooltip: tr(ref, 'pan_up'), onStep: _panUp),
+              const SizedBox(height: 10),
+              _PanButton(
+                icon: Icons.keyboard_arrow_down,
+                tooltip: tr(ref, 'pan_down'),
+                onStep: _panDown,
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 }
 
-class _Legend extends StatelessWidget {
-  const _Legend({required this.styles, required this.colorScheme});
+class _PanButton extends StatefulWidget {
+  const _PanButton({required this.icon, required this.tooltip, required this.onStep});
 
-  final Map<_NodeKind, _NodeStyle> styles;
-  final ColorScheme colorScheme;
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onStep;
+
+  @override
+  State<_PanButton> createState() => _PanButtonState();
+}
+
+class _PanButtonState extends State<_PanButton> {
+  Timer? _repeatTimer;
+
+  void _start() {
+    widget.onStep();
+    _repeatTimer?.cancel();
+    _repeatTimer = Timer.periodic(const Duration(milliseconds: 90), (_) => widget.onStep());
+  }
+
+  void _stop() {
+    _repeatTimer?.cancel();
+    _repeatTimer = null;
+  }
+
+  @override
+  void dispose() {
+    _repeatTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Tooltip(
+      message: widget.tooltip,
+      child: GestureDetector(
+        onTapDown: (_) => _start(),
+        onTapUp: (_) => _stop(),
+        onTapCancel: _stop,
+        child: Material(
+          color: Theme.of(context).colorScheme.surface,
+          shape: const CircleBorder(),
+          elevation: 3,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(widget.icon),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Legend extends ConsumerWidget {
+  const _Legend({required this.styles});
+
+  final Map<_NodeKind, _NodeStyle> styles;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Card(
       elevation: 3,
       child: Padding(
@@ -206,10 +314,10 @@ class _Legend extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Legend', style: Theme.of(context).textTheme.labelLarge),
+            Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
-            ...styles.values.map(
-              (style) => Padding(
+            ...styles.entries.map(
+              (entry) => Padding(
                 padding: const EdgeInsets.only(bottom: 3),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -218,12 +326,15 @@ class _Legend extends StatelessWidget {
                       width: 14,
                       height: 14,
                       decoration: BoxDecoration(
-                        color: style.color,
-                        borderRadius: BorderRadius.circular(style.radius / 2),
+                        color: entry.value.color,
+                        borderRadius: BorderRadius.circular(entry.value.radius / 2),
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text(style.label, style: Theme.of(context).textTheme.bodySmall),
+                    Text(
+                      tr(ref, _nodeKindLabelKey(entry.key)),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ),
@@ -241,7 +352,7 @@ class _Legend extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text('Main Story Beat', style: Theme.of(context).textTheme.bodySmall),
+                Text(tr(ref, 'main_story_beat'), style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ],
@@ -257,6 +368,10 @@ Future<void> _showNodeInfo(
   StoryNode node,
   _NodeStyle style,
 ) {
+  final language = ref.read(appLanguageProvider);
+  final french = language == AppLanguage.fr;
+  String t(String key) => trFor(language, key);
+
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
@@ -276,16 +391,19 @@ Future<void> _showNodeInfo(
                   children: [
                     Icon(style.icon, size: 18),
                     const SizedBox(width: 6),
-                    Text('Node ${node.id}', style: Theme.of(innerContext).textTheme.titleLarge),
+                    Text(
+                      '${t('node')} ${node.id}',
+                      style: Theme.of(innerContext).textTheme.titleLarge,
+                    ),
                     const SizedBox(width: 8),
                     if (isMainBeatNode(node.id))
-                      const Chip(label: Text('Main Beat'), visualDensity: VisualDensity.compact),
+                      Chip(label: Text(t('main_beat_chip')), visualDensity: VisualDensity.compact),
                   ],
                 ),
                 if (node.hasRequirements) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Requires: '
+                    '${t('requires_label')} '
                     '${node.reqGold > 0 ? "${node.reqGold}g " : ""}'
                     '${node.reqAlignmentScore != null ? "align>=${node.reqAlignmentScore} " : ""}'
                     '${node.reqFlags.isNotEmpty ? node.reqFlags.join(", ") : ""}',
@@ -293,18 +411,19 @@ Future<void> _showNodeInfo(
                   ),
                 ],
                 const SizedBox(height: 12),
-                Text(node.description),
+                Text(node.descriptionFor(french)),
                 const SizedBox(height: 16),
-                Text('Choices', style: Theme.of(innerContext).textTheme.titleMedium),
+                Text(t('choices_label'), style: Theme.of(innerContext).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 if (node.choices.isEmpty)
-                  const Text('(none — this is an ending)')
+                  Text(t('no_choices_ending'))
                 else
                   ...node.choices.map(
                     (choice) => Padding(
                       padding: const EdgeInsets.only(bottom: 6),
                       child: Text(
-                        '• ${choice.text} → ${choice.isEnding ? "End" : choice.nextId}',
+                        '• ${choice.textFor(french)} → '
+                        '${choice.isEnding ? t('end_label') : choice.nextId}',
                       ),
                     ),
                   ),
@@ -315,7 +434,7 @@ Future<void> _showNodeInfo(
                     Navigator.of(sheetContext).pop();
                   },
                   icon: const Icon(Icons.play_arrow),
-                  label: const Text('Jump to this node'),
+                  label: Text(t('jump_to_node')),
                 ),
               ],
             ),

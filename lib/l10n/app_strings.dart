@@ -40,9 +40,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'bestiary': {AppLanguage.en: 'Bestiary', AppLanguage.fr: 'Bestiaire'},
   'character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'language': {AppLanguage.en: 'Language', AppLanguage.fr: 'Langue'},
+  'legend_title': {AppLanguage.en: 'Legend', AppLanguage.fr: 'Légende'},
+  'node_kind_character_creation': {
+    AppLanguage.en: 'Character Creation',
+    AppLanguage.fr: 'Création de personnage',
+  },
+  'node_kind_combat': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
+  'node_kind_shop': {AppLanguage.en: 'Shop', AppLanguage.fr: 'Boutique'},
+  'node_kind_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'node_kind_generic': {AppLanguage.en: 'Generic', AppLanguage.fr: 'Générique'},
+  'main_story_beat': {
+    AppLanguage.en: 'Main Story Beat',
+    AppLanguage.fr: "Étape principale de l'histoire",
+  },
+  'main_beat_chip': {AppLanguage.en: 'Main Beat', AppLanguage.fr: 'Étape principale'},
+  'requires_label': {AppLanguage.en: 'Requires:', AppLanguage.fr: 'Nécessite :'},
+  'choices_label': {AppLanguage.en: 'Choices', AppLanguage.fr: 'Choix'},
+  'no_choices_ending': {
+    AppLanguage.en: '(none — this is an ending)',
+    AppLanguage.fr: '(aucun — ceci est une fin)',
+  },
+  'jump_to_node': {AppLanguage.en: 'Jump to this node', AppLanguage.fr: 'Aller à ce nœud'},
+  'end_label': {AppLanguage.en: 'End', AppLanguage.fr: 'Fin'},
+  'pan_up': {AppLanguage.en: 'Pan up', AppLanguage.fr: 'Déplacer vers le haut'},
+  'pan_down': {AppLanguage.en: 'Pan down', AppLanguage.fr: 'Déplacer vers le bas'},
 };
 
-String tr(WidgetRef ref, String key) {
-  final language = ref.watch(appLanguageProvider);
+/// Looks up [key] for a known [language] without needing a [WidgetRef] —
+/// for use in callbacks (dialogs, bottom sheets) outside a widget's build.
+String trFor(AppLanguage language, String key) {
   return _strings[key]?[language] ?? _strings[key]?[AppLanguage.en] ?? key;
 }
+
+String tr(WidgetRef ref, String key) => trFor(ref.watch(appLanguageProvider), key);
