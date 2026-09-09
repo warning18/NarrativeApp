@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
 import '../data/story_repository.dart';
+import '../models/story_node.dart';
 import '../providers/story_providers.dart';
 
 class StoryGraphScreen extends ConsumerWidget {
@@ -60,7 +61,6 @@ class _GraphView extends ConsumerWidget {
       ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM;
 
     final playState = ref.watch(storyPlayProvider);
-    final notifier = ref.read(storyPlayProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
 
     return InteractiveViewer(
@@ -79,7 +79,12 @@ class _GraphView extends ConsumerWidget {
           final id = node.key!.value as String;
           final isCurrent = id == playState.currentNodeId;
           return GestureDetector(
-            onTap: () => notifier.jumpTo(id),
+            onTap: () {
+              final storyNode = story.nodeFor(id);
+              if (storyNode != null) {
+                _showNodeInfo(context, ref, storyNode);
+              }
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
@@ -102,4 +107,65 @@ class _GraphView extends ConsumerWidget {
       ),
     );
   }
+}
+
+Future<void> _showNodeInfo(BuildContext context, WidgetRef ref, StoryNode node) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    builder: (sheetContext) {
+      return DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.5,
+        minChildSize: 0.3,
+        maxChildSize: 0.9,
+        builder: (innerContext, scrollController) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: ListView(
+              controller: scrollController,
+              children: [
+                Text('Node ${node.id}', style: Theme.of(innerContext).textTheme.titleLarge),
+                if (node.hasRequirements) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Requires: '
+                    '${node.reqGold > 0 ? "${node.reqGold}g " : ""}'
+                    '${node.reqAlignmentScore != null ? "align>=${node.reqAlignmentScore} " : ""}'
+                    '${node.reqFlags.isNotEmpty ? node.reqFlags.join(", ") : ""}',
+                    style: Theme.of(innerContext).textTheme.bodySmall,
+                  ),
+                ],
+                const SizedBox(height: 12),
+                Text(node.description),
+                const SizedBox(height: 16),
+                Text('Choices', style: Theme.of(innerContext).textTheme.titleMedium),
+                const SizedBox(height: 8),
+                if (node.choices.isEmpty)
+                  const Text('(none — this is an ending)')
+                else
+                  ...node.choices.map(
+                    (choice) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '• ${choice.text} → ${choice.isEnding ? "End" : choice.nextId}',
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    ref.read(storyPlayProvider.notifier).jumpTo(node.id);
+                    Navigator.of(sheetContext).pop();
+                  },
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text('Jump to this node'),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
 }

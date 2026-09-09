@@ -1,0 +1,171 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../gamedata/db_schema.dart';
+import '../providers/game_db_providers.dart';
+import '../providers/player_session_provider.dart';
+import '../widgets/player_stats_bar.dart';
+import 'shop_detail_screen.dart';
+
+class PlayScreen extends ConsumerWidget {
+  const PlayScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final questsAsync = ref.watch(gameDbProvider(questsSchema));
+    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const PlayerStatsBar(),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Player Session', style: Theme.of(context).textTheme.titleMedium),
+            TextButton.icon(
+              onPressed: () => ref.read(playerSessionProvider.notifier).resetSession(),
+              icon: const Icon(Icons.restart_alt),
+              label: const Text('Reset'),
+            ),
+          ],
+        ),
+        if (session.inventoryItemIds.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text('Inventory: ${session.inventoryItemIds.join(", ")}'),
+          ),
+        const Divider(height: 32),
+        Text('Quests', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        questsAsync.when(
+          data: (records) => _QuestList(records: records),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Text('Failed to load quests: $error'),
+        ),
+        const Divider(height: 32),
+        Text('Shops', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        shopsAsync.when(
+          data: (records) => _ShopList(records: records),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Text('Failed to load shops: $error'),
+        ),
+      ],
+    );
+  }
+}
+
+class _QuestList extends ConsumerWidget {
+  const _QuestList({required this.records});
+
+  final Map<String, dynamic> records;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (records.isEmpty) {
+      return const Text('No quests defined yet.');
+    }
+    final session = ref.watch(playerSessionProvider);
+    final keys = records.keys.toList()..sort();
+
+    return Column(
+      children: keys.map((questId) {
+        final quest = records[questId] as Map<String, dynamic>;
+        final questName = quest['questName']?.toString() ?? questId;
+        final dialogue = quest['npcDialogueText']?.toString() ?? '';
+        final isCompleted = session.completedQuestIds.contains(questId);
+        final isActive = session.activeQuestIds.contains(questId);
+        final requiredGold = (quest['requiredGold'] as num?)?.toInt() ?? 0;
+        final requiredFlags =
+            (quest['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [];
+        final meetsRequirements =
+            session.meetsRequirements(reqGold: requiredGold, reqFlags: requiredFlags);
+
+        String statusLabel;
+        if (isCompleted) {
+          statusLabel = 'Completed';
+        } else if (isActive) {
+          statusLabel = 'Active';
+        } else if (!meetsRequirements) {
+          statusLabel = 'Locked';
+        } else {
+          statusLabel = 'Available';
+        }
+
+        Widget trailing;
+        if (isCompleted) {
+          trailing = const Icon(Icons.check_circle, color: Colors.green);
+        } else if (isActive) {
+          trailing = ElevatedButton(
+            onPressed: () {
+              final rewardGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
+              final rewardItemId = quest['rewardItemID']?.toString();
+              ref.read(playerSessionProvider.notifier).completeQuest(
+                    questId,
+                    rewardGold: rewardGold,
+                    rewardItemId: rewardItemId,
+                  );
+            },
+            child: const Text('Complete'),
+          );
+        } else {
+          trailing = ElevatedButton(
+            onPressed: !meetsRequirements
+                ? null
+                : () => ref.read(playerSessionProvider.notifier).acceptQuest(questId),
+            child: const Text('Accept'),
+          );
+        }
+
+        return Card(
+          child: ListTile(
+            title: Text(questName),
+            subtitle: Text(
+              dialogue.isNotEmpty ? '$dialogue\nStatus: $statusLabel' : 'Status: $statusLabel',
+            ),
+            isThreeLine: dialogue.isNotEmpty,
+            trailing: trailing,
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _ShopList extends StatelessWidget {
+  const _ShopList({required this.records});
+
+  final Map<String, dynamic> records;
+
+  @override
+  Widget build(BuildContext context) {
+    if (records.isEmpty) {
+      return const Text('No shops defined yet.');
+    }
+    final keys = records.keys.toList()..sort();
+
+    return Column(
+      children: keys.map((shopId) {
+        final shop = records[shopId] as Map<String, dynamic>;
+        final shopName = shop['shopName']?.toString() ?? shopId;
+        return Card(
+          child: ListTile(
+            title: Text(shopName),
+            subtitle: Text(shop['shopDescription']?.toString() ?? ''),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop),
+                ),
+              );
+            },
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
