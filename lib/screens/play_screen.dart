@@ -6,8 +6,8 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import '../widgets/player_stats_bar.dart';
+import 'character_screen.dart';
 import 'fight_screen.dart';
-import 'inventory_screen.dart';
 import 'shop_detail_screen.dart';
 
 class PlayScreen extends ConsumerWidget {
@@ -39,16 +39,16 @@ class PlayScreen extends ConsumerWidget {
         const SizedBox(height: 4),
         Card(
           child: ListTile(
-            leading: const Icon(Icons.backpack),
-            title: const Text('Inventory & Equipment'),
+            leading: const Icon(Icons.person),
+            title: const Text('Character'),
             subtitle: Text(
-              '${session.inventoryItemIds.length} item(s) owned · '
-              '${session.equippedItemIds.length} equipped',
+              'Lvl ${session.level} · ${session.inventoryItemIds.length} item(s) · '
+              '${session.skillPoints} skill pt(s) · ${session.statPoints} stat pt(s)',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const InventoryScreen()),
+                MaterialPageRoute(builder: (_) => const CharacterScreen()),
               );
             },
           ),

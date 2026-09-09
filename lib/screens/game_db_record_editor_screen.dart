@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../gamedata/field_schema.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/story_providers.dart';
 
 class GameDbRecordEditorScreen extends ConsumerStatefulWidget {
   const GameDbRecordEditorScreen({
@@ -27,6 +28,7 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
   final Map<String, TextEditingController> _textControllers = {};
   final Map<String, bool> _boolValues = {};
   final Map<String, String> _enumValues = {};
+  final Map<String, List<String>> _multiSelectValues = {};
   String? _error;
 
   bool get _isNew => widget.initialRecord == null;
@@ -42,13 +44,21 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           _boolValues[field.key] = value as bool? ?? (field.defaultValue as bool? ?? false);
           break;
         case FieldType.enumeration:
+        case FieldType.reference:
           _enumValues[field.key] = (value as String?) ??
               (field.defaultValue as String?) ??
-              (field.enumOptions.isNotEmpty ? field.enumOptions.first : '');
+              (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty
+                  ? field.enumOptions.first
+                  : '');
           break;
         case FieldType.stringList:
           final list = (value as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
           _textControllers[field.key] = TextEditingController(text: list.join(', '));
+          break;
+        case FieldType.referenceList:
+        case FieldType.multiEnum:
+          _multiSelectValues[field.key] =
+              (value as List?)?.map((e) => e.toString()).toList() ?? <String>[];
           break;
         case FieldType.json:
           final encoded =
@@ -89,12 +99,17 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           result[field.key] = _boolValues[field.key] ?? false;
           break;
         case FieldType.enumeration:
+        case FieldType.reference:
           result[field.key] = _enumValues[field.key] ?? '';
           break;
         case FieldType.stringList:
           final raw = _textControllers[field.key]!.text;
           result[field.key] =
               raw.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+          break;
+        case FieldType.referenceList:
+        case FieldType.multiEnum:
+          result[field.key] = _multiSelectValues[field.key] ?? <String>[];
           break;
         case FieldType.json:
           final raw = _textControllers[field.key]!.text.trim();
@@ -134,6 +149,29 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
     }
     notifier.upsertRecord(newKey, result);
     Navigator.of(context).pop();
+  }
+
+  List<String> _referenceOptions(String referenceSchemaId) {
+    if (referenceSchemaId == storyEventsReferenceId) {
+      final storyAsync = ref.watch(storyDataProvider);
+      return storyAsync.maybeWhen(
+        data: (story) => story.nodes.keys.toList()..sort(),
+        orElse: () => const <String>[],
+      );
+    }
+    DbSchema? targetSchema;
+    for (final schema in gameDbSchemas) {
+      if (schema.id == referenceSchemaId) {
+        targetSchema = schema;
+        break;
+      }
+    }
+    if (targetSchema == null) return const <String>[];
+    final recordsAsync = ref.watch(gameDbProvider(targetSchema));
+    return recordsAsync.maybeWhen(
+      data: (records) => records.keys.toList()..sort(),
+      orElse: () => const <String>[],
+    );
   }
 
   @override
@@ -183,6 +221,26 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             onChanged: (value) => setState(() => _enumValues[field.key] = value ?? ''),
           ),
         );
+      case FieldType.reference:
+        final options = _referenceOptions(field.referenceSchemaId ?? '');
+        final current = _enumValues[field.key] ?? '';
+        final dropdownValue = current.isEmpty || options.contains(current) ? current : '';
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: DropdownButtonFormField<String>(
+            value: dropdownValue,
+            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            items: [
+              const DropdownMenuItem(value: '', child: Text('(none)')),
+              ...options.map((option) => DropdownMenuItem(value: option, child: Text(option))),
+            ],
+            onChanged: (value) => setState(() => _enumValues[field.key] = value ?? ''),
+          ),
+        );
+      case FieldType.referenceList:
+        return _buildMultiSelect(field, _referenceOptions(field.referenceSchemaId ?? ''));
+      case FieldType.multiEnum:
+        return _buildMultiSelect(field, field.enumOptions);
       case FieldType.stringList:
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
@@ -246,5 +304,59 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           ),
         );
     }
+  }
+
+  Widget _buildMultiSelect(FieldSchema field, List<String> availableOptions) {
+    final selected = _multiSelectValues[field.key] ?? const <String>[];
+    final addable = availableOptions.where((o) => !selected.contains(o)).toList();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: InputDecorator(
+        decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (selected.isNotEmpty)
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: selected
+                    .map(
+                      (value) => Chip(
+                        label: Text(value),
+                        onDeleted: () => setState(() {
+                          _multiSelectValues[field.key] =
+                              selected.where((v) => v != value).toList();
+                        }),
+                      ),
+                    )
+                    .toList(),
+              ),
+            if (selected.isNotEmpty) const SizedBox(height: 8),
+            if (addable.isEmpty)
+              Text(
+                selected.isEmpty ? 'Nothing available to add yet.' : 'All options added.',
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            else
+              DropdownButton<String>(
+                isExpanded: true,
+                hint: const Text('Add...'),
+                value: null,
+                items: addable
+                    .map((option) => DropdownMenuItem(value: option, child: Text(option)))
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  setState(() {
+                    _multiSelectValues[field.key] = [...selected, value];
+                  });
+                },
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

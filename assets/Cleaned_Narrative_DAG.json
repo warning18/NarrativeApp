@@ -97,7 +97,8 @@
     "choices": [
       {
         "text": "FIGHT!",
-        "next_id": "280"
+        "next_id": "280",
+        "triggerEnemyId": "slum_thug"
       }
     ]
   },
@@ -351,7 +352,8 @@
     "choices": [
       {
         "text": "Kill them (Start Battle)",
-        "next_id": "823"
+        "next_id": "823",
+        "triggerEnemyId": "inquisition_warden"
       }
     ]
   },
@@ -445,7 +447,8 @@
     "choices": [
       {
         "text": "Kill the Beast (Start Battle)",
-        "next_id": "860"
+        "next_id": "860",
+        "triggerEnemyId": "rat_matriarch"
       }
     ]
   },

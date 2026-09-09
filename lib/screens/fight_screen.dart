@@ -81,6 +81,16 @@ class _FightScreenState extends ConsumerState<FightScreen> {
     return bonus;
   }
 
+  Map<String, dynamic> _availableSkills(Map<String, dynamic> skills) {
+    final session = ref.read(playerSessionProvider);
+    return <String, dynamic>{
+      for (final entry in skills.entries)
+        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ?? false) ||
+            session.unlockedSkillIds.contains(entry.key))
+          entry.key: entry.value,
+    };
+  }
+
   void _takePlayerTurn(
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
@@ -92,7 +102,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
 
     final face = rollDie(faces, _random);
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
-    final result = resolvePlayerFace(face, skills, totalDamage);
+    final result = resolvePlayerFace(face, _availableSkills(skills), totalDamage);
 
     setState(() {
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
@@ -307,7 +317,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
           const SizedBox(height: 16),
           if (_over)
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(_won),
               child: Text(_won ? 'Victory! Return' : 'Retreat'),
             )
           else
