@@ -160,6 +160,98 @@ final DbSchema skillsSchema = DbSchema(
       defaultValue: 1.0,
     ),
     FieldSchema(key: 'battleMessage', label: 'Battle Message', type: FieldType.text),
+    FieldSchema(
+      key: 'restrictedRaceID',
+      label: 'Reserved For Race',
+      type: FieldType.reference,
+      referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+      key: 'restrictedProfessionID',
+      label: 'Reserved For Profession',
+      type: FieldType.reference,
+      referenceSchemaId: 'professions',
+    ),
+  ],
+);
+
+final DbSchema racesSchema = DbSchema(
+  id: 'races',
+  label: 'Races',
+  assetPath: 'assets/gamedata/races.json',
+  primaryKeyField: 'raceID',
+  titleField: 'raceName',
+  fields: [
+    FieldSchema(key: 'raceID', label: 'Race ID', type: FieldType.text),
+    FieldSchema(key: 'raceName', label: 'Race Name', type: FieldType.text),
+    FieldSchema(key: 'description', label: 'Description', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'bonusMaxHealth',
+      label: 'Bonus Max Health',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'bonusBaseDamage',
+      label: 'Bonus Base Damage',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'bonusBaseArmor',
+      label: 'Bonus Base Armor',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'startingGoldBonus',
+      label: 'Starting Gold Bonus',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+  ],
+);
+
+final DbSchema professionsSchema = DbSchema(
+  id: 'professions',
+  label: 'Professions',
+  assetPath: 'assets/gamedata/professions.json',
+  primaryKeyField: 'professionID',
+  titleField: 'professionName',
+  fields: [
+    FieldSchema(key: 'professionID', label: 'Profession ID', type: FieldType.text),
+    FieldSchema(key: 'professionName', label: 'Profession Name', type: FieldType.text),
+    FieldSchema(key: 'description', label: 'Description', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'bonusMaxHealth',
+      label: 'Bonus Max Health',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'bonusBaseDamage',
+      label: 'Bonus Base Damage',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'bonusBaseArmor',
+      label: 'Bonus Base Armor',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'startingGoldBonus',
+      label: 'Starting Gold Bonus',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'startingSkillPoints',
+      label: 'Starting Skill Points',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
   ],
 );
 
@@ -488,4 +580,6 @@ final List<DbSchema> gameDbSchemas = [
   shopsSchema,
   gatesSchema,
   adventureNodesSchema,
+  racesSchema,
+  professionsSchema,
 ];

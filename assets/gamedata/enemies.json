@@ -79,5 +79,251 @@
       }
     ],
     "skillMoves": []
+  },
+  "harbor_rat": {
+    "enemyName": "Harbor Rat",
+    "maxHealth": 38,
+    "damage": 5,
+    "xpReward": 19,
+    "goldReward": 12,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": []
+  },
+  "street_bandit": {
+    "enemyName": "Street Bandit",
+    "maxHealth": 56,
+    "damage": 7,
+    "xpReward": 28,
+    "goldReward": 19,
+    "lootTable": [
+      {
+        "itemID": "dagger_t1",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": []
+  },
+  "cultist_acolyte": {
+    "enemyName": "Cultist Acolyte",
+    "maxHealth": 74,
+    "damage": 9,
+    "xpReward": 37,
+    "goldReward": 26,
+    "lootTable": [
+      {
+        "itemID": "scroll_fireball",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "fireball",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "inquisition_soldier": {
+    "enemyName": "Inquisition Soldier",
+    "maxHealth": 92,
+    "damage": 11,
+    "xpReward": 46,
+    "goldReward": 33,
+    "lootTable": [
+      {
+        "itemID": "sword_t2",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": []
+  },
+  "void_wisp": {
+    "enemyName": "Void Wisp",
+    "maxHealth": 110,
+    "damage": 13,
+    "xpReward": 55,
+    "goldReward": 40,
+    "lootTable": [
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "smuggler_captain": {
+    "enemyName": "Smuggler Captain",
+    "maxHealth": 128,
+    "damage": 15,
+    "xpReward": 64,
+    "goldReward": 47,
+    "lootTable": [
+      {
+        "itemID": "dagger_t3",
+        "dropRate": 25
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "shadow_step",
+        "condition": "Chance",
+        "requiredElement": "Wind",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "plague_hound": {
+    "enemyName": "Plague Hound",
+    "maxHealth": 146,
+    "damage": 17,
+    "xpReward": 73,
+    "goldReward": 54,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 35
+      }
+    ],
+    "skillMoves": []
+  },
+  "iron_golem": {
+    "enemyName": "Iron Golem",
+    "maxHealth": 164,
+    "damage": 19,
+    "xpReward": 82,
+    "goldReward": 61,
+    "lootTable": [
+      {
+        "itemID": "shield_t5",
+        "dropRate": 20
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 50
+      }
+    ],
+    "skillMoves": []
+  },
+  "void_stalker": {
+    "enemyName": "Void Stalker",
+    "maxHealth": 182,
+    "damage": 21,
+    "xpReward": 91,
+    "goldReward": 68,
+    "lootTable": [
+      {
+        "itemID": "staff_t6",
+        "dropRate": 15
+      },
+      {
+        "itemID": "artifact_moon_shard",
+        "dropRate": 8
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Always",
+        "requiredElement": "Void",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "shadow_step",
+        "condition": "OnLowHealth",
+        "requiredElement": "Wind",
+        "chance": 60,
+        "healthThreshold": 30,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "inquisition_high_warden": {
+    "enemyName": "Inquisition High Warden",
+    "maxHealth": 200,
+    "damage": 23,
+    "xpReward": 100,
+    "goldReward": 75,
+    "lootTable": [
+      {
+        "itemID": "sword_t9",
+        "dropRate": 20
+      },
+      {
+        "itemID": "quest_sealed_letter",
+        "dropRate": 100
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "fireball",
+        "condition": "OnLowHealth",
+        "requiredElement": "Fire",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
   }
 }

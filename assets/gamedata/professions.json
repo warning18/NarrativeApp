@@ -1,0 +1,52 @@
+{
+  "warrior": {
+    "professionID": "warrior",
+    "professionName": "Warrior",
+    "description": "Front-line fighters who trade finesse for raw durability.",
+    "bonusMaxHealth": 20,
+    "bonusBaseDamage": 3,
+    "bonusBaseArmor": 3,
+    "startingGoldBonus": 0,
+    "startingSkillPoints": 0
+  },
+  "mage": {
+    "professionID": "mage",
+    "professionName": "Mage",
+    "description": "Channel elemental forces at the cost of a fragile body.",
+    "bonusMaxHealth": -15,
+    "bonusBaseDamage": 6,
+    "bonusBaseArmor": -2,
+    "startingGoldBonus": 0,
+    "startingSkillPoints": 1
+  },
+  "rogue": {
+    "professionID": "rogue",
+    "professionName": "Rogue",
+    "description": "Fast, opportunistic, and always first to spot a good deal.",
+    "bonusMaxHealth": -5,
+    "bonusBaseDamage": 4,
+    "bonusBaseArmor": 0,
+    "startingGoldBonus": 30,
+    "startingSkillPoints": 0
+  },
+  "cleric": {
+    "professionID": "cleric",
+    "professionName": "Cleric",
+    "description": "Battlefield healers who temper their blows with restraint.",
+    "bonusMaxHealth": 10,
+    "bonusBaseDamage": 0,
+    "bonusBaseArmor": 2,
+    "startingGoldBonus": 0,
+    "startingSkillPoints": 1
+  },
+  "ranger": {
+    "professionID": "ranger",
+    "professionName": "Ranger",
+    "description": "Well-traveled scouts, equally at home with blade or bow.",
+    "bonusMaxHealth": 0,
+    "bonusBaseDamage": 3,
+    "bonusBaseArmor": 1,
+    "startingGoldBonus": 10,
+    "startingSkillPoints": 0
+  }
+}

@@ -102,6 +102,10 @@ IconData gameDbIcon(String schemaId) {
       return Icons.door_front_door;
     case 'adventure_nodes':
       return Icons.map;
+    case 'races':
+      return Icons.diversity_3;
+    case 'professions':
+      return Icons.work;
     default:
       return Icons.table_chart;
   }
@@ -109,3 +113,5 @@ IconData gameDbIcon(String schemaId) {
 
 const IconData enemyIcon = Icons.pest_control;
 const IconData shopIcon = Icons.storefront;
+const IconData raceIcon = Icons.diversity_3;
+const IconData professionIcon = Icons.work;

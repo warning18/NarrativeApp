@@ -32,6 +32,8 @@ class PlayerSession {
     required this.unlockedQuestIds,
     required this.unlockedEnemyIds,
     required this.diceSkillAssignments,
+    required this.raceId,
+    required this.professionId,
   });
 
   final int level;
@@ -58,6 +60,9 @@ class PlayerSession {
 
   /// diceId -> {faceIndex (as string) -> skillId}
   final Map<String, Map<String, String>> diceSkillAssignments;
+
+  final String raceId;
+  final String professionId;
 
   int get xpToNextLevel => level * 100;
 
@@ -103,6 +108,8 @@ class PlayerSession {
     List<String>? unlockedQuestIds,
     List<String>? unlockedEnemyIds,
     Map<String, Map<String, String>>? diceSkillAssignments,
+    String? raceId,
+    String? professionId,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -127,6 +134,8 @@ class PlayerSession {
       unlockedQuestIds: unlockedQuestIds ?? this.unlockedQuestIds,
       unlockedEnemyIds: unlockedEnemyIds ?? this.unlockedEnemyIds,
       diceSkillAssignments: diceSkillAssignments ?? this.diceSkillAssignments,
+      raceId: raceId ?? this.raceId,
+      professionId: professionId ?? this.professionId,
     );
   }
 
@@ -153,6 +162,8 @@ class PlayerSession {
         'unlockedQuestIds': unlockedQuestIds,
         'unlockedEnemyIds': unlockedEnemyIds,
         'diceSkillAssignments': diceSkillAssignments,
+        'raceId': raceId,
+        'professionId': professionId,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -195,6 +206,8 @@ class PlayerSession {
             ),
           ) ??
           const {},
+      raceId: json['raceId'] as String? ?? '',
+      professionId: json['professionId'] as String? ?? '',
     );
   }
 }
@@ -224,6 +237,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           unlockedQuestIds: [],
           unlockedEnemyIds: [],
           diceSkillAssignments: {},
+          raceId: '',
+          professionId: '',
         )) {
     _load();
   }
@@ -271,6 +286,72 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       unlockedQuestIds: const [],
       unlockedEnemyIds: const [],
       diceSkillAssignments: const {},
+      raceId: '',
+      professionId: '',
+    );
+    await _persist();
+  }
+
+  /// Starts a fresh game as the given race/profession, combining the base
+  /// New Game Defaults with each preset's stat bonuses. [race] and
+  /// [profession] are the raw records from the Races/Professions db.
+  Future<void> startNewGame({
+    required String raceId,
+    required Map<String, dynamic> race,
+    required String professionId,
+    required Map<String, dynamic> profession,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> defaults;
+    final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
+    if (savedConfig != null) {
+      defaults = json.decode(savedConfig) as Map<String, dynamic>;
+    } else {
+      final raw = await rootBundle.loadString(_newGameDefaultsAssetPath);
+      defaults = json.decode(raw) as Map<String, dynamic>;
+    }
+
+    int bonus(Map<String, dynamic> preset, String key) => (preset[key] as num?)?.toInt() ?? 0;
+
+    final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 100) +
+        bonus(race, 'bonusMaxHealth') +
+        bonus(profession, 'bonusMaxHealth');
+    final baseDamage = ((defaults['baseDamage'] as num?)?.toInt() ?? 10) +
+        bonus(race, 'bonusBaseDamage') +
+        bonus(profession, 'bonusBaseDamage');
+    final baseArmor = ((defaults['baseArmor'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusBaseArmor') +
+        bonus(profession, 'bonusBaseArmor');
+    final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'startingGoldBonus') +
+        bonus(profession, 'startingGoldBonus');
+    final skillPoints = bonus(profession, 'startingSkillPoints');
+
+    state = PlayerSession(
+      level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
+      currentXP: 0,
+      gold: gold,
+      alignmentScore: 0,
+      maxHealth: maxHealth,
+      currentHealth: maxHealth,
+      baseDamage: baseDamage,
+      baseArmor: baseArmor,
+      potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
+      statPoints: 0,
+      skillPoints: skillPoints,
+      maxSkillSlots: (defaults['maxSkillSlots'] as num?)?.toInt() ?? 3,
+      flags: const [],
+      activeQuestIds: const [],
+      completedQuestIds: const [],
+      inventoryItemIds: const [],
+      equippedItemIds: const [],
+      unlockedSkillIds: const [],
+      unlockedShopIds: const [],
+      unlockedQuestIds: const [],
+      unlockedEnemyIds: const [],
+      diceSkillAssignments: const {},
+      raceId: raceId,
+      professionId: professionId,
     );
     await _persist();
   }
