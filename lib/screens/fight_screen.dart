@@ -61,13 +61,38 @@ class _FightScreenState extends ConsumerState<FightScreen> {
     });
   }
 
-  void _takePlayerTurn(Map<String, dynamic> dice, Map<String, dynamic> skills) {
+  int _equipmentDamageBonus(Map<String, dynamic> items) {
+    final session = ref.read(playerSessionProvider);
+    var bonus = 0;
+    for (final id in session.equippedItemIds) {
+      final item = items[id] as Map<String, dynamic>?;
+      bonus += (item?['attackDamage'] as num?)?.toInt() ?? 0;
+    }
+    return bonus;
+  }
+
+  int _equipmentArmorBonus(Map<String, dynamic> items) {
+    final session = ref.read(playerSessionProvider);
+    var bonus = 0;
+    for (final id in session.equippedItemIds) {
+      final item = items[id] as Map<String, dynamic>?;
+      bonus += (item?['armor'] as num?)?.toInt() ?? 0;
+    }
+    return bonus;
+  }
+
+  void _takePlayerTurn(
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
     if (_over) return;
     final faces = (dice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     if (faces.isEmpty) return;
 
     final face = rollDie(faces, _random);
-    final result = resolvePlayerFace(face, skills, _playerBaseDamage);
+    final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
+    final result = resolvePlayerFace(face, skills, totalDamage);
 
     setState(() {
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
@@ -81,10 +106,10 @@ class _FightScreenState extends ConsumerState<FightScreen> {
       return;
     }
 
-    _takeEnemyTurn(skills);
+    _takeEnemyTurn(skills, items);
   }
 
-  void _takeEnemyTurn(Map<String, dynamic> skills) {
+  void _takeEnemyTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final move = resolveEnemyMove(
       enemy: {...widget.enemy, 'damage': _enemyDamage},
       skills: skills,
@@ -92,7 +117,9 @@ class _FightScreenState extends ConsumerState<FightScreen> {
       enemyMaxHealth: _enemyMaxHealth,
       random: _random,
     );
-    final damageTaken = max(0, move.damage - _block);
+    final session = ref.read(playerSessionProvider);
+    final totalArmor = session.baseArmor + _equipmentArmorBonus(items);
+    final damageTaken = max(0, move.damage - _block - totalArmor);
 
     setState(() {
       _playerHealth = max(0, _playerHealth - damageTaken);
@@ -163,18 +190,23 @@ class _FightScreenState extends ConsumerState<FightScreen> {
   Widget build(BuildContext context) {
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
+    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final session = ref.watch(playerSessionProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text('Fight: ${widget.enemy['enemyName'] ?? widget.enemyId}')),
       body: diceAsync.when(
         data: (dice) => skillsAsync.when(
-          data: (skills) {
-            if (!_started) {
-              return _buildSetup(dice);
-            }
-            return _buildBattle(dice, skills, session);
-          },
+          data: (skills) => itemsAsync.when(
+            data: (items) {
+              if (!_started) {
+                return _buildSetup(dice, items);
+              }
+              return _buildBattle(dice, skills, items, session);
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(child: Text('Failed to load items: $error')),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text('Failed to load skills: $error')),
         ),
@@ -184,11 +216,13 @@ class _FightScreenState extends ConsumerState<FightScreen> {
     );
   }
 
-  Widget _buildSetup(Map<String, dynamic> dice) {
+  Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
     final diceIds = dice.keys.toList()..sort();
     if (diceIds.isEmpty) {
       return const Center(child: Text('No dice defined in the Data tab yet.'));
     }
+    final damageBonus = _equipmentDamageBonus(items);
+    final armorBonus = _equipmentArmorBonus(items);
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -200,6 +234,13 @@ class _FightScreenState extends ConsumerState<FightScreen> {
           ),
           const SizedBox(height: 8),
           Text('HP $_enemyMaxHealth · Damage $_enemyDamage (scaled to level $_playerLevel)'),
+          if (damageBonus > 0 || armorBonus > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Your equipment: +$damageBonus damage, +$armorBonus armor',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
           const SizedBox(height: 24),
           Text('Choose your die', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
@@ -207,6 +248,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
             final faceCount = ((dice[id] as Map<String, dynamic>)['faces'] as List?)?.length ?? 0;
             return Card(
               child: ListTile(
+                leading: const Icon(Icons.casino),
                 title: Text(id),
                 subtitle: Text('$faceCount faces'),
                 onTap: () => _startFight(id),
@@ -221,6 +263,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
   Widget _buildBattle(
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
+    Map<String, dynamic> items,
     PlayerSession session,
   ) {
     final selectedDice = _selectedDiceId != null
@@ -274,7 +317,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
                   child: ElevatedButton.icon(
                     onPressed: selectedDice == null
                         ? null
-                        : () => _takePlayerTurn(selectedDice, skills),
+                        : () => _takePlayerTurn(selectedDice, skills, items),
                     icon: const Icon(Icons.casino),
                     label: const Text('Roll Dice'),
                   ),

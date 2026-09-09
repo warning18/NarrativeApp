@@ -26,6 +26,7 @@ class PlayerSession {
     required this.activeQuestIds,
     required this.completedQuestIds,
     required this.inventoryItemIds,
+    required this.equippedItemIds,
   });
 
   final int level;
@@ -44,6 +45,7 @@ class PlayerSession {
   final List<String> activeQuestIds;
   final List<String> completedQuestIds;
   final List<String> inventoryItemIds;
+  final List<String> equippedItemIds;
 
   int get xpToNextLevel => level * 100;
 
@@ -83,6 +85,7 @@ class PlayerSession {
     List<String>? activeQuestIds,
     List<String>? completedQuestIds,
     List<String>? inventoryItemIds,
+    List<String>? equippedItemIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -101,6 +104,7 @@ class PlayerSession {
       activeQuestIds: activeQuestIds ?? this.activeQuestIds,
       completedQuestIds: completedQuestIds ?? this.completedQuestIds,
       inventoryItemIds: inventoryItemIds ?? this.inventoryItemIds,
+      equippedItemIds: equippedItemIds ?? this.equippedItemIds,
     );
   }
 
@@ -121,6 +125,7 @@ class PlayerSession {
         'activeQuestIds': activeQuestIds,
         'completedQuestIds': completedQuestIds,
         'inventoryItemIds': inventoryItemIds,
+        'equippedItemIds': equippedItemIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -144,6 +149,8 @@ class PlayerSession {
           (json['completedQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       inventoryItemIds:
           (json['inventoryItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      equippedItemIds:
+          (json['equippedItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -167,6 +174,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           activeQuestIds: [],
           completedQuestIds: [],
           inventoryItemIds: [],
+          equippedItemIds: [],
         )) {
     _load();
   }
@@ -208,6 +216,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       activeQuestIds: const [],
       completedQuestIds: const [],
       inventoryItemIds: const [],
+      equippedItemIds: const [],
     );
     await _persist();
   }
@@ -279,6 +288,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - cost,
       inventoryItemIds: [...state.inventoryItemIds, itemId],
+    );
+    await _persist();
+  }
+
+  Future<void> equipItem(String itemId) async {
+    if (state.equippedItemIds.contains(itemId)) return;
+    state = state.copyWith(equippedItemIds: [...state.equippedItemIds, itemId]);
+    await _persist();
+  }
+
+  Future<void> unequipItem(String itemId) async {
+    if (!state.equippedItemIds.contains(itemId)) return;
+    state = state.copyWith(
+      equippedItemIds: state.equippedItemIds.where((id) => id != itemId).toList(),
     );
     await _persist();
   }

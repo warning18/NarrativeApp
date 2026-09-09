@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/game_icons.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
+import 'inventory_screen.dart';
 import 'shop_detail_screen.dart';
 
 class PlayScreen extends ConsumerWidget {
@@ -34,11 +36,23 @@ class PlayScreen extends ConsumerWidget {
             ),
           ],
         ),
-        if (session.inventoryItemIds.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Text('Inventory: ${session.inventoryItemIds.join(", ")}'),
+        const SizedBox(height: 4),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.backpack),
+            title: const Text('Inventory & Equipment'),
+            subtitle: Text(
+              '${session.inventoryItemIds.length} item(s) owned · '
+              '${session.equippedItemIds.length} equipped',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const InventoryScreen()),
+              );
+            },
           ),
+        ),
         const Divider(height: 32),
         Text('Quests', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
@@ -85,6 +99,7 @@ class _QuestList extends ConsumerWidget {
       children: keys.map((questId) {
         final quest = records[questId] as Map<String, dynamic>;
         final questName = quest['questName']?.toString() ?? questId;
+        final category = quest['category']?.toString();
         final dialogue = quest['npcDialogueText']?.toString() ?? '';
         final isCompleted = session.completedQuestIds.contains(questId);
         final isActive = session.activeQuestIds.contains(questId);
@@ -110,14 +125,24 @@ class _QuestList extends ConsumerWidget {
           trailing = const Icon(Icons.check_circle, color: Colors.green);
         } else if (isActive) {
           trailing = ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               final rewardGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
+              final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
               final rewardItemId = quest['rewardItemID']?.toString();
-              ref.read(playerSessionProvider.notifier).completeQuest(
+              await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
                     rewardItemId: rewardItemId,
                   );
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Quest complete: $questName (+$rewardGold gold, +$rewardXp XP'
+                    '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""})',
+                  ),
+                ),
+              );
             },
             child: const Text('Complete'),
           );
@@ -125,13 +150,20 @@ class _QuestList extends ConsumerWidget {
           trailing = ElevatedButton(
             onPressed: !meetsRequirements
                 ? null
-                : () => ref.read(playerSessionProvider.notifier).acceptQuest(questId),
+                : () async {
+                    await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Quest accepted: $questName')),
+                    );
+                  },
             child: const Text('Accept'),
           );
         }
 
         return Card(
           child: ListTile(
+            leading: Icon(questCategoryIcon(category)),
             title: Text(questName),
             subtitle: Text(
               dialogue.isNotEmpty ? '$dialogue\nStatus: $statusLabel' : 'Status: $statusLabel',
@@ -163,6 +195,7 @@ class _ShopList extends StatelessWidget {
         final shopName = shop['shopName']?.toString() ?? shopId;
         return Card(
           child: ListTile(
+            leading: const Icon(shopIcon),
             title: Text(shopName),
             subtitle: Text(shop['shopDescription']?.toString() ?? ''),
             trailing: const Icon(Icons.chevron_right),
@@ -200,6 +233,7 @@ class _EnemyList extends StatelessWidget {
         final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
         return Card(
           child: ListTile(
+            leading: const Icon(enemyIcon),
             title: Text(enemyName),
             subtitle: Text('HP $maxHealth · Damage $damage'),
             trailing: ElevatedButton.icon(

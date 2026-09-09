@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../gamedata/db_schema.dart';
+import '../utils/game_icons.dart';
 import 'game_config_screen.dart';
 import 'game_db_list_screen.dart';
 
@@ -32,7 +33,7 @@ class GameDataHomeScreen extends StatelessWidget {
         ...gameDbSchemas.map(
           (schema) => Card(
             child: ListTile(
-              leading: const Icon(Icons.table_chart),
+              leading: Icon(gameDbIcon(schema.id)),
               title: Text(schema.label),
               subtitle: Text('key: ${schema.primaryKeyField} · ${schema.fields.length} fields'),
               trailing: const Icon(Icons.chevron_right),
