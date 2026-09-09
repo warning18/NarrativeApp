@@ -1,0 +1,9 @@
+{
+  "playerLevel": 1,
+  "gold": 100,
+  "potionCount": 3,
+  "maxHealth": 100,
+  "baseDamage": 10,
+  "baseArmor": 0,
+  "maxSkillSlots": 3
+}

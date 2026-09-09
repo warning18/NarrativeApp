@@ -1,0 +1,13 @@
+{
+  "raider_skiff": {
+    "shipName": "raider_skiff",
+    "maxHull": 60,
+    "maxShield": 20,
+    "weaponDamage": 8,
+    "xpReward": 30,
+    "goldReward": 25,
+    "skillMoves": [
+      { "skillID": "", "condition": "Always", "requiredElement": "None", "chance": 100, "healthThreshold": 0, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 0 }
+    ]
+  }
+}

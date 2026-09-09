@@ -1,0 +1,7 @@
+{
+  "slums_gate": {
+    "gateID": "slums_gate",
+    "isPermanentGate": true,
+    "possibleMonsters": ["slum_thug"]
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'ai_generator_screen.dart';
+import 'game_data_home_screen.dart';
 import 'settings_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
@@ -15,12 +16,13 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
 
-  static const List<String> _titles = ['Story', 'Story Map', 'AI Generator'];
+  static const List<String> _titles = ['Story', 'Story Map', 'AI Generator', 'Game Data'];
 
   static const List<Widget> _screens = [
     StoryPlayerScreen(),
     StoryGraphScreen(),
     AiGeneratorScreen(),
+    GameDataHomeScreen(),
   ];
 
   @override
@@ -51,6 +53,7 @@ class _HomeShellState extends State<HomeShell> {
             icon: Icon(Icons.auto_awesome),
             label: 'Generate',
           ),
+          NavigationDestination(icon: Icon(Icons.storage), label: 'Data'),
         ],
       ),
     );

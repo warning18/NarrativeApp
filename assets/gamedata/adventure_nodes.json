@@ -1,0 +1,30 @@
+{
+  "combat_basic": {
+    "nodeID": "combat_basic",
+    "displayName": "Ambush",
+    "flavorText": "Shapes move in the dark.",
+    "category": "Combat",
+    "difficulty": "Normal",
+    "possibleEnemies": ["slum_thug"],
+    "possibleEnemyShips": [],
+    "storyEventID": "",
+    "shopID": "",
+    "healPercent": 0,
+    "guaranteedLoot": [],
+    "goldReward": 0
+  },
+  "rest_camp": {
+    "nodeID": "rest_camp",
+    "displayName": "Rest Camp",
+    "flavorText": "A quiet place to catch your breath.",
+    "category": "Rest",
+    "difficulty": "Normal",
+    "possibleEnemies": [],
+    "possibleEnemyShips": [],
+    "storyEventID": "",
+    "shopID": "",
+    "healPercent": 50,
+    "guaranteedLoot": [],
+    "goldReward": 0
+  }
+}

@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.1.0+2
+version: 1.2.0+3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -25,3 +25,15 @@ flutter:
   uses-material-design: true
   assets:
     - assets/Cleaned_Narrative_DAG.json
+    - assets/gamedata/items.json
+    - assets/gamedata/skills.json
+    - assets/gamedata/dice.json
+    - assets/gamedata/enemies.json
+    - assets/gamedata/enemy_ships.json
+    - assets/gamedata/ships.json
+    - assets/gamedata/ship_parts.json
+    - assets/gamedata/quests.json
+    - assets/gamedata/shops.json
+    - assets/gamedata/gates.json
+    - assets/gamedata/adventure_nodes.json
+    - assets/gamedata/game_config.json
