@@ -6,7 +6,15 @@
     "difficulty": "1",
     "requiredAlignment": "Neutral",
     "objectives": [
-      { "description": "Defeat the slum thug", "type": "Kill", "targetEnemyID": "slum_thug", "targetItemID": "", "targetNPCName": "", "locationID": "", "requiredAmount": 1 }
+      {
+        "description": "Defeat the slum thug",
+        "type": "Kill",
+        "targetEnemyID": "slum_thug",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
     ],
     "rewardGold": 20,
     "rewardXP": 25,
@@ -17,7 +25,52 @@
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
-      { "buttonText": "Accept", "goldModifier": 0, "alignmentModifier": 0, "flagToAdd": "q_first_blood_accepted", "nextEventID": "", "actionType": "Accept", "lockedText": "" }
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_first_blood_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_retrieve_banner": {
+    "questID": "q_retrieve_banner",
+    "questName": "The Heirloom of Alster",
+    "category": "Main",
+    "difficulty": "2",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Retrieve the Grey Shroud from the hovel",
+        "type": "Fetch",
+        "targetEnemyID": "",
+        "targetItemID": "void_banner",
+        "targetNPCName": "Lysa",
+        "locationID": "hovel",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 100,
+    "rewardXP": 150,
+    "rewardItemID": "void_banner",
+    "alignmentChange": 10,
+    "nextQuestID": "",
+    "npcDialogueText": "They are coming for the bundle. You must secure it before the wardens breach.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Secure the Shroud",
+        "goldModifier": 0,
+        "alignmentModifier": 5,
+        "flagToAdd": "has_void_banner",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
     ]
   }
 }

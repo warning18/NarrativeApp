@@ -3,12 +3,92 @@
     "diceName": "starter_die",
     "numberOfFaces": 6,
     "faces": [
-      { "faceName": "Slash", "type": "Attack", "value": 4, "linkedSkillID": "", "weight": 1.0, "element": "None" },
-      { "faceName": "Guard", "type": "Defend", "value": 3, "linkedSkillID": "", "weight": 1.0, "element": "None" },
-      { "faceName": "Fireball", "type": "Skill", "value": 0, "linkedSkillID": "fireball", "weight": 0.5, "element": "Fire" },
-      { "faceName": "Bandage", "type": "Heal", "value": 5, "linkedSkillID": "", "weight": 0.7, "element": "None" },
-      { "faceName": "Miss", "type": "Empty", "value": 0, "linkedSkillID": "", "weight": 0.3, "element": "None" },
-      { "faceName": "Slash", "type": "Attack", "value": 4, "linkedSkillID": "", "weight": 1.0, "element": "None" }
+      {
+        "faceName": "Slash",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Guard",
+        "type": "Defend",
+        "value": 3,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Fireball",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "fireball",
+        "weight": 0.5,
+        "element": "Fire"
+      },
+      {
+        "faceName": "Bandage",
+        "type": "Heal",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 0.7,
+        "element": "None"
+      },
+      {
+        "faceName": "Miss",
+        "type": "Empty",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.3,
+        "element": "None"
+      },
+      {
+        "faceName": "Slash",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ]
+  },
+  "void_die": {
+    "diceName": "void_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Void Rip",
+        "type": "Attack",
+        "value": 12,
+        "linkedSkillID": "void_blast",
+        "weight": 1.0,
+        "element": "Void"
+      },
+      {
+        "faceName": "Shadow Dash",
+        "type": "Defend",
+        "value": 8,
+        "linkedSkillID": "shadow_step",
+        "weight": 1.2,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Soul Heal",
+        "type": "Heal",
+        "value": 15,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "None"
+      },
+      {
+        "faceName": "Void Rip",
+        "type": "Attack",
+        "value": 12,
+        "linkedSkillID": "void_blast",
+        "weight": 1.0,
+        "element": "Void"
+      }
     ]
   }
 }

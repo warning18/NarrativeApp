@@ -26,11 +26,27 @@ const List<String> itemTypeOptions = [
   'Ship',
   'Material',
   'Quest',
+  'Artifact',
 ];
 
-const List<String> equipSlotOptions = ['Head', 'Chest', 'Weapon', 'Shield', 'Feet'];
+const List<String> equipSlotOptions = [
+  'Head',
+  'Chest',
+  'Weapon',
+  'Shield',
+  'Feet',
+  'Artifact',
+];
 
-const List<String> elementOptions = ['None', 'Fire', 'Wind', 'Earth', 'Water', 'Electricity'];
+const List<String> elementOptions = [
+  'None',
+  'Fire',
+  'Wind',
+  'Earth',
+  'Water',
+  'Electricity',
+  'Void',
+];
 
 const List<String> faceTypeOptions = ['Attack', 'Defend', 'Skill', 'Heal', 'Empty'];
 

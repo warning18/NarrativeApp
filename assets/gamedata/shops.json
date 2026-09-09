@@ -5,7 +5,30 @@
     "shopDescription": "A makeshift stall selling salvaged goods.",
     "unlockLevel": 1,
     "buildCost": 0,
-    "initialStock": ["potion_minor", "sword_001"],
-    "merchantSpecialties": ["Potion", "Weapon"]
+    "initialStock": [
+      "potion_minor",
+      "sword_001"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Weapon"
+    ]
+  },
+  "black_market_docks": {
+    "shopID": "black_market_docks",
+    "shopName": "Smuggler's Secret Cache",
+    "shopDescription": "Hidden beneath the rusty pier, contraband gear changes hands.",
+    "unlockLevel": 2,
+    "buildCost": 150,
+    "initialStock": [
+      "void_banner",
+      "armor_leather",
+      "sword_001"
+    ],
+    "merchantSpecialties": [
+      "Artifact",
+      "Armor",
+      "Weapon"
+    ]
   }
 }

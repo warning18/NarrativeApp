@@ -26,5 +26,33 @@
     "isActiveSkill": true,
     "damageMultiplier": 1.0,
     "battleMessage": "You catch your breath."
+  },
+  "void_blast": {
+    "id": "void_blast",
+    "element": "Void",
+    "cost": 5,
+    "requiredSkillID": "fireball",
+    "isUnlocked": false,
+    "description": "Unfurl the shroud and unleash a wave of absolute void.",
+    "healAmount": 0,
+    "damageMod": 25,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 2.5,
+    "battleMessage": "A tear in reality rips across the battlefield!"
+  },
+  "shadow_step": {
+    "id": "shadow_step",
+    "element": "Wind",
+    "cost": 3,
+    "requiredSkillID": "",
+    "isUnlocked": true,
+    "description": "Dash through shadows to evade incoming attacks.",
+    "healAmount": 10,
+    "damageMod": 5,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.2,
+    "battleMessage": "You vanish into the dim smoke."
   }
 }
