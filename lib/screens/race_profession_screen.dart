@@ -29,7 +29,16 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       appBar: AppBar(title: const Text('Race & Profession')),
       body: racesAsync.when(
         data: (races) => professionsAsync.when(
-          data: (professions) => _buildBody(context, races, professions),
+          data: (professions) {
+            if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
+              return _CharacterSheet(
+                session: session,
+                race: races[session.raceId] as Map<String, dynamic>?,
+                profession: professions[session.professionId] as Map<String, dynamic>?,
+              );
+            }
+            return _buildPicker(context, races, professions);
+          },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Center(child: Text('Failed to load professions: $error')),
         ),
@@ -39,7 +48,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     );
   }
 
-  Widget _buildBody(
+  Widget _buildPicker(
     BuildContext context,
     Map<String, dynamic> races,
     Map<String, dynamic> professions,
@@ -51,8 +60,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Choosing a race and profession and starting a new game replaces your '
-          'current character, stats and progress.',
+          'Choose who you are. This sets your starting stats and starts a new game.',
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
@@ -125,8 +133,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       builder: (dialogContext) => AlertDialog(
         title: const Text('Start new game?'),
         content: Text(
-          'This replaces your current character with a ${race['raceName']} '
-          '${profession['professionName']}. Current progress will be lost.',
+          'This begins your journey as a ${race['raceName']} '
+          '${profession['professionName']}.',
         ),
         actions: [
           TextButton(
@@ -155,7 +163,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         ),
       ),
     );
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
   }
 }
 
@@ -191,6 +199,91 @@ class _PresetCard extends StatelessWidget {
         trailing: selected ? const Icon(Icons.check_circle) : null,
         onTap: onTap,
       ),
+    );
+  }
+}
+
+/// Read-only full character info, shown once a race and profession are set.
+/// Race/profession can only be changed by restarting the story from the
+/// beginning (Node 0), not from here.
+class _CharacterSheet extends StatelessWidget {
+  const _CharacterSheet({required this.session, required this.race, required this.profession});
+
+  final PlayerSession session;
+  final Map<String, dynamic>? race;
+  final Map<String, dynamic>? profession;
+
+  @override
+  Widget build(BuildContext context) {
+    final raceName = race?['raceName']?.toString() ?? session.raceId;
+    final professionName = profession?['professionName']?.toString() ?? session.professionId;
+
+    Widget statRow(String label, String value) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label),
+              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+            ],
+          ),
+        );
+
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Card(
+          child: ListTile(
+            leading: Icon(raceIcon),
+            title: Text(raceName),
+            subtitle: Text(race?['description']?.toString() ?? ''),
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(professionIcon),
+            title: Text(professionName),
+            subtitle: Text(profession?['description']?.toString() ?? ''),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text('Character Sheet', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                statRow('Level', '${session.level}'),
+                statRow(
+                  'Experience',
+                  '${session.currentXP} / ${session.xpToNextLevel}',
+                ),
+                statRow(
+                  'Health',
+                  '${session.currentHealth} / ${session.maxHealth}',
+                ),
+                statRow('Base Damage', '${session.baseDamage}'),
+                statRow('Base Armor', '${session.baseArmor}'),
+                statRow('Gold', '${session.gold}'),
+                statRow('Alignment', '${session.alignmentLabel} (${session.alignmentScore})'),
+                statRow('Stat Points', '${session.statPoints}'),
+                statRow('Skill Points', '${session.skillPoints}'),
+                statRow('Potions', '${session.potionCount}'),
+                statRow('Inventory Items', '${session.inventoryItemIds.length}'),
+                statRow('Equipped Items', '${session.equippedItemIds.length}'),
+                statRow('Unlocked Skills', '${session.unlockedSkillIds.length}'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          'Race and profession can only be changed by restarting the story '
+          'from the very beginning.',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
     );
   }
 }

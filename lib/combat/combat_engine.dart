@@ -88,7 +88,8 @@ PlayerActionResult resolvePlayerFace(
         message: '${face.faceName}: you brace for ${face.value} block.',
       );
     case 'Skill':
-      final skill = skills[face.linkedSkillID] as Map<String, dynamic>?;
+      final effectiveSkillId = face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
+      final skill = skills[effectiveSkillId] as Map<String, dynamic>?;
       if (skill == null) {
         return const PlayerActionResult(
           damageDealt: 0,

@@ -402,6 +402,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String questId, {
     int rewardGold = 0,
     String? rewardItemId,
+    String? nextQuestId,
   }) async {
     final newActive = state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
@@ -409,11 +410,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
       newInventory.add(rewardItemId);
     }
+    var newUnlockedQuests = state.unlockedQuestIds;
+    if (nextQuestId != null &&
+        nextQuestId.isNotEmpty &&
+        !newUnlockedQuests.contains(nextQuestId)) {
+      newUnlockedQuests = [...newUnlockedQuests, nextQuestId];
+    }
     state = state.copyWith(
       gold: state.gold + rewardGold,
       activeQuestIds: newActive,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
+      unlockedQuestIds: newUnlockedQuests,
     );
     await _persist();
   }

@@ -12,38 +12,6 @@ import 'character_screen.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
-/// Ids referenced by at least one story choice as an unlock target — these
-/// are only accessible once the player has actually reached that choice.
-/// Anything never referenced by the story stays accessible by default.
-class _GatedIds {
-  const _GatedIds({required this.shops, required this.quests, required this.enemies});
-
-  final Set<String> shops;
-  final Set<String> quests;
-  final Set<String> enemies;
-
-  static _GatedIds fromStory(StoryData? story) {
-    if (story == null) return const _GatedIds(shops: {}, quests: {}, enemies: {});
-    final shops = <String>{};
-    final quests = <String>{};
-    final enemies = <String>{};
-    for (final node in story.nodes.values) {
-      for (final choice in node.choices) {
-        final shopId = choice.unlockShopId;
-        if (shopId != null && shopId.isNotEmpty) shops.add(shopId);
-        final questId = choice.unlockQuestId;
-        if (questId != null && questId.isNotEmpty) quests.add(questId);
-        final enemyId = choice.triggerEnemyId;
-        if (enemyId != null && enemyId.isNotEmpty) enemies.add(enemyId);
-      }
-    }
-    return _GatedIds(shops: shops, quests: quests, enemies: enemies);
-  }
-}
-
-bool _isAccessible(Set<String> gated, List<String> unlocked, String id) =>
-    !gated.contains(id) || unlocked.contains(id);
-
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
 
@@ -53,7 +21,6 @@ class PlayScreen extends ConsumerWidget {
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
-    final gated = _GatedIds.fromStory(ref.watch(storyDataProvider).value);
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -65,7 +32,10 @@ class PlayScreen extends ConsumerWidget {
           children: [
             Text('Player Session', style: Theme.of(context).textTheme.titleMedium),
             TextButton.icon(
-              onPressed: () => ref.read(playerSessionProvider.notifier).resetSession(),
+              onPressed: () async {
+                await ref.read(playerSessionProvider.notifier).resetSession();
+                ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+              },
               icon: const Icon(Icons.restart_alt),
               label: const Text('Reset'),
             ),
@@ -92,7 +62,7 @@ class PlayScreen extends ConsumerWidget {
         Text('Quests', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         questsAsync.when(
-          data: (records) => _QuestList(records: records, gatedIds: gated.quests),
+          data: (records) => _QuestList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Text('Failed to load quests: $error'),
         ),
@@ -100,7 +70,7 @@ class PlayScreen extends ConsumerWidget {
         Text('Shops', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         shopsAsync.when(
-          data: (records) => _ShopList(records: records, gatedIds: gated.shops),
+          data: (records) => _ShopList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Text('Failed to load shops: $error'),
         ),
@@ -108,7 +78,7 @@ class PlayScreen extends ConsumerWidget {
         Text('Bestiary', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         enemiesAsync.when(
-          data: (records) => _EnemyList(records: records, gatedIds: gated.enemies),
+          data: (records) => _EnemyList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Text('Failed to load enemies: $error'),
         ),
@@ -118,10 +88,9 @@ class PlayScreen extends ConsumerWidget {
 }
 
 class _QuestList extends ConsumerWidget {
-  const _QuestList({required this.records, required this.gatedIds});
+  const _QuestList({required this.records});
 
   final Map<String, dynamic> records;
-  final Set<String> gatedIds;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -140,7 +109,7 @@ class _QuestList extends ConsumerWidget {
         final isCompleted = session.completedQuestIds.contains(questId);
         final isActive = session.activeQuestIds.contains(questId);
         final isDiscovered =
-            isCompleted || isActive || _isAccessible(gatedIds, session.unlockedQuestIds, questId);
+            isCompleted || isActive || session.unlockedQuestIds.contains(questId);
         final requiredGold = (quest['requiredGold'] as num?)?.toInt() ?? 0;
         final requiredFlags =
             (quest['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [];
@@ -171,10 +140,12 @@ class _QuestList extends ConsumerWidget {
               final rewardGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
               final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
               final rewardItemId = quest['rewardItemID']?.toString();
+              final nextQuestId = quest['nextQuestID']?.toString();
               await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
                     rewardItemId: rewardItemId,
+                    nextQuestId: nextQuestId,
                   );
               if (!context.mounted) return;
               ScaffoldMessenger.of(context).showSnackBar(
@@ -220,10 +191,9 @@ class _QuestList extends ConsumerWidget {
 }
 
 class _ShopList extends ConsumerWidget {
-  const _ShopList({required this.records, required this.gatedIds});
+  const _ShopList({required this.records});
 
   final Map<String, dynamic> records;
-  final Set<String> gatedIds;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -237,7 +207,7 @@ class _ShopList extends ConsumerWidget {
       children: keys.map((shopId) {
         final shop = records[shopId] as Map<String, dynamic>;
         final shopName = shop['shopName']?.toString() ?? shopId;
-        final accessible = _isAccessible(gatedIds, session.unlockedShopIds, shopId);
+        final accessible = session.unlockedShopIds.contains(shopId);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? shopIcon : Icons.lock_outline),
@@ -265,10 +235,9 @@ class _ShopList extends ConsumerWidget {
 }
 
 class _EnemyList extends ConsumerWidget {
-  const _EnemyList({required this.records, required this.gatedIds});
+  const _EnemyList({required this.records});
 
   final Map<String, dynamic> records;
-  final Set<String> gatedIds;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -284,7 +253,7 @@ class _EnemyList extends ConsumerWidget {
         final enemyName = enemy['enemyName']?.toString() ?? enemyId;
         final maxHealth = (enemy['maxHealth'] as num?)?.toInt() ?? 0;
         final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
-        final accessible = _isAccessible(gatedIds, session.unlockedEnemyIds, enemyId);
+        final accessible = session.unlockedEnemyIds.contains(enemyId);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? enemyIcon : Icons.lock_outline),

@@ -9,6 +9,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
+import 'race_profession_screen.dart';
 
 class StoryPlayerScreen extends ConsumerWidget {
   const StoryPlayerScreen({super.key});
@@ -135,6 +136,15 @@ class _ChoiceButton extends ConsumerWidget {
       onPressed: locked
           ? null
           : () async {
+              if (choice.opensCharacterCreation) {
+                await ref.read(playerSessionProvider.notifier).resetSession();
+                if (!context.mounted) return;
+                final started = await Navigator.of(context).push<bool>(
+                  MaterialPageRoute(builder: (_) => const RaceProfessionScreen()),
+                );
+                if (started != true) return;
+              }
+
               if (choice.triggersCombat) {
                 final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
                 final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
