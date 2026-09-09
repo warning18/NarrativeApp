@@ -67,6 +67,7 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           break;
         case FieldType.text:
         case FieldType.multilineText:
+        case FieldType.image:
           _textControllers[field.key] = TextEditingController(
             text: value?.toString() ?? (field.defaultValue?.toString() ?? ''),
           );
@@ -130,6 +131,7 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           break;
         case FieldType.text:
         case FieldType.multilineText:
+        case FieldType.image:
           result[field.key] = _textControllers[field.key]!.text;
           break;
       }
@@ -303,6 +305,32 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
           ),
         );
+      case FieldType.image:
+        final controller = _textControllers[field.key]!;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    labelText: field.label,
+                    hintText: 'e.g. sword_iron.png',
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: controller,
+                builder: (context, value, _) =>
+                    _ImagePreview(schema: widget.schema, filename: value.text),
+              ),
+            ],
+          ),
+        );
     }
   }
 
@@ -357,6 +385,37 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ImagePreview extends StatelessWidget {
+  const _ImagePreview({required this.schema, required this.filename});
+
+  final DbSchema schema;
+  final String filename;
+
+  @override
+  Widget build(BuildContext context) {
+    final path = filename.trim().isEmpty ? null : '${visualAssetFolder(schema)}${filename.trim()}';
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: path == null
+          ? Icon(Icons.image_outlined, color: Theme.of(context).colorScheme.outline)
+          : Image.asset(
+              path,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Icon(
+                Icons.image_not_supported_outlined,
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
     );
   }
 }

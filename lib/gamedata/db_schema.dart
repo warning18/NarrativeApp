@@ -8,6 +8,7 @@ class DbSchema {
     required this.primaryKeyField,
     required this.fields,
     this.titleField,
+    this.visualAssetField,
   });
 
   final String id;
@@ -16,7 +17,33 @@ class DbSchema {
   final String primaryKeyField;
   final String? titleField;
   final List<FieldSchema> fields;
+
+  /// Key of the [FieldType.image] field (if any) holding the filename of
+  /// this record's visual asset, expected to live under
+  /// [visualAssetFolder].
+  final String? visualAssetField;
 }
+
+/// Folder each record of [schema] should store its visual assets in, e.g.
+/// `assets/visuals/items/`. Declared per-collection in pubspec.yaml so
+/// images dropped in are bundled without further wiring.
+String visualAssetFolder(DbSchema schema) => 'assets/visuals/${schema.id}/';
+
+/// Full asset path for [record]'s visual, or null if the schema has no
+/// visual field or the record hasn't set one.
+String? visualAssetPath(DbSchema schema, Map<String, dynamic> record) {
+  final field = schema.visualAssetField;
+  if (field == null) return null;
+  final filename = record[field]?.toString() ?? '';
+  if (filename.isEmpty) return null;
+  return '${visualAssetFolder(schema)}$filename';
+}
+
+FieldSchema visualAssetFieldSchema(String schemaId) => FieldSchema(
+      key: 'visualAsset',
+      label: 'Visual Asset (filename in assets/visuals/$schemaId/)',
+      type: FieldType.image,
+    );
 
 const List<String> itemTypeOptions = [
   'Weapon',
@@ -86,6 +113,7 @@ final DbSchema itemsSchema = DbSchema(
   assetPath: 'assets/gamedata/items.json',
   primaryKeyField: 'id',
   titleField: 'itemName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'id', label: 'ID', type: FieldType.text),
     FieldSchema(key: 'itemName', label: 'Item Name', type: FieldType.text),
@@ -121,6 +149,7 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(key: 'earthResist', label: 'Earth Resist', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'waterResist', label: 'Water Resist', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'elecResist', label: 'Elec Resist', type: FieldType.integer, defaultValue: 0),
+    visualAssetFieldSchema('items'),
   ],
 );
 
@@ -129,6 +158,7 @@ final DbSchema skillsSchema = DbSchema(
   label: 'Skills',
   assetPath: 'assets/gamedata/skills.json',
   primaryKeyField: 'id',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'id', label: 'ID (Skill Name)', type: FieldType.text),
     FieldSchema(
@@ -174,6 +204,7 @@ final DbSchema skillsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'professions',
     ),
+    visualAssetFieldSchema('skills'),
   ],
 );
 
@@ -183,6 +214,7 @@ final DbSchema racesSchema = DbSchema(
   assetPath: 'assets/gamedata/races.json',
   primaryKeyField: 'raceID',
   titleField: 'raceName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'raceID', label: 'Race ID', type: FieldType.text),
     FieldSchema(key: 'raceName', label: 'Race Name', type: FieldType.text),
@@ -217,6 +249,7 @@ final DbSchema racesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'skills',
     ),
+    visualAssetFieldSchema('races'),
   ],
 );
 
@@ -226,6 +259,7 @@ final DbSchema professionsSchema = DbSchema(
   assetPath: 'assets/gamedata/professions.json',
   primaryKeyField: 'professionID',
   titleField: 'professionName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'professionID', label: 'Profession ID', type: FieldType.text),
     FieldSchema(key: 'professionName', label: 'Profession Name', type: FieldType.text),
@@ -266,6 +300,7 @@ final DbSchema professionsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'skills',
     ),
+    visualAssetFieldSchema('professions'),
   ],
 );
 
@@ -274,6 +309,7 @@ final DbSchema diceSchema = DbSchema(
   label: 'Dice (Equipment)',
   assetPath: 'assets/gamedata/dice.json',
   primaryKeyField: 'diceName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'diceName', label: 'Dice Name', type: FieldType.text),
     FieldSchema(key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
@@ -289,6 +325,7 @@ final DbSchema diceSchema = DbSchema(
           'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions}]',
       type: FieldType.json,
     ),
+    visualAssetFieldSchema('dice'),
   ],
 );
 
@@ -297,6 +334,7 @@ final DbSchema enemiesSchema = DbSchema(
   label: 'Enemies (Ground)',
   assetPath: 'assets/gamedata/enemies.json',
   primaryKeyField: 'enemyName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'enemyName', label: 'Enemy Name', type: FieldType.text),
     FieldSchema(key: 'maxHealth', label: 'Max Health', type: FieldType.integer, defaultValue: 0),
@@ -314,6 +352,7 @@ final DbSchema enemiesSchema = DbSchema(
           'Skill Moves [{skillID, condition: $skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
       type: FieldType.json,
     ),
+    visualAssetFieldSchema('enemies'),
   ],
 );
 
@@ -322,6 +361,7 @@ final DbSchema enemyShipsSchema = DbSchema(
   label: 'Enemy Ships (FTL)',
   assetPath: 'assets/gamedata/enemy_ships.json',
   primaryKeyField: 'shipName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
     FieldSchema(key: 'maxHull', label: 'Max Hull', type: FieldType.integer, defaultValue: 0),
@@ -335,6 +375,7 @@ final DbSchema enemyShipsSchema = DbSchema(
           'Skill Moves [{skillID, condition: $skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
       type: FieldType.json,
     ),
+    visualAssetFieldSchema('enemy_ships'),
   ],
 );
 
@@ -344,6 +385,7 @@ final DbSchema shipsSchema = DbSchema(
   assetPath: 'assets/gamedata/ships.json',
   primaryKeyField: 'shipID',
   titleField: 'shipName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'shipID', label: 'Ship ID', type: FieldType.text),
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
@@ -363,6 +405,7 @@ final DbSchema shipsSchema = DbSchema(
     FieldSchema(key: 'weaponSlots', label: 'Weapon Slots', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'shieldSlots', label: 'Shield Slots', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'utilitySlots', label: 'Utility Slots', type: FieldType.integer, defaultValue: 0),
+    visualAssetFieldSchema('ships'),
   ],
 );
 
@@ -372,6 +415,7 @@ final DbSchema shipPartsSchema = DbSchema(
   assetPath: 'assets/gamedata/ship_parts.json',
   primaryKeyField: 'partID',
   titleField: 'partName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'partID', label: 'Part ID', type: FieldType.text),
     FieldSchema(key: 'partName', label: 'Part Name', type: FieldType.text),
@@ -408,6 +452,7 @@ final DbSchema shipPartsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
+    visualAssetFieldSchema('ship_parts'),
   ],
 );
 
@@ -417,6 +462,7 @@ final DbSchema questsSchema = DbSchema(
   assetPath: 'assets/gamedata/quests.json',
   primaryKeyField: 'questID',
   titleField: 'questName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'questID', label: 'Quest ID', type: FieldType.text),
     FieldSchema(key: 'questName', label: 'Quest Name', type: FieldType.text),
@@ -475,6 +521,7 @@ final DbSchema questsSchema = DbSchema(
           'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, actionType, lockedText}]',
       type: FieldType.json,
     ),
+    visualAssetFieldSchema('quests'),
   ],
 );
 
@@ -484,6 +531,7 @@ final DbSchema shopsSchema = DbSchema(
   assetPath: 'assets/gamedata/shops.json',
   primaryKeyField: 'shopID',
   titleField: 'shopName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'shopID', label: 'Shop ID', type: FieldType.text),
     FieldSchema(key: 'shopName', label: 'Shop Name', type: FieldType.text),
@@ -508,6 +556,7 @@ final DbSchema shopsSchema = DbSchema(
       type: FieldType.multiEnum,
       enumOptions: itemTypeOptions,
     ),
+    visualAssetFieldSchema('shops'),
   ],
 );
 
@@ -516,6 +565,7 @@ final DbSchema gatesSchema = DbSchema(
   label: 'Gates',
   assetPath: 'assets/gamedata/gates.json',
   primaryKeyField: 'gateID',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'gateID', label: 'Gate ID', type: FieldType.text),
     FieldSchema(
@@ -530,6 +580,7 @@ final DbSchema gatesSchema = DbSchema(
       type: FieldType.referenceList,
       referenceSchemaId: 'enemies',
     ),
+    visualAssetFieldSchema('gates'),
   ],
 );
 
@@ -539,6 +590,7 @@ final DbSchema adventureNodesSchema = DbSchema(
   assetPath: 'assets/gamedata/adventure_nodes.json',
   primaryKeyField: 'nodeID',
   titleField: 'displayName',
+  visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'nodeID', label: 'Node ID', type: FieldType.text),
     FieldSchema(key: 'displayName', label: 'Display Name', type: FieldType.text),
@@ -592,6 +644,7 @@ final DbSchema adventureNodesSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 0,
     ),
+    visualAssetFieldSchema('adventure_nodes'),
   ],
 );
 

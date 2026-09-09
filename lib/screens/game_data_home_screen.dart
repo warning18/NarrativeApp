@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../gamedata/db_schema.dart';
 import '../utils/game_icons.dart';
+import 'data_summary_screen.dart';
 import 'game_config_screen.dart';
 import 'game_db_list_screen.dart';
 import 'main_story_screen.dart';
@@ -14,6 +15,19 @@ class GameDataHomeScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(12),
       children: [
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.insights_outlined),
+            title: const Text('Data Summary'),
+            subtitle: const Text('KPIs across all collections: record counts, visual coverage, issues'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DataSummaryScreen()),
+              );
+            },
+          ),
+        ),
         Card(
           child: ListTile(
             leading: const Icon(Icons.tune),
