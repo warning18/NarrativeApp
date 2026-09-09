@@ -42,9 +42,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     Map<String, dynamic> skills,
     PlayerSession session,
   ) {
-    final diceIds = dice.keys.toList()..sort();
+    final diceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
     if (diceIds.isEmpty) {
-      return const Center(child: Text('No dice defined in the Data tab yet.'));
+      return const Center(child: Text('You don\'t own any dice yet — buy or find one first.'));
     }
     _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;

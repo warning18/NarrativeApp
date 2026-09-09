@@ -12,11 +12,16 @@ class InventoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
+    final diceAsync = ref.watch(gameDbProvider(diceSchema));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Inventory & Equipment')),
       body: itemsAsync.when(
-        data: (items) => _InventoryBody(items: items),
+        data: (items) => diceAsync.when(
+          data: (dice) => _InventoryBody(items: items, dice: dice),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Failed to load dice: $error')),
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Failed to load items: $error')),
       ),
@@ -25,9 +30,10 @@ class InventoryScreen extends ConsumerWidget {
 }
 
 class _InventoryBody extends ConsumerWidget {
-  const _InventoryBody({required this.items});
+  const _InventoryBody({required this.items, required this.dice});
 
   final Map<String, dynamic> items;
+  final Map<String, dynamic> dice;
 
   String? _equippedInSlot(List<String> equippedIds, String slot) {
     for (final id in equippedIds) {
@@ -48,11 +54,29 @@ class _InventoryBody extends ConsumerWidget {
     final ownedIds = counts.keys.toList()..sort();
     final equippedIds = session.equippedItemIds;
 
+    final equippedDiceId = session.equippedDiceId;
+    final equippedDie = equippedDiceId != null ? dice[equippedDiceId] as Map<String, dynamic>? : null;
+    final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
+
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         Text('Equipment', style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.casino),
+            title: const Text('Dice'),
+            subtitle: Text(equippedDie != null ? equippedDiceId! : '(none equipped)'),
+            trailing: IconButton(
+              icon: const Icon(Icons.edit_outlined),
+              tooltip: 'Choose die',
+              onPressed: ownedDiceIds.isEmpty
+                  ? null
+                  : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
+            ),
+          ),
+        ),
         ...equipSlotOptions.map((slot) {
           final equippedId = _equippedInSlot(equippedIds, slot);
           final equippedItem = equippedId != null ? items[equippedId] as Map<String, dynamic>? : null;
@@ -104,6 +128,37 @@ class _InventoryBody extends ConsumerWidget {
             return _ItemTile(itemId: id, item: item, count: counts[id], isEquipped: isEquipped);
           }),
       ],
+    );
+  }
+
+  Future<void> _pickDice(
+    BuildContext context,
+    WidgetRef ref,
+    List<String> ownedDiceIds,
+    String? currentlyEquippedId,
+  ) {
+    return showModalBottomSheet<void>(
+      context: context,
+      builder: (sheetContext) => SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          children: ownedDiceIds.map((id) {
+            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces'] is List
+                ? ((dice[id] as Map<String, dynamic>)['faces'] as List).length
+                : 0;
+            return ListTile(
+              leading: const Icon(Icons.casino),
+              title: Text(id),
+              subtitle: Text('$faceCount faces'),
+              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              onTap: () {
+                ref.read(playerSessionProvider.notifier).equipDice(id);
+                Navigator.of(sheetContext).pop();
+              },
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 

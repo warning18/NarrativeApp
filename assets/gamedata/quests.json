@@ -35,7 +35,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
@@ -73,7 +74,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -111,7 +113,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
@@ -149,7 +152,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch2_burning_manifest": {
     "questID": "q_ch2_burning_manifest",
@@ -187,7 +191,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch2_captains_gambit": {
     "questID": "q_ch2_captains_gambit",
@@ -225,7 +230,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch2_harbor_reckoning": {
     "questID": "q_ch2_harbor_reckoning",
@@ -263,7 +269,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": "storm_die"
   },
   "q_ch3_ashen_oath": {
     "questID": "q_ch3_ashen_oath",
@@ -301,7 +308,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch3_inquisition_ledger": {
     "questID": "q_ch3_inquisition_ledger",
@@ -339,7 +347,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch3_void_relic": {
     "questID": "q_ch3_void_relic",
@@ -377,7 +386,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   },
   "q_ch3_the_high_wardens_fall": {
     "questID": "q_ch3_the_high_wardens_fall",
@@ -415,7 +425,8 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": "huntsman_die"
   },
   "q_ch3_alsters_dawn": {
     "questID": "q_ch3_alsters_dawn",
@@ -453,6 +464,7 @@
         "actionType": "Accept",
         "lockedText": ""
       }
-    ]
+    ],
+    "rewardDiceID": ""
   }
 }

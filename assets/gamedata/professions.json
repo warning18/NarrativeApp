@@ -7,7 +7,8 @@
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 3,
     "startingGoldBonus": 0,
-    "startingSkillPoints": 0
+    "startingSkillPoints": 0,
+    "standardSkillID": "warrior_shield_bash"
   },
   "mage": {
     "professionID": "mage",
@@ -17,7 +18,8 @@
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -2,
     "startingGoldBonus": 0,
-    "startingSkillPoints": 1
+    "startingSkillPoints": 1,
+    "standardSkillID": "mage_arcane_missile"
   },
   "rogue": {
     "professionID": "rogue",
@@ -27,7 +29,8 @@
     "bonusBaseDamage": 4,
     "bonusBaseArmor": 0,
     "startingGoldBonus": 30,
-    "startingSkillPoints": 0
+    "startingSkillPoints": 0,
+    "standardSkillID": "rogue_backstab"
   },
   "cleric": {
     "professionID": "cleric",
@@ -37,7 +40,8 @@
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 2,
     "startingGoldBonus": 0,
-    "startingSkillPoints": 1
+    "startingSkillPoints": 1,
+    "standardSkillID": "cleric_holy_light"
   },
   "ranger": {
     "professionID": "ranger",
@@ -47,6 +51,7 @@
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 1,
     "startingGoldBonus": 10,
-    "startingSkillPoints": 0
+    "startingSkillPoints": 0,
+    "standardSkillID": "ranger_aimed_shot"
   }
 }

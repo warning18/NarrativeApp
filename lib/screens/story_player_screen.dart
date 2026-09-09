@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
+import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
@@ -41,7 +45,7 @@ class _StoryView extends ConsumerWidget {
     final playState = ref.watch(storyPlayProvider);
     final notifier = ref.read(storyPlayProvider.notifier);
     final session = ref.watch(playerSessionProvider);
-    final node = story.nodeFor(playState.currentNodeId);
+    final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
 
     if (node == null) {
       return _EndingView(
@@ -61,7 +65,7 @@ class _StoryView extends ConsumerWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                if (playState.history.isNotEmpty)
+                if (playState.history.isNotEmpty && !playState.isInExcursion)
                   TextButton.icon(
                     onPressed: notifier.goBack,
                     icon: const Icon(Icons.arrow_back),
@@ -69,7 +73,7 @@ class _StoryView extends ConsumerWidget {
                   ),
                 const Spacer(),
                 Text(
-                  'Node ${node.id}',
+                  playState.isInExcursion ? 'Detour' : 'Node ${node.id}',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
@@ -94,7 +98,13 @@ class _StoryView extends ConsumerWidget {
               ...node.choices.map(
                 (choice) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: _ChoiceButton(choice: choice, story: story, session: session),
+                  child: _ChoiceButton(
+                    choice: choice,
+                    story: story,
+                    session: session,
+                    currentNodeId: playState.currentNodeId,
+                    isExcursion: playState.isInExcursion,
+                  ),
                 ),
               ),
           ],
@@ -105,15 +115,24 @@ class _StoryView extends ConsumerWidget {
 }
 
 class _ChoiceButton extends ConsumerWidget {
-  const _ChoiceButton({required this.choice, required this.story, required this.session});
+  const _ChoiceButton({
+    required this.choice,
+    required this.story,
+    required this.session,
+    required this.currentNodeId,
+    required this.isExcursion,
+  });
 
   final StoryChoice choice;
   final StoryData story;
   final PlayerSession session;
+  final String currentNodeId;
+  final bool isExcursion;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
+    final targetNode =
+        (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
     final locked = targetNode != null &&
         targetNode.hasRequirements &&
         !session.meetsRequirements(
@@ -177,11 +196,38 @@ class _ChoiceButton extends ConsumerWidget {
                       enemyId: choice.triggerEnemyId,
                     );
               }
+
+              if (isExcursion) {
+                playNotifier.advanceExcursion();
+                return;
+              }
+
               if (choice.isEnding) {
                 playNotifier.restart(StoryRepository.startNodeId);
-              } else {
-                playNotifier.choose(choice.nextId);
+                return;
               }
+
+              final chapter = chapterForNode(currentNodeId);
+              if (chapter != null && !choice.opensCharacterCreation) {
+                final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
+                final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
+                final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
+                final excursion = SubNodeEngine.maybeGenerate(
+                  random: Random(),
+                  chapter: chapter,
+                  shops: shops,
+                  enemies: enemies,
+                  quests: quests,
+                  unlockedShopIds: session.unlockedShopIds,
+                  unlockedEnemyIds: session.unlockedEnemyIds,
+                  unlockedQuestIds: session.unlockedQuestIds,
+                );
+                if (excursion != null) {
+                  playNotifier.startExcursion(excursion, choice.nextId);
+                  return;
+                }
+              }
+              playNotifier.choose(choice.nextId);
             },
       child: Align(
         alignment: Alignment.centerLeft,
