@@ -105,14 +105,14 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                         onChanged: (value) => setState(() => _search = value),
                       ),
                     ),
-                    if (_filterField != null) ...[
+                    if (filterField != null) ...[
                       const SizedBox(width: 8),
                       DropdownButton<String?>(
                         value: _filterValue,
-                        hint: Text(_filterField.label),
+                        hint: Text(filterField.label),
                         items: [
                           const DropdownMenuItem<String?>(value: null, child: Text('All')),
-                          ..._filterField.enumOptions.map(
+                          ...filterField.enumOptions.map(
                             (option) => DropdownMenuItem<String?>(
                               value: option,
                               child: Text(option),
