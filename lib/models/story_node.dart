@@ -11,6 +11,7 @@ class StoryChoice {
     this.unlockShopId,
     this.unlockQuestId,
     this.opensCharacterCreation = false,
+    this.textFr,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -27,6 +28,7 @@ class StoryChoice {
       unlockShopId: json['unlockShopId'] as String?,
       unlockQuestId: json['unlockQuestId'] as String?,
       opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
+      textFr: json['text_fr'] as String?,
     );
   }
 
@@ -41,6 +43,11 @@ class StoryChoice {
   final String? unlockShopId;
   final String? unlockQuestId;
   final bool opensCharacterCreation;
+
+  /// Optional French translation of [text]; falls back to English when absent.
+  final String? textFr;
+
+  String textFor(bool french) => french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
 
   bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
 
@@ -68,6 +75,7 @@ class StoryNode {
     this.reqGold = 0,
     this.reqAlignmentScore,
     this.reqFlags = const [],
+    this.descriptionFr,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -82,6 +90,7 @@ class StoryNode {
       reqGold: (json['reqGold'] as num?)?.toInt() ?? 0,
       reqAlignmentScore: (json['reqAlignmentScore'] as num?)?.toInt(),
       reqFlags: (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      descriptionFr: json['description_fr'] as String?,
     );
   }
 
@@ -91,6 +100,13 @@ class StoryNode {
   final int reqGold;
   final int? reqAlignmentScore;
   final List<String> reqFlags;
+
+  /// Optional French translation of [description]; falls back to English
+  /// when absent (most of chapters 1-3 predate French support).
+  final String? descriptionFr;
+
+  String descriptionFor(bool french) =>
+      french && (descriptionFr?.isNotEmpty ?? false) ? descriptionFr! : description;
 
   bool get hasRequirements =>
       reqGold > 0 || reqAlignmentScore != null || reqFlags.isNotEmpty;

@@ -47,7 +47,9 @@ const List<String> elementOptions = [
   'Void',
 ];
 
-const List<String> faceTypeOptions = ['Attack', 'Defend', 'Skill', 'Heal', 'Empty'];
+// 'Empty' is intentionally excluded: no die face may be empty in play, so
+// the Data tab only offers face types that are actually usable in combat.
+const List<String> faceTypeOptions = ['Attack', 'Defend', 'Skill', 'Heal'];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility'];
 

@@ -32,6 +32,20 @@ const List<ChapterSpine> chapterSpines = [
     {'3030', '3040', '3050'},
     {'4999'},
   ]),
+  ChapterSpine(4, [
+    {'5001'},
+    {'5002'},
+    {'5003'},
+    {'5004'},
+    {'5005'},
+  ]),
+  ChapterSpine(5, [
+    {'6001'},
+    {'6002'},
+    {'6003'},
+    {'6004'},
+    {'6005'},
+  ]),
 ];
 
 /// The chapter a node belongs to, or null if it isn't part of the spine

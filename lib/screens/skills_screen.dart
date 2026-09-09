@@ -5,6 +5,7 @@ import '../gamedata/db_schema.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/detail_dialog.dart';
 
 class SkillsScreen extends ConsumerWidget {
   const SkillsScreen({super.key});
@@ -138,6 +139,23 @@ class _SkillList extends ConsumerWidget {
             subtitle: Text(subtitleParts.join(' · ')),
             isThreeLine: description.isNotEmpty,
             trailing: trailing,
+            onTap: () => showDetailDialog(
+              context,
+              title: id,
+              description: description,
+              icon: elementIcon(element),
+              rows: [
+                MapEntry('Element', element ?? 'None'),
+                MapEntry('Cost', '$cost'),
+                MapEntry('Damage Mod', '${skill['damageMod'] ?? 0}'),
+                MapEntry('Damage Multiplier', '${skill['damageMultiplier'] ?? 1.0}'),
+                MapEntry('Heal Amount', '${skill['healAmount'] ?? 0}'),
+                if (requiredSkillId.isNotEmpty) MapEntry('Requires', requiredSkillId),
+                if (restriction.isNotEmpty) MapEntry('Restriction', restriction),
+                MapEntry('Active Skill', (skill['isActiveSkill'] as bool? ?? true) ? 'Yes' : 'No'),
+                MapEntry('Status', available ? 'Unlocked' : 'Locked'),
+              ],
+            ),
           ),
         );
       }).toList(),

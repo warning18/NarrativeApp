@@ -936,8 +936,9 @@
     },
     "choices": [
       {
-        "text": "Restart Journey (Node 100)",
-        "next_id": "100"
+        "text": "Descend into the Hollow Court",
+        "next_id": "5001",
+        "text_fr": "Descendre dans la Cour Creuse"
       }
     ]
   },
@@ -1123,6 +1124,116 @@
       {
         "text": "Walk openly through the Hall of Records",
         "next_id": "3020"
+      }
+    ]
+  },
+  "5001": {
+    "description": "Beyond the Spire's ashes, whispers speak of a Hollow Court \u2014 inquisitors who answer to no living authority.",
+    "description_fr": "Par-del\u00e0 les cendres de la Fl\u00e8che, des rumeurs parlent d'une Cour Creuse \u2014 des inquisiteurs qui ne r\u00e9pondent \u00e0 aucune autorit\u00e9 vivante.",
+    "choices": [
+      {
+        "text": "Follow the whispers",
+        "text_fr": "Suivre les rumeurs",
+        "next_id": "5002"
+      }
+    ]
+  },
+  "5002": {
+    "description": "The road narrows into catacombs beneath the city, the air thick with old incense and older blood.",
+    "description_fr": "La route se resserre en catacombes sous la ville, l'air \u00e9pais d'encens ancien et de sang plus ancien encore.",
+    "choices": [
+      {
+        "text": "Press onward",
+        "text_fr": "Continuer",
+        "next_id": "5003"
+      }
+    ]
+  },
+  "5003": {
+    "description": "A chamber opens before me: robed figures kneel around a black altar, the Void Banner's twin humming in their midst.",
+    "description_fr": "Une chambre s'ouvre devant moi : des silhouettes encapuchonn\u00e9es s'agenouillent autour d'un autel noir, le jumeau de la Banni\u00e8re du N\u00e9ant vibrant parmi elles.",
+    "choices": [
+      {
+        "text": "Confront them",
+        "text_fr": "Les affronter",
+        "next_id": "5004"
+      }
+    ]
+  },
+  "5004": {
+    "description": "The figures scatter like smoke. Among the wreckage, a ledger names every soul the Hollow Court has taken \u2014 including, once, my own family.",
+    "description_fr": "Les silhouettes se dispersent comme de la fum\u00e9e. Parmi les d\u00e9combres, un registre nomme chaque \u00e2me prise par la Cour Creuse \u2014 y compris, autrefois, ma propre famille.",
+    "choices": [
+      {
+        "text": "Take the ledger",
+        "text_fr": "Prendre le registre",
+        "next_id": "5005"
+      }
+    ]
+  },
+  "5005": {
+    "description": "The catacombs shake as the Court's remaining loyalists flee into the dark, the ledger heavy in my hands.",
+    "description_fr": "Les catacombes tremblent tandis que les derniers fid\u00e8les de la Cour fuient dans l'obscurit\u00e9, le registre lourd entre mes mains.",
+    "choices": [
+      {
+        "text": "Climb back to the surface",
+        "text_fr": "Remonter \u00e0 la surface",
+        "next_id": "6001"
+      }
+    ]
+  },
+  "6001": {
+    "description": "[CHAPTER 5: THE SHROUD'S TRUTH] Daylight is a shock after the catacombs. The Void Banner pulses warm against my back, as if it recognizes the ledger I carry.",
+    "description_fr": "[CHAPITRE 5 : LA V\u00c9RIT\u00c9 DU LINCEUL] La lumi\u00e8re du jour est un choc apr\u00e8s les catacombes. La Banni\u00e8re du N\u00e9ant palpite, chaude contre mon dos, comme si elle reconnaissait le registre que je porte.",
+    "choices": [
+      {
+        "text": "Read the ledger in the light",
+        "text_fr": "Lire le registre \u00e0 la lumi\u00e8re du jour",
+        "next_id": "6002"
+      }
+    ]
+  },
+  "6002": {
+    "description": "The names blur into one truth: the Banner was never a weapon. It was a warning, sewn by the first Inquisitor who saw what waited beyond the veil.",
+    "description_fr": "Les noms se fondent en une seule v\u00e9rit\u00e9 : la Banni\u00e8re n'a jamais \u00e9t\u00e9 une arme. C'\u00e9tait un avertissement, cousu par le premier Inquisiteur \u00e0 avoir vu ce qui attendait au-del\u00e0 du voile.",
+    "choices": [
+      {
+        "text": "Seek the source of the Void",
+        "text_fr": "Chercher la source du N\u00e9ant",
+        "next_id": "6003"
+      }
+    ]
+  },
+  "6003": {
+    "description": "At the city's heart, a tear in the world hangs silent and patient, exactly where the ledger said it would be.",
+    "description_fr": "Au c\u0153ur de la ville, une d\u00e9chirure dans le monde flotte, silencieuse et patiente, exactement l\u00e0 o\u00f9 le registre l'annon\u00e7ait.",
+    "choices": [
+      {
+        "text": "Step through the tear",
+        "text_fr": "Franchir la d\u00e9chirure",
+        "next_id": "6004"
+      }
+    ]
+  },
+  "6004": {
+    "description": "On the other side, the Shroud finally speaks \u2014 not in words, but in a certainty: the invasion was never the ending. It was the delay.",
+    "description_fr": "De l'autre c\u00f4t\u00e9, le Linceul parle enfin \u2014 non par des mots, mais par une certitude : l'invasion n'a jamais \u00e9t\u00e9 la fin. Elle n'\u00e9tait qu'un sursis.",
+    "choices": [
+      {
+        "text": "Accept what the Shroud shows me",
+        "text_fr": "Accepter ce que le Linceul me montre",
+        "next_id": "6005"
+      }
+    ]
+  },
+  "6005": {
+    "description": "[JOURNEY'S END] I step back into my own world, the Void Banner quiet now, and for the first time since the invasion began, I know exactly what comes next.",
+    "description_fr": "[FIN DU VOYAGE] Je reviens dans mon propre monde, la Banni\u00e8re du N\u00e9ant d\u00e9sormais silencieuse, et pour la premi\u00e8re fois depuis le d\u00e9but de l'invasion, je sais exactement ce qui m'attend.",
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transform\u00e9",
+        "next_id": "100"
       }
     ]
   }

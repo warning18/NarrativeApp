@@ -4,6 +4,7 @@ import '../gamedata/db_schema.dart';
 import '../utils/game_icons.dart';
 import 'game_config_screen.dart';
 import 'game_db_list_screen.dart';
+import 'main_story_screen.dart';
 
 class GameDataHomeScreen extends StatelessWidget {
   const GameDataHomeScreen({super.key});
@@ -22,6 +23,19 @@ class GameDataHomeScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const GameConfigScreen()),
+              );
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.map_outlined),
+            title: const Text('Main Story'),
+            subtitle: const Text('The fixed chapter beats every playthrough passes through'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const MainStoryScreen()),
               );
             },
           ),

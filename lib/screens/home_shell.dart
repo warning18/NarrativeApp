@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import 'ai_generator_screen.dart';
 import 'game_data_home_screen.dart';
 import 'play_screen.dart';
@@ -7,23 +10,15 @@ import 'settings_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
 
-class HomeShell extends StatefulWidget {
+class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
   @override
-  State<HomeShell> createState() => _HomeShellState();
+  ConsumerState<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomeShellState extends State<HomeShell> {
+class _HomeShellState extends ConsumerState<HomeShell> {
   int _index = 0;
-
-  static const List<String> _titles = [
-    'Story',
-    'Play',
-    'Story Map',
-    'AI Generator',
-    'Game Data',
-  ];
 
   static const List<Widget> _screens = [
     StoryPlayerScreen(),
@@ -35,13 +30,31 @@ class _HomeShellState extends State<HomeShell> {
 
   @override
   Widget build(BuildContext context) {
+    final titles = [
+      tr(ref, 'title_story'),
+      tr(ref, 'title_play'),
+      tr(ref, 'title_map'),
+      tr(ref, 'title_generate'),
+      tr(ref, 'title_data'),
+    ];
+    final language = ref.watch(appLanguageProvider);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titles[_index]),
+        title: Text(titles[_index]),
         actions: [
           IconButton(
+            icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
+            tooltip: tr(ref, 'language'),
+            onPressed: () {
+              ref.read(appLanguageProvider.notifier).setLanguage(
+                    language == AppLanguage.fr ? AppLanguage.en : AppLanguage.fr,
+                  );
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
+            tooltip: tr(ref, 'settings'),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const SettingsScreen()),
@@ -54,15 +67,18 @@ class _HomeShellState extends State<HomeShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.menu_book), label: 'Story'),
-          NavigationDestination(icon: Icon(Icons.videogame_asset), label: 'Play'),
-          NavigationDestination(icon: Icon(Icons.account_tree), label: 'Map'),
+        destinations: [
+          NavigationDestination(icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
           NavigationDestination(
-            icon: Icon(Icons.auto_awesome),
-            label: 'Generate',
+            icon: const Icon(Icons.videogame_asset),
+            label: tr(ref, 'nav_play'),
           ),
-          NavigationDestination(icon: Icon(Icons.storage), label: 'Data'),
+          NavigationDestination(icon: const Icon(Icons.account_tree), label: tr(ref, 'nav_map')),
+          NavigationDestination(
+            icon: const Icon(Icons.auto_awesome),
+            label: tr(ref, 'nav_generate'),
+          ),
+          NavigationDestination(icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
         ],
       ),
     );

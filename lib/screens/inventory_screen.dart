@@ -5,6 +5,7 @@ import '../gamedata/db_schema.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/detail_dialog.dart';
 
 class InventoryScreen extends ConsumerWidget {
   const InventoryScreen({super.key});
@@ -228,6 +229,33 @@ class _ItemTile extends StatelessWidget {
         leading: Icon(itemTypeIcon(itemType)),
         title: Text(itemName),
         subtitle: Text(statsParts.join(' · ')),
+        onTap: () => showDetailDialog(
+          context,
+          title: itemName,
+          icon: itemTypeIcon(itemType),
+          rows: [
+            MapEntry('Type', itemType ?? 'Unknown'),
+            MapEntry('Cost', '${item?['cost'] ?? 0}'),
+            if (equipSlot != null && equipSlot.isNotEmpty) MapEntry('Equip Slot', equipSlot),
+            MapEntry('Attack Damage', '$attackDamage'),
+            MapEntry('Armor', '$armor'),
+            for (final entry in const {
+              'fireDmgBonus': 'Fire Dmg', 'windDmgBonus': 'Wind Dmg',
+              'earthDmgBonus': 'Earth Dmg', 'waterDmgBonus': 'Water Dmg',
+              'elecDmgBonus': 'Elec Dmg',
+            }.entries)
+              if (((item?[entry.key] as num?) ?? 0) != 0)
+                MapEntry(entry.value, '${item?[entry.key]}'),
+            for (final entry in const {
+              'fireResist': 'Fire Resist', 'windResist': 'Wind Resist',
+              'earthResist': 'Earth Resist', 'waterResist': 'Water Resist',
+              'elecResist': 'Elec Resist',
+            }.entries)
+              if (((item?[entry.key] as num?) ?? 0) != 0)
+                MapEntry(entry.value, '${item?[entry.key]}'),
+            if (count != null && count! > 1) MapEntry('Owned', '$count'),
+          ],
+        ),
       ),
     );
   }
