@@ -30,5 +30,109 @@
       "Armor",
       "Weapon"
     ]
+  },
+  "weaponsmith_forge": {
+    "shopID": "weaponsmith_forge",
+    "shopName": "The Weaponsmith's Forge",
+    "shopDescription": "Freshly forged blades and spears line the racks, still warm from the anvil.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "sword_t1",
+      "sword_t2",
+      "sword_t3",
+      "spear_t1",
+      "spear_t2",
+      "spear_t3",
+      "dagger_t1",
+      "dagger_t2",
+      "dagger_t3"
+    ],
+    "merchantSpecialties": [
+      "Weapon"
+    ]
+  },
+  "shieldwrights_hall": {
+    "shopID": "shieldwrights_hall",
+    "shopName": "Shieldwright's Hall",
+    "shopDescription": "Rows of shields, from cracked bucklers to gleaming aegises.",
+    "unlockLevel": 1,
+    "buildCost": 50,
+    "initialStock": [
+      "shield_t1",
+      "shield_t2",
+      "shield_t3",
+      "shield_t4",
+      "shield_t5"
+    ],
+    "merchantSpecialties": [
+      "Weapon"
+    ]
+  },
+  "arcane_bazaar": {
+    "shopID": "arcane_bazaar",
+    "shopName": "Arcane Bazaar",
+    "shopDescription": "Incense smoke curls around shelves of staves, scrolls and stranger things.",
+    "unlockLevel": 2,
+    "buildCost": 100,
+    "initialStock": [
+      "staff_t1",
+      "staff_t2",
+      "staff_t3",
+      "staff_t4",
+      "staff_t5",
+      "scroll_fireball",
+      "artifact_moon_shard"
+    ],
+    "merchantSpecialties": [
+      "Weapon",
+      "Scroll",
+      "Artifact"
+    ]
+  },
+  "apothecary_row": {
+    "shopID": "apothecary_row",
+    "shopName": "Apothecary Row",
+    "shopDescription": "Jars of tinctures and salves promise to mend whatever ails you.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_minor",
+      "potion_major",
+      "material_iron_ore"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Material"
+    ]
+  },
+  "smugglers_vault": {
+    "shopID": "smugglers_vault",
+    "shopName": "The Smugglers' Vault",
+    "shopDescription": "A hidden cache of the finest contraband steel and relics money can buy.",
+    "unlockLevel": 5,
+    "buildCost": 400,
+    "initialStock": [
+      "sword_t8",
+      "sword_t9",
+      "sword_t10",
+      "spear_t8",
+      "spear_t9",
+      "spear_t10",
+      "dagger_t8",
+      "dagger_t9",
+      "dagger_t10",
+      "shield_t8",
+      "shield_t9",
+      "shield_t10",
+      "staff_t8",
+      "staff_t9",
+      "staff_t10",
+      "void_banner"
+    ],
+    "merchantSpecialties": [
+      "Weapon",
+      "Artifact"
+    ]
   }
 }

@@ -74,5 +74,385 @@
         "lockedText": ""
       }
     ]
+  },
+  "q_ch2_dockside_debts": {
+    "questID": "q_ch2_dockside_debts",
+    "questName": "Dockside Debts",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Clear the rats fouling the harbor stores",
+        "type": "Kill",
+        "targetEnemyID": "harbor_rat",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 30,
+    "rewardXP": 35,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch2_smugglers_favor",
+    "npcDialogueText": "The harbor master needs those rats dealt with before the shipment arrives.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_dockside_debts_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch2_smugglers_favor": {
+    "questID": "q_ch2_smugglers_favor",
+    "questName": "A Smuggler's Favor",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Bring back iron ore for the smuggler's forge",
+        "type": "Fetch",
+        "targetEnemyID": "",
+        "targetItemID": "material_iron_ore",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 40,
+    "rewardItemID": "dagger_t2",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch2_burning_manifest",
+    "npcDialogueText": "Get me that ore and I'll cut you a fair price on steel.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_smugglers_favor_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch2_burning_manifest": {
+    "questID": "q_ch2_burning_manifest",
+    "questName": "The Burning Manifest",
+    "chapter": 2,
+    "category": "Main",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Stop the bandit torching the cargo manifests",
+        "type": "Kill",
+        "targetEnemyID": "street_bandit",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 50,
+    "rewardXP": 60,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch2_captains_gambit",
+    "npcDialogueText": "If those manifests burn, we lose every trail we have.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_burning_manifest_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch2_captains_gambit": {
+    "questID": "q_ch2_captains_gambit",
+    "questName": "The Captain's Gambit",
+    "chapter": 2,
+    "category": "Main",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Confront the smuggler captain",
+        "type": "Kill",
+        "targetEnemyID": "smuggler_captain",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 70,
+    "rewardXP": 85,
+    "rewardItemID": "potion_major",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch2_harbor_reckoning",
+    "npcDialogueText": "The captain holds the last ferry off these docks. Convince him, one way or another.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_captains_gambit_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch2_harbor_reckoning": {
+    "questID": "q_ch2_harbor_reckoning",
+    "questName": "Harbor Reckoning",
+    "chapter": 2,
+    "category": "Main",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down the plague hound stalking the harbor",
+        "type": "Kill",
+        "targetEnemyID": "plague_hound",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 100,
+    "rewardItemID": "shield_t4",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "That thing has been dragging the sick from their beds. End it.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_harbor_reckoning_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch3_ashen_oath": {
+    "questID": "q_ch3_ashen_oath",
+    "questName": "The Ashen Oath",
+    "chapter": 3,
+    "category": "Main",
+    "difficulty": "6",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Silence the cultist acolyte in the ashes of Alster",
+        "type": "Kill",
+        "targetEnemyID": "cultist_acolyte",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 90,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch3_inquisition_ledger",
+    "npcDialogueText": "Their chanting hasn't stopped since the city burned. Make it stop.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_ashen_oath_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch3_inquisition_ledger": {
+    "questID": "q_ch3_inquisition_ledger",
+    "questName": "The Inquisition's Ledger",
+    "chapter": 3,
+    "category": "Main",
+    "difficulty": "6",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Recover the sealed Inquisition letter",
+        "type": "Fetch",
+        "targetEnemyID": "",
+        "targetItemID": "quest_sealed_letter",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 70,
+    "rewardXP": 100,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch3_void_relic",
+    "npcDialogueText": "Whatever they sealed in that letter, the Inquisition wants it buried.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_inquisition_ledger_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch3_void_relic": {
+    "questID": "q_ch3_void_relic",
+    "questName": "The Void Relic",
+    "chapter": 3,
+    "category": "Main",
+    "difficulty": "7",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Wrest the moon shard from the void wisp",
+        "type": "Kill",
+        "targetEnemyID": "void_wisp",
+        "targetItemID": "artifact_moon_shard",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 120,
+    "rewardItemID": "artifact_moon_shard",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch3_the_high_wardens_fall",
+    "npcDialogueText": "That shard hums with the same wrongness as the Shroud. Bring it to me.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_void_relic_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch3_the_high_wardens_fall": {
+    "questID": "q_ch3_the_high_wardens_fall",
+    "questName": "The High Warden's Fall",
+    "chapter": 3,
+    "category": "Main",
+    "difficulty": "9",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Inquisition High Warden",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_high_warden",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 200,
+    "rewardItemID": "staff_t9",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch3_alsters_dawn",
+    "npcDialogueText": "He led the purge on the slums himself. This ends with him.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_the_high_wardens_fall_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
+  },
+  "q_ch3_alsters_dawn": {
+    "questID": "q_ch3_alsters_dawn",
+    "questName": "Alster's Dawn",
+    "chapter": 3,
+    "category": "Main",
+    "difficulty": "9",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Carry word of the Warden's fall back to Alster",
+        "type": "Talk",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Lysa",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 100,
+    "rewardXP": 150,
+    "rewardItemID": "void_banner",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Go on. Tell them it's over. Tell them we can go home.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_alsters_dawn_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ]
   }
 }

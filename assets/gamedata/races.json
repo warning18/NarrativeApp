@@ -1,0 +1,47 @@
+{
+  "human": {
+    "raceID": "human",
+    "raceName": "Human",
+    "description": "Adaptable and resourceful, humans favor coin and connections over raw power.",
+    "bonusMaxHealth": 0,
+    "bonusBaseDamage": 0,
+    "bonusBaseArmor": 0,
+    "startingGoldBonus": 20
+  },
+  "elf": {
+    "raceID": "elf",
+    "raceName": "Elf",
+    "description": "Quick and attuned to the world's currents, at the cost of a frailer frame.",
+    "bonusMaxHealth": -10,
+    "bonusBaseDamage": 3,
+    "bonusBaseArmor": 0,
+    "startingGoldBonus": 0
+  },
+  "dwarf": {
+    "raceID": "dwarf",
+    "raceName": "Dwarf",
+    "description": "Stout and stubborn, built to shrug off blows that would fell others.",
+    "bonusMaxHealth": 20,
+    "bonusBaseDamage": 0,
+    "bonusBaseArmor": 3,
+    "startingGoldBonus": 0
+  },
+  "orc": {
+    "raceID": "orc",
+    "raceName": "Orc",
+    "description": "Brutal strength wins fights fast, but leaves little room for finesse.",
+    "bonusMaxHealth": 10,
+    "bonusBaseDamage": 4,
+    "bonusBaseArmor": -2,
+    "startingGoldBonus": 0
+  },
+  "voidkin": {
+    "raceID": "voidkin",
+    "raceName": "Voidkin",
+    "description": "Touched by the Shroud, they hit devastatingly hard but break easily.",
+    "bonusMaxHealth": -15,
+    "bonusBaseDamage": 6,
+    "bonusBaseArmor": -1,
+    "startingGoldBonus": 0
+  }
+}
