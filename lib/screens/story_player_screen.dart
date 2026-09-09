@@ -7,6 +7,8 @@ import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -46,11 +48,13 @@ class _StoryView extends ConsumerWidget {
     final notifier = ref.read(storyPlayProvider.notifier);
     final session = ref.watch(playerSessionProvider);
     final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
+    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
 
     if (node == null) {
       return _EndingView(
-        title: 'The trail goes cold',
-        message: 'This path leads nowhere in the current story data.',
+        title: tr(ref, 'trail_cold_title'),
+        message: tr(ref, 'trail_cold_message'),
+        restartLabel: tr(ref, 'restart_story'),
         onRestart: () => notifier.restart(StoryRepository.startNodeId),
       );
     }
@@ -69,11 +73,11 @@ class _StoryView extends ConsumerWidget {
                   TextButton.icon(
                     onPressed: notifier.goBack,
                     icon: const Icon(Icons.arrow_back),
-                    label: const Text('Back'),
+                    label: Text(tr(ref, 'back')),
                   ),
                 const Spacer(),
                 Text(
-                  playState.isInExcursion ? 'Detour' : 'Node ${node.id}',
+                  playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
@@ -82,7 +86,7 @@ class _StoryView extends ConsumerWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Text(
-                  node.description,
+                  node.descriptionFor(french),
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
@@ -90,8 +94,9 @@ class _StoryView extends ConsumerWidget {
             const SizedBox(height: 16),
             if (node.choices.isEmpty)
               _EndingView(
-                title: 'The End',
-                message: 'You have reached the end of this branch.',
+                title: tr(ref, 'the_end'),
+                message: tr(ref, 'branch_end_message'),
+                restartLabel: tr(ref, 'restart_story'),
                 onRestart: () => notifier.restart(StoryRepository.startNodeId),
               )
             else
@@ -104,6 +109,7 @@ class _StoryView extends ConsumerWidget {
                     session: session,
                     currentNodeId: playState.currentNodeId,
                     isExcursion: playState.isInExcursion,
+                    french: french,
                   ),
                 ),
               ),
@@ -121,6 +127,7 @@ class _ChoiceButton extends ConsumerWidget {
     required this.session,
     required this.currentNodeId,
     required this.isExcursion,
+    required this.french,
   });
 
   final StoryChoice choice;
@@ -128,6 +135,7 @@ class _ChoiceButton extends ConsumerWidget {
   final PlayerSession session;
   final String currentNodeId;
   final bool isExcursion;
+  final bool french;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -143,7 +151,7 @@ class _ChoiceButton extends ConsumerWidget {
 
     final label = locked && (choice.lockedText?.isNotEmpty ?? false)
         ? choice.lockedText!
-        : choice.text;
+        : choice.textFor(french);
 
     if (choice.triggersCombat) {
       // Keep the enemies database warm so it's ready by the time this
@@ -241,11 +249,13 @@ class _EndingView extends StatelessWidget {
   const _EndingView({
     required this.title,
     required this.message,
+    required this.restartLabel,
     required this.onRestart,
   });
 
   final String title;
   final String message;
+  final String restartLabel;
   final VoidCallback onRestart;
 
   @override
@@ -262,7 +272,7 @@ class _EndingView extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: onRestart,
-              child: const Text('Restart Story'),
+              child: Text(restartLabel),
             ),
           ],
         ),

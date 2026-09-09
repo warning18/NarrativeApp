@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app_info.dart';
+import '../l10n/app_locale.dart';
 import '../providers/settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -29,6 +30,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final language = ref.watch(appLanguageProvider);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Padding(
@@ -36,6 +39,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              'Language',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Applies to navigation, the story reader, and the two newest '
+              'chapters. Older chapters and game data stay in English for now.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            SegmentedButton<AppLanguage>(
+              segments: const [
+                ButtonSegment(value: AppLanguage.en, label: Text('English'), icon: Text('🇬🇧')),
+                ButtonSegment(value: AppLanguage.fr, label: Text('Français'), icon: Text('🇫🇷')),
+              ],
+              selected: {language},
+              onSelectionChanged: (selection) {
+                ref.read(appLanguageProvider.notifier).setLanguage(selection.first);
+              },
+            ),
+            const SizedBox(height: 24),
             Text(
               'Gemini API Key',
               style: Theme.of(context).textTheme.titleMedium,

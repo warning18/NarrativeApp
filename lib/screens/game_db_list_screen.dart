@@ -5,17 +5,43 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../gamedata/field_schema.dart';
 import '../gamedata/quest_validation.dart';
 import '../providers/game_db_providers.dart';
 import 'game_db_record_editor_screen.dart';
 
-class GameDbListScreen extends ConsumerWidget {
+class GameDbListScreen extends ConsumerStatefulWidget {
   const GameDbListScreen({super.key, required this.schema});
 
   final DbSchema schema;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GameDbListScreen> createState() => _GameDbListScreenState();
+}
+
+class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _search = '';
+  String? _filterValue;
+  late final FieldSchema? _filterField = _findEnumField(widget.schema);
+
+  DbSchema get schema => widget.schema;
+
+  static FieldSchema? _findEnumField(DbSchema schema) {
+    for (final field in schema.fields) {
+      if (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty) return field;
+    }
+    return null;
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final recordsAsync = ref.watch(gameDbProvider(schema));
 
     return Scaffold(
@@ -41,74 +67,133 @@ class GameDbListScreen extends ConsumerWidget {
       ),
       body: recordsAsync.when(
         data: (records) {
-          final keys = records.keys.toList()..sort();
-          if (keys.isEmpty) {
-            return const Center(child: Text('No records yet. Tap + to add one.'));
-          }
-          final issues = schema.id == 'quests' ? validateQuestChapters(records) : const <String>[];
-          return ListView.builder(
-            itemCount: keys.length + (issues.isEmpty ? 0 : 1),
-            itemBuilder: (context, index) {
-              if (issues.isNotEmpty) {
-                if (index == 0) {
-                  return Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.all(12),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.errorContainer,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Chapter structure issues',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onErrorContainer,
-                              ),
-                        ),
-                        const SizedBox(height: 6),
-                        ...issues.map(
-                          (issue) => Padding(
-                            padding: const EdgeInsets.only(top: 2),
-                            child: Text(
-                              '• $issue',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.onErrorContainer,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              }
-              final key = keys[index - (issues.isEmpty ? 0 : 1)];
+          var keys = records.keys.toList()..sort();
+          if (_search.isNotEmpty) {
+            final query = _search.toLowerCase();
+            keys = keys.where((key) {
               final record = records[key] as Map<String, dynamic>;
-              final subtitleValue =
+              final title =
                   schema.titleField != null ? record[schema.titleField]?.toString() ?? '' : '';
-              return ListTile(
-                title: Text(key),
-                subtitle: subtitleValue.isNotEmpty ? Text(subtitleValue) : null,
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => ref.read(gameDbProvider(schema).notifier).deleteRecord(key),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => GameDbRecordEditorScreen(
-                        schema: schema,
-                        recordKey: key,
-                        initialRecord: record,
+              return key.toLowerCase().contains(query) || title.toLowerCase().contains(query);
+            }).toList();
+          }
+          final filterField = _filterField;
+          if (filterField != null && _filterValue != null) {
+            keys = keys.where((key) {
+              final record = records[key] as Map<String, dynamic>;
+              return record[filterField.key]?.toString() == _filterValue;
+            }).toList();
+          }
+
+          final issues = schema.id == 'quests' ? validateQuestChapters(records) : const <String>[];
+
+          return Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          hintText: 'Search...',
+                          border: OutlineInputBorder(),
+                          isDense: true,
+                        ),
+                        onChanged: (value) => setState(() => _search = value),
                       ),
                     ),
-                  );
-                },
-              );
-            },
+                    if (_filterField != null) ...[
+                      const SizedBox(width: 8),
+                      DropdownButton<String?>(
+                        value: _filterValue,
+                        hint: Text(_filterField.label),
+                        items: [
+                          const DropdownMenuItem<String?>(value: null, child: Text('All')),
+                          ..._filterField.enumOptions.map(
+                            (option) => DropdownMenuItem<String?>(
+                              value: option,
+                              child: Text(option),
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) => setState(() => _filterValue = value),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Expanded(
+                child: keys.isEmpty
+                    ? const Center(child: Text('No matching records.'))
+                    : ListView.builder(
+                        itemCount: keys.length + (issues.isEmpty ? 0 : 1),
+                        itemBuilder: (context, index) {
+                          if (issues.isNotEmpty && index == 0) {
+                            return Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.all(12),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.errorContainer,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Chapter structure issues',
+                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                          color: Theme.of(context).colorScheme.onErrorContainer,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  ...issues.map(
+                                    (issue) => Padding(
+                                      padding: const EdgeInsets.only(top: 2),
+                                      child: Text(
+                                        '• $issue',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onErrorContainer,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          final key = keys[index - (issues.isEmpty ? 0 : 1)];
+                          final record = records[key] as Map<String, dynamic>;
+                          final subtitleValue = schema.titleField != null
+                              ? record[schema.titleField]?.toString() ?? ''
+                              : '';
+                          return ListTile(
+                            title: Text(key),
+                            subtitle: subtitleValue.isNotEmpty ? Text(subtitleValue) : null,
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () =>
+                                  ref.read(gameDbProvider(schema).notifier).deleteRecord(key),
+                            ),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => GameDbRecordEditorScreen(
+                                    schema: schema,
+                                    recordKey: key,
+                                    initialRecord: record,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

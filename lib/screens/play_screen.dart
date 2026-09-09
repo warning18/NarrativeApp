@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -45,7 +46,7 @@ class PlayScreen extends ConsumerWidget {
         Card(
           child: ListTile(
             leading: const Icon(Icons.person),
-            title: const Text('Character'),
+            title: Text(tr(ref, 'character')),
             subtitle: Text(
               'Lvl ${session.level} · ${session.inventoryItemIds.length} item(s) · '
               '${session.skillPoints} skill pt(s) · ${session.statPoints} stat pt(s)',
@@ -59,7 +60,7 @@ class PlayScreen extends ConsumerWidget {
           ),
         ),
         const Divider(height: 32),
-        Text('Quests', style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'quests'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         questsAsync.when(
           data: (records) => _QuestList(records: records),
@@ -67,7 +68,7 @@ class PlayScreen extends ConsumerWidget {
           error: (error, stack) => Text('Failed to load quests: $error'),
         ),
         const Divider(height: 32),
-        Text('Shops', style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'shops'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         shopsAsync.when(
           data: (records) => _ShopList(records: records),
@@ -75,7 +76,7 @@ class PlayScreen extends ConsumerWidget {
           error: (error, stack) => Text('Failed to load shops: $error'),
         ),
         const Divider(height: 32),
-        Text('Bestiary', style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'bestiary'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         enemiesAsync.when(
           data: (records) => _EnemyList(records: records),
