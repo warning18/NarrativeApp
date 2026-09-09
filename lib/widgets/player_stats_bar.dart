@@ -24,6 +24,8 @@ class PlayerStatsBar extends ConsumerWidget {
         children: [
           chip(Icons.shield, 'Lvl ${session.level}'),
           const SizedBox(width: 6),
+          chip(Icons.favorite, '${session.currentHealth}/${session.maxHealth} HP'),
+          const SizedBox(width: 6),
           chip(Icons.paid, '${session.gold}g'),
           const SizedBox(width: 6),
           chip(Icons.balance, session.alignmentLabel),

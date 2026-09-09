@@ -5,6 +5,7 @@ import '../gamedata/db_schema.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../widgets/player_stats_bar.dart';
+import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
 class PlayScreen extends ConsumerWidget {
@@ -15,6 +16,7 @@ class PlayScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -52,6 +54,14 @@ class PlayScreen extends ConsumerWidget {
           data: (records) => _ShopList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) => Text('Failed to load shops: $error'),
+        ),
+        const Divider(height: 32),
+        Text('Bestiary', style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        enemiesAsync.when(
+          data: (records) => _EnemyList(records: records),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Text('Failed to load enemies: $error'),
         ),
       ],
     );
@@ -163,6 +173,46 @@ class _ShopList extends StatelessWidget {
                 ),
               );
             },
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _EnemyList extends StatelessWidget {
+  const _EnemyList({required this.records});
+
+  final Map<String, dynamic> records;
+
+  @override
+  Widget build(BuildContext context) {
+    if (records.isEmpty) {
+      return const Text('No enemies defined yet.');
+    }
+    final keys = records.keys.toList()..sort();
+
+    return Column(
+      children: keys.map((enemyId) {
+        final enemy = records[enemyId] as Map<String, dynamic>;
+        final enemyName = enemy['enemyName']?.toString() ?? enemyId;
+        final maxHealth = (enemy['maxHealth'] as num?)?.toInt() ?? 0;
+        final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
+        return Card(
+          child: ListTile(
+            title: Text(enemyName),
+            subtitle: Text('HP $maxHealth · Damage $damage'),
+            trailing: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.sports_martial_arts),
+              label: const Text('Fight'),
+            ),
           ),
         );
       }).toList(),
