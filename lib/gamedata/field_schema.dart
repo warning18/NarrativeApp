@@ -10,6 +10,7 @@ enum FieldType {
   reference,
   referenceList,
   multiEnum,
+  image,
 }
 
 /// Special [FieldSchema.referenceSchemaId] value meaning the field
