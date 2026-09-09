@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/story_repository.dart';
+import '../models/story_node.dart';
+import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../widgets/player_stats_bar.dart';
 
 class StoryPlayerScreen extends ConsumerWidget {
   const StoryPlayerScreen({super.key});
@@ -33,6 +36,7 @@ class _StoryView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final playState = ref.watch(storyPlayProvider);
     final notifier = ref.read(storyPlayProvider.notifier);
+    final session = ref.watch(playerSessionProvider);
     final node = story.nodeFor(playState.currentNodeId);
 
     if (node == null) {
@@ -49,6 +53,8 @@ class _StoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            const PlayerStatsBar(),
+            const SizedBox(height: 8),
             Row(
               children: [
                 if (playState.history.isNotEmpty)
@@ -84,23 +90,60 @@ class _StoryView extends ConsumerWidget {
               ...node.choices.map(
                 (choice) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (choice.isEnding) {
-                        notifier.restart(StoryRepository.startNodeId);
-                      } else {
-                        notifier.choose(choice.nextId);
-                      }
-                    },
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(choice.text),
-                    ),
-                  ),
+                  child: _ChoiceButton(choice: choice, story: story, session: session),
                 ),
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ChoiceButton extends ConsumerWidget {
+  const _ChoiceButton({required this.choice, required this.story, required this.session});
+
+  final StoryChoice choice;
+  final StoryData story;
+  final PlayerSession session;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
+    final locked = targetNode != null &&
+        targetNode.hasRequirements &&
+        !session.meetsRequirements(
+          reqGold: targetNode.reqGold,
+          reqAlignmentScore: targetNode.reqAlignmentScore,
+          reqFlags: targetNode.reqFlags,
+        );
+
+    final label = locked && (choice.lockedText?.isNotEmpty ?? false)
+        ? choice.lockedText!
+        : choice.text;
+
+    return ElevatedButton(
+      onPressed: locked
+          ? null
+          : () {
+              final playNotifier = ref.read(storyPlayProvider.notifier);
+              if (choice.hasEffects) {
+                ref.read(playerSessionProvider.notifier).applyChoiceEffects(
+                      goldMod: choice.goldMod,
+                      alignmentMod: choice.alignmentMod,
+                      flagsToAdd: choice.flagsToAdd,
+                      questIDToProgress: choice.questIDToProgress,
+                    );
+              }
+              if (choice.isEnding) {
+                playNotifier.restart(StoryRepository.startNodeId);
+              } else {
+                playNotifier.choose(choice.nextId);
+              }
+            },
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(label),
       ),
     );
   }
