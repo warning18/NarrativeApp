@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/player_stats_bar.dart';
+import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'level_up_screen.dart';
 import 'skills_screen.dart';
@@ -49,6 +50,18 @@ class CharacterScreen extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const LevelUpScreen()),
+                );
+              },
+            ),
+          ),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.casino),
+              title: const Text('Dice Loadout'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const DiceLoadoutScreen()),
                 );
               },
             ),

@@ -28,6 +28,10 @@ class PlayerSession {
     required this.inventoryItemIds,
     required this.equippedItemIds,
     required this.unlockedSkillIds,
+    required this.unlockedShopIds,
+    required this.unlockedQuestIds,
+    required this.unlockedEnemyIds,
+    required this.diceSkillAssignments,
   });
 
   final int level;
@@ -48,6 +52,12 @@ class PlayerSession {
   final List<String> inventoryItemIds;
   final List<String> equippedItemIds;
   final List<String> unlockedSkillIds;
+  final List<String> unlockedShopIds;
+  final List<String> unlockedQuestIds;
+  final List<String> unlockedEnemyIds;
+
+  /// diceId -> {faceIndex (as string) -> skillId}
+  final Map<String, Map<String, String>> diceSkillAssignments;
 
   int get xpToNextLevel => level * 100;
 
@@ -89,6 +99,10 @@ class PlayerSession {
     List<String>? inventoryItemIds,
     List<String>? equippedItemIds,
     List<String>? unlockedSkillIds,
+    List<String>? unlockedShopIds,
+    List<String>? unlockedQuestIds,
+    List<String>? unlockedEnemyIds,
+    Map<String, Map<String, String>>? diceSkillAssignments,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -109,6 +123,10 @@ class PlayerSession {
       inventoryItemIds: inventoryItemIds ?? this.inventoryItemIds,
       equippedItemIds: equippedItemIds ?? this.equippedItemIds,
       unlockedSkillIds: unlockedSkillIds ?? this.unlockedSkillIds,
+      unlockedShopIds: unlockedShopIds ?? this.unlockedShopIds,
+      unlockedQuestIds: unlockedQuestIds ?? this.unlockedQuestIds,
+      unlockedEnemyIds: unlockedEnemyIds ?? this.unlockedEnemyIds,
+      diceSkillAssignments: diceSkillAssignments ?? this.diceSkillAssignments,
     );
   }
 
@@ -131,6 +149,10 @@ class PlayerSession {
         'inventoryItemIds': inventoryItemIds,
         'equippedItemIds': equippedItemIds,
         'unlockedSkillIds': unlockedSkillIds,
+        'unlockedShopIds': unlockedShopIds,
+        'unlockedQuestIds': unlockedQuestIds,
+        'unlockedEnemyIds': unlockedEnemyIds,
+        'diceSkillAssignments': diceSkillAssignments,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -158,6 +180,21 @@ class PlayerSession {
           (json['equippedItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       unlockedSkillIds:
           (json['unlockedSkillIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      unlockedShopIds:
+          (json['unlockedShopIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      unlockedQuestIds:
+          (json['unlockedQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      unlockedEnemyIds:
+          (json['unlockedEnemyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      diceSkillAssignments: (json['diceSkillAssignments'] as Map?)?.map(
+            (diceId, faces) => MapEntry(
+              diceId.toString(),
+              (faces as Map).map(
+                (faceIndex, skillId) => MapEntry(faceIndex.toString(), skillId.toString()),
+              ),
+            ),
+          ) ??
+          const {},
     );
   }
 }
@@ -183,6 +220,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           inventoryItemIds: [],
           equippedItemIds: [],
           unlockedSkillIds: [],
+          unlockedShopIds: [],
+          unlockedQuestIds: [],
+          unlockedEnemyIds: [],
+          diceSkillAssignments: {},
         )) {
     _load();
   }
@@ -226,6 +267,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       inventoryItemIds: const [],
       equippedItemIds: const [],
       unlockedSkillIds: const [],
+      unlockedShopIds: const [],
+      unlockedQuestIds: const [],
+      unlockedEnemyIds: const [],
+      diceSkillAssignments: const {},
     );
     await _persist();
   }
@@ -301,9 +346,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> equipItem(String itemId) async {
+  /// Equips [itemId]. When [slot] is given, any other equipped item sharing
+  /// that slot (per [items], a map of itemId -> item record) is unequipped
+  /// first, so only one item per slot is ever equipped at once.
+  Future<void> equipItem(
+    String itemId, {
+    String? slot,
+    Map<String, dynamic>? items,
+  }) async {
     if (state.equippedItemIds.contains(itemId)) return;
-    state = state.copyWith(equippedItemIds: [...state.equippedItemIds, itemId]);
+    var newEquipped = state.equippedItemIds;
+    if (slot != null && slot.isNotEmpty && items != null) {
+      newEquipped = state.equippedItemIds.where((id) {
+        final other = items[id] as Map<String, dynamic>?;
+        return (other?['equipSlot']?.toString() ?? '') != slot;
+      }).toList();
+    }
+    state = state.copyWith(equippedItemIds: [...newEquipped, itemId]);
     await _persist();
   }
 
@@ -312,6 +371,58 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       equippedItemIds: state.equippedItemIds.where((id) => id != itemId).toList(),
     );
+    await _persist();
+  }
+
+  /// Marks a shop/quest/enemy as discovered through story progression, so it
+  /// becomes accessible in the Play tab. Empty/null ids are ignored.
+  Future<void> unlockContent({String? shopId, String? questId, String? enemyId}) async {
+    var newShops = state.unlockedShopIds;
+    var newQuests = state.unlockedQuestIds;
+    var newEnemies = state.unlockedEnemyIds;
+    if (shopId != null && shopId.isNotEmpty && !newShops.contains(shopId)) {
+      newShops = [...newShops, shopId];
+    }
+    if (questId != null && questId.isNotEmpty && !newQuests.contains(questId)) {
+      newQuests = [...newQuests, questId];
+    }
+    if (enemyId != null && enemyId.isNotEmpty && !newEnemies.contains(enemyId)) {
+      newEnemies = [...newEnemies, enemyId];
+    }
+    if (identical(newShops, state.unlockedShopIds) &&
+        identical(newQuests, state.unlockedQuestIds) &&
+        identical(newEnemies, state.unlockedEnemyIds)) {
+      return;
+    }
+    state = state.copyWith(
+      unlockedShopIds: newShops,
+      unlockedQuestIds: newQuests,
+      unlockedEnemyIds: newEnemies,
+    );
+    await _persist();
+  }
+
+  Future<void> assignSkillToDiceFace(String diceId, int faceIndex, String skillId) async {
+    final updated = <String, Map<String, String>>{
+      for (final entry in state.diceSkillAssignments.entries)
+        entry.key: Map<String, String>.from(entry.value),
+    };
+    final faceMap = Map<String, String>.from(updated[diceId] ?? const {});
+    faceMap[faceIndex.toString()] = skillId;
+    updated[diceId] = faceMap;
+    state = state.copyWith(diceSkillAssignments: updated);
+    await _persist();
+  }
+
+  Future<void> clearDiceFaceSkill(String diceId, int faceIndex) async {
+    final faceMap = state.diceSkillAssignments[diceId];
+    if (faceMap == null || !faceMap.containsKey(faceIndex.toString())) return;
+    final updated = <String, Map<String, String>>{
+      for (final entry in state.diceSkillAssignments.entries)
+        entry.key: Map<String, String>.from(entry.value),
+    };
+    updated[diceId]!.remove(faceIndex.toString());
+    state = state.copyWith(diceSkillAssignments: updated);
     await _persist();
   }
 

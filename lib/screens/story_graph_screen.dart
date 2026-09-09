@@ -68,7 +68,9 @@ class _GraphView extends ConsumerWidget {
       boundaryMargin: const EdgeInsets.all(200),
       minScale: 0.1,
       maxScale: 3,
-      child: GraphView(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 200),
+        child: GraphView(
         graph: graph,
         algorithm: SugiyamaAlgorithm(configuration),
         paint: Paint()
@@ -104,6 +106,7 @@ class _GraphView extends ConsumerWidget {
             ),
           );
         },
+        ),
       ),
     );
   }

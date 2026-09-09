@@ -100,7 +100,14 @@ class _FightScreenState extends ConsumerState<FightScreen> {
     final faces = (dice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     if (faces.isEmpty) return;
 
-    final face = rollDie(faces, _random);
+    var face = rollDie(faces, _random);
+    if (face.type == 'Skill') {
+      final session = ref.read(playerSessionProvider);
+      final assigned = session.diceSkillAssignments[_selectedDiceId]?[face.faceIndex.toString()];
+      if (assigned != null && assigned.isNotEmpty) {
+        face = face.withLinkedSkillID(assigned);
+      }
+    }
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
     final result = resolvePlayerFace(face, _availableSkills(skills), totalDamage);
 

@@ -2,6 +2,7 @@
   "q_first_blood": {
     "questID": "q_first_blood",
     "questName": "First Blood",
+    "chapter": 1,
     "category": "Main",
     "difficulty": "1",
     "requiredAlignment": "Neutral",
@@ -20,7 +21,7 @@
     "rewardXP": 25,
     "rewardItemID": "",
     "alignmentChange": 0,
-    "nextQuestID": "",
+    "nextQuestID": "q_retrieve_banner",
     "npcDialogueText": "Clear the alley of thugs and I'll make it worth your while.",
     "requiredGold": 0,
     "requiredFlags": [],
@@ -39,6 +40,7 @@
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
     "questName": "The Heirloom of Alster",
+    "chapter": 1,
     "category": "Main",
     "difficulty": "2",
     "requiredAlignment": "Neutral",
