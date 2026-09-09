@@ -1,0 +1,14 @@
+{
+  "laser_mk1": {
+    "partID": "laser_mk1",
+    "partName": "Laser Mk1",
+    "slotType": "Weapon",
+    "cost": 80,
+    "battleActionLabel": "Fire Laser",
+    "cooldownTurns": 1,
+    "damageAmount": 12,
+    "shieldRestoreAmount": 0,
+    "maxShieldBonus": 0,
+    "hullRepairAmount": 0
+  }
+}

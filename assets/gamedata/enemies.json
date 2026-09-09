@@ -1,0 +1,16 @@
+{
+  "slum_thug": {
+    "enemyName": "slum_thug",
+    "maxHealth": 40,
+    "damage": 6,
+    "xpReward": 15,
+    "goldReward": 10,
+    "lootTable": [
+      { "itemID": "potion_minor", "dropRate": 25 }
+    ],
+    "skillMoves": [
+      { "skillID": "", "condition": "Always", "requiredElement": "None", "chance": 100, "healthThreshold": 0, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 0 },
+      { "skillID": "", "condition": "OnLowHealth", "requiredElement": "None", "chance": 60, "healthThreshold": 25, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 1 }
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "blind_beggar_stall": {
+    "shopID": "blind_beggar_stall",
+    "shopName": "Blind Beggar Stall",
+    "shopDescription": "A makeshift stall selling salvaged goods.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": ["potion_minor", "sword_001"],
+    "merchantSpecialties": ["Potion", "Weapon"]
+  }
+}

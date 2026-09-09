@@ -1,0 +1,23 @@
+{
+  "q_first_blood": {
+    "questID": "q_first_blood",
+    "questName": "First Blood",
+    "category": "Main",
+    "difficulty": "1",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      { "description": "Defeat the slum thug", "type": "Kill", "targetEnemyID": "slum_thug", "targetItemID": "", "targetNPCName": "", "locationID": "", "requiredAmount": 1 }
+    ],
+    "rewardGold": 20,
+    "rewardXP": 25,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "Clear the alley of thugs and I'll make it worth your while.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      { "buttonText": "Accept", "goldModifier": 0, "alignmentModifier": 0, "flagToAdd": "q_first_blood_accepted", "nextEventID": "", "actionType": "Accept", "lockedText": "" }
+    ]
+  }
+}

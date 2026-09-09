@@ -1,0 +1,12 @@
+{
+  "starter_freighter": {
+    "shipID": "starter_freighter",
+    "shipName": "Starter Freighter",
+    "baseMaxHull": 100,
+    "baseMaxShield": 40,
+    "shieldRegenPerTurn": 5,
+    "weaponSlots": 2,
+    "shieldSlots": 1,
+    "utilitySlots": 1
+  }
+}

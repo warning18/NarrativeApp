@@ -1,0 +1,30 @@
+{
+  "fireball": {
+    "id": "fireball",
+    "element": "Fire",
+    "cost": 3,
+    "requiredSkillID": "",
+    "isUnlocked": true,
+    "description": "Hurl a bolt of fire at the enemy.",
+    "healAmount": 0,
+    "damageMod": 5,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.5,
+    "battleMessage": "Flames erupt!"
+  },
+  "second_wind": {
+    "id": "second_wind",
+    "element": "None",
+    "cost": 2,
+    "requiredSkillID": "",
+    "isUnlocked": true,
+    "description": "Recover a burst of health.",
+    "healAmount": 20,
+    "damageMod": 0,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "You catch your breath."
+  }
+}
