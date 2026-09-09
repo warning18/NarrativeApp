@@ -5,7 +5,9 @@
     "flavorText": "Shapes move in the dark.",
     "category": "Combat",
     "difficulty": "Normal",
-    "possibleEnemies": ["slum_thug"],
+    "possibleEnemies": [
+      "slum_thug"
+    ],
     "possibleEnemyShips": [],
     "storyEventID": "",
     "shopID": "",
@@ -26,5 +28,23 @@
     "healPercent": 50,
     "guaranteedLoot": [],
     "goldReward": 0
+  },
+  "inquisition_ambush": {
+    "nodeID": "inquisition_ambush",
+    "displayName": "Inquisition Patrol",
+    "flavorText": "White-masked soldiers block the street with drawn blades.",
+    "category": "Combat",
+    "difficulty": "Hard",
+    "possibleEnemies": [
+      "inquisition_warden"
+    ],
+    "possibleEnemyShips": [],
+    "storyEventID": "820",
+    "shopID": "",
+    "healPercent": 0,
+    "guaranteedLoot": [
+      "potion_minor"
+    ],
+    "goldReward": 40
   }
 }

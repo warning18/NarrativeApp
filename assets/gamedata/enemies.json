@@ -6,11 +6,78 @@
     "xpReward": 15,
     "goldReward": 10,
     "lootTable": [
-      { "itemID": "potion_minor", "dropRate": 25 }
+      {
+        "itemID": "potion_minor",
+        "dropRate": 25
+      }
     ],
     "skillMoves": [
-      { "skillID": "", "condition": "Always", "requiredElement": "None", "chance": 100, "healthThreshold": 0, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 0 },
-      { "skillID": "", "condition": "OnLowHealth", "requiredElement": "None", "chance": 60, "healthThreshold": 25, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 1 }
+      {
+        "skillID": "",
+        "condition": "Always",
+        "requiredElement": "None",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 60,
+        "healthThreshold": 25,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
     ]
+  },
+  "inquisition_warden": {
+    "enemyName": "Inquisition Warden",
+    "maxHealth": 80,
+    "damage": 12,
+    "xpReward": 45,
+    "goldReward": 30,
+    "lootTable": [
+      {
+        "itemID": "sword_001",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 50
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "fireball",
+        "condition": "OnLowHealth",
+        "requiredElement": "Fire",
+        "chance": 40,
+        "healthThreshold": 30,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "rat_matriarch": {
+    "enemyName": "Rat Matriarch",
+    "maxHealth": 120,
+    "damage": 15,
+    "xpReward": 80,
+    "goldReward": 50,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 80
+      }
+    ],
+    "skillMoves": []
   }
 }
