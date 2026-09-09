@@ -58,7 +58,7 @@ class _GraphView extends ConsumerWidget {
     final configuration = SugiyamaConfiguration()
       ..nodeSeparation = 24
       ..levelSeparation = 48
-      ..orientation = SugiyamaConfiguration.ORIENTATION_TOP_BOTTOM;
+      ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT;
 
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;

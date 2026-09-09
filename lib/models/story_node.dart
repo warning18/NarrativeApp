@@ -7,6 +7,7 @@ class StoryChoice {
     this.flagsToAdd = const [],
     this.questIDToProgress,
     this.lockedText,
+    this.triggerEnemyId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -19,6 +20,7 @@ class StoryChoice {
           (json['flagsToAdd'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       questIDToProgress: json['questIDToProgress'] as String?,
       lockedText: json['lockedText'] as String?,
+      triggerEnemyId: json['triggerEnemyId'] as String?,
     );
   }
 
@@ -29,6 +31,9 @@ class StoryChoice {
   final List<String> flagsToAdd;
   final String? questIDToProgress;
   final String? lockedText;
+  final String? triggerEnemyId;
+
+  bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
 
   static const List<String> _endMarkers = ['EXIT', 'END'];
 

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/story_repository.dart';
+import '../gamedata/db_schema.dart';
 import '../models/story_node.dart';
+import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../widgets/player_stats_bar.dart';
+import 'fight_screen.dart';
 
 class StoryPlayerScreen extends ConsumerWidget {
   const StoryPlayerScreen({super.key});
@@ -122,10 +125,32 @@ class _ChoiceButton extends ConsumerWidget {
         ? choice.lockedText!
         : choice.text;
 
+    if (choice.triggersCombat) {
+      // Keep the enemies database warm so it's ready by the time this
+      // button is tapped.
+      ref.watch(gameDbProvider(enemiesSchema));
+    }
+
     return ElevatedButton(
       onPressed: locked
           ? null
-          : () {
+          : () async {
+              if (choice.triggersCombat) {
+                final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
+                final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
+                if (enemy != null) {
+                  final won = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (_) => FightScreen(
+                        enemyId: choice.triggerEnemyId!,
+                        enemy: enemy,
+                      ),
+                    ),
+                  );
+                  if (won != true) return;
+                }
+              }
+
               final playNotifier = ref.read(storyPlayProvider.notifier);
               if (choice.hasEffects) {
                 ref.read(playerSessionProvider.notifier).applyChoiceEffects(
