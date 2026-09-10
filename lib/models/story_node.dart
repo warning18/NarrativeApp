@@ -4,6 +4,7 @@ class StoryChoice {
     required this.nextId,
     this.goldMod = 0,
     this.alignmentMod = 0,
+    this.healAmount = 0,
     this.flagsToAdd = const [],
     this.questIDToProgress,
     this.lockedText,
@@ -20,6 +21,7 @@ class StoryChoice {
       nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID']) as String? ?? '',
       goldMod: (json['goldMod'] as num?)?.toInt() ?? 0,
       alignmentMod: (json['alignmentMod'] as num?)?.toInt() ?? 0,
+      healAmount: (json['healAmount'] as num?)?.toInt() ?? 0,
       flagsToAdd:
           (json['flagsToAdd'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       questIDToProgress: json['questIDToProgress'] as String?,
@@ -36,6 +38,7 @@ class StoryChoice {
   final String nextId;
   final int goldMod;
   final int alignmentMod;
+  final int healAmount;
   final List<String> flagsToAdd;
   final String? questIDToProgress;
   final String? lockedText;
@@ -55,6 +58,7 @@ class StoryChoice {
         'next_id': nextId,
         if (goldMod != 0) 'goldMod': goldMod,
         if (alignmentMod != 0) 'alignmentMod': alignmentMod,
+        if (healAmount != 0) 'healAmount': healAmount,
         if (flagsToAdd.isNotEmpty) 'flagsToAdd': flagsToAdd,
         if (questIDToProgress != null && questIDToProgress!.isNotEmpty)
           'questIDToProgress': questIDToProgress,
@@ -79,6 +83,7 @@ class StoryChoice {
   bool get hasEffects =>
       goldMod != 0 ||
       alignmentMod != 0 ||
+      healAmount != 0 ||
       flagsToAdd.isNotEmpty ||
       (questIDToProgress != null && questIDToProgress!.isNotEmpty);
 }

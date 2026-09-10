@@ -207,6 +207,7 @@ class _ChoiceButton extends ConsumerWidget {
                 ref.read(playerSessionProvider.notifier).applyChoiceEffects(
                       goldMod: choice.goldMod,
                       alignmentMod: choice.alignmentMod,
+                      healAmount: choice.healAmount,
                       flagsToAdd: choice.flagsToAdd,
                       questIDToProgress: choice.questIDToProgress,
                     );

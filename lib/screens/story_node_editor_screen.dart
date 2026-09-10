@@ -201,6 +201,7 @@ class _ChoiceEditState {
         nextId = choice.nextId,
         goldModController = TextEditingController(text: choice.goldMod.toString()),
         alignmentModController = TextEditingController(text: choice.alignmentMod.toString()),
+        healAmountController = TextEditingController(text: choice.healAmount.toString()),
         flagsToAddController = TextEditingController(text: choice.flagsToAdd.join(', ')),
         questIDToProgressController = TextEditingController(text: choice.questIDToProgress ?? ''),
         lockedTextController = TextEditingController(text: choice.lockedText ?? ''),
@@ -216,6 +217,7 @@ class _ChoiceEditState {
   String nextId;
   final TextEditingController goldModController;
   final TextEditingController alignmentModController;
+  final TextEditingController healAmountController;
   final TextEditingController flagsToAddController;
   final TextEditingController questIDToProgressController;
   final TextEditingController lockedTextController;
@@ -229,6 +231,7 @@ class _ChoiceEditState {
     textFrController.dispose();
     goldModController.dispose();
     alignmentModController.dispose();
+    healAmountController.dispose();
     flagsToAddController.dispose();
     questIDToProgressController.dispose();
     lockedTextController.dispose();
@@ -243,6 +246,7 @@ class _ChoiceEditState {
         nextId: nextId,
         goldMod: int.tryParse(goldModController.text.trim()) ?? 0,
         alignmentMod: int.tryParse(alignmentModController.text.trim()) ?? 0,
+        healAmount: int.tryParse(healAmountController.text.trim()) ?? 0,
         flagsToAdd: flagsToAddController.text
             .split(',')
             .map((s) => s.trim())
@@ -351,6 +355,13 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   keyboardType: const TextInputType.numberWithOptions(signed: true),
                   decoration:
                       const InputDecoration(labelText: 'Alignment mod', border: OutlineInputBorder()),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.healAmountController,
+                  keyboardType: const TextInputType.numberWithOptions(signed: true),
+                  decoration:
+                      const InputDecoration(labelText: 'Heal amount', border: OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(

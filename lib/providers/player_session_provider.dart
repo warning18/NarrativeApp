@@ -407,6 +407,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
+    int healAmount = 0,
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
   }) async {
@@ -419,9 +420,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
     }
     final newGoldRaw = state.gold + goldMod;
+    final newHealthRaw = state.currentHealth + healAmount;
     state = state.copyWith(
       gold: newGoldRaw < 0 ? 0 : newGoldRaw,
       alignmentScore: state.alignmentScore + alignmentMod,
+      currentHealth: newHealthRaw > state.maxHealth ? state.maxHealth : newHealthRaw,
       flags: newFlags,
       activeQuestIds: newActiveQuests,
     );
