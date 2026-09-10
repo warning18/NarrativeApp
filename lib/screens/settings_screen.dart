@@ -9,6 +9,7 @@ import '../providers/combat_settings_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/palette_provider.dart';
 import '../providers/settings_providers.dart';
+import '../providers/update_checker.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -20,6 +21,9 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late final TextEditingController _controller;
   bool _obscure = true;
+  bool _checkingUpdate = false;
+  bool _downloading = false;
+  double? _downloadProgress;
 
   @override
   void initState() {
@@ -178,6 +182,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
+              tr(ref, 'updates_section'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${tr(ref, 'current_version_label')}: ${AppInfo.version}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: (_checkingUpdate || _downloading) ? null : _checkForUpdates,
+              icon: _checkingUpdate
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.system_update),
+              label: Text(
+                _checkingUpdate
+                    ? tr(ref, 'checking_for_updates')
+                    : tr(ref, 'check_for_updates_button'),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
               tr(ref, 'gemini_api_key_title'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -254,6 +284,107 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return 'palette_autumn_meadow';
       case AppPalette.duskHorizon:
         return 'palette_dusk_horizon';
+    }
+  }
+
+  Future<void> _checkForUpdates() async {
+    setState(() => _checkingUpdate = true);
+    final lang = ref.read(appLanguageProvider);
+    UpdateInfo? info;
+    var failed = false;
+    try {
+      info = await checkForUpdate();
+    } catch (_) {
+      failed = true;
+    }
+    if (!mounted) return;
+    setState(() => _checkingUpdate = false);
+
+    if (failed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'update_check_failed'))),
+      );
+      return;
+    }
+    if (info == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'up_to_date_message'))),
+      );
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(trFor(lang, 'update_available_title')),
+        content: Text(
+          '${trFor(lang, 'update_available_prefix')} ${info!.version} '
+          '${trFor(lang, 'update_available_suffix')}',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(trFor(lang, 'cancel')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(trFor(lang, 'download_install_button')),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await _downloadAndInstall(info);
+    }
+  }
+
+  Future<void> _downloadAndInstall(UpdateInfo info) async {
+    final lang = ref.read(appLanguageProvider);
+    setState(() {
+      _downloading = true;
+      _downloadProgress = null;
+    });
+
+    if (!mounted) return;
+    StateSetter? dialogSetState;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          dialogSetState = setDialogState;
+          return AlertDialog(
+            title: Text(trFor(lang, 'downloading_label')),
+            content: LinearProgressIndicator(value: _downloadProgress),
+          );
+        },
+      ),
+    );
+
+    try {
+      final path = await downloadApk(
+        info.downloadUrl,
+        onProgress: (p) {
+          _downloadProgress = p;
+          dialogSetState?.call(() {});
+        },
+      );
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      await installApk(path);
+    } catch (_) {
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'download_failed'))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _downloading = false;
+          _downloadProgress = null;
+        });
+      }
     }
   }
 }

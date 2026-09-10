@@ -523,6 +523,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
   'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L'ennemi"},
+  'updates_section': {AppLanguage.en: 'Updates', AppLanguage.fr: 'Mises à jour'},
+  'current_version_label': {
+    AppLanguage.en: 'Current version',
+    AppLanguage.fr: 'Version actuelle',
+  },
+  'check_for_updates_button': {
+    AppLanguage.en: 'Check for Updates',
+    AppLanguage.fr: 'Rechercher des mises à jour',
+  },
+  'checking_for_updates': {AppLanguage.en: 'Checking…', AppLanguage.fr: 'Recherche en cours…'},
+  'up_to_date_message': {AppLanguage.en: "You're up to date.", AppLanguage.fr: 'Vous êtes à jour.'},
+  'update_check_failed': {
+    AppLanguage.en: 'Could not check for updates. Try again later.',
+    AppLanguage.fr: 'Impossible de vérifier les mises à jour. Réessayez plus tard.',
+  },
+  'update_available_title': {
+    AppLanguage.en: 'Update available',
+    AppLanguage.fr: 'Mise à jour disponible',
+  },
+  'update_available_prefix': {AppLanguage.en: 'Version', AppLanguage.fr: 'La version'},
+  'update_available_suffix': {
+    AppLanguage.en: 'is available. Download and install it now?',
+    AppLanguage.fr: "est disponible. La télécharger et l'installer maintenant ?",
+  },
+  'download_install_button': {
+    AppLanguage.en: 'Download & Install',
+    AppLanguage.fr: 'Télécharger et installer',
+  },
+  'downloading_label': {AppLanguage.en: 'Downloading…', AppLanguage.fr: 'Téléchargement…'},
+  'download_failed': {
+    AppLanguage.en: 'Download failed. Try again later.',
+    AppLanguage.fr: 'Échec du téléchargement. Réessayez plus tard.',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
