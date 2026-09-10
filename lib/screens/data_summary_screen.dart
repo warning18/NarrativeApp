@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_spine.dart';
+import '../gamedata/balance_validation.dart';
 import '../gamedata/db_schema.dart';
 import '../gamedata/quest_validation.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 
 class DataSummaryScreen extends ConsumerWidget {
@@ -36,6 +38,14 @@ class DataSummaryScreen extends ConsumerWidget {
     final questIssues = quests != null ? validateQuestChapters(quests).length : 0;
     final visualCoverage = visualTotal == 0 ? 0.0 : visualFilled / visualTotal;
     final colorScheme = Theme.of(context).colorScheme;
+
+    final story = ref.watch(storyDataProvider).value;
+    final skills = recordsBySchema[skillsSchema];
+    final shops = recordsBySchema[shopsSchema];
+    final enemies = recordsBySchema[enemiesSchema];
+    final balanceIssues = (story != null && skills != null && shops != null && enemies != null)
+        ? validateBalance(story: story, skills: skills, shops: shops, enemies: enemies)
+        : null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Data Summary')),
@@ -72,8 +82,49 @@ class DataSummaryScreen extends ConsumerWidget {
                 value: '$questIssues',
                 warning: questIssues > 0,
               ),
+              _KpiCard(
+                icon: balanceIssues == null
+                    ? Icons.hourglass_empty
+                    : balanceIssues.isEmpty
+                        ? Icons.check_circle_outline
+                        : Icons.error_outline,
+                label: 'Reachability Issues',
+                value: balanceIssues == null ? '…' : '${balanceIssues.length}',
+                warning: (balanceIssues?.isNotEmpty ?? false),
+              ),
             ],
           ),
+          if (balanceIssues != null && balanceIssues.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Text('Reachability & Balance', style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 4),
+            Text(
+              'Mandatory fights with no shop access first, dead-end skill chains, '
+              'and story requirements that can never be satisfied.',
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              color: colorScheme.errorContainer,
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: balanceIssues
+                      .map(
+                        (issue) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(
+                            '• $issue',
+                            style: TextStyle(color: colorScheme.onErrorContainer),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: 20),
           Text('Collections', style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 4),
