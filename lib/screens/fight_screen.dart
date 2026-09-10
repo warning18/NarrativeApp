@@ -135,7 +135,12 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
       }
     }
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
-    final result = resolvePlayerFace(face, _availableSkills(skills), totalDamage);
+    final result = resolvePlayerFace(
+      face,
+      _availableSkills(skills),
+      totalDamage,
+      language: ref.read(appLanguageProvider),
+    );
 
     setState(() {
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
@@ -159,6 +164,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
       enemyCurrentHealth: _enemyHealth,
       enemyMaxHealth: _enemyMaxHealth,
       random: _random,
+      language: ref.read(appLanguageProvider),
     );
     final session = ref.read(playerSessionProvider);
     final totalArmor = session.baseArmor + _equipmentArmorBonus(items);
