@@ -100,6 +100,7 @@ class _GraphView extends ConsumerStatefulWidget {
 
 class _GraphViewState extends ConsumerState<_GraphView> {
   final Set<_NodeKind> _hiddenKinds = {};
+  bool _legendVisible = true;
 
   void _toggleKind(_NodeKind kind) {
     setState(() {
@@ -220,11 +221,16 @@ class _GraphViewState extends ConsumerState<_GraphView> {
         Positioned(
           left: 12,
           top: 12,
-          child: _Legend(
-            styles: styles,
-            hiddenKinds: _hiddenKinds,
-            onToggle: _toggleKind,
-          ),
+          child: _legendVisible
+              ? _Legend(
+                  styles: styles,
+                  hiddenKinds: _hiddenKinds,
+                  onToggle: _toggleKind,
+                  onClose: () => setState(() => _legendVisible = false),
+                )
+              : _LegendReopenButton(
+                  onTap: () => setState(() => _legendVisible = true),
+                ),
         ),
       ],
     );
@@ -272,12 +278,44 @@ class _NodeTapAreaState extends State<_NodeTapArea> {
   }
 }
 
+class _LegendReopenButton extends ConsumerWidget {
+  const _LegendReopenButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: tr(ref, 'show_legend'),
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 3,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: const Padding(
+            padding: EdgeInsets.all(10),
+            child: Icon(Icons.info_outline),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _Legend extends ConsumerWidget {
-  const _Legend({required this.styles, required this.hiddenKinds, required this.onToggle});
+  const _Legend({
+    required this.styles,
+    required this.hiddenKinds,
+    required this.onToggle,
+    required this.onClose,
+  });
 
   final Map<_NodeKind, _NodeStyle> styles;
   final Set<_NodeKind> hiddenKinds;
   final ValueChanged<_NodeKind> onToggle;
+  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -290,7 +328,19 @@ class _Legend extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
+            Row(
+              children: [
+                Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
+                const SizedBox(width: 12),
+                InkWell(
+                  onTap: onClose,
+                  child: Tooltip(
+                    message: tr(ref, 'close_legend'),
+                    child: Icon(Icons.close, size: 16, color: colorScheme.outline),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 6),
             ...styles.entries.map((entry) {
               final hidden = hiddenKinds.contains(entry.key);

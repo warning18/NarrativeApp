@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app_info.dart';
+import '../data/map_themes.dart';
 import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
+import '../providers/map_theme_provider.dart';
 import '../providers/settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -31,10 +34,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
+    final mapTheme = ref.watch(mapThemeProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,6 +62,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               selected: {language},
               onSelectionChanged: (selection) {
                 ref.read(appLanguageProvider.notifier).setLanguage(selection.first);
+              },
+            ),
+            const SizedBox(height: 24),
+            Text(
+              tr(ref, 'map_theme_section'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'map_theme_description'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            DropdownButtonFormField<MapTheme>(
+              value: mapTheme,
+              decoration: const InputDecoration(border: OutlineInputBorder()),
+              items: MapTheme.values
+                  .map(
+                    (theme) => DropdownMenuItem(
+                      value: theme,
+                      child: Text(tr(ref, mapThemeLabelKey(theme))),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (value) {
+                if (value != null) ref.read(mapThemeProvider.notifier).setTheme(value);
               },
             ),
             const SizedBox(height: 24),
@@ -115,7 +145,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ),
               ],
             ),
-            const Spacer(),
+            const SizedBox(height: 32),
             Center(
               child: Text(
                 AppInfo.displayName,
