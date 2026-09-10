@@ -83,8 +83,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'requirements': {AppLanguage.en: 'Requirements to view this node', AppLanguage.fr: 'Conditions pour voir ce nœud'},
   'required_gold': {AppLanguage.en: 'Required gold', AppLanguage.fr: "Or requis"},
   'required_alignment': {
-    AppLanguage.en: 'Required alignment score',
-    AppLanguage.fr: "Score d'alignement requis",
+    AppLanguage.en: 'Required alignment score (minimum)',
+    AppLanguage.fr: "Score d'alignement requis (minimum)",
+  },
+  'required_alignment_max': {
+    AppLanguage.en: 'Required alignment score (maximum)',
+    AppLanguage.fr: "Score d'alignement requis (maximum)",
   },
   'required_flags': {
     AppLanguage.en: 'Required flags (comma-separated)',
@@ -134,8 +138,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'unlock_shop_id': {AppLanguage.en: 'Unlock shop ID', AppLanguage.fr: 'ID de boutique débloquée'},
   'unlock_quest_id': {AppLanguage.en: 'Unlock quest ID', AppLanguage.fr: 'ID de quête débloquée'},
   'locked_text': {
-    AppLanguage.en: 'Locked text (shown when requirements unmet)',
-    AppLanguage.fr: 'Texte verrouillé (affiché si conditions non remplies)',
+    AppLanguage.en: 'Locked text (English, shown when requirements unmet)',
+    AppLanguage.fr: 'Texte verrouillé (anglais, affiché si conditions non remplies)',
+  },
+  'locked_text_fr': {
+    AppLanguage.en: 'Locked text (French)',
+    AppLanguage.fr: 'Texte verrouillé (français)',
   },
   'opens_character_creation': {
     AppLanguage.en: 'Opens character creation',

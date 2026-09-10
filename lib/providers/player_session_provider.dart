@@ -88,10 +88,12 @@ class PlayerSession {
   bool meetsRequirements({
     int reqGold = 0,
     int? reqAlignmentScore,
+    int? reqAlignmentMax,
     List<String> reqFlags = const [],
   }) {
     if (gold < reqGold) return false;
     if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore) return false;
+    if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax) return false;
     for (final flag in reqFlags) {
       if (!flags.contains(flag)) return false;
     }

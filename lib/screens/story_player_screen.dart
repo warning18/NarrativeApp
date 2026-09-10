@@ -160,12 +160,12 @@ class _ChoiceButton extends ConsumerWidget {
         !session.meetsRequirements(
           reqGold: targetNode.reqGold,
           reqAlignmentScore: targetNode.reqAlignmentScore,
+          reqAlignmentMax: targetNode.reqAlignmentMax,
           reqFlags: targetNode.reqFlags,
         );
 
-    final label = locked && (choice.lockedText?.isNotEmpty ?? false)
-        ? choice.lockedText!
-        : choice.textFor(french);
+    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final label = (lockedLabel?.isNotEmpty ?? false) ? lockedLabel! : choice.textFor(french);
 
     if (choice.triggersCombat) {
       // Keep the enemies database warm so it's ready by the time this
