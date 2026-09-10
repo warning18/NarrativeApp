@@ -1,7 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Lets the in-app updater (Settings > Check for Updates) launch the
+         system installer on the APK it downloads from a GitHub Release. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <application
-        android:label="Narrative Data App v1.20.1"
+        android:label="Narrative Data App v1.21.0"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
