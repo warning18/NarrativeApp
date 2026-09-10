@@ -241,7 +241,7 @@ class _FightScreenState extends ConsumerState<FightScreen> {
         _selectedDiceId != null ? dice[_selectedDiceId] as Map<String, dynamic>? : null;
     final faceCount = (equippedDie?['faces'] as List?)?.length ?? 0;
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

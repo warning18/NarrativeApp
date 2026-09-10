@@ -110,6 +110,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 labelText: 'API key',
                 suffixIcon: IconButton(
                   icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                  tooltip: _obscure ? 'Show API key' : 'Hide API key',
                   onPressed: () => setState(() => _obscure = !_obscure),
                 ),
               ),

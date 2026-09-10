@@ -175,8 +175,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                             subtitle: subtitleValue.isNotEmpty ? Text(subtitleValue) : null,
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
-                              onPressed: () =>
-                                  ref.read(gameDbProvider(schema).notifier).deleteRecord(key),
+                              tooltip: 'Delete',
+                              onPressed: () => _confirmDelete(context, ref, key),
                             ),
                             onTap: () {
                               Navigator.of(context).push(
@@ -227,6 +227,29 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('JSON copied to clipboard.')),
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, String key) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete this entry?'),
+        content: Text('This permanently removes "$key" from ${schema.label}.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(gameDbProvider(schema).notifier).deleteRecord(key);
+    }
   }
 
   Future<void> _confirmReset(BuildContext context, WidgetRef ref) async {
@@ -294,6 +317,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
         ],
       ),
     );
+    controller.dispose();
     if (imported != null) {
       await ref.read(gameDbProvider(schema).notifier).replaceAll(imported);
     }

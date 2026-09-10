@@ -347,65 +347,65 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                 TextField(
                   controller: state.goldModController,
                   keyboardType: const TextInputType.numberWithOptions(signed: true),
-                  decoration: const InputDecoration(labelText: 'Gold mod', border: OutlineInputBorder()),
+                  decoration: InputDecoration(labelText: t('gold_mod'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.alignmentModController,
                   keyboardType: const TextInputType.numberWithOptions(signed: true),
                   decoration:
-                      const InputDecoration(labelText: 'Alignment mod', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('alignment_mod'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.healAmountController,
                   keyboardType: const TextInputType.numberWithOptions(signed: true),
                   decoration:
-                      const InputDecoration(labelText: 'Heal amount', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('heal_amount'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.flagsToAddController,
-                  decoration: const InputDecoration(
-                    labelText: 'Flags to add (comma-separated)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: t('flags_to_add'),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.questIDToProgressController,
                   decoration:
-                      const InputDecoration(labelText: 'Quest ID to progress', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('quest_id_to_progress'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.triggerEnemyIdController,
                   decoration:
-                      const InputDecoration(labelText: 'Trigger enemy ID', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('trigger_enemy_id'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.unlockShopIdController,
                   decoration:
-                      const InputDecoration(labelText: 'Unlock shop ID', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('unlock_shop_id'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.unlockQuestIdController,
                   decoration:
-                      const InputDecoration(labelText: 'Unlock quest ID', border: OutlineInputBorder()),
+                      InputDecoration(labelText: t('unlock_quest_id'), border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),
                 TextField(
                   controller: state.lockedTextController,
-                  decoration: const InputDecoration(
-                    labelText: 'Locked text (shown when requirements unmet)',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: t('locked_text'),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Opens character creation'),
+                  title: Text(t('opens_character_creation')),
                   value: state.opensCharacterCreation,
                   onChanged: (value) => setState(() => state.opensCharacterCreation = value),
                 ),
