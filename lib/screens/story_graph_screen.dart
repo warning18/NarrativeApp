@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
@@ -101,24 +99,13 @@ class _GraphView extends ConsumerStatefulWidget {
 }
 
 class _GraphViewState extends ConsumerState<_GraphView> {
-  final TransformationController _transformationController = TransformationController();
-  static const double _panStep = 140;
+  final Set<_NodeKind> _hiddenKinds = {};
 
-  @override
-  void dispose() {
-    _transformationController.dispose();
-    super.dispose();
+  void _toggleKind(_NodeKind kind) {
+    setState(() {
+      if (!_hiddenKinds.remove(kind)) _hiddenKinds.add(kind);
+    });
   }
-
-  void _pan(double dx, double dy) {
-    final scale = _transformationController.value.getMaxScaleOnAxis();
-    final matrix = _transformationController.value.clone()..translate(dx / scale, dy / scale);
-    _transformationController.value = matrix;
-  }
-
-  void _panUp() => _pan(0, _panStep);
-
-  void _panDown() => _pan(0, -_panStep);
 
   @override
   Widget build(BuildContext context) {
@@ -157,7 +144,6 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     return Stack(
       children: [
         InteractiveViewer(
-          transformationController: _transformationController,
           constrained: false,
           boundaryMargin: const EdgeInsets.all(200),
           minScale: 0.1,
@@ -178,42 +164,54 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                 final kind = storyNode != null ? _classify(storyNode) : _NodeKind.generic;
                 final style = styles[kind]!;
                 final isMainBeat = isMainBeatNode(id);
+                final hidden = _hiddenKinds.contains(kind);
 
-                return GestureDetector(
+                final container = Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isCurrent ? colorScheme.primary : style.color,
+                    borderRadius: BorderRadius.circular(style.radius),
+                    border: Border.all(
+                      color: isMainBeat ? colorScheme.primary : colorScheme.outline,
+                      width: isMainBeat ? 3 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        style.icon,
+                        size: 14,
+                        color: isCurrent ? colorScheme.onPrimary : Colors.black87,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        id,
+                        style: TextStyle(
+                          color: isCurrent ? colorScheme.onPrimary : Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (hidden) {
+                  return Opacity(opacity: 0.18, child: IgnorePointer(child: container));
+                }
+
+                // A plain GestureDetector's tap recognizer competes with
+                // InteractiveViewer's pan/scale recognizer in the gesture
+                // arena, which can eat one-finger drags that start on a
+                // node. Listener never joins the arena, so panning always
+                // wins immediately; tap is detected manually instead.
+                return _NodeTapArea(
                   onTap: () {
                     if (storyNode != null) {
                       _showNodeInfo(context, ref, storyNode, style);
                     }
                   },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isCurrent ? colorScheme.primary : style.color,
-                      borderRadius: BorderRadius.circular(style.radius),
-                      border: Border.all(
-                        color: isMainBeat ? colorScheme.primary : colorScheme.outline,
-                        width: isMainBeat ? 3 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          style.icon,
-                          size: 14,
-                          color: isCurrent ? colorScheme.onPrimary : Colors.black87,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          id,
-                          style: TextStyle(
-                            color: isCurrent ? colorScheme.onPrimary : Colors.black87,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  child: container,
                 );
               },
             ),
@@ -222,22 +220,10 @@ class _GraphViewState extends ConsumerState<_GraphView> {
         Positioned(
           left: 12,
           top: 12,
-          child: _Legend(styles: styles),
-        ),
-        Positioned(
-          right: 12,
-          bottom: 24,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _PanButton(icon: Icons.keyboard_arrow_up, tooltip: tr(ref, 'pan_up'), onStep: _panUp),
-              const SizedBox(height: 10),
-              _PanButton(
-                icon: Icons.keyboard_arrow_down,
-                tooltip: tr(ref, 'pan_down'),
-                onStep: _panDown,
-              ),
-            ],
+          child: _Legend(
+            styles: styles,
+            hiddenKinds: _hiddenKinds,
+            onToggle: _toggleKind,
           ),
         ),
       ],
@@ -245,63 +231,53 @@ class _GraphViewState extends ConsumerState<_GraphView> {
   }
 }
 
-class _PanButton extends StatefulWidget {
-  const _PanButton({required this.icon, required this.tooltip, required this.onStep});
+/// Detects a tap using raw pointer events instead of a [GestureDetector],
+/// so it never competes with the enclosing [InteractiveViewer] for the
+/// gesture arena — one-finger drag-to-pan always starts immediately, even
+/// when the drag begins on top of a node.
+class _NodeTapArea extends StatefulWidget {
+  const _NodeTapArea({required this.onTap, required this.child});
 
-  final IconData icon;
-  final String tooltip;
-  final VoidCallback onStep;
+  final VoidCallback onTap;
+  final Widget child;
 
   @override
-  State<_PanButton> createState() => _PanButtonState();
+  State<_NodeTapArea> createState() => _NodeTapAreaState();
 }
 
-class _PanButtonState extends State<_PanButton> {
-  Timer? _repeatTimer;
+class _NodeTapAreaState extends State<_NodeTapArea> {
+  static const double _tapSlop = 12;
+  static const Duration _tapTimeout = Duration(milliseconds: 400);
 
-  void _start() {
-    widget.onStep();
-    _repeatTimer?.cancel();
-    _repeatTimer = Timer.periodic(const Duration(milliseconds: 90), (_) => widget.onStep());
-  }
-
-  void _stop() {
-    _repeatTimer?.cancel();
-    _repeatTimer = null;
-  }
-
-  @override
-  void dispose() {
-    _repeatTimer?.cancel();
-    super.dispose();
-  }
+  Offset? _downPosition;
+  DateTime? _downTime;
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: widget.tooltip,
-      child: GestureDetector(
-        onTapDown: (_) => _start(),
-        onTapUp: (_) => _stop(),
-        onTapCancel: _stop,
-        child: Material(
-          color: Theme.of(context).colorScheme.surface,
-          shape: const CircleBorder(),
-          elevation: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Icon(widget.icon),
-          ),
-        ),
-      ),
+    return Listener(
+      onPointerDown: (event) {
+        _downPosition = event.position;
+        _downTime = DateTime.now();
+      },
+      onPointerUp: (event) {
+        final downPosition = _downPosition;
+        final downTime = _downTime;
+        if (downPosition == null || downTime == null) return;
+        final movedFar = (event.position - downPosition).distance > _tapSlop;
+        final tookTooLong = DateTime.now().difference(downTime) > _tapTimeout;
+        if (!movedFar && !tookTooLong) widget.onTap();
+      },
+      child: widget.child,
     );
   }
 }
 
 class _Legend extends ConsumerWidget {
-  const _Legend({required this.styles});
+  const _Legend({required this.styles, required this.hiddenKinds, required this.onToggle});
 
   final Map<_NodeKind, _NodeStyle> styles;
+  final Set<_NodeKind> hiddenKinds;
+  final ValueChanged<_NodeKind> onToggle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -316,29 +292,38 @@ class _Legend extends ConsumerWidget {
           children: [
             Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
-            ...styles.entries.map(
-              (entry) => Padding(
-                padding: const EdgeInsets.only(bottom: 3),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 14,
-                      height: 14,
-                      decoration: BoxDecoration(
-                        color: entry.value.color,
-                        borderRadius: BorderRadius.circular(entry.value.radius / 2),
-                      ),
+            ...styles.entries.map((entry) {
+              final hidden = hiddenKinds.contains(entry.key);
+              return InkWell(
+                onTap: () => onToggle(entry.key),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 3),
+                  child: Opacity(
+                    opacity: hidden ? 0.4 : 1.0,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: entry.value.color,
+                            borderRadius: BorderRadius.circular(entry.value.radius / 2),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          tr(ref, _nodeKindLabelKey(entry.key)),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                decoration: hidden ? TextDecoration.lineThrough : null,
+                              ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      tr(ref, _nodeKindLabelKey(entry.key)),
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
             const SizedBox(height: 4),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -354,6 +339,11 @@ class _Legend extends ConsumerWidget {
                 const SizedBox(width: 6),
                 Text(tr(ref, 'main_story_beat'), style: Theme.of(context).textTheme.bodySmall),
               ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              tr(ref, 'tap_to_filter'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
             ),
           ],
         ),

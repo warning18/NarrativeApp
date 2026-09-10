@@ -11,6 +11,25 @@ final storyDataProvider = FutureProvider<StoryData>((ref) {
   return ref.watch(storyRepositoryProvider).load();
 });
 
+/// Persists [updated] as the new version of its node (identified by
+/// [StoryNode.id]) and reloads [storyDataProvider] so every screen picks up
+/// the change immediately.
+Future<void> saveStoryNode(WidgetRef ref, StoryNode updated) async {
+  final story = await ref.read(storyDataProvider.future);
+  final rawNodes = <String, dynamic>{
+    for (final entry in story.nodes.entries)
+      entry.key: (entry.key == updated.id ? updated : entry.value).toJson(),
+  };
+  await ref.read(storyRepositoryProvider).saveNodes(rawNodes);
+  ref.invalidate(storyDataProvider);
+}
+
+/// Discards all story edits and reverts to the bundled narrative data.
+Future<void> resetStoryToDefaults(WidgetRef ref) async {
+  await ref.read(storyRepositoryProvider).resetToDefaults();
+  ref.invalidate(storyDataProvider);
+}
+
 class StoryPlayState {
   const StoryPlayState({
     required this.currentNodeId,
