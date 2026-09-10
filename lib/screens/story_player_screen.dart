@@ -11,11 +11,13 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
+import 'story_node_editor_screen.dart';
 
 class StoryPlayerScreen extends ConsumerWidget {
   const StoryPlayerScreen({super.key});
@@ -80,6 +82,21 @@ class _StoryView extends ConsumerWidget {
                   playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
+                if (!playState.isInExcursion) ...[
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: const Icon(Icons.edit_outlined, size: 18),
+                    tooltip: tr(ref, 'edit_node'),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => StoryNodeEditorScreen(node: node),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: 8),
@@ -226,6 +243,7 @@ class _ChoiceButton extends ConsumerWidget {
                   unlockedShopIds: session.unlockedShopIds,
                   unlockedEnemyIds: session.unlockedEnemyIds,
                   unlockedQuestIds: session.unlockedQuestIds,
+                  theme: ref.read(mapThemeProvider),
                 );
                 if (excursion != null) {
                   playNotifier.startExcursion(excursion, choice.nextId);

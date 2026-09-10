@@ -98,6 +98,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'cancel': {AppLanguage.en: 'Cancel', AppLanguage.fr: 'Annuler'},
   'reset': {AppLanguage.en: 'Reset', AppLanguage.fr: 'Réinitialiser'},
+  'close_legend': {AppLanguage.en: 'Close legend', AppLanguage.fr: 'Fermer la légende'},
+  'show_legend': {AppLanguage.en: 'Show legend', AppLanguage.fr: 'Afficher la légende'},
+  'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
+  'map_theme_description': {
+    AppLanguage.en:
+        'The 5 main beats per chapter never change. This picks the flavor of the random '
+        'encounters, shops, and quests generated between them.',
+    AppLanguage.fr:
+        'Les 5 étapes principales de chaque chapitre ne changent jamais. Ceci choisit '
+        "l'ambiance des rencontres, boutiques et quêtes générées entre elles.",
+  },
+  'map_theme_ashen_streets': {
+    AppLanguage.en: 'Ashen Streets',
+    AppLanguage.fr: 'Rues de Cendre',
+  },
+  'map_theme_salt_roads': {AppLanguage.en: 'Salt Roads', AppLanguage.fr: 'Routes du Sel'},
+  'map_theme_hollow_reaches': {
+    AppLanguage.en: 'Hollow Reaches',
+    AppLanguage.fr: 'Étendues Creuses',
+  },
+  'map_theme_wilds_beyond': {AppLanguage.en: 'Wilds Beyond', AppLanguage.fr: 'Terres Sauvages'},
 };
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —
