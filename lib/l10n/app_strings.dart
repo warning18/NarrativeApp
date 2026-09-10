@@ -62,8 +62,42 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'jump_to_node': {AppLanguage.en: 'Jump to this node', AppLanguage.fr: 'Aller à ce nœud'},
   'end_label': {AppLanguage.en: 'End', AppLanguage.fr: 'Fin'},
-  'pan_up': {AppLanguage.en: 'Pan up', AppLanguage.fr: 'Déplacer vers le haut'},
-  'pan_down': {AppLanguage.en: 'Pan down', AppLanguage.fr: 'Déplacer vers le bas'},
+  'tap_to_filter': {
+    AppLanguage.en: 'Tap a legend row to hide/show that node type',
+    AppLanguage.fr: "Touchez une ligne pour afficher/masquer ce type de nœud",
+  },
+  'edit_node': {AppLanguage.en: 'Edit node', AppLanguage.fr: 'Modifier le nœud'},
+  'save': {AppLanguage.en: 'Save', AppLanguage.fr: 'Enregistrer'},
+  'description_en': {AppLanguage.en: 'Description (English)', AppLanguage.fr: 'Description (anglais)'},
+  'description_fr_label': {
+    AppLanguage.en: 'Description (French)',
+    AppLanguage.fr: 'Description (français)',
+  },
+  'choice_n': {AppLanguage.en: 'Choice', AppLanguage.fr: 'Choix'},
+  'choice_text_en': {AppLanguage.en: 'Choice text (English)', AppLanguage.fr: 'Texte du choix (anglais)'},
+  'choice_text_fr': {AppLanguage.en: 'Choice text (French)', AppLanguage.fr: 'Texte du choix (français)'},
+  'destination_node': {AppLanguage.en: 'Destination node', AppLanguage.fr: 'Nœud de destination'},
+  'add_choice': {AppLanguage.en: 'Add choice', AppLanguage.fr: 'Ajouter un choix'},
+  'remove_choice': {AppLanguage.en: 'Remove choice', AppLanguage.fr: 'Supprimer le choix'},
+  'advanced_options': {AppLanguage.en: 'Advanced options', AppLanguage.fr: 'Options avancées'},
+  'requirements': {AppLanguage.en: 'Requirements to view this node', AppLanguage.fr: 'Conditions pour voir ce nœud'},
+  'required_gold': {AppLanguage.en: 'Required gold', AppLanguage.fr: "Or requis"},
+  'required_alignment': {
+    AppLanguage.en: 'Required alignment score',
+    AppLanguage.fr: "Score d'alignement requis",
+  },
+  'required_flags': {
+    AppLanguage.en: 'Required flags (comma-separated)',
+    AppLanguage.fr: 'Drapeaux requis (séparés par des virgules)',
+  },
+  'node_saved': {AppLanguage.en: 'Node saved.', AppLanguage.fr: 'Nœud enregistré.'},
+  'reset_story': {AppLanguage.en: 'Reset story to defaults', AppLanguage.fr: "Réinitialiser l'histoire"},
+  'reset_story_confirm': {
+    AppLanguage.en: 'This discards all edits to the story text and reloads the bundled version.',
+    AppLanguage.fr: "Ceci annule toutes les modifications du texte de l'histoire et recharge la version d'origine.",
+  },
+  'cancel': {AppLanguage.en: 'Cancel', AppLanguage.fr: 'Annuler'},
+  'reset': {AppLanguage.en: 'Reset', AppLanguage.fr: 'Réinitialiser'},
 };
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —

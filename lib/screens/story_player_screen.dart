@@ -85,10 +85,7 @@ class _StoryView extends ConsumerWidget {
             const SizedBox(height: 8),
             Expanded(
               child: SingleChildScrollView(
-                child: Text(
-                  node.descriptionFor(french),
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
+                child: _StoryText(text: node.descriptionFor(french)),
               ),
             ),
             const SizedBox(height: 16),
@@ -240,6 +237,70 @@ class _ChoiceButton extends ConsumerWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Text(label),
+      ),
+    );
+  }
+}
+
+/// Renders a story node's narrative text with a book-like presentation:
+/// a leading `[CHAPTER N: TITLE]`-style header (if present) is pulled out
+/// and styled as a centered heading with a divider, and the body gets
+/// generous spacing, justified alignment, and a soft parchment-like card.
+class _StoryText extends StatelessWidget {
+  const _StoryText({required this.text});
+
+  final String text;
+
+  static final RegExp _headerPattern = RegExp(r'^\[(.+?)\]\s*');
+
+  @override
+  Widget build(BuildContext context) {
+    final match = _headerPattern.firstMatch(text);
+    final header = match?.group(1);
+    final body = (match != null ? text.substring(match.end) : text).trim();
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.35),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (header != null && header.isNotEmpty) ...[
+            Text(
+              header.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.5,
+                    color: colorScheme.primary,
+                  ),
+            ),
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                width: 56,
+                height: 2,
+                color: colorScheme.primary.withOpacity(0.5),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+          Text(
+            body,
+            textAlign: TextAlign.justify,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  fontFamily: 'serif',
+                  height: 1.55,
+                  letterSpacing: 0.2,
+                ),
+          ),
+        ],
       ),
     );
   }

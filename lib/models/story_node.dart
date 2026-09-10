@@ -49,6 +49,22 @@ class StoryChoice {
 
   String textFor(bool french) => french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
 
+  Map<String, dynamic> toJson() => {
+        'text': text,
+        if (textFr != null && textFr!.isNotEmpty) 'text_fr': textFr,
+        'next_id': nextId,
+        if (goldMod != 0) 'goldMod': goldMod,
+        if (alignmentMod != 0) 'alignmentMod': alignmentMod,
+        if (flagsToAdd.isNotEmpty) 'flagsToAdd': flagsToAdd,
+        if (questIDToProgress != null && questIDToProgress!.isNotEmpty)
+          'questIDToProgress': questIDToProgress,
+        if (lockedText != null && lockedText!.isNotEmpty) 'lockedText': lockedText,
+        if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty) 'triggerEnemyId': triggerEnemyId,
+        if (unlockShopId != null && unlockShopId!.isNotEmpty) 'unlockShopId': unlockShopId,
+        if (unlockQuestId != null && unlockQuestId!.isNotEmpty) 'unlockQuestId': unlockQuestId,
+        if (opensCharacterCreation) 'opensCharacterCreation': opensCharacterCreation,
+      };
+
   bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
 
   bool get hasUnlocks =>
@@ -110,4 +126,13 @@ class StoryNode {
 
   bool get hasRequirements =>
       reqGold > 0 || reqAlignmentScore != null || reqFlags.isNotEmpty;
+
+  Map<String, dynamic> toJson() => {
+        'description': description,
+        if (descriptionFr != null && descriptionFr!.isNotEmpty) 'description_fr': descriptionFr,
+        if (reqGold != 0) 'reqGold': reqGold,
+        if (reqAlignmentScore != null) 'reqAlignmentScore': reqAlignmentScore,
+        if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
+        'choices': choices.map((c) => c.toJson()).toList(),
+      };
 }
