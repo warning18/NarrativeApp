@@ -69,11 +69,18 @@ class SubNodeEngine {
     final id = 'gen_$_counter';
 
     if (questId != null) {
+      final idx = random.nextInt(flavor.quest.length);
       return StoryNode(
         id: id,
-        description: _pick(random, flavor.quest),
+        description: flavor.quest[idx],
+        descriptionFr: flavor.questFr[idx],
         choices: [
-          StoryChoice(text: 'Take the job', nextId: id, unlockQuestId: questId),
+          StoryChoice(
+            text: 'Take the job',
+            textFr: 'Accepter le travail',
+            nextId: id,
+            unlockQuestId: questId,
+          ),
         ],
       );
     }
@@ -81,52 +88,74 @@ class SubNodeEngine {
     final roll = random.nextDouble();
     if (shopPool.isNotEmpty && roll < 0.25) {
       final shopId = shopPool[random.nextInt(shopPool.length)];
+      final idx = random.nextInt(flavor.shop.length);
       return StoryNode(
         id: id,
-        description: _pick(random, flavor.shop),
+        description: flavor.shop[idx],
+        descriptionFr: flavor.shopFr[idx],
         choices: [
-          StoryChoice(text: 'Take a look', nextId: id, unlockShopId: shopId),
+          StoryChoice(
+            text: 'Take a look',
+            textFr: 'Jeter un œil',
+            nextId: id,
+            unlockShopId: shopId,
+          ),
         ],
       );
     }
     if (enemyPool.isNotEmpty && roll < 0.5) {
       final enemyId = enemyPool[random.nextInt(enemyPool.length)];
+      final idx = random.nextInt(flavor.enemy.length);
       return StoryNode(
         id: id,
-        description: _pick(random, flavor.enemy),
+        description: flavor.enemy[idx],
+        descriptionFr: flavor.enemyFr[idx],
         choices: [
-          StoryChoice(text: 'Fight', nextId: id, triggerEnemyId: enemyId),
+          StoryChoice(
+            text: 'Fight',
+            textFr: 'Combattre',
+            nextId: id,
+            triggerEnemyId: enemyId,
+          ),
         ],
       );
     }
     if (roll < 0.65) {
       final goldFound = 5 + random.nextInt(16);
+      final idx = random.nextInt(flavor.treasure.length);
       return StoryNode(
         id: id,
-        description: _pick(random, flavor.treasure),
+        description: flavor.treasure[idx],
+        descriptionFr: flavor.treasureFr[idx],
         choices: [
-          StoryChoice(text: 'Take it ($goldFound gold)', nextId: id, goldMod: goldFound),
+          StoryChoice(
+            text: 'Take it ($goldFound gold)',
+            textFr: 'Le prendre ($goldFound or)',
+            nextId: id,
+            goldMod: goldFound,
+          ),
         ],
       );
     }
     if (roll < 0.8) {
+      final idx = random.nextInt(flavor.rest.length);
       return StoryNode(
         id: id,
-        description: _pick(random, flavor.rest),
+        description: flavor.rest[idx],
+        descriptionFr: flavor.restFr[idx],
         choices: const [
-          StoryChoice(text: 'Rest a while', nextId: '', healAmount: 20),
+          StoryChoice(text: 'Rest a while', textFr: 'Se reposer un moment', nextId: '', healAmount: 20),
         ],
       );
     }
+    final idx = random.nextInt(flavor.generic.length);
     return StoryNode(
       id: id,
-      description: _pick(random, flavor.generic),
+      description: flavor.generic[idx],
+      descriptionFr: flavor.genericFr[idx],
       choices: const [
-        StoryChoice(text: 'Move on', nextId: ''),
+        StoryChoice(text: 'Move on', textFr: 'Continuer', nextId: ''),
       ],
     );
   }
-
-  static String _pick(Random random, List<String> options) =>
-      options[random.nextInt(options.length)];
 }

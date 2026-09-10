@@ -505,6 +505,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Node activated — jumped to it in the story.',
     AppLanguage.fr: "Nœud activé — vous y avez été téléporté dans l'histoire.",
   },
+  'you_deal_prefix': {AppLanguage.en: 'you deal', AppLanguage.fr: 'vous infligez'},
+  'you_brace_prefix': {
+    AppLanguage.en: 'you brace for',
+    AppLanguage.fr: 'vous vous préparez à bloquer',
+  },
+  'block_word': {AppLanguage.en: 'block', AppLanguage.fr: 'blocage'},
+  'skill_fizzles': {
+    AppLanguage.en: 'The skill fizzles.',
+    AppLanguage.fr: 'La compétence échoue.',
+  },
+  'you_recover_prefix': {AppLanguage.en: 'you recover', AppLanguage.fr: 'vous récupérez'},
+  'miss_label': {AppLanguage.en: 'Miss', AppLanguage.fr: 'Raté'},
+  'nothing_happens': {
+    AppLanguage.en: 'nothing happens.',
+    AppLanguage.fr: 'il ne se passe rien.',
+  },
+  'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L'ennemi"},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
