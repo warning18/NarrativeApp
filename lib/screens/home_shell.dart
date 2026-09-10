@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/home_tab_provider.dart';
 import 'ai_generator_screen.dart';
 import 'game_data_home_screen.dart';
 import 'play_screen.dart';
@@ -18,8 +19,6 @@ class HomeShell extends ConsumerStatefulWidget {
 }
 
 class _HomeShellState extends ConsumerState<HomeShell> {
-  int _index = 0;
-
   static const List<Widget> _screens = [
     StoryPlayerScreen(),
     PlayScreen(),
@@ -38,10 +37,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       tr(ref, 'title_data'),
     ];
     final language = ref.watch(appLanguageProvider);
+    final index = ref.watch(homeTabIndexProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(titles[_index]),
+        title: Text(titles[index]),
         actions: [
           IconButton(
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
@@ -63,10 +63,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: IndexedStack(index: _index, children: _screens),
+      body: IndexedStack(index: index, children: _screens),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: _index,
-        onDestinationSelected: (i) => setState(() => _index = i),
+        selectedIndex: index,
+        onDestinationSelected: (i) => ref.read(homeTabIndexProvider.notifier).state = i,
         destinations: [
           NavigationDestination(icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
           NavigationDestination(

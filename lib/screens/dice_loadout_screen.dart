@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -23,15 +25,17 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     final session = ref.watch(playerSessionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Dice Loadout')),
+      appBar: AppBar(title: Text(tr(ref, 'dice_loadout'))),
       body: diceAsync.when(
         data: (dice) => skillsAsync.when(
           data: (skills) => _buildBody(context, dice, skills, session),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Failed to load skills: $error')),
+          error: (error, stack) =>
+              Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Failed to load dice: $error')),
+        error: (error, stack) =>
+            Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
       ),
     );
   }
@@ -44,7 +48,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   ) {
     final diceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
     if (diceIds.isEmpty) {
-      return const Center(child: Text('You don\'t own any dice yet — buy or find one first.'));
+      return Center(child: Text(tr(ref, 'own_no_dice')));
     }
     _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
@@ -68,7 +72,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           padding: const EdgeInsets.all(16),
           child: DropdownButtonFormField<String>(
             value: _selectedDiceId,
-            decoration: const InputDecoration(labelText: 'Die', border: OutlineInputBorder()),
+            decoration: InputDecoration(
+              labelText: tr(ref, 'die_label'),
+              border: const OutlineInputBorder(),
+            ),
             items: diceIds.map((id) => DropdownMenuItem(value: id, child: Text(id))).toList(),
             onChanged: (value) => setState(() => _selectedDiceId = value),
           ),
@@ -77,17 +84,17 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              Text('Skill Faces', style: Theme.of(context).textTheme.titleMedium),
+              Text(tr(ref, 'skill_faces_title'), style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(
-                'Drag a skill below onto a face to bind it for combat.',
+                tr(ref, 'drag_skill_hint'),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
               if (skillFaceIndexes.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text('This die has no Skill faces to customize.'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(tr(ref, 'no_skill_faces')),
                 )
               else
                 Wrap(
@@ -101,6 +108,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                       face: face,
                       assignedSkillId: assignedSkillId,
                       defaultSkillId: defaultSkillId,
+                      language: ref.watch(appLanguageProvider),
                       onAccept: (skillId) => ref
                           .read(playerSessionProvider.notifier)
                           .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
@@ -113,12 +121,12 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                   }).toList(),
                 ),
               const Divider(height: 40),
-              Text('Your Unlocked Skills', style: Theme.of(context).textTheme.titleMedium),
+              Text(tr(ref, 'your_unlocked_skills'), style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               if (unlockedSkillIds.isEmpty)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  child: Text('No skills unlocked yet — unlock some on the Skills screen.'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Text(tr(ref, 'no_skills_unlocked_hint')),
                 )
               else
                 Wrap(
@@ -167,6 +175,7 @@ class _FaceSlot extends StatelessWidget {
     required this.face,
     required this.assignedSkillId,
     required this.defaultSkillId,
+    required this.language,
     required this.onAccept,
     required this.onClear,
   });
@@ -174,12 +183,13 @@ class _FaceSlot extends StatelessWidget {
   final Map<String, dynamic> face;
   final String? assignedSkillId;
   final String defaultSkillId;
+  final AppLanguage language;
   final ValueChanged<String> onAccept;
   final VoidCallback? onClear;
 
   @override
   Widget build(BuildContext context) {
-    final faceName = face['faceName']?.toString() ?? 'Skill';
+    final faceName = face['faceName']?.toString() ?? trFor(language, 'skill_singular');
     final effectiveSkillId = assignedSkillId ?? (defaultSkillId.isNotEmpty ? defaultSkillId : null);
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -211,7 +221,7 @@ class _FaceSlot extends StatelessWidget {
                   if (onClear != null)
                     IconButton(
                       icon: const Icon(Icons.close, size: 16),
-                      tooltip: 'Clear assigned skill',
+                      tooltip: trFor(language, 'clear_assigned_skill_tooltip'),
                       visualDensity: VisualDensity.compact,
                       onPressed: onClear,
                     ),
@@ -219,14 +229,14 @@ class _FaceSlot extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                effectiveSkillId ?? 'Drop a skill here',
+                effectiveSkillId ?? trFor(language, 'drop_skill_here'),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontStyle: effectiveSkillId == null ? FontStyle.italic : FontStyle.normal,
                     ),
               ),
               if (assignedSkillId != null)
                 Text(
-                  'Custom',
+                  trFor(language, 'custom_label'),
                   style: Theme.of(context)
                       .textTheme
                       .labelSmall

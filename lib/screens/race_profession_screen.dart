@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -26,7 +28,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     _selectedProfessionId ??= session.professionId.isNotEmpty ? session.professionId : null;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Race & Profession')),
+      appBar: AppBar(title: Text(tr(ref, 'race_profession_title'))),
       body: racesAsync.when(
         data: (races) => professionsAsync.when(
           data: (professions) {
@@ -35,15 +37,18 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                 session: session,
                 race: races[session.raceId] as Map<String, dynamic>?,
                 profession: professions[session.professionId] as Map<String, dynamic>?,
+                language: ref.watch(appLanguageProvider),
               );
             }
             return _buildPicker(context, races, professions);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Failed to load professions: $error')),
+          error: (error, stack) =>
+              Center(child: Text('${tr(ref, 'failed_to_load_professions')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Failed to load races: $error')),
+        error: (error, stack) =>
+            Center(child: Text('${tr(ref, 'failed_to_load_races')}: $error')),
       ),
     );
   }
@@ -60,11 +65,11 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       padding: const EdgeInsets.all(16),
       children: [
         Text(
-          'Choose who you are. This sets your starting stats and starts a new game.',
+          tr(ref, 'choose_who_desc'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         const SizedBox(height: 16),
-        Text('Race', style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'race_label'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...raceIds.map((id) {
           final race = races[id] as Map<String, dynamic>;
@@ -78,7 +83,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           );
         }),
         const SizedBox(height: 24),
-        Text('Profession', style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'profession_label'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...professionIds.map((id) {
           final profession = professions[id] as Map<String, dynamic>;
@@ -101,7 +106,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                     professions[_selectedProfessionId!] as Map<String, dynamic>,
                   ),
           icon: const Icon(Icons.play_arrow),
-          label: const Text('Start New Game With This Character'),
+          label: Text(tr(ref, 'start_new_game_button')),
         ),
       ],
     );
@@ -114,11 +119,11 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
     final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
     final parts = <String>[
-      '${health >= 0 ? '+' : ''}$health HP',
-      '${damage >= 0 ? '+' : ''}$damage DMG',
-      '${armor >= 0 ? '+' : ''}$armor ARM',
-      '${gold >= 0 ? '+' : ''}$gold Gold',
-      if (showSkillPoints && skillPoints > 0) '+$skillPoints Skill Pt',
+      '${health >= 0 ? '+' : ''}$health ${tr(ref, 'hp_label')}',
+      '${damage >= 0 ? '+' : ''}$damage ${tr(ref, 'damage_label')}',
+      '${armor >= 0 ? '+' : ''}$armor ${tr(ref, 'arm_abbrev')}',
+      '${gold >= 0 ? '+' : ''}$gold ${tr(ref, 'gold_field_label')}',
+      if (showSkillPoints && skillPoints > 0) '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
     ];
     return parts.join(' · ');
   }
@@ -128,22 +133,23 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     Map<String, dynamic> race,
     Map<String, dynamic> profession,
   ) async {
+    final lang = ref.read(appLanguageProvider);
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Start new game?'),
+        title: Text(trFor(lang, 'start_new_game_dialog_title')),
         content: Text(
-          'This begins your journey as a ${race['raceName']} '
+          '${trFor(lang, 'start_new_game_dialog_prefix')} ${race['raceName']} '
           '${profession['professionName']}.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
-            child: const Text('Cancel'),
+            child: Text(trFor(lang, 'cancel')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Start'),
+            child: Text(trFor(lang, 'start_button')),
           ),
         ],
       ),
@@ -159,7 +165,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'New character: ${race['raceName']} ${profession['professionName']}',
+          '${trFor(lang, 'new_character_prefix')}: ${race['raceName']} '
+          '${profession['professionName']}',
         ),
       ),
     );
@@ -207,16 +214,23 @@ class _PresetCard extends StatelessWidget {
 /// Race/profession can only be changed by restarting the story from the
 /// beginning (Node 0), not from here.
 class _CharacterSheet extends StatelessWidget {
-  const _CharacterSheet({required this.session, required this.race, required this.profession});
+  const _CharacterSheet({
+    required this.session,
+    required this.race,
+    required this.profession,
+    required this.language,
+  });
 
   final PlayerSession session;
   final Map<String, dynamic>? race;
   final Map<String, dynamic>? profession;
+  final AppLanguage language;
 
   @override
   Widget build(BuildContext context) {
     final raceName = race?['raceName']?.toString() ?? session.raceId;
     final professionName = profession?['professionName']?.toString() ?? session.professionId;
+    String t(String key) => trFor(language, key);
 
     Widget statRow(String label, String value) => Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
@@ -247,43 +261,56 @@ class _CharacterSheet extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        Text('Character Sheet', style: Theme.of(context).textTheme.titleMedium),
+        Text(t('character_sheet_title'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         Card(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
-                statRow('Level', '${session.level}'),
+                statRow(t('level_field_label'), '${session.level}'),
                 statRow(
-                  'Experience',
+                  t('experience_label'),
                   '${session.currentXP} / ${session.xpToNextLevel}',
                 ),
                 statRow(
-                  'Health',
+                  t('health_label'),
                   '${session.currentHealth} / ${session.maxHealth}',
                 ),
-                statRow('Base Damage', '${session.baseDamage}'),
-                statRow('Base Armor', '${session.baseArmor}'),
-                statRow('Gold', '${session.gold}'),
-                statRow('Alignment', '${session.alignmentLabel} (${session.alignmentScore})'),
-                statRow('Stat Points', '${session.statPoints}'),
-                statRow('Skill Points', '${session.skillPoints}'),
-                statRow('Potions', '${session.potionCount}'),
-                statRow('Inventory Items', '${session.inventoryItemIds.length}'),
-                statRow('Equipped Items', '${session.equippedItemIds.length}'),
-                statRow('Unlocked Skills', '${session.unlockedSkillIds.length}'),
+                statRow(t('base_damage_label'), '${session.baseDamage}'),
+                statRow(t('base_armor_label'), '${session.baseArmor}'),
+                statRow(t('gold_field_label'), '${session.gold}'),
+                statRow(
+                  t('alignment_label'),
+                  '${t(_alignmentKey(session.alignmentLabel))} (${session.alignmentScore})',
+                ),
+                statRow(t('stat_points_label'), '${session.statPoints}'),
+                statRow(t('skill_points_label'), '${session.skillPoints}'),
+                statRow(t('potions_label'), '${session.potionCount}'),
+                statRow(t('inventory_items_label'), '${session.inventoryItemIds.length}'),
+                statRow(t('equipped_items_label'), '${session.equippedItemIds.length}'),
+                statRow(t('unlocked_skills_label'), '${session.unlockedSkillIds.length}'),
               ],
             ),
           ),
         ),
         const SizedBox(height: 16),
         Text(
-          'Race and profession can only be changed by restarting the story '
-          'from the very beginning.',
+          t('race_profession_footer_note'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
+  }
+
+  String _alignmentKey(String raw) {
+    switch (raw) {
+      case 'Good':
+        return 'alignment_good';
+      case 'Evil':
+        return 'alignment_evil';
+      default:
+        return 'alignment_neutral';
+    }
   }
 }

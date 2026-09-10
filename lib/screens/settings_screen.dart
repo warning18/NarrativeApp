@@ -5,7 +5,9 @@ import '../app_info.dart';
 import '../data/map_themes.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/map_theme_provider.dart';
+import '../providers/palette_provider.dart';
 import '../providers/settings_providers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -35,22 +37,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final mapTheme = ref.watch(mapThemeProvider);
+    final palette = ref.watch(appPaletteProvider);
+    final trembleEnabled = ref.watch(trembleEnabledProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(title: Text(tr(ref, 'settings'))),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Language',
+              tr(ref, 'language'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Applies to navigation, the full story (reader and map), and the Legend. '
-              'Game data tables, field names, and IDs stay in English.',
+              tr(ref, 'language_coverage_note'),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
@@ -92,13 +95,95 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Gemini API Key',
+              tr(ref, 'palette_section_title'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
             Text(
-              'Used by the AI Generator tab to create new story beats. '
-              'Stored only on this device.',
+              tr(ref, 'palette_section_desc'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: AppPalette.values.map((p) {
+                final selected = palette == p;
+                final label = tr(ref, _paletteLabelKey(p));
+                return InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => ref.read(appPaletteProvider.notifier).setPalette(p),
+                  child: Container(
+                    width: 96,
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: selected
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outlineVariant,
+                        width: selected ? 2 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: p.swatch
+                              .map(
+                                (color) => Container(
+                                  width: 18,
+                                  height: 18,
+                                  margin: const EdgeInsets.symmetric(horizontal: 1),
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          label,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                        if (selected) ...[
+                          const SizedBox(height: 2),
+                          Icon(
+                            Icons.check_circle,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              tr(ref, 'combat_section_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'tremble_setting_title')),
+              subtitle: Text(tr(ref, 'tremble_setting_desc')),
+              value: trembleEnabled,
+              onChanged: (value) => ref.read(trembleEnabledProvider.notifier).setEnabled(value),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              tr(ref, 'gemini_api_key_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'gemini_api_key_desc'),
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
@@ -107,10 +192,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               obscureText: _obscure,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: 'API key',
+                labelText: tr(ref, 'api_key_label'),
                 suffixIcon: IconButton(
                   icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-                  tooltip: _obscure ? 'Show API key' : 'Hide API key',
+                  tooltip: _obscure ? tr(ref, 'show_api_key_tooltip') : tr(ref, 'hide_api_key_tooltip'),
                   onPressed: () => setState(() => _obscure = !_obscure),
                 ),
               ),
@@ -126,10 +211,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       await ref.read(apiKeyProvider.notifier).setKey(key);
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('API key saved.')),
+                        SnackBar(content: Text(tr(ref, 'api_key_saved'))),
                       );
                     },
-                    child: const Text('Save'),
+                    child: Text(tr(ref, 'save')),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -139,10 +224,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     await ref.read(apiKeyProvider.notifier).clearKey();
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('API key removed.')),
+                      SnackBar(content: Text(tr(ref, 'api_key_removed'))),
                     );
                   },
-                  child: const Text('Clear'),
+                  child: Text(tr(ref, 'clear_button')),
                 ),
               ],
             ),
@@ -157,5 +242,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  String _paletteLabelKey(AppPalette palette) {
+    switch (palette) {
+      case AppPalette.deepPurple:
+        return 'palette_deep_purple';
+      case AppPalette.weatheredEarth:
+        return 'palette_weathered_earth';
+      case AppPalette.autumnMeadow:
+        return 'palette_autumn_meadow';
+      case AppPalette.duskHorizon:
+        return 'palette_dusk_horizon';
+    }
   }
 }

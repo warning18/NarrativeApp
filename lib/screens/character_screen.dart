@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../widgets/player_stats_bar.dart';
@@ -20,7 +21,7 @@ class CharacterScreen extends ConsumerWidget {
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
 
-    String subtitle = 'Not set — tap to create a character';
+    String subtitle = tr(ref, 'char_not_set');
     final races = racesAsync.value;
     final professions = professionsAsync.value;
     if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
@@ -32,7 +33,7 @@ class CharacterScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Character')),
+      appBar: AppBar(title: Text(tr(ref, 'character'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -41,7 +42,7 @@ class CharacterScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.badge_outlined),
-              title: const Text('Race & Profession'),
+              title: Text(tr(ref, 'race_profession_title')),
               subtitle: Text(subtitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
@@ -54,7 +55,7 @@ class CharacterScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.backpack),
-              title: const Text('Inventory & Equipment'),
+              title: Text(tr(ref, 'inventory_equipment')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
@@ -66,7 +67,7 @@ class CharacterScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.auto_awesome),
-              title: const Text('Skills'),
+              title: Text(tr(ref, 'skills')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
@@ -78,7 +79,7 @@ class CharacterScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.trending_up),
-              title: const Text('Level Up'),
+              title: Text(tr(ref, 'level_up')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
@@ -90,7 +91,7 @@ class CharacterScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               leading: const Icon(Icons.casino),
-              title: const Text('Dice Loadout'),
+              title: Text(tr(ref, 'dice_loadout')),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(

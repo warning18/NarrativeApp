@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -31,14 +32,14 @@ class PlayScreen extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Player Session', style: Theme.of(context).textTheme.titleMedium),
+            Text(tr(ref, 'player_session'), style: Theme.of(context).textTheme.titleMedium),
             TextButton.icon(
               onPressed: () async {
                 await ref.read(playerSessionProvider.notifier).resetSession();
                 ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
               },
               icon: const Icon(Icons.restart_alt),
-              label: const Text('Reset'),
+              label: Text(tr(ref, 'reset')),
             ),
           ],
         ),
@@ -48,8 +49,9 @@ class PlayScreen extends ConsumerWidget {
             leading: const Icon(Icons.person),
             title: Text(tr(ref, 'character')),
             subtitle: Text(
-              'Lvl ${session.level} · ${session.inventoryItemIds.length} item(s) · '
-              '${session.skillPoints} skill pt(s) · ${session.statPoints} stat pt(s)',
+              '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
+              '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
+              '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
             ),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
@@ -65,7 +67,7 @@ class PlayScreen extends ConsumerWidget {
         questsAsync.when(
           data: (records) => _QuestList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('Failed to load quests: $error'),
+          error: (error, stack) => Text('${tr(ref, 'failed_to_load_quests')}: $error'),
         ),
         const Divider(height: 32),
         Text(tr(ref, 'shops'), style: Theme.of(context).textTheme.titleMedium),
@@ -73,7 +75,7 @@ class PlayScreen extends ConsumerWidget {
         shopsAsync.when(
           data: (records) => _ShopList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('Failed to load shops: $error'),
+          error: (error, stack) => Text('${tr(ref, 'failed_to_load_shops')}: $error'),
         ),
         const Divider(height: 32),
         Text(tr(ref, 'bestiary'), style: Theme.of(context).textTheme.titleMedium),
@@ -81,7 +83,7 @@ class PlayScreen extends ConsumerWidget {
         enemiesAsync.when(
           data: (records) => _EnemyList(records: records),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('Failed to load enemies: $error'),
+          error: (error, stack) => Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
         ),
       ],
     );
@@ -96,7 +98,7 @@ class _QuestList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (records.isEmpty) {
-      return const Text('No quests defined yet.');
+      return Text(tr(ref, 'no_quests_defined'));
     }
     final session = ref.watch(playerSessionProvider);
     final keys = records.keys.toList()..sort();
@@ -119,15 +121,15 @@ class _QuestList extends ConsumerWidget {
 
         String statusLabel;
         if (isCompleted) {
-          statusLabel = 'Completed';
+          statusLabel = tr(ref, 'status_completed');
         } else if (isActive) {
-          statusLabel = 'Active';
+          statusLabel = tr(ref, 'status_active');
         } else if (!isDiscovered) {
-          statusLabel = 'Undiscovered';
+          statusLabel = tr(ref, 'status_undiscovered');
         } else if (!meetsRequirements) {
-          statusLabel = 'Locked';
+          statusLabel = tr(ref, 'status_locked');
         } else {
-          statusLabel = 'Available';
+          statusLabel = tr(ref, 'status_available');
         }
 
         Widget trailing;
@@ -151,17 +153,19 @@ class _QuestList extends ConsumerWidget {
                     rewardDiceId: rewardDiceId,
                   );
               if (!context.mounted) return;
+              final lang = ref.read(appLanguageProvider);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    'Quest complete: $questName (+$rewardGold gold, +$rewardXp XP'
+                    '${trFor(lang, 'quest_complete_prefix')}: $questName '
+                    '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
                     '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
                     '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""})',
                   ),
                 ),
               );
             },
-            child: const Text('Complete'),
+            child: Text(tr(ref, 'complete')),
           );
         } else {
           trailing = ElevatedButton(
@@ -170,11 +174,14 @@ class _QuestList extends ConsumerWidget {
                 : () async {
                     await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
                     if (!context.mounted) return;
+                    final lang = ref.read(appLanguageProvider);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Quest accepted: $questName')),
+                      SnackBar(
+                        content: Text('${trFor(lang, 'quest_accepted_prefix')}: $questName'),
+                      ),
                     );
                   },
-            child: const Text('Accept'),
+            child: Text(tr(ref, 'accept')),
           );
         }
 
@@ -183,7 +190,9 @@ class _QuestList extends ConsumerWidget {
             leading: Icon(questCategoryIcon(category)),
             title: Text(questName),
             subtitle: Text(
-              dialogue.isNotEmpty ? '$dialogue\nStatus: $statusLabel' : 'Status: $statusLabel',
+              dialogue.isNotEmpty
+                  ? '$dialogue\n${tr(ref, 'status_label')}: $statusLabel'
+                  : '${tr(ref, 'status_label')}: $statusLabel',
             ),
             isThreeLine: dialogue.isNotEmpty,
             trailing: trailing,
@@ -202,7 +211,7 @@ class _ShopList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (records.isEmpty) {
-      return const Text('No shops defined yet.');
+      return Text(tr(ref, 'no_shops_defined'));
     }
     final session = ref.watch(playerSessionProvider);
     final keys = records.keys.toList()..sort();
@@ -219,7 +228,7 @@ class _ShopList extends ConsumerWidget {
             subtitle: Text(
               accessible
                   ? shop['shopDescription']?.toString() ?? ''
-                  : 'Undiscovered — find this shop during the story.',
+                  : tr(ref, 'shop_undiscovered'),
             ),
             trailing: accessible ? const Icon(Icons.chevron_right) : null,
             onTap: !accessible
@@ -246,7 +255,7 @@ class _EnemyList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (records.isEmpty) {
-      return const Text('No enemies defined yet.');
+      return Text(tr(ref, 'no_enemies_defined'));
     }
     final session = ref.watch(playerSessionProvider);
     final keys = records.keys.toList()..sort();
@@ -263,7 +272,9 @@ class _EnemyList extends ConsumerWidget {
             leading: Icon(accessible ? enemyIcon : Icons.lock_outline),
             title: Text(enemyName),
             subtitle: Text(
-              accessible ? 'HP $maxHealth · Damage $damage' : 'Not yet encountered.',
+              accessible
+                  ? '${tr(ref, 'hp_label')} $maxHealth · ${tr(ref, 'damage_label')} $damage'
+                  : tr(ref, 'not_yet_encountered'),
             ),
             trailing: !accessible
                 ? null
@@ -276,7 +287,7 @@ class _EnemyList extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.sports_martial_arts),
-                    label: const Text('Fight'),
+                    label: Text(tr(ref, 'fight')),
                   ),
           ),
         );

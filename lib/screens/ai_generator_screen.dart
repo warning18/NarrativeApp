@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../providers/settings_providers.dart';
 
 class AiGeneratorScreen extends ConsumerStatefulWidget {
@@ -27,12 +29,13 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
     final apiKey = ref.read(apiKeyProvider);
     final prompt = _promptController.text.trim();
 
+    final lang = ref.read(appLanguageProvider);
     if (apiKey == null || apiKey.isEmpty) {
-      setState(() => _error = 'Add your Gemini API key in Settings first.');
+      setState(() => _error = trFor(lang, 'add_api_key_first'));
       return;
     }
     if (prompt.isEmpty) {
-      setState(() => _error = 'Describe what should happen next.');
+      setState(() => _error = trFor(lang, 'describe_next'));
       return;
     }
 
@@ -53,10 +56,10 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
         ),
       ]);
       if (!mounted) return;
-      setState(() => _result = response.text ?? 'No response generated.');
+      setState(() => _result = response.text ?? trFor(lang, 'no_response_generated'));
     } catch (e) {
       if (!mounted) return;
-      setState(() => _error = 'Generation failed: $e');
+      setState(() => _error = '${trFor(lang, 'generation_failed_prefix')}: $e');
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -66,6 +69,7 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
   Widget build(BuildContext context) {
     final apiKey = ref.watch(apiKeyProvider);
     final colorScheme = Theme.of(context).colorScheme;
+    final lang = ref.watch(appLanguageProvider);
 
     return SafeArea(
       child: Padding(
@@ -83,7 +87,7 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    'No Gemini API key set. Open Settings to add one.',
+                    trFor(lang, 'no_api_key_banner'),
                     style: TextStyle(color: colorScheme.onErrorContainer),
                   ),
                 ),
@@ -91,11 +95,10 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
                 controller: _promptController,
                 minLines: 2,
                 maxLines: 4,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'What happens next?',
-                  hintText:
-                      'e.g. Lysa wakes up and finds the Grey Bundle missing.',
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: trFor(lang, 'what_happens_next_label'),
+                  hintText: trFor(lang, 'ai_prompt_hint'),
                 ),
               ),
               const SizedBox(height: 12),
@@ -108,7 +111,7 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_isLoading ? 'Generating...' : 'Generate'),
+                label: Text(_isLoading ? trFor(lang, 'generating_label') : trFor(lang, 'generate_button')),
               ),
               const SizedBox(height: 16),
               if (_error != null)

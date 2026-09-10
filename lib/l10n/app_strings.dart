@@ -149,7 +149,376 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Opens character creation',
     AppLanguage.fr: 'Ouvre la création de personnage',
   },
+  'failed_to_load_story': {
+    AppLanguage.en: 'Failed to load story',
+    AppLanguage.fr: "Échec du chargement de l'histoire",
+  },
+  'player_session': {AppLanguage.en: 'Player Session', AppLanguage.fr: 'Session du joueur'},
+  'failed_to_load_quests': {
+    AppLanguage.en: 'Failed to load quests',
+    AppLanguage.fr: 'Échec du chargement des quêtes',
+  },
+  'failed_to_load_shops': {
+    AppLanguage.en: 'Failed to load shops',
+    AppLanguage.fr: 'Échec du chargement des boutiques',
+  },
+  'failed_to_load_enemies': {
+    AppLanguage.en: 'Failed to load enemies',
+    AppLanguage.fr: 'Échec du chargement des ennemis',
+  },
+  'no_quests_defined': {
+    AppLanguage.en: 'No quests defined yet.',
+    AppLanguage.fr: 'Aucune quête définie pour le moment.',
+  },
+  'no_shops_defined': {
+    AppLanguage.en: 'No shops defined yet.',
+    AppLanguage.fr: 'Aucune boutique définie pour le moment.',
+  },
+  'no_enemies_defined': {
+    AppLanguage.en: 'No enemies defined yet.',
+    AppLanguage.fr: 'Aucun ennemi défini pour le moment.',
+  },
+  'status_completed': {AppLanguage.en: 'Completed', AppLanguage.fr: 'Terminée'},
+  'status_active': {AppLanguage.en: 'Active', AppLanguage.fr: 'En cours'},
+  'status_undiscovered': {AppLanguage.en: 'Undiscovered', AppLanguage.fr: 'Non découverte'},
+  'status_locked': {AppLanguage.en: 'Locked', AppLanguage.fr: 'Verrouillée'},
+  'status_available': {AppLanguage.en: 'Available', AppLanguage.fr: 'Disponible'},
+  'quest_complete_prefix': {
+    AppLanguage.en: 'Quest complete',
+    AppLanguage.fr: 'Quête terminée',
+  },
+  'quest_accepted_prefix': {
+    AppLanguage.en: 'Quest accepted',
+    AppLanguage.fr: 'Quête acceptée',
+  },
+  'complete': {AppLanguage.en: 'Complete', AppLanguage.fr: 'Terminer'},
+  'accept': {AppLanguage.en: 'Accept', AppLanguage.fr: 'Accepter'},
+  'status_label': {AppLanguage.en: 'Status', AppLanguage.fr: 'Statut'},
+  'shop_undiscovered': {
+    AppLanguage.en: 'Undiscovered — find this shop during the story.',
+    AppLanguage.fr: "Non découverte — trouvez cette boutique au cours de l'histoire.",
+  },
+  'not_yet_encountered': {
+    AppLanguage.en: 'Not yet encountered.',
+    AppLanguage.fr: 'Pas encore rencontré.',
+  },
+  'hp_label': {AppLanguage.en: 'HP', AppLanguage.fr: 'PV'},
+  'damage_label': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
+  'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
+  'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
+  'level_abbrev': {AppLanguage.en: 'Lvl', AppLanguage.fr: 'Niv.'},
+  'item_count_label': {AppLanguage.en: 'item(s)', AppLanguage.fr: 'objet(s)'},
+  'skill_pt_label': {AppLanguage.en: 'skill pt(s)', AppLanguage.fr: 'pt(s) de compétence'},
+  'stat_pt_label': {AppLanguage.en: 'stat pt(s)', AppLanguage.fr: 'pt(s) de statistique'},
+  'char_not_set': {
+    AppLanguage.en: 'Not set — tap to create a character',
+    AppLanguage.fr: 'Non défini — touchez pour créer un personnage',
+  },
+  'race_profession_title': {
+    AppLanguage.en: 'Race & Profession',
+    AppLanguage.fr: 'Race et profession',
+  },
+  'inventory_equipment': {
+    AppLanguage.en: 'Inventory & Equipment',
+    AppLanguage.fr: 'Inventaire et équipement',
+  },
+  'skills': {AppLanguage.en: 'Skills', AppLanguage.fr: 'Compétences'},
+  'level_up': {AppLanguage.en: 'Level Up', AppLanguage.fr: 'Monter de niveau'},
+  'dice_loadout': {AppLanguage.en: 'Dice Loadout', AppLanguage.fr: 'Équipement de dés'},
+  'failed_to_load_dice': {
+    AppLanguage.en: 'Failed to load dice',
+    AppLanguage.fr: 'Échec du chargement des dés',
+  },
+  'failed_to_load_items': {
+    AppLanguage.en: 'Failed to load items',
+    AppLanguage.fr: 'Échec du chargement des objets',
+  },
+  'equipment_section': {AppLanguage.en: 'Equipment', AppLanguage.fr: 'Équipement'},
+  'dice_label': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dé'},
+  'none_equipped': {AppLanguage.en: '(none equipped)', AppLanguage.fr: '(aucun équipé)'},
+  'choose_die': {AppLanguage.en: 'Choose die', AppLanguage.fr: 'Choisir un dé'},
+  'unequip': {AppLanguage.en: 'Unequip', AppLanguage.fr: 'Déséquiper'},
+  'choose_item': {AppLanguage.en: 'Choose item', AppLanguage.fr: 'Choisir un objet'},
+  'all_items': {AppLanguage.en: 'All Items', AppLanguage.fr: 'Tous les objets'},
+  'inventory_empty': {
+    AppLanguage.en: 'Your inventory is empty. Buy or loot some gear!',
+    AppLanguage.fr: "Votre inventaire est vide. Achetez ou pillez de l'équipement !",
+  },
+  'faces_label': {AppLanguage.en: 'faces', AppLanguage.fr: 'faces'},
+  'skill_points_label': {
+    AppLanguage.en: 'Skill Points',
+    AppLanguage.fr: 'Points de compétence',
+  },
+  'failed_to_load_skills': {
+    AppLanguage.en: 'Failed to load skills',
+    AppLanguage.fr: 'Échec du chargement des compétences',
+  },
+  'no_skills_defined': {
+    AppLanguage.en: 'No skills defined yet.',
+    AppLanguage.fr: 'Aucune compétence définie pour le moment.',
+  },
+  'unlocked_prefix': {AppLanguage.en: 'Unlocked', AppLanguage.fr: 'Débloqué'},
+  'unlock_button': {AppLanguage.en: 'Unlock', AppLanguage.fr: 'Débloquer'},
+  'reserved_prefix': {AppLanguage.en: 'Reserved', AppLanguage.fr: 'Réservé'},
+  'shop_no_stock': {
+    AppLanguage.en: 'This shop has no stock configured.',
+    AppLanguage.fr: "Cette boutique n'a aucun stock configuré.",
+  },
+  'buy_button': {AppLanguage.en: 'Buy', AppLanguage.fr: 'Acheter'},
+  'bought_prefix': {AppLanguage.en: 'Bought', AppLanguage.fr: 'Achat de'},
+  'for_label': {AppLanguage.en: 'for', AppLanguage.fr: 'pour'},
+  'owned_label': {AppLanguage.en: 'Owned', AppLanguage.fr: 'Possédé'},
+  'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
+  'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
+  'equip_slot_label': {AppLanguage.en: 'Equip Slot', AppLanguage.fr: "Emplacement d'équipement"},
+  'attack_damage_label': {AppLanguage.en: 'Attack Damage', AppLanguage.fr: "Dégâts d'attaque"},
+  'armor_label': {AppLanguage.en: 'Armor', AppLanguage.fr: 'Armure'},
+  'fire_dmg_label': {AppLanguage.en: 'Fire Dmg', AppLanguage.fr: 'Dégâts Feu'},
+  'wind_dmg_label': {AppLanguage.en: 'Wind Dmg', AppLanguage.fr: 'Dégâts Vent'},
+  'earth_dmg_label': {AppLanguage.en: 'Earth Dmg', AppLanguage.fr: 'Dégâts Terre'},
+  'water_dmg_label': {AppLanguage.en: 'Water Dmg', AppLanguage.fr: 'Dégâts Eau'},
+  'elec_dmg_label': {AppLanguage.en: 'Elec Dmg', AppLanguage.fr: 'Dégâts Élec.'},
+  'fire_resist_label': {AppLanguage.en: 'Fire Resist', AppLanguage.fr: 'Résist. Feu'},
+  'wind_resist_label': {AppLanguage.en: 'Wind Resist', AppLanguage.fr: 'Résist. Vent'},
+  'earth_resist_label': {AppLanguage.en: 'Earth Resist', AppLanguage.fr: 'Résist. Terre'},
+  'water_resist_label': {AppLanguage.en: 'Water Resist', AppLanguage.fr: 'Résist. Eau'},
+  'elec_resist_label': {AppLanguage.en: 'Elec Resist', AppLanguage.fr: 'Résist. Élec.'},
+  'unknown_label': {AppLanguage.en: 'Unknown', AppLanguage.fr: 'Inconnu'},
+  'element_label': {AppLanguage.en: 'Element', AppLanguage.fr: 'Élément'},
+  'damage_mod_label': {AppLanguage.en: 'Damage Mod', AppLanguage.fr: 'Modif. de dégâts'},
+  'damage_multiplier_label': {
+    AppLanguage.en: 'Damage Multiplier',
+    AppLanguage.fr: 'Multiplicateur de dégâts',
+  },
+  'active_skill_label': {AppLanguage.en: 'Active Skill', AppLanguage.fr: 'Compétence active'},
+  'yes_label': {AppLanguage.en: 'Yes', AppLanguage.fr: 'Oui'},
+  'no_label': {AppLanguage.en: 'No', AppLanguage.fr: 'Non'},
+  'equipped_prefix': {AppLanguage.en: 'Equipped', AppLanguage.fr: 'Équipé'},
+  'atk_abbrev': {AppLanguage.en: 'ATK', AppLanguage.fr: 'ATQ'},
+  'arm_abbrev': {AppLanguage.en: 'ARM', AppLanguage.fr: 'ARM'},
+  'level_field_label': {AppLanguage.en: 'Level', AppLanguage.fr: 'Niveau'},
+  'experience_label': {AppLanguage.en: 'Experience', AppLanguage.fr: 'Expérience'},
+  'health_label': {AppLanguage.en: 'Health', AppLanguage.fr: 'Santé'},
+  'base_damage_label': {AppLanguage.en: 'Base Damage', AppLanguage.fr: 'Dégâts de base'},
+  'base_armor_label': {AppLanguage.en: 'Base Armor', AppLanguage.fr: 'Armure de base'},
+  'gold_field_label': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
+  'alignment_label': {AppLanguage.en: 'Alignment', AppLanguage.fr: 'Alignement'},
+  'stat_points_label': {AppLanguage.en: 'Stat Points', AppLanguage.fr: 'Points de statistique'},
+  'potions_label': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'inventory_items_label': {
+    AppLanguage.en: 'Inventory Items',
+    AppLanguage.fr: "Objets d'inventaire",
+  },
+  'equipped_items_label': {AppLanguage.en: 'Equipped Items', AppLanguage.fr: 'Objets équipés'},
+  'unlocked_skills_label': {
+    AppLanguage.en: 'Unlocked Skills',
+    AppLanguage.fr: 'Compétences débloquées',
+  },
+  'character_sheet_title': {AppLanguage.en: 'Character Sheet', AppLanguage.fr: 'Fiche de personnage'},
+  'choose_who_desc': {
+    AppLanguage.en: 'Choose who you are. This sets your starting stats and starts a new game.',
+    AppLanguage.fr:
+        'Choisissez qui vous êtes. Ceci définit vos statistiques de départ et démarre une nouvelle partie.',
+  },
+  'race_label': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
+  'profession_label': {AppLanguage.en: 'Profession', AppLanguage.fr: 'Profession'},
+  'start_new_game_button': {
+    AppLanguage.en: 'Start New Game With This Character',
+    AppLanguage.fr: 'Commencer une nouvelle partie avec ce personnage',
+  },
+  'start_new_game_dialog_title': {
+    AppLanguage.en: 'Start new game?',
+    AppLanguage.fr: 'Commencer une nouvelle partie ?',
+  },
+  'start_new_game_dialog_prefix': {
+    AppLanguage.en: 'This begins your journey as a',
+    AppLanguage.fr: 'Ceci commence votre voyage en tant que',
+  },
+  'start_button': {AppLanguage.en: 'Start', AppLanguage.fr: 'Commencer'},
+  'new_character_prefix': {AppLanguage.en: 'New character', AppLanguage.fr: 'Nouveau personnage'},
+  'skill_pt_bonus_label': {AppLanguage.en: 'Skill Pt', AppLanguage.fr: 'Pt Comp.'},
+  'race_profession_footer_note': {
+    AppLanguage.en: 'Race and profession can only be changed by restarting the story '
+        'from the very beginning.',
+    AppLanguage.fr: "La race et la profession ne peuvent être modifiées qu'en recommençant "
+        "l'histoire depuis le tout début.",
+  },
+  'failed_to_load_races': {
+    AppLanguage.en: 'Failed to load races',
+    AppLanguage.fr: 'Échec du chargement des races',
+  },
+  'failed_to_load_professions': {
+    AppLanguage.en: 'Failed to load professions',
+    AppLanguage.fr: 'Échec du chargement des professions',
+  },
+  'empty_slot_label': {AppLanguage.en: '(empty)', AppLanguage.fr: '(vide)'},
+  'xp_label': {AppLanguage.en: 'XP', AppLanguage.fr: 'XP'},
+  'stat_points_available': {
+    AppLanguage.en: 'Stat Points Available',
+    AppLanguage.fr: 'Points de statistique disponibles',
+  },
+  'max_health_label': {AppLanguage.en: 'Max Health', AppLanguage.fr: 'Santé max.'},
+  'plus_one_point': {AppLanguage.en: '+1 Point', AppLanguage.fr: '+1 Point'},
+  'increased_suffix': {AppLanguage.en: 'increased!', AppLanguage.fr: 'augmenté(e) !'},
+  'none_label': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
+  'restriction_label': {AppLanguage.en: 'Restriction', AppLanguage.fr: 'Restriction'},
+  'own_no_dice': {
+    AppLanguage.en: "You don't own any dice yet — buy or find one first.",
+    AppLanguage.fr: "Vous ne possédez encore aucun dé — achetez-en ou trouvez-en un.",
+  },
+  'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
+  'skill_faces_title': {AppLanguage.en: 'Skill Faces', AppLanguage.fr: 'Faces de compétence'},
+  'drag_skill_hint': {
+    AppLanguage.en: 'Drag a skill below onto a face to bind it for combat.',
+    AppLanguage.fr: 'Faites glisser une compétence ci-dessous sur une face pour la lier au combat.',
+  },
+  'no_skill_faces': {
+    AppLanguage.en: 'This die has no Skill faces to customize.',
+    AppLanguage.fr: 'Ce dé ne possède aucune face de compétence à personnaliser.',
+  },
+  'your_unlocked_skills': {
+    AppLanguage.en: 'Your Unlocked Skills',
+    AppLanguage.fr: 'Vos compétences débloquées',
+  },
+  'no_skills_unlocked_hint': {
+    AppLanguage.en: 'No skills unlocked yet — unlock some on the Skills screen.',
+    AppLanguage.fr: "Aucune compétence débloquée pour le moment — débloquez-en sur l'écran Compétences.",
+  },
+  'clear_assigned_skill_tooltip': {
+    AppLanguage.en: 'Clear assigned skill',
+    AppLanguage.fr: 'Effacer la compétence assignée',
+  },
+  'drop_skill_here': {AppLanguage.en: 'Drop a skill here', AppLanguage.fr: 'Déposez une compétence ici'},
+  'custom_label': {AppLanguage.en: 'Custom', AppLanguage.fr: 'Personnalisé'},
+  'skill_singular': {AppLanguage.en: 'Skill', AppLanguage.fr: 'Compétence'},
+  'fight_begins_prefix': {AppLanguage.en: 'The fight begins!', AppLanguage.fr: 'Le combat commence !'},
+  'has_label': {AppLanguage.en: 'has', AppLanguage.fr: 'a'},
+  'you_take_damage_prefix': {AppLanguage.en: 'You take', AppLanguage.fr: 'Vous subissez'},
+  'damage_word': {AppLanguage.en: 'damage', AppLanguage.fr: 'dégâts'},
+  'drink_potion_prefix': {
+    AppLanguage.en: 'You drink a potion and recover',
+    AppLanguage.fr: 'Vous buvez une potion et récupérez',
+  },
+  'victory_prefix': {AppLanguage.en: 'Victory!', AppLanguage.fr: 'Victoire !'},
+  'loot_label': {AppLanguage.en: 'loot', AppLanguage.fr: 'butin'},
+  'defeat_message': {
+    AppLanguage.en: 'You are overwhelmed, but crawl away to recover.',
+    AppLanguage.fr: 'Vous êtes submergé, mais parvenez à ramper pour vous rétablir.',
+  },
+  'fight_prefix': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'scaled_to_level': {AppLanguage.en: 'scaled to level', AppLanguage.fr: 'ajusté au niveau'},
+  'your_equipment_prefix': {AppLanguage.en: 'Your equipment', AppLanguage.fr: 'Votre équipement'},
+  'equipped_die_label': {AppLanguage.en: 'Equipped Die', AppLanguage.fr: 'Dé équipé'},
+  'no_die_equipped': {AppLanguage.en: 'No die equipped', AppLanguage.fr: 'Aucun dé équipé'},
+  'equip_die_hint': {
+    AppLanguage.en: 'Equip a die from Inventory before fighting.',
+    AppLanguage.fr: "Équipez un dé depuis l'Inventaire avant de combattre.",
+  },
+  'enter_battle_button': {AppLanguage.en: 'Enter Battle', AppLanguage.fr: 'Entrer au combat'},
+  'you_label': {AppLanguage.en: 'You', AppLanguage.fr: 'Vous'},
+  'block_active_prefix': {AppLanguage.en: 'Block active', AppLanguage.fr: 'Blocage actif'},
+  'victory_return_button': {AppLanguage.en: 'Victory! Return', AppLanguage.fr: 'Victoire ! Retour'},
+  'retreat_button': {AppLanguage.en: 'Retreat', AppLanguage.fr: 'Battre en retraite'},
+  'roll_dice_button': {AppLanguage.en: 'Roll Dice', AppLanguage.fr: 'Lancer le dé'},
+  'potion_button_prefix': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'tremble_setting_title': {
+    AppLanguage.en: 'Screen tremble on hit',
+    AppLanguage.fr: "Tremblement d'écran à l'impact",
+  },
+  'tremble_setting_desc': {
+    AppLanguage.en: 'Shakes the screen briefly when you take damage in combat.',
+    AppLanguage.fr: "Fait légèrement trembler l'écran lorsque vous subissez des dégâts au combat.",
+  },
+  'language_coverage_note': {
+    AppLanguage.en: 'Applies to the whole app — navigation, the full story (reader and map), '
+        'the Legend, and every gameplay screen. Game data tables, field names, and IDs '
+        'stay in English.',
+    AppLanguage.fr: "S'applique à toute l'application — navigation, l'histoire complète "
+        '(lecteur et carte), la Légende, et tous les écrans de jeu. Les tables de données, '
+        'les noms de champs et les identifiants restent en anglais.',
+  },
+  'gemini_api_key_title': {AppLanguage.en: 'Gemini API Key', AppLanguage.fr: 'Clé API Gemini'},
+  'gemini_api_key_desc': {
+    AppLanguage.en: 'Used by the AI Generator tab to create new story beats. '
+        'Stored only on this device.',
+    AppLanguage.fr: "Utilisée par l'onglet Générateur IA pour créer de nouvelles scènes. "
+        'Stockée uniquement sur cet appareil.',
+  },
+  'api_key_label': {AppLanguage.en: 'API key', AppLanguage.fr: 'Clé API'},
+  'show_api_key_tooltip': {AppLanguage.en: 'Show API key', AppLanguage.fr: 'Afficher la clé API'},
+  'hide_api_key_tooltip': {AppLanguage.en: 'Hide API key', AppLanguage.fr: 'Masquer la clé API'},
+  'api_key_saved': {AppLanguage.en: 'API key saved.', AppLanguage.fr: 'Clé API enregistrée.'},
+  'api_key_removed': {AppLanguage.en: 'API key removed.', AppLanguage.fr: 'Clé API supprimée.'},
+  'clear_button': {AppLanguage.en: 'Clear', AppLanguage.fr: 'Effacer'},
+  'palette_section_title': {AppLanguage.en: 'Color Palette', AppLanguage.fr: 'Palette de couleurs'},
+  'palette_section_desc': {
+    AppLanguage.en: 'Choose an accent palette for the whole app.',
+    AppLanguage.fr: "Choisissez une palette d'accentuation pour toute l'application.",
+  },
+  'palette_deep_purple': {AppLanguage.en: 'Deep Purple', AppLanguage.fr: 'Violet profond'},
+  'palette_weathered_earth': {AppLanguage.en: 'Weathered Earth', AppLanguage.fr: 'Terre patinée'},
+  'palette_autumn_meadow': {AppLanguage.en: 'Autumn Meadow', AppLanguage.fr: 'Prairie automnale'},
+  'palette_dusk_horizon': {
+    AppLanguage.en: 'Dusk Horizon',
+    AppLanguage.fr: 'Horizon crépusculaire',
+  },
+  'combat_section_title': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
+  'add_api_key_first': {
+    AppLanguage.en: 'Add your Gemini API key in Settings first.',
+    AppLanguage.fr: "Ajoutez d'abord votre clé API Gemini dans les Paramètres.",
+  },
+  'describe_next': {
+    AppLanguage.en: 'Describe what should happen next.',
+    AppLanguage.fr: 'Décrivez ce qui doit se passer ensuite.',
+  },
+  'no_api_key_banner': {
+    AppLanguage.en: 'No Gemini API key set. Open Settings to add one.',
+    AppLanguage.fr: "Aucune clé API Gemini définie. Ouvrez les Paramètres pour en ajouter une.",
+  },
+  'what_happens_next_label': {
+    AppLanguage.en: 'What happens next?',
+    AppLanguage.fr: 'Que se passe-t-il ensuite ?',
+  },
+  'ai_prompt_hint': {
+    AppLanguage.en: 'e.g. Lysa wakes up and finds the Grey Bundle missing.',
+    AppLanguage.fr: 'ex. Lysa se réveille et découvre que le Balluchon Gris a disparu.',
+  },
+  'generating_label': {AppLanguage.en: 'Generating...', AppLanguage.fr: 'Génération en cours...'},
+  'generate_button': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
+  'no_response_generated': {
+    AppLanguage.en: 'No response generated.',
+    AppLanguage.fr: 'Aucune réponse générée.',
+  },
+  'generation_failed_prefix': {
+    AppLanguage.en: 'Generation failed',
+    AppLanguage.fr: 'Échec de la génération',
+  },
+  'close_button': {AppLanguage.en: 'Close', AppLanguage.fr: 'Fermer'},
+  'flags_count_label': {AppLanguage.en: 'flags', AppLanguage.fr: 'drapeaux'},
+  'alignment_good': {AppLanguage.en: 'Good', AppLanguage.fr: 'Bon'},
+  'alignment_neutral': {AppLanguage.en: 'Neutral', AppLanguage.fr: 'Neutre'},
+  'alignment_evil': {AppLanguage.en: 'Evil', AppLanguage.fr: 'Mauvais'},
+  'main_story_title': {AppLanguage.en: 'Main Story', AppLanguage.fr: 'Histoire principale'},
+  'chapter_label': {AppLanguage.en: 'Chapter', AppLanguage.fr: 'Chapitre'},
+  'missing_node_label': {AppLanguage.en: '(missing node)', AppLanguage.fr: '(nœud manquant)'},
+  'node_activated': {
+    AppLanguage.en: 'Node activated — jumped to it in the story.',
+    AppLanguage.fr: "Nœud activé — vous y avez été téléporté dans l'histoire.",
+  },
 };
+
+/// Translates the raw English [PlayerSession.alignmentLabel] value
+/// ('Good' / 'Neutral' / 'Evil') for display.
+String trAlignmentLabel(WidgetRef ref, String raw) {
+  switch (raw) {
+    case 'Good':
+      return tr(ref, 'alignment_good');
+    case 'Evil':
+      return tr(ref, 'alignment_evil');
+    default:
+      return tr(ref, 'alignment_neutral');
+  }
+}
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —
 /// for use in callbacks (dialogs, bottom sheets) outside a widget's build.

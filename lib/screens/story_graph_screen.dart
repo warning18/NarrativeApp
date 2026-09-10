@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
@@ -7,6 +9,7 @@ import '../data/story_repository.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
 
 enum _NodeKind { characterCreation, combat, shop, quest, generic }
@@ -212,6 +215,15 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                       _showNodeInfo(context, ref, storyNode, style);
                     }
                   },
+                  onDoubleTap: storyNode == null
+                      ? null
+                      : () {
+                          ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
+                          ref.read(homeTabIndexProvider.notifier).state = 0;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(tr(ref, 'node_activated'))),
+                          );
+                        },
                   child: container,
                 );
               },
@@ -237,14 +249,15 @@ class _GraphViewState extends ConsumerState<_GraphView> {
   }
 }
 
-/// Detects a tap using raw pointer events instead of a [GestureDetector],
-/// so it never competes with the enclosing [InteractiveViewer] for the
-/// gesture arena — one-finger drag-to-pan always starts immediately, even
-/// when the drag begins on top of a node.
+/// Detects a tap (and optionally a double-tap) using raw pointer events
+/// instead of a [GestureDetector], so it never competes with the enclosing
+/// [InteractiveViewer] for the gesture arena — one-finger drag-to-pan
+/// always starts immediately, even when the drag begins on top of a node.
 class _NodeTapArea extends StatefulWidget {
-  const _NodeTapArea({required this.onTap, required this.child});
+  const _NodeTapArea({required this.onTap, this.onDoubleTap, required this.child});
 
   final VoidCallback onTap;
+  final VoidCallback? onDoubleTap;
   final Widget child;
 
   @override
@@ -254,9 +267,18 @@ class _NodeTapArea extends StatefulWidget {
 class _NodeTapAreaState extends State<_NodeTapArea> {
   static const double _tapSlop = 12;
   static const Duration _tapTimeout = Duration(milliseconds: 400);
+  static const Duration _doubleTapWindow = Duration(milliseconds: 300);
 
   Offset? _downPosition;
   DateTime? _downTime;
+  Offset? _pendingTapPosition;
+  Timer? _singleTapTimer;
+
+  @override
+  void dispose() {
+    _singleTapTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +293,29 @@ class _NodeTapAreaState extends State<_NodeTapArea> {
         if (downPosition == null || downTime == null) return;
         final movedFar = (event.position - downPosition).distance > _tapSlop;
         final tookTooLong = DateTime.now().difference(downTime) > _tapTimeout;
-        if (!movedFar && !tookTooLong) widget.onTap();
+        if (movedFar || tookTooLong) return;
+
+        final onDoubleTap = widget.onDoubleTap;
+        if (onDoubleTap == null) {
+          widget.onTap();
+          return;
+        }
+
+        final pending = _pendingTapPosition;
+        if (pending != null && (event.position - pending).distance <= _tapSlop) {
+          _singleTapTimer?.cancel();
+          _singleTapTimer = null;
+          _pendingTapPosition = null;
+          onDoubleTap();
+          return;
+        }
+
+        _pendingTapPosition = event.position;
+        _singleTapTimer?.cancel();
+        _singleTapTimer = Timer(_doubleTapWindow, () {
+          _pendingTapPosition = null;
+          widget.onTap();
+        });
       },
       child: widget.child,
     );

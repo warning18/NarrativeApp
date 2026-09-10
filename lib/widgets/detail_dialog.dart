@@ -8,6 +8,7 @@ Future<void> showDetailDialog(
   String? description,
   IconData? icon,
   List<MapEntry<String, String>> rows = const [],
+  String closeLabel = 'Close',
 }) {
   return showDialog<void>(
     context: context,
@@ -57,7 +58,7 @@ Future<void> showDetailDialog(
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Close'),
+          child: Text(closeLabel),
         ),
       ],
     ),

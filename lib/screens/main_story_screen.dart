@@ -45,7 +45,7 @@ class MainStoryScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Main Story'),
+        title: Text(tr(ref, 'main_story_title')),
         actions: [
           IconButton(
             icon: const Icon(Icons.restore),
@@ -59,7 +59,10 @@ class MainStoryScreen extends ConsumerWidget {
           padding: const EdgeInsets.all(16),
           children: [
             for (final spine in chapterSpines) ...[
-              Text('Chapter ${spine.chapter}', style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                '${tr(ref, 'chapter_label')} ${spine.chapter}',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               const SizedBox(height: 8),
               for (var i = 0; i < spine.beats.length; i++)
                 Card(
@@ -97,7 +100,8 @@ class MainStoryScreen extends ConsumerWidget {
                               const SizedBox(height: 6),
                               Text(
                                 spine.beats[i]
-                                    .map((id) => story.nodeFor(id)?.description ?? '(missing node)')
+                                    .map((id) =>
+                                        story.nodeFor(id)?.description ?? tr(ref, 'missing_node_label'))
                                     .join('\n'),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,
@@ -118,7 +122,8 @@ class MainStoryScreen extends ConsumerWidget {
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Failed to load story: $error')),
+        error: (error, stack) =>
+            Center(child: Text('${tr(ref, 'failed_to_load_story')}: $error')),
       ),
     );
   }
