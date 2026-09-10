@@ -11,6 +11,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -32,7 +33,7 @@ class StoryPlayerScreen extends ConsumerWidget {
       error: (error, stack) => Center(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Text('Failed to load story: $error'),
+          child: Text('${tr(ref, 'failed_to_load_story')}: $error'),
         ),
       ),
     );
@@ -68,6 +69,27 @@ class _StoryView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const PlayerStatsBar(),
+            if (session.activeQuestIds.isNotEmpty || session.unlockedShopIds.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  if (session.activeQuestIds.isNotEmpty)
+                    ActionChip(
+                      avatar: const Icon(Icons.assignment, size: 16),
+                      label: Text('${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                      onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
+                    ),
+                  if (session.unlockedShopIds.isNotEmpty)
+                    ActionChip(
+                      avatar: const Icon(Icons.storefront, size: 16),
+                      label: Text('${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                      onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
+                    ),
+                ],
+              ),
+            ],
             const SizedBox(height: 8),
             Row(
               children: [

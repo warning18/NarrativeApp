@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -18,7 +20,7 @@ class SkillsScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Skills')),
+      appBar: AppBar(title: Text(tr(ref, 'skills'))),
       body: Column(
         children: [
           Padding(
@@ -27,7 +29,7 @@ class SkillsScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Skill Points: ${session.skillPoints}',
+                  '${tr(ref, 'skill_points_label')}: ${session.skillPoints}',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
@@ -41,7 +43,8 @@ class SkillsScreen extends ConsumerWidget {
                 professions: professionsAsync.value ?? const {},
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(child: Text('Failed to load skills: $error')),
+              error: (error, stack) =>
+                  Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
             ),
           ),
         ],
@@ -60,7 +63,7 @@ class _SkillList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (records.isEmpty) {
-      return const Center(child: Text('No skills defined yet.'));
+      return Center(child: Text(tr(ref, 'no_skills_defined')));
     }
     final session = ref.watch(playerSessionProvider);
     final keys = records.keys.toList()..sort();
@@ -89,7 +92,7 @@ class _SkillList extends ConsumerWidget {
       final professionName = professionId.isNotEmpty
           ? (profession?['professionName']?.toString() ?? professionId)
           : null;
-      return 'Reserved: ${[raceName, professionName].whereType<String>().join(' · ')}';
+      return '${tr(ref, 'reserved_prefix')}: ${[raceName, professionName].whereType<String>().join(' · ')}';
     }
 
     return ListView(
@@ -116,20 +119,22 @@ class _SkillList extends ConsumerWidget {
                 ? () async {
                     await ref.read(playerSessionProvider.notifier).unlockSkill(id);
                     if (!context.mounted) return;
+                    final unlockedPrefix =
+                        trFor(ref.read(appLanguageProvider), 'unlocked_prefix');
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Unlocked: $id')),
+                      SnackBar(content: Text('$unlockedPrefix: $id')),
                     );
                   }
                 : null,
-            child: const Text('Unlock'),
+            child: Text(tr(ref, 'unlock_button')),
           );
         }
 
         final subtitleParts = <String>[
           if (description.isNotEmpty) description,
-          if (requiredSkillId.isNotEmpty) 'Requires: $requiredSkillId',
+          if (requiredSkillId.isNotEmpty) '${tr(ref, 'requires_label')} $requiredSkillId',
           if (restriction.isNotEmpty) restriction,
-          'Cost: $cost',
+          '${tr(ref, 'cost_label')}: $cost',
         ];
 
         return Card(
@@ -144,16 +149,28 @@ class _SkillList extends ConsumerWidget {
               title: id,
               description: description,
               icon: elementIcon(element),
+              closeLabel: tr(ref, 'close_button'),
               rows: [
-                MapEntry('Element', element ?? 'None'),
-                MapEntry('Cost', '$cost'),
-                MapEntry('Damage Mod', '${skill['damageMod'] ?? 0}'),
-                MapEntry('Damage Multiplier', '${skill['damageMultiplier'] ?? 1.0}'),
-                MapEntry('Heal Amount', '${skill['healAmount'] ?? 0}'),
-                if (requiredSkillId.isNotEmpty) MapEntry('Requires', requiredSkillId),
-                if (restriction.isNotEmpty) MapEntry('Restriction', restriction),
-                MapEntry('Active Skill', (skill['isActiveSkill'] as bool? ?? true) ? 'Yes' : 'No'),
-                MapEntry('Status', available ? 'Unlocked' : 'Locked'),
+                MapEntry(tr(ref, 'element_label'), element ?? tr(ref, 'none_label')),
+                MapEntry(tr(ref, 'cost_label'), '$cost'),
+                MapEntry(tr(ref, 'damage_mod_label'), '${skill['damageMod'] ?? 0}'),
+                MapEntry(
+                  tr(ref, 'damage_multiplier_label'),
+                  '${skill['damageMultiplier'] ?? 1.0}',
+                ),
+                MapEntry(tr(ref, 'heal_amount'), '${skill['healAmount'] ?? 0}'),
+                if (requiredSkillId.isNotEmpty)
+                  MapEntry(tr(ref, 'requires_label'), requiredSkillId),
+                if (restriction.isNotEmpty)
+                  MapEntry(tr(ref, 'restriction_label'), restriction),
+                MapEntry(
+                  tr(ref, 'active_skill_label'),
+                  (skill['isActiveSkill'] as bool? ?? true) ? tr(ref, 'yes_label') : tr(ref, 'no_label'),
+                ),
+                MapEntry(
+                  tr(ref, 'status_label'),
+                  available ? tr(ref, 'unlocked_prefix') : tr(ref, 'status_locked'),
+                ),
               ],
             ),
           ),

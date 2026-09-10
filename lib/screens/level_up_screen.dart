@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 
 class LevelUpScreen extends ConsumerWidget {
@@ -23,11 +24,11 @@ class LevelUpScreen extends ConsumerWidget {
                     await notifier.spendStatPoint(stat: statKey);
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('$label increased!')),
+                      SnackBar(content: Text('$label ${tr(ref, 'increased_suffix')}')),
                     );
                   }
                 : null,
-            child: const Text('+1 Point'),
+            child: Text(tr(ref, 'plus_one_point')),
           ),
         ),
       );
@@ -37,13 +38,16 @@ class LevelUpScreen extends ConsumerWidget {
         session.xpToNextLevel == 0 ? 0.0 : session.currentXP / session.xpToNextLevel;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Level Up')),
+      appBar: AppBar(title: Text(tr(ref, 'level_up'))),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text('Level ${session.level}', style: Theme.of(context).textTheme.headlineSmall),
+          Text(
+            '${tr(ref, 'level_field_label')} ${session.level}',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
           const SizedBox(height: 4),
-          Text('XP: ${session.currentXP} / ${session.xpToNextLevel}'),
+          Text('${tr(ref, 'xp_label')}: ${session.currentXP} / ${session.xpToNextLevel}'),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -51,14 +55,14 @@ class LevelUpScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Stat Points Available: ${session.statPoints}',
+            '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          statRow('Base Damage', Icons.gavel, '${session.baseDamage}', 'damage'),
-          statRow('Base Armor', Icons.shield, '${session.baseArmor}', 'armor'),
+          statRow(tr(ref, 'base_damage_label'), Icons.gavel, '${session.baseDamage}', 'damage'),
+          statRow(tr(ref, 'base_armor_label'), Icons.shield, '${session.baseArmor}', 'armor'),
           statRow(
-            'Max Health',
+            tr(ref, 'max_health_label'),
             Icons.favorite,
             '${session.currentHealth} / ${session.maxHealth}',
             'health',

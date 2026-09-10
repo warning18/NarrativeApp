@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
+import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -28,7 +30,7 @@ class ShopDetailScreen extends ConsumerWidget {
         data: (items) => diceAsync.when(
           data: (dice) {
             if (stock.isEmpty && diceStock.isEmpty) {
-              return const Center(child: Text('This shop has no stock configured.'));
+              return Center(child: Text(tr(ref, 'shop_no_stock')));
             }
             return ListView(
               padding: const EdgeInsets.all(16),
@@ -43,7 +45,7 @@ class ShopDetailScreen extends ConsumerWidget {
                     child: ListTile(
                       leading: Icon(itemTypeIcon(itemType)),
                       title: Text(itemName),
-                      subtitle: Text('$cost gold'),
+                      subtitle: Text('$cost ${tr(ref, 'gold_label')}'),
                       trailing: ElevatedButton(
                         onPressed: !canAfford
                             ? null
@@ -52,18 +54,24 @@ class ShopDetailScreen extends ConsumerWidget {
                                     .read(playerSessionProvider.notifier)
                                     .buyItem(itemId, cost);
                                 if (!context.mounted) return;
+                                final lang = ref.read(appLanguageProvider);
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Bought $itemName for $cost gold')),
+                                  SnackBar(
+                                    content: Text(
+                                      '${trFor(lang, 'bought_prefix')} $itemName '
+                                      '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                                    ),
+                                  ),
                                 );
                               },
-                        child: const Text('Buy'),
+                        child: Text(tr(ref, 'buy_button')),
                       ),
                     ),
                   );
                 }),
                 if (diceStock.isNotEmpty) ...[
                   if (stock.isNotEmpty) const Divider(height: 32),
-                  Text('Dice', style: Theme.of(context).textTheme.titleMedium),
+                  Text(tr(ref, 'dice_label'), style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 8),
                   ...diceStock.map((diceId) {
                     final die = dice[diceId] as Map<String, dynamic>?;
@@ -74,7 +82,9 @@ class ShopDetailScreen extends ConsumerWidget {
                       child: ListTile(
                         leading: const Icon(Icons.casino),
                         title: Text(diceId),
-                        subtitle: Text(owned ? 'Owned' : '$cost gold'),
+                        subtitle: Text(
+                          owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}',
+                        ),
                         trailing: owned
                             ? const Icon(Icons.check_circle, color: Colors.green)
                             : ElevatedButton(
@@ -85,13 +95,18 @@ class ShopDetailScreen extends ConsumerWidget {
                                             .read(playerSessionProvider.notifier)
                                             .buyDice(diceId, cost);
                                         if (!context.mounted) return;
+                                        final lang = ref.read(appLanguageProvider);
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text('Bought $diceId for $cost gold'),
+                                            content: Text(
+                                              '${trFor(lang, 'bought_prefix')} $diceId '
+                                              '${trFor(lang, 'for_label')} $cost '
+                                              '${trFor(lang, 'gold_label')}',
+                                            ),
                                           ),
                                         );
                                       },
-                                child: const Text('Buy'),
+                                child: Text(tr(ref, 'buy_button')),
                               ),
                       ),
                     );
@@ -101,10 +116,12 @@ class ShopDetailScreen extends ConsumerWidget {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Failed to load dice: $error')),
+          error: (error, stack) =>
+              Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Failed to load items: $error')),
+        error: (error, stack) =>
+            Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
       ),
     );
   }
