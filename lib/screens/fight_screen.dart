@@ -4,12 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/home_tab_provider.dart';
+import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/story_providers.dart';
+import 'death_screen.dart';
 
 const int _potionHealAmount = 30;
 
@@ -381,7 +386,13 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
             Stack(
               clipBehavior: Clip.none,
               children: [
-                _HealthBar(label: tr(ref, 'you_label'), current: _playerHealth, max: _playerMaxHealth),
+                _HealthBar(
+                  label: tr(ref, 'you_label'),
+                  current: _playerHealth,
+                  max: _playerMaxHealth,
+                  statLine: '⚔ ${_playerBaseDamage + _equipmentDamageBonus(items)}'
+                      '  ·  🛡 ${session.baseArmor + _equipmentArmorBonus(items)}',
+                ),
                 if (_lastDamageTaken > 0)
                   Positioned(
                     right: 0,
@@ -407,6 +418,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
               label: widget.enemy['enemyName']?.toString() ?? widget.enemyId,
               current: _enemyHealth,
               max: _enemyMaxHealth,
+              statLine: '⚔ $_enemyDamage',
             ),
             if (_block > 0) ...[
               const SizedBox(height: 8),
@@ -436,7 +448,20 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
             const SizedBox(height: 16),
             if (_over)
               ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(_won),
+                onPressed: () async {
+                  if (!_won && ref.read(permadeathEnabledProvider)) {
+                    final lost = await ref.read(playerSessionProvider.notifier).applyPermadeath();
+                    ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+                    ref.read(homeTabIndexProvider.notifier).state = 0;
+                    if (!context.mounted) return;
+                    await Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => DeathScreen(lostItemIds: lost)),
+                      (route) => route.isFirst,
+                    );
+                    return;
+                  }
+                  Navigator.of(context).pop(_won);
+                },
                 child: Text(_won ? tr(ref, 'victory_return_button') : tr(ref, 'retreat_button')),
               )
             else
@@ -467,11 +492,19 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
 }
 
 class _HealthBar extends StatelessWidget {
-  const _HealthBar({required this.label, required this.current, required this.max});
+  const _HealthBar({
+    required this.label,
+    required this.current,
+    required this.max,
+    this.statLine,
+  });
 
   final String label;
   final int current;
   final int max;
+
+  /// An optional line of extra stats (e.g. "⚔ 12 · 🛡 4") shown under the bar.
+  final String? statLine;
 
   @override
   Widget build(BuildContext context) {
@@ -480,28 +513,54 @@ class _HealthBar extends StatelessWidget {
     final barColor = ratio > 0.5
         ? Colors.green
         : (ratio > 0.25 ? Colors.orange : Colors.red);
+    const barHeight = 26.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('$label: $current / $max'),
+        Text(label, style: Theme.of(context).textTheme.titleSmall),
         const SizedBox(height: 4),
         ClipRRect(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
-            height: 8,
-            color: barColor.withOpacity(0.2),
-            child: LayoutBuilder(
-              builder: (context, constraints) => AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-                alignment: Alignment.centerLeft,
-                width: constraints.maxWidth * ratio,
-                height: 8,
-                color: barColor,
-              ),
+            height: barHeight,
+            decoration: BoxDecoration(
+              color: barColor.withOpacity(0.18),
+              border: Border.all(color: barColor.withOpacity(0.5)),
+            ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                    alignment: Alignment.centerLeft,
+                    width: constraints.maxWidth * ratio,
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [barColor.withOpacity(0.75), barColor],
+                      ),
+                    ),
+                  ),
+                ),
+                Text(
+                  '$current / $max',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    shadows: [Shadow(color: Colors.black54, blurRadius: 2)],
+                    color: Colors.white,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+        if (statLine != null) ...[
+          const SizedBox(height: 2),
+          Text(statLine!, style: Theme.of(context).textTheme.bodySmall),
+        ],
       ],
     );
   }

@@ -88,9 +88,10 @@
       {
         "text": "Pay Toll (50g)",
         "text_fr": "Payer le péage (50 po)",
-        "next_id": "280",
-        "goldMod": -50,
-        "questIDToProgress": "q_first_blood"
+        "next_id": "261",
+        "questIDToProgress": "q_first_blood",
+        "lockedText": "You dig through your pockets and come up short — the guards aren't interested in promises.",
+        "lockedText_fr": "Tu fouilles tes poches et n'y trouves pas de quoi payer — les gardes ne s'intéressent pas aux promesses."
       },
       {
         "text": "Refuse & Fight",
@@ -538,6 +539,13 @@
         "text_fr": "Lui parler (Commencer la discussion)",
         "next_id": "895",
         "unlockShopId": "black_market_docks"
+      },
+      {
+        "text": "Whistle for the hound",
+        "text_fr": "Siffler le chien",
+        "next_id": "892",
+        "lockedText": "There's nothing to whistle for — you came through this chapter alone.",
+        "lockedText_fr": "Il n'y a personne à appeler — tu as traversé ce chapitre seul."
       }
     ]
   },
@@ -1407,6 +1415,36 @@
         "text": "Board the ship",
         "text_fr": "Monter à bord",
         "next_id": "955"
+      }
+    ]
+  },
+  "892": {
+    "id": "892",
+    "description": "A low whine cuts through the dock fog — the hound, favoring its healed leg, noses up beside you like it never left. It trots ahead, distracting a dockhand just long enough for you to lift a dropped coin purse, then falls back into step at your heel.",
+    "description_fr": "Un gémissement sourd perce le brouillard du port — le chien, boitant encore un peu, vient se frotter contre toi comme s'il ne t'avait jamais quitté. Il trotte devant, détournant l'attention d'un docker le temps que tu ramasses une bourse tombée, avant de revenir se coller à tes talons.",
+    "reqFlags": [
+      "companion_hound"
+    ],
+    "choices": [
+      {
+        "text": "Keep moving",
+        "text_fr": "Continuer",
+        "next_id": "895",
+        "goldMod": 10
+      }
+    ]
+  },
+  "261": {
+    "id": "261",
+    "description": "The guard counts your coin, unimpressed, and waves you through with a grunt. Lysa barely stirs as you cross.",
+    "description_fr": "Le garde compte tes pièces, peu impressionné, et te fait signe de passer d'un grognement. Lysa bouge à peine tandis que tu traverses.",
+    "reqGold": 50,
+    "choices": [
+      {
+        "text": "Cross the bridge",
+        "text_fr": "Traverser le pont",
+        "next_id": "280",
+        "goldMod": -50
       }
     ]
   }
