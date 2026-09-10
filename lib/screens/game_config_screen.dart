@@ -56,6 +56,27 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
     );
   }
 
+  Future<void> _confirmReset() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Reset to defaults?'),
+        content: const Text('This discards your saved New Game Defaults and reloads the bundled values.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Reset'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) await _reset();
+  }
+
   Future<void> _reset() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(gameConfigPrefsKey);
@@ -81,7 +102,7 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
           IconButton(
             icon: const Icon(Icons.restore),
             tooltip: 'Reset to defaults',
-            onPressed: _reset,
+            onPressed: _confirmReset,
           ),
         ],
       ),

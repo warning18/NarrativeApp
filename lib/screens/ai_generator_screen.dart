@@ -70,55 +70,52 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (apiKey == null || apiKey.isEmpty)
-              Container(
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: colorScheme.errorContainer,
-                  borderRadius: BorderRadius.circular(8),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (apiKey == null || apiKey.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: colorScheme.errorContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    'No Gemini API key set. Open Settings to add one.',
+                    style: TextStyle(color: colorScheme.onErrorContainer),
+                  ),
                 ),
-                child: Text(
-                  'No Gemini API key set. Open Settings to add one.',
-                  style: TextStyle(color: colorScheme.onErrorContainer),
-                ),
-              ),
-            TextField(
-              controller: _promptController,
-              minLines: 2,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'What happens next?',
-                hintText:
-                    'e.g. Lysa wakes up and finds the Grey Bundle missing.',
-              ),
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              onPressed: _isLoading ? null : _generate,
-              icon: _isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.auto_awesome),
-              label: Text(_isLoading ? 'Generating...' : 'Generate'),
-            ),
-            const SizedBox(height: 16),
-            if (_error != null)
-              Text(_error!, style: TextStyle(color: colorScheme.error)),
-            if (_result != null)
-              Expanded(
-                child: SingleChildScrollView(
-                  child: SelectableText(_result!),
+              TextField(
+                controller: _promptController,
+                minLines: 2,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'What happens next?',
+                  hintText:
+                      'e.g. Lysa wakes up and finds the Grey Bundle missing.',
                 ),
               ),
-          ],
+              const SizedBox(height: 12),
+              ElevatedButton.icon(
+                onPressed: _isLoading ? null : _generate,
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.auto_awesome),
+                label: Text(_isLoading ? 'Generating...' : 'Generate'),
+              ),
+              const SizedBox(height: 16),
+              if (_error != null)
+                Text(_error!, style: TextStyle(color: colorScheme.error)),
+              if (_result != null) SelectableText(_result!),
+            ],
+          ),
         ),
       ),
     );

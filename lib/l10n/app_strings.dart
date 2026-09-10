@@ -119,6 +119,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Étendues Creuses',
   },
   'map_theme_wilds_beyond': {AppLanguage.en: 'Wilds Beyond', AppLanguage.fr: 'Terres Sauvages'},
+  'gold_mod': {AppLanguage.en: 'Gold mod', AppLanguage.fr: "Modif. d'or"},
+  'alignment_mod': {AppLanguage.en: 'Alignment mod', AppLanguage.fr: "Modif. d'alignement"},
+  'heal_amount': {AppLanguage.en: 'Heal amount', AppLanguage.fr: 'Soins'},
+  'flags_to_add': {
+    AppLanguage.en: 'Flags to add (comma-separated)',
+    AppLanguage.fr: 'Drapeaux à ajouter (séparés par des virgules)',
+  },
+  'quest_id_to_progress': {
+    AppLanguage.en: 'Quest ID to progress',
+    AppLanguage.fr: 'ID de quête à faire progresser',
+  },
+  'trigger_enemy_id': {AppLanguage.en: 'Trigger enemy ID', AppLanguage.fr: "ID d'ennemi déclenché"},
+  'unlock_shop_id': {AppLanguage.en: 'Unlock shop ID', AppLanguage.fr: 'ID de boutique débloquée'},
+  'unlock_quest_id': {AppLanguage.en: 'Unlock quest ID', AppLanguage.fr: 'ID de quête débloquée'},
+  'locked_text': {
+    AppLanguage.en: 'Locked text (shown when requirements unmet)',
+    AppLanguage.fr: 'Texte verrouillé (affiché si conditions non remplies)',
+  },
+  'opens_character_creation': {
+    AppLanguage.en: 'Opens character creation',
+    AppLanguage.fr: 'Ouvre la création de personnage',
+  },
 };
 
 /// Looks up [key] for a known [language] without needing a [WidgetRef] —

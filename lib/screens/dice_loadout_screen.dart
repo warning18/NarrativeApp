@@ -209,9 +209,11 @@ class _FaceSlot extends StatelessWidget {
                     child: Text(faceName, style: Theme.of(context).textTheme.titleSmall),
                   ),
                   if (onClear != null)
-                    InkWell(
-                      onTap: onClear,
-                      child: const Icon(Icons.close, size: 16),
+                    IconButton(
+                      icon: const Icon(Icons.close, size: 16),
+                      tooltip: 'Clear assigned skill',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: onClear,
                     ),
                 ],
               ),
