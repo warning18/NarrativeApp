@@ -8,8 +8,11 @@ import '../l10n/app_strings.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/palette_provider.dart';
+import '../providers/permadeath_provider.dart';
 import '../providers/settings_providers.dart';
+import '../providers/theme_mode_provider.dart';
 import '../providers/update_checker.dart';
+import 'playthrough_simulator_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -42,7 +45,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final language = ref.watch(appLanguageProvider);
     final mapTheme = ref.watch(mapThemeProvider);
     final palette = ref.watch(appPaletteProvider);
+    final themeMode = ref.watch(themeModeProvider);
     final trembleEnabled = ref.watch(trembleEnabledProvider);
+    final permadeathEnabled = ref.watch(permadeathEnabledProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'settings'))),
@@ -167,6 +172,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 );
               }).toList(),
             ),
+            const SizedBox(height: 16),
+            Text(
+              tr(ref, 'theme_mode_section'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            SegmentedButton<ThemeMode>(
+              segments: [
+                ButtonSegment(
+                  value: ThemeMode.system,
+                  label: Text(tr(ref, 'theme_mode_system')),
+                  icon: const Icon(Icons.brightness_auto),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.light,
+                  label: Text(tr(ref, 'theme_mode_light')),
+                  icon: const Icon(Icons.light_mode),
+                ),
+                ButtonSegment(
+                  value: ThemeMode.dark,
+                  label: Text(tr(ref, 'theme_mode_dark')),
+                  icon: const Icon(Icons.dark_mode),
+                ),
+              ],
+              selected: {themeMode},
+              onSelectionChanged: (selection) {
+                ref.read(themeModeProvider.notifier).setThemeMode(selection.first);
+              },
+            ),
             const SizedBox(height: 24),
             Text(
               tr(ref, 'combat_section_title'),
@@ -179,6 +213,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               subtitle: Text(tr(ref, 'tremble_setting_desc')),
               value: trembleEnabled,
               onChanged: (value) => ref.read(trembleEnabledProvider.notifier).setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'permadeath_setting_title')),
+              subtitle: Text(tr(ref, 'permadeath_setting_desc')),
+              value: permadeathEnabled,
+              onChanged: (value) => ref.read(permadeathEnabledProvider.notifier).setEnabled(value),
             ),
             const SizedBox(height: 24),
             Text(
@@ -260,6 +301,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: Text(tr(ref, 'clear_button')),
                 ),
               ],
+            ),
+            const SizedBox(height: 24),
+            Text(
+              tr(ref, 'dev_tools_section'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const PlaythroughSimulatorScreen()),
+                );
+              },
+              icon: const Icon(Icons.play_circle_outline),
+              label: Text(tr(ref, 'auto_playthrough_button')),
             ),
             const SizedBox(height: 32),
             Center(

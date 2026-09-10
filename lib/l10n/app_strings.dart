@@ -556,6 +556,81 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Download failed. Try again later.',
     AppLanguage.fr: 'Échec du téléchargement. Réessayez plus tard.',
   },
+  'theme_mode_section': {AppLanguage.en: 'Appearance', AppLanguage.fr: 'Apparence'},
+  'theme_mode_system': {AppLanguage.en: 'System', AppLanguage.fr: 'Système'},
+  'theme_mode_light': {AppLanguage.en: 'Light', AppLanguage.fr: 'Clair'},
+  'theme_mode_dark': {AppLanguage.en: 'Dark', AppLanguage.fr: 'Sombre'},
+  'your_stats_label': {AppLanguage.en: 'Your Stats', AppLanguage.fr: 'Vos statistiques'},
+  'enemy_stats_label': {AppLanguage.en: 'Enemy Stats', AppLanguage.fr: "Statistiques de l'ennemi"},
+  'permadeath_setting_title': {AppLanguage.en: 'Permadeath', AppLanguage.fr: 'Mort permanente'},
+  'permadeath_setting_desc': {
+    AppLanguage.en: 'When enabled, losing a fight sends you back to the beginning of the '
+        'story. You keep your level and stats, but lose all items.',
+    AppLanguage.fr: 'Une fois activée, perdre un combat vous renvoie au début de '
+        "l'histoire. Vous conservez votre niveau et vos statistiques, mais perdez tous vos objets.",
+  },
+  'you_died_title': {AppLanguage.en: 'You Died', AppLanguage.fr: 'Vous êtes mort'},
+  'you_died_message': {
+    AppLanguage.en: 'The story starts over. You keep everything you\'ve learned — your '
+        'level, stats, and skills — but your pack is empty.',
+    AppLanguage.fr: "L'histoire recommence. Vous conservez tout ce que vous avez appris — "
+        'votre niveau, vos statistiques et vos compétences — mais votre sac est vide.',
+  },
+  'items_lost_label': {AppLanguage.en: 'Items lost', AppLanguage.fr: 'Objets perdus'},
+  'return_to_start_button': {
+    AppLanguage.en: 'Return to the Beginning',
+    AppLanguage.fr: 'Retourner au début',
+  },
+  'dev_tools_section': {
+    AppLanguage.en: 'Developer Tools',
+    AppLanguage.fr: 'Outils de développement',
+  },
+  'auto_playthrough_button': {
+    AppLanguage.en: 'Simulate a Playthrough',
+    AppLanguage.fr: 'Simuler une partie',
+  },
+  'simulating_label': {AppLanguage.en: 'Simulating…', AppLanguage.fr: 'Simulation en cours…'},
+  'playthrough_recap_title': {
+    AppLanguage.en: 'Playthrough Recap',
+    AppLanguage.fr: 'Récapitulatif de la partie',
+  },
+  'ending_reached_label': {AppLanguage.en: 'Ending reached', AppLanguage.fr: 'Fin atteinte'},
+  'nodes_visited_label': {AppLanguage.en: 'Nodes visited', AppLanguage.fr: 'Nœuds visités'},
+  'final_level_label': {AppLanguage.en: 'Final level', AppLanguage.fr: 'Niveau final'},
+  'final_gold_label': {AppLanguage.en: 'Final gold', AppLanguage.fr: 'Or final'},
+  'final_alignment_label': {
+    AppLanguage.en: 'Final alignment',
+    AppLanguage.fr: 'Alignement final',
+  },
+  'quests_completed_label': {
+    AppLanguage.en: 'Quests completed',
+    AppLanguage.fr: 'Quêtes terminées',
+  },
+  'path_summary_label': {AppLanguage.en: 'Your Journey', AppLanguage.fr: 'Votre parcours'},
+  'discovery_title': {AppLanguage.en: 'Discovered!', AppLanguage.fr: 'Découverte !'},
+  'shop_discovered_message': {
+    AppLanguage.en: 'A new shop is available:',
+    AppLanguage.fr: 'Une nouvelle boutique est disponible :',
+  },
+  'quest_discovered_message': {
+    AppLanguage.en: 'A new quest is available:',
+    AppLanguage.fr: 'Une nouvelle quête est disponible :',
+  },
+  'open_shop_button': {AppLanguage.en: 'Open Shop', AppLanguage.fr: 'Ouvrir la boutique'},
+  'view_quest_button': {AppLanguage.en: 'View Quest', AppLanguage.fr: 'Voir la quête'},
+  'maybe_later_button': {AppLanguage.en: 'Maybe Later', AppLanguage.fr: 'Plus tard'},
+  'shops_discovered_label': {
+    AppLanguage.en: 'Shops discovered',
+    AppLanguage.fr: 'Boutiques découvertes',
+  },
+  'quests_discovered_label': {
+    AppLanguage.en: 'Quests discovered',
+    AppLanguage.fr: 'Quêtes découvertes',
+  },
+  'combat_encounters_label': {
+    AppLanguage.en: 'Combat encounters',
+    AppLanguage.fr: 'Rencontres de combat',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

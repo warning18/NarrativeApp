@@ -665,6 +665,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     await _persist();
   }
+
+  /// Permadeath: clears the player's inventory and equipped items but keeps
+  /// level, XP, gold, stats, skills, dice and story flags/quests intact.
+  /// Returns the item ids that were lost, for a death-screen summary.
+  Future<List<String>> applyPermadeath() async {
+    final lostItems = [...state.inventoryItemIds];
+    state = state.copyWith(
+      currentHealth: state.maxHealth,
+      inventoryItemIds: const [],
+      equippedItemIds: const [],
+    );
+    await _persist();
+    return lostItems;
+  }
 }
 
 final playerSessionProvider =

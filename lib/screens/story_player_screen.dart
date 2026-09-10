@@ -10,6 +10,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/discovery_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
@@ -18,6 +19,7 @@ import '../providers/story_providers.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
+import 'shop_detail_screen.dart';
 import 'story_node_editor_screen.dart';
 
 class StoryPlayerScreen extends ConsumerWidget {
@@ -52,6 +54,23 @@ class _StoryView extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+
+    final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
+    if (pendingDiscovery != null) {
+      final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
+      final questsAsync = ref.watch(gameDbProvider(questsSchema));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        ref.read(pendingDiscoveryProvider.notifier).state = null;
+        _showDiscoveryModal(
+          context,
+          ref,
+          pendingDiscovery,
+          shops: shopsAsync.value ?? const {},
+          quests: questsAsync.value ?? const {},
+        );
+      });
+    }
 
     if (node == null) {
       return _EndingView(
@@ -134,6 +153,7 @@ class _StoryView extends ConsumerWidget {
                 message: tr(ref, 'branch_end_message'),
                 restartLabel: tr(ref, 'restart_story'),
                 onRestart: () => notifier.restart(StoryRepository.startNodeId),
+                session: session,
               )
             else
               ...node.choices.map(
@@ -240,6 +260,14 @@ class _ChoiceButton extends ConsumerWidget {
                       questId: choice.unlockQuestId,
                       enemyId: choice.triggerEnemyId,
                     );
+                final newShopId = choice.unlockShopId ?? '';
+                final newQuestId = choice.unlockQuestId ?? '';
+                if (!isExcursion && (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
+                  ref.read(pendingDiscoveryProvider.notifier).state = PendingDiscovery(
+                    shopId: newShopId.isNotEmpty ? newShopId : null,
+                    questId: newQuestId.isNotEmpty ? newQuestId : null,
+                  );
+                }
               }
 
               if (isExcursion) {
@@ -347,12 +375,13 @@ class _StoryText extends StatelessWidget {
   }
 }
 
-class _EndingView extends StatelessWidget {
+class _EndingView extends ConsumerWidget {
   const _EndingView({
     required this.title,
     required this.message,
     required this.restartLabel,
     required this.onRestart,
+    this.session,
   });
 
   final String title;
@@ -360,8 +389,14 @@ class _EndingView extends StatelessWidget {
   final String restartLabel;
   final VoidCallback onRestart;
 
+  /// When set, a recap card (level/gold/alignment/quests) is shown below
+  /// the message — only passed for a genuine story ending, not the "trail
+  /// goes cold" data-error state.
+  final PlayerSession? session;
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recapSession = session;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -371,6 +406,35 @@ class _EndingView extends StatelessWidget {
             Text(title, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 8),
             Text(message, textAlign: TextAlign.center),
+            if (recapSession != null) ...[
+              const SizedBox(height: 16),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tr(ref, 'path_summary_label'),
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Text('${tr(ref, 'final_level_label')}: ${recapSession.level}'),
+                      Text('${tr(ref, 'final_gold_label')}: ${recapSession.gold}'),
+                      Text(
+                        '${tr(ref, 'final_alignment_label')}: '
+                        '${trAlignmentLabel(ref, recapSession.alignmentLabel)} '
+                        '(${recapSession.alignmentScore})',
+                      ),
+                      Text(
+                        '${tr(ref, 'quests_completed_label')}: '
+                        '${recapSession.completedQuestIds.length}',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: onRestart,
@@ -381,4 +445,75 @@ class _EndingView extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Shown once, right after a choice unlocks a shop and/or quest, on the
+/// node the player just arrived at — lets them jump straight in instead of
+/// only noticing the Play-tab CTA chip.
+Future<void> _showDiscoveryModal(
+  BuildContext context,
+  WidgetRef ref,
+  PendingDiscovery discovery, {
+  required Map<String, dynamic> shops,
+  required Map<String, dynamic> quests,
+}) async {
+  final lang = ref.read(appLanguageProvider);
+  final shopId = discovery.shopId;
+  final questId = discovery.questId;
+  final shop = shopId != null ? shops[shopId] as Map<String, dynamic>? : null;
+  final quest = questId != null ? quests[questId] as Map<String, dynamic>? : null;
+
+  await showDialog<void>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(trFor(lang, 'discovery_title')),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (shopId != null) ...[
+            Text(trFor(lang, 'shop_discovered_message')),
+            const SizedBox(height: 4),
+            Text(
+              shop?['shopName']?.toString() ?? shopId,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+          if (shopId != null && questId != null) const SizedBox(height: 12),
+          if (questId != null) ...[
+            Text(trFor(lang, 'quest_discovered_message')),
+            const SizedBox(height: 4),
+            Text(
+              quest?['questName']?.toString() ?? questId,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(dialogContext),
+          child: Text(trFor(lang, 'maybe_later_button')),
+        ),
+        if (shopId != null && shop != null)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop)),
+              );
+            },
+            child: Text(trFor(lang, 'open_shop_button')),
+          ),
+        if (questId != null)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              ref.read(homeTabIndexProvider.notifier).state = 1;
+            },
+            child: Text(trFor(lang, 'view_quest_button')),
+          ),
+      ],
+    ),
+  );
 }
