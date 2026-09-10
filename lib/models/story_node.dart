@@ -13,6 +13,7 @@ class StoryChoice {
     this.unlockQuestId,
     this.opensCharacterCreation = false,
     this.textFr,
+    this.lockedTextFr,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -31,6 +32,7 @@ class StoryChoice {
       unlockQuestId: json['unlockQuestId'] as String?,
       opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
       textFr: json['text_fr'] as String?,
+      lockedTextFr: json['lockedText_fr'] as String?,
     );
   }
 
@@ -50,7 +52,13 @@ class StoryChoice {
   /// Optional French translation of [text]; falls back to English when absent.
   final String? textFr;
 
+  /// Optional French translation of [lockedText]; falls back to English when absent.
+  final String? lockedTextFr;
+
   String textFor(bool french) => french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
+
+  String? lockedTextFor(bool french) =>
+      french && (lockedTextFr?.isNotEmpty ?? false) ? lockedTextFr : lockedText;
 
   Map<String, dynamic> toJson() => {
         'text': text,
@@ -63,6 +71,7 @@ class StoryChoice {
         if (questIDToProgress != null && questIDToProgress!.isNotEmpty)
           'questIDToProgress': questIDToProgress,
         if (lockedText != null && lockedText!.isNotEmpty) 'lockedText': lockedText,
+        if (lockedTextFr != null && lockedTextFr!.isNotEmpty) 'lockedText_fr': lockedTextFr,
         if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty) 'triggerEnemyId': triggerEnemyId,
         if (unlockShopId != null && unlockShopId!.isNotEmpty) 'unlockShopId': unlockShopId,
         if (unlockQuestId != null && unlockQuestId!.isNotEmpty) 'unlockQuestId': unlockQuestId,
@@ -95,6 +104,7 @@ class StoryNode {
     required this.choices,
     this.reqGold = 0,
     this.reqAlignmentScore,
+    this.reqAlignmentMax,
     this.reqFlags = const [],
     this.descriptionFr,
   });
@@ -110,6 +120,7 @@ class StoryNode {
           .toList(),
       reqGold: (json['reqGold'] as num?)?.toInt() ?? 0,
       reqAlignmentScore: (json['reqAlignmentScore'] as num?)?.toInt(),
+      reqAlignmentMax: (json['reqAlignmentMax'] as num?)?.toInt(),
       reqFlags: (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       descriptionFr: json['description_fr'] as String?,
     );
@@ -120,6 +131,12 @@ class StoryNode {
   final List<StoryChoice> choices;
   final int reqGold;
   final int? reqAlignmentScore;
+
+  /// Upper bound on alignment score, alongside [reqAlignmentScore] as the
+  /// lower bound — together they express a stance band (e.g. a "neutral"
+  /// path requiring an alignment score close to zero in either direction),
+  /// not just a minimum threshold.
+  final int? reqAlignmentMax;
   final List<String> reqFlags;
 
   /// French translation of [description]; falls back to English if a node
@@ -130,13 +147,14 @@ class StoryNode {
       french && (descriptionFr?.isNotEmpty ?? false) ? descriptionFr! : description;
 
   bool get hasRequirements =>
-      reqGold > 0 || reqAlignmentScore != null || reqFlags.isNotEmpty;
+      reqGold > 0 || reqAlignmentScore != null || reqAlignmentMax != null || reqFlags.isNotEmpty;
 
   Map<String, dynamic> toJson() => {
         'description': description,
         if (descriptionFr != null && descriptionFr!.isNotEmpty) 'description_fr': descriptionFr,
         if (reqGold != 0) 'reqGold': reqGold,
         if (reqAlignmentScore != null) 'reqAlignmentScore': reqAlignmentScore,
+        if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,
         if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
         'choices': choices.map((c) => c.toJson()).toList(),
       };

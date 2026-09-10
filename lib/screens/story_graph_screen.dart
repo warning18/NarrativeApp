@@ -446,6 +446,7 @@ Future<void> _showNodeInfo(
                     '${t('requires_label')} '
                     '${node.reqGold > 0 ? "${node.reqGold}g " : ""}'
                     '${node.reqAlignmentScore != null ? "align>=${node.reqAlignmentScore} " : ""}'
+                    '${node.reqAlignmentMax != null ? "align<=${node.reqAlignmentMax} " : ""}'
                     '${node.reqFlags.isNotEmpty ? node.reqFlags.join(", ") : ""}',
                     style: Theme.of(innerContext).textTheme.bodySmall,
                   ),

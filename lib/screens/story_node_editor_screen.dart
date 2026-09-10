@@ -20,6 +20,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _descriptionFrController;
   late final TextEditingController _reqGoldController;
   late final TextEditingController _reqAlignmentController;
+  late final TextEditingController _reqAlignmentMaxController;
   late final TextEditingController _reqFlagsController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
@@ -32,6 +33,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqGoldController = TextEditingController(text: widget.node.reqGold.toString());
     _reqAlignmentController =
         TextEditingController(text: widget.node.reqAlignmentScore?.toString() ?? '');
+    _reqAlignmentMaxController =
+        TextEditingController(text: widget.node.reqAlignmentMax?.toString() ?? '');
     _reqFlagsController = TextEditingController(text: widget.node.reqFlags.join(', '));
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
@@ -42,6 +45,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _descriptionFrController.dispose();
     _reqGoldController.dispose();
     _reqAlignmentController.dispose();
+    _reqAlignmentMaxController.dispose();
     _reqFlagsController.dispose();
     for (final choice in _choices) {
       choice.dispose();
@@ -61,6 +65,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       reqAlignmentScore: _reqAlignmentController.text.trim().isEmpty
           ? null
           : int.tryParse(_reqAlignmentController.text.trim()),
+      reqAlignmentMax: _reqAlignmentMaxController.text.trim().isEmpty
+          ? null
+          : int.tryParse(_reqAlignmentMaxController.text.trim()),
       reqFlags: _reqFlagsController.text
           .split(',')
           .map((s) => s.trim())
@@ -162,6 +169,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
+                controller: _reqAlignmentMaxController,
+                keyboardType: const TextInputType.numberWithOptions(signed: true),
+                decoration: InputDecoration(
+                  labelText: t('required_alignment_max'),
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
                 controller: _reqFlagsController,
                 decoration: InputDecoration(
                   labelText: t('required_flags'),
@@ -205,6 +221,7 @@ class _ChoiceEditState {
         flagsToAddController = TextEditingController(text: choice.flagsToAdd.join(', ')),
         questIDToProgressController = TextEditingController(text: choice.questIDToProgress ?? ''),
         lockedTextController = TextEditingController(text: choice.lockedText ?? ''),
+        lockedTextFrController = TextEditingController(text: choice.lockedTextFr ?? ''),
         triggerEnemyIdController = TextEditingController(text: choice.triggerEnemyId ?? ''),
         unlockShopIdController = TextEditingController(text: choice.unlockShopId ?? ''),
         unlockQuestIdController = TextEditingController(text: choice.unlockQuestId ?? ''),
@@ -221,6 +238,7 @@ class _ChoiceEditState {
   final TextEditingController flagsToAddController;
   final TextEditingController questIDToProgressController;
   final TextEditingController lockedTextController;
+  final TextEditingController lockedTextFrController;
   final TextEditingController triggerEnemyIdController;
   final TextEditingController unlockShopIdController;
   final TextEditingController unlockQuestIdController;
@@ -235,6 +253,7 @@ class _ChoiceEditState {
     flagsToAddController.dispose();
     questIDToProgressController.dispose();
     lockedTextController.dispose();
+    lockedTextFrController.dispose();
     triggerEnemyIdController.dispose();
     unlockShopIdController.dispose();
     unlockQuestIdController.dispose();
@@ -255,6 +274,8 @@ class _ChoiceEditState {
         questIDToProgress:
             questIDToProgressController.text.trim().isEmpty ? null : questIDToProgressController.text.trim(),
         lockedText: lockedTextController.text.trim().isEmpty ? null : lockedTextController.text.trim(),
+        lockedTextFr:
+            lockedTextFrController.text.trim().isEmpty ? null : lockedTextFrController.text.trim(),
         triggerEnemyId:
             triggerEnemyIdController.text.trim().isEmpty ? null : triggerEnemyIdController.text.trim(),
         unlockShopId:
@@ -400,6 +421,14 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.lockedTextController,
                   decoration: InputDecoration(
                     labelText: t('locked_text'),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.lockedTextFrController,
+                  decoration: InputDecoration(
+                    labelText: t('locked_text_fr'),
                     border: const OutlineInputBorder(),
                   ),
                 ),
