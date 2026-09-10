@@ -5,11 +5,12 @@ import 'map_themes.dart';
 
 /// Generates short chains of procedural "excursion" nodes inserted between
 /// the fixed main story beats — a shop visit, an enemy encounter, a quest
-/// pickup, or a bit of ambient flavor. If a quest pickup is rolled, the
-/// chain is lengthened to 4-7 nodes to represent that quest's own mini-arc;
-/// otherwise it's a short 1-3 node detour. The wording of these excursions
-/// comes from [theme] (see map_themes.dart) — the main story beats
-/// themselves never change, only the flavor of what happens between them.
+/// pickup, a small treasure find, a moment of rest, or a bit of ambient
+/// flavor. If a quest pickup is rolled, the chain is lengthened to 4-7
+/// nodes to represent that quest's own mini-arc; otherwise it's a short
+/// 1-3 node detour. The wording of these excursions comes from [theme]
+/// (see map_themes.dart) — the main story beats themselves never change,
+/// only the flavor of what happens between them.
 class SubNodeEngine {
   static int _counter = 0;
 
@@ -78,7 +79,7 @@ class SubNodeEngine {
     }
 
     final roll = random.nextDouble();
-    if (shopPool.isNotEmpty && roll < 0.35) {
+    if (shopPool.isNotEmpty && roll < 0.25) {
       final shopId = shopPool[random.nextInt(shopPool.length)];
       return StoryNode(
         id: id,
@@ -88,13 +89,32 @@ class SubNodeEngine {
         ],
       );
     }
-    if (enemyPool.isNotEmpty && roll < 0.7) {
+    if (enemyPool.isNotEmpty && roll < 0.5) {
       final enemyId = enemyPool[random.nextInt(enemyPool.length)];
       return StoryNode(
         id: id,
         description: _pick(random, flavor.enemy),
         choices: [
           StoryChoice(text: 'Fight', nextId: id, triggerEnemyId: enemyId),
+        ],
+      );
+    }
+    if (roll < 0.65) {
+      final goldFound = 5 + random.nextInt(16);
+      return StoryNode(
+        id: id,
+        description: _pick(random, flavor.treasure),
+        choices: [
+          StoryChoice(text: 'Take it ($goldFound gold)', nextId: id, goldMod: goldFound),
+        ],
+      );
+    }
+    if (roll < 0.8) {
+      return StoryNode(
+        id: id,
+        description: _pick(random, flavor.rest),
+        choices: const [
+          StoryChoice(text: 'Rest a while', nextId: '', healAmount: 20),
         ],
       );
     }
