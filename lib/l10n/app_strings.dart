@@ -284,6 +284,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No items match this filter.',
     AppLanguage.fr: 'Aucun objet ne correspond à ce filtre.',
   },
+  'interface_section_title': {AppLanguage.en: 'Interface', AppLanguage.fr: 'Interface'},
+  'walk_companion_setting_title': {
+    AppLanguage.en: 'Walking companion',
+    AppLanguage.fr: 'Compagnon qui marche',
+  },
+  'walk_companion_setting_desc': {
+    AppLanguage.en: 'A little companion walks across the page whenever the story moves to a new node.',
+    AppLanguage.fr:
+        "Un petit compagnon traverse la page à chaque fois que l'histoire passe à un nouveau nœud.",
+  },
   'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
   'equip_slot_label': {AppLanguage.en: 'Equip Slot', AppLanguage.fr: "Emplacement d'équipement"},
