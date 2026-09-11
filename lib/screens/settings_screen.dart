@@ -6,6 +6,7 @@ import '../app_info.dart';
 import '../data/map_themes.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/github_push_provider.dart';
 import '../providers/map_theme_provider.dart';
@@ -55,6 +56,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final themeMode = ref.watch(themeModeProvider);
     final trembleEnabled = ref.watch(trembleEnabledProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
+    final appMode = ref.watch(appModeProvider);
+    final isEditMode = appMode == AppMode.edit;
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'settings'))),
@@ -63,6 +66,35 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              tr(ref, 'app_mode_section_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'app_mode_section_desc'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            SegmentedButton<AppMode>(
+              segments: [
+                ButtonSegment(
+                  value: AppMode.edit,
+                  label: Text(tr(ref, 'edit_mode_label')),
+                  icon: const Icon(Icons.edit_outlined),
+                ),
+                ButtonSegment(
+                  value: AppMode.inGame,
+                  label: Text(tr(ref, 'in_game_mode_label')),
+                  icon: const Icon(Icons.sports_esports_outlined),
+                ),
+              ],
+              selected: {appMode},
+              onSelectionChanged: (selection) {
+                ref.read(appModeProvider.notifier).setMode(selection.first);
+              },
+            ),
+            const SizedBox(height: 24),
             Text(
               tr(ref, 'language'),
               style: Theme.of(context).textTheme.titleMedium,
@@ -254,145 +286,148 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     : tr(ref, 'check_for_updates_button'),
               ),
             ),
-            const SizedBox(height: 24),
-            Text(
-              tr(ref, 'gemini_api_key_title'),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              tr(ref, 'gemini_api_key_desc'),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _controller,
-              obscureText: _obscure,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: tr(ref, 'api_key_label'),
-                suffixIcon: IconButton(
-                  icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-                  tooltip: _obscure ? tr(ref, 'show_api_key_tooltip') : tr(ref, 'hide_api_key_tooltip'),
-                  onPressed: () => setState(() => _obscure = !_obscure),
-                ),
+            if (isEditMode) ...[
+              const SizedBox(height: 24),
+              Text(
+                tr(ref, 'gemini_api_key_title'),
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final key = _controller.text.trim();
-                      if (key.isEmpty) return;
-                      await ref.read(apiKeyProvider.notifier).setKey(key);
-                      if (!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(tr(ref, 'api_key_saved'))),
-                      );
-                    },
-                    child: Text(tr(ref, 'save')),
+              const SizedBox(height: 8),
+              Text(
+                tr(ref, 'gemini_api_key_desc'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _controller,
+                obscureText: _obscure,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: tr(ref, 'api_key_label'),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
+                    tooltip:
+                        _obscure ? tr(ref, 'show_api_key_tooltip') : tr(ref, 'hide_api_key_tooltip'),
+                    onPressed: () => setState(() => _obscure = !_obscure),
                   ),
                 ),
-                const SizedBox(width: 12),
-                OutlinedButton(
-                  onPressed: () async {
-                    _controller.clear();
-                    await ref.read(apiKeyProvider.notifier).clearKey();
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(tr(ref, 'api_key_removed'))),
-                    );
-                  },
-                  child: Text(tr(ref, 'clear_button')),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Text(
-              tr(ref, 'github_sync_title'),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              tr(ref, 'github_sync_desc'),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _githubTokenController,
-              obscureText: _obscureGithubToken,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                labelText: tr(ref, 'github_token_label'),
-                suffixIcon: IconButton(
-                  icon: Icon(_obscureGithubToken ? Icons.visibility : Icons.visibility_off),
-                  tooltip: _obscureGithubToken
-                      ? tr(ref, 'show_token_tooltip')
-                      : tr(ref, 'hide_token_tooltip'),
-                  onPressed: () => setState(() => _obscureGithubToken = !_obscureGithubToken),
-                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final key = _controller.text.trim();
+                        if (key.isEmpty) return;
+                        await ref.read(apiKeyProvider.notifier).setKey(key);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(tr(ref, 'api_key_saved'))),
+                        );
+                      },
+                      child: Text(tr(ref, 'save')),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  OutlinedButton(
                     onPressed: () async {
-                      final token = _githubTokenController.text.trim();
-                      if (token.isEmpty) return;
-                      await ref.read(githubTokenProvider.notifier).setToken(token);
+                      _controller.clear();
+                      await ref.read(apiKeyProvider.notifier).clearKey();
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(tr(ref, 'github_token_saved'))),
+                        SnackBar(content: Text(tr(ref, 'api_key_removed'))),
                       );
                     },
-                    child: Text(tr(ref, 'save')),
+                    child: Text(tr(ref, 'clear_button')),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                tr(ref, 'github_sync_title'),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                tr(ref, 'github_sync_desc'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _githubTokenController,
+                obscureText: _obscureGithubToken,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: tr(ref, 'github_token_label'),
+                  suffixIcon: IconButton(
+                    icon: Icon(_obscureGithubToken ? Icons.visibility : Icons.visibility_off),
+                    tooltip: _obscureGithubToken
+                        ? tr(ref, 'show_token_tooltip')
+                        : tr(ref, 'hide_token_tooltip'),
+                    onPressed: () => setState(() => _obscureGithubToken = !_obscureGithubToken),
                   ),
                 ),
-                const SizedBox(width: 12),
-                OutlinedButton(
-                  onPressed: () async {
-                    _githubTokenController.clear();
-                    await ref.read(githubTokenProvider.notifier).clearToken();
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(tr(ref, 'github_token_removed'))),
-                    );
-                  },
-                  child: Text(tr(ref, 'clear_button')),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Text(
-              tr(ref, 'dev_tools_section'),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const PlaythroughSimulatorScreen()),
-                );
-              },
-              icon: const Icon(Icons.play_circle_outline),
-              label: Text(tr(ref, 'auto_playthrough_button')),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed: _pushingEdits ? null : _pushEditsToGithub,
-              icon: _pushingEdits
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.upload),
-              label: Text(tr(ref, 'push_edits_button')),
-            ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final token = _githubTokenController.text.trim();
+                        if (token.isEmpty) return;
+                        await ref.read(githubTokenProvider.notifier).setToken(token);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(tr(ref, 'github_token_saved'))),
+                        );
+                      },
+                      child: Text(tr(ref, 'save')),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  OutlinedButton(
+                    onPressed: () async {
+                      _githubTokenController.clear();
+                      await ref.read(githubTokenProvider.notifier).clearToken();
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(tr(ref, 'github_token_removed'))),
+                      );
+                    },
+                    child: Text(tr(ref, 'clear_button')),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                tr(ref, 'dev_tools_section'),
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const PlaythroughSimulatorScreen()),
+                  );
+                },
+                icon: const Icon(Icons.play_circle_outline),
+                label: Text(tr(ref, 'auto_playthrough_button')),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _pushingEdits ? null : _pushEditsToGithub,
+                icon: _pushingEdits
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.upload),
+                label: Text(tr(ref, 'push_edits_button')),
+              ),
+            ],
             const SizedBox(height: 32),
             Center(
               child: Text(

@@ -10,6 +10,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -138,7 +139,7 @@ class _StoryView extends ConsumerWidget {
                   playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
-                if (!playState.isInExcursion) ...[
+                if (!playState.isInExcursion && ref.watch(appModeProvider) == AppMode.edit) ...[
                   const SizedBox(width: 4),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined, size: 18),
