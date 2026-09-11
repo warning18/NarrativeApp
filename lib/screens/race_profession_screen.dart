@@ -20,6 +20,12 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   String? _selectedRaceId;
   String? _selectedProfessionId;
 
+  // Set once a brand-new character has just been confirmed in this screen
+  // instance, so the character sheet below shows a "Continue" button that
+  // starts the game — as opposed to viewing an already-created character's
+  // sheet from the Character hub, where there's nothing to "start".
+  bool _justCreated = false;
+
   @override
   Widget build(BuildContext context) {
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
@@ -39,6 +45,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                 race: races[session.raceId] as Map<String, dynamic>?,
                 profession: professions[session.professionId] as Map<String, dynamic>?,
                 language: ref.watch(appLanguageProvider),
+                onStartGame:
+                    _justCreated ? () => Navigator.of(context).pop(true) : null,
               );
             }
             return _buildPicker(context, races, professions);
@@ -169,8 +177,11 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       message: '${trFor(lang, 'new_character_prefix')}: ${race['raceName']} '
           '${profession['professionName']}',
     );
-    if (!context.mounted) return;
-    Navigator.of(context).pop(true);
+    if (!mounted) return;
+    // Let the screen rebuild into the character sheet (now that race/
+    // profession are set) instead of popping straight back to the story —
+    // the player reviews their starting stats first, then taps Continue.
+    setState(() => _justCreated = true);
   }
 }
 
@@ -210,21 +221,26 @@ class _PresetCard extends StatelessWidget {
   }
 }
 
-/// Read-only full character info, shown once a race and profession are set.
-/// Race/profession can only be changed by restarting the story from the
-/// beginning (Node 0), not from here.
+/// Full character info, shown once a race and profession are set. Race/
+/// profession can only be changed by restarting the story from the
+/// beginning (Node 0), not from here. When [onStartGame] is set (right
+/// after creating a brand-new character), a Continue button is shown to
+/// carry on into the story; viewed later from the Character hub, it's
+/// read-only.
 class _CharacterSheet extends StatelessWidget {
   const _CharacterSheet({
     required this.session,
     required this.race,
     required this.profession,
     required this.language,
+    this.onStartGame,
   });
 
   final PlayerSession session;
   final Map<String, dynamic>? race;
   final Map<String, dynamic>? profession;
   final AppLanguage language;
+  final VoidCallback? onStartGame;
 
   @override
   Widget build(BuildContext context) {
@@ -299,6 +315,10 @@ class _CharacterSheet extends StatelessWidget {
           t('race_profession_footer_note'),
           style: Theme.of(context).textTheme.bodySmall,
         ),
+        if (onStartGame != null) ...[
+          const SizedBox(height: 20),
+          FilledButton(onPressed: onStartGame, child: Text(t('continue_button'))),
+        ],
       ],
     );
   }
