@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/companion_sprites.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/tutorial_provider.dart';
+
+final List<String> _tutorialFrames = companionFrames('Walking/north', 8);
+const double _tutorialMascotSize = 192;
 
 class _TutorialStep {
   const _TutorialStep({required this.icon, required this.titleKey, required this.bodyKey});
@@ -73,8 +77,23 @@ class _TutorialDialog extends ConsumerStatefulWidget {
   ConsumerState<_TutorialDialog> createState() => _TutorialDialogState();
 }
 
-class _TutorialDialogState extends ConsumerState<_TutorialDialog> {
+class _TutorialDialogState extends ConsumerState<_TutorialDialog>
+    with SingleTickerProviderStateMixin {
   int _step = 0;
+  late final AnimationController _walkController;
+
+  @override
+  void initState() {
+    super.initState();
+    _walkController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _walkController.dispose();
+    super.dispose();
+  }
 
   void _finish() {
     ref.read(tutorialProvider.notifier).markSeen();
@@ -109,13 +128,24 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/visuals/companion/dog_companion_animations/Walking/north/frame_000.png',
-                  width: 64,
-                  height: 64,
-                  filterQuality: FilterQuality.none,
-                  errorBuilder: (context, error, stackTrace) =>
-                      Icon(Icons.pets, size: 64, color: colorScheme.primary),
+                AnimatedBuilder(
+                  animation: _walkController,
+                  builder: (context, _) {
+                    final frame =
+                        (_walkController.value * _tutorialFrames.length).floor() %
+                            _tutorialFrames.length;
+                    return Image.asset(
+                      _tutorialFrames[frame],
+                      width: _tutorialMascotSize,
+                      height: _tutorialMascotSize,
+                      filterQuality: FilterQuality.none,
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        Icons.pets,
+                        size: _tutorialMascotSize,
+                        color: colorScheme.primary,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 AnimatedSwitcher(

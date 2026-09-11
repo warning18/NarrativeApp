@@ -11,6 +11,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/combat_active_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -343,6 +344,7 @@ class _ChoiceButton extends ConsumerWidget {
                 final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
                 final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
                 if (enemy != null) {
+                  ref.read(combatActiveProvider.notifier).state = true;
                   final won = await Navigator.of(context).push<bool>(
                     MaterialPageRoute(
                       builder: (_) => FightScreen(
@@ -351,6 +353,7 @@ class _ChoiceButton extends ConsumerWidget {
                       ),
                     ),
                   );
+                  ref.read(combatActiveProvider.notifier).state = false;
                   if (won != true) return;
                 }
               }
