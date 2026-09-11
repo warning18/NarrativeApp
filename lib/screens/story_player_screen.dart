@@ -143,36 +143,113 @@ class _StoryView extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: SingleChildScrollView(
-                child: _StoryText(text: node.descriptionFor(french)),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 320),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: _nodeTransition,
+                child: SingleChildScrollView(
+                  key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
+                  child: _StoryText(text: node.descriptionFor(french)),
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            if (node.choices.isEmpty)
-              _EndingView(
-                title: tr(ref, 'the_end'),
-                message: tr(ref, 'branch_end_message'),
-                restartLabel: tr(ref, 'restart_story'),
-                onRestart: () => notifier.restart(StoryRepository.startNodeId),
-                session: session,
-              )
-            else
-              ...node.choices.map(
-                (choice) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: _ChoiceButton(
-                    choice: choice,
-                    story: story,
-                    session: session,
-                    currentNodeId: playState.currentNodeId,
-                    isExcursion: playState.isInExcursion,
-                    french: french,
-                  ),
-                ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 320),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              transitionBuilder: _nodeTransition,
+              child: Column(
+                key: ValueKey('${node.id}_${playState.isInExcursion}_choices'),
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (node.choices.isEmpty)
+                    _EndingView(
+                      title: tr(ref, 'the_end'),
+                      message: tr(ref, 'branch_end_message'),
+                      restartLabel: tr(ref, 'restart_story'),
+                      onRestart: () => notifier.restart(StoryRepository.startNodeId),
+                      session: session,
+                    )
+                  else
+                    for (var i = 0; i < node.choices.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _StaggeredReveal(
+                          delay: Duration(milliseconds: 60 * i),
+                          child: _ChoiceButton(
+                            choice: node.choices[i],
+                            story: story,
+                            session: session,
+                            currentNodeId: playState.currentNodeId,
+                            isExcursion: playState.isInExcursion,
+                            french: french,
+                          ),
+                        ),
+                      ),
+                ],
               ),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Fade + subtle upward slide used whenever the story advances to a
+/// different node (or leaves/enters an excursion), for both the narrative
+/// text and the choice list below it.
+Widget _nodeTransition(Widget child, Animation<double> animation) {
+  final offset = Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero).animate(animation);
+  return FadeTransition(
+    opacity: animation,
+    child: SlideTransition(position: offset, child: child),
+  );
+}
+
+/// Fades and slides [child] up into place, starting after [delay] — used to
+/// stagger each choice button's entrance so a fresh node's options reveal
+/// one after another instead of popping in all at once.
+class _StaggeredReveal extends StatefulWidget {
+  const _StaggeredReveal({required this.child, this.delay = Duration.zero});
+
+  final Widget child;
+  final Duration delay;
+
+  @override
+  State<_StaggeredReveal> createState() => _StaggeredRevealState();
+}
+
+class _StaggeredRevealState extends State<_StaggeredReveal> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _offset;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _offset = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    Future.delayed(widget.delay, () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacity,
+      child: SlideTransition(position: _offset, child: widget.child),
     );
   }
 }
