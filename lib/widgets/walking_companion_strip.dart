@@ -4,18 +4,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-/// Sprite frames are picked up automatically from this folder if present
-/// (named walk_01.png, walk_02.png, ... in order, facing left) — see
-/// assets/visuals/companion/README.md. Falls back to a hand-drawn dog when
-/// no frames have been added yet.
-const String _spriteFramePrefix = 'assets/visuals/companion/walk_';
+/// Sprite frames are picked up automatically from this folder if present —
+/// see assets/visuals/companion/README.md. Falls back to a hand-drawn dog
+/// when no frames have been added yet.
+const String _spriteFramePrefix =
+    'assets/visuals/companion/dog_companion_animations/Walking/west/frame_';
 
 /// A thin strip that plays a small walking-companion animation moving from
 /// the right edge to the left edge (east to west) whenever [trigger]
 /// changes — used between the story text and the choice list so each node
 /// transition gets a playful "someone crossed the page" beat.
 class WalkingCompanionStrip extends StatefulWidget {
-  const WalkingCompanionStrip({super.key, required this.trigger, this.height = 28});
+  const WalkingCompanionStrip({super.key, required this.trigger, this.height = 36});
 
   final Object trigger;
   final double height;
@@ -76,14 +76,17 @@ class _WalkingCompanionStripState extends State<WalkingCompanionStrip>
           if (_controller.isDismissed) return const SizedBox.shrink();
           return LayoutBuilder(
             builder: (context, constraints) {
-              const spriteWidth = 40.0;
-              const spriteHeight = 24.0;
+              // The hand-drawn fallback is a wide horizontal silhouette;
+              // real sprite frames (square, e.g. 88x88 source art) read
+              // better a little larger and evenly sized.
+              final spriteWidth = _frames.isEmpty ? 40.0 : 34.0;
+              final spriteHeight = _frames.isEmpty ? 24.0 : 34.0;
               final t = Curves.linear.transform(_controller.value);
               final x = constraints.maxWidth - (constraints.maxWidth + spriteWidth) * t;
               final legPhase = t * 16 * pi;
               final sprite = _frames.isEmpty
                   ? CustomPaint(
-                      size: const Size(spriteWidth, spriteHeight),
+                      size: Size(spriteWidth, spriteHeight),
                       painter: _WalkingDogPainter(
                         legPhase: legPhase,
                         bodyColor: Theme.of(context).colorScheme.onSurface,
