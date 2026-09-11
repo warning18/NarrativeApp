@@ -1,11 +1,19 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
-/// A thin strip that plays a small walking-dog silhouette moving from the
-/// right edge to the left edge (east to west) whenever [trigger] changes —
-/// used between the story text and the choice list so each node transition
-/// gets a playful "someone crossed the page" beat.
+/// Sprite frames are picked up automatically from this folder if present
+/// (named walk_01.png, walk_02.png, ... in order, facing left) — see
+/// assets/visuals/companion/README.md. Falls back to a hand-drawn dog when
+/// no frames have been added yet.
+const String _spriteFramePrefix = 'assets/visuals/companion/walk_';
+
+/// A thin strip that plays a small walking-companion animation moving from
+/// the right edge to the left edge (east to west) whenever [trigger]
+/// changes — used between the story text and the choice list so each node
+/// transition gets a playful "someone crossed the page" beat.
 class WalkingCompanionStrip extends StatefulWidget {
   const WalkingCompanionStrip({super.key, required this.trigger, this.height = 28});
 
@@ -19,11 +27,28 @@ class WalkingCompanionStrip extends StatefulWidget {
 class _WalkingCompanionStripState extends State<WalkingCompanionStrip>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
+  List<String> _frames = const [];
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600));
+    _loadFrames();
+  }
+
+  Future<void> _loadFrames() async {
+    try {
+      final manifestJson = await rootBundle.loadString('AssetManifest.json');
+      final manifest = json.decode(manifestJson) as Map<String, dynamic>;
+      final frames = manifest.keys.where((path) => path.startsWith(_spriteFramePrefix)).toList()
+        ..sort();
+      if (mounted && frames.isNotEmpty) {
+        setState(() => _frames = frames);
+      }
+    } catch (_) {
+      // No manifest yet, or nothing under assets/visuals/companion/ —
+      // keep using the hand-drawn fallback below.
+    }
   }
 
   @override
@@ -52,24 +77,34 @@ class _WalkingCompanionStripState extends State<WalkingCompanionStrip>
           return LayoutBuilder(
             builder: (context, constraints) {
               const spriteWidth = 40.0;
+              const spriteHeight = 24.0;
               final t = Curves.linear.transform(_controller.value);
               final x = constraints.maxWidth - (constraints.maxWidth + spriteWidth) * t;
               final legPhase = t * 16 * pi;
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Positioned(
-                    left: x,
-                    bottom: 0,
-                    child: CustomPaint(
-                      size: const Size(spriteWidth, 24),
+              final sprite = _frames.isEmpty
+                  ? CustomPaint(
+                      size: const Size(spriteWidth, spriteHeight),
                       painter: _WalkingDogPainter(
                         legPhase: legPhase,
                         bodyColor: Theme.of(context).colorScheme.onSurface,
                         patchColor: Theme.of(context).colorScheme.surface,
                       ),
-                    ),
-                  ),
+                    )
+                  : SizedBox(
+                      width: spriteWidth,
+                      height: spriteHeight,
+                      // A handful of walk cycles across the crossing, cycling
+                      // through whatever frames were found.
+                      child: Image.asset(
+                        _frames[(t * _frames.length * 4).floor() % _frames.length],
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.none,
+                      ),
+                    );
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(left: x, bottom: 0, child: sprite),
                 ],
               );
             },
