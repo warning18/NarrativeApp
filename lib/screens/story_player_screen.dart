@@ -16,6 +16,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/tts_provider.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
@@ -54,7 +55,18 @@ class _StoryView extends ConsumerWidget {
     final notifier = ref.read(storyPlayProvider.notifier);
     final session = ref.watch(playerSessionProvider);
     final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
-    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final language = ref.watch(appLanguageProvider);
+    final french = language == AppLanguage.fr;
+
+    // Stop any in-progress narration when the story moves to a different
+    // node, so stale audio never plays over newly-displayed text.
+    ref.listen<StoryPlayState>(storyPlayProvider, (previous, next) {
+      final prevId = previous?.activeExcursionNode?.id ?? previous?.currentNodeId;
+      final nextId = next.activeExcursionNode?.id ?? next.currentNodeId;
+      if (prevId != nextId) {
+        ref.read(ttsProvider.notifier).stop();
+      }
+    });
 
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
     if (pendingDiscovery != null) {
@@ -120,6 +132,8 @@ class _StoryView extends ConsumerWidget {
                     label: Text(tr(ref, 'back')),
                   ),
                 const Spacer(),
+                _ReadAloudButton(text: node.descriptionFor(french), language: language),
+                const SizedBox(width: 4),
                 Text(
                   playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
                   style: Theme.of(context).textTheme.labelMedium,
@@ -389,6 +403,47 @@ class _ChoiceButton extends ConsumerWidget {
   }
 }
 
+/// Toggles reading the current node's narrative text aloud via the device's
+/// text-to-speech engine — voiced in whichever language the app is set to.
+/// Tapping again while speaking stops it.
+class _ReadAloudButton extends ConsumerWidget {
+  const _ReadAloudButton({required this.text, required this.language});
+
+  final String text;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSpeaking = ref.watch(ttsProvider);
+    return IconButton(
+      icon: Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
+      tooltip: isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip'),
+      visualDensity: VisualDensity.compact,
+      onPressed: () {
+        final notifier = ref.read(ttsProvider.notifier);
+        if (isSpeaking) {
+          notifier.stop();
+        } else {
+          notifier.speak(storyBodyFor(text), language);
+        }
+      },
+    );
+  }
+}
+
+final RegExp _storyHeaderPattern = RegExp(r'^\[(.+?)\]\s*');
+
+/// This node's `[CHAPTER N: TITLE]`-style leading header, if present.
+String? storyHeaderFor(String text) => _storyHeaderPattern.firstMatch(text)?.group(1);
+
+/// This node's narrative text with any leading `[CHAPTER N: TITLE]`-style
+/// header stripped off — used both for on-screen rendering and for what
+/// the read-aloud button speaks, so the header isn't read out loud.
+String storyBodyFor(String text) {
+  final match = _storyHeaderPattern.firstMatch(text);
+  return (match != null ? text.substring(match.end) : text).trim();
+}
+
 /// Renders a story node's narrative text with a book-like presentation:
 /// a leading `[CHAPTER N: TITLE]`-style header (if present) is pulled out
 /// and styled as a centered heading with a divider, and the body gets
@@ -398,13 +453,10 @@ class _StoryText extends StatelessWidget {
 
   final String text;
 
-  static final RegExp _headerPattern = RegExp(r'^\[(.+?)\]\s*');
-
   @override
   Widget build(BuildContext context) {
-    final match = _headerPattern.firstMatch(text);
-    final header = match?.group(1);
-    final body = (match != null ? text.substring(match.end) : text).trim();
+    final header = storyHeaderFor(text);
+    final body = storyBodyFor(text);
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(

@@ -19,6 +19,15 @@ class _NodeStyle {
   final Color color;
   final IconData icon;
   final double radius;
+
+  /// A readable text/icon color for this node, computed from [color]'s
+  /// actual brightness rather than assumed — [color] is a fixed light
+  /// pastel for most kinds, but the generic kind uses a theme-adaptive
+  /// surface color that turns dark in dark mode, where a hardcoded dark
+  /// text color would be unreadable.
+  Color get onColor => ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+      ? Colors.white
+      : Colors.black87;
 }
 
 _NodeKind _classify(StoryNode node) {
@@ -186,13 +195,13 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                       Icon(
                         style.icon,
                         size: 14,
-                        color: isCurrent ? colorScheme.onPrimary : Colors.black87,
+                        color: isCurrent ? colorScheme.onPrimary : style.onColor,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         id,
                         style: TextStyle(
-                          color: isCurrent ? colorScheme.onPrimary : Colors.black87,
+                          color: isCurrent ? colorScheme.onPrimary : style.onColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
