@@ -631,6 +631,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Combat encounters',
     AppLanguage.fr: 'Rencontres de combat',
   },
+  'fixed_face_label': {AppLanguage.en: 'Fixed', AppLanguage.fr: 'Fixe'},
+  'only_suffix': {AppLanguage.en: 'only', AppLanguage.fr: 'seulement'},
+  'xp_earned_label': {AppLanguage.en: 'XP earned this run', AppLanguage.fr: 'XP gagnée cette partie'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

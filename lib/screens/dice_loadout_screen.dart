@@ -7,6 +7,19 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/detail_dialog.dart';
+
+/// A face's signature skill (non-empty `linkedSkillID`, other than the
+/// universal `heavy_attack` filler every die carries) is the die's fixed
+/// identity move and can't be reassigned. Faces with no linkedSkillID, or
+/// with the generic `heavy_attack`, are open slots the player can fill
+/// with any of their unlocked skills (subject to the face's element, if
+/// it has one other than "None").
+bool _isFixedSkillFace(Map<String, dynamic> face) {
+  if (face['type'] != 'Skill') return false;
+  final linked = face['linkedSkillID']?.toString() ?? '';
+  return linked.isNotEmpty && linked != 'heavy_attack';
+}
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key});
@@ -53,10 +66,6 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
     final faces = (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
-    final skillFaceIndexes = [
-      for (var i = 0; i < faces.length; i++)
-        if (faces[i]['type'] == 'Skill') i,
-    ];
     final assignments = session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
@@ -65,6 +74,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           entry.key,
     }.toList()
       ..sort();
+    final language = ref.watch(appLanguageProvider);
 
     return Column(
       children: [
@@ -91,35 +101,41 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
-              if (skillFaceIndexes.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: Text(tr(ref, 'no_skill_faces')),
-                )
-              else
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: skillFaceIndexes.map((index) {
-                    final face = faces[index];
-                    final assignedSkillId = assignments[index.toString()];
-                    final defaultSkillId = face['linkedSkillID']?.toString() ?? '';
-                    return _FaceSlot(
-                      face: face,
-                      assignedSkillId: assignedSkillId,
-                      defaultSkillId: defaultSkillId,
-                      language: ref.watch(appLanguageProvider),
-                      onAccept: (skillId) => ref
-                          .read(playerSessionProvider.notifier)
-                          .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
-                      onClear: assignedSkillId == null
-                          ? null
-                          : () => ref
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  for (var index = 0; index < faces.length; index++)
+                    if (faces[index]['type'] == 'Skill')
+                      Builder(builder: (context) {
+                        final face = faces[index];
+                        final assignedSkillId = assignments[index.toString()];
+                        final defaultSkillId = face['linkedSkillID']?.toString() ?? '';
+                        final locked = _isFixedSkillFace(face);
+                        final faceElement = face['element']?.toString() ?? 'None';
+                        return _FaceSlot(
+                          face: face,
+                          assignedSkillId: assignedSkillId,
+                          defaultSkillId: defaultSkillId,
+                          language: language,
+                          locked: locked,
+                          restrictionElement: faceElement != 'None' ? faceElement : null,
+                          skills: skills,
+                          onAccept: (skillId) => ref
                               .read(playerSessionProvider.notifier)
-                              .clearDiceFaceSkill(_selectedDiceId!, index),
-                    );
-                  }).toList(),
-                ),
+                              .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
+                          onClear: (locked || assignedSkillId == null)
+                              ? null
+                              : () => ref
+                                  .read(playerSessionProvider.notifier)
+                                  .clearDiceFaceSkill(_selectedDiceId!, index),
+                          onShowDetail: (skillId) => _showSkillDetail(context, skillId, skills[skillId] as Map<String, dynamic>?),
+                        );
+                      })
+                    else
+                      _StaticFaceCard(face: faces[index]),
+                ],
+              ),
               const Divider(height: 40),
               Text(tr(ref, 'your_unlocked_skills'), style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
@@ -137,6 +153,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     return _SkillChip(
                       skillId: id,
                       element: skill?['element']?.toString(),
+                      onTap: () => _showSkillDetail(context, id, skill),
                     );
                   }).toList(),
                 ),
@@ -147,19 +164,83 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       ],
     );
   }
+
+  void _showSkillDetail(BuildContext context, String skillId, Map<String, dynamic>? skill) {
+    final lang = ref.read(appLanguageProvider);
+    String t(String key) => trFor(lang, key);
+    final element = skill?['element']?.toString();
+    final cost = (skill?['cost'] as num?)?.toInt() ?? 0;
+    final requiredSkillId = skill?['requiredSkillID']?.toString() ?? '';
+
+    showDetailDialog(
+      context,
+      title: skillId,
+      description: skill?['description']?.toString() ?? '',
+      icon: elementIcon(element),
+      closeLabel: t('close_button'),
+      rows: [
+        MapEntry(t('element_label'), element ?? t('none_label')),
+        MapEntry(t('cost_label'), '$cost'),
+        MapEntry(t('damage_mod_label'), '${skill?['damageMod'] ?? 0}'),
+        MapEntry(t('damage_multiplier_label'), '${skill?['damageMultiplier'] ?? 1.0}'),
+        MapEntry(t('heal_amount'), '${skill?['healAmount'] ?? 0}'),
+        if (requiredSkillId.isNotEmpty) MapEntry(t('requires_label'), requiredSkillId),
+        MapEntry(
+          t('active_skill_label'),
+          (skill?['isActiveSkill'] as bool? ?? true) ? t('yes_label') : t('no_label'),
+        ),
+      ],
+    );
+  }
 }
 
-class _SkillChip extends StatelessWidget {
-  const _SkillChip({required this.skillId, this.element});
+class _StaticFaceCard extends StatelessWidget {
+  const _StaticFaceCard({required this.face});
 
-  final String skillId;
-  final String? element;
+  final Map<String, dynamic> face;
 
   @override
   Widget build(BuildContext context) {
-    final chip = Chip(
-      avatar: Icon(elementIcon(element), size: 18),
-      label: Text(skillId),
+    final faceName = face['faceName']?.toString() ?? '';
+    final type = face['type']?.toString() ?? '';
+    final value = (face['value'] as num?)?.toInt() ?? 0;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 160,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: colorScheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(faceName, style: Theme.of(context).textTheme.titleSmall),
+          const SizedBox(height: 6),
+          Text('$type · $value', style: Theme.of(context).textTheme.bodySmall),
+        ],
+      ),
+    );
+  }
+}
+
+class _SkillChip extends StatelessWidget {
+  const _SkillChip({required this.skillId, this.element, this.onTap});
+
+  final String skillId;
+  final String? element;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final chip = GestureDetector(
+      onTap: onTap,
+      child: Chip(
+        avatar: Icon(elementIcon(element), size: 18),
+        label: Text(skillId),
+      ),
     );
     return Draggable<String>(
       data: skillId,
@@ -178,6 +259,10 @@ class _FaceSlot extends StatelessWidget {
     required this.language,
     required this.onAccept,
     required this.onClear,
+    required this.locked,
+    required this.skills,
+    this.restrictionElement,
+    this.onShowDetail,
   });
 
   final Map<String, dynamic> face;
@@ -186,6 +271,12 @@ class _FaceSlot extends StatelessWidget {
   final AppLanguage language;
   final ValueChanged<String> onAccept;
   final VoidCallback? onClear;
+  final bool locked;
+  final Map<String, dynamic> skills;
+
+  /// When set, only skills whose own `element` matches this may be dropped.
+  final String? restrictionElement;
+  final ValueChanged<String>? onShowDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -193,19 +284,24 @@ class _FaceSlot extends StatelessWidget {
     final effectiveSkillId = assignedSkillId ?? (defaultSkillId.isNotEmpty ? defaultSkillId : null);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return DragTarget<String>(
-      onAcceptWithDetails: (details) => onAccept(details.data),
-      builder: (context, candidateData, rejectedData) {
-        final isHovering = candidateData.isNotEmpty;
-        return Container(
+    Widget content(bool isHovering, bool isInvalidHover) {
+      return GestureDetector(
+        onTap: effectiveSkillId != null && onShowDetail != null
+            ? () => onShowDetail!(effectiveSkillId)
+            : null,
+        child: Container(
           width: 160,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isHovering ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest,
+            color: isInvalidHover
+                ? colorScheme.errorContainer
+                : (isHovering ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
-              color: isHovering ? colorScheme.primary : colorScheme.outline,
-              width: isHovering ? 2 : 1,
+              color: isInvalidHover
+                  ? colorScheme.error
+                  : (isHovering ? colorScheme.primary : colorScheme.outline),
+              width: (isHovering || isInvalidHover) ? 2 : 1,
             ),
           ),
           child: Column(
@@ -218,7 +314,9 @@ class _FaceSlot extends StatelessWidget {
                   Expanded(
                     child: Text(faceName, style: Theme.of(context).textTheme.titleSmall),
                   ),
-                  if (onClear != null)
+                  if (locked)
+                    Icon(Icons.lock_outline, size: 16, color: colorScheme.outline)
+                  else if (onClear != null)
                     IconButton(
                       icon: const Icon(Icons.close, size: 16),
                       tooltip: trFor(language, 'clear_assigned_skill_tooltip'),
@@ -234,7 +332,12 @@ class _FaceSlot extends StatelessWidget {
                       fontStyle: effectiveSkillId == null ? FontStyle.italic : FontStyle.normal,
                     ),
               ),
-              if (assignedSkillId != null)
+              if (locked)
+                Text(
+                  trFor(language, 'fixed_face_label'),
+                  style: Theme.of(context).textTheme.labelSmall,
+                )
+              else if (assignedSkillId != null)
                 Text(
                   trFor(language, 'custom_label'),
                   style: Theme.of(context)
@@ -242,9 +345,31 @@ class _FaceSlot extends StatelessWidget {
                       .labelSmall
                       ?.copyWith(color: colorScheme.primary),
                 ),
+              if (!locked && restrictionElement != null)
+                Text(
+                  '$restrictionElement ${trFor(language, 'only_suffix')}',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
             ],
           ),
-        );
+        ),
+      );
+    }
+
+    if (locked) return content(false, false);
+
+    return DragTarget<String>(
+      onWillAcceptWithDetails: (details) {
+        final restriction = restrictionElement;
+        if (restriction == null) return true;
+        final skillElement = (skills[details.data] as Map<String, dynamic>?)?['element']?.toString();
+        return skillElement == restriction;
+      },
+      onAcceptWithDetails: (details) => onAccept(details.data),
+      builder: (context, candidateData, rejectedData) {
+        final isHovering = candidateData.isNotEmpty;
+        final isInvalidHover = rejectedData.isNotEmpty && candidateData.isEmpty;
+        return content(isHovering, isInvalidHover);
       },
     );
   }
