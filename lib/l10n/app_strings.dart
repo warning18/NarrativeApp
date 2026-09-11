@@ -651,6 +651,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Sélectionné. Touchez-en un second pour comparer.',
   },
   'vs_equipped_suffix': {AppLanguage.en: '(equipped)', AppLanguage.fr: '(équipé)'},
+  'category_label': {AppLanguage.en: 'Category', AppLanguage.fr: 'Catégorie'},
+  'required_gold_label': {AppLanguage.en: 'Required Gold', AppLanguage.fr: 'Or requis'},
+  'required_flags_label': {AppLanguage.en: 'Requires', AppLanguage.fr: 'Nécessite'},
+  'reward_gold_label': {AppLanguage.en: 'Reward Gold', AppLanguage.fr: 'Récompense (or)'},
+  'reward_xp_label': {AppLanguage.en: 'Reward XP', AppLanguage.fr: 'Récompense (XP)'},
+  'reward_item_label': {AppLanguage.en: 'Reward Item', AppLanguage.fr: 'Récompense (objet)'},
+  'reward_dice_label': {AppLanguage.en: 'Reward Die', AppLanguage.fr: 'Récompense (dé)'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

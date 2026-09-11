@@ -9,6 +9,8 @@ Future<void> showDetailDialog(
   IconData? icon,
   List<MapEntry<String, String>> rows = const [],
   String closeLabel = 'Close',
+  String? extraActionLabel,
+  VoidCallback? onExtraAction,
 }) {
   return showDialog<void>(
     context: context,
@@ -60,6 +62,14 @@ Future<void> showDetailDialog(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(closeLabel),
         ),
+        if (extraActionLabel != null && onExtraAction != null)
+          FilledButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              onExtraAction();
+            },
+            child: Text(extraActionLabel),
+          ),
       ],
     ),
   );
