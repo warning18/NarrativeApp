@@ -268,6 +268,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'bought_prefix': {AppLanguage.en: 'Bought', AppLanguage.fr: 'Achat de'},
   'for_label': {AppLanguage.en: 'for', AppLanguage.fr: 'pour'},
   'owned_label': {AppLanguage.en: 'Owned', AppLanguage.fr: 'Possédé'},
+  'continue_button': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'sort_name': {AppLanguage.en: 'Name (A-Z)', AppLanguage.fr: 'Nom (A-Z)'},
+  'sort_price_low': {
+    AppLanguage.en: 'Price: Low to High',
+    AppLanguage.fr: 'Prix : croissant',
+  },
+  'sort_price_high': {
+    AppLanguage.en: 'Price: High to Low',
+    AppLanguage.fr: 'Prix : décroissant',
+  },
+  'sort_stock': {AppLanguage.en: 'Most in stock', AppLanguage.fr: 'Plus en stock'},
+  'filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tous'},
+  'shop_filtered_empty': {
+    AppLanguage.en: 'No items match this filter.',
+    AppLanguage.fr: 'Aucun objet ne correspond à ce filtre.',
+  },
   'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
   'equip_slot_label': {AppLanguage.en: 'Equip Slot', AppLanguage.fr: "Emplacement d'équipement"},
