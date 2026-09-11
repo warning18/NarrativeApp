@@ -634,6 +634,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fixed_face_label': {AppLanguage.en: 'Fixed', AppLanguage.fr: 'Fixe'},
   'only_suffix': {AppLanguage.en: 'only', AppLanguage.fr: 'seulement'},
   'xp_earned_label': {AppLanguage.en: 'XP earned this run', AppLanguage.fr: 'XP gagnée cette partie'},
+  'equip_button': {AppLanguage.en: 'Equip', AppLanguage.fr: 'Équiper'},
+  'sold_out_label': {AppLanguage.en: 'Sold out', AppLanguage.fr: 'Épuisé'},
+  'left_suffix': {AppLanguage.en: 'left', AppLanguage.fr: 'restant(s)'},
+  'compare_button': {AppLanguage.en: 'Compare', AppLanguage.fr: 'Comparer'},
+  'compare_hint_items': {
+    AppLanguage.en: 'Tap two items to compare them.',
+    AppLanguage.fr: 'Touchez deux objets pour les comparer.',
+  },
+  'compare_hint_skills': {
+    AppLanguage.en: 'Tap two skills to compare them.',
+    AppLanguage.fr: 'Touchez deux compétences pour les comparer.',
+  },
+  'compare_first_selected': {
+    AppLanguage.en: 'Selected. Now tap a second one to compare.',
+    AppLanguage.fr: 'Sélectionné. Touchez-en un second pour comparer.',
+  },
+  'vs_equipped_suffix': {AppLanguage.en: '(equipped)', AppLanguage.fr: '(équipé)'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

@@ -545,6 +545,14 @@ final DbSchema shopsSchema = DbSchema(
       referenceSchemaId: 'items',
     ),
     FieldSchema(
+      key: 'stockQuantities',
+      label: 'Stock Quantities {itemID: quantity} — how many units of each '
+          'Initial Stock item this shop has to sell (missing entries default '
+          'to 1). Sold-out items stop being purchasable; stock never '
+          'replenishes.',
+      type: FieldType.json,
+    ),
+    FieldSchema(
       key: 'diceStock',
       label: 'Dice For Sale',
       type: FieldType.referenceList,

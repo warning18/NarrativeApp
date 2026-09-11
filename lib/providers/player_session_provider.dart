@@ -43,6 +43,7 @@ class PlayerSession {
     required this.ownedDiceIds,
     required this.equippedDiceId,
     this.xpEarnedThisRun = 0,
+    this.shopPurchaseCounts = const {},
   });
 
   final int level;
@@ -81,6 +82,12 @@ class PlayerSession {
   /// XP gained since the last new game / permadeath reset — a recap metric
   /// only, not a gameplay stat; doesn't affect level or anything else.
   final int xpEarnedThisRun;
+
+  /// How many units of each item a shop has sold so far, keyed by
+  /// "shopID::itemID". Shops have a fixed stock (see [DbSchema] shops'
+  /// stockQuantities field) that doesn't replenish, so this persists across
+  /// sessions and survives permadeath (losing an item doesn't restock it).
+  final Map<String, int> shopPurchaseCounts;
 
   int get xpToNextLevel => level * 100;
 
@@ -133,6 +140,7 @@ class PlayerSession {
     List<String>? ownedDiceIds,
     String? equippedDiceId,
     int? xpEarnedThisRun,
+    Map<String, int>? shopPurchaseCounts,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -162,6 +170,7 @@ class PlayerSession {
       ownedDiceIds: ownedDiceIds ?? this.ownedDiceIds,
       equippedDiceId: equippedDiceId ?? this.equippedDiceId,
       xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
+      shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
     );
   }
 
@@ -193,6 +202,7 @@ class PlayerSession {
         'ownedDiceIds': ownedDiceIds,
         'equippedDiceId': equippedDiceId,
         'xpEarnedThisRun': xpEarnedThisRun,
+        'shopPurchaseCounts': shopPurchaseCounts,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -241,6 +251,10 @@ class PlayerSession {
           (json['ownedDiceIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       equippedDiceId: json['equippedDiceId'] as String?,
       xpEarnedThisRun: (json['xpEarnedThisRun'] as num?)?.toInt() ?? 0,
+      shopPurchaseCounts: (json['shopPurchaseCounts'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
     );
   }
 }
@@ -501,11 +515,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> buyItem(String itemId, int cost) async {
-    if (state.gold < cost) return;
+  /// Buys [itemId] from [shopId]. Shops have a fixed stock per item
+  /// ([stockLimit], from the shop's stockQuantities data) that this tracks
+  /// via [PlayerSession.shopPurchaseCounts] and never replenishes.
+  Future<void> buyItem(String shopId, String itemId, int cost, int stockLimit) async {
+    final key = '$shopId::$itemId';
+    final purchased = state.shopPurchaseCounts[key] ?? 0;
+    if (state.gold < cost || purchased >= stockLimit) return;
     state = state.copyWith(
       gold: state.gold - cost,
       inventoryItemIds: [...state.inventoryItemIds, itemId],
+      shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
     );
     await _persist();
   }

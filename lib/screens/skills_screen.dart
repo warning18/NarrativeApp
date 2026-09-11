@@ -7,20 +7,91 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 
-class SkillsScreen extends ConsumerWidget {
+class SkillsScreen extends ConsumerStatefulWidget {
   const SkillsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SkillsScreen> createState() => _SkillsScreenState();
+}
+
+class _SkillsScreenState extends ConsumerState<SkillsScreen> {
+  bool _compareMode = false;
+  String? _firstCompareId;
+
+  void _toggleCompareMode() {
+    setState(() {
+      _compareMode = !_compareMode;
+      _firstCompareId = null;
+    });
+  }
+
+  void _onCompareTap(BuildContext context, Map<String, dynamic> records, String skillId) {
+    if (_firstCompareId == null) {
+      setState(() => _firstCompareId = skillId);
+      return;
+    }
+    if (_firstCompareId == skillId) return;
+    final firstId = _firstCompareId!;
+    final skillA = records[firstId] as Map<String, dynamic>?;
+    final skillB = records[skillId] as Map<String, dynamic>?;
+    final lang = ref.read(appLanguageProvider);
+    num v(Map<String, dynamic>? skill, String key) => (skill?[key] as num?) ?? 0;
+    showCompareDialog(
+      context,
+      titleA: firstId,
+      titleB: skillId,
+      closeLabel: trFor(lang, 'close_button'),
+      rows: [
+        CompareRow(
+          label: trFor(lang, 'cost_label'),
+          valueA: v(skillA, 'cost'),
+          valueB: v(skillB, 'cost'),
+          higherIsBetter: false,
+        ),
+        CompareRow(
+          label: trFor(lang, 'damage_mod_label'),
+          valueA: v(skillA, 'damageMod'),
+          valueB: v(skillB, 'damageMod'),
+        ),
+        CompareRow(
+          label: trFor(lang, 'damage_multiplier_label'),
+          valueA: v(skillA, 'damageMultiplier'),
+          valueB: v(skillB, 'damageMultiplier'),
+        ),
+        CompareRow(
+          label: trFor(lang, 'heal_amount'),
+          valueA: v(skillA, 'healAmount'),
+          valueB: v(skillB, 'healAmount'),
+        ),
+      ],
+    );
+    setState(() {
+      _compareMode = false;
+      _firstCompareId = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final session = ref.watch(playerSessionProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'skills'))),
+      appBar: AppBar(
+        title: Text(tr(ref, 'skills')),
+        actions: [
+          IconButton(
+            icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
+            tooltip: tr(ref, 'compare_button'),
+            onPressed: _toggleCompareMode,
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -35,12 +106,26 @@ class SkillsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          if (_compareMode)
+            Container(
+              width: double.infinity,
+              color: Theme.of(context).colorScheme.primaryContainer,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(
+                _firstCompareId == null
+                    ? tr(ref, 'compare_hint_skills')
+                    : tr(ref, 'compare_first_selected'),
+              ),
+            ),
           Expanded(
             child: skillsAsync.when(
               data: (records) => _SkillList(
                 records: records,
                 races: racesAsync.value ?? const {},
                 professions: professionsAsync.value ?? const {},
+                compareMode: _compareMode,
+                firstCompareId: _firstCompareId,
+                onCompareTap: (id) => _onCompareTap(context, records, id),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stack) =>
@@ -54,11 +139,21 @@ class SkillsScreen extends ConsumerWidget {
 }
 
 class _SkillList extends ConsumerWidget {
-  const _SkillList({required this.records, required this.races, required this.professions});
+  const _SkillList({
+    required this.records,
+    required this.races,
+    required this.professions,
+    required this.compareMode,
+    required this.firstCompareId,
+    required this.onCompareTap,
+  });
 
   final Map<String, dynamic> records;
   final Map<String, dynamic> races;
   final Map<String, dynamic> professions;
+  final bool compareMode;
+  final String? firstCompareId;
+  final ValueChanged<String> onCompareTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -108,8 +203,10 @@ class _SkillList extends ConsumerWidget {
         final restrictionOk = meetsRestriction(skill);
         final restriction = restrictionLabel(skill);
 
-        Widget trailing;
-        if (available) {
+        Widget? trailing;
+        if (compareMode) {
+          trailing = null;
+        } else if (available) {
           trailing = const Icon(Icons.check_circle, color: Colors.green);
         } else if (!restrictionOk) {
           trailing = const Icon(Icons.lock_outline);
@@ -138,41 +235,46 @@ class _SkillList extends ConsumerWidget {
         ];
 
         return Card(
+          color: firstCompareId == id ? Theme.of(context).colorScheme.tertiaryContainer : null,
           child: ListTile(
             leading: Icon(elementIcon(element)),
             title: Text(id),
             subtitle: Text(subtitleParts.join(' · ')),
             isThreeLine: description.isNotEmpty,
             trailing: trailing,
-            onTap: () => showDetailDialog(
-              context,
-              title: id,
-              description: description,
-              icon: elementIcon(element),
-              closeLabel: tr(ref, 'close_button'),
-              rows: [
-                MapEntry(tr(ref, 'element_label'), element ?? tr(ref, 'none_label')),
-                MapEntry(tr(ref, 'cost_label'), '$cost'),
-                MapEntry(tr(ref, 'damage_mod_label'), '${skill['damageMod'] ?? 0}'),
-                MapEntry(
-                  tr(ref, 'damage_multiplier_label'),
-                  '${skill['damageMultiplier'] ?? 1.0}',
-                ),
-                MapEntry(tr(ref, 'heal_amount'), '${skill['healAmount'] ?? 0}'),
-                if (requiredSkillId.isNotEmpty)
-                  MapEntry(tr(ref, 'requires_label'), requiredSkillId),
-                if (restriction.isNotEmpty)
-                  MapEntry(tr(ref, 'restriction_label'), restriction),
-                MapEntry(
-                  tr(ref, 'active_skill_label'),
-                  (skill['isActiveSkill'] as bool? ?? true) ? tr(ref, 'yes_label') : tr(ref, 'no_label'),
-                ),
-                MapEntry(
-                  tr(ref, 'status_label'),
-                  available ? tr(ref, 'unlocked_prefix') : tr(ref, 'status_locked'),
-                ),
-              ],
-            ),
+            onTap: compareMode
+                ? () => onCompareTap(id)
+                : () => showDetailDialog(
+                      context,
+                      title: id,
+                      description: description,
+                      icon: elementIcon(element),
+                      closeLabel: tr(ref, 'close_button'),
+                      rows: [
+                        MapEntry(tr(ref, 'element_label'), element ?? tr(ref, 'none_label')),
+                        MapEntry(tr(ref, 'cost_label'), '$cost'),
+                        MapEntry(tr(ref, 'damage_mod_label'), '${skill['damageMod'] ?? 0}'),
+                        MapEntry(
+                          tr(ref, 'damage_multiplier_label'),
+                          '${skill['damageMultiplier'] ?? 1.0}',
+                        ),
+                        MapEntry(tr(ref, 'heal_amount'), '${skill['healAmount'] ?? 0}'),
+                        if (requiredSkillId.isNotEmpty)
+                          MapEntry(tr(ref, 'requires_label'), requiredSkillId),
+                        if (restriction.isNotEmpty)
+                          MapEntry(tr(ref, 'restriction_label'), restriction),
+                        MapEntry(
+                          tr(ref, 'active_skill_label'),
+                          (skill['isActiveSkill'] as bool? ?? true)
+                              ? tr(ref, 'yes_label')
+                              : tr(ref, 'no_label'),
+                        ),
+                        MapEntry(
+                          tr(ref, 'status_label'),
+                          available ? tr(ref, 'unlocked_prefix') : tr(ref, 'status_locked'),
+                        ),
+                      ],
+                    ),
           ),
         );
       }).toList(),
