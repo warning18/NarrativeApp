@@ -706,6 +706,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'link_copied_message': {AppLanguage.en: 'Link copied.', AppLanguage.fr: 'Lien copié.'},
   'push_failed_prefix': {AppLanguage.en: 'Push failed', AppLanguage.fr: "Échec de l'envoi"},
   'push_button': {AppLanguage.en: 'Push', AppLanguage.fr: 'Envoyer'},
+  'strategy_label': {AppLanguage.en: 'Strategy', AppLanguage.fr: 'Stratégie'},
+  'sim_strategy_random': {AppLanguage.en: 'Random', AppLanguage.fr: 'Aléatoire'},
+  'sim_strategy_favor_good': {AppLanguage.en: 'Favor Good', AppLanguage.fr: 'Favoriser le bien'},
+  'sim_strategy_favor_evil': {AppLanguage.en: 'Favor Evil', AppLanguage.fr: 'Favoriser le mal'},
+  'sim_strategy_maximize_gold': {
+    AppLanguage.en: 'Maximize Gold',
+    AppLanguage.fr: "Maximiser l'or",
+  },
+  'runs_label': {AppLanguage.en: 'Runs', AppLanguage.fr: 'Parties'},
+  'clear_all_button': {AppLanguage.en: 'Clear All', AppLanguage.fr: 'Tout effacer'},
+  'no_batches_yet_message': {
+    AppLanguage.en: 'Run a simulation to see results here.',
+    AppLanguage.fr: 'Lancez une simulation pour voir les résultats ici.',
+  },
+  'endings_label': {AppLanguage.en: 'Endings', AppLanguage.fr: 'Fins'},
+  'individual_runs_label': {AppLanguage.en: 'Individual Runs', AppLanguage.fr: 'Parties individuelles'},
+  'exceeded_step_cap_label': {
+    AppLanguage.en: 'did not reach an ending (hit the step limit)',
+    AppLanguage.fr: "n'ont pas atteint de fin (limite de pas atteinte)",
+  },
+  'furthest_chapter_label': {
+    AppLanguage.en: 'Furthest chapter reached',
+    AppLanguage.fr: 'Chapitre le plus avancé atteint',
+  },
+  'unique_nodes_visited_label': {
+    AppLanguage.en: 'Unique nodes visited',
+    AppLanguage.fr: 'Nœuds uniques visités',
+  },
+  'total_steps_label': {AppLanguage.en: 'total steps', AppLanguage.fr: 'pas au total'},
+  'flags_collected_label': {AppLanguage.en: 'Flags collected', AppLanguage.fr: 'Drapeaux collectés'},
+  'read_aloud_tooltip': {AppLanguage.en: 'Read aloud', AppLanguage.fr: 'Lire à voix haute'},
+  'stop_reading_tooltip': {AppLanguage.en: 'Stop reading', AppLanguage.fr: 'Arrêter la lecture'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

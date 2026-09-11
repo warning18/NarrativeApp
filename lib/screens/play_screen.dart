@@ -61,31 +61,58 @@ class PlayScreen extends ConsumerWidget {
             },
           ),
         ),
-        const Divider(height: 32),
-        Text(tr(ref, 'quests'), style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        questsAsync.when(
-          data: (records) => _QuestList(records: records),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+        const Divider(height: 24),
+        _CollapsibleSection(
+          title: tr(ref, 'quests'),
+          child: questsAsync.when(
+            data: (records) => _QuestList(records: records),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+          ),
         ),
-        const Divider(height: 32),
-        Text(tr(ref, 'shops'), style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        shopsAsync.when(
-          data: (records) => _ShopList(records: records),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('${tr(ref, 'failed_to_load_shops')}: $error'),
+        const Divider(height: 24),
+        _CollapsibleSection(
+          title: tr(ref, 'shops'),
+          child: shopsAsync.when(
+            data: (records) => _ShopList(records: records),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Text('${tr(ref, 'failed_to_load_shops')}: $error'),
+          ),
         ),
-        const Divider(height: 32),
-        Text(tr(ref, 'bestiary'), style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        enemiesAsync.when(
-          data: (records) => _EnemyList(records: records),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+        const Divider(height: 24),
+        _CollapsibleSection(
+          title: tr(ref, 'bestiary'),
+          child: enemiesAsync.when(
+            data: (records) => _EnemyList(records: records),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+          ),
         ),
       ],
+    );
+  }
+}
+
+/// A titled section that can be collapsed to reduce scrolling once the
+/// player has several quests/shops/enemies unlocked. Expanded by default;
+/// each section remembers its own open/closed state independently.
+class _CollapsibleSection extends StatelessWidget {
+  const _CollapsibleSection({required this.title, required this.child});
+
+  final String title;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
+        initiallyExpanded: true,
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: const EdgeInsets.only(top: 8, bottom: 8),
+        children: [child],
+      ),
     );
   }
 }
