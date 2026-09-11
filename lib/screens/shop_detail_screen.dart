@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/immersive_notice.dart';
 
 class ShopDetailScreen extends ConsumerWidget {
   const ShopDetailScreen({super.key, required this.shopId, required this.shop});
@@ -71,21 +72,18 @@ class ShopDetailScreen extends ConsumerWidget {
                                     .buyItem(shopId, itemId, cost, stockLimit);
                                 if (!context.mounted) return;
                                 final lang = ref.read(appLanguageProvider);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
+                                showImmersiveNotice(
+                                  context,
+                                  icon: Icons.shopping_bag_outlined,
+                                  message:
                                       '${trFor(lang, 'bought_prefix')} $itemName '
                                       '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
-                                    ),
-                                    action: isEquippable
-                                        ? SnackBarAction(
-                                            label: trFor(lang, 'equip_button'),
-                                            onPressed: () => ref
-                                                .read(playerSessionProvider.notifier)
-                                                .equipItem(itemId, slot: equipSlot, items: items),
-                                          )
-                                        : null,
-                                  ),
+                                  actionLabel: isEquippable ? trFor(lang, 'equip_button') : null,
+                                  onAction: isEquippable
+                                      ? () => ref
+                                          .read(playerSessionProvider.notifier)
+                                          .equipItem(itemId, slot: equipSlot, items: items)
+                                      : null,
                                 );
                               },
                         child: Text(tr(ref, 'buy_button')),
@@ -120,14 +118,12 @@ class ShopDetailScreen extends ConsumerWidget {
                                             .buyDice(diceId, cost);
                                         if (!context.mounted) return;
                                         final lang = ref.read(appLanguageProvider);
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              '${trFor(lang, 'bought_prefix')} $diceId '
+                                        showImmersiveNotice(
+                                          context,
+                                          icon: Icons.casino,
+                                          message: '${trFor(lang, 'bought_prefix')} $diceId '
                                               '${trFor(lang, 'for_label')} $cost '
                                               '${trFor(lang, 'gold_label')}',
-                                            ),
-                                          ),
                                         );
                                       },
                                 child: Text(tr(ref, 'buy_button')),

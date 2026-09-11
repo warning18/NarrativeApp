@@ -9,6 +9,7 @@ import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/immersive_notice.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
   const SkillsScreen({super.key});
@@ -218,8 +219,10 @@ class _SkillList extends ConsumerWidget {
                     if (!context.mounted) return;
                     final unlockedPrefix =
                         trFor(ref.read(appLanguageProvider), 'unlocked_prefix');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('$unlockedPrefix: $id')),
+                    showImmersiveNotice(
+                      context,
+                      icon: Icons.auto_awesome,
+                      message: '$unlockedPrefix: $id',
                     );
                   }
                 : null,

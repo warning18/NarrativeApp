@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/immersive_notice.dart';
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key});
@@ -162,14 +163,13 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           profession: profession,
         );
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '${trFor(lang, 'new_character_prefix')}: ${race['raceName']} '
+    await showImmersiveNotice(
+      context,
+      icon: Icons.person,
+      message: '${trFor(lang, 'new_character_prefix')}: ${race['raceName']} '
           '${profession['professionName']}',
-        ),
-      ),
     );
+    if (!context.mounted) return;
     Navigator.of(context).pop(true);
   }
 }

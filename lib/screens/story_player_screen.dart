@@ -19,6 +19,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
@@ -608,12 +609,11 @@ Future<void> _showDiscoveryModal(
   Future<void> acceptDiscoveredQuest() async {
     await ref.read(playerSessionProvider.notifier).acceptQuest(questId!);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
+    showImmersiveNotice(
+      context,
+      icon: Icons.assignment_turned_in_outlined,
+      message:
           '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
-        ),
-      ),
     );
   }
 
