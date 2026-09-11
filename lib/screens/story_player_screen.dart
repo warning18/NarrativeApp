@@ -18,9 +18,11 @@ import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
+import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/walking_companion_strip.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
@@ -59,6 +61,7 @@ class _StoryView extends ConsumerWidget {
     final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
+    final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
 
     // Stop any in-progress narration when the story moves to a different
     // node, so stale audio never plays over newly-displayed text.
@@ -170,7 +173,10 @@ class _StoryView extends ConsumerWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            if (walkCompanionEnabled)
+              WalkingCompanionStrip(trigger: '${node.id}_${playState.isInExcursion}')
+            else
+              const SizedBox(height: 16),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 320),
               switchInCurve: Curves.easeOut,
