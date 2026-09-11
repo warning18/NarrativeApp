@@ -738,6 +738,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'flags_collected_label': {AppLanguage.en: 'Flags collected', AppLanguage.fr: 'Drapeaux collectés'},
   'read_aloud_tooltip': {AppLanguage.en: 'Read aloud', AppLanguage.fr: 'Lire à voix haute'},
   'stop_reading_tooltip': {AppLanguage.en: 'Stop reading', AppLanguage.fr: 'Arrêter la lecture'},
+  'app_mode_section_title': {AppLanguage.en: 'App Mode', AppLanguage.fr: "Mode de l'application"},
+  'app_mode_section_desc': {
+    AppLanguage.en: 'Edit mode has the full toolset (Map, Generate, Data, node editing, dev '
+        'tools). In-Game mode hides all of that for a clean, player-only experience — just '
+        'Story and Play.',
+    AppLanguage.fr: 'Le mode Édition donne accès à tous les outils (Carte, Générer, Données, '
+        'édition des nœuds, outils de développement). Le mode En jeu masque tout cela pour '
+        'une expérience réservée au joueur — seulement Histoire et Jouer.',
+  },
+  'edit_mode_label': {AppLanguage.en: 'Edit', AppLanguage.fr: 'Édition'},
+  'in_game_mode_label': {AppLanguage.en: 'In-Game', AppLanguage.fr: 'En jeu'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
