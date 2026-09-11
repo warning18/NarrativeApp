@@ -775,6 +775,59 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'edit_mode_label': {AppLanguage.en: 'Edit', AppLanguage.fr: 'Édition'},
   'in_game_mode_label': {AppLanguage.en: 'In-Game', AppLanguage.fr: 'En jeu'},
+  'tutorial_setting_title': {AppLanguage.en: 'Guided tour', AppLanguage.fr: 'Visite guidée'},
+  'tutorial_setting_desc': {
+    AppLanguage.en: 'Show a short walkthrough the first time you enter In-Game mode.',
+    AppLanguage.fr: 'Affiche une courte visite guidée la première fois que vous entrez en mode En jeu.',
+  },
+  'tutorial_replay_button': {
+    AppLanguage.en: 'Replay tutorial',
+    AppLanguage.fr: 'Revoir le tutoriel',
+  },
+  'tutorial_skip_button': {AppLanguage.en: 'Skip', AppLanguage.fr: 'Passer'},
+  'tutorial_next_button': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suivant'},
+  'tutorial_done_button': {AppLanguage.en: 'Got it!', AppLanguage.fr: 'Compris !'},
+  'tutorial_step1_title': {
+    AppLanguage.en: 'Welcome, adventurer!',
+    AppLanguage.fr: 'Bienvenue, aventurier !',
+  },
+  'tutorial_step1_body': {
+    AppLanguage.en: "Hi, I'm your companion for the journey — let me show you around before "
+        'you dive in.',
+    AppLanguage.fr: 'Bonjour, je suis votre compagnon pour le voyage — laissez-moi vous faire '
+        'visiter avant de commencer.',
+  },
+  'tutorial_step2_title': {AppLanguage.en: 'The Story tab', AppLanguage.fr: "L'onglet Histoire"},
+  'tutorial_step2_body': {
+    AppLanguage.en: 'This is where the tale unfolds. Read each passage, then pick a choice to '
+        'see what happens next.',
+    AppLanguage.fr: "C'est ici que l'histoire se déroule. Lisez chaque passage, puis faites un "
+        'choix pour voir la suite.',
+  },
+  'tutorial_step3_title': {AppLanguage.en: 'The Play tab', AppLanguage.fr: "L'onglet Jouer"},
+  'tutorial_step3_body': {
+    AppLanguage.en: "Track active quests, browse shops, and check the bestiary here — "
+        "everything you've discovered so far.",
+    AppLanguage.fr: 'Suivez vos quêtes actives, visitez les boutiques et consultez le '
+        "bestiaire ici — tout ce que vous avez découvert jusqu'à présent.",
+  },
+  'tutorial_step4_title': {AppLanguage.en: 'Your character', AppLanguage.fr: 'Votre personnage'},
+  'tutorial_step4_body': {
+    AppLanguage.en: 'Keep an eye on health, gold, and stats at the top of the screen. Win '
+        'fights to gain experience and level up.',
+    AppLanguage.fr: "Surveillez votre santé, votre or et vos statistiques en haut de l'écran. "
+        "Gagnez des combats pour prendre de l'expérience et monter de niveau.",
+  },
+  'tutorial_step5_title': {
+    AppLanguage.en: 'Make it yours',
+    AppLanguage.fr: "Personnalisez l'expérience",
+  },
+  'tutorial_step5_body': {
+    AppLanguage.en: 'Visit Settings anytime to adjust dark mode, read-aloud narration, and '
+        'more — including turning me on or off.',
+    AppLanguage.fr: 'Allez dans les paramètres à tout moment pour ajuster le mode sombre, la '
+        "narration vocale, et plus encore — y compris m'activer ou me désactiver.",
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
