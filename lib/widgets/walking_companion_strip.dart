@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 /// Listed explicitly (rather than discovered at runtime via
 /// AssetManifest.json) since that manifest's format/availability isn't
 /// guaranteed across Flutter versions, and this app only ever ships with
-/// this one fixed frame set anyway.
+/// this one fixed frame set anyway. The "east" set (rather than "west")
+/// faces the direction of travel below: left to right.
 final List<String> _spriteFrames = List<String>.generate(
   8,
-  (i) => 'assets/visuals/companion/dog_companion_animations/Walking/west/'
+  (i) => 'assets/visuals/companion/dog_companion_animations/Walking/east/'
       'frame_${i.toString().padLeft(3, '0')}.png',
 );
 
 /// A thin strip that plays a small walking-companion animation moving from
-/// the right edge to the left edge (east to west) whenever [trigger]
+/// the left edge to the right edge (west to east) whenever [trigger]
 /// changes — used between the story text and the choice list so each node
 /// transition gets a playful "someone crossed the page" beat.
 class WalkingCompanionStrip extends StatefulWidget {
@@ -62,10 +63,10 @@ class _WalkingCompanionStripState extends State<WalkingCompanionStrip>
           if (_controller.isDismissed) return const SizedBox.shrink();
           return LayoutBuilder(
             builder: (context, constraints) {
-              const spriteWidth = 34.0;
-              const spriteHeight = 34.0;
+              const spriteWidth = 60.0;
+              const spriteHeight = 60.0;
               final t = Curves.linear.transform(_controller.value);
-              final x = constraints.maxWidth - (constraints.maxWidth + spriteWidth) * t;
+              final x = -spriteWidth + (constraints.maxWidth + spriteWidth) * t;
               final legPhase = t * 16 * pi;
               // A handful of walk cycles across the crossing.
               final frameIndex = (t * _spriteFrames.length * 4).floor() % _spriteFrames.length;
@@ -126,23 +127,23 @@ class _WalkingDogPainter extends CustomPainter {
       canvas.drawLine(Offset(hipX, baseY - 3), Offset(hipX + swing, baseY + 5), legPaint);
     }
 
-    drawLeg(size.width * 0.30, 0);
-    drawLeg(size.width * 0.30, pi);
-    drawLeg(size.width * 0.72, pi);
-    drawLeg(size.width * 0.72, 0);
+    drawLeg(size.width * 0.70, 0);
+    drawLeg(size.width * 0.70, pi);
+    drawLeg(size.width * 0.28, pi);
+    drawLeg(size.width * 0.28, 0);
 
     // Tail stub, wagging slightly.
-    final tailX = size.width * 0.84;
+    final tailX = size.width * 0.16;
     canvas.drawLine(
       Offset(tailX, baseY - 12),
-      Offset(tailX + 4, baseY - 15 + sin(legPhase) * 1.5),
+      Offset(tailX - 4, baseY - 15 + sin(legPhase) * 1.5),
       legPaint,
     );
 
     // Body.
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(size.width * 0.18, baseY - 12, size.width * 0.62, 10),
+        Rect.fromLTWH(size.width * 0.20, baseY - 12, size.width * 0.62, 10),
         const Radius.circular(6),
       ),
       bodyPaint,
@@ -151,31 +152,31 @@ class _WalkingDogPainter extends CustomPainter {
     // Belly patch.
     canvas.drawRRect(
       RRect.fromRectAndRadius(
-        Rect.fromLTWH(size.width * 0.32, baseY - 6, size.width * 0.28, 5),
+        Rect.fromLTWH(size.width * 0.40, baseY - 6, size.width * 0.28, 5),
         const Radius.circular(3),
       ),
       lightPaint,
     );
 
-    // Head (leading, on the left since the walk moves right-to-left).
-    final headCenter = Offset(size.width * 0.14, baseY - 14);
+    // Head (leading, on the right since the walk moves left-to-right).
+    final headCenter = Offset(size.width * 0.86, baseY - 14);
     canvas.drawCircle(headCenter, 6.5, bodyPaint);
-    canvas.drawCircle(Offset(headCenter.dx - 3, headCenter.dy + 2), 3.0, lightPaint);
+    canvas.drawCircle(Offset(headCenter.dx + 3, headCenter.dy + 2), 3.0, lightPaint);
 
     // Pointy ears.
     canvas.drawPath(
       Path()
-        ..moveTo(headCenter.dx - 4, headCenter.dy - 5)
-        ..lineTo(headCenter.dx - 6, headCenter.dy - 11)
-        ..lineTo(headCenter.dx - 1, headCenter.dy - 6)
+        ..moveTo(headCenter.dx + 4, headCenter.dy - 5)
+        ..lineTo(headCenter.dx + 6, headCenter.dy - 11)
+        ..lineTo(headCenter.dx + 1, headCenter.dy - 6)
         ..close(),
       bodyPaint,
     );
     canvas.drawPath(
       Path()
-        ..moveTo(headCenter.dx + 3, headCenter.dy - 5)
-        ..lineTo(headCenter.dx + 5, headCenter.dy - 11)
-        ..lineTo(headCenter.dx + 6, headCenter.dy - 4)
+        ..moveTo(headCenter.dx - 3, headCenter.dy - 5)
+        ..lineTo(headCenter.dx - 5, headCenter.dy - 11)
+        ..lineTo(headCenter.dx - 6, headCenter.dy - 4)
         ..close(),
       bodyPaint,
     );

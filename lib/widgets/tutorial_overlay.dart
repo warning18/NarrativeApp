@@ -41,15 +41,16 @@ const List<_TutorialStep> _steps = [
   ),
 ];
 
-/// A short guided tour, hosted by the walking-companion dog, shown the
-/// first time the player enters In-Game mode (see home_shell.dart) or
-/// replayed on demand from Settings.
+/// A short guided tour, hosted by the walking-companion dog, shown right
+/// after a new character is created (see story_player_screen.dart) or
+/// replayed on demand from Settings. Uses a near-opaque barrier so the
+/// character stats bar behind it doesn't peek through distractingly.
 Future<void> showTutorialOverlay(BuildContext context, WidgetRef ref) {
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
     barrierLabel: 'Tutorial',
-    barrierColor: Colors.black.withOpacity(0.5),
+    barrierColor: Colors.black.withOpacity(0.85),
     transitionDuration: const Duration(milliseconds: 220),
     pageBuilder: (context, animation, secondaryAnimation) => const _TutorialDialog(),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -109,7 +110,7 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Image.asset(
-                  'assets/visuals/companion/dog_companion_animations/Walking/west/frame_000.png',
+                  'assets/visuals/companion/dog_companion_animations/Walking/north/frame_000.png',
                   width: 64,
                   height: 64,
                   filterQuality: FilterQuality.none,
