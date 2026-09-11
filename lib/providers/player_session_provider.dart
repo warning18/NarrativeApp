@@ -655,7 +655,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> applyCombatResult({
+  /// Applies a fight's outcome to the player's stats. Returns true if the
+  /// XP gain pushed the player up one or more levels, so the caller can
+  /// show a level-up celebration.
+  Future<bool> applyCombatResult({
     required int hpAfter,
     int goldGain = 0,
     int xpGain = 0,
@@ -694,6 +697,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
     );
     await _persist();
+    return leveledUp;
   }
 
   /// Permadeath: clears the player's inventory and equipped items but keeps

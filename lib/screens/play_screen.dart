@@ -9,6 +9,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
+import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
@@ -181,15 +182,13 @@ class _QuestList extends ConsumerWidget {
                   );
               if (!context.mounted) return;
               final lang = ref.read(appLanguageProvider);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${trFor(lang, 'quest_complete_prefix')}: $questName '
+              showImmersiveNotice(
+                context,
+                icon: Icons.emoji_events_outlined,
+                message: '${trFor(lang, 'quest_complete_prefix')}: $questName '
                     '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
                     '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
                     '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""})',
-                  ),
-                ),
               );
             },
             child: Text(tr(ref, 'complete')),
@@ -202,10 +201,10 @@ class _QuestList extends ConsumerWidget {
                     await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
                     if (!context.mounted) return;
                     final lang = ref.read(appLanguageProvider);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${trFor(lang, 'quest_accepted_prefix')}: $questName'),
-                      ),
+                    showImmersiveNotice(
+                      context,
+                      icon: Icons.assignment_turned_in_outlined,
+                      message: '${trFor(lang, 'quest_accepted_prefix')}: $questName',
                     );
                   },
             child: Text(tr(ref, 'accept')),
