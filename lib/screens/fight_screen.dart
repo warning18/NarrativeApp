@@ -450,12 +450,19 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
               ElevatedButton(
                 onPressed: () async {
                   if (!_won && ref.read(permadeathEnabledProvider)) {
-                    final lost = await ref.read(playerSessionProvider.notifier).applyPermadeath();
+                    final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
+                    final result = await ref.read(playerSessionProvider.notifier).applyPermadeath();
                     ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
                     ref.read(homeTabIndexProvider.notifier).state = 0;
                     if (!context.mounted) return;
                     await Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => DeathScreen(lostItemIds: lost)),
+                      MaterialPageRoute(
+                        builder: (_) => DeathScreen(
+                          lostItemIds: result.lostItemIds,
+                          xpEarned: result.xpEarnedThisRun,
+                          nodesVisited: nodesVisited,
+                        ),
+                      ),
                       (route) => route.isFirst,
                     );
                     return;

@@ -8,9 +8,16 @@ import '../l10n/app_strings.dart';
 /// confirmation/summary screen — tapping through just closes it, revealing
 /// the already-reset app underneath.
 class DeathScreen extends ConsumerWidget {
-  const DeathScreen({super.key, required this.lostItemIds});
+  const DeathScreen({
+    super.key,
+    required this.lostItemIds,
+    required this.xpEarned,
+    required this.nodesVisited,
+  });
 
   final List<String> lostItemIds;
+  final int xpEarned;
+  final int nodesVisited;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,9 +48,29 @@ class DeathScreen extends ConsumerWidget {
                     style: const TextStyle(color: Colors.white70),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    '${tr(ref, 'items_lost_label')}: ${lostItemIds.isEmpty ? 0 : lostItemIds.length}',
-                    style: const TextStyle(color: Colors.white54),
+                  Card(
+                    color: Colors.white10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _StatLine(
+                            label: tr(ref, 'nodes_visited_label'),
+                            value: '$nodesVisited',
+                          ),
+                          _StatLine(
+                            label: tr(ref, 'xp_earned_label'),
+                            value: '$xpEarned',
+                          ),
+                          _StatLine(
+                            label: tr(ref, 'items_lost_label'),
+                            value: '${lostItemIds.length}',
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 32),
                   ElevatedButton(
@@ -55,6 +82,30 @@ class DeathScreen extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StatLine extends StatelessWidget {
+  const _StatLine({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.white70)),
+          Text(
+            value,
+            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }

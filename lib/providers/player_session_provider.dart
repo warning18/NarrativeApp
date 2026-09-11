@@ -42,6 +42,7 @@ class PlayerSession {
     required this.professionId,
     required this.ownedDiceIds,
     required this.equippedDiceId,
+    this.xpEarnedThisRun = 0,
   });
 
   final int level;
@@ -76,6 +77,10 @@ class PlayerSession {
   /// and which one is currently equipped for combat.
   final List<String> ownedDiceIds;
   final String? equippedDiceId;
+
+  /// XP gained since the last new game / permadeath reset — a recap metric
+  /// only, not a gameplay stat; doesn't affect level or anything else.
+  final int xpEarnedThisRun;
 
   int get xpToNextLevel => level * 100;
 
@@ -127,6 +132,7 @@ class PlayerSession {
     String? professionId,
     List<String>? ownedDiceIds,
     String? equippedDiceId,
+    int? xpEarnedThisRun,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -155,6 +161,7 @@ class PlayerSession {
       professionId: professionId ?? this.professionId,
       ownedDiceIds: ownedDiceIds ?? this.ownedDiceIds,
       equippedDiceId: equippedDiceId ?? this.equippedDiceId,
+      xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
     );
   }
 
@@ -185,6 +192,7 @@ class PlayerSession {
         'professionId': professionId,
         'ownedDiceIds': ownedDiceIds,
         'equippedDiceId': equippedDiceId,
+        'xpEarnedThisRun': xpEarnedThisRun,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -232,6 +240,7 @@ class PlayerSession {
       ownedDiceIds:
           (json['ownedDiceIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       equippedDiceId: json['equippedDiceId'] as String?,
+      xpEarnedThisRun: (json['xpEarnedThisRun'] as num?)?.toInt() ?? 0,
     );
   }
 }
@@ -662,23 +671,36 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillPoints: newSkillPoints,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
+      xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
     );
     await _persist();
   }
 
   /// Permadeath: clears the player's inventory and equipped items but keeps
   /// level, XP, gold, stats, skills, dice and story flags/quests intact.
-  /// Returns the item ids that were lost, for a death-screen summary.
-  Future<List<String>> applyPermadeath() async {
-    final lostItems = [...state.inventoryItemIds];
+  /// Returns a summary of the run for a death-screen recap.
+  Future<PermadeathResult> applyPermadeath() async {
+    final result = PermadeathResult(
+      lostItemIds: [...state.inventoryItemIds],
+      xpEarnedThisRun: state.xpEarnedThisRun,
+    );
     state = state.copyWith(
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
       equippedItemIds: const [],
+      xpEarnedThisRun: 0,
     );
     await _persist();
-    return lostItems;
+    return result;
   }
+}
+
+/// Summary of a run that ended in permadeath, for the death screen.
+class PermadeathResult {
+  const PermadeathResult({required this.lostItemIds, required this.xpEarnedThisRun});
+
+  final List<String> lostItemIds;
+  final int xpEarnedThisRun;
 }
 
 final playerSessionProvider =
