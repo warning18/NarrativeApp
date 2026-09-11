@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../app_info.dart';
@@ -6,6 +7,7 @@ import '../data/map_themes.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/combat_settings_provider.dart';
+import '../providers/github_push_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/palette_provider.dart';
 import '../providers/permadeath_provider.dart';
@@ -23,20 +25,25 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late final TextEditingController _controller;
+  late final TextEditingController _githubTokenController;
   bool _obscure = true;
+  bool _obscureGithubToken = true;
   bool _checkingUpdate = false;
   bool _downloading = false;
   double? _downloadProgress;
+  bool _pushingEdits = false;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: ref.read(apiKeyProvider) ?? '');
+    _githubTokenController = TextEditingController(text: ref.read(githubTokenProvider) ?? '');
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _githubTokenController.dispose();
     super.dispose();
   }
 
@@ -304,6 +311,63 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
+              tr(ref, 'github_sync_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'github_sync_desc'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _githubTokenController,
+              obscureText: _obscureGithubToken,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: tr(ref, 'github_token_label'),
+                suffixIcon: IconButton(
+                  icon: Icon(_obscureGithubToken ? Icons.visibility : Icons.visibility_off),
+                  tooltip: _obscureGithubToken
+                      ? tr(ref, 'show_token_tooltip')
+                      : tr(ref, 'hide_token_tooltip'),
+                  onPressed: () => setState(() => _obscureGithubToken = !_obscureGithubToken),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final token = _githubTokenController.text.trim();
+                      if (token.isEmpty) return;
+                      await ref.read(githubTokenProvider.notifier).setToken(token);
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(tr(ref, 'github_token_saved'))),
+                      );
+                    },
+                    child: Text(tr(ref, 'save')),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                OutlinedButton(
+                  onPressed: () async {
+                    _githubTokenController.clear();
+                    await ref.read(githubTokenProvider.notifier).clearToken();
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(tr(ref, 'github_token_removed'))),
+                    );
+                  },
+                  child: Text(tr(ref, 'clear_button')),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Text(
               tr(ref, 'dev_tools_section'),
               style: Theme.of(context).textTheme.titleMedium,
             ),
@@ -317,6 +381,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               icon: const Icon(Icons.play_circle_outline),
               label: Text(tr(ref, 'auto_playthrough_button')),
             ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _pushingEdits ? null : _pushEditsToGithub,
+              icon: _pushingEdits
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.upload),
+              label: Text(tr(ref, 'push_edits_button')),
+            ),
             const SizedBox(height: 32),
             Center(
               child: Text(
@@ -328,6 +404,105 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _pushEditsToGithub() async {
+    final lang = ref.read(appLanguageProvider);
+    final token = ref.read(githubTokenProvider);
+    if (token == null || token.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'set_github_token_first_message'))),
+      );
+      return;
+    }
+
+    final changes = await collectLocalDataEdits();
+    if (!mounted) return;
+    if (changes.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'no_local_edits_message'))),
+      );
+      return;
+    }
+
+    final defaultBranch = 'app-edits-${DateTime.now().millisecondsSinceEpoch}';
+    final branchController = TextEditingController(text: defaultBranch);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(trFor(lang, 'push_confirm_title')),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(trFor(lang, 'push_confirm_message')),
+              const SizedBox(height: 8),
+              ...changes.map((c) => Text('• ${c.path}')),
+              const SizedBox(height: 16),
+              TextField(
+                controller: branchController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: trFor(lang, 'branch_name_label'),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(trFor(lang, 'cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(trFor(lang, 'push_button')),
+          ),
+        ],
+      ),
+    );
+    final branchName =
+        branchController.text.trim().isEmpty ? defaultBranch : branchController.text.trim();
+    branchController.dispose();
+    if (confirmed != true) return;
+
+    setState(() => _pushingEdits = true);
+    try {
+      final result =
+          await pushEditsToGitHub(token: token, branchName: branchName, changes: changes);
+      if (!mounted) return;
+      setState(() => _pushingEdits = false);
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(trFor(lang, 'push_success_title')),
+          content: SelectableText('${trFor(lang, 'push_success_message')}\n\n${result.compareUrl}'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: result.compareUrl));
+                if (!dialogContext.mounted) return;
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                  SnackBar(content: Text(trFor(lang, 'link_copied_message'))),
+                );
+              },
+              child: Text(trFor(lang, 'copy_link_button')),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: Text(trFor(lang, 'close_button')),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _pushingEdits = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${trFor(lang, 'push_failed_prefix')}: $e')),
+      );
+    }
   }
 
   String _paletteLabelKey(AppPalette palette) {

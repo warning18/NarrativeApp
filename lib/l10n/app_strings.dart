@@ -658,6 +658,54 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'reward_xp_label': {AppLanguage.en: 'Reward XP', AppLanguage.fr: 'Récompense (XP)'},
   'reward_item_label': {AppLanguage.en: 'Reward Item', AppLanguage.fr: 'Récompense (objet)'},
   'reward_dice_label': {AppLanguage.en: 'Reward Die', AppLanguage.fr: 'Récompense (dé)'},
+  'github_sync_title': {AppLanguage.en: 'GitHub Sync', AppLanguage.fr: 'Synchronisation GitHub'},
+  'github_sync_desc': {
+    AppLanguage.en: 'Edits made in the Data tab and Story editor stay on this device until '
+        'you push them to GitHub as a branch. Needs a Personal Access Token with '
+        'Contents: Read and write on this repo. Stored only on this device.',
+    AppLanguage.fr: "Les modifications faites dans l'onglet Données et l'éditeur d'histoire "
+        "restent sur cet appareil tant qu'elles ne sont pas envoyées sur GitHub sous forme "
+        "de branche. Nécessite un jeton d'accès personnel avec accès Contents: Read and "
+        "write sur ce dépôt. Stocké uniquement sur cet appareil.",
+  },
+  'github_token_label': {
+    AppLanguage.en: 'GitHub Personal Access Token',
+    AppLanguage.fr: "Jeton d'accès personnel GitHub",
+  },
+  'show_token_tooltip': {AppLanguage.en: 'Show token', AppLanguage.fr: 'Afficher le jeton'},
+  'hide_token_tooltip': {AppLanguage.en: 'Hide token', AppLanguage.fr: 'Masquer le jeton'},
+  'github_token_saved': {AppLanguage.en: 'Token saved.', AppLanguage.fr: 'Jeton enregistré.'},
+  'github_token_removed': {AppLanguage.en: 'Token removed.', AppLanguage.fr: 'Jeton supprimé.'},
+  'push_edits_button': {
+    AppLanguage.en: 'Push Local Edits to GitHub',
+    AppLanguage.fr: 'Envoyer les modifications vers GitHub',
+  },
+  'no_local_edits_message': {
+    AppLanguage.en: 'No local edits to push — the Data tab and story editor are unchanged from the bundled defaults.',
+    AppLanguage.fr: "Aucune modification locale à envoyer — l'onglet Données et l'éditeur "
+        "d'histoire sont inchangés par rapport aux valeurs par défaut.",
+  },
+  'set_github_token_first_message': {
+    AppLanguage.en: 'Set your GitHub token above first.',
+    AppLanguage.fr: "Renseignez d'abord votre jeton GitHub ci-dessus.",
+  },
+  'push_confirm_title': {AppLanguage.en: 'Push to GitHub?', AppLanguage.fr: 'Envoyer vers GitHub ?'},
+  'push_confirm_message': {
+    AppLanguage.en: 'This will push the following changed files to a new branch:',
+    AppLanguage.fr: 'Cela enverra les fichiers modifiés suivants vers une nouvelle branche :',
+  },
+  'branch_name_label': {AppLanguage.en: 'Branch name', AppLanguage.fr: 'Nom de la branche'},
+  'pushing_label': {AppLanguage.en: 'Pushing…', AppLanguage.fr: 'Envoi en cours…'},
+  'push_success_title': {AppLanguage.en: 'Pushed!', AppLanguage.fr: 'Envoyé !'},
+  'push_success_message': {
+    AppLanguage.en: 'Your edits are now on a new branch. Open a pull request to bring them into the game.',
+    AppLanguage.fr: 'Vos modifications sont maintenant sur une nouvelle branche. Ouvrez une '
+        'pull request pour les intégrer au jeu.',
+  },
+  'copy_link_button': {AppLanguage.en: 'Copy Link', AppLanguage.fr: 'Copier le lien'},
+  'link_copied_message': {AppLanguage.en: 'Link copied.', AppLanguage.fr: 'Lien copié.'},
+  'push_failed_prefix': {AppLanguage.en: 'Push failed', AppLanguage.fr: "Échec de l'envoi"},
+  'push_button': {AppLanguage.en: 'Push', AppLanguage.fr: 'Envoyer'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
