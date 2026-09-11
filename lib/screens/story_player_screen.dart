@@ -18,10 +18,12 @@ import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
+import '../providers/tutorial_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/tutorial_overlay.dart';
 import '../widgets/walking_companion_strip.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
@@ -326,6 +328,15 @@ class _ChoiceButton extends ConsumerWidget {
                   MaterialPageRoute(builder: (_) => const RaceProfessionScreen()),
                 );
                 if (started != true) return;
+                // Show the guided tour once the player is back on the story
+                // view with a freshly created character, rather than on any
+                // generic "entered the app" trigger.
+                final tutorial = ref.read(tutorialProvider);
+                if (tutorial.enabled && !tutorial.seen) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (context.mounted) showTutorialOverlay(context, ref);
+                  });
+                }
               }
 
               if (choice.triggersCombat) {

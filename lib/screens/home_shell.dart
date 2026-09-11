@@ -5,8 +5,6 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
-import '../providers/tutorial_provider.dart';
-import '../widgets/tutorial_overlay.dart';
 import 'ai_generator_screen.dart';
 import 'game_data_home_screen.dart';
 import 'play_screen.dart';
@@ -35,37 +33,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     PlayScreen(),
   ];
 
-  // Guards the initial (cold-start) tutorial check so it only ever
-  // schedules once per HomeShell lifetime, regardless of how many times
-  // build() reruns before the dialog is actually shown.
-  bool _checkedInitialTutorial = false;
-
-  void _maybeShowTutorial() {
-    if (!mounted) return;
-    final tutorial = ref.read(tutorialProvider);
-    final isEditMode = ref.read(appModeProvider) == AppMode.edit;
-    if (!isEditMode && tutorial.enabled && !tutorial.seen) {
-      showTutorialOverlay(context, ref);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Covers a returning player who quit while already in In-Game mode:
-    // no mode *transition* happens on the next launch, so the listener
-    // below wouldn't fire — this one-time check catches that case too.
-    if (!_checkedInitialTutorial) {
-      _checkedInitialTutorial = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowTutorial());
-    }
-
     // Reset to the Story tab whenever the mode changes, so a stale index
     // from the other mode's (longer) tab list never goes out of range.
     ref.listen<AppMode>(appModeProvider, (previous, next) {
       ref.read(homeTabIndexProvider.notifier).state = 0;
-      if (next == AppMode.inGame) {
-        WidgetsBinding.instance.addPostFrameCallback((_) => _maybeShowTutorial());
-      }
     });
 
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
