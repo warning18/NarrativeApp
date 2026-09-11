@@ -23,6 +23,12 @@ class ShopDetailScreen extends ConsumerWidget {
         (shop['initialStock'] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
     final diceStock =
         (shop['diceStock'] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
+    final rawStockQuantities = shop['stockQuantities'];
+    final stockQuantities = rawStockQuantities is Map
+        ? rawStockQuantities.map(
+            (key, value) => MapEntry(key.toString(), (value as num?)?.toInt() ?? 1),
+          )
+        : const <String, int>{};
 
     return Scaffold(
       appBar: AppBar(title: Text(shop['shopName']?.toString() ?? shopId)),
@@ -41,18 +47,28 @@ class ShopDetailScreen extends ConsumerWidget {
                   final itemType = item?['itemType']?.toString();
                   final cost = (item?['cost'] as num?)?.toInt() ?? 0;
                   final canAfford = session.gold >= cost;
+                  final stockLimit = stockQuantities[itemId] ?? 1;
+                  final purchased = session.shopPurchaseCounts['$shopId::$itemId'] ?? 0;
+                  final remaining = stockLimit - purchased;
+                  final soldOut = remaining <= 0;
+                  final isEquippable = item?['isEquippable'] as bool? ?? false;
+                  final equipSlot = item?['equipSlot']?.toString();
                   return Card(
                     child: ListTile(
                       leading: Icon(itemTypeIcon(itemType)),
                       title: Text(itemName),
-                      subtitle: Text('$cost ${tr(ref, 'gold_label')}'),
+                      subtitle: Text(
+                        soldOut
+                            ? tr(ref, 'sold_out_label')
+                            : '$cost ${tr(ref, 'gold_label')} · $remaining ${tr(ref, 'left_suffix')}',
+                      ),
                       trailing: ElevatedButton(
-                        onPressed: !canAfford
+                        onPressed: (!canAfford || soldOut)
                             ? null
                             : () async {
                                 await ref
                                     .read(playerSessionProvider.notifier)
-                                    .buyItem(itemId, cost);
+                                    .buyItem(shopId, itemId, cost, stockLimit);
                                 if (!context.mounted) return;
                                 final lang = ref.read(appLanguageProvider);
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -61,6 +77,14 @@ class ShopDetailScreen extends ConsumerWidget {
                                       '${trFor(lang, 'bought_prefix')} $itemName '
                                       '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
                                     ),
+                                    action: isEquippable
+                                        ? SnackBarAction(
+                                            label: trFor(lang, 'equip_button'),
+                                            onPressed: () => ref
+                                                .read(playerSessionProvider.notifier)
+                                                .equipItem(itemId, slot: equipSlot, items: items),
+                                          )
+                                        : null,
                                   ),
                                 );
                               },

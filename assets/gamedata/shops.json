@@ -13,7 +13,11 @@
       "Potion",
       "Weapon"
     ],
-    "diceStock": []
+    "diceStock": [],
+    "stockQuantities": {
+      "potion_minor": 4,
+      "sword_001": 1
+    }
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -33,7 +37,12 @@
     ],
     "diceStock": [
       "storm_die"
-    ]
+    ],
+    "stockQuantities": {
+      "void_banner": 1,
+      "armor_leather": 1,
+      "sword_001": 1
+    }
   },
   "weaponsmith_forge": {
     "shopID": "weaponsmith_forge",
@@ -58,7 +67,18 @@
     "diceStock": [
       "iron_die",
       "berserker_die"
-    ]
+    ],
+    "stockQuantities": {
+      "sword_t1": 1,
+      "sword_t2": 1,
+      "sword_t3": 1,
+      "spear_t1": 1,
+      "spear_t2": 1,
+      "spear_t3": 1,
+      "dagger_t1": 1,
+      "dagger_t2": 1,
+      "dagger_t3": 1
+    }
   },
   "shieldwrights_hall": {
     "shopID": "shieldwrights_hall",
@@ -78,7 +98,14 @@
     ],
     "diceStock": [
       "stone_die"
-    ]
+    ],
+    "stockQuantities": {
+      "shield_t1": 1,
+      "shield_t2": 1,
+      "shield_t3": 1,
+      "shield_t4": 1,
+      "shield_t5": 1
+    }
   },
   "arcane_bazaar": {
     "shopID": "arcane_bazaar",
@@ -103,7 +130,16 @@
     "diceStock": [
       "arcane_die",
       "flame_die"
-    ]
+    ],
+    "stockQuantities": {
+      "staff_t1": 1,
+      "staff_t2": 1,
+      "staff_t3": 1,
+      "staff_t4": 1,
+      "staff_t5": 1,
+      "scroll_fireball": 4,
+      "artifact_moon_shard": 1
+    }
   },
   "apothecary_row": {
     "shopID": "apothecary_row",
@@ -123,7 +159,12 @@
     "diceStock": [
       "tide_die",
       "holy_die"
-    ]
+    ],
+    "stockQuantities": {
+      "potion_minor": 4,
+      "potion_major": 4,
+      "material_iron_ore": 4
+    }
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
@@ -156,6 +197,24 @@
     "diceStock": [
       "shadow_die",
       "void_die"
-    ]
+    ],
+    "stockQuantities": {
+      "sword_t8": 1,
+      "sword_t9": 1,
+      "sword_t10": 1,
+      "spear_t8": 1,
+      "spear_t9": 1,
+      "spear_t10": 1,
+      "dagger_t8": 1,
+      "dagger_t9": 1,
+      "dagger_t10": 1,
+      "shield_t8": 1,
+      "shield_t9": 1,
+      "shield_t10": 1,
+      "staff_t8": 1,
+      "staff_t9": 1,
+      "staff_t10": 1,
+      "void_banner": 1
+    }
   }
 }
