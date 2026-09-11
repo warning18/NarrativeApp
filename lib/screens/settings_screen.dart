@@ -14,8 +14,10 @@ import '../providers/palette_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/theme_mode_provider.dart';
+import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/walk_companion_provider.dart';
+import '../widgets/tutorial_overlay.dart';
 import 'playthrough_simulator_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -58,6 +60,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final trembleEnabled = ref.watch(trembleEnabledProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
+    final tutorial = ref.watch(tutorialProvider);
     final appMode = ref.watch(appModeProvider);
     final isEditMode = appMode == AppMode.edit;
 
@@ -95,6 +98,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onSelectionChanged: (selection) {
                 ref.read(appModeProvider.notifier).setMode(selection.first);
               },
+            ),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'tutorial_setting_title')),
+              subtitle: Text(tr(ref, 'tutorial_setting_desc')),
+              value: tutorial.enabled,
+              onChanged: (value) => ref.read(tutorialProvider.notifier).setEnabled(value),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () async {
+                  await ref.read(tutorialProvider.notifier).reset();
+                  if (!context.mounted) return;
+                  showTutorialOverlay(context, ref);
+                },
+                icon: const Icon(Icons.replay),
+                label: Text(tr(ref, 'tutorial_replay_button')),
+              ),
             ),
             const SizedBox(height: 24),
             Text(
