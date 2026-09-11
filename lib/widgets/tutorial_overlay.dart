@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/companion_sprites.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/companion_name_provider.dart';
 import '../providers/tutorial_provider.dart';
 
 final List<String> _tutorialFrames = companionFrames('Walking/north', 8);
@@ -105,6 +106,12 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
     final colorScheme = Theme.of(context).colorScheme;
     final step = _steps[_step];
     final isLast = _step == _steps.length - 1;
+    final companionName = ref.watch(companionNameProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final stepBody = _step == 0 && companionName.isNotEmpty
+        ? '${trFor(lang, 'tutorial_step1_body_named_prefix')}$companionName'
+            '${trFor(lang, 'tutorial_step1_body_named_suffix')}'
+        : tr(ref, step.bodyKey);
 
     return Center(
       child: Material(
@@ -162,7 +169,7 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        tr(ref, step.bodyKey),
+                        stepBody,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'serif',

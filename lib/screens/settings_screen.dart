@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_settings_provider.dart';
+import '../providers/companion_name_provider.dart';
 import '../providers/github_push_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/palette_provider.dart';
@@ -30,6 +31,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   late final TextEditingController _controller;
   late final TextEditingController _githubTokenController;
+  late final TextEditingController _companionNameController;
   bool _obscure = true;
   bool _obscureGithubToken = true;
   bool _checkingUpdate = false;
@@ -42,12 +44,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     super.initState();
     _controller = TextEditingController(text: ref.read(apiKeyProvider) ?? '');
     _githubTokenController = TextEditingController(text: ref.read(githubTokenProvider) ?? '');
+    _companionNameController = TextEditingController(text: ref.read(companionNameProvider));
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _githubTokenController.dispose();
+    _companionNameController.dispose();
     super.dispose();
   }
 
@@ -298,6 +302,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: walkCompanionEnabled,
               onChanged: (value) =>
                   ref.read(walkCompanionEnabledProvider.notifier).setEnabled(value),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _companionNameController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: tr(ref, 'companion_name_label'),
+                hintText: tr(ref, 'companion_name_hint'),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.check),
+                  tooltip: tr(ref, 'save'),
+                  onPressed: () =>
+                      ref.read(companionNameProvider.notifier).setName(_companionNameController.text),
+                ),
+              ),
+              onSubmitted: (value) => ref.read(companionNameProvider.notifier).setName(value),
             ),
             const SizedBox(height: 24),
             Text(

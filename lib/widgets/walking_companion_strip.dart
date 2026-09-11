@@ -3,23 +3,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/companion_sprites.dart';
 import '../providers/combat_active_provider.dart';
+import '../providers/companion_name_provider.dart';
 
 final List<String> _walkFrames = companionFrames('Walking/east', 8);
-final List<String> _fightFrames = companionFrames('Fight_-_Attack/animations/Bark/east', 6);
-const String _idleSprite = '$companionAssetsRoot/Sitting_down/rotations/east.png';
+final List<String> _fightFrames = companionFrames('Fight_-_Attack/animations/Bark/south', 6);
+const String _idleSprite = '$companionAssetsRoot/Sitting_down/rotations/south.png';
 
-const double _companionSpriteSize = 120;
+// The walking frames' source canvas is 88x88px; the sitting/fighting
+// frames' is 64x64px. Rendering both into the same fixed box would stretch
+// the smaller canvas's padding along with it, making the sitting dog look
+// like a different size than the walking one. Scaling each pose by the
+// same factor relative to its own native canvas keeps the dog itself a
+// consistent size across poses.
+const double _walkNativeSize = 88;
+const double _restNativeSize = 64;
+const double _walkDisplaySize = 120;
+const double _restDisplaySize = _restNativeSize * (_walkDisplaySize / _walkNativeSize);
 
-/// A companion dog that idles (sitting) at the left edge of the story
-/// screen, walks west to east across it each time [trigger] changes (i.e.
-/// each time the player advances the story), then returns to idling at the
-/// left — and switches to a fighting stance instead of idling whenever
-/// [combatActiveProvider] is true.
+/// A companion dog that idles (sitting, facing the player) at the left edge
+/// of the story screen, and each time [trigger] changes (i.e. each time the
+/// player advances the story) walks off across the screen to the right,
+/// then walks back in from the left and sits back down — rather than
+/// popping between positions. Switches to a fighting stance instead of
+/// idling whenever [combatActiveProvider] is true.
 class WalkingCompanionStrip extends ConsumerStatefulWidget {
   const WalkingCompanionStrip({
     super.key,
     required this.trigger,
-    this.height = _companionSpriteSize,
+    this.height = _walkDisplaySize,
   });
 
   final Object trigger;
@@ -31,30 +42,40 @@ class WalkingCompanionStrip extends ConsumerStatefulWidget {
 
 class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
     with TickerProviderStateMixin {
-  late final AnimationController _walkController;
+  late final AnimationController _walkOutController;
+  late final AnimationController _walkInController;
   late final AnimationController _poseController;
 
   @override
   void initState() {
     super.initState();
-    _walkController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600));
-    // Drives frame cycling for the (currently only) multi-frame pose:
-    // fighting. Only runs while actually fighting (see build's ref.listen)
-    // so idling doesn't repaint every frame for no reason.
+    _walkOutController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _walkInController.forward(from: 0);
+        }
+      });
+    _walkInController = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
+    // Drives frame cycling for the fighting stance. Only runs while
+    // actually fighting (see build's ref.listen) so idling doesn't repaint
+    // every frame for no reason.
     _poseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    // Walk in and sit down on first appearance too, instead of popping in.
+    _walkInController.forward(from: 0);
   }
 
   @override
   void didUpdateWidget(covariant WalkingCompanionStrip oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.trigger != widget.trigger) {
-      _walkController.forward(from: 0);
+      _walkOutController.forward(from: 0);
     }
   }
 
   @override
   void dispose() {
-    _walkController.dispose();
+    _walkOutController.dispose();
+    _walkInController.dispose();
     _poseController.dispose();
     super.dispose();
   }
@@ -69,42 +90,70 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       }
     });
     final fighting = ref.watch(combatActiveProvider);
+    final name = ref.watch(companionNameProvider);
+
     return SizedBox(
       height: widget.height,
       width: double.infinity,
       child: AnimatedBuilder(
-        animation: Listenable.merge([_walkController, _poseController]),
+        animation: Listenable.merge([_walkOutController, _walkInController, _poseController]),
         builder: (context, _) {
           return LayoutBuilder(
             builder: (context, constraints) {
-              final walking = !fighting && _walkController.isAnimating;
+              final walkingOut = !fighting && _walkOutController.isAnimating;
+              final walkingIn = !fighting && !walkingOut && _walkInController.isAnimating;
+              final stationary = !fighting && !walkingOut && !walkingIn;
 
               final String framePath;
               double x = 0;
+              double size;
               if (fighting) {
                 final frame =
                     (_poseController.value * _fightFrames.length).floor() % _fightFrames.length;
                 framePath = _fightFrames[frame];
-              } else if (walking) {
-                final t = Curves.linear.transform(_walkController.value);
-                x = -_companionSpriteSize + (constraints.maxWidth + _companionSpriteSize) * t;
-                // A handful of walk cycles across the crossing.
+                size = _restDisplaySize;
+              } else if (walkingOut) {
+                final t = Curves.linear.transform(_walkOutController.value);
+                x = (constraints.maxWidth + _walkDisplaySize) * t;
                 final frame = (t * _walkFrames.length * 4).floor() % _walkFrames.length;
                 framePath = _walkFrames[frame];
+                size = _walkDisplaySize;
+              } else if (walkingIn) {
+                final t = Curves.linear.transform(_walkInController.value);
+                x = -_walkDisplaySize + _walkDisplaySize * t;
+                final frame = (t * _walkFrames.length).floor() % _walkFrames.length;
+                framePath = _walkFrames[frame];
+                size = _walkDisplaySize;
               } else {
                 framePath = _idleSprite;
+                size = _restDisplaySize;
               }
 
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
+                  if (stationary && name.isNotEmpty)
+                    Positioned(
+                      left: 0,
+                      bottom: _restDisplaySize + 2,
+                      width: _restDisplaySize,
+                      child: Text(
+                        name,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
                   Positioned(
                     left: x,
                     bottom: 0,
                     child: Image.asset(
                       framePath,
-                      width: _companionSpriteSize,
-                      height: _companionSpriteSize,
+                      width: size,
+                      height: size,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.none,
                       errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),

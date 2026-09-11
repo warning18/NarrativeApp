@@ -294,6 +294,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Un petit compagnon traverse la page à chaque fois que l'histoire passe à un nouveau nœud.",
   },
+  'companion_name_label': {AppLanguage.en: 'Companion name', AppLanguage.fr: 'Nom du compagnon'},
+  'companion_name_hint': {AppLanguage.en: 'e.g. Rex', AppLanguage.fr: 'ex. Rex'},
   'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
   'equip_slot_label': {AppLanguage.en: 'Equip Slot', AppLanguage.fr: "Emplacement d'équipement"},
@@ -796,6 +798,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'you dive in.',
     AppLanguage.fr: 'Bonjour, je suis votre compagnon pour le voyage — laissez-moi vous faire '
         'visiter avant de commencer.',
+  },
+  'tutorial_step1_body_named_prefix': {
+    AppLanguage.en: "Hi, I'm ",
+    AppLanguage.fr: 'Bonjour, je suis ',
+  },
+  'tutorial_step1_body_named_suffix': {
+    AppLanguage.en: ' — let me show you around before you dive in.',
+    AppLanguage.fr: ' — laissez-moi vous faire visiter avant de commencer.',
   },
   'tutorial_step2_title': {AppLanguage.en: 'The Story tab', AppLanguage.fr: "L'onglet Histoire"},
   'tutorial_step2_body': {
