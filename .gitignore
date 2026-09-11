@@ -46,3 +46,10 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Release signing material must never be committed — CI sources it from
+# repository secrets (see .github/workflows/build_apk.yml) and decodes it
+# into a runner temp file at build time instead.
+android/key.properties
+*.keystore
+*.jks
