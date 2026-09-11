@@ -16,6 +16,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../widgets/detail_dialog.dart';
 import '../widgets/player_stats_bar.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
@@ -462,6 +463,66 @@ Future<void> _showDiscoveryModal(
   final questId = discovery.questId;
   final shop = shopId != null ? shops[shopId] as Map<String, dynamic>? : null;
   final quest = questId != null ? quests[questId] as Map<String, dynamic>? : null;
+  final session = ref.read(playerSessionProvider);
+
+  final questActive = questId != null && session.activeQuestIds.contains(questId);
+  final questCompleted = questId != null && session.completedQuestIds.contains(questId);
+  final requiredGold = (quest?['requiredGold'] as num?)?.toInt() ?? 0;
+  final requiredFlags =
+      (quest?['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
+  final questEligible = questId != null &&
+      !questActive &&
+      !questCompleted &&
+      session.meetsRequirements(reqGold: requiredGold, reqFlags: requiredFlags);
+
+  Future<void> acceptDiscoveredQuest() async {
+    await ref.read(playerSessionProvider.notifier).acceptQuest(questId!);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '${trFor(lang, 'quest_accepted_prefix')}: ${quest?['questName']?.toString() ?? questId}',
+        ),
+      ),
+    );
+  }
+
+  void viewDiscoveredQuest() {
+    final questName = quest?['questName']?.toString() ?? questId!;
+    final category = quest?['category']?.toString();
+    final dialogue = quest?['npcDialogueText']?.toString() ?? '';
+    final rewardGold = (quest?['rewardGold'] as num?)?.toInt() ?? 0;
+    final rewardXp = (quest?['rewardXP'] as num?)?.toInt() ?? 0;
+    final rewardItemId = quest?['rewardItemID']?.toString() ?? '';
+    final rewardDiceId = quest?['rewardDiceID']?.toString() ?? '';
+
+    showDetailDialog(
+      context,
+      title: questName,
+      description: dialogue,
+      icon: Icons.assignment,
+      closeLabel: trFor(lang, 'close_button'),
+      rows: [
+        if (category != null && category.isNotEmpty)
+          MapEntry(trFor(lang, 'category_label'), category),
+        if (requiredGold > 0) MapEntry(trFor(lang, 'required_gold_label'), '$requiredGold'),
+        if (requiredFlags.isNotEmpty)
+          MapEntry(trFor(lang, 'required_flags_label'), requiredFlags.join(', ')),
+        if (rewardGold > 0) MapEntry(trFor(lang, 'reward_gold_label'), '$rewardGold'),
+        if (rewardXp > 0) MapEntry(trFor(lang, 'reward_xp_label'), '$rewardXp'),
+        if (rewardItemId.isNotEmpty) MapEntry(trFor(lang, 'reward_item_label'), rewardItemId),
+        if (rewardDiceId.isNotEmpty) MapEntry(trFor(lang, 'reward_dice_label'), rewardDiceId),
+        MapEntry(
+          trFor(lang, 'status_label'),
+          questCompleted
+              ? trFor(lang, 'status_completed')
+              : (questActive ? trFor(lang, 'status_active') : trFor(lang, 'status_available')),
+        ),
+      ],
+      extraActionLabel: questEligible ? trFor(lang, 'accept') : null,
+      onExtraAction: questEligible ? () => acceptDiscoveredQuest() : null,
+    );
+  }
 
   await showDialog<void>(
     context: context,
@@ -509,9 +570,17 @@ Future<void> _showDiscoveryModal(
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
-              ref.read(homeTabIndexProvider.notifier).state = 1;
+              viewDiscoveredQuest();
             },
             child: Text(trFor(lang, 'view_quest_button')),
+          ),
+        if (questEligible)
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(dialogContext);
+              acceptDiscoveredQuest();
+            },
+            child: Text(trFor(lang, 'accept')),
           ),
       ],
     ),
