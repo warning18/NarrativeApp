@@ -5,6 +5,7 @@ import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -305,12 +306,14 @@ class _EnemyList extends ConsumerWidget {
             trailing: !accessible
                 ? null
                 : ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).push(
+                    onPressed: () async {
+                      ref.read(combatActiveProvider.notifier).state = true;
+                      await Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy),
                         ),
                       );
+                      ref.read(combatActiveProvider.notifier).state = false;
                     },
                     icon: const Icon(Icons.sports_martial_arts),
                     label: Text(tr(ref, 'fight')),
