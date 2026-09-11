@@ -36,15 +36,18 @@ bool isNewerVersion(String remote, String local) {
   return false;
 }
 
-/// Queries the repository's latest GitHub Release. Returns null if the
-/// current app is already up to date, the release has no APK asset, or the
-/// request fails (treated as "no update available" rather than an error the
-/// user needs to see).
+/// Queries the repository's latest GitHub Release. Returns null only when
+/// the current app is genuinely already up to date, or the release has no
+/// APK asset. Throws if the request itself fails or the API responds with
+/// anything other than 200 (e.g. rate limiting), so the caller can tell a
+/// real check failure apart from "no update available".
 Future<UpdateInfo?> checkForUpdate() async {
   final response = await http
       .get(Uri.parse(_releasesApiUrl), headers: {'Accept': 'application/vnd.github+json'})
       .timeout(const Duration(seconds: 15));
-  if (response.statusCode != 200) return null;
+  if (response.statusCode != 200) {
+    throw Exception('Update check failed with status ${response.statusCode}');
+  }
 
   final json = jsonDecode(response.body) as Map<String, dynamic>;
   final tagName = json['tag_name']?.toString() ?? '';
