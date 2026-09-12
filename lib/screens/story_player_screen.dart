@@ -151,11 +151,24 @@ class _StoryView extends ConsumerWidget {
     if (ref.watch(autoReadAloudProvider)) {
       final autoReadKey = '${node.id}_${playState.isInExcursion}';
       if (ref.read(_autoReadLastNodeKeyProvider) != autoReadKey) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!context.mounted) return;
           ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
           ref.read(geminiTtsProvider.notifier).stop();
-          _speakNarration(ref, storyBodyFor(node.descriptionFor(french)), language);
+          try {
+            await _speakNarration(ref, storyBodyFor(node.descriptionFor(french)), language);
+          } catch (e) {
+            // Auto-read fires without the player asking for it, so a
+            // failure here (e.g. the offline voice's one-time model
+            // download failing) must still surface — otherwise it just
+            // looks like the voice silently never triggers.
+            if (!context.mounted) return;
+            showImmersiveNotice(
+              context,
+              icon: Icons.error_outline,
+              message: '${tr(ref, 'sherpa_voice_error_prefix')}: $e',
+            );
+          }
         });
       }
     }
