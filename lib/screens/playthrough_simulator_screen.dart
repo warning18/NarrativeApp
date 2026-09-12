@@ -2,13 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 
 /// How the simulator picks among a node's valid (non-locked) choices. Lets
@@ -199,8 +202,12 @@ _SimResult _simulate(
 /// One "Run" button press worth of simulations — 1 to N runs, all using the
 /// same [strategy], kept together so different batches can be compared.
 class _SimBatch {
-  _SimBatch({required this.strategy, required this.results});
+  _SimBatch({required this.id, required this.strategy, required this.results});
 
+  /// Stable identity for this batch (a monotonic counter, not a list
+  /// index), used as the _BatchCard's key so each card's own analysis
+  /// state stays attached to the right batch as new ones are prepended.
+  final int id;
   final SimStrategy strategy;
   final List<_SimResult> results;
 
@@ -237,6 +244,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   SimStrategy _strategy = SimStrategy.random;
   int _runCount = 1;
   final List<_SimBatch> _batches = [];
+  int _nextBatchId = 0;
 
   Future<void> _run() async {
     setState(() => _running = true);
@@ -248,7 +256,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
     if (!mounted) return;
     setState(() {
       _running = false;
-      _batches.add(_SimBatch(strategy: _strategy, results: results));
+      _batches.add(_SimBatch(id: _nextBatchId++, strategy: _strategy, results: results));
     });
   }
 
@@ -319,7 +327,12 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
                   : ListView(
                       children: [
                         for (final batch in _batches.reversed)
-                          _BatchCard(batch: batch, shops: shops, quests: quests),
+                          _BatchCard(
+                            key: ValueKey(batch.id),
+                            batch: batch,
+                            shops: shops,
+                            quests: quests,
+                          ),
                       ],
                     ),
             ),
@@ -330,17 +343,111 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   }
 }
 
-class _BatchCard extends ConsumerWidget {
-  const _BatchCard({required this.batch, required this.shops, required this.quests});
+class _BatchCard extends ConsumerStatefulWidget {
+  const _BatchCard({super.key, required this.batch, required this.shops, required this.quests});
 
   final _SimBatch batch;
   final Map<String, dynamic> shops;
   final Map<String, dynamic> quests;
 
+  @override
+  ConsumerState<_BatchCard> createState() => _BatchCardState();
+}
+
+class _BatchCardState extends ConsumerState<_BatchCard> {
+  bool _analyzing = false;
+  String? _analysisText;
+  String? _analysisError;
+
   String _oneDecimal(double v) => v.toStringAsFixed(1);
 
+  /// Compiles this batch's stats into a plain-text summary Gemini can
+  /// reason over — the same numbers already shown in the card, plus the
+  /// full path/flags/discoveries for a single run.
+  String _buildPrompt(AppLanguage lang) {
+    final batch = widget.batch;
+    final b = StringBuffer()
+      ..writeln(
+        'You are a narrative game designer reviewing simulated playthroughs of a dark-fantasy '
+        'interactive-fiction app. Below is aggregate data from an automated simulator that plays '
+        'the story graph choosing among valid choices per a fixed strategy.',
+      )
+      ..writeln()
+      ..writeln('Strategy: ${trFor(lang, _strategyLabelKey(batch.strategy))}')
+      ..writeln('Runs: ${batch.runCount}')
+      ..writeln('Average nodes visited: ${_oneDecimal(batch.avgSteps)}')
+      ..writeln('Average final gold: ${_oneDecimal(batch.avgGold)}')
+      ..writeln('Average final alignment: ${_oneDecimal(batch.avgAlignment)}')
+      ..writeln('Average combat encounters: ${_oneDecimal(batch.avgCombat)}');
+    if (batch.stepCapCount > 0) {
+      b.writeln(
+        '${batch.stepCapCount}/${batch.runCount} runs never reached an ending '
+        '(hit the simulator\'s step cap — likely an infinite loop or missing ending).',
+      );
+    }
+    b
+      ..writeln()
+      ..writeln('Ending distribution:');
+    for (final entry in batch.endingCounts.entries) {
+      b.writeln('- ${entry.value}x: ${entry.key}');
+    }
+    final single = batch.runCount == 1 ? batch.results.single : null;
+    if (single != null) {
+      b
+        ..writeln()
+        ..writeln('Full node path for this run: ${single.path.join(' -> ')}')
+        ..writeln(
+          'Flags collected: ${single.flags.isEmpty ? 'none' : single.flags.join(', ')}',
+        )
+        ..writeln(
+          'Shops discovered: '
+          '${single.shopsDiscovered.isEmpty ? 'none' : single.shopsDiscovered.join(', ')}',
+        )
+        ..writeln(
+          'Quests discovered: '
+          '${single.questsDiscovered.isEmpty ? 'none' : single.questsDiscovered.join(', ')}',
+        );
+    }
+    b
+      ..writeln()
+      ..writeln(
+        'Based on this data, provide: (1) a short summary of what this run reveals about the '
+        'player\'s experience, (2) any issues you notice (repetitive endings, dead ends, '
+        'pacing or balance problems, a strategy that trivially dominates), and (3) concrete, '
+        'specific suggestions for updates to particular story nodes to improve the story. Be '
+        'concise.',
+      );
+    return b.toString();
+  }
+
+  Future<void> _analyze() async {
+    final apiKey = ref.read(apiKeyProvider);
+    final lang = ref.read(appLanguageProvider);
+    if (apiKey == null || apiKey.isEmpty) {
+      setState(() => _analysisError = trFor(lang, 'add_api_key_first'));
+      return;
+    }
+    setState(() {
+      _analyzing = true;
+      _analysisError = null;
+      _analysisText = null;
+    });
+    try {
+      final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+      final response = await model.generateContent([Content.text(_buildPrompt(lang))]);
+      if (!mounted) return;
+      setState(() => _analysisText = response.text ?? trFor(lang, 'no_response_generated'));
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _analysisError = '${trFor(lang, 'generation_failed_prefix')}: $e');
+    } finally {
+      if (mounted) setState(() => _analyzing = false);
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final batch = widget.batch;
     final single = batch.runCount == 1 ? batch.results.single : null;
 
     return Card(
@@ -377,7 +484,7 @@ class _BatchCard extends ConsumerWidget {
               ),
             if (single != null) ...[
               const Divider(height: 24),
-              _SingleRunDetail(result: single, shops: shops, quests: quests),
+              _SingleRunDetail(result: single, shops: widget.shops, quests: widget.quests),
             ] else ...[
               const Divider(height: 24),
               Text(tr(ref, 'individual_runs_label'), style: Theme.of(context).textTheme.titleSmall),
@@ -390,6 +497,41 @@ class _BatchCard extends ConsumerWidget {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
             ],
+            const Divider(height: 24),
+            OutlinedButton.icon(
+              onPressed: _analyzing ? null : _analyze,
+              icon: _analyzing
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.auto_awesome),
+              label: Text(
+                _analyzing ? tr(ref, 'analyzing_label') : tr(ref, 'analyze_with_gemini_button'),
+              ),
+            ),
+            if (_analysisError != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(
+                  _analysisError!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ),
+            if (_analysisText != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: SelectableText(_analysisText!),
+                ),
+              ),
           ],
         ),
       ),

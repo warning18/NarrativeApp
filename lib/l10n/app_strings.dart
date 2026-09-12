@@ -359,6 +359,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'gold_field_label': {AppLanguage.en: 'Gold', AppLanguage.fr: 'Or'},
   'alignment_label': {AppLanguage.en: 'Alignment', AppLanguage.fr: 'Alignement'},
   'stat_points_label': {AppLanguage.en: 'Stat Points', AppLanguage.fr: 'Points de statistique'},
+  'debug_stats_section_title': {
+    AppLanguage.en: 'Debug: Edit Stats',
+    AppLanguage.fr: 'Débogage : modifier les statistiques',
+  },
+  'debug_stats_section_desc': {
+    AppLanguage.en:
+        'Edit mode only — directly overwrites stats for testing, bypassing normal game rules.',
+    AppLanguage.fr:
+        'Mode Édition uniquement — modifie directement les statistiques pour les tests, en '
+        'contournant les règles normales du jeu.',
+  },
+  'current_hp_label': {AppLanguage.en: 'Current HP', AppLanguage.fr: 'PV actuels'},
+  'max_hp_label': {AppLanguage.en: 'Max HP', AppLanguage.fr: 'PV max'},
+  'alignment_score_label': {AppLanguage.en: 'Alignment', AppLanguage.fr: 'Alignement'},
+  'potion_count_label': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'current_xp_label': {AppLanguage.en: 'Current XP', AppLanguage.fr: 'XP actuelle'},
+  'apply_button': {AppLanguage.en: 'Apply', AppLanguage.fr: 'Appliquer'},
+  'stats_updated_message': {
+    AppLanguage.en: 'Stats updated.',
+    AppLanguage.fr: 'Statistiques mises à jour.',
+  },
   'potions_label': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
   'inventory_items_label': {
     AppLanguage.en: 'Inventory Items',
@@ -645,6 +666,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Simuler une partie',
   },
   'simulating_label': {AppLanguage.en: 'Simulating…', AppLanguage.fr: 'Simulation en cours…'},
+  'analyze_with_gemini_button': {
+    AppLanguage.en: 'Analyze with Gemini',
+    AppLanguage.fr: 'Analyser avec Gemini',
+  },
+  'analyzing_label': {AppLanguage.en: 'Analyzing…', AppLanguage.fr: 'Analyse en cours…'},
   'playthrough_recap_title': {
     AppLanguage.en: 'Playthrough Recap',
     AppLanguage.fr: 'Récapitulatif de la partie',

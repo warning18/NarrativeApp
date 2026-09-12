@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../widgets/player_stats_bar.dart';
@@ -20,6 +21,7 @@ class CharacterScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
     String subtitle = tr(ref, 'char_not_set');
     final races = racesAsync.value;
@@ -100,7 +102,136 @@ class CharacterScreen extends ConsumerWidget {
               },
             ),
           ),
+          if (isEditMode) ...[
+            const SizedBox(height: 16),
+            const _DebugStatsEditor(),
+          ],
         ],
+      ),
+    );
+  }
+}
+
+/// Edit-mode-only panel that lets stats be overwritten directly for
+/// testing (e.g. jumping straight to low HP to check a death flow, or high
+/// gold to check a shop) instead of having to replay to reach that state.
+class _DebugStatsEditor extends ConsumerStatefulWidget {
+  const _DebugStatsEditor();
+
+  @override
+  ConsumerState<_DebugStatsEditor> createState() => _DebugStatsEditorState();
+}
+
+class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
+  late final Map<String, TextEditingController> _controllers;
+
+  @override
+  void initState() {
+    super.initState();
+    final session = ref.read(playerSessionProvider);
+    _controllers = {
+      'level': TextEditingController(text: '${session.level}'),
+      'currentXP': TextEditingController(text: '${session.currentXP}'),
+      'gold': TextEditingController(text: '${session.gold}'),
+      'alignmentScore': TextEditingController(text: '${session.alignmentScore}'),
+      'currentHealth': TextEditingController(text: '${session.currentHealth}'),
+      'maxHealth': TextEditingController(text: '${session.maxHealth}'),
+      'baseDamage': TextEditingController(text: '${session.baseDamage}'),
+      'baseArmor': TextEditingController(text: '${session.baseArmor}'),
+      'potionCount': TextEditingController(text: '${session.potionCount}'),
+      'statPoints': TextEditingController(text: '${session.statPoints}'),
+      'skillPoints': TextEditingController(text: '${session.skillPoints}'),
+    };
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  Widget _field(String key, String labelKey) {
+    return SizedBox(
+      width: 140,
+      child: TextField(
+        controller: _controllers[key],
+        keyboardType: const TextInputType.numberWithOptions(signed: true),
+        decoration: InputDecoration(
+          border: const OutlineInputBorder(),
+          labelText: tr(ref, labelKey),
+          isDense: true,
+        ),
+      ),
+    );
+  }
+
+  void _apply() {
+    int? parse(String key) => int.tryParse(_controllers[key]!.text.trim());
+    ref.read(playerSessionProvider.notifier).debugSetStats(
+          level: parse('level'),
+          currentXP: parse('currentXP'),
+          gold: parse('gold'),
+          alignmentScore: parse('alignmentScore'),
+          currentHealth: parse('currentHealth'),
+          maxHealth: parse('maxHealth'),
+          baseDamage: parse('baseDamage'),
+          baseArmor: parse('baseArmor'),
+          potionCount: parse('potionCount'),
+          statPoints: parse('statPoints'),
+          skillPoints: parse('skillPoints'),
+        );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(tr(ref, 'stats_updated_message'))),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              tr(ref, 'debug_stats_section_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              tr(ref, 'debug_stats_section_desc'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _field('level', 'level_field_label'),
+                _field('currentXP', 'current_xp_label'),
+                _field('gold', 'gold_label'),
+                _field('alignmentScore', 'alignment_score_label'),
+                _field('currentHealth', 'current_hp_label'),
+                _field('maxHealth', 'max_hp_label'),
+                _field('baseDamage', 'damage_label'),
+                _field('baseArmor', 'armor_label'),
+                _field('potionCount', 'potion_count_label'),
+                _field('statPoints', 'stat_points_label'),
+                _field('skillPoints', 'skill_points_label'),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ElevatedButton(
+                onPressed: _apply,
+                child: Text(tr(ref, 'apply_button')),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

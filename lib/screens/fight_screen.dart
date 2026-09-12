@@ -19,6 +19,55 @@ import 'death_screen.dart';
 
 const int _potionHealAmount = 30;
 
+/// Broad categories a combat-log line falls into, used to color and icon
+/// each line so the log reads at a glance instead of as a wall of text.
+enum _LogKind { info, playerDamage, playerHeal, playerBlock, enemyDamage, victory, defeat }
+
+class _LogEntry {
+  const _LogEntry(this.text, this.kind);
+
+  final String text;
+  final _LogKind kind;
+}
+
+Color _logColor(BuildContext context, _LogKind kind) {
+  switch (kind) {
+    case _LogKind.info:
+      return Theme.of(context).colorScheme.onSurfaceVariant;
+    case _LogKind.playerDamage:
+      return Colors.deepOrange;
+    case _LogKind.playerHeal:
+      return Colors.green;
+    case _LogKind.playerBlock:
+      return Colors.blueGrey;
+    case _LogKind.enemyDamage:
+      return Colors.red;
+    case _LogKind.victory:
+      return Colors.amber.shade800;
+    case _LogKind.defeat:
+      return Colors.red.shade900;
+  }
+}
+
+IconData _logIcon(_LogKind kind) {
+  switch (kind) {
+    case _LogKind.info:
+      return Icons.info_outline;
+    case _LogKind.playerDamage:
+      return Icons.bolt;
+    case _LogKind.playerHeal:
+      return Icons.favorite;
+    case _LogKind.playerBlock:
+      return Icons.shield;
+    case _LogKind.enemyDamage:
+      return Icons.warning_amber_rounded;
+    case _LogKind.victory:
+      return Icons.emoji_events;
+    case _LogKind.defeat:
+      return Icons.heart_broken;
+  }
+}
+
 class FightScreen extends ConsumerStatefulWidget {
   const FightScreen({super.key, required this.enemyId, required this.enemy});
 
@@ -31,7 +80,7 @@ class FightScreen extends ConsumerStatefulWidget {
 
 class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderStateMixin {
   final Random _random = Random();
-  final List<String> _log = [];
+  final List<_LogEntry> _log = [];
 
   bool _started = false;
   bool _over = false;
@@ -96,8 +145,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     setState(() {
       _started = true;
       _log.add(
-        '${trFor(lang, 'fight_begins_prefix')} ${widget.enemy['enemyName']} '
-        '${trFor(lang, 'has_label')} $_enemyMaxHealth ${trFor(lang, 'hp_label')}.',
+        _LogEntry(
+          '${trFor(lang, 'fight_begins_prefix')} ${widget.enemy['enemyName']} '
+          '${trFor(lang, 'has_label')} $_enemyMaxHealth ${trFor(lang, 'hp_label')}.',
+          _LogKind.info,
+        ),
       );
     });
   }
@@ -155,7 +207,6 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     setState(() => _rolling = true);
     await _rollController.forward(from: 0);
     if (!mounted) return;
-    setState(() => _rolling = false);
 
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
     final result = resolvePlayerFace(
@@ -164,13 +215,27 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       totalDamage,
       language: ref.read(appLanguageProvider),
     );
+    final kind = result.damageDealt > 0
+        ? _LogKind.playerDamage
+        : result.healingDone > 0
+            ? _LogKind.playerHeal
+            : result.blockAmount > 0
+                ? _LogKind.playerBlock
+                : _LogKind.info;
 
+    // Apply the result while the die still sits frozen on screen (stopped,
+    // not spinning), so the player has a moment to see it land before it
+    // disappears and the enemy's turn plays out.
     setState(() {
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
       _playerHealth = min(_playerMaxHealth, _playerHealth + result.healingDone);
       _block = result.blockAmount;
-      _log.add(result.message);
+      _log.add(_LogEntry(result.message, kind));
     });
+
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    setState(() => _rolling = false);
 
     if (_enemyHealth <= 0) {
       _finishFight(won: true);
@@ -199,8 +264,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       _block = 0;
       _lastDamageTaken = damageTaken;
       _log.add(
-        '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
-        '${trFor(lang, 'damage_word')}.',
+        _LogEntry(
+          '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
+          '${trFor(lang, 'damage_word')}.',
+          damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock,
+        ),
       );
     });
     if (damageTaken > 0) _triggerShake();
@@ -218,7 +286,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     setState(() {
       _playerHealth = min(_playerMaxHealth, _playerHealth + _potionHealAmount);
       _log.add(
-        '${trFor(lang, 'drink_potion_prefix')} $_potionHealAmount ${trFor(lang, 'hp_label')}.',
+        _LogEntry(
+          '${trFor(lang, 'drink_potion_prefix')} $_potionHealAmount ${trFor(lang, 'hp_label')}.',
+          _LogKind.playerHeal,
+        ),
       );
     });
   }
@@ -255,9 +326,12 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       final lang = ref.read(appLanguageProvider);
       setState(() {
         _log.add(
-          '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
-          '+$xpGain XP'
-          '${loot.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${loot.join(", ")}" : ""}.',
+          _LogEntry(
+            '${trFor(lang, 'victory_prefix')} +$goldGain ${trFor(lang, 'gold_label')}, '
+            '+$xpGain XP'
+            '${loot.isNotEmpty ? ", ${trFor(lang, 'loot_label')}: ${loot.join(", ")}" : ""}.',
+            _LogKind.victory,
+          ),
         );
       });
       if (leveledUp) {
@@ -272,7 +346,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       await notifier.applyCombatResult(hpAfter: _playerMaxHealth);
       if (!mounted) return;
       setState(() {
-        _log.add(trFor(ref.read(appLanguageProvider), 'defeat_message'));
+        _log.add(_LogEntry(trFor(ref.read(appLanguageProvider), 'defeat_message'), _LogKind.defeat));
       });
     }
   }
@@ -464,10 +538,31 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 child: ListView.builder(
                   reverse: true,
                   itemCount: _log.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text(_log[_log.length - 1 - index]),
-                  ),
+                  itemBuilder: (context, index) {
+                    final entry = _log[_log.length - 1 - index];
+                    final color = _logColor(context, entry.kind);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(_logIcon(entry.kind), size: 14, color: color),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              entry.text,
+                              style: TextStyle(
+                                color: color,
+                                fontWeight: entry.kind == _LogKind.info
+                                    ? FontWeight.normal
+                                    : FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
