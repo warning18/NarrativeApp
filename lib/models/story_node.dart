@@ -107,11 +107,17 @@ class StoryNode {
     this.reqAlignmentMax,
     this.reqFlags = const [],
     this.descriptionFr,
+    this.uiTheme,
+    this.mood,
+    this.speaker,
+    this.scriptTrigger,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
     final choicesJson =
         (json['choices'] ?? json['possibleChoices']) as List<dynamic>? ?? const [];
+    final taxonomy = json['context_taxonomy'] as Map<String, dynamic>?;
+    final automations = json['automations'] as Map<String, dynamic>?;
     return StoryNode(
       id: id,
       description: json['description'] as String? ?? '',
@@ -123,6 +129,10 @@ class StoryNode {
       reqAlignmentMax: (json['reqAlignmentMax'] as num?)?.toInt(),
       reqFlags: (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       descriptionFr: json['description_fr'] as String?,
+      uiTheme: taxonomy?['ui_theme'] as String?,
+      mood: taxonomy?['mood'] as String?,
+      speaker: taxonomy?['speaker'] as String?,
+      scriptTrigger: automations?['script_trigger'] as String?,
     );
   }
 
@@ -143,6 +153,25 @@ class StoryNode {
   /// is ever added without one.
   final String? descriptionFr;
 
+  /// The node's narrative setting (e.g. "docks", "cathedral") — used to pick
+  /// a matching flavor for the procedural excursions generated after this
+  /// node (see [mapThemeForUiTheme] in map_themes.dart) so wandering shops,
+  /// enemies, and rest stops read consistently with the current scene.
+  final String? uiTheme;
+
+  /// The node's emotional tone (e.g. "tense", "grim"). Authoring metadata,
+  /// not currently read by the app, but preserved so editing a node never
+  /// silently discards it.
+  final String? mood;
+
+  /// Who is speaking this node's description (e.g. "Narrator", "Vane").
+  /// Authoring metadata, not currently read by the app.
+  final String? speaker;
+
+  /// An authoring hook name for this node's on-load script, if any.
+  /// Not currently read by the app.
+  final String? scriptTrigger;
+
   String descriptionFor(bool french) =>
       french && (descriptionFr?.isNotEmpty ?? false) ? descriptionFr! : description;
 
@@ -150,8 +179,17 @@ class StoryNode {
       reqGold > 0 || reqAlignmentScore != null || reqAlignmentMax != null || reqFlags.isNotEmpty;
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'description': description,
         if (descriptionFr != null && descriptionFr!.isNotEmpty) 'description_fr': descriptionFr,
+        if (uiTheme != null || mood != null || speaker != null)
+          'context_taxonomy': {
+            if (uiTheme != null) 'ui_theme': uiTheme,
+            if (mood != null) 'mood': mood,
+            if (speaker != null) 'speaker': speaker,
+          },
+        if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
+          'automations': {'script_trigger': scriptTrigger},
         if (reqGold != 0) 'reqGold': reqGold,
         if (reqAlignmentScore != null) 'reqAlignmentScore': reqAlignmentScore,
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,

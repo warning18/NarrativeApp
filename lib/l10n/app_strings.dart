@@ -112,10 +112,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'map_theme_description': {
     AppLanguage.en:
         'The 5 main beats per chapter never change. This picks the flavor of the random '
-        'encounters, shops, and quests generated between them.',
+        'encounters, shops, and quests generated between them. Auto matches each scene\'s '
+        'own setting automatically; pick a fixed theme to override every chapter with it.',
     AppLanguage.fr:
         'Les 5 étapes principales de chaque chapitre ne changent jamais. Ceci choisit '
-        "l'ambiance des rencontres, boutiques et quêtes générées entre elles.",
+        "l'ambiance des rencontres, boutiques et quêtes générées entre elles. Le mode "
+        'automatique correspond au décor propre à chaque scène ; choisissez une ambiance '
+        'fixe pour l\'imposer à tous les chapitres.',
+  },
+  'map_theme_auto_label': {
+    AppLanguage.en: 'Auto (match story)',
+    AppLanguage.fr: 'Automatique (selon le récit)',
   },
   'map_theme_ashen_streets': {
     AppLanguage.en: 'Ashen Streets',

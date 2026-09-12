@@ -73,6 +73,10 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
           .map((s) => s.trim())
           .where((s) => s.isNotEmpty)
           .toList(),
+      uiTheme: widget.node.uiTheme,
+      mood: widget.node.mood,
+      speaker: widget.node.speaker,
+      scriptTrigger: widget.node.scriptTrigger,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;

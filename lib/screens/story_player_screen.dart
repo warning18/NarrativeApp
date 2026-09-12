@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_spine.dart';
+import '../data/map_themes.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
@@ -483,6 +484,9 @@ class _ChoiceButton extends ConsumerWidget {
                 final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
                 final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
                 final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
+                final manualTheme = ref.read(mapThemeProvider);
+                final resolvedTheme =
+                    manualTheme ?? mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
                 final excursion = SubNodeEngine.maybeGenerate(
                   random: Random(),
                   chapter: chapter,
@@ -492,7 +496,7 @@ class _ChoiceButton extends ConsumerWidget {
                   unlockedShopIds: session.unlockedShopIds,
                   unlockedEnemyIds: session.unlockedEnemyIds,
                   unlockedQuestIds: session.unlockedQuestIds,
-                  theme: ref.read(mapThemeProvider),
+                  theme: resolvedTheme,
                 );
                 if (excursion != null) {
                   playNotifier.startExcursion(excursion, choice.nextId);

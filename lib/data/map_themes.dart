@@ -67,6 +67,25 @@ ExcursionFlavor flavorFor(MapTheme theme) {
   }
 }
 
+/// Maps a story node's [StoryNode.uiTheme] category — its actual narrative
+/// setting, e.g. "docks" or "cathedral" — to the excursion flavor that best
+/// matches it, so the shops/enemies/rest stops generated after that node
+/// read consistently with the scene the player is actually in, instead of
+/// depending on one map-wide setting that ignores where the story is.
+MapTheme mapThemeForUiTheme(String? uiTheme) {
+  switch (uiTheme) {
+    case 'docks':
+      return MapTheme.saltRoads;
+    case 'sewers':
+    case 'torture_chamber':
+    case 'cathedral':
+    case 'catacombs':
+      return MapTheme.hollowReaches;
+    default:
+      return MapTheme.ashenStreets;
+  }
+}
+
 const _ashenStreets = ExcursionFlavor(
   shop: [
     'A stall has been set up in a doorway, its owner watching the street more than the goods.',
