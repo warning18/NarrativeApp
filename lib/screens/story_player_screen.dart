@@ -14,12 +14,15 @@ import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/gemini_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
 import '../providers/tutorial_provider.dart';
+import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
@@ -73,6 +76,7 @@ class _StoryView extends ConsumerWidget {
       final nextId = next.activeExcursionNode?.id ?? next.currentNodeId;
       if (prevId != nextId) {
         ref.read(ttsProvider.notifier).stop();
+        ref.read(geminiTtsProvider.notifier).stop();
       }
     });
 
@@ -455,12 +459,40 @@ class _ReadAloudButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSpeaking = ref.watch(ttsProvider);
+    final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
+    final apiKey = ref.watch(apiKeyProvider);
+    final useGemini = geminiVoice.enabled && (apiKey?.isNotEmpty ?? false);
+    final isSpeaking = useGemini ? ref.watch(geminiTtsProvider) : ref.watch(ttsProvider);
+
     return IconButton(
       icon: Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
       tooltip: isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip'),
       visualDensity: VisualDensity.compact,
-      onPressed: () {
+      onPressed: () async {
+        if (useGemini) {
+          final notifier = ref.read(geminiTtsProvider.notifier);
+          if (isSpeaking) {
+            await notifier.stop();
+            return;
+          }
+          try {
+            await notifier.speak(
+              text: storyBodyFor(text),
+              apiKey: apiKey!,
+              voiceName: geminiVoice.voiceName,
+              language: language,
+            );
+          } catch (e) {
+            if (!context.mounted) return;
+            showImmersiveNotice(
+              context,
+              icon: Icons.error_outline,
+              message: '${tr(ref, 'gemini_voice_error_prefix')}: $e',
+            );
+          }
+          return;
+        }
+
         final notifier = ref.read(ttsProvider.notifier);
         if (isSpeaking) {
           notifier.stop();
