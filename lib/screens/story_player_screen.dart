@@ -133,7 +133,9 @@ class _StoryView extends ConsumerWidget {
             const SizedBox(height: 8),
             Row(
               children: [
-                if (playState.history.isNotEmpty && !playState.isInExcursion)
+                if (playState.history.isNotEmpty &&
+                    !playState.isInExcursion &&
+                    ref.watch(appModeProvider) == AppMode.edit)
                   TextButton.icon(
                     onPressed: notifier.goBack,
                     icon: const Icon(Icons.arrow_back),
@@ -177,7 +179,13 @@ class _StoryView extends ConsumerWidget {
               ),
             ),
             if (walkCompanionEnabled)
-              WalkingCompanionStrip(trigger: '${node.id}_${playState.isInExcursion}')
+              WalkingCompanionStrip(
+                trigger: '${node.id}_${playState.isInExcursion}',
+                fightAvailable: node.choices.any(
+                  (c) => c.triggersCombat &&
+                      !_isChoiceLocked(c, story, session, playState.isInExcursion),
+                ),
+              )
             else
               const SizedBox(height: 16),
             AnimatedSwitcher(
@@ -221,6 +229,26 @@ class _StoryView extends ConsumerWidget {
       ),
     );
   }
+}
+
+/// Whether [choice] is currently unreachable because its target node has
+/// requirements the player doesn't meet (shown disabled with its
+/// lockedText instead of being selectable).
+bool _isChoiceLocked(
+  StoryChoice choice,
+  StoryData story,
+  PlayerSession session,
+  bool isExcursion,
+) {
+  final targetNode = (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
+  return targetNode != null &&
+      targetNode.hasRequirements &&
+      !session.meetsRequirements(
+        reqGold: targetNode.reqGold,
+        reqAlignmentScore: targetNode.reqAlignmentScore,
+        reqAlignmentMax: targetNode.reqAlignmentMax,
+        reqFlags: targetNode.reqFlags,
+      );
 }
 
 /// Fade + subtle upward slide used whenever the story advances to a
@@ -298,16 +326,7 @@ class _ChoiceButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final targetNode =
-        (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
-    final locked = targetNode != null &&
-        targetNode.hasRequirements &&
-        !session.meetsRequirements(
-          reqGold: targetNode.reqGold,
-          reqAlignmentScore: targetNode.reqAlignmentScore,
-          reqAlignmentMax: targetNode.reqAlignmentMax,
-          reqFlags: targetNode.reqFlags,
-        );
+    final locked = _isChoiceLocked(choice, story, session, isExcursion);
 
     final lockedLabel = locked ? choice.lockedTextFor(french) : null;
     final label = (lockedLabel?.isNotEmpty ?? false) ? lockedLabel! : choice.textFor(french);
