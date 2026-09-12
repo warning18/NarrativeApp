@@ -34,6 +34,12 @@ import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'story_node_editor_screen.dart';
 
+/// Tracks the id of the last scene auto-read aloud, so the auto-read
+/// effect (see [_StoryView.build]) speaks each scene exactly once instead
+/// of re-triggering on every rebuild that doesn't actually change the
+/// displayed node.
+final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
+
 class StoryPlayerScreen extends ConsumerWidget {
   const StoryPlayerScreen({super.key});
 
@@ -120,6 +126,22 @@ class _StoryView extends ConsumerWidget {
             voiceName: geminiVoiceForPreload.voiceName,
             language: language,
           );
+    }
+
+    // Auto-read: once enabled, speak each scene the moment it appears
+    // instead of waiting for a manual tap on the read-aloud button — always
+    // via the fast on-device voice (never Gemini, which would mean a
+    // network wait on every single scene).
+    if (ref.watch(autoReadAloudProvider)) {
+      final autoReadKey = '${node.id}_${playState.isInExcursion}';
+      if (ref.read(_autoReadLastNodeKeyProvider) != autoReadKey) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!context.mounted) return;
+          ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
+          ref.read(geminiTtsProvider.notifier).stop();
+          ref.read(ttsProvider.notifier).speak(storyBodyFor(node.descriptionFor(french)), language);
+        });
+      }
     }
 
     return SafeArea(

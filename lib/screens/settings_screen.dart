@@ -70,6 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final isEditMode = appMode == AppMode.edit;
     final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
     final apiKey = ref.watch(apiKeyProvider);
+    final autoReadAloud = ref.watch(autoReadAloudProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'settings'))),
@@ -333,6 +334,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'auto_read_aloud_setting_title')),
+              subtitle: Text(tr(ref, 'auto_read_aloud_setting_desc')),
+              value: autoReadAloud,
+              onChanged: (value) => ref.read(autoReadAloudProvider.notifier).setEnabled(value),
+            ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(tr(ref, 'gemini_voice_setting_title')),
