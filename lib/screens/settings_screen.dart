@@ -658,6 +658,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         return 'palette_autumn_meadow';
       case AppPalette.duskHorizon:
         return 'palette_dusk_horizon';
+      case AppPalette.auroraDusk:
+        return 'palette_aurora_dusk';
+      case AppPalette.roseNoir:
+        return 'palette_rose_noir';
+      case AppPalette.mistSlate:
+        return 'palette_mist_slate';
     }
   }
 
