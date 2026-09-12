@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'dart:isolate';
+import 'dart:typed_data';
 
 import 'package:archive/archive.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart' show compute;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -34,11 +37,76 @@ class SherpaTtsException implements Exception {
 /// on a slow connection instead of a generic spinner throughout.
 enum SherpaTtsPlaybackState { idle, downloading, generating, playing }
 
+/// Unpacks a downloaded tar.bz2 model archive into filename -> bytes for
+/// just the files the engine needs (model + tokens). Run via [compute]
+/// (a throwaway background isolate) since bzip2/tar decoding is CPU-bound
+/// and would otherwise freeze the UI for however long it takes — a one-time
+/// cost, but still enough to be felt on the first read-aloud.
+Map<String, Uint8List> _extractModelArchive(Uint8List archiveBytes) {
+  final tarBytes = BZip2Decoder().decodeBytes(archiveBytes);
+  final archive = TarDecoder().decodeBytes(tarBytes);
+  final result = <String, Uint8List>{};
+  for (final file in archive.files) {
+    if (!file.isFile) continue;
+    final name = file.name.split('/').last;
+    if (!name.endsWith('.onnx') && name != 'tokens.txt') continue;
+    final content = file.content;
+    result[name] = content is Uint8List ? content : Uint8List.fromList(content as List<int>);
+  }
+  return result;
+}
+
+/// Runs entirely in a dedicated background isolate for the lifetime of the
+/// app: loads the sherpa-onnx model once and keeps it resident in that
+/// isolate, generating audio for each request without re-loading. Model
+/// construction and neural-network inference (`OfflineTts.generate`) are
+/// both synchronous, CPU-heavy native calls — running them on the main
+/// isolate is exactly what was freezing the UI, since auto-read fires one
+/// on every single scene. Communicates over plain Maps of primitives/
+/// TypedData plus a SendPort, which cross the isolate boundary directly.
+void _sherpaIsolateEntry(SendPort mainSendPort) {
+  final commandPort = ReceivePort();
+  mainSendPort.send(commandPort.sendPort);
+
+  sherpa_onnx.OfflineTts? tts;
+  var bindingsInitialized = false;
+
+  commandPort.listen((dynamic message) {
+    final request = message as Map<String, dynamic>;
+    final replyPort = request['replyPort'] as SendPort;
+    try {
+      if (tts == null) {
+        if (!bindingsInitialized) {
+          sherpa_onnx.initBindings();
+          bindingsInitialized = true;
+        }
+        tts = sherpa_onnx.OfflineTts(
+          sherpa_onnx.OfflineTtsConfig(
+            model: sherpa_onnx.OfflineTtsModelConfig(
+              vits: sherpa_onnx.OfflineTtsVitsModelConfig(
+                model: request['modelPath'] as String,
+                tokens: request['tokensPath'] as String,
+              ),
+              numThreads: 2,
+              debug: false,
+            ),
+          ),
+        );
+      }
+      final audio = tts!.generate(text: request['text'] as String);
+      replyPort.send({'samples': audio.samples, 'sampleRate': audio.sampleRate});
+    } catch (e) {
+      replyPort.send({'error': e.toString()});
+    }
+  });
+}
+
 /// Speaks French text aloud entirely on-device via sherpa-onnx, once the
 /// (one-time, cached) model has been fetched — no network round-trip per
 /// line the way the Gemini voice needs, and no dependence on whatever (or
 /// however poor) text-to-speech engine happens to be installed on the
-/// device the way the OS voice does.
+/// device the way the OS voice does. All CPU-heavy work (model load,
+/// inference, archive extraction) runs off the UI isolate.
 class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
   SherpaTtsNotifier() : super(SherpaTtsPlaybackState.idle) {
     _player.onPlayerComplete.listen((_) {
@@ -47,11 +115,13 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
   }
 
   final AudioPlayer _player = AudioPlayer();
-  sherpa_onnx.OfflineTts? _tts;
-  bool _bindingsInitialized = false;
 
-  /// Guards concurrent callers from downloading/initializing twice.
-  Future<void>? _readyFuture;
+  Isolate? _workerIsolate;
+  Future<SendPort>? _workerPortFuture;
+
+  String? _modelPath;
+  String? _tokensPath;
+  Future<void>? _modelReadyFuture;
 
   Future<Directory> _modelDir() async {
     final docs = await getApplicationDocumentsDirectory();
@@ -63,99 +133,107 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
   /// Looks for already-extracted model files by extension/name rather than
   /// a hardcoded folder layout, since the archive's internal structure
   /// isn't guaranteed across releases.
-  Future<(File, File)?> _findModelFiles(Directory dir) async {
-    File? modelFile;
-    File? tokensFile;
+  Future<(String, String)?> _findModelPaths(Directory dir) async {
+    String? modelPath;
+    String? tokensPath;
     await for (final entity in dir.list(recursive: true)) {
       if (entity is! File) continue;
       final name = entity.uri.pathSegments.last;
-      if (name.endsWith('.onnx')) modelFile = entity;
-      if (name == 'tokens.txt') tokensFile = entity;
+      if (name.endsWith('.onnx')) modelPath = entity.path;
+      if (name == 'tokens.txt') tokensPath = entity.path;
     }
-    if (modelFile != null && tokensFile != null) return (modelFile, tokensFile);
+    if (modelPath != null && tokensPath != null) return (modelPath, tokensPath);
     return null;
   }
 
-  Future<void> _ensureReady() async {
+  Future<void> _ensureModelDownloaded() async {
     try {
-      await (_readyFuture ??= _prepareEngine());
+      await (_modelReadyFuture ??= _downloadAndExtractModel());
     } catch (e) {
       // Don't let a failed attempt (e.g. no network) permanently poison
       // future retries — clear the cache so the next speak() tries again.
-      _readyFuture = null;
+      _modelReadyFuture = null;
       rethrow;
     }
   }
 
-  Future<void> _prepareEngine() async {
+  Future<void> _downloadAndExtractModel() async {
     final dir = await _modelDir();
-    var found = await _findModelFiles(dir);
-    if (found == null) {
-      state = SherpaTtsPlaybackState.downloading;
-      try {
-        final response = await http
-            .get(Uri.parse(_frenchModelUrl))
-            .timeout(const Duration(minutes: 5));
-        if (response.statusCode != 200) {
-          throw SherpaTtsException(
-            'French voice download failed (HTTP ${response.statusCode}).',
-          );
-        }
-        final tarBytes = BZip2Decoder().decodeBytes(response.bodyBytes);
-        final archive = TarDecoder().decodeBytes(tarBytes);
-        for (final file in archive.files) {
-          if (!file.isFile) continue;
-          final name = file.name.split('/').last;
-          if (!name.endsWith('.onnx') && name != 'tokens.txt') continue;
-          final content = file.content as List<int>;
-          await File('${dir.path}/$name').writeAsBytes(content, flush: true);
-        }
-      } catch (e) {
-        state = SherpaTtsPlaybackState.idle;
-        throw SherpaTtsException('Could not download the French voice: $e');
-      }
-      found = await _findModelFiles(dir);
-      if (found == null) {
-        state = SherpaTtsPlaybackState.idle;
-        throw SherpaTtsException('French voice download did not contain a usable model.');
-      }
+    final existing = await _findModelPaths(dir);
+    if (existing != null) {
+      (_modelPath, _tokensPath) = existing;
+      return;
     }
 
-    if (!_bindingsInitialized) {
-      sherpa_onnx.initBindings();
-      _bindingsInitialized = true;
+    state = SherpaTtsPlaybackState.downloading;
+    final http.Response response;
+    try {
+      response =
+          await http.get(Uri.parse(_frenchModelUrl)).timeout(const Duration(minutes: 5));
+    } catch (e) {
+      state = SherpaTtsPlaybackState.idle;
+      throw SherpaTtsException('Could not download the French voice: $e');
     }
-    final (modelFile, tokensFile) = found;
-    _tts = sherpa_onnx.OfflineTts(
-      sherpa_onnx.OfflineTtsConfig(
-        model: sherpa_onnx.OfflineTtsModelConfig(
-          vits: sherpa_onnx.OfflineTtsVitsModelConfig(
-            model: modelFile.path,
-            tokens: tokensFile.path,
-          ),
-          numThreads: 2,
-          debug: false,
-        ),
-      ),
-    );
+    if (response.statusCode != 200) {
+      state = SherpaTtsPlaybackState.idle;
+      throw SherpaTtsException('French voice download failed (HTTP ${response.statusCode}).');
+    }
+
+    final files = await compute(_extractModelArchive, response.bodyBytes);
+    for (final entry in files.entries) {
+      await File('${dir.path}/${entry.key}').writeAsBytes(entry.value, flush: true);
+    }
+
+    final found = await _findModelPaths(dir);
+    if (found == null) {
+      state = SherpaTtsPlaybackState.idle;
+      throw SherpaTtsException('French voice download did not contain a usable model.');
+    }
+    (_modelPath, _tokensPath) = found;
+  }
+
+  Future<SendPort> _ensureWorkerPort() async {
+    try {
+      return await (_workerPortFuture ??= _spawnWorker());
+    } catch (e) {
+      _workerPortFuture = null;
+      rethrow;
+    }
+  }
+
+  Future<SendPort> _spawnWorker() async {
+    final readyPort = ReceivePort();
+    _workerIsolate = await Isolate.spawn(_sherpaIsolateEntry, readyPort.sendPort);
+    return await readyPort.first as SendPort;
   }
 
   Future<void> speak(String text) async {
     if (text.trim().isEmpty) return;
     await _player.stop();
     try {
-      await _ensureReady();
+      await _ensureModelDownloaded();
       state = SherpaTtsPlaybackState.generating;
-      final tts = _tts;
-      if (tts == null) throw SherpaTtsException('French voice failed to load.');
-      final audio = tts.generate(text: text);
+
+      final workerPort = await _ensureWorkerPort();
+      final replyPort = ReceivePort();
+      workerPort.send({
+        'text': text,
+        'modelPath': _modelPath,
+        'tokensPath': _tokensPath,
+        'replyPort': replyPort.sendPort,
+      });
+      final response = await replyPort.first as Map<dynamic, dynamic>;
+      replyPort.close();
+      if (response.containsKey('error')) {
+        throw SherpaTtsException('French voice error: ${response['error']}');
+      }
+
+      final samples = response['samples'] as Float32List;
+      final sampleRate = response['sampleRate'] as int;
       final dir = await getTemporaryDirectory();
       final file = File('${dir.path}/sherpa_tts_output.wav');
-      sherpa_onnx.writeWave(
-        filename: file.path,
-        samples: audio.samples,
-        sampleRate: audio.sampleRate,
-      );
+      sherpa_onnx.writeWave(filename: file.path, samples: samples, sampleRate: sampleRate);
+
       if (state != SherpaTtsPlaybackState.generating) return;
       state = SherpaTtsPlaybackState.playing;
       await _player.play(DeviceFileSource(file.path));
@@ -173,7 +251,7 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
 
   @override
   void dispose() {
-    _tts?.free();
+    _workerIsolate?.kill(priority: Isolate.immediate);
     _player.dispose();
     super.dispose();
   }
