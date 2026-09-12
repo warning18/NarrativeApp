@@ -9,6 +9,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
@@ -23,6 +24,9 @@ class PlayScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
+    final playState = ref.watch(storyPlayProvider);
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final hasSavedGame = ref.watch(savedGameExistsProvider);
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
@@ -43,13 +47,59 @@ class PlayScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(tr(ref, 'player_session'), style: Theme.of(context).textTheme.titleMedium),
-            TextButton.icon(
-              onPressed: () async {
-                await ref.read(playerSessionProvider.notifier).resetSession();
-                ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
-              },
-              icon: const Icon(Icons.restart_alt),
-              label: Text(tr(ref, 'reset')),
+            Wrap(
+              spacing: 4,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.save_outlined),
+                  tooltip: tr(ref, 'save_game_tooltip'),
+                  onPressed: () async {
+                    await ref.read(savedGameExistsProvider.notifier).save(
+                          session: session,
+                          currentNodeId: playState.currentNodeId,
+                          history: playState.history,
+                        );
+                    if (!context.mounted) return;
+                    showImmersiveNotice(
+                      context,
+                      icon: Icons.save,
+                      message: tr(ref, 'game_saved_message'),
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.folder_open_outlined),
+                  tooltip: tr(ref, 'load_game_tooltip'),
+                  onPressed: !hasSavedGame
+                      ? null
+                      : () async {
+                          final saved = await ref.read(savedGameExistsProvider.notifier).load();
+                          if (saved == null) return;
+                          final (savedSession, savedNodeId, savedHistory) = saved;
+                          await ref
+                              .read(playerSessionProvider.notifier)
+                              .loadSession(savedSession);
+                          ref
+                              .read(storyPlayProvider.notifier)
+                              .loadState(savedNodeId, savedHistory);
+                          if (!context.mounted) return;
+                          showImmersiveNotice(
+                            context,
+                            icon: Icons.folder_open,
+                            message: tr(ref, 'game_loaded_message'),
+                          );
+                        },
+                ),
+                if (isEditMode)
+                  TextButton.icon(
+                    onPressed: () async {
+                      await ref.read(playerSessionProvider.notifier).resetSession();
+                      ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+                    },
+                    icon: const Icon(Icons.restart_alt),
+                    label: Text(tr(ref, 'reset')),
+                  ),
+              ],
             ),
           ],
         ),

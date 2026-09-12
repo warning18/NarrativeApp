@@ -19,7 +19,6 @@ import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/settings_providers.dart';
-import '../providers/sherpa_tts_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
 import '../providers/tutorial_provider.dart';
@@ -41,20 +40,16 @@ import 'story_node_editor_screen.dart';
 /// displayed node.
 final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
 
-/// Speaks [text] via the fast on-device voice for [language] — the offline
-/// sherpa-onnx neural voice for French, the OS text-to-speech engine for
-/// everything else (sherpa-onnx isn't wired up for other languages yet).
+/// Speaks [text] via the device's on-device text-to-speech engine — the
+/// fast default voice, used for auto-read and as read-aloud's fallback
+/// when the (opt-in) Gemini voice isn't enabled.
 Future<void> _speakNarration(WidgetRef ref, String text, AppLanguage language) {
-  if (language == AppLanguage.fr) {
-    return ref.read(sherpaTtsProvider.notifier).speak(text);
-  }
   return ref.read(ttsProvider.notifier).speak(text, language);
 }
 
 void _stopAllNarration(WidgetRef ref) {
   ref.read(ttsProvider.notifier).stop();
   ref.read(geminiTtsProvider.notifier).stop();
-  ref.read(sherpaTtsProvider.notifier).stop();
 }
 
 class StoryPlayerScreen extends ConsumerWidget {
@@ -146,8 +141,8 @@ class _StoryView extends ConsumerWidget {
 
     // Auto-read: once enabled, speak each scene the moment it appears
     // instead of waiting for a manual tap on the read-aloud button — always
-    // via a fast on-device voice (French via sherpa-onnx, otherwise the OS
-    // voice; never Gemini, which would mean a network wait on every scene).
+    // via the fast on-device voice, never Gemini (which would mean a
+    // network wait on every single scene).
     if (ref.watch(autoReadAloudProvider)) {
       final autoReadKey = '${node.id}_${playState.isInExcursion}';
       if (ref.read(_autoReadLastNodeKeyProvider) != autoReadKey) {
@@ -159,14 +154,13 @@ class _StoryView extends ConsumerWidget {
             await _speakNarration(ref, storyBodyFor(node.descriptionFor(french)), language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
-            // failure here (e.g. the offline voice's one-time model
-            // download failing) must still surface — otherwise it just
-            // looks like the voice silently never triggers.
+            // failure here must still surface — otherwise it just looks
+            // like the voice silently never triggers.
             if (!context.mounted) return;
             showImmersiveNotice(
               context,
               icon: Icons.error_outline,
-              message: '${tr(ref, 'sherpa_voice_error_prefix')}: $e',
+              message: '${tr(ref, 'voice_error_prefix')}: $e',
             );
           }
         });
@@ -529,36 +523,23 @@ class _ReadAloudButton extends ConsumerWidget {
     final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
     final apiKey = ref.watch(apiKeyProvider);
     final useGemini = geminiVoice.enabled && (apiKey?.isNotEmpty ?? false);
-    // French reads aloud via the offline sherpa-onnx voice instead of the
-    // OS engine, unless Gemini is explicitly enabled — sherpa-onnx isn't
-    // wired up for other languages yet.
-    final useSherpa = !useGemini && language == AppLanguage.fr;
 
     final geminiState = useGemini ? ref.watch(geminiTtsProvider) : null;
-    final sherpaState = useSherpa ? ref.watch(sherpaTtsProvider) : null;
-
-    final isDownloading = sherpaState == SherpaTtsPlaybackState.downloading;
-    final isLoading = geminiState == GeminiTtsPlaybackState.loading ||
-        sherpaState == SherpaTtsPlaybackState.generating;
-    final isSpeaking = useGemini
-        ? geminiState != GeminiTtsPlaybackState.idle
-        : useSherpa
-            ? sherpaState != SherpaTtsPlaybackState.idle
-            : ref.watch(ttsProvider);
+    final isLoading = geminiState == GeminiTtsPlaybackState.loading;
+    final isSpeaking =
+        useGemini ? geminiState != GeminiTtsPlaybackState.idle : ref.watch(ttsProvider);
 
     return IconButton(
-      icon: (isLoading || isDownloading)
+      icon: isLoading
           ? const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
           : Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
-      tooltip: isDownloading
-          ? tr(ref, 'downloading_voice_tooltip')
-          : isLoading
-              ? tr(ref, 'loading_voice_tooltip')
-              : (isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip')),
+      tooltip: isLoading
+          ? tr(ref, 'loading_voice_tooltip')
+          : (isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip')),
       visualDensity: VisualDensity.compact,
       onPressed: () async {
         if (useGemini) {
@@ -583,25 +564,6 @@ class _ReadAloudButton extends ConsumerWidget {
               context,
               icon: Icons.error_outline,
               message: '${tr(ref, 'gemini_voice_error_prefix')}: $e',
-            );
-          }
-          return;
-        }
-
-        if (useSherpa) {
-          final notifier = ref.read(sherpaTtsProvider.notifier);
-          if (isSpeaking) {
-            await notifier.stop();
-            return;
-          }
-          try {
-            await notifier.speak(storyBodyFor(text));
-          } catch (e) {
-            if (!context.mounted) return;
-            showImmersiveNotice(
-              context,
-              icon: Icons.error_outline,
-              message: '${tr(ref, 'sherpa_voice_error_prefix')}: $e',
             );
           }
           return;

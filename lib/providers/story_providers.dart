@@ -79,6 +79,14 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     state = StoryPlayState(currentNodeId: startId, history: const []);
   }
 
+  /// Restores play position to [nodeId] with the given [history] — used to
+  /// restore a manually saved checkpoint. Drops any in-progress excursion,
+  /// since excursions are procedurally generated side content not meant to
+  /// survive a save/load round trip.
+  void loadState(String nodeId, List<String> history) {
+    state = StoryPlayState(currentNodeId: nodeId, history: history);
+  }
+
   /// Inserts a procedurally generated chain of nodes before the player
   /// reaches [resumeNodeId], the real node they were about to move to.
   void startExcursion(List<StoryNode> chain, String resumeNodeId) {
