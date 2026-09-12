@@ -305,6 +305,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Choose which voice reads the story aloud.',
     AppLanguage.fr: "Choisis la voix qui lit l'histoire à voix haute.",
   },
+  'auto_read_aloud_setting_title': {
+    AppLanguage.en: 'Auto-read narration',
+    AppLanguage.fr: 'Lecture automatique du récit',
+  },
+  'auto_read_aloud_setting_desc': {
+    AppLanguage.en: 'Reads each scene aloud as soon as it appears, using the '
+        "device's built-in voice (fast — never waits on Gemini).",
+    AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage, avec la "
+        "voix intégrée de l'appareil (rapide — n'attend jamais Gemini).",
+  },
   'gemini_voice_setting_title': {
     AppLanguage.en: 'Use Gemini AI voice (higher quality)',
     AppLanguage.fr: "Utiliser la voix IA Gemini (meilleure qualité)",
