@@ -4,7 +4,7 @@
          system installer on the APK it downloads from a GitHub Release. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <application
-        android:label="Narrative Data App v1.44.5"
+        android:label="Narrative Data App v1.44.6"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
