@@ -4,10 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/companion_sprites.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/companion_name_provider.dart';
+import '../providers/player_session_provider.dart';
 
-final List<String> _walkFrames = companionFrames('Walking/east', 8);
+final List<String> _neutralWalkFrames = companionFrames('Walking/east', 8);
 final List<String> _fightFrames = companionFrames('Fight_-_Attack/animations/Bark/south', 6);
-const String _idleSprite = '$companionAssetsRoot/Sitting_down/rotations/south.png';
+const String _neutralIdleSprite = '$companionAssetsRoot/Sitting_down/rotations/south.png';
+
+// A Good/Evil character's companion swaps its neutral dog look for an
+// angelic/demonic one (a single directional pose each, not an animated
+// cycle) instead of the plain walking/sitting sprites.
+const String _angelWalkSprite = '$companionAssetsRoot/Make_it_with_angel_w/rotations/east.png';
+const String _demonWalkSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotations/east.png';
+const String _angelIdleSprite = '$companionAssetsRoot/Make_it_with_angel_w/rotations/south.png';
+const String _demonIdleSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotations/south.png';
 
 // The walking frames' source canvas is 88x88px; the sitting/fighting
 // frames' is 64x64px. Rendering both into the same fixed box would stretch
@@ -95,6 +104,17 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       _poseController.stop();
     }
     final name = ref.watch(companionNameProvider);
+    final alignment = ref.watch(playerSessionProvider).alignmentLabel;
+    final walkFrames = switch (alignment) {
+      'Good' => const [_angelWalkSprite],
+      'Evil' => const [_demonWalkSprite],
+      _ => _neutralWalkFrames,
+    };
+    final idleSprite = switch (alignment) {
+      'Good' => _angelIdleSprite,
+      'Evil' => _demonIdleSprite,
+      _ => _neutralIdleSprite,
+    };
 
     return SizedBox(
       height: widget.height,
@@ -119,17 +139,17 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
               } else if (walkingOut) {
                 final t = Curves.linear.transform(_walkOutController.value);
                 x = (constraints.maxWidth + _walkDisplaySize) * t;
-                final frame = (t * _walkFrames.length * 4).floor() % _walkFrames.length;
-                framePath = _walkFrames[frame];
+                final frame = (t * walkFrames.length * 4).floor() % walkFrames.length;
+                framePath = walkFrames[frame];
                 size = _walkDisplaySize;
               } else if (walkingIn) {
                 final t = Curves.linear.transform(_walkInController.value);
                 x = -_walkDisplaySize + _walkDisplaySize * t;
-                final frame = (t * _walkFrames.length).floor() % _walkFrames.length;
-                framePath = _walkFrames[frame];
+                final frame = (t * walkFrames.length).floor() % walkFrames.length;
+                framePath = walkFrames[frame];
                 size = _walkDisplaySize;
               } else {
-                framePath = _idleSprite;
+                framePath = idleSprite;
                 size = _restDisplaySize;
               }
 
