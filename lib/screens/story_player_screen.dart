@@ -41,6 +41,17 @@ import 'story_node_editor_screen.dart';
 /// displayed node.
 final _autoReadLastNodeKeyProvider = StateProvider<String?>((ref) => null);
 
+/// Whether the status header (level/HP/gold and the quests/shops chips) is
+/// collapsed to give the narration more room. Resets on app restart —
+/// a per-session reading preference, not a persisted setting.
+final _statusBarCollapsedProvider = StateProvider<bool>((ref) => false);
+
+/// Whether the walking companion strip is collapsed. Independent from
+/// [walkCompanionEnabledProvider] (the permanent Settings toggle that
+/// disables the feature outright) — this is a quick per-session way to
+/// hide the dog without turning the feature off.
+final _companionCollapsedProvider = StateProvider<bool>((ref) => false);
+
 /// Speaks [text] via the device's on-device text-to-speech engine — the
 /// fast default voice, used for auto-read and as read-aloud's fallback
 /// when the (opt-in) Gemini voice isn't enabled.
@@ -87,6 +98,8 @@ class _StoryView extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
+    final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
+    final companionCollapsed = ref.watch(_companionCollapsedProvider);
 
     // Stop any in-progress narration when the story moves to a different
     // node, so stale audio never plays over newly-displayed text.
@@ -174,28 +187,55 @@ class _StoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const PlayerStatsBar(),
-            if (session.activeQuestIds.isNotEmpty || session.unlockedShopIds.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  if (session.activeQuestIds.isNotEmpty)
-                    ActionChip(
-                      avatar: const Icon(Icons.assignment, size: 16),
-                      label: Text('${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                      onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
-                    ),
-                  if (session.unlockedShopIds.isNotEmpty)
-                    ActionChip(
-                      avatar: const Icon(Icons.storefront, size: 16),
-                      label: Text('${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                      onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
-                    ),
-                ],
-              ),
-            ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: statusBarCollapsed
+                      ? const SizedBox.shrink()
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const PlayerStatsBar(),
+                            if (session.activeQuestIds.isNotEmpty ||
+                                session.unlockedShopIds.isNotEmpty) ...[
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 4,
+                                children: [
+                                  if (session.activeQuestIds.isNotEmpty)
+                                    ActionChip(
+                                      avatar: const Icon(Icons.assignment, size: 16),
+                                      label: Text(
+                                          '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                                      onPressed: () =>
+                                          ref.read(homeTabIndexProvider.notifier).state = 1,
+                                    ),
+                                  if (session.unlockedShopIds.isNotEmpty)
+                                    ActionChip(
+                                      avatar: const Icon(Icons.storefront, size: 16),
+                                      label: Text(
+                                          '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                                      onPressed: () =>
+                                          ref.read(homeTabIndexProvider.notifier).state = 1,
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                ),
+                IconButton(
+                  icon: Icon(statusBarCollapsed ? Icons.expand_more : Icons.expand_less),
+                  tooltip:
+                      tr(ref, statusBarCollapsed ? 'expand_status_bar' : 'collapse_status_bar'),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state =
+                      !statusBarCollapsed,
+                ),
+              ],
+            ),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -243,15 +283,26 @@ class _StoryView extends ConsumerWidget {
                 ),
               ),
             ),
-            if (walkCompanionEnabled)
-              WalkingCompanionStrip(
-                trigger: '${node.id}_${playState.isInExcursion}',
-                fightAvailable: node.choices.any(
-                  (c) => c.triggersCombat &&
-                      !_isChoiceLocked(c, story, session, playState.isInExcursion),
+            if (walkCompanionEnabled) ...[
+              if (!companionCollapsed)
+                WalkingCompanionStrip(
+                  trigger: '${node.id}_${playState.isInExcursion}',
+                  fightAvailable: node.choices.any(
+                    (c) => c.triggersCombat &&
+                        !_isChoiceLocked(c, story, session, playState.isInExcursion),
+                  ),
                 ),
-              )
-            else
+              Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                  icon: Icon(companionCollapsed ? Icons.expand_more : Icons.expand_less),
+                  tooltip: tr(ref, companionCollapsed ? 'show_companion' : 'hide_companion'),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () =>
+                      ref.read(_companionCollapsedProvider.notifier).state = !companionCollapsed,
+                ),
+              ),
+            ] else
               const SizedBox(height: 16),
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 320),

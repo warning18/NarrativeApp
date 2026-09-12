@@ -961,7 +961,7 @@
     "description_fr": "[ORIGINE : LE RAT] Personne ne m'attend en haut de cette chaîne. Je n'ai rien d'autre que ce que j'ai pu récupérer, voler ou obtenir par le bluff — aucun héritage, aucune bannière, juste des mains rapides et des jambes plus rapides encore. Une grande discrétion et de l'or, mais zéro honneur.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
-      "mood": "triumphant",
+      "mood": "grim",
       "speaker": "Narrator"
     },
     "automations": {
@@ -981,7 +981,7 @@
     "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attend en haut de cette chaîne, et aucun héritage n'a survécu avec moi. Ce qu'il reste, c'est de la cicatrice et de la haine : des points de vie massifs et une résistance à la douleur, mais lent et défiguré. Je trouverai cette Bannière, dussé-je y laisser la vie.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
-      "mood": "triumphant",
+      "mood": "grim",
       "speaker": "Narrator"
     },
     "automations": {
