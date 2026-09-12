@@ -161,7 +161,9 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
     final dir = await _modelDir();
     final existing = await _findModelPaths(dir);
     if (existing != null) {
-      (_modelPath, _tokensPath) = existing;
+      final (modelPath, tokensPath) = existing;
+      _modelPath = modelPath;
+      _tokensPath = tokensPath;
       return;
     }
 
@@ -189,7 +191,9 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
       state = SherpaTtsPlaybackState.idle;
       throw SherpaTtsException('French voice download did not contain a usable model.');
     }
-    (_modelPath, _tokensPath) = found;
+    final (modelPath, tokensPath) = found;
+    _modelPath = modelPath;
+    _tokensPath = tokensPath;
   }
 
   Future<SendPort> _ensureWorkerPort() async {
