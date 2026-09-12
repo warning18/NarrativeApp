@@ -9,7 +9,10 @@ enum AppPalette {
   deepPurple,
   weatheredEarth,
   autumnMeadow,
-  duskHorizon;
+  duskHorizon,
+  auroraDusk,
+  roseNoir,
+  mistSlate;
 
   Color get seedColor {
     switch (this) {
@@ -21,6 +24,12 @@ enum AppPalette {
         return const Color(0xFFBC6B3C);
       case AppPalette.duskHorizon:
         return const Color(0xFF4C4967);
+      case AppPalette.auroraDusk:
+        return const Color(0xFF166E7A);
+      case AppPalette.roseNoir:
+        return const Color(0xFFD03791);
+      case AppPalette.mistSlate:
+        return const Color(0xFF565A75);
     }
   }
 
@@ -35,6 +44,12 @@ enum AppPalette {
         return const [Color(0xFF7B4238), Color(0xFFBC6B3C), Color(0xFFB7A94E)];
       case AppPalette.duskHorizon:
         return const [Color(0xFF1B3B5C), Color(0xFF8B6178), Color(0xFFFCA85C)];
+      case AppPalette.auroraDusk:
+        return const [Color(0xFF166E7A), Color(0xFF52C33F), Color(0xFFFCF660)];
+      case AppPalette.roseNoir:
+        return const [Color(0xFF452459), Color(0xFFD03791), Color(0xFFFE6C90)];
+      case AppPalette.mistSlate:
+        return const [Color(0xFF0F0F1B), Color(0xFF565A75), Color(0xFFC6B7BE)];
     }
   }
 }

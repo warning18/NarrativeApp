@@ -44,6 +44,7 @@ class PlayerSession {
     required this.equippedDiceId,
     this.xpEarnedThisRun = 0,
     this.shopPurchaseCounts = const {},
+    this.characterName = '',
   });
 
   final int level;
@@ -88,6 +89,11 @@ class PlayerSession {
   /// stockQuantities field) that doesn't replenish, so this persists across
   /// sessions and survives permadeath (losing an item doesn't restock it).
   final Map<String, int> shopPurchaseCounts;
+
+  /// The player-chosen name for this character, set once during creation
+  /// (see RaceProfessionScreen's lock-in dialog) and fixed for the rest of
+  /// the run.
+  final String characterName;
 
   int get xpToNextLevel => level * 100;
 
@@ -141,6 +147,7 @@ class PlayerSession {
     String? equippedDiceId,
     int? xpEarnedThisRun,
     Map<String, int>? shopPurchaseCounts,
+    String? characterName,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -171,6 +178,7 @@ class PlayerSession {
       equippedDiceId: equippedDiceId ?? this.equippedDiceId,
       xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
       shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
+      characterName: characterName ?? this.characterName,
     );
   }
 
@@ -203,6 +211,7 @@ class PlayerSession {
         'equippedDiceId': equippedDiceId,
         'xpEarnedThisRun': xpEarnedThisRun,
         'shopPurchaseCounts': shopPurchaseCounts,
+        'characterName': characterName,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -255,6 +264,7 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
+      characterName: json['characterName'] as String? ?? '',
     );
   }
 }
@@ -385,6 +395,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         _starterDieProfessionFaceIndex.toString(): professionSkillId,
       if (raceSkillId.isNotEmpty) _starterDieRaceFaceIndex.toString(): raceSkillId,
     };
+    // Race/profession signature skills default to isUnlocked: false in the
+    // skills db (most skills are locked until earned) but are wired
+    // directly into the starter die's Heritage/Profession Technique faces
+    // from the moment a character exists — so they need to be unlocked
+    // here too, or those faces would just fizzle on the very first roll.
+    final starterUnlockedSkills = <String>[
+      if (professionSkillId.isNotEmpty) professionSkillId,
+      if (raceSkillId.isNotEmpty) raceSkillId,
+    ];
 
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
@@ -404,7 +423,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       completedQuestIds: const [],
       inventoryItemIds: const [],
       equippedItemIds: const [],
-      unlockedSkillIds: const [],
+      unlockedSkillIds: starterUnlockedSkills,
       unlockedShopIds: const [],
       unlockedQuestIds: const [],
       unlockedEnemyIds: const [],
@@ -416,6 +435,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: const [_starterDiceId],
       equippedDiceId: _starterDiceId,
     );
+    await _persist();
+  }
+
+  /// Sets the character's name — called once from the lock-in dialog right
+  /// after character creation (see RaceProfessionScreen), before the
+  /// origin-story prompts run.
+  Future<void> setCharacterName(String name) async {
+    state = state.copyWith(characterName: name.trim());
     await _persist();
   }
 

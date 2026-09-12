@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/origin_stories.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -8,6 +9,15 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
+
+/// Formats a skill id like "human_resolve" into "Human Resolve" — skills
+/// have no separate display-name field, only an id (matches how
+/// skills_screen.dart shows them).
+String _formatSkillName(String id) => id
+    .split('_')
+    .where((w) => w.isNotEmpty)
+    .map((w) => '${w[0].toUpperCase()}${w.substring(1)}')
+    .join(' ');
 
 class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key});
@@ -30,6 +40,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   Widget build(BuildContext context) {
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
     _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
     _selectedProfessionId ??= session.professionId.isNotEmpty ? session.professionId : null;
@@ -38,19 +49,24 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       appBar: AppBar(title: Text(tr(ref, 'race_profession_title'))),
       body: racesAsync.when(
         data: (races) => professionsAsync.when(
-          data: (professions) {
-            if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
-              return _CharacterSheet(
-                session: session,
-                race: races[session.raceId] as Map<String, dynamic>?,
-                profession: professions[session.professionId] as Map<String, dynamic>?,
-                language: ref.watch(appLanguageProvider),
-                onStartGame:
-                    _justCreated ? () => Navigator.of(context).pop(true) : null,
-              );
-            }
-            return _buildPicker(context, races, professions);
-          },
+          data: (professions) => skillsAsync.when(
+            data: (skills) {
+              if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
+                return _CharacterSheet(
+                  session: session,
+                  race: races[session.raceId] as Map<String, dynamic>?,
+                  profession: professions[session.professionId] as Map<String, dynamic>?,
+                  skills: skills,
+                  language: ref.watch(appLanguageProvider),
+                  onStartGame: _justCreated ? _handleContinue : null,
+                );
+              }
+              return _buildPicker(context, races, professions, skills);
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) =>
+                Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) =>
               Center(child: Text('${tr(ref, 'failed_to_load_professions')}: $error')),
@@ -62,10 +78,24 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     );
   }
 
+  /// The race/profession's granted skill, formatted as
+  /// "Starting Skill: Human Resolve — Draw on human tenacity...", or null
+  /// if the preset grants none.
+  String? _skillLine(Map<String, dynamic> preset, Map<String, dynamic> skills) {
+    final skillId = preset['standardSkillID']?.toString() ?? '';
+    if (skillId.isEmpty) return null;
+    final skill = skills[skillId] as Map<String, dynamic>?;
+    final name = _formatSkillName(skillId);
+    final desc = skill?['description']?.toString() ?? '';
+    final prefix = '${tr(ref, 'granted_skill_label')}: $name';
+    return desc.isNotEmpty ? '$prefix — $desc' : prefix;
+  }
+
   Widget _buildPicker(
     BuildContext context,
     Map<String, dynamic> races,
     Map<String, dynamic> professions,
+    Map<String, dynamic> skills,
   ) {
     final raceIds = races.keys.toList()..sort();
     final professionIds = professions.keys.toList()..sort();
@@ -87,6 +117,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
             title: race['raceName']?.toString() ?? id,
             description: race['description']?.toString() ?? '',
             bonusLine: _bonusLine(race, showSkillPoints: false),
+            skillLine: _skillLine(race, skills),
             selected: _selectedRaceId == id,
             onTap: () => setState(() => _selectedRaceId = id),
           );
@@ -101,6 +132,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
             title: profession['professionName']?.toString() ?? id,
             description: profession['description']?.toString() ?? '',
             bonusLine: _bonusLine(profession, showSkillPoints: true),
+            skillLine: _skillLine(profession, skills),
             selected: _selectedProfessionId == id,
             onTap: () => setState(() => _selectedProfessionId = id),
           );
@@ -183,6 +215,114 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     // the player reviews their starting stats first, then taps Continue.
     setState(() => _justCreated = true);
   }
+
+  /// Runs the rest of character creation once the player taps Continue on
+  /// the character sheet: locks the character in with a name (race and
+  /// profession are already permanent from [_confirmStart] on), then walks
+  /// through the five origin-story prompts before finally handing off to
+  /// the story.
+  Future<void> _handleContinue() async {
+    final name = await _showLockInDialog();
+    if (name == null || !mounted) return;
+    await ref.read(playerSessionProvider.notifier).setCharacterName(name);
+    if (!mounted) return;
+    await _runOriginStories();
+    if (!mounted) return;
+    Navigator.of(context).pop(true);
+  }
+
+  /// A required, non-dismissible dialog warning that the character is now
+  /// permanent for this run, and collecting the character's name. Returns
+  /// the trimmed name, or null if the widget was unmounted mid-dialog.
+  Future<String?> _showLockInDialog() async {
+    final lang = ref.read(appLanguageProvider);
+    final controller = TextEditingController();
+    final name = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(trFor(lang, 'lock_character_dialog_title')),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(trFor(lang, 'lock_character_dialog_desc')),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: trFor(lang, 'character_name_field_label'),
+                  hintText: trFor(lang, 'character_name_field_hint'),
+                ),
+                onChanged: (_) => setDialogState(() {}),
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) Navigator.pop(dialogContext, value.trim());
+                },
+              ),
+            ],
+          ),
+          actions: [
+            FilledButton(
+              onPressed: controller.text.trim().isEmpty
+                  ? null
+                  : () => Navigator.pop(dialogContext, controller.text.trim()),
+              child: Text(trFor(lang, 'begin_story_button')),
+            ),
+          ],
+        ),
+      ),
+    );
+    controller.dispose();
+    return name;
+  }
+
+  /// Walks through the five formative-memory prompts in order, applying
+  /// each choice's alignment effect immediately. Non-dismissible and
+  /// unskippable — a choice must be tapped to advance.
+  Future<void> _runOriginStories() async {
+    for (var index = 0; index < originStoryPrompts.length; index++) {
+      if (!mounted) return;
+      final prompt = originStoryPrompts[index];
+      final choice = await showDialog<OriginChoice>(
+        context: context,
+        barrierDismissible: false,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(tr(ref, prompt.titleKey)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  '${index + 1} / ${originStoryPrompts.length}',
+                  style: Theme.of(dialogContext).textTheme.labelSmall,
+                ),
+                const SizedBox(height: 8),
+                Text(tr(ref, prompt.descriptionKey)),
+                const SizedBox(height: 16),
+                for (final choice in prompt.choices)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(dialogContext, choice),
+                      child: Text(tr(ref, choice.textKey), textAlign: TextAlign.center),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      );
+      if (choice != null) {
+        await ref
+            .read(playerSessionProvider.notifier)
+            .applyChoiceEffects(alignmentMod: choice.alignmentMod);
+      }
+    }
+  }
 }
 
 class _PresetCard extends StatelessWidget {
@@ -191,6 +331,7 @@ class _PresetCard extends StatelessWidget {
     required this.title,
     required this.description,
     required this.bonusLine,
+    this.skillLine,
     required this.selected,
     required this.onTap,
   });
@@ -199,23 +340,85 @@ class _PresetCard extends StatelessWidget {
   final String title;
   final String description;
   final String bonusLine;
+
+  /// The race/profession's granted starting skill, already formatted with
+  /// name and description — null if it grants none.
+  final String? skillLine;
   final bool selected;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final onContainer = selected ? colorScheme.onPrimaryContainer : null;
     return Card(
       color: selected ? colorScheme.primaryContainer : null,
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(
-          description.isNotEmpty ? '$description\n$bonusLine' : bonusLine,
-        ),
-        isThreeLine: description.isNotEmpty,
-        trailing: selected ? const Icon(Icons.check_circle) : null,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
         onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: onContainer),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(color: onContainer),
+                    ),
+                    if (description.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        description,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall
+                            ?.copyWith(color: onContainer),
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Text(
+                      bonusLine,
+                      style:
+                          Theme.of(context).textTheme.bodySmall?.copyWith(color: onContainer),
+                    ),
+                    if (skillLine != null) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.auto_awesome, size: 14, color: colorScheme.primary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              skillLine!,
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontStyle: FontStyle.italic,
+                                    color: colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (selected) ...[
+                const SizedBox(width: 8),
+                Icon(Icons.check_circle, color: onContainer),
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -232,6 +435,7 @@ class _CharacterSheet extends StatelessWidget {
     required this.session,
     required this.race,
     required this.profession,
+    required this.skills,
     required this.language,
     this.onStartGame,
   });
@@ -239,8 +443,31 @@ class _CharacterSheet extends StatelessWidget {
   final PlayerSession session;
   final Map<String, dynamic>? race;
   final Map<String, dynamic>? profession;
+  final Map<String, dynamic> skills;
   final AppLanguage language;
   final VoidCallback? onStartGame;
+
+  /// A card naming [preset]'s granted skill (if any), shown right under
+  /// its race/profession card so the connection is obvious.
+  Widget _skillCard(BuildContext context, String label, Map<String, dynamic>? preset) {
+    final skillId = preset?['standardSkillID']?.toString() ?? '';
+    if (skillId.isEmpty) return const SizedBox.shrink();
+    final skill = skills[skillId] as Map<String, dynamic>?;
+    final name = _formatSkillName(skillId);
+    final desc = skill?['description']?.toString() ?? '';
+    return Padding(
+      padding: const EdgeInsets.only(top: 4, bottom: 8),
+      child: Card(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        child: ListTile(
+          dense: true,
+          leading: const Icon(Icons.auto_awesome),
+          title: Text('$label: $name'),
+          subtitle: desc.isNotEmpty ? Text(desc) : null,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +489,14 @@ class _CharacterSheet extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        if (session.characterName.isNotEmpty) ...[
+          Text(
+            session.characterName,
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+        ],
         Card(
           child: ListTile(
             leading: Icon(raceIcon),
@@ -269,6 +504,7 @@ class _CharacterSheet extends StatelessWidget {
             subtitle: Text(race?['description']?.toString() ?? ''),
           ),
         ),
+        _skillCard(context, t('granted_skill_label'), race),
         Card(
           child: ListTile(
             leading: Icon(professionIcon),
@@ -276,6 +512,7 @@ class _CharacterSheet extends StatelessWidget {
             subtitle: Text(profession?['description']?.toString() ?? ''),
           ),
         ),
+        _skillCard(context, t('granted_skill_label'), profession),
         const SizedBox(height: 16),
         Text(t('character_sheet_title'), style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),

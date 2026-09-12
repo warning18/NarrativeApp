@@ -419,6 +419,143 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "La race et la profession ne peuvent être modifiées qu'en recommençant "
         "l'histoire depuis le tout début.",
   },
+  'granted_skill_label': {
+    AppLanguage.en: 'Starting Skill',
+    AppLanguage.fr: 'Compétence de départ',
+  },
+  'lock_character_dialog_title': {
+    AppLanguage.en: 'Your Character, Set in Stone',
+    AppLanguage.fr: 'Ton personnage, gravé dans la pierre',
+  },
+  'lock_character_dialog_desc': {
+    AppLanguage.en: "Once you begin, your race and profession can't be changed for the rest "
+        'of this run. Choose a name to carry with you.',
+    AppLanguage.fr: 'Une fois commencé, ta race et ta profession ne pourront plus être '
+        'changées pour le reste de cette partie. Choisis un nom à porter.',
+  },
+  'character_name_field_label': {
+    AppLanguage.en: 'Character name',
+    AppLanguage.fr: 'Nom du personnage',
+  },
+  'character_name_field_hint': {AppLanguage.en: 'e.g. Kaelen', AppLanguage.fr: 'ex. Kaelen'},
+  'begin_story_button': {
+    AppLanguage.en: 'Begin Your Story',
+    AppLanguage.fr: 'Commencer ton histoire',
+  },
+  'origin_stories_section_title': {
+    AppLanguage.en: 'A Life Before This One',
+    AppLanguage.fr: 'Une vie avant celle-ci',
+  },
+  'origin_childhood_bird_title': {
+    AppLanguage.en: 'Childhood: The Injured Bird',
+    AppLanguage.fr: "Enfance : L'oiseau blessé",
+  },
+  'origin_childhood_bird_desc': {
+    AppLanguage.en: 'As a child, you stumbled upon a sparrow with a broken wing, thrashing '
+        'weakly in the grass.',
+    AppLanguage.fr: "Enfant, tu tombes sur un moineau à l'aile brisée, se débattant "
+        "faiblement dans l'herbe.",
+  },
+  'origin_childhood_bird_good': {
+    AppLanguage.en: 'Cup it in your hands and nurse it back to health',
+    AppLanguage.fr: 'Le prendre dans tes mains et le soigner',
+  },
+  'origin_childhood_bird_evil': {
+    AppLanguage.en: 'Crush it beneath your heel and walk on',
+    AppLanguage.fr: 'Écraser sous ton talon et poursuivre ton chemin',
+  },
+  'origin_childhood_bird_neutral': {
+    AppLanguage.en: 'Leave it to nature and walk away',
+    AppLanguage.fr: 'Laisser à son sort et t\'en aller',
+  },
+  'origin_childhood_beggar_title': {
+    AppLanguage.en: "Childhood: The Beggar's Plea",
+    AppLanguage.fr: 'Enfance : La supplique du mendiant',
+  },
+  'origin_childhood_beggar_desc': {
+    AppLanguage.en: 'An old beggar outside the market grabs your sleeve, pleading for the '
+        'last piece of bread in your hand.',
+    AppLanguage.fr: "Un vieux mendiant devant le marché s'accroche à ta manche, suppliant "
+        'pour le dernier morceau de pain dans ta main.',
+  },
+  'origin_childhood_beggar_good': {
+    AppLanguage.en: 'Give him the bread, even hungry yourself',
+    AppLanguage.fr: 'Lui donner le pain, même le ventre vide',
+  },
+  'origin_childhood_beggar_evil': {
+    AppLanguage.en: 'Mock him and eat it in front of him',
+    AppLanguage.fr: 'Te moquer de lui et le manger devant lui',
+  },
+  'origin_childhood_beggar_neutral': {
+    AppLanguage.en: 'Pull free and keep walking without a word',
+    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+  },
+  'origin_teen_bully_title': {
+    AppLanguage.en: 'Teenage Years: The Bully',
+    AppLanguage.fr: 'Adolescence : Le tyran de cour',
+  },
+  'origin_teen_bully_desc': {
+    AppLanguage.en: 'Behind the schoolyard, an older boy has a smaller kid pinned against '
+        'the wall, fists ready.',
+    AppLanguage.fr: "Derrière la cour de l'école, un garçon plus âgé plaque un plus petit "
+        'contre le mur, poings levés.',
+  },
+  'origin_teen_bully_good': {
+    AppLanguage.en: 'Step in and stand between them',
+    AppLanguage.fr: 'Intervenir et te placer entre eux',
+  },
+  'origin_teen_bully_evil': {
+    AppLanguage.en: 'Laugh and egg the bully on',
+    AppLanguage.fr: 'Rire et encourager le tyran',
+  },
+  'origin_teen_bully_neutral': {
+    AppLanguage.en: 'Turn the corner and pretend you saw nothing',
+    AppLanguage.fr: "Tourner au coin et faire comme si tu n'avais rien vu",
+  },
+  'origin_teen_vase_title': {
+    AppLanguage.en: 'Teenage Years: The Broken Vase',
+    AppLanguage.fr: 'Adolescence : Le vase brisé',
+  },
+  'origin_teen_vase_desc': {
+    AppLanguage.en: "Running through the market, you knock over a merchant's prized vase. "
+        'It shatters at your feet.',
+    AppLanguage.fr: "En courant dans le marché, tu renverses le vase précieux d'un "
+        'marchand. Il se brise à tes pieds.',
+  },
+  'origin_teen_vase_good': {
+    AppLanguage.en: 'Confess and offer to work off the debt',
+    AppLanguage.fr: 'Avouer et proposer de rembourser en travaillant',
+  },
+  'origin_teen_vase_evil': {
+    AppLanguage.en: 'Point at another passerby and blame them',
+    AppLanguage.fr: 'Désigner un autre passant et l\'accuser',
+  },
+  'origin_teen_vase_neutral': {
+    AppLanguage.en: 'Slip into the crowd before anyone notices',
+    AppLanguage.fr: 'Te fondre dans la foule avant que quiconque remarque',
+  },
+  'origin_teen_thief_title': {
+    AppLanguage.en: 'Teenage Years: The Cornered Thief',
+    AppLanguage.fr: 'Adolescence : Le voleur acculé',
+  },
+  'origin_teen_thief_desc': {
+    AppLanguage.en: 'You catch a gaunt, starving thief mid-theft, rifling through your '
+        "family's stores.",
+    AppLanguage.fr: 'Tu surprends un voleur famélique en train de fouiller les provisions '
+        'de ta famille.',
+  },
+  'origin_teen_thief_good': {
+    AppLanguage.en: 'Let them go, and press some food into their hands',
+    AppLanguage.fr: 'Le laisser partir, en lui glissant un peu de nourriture',
+  },
+  'origin_teen_thief_evil': {
+    AppLanguage.en: 'Hand them to the guards, knowing what awaits them',
+    AppLanguage.fr: 'Le livrer aux gardes, sachant ce qui l\'attend',
+  },
+  'origin_teen_thief_neutral': {
+    AppLanguage.en: 'Report the theft plainly and let others decide',
+    AppLanguage.fr: 'Signaler le vol sans détour et laisser les autres décider',
+  },
   'failed_to_load_races': {
     AppLanguage.en: 'Failed to load races',
     AppLanguage.fr: 'Échec du chargement des races',
@@ -542,6 +679,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Dusk Horizon',
     AppLanguage.fr: 'Horizon crépusculaire',
   },
+  'palette_aurora_dusk': {AppLanguage.en: 'Aurora Dusk', AppLanguage.fr: 'Aurore crépusculaire'},
+  'palette_rose_noir': {AppLanguage.en: 'Rose Noir', AppLanguage.fr: 'Rose et noir'},
+  'palette_mist_slate': {AppLanguage.en: 'Mist Slate', AppLanguage.fr: "Brume d'ardoise"},
   'combat_section_title': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
   'add_api_key_first': {
     AppLanguage.en: 'Add your Gemini API key in Settings first.',
