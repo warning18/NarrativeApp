@@ -159,19 +159,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<MapTheme>(
+            DropdownButtonFormField<MapTheme?>(
               value: mapTheme,
               decoration: const InputDecoration(border: OutlineInputBorder()),
-              items: MapTheme.values
-                  .map(
-                    (theme) => DropdownMenuItem(
-                      value: theme,
-                      child: Text(tr(ref, mapThemeLabelKey(theme))),
-                    ),
-                  )
-                  .toList(),
+              items: [
+                DropdownMenuItem(value: null, child: Text(tr(ref, 'map_theme_auto_label'))),
+                ...MapTheme.values.map(
+                  (theme) => DropdownMenuItem(
+                    value: theme,
+                    child: Text(tr(ref, mapThemeLabelKey(theme))),
+                  ),
+                ),
+              ],
               onChanged: (value) {
-                if (value != null) ref.read(mapThemeProvider.notifier).setTheme(value);
+                ref.read(mapThemeProvider.notifier).setTheme(value);
               },
             ),
             const SizedBox(height: 24),

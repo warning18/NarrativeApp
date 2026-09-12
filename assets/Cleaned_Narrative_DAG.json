@@ -1,4 +1,25 @@
 {
+  "0": {
+    "id": "0",
+    "description": "Before the story begins, the darkness pauses. A single question hangs in the air: who were you, before all this?",
+    "description_fr": "Avant que l'histoire ne commence, les ténèbres s'immobilisent. Une seule question plane dans l'air : qui étais-tu, avant tout cela ?",
+    "context_taxonomy": {
+      "ui_theme": "prologue",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_0"
+    },
+    "choices": [
+      {
+        "text": "Choose who you are...",
+        "text_fr": "Choisis qui tu es...",
+        "next_id": "100",
+        "opensCharacterCreation": true
+      }
+    ]
+  },
   "100": {
     "id": "100",
     "description": "The invasion hasn't reached the slums yet, but the panic has. I run to the 'Blind Beggar,' the tavern where Lysa pours ale. The door is swinging on one hinge. There is no noise inside. No music. No laughter. Just the wet drip of spilled casks... and spilled blood.",
@@ -22,6 +43,44 @@
         "text": "Leave (End Game)",
         "text_fr": "Partir (Fin de partie)",
         "next_id": "EXIT"
+      }
+    ]
+  },
+  "151": {
+    "id": "151",
+    "description": "A few stalls still operate despite the panic in the streets — a blacksmith hammering out blades, a shieldwright patching dented steel, and a bandit eyeing the crowd for an easy mark.",
+    "description_fr": "Quelques étals fonctionnent encore malgré la panique dans les rues — un forgeron martelant des lames, un fabricant de boucliers rafistolant de l'acier cabossé, et un bandit guettant la foule pour une proie facile.",
+    "context_taxonomy": {
+      "ui_theme": "market",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_151"
+    },
+    "choices": [
+      {
+        "text": "Visit the Weaponsmith's Forge",
+        "text_fr": "Visiter la forge de l'armurier",
+        "next_id": "300",
+        "unlockShopId": "weaponsmith_forge"
+      },
+      {
+        "text": "Check the Shieldwright's Hall",
+        "text_fr": "Examiner la halle du fabricant de boucliers",
+        "next_id": "300",
+        "unlockShopId": "shieldwrights_hall"
+      },
+      {
+        "text": "Fight off a street bandit",
+        "text_fr": "Repousser un bandit des rues",
+        "next_id": "300",
+        "triggerEnemyId": "street_bandit"
+      },
+      {
+        "text": "Move on",
+        "text_fr": "Poursuivre son chemin",
+        "next_id": "300"
       }
     ]
   },
@@ -102,9 +161,40 @@
       }
     ]
   },
+  "261": {
+    "id": "261",
+    "description": "The guard counts your coin, unimpressed, and waves you through with a grunt. Lysa barely stirs as you cross.",
+    "description_fr": "Le garde compte tes pièces, peu impressionné, et te fait signe de passer d'un grognement. Lysa bouge à peine tandis que tu traverses.",
+    "context_taxonomy": {
+      "ui_theme": "bridge",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_261"
+    },
+    "reqGold": 50,
+    "choices": [
+      {
+        "text": "Cross the bridge",
+        "text_fr": "Traverser le pont",
+        "next_id": "280",
+        "goldMod": -50
+      }
+    ]
+  },
   "265": {
+    "id": "265",
     "description": "Steel rings on steel before I've even decided to draw. The soldier at the toll booth is more opportunist than soldier — a stolen sash over looted mail, rotten teeth bared in something that isn't quite a grin. Lysa presses herself against the railing, arms over her head, as he comes at me anyway.",
     "description_fr": "L'acier sonne contre l'acier avant même que j'aie décidé de dégainer. Le soldat du péage est plus opportuniste que militaire — une écharpe volée sur une cotte de maille pillée, des dents pourries découvertes dans quelque chose qui n'est pas tout à fait un sourire. Lysa se plaque contre la rambarde, les bras sur la tête, tandis qu'il fonce sur moi quand même.",
+    "context_taxonomy": {
+      "ui_theme": "bridge",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_265"
+    },
     "choices": [
       {
         "text": "FIGHT!",
@@ -115,8 +205,17 @@
     ]
   },
   "270": {
+    "id": "270",
     "description": "The alley swallows the daylight whole. Halfway down, something is thrashing in a coil of razor wire strung low across the passage — a lean grey warhound, one ear torn to ribbons, foam at its jaws. Its handler lies face-down a few feet further on, throat opened to the bone, one gauntleted hand still closed around a leash gone slack. The dog's eyes find mine. It doesn't whimper. It doesn't growl. It just watches, the way starving things watch.",
     "description_fr": "La ruelle avale la lumière du jour tout entière. À mi-chemin, quelque chose se débat dans un rouleau de fil barbelé tendu en travers du passage — un chien de guerre gris et efflanqué, une oreille déchirée en lambeaux, de l'écume aux babines. Son maître gît face contre terre un peu plus loin, la gorge ouverte jusqu'à l'os, une main gantelée encore refermée sur une laisse relâchée. Les yeux du chien trouvent les miens. Il ne gémit pas. Il ne gronde pas. Il regarde, simplement, comme regardent les êtres affamés.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_270"
+    },
     "choices": [
       {
         "text": "Cut it free",
@@ -141,9 +240,38 @@
       }
     ]
   },
+  "271": {
+    "id": "271",
+    "description": "The wire bites my palms before it gives. The dog doesn't bolt. It presses its skull, hard, against my knee — once — then falls into step three paces behind me, exactly where a soldier trains a hound to walk. I don't have a name for it yet. I'm not sure it needs one.",
+    "description_fr": "Le fil me mord les paumes avant de céder. Le chien ne détale pas. Il presse son crâne, fort, contre mon genou — une fois — puis se met à marcher trois pas derrière moi, exactement là où un soldat dresse un chien à se tenir. Je n'ai pas encore de nom pour lui. Je ne suis pas sûr qu'il en ait besoin.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_271"
+    },
+    "choices": [
+      {
+        "text": "Keep moving",
+        "text_fr": "Continuer",
+        "next_id": "280"
+      }
+    ]
+  },
   "280": {
+    "id": "280",
     "description": "The alley opens onto a scorched square. At its center, hanging in the air a hand's width above the cobblestones, is a tear in the world no wider than a coin slot — small, contained, patient, and wrong in a way that prickles the back of my neck like a held breath before a scream. A few looters give it a wide, superstitious berth.",
     "description_fr": "La ruelle débouche sur une place calcinée. En son centre, suspendue dans l'air à la largeur d'une main au-dessus des pavés, une déchirure dans le monde pas plus large qu'une fente à monnaie — petite, contenue, patiente, et empreinte d'une anomalie qui hérisse la nuque, comme un souffle retenu avant un cri. Quelques pillards lui laissent un large passage, superstitieux.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_280"
+    },
     "choices": [
       {
         "text": "Touch the Tear (Luck Check)",
@@ -163,8 +291,17 @@
     ]
   },
   "281": {
+    "id": "281",
     "description": "[LUCK CHECK] For a heartbeat the tear widens, and I see — not with my eyes — something vast and patient look back. Then it snaps shut like a caught breath, and the world is just a burning street again. My knees don't remember how to stop shaking for a while.",
     "description_fr": "[JET DE CHANCE] Le temps d'un battement de cœur, la déchirure s'élargit, et je vois — pas avec mes yeux — quelque chose de vaste et de patient me regarder en retour. Puis elle se referme comme un souffle retenu, et le monde n'est plus qu'une rue en feu. Mes genoux mettent un moment à se souvenir comment arrêter de trembler.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_281"
+    },
     "choices": [
       {
         "text": "Continue",
@@ -174,8 +311,17 @@
     ]
   },
   "300": {
+    "id": "300",
     "description": "My parents' hovel is a smoking husk, one wall caved in, but the floorboard I'm looking for is exactly where I left it. Underneath: the Grey Bundle, wrapped in oilcloth, warm to the touch in a way cloth has no business being. I don't remember my hands shaking like this the last time I held it.",
     "description_fr": "La masure de mes parents n'est plus qu'une carcasse fumante, un mur effondré, mais la latte du plancher que je cherche est exactement où je l'ai laissée. Dessous : le Balluchon Gris, enveloppé de toile cirée, chaud au toucher d'une façon qu'un tissu ne devrait pas être. Je ne me souviens pas que mes mains tremblaient ainsi la dernière fois que je l'ai tenu.",
+    "context_taxonomy": {
+      "ui_theme": "hovel",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_300"
+    },
     "choices": [
       {
         "text": "Take the Bundle",
@@ -378,6 +524,29 @@
       }
     ]
   },
+  "821": {
+    "id": "821",
+    "description": "I don't know if it still remembers the whistle its old handler used, but it comes anyway — a grey blur that takes the nearest Warden in the throat before he can shout. The second one turns just in time to catch my dagger instead. It's over in seconds. The dog sits, panting, waiting for what's next.",
+    "description_fr": "Je ne sais pas s'il se souvient encore du sifflement de son ancien maître, mais il vient quand même — un éclair gris qui saisit le premier Gardien à la gorge avant qu'il ne puisse crier. Le second se retourne juste à temps pour recevoir ma dague à la place. C'est fini en quelques secondes. Le chien s'assoit, haletant, attendant la suite.",
+    "context_taxonomy": {
+      "ui_theme": "torture_chamber",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_821"
+    },
+    "reqFlags": [
+      "companion_hound"
+    ],
+    "choices": [
+      {
+        "text": "Move on",
+        "text_fr": "Continuer",
+        "next_id": "823"
+      }
+    ]
+  },
   "822": {
     "id": "822",
     "description": "They are still standing. I cannot pass until they are dead.",
@@ -428,8 +597,8 @@
     "description": "[BATTLEMENTS] The night air hits my wounds like salt. I scramble over the slate roof. Below, the city burns. A Crusade Archer spots me. He raises a crossbow. There's nowhere to go but down.",
     "description_fr": "[REMPARTS] L'air nocturne mord mes blessures comme du sel. Je grimpe sur le toit d'ardoise. En contrebas, la ville brûle. Un archer de la Croisade me repère. Il lève une arbalète. Il n'y a nulle part où aller, sinon vers le bas.",
     "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
+      "ui_theme": "battlements",
+      "mood": "tense",
       "speaker": "Narrator"
     },
     "automations": {
@@ -558,6 +727,30 @@
       }
     ]
   },
+  "892": {
+    "id": "892",
+    "description": "A low whine cuts through the dock fog — the hound noses up beside you like it never left. It trots ahead, distracting a dockhand just long enough for you to lift a dropped coin purse, then falls back into step at your heel.",
+    "description_fr": "Un gémissement sourd perce le brouillard du port — le chien vient se frotter contre toi comme s'il ne t'avait jamais quitté. Il trotte devant, détournant l'attention d'un docker le temps que tu ramasses une bourse tombée, avant de revenir se coller à tes talons.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "suspense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_892"
+    },
+    "reqFlags": [
+      "companion_hound"
+    ],
+    "choices": [
+      {
+        "text": "Keep moving",
+        "text_fr": "Continuer",
+        "next_id": "895",
+        "goldMod": 10
+      }
+    ]
+  },
   "895": {
     "id": "895",
     "description": "The Smuggler shakes his head. \"No ticket, no ride. Unless you have something shiny?\"",
@@ -591,6 +784,70 @@
         "next_id": "898",
         "lockedText": "You don't have the reputation yet to make that threat land.",
         "lockedText_fr": "Tu n'as pas encore la réputation nécessaire pour qu'une telle menace porte."
+      }
+    ]
+  },
+  "896": {
+    "id": "896",
+    "description": "I don't have coin, but I have a story — Lysa, the tavern, the dead I couldn't save. Something in his face cracks. \"Story's the currency around here that's worth less than nothing,\" he mutters, \"but it's yours.\" He waves us aboard without another word, not meeting my eyes.",
+    "description_fr": "Je n'ai pas d'or, mais j'ai une histoire — Lysa, la taverne, les morts que je n'ai pas pu sauver. Quelque chose se fissure sur son visage. « Les histoires, ici, c'est la monnaie qui vaut le moins que rien, marmonne-t-il, mais elle est à toi. » Il nous fait signe de monter à bord sans un mot de plus, sans croiser mon regard.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_896"
+    },
+    "reqAlignmentScore": 3,
+    "choices": [
+      {
+        "text": "Board the ship",
+        "text_fr": "Monter à bord",
+        "next_id": "955"
+      }
+    ]
+  },
+  "897": {
+    "id": "897",
+    "description": "No sob story, no threats — just the truth: I have skills worth more alive than my corpse is worth to anyone chasing me, and he has a ship that needs crew who won't ask questions. He looks me over like he's pricing livestock, then spits and offers a hand. \"Passage for work. Don't make me regret it.\"",
+    "description_fr": "Pas d'histoire larmoyante, pas de menaces — juste la vérité : j'ai des compétences qui valent plus vivant que mon cadavre ne vaut pour quiconque me pourchasse, et il a un navire qui a besoin d'un équipage qui ne posera pas de questions. Il me toise comme on évalue du bétail, puis crache et me tend la main. « Passage contre travail. Ne me fais pas le regretter. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_897"
+    },
+    "reqAlignmentScore": -2,
+    "reqAlignmentMax": 2,
+    "choices": [
+      {
+        "text": "Shake on it",
+        "text_fr": "Conclure le marché",
+        "next_id": "955"
+      }
+    ]
+  },
+  "898": {
+    "id": "898",
+    "description": "I don't waste words. I let him see exactly what I did to get this far, and let him do the arithmetic himself. His bravado drains out through his boots. \"No trouble,\" he says, hands raised, already backing toward the gangplank. \"No trouble at all.\"",
+    "description_fr": "Je ne perds pas de mots. Je le laisse voir exactement ce que j'ai fait pour arriver jusqu'ici, et je le laisse faire le calcul lui-même. Son bravache s'évapore par ses bottes. « Pas de problème, dit-il, les mains levées, reculant déjà vers la passerelle. Aucun problème. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_898"
+    },
+    "reqAlignmentMax": -3,
+    "choices": [
+      {
+        "text": "Board the ship",
+        "text_fr": "Monter à bord",
+        "next_id": "955"
       }
     ]
   },
@@ -718,6 +975,27 @@
       }
     ]
   },
+  "1002": {
+    "id": "1002",
+    "description": "[ORIGIN: THE BROKEN] No one is waiting at the top of that chain, and no Heirloom survived with me. What's left is scar tissue and hate: massive HP and Pain Resistance, but slow and disfigured. I will find that Banner if it kills me.",
+    "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attend en haut de cette chaîne, et aucun héritage n'a survécu avec moi. Ce qu'il reste, c'est de la cicatrice et de la haine : des points de vie massifs et une résistance à la douleur, mais lent et défiguré. Je trouverai cette Bannière, dussé-je y laisser la vie.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "triumphant",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_1002"
+    },
+    "reqAlignmentMax": -3,
+    "choices": [
+      {
+        "text": "Proceed to Chapter 2 (The Broken Path)",
+        "text_fr": "Passer au chapitre 2 (La voie du Brisé)",
+        "next_id": "2001"
+      }
+    ]
+  },
   "1003": {
     "id": "1003",
     "description": "I reach the top rung alone. No hand pulls me the rest of the way up. Whatever I am now, I decided it down there in the dark, one choice at a time.",
@@ -748,24 +1026,24 @@
       }
     ]
   },
-  "1002": {
-    "id": "1002",
-    "description": "[ORIGIN: THE BROKEN] No one is waiting at the top of that chain, and no Heirloom survived with me. What's left is scar tissue and hate: massive HP and Pain Resistance, but slow and disfigured. I will find that Banner if it kills me.",
-    "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attend en haut de cette chaîne, et aucun héritage n'a survécu avec moi. Ce qu'il reste, c'est de la cicatrice et de la haine : des points de vie massifs et une résistance à la douleur, mais lent et défiguré. Je trouverai cette Bannière, dussé-je y laisser la vie.",
+  "2000": {
+    "id": "2000",
+    "description": "[Random_RatSwarm] A swarm of plague rats blocks the sewer tunnel. Their eyes glow with a sick green light.",
+    "description_fr": "[Random_RatSwarm] Un essaim de rats pestiférés bloque le tunnel des égouts. Leurs yeux luisent d'une lumière verte maladive.",
     "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "triumphant",
+      "ui_theme": "docks",
+      "mood": "tense",
       "speaker": "Narrator"
     },
     "automations": {
-      "script_trigger": "on_load_node_1002"
+      "script_trigger": "on_load_node_2000"
     },
-    "reqAlignmentMax": -3,
     "choices": [
       {
-        "text": "Proceed to Chapter 2 (The Broken Path)",
-        "text_fr": "Passer au chapitre 2 (La voie du Brisé)",
-        "next_id": "2001"
+        "text": "Attack",
+        "text_fr": "Attaquer",
+        "next_id": "2001",
+        "triggerEnemyId": "harbor_rat"
       }
     ]
   },
@@ -779,7 +1057,7 @@
       "speaker": "Narrator"
     },
     "automations": {
-      "script_trigger": "on_load_node_3000"
+      "script_trigger": "on_load_node_2001"
     },
     "choices": [
       {
@@ -794,6 +1072,31 @@
       }
     ]
   },
+  "2005": {
+    "id": "2005",
+    "description": "The gangway creaks underfoot as I step onto the ruined pier. Two ways lead deeper into the harbor district.",
+    "description_fr": "La passerelle craque sous mes pas tandis que je pose le pied sur la jetée en ruine. Deux voies mènent plus profondément dans le quartier du port.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2005"
+    },
+    "choices": [
+      {
+        "text": "Disembark at the Smuggler's Wharf",
+        "text_fr": "Débarquer au Quai des Contrebandiers",
+        "next_id": "2010"
+      },
+      {
+        "text": "Stay hidden in the cargo hold",
+        "text_fr": "Rester caché dans la cale",
+        "next_id": "2020"
+      }
+    ]
+  },
   "2010": {
     "id": "2010",
     "description": "The wharf is slick with fish scales and black oil. Smugglers barter in hushed tones under the flickering amber glow of lanterns. A scarred quartermaster named Vane blocks the gangplank, eyeing my gear with predatory interest.",
@@ -804,7 +1107,7 @@
       "speaker": "Narrator"
     },
     "automations": {
-      "script_trigger": "on_load_node_3010"
+      "script_trigger": "on_load_node_2010"
     },
     "choices": [
       {
@@ -829,304 +1132,12 @@
       }
     ]
   },
-  "2020": {
-    "id": "2020",
-    "description": "Cramped between crates of smuggled iron, I wait out the harbor inspection. Heavy boots stamp on the deck above. The stamp of the Inquisition's seal echoes through the wood.",
-    "description_fr": "Coincé entre des caisses de fer de contrebande, j'attends la fin de l'inspection portuaire. Des bottes lourdes martèlent le pont au-dessus. Le tampon du sceau de l'Inquisition résonne à travers le bois.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3020"
-    },
-    "choices": [
-      {
-        "text": "Slip out through the bilge drain",
-        "text_fr": "Se glisser par le drain de cale",
-        "next_id": "2050"
-      },
-      {
-        "text": "Ambush the inspector",
-        "text_fr": "Tendre une embuscade à l'inspecteur",
-        "next_id": "2021",
-        "triggerEnemyId": "inquisition_soldier"
-      }
-    ]
-  },
-  "2030": {
-    "id": "2030",
-    "description": "Vane listens closely, his eyes narrowing. 'Information about the Crusade's movements? That has currency.' He tosses a rusty iron key onto the barrel. 'Use the maintenance tunnel. It avoids the checkpoint.'",
-    "description_fr": "Vane écoute attentivement, les yeux plissés. « Des informations sur les mouvements de la Croisade ? Voilà qui a de la valeur. » Il lance une clé de fer rouillée sur le tonneau. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. »",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "neutral",
-      "speaker": "Vane"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3030"
-    },
-    "choices": [
-      {
-        "text": "Take the maintenance tunnel",
-        "text_fr": "Emprunter le tunnel de maintenance",
-        "next_id": "2900"
-      }
-    ]
-  },
-  "2040": {
-    "id": "2040",
-    "description": "My hand drops to my blade. Vane snorts, raising a heavy crossbow. 'Wrong move, rat.' Before I can react, his guards rush me from behind.",
-    "description_fr": "Ma main glisse vers ma lame. Vane renâcle en levant une lourde arbalète. « Mauvais choix, le rat. » Avant que je ne puisse réagir, ses gardes fondent sur moi par-derrière.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3040"
-    },
-    "choices": [
-      {
-        "text": "Fight back (Combat Encounter)",
-        "text_fr": "Riposter (Rencontre de combat)",
-        "next_id": "2070"
-      }
-    ]
-  },
-  "2050": {
-    "id": "2050",
-    "description": "I plunge into the freezing bilge water, squeezing through the narrow iron grate. The current pulls me out toward the city canals, straight into the shadow of the Upper Gate.",
-    "description_fr": "Je plonge dans l'eau glacée de la cale, me faufilant à travers l'étroite grille de fer. Le courant m'entraîne vers les canaux de la ville, droit dans l'ombre de la Porte Supérieure.",
-    "context_taxonomy": {
-      "ui_theme": "sewers",
-      "mood": "creepy",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3050"
-    },
-    "choices": [
-      {
-        "text": "Climb up to the Upper Gate",
-        "text_fr": "Grimper vers la Porte Supérieure",
-        "next_id": "2900"
-      }
-    ]
-  },
-  "2999": {
-    "id": "2999",
-    "description": "[CHAPTER 2 END] The Upper Gate opens. You stand on the threshold of the Spire district.",
-    "description_fr": "[FIN DU CHAPITRE 2] La Porte Supérieure s'ouvre. Tu te tiens sur le seuil du quartier de la Flèche.",
-    "context_taxonomy": {
-      "ui_theme": "bridge",
-      "mood": "triumphant",
-      "speaker": "Narrator"
-    },
-    "choices": [
-      {
-        "text": "Enter Chapter 3: The Spire of Judgment",
-        "text_fr": "Entrer dans le chapitre 3 : La Flèche du Jugement",
-        "next_id": "3001"
-      }
-    ]
-  },
-  "2070": {
-    "id": "2070",
-    "description": "[COMBAT] Steel flashes in the lantern light. Vane's thugs hit hard, but survival is my only option.",
-    "description_fr": "[COMBAT] L'acier scintille à la lueur des lanternes. Les hommes de main de Vane frappent fort, mais survivre est ma seule option.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_3070"
-    },
-    "choices": [
-      {
-        "text": "Overpower them and force the gate",
-        "text_fr": "Les vaincre et forcer le passage",
-        "next_id": "2900"
-      }
-    ]
-  },
-  "3001": {
-    "id": "3001",
-    "description": "[CHAPTER 3: THE SPIRE OF JUDGMENT] The massive bronze doors of the Upper Gate clang shut behind me. The air here smells of frankincense and ozone, starkly contrasting with the burning slums below. The Grand Cathedral towers above the district, its stained-glass windows bleeding purple light into the evening sky. This is where the Inquisitors hold court.",
-    "description_fr": "[CHAPITRE 3 : LA FLÈCHE DU JUGEMENT] Les immenses portes de bronze de la Porte Supérieure claquent derrière moi. L'air ici sent l'encens et l'ozone, contrastant violemment avec les bas-fonds en flammes plus bas. La Grande Cathédrale domine le quartier, ses vitraux répandant une lumière pourpre dans le ciel du soir. C'est ici que les Inquisiteurs rendent leur justice.",
-    "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4000"
-    },
-    "choices": [
-      {
-        "text": "Push deeper into the Spire",
-        "text_fr": "S'enfoncer plus profondément dans la Flèche",
-        "next_id": "3002"
-      },
-      {
-        "text": "Pause to take stock of the Spire district",
-        "text_fr": "Faire une pause pour observer le quartier de la Flèche",
-        "next_id": "3005"
-      }
-    ]
-  },
-  "3010": {
-    "id": "3010",
-    "description": "Scrambling across the slate rooftops of the cloister, the wind howls around the gothic spires. Below me, patrol guards march with silver-plated halberds. One slip means a thousand-foot drop.",
-    "description_fr": "En escaladant les toits d'ardoise du cloître, le vent hurle autour des flèches gothiques. En contrebas, des gardes en patrouille marchent avec des hallebardes plaquées argent. Un faux pas signifie une chute de trois cents mètres.",
-    "context_taxonomy": {
-      "ui_theme": "bridge",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4010"
-    },
-    "choices": [
-      {
-        "text": "Drop through the stained-glass dome",
-        "text_fr": "Plonger à travers le dôme de vitraux",
-        "next_id": "3030"
-      }
-    ]
-  },
-  "3020": {
-    "id": "3020",
-    "description": "The Hall of Records is lined with endless shelves of parchment detailing the sins of every citizen. A senior archivist sits at a towering mahogany desk, peering over half-moon spectacles.",
-    "description_fr": "La Salle des Archives est bordée d'étagères infinies de parchemins détaillant les péchés de chaque citoyen. Un archiviste chevronné est assis à un imposant bureau d'acajou, scrutant par-dessus des lunettes en demi-lune.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "suspense",
-      "speaker": "Archivist"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4020"
-    },
-    "choices": [
-      {
-        "text": "Bribe the archivist for the high-security pass",
-        "text_fr": "Soudoyer l'archiviste pour obtenir le laissez-passer haute sécurité",
-        "next_id": "3040"
-      },
-      {
-        "text": "Subdue the archivist and steal the ledger",
-        "text_fr": "Maîtriser l'archiviste et voler le registre",
-        "next_id": "3050"
-      }
-    ]
-  },
-  "3030": {
-    "id": "3030",
-    "description": "Glass shatters like a cascade of diamonds. I hit the marble floor of the inner sanctum, rolling to absorb the impact. The Inquisitor's vanguard turns in shock.",
-    "description_fr": "Le verre se brise comme une cascade de diamants. Je heurte le sol de marbre du sanctuaire intérieur, roulant pour amortir le choc. L'avant-garde de l'Inquisiteur se retourne, sous le choc.",
-    "context_taxonomy": {
-      "ui_theme": "hovel",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4030"
-    },
-    "choices": [
-      {
-        "text": "Stand and fight the vanguard",
-        "text_fr": "Se relever et combattre l'avant-garde",
-        "next_id": "4999",
-        "triggerEnemyId": "inquisition_high_warden"
-      }
-    ]
-  },
-  "3040": {
-    "id": "3040",
-    "description": "The archivist pockets the coins without a word, sliding a golden signet ring across the desk. 'Third door on the left. Don't touch the candles.'",
-    "description_fr": "L'archiviste empoche les pièces sans un mot, faisant glisser une chevalière dorée sur le bureau. « Troisième porte à gauche. Ne touche pas aux bougies. »",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "neutral",
-      "speaker": "Archivist"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4040"
-    },
-    "choices": [
-      {
-        "text": "Proceed to the inner sanctum",
-        "text_fr": "Se rendre au sanctuaire intérieur",
-        "next_id": "4999"
-      }
-    ]
-  },
-  "3050": {
-    "id": "3050",
-    "description": "A swift strike to the neck silences the archivist before he can sound the alarm. I snatch the golden signet ring from his trembling fingers.",
-    "description_fr": "Un coup rapide à la nuque réduit l'archiviste au silence avant qu'il ne puisse donner l'alarme. J'arrache la chevalière dorée de ses doigts tremblants.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_4050"
-    },
-    "choices": [
-      {
-        "text": "Move deeper into the cathedral",
-        "text_fr": "S'enfoncer plus profondément dans la cathédrale",
-        "next_id": "4999"
-      }
-    ]
-  },
-  "4999": {
-    "id": "4999",
-    "description": "[FINAL CLIMAX REACHED] The High Inquisitor falls. The truth of the invasion is revealed. You have completed all three chapters.",
-    "description_fr": "[APOGÉE FINAL ATTEINT] Le Grand Inquisiteur tombe. La vérité de l'invasion est révélée. Tu as achevé les trois chapitres.",
-    "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "triumphant",
-      "speaker": "High Inquisitor"
-    },
-    "choices": [
-      {
-        "text": "Descend into the Hollow Court",
-        "text_fr": "Descendre dans la Cour Creuse",
-        "next_id": "5001"
-      }
-    ]
-  },
-  "2000": {
-    "id": "2000",
-    "description": "[Random_RatSwarm] A swarm of plague rats blocks the sewer tunnel. Their eyes glow with a sick green light.",
-    "description_fr": "[Random_RatSwarm] Un essaim de rats pestiférés bloque le tunnel des égouts. Leurs yeux luisent d'une lumière verte maladive.",
-    "context_taxonomy": {
-      "ui_theme": "default",
-      "mood": "neutral",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_2000"
-    },
-    "choices": [
-      {
-        "text": "Attack",
-        "text_fr": "Attaquer",
-        "next_id": "2001",
-        "triggerEnemyId": "harbor_rat"
-      }
-    ]
-  },
   "2011": {
     "id": "2011",
     "description": "I shove past Vane before he can react, boots slapping the wet boards as I push deeper into the docks.",
     "description_fr": "Je bouscule Vane avant qu'il ne puisse réagir, mes bottes claquant sur les planches mouillées tandis que je m'enfonce dans les docks.",
     "context_taxonomy": {
-      "ui_theme": "default",
+      "ui_theme": "docks",
       "mood": "neutral",
       "speaker": "Narrator"
     },
@@ -1142,70 +1153,18 @@
       }
     ]
   },
-  "2021": {
-    "id": "2021",
-    "description": "[COMBAT] You strike from the shadows, but his armor is tough.",
-    "description_fr": "[COMBAT] Tu frappes depuis l'ombre, mais son armure est solide.",
+  "2015": {
+    "id": "2015",
+    "description": "Even with the Inquisition patrolling, merchants still ply their trade along the wharf — and not everyone here is friendly. If I'm going to give Vane something worth his while, I'll need to hear what's actually moving through this market first.",
+    "description_fr": "Même avec l'Inquisition qui patrouille, des marchands continuent leur commerce le long du quai — et tout le monde ici n'est pas amical. Si je veux offrir à Vane quelque chose qui vaille la peine, je dois d'abord entendre ce qui circule vraiment sur ce marché.",
     "context_taxonomy": {
-      "ui_theme": "default",
+      "ui_theme": "docks",
       "mood": "neutral",
       "speaker": "Narrator"
     },
     "automations": {
-      "script_trigger": "on_load_node_2021"
+      "script_trigger": "on_load_node_2015"
     },
-    "choices": [
-      {
-        "text": "Escape into the Canals",
-        "text_fr": "Fuir dans les canaux",
-        "next_id": "2999"
-      }
-    ]
-  },
-  "0": {
-    "description": "Before the story begins, the darkness pauses. A single question hangs in the air: who were you, before all this?",
-    "description_fr": "Avant que l'histoire ne commence, les ténèbres s'immobilisent. Une seule question plane dans l'air : qui étais-tu, avant tout cela ?",
-    "choices": [
-      {
-        "text": "Choose who you are...",
-        "text_fr": "Choisis qui tu es...",
-        "next_id": "100",
-        "opensCharacterCreation": true
-      }
-    ]
-  },
-  "151": {
-    "description": "A few stalls still operate despite the panic in the streets — a blacksmith hammering out blades, a shieldwright patching dented steel, and a bandit eyeing the crowd for an easy mark.",
-    "description_fr": "Quelques étals fonctionnent encore malgré la panique dans les rues — un forgeron martelant des lames, un fabricant de boucliers rafistolant de l'acier cabossé, et un bandit guettant la foule pour une proie facile.",
-    "choices": [
-      {
-        "text": "Visit the Weaponsmith's Forge",
-        "text_fr": "Visiter la forge de l'armurier",
-        "next_id": "300",
-        "unlockShopId": "weaponsmith_forge"
-      },
-      {
-        "text": "Check the Shieldwright's Hall",
-        "text_fr": "Examiner la halle du fabricant de boucliers",
-        "next_id": "300",
-        "unlockShopId": "shieldwrights_hall"
-      },
-      {
-        "text": "Fight off a street bandit",
-        "text_fr": "Repousser un bandit des rues",
-        "next_id": "300",
-        "triggerEnemyId": "street_bandit"
-      },
-      {
-        "text": "Move on",
-        "text_fr": "Poursuivre son chemin",
-        "next_id": "300"
-      }
-    ]
-  },
-  "2015": {
-    "description": "Even with the Inquisition patrolling, merchants still ply their trade along the wharf — and not everyone here is friendly. If I'm going to give Vane something worth his while, I'll need to hear what's actually moving through this market first.",
-    "description_fr": "Même avec l'Inquisition qui patrouille, des marchands continuent leur commerce le long du quai — et tout le monde ici n'est pas amical. Si je veux offrir à Vane quelque chose qui vaille la peine, je dois d'abord entendre ce qui circule vraiment sur ce marché.",
     "choices": [
       {
         "text": "Visit the Arcane Bazaar",
@@ -1239,9 +1198,234 @@
       }
     ]
   },
+  "2020": {
+    "id": "2020",
+    "description": "Cramped between crates of smuggled iron, I wait out the harbor inspection. Heavy boots stamp on the deck above. The stamp of the Inquisition's seal echoes through the wood.",
+    "description_fr": "Coincé entre des caisses de fer de contrebande, j'attends la fin de l'inspection portuaire. Des bottes lourdes martèlent le pont au-dessus. Le tampon du sceau de l'Inquisition résonne à travers le bois.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2020"
+    },
+    "choices": [
+      {
+        "text": "Slip out through the bilge drain",
+        "text_fr": "Se glisser par le drain de cale",
+        "next_id": "2050"
+      },
+      {
+        "text": "Ambush the inspector",
+        "text_fr": "Tendre une embuscade à l'inspecteur",
+        "next_id": "2021",
+        "triggerEnemyId": "inquisition_soldier"
+      }
+    ]
+  },
+  "2021": {
+    "id": "2021",
+    "description": "[COMBAT] You strike from the shadows, but his armor is tough.",
+    "description_fr": "[COMBAT] Tu frappes depuis l'ombre, mais son armure est solide.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2021"
+    },
+    "choices": [
+      {
+        "text": "Escape into the Canals",
+        "text_fr": "Fuir dans les canaux",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "2030": {
+    "id": "2030",
+    "description": "Vane listens closely, his eyes narrowing. 'Information about the Crusade's movements? That has currency.' He tosses a rusty iron key onto the barrel. 'Use the maintenance tunnel. It avoids the checkpoint.'",
+    "description_fr": "Vane écoute attentivement, les yeux plissés. « Des informations sur les mouvements de la Croisade ? Voilà qui a de la valeur. » Il lance une clé de fer rouillée sur le tonneau. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Vane"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2030"
+    },
+    "choices": [
+      {
+        "text": "Take the maintenance tunnel",
+        "text_fr": "Emprunter le tunnel de maintenance",
+        "next_id": "2900"
+      }
+    ]
+  },
+  "2040": {
+    "id": "2040",
+    "description": "My hand drops to my blade. Vane snorts, raising a heavy crossbow. 'Wrong move, rat.' Before I can react, his guards rush me from behind.",
+    "description_fr": "Ma main glisse vers ma lame. Vane renâcle en levant une lourde arbalète. « Mauvais choix, le rat. » Avant que je ne puisse réagir, ses gardes fondent sur moi par-derrière.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2040"
+    },
+    "choices": [
+      {
+        "text": "Fight back (Combat Encounter)",
+        "text_fr": "Riposter (Rencontre de combat)",
+        "next_id": "2070"
+      }
+    ]
+  },
+  "2050": {
+    "id": "2050",
+    "description": "I plunge into the freezing bilge water, squeezing through the narrow iron grate. The current pulls me out toward the city canals, straight into the shadow of the Upper Gate.",
+    "description_fr": "Je plonge dans l'eau glacée de la cale, me faufilant à travers l'étroite grille de fer. Le courant m'entraîne vers les canaux de la ville, droit dans l'ombre de la Porte Supérieure.",
+    "context_taxonomy": {
+      "ui_theme": "sewers",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2050"
+    },
+    "choices": [
+      {
+        "text": "Climb up to the Upper Gate",
+        "text_fr": "Grimper vers la Porte Supérieure",
+        "next_id": "2900"
+      }
+    ]
+  },
+  "2070": {
+    "id": "2070",
+    "description": "[COMBAT] Steel flashes in the lantern light. Vane's thugs hit hard, but survival is my only option.",
+    "description_fr": "[COMBAT] L'acier scintille à la lueur des lanternes. Les hommes de main de Vane frappent fort, mais survivre est ma seule option.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2070"
+    },
+    "choices": [
+      {
+        "text": "Overpower them and force the gate",
+        "text_fr": "Les vaincre et forcer le passage",
+        "next_id": "2900"
+      }
+    ]
+  },
+  "2900": {
+    "id": "2900",
+    "description": "Whatever path brought me here, the Upper Gate now looms just ahead, its bronze plating scorched but intact — the only door in the Lower City that still knows how to keep people out instead of in. I catch my breath in its shadow before crossing the last stretch of open ground.",
+    "description_fr": "Quel que soit le chemin qui m'a mené ici, la Porte Supérieure se dresse désormais devant moi, son revêtement de bronze noirci mais intact — la seule porte de la Ville Basse qui sache encore garder les gens dehors plutôt que dedans. Je reprends mon souffle dans son ombre avant de traverser le dernier terrain découvert.",
+    "context_taxonomy": {
+      "ui_theme": "gate",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2900"
+    },
+    "choices": [
+      {
+        "text": "Approach the Upper Gate",
+        "text_fr": "S'approcher de la Porte Supérieure",
+        "next_id": "2999"
+      }
+    ]
+  },
+  "2999": {
+    "id": "2999",
+    "description": "[CHAPTER 2 END] The Upper Gate opens. You stand on the threshold of the Spire district.",
+    "description_fr": "[FIN DU CHAPITRE 2] La Porte Supérieure s'ouvre. Tu te tiens sur le seuil du quartier de la Flèche.",
+    "context_taxonomy": {
+      "ui_theme": "gate",
+      "mood": "triumphant",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2999"
+    },
+    "choices": [
+      {
+        "text": "Enter Chapter 3: The Spire of Judgment",
+        "text_fr": "Entrer dans le chapitre 3 : La Flèche du Jugement",
+        "next_id": "3001"
+      }
+    ]
+  },
+  "3001": {
+    "id": "3001",
+    "description": "[CHAPTER 3: THE SPIRE OF JUDGMENT] The massive bronze doors of the Upper Gate clang shut behind me. The air here smells of frankincense and ozone, starkly contrasting with the burning slums below. The Grand Cathedral towers above the district, its stained-glass windows bleeding purple light into the evening sky. This is where the Inquisitors hold court.",
+    "description_fr": "[CHAPITRE 3 : LA FLÈCHE DU JUGEMENT] Les immenses portes de bronze de la Porte Supérieure claquent derrière moi. L'air ici sent l'encens et l'ozone, contrastant violemment avec les bas-fonds en flammes plus bas. La Grande Cathédrale domine le quartier, ses vitraux répandant une lumière pourpre dans le ciel du soir. C'est ici que les Inquisiteurs rendent leur justice.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3001"
+    },
+    "choices": [
+      {
+        "text": "Push deeper into the Spire",
+        "text_fr": "S'enfoncer plus profondément dans la Flèche",
+        "next_id": "3002"
+      },
+      {
+        "text": "Pause to take stock of the Spire district",
+        "text_fr": "Faire une pause pour observer le quartier de la Flèche",
+        "next_id": "3005"
+      }
+    ]
+  },
+  "3002": {
+    "id": "3002",
+    "description": "The bronze doors seal shut behind me with a resonant clang that echoes long after it should have died. Incense smoke drifts from somewhere above, thick enough to taste. Two passages lead deeper into the Spire, and neither one looks like it forgives mistakes.",
+    "description_fr": "Les portes de bronze se referment derrière moi dans un vacarme résonnant qui met bien plus longtemps que prévu à s'éteindre. Une fumée d'encens dérive d'en haut, assez dense pour qu'on la goûte. Deux passages mènent plus profondément dans la Flèche, et aucun des deux n'a l'air de pardonner les erreurs.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3002"
+    },
+    "choices": [
+      {
+        "text": "Infiltrate the Cathedral via the high cloisters",
+        "text_fr": "Infiltrer la cathédrale par les hauts cloîtres",
+        "next_id": "3010"
+      },
+      {
+        "text": "Walk openly through the Hall of Records",
+        "text_fr": "Traverser ouvertement la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
   "3005": {
+    "id": "3005",
     "description": "Before choosing a path into the cathedral, the outer district still holds a few things worth doing — and a few things worth avoiding.",
     "description_fr": "Avant de choisir une voie vers la cathédrale, le quartier extérieur recèle encore quelques occasions à saisir — et quelques dangers à éviter.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3005"
+    },
     "choices": [
       {
         "text": "Take up the Ashen Oath",
@@ -1275,52 +1459,144 @@
       }
     ]
   },
-  "2005": {
-    "description": "The gangway creaks underfoot as I step onto the ruined pier. Two ways lead deeper into the harbor district.",
-    "description_fr": "La passerelle craque sous mes pas tandis que je pose le pied sur la jetée en ruine. Deux voies mènent plus profondément dans le quartier du port.",
+  "3010": {
+    "id": "3010",
+    "description": "Scrambling across the slate rooftops of the cloister, the wind howls around the gothic spires. Below me, patrol guards march with silver-plated halberds. One slip means a thousand-foot drop.",
+    "description_fr": "En escaladant les toits d'ardoise du cloître, le vent hurle autour des flèches gothiques. En contrebas, des gardes en patrouille marchent avec des hallebardes plaquées argent. Un faux pas signifie une chute de trois cents mètres.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3010"
+    },
     "choices": [
       {
-        "text": "Disembark at the Smuggler's Wharf",
-        "text_fr": "Débarquer au Quai des Contrebandiers",
-        "next_id": "2010"
-      },
-      {
-        "text": "Stay hidden in the cargo hold",
-        "text_fr": "Rester caché dans la cale",
-        "next_id": "2020"
+        "text": "Drop through the stained-glass dome",
+        "text_fr": "Plonger à travers le dôme de vitraux",
+        "next_id": "3030"
       }
     ]
   },
-  "2900": {
-    "description": "Whatever path brought me here, the Upper Gate now looms just ahead, its bronze plating scorched but intact.",
-    "description_fr": "Quel que soit le chemin qui m'a mené ici, la Porte Supérieure se dresse désormais devant moi, son revêtement de bronze noirci mais intact.",
+  "3020": {
+    "id": "3020",
+    "description": "The Hall of Records is lined with endless shelves of parchment detailing the sins of every citizen. A senior archivist sits at a towering mahogany desk, peering over half-moon spectacles.",
+    "description_fr": "La Salle des Archives est bordée d'étagères infinies de parchemins détaillant les péchés de chaque citoyen. Un archiviste chevronné est assis à un imposant bureau d'acajou, scrutant par-dessus des lunettes en demi-lune.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "suspense",
+      "speaker": "Archivist"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3020"
+    },
     "choices": [
       {
-        "text": "Approach the Upper Gate",
-        "text_fr": "S'approcher de la Porte Supérieure",
-        "next_id": "2999"
+        "text": "Bribe the archivist for the high-security pass",
+        "text_fr": "Soudoyer l'archiviste pour obtenir le laissez-passer haute sécurité",
+        "next_id": "3040"
+      },
+      {
+        "text": "Subdue the archivist and steal the ledger",
+        "text_fr": "Maîtriser l'archiviste et voler le registre",
+        "next_id": "3050"
       }
     ]
   },
-  "3002": {
-    "description": "The bronze doors seal shut behind me with a resonant clang. Two passages lead deeper into the Spire.",
-    "description_fr": "Les portes de bronze se referment derrière moi dans un vacarme résonnant. Deux passages mènent plus profondément dans la Flèche.",
+  "3030": {
+    "id": "3030",
+    "description": "Glass shatters like a cascade of diamonds. I hit the marble floor of the inner sanctum, rolling to absorb the impact. The Inquisitor's vanguard turns in shock.",
+    "description_fr": "Le verre se brise comme une cascade de diamants. Je heurte le sol de marbre du sanctuaire intérieur, roulant pour amortir le choc. L'avant-garde de l'Inquisiteur se retourne, sous le choc.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3030"
+    },
     "choices": [
       {
-        "text": "Infiltrate the Cathedral via the high cloisters",
-        "text_fr": "Infiltrer la cathédrale par les hauts cloîtres",
-        "next_id": "3010"
-      },
+        "text": "Stand and fight the vanguard",
+        "text_fr": "Se relever et combattre l'avant-garde",
+        "next_id": "4999",
+        "triggerEnemyId": "inquisition_high_warden"
+      }
+    ]
+  },
+  "3040": {
+    "id": "3040",
+    "description": "The archivist pockets the coins without a word, sliding a golden signet ring across the desk. 'Third door on the left. Don't touch the candles.'",
+    "description_fr": "L'archiviste empoche les pièces sans un mot, faisant glisser une chevalière dorée sur le bureau. « Troisième porte à gauche. Ne touche pas aux bougies. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Archivist"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3040"
+    },
+    "choices": [
       {
-        "text": "Walk openly through the Hall of Records",
-        "text_fr": "Traverser ouvertement la Salle des Archives",
-        "next_id": "3020"
+        "text": "Proceed to the inner sanctum",
+        "text_fr": "Se rendre au sanctuaire intérieur",
+        "next_id": "4999"
+      }
+    ]
+  },
+  "3050": {
+    "id": "3050",
+    "description": "A swift strike to the neck silences the archivist before he can sound the alarm. I snatch the golden signet ring from his trembling fingers.",
+    "description_fr": "Un coup rapide à la nuque réduit l'archiviste au silence avant qu'il ne puisse donner l'alarme. J'arrache la chevalière dorée de ses doigts tremblants.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3050"
+    },
+    "choices": [
+      {
+        "text": "Move deeper into the cathedral",
+        "text_fr": "S'enfoncer plus profondément dans la cathédrale",
+        "next_id": "4999"
+      }
+    ]
+  },
+  "4999": {
+    "id": "4999",
+    "description": "[FINAL CLIMAX REACHED] The High Inquisitor falls. The truth of the invasion is revealed. You have completed all three chapters.",
+    "description_fr": "[APOGÉE FINAL ATTEINT] Le Grand Inquisiteur tombe. La vérité de l'invasion est révélée. Tu as achevé les trois chapitres.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "triumphant",
+      "speaker": "High Inquisitor"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_4999"
+    },
+    "choices": [
+      {
+        "text": "Descend into the Hollow Court",
+        "text_fr": "Descendre dans la Cour Creuse",
+        "next_id": "5001"
       }
     ]
   },
   "5001": {
-    "description": "Beyond the Spire's ashes, whispers speak of a Hollow Court — inquisitors who answer to no living authority.",
-    "description_fr": "Par-delà les cendres de la Flèche, des rumeurs parlent d'une Cour Creuse — des inquisiteurs qui ne répondent à aucune autorité vivante.",
+    "id": "5001",
+    "description": "The Spire's bells have stopped ringing, but a different kind of silence follows me down from the ashes — the kind that comes right before someone tells you a secret they shouldn't. In the rubble of the outer district, survivors trade the same word in hushed voices: the Hollow Court. Inquisitors, they say, who kneel to no living authority and never officially existed at all. Whatever waits down there, it knew my family's name before I did.",
+    "description_fr": "Les cloches de la Flèche se sont tues, mais un autre genre de silence me suit hors des cendres — celui qui précède l'aveu d'un secret qu'on ne devrait pas connaître. Dans les décombres du quartier extérieur, les survivants échangent le même mot à voix basse : la Cour Creuse. Des inquisiteurs, dit-on, qui ne s'agenouillent devant aucune autorité vivante et n'ont, officiellement, jamais existé. Quoi qu'il m'attende là-dessous, cette chose connaissait le nom de ma famille avant moi.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5001"
+    },
     "choices": [
       {
         "text": "Follow the whispers",
@@ -1330,8 +1606,17 @@
     ]
   },
   "5002": {
-    "description": "The road narrows into catacombs beneath the city, the air thick with old incense and older blood.",
-    "description_fr": "La route se resserre en catacombes sous la ville, l'air épais d'encens ancien et de sang plus ancien encore.",
+    "id": "5002",
+    "description": "The whispers lead to a drain grate no wider than a coffin, and then down, and down again, until the city noise above fades to nothing. The catacombs swallow the last of the daylight at the first turn. Old incense clings to the walls in layers, one century laid over another, and beneath it — fainter, but unmistakable — the copper tang of blood that never had the decency to dry.",
+    "description_fr": "Les rumeurs mènent à une grille d'égout à peine plus large qu'un cercueil, puis vers le bas, encore et encore, jusqu'à ce que le bruit de la ville au-dessus s'efface entièrement. Les catacombes engloutissent le dernier jour dès le premier tournant. Un encens ancien s'accroche aux murs en strates, un siècle posé sur l'autre, et sous cette odeur — plus discrète, mais indéniable — la tenue cuivrée du sang qui n'a jamais eu la décence de sécher.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5002"
+    },
     "choices": [
       {
         "text": "Press onward",
@@ -1341,8 +1626,17 @@
     ]
   },
   "5003": {
-    "description": "A chamber opens before me: robed figures kneel around a black altar, the Void Banner's twin humming in their midst.",
-    "description_fr": "Une chambre s'ouvre devant moi : des silhouettes encapuchonnées s'agenouillent autour d'un autel noir, le jumeau de la Bannière du Néant vibrant parmi elles.",
+    "id": "5003",
+    "description": "The passage opens without warning into a chamber carved smooth by hands that had centuries to spare. Robed figures kneel in a loose circle around a black altar, and at its center hums something my body recognizes before my mind does — the twin of the Grey Shroud, restless in its cradle of stone. Nobody has looked up yet. That will not last.",
+    "description_fr": "Le passage débouche sans prévenir sur une chambre polie par des mains qui avaient des siècles devant elles. Des silhouettes encapuchonnées s'agenouillent en cercle lâche autour d'un autel noir, et en son centre vibre quelque chose que mon corps reconnaît avant mon esprit — le jumeau du Linceul Gris, agité dans son berceau de pierre. Personne n'a encore levé les yeux. Cela ne durera pas.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5003"
+    },
     "choices": [
       {
         "text": "Confront them",
@@ -1352,8 +1646,17 @@
     ]
   },
   "5004": {
-    "description": "The figures scatter like smoke. Among the wreckage, a ledger names every soul the Hollow Court has taken — including, once, my own family.",
-    "description_fr": "Les silhouettes se dispersent comme de la fumée. Parmi les décombres, un registre nomme chaque âme prise par la Cour Creuse — y compris, autrefois, ma propre famille.",
+    "id": "5004",
+    "description": "They break before I even draw a weapon — robes and shadow scattering down side passages like smoke fleeing a closed fist. What they leave behind is worse than a fight: a ledger, bound in something that was once skin, listing every soul the Hollow Court has ever taken. I find my parents' names on the second page. I already knew. Seeing it written is a different kind of knowing.",
+    "description_fr": "Ils se dispersent avant même que je ne dégaine — robes et ombres fuyant par les passages latéraux comme de la fumée échappant à un poing fermé. Ce qu'ils laissent derrière eux est pire qu'un combat : un registre, relié dans quelque chose qui fut autrefois de la peau, énumérant chaque âme que la Cour Creuse a jamais prise. Je trouve le nom de mes parents à la deuxième page. Je le savais déjà. Le voir écrit est une autre forme de savoir.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5004"
+    },
     "choices": [
       {
         "text": "Take the ledger",
@@ -1363,8 +1666,17 @@
     ]
   },
   "5005": {
-    "description": "The catacombs shake as the Court's remaining loyalists flee into the dark, the ledger heavy in my hands.",
-    "description_fr": "Les catacombes tremblent tandis que les derniers fidèles de la Cour fuient dans l'obscurité, le registre lourd entre mes mains.",
+    "id": "5005",
+    "description": "Somewhere above, the loyalists who didn't run are screaming orders nobody is left to follow. Dust sifts down from the ceiling in slow curtains as the old stone remembers, a little late, that it was never meant to hold this much noise. I don't wait to see it finish falling. I climb, the ledger's weight settling into my arms like something I've been carrying my whole life without knowing its name.",
+    "description_fr": "Quelque part au-dessus, les fidèles qui n'ont pas fui hurlent des ordres que plus personne n'est là pour suivre. La poussière tombe du plafond en rideaux lents, tandis que la vieille pierre se souvient, un peu tard, qu'elle n'a jamais été faite pour contenir tant de vacarme. Je n'attends pas de la voir s'effondrer. Je grimpe, le poids du registre se logeant dans mes bras comme quelque chose que je porte depuis toujours sans en connaître le nom.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5005"
+    },
     "choices": [
       {
         "text": "Climb back to the surface",
@@ -1374,8 +1686,17 @@
     ]
   },
   "6001": {
-    "description": "[CHAPTER 5: THE SHROUD'S TRUTH] Daylight is a shock after the catacombs. The Void Banner pulses warm against my back, as if it recognizes the ledger I carry.",
-    "description_fr": "[CHAPITRE 5 : LA VÉRITÉ DU LINCEUL] La lumière du jour est un choc après les catacombes. La Bannière du Néant palpite, chaude contre mon dos, comme si elle reconnaissait le registre que je porte.",
+    "id": "6001",
+    "description": "[CHAPTER 5: THE SHROUD'S TRUTH] Daylight hits like a slap after so long underground — too bright, too loud, too ordinary for what I'm carrying. Against my back, the Void Banner has gone warm, almost companionable, as though it recognizes the ledger tucked under my arm and approves. I find a doorway out of the wind and sit, because whatever this book says, I want to be steady on my feet when I read it.",
+    "description_fr": "[CHAPITRE 5 : LA VÉRITÉ DU LINCEUL] La lumière du jour frappe comme une gifle après si longtemps sous terre — trop vive, trop bruyante, trop ordinaire pour ce que je porte. Contre mon dos, la Bannière du Néant s'est réchauffée, presque amicale, comme si elle reconnaissait le registre glissé sous mon bras et l'approuvait. Je trouve une embrasure à l'abri du vent et m'assois, car quoi que dise ce livre, je veux être stable sur mes jambes pour le lire.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6001"
+    },
     "choices": [
       {
         "text": "Read the ledger in the light",
@@ -1385,8 +1706,17 @@
     ]
   },
   "6002": {
-    "description": "The names blur into one truth: the Banner was never a weapon. It was a warning, sewn by the first Inquisitor who saw what waited beyond the veil.",
-    "description_fr": "Les noms se fondent en une seule vérité : la Bannière n'a jamais été une arme. C'était un avertissement, cousu par le premier Inquisiteur à avoir vu ce qui attendait au-delà du voile.",
+    "id": "6002",
+    "description": "The names go on for pages before the pattern surfaces, and once it does I can't unsee it: every entry is dated to the night a tear opened somewhere in the world, and closed again just as fast. The Banner was never forged as a weapon. It was sewn, generations ago, as a warning — by the first Inquisitor who looked into one of those tears and didn't like what looked back.",
+    "description_fr": "Les noms s'étendent sur des pages avant que le motif ne se révèle, et une fois qu'il l'a fait, je ne peux plus l'ignorer : chaque entrée est datée d'une nuit où une déchirure s'est ouverte quelque part dans le monde, avant de se refermer aussitôt. La Bannière n'a jamais été forgée comme une arme. Elle a été cousue, des générations plus tôt, comme un avertissement — par le premier Inquisiteur qui a regardé dans l'une de ces déchirures et n'a pas aimé ce qui le regardait en retour.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6002"
+    },
     "choices": [
       {
         "text": "Seek the source of the Void",
@@ -1396,8 +1726,17 @@
     ]
   },
   "6003": {
-    "description": "At the city's heart, a tear in the world hangs silent and patient, exactly where the ledger said it would be.",
-    "description_fr": "Au cœur de la ville, une déchirure dans le monde flotte, silencieuse et patiente, exactement là où le registre l'annonçait.",
+    "id": "6003",
+    "description": "The ledger's last page gives a location, plain as a street address, and my feet know the way before my mind agrees to go. At the city's dead heart, exactly where the book said it would be, a tear hangs in the open air — small, patient, and achingly familiar. I have stood this close to one before. I didn't understand it then either.",
+    "description_fr": "La dernière page du registre donne un lieu, aussi simple qu'une adresse, et mes pieds connaissent le chemin avant que mon esprit n'accepte d'y aller. Au cœur mort de la ville, exactement là où le livre l'annonçait, une déchirure flotte à l'air libre — petite, patiente, et douloureusement familière. Je me suis déjà tenu aussi près de l'une d'elles. Je ne la comprenais pas davantage à l'époque.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6003"
+    },
     "choices": [
       {
         "text": "Step through the tear",
@@ -1407,8 +1746,17 @@
     ]
   },
   "6004": {
-    "description": "On the other side, the Shroud finally speaks — not in words, but in a certainty: the invasion was never the ending. It was the delay.",
-    "description_fr": "De l'autre côté, le Linceul parle enfin — non par des mots, mais par une certitude : l'invasion n'a jamais été la fin. Elle n'était qu'un sursis.",
+    "id": "6004",
+    "description": "On the other side there is no light, no sound, no ground beneath my feet — only the Shroud, finally speaking in the one language it has: certainty, poured directly into the bone. The invasion was never the ending anyone feared. It was the opening act, and something patient is still counting down the delay it bought us.",
+    "description_fr": "De l'autre côté, il n'y a ni lumière, ni son, ni sol sous mes pieds — seulement le Linceul, parlant enfin dans le seul langage qu'il connaisse : une certitude, versée directement dans les os. L'invasion n'a jamais été la fin que tout le monde redoutait. Elle n'était que le premier acte, et quelque chose de patient compte encore le sursis qu'elle nous a acheté.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6004"
+    },
     "choices": [
       {
         "text": "Accept what the Shroud shows me",
@@ -1418,105 +1766,22 @@
     ]
   },
   "6005": {
-    "description": "[JOURNEY'S END] I step back into my own world, the Void Banner quiet now, and for the first time since the invasion began, I know exactly what comes next.",
-    "description_fr": "[FIN DU VOYAGE] Je reviens dans mon propre monde, la Bannière du Néant désormais silencieuse, et pour la première fois depuis le début de l'invasion, je sais exactement ce qui m'attend.",
+    "id": "6005",
+    "description": "[JOURNEY'S END] I step back into my own world with the Void Banner quiet against my back for the first time since the tavern door swung on its broken hinge. The invasion is over. What comes after it is not — and for the first time since that night, I know exactly what I mean to do about it.",
+    "description_fr": "[FIN DU VOYAGE] Je reviens dans mon propre monde, la Bannière du Néant enfin silencieuse contre mon dos pour la première fois depuis que la porte de la taverne oscillait sur son gond brisé. L'invasion est terminée. Ce qui vient après ne l'est pas — et pour la première fois depuis cette nuit-là, je sais exactement ce que je compte en faire.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "triumphant",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6005"
+    },
     "choices": [
       {
         "text": "Begin again, changed",
         "text_fr": "Recommencer, transformé",
         "next_id": "100"
-      }
-    ]
-  },
-  "271": {
-    "description": "The wire bites my palms before it gives. The dog doesn't bolt. It presses its skull, hard, against my knee — once — then falls into step three paces behind me, exactly where a soldier trains a hound to walk. I don't have a name for it yet. I'm not sure it needs one.",
-    "description_fr": "Le fil me mord les paumes avant de céder. Le chien ne détale pas. Il presse son crâne, fort, contre mon genou — une fois — puis se met à marcher trois pas derrière moi, exactement là où un soldat dresse un chien à se tenir. Je n'ai pas encore de nom pour lui. Je ne suis pas sûr qu'il en ait besoin.",
-    "choices": [
-      {
-        "text": "Keep moving",
-        "text_fr": "Continuer",
-        "next_id": "280"
-      }
-    ]
-  },
-  "821": {
-    "description": "I don't know if it still remembers the whistle its old handler used, but it comes anyway — a grey blur that takes the nearest Warden in the throat before he can shout. The second one turns just in time to catch my dagger instead. It's over in seconds. The dog sits, panting, waiting for what's next.",
-    "description_fr": "Je ne sais pas s'il se souvient encore du sifflement de son ancien maître, mais il vient quand même — un éclair gris qui saisit le premier Gardien à la gorge avant qu'il ne puisse crier. Le second se retourne juste à temps pour recevoir ma dague à la place. C'est fini en quelques secondes. Le chien s'assoit, haletant, attendant la suite.",
-    "reqFlags": [
-      "companion_hound"
-    ],
-    "choices": [
-      {
-        "text": "Move on",
-        "text_fr": "Continuer",
-        "next_id": "823"
-      }
-    ]
-  },
-  "896": {
-    "description": "I don't have coin, but I have a story — Lysa, the tavern, the dead I couldn't save. Something in his face cracks. \"Story's the currency around here that's worth less than nothing,\" he mutters, \"but it's yours.\" He waves us aboard without another word, not meeting my eyes.",
-    "description_fr": "Je n'ai pas d'or, mais j'ai une histoire — Lysa, la taverne, les morts que je n'ai pas pu sauver. Quelque chose se fissure sur son visage. « Les histoires, ici, c'est la monnaie qui vaut le moins que rien, marmonne-t-il, mais elle est à toi. » Il nous fait signe de monter à bord sans un mot de plus, sans croiser mon regard.",
-    "reqAlignmentScore": 3,
-    "choices": [
-      {
-        "text": "Board the ship",
-        "text_fr": "Monter à bord",
-        "next_id": "955"
-      }
-    ]
-  },
-  "897": {
-    "description": "No sob story, no threats — just the truth: I have skills worth more alive than my corpse is worth to anyone chasing me, and he has a ship that needs crew who won't ask questions. He looks me over like he's pricing livestock, then spits and offers a hand. \"Passage for work. Don't make me regret it.\"",
-    "description_fr": "Pas d'histoire larmoyante, pas de menaces — juste la vérité : j'ai des compétences qui valent plus vivant que mon cadavre ne vaut pour quiconque me pourchasse, et il a un navire qui a besoin d'un équipage qui ne posera pas de questions. Il me toise comme on évalue du bétail, puis crache et me tend la main. « Passage contre travail. Ne me fais pas le regretter. »",
-    "reqAlignmentScore": -2,
-    "reqAlignmentMax": 2,
-    "choices": [
-      {
-        "text": "Shake on it",
-        "text_fr": "Conclure le marché",
-        "next_id": "955"
-      }
-    ]
-  },
-  "898": {
-    "description": "I don't waste words. I let him see exactly what I did to get this far, and let him do the arithmetic himself. His bravado drains out through his boots. \"No trouble,\" he says, hands raised, already backing toward the gangplank. \"No trouble at all.\"",
-    "description_fr": "Je ne perds pas de mots. Je le laisse voir exactement ce que j'ai fait pour arriver jusqu'ici, et je le laisse faire le calcul lui-même. Son bravache s'évapore par ses bottes. « Pas de problème, dit-il, les mains levées, reculant déjà vers la passerelle. Aucun problème. »",
-    "reqAlignmentMax": -3,
-    "choices": [
-      {
-        "text": "Board the ship",
-        "text_fr": "Monter à bord",
-        "next_id": "955"
-      }
-    ]
-  },
-  "892": {
-    "id": "892",
-    "description": "A low whine cuts through the dock fog — the hound noses up beside you like it never left. It trots ahead, distracting a dockhand just long enough for you to lift a dropped coin purse, then falls back into step at your heel.",
-    "description_fr": "Un gémissement sourd perce le brouillard du port — le chien vient se frotter contre toi comme s'il ne t'avait jamais quitté. Il trotte devant, détournant l'attention d'un docker le temps que tu ramasses une bourse tombée, avant de revenir se coller à tes talons.",
-    "reqFlags": [
-      "companion_hound"
-    ],
-    "choices": [
-      {
-        "text": "Keep moving",
-        "text_fr": "Continuer",
-        "next_id": "895",
-        "goldMod": 10
-      }
-    ]
-  },
-  "261": {
-    "id": "261",
-    "description": "The guard counts your coin, unimpressed, and waves you through with a grunt. Lysa barely stirs as you cross.",
-    "description_fr": "Le garde compte tes pièces, peu impressionné, et te fait signe de passer d'un grognement. Lysa bouge à peine tandis que tu traverses.",
-    "reqGold": 50,
-    "choices": [
-      {
-        "text": "Cross the bridge",
-        "text_fr": "Traverser le pont",
-        "next_id": "280",
-        "goldMod": -50
       }
     ]
   }
