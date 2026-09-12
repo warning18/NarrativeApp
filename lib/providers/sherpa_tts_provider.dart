@@ -62,8 +62,15 @@ Map<String, Uint8List> _extractModelArchive(Uint8List archiveBytes) {
 /// construction and neural-network inference (`OfflineTts.generate`) are
 /// both synchronous, CPU-heavy native calls — running them on the main
 /// isolate is exactly what was freezing the UI, since auto-read fires one
-/// on every single scene. Communicates over plain Maps of primitives/
-/// TypedData plus a SendPort, which cross the isolate boundary directly.
+/// on every single scene. Communicates over plain Maps of primitives plus
+/// a SendPort, which cross the isolate boundary directly.
+///
+/// sherpa-onnx's FFI binding state is per-isolate — every isolate that
+/// calls a sherpa-onnx API must call `initBindings()` itself first. That
+/// includes `writeWave()`, so the WAV file is written here too (given a
+/// path computed on the main isolate, since `path_provider` needs platform
+/// channels this isolate doesn't have) rather than back on the main
+/// isolate, which previously threw "Please initialize sherpa-onnx first".
 void _sherpaIsolateEntry(SendPort mainSendPort) {
   final commandPort = ReceivePort();
   mainSendPort.send(commandPort.sendPort);
@@ -75,26 +82,30 @@ void _sherpaIsolateEntry(SendPort mainSendPort) {
     final request = message as Map<String, dynamic>;
     final replyPort = request['replyPort'] as SendPort;
     try {
-      if (tts == null) {
-        if (!bindingsInitialized) {
-          sherpa_onnx.initBindings();
-          bindingsInitialized = true;
-        }
-        tts = sherpa_onnx.OfflineTts(
-          sherpa_onnx.OfflineTtsConfig(
-            model: sherpa_onnx.OfflineTtsModelConfig(
-              vits: sherpa_onnx.OfflineTtsVitsModelConfig(
-                model: request['modelPath'] as String,
-                tokens: request['tokensPath'] as String,
-              ),
-              numThreads: 2,
-              debug: false,
-            ),
-          ),
-        );
+      if (!bindingsInitialized) {
+        sherpa_onnx.initBindings();
+        bindingsInitialized = true;
       }
+      tts ??= sherpa_onnx.OfflineTts(
+        sherpa_onnx.OfflineTtsConfig(
+          model: sherpa_onnx.OfflineTtsModelConfig(
+            vits: sherpa_onnx.OfflineTtsVitsModelConfig(
+              model: request['modelPath'] as String,
+              tokens: request['tokensPath'] as String,
+            ),
+            numThreads: 2,
+            debug: false,
+          ),
+        ),
+      );
       final audio = tts!.generate(text: request['text'] as String);
-      replyPort.send({'samples': audio.samples, 'sampleRate': audio.sampleRate});
+      final outputPath = request['outputPath'] as String;
+      sherpa_onnx.writeWave(
+        filename: outputPath,
+        samples: audio.samples,
+        sampleRate: audio.sampleRate,
+      );
+      replyPort.send({'outputPath': outputPath});
     } catch (e) {
       replyPort.send({'error': e.toString()});
     }
@@ -218,12 +229,19 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
       await _ensureModelDownloaded();
       state = SherpaTtsPlaybackState.generating;
 
+      // Computed here (not in the worker isolate) because path_provider
+      // needs platform-channel access a plain Isolate.spawn'd isolate
+      // doesn't have.
+      final dir = await getTemporaryDirectory();
+      final outputPath = '${dir.path}/sherpa_tts_output.wav';
+
       final workerPort = await _ensureWorkerPort();
       final replyPort = ReceivePort();
       workerPort.send({
         'text': text,
         'modelPath': _modelPath,
         'tokensPath': _tokensPath,
+        'outputPath': outputPath,
         'replyPort': replyPort.sendPort,
       });
       final response = await replyPort.first as Map<dynamic, dynamic>;
@@ -232,15 +250,9 @@ class SherpaTtsNotifier extends StateNotifier<SherpaTtsPlaybackState> {
         throw SherpaTtsException('French voice error: ${response['error']}');
       }
 
-      final samples = response['samples'] as Float32List;
-      final sampleRate = response['sampleRate'] as int;
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/sherpa_tts_output.wav');
-      sherpa_onnx.writeWave(filename: file.path, samples: samples, sampleRate: sampleRate);
-
       if (state != SherpaTtsPlaybackState.generating) return;
       state = SherpaTtsPlaybackState.playing;
-      await _player.play(DeviceFileSource(file.path));
+      await _player.play(DeviceFileSource(response['outputPath'] as String));
     } catch (e) {
       state = SherpaTtsPlaybackState.idle;
       if (e is SherpaTtsException) rethrow;
