@@ -115,6 +115,13 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       'Evil' => _demonIdleSprite,
       _ => _neutralIdleSprite,
     };
+    // The neutral walk cycle's source frames sit on an 88x88 canvas, but the
+    // Good/Evil sprites share the 64x64 canvas used by the idle/fight poses
+    // — render each at the display size calibrated for its own canvas, or
+    // the alignment sprite comes out oversized relative to how it looks
+    // idling.
+    final isNeutralWalk = identical(walkFrames, _neutralWalkFrames);
+    final walkSize = isNeutralWalk ? _walkDisplaySize : _restDisplaySize;
 
     return SizedBox(
       height: widget.height,
@@ -141,13 +148,13 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
                 x = (constraints.maxWidth + _walkDisplaySize) * t;
                 final frame = (t * walkFrames.length * 4).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
-                size = _walkDisplaySize;
+                size = walkSize;
               } else if (walkingIn) {
                 final t = Curves.linear.transform(_walkInController.value);
                 x = -_walkDisplaySize + _walkDisplaySize * t;
                 final frame = (t * walkFrames.length).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
-                size = _walkDisplaySize;
+                size = walkSize;
               } else {
                 framePath = idleSprite;
                 size = _restDisplaySize;
