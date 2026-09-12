@@ -496,6 +496,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _resetToDefaults(prefs);
   }
 
+  /// Directly replaces the live session with [session] — used to restore a
+  /// manually saved checkpoint (see save_game_provider.dart). Persists
+  /// immediately like every other mutator here.
+  Future<void> loadSession(PlayerSession session) async {
+    state = session;
+    await _persist();
+  }
+
   Future<void> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
