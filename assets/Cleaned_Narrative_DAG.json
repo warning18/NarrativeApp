@@ -1042,7 +1042,7 @@
       {
         "text": "Attack",
         "text_fr": "Attaquer",
-        "next_id": "2001",
+        "next_id": "2005",
         "triggerEnemyId": "harbor_rat"
       }
     ]
@@ -1134,8 +1134,8 @@
   },
   "2011": {
     "id": "2011",
-    "description": "I shoved past Vane before he could properly react, which is generally the only window one gets with men who make their living reacting to things, boots slapping wet boards as I pushed deeper into the docks without the customary courtesy of an explanation.",
-    "description_fr": "Je bousculai Vane avant qu'il ne puisse proprement réagir, ce qui constitue en général l'unique fenêtre dont on dispose avec les hommes qui gagnent leur vie à réagir aux choses, mes bottes claquant sur les planches mouillées tandis que je m'enfonçais dans les docks sans la courtoisie coutumière d'une explication.",
+    "description": "I shoved past Vane before he could properly react, which is generally the only window one gets with men who make their living reacting to things, boots slapping wet boards as I pushed deeper into the docks without the customary courtesy of an explanation. Something skittered underfoot in the dark — more than one something, judging by the sound, and none of it inclined to move out of my way.",
+    "description_fr": "Je bousculai Vane avant qu'il ne puisse proprement réagir, ce qui constitue en général l'unique fenêtre dont on dispose avec les hommes qui gagnent leur vie à réagir aux choses, mes bottes claquant sur les planches mouillées tandis que je m'enfonçais dans les docks sans la courtoisie coutumière d'une explication. Quelque chose détala sous mes pieds dans le noir — plus d'une chose, à en juger par le bruit, et aucune ne semblait disposée à me céder le passage.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
