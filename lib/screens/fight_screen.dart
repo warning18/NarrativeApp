@@ -29,7 +29,7 @@ class FightScreen extends ConsumerStatefulWidget {
   ConsumerState<FightScreen> createState() => _FightScreenState();
 }
 
-class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProviderStateMixin {
+class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderStateMixin {
   final Random _random = Random();
   final List<String> _log = [];
 
@@ -48,8 +48,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
   int _lastDamageTaken = 0;
 
   String? _selectedDiceId;
+  bool _rolling = false;
 
   late final AnimationController _shakeController;
+  late final AnimationController _rollController;
 
   @override
   void initState() {
@@ -69,11 +71,18 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+    // Spins and bounces the die icon for a beat before a roll's result is
+    // applied, so a tap reads as "rolling" rather than an instant stat swap.
+    _rollController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 650),
+    );
   }
 
   @override
   void dispose() {
     _shakeController.dispose();
+    _rollController.dispose();
     super.dispose();
   }
 
@@ -123,12 +132,12 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
     };
   }
 
-  void _takePlayerTurn(
+  Future<void> _takePlayerTurn(
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
-  ) {
-    if (_over) return;
+  ) async {
+    if (_over || _rolling) return;
     final faces = (dice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     if (faces.isEmpty) return;
 
@@ -140,6 +149,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
         face = face.withLinkedSkillID(assigned);
       }
     }
+
+    // The face is already decided above; the spin is purely a beat of
+    // suspense before its effect lands.
+    setState(() => _rolling = true);
+    await _rollController.forward(from: 0);
+    if (!mounted) return;
+    setState(() => _rolling = false);
+
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
     final result = resolvePlayerFace(
       face,
@@ -455,6 +472,34 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
               ),
             ),
             const SizedBox(height: 16),
+            if (_rolling)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: Center(
+                  child: AnimatedBuilder(
+                    animation: _rollController,
+                    builder: (context, _) {
+                      final t = _rollController.value;
+                      // A few full spins that ease out, plus a little bounce
+                      // in scale, so the die feels like it's tumbling to a
+                      // stop rather than just rotating at constant speed.
+                      final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
+                      final scale = 1 + (sin(t * pi) * 0.25);
+                      return Transform.rotate(
+                        angle: angle,
+                        child: Transform.scale(
+                          scale: scale,
+                          child: Icon(
+                            Icons.casino,
+                            size: 40,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
             if (_over)
               ElevatedButton(
                 onPressed: () async {
@@ -485,7 +530,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: selectedDice == null
+                      onPressed: (selectedDice == null || _rolling)
                           ? null
                           : () => _takePlayerTurn(selectedDice, skills, items),
                       icon: const Icon(Icons.casino),
@@ -494,7 +539,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with SingleTickerProv
                   ),
                   const SizedBox(width: 8),
                   OutlinedButton.icon(
-                    onPressed: session.potionCount > 0 ? _usePotion : null,
+                    onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
                     icon: const Icon(Icons.local_drink),
                     label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
                   ),

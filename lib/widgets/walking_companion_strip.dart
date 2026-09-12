@@ -25,15 +25,19 @@ const double _restDisplaySize = _restNativeSize * (_walkDisplaySize / _walkNativ
 /// player advances the story) walks off across the screen to the right,
 /// then walks back in from the left and sits back down — rather than
 /// popping between positions. Switches to a fighting stance instead of
-/// idling whenever [combatActiveProvider] is true.
+/// idling whenever [combatActiveProvider] is true (an actual fight is on
+/// screen) or [fightAvailable] is true (the current node offers a choice
+/// that would start one, even before the player picks it).
 class WalkingCompanionStrip extends ConsumerStatefulWidget {
   const WalkingCompanionStrip({
     super.key,
     required this.trigger,
+    this.fightAvailable = false,
     this.height = _walkDisplaySize,
   });
 
   final Object trigger;
+  final bool fightAvailable;
   final double height;
 
   @override
@@ -57,8 +61,8 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       });
     _walkInController = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
     // Drives frame cycling for the fighting stance. Only runs while
-    // actually fighting (see build's ref.listen) so idling doesn't repaint
-    // every frame for no reason.
+    // actually fighting (see build's isAnimating guard) so idling doesn't
+    // repaint every frame for no reason.
     _poseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
     // Walk in and sit down on first appearance too, instead of popping in.
     _walkInController.forward(from: 0);
@@ -82,14 +86,14 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
 
   @override
   Widget build(BuildContext context) {
-    ref.listen<bool>(combatActiveProvider, (previous, next) {
-      if (next) {
-        _poseController.repeat();
-      } else {
-        _poseController.stop();
-      }
-    });
-    final fighting = ref.watch(combatActiveProvider);
+    final fighting = ref.watch(combatActiveProvider) || widget.fightAvailable;
+    // Guarded by isAnimating so this is a no-op (not a restart-from-frame-0)
+    // on rebuilds where `fighting` hasn't actually changed.
+    if (fighting && !_poseController.isAnimating) {
+      _poseController.repeat();
+    } else if (!fighting && _poseController.isAnimating) {
+      _poseController.stop();
+    }
     final name = ref.watch(companionNameProvider);
 
     return SizedBox(
