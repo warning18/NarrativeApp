@@ -17,6 +17,7 @@ import '../providers/settings_providers.dart';
 import '../providers/theme_mode_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
+import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/tutorial_overlay.dart';
 import 'playthrough_simulator_screen.dart';
@@ -67,6 +68,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final tutorial = ref.watch(tutorialProvider);
     final appMode = ref.watch(appModeProvider);
     final isEditMode = appMode == AppMode.edit;
+    final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
+    final apiKey = ref.watch(apiKeyProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'settings'))),
@@ -319,6 +322,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
               onSubmitted: (value) => ref.read(companionNameProvider.notifier).setName(value),
             ),
+            const SizedBox(height: 24),
+            Text(
+              tr(ref, 'voice_section_title'),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'voice_section_desc'),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'gemini_voice_setting_title')),
+              subtitle: Text(tr(ref, 'gemini_voice_setting_desc')),
+              value: geminiVoice.enabled,
+              onChanged: (value) => ref.read(geminiVoiceSettingsProvider.notifier).setEnabled(value),
+            ),
+            if (geminiVoice.enabled) ...[
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: geminiVoice.voiceName,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: tr(ref, 'gemini_voice_picker_label'),
+                ),
+                items: geminiVoiceChoices
+                    .map((voice) => DropdownMenuItem(value: voice, child: Text(voice)))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(geminiVoiceSettingsProvider.notifier).setVoiceName(value);
+                  }
+                },
+              ),
+              if (apiKey == null || apiKey.isEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  tr(ref, 'gemini_voice_missing_key_hint'),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(color: Theme.of(context).colorScheme.error),
+                ),
+              ],
+            ],
             const SizedBox(height: 24),
             Text(
               tr(ref, 'updates_section'),

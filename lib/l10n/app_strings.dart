@@ -296,6 +296,33 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'companion_name_label': {AppLanguage.en: 'Companion name', AppLanguage.fr: 'Nom du compagnon'},
   'companion_name_hint': {AppLanguage.en: 'e.g. Rex', AppLanguage.fr: 'ex. Rex'},
+  'voice_section_title': {AppLanguage.en: 'Read-Aloud Voice', AppLanguage.fr: 'Voix de lecture'},
+  'voice_section_desc': {
+    AppLanguage.en: 'Choose which voice reads the story aloud.',
+    AppLanguage.fr: "Choisis la voix qui lit l'histoire à voix haute.",
+  },
+  'gemini_voice_setting_title': {
+    AppLanguage.en: 'Use Gemini AI voice (higher quality)',
+    AppLanguage.fr: "Utiliser la voix IA Gemini (meilleure qualité)",
+  },
+  'gemini_voice_setting_desc': {
+    AppLanguage.en:
+        'Needs a Gemini API key (set one below in Edit mode) and an internet connection. '
+        'Falls back to the device voice otherwise.',
+    AppLanguage.fr:
+        "Nécessite une clé API Gemini (à définir ci-dessous en mode Édition) et une connexion "
+        "internet. Utilise sinon la voix de l'appareil.",
+  },
+  'gemini_voice_picker_label': {AppLanguage.en: 'Gemini voice', AppLanguage.fr: 'Voix Gemini'},
+  'gemini_voice_missing_key_hint': {
+    AppLanguage.en: 'No Gemini API key set — using the device voice instead.',
+    AppLanguage.fr:
+        "Aucune clé API Gemini définie — utilisation de la voix de l'appareil à la place.",
+  },
+  'gemini_voice_error_prefix': {
+    AppLanguage.en: 'Gemini voice failed',
+    AppLanguage.fr: 'Échec de la voix Gemini',
+  },
   'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
   'equip_slot_label': {AppLanguage.en: 'Equip Slot', AppLanguage.fr: "Emplacement d'équipement"},
