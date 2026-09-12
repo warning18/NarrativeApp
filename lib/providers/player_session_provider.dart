@@ -649,6 +649,40 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Directly overwrites any subset of the player's stats — bypassing all
+  /// normal game rules (gold/level requirements, max-health clamping,
+  /// etc). Only intended for the Edit-mode stat editor, so QA/authoring
+  /// can jump straight to a specific game state to test a node or fight
+  /// without replaying to reach it.
+  Future<void> debugSetStats({
+    int? level,
+    int? currentXP,
+    int? gold,
+    int? alignmentScore,
+    int? maxHealth,
+    int? currentHealth,
+    int? baseDamage,
+    int? baseArmor,
+    int? potionCount,
+    int? statPoints,
+    int? skillPoints,
+  }) async {
+    state = state.copyWith(
+      level: level,
+      currentXP: currentXP,
+      gold: gold,
+      alignmentScore: alignmentScore,
+      maxHealth: maxHealth,
+      currentHealth: currentHealth,
+      baseDamage: baseDamage,
+      baseArmor: baseArmor,
+      potionCount: potionCount,
+      statPoints: statPoints,
+      skillPoints: skillPoints,
+    );
+    await _persist();
+  }
+
   Future<void> consumePotion() async {
     if (state.potionCount <= 0) return;
     state = state.copyWith(potionCount: state.potionCount - 1);
