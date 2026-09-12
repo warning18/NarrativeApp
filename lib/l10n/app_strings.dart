@@ -108,6 +108,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'game_loaded_message': {AppLanguage.en: 'Game loaded.', AppLanguage.fr: 'Partie chargée.'},
   'close_legend': {AppLanguage.en: 'Close legend', AppLanguage.fr: 'Fermer la légende'},
   'show_legend': {AppLanguage.en: 'Show legend', AppLanguage.fr: 'Afficher la légende'},
+  'collapse_status_bar': {
+    AppLanguage.en: 'Collapse status bar',
+    AppLanguage.fr: 'Réduire la barre de statut',
+  },
+  'expand_status_bar': {
+    AppLanguage.en: 'Expand status bar',
+    AppLanguage.fr: 'Afficher la barre de statut',
+  },
+  'hide_companion': {AppLanguage.en: 'Hide companion', AppLanguage.fr: 'Masquer le compagnon'},
+  'show_companion': {AppLanguage.en: 'Show companion', AppLanguage.fr: 'Afficher le compagnon'},
   'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'map_theme_description': {
     AppLanguage.en:
