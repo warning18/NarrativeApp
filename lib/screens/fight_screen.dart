@@ -68,6 +68,31 @@ IconData _logIcon(_LogKind kind) {
   }
 }
 
+/// Icon for a die face's own type — distinct from [_logIcon], which is
+/// about a resolved log line's category.
+IconData _faceTypeIcon(String type) {
+  switch (type) {
+    case 'Attack':
+      return Icons.bolt;
+    case 'Defend':
+      return Icons.shield;
+    case 'Heal':
+      return Icons.favorite;
+    case 'Skill':
+      return Icons.auto_awesome;
+    default:
+      return Icons.remove_circle_outline;
+  }
+}
+
+/// The skill a rolled 'Skill' face actually resolves to — mirrors
+/// combat_engine.dart's own fallback so the preview always matches what
+/// pressing Confirm will actually do.
+String _effectiveSkillId(DiceFaceResult face) =>
+    face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
+
+const int _maxRolls = 3;
+
 class FightScreen extends ConsumerStatefulWidget {
   const FightScreen({super.key, required this.enemyId, required this.enemy});
 
@@ -98,6 +123,20 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
 
   String? _selectedDiceId;
   bool _rolling = false;
+
+  /// The most recently rolled face — kept on screen (never cleared) once a
+  /// fight has its first roll, so the player always has the face they're
+  /// looking at in view, right up until the next roll replaces it.
+  DiceFaceResult? _lastFace;
+
+  /// How many times the die has been rolled so far *this turn* (0-3).
+  /// Resets to 0 once a roll is confirmed and the turn resolves.
+  int _rollCount = 0;
+
+  /// True right after a roll lands and before the player has chosen to
+  /// keep it or reroll — false before the first roll of a turn, and false
+  /// again once a choice is confirmed (manually, or forced at the 3rd roll).
+  bool _awaitingDecision = false;
 
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
@@ -184,12 +223,16 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     };
   }
 
-  Future<void> _takePlayerTurn(
+  /// Rolls the die once. The first roll of a turn just shows its result and
+  /// waits for the player to confirm or reroll (see [_confirmRoll]); the
+  /// 3rd roll is forced — there's no more choice left, so it locks in and
+  /// resolves automatically after a beat.
+  Future<void> _rollDice(
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) async {
-    if (_over || _rolling) return;
+    if (_over || _rolling || _rollCount >= _maxRolls) return;
     final faces = (dice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     if (faces.isEmpty) return;
 
@@ -202,11 +245,33 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       }
     }
 
-    // The face is already decided above; the spin is purely a beat of
-    // suspense before its effect lands.
     setState(() => _rolling = true);
     await _rollController.forward(from: 0);
     if (!mounted) return;
+
+    final rollNumber = _rollCount + 1;
+    final forced = rollNumber >= _maxRolls;
+    setState(() {
+      _rolling = false;
+      _rollCount = rollNumber;
+      _lastFace = face;
+      _awaitingDecision = !forced;
+    });
+
+    if (forced) {
+      // No choice left — give the player a beat to see the 3rd face land
+      // before it resolves on its own.
+      await Future.delayed(const Duration(milliseconds: 700));
+      if (!mounted) return;
+      await _confirmRoll(skills, items);
+    }
+  }
+
+  /// Locks in the currently-shown rolled face and applies its effect,
+  /// whether the player tapped Confirm or the 3rd roll forced it.
+  Future<void> _confirmRoll(Map<String, dynamic> skills, Map<String, dynamic> items) async {
+    final face = _lastFace;
+    if (face == null || _over) return;
 
     final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
     final result = resolvePlayerFace(
@@ -223,19 +288,17 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 ? _LogKind.playerBlock
                 : _LogKind.info;
 
-    // Apply the result while the die still sits frozen on screen (stopped,
-    // not spinning), so the player has a moment to see it land before it
-    // disappears and the enemy's turn plays out.
     setState(() {
+      _awaitingDecision = false;
+      _rollCount = 0;
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
       _playerHealth = min(_playerMaxHealth, _playerHealth + result.healingDone);
       _block = result.blockAmount;
       _log.add(_LogEntry(result.message, kind));
     });
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
-    setState(() => _rolling = false);
 
     if (_enemyHealth <= 0) {
       _finishFight(won: true);
@@ -567,34 +630,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               ),
             ),
             const SizedBox(height: 16),
-            if (_rolling)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: Center(
-                  child: AnimatedBuilder(
-                    animation: _rollController,
-                    builder: (context, _) {
-                      final t = _rollController.value;
-                      // A few full spins that ease out, plus a little bounce
-                      // in scale, so the die feels like it's tumbling to a
-                      // stop rather than just rotating at constant speed.
-                      final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
-                      final scale = 1 + (sin(t * pi) * 0.25);
-                      return Transform.rotate(
-                        angle: angle,
-                        child: Transform.scale(
-                          scale: scale,
-                          child: Icon(
-                            Icons.casino,
-                            size: 40,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
+            if (_lastFace != null) ...[
+              _buildDieFaceCard(skills, items),
+              const SizedBox(height: 12),
+            ],
             if (_over)
               ElevatedButton(
                 onPressed: () async {
@@ -620,28 +659,133 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 },
                 child: Text(_won ? tr(ref, 'victory_return_button') : tr(ref, 'retreat_button')),
               )
-            else
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: (selectedDice == null || _rolling)
-                          ? null
-                          : () => _takePlayerTurn(selectedDice, skills, items),
-                      icon: const Icon(Icons.casino),
-                      label: Text(tr(ref, 'roll_dice_button')),
+            else ...[
+              if (_awaitingDecision)
+                Row(
+                  children: [
+                    if (_rollCount < _maxRolls) ...[
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed:
+                              _rolling ? null : () => _rollDice(selectedDice!, skills, items),
+                          icon: const Icon(Icons.refresh),
+                          label: Text('${tr(ref, 'reroll_button')} ($_rollCount/$_maxRolls)'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _rolling ? null : () => _confirmRoll(skills, items),
+                        icon: const Icon(Icons.check),
+                        label: Text(tr(ref, 'confirm_roll_button')),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  OutlinedButton.icon(
-                    onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
-                    icon: const Icon(Icons.local_drink),
-                    label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
-                  ),
-                ],
+                  ],
+                )
+              else
+                ElevatedButton.icon(
+                  onPressed: (selectedDice == null || _rolling)
+                      ? null
+                      : () => _rollDice(selectedDice, skills, items),
+                  icon: const Icon(Icons.casino),
+                  label: Text(tr(ref, 'roll_dice_button')),
+                ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
+                icon: const Icon(Icons.local_drink),
+                label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
               ),
+            ],
           ],
         ),
+      ),
+    );
+  }
+
+  /// The most recently rolled face, kept on screen so the player always
+  /// knows what they're looking at — spinning while a roll is in flight,
+  /// settled (face name, which skill it maps to if it's a Skill face, and
+  /// a preview of what confirming it will do) once it lands.
+  Widget _buildDieFaceCard(Map<String, dynamic> skills, Map<String, dynamic> items) {
+    final face = _lastFace!;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    Widget content;
+    if (_rolling) {
+      content = Text(tr(ref, 'rolling_label'), style: Theme.of(context).textTheme.bodySmall);
+    } else {
+      final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
+      final preview = resolvePlayerFace(
+        face,
+        _availableSkills(skills),
+        totalDamage,
+        language: ref.read(appLanguageProvider),
+      );
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            face.faceName.isEmpty ? face.type : face.faceName,
+            style: Theme.of(context).textTheme.titleSmall,
+          ),
+          if (face.type == 'Skill') ...[
+            const SizedBox(height: 2),
+            Text(
+              '${tr(ref, 'skill_label')}: ${_effectiveSkillId(face)}',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontStyle: FontStyle.italic, color: colorScheme.primary),
+            ),
+          ],
+          const SizedBox(height: 2),
+          Text(preview.message, style: Theme.of(context).textTheme.bodySmall),
+        ],
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: _awaitingDecision ? colorScheme.primaryContainer.withOpacity(0.25) : null,
+        border: Border.all(
+          color: _awaitingDecision ? colorScheme.primary : colorScheme.outlineVariant,
+          width: _awaitingDecision ? 2 : 1,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 36,
+            height: 36,
+            child: Center(
+              child: _rolling
+                  ? AnimatedBuilder(
+                      animation: _rollController,
+                      builder: (context, _) {
+                        final t = _rollController.value;
+                        final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
+                        final scale = 1 + (sin(t * pi) * 0.25);
+                        return Transform.rotate(
+                          angle: angle,
+                          child: Transform.scale(
+                            scale: scale,
+                            child: Icon(Icons.casino, size: 30, color: colorScheme.primary),
+                          ),
+                        );
+                      },
+                    )
+                  : Icon(_faceTypeIcon(face.type), size: 30, color: colorScheme.primary),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(child: content),
+        ],
       ),
     );
   }
