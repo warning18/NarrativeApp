@@ -14,7 +14,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
-import '../widgets/immersive_notice.dart';
+import '../widgets/level_up_dialog.dart';
 import 'death_screen.dart';
 
 const int _potionHealAmount = 30;
@@ -399,11 +399,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       });
       if (leveledUp) {
         final newLevel = ref.read(playerSessionProvider).level;
-        showImmersiveNotice(
-          context,
-          icon: Icons.military_tech,
-          message: '${trFor(lang, 'level_up')}! ${trFor(lang, 'level_field_label')} $newLevel',
-        );
+        showLevelUpDialog(context, ref, newLevel: newLevel);
       }
     } else {
       await notifier.applyCombatResult(hpAfter: _playerMaxHealth);

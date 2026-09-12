@@ -5,6 +5,7 @@ import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -25,6 +26,13 @@ class PlayScreen extends ConsumerWidget {
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
+
+    final unseenQuests =
+        session.unlockedQuestIds.where((id) => !session.seenQuestIds.contains(id)).length;
+    final unseenShops =
+        session.unlockedShopIds.where((id) => !session.seenShopIds.contains(id)).length;
+    final unseenEnemies =
+        session.unlockedEnemyIds.where((id) => !session.seenEnemyIds.contains(id)).length;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -66,6 +74,9 @@ class PlayScreen extends ConsumerWidget {
         const Divider(height: 24),
         _CollapsibleSection(
           title: tr(ref, 'quests'),
+          badgeCount: unseenQuests,
+          onExpanded: () =>
+              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(quests: true),
           child: questsAsync.when(
             data: (records) => _QuestList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -75,6 +86,9 @@ class PlayScreen extends ConsumerWidget {
         const Divider(height: 24),
         _CollapsibleSection(
           title: tr(ref, 'shops'),
+          badgeCount: unseenShops,
+          onExpanded: () =>
+              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(shops: true),
           child: shopsAsync.when(
             data: (records) => _ShopList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -84,6 +98,9 @@ class PlayScreen extends ConsumerWidget {
         const Divider(height: 24),
         _CollapsibleSection(
           title: tr(ref, 'bestiary'),
+          badgeCount: unseenEnemies,
+          onExpanded: () =>
+              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(enemies: true),
           child: enemiesAsync.when(
             data: (records) => _EnemyList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -96,21 +113,54 @@ class PlayScreen extends ConsumerWidget {
 }
 
 /// A titled section that can be collapsed to reduce scrolling once the
-/// player has several quests/shops/enemies unlocked. Expanded by default;
-/// each section remembers its own open/closed state independently.
+/// player has several quests/shops/enemies unlocked. Collapsed by default;
+/// each section remembers its own open/closed state independently. An
+/// optional [badgeCount] shows how many entries were newly unlocked and not
+/// yet viewed, cleared via [onExpanded] the first time the section opens.
 class _CollapsibleSection extends StatelessWidget {
-  const _CollapsibleSection({required this.title, required this.child});
+  const _CollapsibleSection({
+    required this.title,
+    required this.child,
+    this.badgeCount = 0,
+    this.onExpanded,
+  });
 
   final String title;
   final Widget child;
+  final int badgeCount;
+  final VoidCallback? onExpanded;
 
   @override
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
-        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-        initiallyExpanded: true,
+        title: Row(
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const Spacer(),
+            if (badgeCount > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.error,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '$badgeCount',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onError,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+          ],
+        ),
+        initiallyExpanded: false,
+        onExpansionChanged: (expanded) {
+          if (expanded) onExpanded?.call();
+        },
         tilePadding: EdgeInsets.zero,
         childrenPadding: const EdgeInsets.only(top: 8, bottom: 8),
         children: [child],
@@ -130,6 +180,7 @@ class _QuestList extends ConsumerWidget {
       return Text(tr(ref, 'no_quests_defined'));
     }
     final session = ref.watch(playerSessionProvider);
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -140,12 +191,14 @@ class _QuestList extends ConsumerWidget {
         final dialogue = quest['npcDialogueText']?.toString() ?? '';
         final isCompleted = session.completedQuestIds.contains(questId);
         final isActive = session.activeQuestIds.contains(questId);
-        final isDiscovered =
-            isCompleted || isActive || session.unlockedQuestIds.contains(questId);
+        final isDiscovered = isEditMode ||
+            isCompleted ||
+            isActive ||
+            session.unlockedQuestIds.contains(questId);
         final requiredGold = (quest['requiredGold'] as num?)?.toInt() ?? 0;
         final requiredFlags =
             (quest['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [];
-        final meetsRequirements =
+        final meetsRequirements = isEditMode ||
             session.meetsRequirements(reqGold: requiredGold, reqFlags: requiredFlags);
 
         String statusLabel;
@@ -241,13 +294,17 @@ class _ShopList extends ConsumerWidget {
       return Text(tr(ref, 'no_shops_defined'));
     }
     final session = ref.watch(playerSessionProvider);
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final currentNodeId = ref.watch(storyPlayProvider).currentNodeId;
     final keys = records.keys.toList()..sort();
 
     return Column(
       children: keys.map((shopId) {
         final shop = records[shopId] as Map<String, dynamic>;
         final shopName = shop['shopName']?.toString() ?? shopId;
-        final accessible = session.unlockedShopIds.contains(shopId);
+        final discovered = session.unlockedShopIds.contains(shopId);
+        final onTriggerNode = session.shopUnlockNodeIds[shopId] == currentNodeId;
+        final accessible = isEditMode || (discovered && onTriggerNode);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? shopIcon : Icons.lock_outline),
@@ -255,7 +312,7 @@ class _ShopList extends ConsumerWidget {
             subtitle: Text(
               accessible
                   ? shop['shopDescription']?.toString() ?? ''
-                  : tr(ref, 'shop_undiscovered'),
+                  : (discovered ? tr(ref, 'shop_left_behind') : tr(ref, 'shop_undiscovered')),
             ),
             trailing: accessible ? const Icon(Icons.chevron_right) : null,
             onTap: !accessible
@@ -285,6 +342,7 @@ class _EnemyList extends ConsumerWidget {
       return Text(tr(ref, 'no_enemies_defined'));
     }
     final session = ref.watch(playerSessionProvider);
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -293,7 +351,7 @@ class _EnemyList extends ConsumerWidget {
         final enemyName = enemy['enemyName']?.toString() ?? enemyId;
         final maxHealth = (enemy['maxHealth'] as num?)?.toInt() ?? 0;
         final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
-        final accessible = session.unlockedEnemyIds.contains(enemyId);
+        final accessible = isEditMode || session.unlockedEnemyIds.contains(enemyId);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? enemyIcon : Icons.lock_outline),
