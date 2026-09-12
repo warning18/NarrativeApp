@@ -47,8 +47,8 @@
   },
   "250": {
     "id": "250",
-    "description": "I drag Lysa out the back of the slaughterhouse. The air is thick with smoke. We need to reach my parents' hovel to get the Heirloom. Two paths lie ahead: The Stone Bridge, which is faster but exposed, or the Weaver's Alley, dark and twisting.",
-    "description_fr": "Je traîne Lysa hors de l'abattoir par l'arrière. L'air est épais de fumée. Nous devons rejoindre la masure de mes parents pour récupérer l'Héritage. Deux chemins s'offrent à nous : le Pont de Pierre, plus rapide mais exposé, ou la Ruelle du Tisserand, sombre et sinueuse.",
+    "description": "I drag Lysa out the back of the tavern. The air is thick with smoke. We need to reach my parents' hovel to get the Heirloom. Two paths lie ahead: The Stone Bridge, which is faster but exposed, or the Weaver's Alley, dark and twisting.",
+    "description_fr": "Je traîne Lysa hors de la taverne par l'arrière. L'air est épais de fumée. Nous devons rejoindre la masure de mes parents pour récupérer l'Héritage. Deux chemins s'offrent à nous : le Pont de Pierre, plus rapide mais exposé, ou la Ruelle du Tisserand, sombre et sinueuse.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "tense",
@@ -65,8 +65,8 @@
         "unlockQuestId": "q_retrieve_banner"
       },
       {
-        "text": "Take the Alley (Stealth/Rival)",
-        "text_fr": "Prendre la ruelle (Discrétion/Rival)",
+        "text": "Take the Alley (Stealth/Hound)",
+        "text_fr": "Prendre la ruelle (Discrétion/Chien)",
         "next_id": "270",
         "unlockQuestId": "q_retrieve_banner"
       }
@@ -142,8 +142,8 @@
     ]
   },
   "280": {
-    "description": "The alley opens onto a scorched square. At its center, hanging in the air a hand's width above the cobblestones, is a tear in the world no wider than a coin slot — the same wrongness I felt when the Grey Bundle first stirred, but small, contained, patient. A few looters give it a wide, superstitious berth.",
-    "description_fr": "La ruelle débouche sur une place calcinée. En son centre, suspendue dans l'air à la largeur d'une main au-dessus des pavés, une déchirure dans le monde pas plus large qu'une fente à monnaie — la même anomalie que j'ai sentie quand le Balluchon Gris a commencé à vibrer, mais petite, contenue, patiente. Quelques pillards lui laissent un large passage, superstitieux.",
+    "description": "The alley opens onto a scorched square. At its center, hanging in the air a hand's width above the cobblestones, is a tear in the world no wider than a coin slot — small, contained, patient, and wrong in a way that prickles the back of my neck like a held breath before a scream. A few looters give it a wide, superstitious berth.",
+    "description_fr": "La ruelle débouche sur une place calcinée. En son centre, suspendue dans l'air à la largeur d'une main au-dessus des pavés, une déchirure dans le monde pas plus large qu'une fente à monnaie — petite, contenue, patiente, et empreinte d'une anomalie qui hérisse la nuque, comme un souffle retenu avant un cri. Quelques pillards lui laissent un large passage, superstitieux.",
     "choices": [
       {
         "text": "Touch the Tear (Luck Check)",
@@ -201,18 +201,27 @@
         "text": "Unfurl the Bundle (Guardian)",
         "text_fr": "Déployer le balluchon (Gardien)",
         "next_id": "450",
-        "alignmentMod": 1
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "lysa_survived"
+        ]
       },
       {
-        "text": "Surrender (Captured)",
-        "text_fr": "Se rendre (Capturé)",
-        "next_id": "800"
-      },
-      {
-        "text": "Surrender (Broken)",
-        "text_fr": "Se rendre (Brisé)",
+        "text": "Surrender and beg them to spare her",
+        "text_fr": "Se rendre et supplier qu'on l'épargne",
         "next_id": "800",
-        "alignmentMod": -2
+        "flagsToAdd": [
+          "lysa_lost"
+        ]
+      },
+      {
+        "text": "Surrender and tell them anything they want to hear",
+        "text_fr": "Se rendre et leur dire tout ce qu'ils veulent entendre",
+        "next_id": "800",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "lysa_lost"
+        ]
       }
     ]
   },
@@ -416,8 +425,8 @@
   },
   "830": {
     "id": "830",
-    "description": "[BATTLEMENTS] The night air hits my wounds like salt. I scramble over the slate roof. Below, the city burns. A Crusade Archer spots me. He raises a crossbow. I have nowhere to dodge.",
-    "description_fr": "[REMPARTS] L'air nocturne mord mes blessures comme du sel. Je grimpe sur le toit d'ardoise. En contrebas, la ville brûle. Un archer de la Croisade me repère. Il lève une arbalète. Je n'ai nulle part où esquiver.",
+    "description": "[BATTLEMENTS] The night air hits my wounds like salt. I scramble over the slate roof. Below, the city burns. A Crusade Archer spots me. He raises a crossbow. There's nowhere to go but down.",
+    "description_fr": "[REMPARTS] L'air nocturne mord mes blessures comme du sel. Je grimpe sur le toit d'ardoise. En contrebas, la ville brûle. Un archer de la Croisade me repère. Il lève une arbalète. Il n'y a nulle part où aller, sinon vers le bas.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -621,26 +630,55 @@
       {
         "text": "Fight!",
         "text_fr": "Combattre !",
-        "next_id": "1000"
+        "next_id": "965"
       },
       {
         "text": "End it quickly, no more suffering",
         "text_fr": "En finir vite, plus de souffrance",
-        "next_id": "1001",
+        "next_id": "965",
         "alignmentMod": 5
       },
       {
         "text": "Make him pay for every session",
         "text_fr": "Lui faire payer chaque séance",
-        "next_id": "1002",
+        "next_id": "965",
         "alignmentMod": -5
+      }
+    ]
+  },
+  "965": {
+    "id": "965",
+    "description": "Kroll's grip fails. He drops away into the black water, the chain rattling loose in my hands. I start to climb.",
+    "description_fr": "La prise de Kroll cède. Il tombe dans l'eau noire, la chaîne cliquetant, désormais lâche, entre mes mains. Je commence à grimper.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_965"
+    },
+    "choices": [
+      {
+        "text": "Climb toward Lysa",
+        "text_fr": "Grimper vers Lysa",
+        "next_id": "1000",
+        "lockedText": "There's no one waiting up there for you anymore.",
+        "lockedText_fr": "Il n'y a plus personne qui t'attend là-haut."
+      },
+      {
+        "text": "Climb up alone",
+        "text_fr": "Grimper seul",
+        "next_id": "1003",
+        "lockedText": "You didn't survive this alone — Lysa is waiting for you above.",
+        "lockedText_fr": "Tu n'as pas survécu seul à tout ça — Lysa t'attend là-haut."
       }
     ]
   },
   "1000": {
     "id": "1000",
-    "description": "[ORIGIN: THE GUARDIAN] Kroll falls into the dark water. I climb the chain. I start with Lysa (Support Companion) and the 'Grey Shroud' (identified as a Void Banner).",
-    "description_fr": "[ORIGINE : LE GARDIEN] Kroll tombe dans l'eau sombre. Je grimpe le long de la chaîne. Je commence avec Lysa (Compagne de soutien) et le « Linceul Gris » (identifié comme une Bannière du Néant).",
+    "description": "[ORIGIN: THE GUARDIAN] Lysa grips my hand as we reach the top. Whatever comes next, we face it together — and the 'Grey Shroud' (identified as a Void Banner) is still mine to carry.",
+    "description_fr": "[ORIGINE : LE GARDIEN] Lysa me tient la main tandis que nous atteignons le sommet. Quoi qu'il arrive ensuite, nous l'affronterons ensemble — et le « Linceul Gris » (identifié comme une Bannière du Néant) est toujours mien à porter.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "triumphant",
@@ -649,6 +687,9 @@
     "automations": {
       "script_trigger": "on_load_node_1000"
     },
+    "reqFlags": [
+      "lysa_survived"
+    ],
     "choices": [
       {
         "text": "Proceed to Chapter 2",
@@ -659,8 +700,8 @@
   },
   "1001": {
     "id": "1001",
-    "description": "[ORIGIN: THE RAT] Kroll falls. I climb. You start Alone. You kept the 'Grey Shroud', but it remains dormant (Unknown Item). You have High Stealth and Gold, but zero Honor.",
-    "description_fr": "[ORIGINE : LE RAT] Kroll tombe. Je grimpe. Tu commences seul. Tu as gardé le « Linceul Gris », mais il reste dormant (Objet inconnu). Tu as une grande discrétion et de l'or, mais zéro honneur.",
+    "description": "[ORIGIN: THE RAT] No one is waiting at the top of that chain. I have nothing but what I could scrounge, steal, or bluff my way into — no Heirloom, no Banner, just quick hands and quicker feet. High Stealth and Gold, but zero Honor.",
+    "description_fr": "[ORIGINE : LE RAT] Personne ne m'attend en haut de cette chaîne. Je n'ai rien d'autre que ce que j'ai pu récupérer, voler ou obtenir par le bluff — aucun héritage, aucune bannière, juste des mains rapides et des jambes plus rapides encore. Une grande discrétion et de l'or, mais zéro honneur.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "triumphant",
@@ -677,10 +718,40 @@
       }
     ]
   },
+  "1003": {
+    "id": "1003",
+    "description": "I reach the top rung alone. No hand pulls me the rest of the way up. Whatever I am now, I decided it down there in the dark, one choice at a time.",
+    "description_fr": "J'atteins le dernier barreau seul. Aucune main ne m'aide à finir de grimper. Ce que je suis devenu, je l'ai décidé là-dessous, dans le noir, un choix après l'autre.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_1003"
+    },
+    "reqFlags": [
+      "lysa_lost"
+    ],
+    "choices": [
+      {
+        "text": "Keep what's left of yourself",
+        "text_fr": "Garder ce qu'il reste de toi",
+        "next_id": "1001"
+      },
+      {
+        "text": "Let the rage finish what Kroll started",
+        "text_fr": "Laisser la rage achever ce que Kroll a commencé",
+        "next_id": "1002",
+        "lockedText": "Whatever else this place took from you, it didn't take all of you. Not like that.",
+        "lockedText_fr": "Quoi que cet endroit t'ait pris d'autre, il ne t'a pas pris entièrement. Pas à ce point."
+      }
+    ]
+  },
   "1002": {
     "id": "1002",
-    "description": "[ORIGIN: THE BROKEN] Kroll falls. I climb. You start Alone. No Heirloom. You have massive HP and Pain Resistance, but you are slow and disfigured. You seek the Banner.",
-    "description_fr": "[ORIGINE : LE BRISÉ] Kroll tombe. Je grimpe. Tu commences seul. Aucun héritage. Tu as des points de vie massifs et une résistance à la douleur, mais tu es lent et défiguré. Tu cherches la Bannière.",
+    "description": "[ORIGIN: THE BROKEN] No one is waiting at the top of that chain, and no Heirloom survived with me. What's left is scar tissue and hate: massive HP and Pain Resistance, but slow and disfigured. I will find that Banner if it kills me.",
+    "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attend en haut de cette chaîne, et aucun héritage n'a survécu avec moi. Ce qu'il reste, c'est de la cicatrice et de la haine : des points de vie massifs et une résistance à la douleur, mais lent et défiguré. Je trouverai cette Bannière, dussé-je y laisser la vie.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "triumphant",
@@ -689,6 +760,7 @@
     "automations": {
       "script_trigger": "on_load_node_1002"
     },
+    "reqAlignmentMax": -3,
     "choices": [
       {
         "text": "Proceed to Chapter 2 (The Broken Path)",
@@ -1045,7 +1117,7 @@
         "text": "Attack",
         "text_fr": "Attaquer",
         "next_id": "2001",
-        "triggerEnemyId": "void_wisp"
+        "triggerEnemyId": "harbor_rat"
       }
     ]
   },
@@ -1065,7 +1137,7 @@
       {
         "text": "Continue through the Docks",
         "text_fr": "Continuer à travers les docks",
-        "next_id": "2999",
+        "next_id": "2900",
         "triggerEnemyId": "harbor_rat"
       }
     ]
@@ -1132,8 +1204,8 @@
     ]
   },
   "2015": {
-    "description": "Even with the Inquisition patrolling, merchants still ply their trade along the wharf — and not everyone here is friendly.",
-    "description_fr": "Même avec l'Inquisition qui patrouille, des marchands continuent leur commerce le long du quai — et tout le monde ici n'est pas amical.",
+    "description": "Even with the Inquisition patrolling, merchants still ply their trade along the wharf — and not everyone here is friendly. If I'm going to give Vane something worth his while, I'll need to hear what's actually moving through this market first.",
+    "description_fr": "Même avec l'Inquisition qui patrouille, des marchands continuent leur commerce le long du quai — et tout le monde ici n'est pas amical. Si je veux offrir à Vane quelque chose qui vaille la peine, je dois d'abord entendre ce qui circule vraiment sur ce marché.",
     "choices": [
       {
         "text": "Visit the Arcane Bazaar",
@@ -1420,8 +1492,8 @@
   },
   "892": {
     "id": "892",
-    "description": "A low whine cuts through the dock fog — the hound, favoring its healed leg, noses up beside you like it never left. It trots ahead, distracting a dockhand just long enough for you to lift a dropped coin purse, then falls back into step at your heel.",
-    "description_fr": "Un gémissement sourd perce le brouillard du port — le chien, boitant encore un peu, vient se frotter contre toi comme s'il ne t'avait jamais quitté. Il trotte devant, détournant l'attention d'un docker le temps que tu ramasses une bourse tombée, avant de revenir se coller à tes talons.",
+    "description": "A low whine cuts through the dock fog — the hound noses up beside you like it never left. It trots ahead, distracting a dockhand just long enough for you to lift a dropped coin purse, then falls back into step at your heel.",
+    "description_fr": "Un gémissement sourd perce le brouillard du port — le chien vient se frotter contre toi comme s'il ne t'avait jamais quitté. Il trotte devant, détournant l'attention d'un docker le temps que tu ramasses une bourse tombée, avant de revenir se coller à tes talons.",
     "reqFlags": [
       "companion_hound"
     ],
