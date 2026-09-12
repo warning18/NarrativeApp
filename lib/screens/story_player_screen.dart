@@ -154,7 +154,6 @@ class _StoryView extends ConsumerWidget {
             Row(
               children: [
                 if (playState.history.isNotEmpty &&
-                    !playState.isInExcursion &&
                     ref.watch(appModeProvider) == AppMode.edit)
                   TextButton.icon(
                     onPressed: notifier.goBack,
@@ -412,6 +411,7 @@ class _ChoiceButton extends ConsumerWidget {
                       shopId: choice.unlockShopId,
                       questId: choice.unlockQuestId,
                       enemyId: choice.triggerEnemyId,
+                      shopUnlockNodeId: currentNodeId,
                     );
                 final newShopId = choice.unlockShopId ?? '';
                 final newQuestId = choice.unlockQuestId ?? '';

@@ -482,21 +482,6 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                 '${entry.value}× ${entry.key}',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-            if (single != null) ...[
-              const Divider(height: 24),
-              _SingleRunDetail(result: single, shops: widget.shops, quests: widget.quests),
-            ] else ...[
-              const Divider(height: 24),
-              Text(tr(ref, 'individual_runs_label'), style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 4),
-              for (var i = 0; i < batch.results.length; i++)
-                Text(
-                  '#${i + 1}: ${batch.results[i].finalGold}g, '
-                  '${tr(ref, 'final_alignment_label')} ${batch.results[i].finalAlignment}, '
-                  '${batch.results[i].path.length} ${tr(ref, 'nodes_visited_label')}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-            ],
             const Divider(height: 24),
             OutlinedButton.icon(
               onPressed: _analyzing ? null : _analyze,
@@ -532,6 +517,21 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                   child: SelectableText(_analysisText!),
                 ),
               ),
+            if (single != null) ...[
+              const Divider(height: 24),
+              _SingleRunDetail(result: single, shops: widget.shops, quests: widget.quests),
+            ] else ...[
+              const Divider(height: 24),
+              Text(tr(ref, 'individual_runs_label'), style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              for (var i = 0; i < batch.results.length; i++)
+                Text(
+                  '#${i + 1}: ${batch.results[i].finalGold}g, '
+                  '${tr(ref, 'final_alignment_label')} ${batch.results[i].finalAlignment}, '
+                  '${batch.results[i].path.length} ${tr(ref, 'nodes_visited_label')}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
           ],
         ),
       ),

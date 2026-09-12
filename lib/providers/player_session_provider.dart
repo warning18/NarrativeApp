@@ -45,6 +45,10 @@ class PlayerSession {
     this.xpEarnedThisRun = 0,
     this.shopPurchaseCounts = const {},
     this.characterName = '',
+    this.shopUnlockNodeIds = const {},
+    this.seenShopIds = const [],
+    this.seenQuestIds = const [],
+    this.seenEnemyIds = const [],
   });
 
   final int level;
@@ -94,6 +98,21 @@ class PlayerSession {
   /// (see RaceProfessionScreen's lock-in dialog) and fixed for the rest of
   /// the run.
   final String characterName;
+
+  /// shopId -> the story node whose choice unlocked it. A shop is only
+  /// browsable in the Play tab while the player is currently on that node;
+  /// leaving it hides the shop again (it reappears if the player returns).
+  /// Unlike [unlockedShopIds], entries here are never removed, so
+  /// historical stats (e.g. the playthrough simulator) still see every shop
+  /// ever discovered.
+  final Map<String, String> shopUnlockNodeIds;
+
+  /// Ids the player has already viewed in the Play tab, used to compute the
+  /// "newly unlocked" badge counts shown on the Quests/Shops/Bestiary
+  /// section headers.
+  final List<String> seenShopIds;
+  final List<String> seenQuestIds;
+  final List<String> seenEnemyIds;
 
   int get xpToNextLevel => level * 100;
 
@@ -148,6 +167,10 @@ class PlayerSession {
     int? xpEarnedThisRun,
     Map<String, int>? shopPurchaseCounts,
     String? characterName,
+    Map<String, String>? shopUnlockNodeIds,
+    List<String>? seenShopIds,
+    List<String>? seenQuestIds,
+    List<String>? seenEnemyIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -179,6 +202,10 @@ class PlayerSession {
       xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
       shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
       characterName: characterName ?? this.characterName,
+      shopUnlockNodeIds: shopUnlockNodeIds ?? this.shopUnlockNodeIds,
+      seenShopIds: seenShopIds ?? this.seenShopIds,
+      seenQuestIds: seenQuestIds ?? this.seenQuestIds,
+      seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
     );
   }
 
@@ -212,6 +239,10 @@ class PlayerSession {
         'xpEarnedThisRun': xpEarnedThisRun,
         'shopPurchaseCounts': shopPurchaseCounts,
         'characterName': characterName,
+        'shopUnlockNodeIds': shopUnlockNodeIds,
+        'seenShopIds': seenShopIds,
+        'seenQuestIds': seenQuestIds,
+        'seenEnemyIds': seenEnemyIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -265,6 +296,15 @@ class PlayerSession {
           ) ??
           const {},
       characterName: json['characterName'] as String? ?? '',
+      shopUnlockNodeIds: (json['shopUnlockNodeIds'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(), value.toString()),
+          ) ??
+          const {},
+      seenShopIds: (json['seenShopIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      seenQuestIds:
+          (json['seenQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      seenEnemyIds:
+          (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -587,28 +627,106 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Marks a shop/quest/enemy as discovered through story progression, so it
   /// becomes accessible in the Play tab. Empty/null ids are ignored.
-  Future<void> unlockContent({String? shopId, String? questId, String? enemyId}) async {
+  ///
+  /// [shopUnlockNodeId] records which story node's choice unlocked the shop
+  /// (usually the node the player is leaving when the choice fires) — shops
+  /// are only browsable while the player is currently on that node.
+  Future<void> unlockContent({
+    String? shopId,
+    String? questId,
+    String? enemyId,
+    String? shopUnlockNodeId,
+  }) async {
     var newShops = state.unlockedShopIds;
     var newQuests = state.unlockedQuestIds;
     var newEnemies = state.unlockedEnemyIds;
-    if (shopId != null && shopId.isNotEmpty && !newShops.contains(shopId)) {
-      newShops = [...newShops, shopId];
+    var newShopUnlockNodeIds = state.shopUnlockNodeIds;
+    var newSeenShopIds = state.seenShopIds;
+    var newSeenQuestIds = state.seenQuestIds;
+    var newSeenEnemyIds = state.seenEnemyIds;
+    if (shopId != null && shopId.isNotEmpty) {
+      if (!newShops.contains(shopId)) {
+        newShops = [...newShops, shopId];
+      }
+      if (shopUnlockNodeId != null && shopUnlockNodeId.isNotEmpty) {
+        newShopUnlockNodeIds = {...newShopUnlockNodeIds, shopId: shopUnlockNodeId};
+      }
+      if (newSeenShopIds.contains(shopId)) {
+        newSeenShopIds = newSeenShopIds.where((id) => id != shopId).toList();
+      }
     }
-    if (questId != null && questId.isNotEmpty && !newQuests.contains(questId)) {
-      newQuests = [...newQuests, questId];
+    if (questId != null && questId.isNotEmpty) {
+      if (!newQuests.contains(questId)) {
+        newQuests = [...newQuests, questId];
+      }
+      if (newSeenQuestIds.contains(questId)) {
+        newSeenQuestIds = newSeenQuestIds.where((id) => id != questId).toList();
+      }
     }
-    if (enemyId != null && enemyId.isNotEmpty && !newEnemies.contains(enemyId)) {
-      newEnemies = [...newEnemies, enemyId];
+    if (enemyId != null && enemyId.isNotEmpty) {
+      if (!newEnemies.contains(enemyId)) {
+        newEnemies = [...newEnemies, enemyId];
+      }
+      if (newSeenEnemyIds.contains(enemyId)) {
+        newSeenEnemyIds = newSeenEnemyIds.where((id) => id != enemyId).toList();
+      }
     }
     if (identical(newShops, state.unlockedShopIds) &&
         identical(newQuests, state.unlockedQuestIds) &&
-        identical(newEnemies, state.unlockedEnemyIds)) {
+        identical(newEnemies, state.unlockedEnemyIds) &&
+        identical(newShopUnlockNodeIds, state.shopUnlockNodeIds) &&
+        identical(newSeenShopIds, state.seenShopIds) &&
+        identical(newSeenQuestIds, state.seenQuestIds) &&
+        identical(newSeenEnemyIds, state.seenEnemyIds)) {
       return;
     }
     state = state.copyWith(
       unlockedShopIds: newShops,
       unlockedQuestIds: newQuests,
       unlockedEnemyIds: newEnemies,
+      shopUnlockNodeIds: newShopUnlockNodeIds,
+      seenShopIds: newSeenShopIds,
+      seenQuestIds: newSeenQuestIds,
+      seenEnemyIds: newSeenEnemyIds,
+    );
+    await _persist();
+  }
+
+  /// Marks a shop/quest/enemy id as viewed in the Play tab, clearing its
+  /// "newly unlocked" badge contribution.
+  Future<void> markSeen({String? shopId, String? questId, String? enemyId}) async {
+    var newSeenShopIds = state.seenShopIds;
+    var newSeenQuestIds = state.seenQuestIds;
+    var newSeenEnemyIds = state.seenEnemyIds;
+    if (shopId != null && shopId.isNotEmpty && !newSeenShopIds.contains(shopId)) {
+      newSeenShopIds = [...newSeenShopIds, shopId];
+    }
+    if (questId != null && questId.isNotEmpty && !newSeenQuestIds.contains(questId)) {
+      newSeenQuestIds = [...newSeenQuestIds, questId];
+    }
+    if (enemyId != null && enemyId.isNotEmpty && !newSeenEnemyIds.contains(enemyId)) {
+      newSeenEnemyIds = [...newSeenEnemyIds, enemyId];
+    }
+    if (identical(newSeenShopIds, state.seenShopIds) &&
+        identical(newSeenQuestIds, state.seenQuestIds) &&
+        identical(newSeenEnemyIds, state.seenEnemyIds)) {
+      return;
+    }
+    state = state.copyWith(
+      seenShopIds: newSeenShopIds,
+      seenQuestIds: newSeenQuestIds,
+      seenEnemyIds: newSeenEnemyIds,
+    );
+    await _persist();
+  }
+
+  /// Marks every currently-unlocked shop/quest/enemy id as seen at once —
+  /// used when a Play-tab section is expanded, clearing its whole badge.
+  Future<void> markAllSeenInCategory({bool shops = false, bool quests = false, bool enemies = false}) async {
+    state = state.copyWith(
+      seenShopIds: shops ? state.unlockedShopIds : state.seenShopIds,
+      seenQuestIds: quests ? state.unlockedQuestIds : state.seenQuestIds,
+      seenEnemyIds: enemies ? state.unlockedEnemyIds : state.seenEnemyIds,
     );
     await _persist();
   }

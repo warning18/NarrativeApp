@@ -107,11 +107,20 @@ PlayerActionResult resolvePlayerFace(
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
       final healAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
       final damage = ((baseDamage + damageMod) * multiplier).round();
+      final flavor = skill['battleMessage']?.toString() ?? '${face.faceName}!';
+      // Standard dice faces (Attack/Defend/Heal) always spell out the exact
+      // numbers in their preview message; skill faces should be no
+      // different, on top of whatever flavor text the skill defines.
+      final statParts = <String>[
+        if (damage > 0) '${t('you_deal_prefix')} $damage ${t('damage_word')}',
+        if (healAmount > 0) '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
+      ];
+      final message = statParts.isEmpty ? flavor : '$flavor ${statParts.join(', ')}.';
       return PlayerActionResult(
         damageDealt: damage,
         healingDone: healAmount,
         blockAmount: 0,
-        message: skill['battleMessage']?.toString() ?? '${face.faceName}!',
+        message: message,
       );
     case 'Heal':
       return PlayerActionResult(

@@ -198,6 +198,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Undiscovered — find this shop during the story.',
     AppLanguage.fr: "Non découverte — trouvez cette boutique au cours de l'histoire.",
   },
+  'shop_left_behind': {
+    AppLanguage.en: 'Unavailable — return to the node that unlocked it.',
+    AppLanguage.fr: 'Indisponible — retournez au nœud qui l\'a débloquée.',
+  },
   'not_yet_encountered': {
     AppLanguage.en: 'Not yet encountered.',
     AppLanguage.fr: 'Pas encore rencontré.',
@@ -572,6 +576,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'max_health_label': {AppLanguage.en: 'Max Health', AppLanguage.fr: 'Santé max.'},
   'plus_one_point': {AppLanguage.en: '+1 Point', AppLanguage.fr: '+1 Point'},
+  'distribute_later_button': {
+    AppLanguage.en: 'Decide later',
+    AppLanguage.fr: 'Décider plus tard',
+  },
   'increased_suffix': {AppLanguage.en: 'increased!', AppLanguage.fr: 'augmenté(e) !'},
   'none_label': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
   'restriction_label': {AppLanguage.en: 'Restriction', AppLanguage.fr: 'Restriction'},
