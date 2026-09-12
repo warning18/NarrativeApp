@@ -696,6 +696,12 @@ Future<void> _showDiscoveryModal(
   final shop = shopId != null ? shops[shopId] as Map<String, dynamic>? : null;
   final quest = questId != null ? quests[questId] as Map<String, dynamic>? : null;
   final session = ref.read(playerSessionProvider);
+  // In play mode a shop is only reachable from the node that unlocked it
+  // (see PlayerSession.shopUnlockNodeIds) — walking away without opening it
+  // now means it isn't there "later" like the button implies, so don't
+  // offer that false promise when a shop is part of the discovery.
+  final isPlayMode = ref.read(appModeProvider) == AppMode.inGame;
+  final showMaybeLater = !(isPlayMode && shopId != null);
 
   final questActive = questId != null && session.activeQuestIds.contains(questId);
   final questCompleted = questId != null && session.completedQuestIds.contains(questId);
@@ -783,10 +789,11 @@ Future<void> _showDiscoveryModal(
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
-          child: Text(trFor(lang, 'maybe_later_button')),
-        ),
+        if (showMaybeLater)
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(trFor(lang, 'maybe_later_button')),
+          ),
         if (shopId != null && shop != null)
           TextButton(
             onPressed: () {

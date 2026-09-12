@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.42.0+53
+version: 1.42.1+54
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -61,3 +61,5 @@ flutter:
     - assets/visuals/companion/dog_companion_animations/Walking/north/
     - assets/visuals/companion/dog_companion_animations/Fight_-_Attack/animations/Bark/south/
     - assets/visuals/companion/dog_companion_animations/Sitting_down/rotations/
+    - assets/visuals/companion/dog_companion_animations/Make_it_with_angel_w/rotations/
+    - assets/visuals/companion/dog_companion_animations/Make_it_with_demon_w/rotations/
