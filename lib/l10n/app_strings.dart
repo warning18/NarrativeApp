@@ -496,6 +496,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'victory_return_button': {AppLanguage.en: 'Victory! Return', AppLanguage.fr: 'Victoire ! Retour'},
   'retreat_button': {AppLanguage.en: 'Retreat', AppLanguage.fr: 'Battre en retraite'},
   'roll_dice_button': {AppLanguage.en: 'Roll Dice', AppLanguage.fr: 'Lancer le dé'},
+  'reroll_button': {AppLanguage.en: 'Reroll', AppLanguage.fr: 'Relancer'},
+  'confirm_roll_button': {AppLanguage.en: 'Confirm', AppLanguage.fr: 'Confirmer'},
+  'skill_label': {AppLanguage.en: 'Skill', AppLanguage.fr: 'Compétence'},
+  'rolling_label': {AppLanguage.en: 'Rolling…', AppLanguage.fr: 'Lancer en cours…'},
   'potion_button_prefix': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',
@@ -819,6 +823,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'flags_collected_label': {AppLanguage.en: 'Flags collected', AppLanguage.fr: 'Drapeaux collectés'},
   'read_aloud_tooltip': {AppLanguage.en: 'Read aloud', AppLanguage.fr: 'Lire à voix haute'},
   'stop_reading_tooltip': {AppLanguage.en: 'Stop reading', AppLanguage.fr: 'Arrêter la lecture'},
+  'loading_voice_tooltip': {
+    AppLanguage.en: 'Loading voice…',
+    AppLanguage.fr: 'Chargement de la voix…',
+  },
   'app_mode_section_title': {AppLanguage.en: 'App Mode', AppLanguage.fr: "Mode de l'application"},
   'app_mode_section_desc': {
     AppLanguage.en: 'Edit mode has the full toolset (Map, Generate, Data, node editing, dev '

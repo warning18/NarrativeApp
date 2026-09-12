@@ -106,6 +106,22 @@ class _StoryView extends ConsumerWidget {
       );
     }
 
+    // Fetch this node's Gemini narration ahead of time (if that voice is
+    // in use) so tapping read-aloud plays back instantly instead of
+    // waiting on a network round-trip. preload() itself no-ops once this
+    // node's clip is cached or already in flight, so calling it on every
+    // rebuild is cheap.
+    final geminiVoiceForPreload = ref.watch(geminiVoiceSettingsProvider);
+    final apiKeyForPreload = ref.watch(apiKeyProvider);
+    if (geminiVoiceForPreload.enabled && (apiKeyForPreload?.isNotEmpty ?? false)) {
+      ref.read(geminiTtsProvider.notifier).preload(
+            text: storyBodyFor(node.descriptionFor(french)),
+            apiKey: apiKeyForPreload!,
+            voiceName: geminiVoiceForPreload.voiceName,
+            language: language,
+          );
+    }
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -462,16 +478,30 @@ class _ReadAloudButton extends ConsumerWidget {
     final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
     final apiKey = ref.watch(apiKeyProvider);
     final useGemini = geminiVoice.enabled && (apiKey?.isNotEmpty ?? false);
-    final isSpeaking = useGemini ? ref.watch(geminiTtsProvider) : ref.watch(ttsProvider);
+    final geminiState = useGemini ? ref.watch(geminiTtsProvider) : null;
+    final isLoading = geminiState == GeminiTtsPlaybackState.loading;
+    final isSpeaking =
+        useGemini ? geminiState != GeminiTtsPlaybackState.idle : ref.watch(ttsProvider);
 
     return IconButton(
-      icon: Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
-      tooltip: isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip'),
+      icon: isLoading
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
+      tooltip: isLoading
+          ? tr(ref, 'loading_voice_tooltip')
+          : (isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip')),
       visualDensity: VisualDensity.compact,
       onPressed: () async {
         if (useGemini) {
           final notifier = ref.read(geminiTtsProvider.notifier);
           if (isSpeaking) {
+            // Covers both the loading and playing states — tapping again
+            // cancels an in-flight request just as readily as it stops
+            // audio that's already sounding.
             await notifier.stop();
             return;
           }
