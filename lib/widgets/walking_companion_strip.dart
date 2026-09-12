@@ -26,14 +26,23 @@ const String _demonIdleSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotat
 // gets scaled up right along with it, making the dog itself look like a
 // different size from one pose to the next.
 const double _walkNativeSize = 88;
-const double _angelWalkNativeSize = 88;
 const double _demonWalkNativeSize = 92;
 const double _restNativeSize = 64;
 const double _walkDisplaySize = 120;
 const double _scaleFactor = _walkDisplaySize / _walkNativeSize;
 const double _restDisplaySize = _restNativeSize * _scaleFactor;
-const double _angelWalkDisplaySize = _angelWalkNativeSize * _scaleFactor;
+// The angel frames happen to share the neutral dog's 88px canvas, so they
+// display at exactly _walkDisplaySize; only the evil frames' 92px canvas
+// scales to something larger.
+const double _angelWalkDisplaySize = _walkDisplaySize;
 const double _demonWalkDisplaySize = _demonWalkNativeSize * _scaleFactor;
+// The largest of all three walk sizes — used for the strip's height and
+// for how far offscreen a walk animation starts/ends, so the biggest
+// sprite (currently the evil one, at ~125px) never pokes past the box's
+// edge or peeks into view before its walk-in animation properly begins.
+const double _maxWalkDisplaySize = _demonWalkDisplaySize > _angelWalkDisplaySize
+    ? _demonWalkDisplaySize
+    : _angelWalkDisplaySize;
 
 /// A companion dog that idles (sitting, facing the player) at the left edge
 /// of the story screen, and each time [trigger] changes (i.e. each time the
@@ -48,7 +57,7 @@ class WalkingCompanionStrip extends ConsumerStatefulWidget {
     super.key,
     required this.trigger,
     this.fightAvailable = false,
-    this.height = _walkDisplaySize,
+    this.height = _maxWalkDisplaySize,
   });
 
   final Object trigger;
@@ -149,13 +158,13 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
                 size = _restDisplaySize;
               } else if (walkingOut) {
                 final t = Curves.linear.transform(_walkOutController.value);
-                x = (constraints.maxWidth + _walkDisplaySize) * t;
+                x = (constraints.maxWidth + _maxWalkDisplaySize) * t;
                 final frame = (t * walkFrames.length * 4).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;
               } else if (walkingIn) {
                 final t = Curves.linear.transform(_walkInController.value);
-                x = -_walkDisplaySize + _walkDisplaySize * t;
+                x = -_maxWalkDisplaySize + _maxWalkDisplaySize * t;
                 final frame = (t * walkFrames.length).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;

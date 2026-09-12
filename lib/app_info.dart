@@ -1,6 +1,6 @@
 class AppInfo {
   static const String name = 'Narrative Data App';
-  static const String version = '1.44.4';
+  static const String version = '1.44.5';
 
   static String get displayName => '$name v$version';
 }
