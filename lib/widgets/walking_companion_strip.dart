@@ -11,23 +11,29 @@ final List<String> _fightFrames = companionFrames('Fight_-_Attack/animations/Bar
 const String _neutralIdleSprite = '$companionAssetsRoot/Sitting_down/rotations/south.png';
 
 // A Good/Evil character's companion swaps its neutral dog look for an
-// angelic/demonic one (a single directional pose each, not an animated
-// cycle) instead of the plain walking/sitting sprites.
-const String _angelWalkSprite = '$companionAssetsRoot/Make_it_with_angel_w/rotations/east.png';
-const String _demonWalkSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotations/east.png';
+// angelic/demonic one while walking (an 8-frame east-facing cycle each,
+// reused for walking back in too — west-facing frames aren't uploaded yet,
+// matching how the neutral dog also reuses its east cycle both ways) and
+// while idling (a single south-facing pose).
+final List<String> _angelWalkFrames = companionFrames('walking_angel/east', 8);
+final List<String> _demonWalkFrames = companionFrames('walking_evil/east', 8);
 const String _angelIdleSprite = '$companionAssetsRoot/Make_it_with_angel_w/rotations/south.png';
 const String _demonIdleSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotations/south.png';
 
-// The walking frames' source canvas is 88x88px; the sitting/fighting
-// frames' is 64x64px. Rendering both into the same fixed box would stretch
-// the smaller canvas's padding along with it, making the sitting dog look
-// like a different size than the walking one. Scaling each pose by the
-// same factor relative to its own native canvas keeps the dog itself a
-// consistent size across poses.
+// Every pose's source frames sit on a slightly different native canvas
+// (padding varies per upload), so each is scaled by the same factor
+// relative to its own native size — otherwise a larger canvas's padding
+// gets scaled up right along with it, making the dog itself look like a
+// different size from one pose to the next.
 const double _walkNativeSize = 88;
+const double _angelWalkNativeSize = 88;
+const double _demonWalkNativeSize = 92;
 const double _restNativeSize = 64;
 const double _walkDisplaySize = 120;
-const double _restDisplaySize = _restNativeSize * (_walkDisplaySize / _walkNativeSize);
+const double _scaleFactor = _walkDisplaySize / _walkNativeSize;
+const double _restDisplaySize = _restNativeSize * _scaleFactor;
+const double _angelWalkDisplaySize = _angelWalkNativeSize * _scaleFactor;
+const double _demonWalkDisplaySize = _demonWalkNativeSize * _scaleFactor;
 
 /// A companion dog that idles (sitting, facing the player) at the left edge
 /// of the story screen, and each time [trigger] changes (i.e. each time the
@@ -106,8 +112,8 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
     final name = ref.watch(companionNameProvider);
     final alignment = ref.watch(playerSessionProvider).alignmentLabel;
     final walkFrames = switch (alignment) {
-      'Good' => const [_angelWalkSprite],
-      'Evil' => const [_demonWalkSprite],
+      'Good' => _angelWalkFrames,
+      'Evil' => _demonWalkFrames,
       _ => _neutralWalkFrames,
     };
     final idleSprite = switch (alignment) {
@@ -115,13 +121,11 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       'Evil' => _demonIdleSprite,
       _ => _neutralIdleSprite,
     };
-    // The neutral walk cycle's source frames sit on an 88x88 canvas, but the
-    // Good/Evil sprites share the 64x64 canvas used by the idle/fight poses
-    // — render each at the display size calibrated for its own canvas, or
-    // the alignment sprite comes out oversized relative to how it looks
-    // idling.
-    final isNeutralWalk = identical(walkFrames, _neutralWalkFrames);
-    final walkSize = isNeutralWalk ? _walkDisplaySize : _restDisplaySize;
+    final walkSize = switch (alignment) {
+      'Good' => _angelWalkDisplaySize,
+      'Evil' => _demonWalkDisplaySize,
+      _ => _walkDisplaySize,
+    };
 
     return SizedBox(
       height: widget.height,
