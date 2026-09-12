@@ -311,9 +311,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'auto_read_aloud_setting_desc': {
     AppLanguage.en: 'Reads each scene aloud as soon as it appears, using the '
-        "device's built-in voice (fast — never waits on Gemini).",
+        'offline French voice (downloaded once) or the device voice for '
+        'other languages — fast, and never waits on Gemini.',
     AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage, avec la "
-        "voix intégrée de l'appareil (rapide — n'attend jamais Gemini).",
+        "voix française hors ligne (téléchargée une fois) ou la voix de "
+        "l'appareil pour les autres langues — rapide, et n'attend jamais "
+        "Gemini.",
   },
   'gemini_voice_setting_title': {
     AppLanguage.en: 'Use Gemini AI voice (higher quality)',
@@ -336,6 +339,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'gemini_voice_error_prefix': {
     AppLanguage.en: 'Gemini voice failed',
     AppLanguage.fr: 'Échec de la voix Gemini',
+  },
+  'sherpa_voice_error_prefix': {
+    AppLanguage.en: 'French voice failed',
+    AppLanguage.fr: 'Échec de la voix française',
   },
   'item_type_label': {AppLanguage.en: 'Type', AppLanguage.fr: 'Type'},
   'cost_label': {AppLanguage.en: 'Cost', AppLanguage.fr: 'Coût'},
@@ -984,6 +991,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'loading_voice_tooltip': {
     AppLanguage.en: 'Loading voice…',
     AppLanguage.fr: 'Chargement de la voix…',
+  },
+  'downloading_voice_tooltip': {
+    AppLanguage.en: 'Downloading French voice (first time only)…',
+    AppLanguage.fr: 'Téléchargement de la voix française (une seule fois)…',
   },
   'app_mode_section_title': {AppLanguage.en: 'App Mode', AppLanguage.fr: "Mode de l'application"},
   'app_mode_section_desc': {
