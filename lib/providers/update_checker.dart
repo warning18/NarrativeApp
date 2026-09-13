@@ -7,14 +7,29 @@ import 'package:path_provider/path_provider.dart';
 
 import '../app_info.dart';
 
-const String _releasesApiUrl =
-    'https://api.github.com/repos/warning18/NarrativeApp/releases/latest';
+const String _owner = 'warning18';
+const String _repo = 'NarrativeApp';
+const String _releasesApiUrl = 'https://api.github.com/repos/$_owner/$_repo/releases/latest';
+
+Map<String, String> _authHeaders(String? githubToken, {String accept = 'application/vnd.github+json'}) {
+  return {
+    'Accept': accept,
+    if (githubToken != null && githubToken.isNotEmpty) 'Authorization': 'Bearer $githubToken',
+  };
+}
 
 class UpdateInfo {
-  const UpdateInfo({required this.version, required this.downloadUrl});
+  const UpdateInfo({required this.version, required this.downloadUrl, required this.assetId});
 
   final String version;
+
+  /// Only usable directly for a public repo; a private repo's release
+  /// assets need the authenticated API download in [downloadApk] instead.
   final String downloadUrl;
+
+  /// The release asset's id, used to download it through GitHub's API
+  /// (required for a private repo — see [downloadApk]).
+  final int assetId;
 }
 
 /// Compares two dot-separated version strings (ignoring any leading 'v' or
@@ -41,9 +56,14 @@ bool isNewerVersion(String remote, String local) {
 /// APK asset. Throws if the request itself fails or the API responds with
 /// anything other than 200 (e.g. rate limiting), so the caller can tell a
 /// real check failure apart from "no update available".
-Future<UpdateInfo?> checkForUpdate() async {
+///
+/// [githubToken] is required for this to work at all against a private
+/// repo (this one is) — without it, GitHub's API returns a 404 for an
+/// anonymous request exactly as if the repo didn't exist, which otherwise
+/// just looks like a generic "couldn't check for updates" failure.
+Future<UpdateInfo?> checkForUpdate({String? githubToken}) async {
   final response = await http
-      .get(Uri.parse(_releasesApiUrl), headers: {'Accept': 'application/vnd.github+json'})
+      .get(Uri.parse(_releasesApiUrl), headers: _authHeaders(githubToken))
       .timeout(const Duration(seconds: 15));
   if (response.statusCode != 200) {
     throw Exception('Update check failed with status ${response.statusCode}');
@@ -58,18 +78,34 @@ Future<UpdateInfo?> checkForUpdate() async {
   if (apkAsset.isEmpty) return null;
 
   final downloadUrl = apkAsset.first['browser_download_url']?.toString();
-  if (downloadUrl == null || downloadUrl.isEmpty) return null;
+  final assetId = (apkAsset.first['id'] as num?)?.toInt();
+  if (downloadUrl == null || downloadUrl.isEmpty || assetId == null) return null;
 
   return UpdateInfo(
     version: tagName.startsWith('v') ? tagName.substring(1) : tagName,
     downloadUrl: downloadUrl,
+    assetId: assetId,
   );
 }
 
-/// Downloads the APK at [url] into the app's temp directory, reporting
+/// Downloads a release asset into the app's temp directory, reporting
 /// 0.0-1.0 progress via [onProgress] when the response declares its length.
-Future<String> downloadApk(String url, {void Function(double)? onProgress}) async {
-  final request = http.Request('GET', Uri.parse(url));
+///
+/// Goes through GitHub's authenticated asset-download API (rather than
+/// hitting [UpdateInfo.downloadUrl] directly) whenever [githubToken] is
+/// available, since that's the only reliable way to fetch a release asset
+/// from a private repo — the plain browser_download_url just redirects to
+/// a GitHub sign-in page for an unauthenticated request.
+Future<String> downloadApk(
+  UpdateInfo info, {
+  String? githubToken,
+  void Function(double)? onProgress,
+}) async {
+  final uri = githubToken != null && githubToken.isNotEmpty
+      ? Uri.parse('https://api.github.com/repos/$_owner/$_repo/releases/assets/${info.assetId}')
+      : Uri.parse(info.downloadUrl);
+  final request = http.Request('GET', uri)
+    ..headers.addAll(_authHeaders(githubToken, accept: 'application/octet-stream'));
   final response = await http.Client().send(request);
   if (response.statusCode != 200) {
     throw Exception('Download failed with status ${response.statusCode}');

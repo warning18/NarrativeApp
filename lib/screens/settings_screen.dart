@@ -684,12 +684,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   }
 
   Future<void> _checkForUpdates() async {
-    setState(() => _checkingUpdate = true);
     final lang = ref.read(appLanguageProvider);
+    final githubToken = ref.read(githubTokenProvider);
+
+    // This repo is private, so an unauthenticated check always fails with
+    // a 404 that otherwise just looks like a generic network error. Catch
+    // that upfront with a message that actually explains what to do,
+    // rather than spending a round trip to fail the same way every time.
+    if (githubToken == null || githubToken.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(trFor(lang, 'update_check_needs_token'))),
+      );
+      return;
+    }
+
+    setState(() => _checkingUpdate = true);
     UpdateInfo? info;
     var failed = false;
     try {
-      info = await checkForUpdate();
+      info = await checkForUpdate(githubToken: githubToken);
     } catch (_) {
       failed = true;
     }
@@ -736,6 +749,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _downloadAndInstall(UpdateInfo info) async {
     final lang = ref.read(appLanguageProvider);
+    final githubToken = ref.read(githubTokenProvider);
     setState(() {
       _downloading = true;
       _downloadProgress = null;
@@ -759,7 +773,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
     try {
       final path = await downloadApk(
-        info.downloadUrl,
+        info,
+        githubToken: githubToken,
         onProgress: (p) {
           _downloadProgress = p;
           dialogSetState?.call(() {});
