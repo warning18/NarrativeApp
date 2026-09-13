@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
@@ -770,6 +771,91 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
   return b.toString();
 }
 
+/// The batch summary followed by every run's full transcript, in one
+/// document — shared by both the "Copy" and "Export as text" actions so
+/// they always produce identical content.
+String _fullBatchTranscript(String strategyLabel, List<_SimResult> results) {
+  final b = StringBuffer()..writeln(_batchSummaryText(strategyLabel, results));
+  for (var i = 0; i < results.length; i++) {
+    b
+      ..writeln()
+      ..writeln(_runTranscript(results[i], strategyLabel, runNumber: i + 1));
+  }
+  return b.toString();
+}
+
+/// Quotes a CSV field per RFC 4180 whenever it contains a comma, quote, or
+/// newline (every field here can: run text, joined tag lists).
+String _csvField(String value) {
+  if (value.contains(RegExp('[,"\n]'))) {
+    return '"${value.replaceAll('"', '""')}"';
+  }
+  return value;
+}
+
+/// One row per run — final stats side by side, ready to drop into a
+/// spreadsheet for sorting/charting across a batch.
+String _batchResultsCsv(List<_SimResult> results) {
+  final b = StringBuffer();
+  b.writeln([
+    'Run',
+    'Ending',
+    'Final Gold',
+    'Final Alignment',
+    'Nodes Visited',
+    'Combat Encounters',
+    'Furthest Chapter',
+    'Reached Step Cap',
+    'Shops Discovered',
+    'Quests Discovered',
+    'Flags',
+  ].map(_csvField).join(','));
+  for (var i = 0; i < results.length; i++) {
+    final r = results[i];
+    b.writeln([
+      '${i + 1}',
+      r.endingSummary,
+      '${r.finalGold}',
+      '${r.finalAlignment}',
+      '${r.uniqueNodesVisited}',
+      '${r.combatEncounters}',
+      '${r.furthestChapter ?? ''}',
+      r.reachedStepCap ? 'yes' : 'no',
+      r.shopsDiscovered.join('; '),
+      r.questsDiscovered.join('; '),
+      r.flags.join('; '),
+    ].map(_csvField).join(','));
+  }
+  return b.toString();
+}
+
+/// The same per-run data as [_batchResultsCsv], structured for
+/// programmatic reprocessing rather than spreadsheet import.
+String _batchResultsJson(String strategyLabel, List<_SimResult> results) {
+  final data = {
+    'strategy': strategyLabel,
+    'runCount': results.length,
+    'runs': [
+      for (var i = 0; i < results.length; i++)
+        {
+          'run': i + 1,
+          'ending': results[i].endingSummary,
+          'finalGold': results[i].finalGold,
+          'finalAlignment': results[i].finalAlignment,
+          'nodesVisited': results[i].uniqueNodesVisited,
+          'combatEncounters': results[i].combatEncounters,
+          'furthestChapter': results[i].furthestChapter,
+          'reachedStepCap': results[i].reachedStepCap,
+          'shopsDiscovered': results[i].shopsDiscovered.toList(),
+          'questsDiscovered': results[i].questsDiscovered.toList(),
+          'flags': results[i].flags.toList(),
+          'path': results[i].path,
+        },
+    ],
+  };
+  return const JsonEncoder.withIndent('  ').convert(data);
+}
+
 class _BatchCard extends ConsumerStatefulWidget {
   const _BatchCard({
     super.key,
@@ -945,27 +1031,57 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.ios_share_outlined),
-                    tooltip: tr(ref, 'export_all_runs_button'),
+                    icon: const Icon(Icons.copy_outlined),
+                    tooltip: tr(ref, 'copy_button'),
                     onPressed: results.isEmpty
                         ? null
-                        : () {
-                            final b = StringBuffer()
-                              ..writeln(_batchSummaryText(
+                        : () => _copyToClipboard(
+                              context,
+                              ref,
+                              _fullBatchTranscript(
                                 tr(ref, _strategyLabelKey(batch.strategy)),
                                 results,
-                              ));
-                            for (var i = 0; i < results.length; i++) {
-                              b
-                                ..writeln()
-                                ..writeln(_runTranscript(
-                                  results[i],
-                                  tr(ref, _strategyLabelKey(batch.strategy)),
-                                  runNumber: i + 1,
-                                ));
-                            }
-                            _exportToFile(context, ref, b.toString(), 'playthrough_batch_${batch.id}.txt');
-                          },
+                              ),
+                            ),
+                  ),
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.ios_share_outlined),
+                    tooltip: tr(ref, 'export_all_runs_button'),
+                    enabled: results.isNotEmpty,
+                    onSelected: (format) {
+                      final strategyLabel = tr(ref, _strategyLabelKey(batch.strategy));
+                      switch (format) {
+                        case 'txt':
+                          _exportToFile(
+                            context,
+                            ref,
+                            _fullBatchTranscript(strategyLabel, results),
+                            'playthrough_batch_${batch.id}.txt',
+                          );
+                          break;
+                        case 'csv':
+                          _exportToFile(
+                            context,
+                            ref,
+                            _batchResultsCsv(results),
+                            'playthrough_batch_${batch.id}.csv',
+                          );
+                          break;
+                        case 'json':
+                          _exportToFile(
+                            context,
+                            ref,
+                            _batchResultsJson(strategyLabel, results),
+                            'playthrough_batch_${batch.id}.json',
+                          );
+                          break;
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(value: 'txt', child: Text(tr(ref, 'export_as_text'))),
+                      PopupMenuItem(value: 'csv', child: Text(tr(ref, 'export_as_csv'))),
+                      PopupMenuItem(value: 'json', child: Text(tr(ref, 'export_as_json'))),
+                    ],
                   ),
                   IconButton(
                     icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
