@@ -801,6 +801,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Could not check for updates. Try again later.',
     AppLanguage.fr: 'Impossible de vérifier les mises à jour. Réessayez plus tard.',
   },
+  'update_check_needs_token': {
+    AppLanguage.en: 'This repository is private — set a GitHub Personal '
+        'Access Token below (in Edit mode) to check for updates.',
+    AppLanguage.fr: 'Ce dépôt est privé — définissez un jeton d\'accès '
+        'personnel GitHub ci-dessous (en mode Édition) pour rechercher '
+        'des mises à jour.',
+  },
   'update_available_title': {
     AppLanguage.en: 'Update available',
     AppLanguage.fr: 'Mise à jour disponible',

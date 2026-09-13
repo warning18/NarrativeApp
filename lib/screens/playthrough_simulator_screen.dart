@@ -366,6 +366,32 @@ class _SimBatch {
   int get stepCapCount => results.where((r) => r.reachedStepCap).length;
 }
 
+/// Holds every completed simulation batch for the lifetime of the app
+/// (i.e. as long as the ProviderScope lives), not just this screen's own
+/// widget lifetime. The screen itself is reached via Navigator.push, so
+/// without this a State field would reset to empty every time the player
+/// backed out and reopened it. Cleared only by the screen's own "clear
+/// all" action.
+class _SimulatorBatchesNotifier extends StateNotifier<List<_SimBatch>> {
+  _SimulatorBatchesNotifier() : super(const []);
+
+  int _nextId = 0;
+
+  void addBatch(SimStrategy strategy, List<_SimResult> results) {
+    state = [...state, _SimBatch(id: _nextId++, strategy: strategy, results: results)];
+  }
+
+  void clear() {
+    state = const [];
+    _nextId = 0;
+  }
+}
+
+final _simulatorBatchesProvider =
+    StateNotifierProvider<_SimulatorBatchesNotifier, List<_SimBatch>>(
+  (ref) => _SimulatorBatchesNotifier(),
+);
+
 class PlaythroughSimulatorScreen extends ConsumerStatefulWidget {
   const PlaythroughSimulatorScreen({super.key});
 
@@ -377,16 +403,16 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   bool _running = false;
   SimStrategy _strategy = SimStrategy.random;
   int _runCount = 1;
-  final List<_SimBatch> _batches = [];
-  int _nextBatchId = 0;
 
   /// Whether the strategy/runs/simulate controls are shown in full. They
   /// collapse to a compact bar the moment there's a result to look at, so
   /// results don't start halfway down a small screen — and re-expand
-  /// automatically once the results list is scrolled back to the top, or
+  /// automatically once the results list is scrolled back to the top, and
+  /// collapse again the moment the user scrolls down into the results, or
   /// on a manual tap.
   bool _controlsExpanded = true;
   final ScrollController _resultsScrollController = ScrollController();
+  double _lastResultsScrollOffset = 0;
 
   @override
   void initState() {
@@ -402,9 +428,13 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   }
 
   void _onResultsScroll() {
-    if (_resultsScrollController.offset <= 4 && !_controlsExpanded) {
-      setState(() => _controlsExpanded = true);
+    final offset = _resultsScrollController.offset;
+    if (offset <= 4) {
+      if (!_controlsExpanded) setState(() => _controlsExpanded = true);
+    } else if (offset > _lastResultsScrollOffset && _controlsExpanded) {
+      setState(() => _controlsExpanded = false);
     }
+    _lastResultsScrollOffset = offset;
   }
 
   Future<void> _run() async {
@@ -417,9 +447,9 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
         _simulate(story, random, strategy: _strategy, french: french),
     ];
     if (!mounted) return;
+    ref.read(_simulatorBatchesProvider.notifier).addBatch(_strategy, results);
     setState(() {
       _running = false;
-      _batches.add(_SimBatch(id: _nextBatchId++, strategy: _strategy, results: results));
       _controlsExpanded = false;
     });
   }
@@ -476,7 +506,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
     );
   }
 
-  Widget _fullControls(BuildContext context) {
+  Widget _fullControls(BuildContext context, List<_SimBatch> batches) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -529,7 +559,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
               tooltip: tr(ref, 'structural_audit_button'),
               onPressed: _runStructuralAudit,
             ),
-            if (_batches.isNotEmpty) ...[
+            if (batches.isNotEmpty) ...[
               const SizedBox(width: 8),
               IconButton(
                 icon: const Icon(Icons.expand_less),
@@ -586,21 +616,22 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   Widget build(BuildContext context) {
     final shops = ref.watch(gameDbProvider(shopsSchema)).value ?? const {};
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-    final showFullControls = _batches.isEmpty || _controlsExpanded;
-    final reversedBatches = _batches.reversed.toList();
+    final batches = ref.watch(_simulatorBatchesProvider);
+    final showFullControls = batches.isEmpty || _controlsExpanded;
+    final reversedBatches = batches.reversed.toList();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(ref, 'auto_playthrough_button')),
         actions: [
-          if (_batches.isNotEmpty)
+          if (batches.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_sweep_outlined),
               tooltip: tr(ref, 'clear_all_button'),
-              onPressed: () => setState(() {
-                _batches.clear();
-                _controlsExpanded = true;
-              }),
+              onPressed: () {
+                ref.read(_simulatorBatchesProvider.notifier).clear();
+                setState(() => _controlsExpanded = true);
+              },
             ),
         ],
       ),
@@ -612,12 +643,12 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
             AnimatedSwitcher(
               duration: const Duration(milliseconds: 200),
               child: showFullControls
-                  ? _fullControls(context)
+                  ? _fullControls(context, batches)
                   : _compactControlsBar(context),
             ),
             const SizedBox(height: 12),
             Expanded(
-              child: _batches.isEmpty
+              child: batches.isEmpty
                   ? Center(child: Text(tr(ref, 'no_batches_yet_message')))
                   : ListView(
                       controller: _resultsScrollController,
@@ -1098,18 +1129,34 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                 ],
               ),
               const Divider(height: 24),
-              OutlinedButton.icon(
-                onPressed: _analyzing ? null : _analyze,
-                icon: _analyzing
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.auto_awesome),
-                label: Text(
-                  _analyzing ? tr(ref, 'analyzing_label') : tr(ref, 'analyze_with_gemini_button'),
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _analyzing ? null : _analyze,
+                      icon: _analyzing
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.auto_awesome),
+                      label: Text(
+                        _analyzing
+                            ? tr(ref, 'analyzing_label')
+                            : tr(ref, 'analyze_with_gemini_button'),
+                      ),
+                    ),
+                  ),
+                  if (_analysisText != null) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.copy_outlined),
+                      tooltip: tr(ref, 'copy_button'),
+                      onPressed: () => _copyToClipboard(context, ref, _analysisText!),
+                    ),
+                  ],
+                ],
               ),
               if (_analysisError != null)
                 Padding(
