@@ -38,11 +38,6 @@
         "text_fr": "Entrer dans la taverne",
         "next_id": "200",
         "unlockShopId": "blind_beggar_stall"
-      },
-      {
-        "text": "Leave (End Game)",
-        "text_fr": "Partir (Fin de partie)",
-        "next_id": "EXIT"
       }
     ]
   },
