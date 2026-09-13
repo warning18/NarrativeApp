@@ -379,6 +379,33 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   final List<_SimBatch> _batches = [];
   int _nextBatchId = 0;
 
+  /// Whether the strategy/runs/simulate controls are shown in full. They
+  /// collapse to a compact bar the moment there's a result to look at, so
+  /// results don't start halfway down a small screen — and re-expand
+  /// automatically once the results list is scrolled back to the top, or
+  /// on a manual tap.
+  bool _controlsExpanded = true;
+  final ScrollController _resultsScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _resultsScrollController.addListener(_onResultsScroll);
+  }
+
+  @override
+  void dispose() {
+    _resultsScrollController.removeListener(_onResultsScroll);
+    _resultsScrollController.dispose();
+    super.dispose();
+  }
+
+  void _onResultsScroll() {
+    if (_resultsScrollController.offset <= 4 && !_controlsExpanded) {
+      setState(() => _controlsExpanded = true);
+    }
+  }
+
   Future<void> _run() async {
     setState(() => _running = true);
     final story = await ref.read(storyDataProvider.future);
@@ -392,13 +419,116 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
     setState(() {
       _running = false;
       _batches.add(_SimBatch(id: _nextBatchId++, strategy: _strategy, results: results));
+      _controlsExpanded = false;
     });
+  }
+
+  Widget _fullControls(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(tr(ref, 'strategy_label'), style: Theme.of(context).textTheme.labelLarge),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: SimStrategy.values.map((strategy) {
+            return ChoiceChip(
+              label: Text(tr(ref, _strategyLabelKey(strategy))),
+              selected: _strategy == strategy,
+              onSelected: (_) => setState(() => _strategy = strategy),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        Text(tr(ref, 'runs_label'), style: Theme.of(context).textTheme.labelLarge),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          children: [1, 5, 10, 20].map((count) {
+            return ChoiceChip(
+              label: Text('$count'),
+              selected: _runCount == count,
+              onSelected: (_) => setState(() => _runCount = count),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: _running ? null : _run,
+                icon: _running
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.play_circle_outline),
+                label:
+                    Text(_running ? tr(ref, 'simulating_label') : tr(ref, 'auto_playthrough_button')),
+              ),
+            ),
+            if (_batches.isNotEmpty) ...[
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.expand_less),
+                tooltip: tr(ref, 'hide_options_tooltip'),
+                onPressed: () => setState(() => _controlsExpanded = false),
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _compactControlsBar(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => setState(() => _controlsExpanded = true),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Row(
+            children: [
+              Icon(Icons.tune, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${tr(ref, _strategyLabelKey(_strategy))} × $_runCount',
+                  style: Theme.of(context).textTheme.titleSmall,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              IconButton(
+                icon: _running
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.replay, size: 20),
+                tooltip: tr(ref, 'auto_playthrough_button'),
+                onPressed: _running ? null : _run,
+              ),
+              Icon(Icons.expand_more, color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final shops = ref.watch(gameDbProvider(shopsSchema)).value ?? const {};
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+    final showFullControls = _batches.isEmpty || _controlsExpanded;
+    final reversedBatches = _batches.reversed.toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -408,7 +538,10 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
             IconButton(
               icon: const Icon(Icons.delete_sweep_outlined),
               tooltip: tr(ref, 'clear_all_button'),
-              onPressed: () => setState(_batches.clear),
+              onPressed: () => setState(() {
+                _batches.clear();
+                _controlsExpanded = true;
+              }),
             ),
         ],
       ),
@@ -417,56 +550,26 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(tr(ref, 'strategy_label'), style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: SimStrategy.values.map((strategy) {
-                return ChoiceChip(
-                  label: Text(tr(ref, _strategyLabelKey(strategy))),
-                  selected: _strategy == strategy,
-                  onSelected: (_) => setState(() => _strategy = strategy),
-                );
-              }).toList(),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: showFullControls
+                  ? _fullControls(context)
+                  : _compactControlsBar(context),
             ),
-            const SizedBox(height: 16),
-            Text(tr(ref, 'runs_label'), style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [1, 5, 10, 20].map((count) {
-                return ChoiceChip(
-                  label: Text('$count'),
-                  selected: _runCount == count,
-                  onSelected: (_) => setState(() => _runCount = count),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _running ? null : _run,
-              icon: _running
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.play_circle_outline),
-              label: Text(_running ? tr(ref, 'simulating_label') : tr(ref, 'auto_playthrough_button')),
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Expanded(
               child: _batches.isEmpty
                   ? Center(child: Text(tr(ref, 'no_batches_yet_message')))
                   : ListView(
+                      controller: _resultsScrollController,
                       children: [
-                        for (final batch in _batches.reversed)
+                        for (var i = 0; i < reversedBatches.length; i++)
                           _BatchCard(
-                            key: ValueKey(batch.id),
-                            batch: batch,
+                            key: ValueKey(reversedBatches[i].id),
+                            batch: reversedBatches[i],
                             shops: shops,
                             quests: quests,
+                            initiallyExpanded: i == 0,
                           ),
                       ],
                     ),
@@ -578,11 +681,22 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
 }
 
 class _BatchCard extends ConsumerStatefulWidget {
-  const _BatchCard({super.key, required this.batch, required this.shops, required this.quests});
+  const _BatchCard({
+    super.key,
+    required this.batch,
+    required this.shops,
+    required this.quests,
+    this.initiallyExpanded = true,
+  });
 
   final _SimBatch batch;
   final Map<String, dynamic> shops;
   final Map<String, dynamic> quests;
+
+  /// Older batches start collapsed to their header line so a page of past
+  /// runs doesn't bury the newest one — only the most recent batch (index
+  /// 0 in the reversed list) opens expanded by default.
+  final bool initiallyExpanded;
 
   @override
   ConsumerState<_BatchCard> createState() => _BatchCardState();
@@ -592,6 +706,10 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
   bool _analyzing = false;
   String? _analysisText;
   String? _analysisError;
+  late bool _expanded = widget.initiallyExpanded;
+  bool _showAllRuns = false;
+
+  static const int _runListPreviewCount = 5;
 
   // Filters applied to which runs count toward the stats/list/export below.
   String? _endingFilter;
@@ -708,40 +826,67 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${tr(ref, _strategyLabelKey(batch.strategy))} × ${batch.runCount}',
-                    style: Theme.of(context).textTheme.titleLarge,
+            InkWell(
+              onTap: () => setState(() => _expanded = !_expanded),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${tr(ref, _strategyLabelKey(batch.strategy))} × ${batch.runCount}',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        if (!_expanded)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              '${_oneDecimal(_avg(batch.results.map((r) => r.finalGold)))}g · '
+                              '${tr(ref, 'final_alignment_label')} '
+                              '${_oneDecimal(_avg(batch.results.map((r) => r.finalAlignment)))} · '
+                              '${_endingCounts(batch.results).entries.map((e) => '${e.value}× ${e.key}').join(', ')}',
+                              style: Theme.of(context).textTheme.bodySmall,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.ios_share_outlined),
-                  tooltip: tr(ref, 'export_all_runs_button'),
-                  onPressed: results.isEmpty
-                      ? null
-                      : () {
-                          final b = StringBuffer()
-                            ..writeln(_batchSummaryText(
-                              tr(ref, _strategyLabelKey(batch.strategy)),
-                              results,
-                            ));
-                          for (var i = 0; i < results.length; i++) {
-                            b
-                              ..writeln()
-                              ..writeln(_runTranscript(
-                                results[i],
+                  IconButton(
+                    icon: const Icon(Icons.ios_share_outlined),
+                    tooltip: tr(ref, 'export_all_runs_button'),
+                    onPressed: results.isEmpty
+                        ? null
+                        : () {
+                            final b = StringBuffer()
+                              ..writeln(_batchSummaryText(
                                 tr(ref, _strategyLabelKey(batch.strategy)),
-                                runNumber: i + 1,
+                                results,
                               ));
-                          }
-                          _exportToFile(context, ref, b.toString(), 'playthrough_batch_${batch.id}.txt');
-                        },
-                ),
-              ],
+                            for (var i = 0; i < results.length; i++) {
+                              b
+                                ..writeln()
+                                ..writeln(_runTranscript(
+                                  results[i],
+                                  tr(ref, _strategyLabelKey(batch.strategy)),
+                                  runNumber: i + 1,
+                                ));
+                            }
+                            _exportToFile(context, ref, b.toString(), 'playthrough_batch_${batch.id}.txt');
+                          },
+                  ),
+                  IconButton(
+                    icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                    tooltip: tr(ref, _expanded ? 'collapse_batch_label' : 'expand_batch_label'),
+                    onPressed: () => setState(() => _expanded = !_expanded),
+                  ),
+                ],
+              ),
             ),
-            if (batch.runCount > 1) ...[
+            if (_expanded) ...[
+              if (batch.runCount > 1) ...[
               const SizedBox(height: 8),
               Text(tr(ref, 'filter_runs_label'), style: Theme.of(context).textTheme.labelLarge),
               const SizedBox(height: 8),
@@ -824,14 +969,29 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                 children: [
                   for (final g in _chapterBreakdown(results))
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Text(
-                        '${g.label}: ${g.runsReaching}/${results.length} • '
-                        '${(g.nodeCount / g.runsReaching).toStringAsFixed(1)} '
-                        '${tr(ref, 'nodes_visited_label').toLowerCase()} • '
-                        '${g.combatCount} ${tr(ref, 'combat_encounters_label').toLowerCase()} • '
-                        'gold Δ${g.goldDelta} • align Δ${g.alignmentDelta}',
-                        style: Theme.of(context).textTheme.bodySmall,
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${g.label} · ${g.runsReaching}/${results.length}',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            [
+                              '${(g.nodeCount / g.runsReaching).toStringAsFixed(1)} '
+                                  '${tr(ref, 'nodes_visited_label').toLowerCase()}',
+                              if (g.combatCount > 0)
+                                '${g.combatCount} ${tr(ref, 'combat_encounters_label').toLowerCase()}',
+                              if (g.goldDelta != 0) 'gold Δ${g.goldDelta}',
+                              if (g.alignmentDelta != 0) 'align Δ${g.alignmentDelta}',
+                            ].join(' • '),
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
                       ),
                     ),
                 ],
@@ -843,7 +1003,17 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                   for (final g in _distributionBy(results, (s) => s.uiTheme))
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Text('${g.label}: ${g.nodeCount}', style: Theme.of(context).textTheme.bodySmall),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(g.label, style: Theme.of(context).textTheme.bodySmall)),
+                          Text(
+                            '${g.nodeCount}',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),
@@ -854,7 +1024,17 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                   for (final g in _distributionBy(results, (s) => s.mood))
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Text('${g.label}: ${g.nodeCount}', style: Theme.of(context).textTheme.bodySmall),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(g.label, style: Theme.of(context).textTheme.bodySmall)),
+                          Text(
+                            '${g.nodeCount}',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                          ),
+                        ],
+                      ),
                     ),
                 ],
               ),
@@ -905,7 +1085,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                 const Divider(height: 24),
                 Text(tr(ref, 'individual_runs_label'), style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
-                for (var i = 0; i < results.length; i++)
+                for (var i = 0; i < (_showAllRuns ? results.length : results.length.clamp(0, _runListPreviewCount)); i++)
                   InkWell(
                     onTap: () => _viewRun(results[i], batch.results.indexOf(results[i])),
                     child: Padding(
@@ -925,7 +1105,17 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       ),
                     ),
                   ),
+                if (results.length > _runListPreviewCount)
+                  TextButton(
+                    onPressed: () => setState(() => _showAllRuns = !_showAllRuns),
+                    child: Text(
+                      _showAllRuns
+                          ? tr(ref, 'show_less_label')
+                          : '${tr(ref, 'show_all_runs_label')} (${results.length})',
+                    ),
+                  ),
               ],
+            ],
             ],
           ],
         ),

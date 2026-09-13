@@ -1016,6 +1016,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No runs match this filter.',
     AppLanguage.fr: 'Aucune partie ne correspond à ce filtre.',
   },
+  'show_all_runs_label': {AppLanguage.en: 'Show all', AppLanguage.fr: 'Tout afficher'},
+  'show_less_label': {AppLanguage.en: 'Show less', AppLanguage.fr: 'Afficher moins'},
+  'collapse_batch_label': {AppLanguage.en: 'Collapse', AppLanguage.fr: 'Réduire'},
+  'expand_batch_label': {AppLanguage.en: 'Expand', AppLanguage.fr: 'Développer'},
+  'hide_options_tooltip': {AppLanguage.en: 'Hide options', AppLanguage.fr: 'Masquer les options'},
   'export_button': {AppLanguage.en: 'Export', AppLanguage.fr: 'Exporter'},
   'copy_button': {AppLanguage.en: 'Copy', AppLanguage.fr: 'Copier'},
   'export_all_runs_button': {
