@@ -819,6 +819,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Download failed. Try again later.',
     AppLanguage.fr: 'Échec du téléchargement. Réessayez plus tard.',
   },
+  'install_failed': {
+    AppLanguage.en: "Couldn't start the installer. If prompted, allow this "
+        'app to install unknown apps, then try again.',
+    AppLanguage.fr: "Impossible de lancer l'installation. Si demandé, "
+        'autorisez cette application à installer des applications inconnues, '
+        'puis réessayez.',
+  },
   'theme_mode_section': {AppLanguage.en: 'Appearance', AppLanguage.fr: 'Apparence'},
   'theme_mode_system': {AppLanguage.en: 'System', AppLanguage.fr: 'Système'},
   'theme_mode_light': {AppLanguage.en: 'Light', AppLanguage.fr: 'Clair'},

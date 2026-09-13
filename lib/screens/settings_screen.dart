@@ -760,7 +760,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      await installApk(path);
+      final installResult = await installApk(path);
+      if (!installResult.launched) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(trFor(lang, 'install_failed'))),
+        );
+      }
     } catch (_) {
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
