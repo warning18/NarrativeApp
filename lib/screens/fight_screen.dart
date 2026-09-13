@@ -638,7 +638,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                     final result = await ref.read(playerSessionProvider.notifier).applyPermadeath();
                     ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
                     ref.read(homeTabIndexProvider.notifier).state = 0;
-                    if (!context.mounted) return;
+                    if (!mounted) return;
                     await Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                         builder: (_) => DeathScreen(
@@ -747,7 +747,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: _awaitingDecision ? colorScheme.primaryContainer.withOpacity(0.25) : null,
+        color: _awaitingDecision ? colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
         border: Border.all(
           color: _awaitingDecision ? colorScheme.primary : colorScheme.outlineVariant,
           width: _awaitingDecision ? 2 : 1,
@@ -820,8 +820,8 @@ class _HealthBar extends StatelessWidget {
           child: Container(
             height: barHeight,
             decoration: BoxDecoration(
-              color: barColor.withOpacity(0.18),
-              border: Border.all(color: barColor.withOpacity(0.5)),
+              color: barColor.withValues(alpha: 0.18),
+              border: Border.all(color: barColor.withValues(alpha: 0.5)),
             ),
             child: Stack(
               alignment: Alignment.center,
@@ -835,7 +835,7 @@ class _HealthBar extends StatelessWidget {
                     height: barHeight,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [barColor.withOpacity(0.75), barColor],
+                        colors: [barColor.withValues(alpha: 0.75), barColor],
                       ),
                     ),
                   ),

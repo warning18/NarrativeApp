@@ -91,7 +91,23 @@ Future<String> downloadApk(String url, {void Function(double)? onProgress}) asyn
   return file.path;
 }
 
-/// Hands the downloaded APK to the system installer.
-Future<void> installApk(String filePath) async {
-  await OpenFilex.open(filePath);
+/// Hands the downloaded APK to the system installer. Returns true if the
+/// installer intent was actually launched; false (with [errorMessage] set
+/// when available) for anything else — most commonly the user not having
+/// granted this app "install unknown apps" yet, which OpenFilex reports as
+/// a result rather than throwing, so a caller that only wraps this in
+/// try/catch would otherwise treat a failed install as a silent no-op.
+Future<InstallResult> installApk(String filePath) async {
+  final result = await OpenFilex.open(filePath);
+  return InstallResult(
+    launched: result.type == ResultType.done,
+    errorMessage: result.type == ResultType.done ? null : result.message,
+  );
+}
+
+class InstallResult {
+  const InstallResult({required this.launched, this.errorMessage});
+
+  final bool launched;
+  final String? errorMessage;
 }

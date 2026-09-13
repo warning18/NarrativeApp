@@ -160,6 +160,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<MapTheme?>(
+              // `value` (not `initialValue`) is needed: mapTheme is a
+              // watched provider value that can change from outside this
+              // dropdown (e.g. a reset elsewhere).
+              // ignore: deprecated_member_use
               value: mapTheme,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
@@ -352,6 +356,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             if (geminiVoice.enabled) ...[
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
+                // See the map theme dropdown above: reactive to a watched
+                // provider value.
+                // ignore: deprecated_member_use
                 value: geminiVoice.voiceName,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
@@ -760,7 +767,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      await installApk(path);
+      final installResult = await installApk(path);
+      if (!installResult.launched) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(trFor(lang, 'install_failed'))),
+        );
+      }
     } catch (_) {
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();

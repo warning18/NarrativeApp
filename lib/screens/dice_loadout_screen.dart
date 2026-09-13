@@ -81,6 +81,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: DropdownButtonFormField<String>(
+            // `value` (not `initialValue`) is needed here: this field must
+            // stay reactive to _selectedDiceId, not just seed from it once.
+            // ignore: deprecated_member_use
             value: _selectedDiceId,
             decoration: InputDecoration(
               labelText: tr(ref, 'die_label'),
@@ -209,7 +212,7 @@ class _StaticFaceCard extends StatelessWidget {
       width: 160,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: colorScheme.outlineVariant),
       ),

@@ -355,6 +355,10 @@ class _ChoiceCardState extends State<_ChoiceCard> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
+              // `value` (not `initialValue`) is needed: this row is reused
+              // as the edited choice/state changes, so the field must
+              // track state.nextId reactively.
+              // ignore: deprecated_member_use
               value: options.contains(state.nextId) ? state.nextId : options.first,
               decoration: InputDecoration(
                 labelText: t('destination_node'),
