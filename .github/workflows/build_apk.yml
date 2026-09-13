@@ -10,7 +10,36 @@ permissions:
   contents: write
 
 jobs:
+  secret-scan:
+    # Gates every push and PR on no API key, token, or other credential
+    # being present anywhere in the diff -- this repo is private today,
+    # but nothing about that is permanent, and a leaked secret in git
+    # history doesn't un-leak itself if the repo is ever made public or a
+    # collaborator is added. Runs before the (much slower) Flutter build so
+    # a real finding fails fast.
+    runs-on: ubuntu-latest
+    permissions:
+      # The workflow-level `permissions:` above already narrows the default
+      # token down to just `contents: write`, which zeroes every other
+      # scope -- including pull-requests, which gitleaks-action needs to
+      # list a PR's commits via the API. Grant that back for this job only.
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Gitleaks needs real history to diff against, not just the tip
+          # commit -- this repo is a couple MB, so fetching it all is cheap.
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build:
+    needs: secret-scan
     runs-on: ubuntu-latest
     env:
       # When these repository secrets are set (Settings > Secrets and
