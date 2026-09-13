@@ -1429,8 +1429,8 @@
         "unlockQuestId": "q_ch3_ashen_oath"
       },
       {
-        "text": "Face a cultist acolyte still chanting among the ashes",
-        "text_fr": "Affronter un acolyte cultiste qui psalmodie encore parmi les cendres",
+        "text": "Face down a single cultist acolyte, still chanting among the ashes as though conviction alone might stop a blade",
+        "text_fr": "Affronter un unique acolyte cultiste, psalmodiant encore parmi les cendres comme si la seule conviction pouvait arrêter une lame",
         "next_id": "3020",
         "triggerEnemyId": "cultist_acolyte"
       },
@@ -1441,14 +1441,26 @@
         "unlockShopId": "smugglers_vault"
       },
       {
-        "text": "Face a void stalker lurking in the ruins",
-        "text_fr": "Affronter un rôdeur du néant tapi dans les ruines",
+        "text": "Take up the contract for the Void Relic, a shard rumored to hum with the same wrongness as the Shroud",
+        "text_fr": "Accepter le contrat pour la Relique du Néant, un éclat que l'on dit vibrer de la même perversité que le Linceul",
+        "next_id": "3020",
+        "unlockQuestId": "q_ch3_void_relic"
+      },
+      {
+        "text": "Face a void wisp drifting low over the ashes, small enough to seem harmless and wrong enough to know better",
+        "text_fr": "Affronter un esprit du néant voletant bas au-dessus des cendres, assez petit pour sembler inoffensif et assez inquiétant pour ne pas s'y fier",
+        "next_id": "3020",
+        "triggerEnemyId": "void_wisp"
+      },
+      {
+        "text": "Face a void stalker lurking in the ruins, the kind of thing the cultists themselves gave a wide berth",
+        "text_fr": "Affronter un rôdeur du néant tapi dans les ruines, le genre de créature que les cultistes eux-mêmes évitaient soigneusement",
         "next_id": "3020",
         "triggerEnemyId": "void_stalker"
       },
       {
-        "text": "Face an iron golem guarding a vault",
-        "text_fr": "Affronter un golem de fer gardant un coffre",
+        "text": "Face an iron golem guarding a vault, its bulk suggesting the contents were worth rather more trouble than most",
+        "text_fr": "Affronter un golem de fer gardant un coffre, sa carrure suggérant que le contenu valait bien plus d'ennuis que la moyenne",
         "next_id": "3020",
         "triggerEnemyId": "iron_golem"
       }
