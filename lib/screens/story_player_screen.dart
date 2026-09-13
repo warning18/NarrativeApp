@@ -272,14 +272,33 @@ class _StoryView extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 320),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
-                transitionBuilder: _nodeTransition,
-                child: SingleChildScrollView(
-                  key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
-                  child: _StoryText(text: node.descriptionFor(french)),
+              // Scrolling down into the narration gives the status bar and
+              // companion collapse toggles above/below no purpose (they'd
+              // just be pushed off-screen anyway), so collapse both
+              // automatically the moment the player starts reading down the
+              // page. The manual chevrons stay available to re-expand.
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification &&
+                      (notification.scrollDelta ?? 0) > 0) {
+                    if (!statusBarCollapsed) {
+                      ref.read(_statusBarCollapsedProvider.notifier).state = true;
+                    }
+                    if (!companionCollapsed) {
+                      ref.read(_companionCollapsedProvider.notifier).state = true;
+                    }
+                  }
+                  return false;
+                },
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 320),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  transitionBuilder: _nodeTransition,
+                  child: SingleChildScrollView(
+                    key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
+                    child: _StoryText(text: node.descriptionFor(french)),
+                  ),
                 ),
               ),
             ),
