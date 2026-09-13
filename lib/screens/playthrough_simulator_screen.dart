@@ -9,6 +9,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/chapter_spine.dart';
+import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -423,6 +424,58 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
     });
   }
 
+  /// Runs the exhaustive, gating-blind graph walk (see
+  /// story_graph_integrity.dart) and shows what it finds — the same audit
+  /// this project has otherwise relied on someone remembering to run by
+  /// hand after a content pass.
+  Future<void> _runStructuralAudit() async {
+    final story = await ref.read(storyDataProvider.future);
+    final report = checkStoryGraphIntegrity(story.nodes, startNodeId: StoryRepository.startNodeId);
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(
+          report.isClean
+              ? tr(ref, 'structural_audit_clean_title')
+              : tr(ref, 'structural_audit_issues_title'),
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${tr(ref, 'structural_audit_endings_label')}: ${report.reachableEndingCount}'),
+              if (report.unreachableNodeIds.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${tr(ref, 'structural_audit_unreachable_label')}: ${report.unreachableNodeIds.join(', ')}',
+                ),
+              ],
+              if (report.deadEndNodeIds.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  '${tr(ref, 'structural_audit_dead_ends_label')}: ${report.deadEndNodeIds.join(', ')}',
+                ),
+              ],
+              if (report.brokenReferences.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text('${tr(ref, 'structural_audit_broken_links_label')}:'),
+                for (final link in report.brokenReferences) Text('• $link'),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _fullControls(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -469,6 +522,12 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
                 label:
                     Text(_running ? tr(ref, 'simulating_label') : tr(ref, 'auto_playthrough_button')),
               ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.fact_check_outlined),
+              tooltip: tr(ref, 'structural_audit_button'),
+              onPressed: _runStructuralAudit,
             ),
             if (_batches.isNotEmpty) ...[
               const SizedBox(width: 8),
@@ -776,7 +835,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
       _analysisText = null;
     });
     try {
-      final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
       final response = await model.generateContent([Content.text(_buildPrompt(lang, results))]);
       if (!mounted) return;
       setState(() => _analysisText = response.text ?? trFor(lang, 'no_response_generated'));

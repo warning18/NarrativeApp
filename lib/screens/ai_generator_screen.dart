@@ -46,7 +46,7 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
     });
 
     try {
-      final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: apiKey);
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
       final response = await model.generateContent([
         Content.text(
           'You are a dark fantasy interactive-fiction writer. '

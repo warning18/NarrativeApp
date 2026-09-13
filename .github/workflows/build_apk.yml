@@ -3,6 +3,8 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -39,6 +41,12 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
       - name: Decode release keystore
         if: ${{ env.ANDROID_KEYSTORE_BASE64 != '' }}
         run: echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
@@ -55,12 +63,16 @@ jobs:
           path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Extract version
+        # Only a push to main produces a real release; a pull_request run is
+        # a pre-merge check (analyze/test/build) and should never tag one.
+        if: github.event_name == 'push'
         id: version
         run: |
           version=$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//' | cut -d'+' -f1)
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Publish GitHub Release
+        if: github.event_name == 'push'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.version.outputs.version }}

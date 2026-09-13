@@ -853,6 +853,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Simuler une partie',
   },
   'simulating_label': {AppLanguage.en: 'Simulating…', AppLanguage.fr: 'Simulation en cours…'},
+  'structural_audit_button': {
+    AppLanguage.en: 'Audit Graph Structure',
+    AppLanguage.fr: 'Auditer la structure du graphe',
+  },
+  'structural_audit_clean_title': {
+    AppLanguage.en: 'Graph is structurally clean',
+    AppLanguage.fr: 'Le graphe est structurellement propre',
+  },
+  'structural_audit_issues_title': {
+    AppLanguage.en: 'Graph issues found',
+    AppLanguage.fr: 'Problèmes de graphe détectés',
+  },
+  'structural_audit_endings_label': {
+    AppLanguage.en: 'Reachable endings',
+    AppLanguage.fr: 'Fins atteignables',
+  },
+  'structural_audit_unreachable_label': {
+    AppLanguage.en: 'Unreachable nodes',
+    AppLanguage.fr: 'Nœuds inaccessibles',
+  },
+  'structural_audit_dead_ends_label': {
+    AppLanguage.en: 'Dead ends',
+    AppLanguage.fr: 'Impasses',
+  },
+  'structural_audit_broken_links_label': {
+    AppLanguage.en: 'Broken links',
+    AppLanguage.fr: 'Liens rompus',
+  },
   'analyze_with_gemini_button': {
     AppLanguage.en: 'Analyze with Gemini',
     AppLanguage.fr: 'Analyser avec Gemini',
