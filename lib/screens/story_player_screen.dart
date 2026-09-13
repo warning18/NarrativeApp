@@ -187,55 +187,67 @@ class _StoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: statusBarCollapsed
-                      ? const SizedBox.shrink()
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const PlayerStatsBar(),
-                            if (session.activeQuestIds.isNotEmpty ||
-                                session.unlockedShopIds.isNotEmpty) ...[
-                              const SizedBox(height: 8),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 4,
-                                children: [
-                                  if (session.activeQuestIds.isNotEmpty)
-                                    ActionChip(
-                                      avatar: const Icon(Icons.assignment, size: 16),
-                                      label: Text(
-                                          '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                                      onPressed: () =>
-                                          ref.read(homeTabIndexProvider.notifier).state = 1,
-                                    ),
-                                  if (session.unlockedShopIds.isNotEmpty)
-                                    ActionChip(
-                                      avatar: const Icon(Icons.storefront, size: 16),
-                                      label: Text(
-                                          '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                                      onPressed: () =>
-                                          ref.read(homeTabIndexProvider.notifier).state = 1,
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ],
-                        ),
-                ),
-                IconButton(
-                  icon: Icon(statusBarCollapsed ? Icons.expand_more : Icons.expand_less),
-                  tooltip:
-                      tr(ref, statusBarCollapsed ? 'expand_status_bar' : 'collapse_status_bar'),
+            // Collapsed shows nothing but the toggle itself -- previously
+            // this used Expanded(child: statusBarCollapsed ? SizedBox.shrink()
+            // : ...) inside a Row, which still left the row's own height and
+            // the Expanded's claimed width in place, so "collapsing" left a
+            // blank band rather than actually reclaiming the space.
+            if (statusBarCollapsed)
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.expand_more),
+                  tooltip: tr(ref, 'expand_status_bar'),
                   visualDensity: VisualDensity.compact,
-                  onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state =
-                      !statusBarCollapsed,
+                  onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state = false,
                 ),
-              ],
-            ),
+              )
+            else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const PlayerStatsBar(),
+                        if (session.activeQuestIds.isNotEmpty ||
+                            session.unlockedShopIds.isNotEmpty) ...[
+                          const SizedBox(height: 8),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 4,
+                            children: [
+                              if (session.activeQuestIds.isNotEmpty)
+                                ActionChip(
+                                  avatar: const Icon(Icons.assignment, size: 16),
+                                  label: Text(
+                                      '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                                  onPressed: () =>
+                                      ref.read(homeTabIndexProvider.notifier).state = 1,
+                                ),
+                              if (session.unlockedShopIds.isNotEmpty)
+                                ActionChip(
+                                  avatar: const Icon(Icons.storefront, size: 16),
+                                  label: Text(
+                                      '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                                  onPressed: () =>
+                                      ref.read(homeTabIndexProvider.notifier).state = 1,
+                                ),
+                            ],
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.expand_less),
+                    tooltip: tr(ref, 'collapse_status_bar'),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state = true,
+                  ),
+                ],
+              ),
             const SizedBox(height: 8),
             Row(
               children: [

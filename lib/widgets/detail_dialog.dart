@@ -32,8 +32,11 @@ Future<void> showDetailDialog(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (description != null && description.isNotEmpty) ...[
-                Text(description),
-                const SizedBox(height: 12),
+                Text(
+                  description,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+                ),
+                const SizedBox(height: 16),
               ],
               ...rows.map(
                 (row) => Padding(

@@ -1069,6 +1069,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Export all runs',
     AppLanguage.fr: 'Exporter toutes les parties',
   },
+  'export_as_text': {
+    AppLanguage.en: 'Export as text (.txt)',
+    AppLanguage.fr: 'Exporter en texte (.txt)',
+  },
+  'export_as_csv': {
+    AppLanguage.en: 'Export as spreadsheet (.csv)',
+    AppLanguage.fr: 'Exporter en tableur (.csv)',
+  },
+  'export_as_json': {
+    AppLanguage.en: 'Export as data (.json)',
+    AppLanguage.fr: 'Exporter en données (.json)',
+  },
   'transcript_copied_message': {
     AppLanguage.en: 'Transcript copied to clipboard.',
     AppLanguage.fr: 'Transcription copiée dans le presse-papiers.',
