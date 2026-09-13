@@ -1129,18 +1129,34 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                 ],
               ),
               const Divider(height: 24),
-              OutlinedButton.icon(
-                onPressed: _analyzing ? null : _analyze,
-                icon: _analyzing
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.auto_awesome),
-                label: Text(
-                  _analyzing ? tr(ref, 'analyzing_label') : tr(ref, 'analyze_with_gemini_button'),
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _analyzing ? null : _analyze,
+                      icon: _analyzing
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.auto_awesome),
+                      label: Text(
+                        _analyzing
+                            ? tr(ref, 'analyzing_label')
+                            : tr(ref, 'analyze_with_gemini_button'),
+                      ),
+                    ),
+                  ),
+                  if (_analysisText != null) ...[
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.copy_outlined),
+                      tooltip: tr(ref, 'copy_button'),
+                      onPressed: () => _copyToClipboard(context, ref, _analysisText!),
+                    ),
+                  ],
+                ],
               ),
               if (_analysisError != null)
                 Padding(
