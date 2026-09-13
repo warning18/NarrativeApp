@@ -18,7 +18,7 @@ Future<void> showImmersiveNotice(
     context: context,
     barrierDismissible: true,
     barrierLabel: message,
-    barrierColor: Colors.black.withOpacity(0.35),
+    barrierColor: Colors.black.withValues(alpha: 0.35),
     transitionDuration: const Duration(milliseconds: 220),
     pageBuilder: (context, animation, secondaryAnimation) {
       return _ImmersiveNoticeContent(
@@ -90,10 +90,10 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colorScheme.primary.withOpacity(0.6), width: 1.5),
+              border: Border.all(color: colorScheme.primary.withValues(alpha: 0.6), width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 24,
                   offset: const Offset(0, 8),
                 ),

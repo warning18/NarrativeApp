@@ -499,7 +499,7 @@ class _CharacterSheet extends StatelessWidget {
         ],
         Card(
           child: ListTile(
-            leading: Icon(raceIcon),
+            leading: const Icon(raceIcon),
             title: Text(raceName),
             subtitle: Text(race?['description']?.toString() ?? ''),
           ),
@@ -507,7 +507,7 @@ class _CharacterSheet extends StatelessWidget {
         _skillCard(context, t('granted_skill_label'), race),
         Card(
           child: ListTile(
-            leading: Icon(professionIcon),
+            leading: const Icon(professionIcon),
             title: Text(professionName),
             subtitle: Text(profession?['description']?.toString() ?? ''),
           ),

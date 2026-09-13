@@ -480,6 +480,7 @@ class _ChoiceButton extends ConsumerWidget {
                 final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
                 if (enemy != null) {
                   ref.read(combatActiveProvider.notifier).state = true;
+                  if (!context.mounted) return;
                   final won = await Navigator.of(context).push<bool>(
                     MaterialPageRoute(
                       builder: (_) => FightScreen(
@@ -667,7 +668,7 @@ class _StoryText extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withOpacity(0.35),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
@@ -689,7 +690,7 @@ class _StoryText extends StatelessWidget {
               child: Container(
                 width: 56,
                 height: 2,
-                color: colorScheme.primary.withOpacity(0.5),
+                color: colorScheme.primary.withValues(alpha: 0.5),
               ),
             ),
             const SizedBox(height: 16),

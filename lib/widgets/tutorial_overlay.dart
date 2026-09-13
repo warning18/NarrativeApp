@@ -55,7 +55,7 @@ Future<void> showTutorialOverlay(BuildContext context, WidgetRef ref) {
     context: context,
     barrierDismissible: false,
     barrierLabel: 'Tutorial',
-    barrierColor: Colors.black.withOpacity(0.85),
+    barrierColor: Colors.black.withValues(alpha: 0.85),
     transitionDuration: const Duration(milliseconds: 220),
     pageBuilder: (context, animation, secondaryAnimation) => const _TutorialDialog(),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -123,10 +123,10 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: colorScheme.primary.withOpacity(0.6), width: 1.5),
+              border: Border.all(color: colorScheme.primary.withValues(alpha: 0.6), width: 1.5),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.4),
+                  color: Colors.black.withValues(alpha: 0.4),
                   blurRadius: 28,
                   offset: const Offset(0, 10),
                 ),

@@ -215,6 +215,9 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: DropdownButtonFormField<String>(
+            // ignore: deprecated_member_use -- `value` (not `initialValue`)
+            // is needed here: this editor is schema-driven and reused across
+            // records, so the field must stay reactive to _enumValues.
             value: dropdownValue,
             decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
             items: options
@@ -230,6 +233,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: DropdownButtonFormField<String>(
+            // ignore: deprecated_member_use -- see the enumeration case
+            // above: reactive to _enumValues, not just an initial seed.
             value: dropdownValue,
             decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
             items: [
