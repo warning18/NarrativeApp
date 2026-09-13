@@ -81,9 +81,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: DropdownButtonFormField<String>(
-            // ignore: deprecated_member_use -- `value` (not `initialValue`) is
-            // needed here: this field must stay reactive to _selectedDiceId,
-            // not just seed from it once.
+            // `value` (not `initialValue`) is needed here: this field must
+            // stay reactive to _selectedDiceId, not just seed from it once.
+            // ignore: deprecated_member_use
             value: _selectedDiceId,
             decoration: InputDecoration(
               labelText: tr(ref, 'die_label'),

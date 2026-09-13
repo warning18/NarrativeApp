@@ -160,9 +160,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<MapTheme?>(
-              // ignore: deprecated_member_use -- `value` (not `initialValue`)
-              // is needed: mapTheme is a watched provider value that can
-              // change from outside this dropdown (e.g. a reset elsewhere).
+              // `value` (not `initialValue`) is needed: mapTheme is a
+              // watched provider value that can change from outside this
+              // dropdown (e.g. a reset elsewhere).
+              // ignore: deprecated_member_use
               value: mapTheme,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
@@ -355,8 +356,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             if (geminiVoice.enabled) ...[
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                // ignore: deprecated_member_use -- see the map theme
-                // dropdown above: reactive to a watched provider value.
+                // See the map theme dropdown above: reactive to a watched
+                // provider value.
+                // ignore: deprecated_member_use
                 value: geminiVoice.voiceName,
                 decoration: InputDecoration(
                   border: const OutlineInputBorder(),
