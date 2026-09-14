@@ -256,8 +256,8 @@
   },
   "280": {
     "id": "280",
-    "description": "The alley opened onto a scorched square, and at its center — hanging in the air precisely a hand's width above the cobblestones, as if measured there by someone with an unpleasant sense of geometry — hung a tear in the world no wider than a coin slot. Small. Contained. Patient, in the way only truly wrong things manage to be patient. It raised the hair on the back of my neck the way a held breath does just before someone screams, and I have known enough screamers to trust the comparison. A few looters gave it a wide, superstitious berth, which struck me, on reflection, as the single most sensible decision I had witnessed all night.",
-    "description_fr": "La ruelle débouchait sur une place calcinée, et en son centre — suspendue dans l'air, à exactement la largeur d'une main au-dessus des pavés, comme mesurée là par quelqu'un doté d'un sens de la géométrie déplaisant — pendait une déchirure dans le monde, pas plus large qu'une fente à monnaie. Petite. Contenue. Patiente, comme seules savent l'être les choses véritablement mauvaises. Elle me hérissait la nuque comme le fait un souffle retenu juste avant qu'on ne crie, et j'ai connu assez de gens qui criaient pour faire confiance à la comparaison. Quelques pillards lui laissaient un large passage, superstitieux, ce qui me frappa, à la réflexion, comme la décision la plus sensée que j'eusse observée de toute la nuit.",
+    "description": "Whichever way I'd come, it let out onto a scorched square, and at its center — hanging in the air precisely a hand's width above the cobblestones, as if measured there by someone with an unpleasant sense of geometry — hung a tear in the world no wider than a coin slot. Small. Contained. Patient, in the way only truly wrong things manage to be patient. It raised the hair on the back of my neck the way a held breath does just before someone screams, and I have known enough screamers to trust the comparison. A few looters gave it a wide, superstitious berth, which struck me, on reflection, as the single most sensible decision I had witnessed all night.",
+    "description_fr": "Quel que fût le chemin emprunté, il débouchait sur une place calcinée, et en son centre — suspendue dans l'air, à exactement la largeur d'une main au-dessus des pavés, comme mesurée là par quelqu'un doté d'un sens de la géométrie déplaisant — pendait une déchirure dans le monde, pas plus large qu'une fente à monnaie. Petite. Contenue. Patiente, comme seules savent l'être les choses véritablement mauvaises. Elle me hérissait la nuque comme le fait un souffle retenu juste avant qu'on ne crie, et j'ai connu assez de gens qui criaient pour faire confiance à la comparaison. Quelques pillards lui laissaient un large passage, superstitieux, ce qui me frappa, à la réflexion, comme la décision la plus sensée que j'eusse observée de toute la nuit.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "creepy",
@@ -1173,44 +1173,163 @@
       {
         "text": "Visit the Arcane Bazaar",
         "text_fr": "Visiter le Bazar Arcanique",
-        "next_id": "2030",
+        "next_id": "2015_bazaar",
         "unlockShopId": "arcane_bazaar"
       },
       {
         "text": "Visit Apothecary Row",
         "text_fr": "Visiter la Rue des Apothicaires",
-        "next_id": "2030",
+        "next_id": "2015_apothecary",
         "unlockShopId": "apothecary_row"
       },
       {
         "text": "Take the harbor master's job",
         "text_fr": "Accepter la mission du maître du port",
-        "next_id": "2030",
+        "next_id": "2015_dockside",
         "unlockQuestId": "q_ch2_dockside_debts"
       },
       {
         "text": "Deal with a lurking smuggler captain",
         "text_fr": "S'occuper d'un capitaine contrebandier à l'affût",
-        "next_id": "2030",
+        "next_id": "2015_smuggler",
         "triggerEnemyId": "smuggler_captain"
       },
       {
         "text": "Fend off a plague hound",
         "text_fr": "Repousser un chien pestiféré",
-        "next_id": "2030",
+        "next_id": "2015_hound",
         "triggerEnemyId": "plague_hound"
       },
       {
         "text": "Hear out a dwarf holding the gate alone",
         "text_fr": "Écouter une naine tenant seule la porte",
-        "next_id": "2030",
+        "next_id": "2015_kelda",
         "unlockQuestId": "q_ch2_keldas_stand"
       },
       {
         "text": "Listen to a rogue's complaint about a card game gone wrong",
         "text_fr": "Écouter la plainte d'une voleuse au sujet d'une partie de cartes ratée",
-        "next_id": "2030",
+        "next_id": "2015_sable",
         "unlockQuestId": "q_ch2_sables_wager"
+      }
+    ]
+  },
+  "2015_bazaar": {
+    "id": "2015_bazaar",
+    "description": "The Arcane Bazaar turned out to be less a market than a running argument between several dozen people who each firmly believed their particular brand of forbidden knowledge was the only honest one for sale. I came away with my purse lighter and my sense of what was moving through this district considerably better informed — roughly the exchange rate I'd expected going in. Vane, I suspected, would find some of it interesting.",
+    "description_fr": "Le Bazar Arcanique se révéla moins un marché qu'une dispute permanente entre plusieurs dizaines de personnes toutes convaincues que leur savoir interdit particulier était le seul honnête à la vente. J'en repartis la bourse plus légère et la compréhension de ce qui circulait dans ce quartier nettement meilleure — à peu près le taux de change auquel je m'attendais en y entrant. Vane, soupçonnai-je, trouverait une partie de cela intéressante.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_apothecary": {
+    "id": "2015_apothecary",
+    "description": "Apothecary Row smelled like an argument between medicine and poison that neither side had yet won, which struck me as an honest advertisement for the trade rather than a warning against it. Between the tinctures and the professionally vague answers to direct questions, I picked up rather more about the district's shipping routes than any apothecary had intended to sell me. Vane would want to hear about that.",
+    "description_fr": "La Rue des Apothicaires sentait comme une dispute entre la médecine et le poison qu'aucun des deux camps n'avait encore remportée, ce qui me frappa comme une publicité honnête pour ce commerce plutôt qu'une mise en garde contre lui. Entre les teintures et les réponses professionnellement vagues à des questions directes, j'appris bien plus sur les routes d'approvisionnement du quartier qu'aucun apothicaire n'avait eu l'intention de m'en vendre. Vane voudrait en entendre parler.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_dockside": {
+    "id": "2015_dockside",
+    "description": "The harbor master turned out to be a weathered woman with the specific exhaustion of someone who has spent decades solving problems that kept turning out to be other people's fault. She had rats fouling the stores and no patience left for them, and by the time she finished explaining the situation I had, somewhat against my better judgment, agreed to become her solution of choice. It would keep, I decided, until after I'd finished with the rest of the market — and with Vane.",
+    "description_fr": "La maîtresse du port se révéla être une femme éprouvée, avec l'épuisement particulier de quelqu'un qui a passé des décennies à résoudre des problèmes qui se révélaient toujours être la faute d'autrui. Des rats infestaient ses réserves et elle n'avait plus la patience de s'en occuper elle-même ; le temps qu'elle finisse de m'exposer la situation, j'avais, un peu contre mon meilleur jugement, accepté de devenir sa solution de choix. Cela pouvait attendre, décidai-je, que j'en aie fini avec le reste du marché — et avec Vane.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_smuggler": {
+    "id": "2015_smuggler",
+    "description": "The smuggler captain fought like a man who'd expected the encounter to end rather differently, which is generally how these things go for people who lurk in market alleys sizing up strangers' coin purses. He carried rather less coin than his confidence had suggested, but the manifest tucked into his coat was worth considerably more — a tidy little record of what was actually moving through this harbor, and for whom. Vane, I suspected, would pay well to know.",
+    "description_fr": "Le capitaine contrebandier se battit comme un homme qui s'était attendu à ce que la rencontre se termine bien différemment, ce qui est généralement le sort de ceux qui rôdent dans les ruelles du marché en jaugeant les bourses des inconnus. Il portait sur lui moins d'or que son assurance ne le laissait supposer, mais le manifeste glissé dans son manteau valait bien davantage — un petit registre soigné de ce qui transitait réellement par ce port, et pour le compte de qui. Vane, soupçonnai-je, paierait cher pour le savoir.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_hound": {
+    "id": "2015_hound",
+    "description": "The plague hound went down snarling, which seemed only fair given how it had spent its last moments trying to introduce me to whatever was rotting under its fur. A few nearby traders applauded with the restrained enthusiasm of people who had clearly been hoping someone else would deal with it first. I wiped off what I could and decided the rest was a problem for later — Vane, at least, wouldn't care what I smelled like, so long as I had something worth his while.",
+    "description_fr": "Le chien pestiféré s'effondra en grognant, ce qui me parut juste étant donné qu'il avait passé ses derniers instants à tenter de me présenter à ce qui pourrissait sous sa fourrure. Quelques marchands proches applaudirent avec l'enthousiasme mesuré de gens qui avaient manifestement espéré que quelqu'un d'autre s'en chargerait en premier. J'essuyai ce que je pus et décidai que le reste attendrait — Vane, au moins, se moquerait de mon odeur, tant que j'aurais quelque chose qui vaille la peine.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_kelda": {
+    "id": "2015_kelda",
+    "description": "She held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. Vane could wait a little longer.",
+    "description_fr": "Elle tenait sa position à la porte avec l'économie obstinée de quelqu'un qui avait déjà décidé de l'issue, quelle que fût ma réponse, et je découvris que je n'avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l'esprit, ce qui est à peu près la promesse la plus engageante que je m'autorise généralement envers des inconnus qui se battent pour vivre. Vane pouvait attendre encore un peu.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_sable": {
+    "id": "2015_sable",
+    "description": "She had the particular bitterness of someone who'd lost at a game she was certain she could beat, which I recognized, having lost at several games under that exact same certainty. I told her I'd think about her marker, which in my experience is the diplomatic way of saying yes without committing to a timeline. Vane, unlike her, was not going anywhere.",
+    "description_fr": "Elle avait l'amertume particulière de quelqu'un qui avait perdu à un jeu qu'elle était certaine de pouvoir gagner, ce que je reconnus bien, ayant moi-même perdu à plusieurs jeux sous cette exacte même certitude. Je lui dis que je réfléchirais à son gage, ce qui, d'après mon expérience, est la manière diplomatique de dire oui sans s'engager sur un délai. Vane, contrairement à elle, n'allait nulle part.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
       }
     ]
   },
@@ -1256,14 +1375,14 @@
       {
         "text": "Escape into the Canals",
         "text_fr": "Fuir dans les canaux",
-        "next_id": "2999"
+        "next_id": "2900"
       }
     ]
   },
   "2030": {
     "id": "2030",
-    "description": "Vane listened closely, his eyes narrowing the way a man's eyes narrow when he is doing mental arithmetic on the value of a thing. \"Information about the Crusade's movements,\" he said slowly, as though tasting the phrase for weaknesses. \"That has currency.\" He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
-    "description_fr": "Vane écouta attentivement, les yeux se plissant comme se plissent les yeux d'un homme faisant mentalement le calcul de la valeur d'une chose. « Des informations sur les mouvements de la Croisade », dit-il lentement, comme s'il goûtait la phrase pour y déceler des faiblesses. « Voilà qui a de la valeur. » Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
+    "description": "Vane listened closely, his eyes narrowing the way a man's eyes narrow when he is doing mental arithmetic on the value of a thing. Whatever I'd brought him — and along that wharf, I had learned, there was always something worth bringing — he turned it over for a long moment as though tasting it for weaknesses. \"That has currency,\" he said finally. He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
+    "description_fr": "Vane écouta attentivement, les yeux se plissant comme se plissent les yeux d'un homme faisant mentalement le calcul de la valeur d'une chose. Quoi que je lui eusse apporté — et le long de ce quai, je l'avais appris, il y avait toujours quelque chose qui valait la peine — il le retourna un long moment comme pour en déceler les faiblesses. « Voilà qui a de la valeur », dit-il enfin. Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1446,50 +1565,186 @@
       {
         "text": "Take up the Ashen Oath",
         "text_fr": "Prêter le Serment de Cendres",
-        "next_id": "3020",
+        "next_id": "3005_oath",
         "unlockQuestId": "q_ch3_ashen_oath"
       },
       {
         "text": "Face down a single cultist acolyte, still chanting among the ashes as though conviction alone might stop a blade",
         "text_fr": "Affronter un unique acolyte cultiste, psalmodiant encore parmi les cendres comme si la seule conviction pouvait arrêter une lame",
-        "next_id": "3020",
+        "next_id": "3005_acolyte",
         "triggerEnemyId": "cultist_acolyte"
       },
       {
         "text": "Trade at the Smugglers' Vault, relocated here",
         "text_fr": "Commercer au Coffre des Contrebandiers, relocalisé ici",
-        "next_id": "3020",
+        "next_id": "3005_vault",
         "unlockShopId": "smugglers_vault"
       },
       {
         "text": "Take up the contract for the Void Relic, a shard rumored to hum with the same wrongness as the Shroud",
         "text_fr": "Accepter le contrat pour la Relique du Néant, un éclat que l'on dit vibrer de la même perversité que le Linceul",
-        "next_id": "3020",
+        "next_id": "3005_relic",
         "unlockQuestId": "q_ch3_void_relic"
       },
       {
         "text": "Face a void wisp drifting low over the ashes, small enough to seem harmless and wrong enough to know better",
         "text_fr": "Affronter un esprit du néant voletant bas au-dessus des cendres, assez petit pour sembler inoffensif et assez inquiétant pour ne pas s'y fier",
-        "next_id": "3020",
+        "next_id": "3005_wisp",
         "triggerEnemyId": "void_wisp"
       },
       {
         "text": "Face a void stalker lurking in the ruins, the kind of thing the cultists themselves gave a wide berth",
         "text_fr": "Affronter un rôdeur du néant tapi dans les ruines, le genre de créature que les cultistes eux-mêmes évitaient soigneusement",
-        "next_id": "3020",
+        "next_id": "3005_stalker",
         "triggerEnemyId": "void_stalker"
       },
       {
         "text": "Face an iron golem guarding a vault, its bulk suggesting the contents were worth rather more trouble than most",
         "text_fr": "Affronter un golem de fer gardant un coffre, sa carrure suggérant que le contenu valait bien plus d'ennuis que la moyenne",
-        "next_id": "3020",
+        "next_id": "3005_golem",
         "triggerEnemyId": "iron_golem"
       },
       {
         "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
         "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
-        "next_id": "3020",
+        "next_id": "3005_maren",
         "unlockQuestId": "q_ch3_marens_penance"
+      }
+    ]
+  },
+  "3005_oath": {
+    "id": "3005_oath",
+    "description": "The Oath, when I found the shrine offering it, asked for exactly the kind of commitment I generally try to avoid making to institutions I don't yet understand — silence a cultist still chanting in the ashes, and mean it. I signed on anyway, on the theory that an oath sworn to ash and ruin was at least being honest about what it expected of me. The archives, I decided, could wait until I'd settled the matter properly.",
+    "description_fr": "Le Serment, une fois trouvé le sanctuaire qui le proposait, exigeait exactement le genre d'engagement que j'essaie généralement d'éviter envers des institutions que je ne comprends pas encore — faire taire un cultiste qui psalmodiait encore parmi les cendres, et le penser vraiment. Je m'engageai tout de même, partant du principe qu'un serment prêté aux cendres et aux ruines avait au moins l'honnêteté de dire ce qu'il attendait de moi. Les archives, décidai-je, pouvaient attendre que j'en aie fini proprement avec cette affaire.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_acolyte": {
+    "id": "3005_acolyte",
+    "description": "The acolyte kept chanting even as the fight turned against him, which I found less admirable than simply exhausting — conviction is a fine thing right up until it's the only weapon left in your hand. He stopped chanting when he stopped doing anything else. I left him among the ashes he'd been so devoted to and made for the archives, no wiser about his cause and considerably less patient with it.",
+    "description_fr": "L'acolyte continua de psalmodier même quand le combat tourna en ma faveur, ce que je trouvai moins admirable que simplement épuisant — la conviction est une belle chose jusqu'au moment où elle devient la seule arme qu'il vous reste. Il cessa de psalmodier quand il cessa de faire quoi que ce soit d'autre. Je le laissai parmi les cendres auxquelles il s'était tant dévoué et me dirigeai vers les archives, pas plus éclairé sur sa cause et nettement moins patient à son égard.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_vault": {
+    "id": "3005_vault",
+    "description": "The Smugglers' Vault had relocated here with the same brisk indifference to Inquisition patrols it had shown everywhere else it had ever set up shop, which I took as a professional courtesy — men who traded in the kind of goods they traded in generally knew better than to advertise fear. I spent what I could justify and pocketed the rest, and made a mental note that the archives weren't going anywhere either.",
+    "description_fr": "Le Coffre des Contrebandiers s'était relocalisé ici avec la même indifférence expéditive envers les patrouilles de l'Inquisition qu'il avait montrée partout où il avait jamais tenu boutique, ce que je pris pour une courtoisie professionnelle — les hommes qui commerçaient dans ce genre de marchandises savaient généralement mieux que quiconque qu'il ne fallait pas afficher la peur. Je dépensai ce que je pouvais justifier et empochai le reste, en me rappelant que les archives, elles non plus, n'allaient nulle part.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_relic": {
+    "id": "3005_relic",
+    "description": "The contract described the relic in the specific overwrought language people use for things they're afraid of and want paid for handling anyway — a shard humming with the same wrongness as the Shroud, apparently, which was not a comparison meant to be reassuring. I took the contract, on the theory that turning down gold to avoid a thing I was clearly going to end up fighting regardless seemed like a poor use of principle. The archives could wait a little longer.",
+    "description_fr": "Le contrat décrivait la relique dans ce langage particulièrement emphatique qu'emploient les gens pour désigner ce qui les effraie et qu'ils veulent néanmoins être payés pour manipuler — un éclat vibrant, paraît-il, de la même perversité que le Linceul, une comparaison qui n'avait rien de rassurant. J'acceptai le contrat, partant du principe que refuser de l'or pour éviter une chose que j'allais de toute façon finir par combattre relevait d'un mauvais usage des principes. Les archives pouvaient attendre encore un peu.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_wisp": {
+    "id": "3005_wisp",
+    "description": "The wisp drifted like something that had never once considered itself in danger, right up until the moment it very much was. Small things that wrong, I've learned, are rarely as harmless as their size suggests, and this one left a smear of something cold and faintly luminous behind when it finally stopped drifting altogether. I wiped my blade twice before I trusted it was actually clean, and turned back toward the archives.",
+    "description_fr": "L'esprit voletait comme une chose qui ne s'était jamais crue en danger, jusqu'à l'instant où elle le fut très nettement. Les petites choses aussi mauvaises que celle-ci, je l'ai appris, sont rarement aussi inoffensives que leur taille le laisse croire, et celle-ci laissa derrière elle une traînée froide et faiblement luminescente quand elle cessa enfin tout à fait de voleter. J'essuyai ma lame deux fois avant de la croire vraiment propre, et me retournai vers les archives.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_stalker": {
+    "id": "3005_stalker",
+    "description": "The stalker fought the way its name suggested it would — patient, low, and entirely uninterested in giving me a clean angle until it had no other choice left. Even the cultists gave these things a wide berth, which I now understood rather better than I wanted to. It went down eventually, the ashes considerably less inclined to notice one more thing dying among them. I made for the archives with my nerves somewhat more frayed than my armor.",
+    "description_fr": "Le rôdeur combattit comme son nom le laissait présager — patient, bas, et parfaitement indifférent à m'offrir un angle net tant qu'il lui restait un autre choix. Même les cultistes évitaient soigneusement ces créatures, ce que je comprenais désormais bien mieux que je ne l'aurais souhaité. Il finit par tomber, les cendres guère plus enclines à remarquer une chose de plus mourant parmi elles. Je me dirigeai vers les archives, les nerfs sensiblement plus éprouvés que mon armure.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_golem": {
+    "id": "3005_golem",
+    "description": "The golem guarded its vault with the singular, joyless dedication of something that had never once questioned the job, and it took rather longer than I'd have liked to convince it the job was over. What was inside turned out to be worth the trouble, in the narrow sense that most things guarded by iron golems generally are. I collected what I'd come for, left the rest for whoever had built the thing to explain, and turned my thoughts back toward the archives.",
+    "description_fr": "Le golem gardait son coffre avec la dévotion unique et sans joie d'une chose qui n'avait jamais une seule fois remis sa tâche en question, et il me fallut bien plus de temps que je ne l'aurais souhaité pour le convaincre que cette tâche était terminée. Ce qui se trouvait à l'intérieur valait la peine, au sens étroit où le sont généralement les choses gardées par des golems de fer. Je pris ce pour quoi j'étais venu, laissai le reste à qui avait construit la chose le soin de s'en expliquer, et tournai de nouveau mes pensées vers les archives.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_maren": {
+    "id": "3005_maren",
+    "description": "She spoke with the particular clarity of someone who'd spent a long time rehearsing a confession she'd never quite worked up the nerve to make to anyone who mattered, and had apparently decided I would do. I didn't have an answer ready for her, not one I trusted anyway, but I told her I'd hear the rest of it when there was time. The archives, at least, would still be there when I was done being someone's confessor.",
+    "description_fr": "Elle parlait avec la clarté particulière de quelqu'un qui avait longtemps répété une confession qu'elle n'avait jamais tout à fait eu le courage de faire à quiconque qui comptât, et avait apparemment décidé que je ferais l'affaire. Je n'avais pas de réponse toute prête pour elle, pas une en laquelle j'avais confiance en tout cas, mais je lui dis que j'entendrais la suite quand j'en aurais le temps. Les archives, au moins, seraient encore là une fois que j'aurais fini de servir de confesseur à quelqu'un.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
       }
     ]
   },
