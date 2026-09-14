@@ -6,13 +6,15 @@ import 'package:graphview/GraphView.dart';
 
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
+import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
 
-enum _NodeKind { characterCreation, combat, shop, quest, generic }
+enum _NodeKind { characterCreation, combat, shop, quest, companionQuest, generic }
 
 class _NodeStyle {
   const _NodeStyle({required this.color, required this.icon, required this.radius});
@@ -30,10 +32,21 @@ class _NodeStyle {
       : Colors.black87;
 }
 
-_NodeKind _classify(StoryNode node) {
+/// [quests] is the loaded `quests.json` table, keyed by quest id — used only
+/// to tell a companion-recruit quest (one with a non-empty `rewardAllyId`)
+/// apart from every other quest, so it gets its own legend entry.
+_NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
   if (node.choices.any((c) => c.opensCharacterCreation)) return _NodeKind.characterCreation;
   if (node.choices.any((c) => c.triggersCombat)) return _NodeKind.combat;
   if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty)) return _NodeKind.shop;
+  if (node.choices.any((c) {
+    final questId = c.unlockQuestId ?? '';
+    if (questId.isEmpty) return false;
+    final quest = quests[questId] as Map<String, dynamic>?;
+    return (quest?['rewardAllyId']?.toString() ?? '').isNotEmpty;
+  })) {
+    return _NodeKind.companionQuest;
+  }
   if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) return _NodeKind.quest;
   return _NodeKind.generic;
 }
@@ -48,6 +61,8 @@ String _nodeKindLabelKey(_NodeKind kind) {
       return 'node_kind_shop';
     case _NodeKind.quest:
       return 'node_kind_quest';
+    case _NodeKind.companionQuest:
+      return 'node_kind_companion_quest';
     case _NodeKind.generic:
       return 'node_kind_generic';
   }
@@ -72,6 +87,11 @@ Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
       _NodeKind.quest: _NodeStyle(
         color: Colors.amber.shade300,
         icon: Icons.assignment,
+        radius: 8,
+      ),
+      _NodeKind.companionQuest: _NodeStyle(
+        color: Colors.teal.shade300,
+        icon: Icons.groups,
         radius: 8,
       ),
       _NodeKind.generic: _NodeStyle(
@@ -153,6 +173,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final styles = _styles(colorScheme);
+    final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const <String, dynamic>{};
 
     return Stack(
       children: [
@@ -174,7 +195,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                 final id = node.key!.value as String;
                 final isCurrent = id == playState.currentNodeId;
                 final storyNode = story.nodeFor(id);
-                final kind = storyNode != null ? _classify(storyNode) : _NodeKind.generic;
+                final kind = storyNode != null ? _classify(storyNode, quests) : _NodeKind.generic;
                 final style = styles[kind]!;
                 final isMainBeat = isMainBeatNode(id);
                 final hidden = _hiddenKinds.contains(kind);
