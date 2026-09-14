@@ -728,6 +728,21 @@ final DbSchema housesSchema = DbSchema(
   ],
 );
 
+final DbSchema achievementsSchema = DbSchema(
+  id: 'achievements',
+  label: 'Achievements',
+  assetPath: 'assets/gamedata/achievements.json',
+  primaryKeyField: 'achievementID',
+  titleField: 'achievementName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'achievementID', label: 'Achievement ID', type: FieldType.text),
+    FieldSchema(key: 'achievementName', label: 'Achievement Name', type: FieldType.text),
+    FieldSchema(key: 'description', label: 'Description', type: FieldType.multilineText),
+    visualAssetFieldSchema('achievements'),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
@@ -744,4 +759,5 @@ final List<DbSchema> gameDbSchemas = [
   professionsSchema,
   companionsSchema,
   housesSchema,
+  achievementsSchema,
 ];

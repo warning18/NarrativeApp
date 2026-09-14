@@ -1,0 +1,37 @@
+{
+  "first_companion": {
+    "achievementID": "first_companion",
+    "achievementName": "New Company",
+    "description": "Recruit your first companion."
+  },
+  "full_roster": {
+    "achievementID": "full_roster",
+    "achievementName": "Three's Company",
+    "description": "Recruit all three companions."
+  },
+  "full_party": {
+    "achievementID": "full_party",
+    "achievementName": "At My Back",
+    "description": "Field a full 3-member active party."
+  },
+  "keldas_hall_built": {
+    "achievementID": "keldas_hall_built",
+    "achievementName": "A Hall of Her Own",
+    "description": "Build Kelda's Hall."
+  },
+  "ally_revival": {
+    "achievementID": "ally_revival",
+    "achievementName": "Not Dead Yet",
+    "description": "Win a fight after an ally was knocked out and revived."
+  },
+  "first_quest": {
+    "achievementID": "first_quest",
+    "achievementName": "First Steps",
+    "description": "Complete your first quest."
+  },
+  "first_shop": {
+    "achievementID": "first_shop",
+    "achievementName": "Window Shopping",
+    "description": "Discover your first shop."
+  }
+}
