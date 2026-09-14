@@ -325,5 +325,76 @@
         "priority": 1
       }
     ]
+  },
+  "hollow_court_zealot": {
+    "enemyName": "Hollow Court Zealot",
+    "maxHealth": 218,
+    "damage": 25,
+    "xpReward": 109,
+    "goldReward": 82,
+    "lootTable": [
+      {
+        "itemID": "dagger_t9",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
+  "void_manifestation": {
+    "enemyName": "Void Manifestation",
+    "maxHealth": 236,
+    "damage": 27,
+    "xpReward": 118,
+    "goldReward": 89,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      },
+      {
+        "itemID": "artifact_moon_shard",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Always",
+        "requiredElement": "Void",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "shadow_step",
+        "condition": "OnLowHealth",
+        "requiredElement": "Wind",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
   }
 }
