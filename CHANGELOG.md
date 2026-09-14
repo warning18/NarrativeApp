@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.63.0+90]
+
+### Changed
+- **Narrative text throughout the app now reads like prose, not a form field.** The childhood/teenage origin-story dialog (shown once at character creation), the Quests tab's quest cards, and the shared item/skill/quest detail popup all now render their descriptive text with a serif typeface, 1.55-1.6 line height, and slight letter-spacing — the same readability treatment the story reader itself got earlier this session. The Quests tab's cards were also rebuilt from a cramped 3-line-max `ListTile` (which truncated longer dialogue) into a proper card layout that shows the full text.
+- **Added a "Jump to Chapter" panel to the Map screen.** A row of chapter chips (Prologue through the current content's last chapter) in the top-right corner jumps straight to that chapter's opening beat, reusing the same `jumpTo` the map's existing (undiscoverable) per-node double-tap already used — now there's a visible way to skip ahead and pick up a playthrough from a specific chapter without replaying from the start.
+
 ## [1.62.0+89]
 
 Phases 2 and 3 of the roguelike redesign (see the design doc's Phase 1 entry below for background). Both delivered without touching the story graph's existing routing — Phase 3 in particular turned out to need far less new content than expected, since its two "banner piece" payoffs were already fully built and just needed tagging.

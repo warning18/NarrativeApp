@@ -34,7 +34,11 @@ Future<void> showDetailDialog(
               if (description != null && description.isNotEmpty) ...[
                 Text(
                   description,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontFamily: 'serif',
+                        height: 1.55,
+                        letterSpacing: 0.1,
+                      ),
                 ),
                 const SizedBox(height: 16),
               ],

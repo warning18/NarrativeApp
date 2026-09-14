@@ -299,27 +299,37 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
           title: Text(tr(ref, prompt.titleKey)),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  '${index + 1} / ${originStoryPrompts.length}',
-                  style: Theme.of(dialogContext).textTheme.labelSmall,
-                ),
-                const SizedBox(height: 8),
-                Text(tr(ref, prompt.descriptionKey)),
-                const SizedBox(height: 16),
-                for (final choice in prompt.choices)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(dialogContext, choice),
-                      child: Text(tr(ref, choice.textKey), textAlign: TextAlign.center),
-                    ),
+          content: SizedBox(
+            width: 360,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    '${index + 1} / ${originStoryPrompts.length}',
+                    style: Theme.of(dialogContext).textTheme.labelSmall,
                   ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    tr(ref, prompt.descriptionKey),
+                    style: Theme.of(dialogContext).textTheme.bodyLarge?.copyWith(
+                          fontFamily: 'serif',
+                          height: 1.6,
+                          letterSpacing: 0.1,
+                        ),
+                  ),
+                  const SizedBox(height: 20),
+                  for (final choice in prompt.choices)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogContext, choice),
+                        child: Text(tr(ref, choice.textKey), textAlign: TextAlign.center),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),

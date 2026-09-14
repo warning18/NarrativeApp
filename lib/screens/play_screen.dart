@@ -410,16 +410,46 @@ class _QuestList extends ConsumerWidget {
         }
 
         return Card(
-          child: ListTile(
-            leading: Icon(questCategoryIcon(category)),
-            title: Text(questName),
-            subtitle: Text(
-              dialogue.isNotEmpty
-                  ? '$dialogue\n${tr(ref, 'status_label')}: $statusLabel'
-                  : '${tr(ref, 'status_label')}: $statusLabel',
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(questCategoryIcon(category)),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(questName, style: Theme.of(context).textTheme.titleMedium),
+                    ),
+                  ],
+                ),
+                if (dialogue.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    dialogue,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontFamily: 'serif',
+                          height: 1.55,
+                          letterSpacing: 0.1,
+                        ),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '${tr(ref, 'status_label')}: $statusLabel',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ),
+                    trailing,
+                  ],
+                ),
+              ],
             ),
-            isThreeLine: dialogue.isNotEmpty,
-            trailing: trailing,
           ),
         );
       }).toList(),
