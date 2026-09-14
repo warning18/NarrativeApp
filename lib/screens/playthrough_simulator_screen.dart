@@ -122,10 +122,17 @@ class _SimResult {
 _SimResult _simulate(
   StoryData story,
   Random random, {
+  Map<String, dynamic> enemies = const {},
   SimStrategy strategy = SimStrategy.random,
   int maxSteps = 200,
   bool french = false,
 }) {
+  int combatGoldReward(StoryChoice c) {
+    if (!c.triggersCombat) return 0;
+    final enemy = enemies[c.triggerEnemyId] as Map<String, dynamic>?;
+    return (enemy?['goldReward'] as num?)?.toInt() ?? 0;
+  }
+
   var currentId = StoryRepository.startNodeId;
   var gold = 0;
   var alignment = 0;
@@ -148,7 +155,7 @@ _SimResult _simulate(
         case SimStrategy.favorEvil:
           return -c.alignmentMod;
         case SimStrategy.maximizeGold:
-          return c.goldMod;
+          return c.goldMod + combatGoldReward(c);
         case SimStrategy.random:
           return 0;
       }
@@ -224,6 +231,11 @@ _SimResult _simulate(
     final pool = available.isNotEmpty ? available : node.choices;
     final choice = pickChoice(pool);
 
+    // A won fight pays out the enemy's goldReward just like a real playthrough
+    // (see FightScreen._finishFight) — folded into this step's goldMod so the
+    // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
+    final effectiveGoldMod = choice.goldMod + combatGoldReward(choice);
+
     steps.add(_SimStep(
       nodeId: currentId,
       chapter: lastKnownChapter,
@@ -232,11 +244,11 @@ _SimResult _simulate(
       description: node.descriptionFor(french),
       choiceText: choice.textFor(french),
       enemyId: choice.triggerEnemyId,
-      goldMod: choice.goldMod,
+      goldMod: effectiveGoldMod,
       alignmentMod: choice.alignmentMod,
     ));
 
-    gold = (gold + choice.goldMod).clamp(0, 1 << 30).toInt();
+    gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
     if ((choice.unlockShopId ?? '').isNotEmpty) shops.add(choice.unlockShopId!);
@@ -441,11 +453,12 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   Future<void> _run() async {
     setState(() => _running = true);
     final story = await ref.read(storyDataProvider.future);
+    final enemies = await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
     final results = [
       for (var i = 0; i < _runCount; i++)
-        _simulate(story, random, strategy: _strategy, french: french),
+        _simulate(story, random, enemies: enemies, strategy: _strategy, french: french),
     ];
     if (!mounted) return;
     ref.read(_simulatorBatchesProvider.notifier).addBatch(_strategy, results);

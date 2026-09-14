@@ -151,7 +151,6 @@
         "text": "Refuse & Fight",
         "text_fr": "Refuser et combattre",
         "next_id": "265",
-        "alignmentMod": -1,
         "questIDToProgress": "q_first_blood"
       }
     ]
@@ -1649,6 +1648,12 @@
         "text": "Confront them",
         "text_fr": "Les affronter",
         "next_id": "5004"
+      },
+      {
+        "text": "Cut them down before they can scatter",
+        "text_fr": "Les abattre avant qu’ils ne se dispersent",
+        "next_id": "5004b",
+        "triggerEnemyId": "hollow_court_zealot"
       }
     ]
   },
@@ -1748,7 +1753,7 @@
       {
         "text": "Step through the tear",
         "text_fr": "Franchir la déchirure",
-        "next_id": "6004"
+        "next_id": "6003b"
       }
     ]
   },
@@ -1789,6 +1794,47 @@
         "text": "Begin again, changed",
         "text_fr": "Recommencer, transformé",
         "next_id": "EXIT"
+      }
+    ]
+  },
+  "5004b": {
+    "id": "5004b",
+    "description": "Whatever quiet understanding the circle had been hoping for died with the first one I put down, along with any interest the rest had in finishing their ritual on schedule. It was not, in the end, a long fight — conviction has never once stopped a blade, whatever the pamphlets claim, and these were more devoted than they were dangerous. It left the chamber considerably quieter, and me considerably more tired, but standing among the wreckage of their altar I found exactly what they had been so eager to protect: a ledger, bound in something that had once, unmistakably, been skin, cataloguing every soul the Hollow Court had ever taken with the tidy dispassion of a merchant's inventory. I found my parents' names on the second page. I had already known, in the way one knows most unbearable things well before agreeing to admit it. Seeing it written, in another man's careful hand, was an altogether different, and considerably less forgivable, species of knowing.",
+    "description_fr": "Quel que fût l’accord tacite que le cercle avait espéré, il mourut avec le premier que j’abattis, emportant avec lui tout intérêt du reste à achever son rituel dans les temps. Ce ne fut, en définitive, pas un long combat — la conviction n’a jamais arrêté une lame, quoi qu’en disent les tracts, et ceux-ci étaient plus dévots que dangereux. Cela laissa la chambre nettement plus silencieuse, et moi nettement plus fatigué, mais debout parmi les décombres de leur autel, je trouvai exactement ce qu’ils avaient tant tenu à protéger : un registre, relié dans quelque chose ayant été, sans erreur possible, de la peau, cataloguant chaque âme que la Cour Creuse avait jamais prise avec le détachement méthodique d’un inventaire de marchand. Je trouvai le nom de mes parents à la deuxième page. Je le savais déjà, de cette façon dont on connaît la plupart des choses insupportables bien avant de consentir à l’admettre. Le voir écrit, de la main appliquée d’un autre, était une tout autre espèce de savoir, et nettement moins pardonnable.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5004b"
+    },
+    "choices": [
+      {
+        "text": "Take the ledger",
+        "text_fr": "Prendre le registre",
+        "next_id": "5005"
+      }
+    ]
+  },
+  "6003b": {
+    "id": "6003b",
+    "description": "The tear did not simply admit me. Something pulled itself free of the air beside it instead — no clearer shape than smoke deciding, briefly and with great effort, to imitate a man — and it wore, for reasons my stomach understood before my mind did, several faces I recognized. Wardens I had put down on a bridge, in a hallway, on a dock, all of them folded into one patient, borrowed silhouette between me and whatever waited on the other side. It did not seem interested in a conversation. Neither, by that point, was I.",
+    "description_fr": "La déchirure ne se contenta pas de m’admettre. Quelque chose se dégagea plutôt de l’air à ses côtés — pas plus de forme que de la fumée décidant, brièvement et avec un grand effort, d’imiter un homme — et cela portait, pour des raisons que mon estomac comprit avant mon esprit, plusieurs visages que je reconnaissais. Des Gardiens que j’avais abattus sur un pont, dans un couloir, sur un quai, tous repliés en une seule silhouette patiente et empruntée, dressée entre moi et ce qui m’attendait de l’autre côté. Cela ne semblait guère d’humeur à converser. Moi non plus, à ce stade.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6003b"
+    },
+    "choices": [
+      {
+        "text": "Fight through it",
+        "text_fr": "Le combattre pour passer",
+        "next_id": "6004",
+        "triggerEnemyId": "void_manifestation"
       }
     ]
   }
