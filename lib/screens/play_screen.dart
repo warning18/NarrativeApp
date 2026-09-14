@@ -14,6 +14,7 @@ import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import 'achievements_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
@@ -31,6 +32,7 @@ class PlayScreen extends ConsumerWidget {
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
+    final achievementsCount = ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
 
     final unseenQuests =
         session.unlockedQuestIds.where((id) => !session.seenQuestIds.contains(id)).length;
@@ -134,6 +136,22 @@ class PlayScreen extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CampScreen()),
+              );
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.emoji_events_outlined),
+            title: Text(tr(ref, 'achievements_title')),
+            subtitle: Text(
+              '${session.unlockedAchievementIds.length} / $achievementsCount '
+              '${tr(ref, 'achievements_progress_label').toLowerCase()}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AchievementsScreen()),
               );
             },
           ),
@@ -251,6 +269,7 @@ class _QuestList extends ConsumerWidget {
     final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
     final professions = ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+    final achievements = ref.watch(gameDbProvider(achievementsSchema)).value ?? const {};
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -318,8 +337,14 @@ class _QuestList extends ConsumerWidget {
                     );
                 recruitedName = companion?['companionName']?.toString() ?? rewardAllyId;
               }
+              final newAchievements = await ref
+                  .read(playerSessionProvider.notifier)
+                  .checkAchievements(totalCompanionCount: companions.length);
               if (!context.mounted) return;
               final lang = ref.read(appLanguageProvider);
+              final achievementNames = newAchievements
+                  .map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id)
+                  .toList();
               showImmersiveNotice(
                 context,
                 icon: Icons.emoji_events_outlined,
@@ -327,7 +352,8 @@ class _QuestList extends ConsumerWidget {
                     '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
                     '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
                     '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
-                    '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})',
+                    '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
+                    '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
               );
             },
             child: Text(tr(ref, 'complete')),

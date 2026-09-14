@@ -554,13 +554,17 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       // survivor's ending health is simply persisted as-is. Level-ups
       // already full-heal every recruited ally inside applyCombatResult
       // itself, so nothing further is needed for that case here.
+      var anyAllyRevived = false;
       for (final member in _party) {
         if (member.isPlayer) continue;
+        if (member.isKnockedOut) anyAllyRevived = true;
         final hpAfter = member.isKnockedOut
             ? (member.maxHealth * _reviveHealthFraction).round()
             : member.currentHealth;
         await notifier.applyAllyCombatResult(member.id, hpAfter: hpAfter);
       }
+      final newlyUnlockedAchievement =
+          anyAllyRevived ? await notifier.unlockAchievement('ally_revival') : false;
       if (!mounted) return;
       final lang = ref.read(appLanguageProvider);
       setState(() {
@@ -572,6 +576,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             _LogKind.victory,
           ),
         );
+        if (newlyUnlockedAchievement) {
+          _log.add(
+            _LogEntry(
+              '${trFor(lang, 'achievement_unlocked_prefix')}: Not Dead Yet',
+              _LogKind.victory,
+            ),
+          );
+        }
       });
       if (leveledUp) {
         final newLevel = ref.read(playerSessionProvider).level;

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/map_themes.dart';
 import '../data/story_repository.dart';
@@ -97,6 +98,14 @@ class _StoryView extends ConsumerWidget {
     final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
+    final displayDescription = node == null
+        ? ''
+        : withAllyAcknowledgment(
+            node.id,
+            node.descriptionFor(french),
+            hasActiveAlly: session.activeAllyIds.isNotEmpty,
+            french: french,
+          );
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
     final companionCollapsed = ref.watch(_companionCollapsedProvider);
@@ -146,7 +155,7 @@ class _StoryView extends ConsumerWidget {
     final apiKeyForPreload = ref.watch(apiKeyProvider);
     if (geminiVoiceForPreload.enabled && (apiKeyForPreload?.isNotEmpty ?? false)) {
       ref.read(geminiTtsProvider.notifier).preload(
-            text: storyBodyFor(node.descriptionFor(french)),
+            text: storyBodyFor(displayDescription),
             apiKey: apiKeyForPreload!,
             voiceName: geminiVoiceForPreload.voiceName,
             language: language,
@@ -165,7 +174,7 @@ class _StoryView extends ConsumerWidget {
           ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
           ref.read(geminiTtsProvider.notifier).stop();
           try {
-            await _speakNarration(ref, storyBodyFor(node.descriptionFor(french)), language);
+            await _speakNarration(ref, storyBodyFor(displayDescription), language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
             // failure here must still surface — otherwise it just looks
@@ -259,7 +268,7 @@ class _StoryView extends ConsumerWidget {
                     label: Text(tr(ref, 'back')),
                   ),
                 const Spacer(),
-                _ReadAloudButton(text: node.descriptionFor(french), language: language),
+                _ReadAloudButton(text: displayDescription, language: language),
                 const SizedBox(width: 4),
                 Text(
                   playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
@@ -309,7 +318,7 @@ class _StoryView extends ConsumerWidget {
                   transitionBuilder: _nodeTransition,
                   child: SingleChildScrollView(
                     key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
-                    child: _StoryText(text: node.descriptionFor(french)),
+                    child: _StoryText(text: displayDescription),
                   ),
                 ),
               ),
@@ -536,12 +545,18 @@ class _ChoiceButton extends ConsumerWidget {
                     );
               }
               if (choice.hasUnlocks) {
-                ref.read(playerSessionProvider.notifier).unlockContent(
+                await ref.read(playerSessionProvider.notifier).unlockContent(
                       shopId: choice.unlockShopId,
                       questId: choice.unlockQuestId,
                       enemyId: choice.triggerEnemyId,
                       shopUnlockNodeId: currentNodeId,
                     );
+                if ((choice.unlockShopId ?? '').isNotEmpty) {
+                  // Silent — no popup here (the discovery modal below already
+                  // covers "something new happened"); the Achievements
+                  // screen is where this becomes visible.
+                  await ref.read(playerSessionProvider.notifier).checkAchievements();
+                }
                 final newShopId = choice.unlockShopId ?? '';
                 final newQuestId = choice.unlockQuestId ?? '';
                 if (!isExcursion && (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {

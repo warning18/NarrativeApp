@@ -54,6 +54,7 @@ class PlayerSession {
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.builtHouseIds = const [],
+    this.unlockedAchievementIds = const [],
   });
 
   final int level;
@@ -135,6 +136,10 @@ class PlayerSession {
   /// (`partyCapacityBonus`), per houses.json.
   final List<String> builtHouseIds;
 
+  /// Achievement ids the player has earned — permanent, append-only, like
+  /// [completedQuestIds].
+  final List<String> unlockedAchievementIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -195,6 +200,7 @@ class PlayerSession {
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? builtHouseIds,
+    List<String>? unlockedAchievementIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -233,6 +239,7 @@ class PlayerSession {
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
+      unlockedAchievementIds: unlockedAchievementIds ?? this.unlockedAchievementIds,
     );
   }
 
@@ -273,6 +280,7 @@ class PlayerSession {
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'builtHouseIds': builtHouseIds,
+        'unlockedAchievementIds': unlockedAchievementIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -343,6 +351,8 @@ class PlayerSession {
           (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      unlockedAchievementIds:
+          (json['unlockedAchievementIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -849,6 +859,55 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ],
     );
     await _persist();
+  }
+
+  // --- Achievements -------------------------------------------------------
+
+  /// Grants a single achievement outright — for milestones that are a
+  /// one-off *event* rather than something derivable from persisted state
+  /// (e.g. "revived a knocked-out ally," which isn't itself remembered once
+  /// the fight ends). Idempotent; returns whether it was newly unlocked, so
+  /// a caller can show a notice only the first time.
+  Future<bool> unlockAchievement(String id) async {
+    if (state.unlockedAchievementIds.contains(id)) return false;
+    state = state.copyWith(unlockedAchievementIds: [...state.unlockedAchievementIds, id]);
+    await _persist();
+    return true;
+  }
+
+  /// Checks every achievement whose condition is a plain function of
+  /// current, already-persisted [PlayerSession] state, and unlocks any
+  /// newly met — called after whichever mutators could make one newly true
+  /// (recruiting, activating an ally, building a house, completing a
+  /// quest). [totalCompanionCount] is optional (the notifier has no DB
+  /// access of its own) — pass it (from companions.json) when checking
+  /// right after a recruit, the only time "recruited everyone" could
+  /// newly become true; omitting it just skips that one check. Returns the
+  /// newly-unlocked ids, if a caller wants to show a notice.
+  Future<List<String>> checkAchievements({int totalCompanionCount = 0}) async {
+    final newly = <String>[];
+    void check(String id, bool condition) {
+      if (condition && !state.unlockedAchievementIds.contains(id) && !newly.contains(id)) {
+        newly.add(id);
+      }
+    }
+
+    check('first_companion', state.recruitedAllies.isNotEmpty);
+    if (totalCompanionCount > 0) {
+      check('full_roster', state.recruitedAllies.length >= totalCompanionCount);
+    }
+    check('full_party', state.activeAllyIds.length >= 3);
+    check('keldas_hall_built', state.builtHouseIds.contains('keldas_hall'));
+    check('first_quest', state.completedQuestIds.isNotEmpty);
+    check('first_shop', state.unlockedShopIds.isNotEmpty);
+
+    if (newly.isNotEmpty) {
+      state = state.copyWith(
+        unlockedAchievementIds: [...state.unlockedAchievementIds, ...newly],
+      );
+      await _persist();
+    }
+    return newly;
   }
 
   /// Marks a shop/quest/enemy as discovered through story progression, so it

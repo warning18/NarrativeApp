@@ -686,6 +686,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'party_capacity_label': {AppLanguage.en: 'party capacity', AppLanguage.fr: 'capacité du groupe'},
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
+  'achievement_unlocked_prefix': {
+    AppLanguage.en: 'Achievement unlocked',
+    AppLanguage.fr: 'Haut fait débloqué',
+  },
+  'achievements_title': {AppLanguage.en: 'Achievements', AppLanguage.fr: 'Hauts faits'},
+  'achievements_progress_label': {AppLanguage.en: 'Unlocked', AppLanguage.fr: 'Débloqués'},
+  'failed_to_load_achievements': {
+    AppLanguage.en: 'Failed to load achievements',
+    AppLanguage.fr: 'Échec du chargement des hauts faits',
+  },
   'drink_potion_prefix': {
     AppLanguage.en: 'You drink a potion and recover',
     AppLanguage.fr: 'Vous buvez une potion et récupérez',

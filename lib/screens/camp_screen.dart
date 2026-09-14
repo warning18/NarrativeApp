@@ -26,12 +26,14 @@ class CampScreen extends ConsumerWidget {
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
+    final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;
     final races = racesAsync.value;
     final professions = professionsAsync.value;
     final gameConfig = gameConfigAsync.value;
+    final achievements = achievementsAsync.value ?? const {};
 
     if (companions == null || houses == null || races == null || professions == null || gameConfig == null) {
       return Scaffold(
@@ -136,12 +138,20 @@ class CampScreen extends ConsumerWidget {
                         selected: isActive,
                         onSelected: (!isActive && !canActivate)
                             ? null
-                            : (_) => ref.read(playerSessionProvider.notifier).setAllyActive(
-                                  companionId,
-                                  !isActive,
-                                  partyCapacity: partyCapacity,
-                                  requiredHouseId: requiredHouseId,
-                                ),
+                            : (_) async {
+                                final wasActive = isActive;
+                                await ref.read(playerSessionProvider.notifier).setAllyActive(
+                                      companionId,
+                                      !wasActive,
+                                      partyCapacity: partyCapacity,
+                                      requiredHouseId: requiredHouseId,
+                                    );
+                                if (wasActive) return;
+                                final newAchievements =
+                                    await ref.read(playerSessionProvider.notifier).checkAchievements();
+                                if (newAchievements.isEmpty || !context.mounted) return;
+                                _showAchievementNotice(context, ref, achievements, newAchievements);
+                              },
                       ),
                     ),
                     Padding(
@@ -213,11 +223,18 @@ class CampScreen extends ConsumerWidget {
                                 await ref
                                     .read(playerSessionProvider.notifier)
                                     .buildHouse(houseId, cost);
+                                final newAchievements =
+                                    await ref.read(playerSessionProvider.notifier).checkAchievements();
                                 if (!context.mounted) return;
+                                final achievementSuffix = newAchievements.isEmpty
+                                    ? ''
+                                    : '\n${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: '
+                                        '${newAchievements.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
                                 showImmersiveNotice(
                                   context,
                                   icon: Icons.home,
-                                  message: '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: $houseName',
+                                  message: '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: '
+                                      '$houseName$achievementSuffix',
                                 );
                               },
                         child: Text('${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
@@ -229,4 +246,20 @@ class CampScreen extends ConsumerWidget {
       ),
     );
   }
+}
+
+void _showAchievementNotice(
+  BuildContext context,
+  WidgetRef ref,
+  Map<String, dynamic> achievements,
+  List<String> newlyUnlockedIds,
+) {
+  final names = newlyUnlockedIds
+      .map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id)
+      .join(', ');
+  showImmersiveNotice(
+    context,
+    icon: Icons.emoji_events_outlined,
+    message: '${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: $names',
+  );
 }
