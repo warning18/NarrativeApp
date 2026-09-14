@@ -326,6 +326,36 @@
       }
     ]
   },
+  "kroll_the_branded": {
+    "enemyName": "Inquisitor Kroll",
+    "maxHealth": 145,
+    "damage": 18,
+    "xpReward": 70,
+    "goldReward": 55,
+    "lootTable": [
+      {
+        "itemID": "dagger_t3",
+        "dropRate": 25
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 35
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 55,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ]
+  },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
     "maxHealth": 218,
