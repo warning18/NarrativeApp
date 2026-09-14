@@ -687,6 +687,28 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'party_capacity_label': {AppLanguage.en: 'party capacity', AppLanguage.fr: 'capacité du groupe'},
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
+  'town_hub_title': {AppLanguage.en: 'Town Hub', AppLanguage.fr: 'Place du village'},
+  'zones_cleared_label': {AppLanguage.en: 'Zones Cleared', AppLanguage.fr: 'Zones nettoyées'},
+  'basic_shops_section': {AppLanguage.en: 'Basic Shops', AppLanguage.fr: 'Commerces de base'},
+  'zones_section': {AppLanguage.en: 'Zones', AppLanguage.fr: 'Zones'},
+  'no_zones_available': {
+    AppLanguage.en: 'No zones to explore here yet.',
+    AppLanguage.fr: "Aucune zone à explorer ici pour l'instant.",
+  },
+  'zone_cleared_label': {AppLanguage.en: 'Cleared', AppLanguage.fr: 'Nettoyée'},
+  'begin_expedition_button': {AppLanguage.en: 'Begin Expedition', AppLanguage.fr: "Partir en expédition"},
+  'expedition_progress_label': {AppLanguage.en: 'Expedition', AppLanguage.fr: 'Expédition'},
+  'expedition_defeated_message': {
+    AppLanguage.en: "You're overwhelmed and pull back to town — everything you'd already gained this run stays with you, but this zone's prize is still out there.",
+    AppLanguage.fr: "Débordé, vous vous repliez vers la ville — tout ce que vous aviez déjà gagné durant cette sortie reste acquis, mais la récompense de cette zone vous échappe encore.",
+  },
+  'expedition_retreat_message': {
+    AppLanguage.en: "You break off and head back to town — everything you'd already gained this run stays with you, but this zone's prize is still out there.",
+    AppLanguage.fr: "Vous interrompez la sortie et rentrez en ville — tout ce que vous aviez déjà gagné durant cette sortie reste acquis, mais la récompense de cette zone vous échappe encore.",
+  },
+  'expedition_ended_title': {AppLanguage.en: 'Expedition Ended', AppLanguage.fr: 'Expédition interrompue'},
+  'zone_cleared_prefix': {AppLanguage.en: 'Zone cleared', AppLanguage.fr: 'Zone nettoyée'},
+  'return_to_town_button': {AppLanguage.en: 'Return to Town', AppLanguage.fr: 'Retourner en ville'},
   'achievement_unlocked_prefix': {
     AppLanguage.en: 'Achievement unlocked',
     AppLanguage.fr: 'Haut fait débloqué',

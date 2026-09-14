@@ -96,6 +96,17 @@ const List<String> nodeCategoryOptions = [
 
 const List<String> nodeDifficultyOptions = ['Normal', 'Hard', 'Elite', 'Boss'];
 
+// Mirrors the MapTheme enum in lib/data/map_themes.dart — kept as plain
+// strings here (like every other enum field in this file) rather than
+// importing that enum, so the data-editor schema layer stays free of any
+// dependency on gameplay code.
+const List<String> mapThemeOptions = [
+  'ashenStreets',
+  'saltRoads',
+  'hollowReaches',
+  'wildsBeyond',
+];
+
 const List<String> skillMoveConditionOptions = [
   'Always',
   'Chance',
@@ -728,6 +739,58 @@ final DbSchema housesSchema = DbSchema(
   ],
 );
 
+final DbSchema zonesSchema = DbSchema(
+  id: 'zones',
+  label: 'Zones (Expeditions)',
+  assetPath: 'assets/gamedata/zones.json',
+  primaryKeyField: 'zoneID',
+  titleField: 'zoneName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'zoneID', label: 'Zone ID', type: FieldType.text),
+    FieldSchema(key: 'zoneName', label: 'Zone Name', type: FieldType.text),
+    FieldSchema(key: 'chapter', label: 'Chapter', type: FieldType.integer, defaultValue: 1),
+    FieldSchema(
+      key: 'expeditionCount',
+      label: 'Expeditions In This Zone',
+      type: FieldType.integer,
+      defaultValue: 3,
+    ),
+    FieldSchema(
+      key: 'mapTheme',
+      label: 'Flavor Theme',
+      type: FieldType.enumeration,
+      enumOptions: mapThemeOptions,
+    ),
+    FieldSchema(key: 'flavorText', label: 'Flavor Text', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'rewardGold',
+      label: 'Reward Gold (on zone completion)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'rewardItemId',
+      label: 'Reward Item ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'items',
+    ),
+    FieldSchema(
+      key: 'rewardDiceId',
+      label: 'Reward Dice ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'dice',
+    ),
+    FieldSchema(
+      key: 'rewardAllyId',
+      label: 'Reward Ally ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
+    visualAssetFieldSchema('zones'),
+  ],
+);
+
 final DbSchema achievementsSchema = DbSchema(
   id: 'achievements',
   label: 'Achievements',
@@ -760,4 +823,5 @@ final List<DbSchema> gameDbSchemas = [
   companionsSchema,
   housesSchema,
   achievementsSchema,
+  zonesSchema,
 ];

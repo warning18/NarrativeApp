@@ -55,6 +55,7 @@ class PlayerSession {
     this.activeAllyIds = const [],
     this.builtHouseIds = const [],
     this.unlockedAchievementIds = const [],
+    this.completedZoneIds = const [],
   });
 
   final int level;
@@ -140,6 +141,13 @@ class PlayerSession {
   /// [completedQuestIds].
   final List<String> unlockedAchievementIds;
 
+  /// Expedition zones whose reward has already been banked — permanent,
+  /// append-only, like [completedQuestIds]. A zone not yet in this list can
+  /// still be attempted any number of times (a retreat doesn't cost
+  /// anything beyond that run's own unbanked reward); once complete, it
+  /// won't offer its reward again.
+  final List<String> completedZoneIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -201,6 +209,7 @@ class PlayerSession {
     List<String>? activeAllyIds,
     List<String>? builtHouseIds,
     List<String>? unlockedAchievementIds,
+    List<String>? completedZoneIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -240,6 +249,7 @@ class PlayerSession {
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       unlockedAchievementIds: unlockedAchievementIds ?? this.unlockedAchievementIds,
+      completedZoneIds: completedZoneIds ?? this.completedZoneIds,
     );
   }
 
@@ -281,6 +291,7 @@ class PlayerSession {
         'activeAllyIds': activeAllyIds,
         'builtHouseIds': builtHouseIds,
         'unlockedAchievementIds': unlockedAchievementIds,
+        'completedZoneIds': completedZoneIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -353,6 +364,8 @@ class PlayerSession {
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       unlockedAchievementIds:
           (json['unlockedAchievementIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      completedZoneIds:
+          (json['completedZoneIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -769,6 +782,40 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],
+    );
+    await _persist();
+  }
+
+  // --- Expedition zones ----------------------------------------------------
+
+  /// Banks a zone's completion reward — the payoff for clearing every
+  /// expedition in [zoneId] in one run without retreating (see
+  /// [ExpeditionScreen]). No-ops if already banked (a zone pays out once).
+  /// Ally rewards aren't handled here, mirroring [completeQuest]'s own
+  /// `rewardAllyId` convention: the caller looks up the companion's
+  /// race/profession and calls [recruitAlly] itself.
+  Future<void> completeZone(
+    String zoneId, {
+    int rewardGold = 0,
+    String? rewardItemId,
+    String? rewardDiceId,
+  }) async {
+    if (state.completedZoneIds.contains(zoneId)) return;
+    final newInventory = [...state.inventoryItemIds];
+    if (rewardItemId != null && rewardItemId.isNotEmpty) {
+      newInventory.add(rewardItemId);
+    }
+    var newOwnedDice = state.ownedDiceIds;
+    if (rewardDiceId != null &&
+        rewardDiceId.isNotEmpty &&
+        !newOwnedDice.contains(rewardDiceId)) {
+      newOwnedDice = [...newOwnedDice, rewardDiceId];
+    }
+    state = state.copyWith(
+      gold: state.gold + rewardGold,
+      inventoryItemIds: newInventory,
+      ownedDiceIds: newOwnedDice,
+      completedZoneIds: [...state.completedZoneIds, zoneId],
     );
     await _persist();
   }

@@ -20,6 +20,7 @@ import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
+import 'town_hub_screen.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -137,6 +138,22 @@ class PlayScreen extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CampScreen()),
+              );
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.cottage_outlined),
+            title: Text(tr(ref, 'town_hub_title')),
+            subtitle: Text(
+              '${session.completedZoneIds.length} '
+              '${tr(ref, 'zones_cleared_label').toLowerCase()}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const TownHubScreen()),
               );
             },
           ),

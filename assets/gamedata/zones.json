@@ -1,0 +1,26 @@
+{
+  "z_fishermans_row": {
+    "zoneID": "z_fishermans_row",
+    "zoneName": "Fisherman's Row",
+    "chapter": 2,
+    "expeditionCount": 3,
+    "mapTheme": "saltRoads",
+    "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbor wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they've learned not to ask why.",
+    "rewardGold": 60,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": ""
+  },
+  "z_tanners_court": {
+    "zoneID": "z_tanners_court",
+    "zoneName": "Tanner's Court",
+    "chapter": 2,
+    "expeditionCount": 3,
+    "mapTheme": "saltRoads",
+    "flavorText": "The smell reaches you before the court does -- lime, salt, and something under it best not examined too closely. Whatever's worth finding here, someone tanned a hide over it first.",
+    "rewardGold": 0,
+    "rewardItemId": "armor_leather",
+    "rewardDiceId": "",
+    "rewardAllyId": ""
+  }
+}

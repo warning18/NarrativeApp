@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.61.0+88]
+
+The first build slice of a larger roguelike redesign discussed and written up as a design doc this session ("The Scattered Banner"): a town-and-expedition loop wrapped around the existing chapters rather than replacing them. This entry is Phase 1 only — "one zone, land only" — proving the mechanism before any existing story content is touched.
+
+### Added
+- **Town Hub screen.** A new, separate screen (`lib/screens/town_hub_screen.dart`, reachable from a new Play-tab card) distinct from Camp: a tutorial/prologue stop with a couple of already-stocked basic shops (Blind Beggar Stall, Weaponsmith's Forge — nothing to build) and a list of the current chapter's expedition zones. Camp remains the one persistent base the player builds from scratch and keeps for the rest of the game; the town hub is what they have before they have that.
+- **Expeditions.** A new `zones.json` data table (2 zones added for Chapter 2: Fisherman's Row, Tanner's Court) and `ExpeditionScreen` (`lib/screens/expedition_screen.dart`) that walks a zone's fixed chain of events — each one drawn live from `SubNodeEngine`'s existing themed flavor pools (its internal node-builder was made public, `SubNodeEngine.buildNode`, rather than duplicated) so a new zone needs no per-event writing, only a data row. Fights resolve through the existing `FightScreen`/`combat_engine.dart` unchanged; shop finds push the existing `ShopDetailScreen`; treasure/rest apply through the existing `applyChoiceEffects`. Losing or fleeing a fight, or retreating voluntarily between events, ends the run — everything already gained that run (gold, items, XP from any won fight) is kept, but the zone's own banked completion reward is forfeit until the zone is cleared in one run. `PlayerSession.completedZoneIds` (new field) tracks cleared zones permanently, mirroring `completedQuestIds`.
+
+### Not in this slice
+Re-plumbing Chapters 2-3's *existing* content onto this frame, the boat/FTL system, and Chapters 5-7's content are later phases per the design doc — deliberately not started here.
+
 ## [1.60.0+87]
 
 ### Changed

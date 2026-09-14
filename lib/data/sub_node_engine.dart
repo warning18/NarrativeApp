@@ -48,7 +48,7 @@ class SubNodeEngine {
 
     return [
       for (var i = 0; i < length; i++)
-        _buildNode(
+        buildNode(
           random: random,
           flavor: flavor,
           shopPool: shopPool,
@@ -58,7 +58,12 @@ class SubNodeEngine {
     ];
   }
 
-  static StoryNode _buildNode({
+  /// Builds a single typed flavor-pool node (shop/enemy/treasure/rest/quest,
+  /// or a plain generic beat if none of those roll) — the same weighted
+  /// draw [maybeGenerate] chains together for excursions, exposed on its
+  /// own so other callers (e.g. the expedition system) can draw one event
+  /// at a time from the same themed pools instead of a whole chain.
+  static StoryNode buildNode({
     required Random random,
     required ExcursionFlavor flavor,
     required List<String> shopPool,
