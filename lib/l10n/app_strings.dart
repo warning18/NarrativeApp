@@ -532,6 +532,121 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Pull free and keep walking without a word',
     AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
   },
+  // Profession-flavored small variants of the beggar's-plea beat above —
+  // same shape and length, reworded to each profession's own world. Rogue
+  // gets a genuinely different scenario (a rigged card game) rather than a
+  // reskin, matching the "cheat in a game" example this was requested with.
+  'origin_childhood_beggar_warrior_title': {
+    AppLanguage.en: 'Childhood: The Wounded Veteran',
+    AppLanguage.fr: 'Enfance : Le vieux soldat',
+  },
+  'origin_childhood_beggar_warrior_desc': {
+    AppLanguage.en: 'An old soldier begging outside the training yard grabs your sleeve, '
+        'pleading for the last ration in your pack.',
+    AppLanguage.fr: "Un vieux soldat devant la cour d'entraînement s'accroche à ta manche, "
+        'suppliant pour la dernière ration dans ton sac.',
+  },
+  'origin_childhood_beggar_warrior_good': {
+    AppLanguage.en: 'Give him the ration, even hungry yourself',
+    AppLanguage.fr: 'Lui donner la ration, même le ventre vide',
+  },
+  'origin_childhood_beggar_warrior_evil': {
+    AppLanguage.en: 'Mock his weakness and eat it in front of him',
+    AppLanguage.fr: 'Te moquer de sa faiblesse et la manger devant lui',
+  },
+  'origin_childhood_beggar_warrior_neutral': {
+    AppLanguage.en: 'Pull free and keep walking without a word',
+    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+  },
+  'origin_childhood_beggar_mage_title': {
+    AppLanguage.en: "Childhood: The Hedge-Mage's Plea",
+    AppLanguage.fr: 'Enfance : La supplique du sorcier des rues',
+  },
+  'origin_childhood_beggar_mage_desc': {
+    AppLanguage.en: 'An old hedge-mage outside the arcane bazaar grabs your sleeve, pleading '
+        'for the last warming charm in your hand.',
+    AppLanguage.fr: 'Un vieux sorcier des rues devant le bazar arcanique s\'accroche à ta '
+        'manche, suppliant pour le dernier charme de chaleur dans ta main.',
+  },
+  'origin_childhood_beggar_mage_good': {
+    AppLanguage.en: 'Give him the charm, even cold yourself',
+    AppLanguage.fr: 'Lui donner le charme, même transi de froid',
+  },
+  'origin_childhood_beggar_mage_evil': {
+    AppLanguage.en: 'Mock him and use it yourself in front of him',
+    AppLanguage.fr: "Te moquer de lui et l'utiliser devant lui",
+  },
+  'origin_childhood_beggar_mage_neutral': {
+    AppLanguage.en: 'Pull free and keep walking without a word',
+    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+  },
+  'origin_childhood_beggar_rogue_title': {
+    AppLanguage.en: 'Childhood: The Rigged Game',
+    AppLanguage.fr: 'Enfance : La partie truquée',
+  },
+  'origin_childhood_beggar_rogue_desc': {
+    AppLanguage.en: 'An old card-sharp in the back alley waves you over, offering a game you '
+        'can tell — even at your age — is rigged in your favor against the next mark.',
+    AppLanguage.fr: 'Un vieux tricheur de cartes dans la ruelle te fait signe, proposant une '
+        'partie que tu devines déjà — même à cet âge — truquée en ta faveur contre le '
+        'prochain pigeon.',
+  },
+  'origin_childhood_beggar_rogue_good': {
+    AppLanguage.en: 'Warn the next mark before he sits down to lose',
+    AppLanguage.fr: "Prévenir le prochain pigeon avant qu'il ne s'assoie pour perdre",
+  },
+  'origin_childhood_beggar_rogue_evil': {
+    AppLanguage.en: 'Take the seat and let the game run as rigged',
+    AppLanguage.fr: 'Prendre place et laisser la partie truquée suivre son cours',
+  },
+  'origin_childhood_beggar_rogue_neutral': {
+    AppLanguage.en: 'Walk past without a word either way',
+    AppLanguage.fr: "Passer ton chemin sans un mot, dans un sens comme dans l'autre",
+  },
+  'origin_childhood_beggar_cleric_title': {
+    AppLanguage.en: "Childhood: The Pilgrim's Plea",
+    AppLanguage.fr: 'Enfance : La supplique du pèlerin',
+  },
+  'origin_childhood_beggar_cleric_desc': {
+    AppLanguage.en: 'An old pilgrim outside the temple steps grabs your sleeve, pleading for '
+        'the last coin in your hand for the offering box.',
+    AppLanguage.fr: "Un vieux pèlerin devant les marches du temple s'accroche à ta manche, "
+        'suppliant pour la dernière pièce dans ta main, pour le tronc des offrandes.',
+  },
+  'origin_childhood_beggar_cleric_good': {
+    AppLanguage.en: 'Give him the coin, even poor yourself',
+    AppLanguage.fr: 'Lui donner la pièce, même démuni toi-même',
+  },
+  'origin_childhood_beggar_cleric_evil': {
+    AppLanguage.en: 'Mock his faith and pocket it in front of him',
+    AppLanguage.fr: 'Te moquer de sa foi et l\'empocher devant lui',
+  },
+  'origin_childhood_beggar_cleric_neutral': {
+    AppLanguage.en: 'Pull free and keep walking without a word',
+    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+  },
+  'origin_childhood_beggar_ranger_title': {
+    AppLanguage.en: "Childhood: The Trapper's Plea",
+    AppLanguage.fr: 'Enfance : La supplique du trappeur',
+  },
+  'origin_childhood_beggar_ranger_desc': {
+    AppLanguage.en: 'An old trapper outside the hunting lodge grabs your sleeve, pleading for '
+        'the last strip of dried meat in your pack.',
+    AppLanguage.fr: "Un vieux trappeur devant le pavillon de chasse s'accroche à ta manche, "
+        'suppliant pour la dernière lanière de viande séchée dans ton sac.',
+  },
+  'origin_childhood_beggar_ranger_good': {
+    AppLanguage.en: 'Give him the meat, even hungry yourself',
+    AppLanguage.fr: 'Lui donner la viande, même affamé toi-même',
+  },
+  'origin_childhood_beggar_ranger_evil': {
+    AppLanguage.en: 'Mock his hunger and eat it in front of him',
+    AppLanguage.fr: 'Te moquer de sa faim et la manger devant lui',
+  },
+  'origin_childhood_beggar_ranger_neutral': {
+    AppLanguage.en: 'Pull free and keep walking without a word',
+    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+  },
   'origin_teen_bully_title': {
     AppLanguage.en: 'Teenage Years: The Bully',
     AppLanguage.fr: 'Adolescence : Le tyran de cour',

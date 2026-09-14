@@ -293,7 +293,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   Future<void> _runOriginStories() async {
     for (var index = 0; index < originStoryPrompts.length; index++) {
       if (!mounted) return;
-      final prompt = originStoryPrompts[index];
+      final prompt = originPromptForSlot(index, _selectedProfessionId);
       final choice = await showDialog<OriginChoice>(
         context: context,
         barrierDismissible: false,

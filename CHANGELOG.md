@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.64.0+91]
+
+### Added
+- **Profession-flavored origin story.** The "beggar's plea" childhood prompt (one of the five formative-memory beats shown at character creation) now has a variant per profession instead of one generic version for everyone: Warrior (a wounded veteran's ration), Mage (a hedge-mage's warming charm), Cleric (a pilgrim's offering coin), Ranger (a trapper's dried meat) each get a small reskin of the same beat; Rogue gets a genuinely different scenario — a rigged card game, warn the mark or run it as rigged. New `originPromptForSlot()` picks the right variant for the player's chosen profession, falling back to the original generic prompt for any profession without one.
+
 ## [1.63.0+90]
 
 ### Changed

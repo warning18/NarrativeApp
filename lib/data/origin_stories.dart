@@ -76,3 +76,74 @@ const List<OriginPrompt> originStoryPrompts = [
     ],
   ),
 ];
+
+/// Index into [originStoryPrompts] of the "beggar's plea" beat — the one
+/// prompt slot that gets a profession-specific variant (see
+/// [beggarPromptByProfession]) instead of the shared generic text.
+const int beggarPromptSlotIndex = 1;
+
+/// Profession-flavored variants of the beggar's-plea prompt: same beat, a
+/// small reskin of the setting/object for warrior/mage/cleric/ranger, and a
+/// genuinely different rigged-card-game scenario for rogue. Keyed by
+/// professionID (professions.json). A profession missing here (including
+/// none selected yet) falls back to the generic prompt at
+/// [beggarPromptSlotIndex] — see [originPromptForSlot].
+const Map<String, OriginPrompt> beggarPromptByProfession = {
+  'warrior': OriginPrompt(
+    titleKey: 'origin_childhood_beggar_warrior_title',
+    descriptionKey: 'origin_childhood_beggar_warrior_desc',
+    choices: [
+      OriginChoice(textKey: 'origin_childhood_beggar_warrior_good', alignmentMod: 4),
+      OriginChoice(textKey: 'origin_childhood_beggar_warrior_evil', alignmentMod: -4),
+      OriginChoice(textKey: 'origin_childhood_beggar_warrior_neutral', alignmentMod: 0),
+    ],
+  ),
+  'mage': OriginPrompt(
+    titleKey: 'origin_childhood_beggar_mage_title',
+    descriptionKey: 'origin_childhood_beggar_mage_desc',
+    choices: [
+      OriginChoice(textKey: 'origin_childhood_beggar_mage_good', alignmentMod: 4),
+      OriginChoice(textKey: 'origin_childhood_beggar_mage_evil', alignmentMod: -4),
+      OriginChoice(textKey: 'origin_childhood_beggar_mage_neutral', alignmentMod: 0),
+    ],
+  ),
+  'rogue': OriginPrompt(
+    titleKey: 'origin_childhood_beggar_rogue_title',
+    descriptionKey: 'origin_childhood_beggar_rogue_desc',
+    choices: [
+      OriginChoice(textKey: 'origin_childhood_beggar_rogue_good', alignmentMod: 4),
+      OriginChoice(textKey: 'origin_childhood_beggar_rogue_evil', alignmentMod: -4),
+      OriginChoice(textKey: 'origin_childhood_beggar_rogue_neutral', alignmentMod: 0),
+    ],
+  ),
+  'cleric': OriginPrompt(
+    titleKey: 'origin_childhood_beggar_cleric_title',
+    descriptionKey: 'origin_childhood_beggar_cleric_desc',
+    choices: [
+      OriginChoice(textKey: 'origin_childhood_beggar_cleric_good', alignmentMod: 4),
+      OriginChoice(textKey: 'origin_childhood_beggar_cleric_evil', alignmentMod: -4),
+      OriginChoice(textKey: 'origin_childhood_beggar_cleric_neutral', alignmentMod: 0),
+    ],
+  ),
+  'ranger': OriginPrompt(
+    titleKey: 'origin_childhood_beggar_ranger_title',
+    descriptionKey: 'origin_childhood_beggar_ranger_desc',
+    choices: [
+      OriginChoice(textKey: 'origin_childhood_beggar_ranger_good', alignmentMod: 4),
+      OriginChoice(textKey: 'origin_childhood_beggar_ranger_evil', alignmentMod: -4),
+      OriginChoice(textKey: 'origin_childhood_beggar_ranger_neutral', alignmentMod: 0),
+    ],
+  ),
+};
+
+/// The prompt to show for slot [index] of [originStoryPrompts], given the
+/// player's chosen [professionId] — the beggar slot swaps in that
+/// profession's variant when one exists; every other slot (and an unknown
+/// or empty professionId) just returns the shared generic prompt.
+OriginPrompt originPromptForSlot(int index, String? professionId) {
+  if (index == beggarPromptSlotIndex && professionId != null) {
+    final variant = beggarPromptByProfession[professionId];
+    if (variant != null) return variant;
+  }
+  return originStoryPrompts[index];
+}
