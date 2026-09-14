@@ -144,6 +144,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardItemId = widget.zone['rewardItemId']?.toString() ?? '';
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
+    final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
     final lang = ref.read(appLanguageProvider);
 
     await notifier.completeZone(
@@ -151,6 +152,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardGold: rewardGold,
       rewardItemId: rewardItemId.isNotEmpty ? rewardItemId : null,
       rewardDiceId: rewardDiceId.isNotEmpty ? rewardDiceId : null,
+      rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
     );
 
     final lines = <String>[];
@@ -177,6 +179,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           professions[companion?['professionId']?.toString() ?? ''] as Map<String, dynamic>?;
       await notifier.recruitAlly(rewardAllyId, race: race, profession: profession);
       lines.add(companion?['companionName']?.toString() ?? rewardAllyId);
+    }
+    if (rewardFlag.isNotEmpty) {
+      final flagKey = 'zone_flag_$rewardFlag';
+      final flagLine = trFor(lang, flagKey);
+      if (flagLine != flagKey) lines.add(flagLine);
     }
 
     final newAchievements = await notifier.checkAchievements();

@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.62.0+89]
+
+Phases 2 and 3 of the roguelike redesign (see the design doc's Phase 1 entry below for background). Both delivered without touching the story graph's existing routing — Phase 3 in particular turned out to need far less new content than expected, since its two "banner piece" payoffs were already fully built and just needed tagging.
+
+### Added
+- **Town Hub now has all 3 of Chapter 2's tutorial zones.** New zone: Lantern Docks — rewards a narrative lead (a flag, not an item) on where the Shroud's second piece went, rather than gold or an item, giving zones their first non-material reward type.
+- **Banner-piece tracking.** `PlayerSession.bannerPiecesCollected` (new field) tracks recovered pieces of the Shroud — the "heirloom cut into pieces" mechanic from this session's design doc. A quest's new `grantsBannerPieceId` field (mirrors the existing `rewardAllyId` pattern) tags a piece on completion; a zone's new `rewardFlag` field (mirrors a quest's `flagToAdd`) grants a plain narrative flag instead of gold/item/dice/ally, for zone rewards that are leads rather than loot.
+- Both of Chapter 1 and Chapter 3's **existing** quests already delivered on the brief's "expedition to get the map to the second part" / "go get the flag" beats without any new content: `q_retrieve_banner` (Ch1, "The Heirloom of Alster" — literally the heirloom pickup) now tags the first piece; `q_ch3_alsters_dawn` (Ch3, the payoff of the already-wired `q_ch3_void_relic → q_ch3_the_high_wardens_fall → q_ch3_alsters_dawn` chain reachable from node `3005`) now tags the second. Character screen shows collected pieces when there are any.
+
+### Not in this slice
+The existing Chapter 2 harbor (`2015`) and Chapter 3 Ashen Quarter (`3005`) hub nodes were deliberately **not** restructured into the expedition/zone frame — turning an authored, one-shot story choice into a repeatable zone is a real engine change, distinct from adding parallel zone content, and risks the narrative-audit fixes from a few versions back. The new zones wrap around this content rather than replacing it, per the design doc's central recommendation. The boat (Phase 4) and Chapters 4-7's content (Phase 5) are still ahead.
+
 ## [1.61.0+88]
 
 The first build slice of a larger roguelike redesign discussed and written up as a design doc this session ("The Scattered Banner"): a town-and-expedition loop wrapped around the existing chapters rather than replacing them. This entry is Phase 1 only — "one zone, land only" — proving the mechanism before any existing story content is touched.

@@ -529,6 +529,11 @@ final DbSchema questsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'companions',
     ),
+    FieldSchema(
+      key: 'grantsBannerPieceId',
+      label: 'Grants Banner Piece ID (empty = none)',
+      type: FieldType.text,
+    ),
     FieldSchema(key: 'npcDialogueText', label: 'NPC Dialogue Text', type: FieldType.multilineText),
     FieldSchema(key: 'requiredGold', label: 'Required Gold', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'requiredFlags', label: 'Required Flags', type: FieldType.stringList),
@@ -786,6 +791,11 @@ final DbSchema zonesSchema = DbSchema(
       label: 'Reward Ally ID',
       type: FieldType.reference,
       referenceSchemaId: 'companions',
+    ),
+    FieldSchema(
+      key: 'rewardFlag',
+      label: 'Reward Flag (empty = none) — for narrative beats short of a full item/ally, e.g. a story flag',
+      type: FieldType.text,
     ),
     visualAssetFieldSchema('zones'),
   ],

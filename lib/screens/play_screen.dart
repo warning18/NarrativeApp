@@ -335,6 +335,7 @@ class _QuestList extends ConsumerWidget {
               final nextQuestId = quest['nextQuestID']?.toString();
               final rewardDiceId = quest['rewardDiceID']?.toString();
               final rewardAllyId = quest['rewardAllyId']?.toString();
+              final grantsBannerPieceId = quest['grantsBannerPieceId']?.toString();
               final leveledUp = await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
@@ -342,6 +343,7 @@ class _QuestList extends ConsumerWidget {
                     rewardItemId: rewardItemId,
                     nextQuestId: nextQuestId,
                     rewardDiceId: rewardDiceId,
+                    grantsBannerPieceId: grantsBannerPieceId,
                   );
               String? recruitedName;
               if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
@@ -372,6 +374,7 @@ class _QuestList extends ConsumerWidget {
                     '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
                     '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
                     '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
+                    '${grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty ? "\n${trFor(lang, 'banner_piece_found_prefix')}" : ""}'
                     '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
               );
               if (leveledUp) {

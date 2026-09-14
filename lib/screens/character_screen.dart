@@ -41,6 +41,22 @@ class CharacterScreen extends ConsumerWidget {
         children: [
           const PlayerStatsBar(),
           const SizedBox(height: 16),
+          if (session.bannerPiecesCollected.isNotEmpty)
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.auto_stories_outlined),
+                title: Text(tr(ref, 'banner_pieces_title')),
+                subtitle: Text(
+                  session.bannerPiecesCollected
+                      .map((id) {
+                        final key = 'banner_piece_$id';
+                        final label = tr(ref, key);
+                        return label == key ? id : label;
+                      })
+                      .join(' · '),
+                ),
+              ),
+            ),
           Card(
             child: ListTile(
               leading: const Icon(Icons.badge_outlined),

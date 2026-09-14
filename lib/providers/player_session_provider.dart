@@ -56,6 +56,7 @@ class PlayerSession {
     this.builtHouseIds = const [],
     this.unlockedAchievementIds = const [],
     this.completedZoneIds = const [],
+    this.bannerPiecesCollected = const [],
   });
 
   final int level;
@@ -148,6 +149,15 @@ class PlayerSession {
   /// won't offer its reward again.
   final List<String> completedZoneIds;
 
+  /// Pieces of the Shroud (the "Void Banner" item, `void_banner` in
+  /// items.json) actually recovered so far — the mechanical thread behind
+  /// the "heirloom cut into pieces" story arc. Permanent, append-only, like
+  /// [completedQuestIds]. Granted by a quest's own `grantsBannerPieceId`
+  /// (see [completeQuest]) rather than any generic reward field, since
+  /// which quests grant a piece is a narrative decision, not a gameplay
+  /// one.
+  final List<String> bannerPiecesCollected;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -210,6 +220,7 @@ class PlayerSession {
     List<String>? builtHouseIds,
     List<String>? unlockedAchievementIds,
     List<String>? completedZoneIds,
+    List<String>? bannerPiecesCollected,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -250,6 +261,7 @@ class PlayerSession {
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       unlockedAchievementIds: unlockedAchievementIds ?? this.unlockedAchievementIds,
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
+      bannerPiecesCollected: bannerPiecesCollected ?? this.bannerPiecesCollected,
     );
   }
 
@@ -292,6 +304,7 @@ class PlayerSession {
         'builtHouseIds': builtHouseIds,
         'unlockedAchievementIds': unlockedAchievementIds,
         'completedZoneIds': completedZoneIds,
+        'bannerPiecesCollected': bannerPiecesCollected,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -366,6 +379,8 @@ class PlayerSession {
           (json['unlockedAchievementIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       completedZoneIds:
           (json['completedZoneIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      bannerPiecesCollected:
+          (json['bannerPiecesCollected'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -609,6 +624,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? rewardItemId,
     String? nextQuestId,
     String? rewardDiceId,
+    String? grantsBannerPieceId,
   }) async {
     final newActive = state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
@@ -627,6 +643,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         rewardDiceId.isNotEmpty &&
         !newOwnedDice.contains(rewardDiceId)) {
       newOwnedDice = [...newOwnedDice, rewardDiceId];
+    }
+    var newBannerPieces = state.bannerPiecesCollected;
+    if (grantsBannerPieceId != null &&
+        grantsBannerPieceId.isNotEmpty &&
+        !newBannerPieces.contains(grantsBannerPieceId)) {
+      newBannerPieces = [...newBannerPieces, grantsBannerPieceId];
     }
 
     final leveled = _applyXp(rewardXP);
@@ -649,6 +671,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: newOwnedDice,
       xpEarnedThisRun: state.xpEarnedThisRun + rewardXP,
       recruitedAllies: newAllies,
+      bannerPiecesCollected: newBannerPieces,
     );
     await _persist();
     return leveled.leveledUp;
@@ -799,6 +822,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int rewardGold = 0,
     String? rewardItemId,
     String? rewardDiceId,
+    String? rewardFlag,
   }) async {
     if (state.completedZoneIds.contains(zoneId)) return;
     final newInventory = [...state.inventoryItemIds];
@@ -811,10 +835,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !newOwnedDice.contains(rewardDiceId)) {
       newOwnedDice = [...newOwnedDice, rewardDiceId];
     }
+    var newFlags = state.flags;
+    if (rewardFlag != null && rewardFlag.isNotEmpty && !newFlags.contains(rewardFlag)) {
+      newFlags = [...newFlags, rewardFlag];
+    }
     state = state.copyWith(
       gold: state.gold + rewardGold,
       inventoryItemIds: newInventory,
       ownedDiceIds: newOwnedDice,
+      flags: newFlags,
       completedZoneIds: [...state.completedZoneIds, zoneId],
     );
     await _persist();

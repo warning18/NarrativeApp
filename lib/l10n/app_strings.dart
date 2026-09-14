@@ -709,6 +709,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'expedition_ended_title': {AppLanguage.en: 'Expedition Ended', AppLanguage.fr: 'Expédition interrompue'},
   'zone_cleared_prefix': {AppLanguage.en: 'Zone cleared', AppLanguage.fr: 'Zone nettoyée'},
   'return_to_town_button': {AppLanguage.en: 'Return to Town', AppLanguage.fr: 'Retourner en ville'},
+  'zone_flag_banner_second_piece_lead': {
+    AppLanguage.en: "A lead on the Shroud's second piece",
+    AppLanguage.fr: "Une piste vers le deuxième fragment du Linceul",
+  },
+  'banner_piece_found_prefix': {
+    AppLanguage.en: 'A piece of the Shroud, recovered',
+    AppLanguage.fr: 'Un fragment du Linceul, récupéré',
+  },
+  'banner_pieces_title': {AppLanguage.en: 'The Shroud, in Pieces', AppLanguage.fr: 'Le Linceul, en morceaux'},
+  'banner_piece_heirloom_shroud': {
+    AppLanguage.en: 'The heirloom piece',
+    AppLanguage.fr: "Le fragment de l'héritage",
+  },
+  'banner_piece_moon_shard_shroud': {
+    AppLanguage.en: 'The moon-shard piece',
+    AppLanguage.fr: 'Le fragment de lune',
+  },
   'achievement_unlocked_prefix': {
     AppLanguage.en: 'Achievement unlocked',
     AppLanguage.fr: 'Haut fait débloqué',

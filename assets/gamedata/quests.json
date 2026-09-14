@@ -77,7 +77,8 @@
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "grantsBannerPieceId": "heirloom_shroud"
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -477,7 +478,8 @@
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "grantsBannerPieceId": "moon_shard_shroud"
   },
   "q_ch2_keldas_stand": {
     "questID": "q_ch2_keldas_stand",
