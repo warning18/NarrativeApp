@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -12,7 +13,13 @@ import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
-  const SkillsScreen({super.key});
+  const SkillsScreen({super.key, this.allyId});
+
+  /// When set, this screen manages the named companion's learnable-skill
+  /// pool instead of the player's own — same screen, pointed at that
+  /// companion's own race/profession restrictions and [AllyState] instead
+  /// of [PlayerSession] directly.
+  final String? allyId;
 
   @override
   ConsumerState<SkillsScreen> createState() => _SkillsScreenState();
@@ -80,11 +87,29 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
+
+    final companion =
+        widget.allyId != null ? companions[widget.allyId] as Map<String, dynamic>? : null;
+    final ally = widget.allyId != null
+        ? session.recruitedAllies.firstWhere(
+            (a) => a.companionId == widget.allyId,
+            orElse: () => AllyState(companionId: widget.allyId!, currentHealth: 0),
+          )
+        : null;
+
+    final raceId = ally != null ? (companion?['raceId']?.toString() ?? '') : session.raceId;
+    final professionId =
+        ally != null ? (companion?['professionId']?.toString() ?? '') : session.professionId;
+    final skillPoints = ally?.skillPoints ?? session.skillPoints;
+    final unlockedSkillIds = ally?.unlockedSkillIds ?? session.unlockedSkillIds;
+    final titleSuffix =
+        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr(ref, 'skills')),
+        title: Text('${tr(ref, 'skills')}$titleSuffix'),
         actions: [
           IconButton(
             icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
@@ -101,7 +126,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '${tr(ref, 'skill_points_label')}: ${session.skillPoints}',
+                  '${tr(ref, 'skill_points_label')}: $skillPoints',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
@@ -124,6 +149,15 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 records: records,
                 races: racesAsync.value ?? const {},
                 professions: professionsAsync.value ?? const {},
+                raceId: raceId,
+                professionId: professionId,
+                skillPoints: skillPoints,
+                unlockedSkillIds: unlockedSkillIds,
+                onUnlock: widget.allyId != null
+                    ? (id) => ref
+                        .read(playerSessionProvider.notifier)
+                        .unlockAllySkill(widget.allyId!, id)
+                    : (id) => ref.read(playerSessionProvider.notifier).unlockSkill(id),
                 compareMode: _compareMode,
                 firstCompareId: _firstCompareId,
                 onCompareTap: (id) => _onCompareTap(context, records, id),
@@ -144,6 +178,11 @@ class _SkillList extends ConsumerWidget {
     required this.records,
     required this.races,
     required this.professions,
+    required this.raceId,
+    required this.professionId,
+    required this.skillPoints,
+    required this.unlockedSkillIds,
+    required this.onUnlock,
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
@@ -152,6 +191,15 @@ class _SkillList extends ConsumerWidget {
   final Map<String, dynamic> records;
   final Map<String, dynamic> races;
   final Map<String, dynamic> professions;
+
+  /// Whose restrictions/unlock state this list reflects — the player's own
+  /// by default, or a companion's when [SkillsScreen.allyId] is set.
+  final String raceId;
+  final String professionId;
+  final int skillPoints;
+  final List<String> unlockedSkillIds;
+  final ValueChanged<String> onUnlock;
+
   final bool compareMode;
   final String? firstCompareId;
   final ValueChanged<String> onCompareTap;
@@ -161,32 +209,34 @@ class _SkillList extends ConsumerWidget {
     if (records.isEmpty) {
       return Center(child: Text(tr(ref, 'no_skills_defined')));
     }
-    final session = ref.watch(playerSessionProvider);
     final keys = records.keys.toList()..sort();
 
     bool isAvailable(String id) {
       final skill = records[id] as Map<String, dynamic>?;
       final globallyUnlocked = skill?['isUnlocked'] as bool? ?? false;
-      return globallyUnlocked || session.unlockedSkillIds.contains(id);
+      return globallyUnlocked || unlockedSkillIds.contains(id);
     }
 
     bool meetsRestriction(Map<String, dynamic> skill) {
-      final raceId = skill['restrictedRaceID']?.toString() ?? '';
-      if (raceId.isNotEmpty && raceId != session.raceId) return false;
-      final professionId = skill['restrictedProfessionID']?.toString() ?? '';
-      if (professionId.isNotEmpty && professionId != session.professionId) return false;
+      final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
+      if (restrictedRaceId.isNotEmpty && restrictedRaceId != raceId) return false;
+      final restrictedProfessionId = skill['restrictedProfessionID']?.toString() ?? '';
+      if (restrictedProfessionId.isNotEmpty && restrictedProfessionId != professionId) {
+        return false;
+      }
       return true;
     }
 
     String restrictionLabel(Map<String, dynamic> skill) {
-      final raceId = skill['restrictedRaceID']?.toString() ?? '';
-      final professionId = skill['restrictedProfessionID']?.toString() ?? '';
-      if (raceId.isEmpty && professionId.isEmpty) return '';
-      final race = races[raceId] as Map<String, dynamic>?;
-      final profession = professions[professionId] as Map<String, dynamic>?;
-      final raceName = raceId.isNotEmpty ? (race?['raceName']?.toString() ?? raceId) : null;
-      final professionName = professionId.isNotEmpty
-          ? (profession?['professionName']?.toString() ?? professionId)
+      final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
+      final restrictedProfessionId = skill['restrictedProfessionID']?.toString() ?? '';
+      if (restrictedRaceId.isEmpty && restrictedProfessionId.isEmpty) return '';
+      final race = races[restrictedRaceId] as Map<String, dynamic>?;
+      final profession = professions[restrictedProfessionId] as Map<String, dynamic>?;
+      final raceName =
+          restrictedRaceId.isNotEmpty ? (race?['raceName']?.toString() ?? restrictedRaceId) : null;
+      final professionName = restrictedProfessionId.isNotEmpty
+          ? (profession?['professionName']?.toString() ?? restrictedProfessionId)
           : null;
       return '${tr(ref, 'reserved_prefix')}: ${[raceName, professionName].whereType<String>().join(' · ')}';
     }
@@ -213,9 +263,9 @@ class _SkillList extends ConsumerWidget {
           trailing = const Icon(Icons.lock_outline);
         } else {
           trailing = ElevatedButton(
-            onPressed: (session.skillPoints > 0 && prereqMet)
+            onPressed: (skillPoints > 0 && prereqMet)
                 ? () async {
-                    await ref.read(playerSessionProvider.notifier).unlockSkill(id);
+                    onUnlock(id);
                     if (!context.mounted) return;
                     final unlockedPrefix =
                         trFor(ref.read(appLanguageProvider), 'unlocked_prefix');

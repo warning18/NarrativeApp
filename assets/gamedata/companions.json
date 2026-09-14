@@ -1,0 +1,29 @@
+{
+  "kelda": {
+    "companionID": "kelda",
+    "companionName": "Kelda",
+    "raceId": "dwarf",
+    "professionId": "warrior",
+    "signatureDiceId": "iron_die",
+    "recruitQuestId": "q_ch2_keldas_stand",
+    "requiredHouseId": "keldas_hall"
+  },
+  "sable": {
+    "companionID": "sable",
+    "companionName": "Sable",
+    "raceId": "human",
+    "professionId": "rogue",
+    "signatureDiceId": "shadow_die",
+    "recruitQuestId": "q_ch2_sables_wager",
+    "requiredHouseId": ""
+  },
+  "maren": {
+    "companionID": "maren",
+    "companionName": "Sister Maren",
+    "raceId": "human",
+    "professionId": "cleric",
+    "signatureDiceId": "holy_die",
+    "recruitQuestId": "q_ch3_marens_penance",
+    "requiredHouseId": ""
+  }
+}

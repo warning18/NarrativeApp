@@ -1199,6 +1199,18 @@
         "text_fr": "Repousser un chien pestiféré",
         "next_id": "2030",
         "triggerEnemyId": "plague_hound"
+      },
+      {
+        "text": "Hear out a dwarf holding the gate alone",
+        "text_fr": "Écouter une naine tenant seule la porte",
+        "next_id": "2030",
+        "unlockQuestId": "q_ch2_keldas_stand"
+      },
+      {
+        "text": "Listen to a rogue's complaint about a card game gone wrong",
+        "text_fr": "Écouter la plainte d'une voleuse au sujet d'une partie de cartes ratée",
+        "next_id": "2030",
+        "unlockQuestId": "q_ch2_sables_wager"
       }
     ]
   },
@@ -1472,6 +1484,12 @@
         "text_fr": "Affronter un golem de fer gardant un coffre, sa carrure suggérant que le contenu valait bien plus d'ennuis que la moyenne",
         "next_id": "3020",
         "triggerEnemyId": "iron_golem"
+      },
+      {
+        "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
+        "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
+        "next_id": "3020",
+        "unlockQuestId": "q_ch3_marens_penance"
       }
     ]
   },

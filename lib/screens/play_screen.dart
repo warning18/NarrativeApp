@@ -14,6 +14,7 @@ import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
@@ -117,6 +118,22 @@ class PlayScreen extends ConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CharacterScreen()),
+              );
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.local_fire_department_outlined),
+            title: Text(tr(ref, 'camp_title')),
+            subtitle: Text(
+              '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
+              '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}',
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CampScreen()),
               );
             },
           ),
@@ -231,6 +248,9 @@ class _QuestList extends ConsumerWidget {
     }
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+    final professions = ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -277,6 +297,7 @@ class _QuestList extends ConsumerWidget {
               final rewardItemId = quest['rewardItemID']?.toString();
               final nextQuestId = quest['nextQuestID']?.toString();
               final rewardDiceId = quest['rewardDiceID']?.toString();
+              final rewardAllyId = quest['rewardAllyId']?.toString();
               await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
@@ -284,6 +305,19 @@ class _QuestList extends ConsumerWidget {
                     nextQuestId: nextQuestId,
                     rewardDiceId: rewardDiceId,
                   );
+              String? recruitedName;
+              if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
+                final companion = companions[rewardAllyId] as Map<String, dynamic>?;
+                final race = races[companion?['raceId']?.toString() ?? ''] as Map<String, dynamic>?;
+                final profession = professions[companion?['professionId']?.toString() ?? '']
+                    as Map<String, dynamic>?;
+                await ref.read(playerSessionProvider.notifier).recruitAlly(
+                      rewardAllyId,
+                      race: race,
+                      profession: profession,
+                    );
+                recruitedName = companion?['companionName']?.toString() ?? rewardAllyId;
+              }
               if (!context.mounted) return;
               final lang = ref.read(appLanguageProvider);
               showImmersiveNotice(
@@ -292,7 +326,8 @@ class _QuestList extends ConsumerWidget {
                 message: '${trFor(lang, 'quest_complete_prefix')}: $questName '
                     '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
                     '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
-                    '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""})',
+                    '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
+                    '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})',
               );
             },
             child: Text(tr(ref, 'complete')),

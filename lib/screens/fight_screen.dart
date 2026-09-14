@@ -8,7 +8,9 @@ import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
 import '../providers/combat_settings_provider.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/permadeath_provider.dart';
@@ -18,6 +20,10 @@ import '../widgets/level_up_dialog.dart';
 import 'death_screen.dart';
 
 const int _potionHealAmount = 30;
+
+/// A knocked-out ally is revived at this fraction of their (live-derived)
+/// max health after a won fight — see [_FightScreenState._finishFight].
+const double _reviveHealthFraction = 0.3;
 
 /// Broad categories a combat-log line falls into, used to color and icon
 /// each line so the log reads at a glance instead of as a wall of text.
@@ -93,6 +99,47 @@ String _effectiveSkillId(DiceFaceResult face) =>
 
 const int _maxRolls = 3;
 
+/// One combatant on the player's side of a fight — the player themself, or
+/// one currently-active ally. Ephemeral, fight-scoped state only (mirrors
+/// how the player's own HP was already tracked as local widget state before
+/// this screen supported more than one combatant per side); persisted back
+/// to [PlayerSession]/[AllyState] only once the fight ends.
+class _PartyMember {
+  _PartyMember({
+    required this.id,
+    required this.displayName,
+    required this.isPlayer,
+    required this.maxHealth,
+    required this.baseDamage,
+    required this.armor,
+    required this.currentHealth,
+    required this.equippedItemIds,
+    required this.unlockedSkillIds,
+    required this.diceSkillAssignments,
+    required this.equippedDiceId,
+  });
+
+  final String id;
+  final String displayName;
+  final bool isPlayer;
+  final int maxHealth;
+  final int baseDamage;
+  final int armor;
+  final List<String> equippedItemIds;
+  final List<String> unlockedSkillIds;
+
+  /// faceIndex (as string) -> skillId. For the player this is their
+  /// currently-equipped die's slice of [PlayerSession.diceSkillAssignments];
+  /// for an ally it's their own flat [AllyState.diceSkillAssignments] as-is.
+  final Map<String, String> diceSkillAssignments;
+  final String? equippedDiceId;
+
+  int currentHealth;
+  int block = 0;
+
+  bool get isKnockedOut => currentHealth <= 0;
+}
+
 class FightScreen extends ConsumerStatefulWidget {
   const FightScreen({super.key, required this.enemyId, required this.enemy});
 
@@ -112,17 +159,26 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   bool _won = false;
 
   late int _playerLevel;
-  late int _playerBaseDamage;
-  late int _playerMaxHealth;
-  late int _playerHealth;
   late int _enemyMaxHealth;
   late int _enemyHealth;
   late int _enemyDamage;
-  int _block = 0;
   int _lastDamageTaken = 0;
+
+  /// Which party member most recently took damage from the enemy, so the
+  /// floating "-N" indicator lands on the right health bar. Null until the
+  /// first hit lands.
+  String? _lastDamagedMemberId;
 
   String? _selectedDiceId;
   bool _rolling = false;
+
+  bool _partyBuilt = false;
+  List<_PartyMember> _party = [];
+
+  /// Index into [_party] of whoever's turn it currently is during the party
+  /// phase of a round (player first, then each active ally in order,
+  /// skipping anyone knocked out).
+  int _currentPartyIndex = 0;
 
   /// The most recently rolled face — kept on screen (never cleared) once a
   /// fight has its first roll, so the player always has the face they're
@@ -146,9 +202,6 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
-    _playerBaseDamage = session.baseDamage;
-    _playerMaxHealth = session.maxHealth;
-    _playerHealth = session.currentHealth > 0 ? session.currentHealth : session.maxHealth;
     _enemyMaxHealth =
         scaledMaxHealth((widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     _enemyHealth = _enemyMaxHealth;
@@ -179,6 +232,79 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     _shakeController.forward(from: 0);
   }
 
+  /// Builds [_party] (the player plus every currently-active ally) once
+  /// every data source it needs has loaded. Idempotent — a rebuild
+  /// triggered by an unrelated provider change is a no-op past the first
+  /// successful call, since mid-fight party state (health, block) lives
+  /// only here from that point on, not in the providers being watched.
+  void _ensurePartyBuilt(
+    PlayerSession session,
+    Map<String, dynamic> companions,
+    Map<String, dynamic> races,
+    Map<String, dynamic> professions,
+    Map<String, dynamic> gameConfig,
+  ) {
+    if (_partyBuilt) return;
+    _partyBuilt = true;
+
+    final playerDiceAssignments =
+        session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
+    final playerLabel = session.characterName.isNotEmpty
+        ? session.characterName
+        : trFor(ref.read(appLanguageProvider), 'you_label');
+    final player = _PartyMember(
+      id: 'player',
+      displayName: playerLabel,
+      isPlayer: true,
+      maxHealth: session.maxHealth,
+      baseDamage: session.baseDamage,
+      armor: session.baseArmor,
+      currentHealth: session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+      equippedItemIds: session.equippedItemIds,
+      unlockedSkillIds: session.unlockedSkillIds,
+      diceSkillAssignments: playerDiceAssignments,
+      equippedDiceId: _selectedDiceId,
+    );
+
+    final activeAllies = <_PartyMember>[];
+    for (final companionId in session.activeAllyIds) {
+      final companion = companions[companionId] as Map<String, dynamic>?;
+      if (companion == null) continue;
+      final allyState = session.recruitedAllies.firstWhere(
+        (a) => a.companionId == companionId,
+        orElse: () =>
+            AllyState(companionId: companionId, currentHealth: AllyState.fullHealthSentinel),
+      );
+      final race = races[companion['raceId']?.toString() ?? ''] as Map<String, dynamic>? ?? const {};
+      final profession =
+          professions[companion['professionId']?.toString() ?? ''] as Map<String, dynamic>? ??
+              const {};
+      final base = deriveAllyBaseStats(gameConfig: gameConfig, race: race, profession: profession);
+      final liveMaxHealth = scaledMaxHealth(base.maxHealth, _playerLevel);
+      activeAllies.add(_PartyMember(
+        id: companionId,
+        displayName: companion['companionName']?.toString() ?? companionId,
+        isPlayer: false,
+        maxHealth: liveMaxHealth,
+        baseDamage: scaledDamage(base.baseDamage, _playerLevel),
+        armor: base.baseArmor,
+        currentHealth: allyState.currentHealth.clamp(0, liveMaxHealth),
+        equippedItemIds: allyState.equippedItemIds,
+        unlockedSkillIds: allyState.unlockedSkillIds,
+        diceSkillAssignments: allyState.diceSkillAssignments,
+        equippedDiceId: companion['signatureDiceId']?.toString(),
+      ));
+    }
+
+    _party = [player, ...activeAllies];
+  }
+
+  /// A log line's actor prefix — only shown once there's more than one
+  /// combatant on the player's side, so a solo player (the common case
+  /// through most of the game, before any ally is both recruited and
+  /// active) sees the exact same unprefixed log this screen always had.
+  String _actorPrefix(_PartyMember actor) => _party.length > 1 ? '${actor.displayName}: ' : '';
+
   void _startFight() {
     final lang = ref.read(appLanguageProvider);
     setState(() {
@@ -193,53 +319,34 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     });
   }
 
-  int _equipmentDamageBonus(Map<String, dynamic> items) {
-    final session = ref.read(playerSessionProvider);
-    var bonus = 0;
-    for (final id in session.equippedItemIds) {
-      final item = items[id] as Map<String, dynamic>?;
-      bonus += (item?['attackDamage'] as num?)?.toInt() ?? 0;
-    }
-    return bonus;
-  }
-
-  int _equipmentArmorBonus(Map<String, dynamic> items) {
-    final session = ref.read(playerSessionProvider);
-    var bonus = 0;
-    for (final id in session.equippedItemIds) {
-      final item = items[id] as Map<String, dynamic>?;
-      bonus += (item?['armor'] as num?)?.toInt() ?? 0;
-    }
-    return bonus;
-  }
-
-  Map<String, dynamic> _availableSkills(Map<String, dynamic> skills) {
-    final session = ref.read(playerSessionProvider);
+  Map<String, dynamic> _availableSkillsFor(_PartyMember actor, Map<String, dynamic> skills) {
     return <String, dynamic>{
       for (final entry in skills.entries)
         if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ?? false) ||
-            session.unlockedSkillIds.contains(entry.key))
+            actor.unlockedSkillIds.contains(entry.key))
           entry.key: entry.value,
     };
   }
 
-  /// Rolls the die once. The first roll of a turn just shows its result and
-  /// waits for the player to confirm or reroll (see [_confirmRoll]); the
-  /// 3rd roll is forced — there's no more choice left, so it locks in and
-  /// resolves automatically after a beat.
+  /// Rolls the acting party member's die once. The first roll of a turn
+  /// just shows its result and waits for a keep/reroll decision (see
+  /// [_confirmRoll]); the 3rd roll is forced — there's no more choice left,
+  /// so it locks in and resolves automatically after a beat.
   Future<void> _rollDice(
-    Map<String, dynamic> dice,
+    Map<String, dynamic> diceDb,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) async {
     if (_over || _rolling || _rollCount >= _maxRolls) return;
-    final faces = (dice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    final actor = _party[_currentPartyIndex];
+    final actorDice =
+        actor.equippedDiceId != null ? diceDb[actor.equippedDiceId] as Map<String, dynamic>? : null;
+    final faces = (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
     if (faces.isEmpty) return;
 
     var face = rollDie(faces, _random);
     if (face.type == 'Skill') {
-      final session = ref.read(playerSessionProvider);
-      final assigned = session.diceSkillAssignments[_selectedDiceId]?[face.faceIndex.toString()];
+      final assigned = actor.diceSkillAssignments[face.faceIndex.toString()];
       if (assigned != null && assigned.isNotEmpty) {
         face = face.withLinkedSkillID(assigned);
       }
@@ -267,16 +374,19 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     }
   }
 
-  /// Locks in the currently-shown rolled face and applies its effect,
-  /// whether the player tapped Confirm or the 3rd roll forced it.
+  /// Locks in the currently-shown rolled face and applies its effect for
+  /// whichever party member is currently acting, whether by tapping
+  /// Confirm or the 3rd roll forcing it.
   Future<void> _confirmRoll(Map<String, dynamic> skills, Map<String, dynamic> items) async {
     final face = _lastFace;
     if (face == null || _over) return;
+    final actor = _party[_currentPartyIndex];
 
-    final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
+    final totalDamage =
+        actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
     final result = resolvePlayerFace(
       face,
-      _availableSkills(skills),
+      _availableSkillsFor(actor, skills),
       totalDamage,
       language: ref.read(appLanguageProvider),
     );
@@ -292,9 +402,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       _awaitingDecision = false;
       _rollCount = 0;
       _enemyHealth = max(0, _enemyHealth - result.damageDealt);
-      _playerHealth = min(_playerMaxHealth, _playerHealth + result.healingDone);
-      _block = result.blockAmount;
-      _log.add(_LogEntry(result.message, kind));
+      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + result.healingDone);
+      actor.block = result.blockAmount;
+      _log.add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
     });
 
     await Future.delayed(const Duration(milliseconds: 400));
@@ -305,7 +415,41 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       return;
     }
 
-    _takeEnemyTurn(skills, items);
+    _advanceToNextTurn(skills, items);
+  }
+
+  /// Advances to the next conscious party member's turn, or — once
+  /// everyone able to act has acted — runs the enemy's turn.
+  void _advanceToNextTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
+    var next = _currentPartyIndex + 1;
+    while (next < _party.length && _party[next].isKnockedOut) {
+      next += 1;
+    }
+    if (next >= _party.length) {
+      _takeEnemyTurn(skills, items);
+      return;
+    }
+    setState(() {
+      _currentPartyIndex = next;
+      _rollCount = 0;
+      _lastFace = null;
+      _awaitingDecision = false;
+    });
+  }
+
+  /// Starts a fresh round at the first conscious party member (always at
+  /// least the player, or the fight would already be over).
+  void _startPartyRound() {
+    var index = 0;
+    while (index < _party.length && _party[index].isKnockedOut) {
+      index += 1;
+    }
+    setState(() {
+      _currentPartyIndex = index;
+      _rollCount = 0;
+      _lastFace = null;
+      _awaitingDecision = false;
+    });
   }
 
   void _takeEnemyTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
@@ -317,37 +461,57 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       random: _random,
       language: ref.read(appLanguageProvider),
     );
-    final session = ref.read(playerSessionProvider);
-    final totalArmor = session.baseArmor + _equipmentArmorBonus(items);
-    final damageTaken = max(0, move.damage - _block - totalArmor);
+
+    final conscious = _party.where((m) => !m.isKnockedOut).toList();
+    // Only the player is ever a valid target once every ally is down, and
+    // the player is always conscious here (their own knockout already ends
+    // the fight via _finishFight before another enemy turn could start).
+    final target = conscious[_random.nextInt(conscious.length)];
+    final totalArmor = target.armor + equipmentBonusFor(target.equippedItemIds, items, 'armor');
+    final damageTaken = max(0, move.damage - target.block - totalArmor);
     final lang = ref.read(appLanguageProvider);
+    final wasKnockedOutAlready = target.isKnockedOut;
 
     setState(() {
-      _playerHealth = max(0, _playerHealth - damageTaken);
-      _block = 0;
+      target.currentHealth = max(0, target.currentHealth - damageTaken);
+      target.block = 0;
       _lastDamageTaken = damageTaken;
+      _lastDamagedMemberId = target.id;
+      final damageLine = target.isPlayer
+          ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
+              '${trFor(lang, 'damage_word')}.'
+          : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
+              '$damageTaken ${trFor(lang, 'damage_word')}.';
       _log.add(
-        _LogEntry(
-          '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
-          '${trFor(lang, 'damage_word')}.',
-          damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock,
-        ),
+        _LogEntry(damageLine, damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
       );
+      if (!target.isPlayer && !wasKnockedOutAlready && target.isKnockedOut) {
+        _log.add(
+          _LogEntry(
+            '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
+            _LogKind.defeat,
+          ),
+        );
+      }
     });
-    if (damageTaken > 0) _triggerShake();
+    if (damageTaken > 0 && target.isPlayer) _triggerShake();
 
-    if (_playerHealth <= 0) {
+    if (target.isPlayer && target.currentHealth <= 0) {
       _finishFight(won: false);
+      return;
     }
+
+    _startPartyRound();
   }
 
   void _usePotion() {
     final session = ref.read(playerSessionProvider);
     if (session.potionCount <= 0 || _over) return;
+    final player = _party.firstWhere((m) => m.isPlayer);
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
     setState(() {
-      _playerHealth = min(_playerMaxHealth, _playerHealth + _potionHealAmount);
+      player.currentHealth = min(player.maxHealth, player.currentHealth + _potionHealAmount);
       _log.add(
         _LogEntry(
           '${trFor(lang, 'drink_potion_prefix')} $_potionHealAmount ${trFor(lang, 'hp_label')}.',
@@ -364,6 +528,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     });
 
     final notifier = ref.read(playerSessionProvider.notifier);
+    final player = _party.firstWhere((m) => m.isPlayer);
     if (won) {
       final goldGain =
           scaledReward((widget.enemy['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
@@ -380,11 +545,22 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
         }
       }
       final leveledUp = await notifier.applyCombatResult(
-        hpAfter: _playerHealth,
+        hpAfter: player.currentHealth,
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
       );
+      // A knocked-out ally is revived at partial health on a win; a
+      // survivor's ending health is simply persisted as-is. Level-ups
+      // already full-heal every recruited ally inside applyCombatResult
+      // itself, so nothing further is needed for that case here.
+      for (final member in _party) {
+        if (member.isPlayer) continue;
+        final hpAfter = member.isKnockedOut
+            ? (member.maxHealth * _reviveHealthFraction).round()
+            : member.currentHealth;
+        await notifier.applyAllyCombatResult(member.id, hpAfter: hpAfter);
+      }
       if (!mounted) return;
       final lang = ref.read(appLanguageProvider);
       setState(() {
@@ -402,7 +578,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
         showLevelUpDialog(context, ref, newLevel: newLevel);
       }
     } else {
-      await notifier.applyCombatResult(hpAfter: _playerMaxHealth);
+      // Ally HP changes from a lost fight are never persisted (mirrors the
+      // player's own full-heal-on-loss below — neither side is punished
+      // HP-wise by a loss).
+      await notifier.applyCombatResult(hpAfter: player.maxHealth);
       if (!mounted) return;
       setState(() {
         _log.add(_LogEntry(trFor(ref.read(appLanguageProvider), 'defeat_message'), _LogKind.defeat));
@@ -415,42 +594,66 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
+    final companionsAsync = ref.watch(gameDbProvider(companionsSchema));
+    final racesAsync = ref.watch(gameDbProvider(racesSchema));
+    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final gameConfigAsync = ref.watch(gameConfigProvider);
     final session = ref.watch(playerSessionProvider);
+
+    final dice = diceAsync.value;
+    final skills = skillsAsync.value;
+    final items = itemsAsync.value;
+    final companions = companionsAsync.value;
+    final races = racesAsync.value;
+    final professions = professionsAsync.value;
+    final gameConfig = gameConfigAsync.value;
+
+    if (dice == null ||
+        skills == null ||
+        items == null ||
+        companions == null ||
+        races == null ||
+        professions == null ||
+        gameConfig == null) {
+      final error = diceAsync.error ??
+          skillsAsync.error ??
+          itemsAsync.error ??
+          companionsAsync.error ??
+          racesAsync.error ??
+          professionsAsync.error ??
+          gameConfigAsync.error;
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
+        ),
+        body: Center(
+          child: error != null
+              ? Text('${tr(ref, 'failed_to_load_dice')}: $error')
+              : const CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    _ensurePartyBuilt(session, companions, races, professions, gameConfig);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
       ),
-      body: diceAsync.when(
-        data: (dice) => skillsAsync.when(
-          data: (skills) => itemsAsync.when(
-            data: (items) {
-              if (!_started) {
-                return _buildSetup(dice, items);
-              }
-              return _buildBattle(dice, skills, items, session);
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
-          ),
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
-        ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) =>
-            Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
-      ),
+      body: !_started
+          ? _buildSetup(dice, items)
+          : _buildBattle(dice, skills, items, session),
     );
   }
 
   Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
-    final damageBonus = _equipmentDamageBonus(items);
-    final armorBonus = _equipmentArmorBonus(items);
+    final player = _party.first;
+    final damageBonus = equipmentBonusFor(player.equippedItemIds, items, 'attackDamage');
+    final armorBonus = equipmentBonusFor(player.equippedItemIds, items, 'armor');
     final equippedDie =
         _selectedDiceId != null ? dice[_selectedDiceId] as Map<String, dynamic>? : null;
     final faceCount = (equippedDie?['faces'] as List?)?.length ?? 0;
+    final activeAllies = _party.skip(1).toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -486,6 +689,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             Text(
               '${tr(ref, 'your_equipment_prefix')}: +$damageBonus ${tr(ref, 'damage_word')}, '
               '+$armorBonus ${tr(ref, 'armor_label')}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+          if (activeAllies.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              '${tr(ref, 'fighting_alongside_prefix')}: '
+              '${activeAllies.map((a) => a.displayName).join(", ")}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
@@ -525,9 +736,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     Map<String, dynamic> items,
     PlayerSession session,
   ) {
-    final selectedDice = _selectedDiceId != null
-        ? dice[_selectedDiceId] as Map<String, dynamic>?
-        : null;
+    final actor = _party[_currentPartyIndex];
+    final actorDice =
+        actor.equippedDiceId != null ? dice[actor.equippedDiceId] as Map<String, dynamic>? : null;
+    final isPlayerTurn = actor.isPlayer;
 
     return AnimatedBuilder(
       animation: _shakeController,
@@ -542,48 +754,25 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                _HealthBar(
-                  label: tr(ref, 'you_label'),
-                  current: _playerHealth,
-                  max: _playerMaxHealth,
-                  statLine: '⚔ ${_playerBaseDamage + _equipmentDamageBonus(items)}'
-                      '  ·  🛡 ${session.baseArmor + _equipmentArmorBonus(items)}',
-                ),
-                if (_lastDamageTaken > 0)
-                  Positioned(
-                    right: 0,
-                    top: -4,
-                    child: AnimatedBuilder(
-                      animation: _shakeController,
-                      builder: (context, _) => Opacity(
-                        opacity: (1 - _shakeController.value).clamp(0.0, 1.0),
-                        child: Text(
-                          '-$_lastDamageTaken',
-                          style: const TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
+            for (final member in _party) ...[
+              _buildMemberHealthBar(member, items),
+              const SizedBox(height: 8),
+            ],
             _HealthBar(
               label: widget.enemy['enemyName']?.toString() ?? widget.enemyId,
               current: _enemyHealth,
               max: _enemyMaxHealth,
               statLine: '⚔ $_enemyDamage',
             ),
-            if (_block > 0) ...[
-              const SizedBox(height: 8),
+            if (_party.length > 1) ...[
+              const SizedBox(height: 12),
               Text(
-                '${tr(ref, 'block_active_prefix')}: $_block',
-                style: Theme.of(context).textTheme.bodySmall,
+                '${tr(ref, 'whose_turn_label')} ${actor.displayName}'
+                '${actor.isKnockedOut ? " (${tr(ref, 'knocked_out_label')})" : ""}',
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
               ),
             ],
             const SizedBox(height: 16),
@@ -662,8 +851,7 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                     if (_rollCount < _maxRolls) ...[
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed:
-                              _rolling ? null : () => _rollDice(selectedDice!, skills, items),
+                          onPressed: _rolling ? null : () => _rollDice(dice, skills, items),
                           icon: const Icon(Icons.refresh),
                           label: Text('${tr(ref, 'reroll_button')} ($_rollCount/$_maxRolls)'),
                         ),
@@ -681,15 +869,15 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 )
               else
                 ElevatedButton.icon(
-                  onPressed: (selectedDice == null || _rolling)
+                  onPressed: (actorDice == null || _rolling)
                       ? null
-                      : () => _rollDice(selectedDice, skills, items),
+                      : () => _rollDice(dice, skills, items),
                   icon: const Icon(Icons.casino),
                   label: Text(tr(ref, 'roll_dice_button')),
                 ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
-                onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
+                onPressed: (isPlayerTurn && session.potionCount > 0 && !_rolling) ? _usePotion : null,
                 icon: const Icon(Icons.local_drink),
                 label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
               ),
@@ -700,22 +888,57 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     );
   }
 
+  Widget _buildMemberHealthBar(_PartyMember member, Map<String, dynamic> items) {
+    final armorBonus = equipmentBonusFor(member.equippedItemIds, items, 'armor');
+    final damageBonus = equipmentBonusFor(member.equippedItemIds, items, 'attackDamage');
+    final label = member.displayName;
+    final bar = _HealthBar(
+      label: member.isKnockedOut ? '$label (${tr(ref, 'knocked_out_label')})' : label,
+      current: member.currentHealth,
+      max: member.maxHealth,
+      statLine: '⚔ ${member.baseDamage + damageBonus}  ·  🛡 ${member.armor + armorBonus}',
+    );
+    if (_lastDamagedMemberId != member.id || _lastDamageTaken <= 0) return bar;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        bar,
+        Positioned(
+          right: 0,
+          top: -4,
+          child: AnimatedBuilder(
+            animation: _shakeController,
+            builder: (context, _) => Opacity(
+              opacity: (1 - _shakeController.value).clamp(0.0, 1.0),
+              child: Text(
+                '-$_lastDamageTaken',
+                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   /// The most recently rolled face, kept on screen so the player always
   /// knows what they're looking at — spinning while a roll is in flight,
   /// settled (face name, which skill it maps to if it's a Skill face, and
   /// a preview of what confirming it will do) once it lands.
   Widget _buildDieFaceCard(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final face = _lastFace!;
+    final actor = _party[_currentPartyIndex];
     final colorScheme = Theme.of(context).colorScheme;
 
     Widget content;
     if (_rolling) {
       content = Text(tr(ref, 'rolling_label'), style: Theme.of(context).textTheme.bodySmall);
     } else {
-      final totalDamage = _playerBaseDamage + _equipmentDamageBonus(items);
+      final totalDamage =
+          actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
       final preview = resolvePlayerFace(
         face,
-        _availableSkills(skills),
+        _availableSkillsFor(actor, skills),
         totalDamage,
         language: ref.read(appLanguageProvider),
       );
