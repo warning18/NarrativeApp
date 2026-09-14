@@ -8,6 +8,12 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.60.0+87]
+
+### Changed
+- **The story map now lays out as a grid capped at 5 nodes per column, with each chapter as its own vertical band** ("a map in itself"), instead of an automatic Sugiyama layered-graph layout with no ceiling on how many nodes could stack in one column. New `ChapterGridAlgorithm` (`lib/screens/story_graph_screen.dart`) positions every node from a precomputed slot map (`lib/data/chapter_grid_layout.dart`): column = BFS hops from that chapter's opening beat (following only same-chapter edges), row = position within that column, split into extra columns whenever a depth level would otherwise exceed the cap. Each chapter's band is labeled and sized to its own tallest column, so a low-branching chapter doesn't waste space matching a denser one. Verified against the real 97-node graph via a Python mirror of the same algorithm before porting to Dart: every column caps at exactly 5, and all 97 nodes place correctly.
+- Content-side note: the *target* node budget this map layout is meant to support — roughly 15 authored nodes per chapter (5 main beats + up to 10 side nodes) — isn't met yet by the existing chapters (currently 43/21/17/7/8 across chapters 1-5); that's a separate, larger content pass, not part of this change.
+
 ## [1.59.0+86]
 
 ### Added

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
+import '../data/chapter_grid_layout.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -101,6 +102,55 @@ Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
       ),
     };
 
+/// Places every node on the fixed grid [slots]/[bandLayout] already
+/// computed, instead of letting an automatic layered-graph algorithm
+/// (Sugiyama, force-directed, …) decide positions — this is what actually
+/// enforces "5 nodes per column, chapters as separate bands," a constraint
+/// no general-purpose layout algorithm takes as an input.
+class ChapterGridAlgorithm extends Algorithm {
+  ChapterGridAlgorithm({
+    required this.slots,
+    required this.bandLayout,
+    this.columnWidth = 170,
+    this.rowHeight = 64,
+  });
+
+  final Map<String, GridSlot> slots;
+  final ChapterBandLayout bandLayout;
+  final double columnWidth;
+  final double rowHeight;
+
+  // ArrowEdgeRenderer, not null — some GraphView internals call through
+  // this unconditionally, and SugiyamaAlgorithm (what this replaces)
+  // always had one set.
+  @override
+  EdgeRenderer? renderer = ArrowEdgeRenderer();
+
+  @override
+  void init(Graph? graph) {}
+
+  @override
+  void setDimensions(double width, double height) {}
+
+  @override
+  Size run(Graph? graph, double shiftX, double shiftY) {
+    if (graph == null) return Size.zero;
+    for (final node in graph.nodes) {
+      final id = node.key!.value as String;
+      final slot = slots[id];
+      if (slot == null) continue;
+      node.position = Offset(
+        shiftX + slot.column * columnWidth,
+        shiftY + (bandLayout.bandStartY[slot.chapter] ?? 0) + slot.row * rowHeight,
+      );
+    }
+    return Size(
+      shiftX + (bandLayout.maxColumn + 1) * columnWidth,
+      shiftY + bandLayout.totalHeight,
+    );
+  }
+}
+
 class StoryGraphScreen extends ConsumerWidget {
   const StoryGraphScreen({super.key});
 
@@ -165,10 +215,11 @@ class _GraphViewState extends ConsumerState<_GraphView> {
       }
     }
 
-    final configuration = SugiyamaConfiguration()
-      ..nodeSeparation = 24
-      ..levelSeparation = 48
-      ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT;
+    // Each chapter lays out as its own small map — a grid capped at 5
+    // nodes per column (column = hops from that chapter's opening beat),
+    // stacked in vertical bands so no chapter's branching crowds another's.
+    final slots = computeChapterGridSlots(story);
+    final bandLayout = computeChapterBandLayout(slots);
 
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
@@ -184,79 +235,97 @@ class _GraphViewState extends ConsumerState<_GraphView> {
           maxScale: 3,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 200),
-            child: GraphView(
-              graph: graph,
-              algorithm: SugiyamaAlgorithm(configuration),
-              paint: Paint()
-                ..color = colorScheme.outline
-                ..strokeWidth = 1.5
-                ..style = PaintingStyle.stroke,
-              builder: (Node node) {
-                final id = node.key!.value as String;
-                final isCurrent = id == playState.currentNodeId;
-                final storyNode = story.nodeFor(id);
-                final kind = storyNode != null ? _classify(storyNode, quests) : _NodeKind.generic;
-                final style = styles[kind]!;
-                final isMainBeat = isMainBeatNode(id);
-                final hidden = _hiddenKinds.contains(kind);
+            child: Stack(
+              children: [
+                GraphView(
+                  graph: graph,
+                  algorithm: ChapterGridAlgorithm(slots: slots, bandLayout: bandLayout),
+                  paint: Paint()
+                    ..color = colorScheme.outline
+                    ..strokeWidth = 1.5
+                    ..style = PaintingStyle.stroke,
+                  builder: (Node node) {
+                  final id = node.key!.value as String;
+                  final isCurrent = id == playState.currentNodeId;
+                  final storyNode = story.nodeFor(id);
+                  final kind = storyNode != null ? _classify(storyNode, quests) : _NodeKind.generic;
+                  final style = styles[kind]!;
+                  final isMainBeat = isMainBeatNode(id);
+                  final hidden = _hiddenKinds.contains(kind);
 
-                final container = Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isCurrent ? colorScheme.primary : style.color,
-                    borderRadius: BorderRadius.circular(style.radius),
-                    border: Border.all(
-                      color: isMainBeat ? colorScheme.primary : colorScheme.outline,
-                      width: isMainBeat ? 3 : 1,
+                  final container = Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: isCurrent ? colorScheme.primary : style.color,
+                      borderRadius: BorderRadius.circular(style.radius),
+                      border: Border.all(
+                        color: isMainBeat ? colorScheme.primary : colorScheme.outline,
+                        width: isMainBeat ? 3 : 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          style.icon,
+                          size: 14,
+                          color: isCurrent ? colorScheme.onPrimary : style.onColor,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          id,
+                          style: TextStyle(
+                            color: isCurrent ? colorScheme.onPrimary : style.onColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (hidden) {
+                    return Opacity(opacity: 0.18, child: IgnorePointer(child: container));
+                  }
+
+                  // A plain GestureDetector's tap recognizer competes with
+                  // InteractiveViewer's pan/scale recognizer in the gesture
+                  // arena, which can eat one-finger drags that start on a
+                  // node. Listener never joins the arena, so panning always
+                  // wins immediately; tap is detected manually instead.
+                  return _NodeTapArea(
+                    onTap: () {
+                      if (storyNode != null) {
+                        _showNodeInfo(context, ref, storyNode, style);
+                      }
+                    },
+                    onDoubleTap: storyNode == null
+                        ? null
+                        : () {
+                            ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
+                            ref.read(homeTabIndexProvider.notifier).state = 0;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(tr(ref, 'node_activated'))),
+                            );
+                          },
+                    child: container,
+                  );
+                },
+                ),
+                for (final entry in bandLayout.bandStartY.entries)
+                  Positioned(
+                    left: 4,
+                    top: entry.value + 4,
+                    child: Text(
+                      entry.key == 0
+                          ? tr(ref, 'chapter_band_prologue')
+                          : '${tr(ref, 'chapter_band_prefix')} ${entry.key}',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                          ),
                     ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        style.icon,
-                        size: 14,
-                        color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        id,
-                        style: TextStyle(
-                          color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-
-                if (hidden) {
-                  return Opacity(opacity: 0.18, child: IgnorePointer(child: container));
-                }
-
-                // A plain GestureDetector's tap recognizer competes with
-                // InteractiveViewer's pan/scale recognizer in the gesture
-                // arena, which can eat one-finger drags that start on a
-                // node. Listener never joins the arena, so panning always
-                // wins immediately; tap is detected manually instead.
-                return _NodeTapArea(
-                  onTap: () {
-                    if (storyNode != null) {
-                      _showNodeInfo(context, ref, storyNode, style);
-                    }
-                  },
-                  onDoubleTap: storyNode == null
-                      ? null
-                      : () {
-                          ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
-                          ref.read(homeTabIndexProvider.notifier).state = 0;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(tr(ref, 'node_activated'))),
-                          );
-                        },
-                  child: container,
-                );
-              },
+              ],
             ),
           ),
         ),

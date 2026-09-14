@@ -53,6 +53,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Quête de compagnon',
   },
   'node_kind_generic': {AppLanguage.en: 'Generic', AppLanguage.fr: 'Générique'},
+  'chapter_band_prefix': {AppLanguage.en: 'Chapter', AppLanguage.fr: 'Chapitre'},
+  'chapter_band_prologue': {AppLanguage.en: 'Prologue', AppLanguage.fr: 'Prologue'},
   'main_story_beat': {
     AppLanguage.en: 'Main Story Beat',
     AppLanguage.fr: "Étape principale de l'histoire",
