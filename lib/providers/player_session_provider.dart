@@ -587,9 +587,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> completeQuest(
+  /// Returns whether the quest's XP reward leveled the player up (so the
+  /// caller can show the same level-up dialog a combat level-up shows).
+  Future<bool> completeQuest(
     String questId, {
     int rewardGold = 0,
+    int rewardXP = 0,
     String? rewardItemId,
     String? nextQuestId,
     String? rewardDiceId,
@@ -612,15 +615,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !newOwnedDice.contains(rewardDiceId)) {
       newOwnedDice = [...newOwnedDice, rewardDiceId];
     }
+
+    final leveled = _applyXp(rewardXP);
+    final newAllies = leveled.leveledUp
+        ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)
+        : state.recruitedAllies;
+
     state = state.copyWith(
+      level: leveled.level,
+      currentXP: leveled.xp,
+      maxHealth: leveled.maxHealth,
+      currentHealth: leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
+      statPoints: leveled.statPoints,
+      skillPoints: leveled.skillPoints,
       gold: state.gold + rewardGold,
       activeQuestIds: newActive,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
       unlockedQuestIds: newUnlockedQuests,
       ownedDiceIds: newOwnedDice,
+      xpEarnedThisRun: state.xpEarnedThisRun + rewardXP,
+      recruitedAllies: newAllies,
     );
     await _persist();
+    return leveled.leveledUp;
   }
 
   Future<void> buyDice(String diceId, int cost) async {
@@ -896,7 +914,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (totalCompanionCount > 0) {
       check('full_roster', state.recruitedAllies.length >= totalCompanionCount);
     }
-    check('full_party', state.activeAllyIds.length >= 3);
+    // "Field a full 3-member active party" means the player plus 2 active
+    // allies (the default party capacity) -- activeAllyIds counts allies
+    // only, so the threshold here is 2, not 3.
+    check('full_party', state.activeAllyIds.length >= 2);
     check('keldas_hall_built', state.builtHouseIds.contains('keldas_hall'));
     check('first_quest', state.completedQuestIds.isNotEmpty);
     check('first_shop', state.unlockedShopIds.isNotEmpty);
@@ -1119,15 +1140,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// Applies a fight's outcome to the player's stats. Returns true if the
-  /// XP gain pushed the player up one or more levels, so the caller can
-  /// show a level-up celebration.
-  Future<bool> applyCombatResult({
-    required int hpAfter,
-    int goldGain = 0,
-    int xpGain = 0,
-    List<String> itemsGained = const [],
-  }) async {
+  /// Runs [xpGain] through the level-up threshold (`level * 100` XP each),
+  /// applying every level gained: +5 statPoints, +1 skillPoint, +20
+  /// maxHealth. Shared by [applyCombatResult] and [completeQuest] so a
+  /// quest's XP reward levels the player up exactly like combat XP does.
+  ({
+    int level,
+    int xp,
+    int maxHealth,
+    int statPoints,
+    int skillPoints,
+    bool leveledUp,
+    int levelsGained,
+  }) _applyXp(int xpGain) {
     var newLevel = state.level;
     var newXp = state.currentXP + xpGain;
     var newMaxHealth = state.maxHealth;
@@ -1146,38 +1171,64 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       levelsGained += 1;
     }
 
+    return (
+      level: newLevel,
+      xp: newXp,
+      maxHealth: newMaxHealth,
+      statPoints: newStatPoints,
+      skillPoints: newSkillPoints,
+      leveledUp: leveledUp,
+      levelsGained: levelsGained,
+    );
+  }
+
+  /// A level-up full-heals the player and, mirroring that, every recruited
+  /// ally too — "grows with you" plus the ally-equivalent of the player's
+  /// own +1 skillPoint/level (see AllyState.skillPoints doc).
+  List<AllyState> _healAndGrowAlliesOnLevelUp(int levelsGained) {
+    return [
+      for (final ally in state.recruitedAllies)
+        ally.copyWith(
+          currentHealth: AllyState.fullHealthSentinel,
+          skillPoints: ally.skillPoints + levelsGained,
+        ),
+    ];
+  }
+
+  /// Applies a fight's outcome to the player's stats. Returns true if the
+  /// XP gain pushed the player up one or more levels, so the caller can
+  /// show a level-up celebration.
+  Future<bool> applyCombatResult({
+    required int hpAfter,
+    int goldGain = 0,
+    int xpGain = 0,
+    List<String> itemsGained = const [],
+  }) async {
+    final leveled = _applyXp(xpGain);
+
     final clampedHp = hpAfter < 0
         ? 0
-        : (hpAfter > newMaxHealth ? newMaxHealth : hpAfter);
-    final newHealth = leveledUp ? newMaxHealth : clampedHp;
+        : (hpAfter > leveled.maxHealth ? leveled.maxHealth : hpAfter);
+    final newHealth = leveled.leveledUp ? leveled.maxHealth : clampedHp;
 
-    // A level-up full-heals the player (above) and, mirroring that, every
-    // recruited ally too — "grows with you" plus the ally-equivalent of the
-    // player's own +1 skillPoint/level (see AllyState.skillPoints doc).
-    final newAllies = leveledUp
-        ? [
-            for (final ally in state.recruitedAllies)
-              ally.copyWith(
-                currentHealth: AllyState.fullHealthSentinel,
-                skillPoints: ally.skillPoints + levelsGained,
-              ),
-          ]
+    final newAllies = leveled.leveledUp
+        ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)
         : state.recruitedAllies;
 
     state = state.copyWith(
-      level: newLevel,
-      currentXP: newXp,
-      maxHealth: newMaxHealth,
+      level: leveled.level,
+      currentXP: leveled.xp,
+      maxHealth: leveled.maxHealth,
       currentHealth: newHealth,
-      statPoints: newStatPoints,
-      skillPoints: newSkillPoints,
+      statPoints: leveled.statPoints,
+      skillPoints: leveled.skillPoints,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
       recruitedAllies: newAllies,
     );
     await _persist();
-    return leveledUp;
+    return leveled.leveledUp;
   }
 
   /// Permadeath: clears the player's inventory and equipped items but keeps

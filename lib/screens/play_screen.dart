@@ -13,6 +13,7 @@ import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/level_up_dialog.dart';
 import '../widgets/player_stats_bar.dart';
 import 'achievements_screen.dart';
 import 'camp_screen.dart';
@@ -317,9 +318,10 @@ class _QuestList extends ConsumerWidget {
               final nextQuestId = quest['nextQuestID']?.toString();
               final rewardDiceId = quest['rewardDiceID']?.toString();
               final rewardAllyId = quest['rewardAllyId']?.toString();
-              await ref.read(playerSessionProvider.notifier).completeQuest(
+              final leveledUp = await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
+                    rewardXP: rewardXp,
                     rewardItemId: rewardItemId,
                     nextQuestId: nextQuestId,
                     rewardDiceId: rewardDiceId,
@@ -355,6 +357,10 @@ class _QuestList extends ConsumerWidget {
                     '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
                     '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
               );
+              if (leveledUp) {
+                final newLevel = ref.read(playerSessionProvider).level;
+                showLevelUpDialog(context, ref, newLevel: newLevel);
+              }
             },
             child: Text(tr(ref, 'complete')),
           );

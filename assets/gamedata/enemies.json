@@ -263,9 +263,9 @@
     "skillMoves": [
       {
         "skillID": "void_blast",
-        "condition": "Always",
+        "condition": "Chance",
         "requiredElement": "Void",
-        "chance": 100,
+        "chance": 35,
         "healthThreshold": 0,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
@@ -405,9 +405,9 @@
     "skillMoves": [
       {
         "skillID": "void_blast",
-        "condition": "Always",
+        "condition": "Chance",
         "requiredElement": "Void",
-        "chance": 100,
+        "chance": 30,
         "healthThreshold": 0,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
