@@ -688,6 +688,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
   'town_hub_title': {AppLanguage.en: 'Town Hub', AppLanguage.fr: 'Place du village'},
+  'town_hub_locked_subtitle': {
+    AppLanguage.en: 'Reach Chapter 2 to unlock',
+    AppLanguage.fr: 'Atteignez le chapitre 2 pour débloquer',
+  },
   'zones_cleared_label': {AppLanguage.en: 'Zones Cleared', AppLanguage.fr: 'Zones nettoyées'},
   'basic_shops_section': {AppLanguage.en: 'Basic Shops', AppLanguage.fr: 'Commerces de base'},
   'zones_section': {AppLanguage.en: 'Zones', AppLanguage.fr: 'Zones'},

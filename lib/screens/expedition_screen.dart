@@ -125,6 +125,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       return;
     }
 
+    final questId = choice.unlockQuestId;
+    if (questId != null && questId.isNotEmpty) {
+      await notifier.unlockContent(questId: questId);
+      if (!mounted) return;
+      await _advance(shops: shops, enemies: enemies);
+      return;
+    }
+
     if (choice.hasEffects) {
       await notifier.applyChoiceEffects(
         goldMod: choice.goldMod,
@@ -146,6 +154,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
     final lang = ref.read(appLanguageProvider);
+    final companions = ref.read(gameDbProvider(companionsSchema)).value ?? const {};
 
     await notifier.completeZone(
       widget.zoneId,
@@ -170,7 +179,6 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       lines.add(diceName ?? rewardDiceId);
     }
     if (rewardAllyId.isNotEmpty) {
-      final companions = ref.read(gameDbProvider(companionsSchema)).value ?? const {};
       final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
       final professions = ref.read(gameDbProvider(professionsSchema)).value ?? const {};
       final companion = companions[rewardAllyId] as Map<String, dynamic>?;
@@ -186,7 +194,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       if (flagLine != flagKey) lines.add(flagLine);
     }
 
-    final newAchievements = await notifier.checkAchievements();
+    final newAchievements =
+        await notifier.checkAchievements(totalCompanionCount: companions.length);
     if (newAchievements.isNotEmpty) {
       final achievements = ref.read(gameDbProvider(achievementsSchema)).value ?? const {};
       for (final id in newAchievements) {

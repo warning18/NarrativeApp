@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_grid_layout.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -35,6 +36,8 @@ class PlayScreen extends ConsumerWidget {
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
     final achievementsCount = ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
+
+    final townHubUnlocked = chapterOfNode(playState.currentNodeId) >= 2;
 
     final unseenQuests =
         session.unlockedQuestIds.where((id) => !session.seenQuestIds.contains(id)).length;
@@ -144,18 +147,22 @@ class PlayScreen extends ConsumerWidget {
         ),
         Card(
           child: ListTile(
-            leading: const Icon(Icons.cottage_outlined),
+            leading: Icon(townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
             title: Text(tr(ref, 'town_hub_title')),
             subtitle: Text(
-              '${session.completedZoneIds.length} '
-              '${tr(ref, 'zones_cleared_label').toLowerCase()}',
+              townHubUnlocked
+                  ? '${session.completedZoneIds.length} '
+                      '${tr(ref, 'zones_cleared_label').toLowerCase()}'
+                  : tr(ref, 'town_hub_locked_subtitle'),
             ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const TownHubScreen()),
-              );
-            },
+            trailing: townHubUnlocked ? const Icon(Icons.chevron_right) : null,
+            onTap: !townHubUnlocked
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const TownHubScreen()),
+                    );
+                  },
           ),
         ),
         Card(

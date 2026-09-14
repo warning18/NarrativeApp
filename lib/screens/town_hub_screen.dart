@@ -37,6 +37,7 @@ class TownHubScreen extends ConsumerWidget {
     }
 
     final chapterZoneIds = zones.entries
+        .where((e) => e.value is Map<String, dynamic>)
         .where((e) => ((e.value as Map<String, dynamic>)['chapter'] as num?)?.toInt() == chapter)
         .map((e) => e.key)
         .toList()
