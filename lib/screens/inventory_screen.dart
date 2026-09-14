@@ -203,7 +203,8 @@ class _InventoryBody extends ConsumerWidget {
     final ownedIds = counts.keys.toList()..sort();
     final equippedIds = ally?.equippedItemIds ?? session.equippedItemIds;
 
-    final equippedDiceId = allyId != null ? companion?['signatureDiceId']?.toString() : session.equippedDiceId;
+    final allySignatureDiceId = companion?['signatureDiceId']?.toString();
+    final equippedDiceId = allyId != null ? allySignatureDiceId : session.equippedDiceId;
     final equippedDie = equippedDiceId != null ? dice[equippedDiceId] as Map<String, dynamic>? : null;
     final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
 
