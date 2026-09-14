@@ -122,9 +122,15 @@ class ChapterGridAlgorithm extends Algorithm {
 
   // ArrowEdgeRenderer, not null — some GraphView internals call through
   // this unconditionally, and SugiyamaAlgorithm (what this replaces)
-  // always had one set.
+  // always had one set. `Algorithm.renderer` is a getter/setter pair, not
+  // a plain field, so this overrides both rather than shadowing it.
+  EdgeRenderer? _renderer = ArrowEdgeRenderer();
+
   @override
-  EdgeRenderer? renderer = ArrowEdgeRenderer();
+  EdgeRenderer? get renderer => _renderer;
+
+  @override
+  set renderer(EdgeRenderer? value) => _renderer = value;
 
   @override
   void init(Graph? graph) {}
