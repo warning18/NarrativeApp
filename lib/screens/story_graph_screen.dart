@@ -11,6 +11,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
@@ -231,6 +232,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     final colorScheme = Theme.of(context).colorScheme;
     final styles = _styles(colorScheme);
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const <String, dynamic>{};
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
     return Stack(
       children: [
@@ -304,7 +306,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                         _showNodeInfo(context, ref, storyNode, style);
                       }
                     },
-                    onDoubleTap: storyNode == null
+                    onDoubleTap: (!isEditMode || storyNode == null)
                         ? null
                         : () {
                             ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
@@ -349,19 +351,20 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                   onTap: () => setState(() => _legendVisible = true),
                 ),
         ),
-        Positioned(
-          right: 12,
-          top: 12,
-          child: _ChapterJumpBar(
-            onJump: (nodeId) {
-              ref.read(storyPlayProvider.notifier).jumpTo(nodeId);
-              ref.read(homeTabIndexProvider.notifier).state = 0;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(tr(ref, 'node_activated'))),
-              );
-            },
+        if (isEditMode)
+          Positioned(
+            right: 12,
+            top: 12,
+            child: _ChapterJumpBar(
+              onJump: (nodeId) {
+                ref.read(storyPlayProvider.notifier).jumpTo(nodeId);
+                ref.read(homeTabIndexProvider.notifier).state = 0;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(tr(ref, 'node_activated'))),
+                );
+              },
+            ),
           ),
-        ),
       ],
     );
   }
@@ -636,6 +639,7 @@ Future<void> _showNodeInfo(
 ) {
   final language = ref.read(appLanguageProvider);
   final french = language == AppLanguage.fr;
+  final isEditMode = ref.read(appModeProvider) == AppMode.edit;
   String t(String key) => trFor(language, key);
 
   return showModalBottomSheet<void>(
@@ -694,15 +698,17 @@ Future<void> _showNodeInfo(
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ref.read(storyPlayProvider.notifier).jumpTo(node.id);
-                    Navigator.of(sheetContext).pop();
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                  label: Text(t('jump_to_node')),
-                ),
+                if (isEditMode) ...[
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ref.read(storyPlayProvider.notifier).jumpTo(node.id);
+                      Navigator.of(sheetContext).pop();
+                    },
+                    icon: const Icon(Icons.play_arrow),
+                    label: Text(t('jump_to_node')),
+                  ),
+                ],
               ],
             ),
           );
