@@ -1,0 +1,16 @@
+{
+  "keldas_hall": {
+    "houseID": "keldas_hall",
+    "houseName": "Kelda's Hall",
+    "description": "A reinforced forge-hall built to Kelda's own specifications. She's fought under enough collapsing roofs for one lifetime and won't stand watch under another until she's satisfied this one holds.",
+    "buildCost": 150,
+    "partyCapacityBonus": 0
+  },
+  "barracks_annex": {
+    "houseID": "barracks_annex",
+    "houseName": "Barracks Annex",
+    "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion's claim on it, just more camp than you started with.",
+    "buildCost": 200,
+    "partyCapacityBonus": 1
+  }
+}

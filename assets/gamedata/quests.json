@@ -36,7 +36,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
@@ -75,7 +76,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -114,7 +116,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
@@ -153,7 +156,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch2_burning_manifest": {
     "questID": "q_ch2_burning_manifest",
@@ -192,7 +196,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch2_captains_gambit": {
     "questID": "q_ch2_captains_gambit",
@@ -231,7 +236,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch2_harbor_reckoning": {
     "questID": "q_ch2_harbor_reckoning",
@@ -270,7 +276,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": "storm_die"
+    "rewardDiceID": "storm_die",
+    "rewardAllyId": ""
   },
   "q_ch3_ashen_oath": {
     "questID": "q_ch3_ashen_oath",
@@ -309,7 +316,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch3_inquisition_ledger": {
     "questID": "q_ch3_inquisition_ledger",
@@ -348,7 +356,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch3_void_relic": {
     "questID": "q_ch3_void_relic",
@@ -387,7 +396,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   },
   "q_ch3_the_high_wardens_fall": {
     "questID": "q_ch3_the_high_wardens_fall",
@@ -426,7 +436,8 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": "huntsman_die"
+    "rewardDiceID": "huntsman_die",
+    "rewardAllyId": ""
   },
   "q_ch3_alsters_dawn": {
     "questID": "q_ch3_alsters_dawn",
@@ -465,6 +476,127 @@
         "lockedText": ""
       }
     ],
-    "rewardDiceID": ""
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch2_keldas_stand": {
+    "questID": "q_ch2_keldas_stand",
+    "questName": "Kelda's Stand",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Help Kelda hold the wharf gate against the boarding party",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_soldier",
+        "targetItemID": "",
+        "targetNPCName": "Kelda",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 50,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"Name's Kelda. I've been holding this gate alone since my unit stopped being a unit, and I'll go on holding it alone if I have to — but I'd rather not have to.\" She sets her shield without waiting for an answer, which I take, correctly, as her having already decided this partnership one way or another.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Fight beside her",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_keldas_stand_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "kelda"
+  },
+  "q_ch2_sables_wager": {
+    "questID": "q_ch2_sables_wager",
+    "questName": "Sable's Wager",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Win back the marker Sable lost to a dockside card sharp",
+        "type": "Fetch",
+        "targetEnemyID": "",
+        "targetItemID": "dagger_t2",
+        "targetNPCName": "Sable",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 35,
+    "rewardXP": 45,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I'm good at exactly two things,\" Sable says, not looking up from the dice she's still sore about, \"picking locks and picking the wrong table to sit down at. Get my marker back and I'm yours for as long as the arrangement keeps paying better than the alternative.\" Which is, I gather, the closest thing to loyalty she considers worth promising in writing.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take the wager",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_sables_wager_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "sable"
+  },
+  "q_ch3_marens_penance": {
+    "questID": "q_ch3_marens_penance",
+    "questName": "Sister Maren's Penance",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "6",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Hear Sister Maren's case for abandoning her Inquisition vows",
+        "type": "Talk",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Maren",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 80,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I took an oath to heal in the Inquisition's name, and for years I told myself the name was the smaller half of that sentence.\" Sister Maren sets down a censer that no longer smells like anything she believes in. \"I'm done arguing myself out of what I've watched this order do. Let me heal on my own terms, or don't, but I'd rather it be with you than for them.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take her oath at her word",
+        "goldModifier": 0,
+        "alignmentModifier": 5,
+        "flagToAdd": "q_ch3_marens_penance_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "maren"
   }
 }

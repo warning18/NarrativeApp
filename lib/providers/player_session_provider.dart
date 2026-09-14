@@ -4,6 +4,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/ally_state.dart';
+
 const String _playerSessionPrefsKey = 'player_session';
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
@@ -49,6 +51,9 @@ class PlayerSession {
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
+    this.recruitedAllies = const [],
+    this.activeAllyIds = const [],
+    this.builtHouseIds = const [],
   });
 
   final int level;
@@ -114,6 +119,22 @@ class PlayerSession {
   final List<String> seenQuestIds;
   final List<String> seenEnemyIds;
 
+  /// Companions recruited through story quests — permanent for this save
+  /// once earned, regardless of active/benched status (mirrors
+  /// [completedQuestIds]'s append-only pattern).
+  final List<AllyState> recruitedAllies;
+
+  /// Subset of [recruitedAllies] (by companionId) currently fighting
+  /// alongside the player, bounded by party capacity (default 2, raised by
+  /// built houses' partyCapacityBonus).
+  final List<String> activeAllyIds;
+
+  /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
+  /// companions can join the active party (a companion's own
+  /// `requiredHouseId`) and/or raises party capacity
+  /// (`partyCapacityBonus`), per houses.json.
+  final List<String> builtHouseIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -171,6 +192,9 @@ class PlayerSession {
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
+    List<AllyState>? recruitedAllies,
+    List<String>? activeAllyIds,
+    List<String>? builtHouseIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -206,6 +230,9 @@ class PlayerSession {
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
+      recruitedAllies: recruitedAllies ?? this.recruitedAllies,
+      activeAllyIds: activeAllyIds ?? this.activeAllyIds,
+      builtHouseIds: builtHouseIds ?? this.builtHouseIds,
     );
   }
 
@@ -243,6 +270,9 @@ class PlayerSession {
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
+        'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
+        'activeAllyIds': activeAllyIds,
+        'builtHouseIds': builtHouseIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -305,6 +335,14 @@ class PlayerSession {
           (json['seenQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
       seenEnemyIds:
           (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      recruitedAllies: (json['recruitedAllies'] as List?)
+              ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
+      activeAllyIds:
+          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      builtHouseIds:
+          (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
     );
   }
 }
@@ -633,6 +671,186 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  // --- Companions (allies) & houses -------------------------------------
+
+  /// Grants a companion permanently once their recruit quest completes — see
+  /// the `rewardAllyId` handling at the Quests tab's completion call site.
+  /// No-ops if already recruited (recruiting is a one-time story reward).
+  /// [race]/[profession] are the companion's own race/profession records
+  /// (looked up via their companions.json entry), used only to seed their
+  /// starting unlocked skills exactly like [startNewGame] does for the
+  /// player — an ally's actual combat stats are always derived live, never
+  /// stored (see [AllyState]'s class doc).
+  Future<void> recruitAlly(
+    String companionId, {
+    Map<String, dynamic>? race,
+    Map<String, dynamic>? profession,
+  }) async {
+    if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
+    final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
+    final raceSkillId = race?['standardSkillID']?.toString() ?? '';
+    final starterUnlocked = <String>[
+      if (professionSkillId.isNotEmpty) professionSkillId,
+      if (raceSkillId.isNotEmpty) raceSkillId,
+    ];
+    state = state.copyWith(recruitedAllies: [
+      ...state.recruitedAllies,
+      AllyState(
+        companionId: companionId,
+        currentHealth: AllyState.fullHealthSentinel,
+        unlockedSkillIds: starterUnlocked,
+      ),
+    ]);
+    await _persist();
+  }
+
+  /// Adds or removes [companionId] from the active fight party.
+  /// [partyCapacity] and [requiredHouseId] (that companion's own gate, if
+  /// any, from companions.json) are enforced here as well as in the Camp
+  /// UI, matching how e.g. [buyItem] re-checks affordability itself.
+  Future<void> setAllyActive(
+    String companionId,
+    bool active, {
+    required int partyCapacity,
+    String? requiredHouseId,
+  }) async {
+    if (!state.recruitedAllies.any((a) => a.companionId == companionId)) return;
+    if (!active) {
+      if (!state.activeAllyIds.contains(companionId)) return;
+      state = state.copyWith(
+        activeAllyIds: state.activeAllyIds.where((id) => id != companionId).toList(),
+      );
+      await _persist();
+      return;
+    }
+    if (state.activeAllyIds.contains(companionId)) return;
+    if (state.activeAllyIds.length >= partyCapacity) return;
+    if (requiredHouseId != null &&
+        requiredHouseId.isNotEmpty &&
+        !state.builtHouseIds.contains(requiredHouseId)) {
+      return;
+    }
+    state = state.copyWith(activeAllyIds: [...state.activeAllyIds, companionId]);
+    await _persist();
+  }
+
+  /// Spends gold to build a camp house. No-ops if already built or
+  /// unaffordable.
+  Future<void> buildHouse(String houseId, int cost) async {
+    if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      builtHouseIds: [...state.builtHouseIds, houseId],
+    );
+    await _persist();
+  }
+
+  /// Runs [update] against the named ally's current [AllyState] and writes
+  /// the result back into [recruitedAllies] — the shared plumbing every
+  /// per-ally mutator below uses, since an ally lives inside a list rather
+  /// than getting its own top-level provider.
+  Future<void> _updateAlly(
+    String companionId,
+    AllyState Function(AllyState ally) update,
+  ) async {
+    final index = state.recruitedAllies.indexWhere((a) => a.companionId == companionId);
+    if (index == -1) return;
+    final newAllies = [...state.recruitedAllies];
+    newAllies[index] = update(newAllies[index]);
+    state = state.copyWith(recruitedAllies: newAllies);
+    await _persist();
+  }
+
+  /// Equips [itemId] onto ally [companionId] — the ally equivalent of
+  /// [equipItem]. Items are drawn from the same shared [inventoryItemIds]
+  /// pool the player equips from (this game has one inventory, not one per
+  /// character); equipping doesn't remove the item from that pool, matching
+  /// [equipItem]'s own existing behavior.
+  Future<void> equipAllyItem(
+    String companionId,
+    String itemId, {
+    String? slot,
+    Map<String, dynamic>? items,
+  }) async {
+    await _updateAlly(companionId, (ally) {
+      if (ally.equippedItemIds.contains(itemId)) return ally;
+      var newEquipped = ally.equippedItemIds;
+      if (slot != null && slot.isNotEmpty && items != null) {
+        newEquipped = ally.equippedItemIds.where((id) {
+          final other = items[id] as Map<String, dynamic>?;
+          return (other?['equipSlot']?.toString() ?? '') != slot;
+        }).toList();
+      }
+      return ally.copyWith(equippedItemIds: [...newEquipped, itemId]);
+    });
+  }
+
+  Future<void> unequipAllyItem(String companionId, String itemId) async {
+    await _updateAlly(
+      companionId,
+      (ally) => ally.copyWith(
+        equippedItemIds: ally.equippedItemIds.where((id) => id != itemId).toList(),
+      ),
+    );
+  }
+
+  /// The ally equivalent of [unlockSkill] — spends one of the ally's own
+  /// [AllyState.skillPoints].
+  Future<void> unlockAllySkill(String companionId, String skillId) async {
+    await _updateAlly(companionId, (ally) {
+      if (ally.skillPoints <= 0 || ally.unlockedSkillIds.contains(skillId)) return ally;
+      return ally.copyWith(
+        skillPoints: ally.skillPoints - 1,
+        unlockedSkillIds: [...ally.unlockedSkillIds, skillId],
+      );
+    });
+  }
+
+  /// The ally equivalent of [assignSkillToDiceFace]/[clearDiceFaceSkill] —
+  /// flat by faceIndex rather than dice-keyed, since an ally only ever has
+  /// their one fixed signature die (see [AllyState.diceSkillAssignments]).
+  Future<void> assignSkillToAllyDiceFace(String companionId, int faceIndex, String skillId) async {
+    await _updateAlly(companionId, (ally) {
+      final updated = Map<String, String>.from(ally.diceSkillAssignments);
+      updated[faceIndex.toString()] = skillId;
+      return ally.copyWith(diceSkillAssignments: updated);
+    });
+  }
+
+  Future<void> clearAllyDiceFaceSkill(String companionId, int faceIndex) async {
+    await _updateAlly(companionId, (ally) {
+      if (!ally.diceSkillAssignments.containsKey(faceIndex.toString())) return ally;
+      final updated = Map<String, String>.from(ally.diceSkillAssignments)
+        ..remove(faceIndex.toString());
+      return ally.copyWith(diceSkillAssignments: updated);
+    });
+  }
+
+  /// Persists an ally's health at the end of a fight (see [FightScreen]) —
+  /// unlike the player, a lost fight simply doesn't call this, so an ally's
+  /// mid-fight damage is never persisted on a loss (mirrors the player not
+  /// being HP-punished on a loss either, via the existing full-heal-on-loss
+  /// behavior in [applyCombatResult]).
+  Future<void> applyAllyCombatResult(String companionId, {required int hpAfter}) async {
+    await _updateAlly(
+      companionId,
+      (ally) => ally.copyWith(currentHealth: hpAfter < 0 ? 0 : hpAfter),
+    );
+  }
+
+  /// Heals the player and every recruited ally (active or benched) to full
+  /// — the Camp screen's Rest action.
+  Future<void> healPartyToFull() async {
+    state = state.copyWith(
+      currentHealth: state.maxHealth,
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          ally.copyWith(currentHealth: AllyState.fullHealthSentinel),
+      ],
+    );
+    await _persist();
+  }
+
   /// Marks a shop/quest/enemy as discovered through story progression, so it
   /// becomes accessible in the Play tab. Empty/null ids are ignored.
   ///
@@ -857,6 +1075,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newStatPoints = state.statPoints;
     var newSkillPoints = state.skillPoints;
     var leveledUp = false;
+    var levelsGained = 0;
 
     while (newXp >= newLevel * 100) {
       newXp -= newLevel * 100;
@@ -865,12 +1084,26 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newSkillPoints += 1;
       newMaxHealth += 20;
       leveledUp = true;
+      levelsGained += 1;
     }
 
     final clampedHp = hpAfter < 0
         ? 0
         : (hpAfter > newMaxHealth ? newMaxHealth : hpAfter);
     final newHealth = leveledUp ? newMaxHealth : clampedHp;
+
+    // A level-up full-heals the player (above) and, mirroring that, every
+    // recruited ally too — "grows with you" plus the ally-equivalent of the
+    // player's own +1 skillPoint/level (see AllyState.skillPoints doc).
+    final newAllies = leveledUp
+        ? [
+            for (final ally in state.recruitedAllies)
+              ally.copyWith(
+                currentHealth: AllyState.fullHealthSentinel,
+                skillPoints: ally.skillPoints + levelsGained,
+              ),
+          ]
+        : state.recruitedAllies;
 
     state = state.copyWith(
       level: newLevel,
@@ -882,6 +1115,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
+      recruitedAllies: newAllies,
     );
     await _persist();
     return leveledUp;

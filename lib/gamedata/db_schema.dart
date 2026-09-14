@@ -512,6 +512,12 @@ final DbSchema questsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'dice',
     ),
+    FieldSchema(
+      key: 'rewardAllyId',
+      label: 'Reward Ally ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
     FieldSchema(key: 'npcDialogueText', label: 'NPC Dialogue Text', type: FieldType.multilineText),
     FieldSchema(key: 'requiredGold', label: 'Required Gold', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'requiredFlags', label: 'Required Flags', type: FieldType.stringList),
@@ -656,6 +662,72 @@ final DbSchema adventureNodesSchema = DbSchema(
   ],
 );
 
+final DbSchema companionsSchema = DbSchema(
+  id: 'companions',
+  label: 'Companions',
+  assetPath: 'assets/gamedata/companions.json',
+  primaryKeyField: 'companionID',
+  titleField: 'companionName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'companionID', label: 'Companion ID', type: FieldType.text),
+    FieldSchema(key: 'companionName', label: 'Companion Name', type: FieldType.text),
+    FieldSchema(
+      key: 'raceId',
+      label: 'Race',
+      type: FieldType.reference,
+      referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+      key: 'professionId',
+      label: 'Profession',
+      type: FieldType.reference,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+      key: 'signatureDiceId',
+      label: 'Signature Die (fixed, never player-swappable)',
+      type: FieldType.reference,
+      referenceSchemaId: 'dice',
+    ),
+    FieldSchema(
+      key: 'recruitQuestId',
+      label: 'Recruit Quest ID',
+      type: FieldType.reference,
+      referenceSchemaId: 'quests',
+    ),
+    FieldSchema(
+      key: 'requiredHouseId',
+      label: 'Required House ID (empty = joins active party unconditionally, still subject to capacity)',
+      type: FieldType.reference,
+      referenceSchemaId: 'houses',
+    ),
+    visualAssetFieldSchema('companions'),
+  ],
+);
+
+final DbSchema housesSchema = DbSchema(
+  id: 'houses',
+  label: 'Houses (Camp)',
+  assetPath: 'assets/gamedata/houses.json',
+  primaryKeyField: 'houseID',
+  titleField: 'houseName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'houseID', label: 'House ID', type: FieldType.text),
+    FieldSchema(key: 'houseName', label: 'House Name', type: FieldType.text),
+    FieldSchema(key: 'description', label: 'Description', type: FieldType.multilineText),
+    FieldSchema(key: 'buildCost', label: 'Build Cost (Gold)', type: FieldType.integer, defaultValue: 0),
+    FieldSchema(
+      key: 'partyCapacityBonus',
+      label: 'Party Capacity Bonus',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    visualAssetFieldSchema('houses'),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
@@ -670,4 +742,6 @@ final List<DbSchema> gameDbSchemas = [
   adventureNodesSchema,
   racesSchema,
   professionsSchema,
+  companionsSchema,
+  housesSchema,
 ];

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -11,7 +12,15 @@ import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 
 class InventoryScreen extends ConsumerStatefulWidget {
-  const InventoryScreen({super.key});
+  const InventoryScreen({super.key, this.allyId});
+
+  /// When set, this screen manages the named companion's gear instead of
+  /// the player's own — same screen, same equip/unequip flow, just pointed
+  /// at a different character's [AllyState] instead of [PlayerSession]
+  /// directly. Both draw candidate items from the same shared
+  /// `inventoryItemIds` pool (this game has one inventory, not one per
+  /// character); only which `equippedItemIds` list gets written differs.
+  final String? allyId;
 
   @override
   ConsumerState<InventoryScreen> createState() => _InventoryScreenState();
@@ -55,10 +64,17 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   Widget build(BuildContext context) {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
+    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+
+    final companion = widget.allyId != null
+        ? companions[widget.allyId] as Map<String, dynamic>?
+        : null;
+    final titleSuffix =
+        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(tr(ref, 'inventory_equipment')),
+        title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
         actions: [
           IconButton(
             icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
@@ -86,6 +102,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 data: (dice) => _InventoryBody(
                   items: items,
                   dice: dice,
+                  allyId: widget.allyId,
+                  companion: companion,
                   compareMode: _compareMode,
                   firstCompareId: _firstCompareId,
                   onCompareTap: (itemId) => _onCompareTap(context, items, itemId),
@@ -135,6 +153,8 @@ class _InventoryBody extends ConsumerWidget {
   const _InventoryBody({
     required this.items,
     required this.dice,
+    required this.allyId,
+    required this.companion,
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
@@ -142,6 +162,8 @@ class _InventoryBody extends ConsumerWidget {
 
   final Map<String, dynamic> items;
   final Map<String, dynamic> dice;
+  final String? allyId;
+  final Map<String, dynamic>? companion;
   final bool compareMode;
   final String? firstCompareId;
   final ValueChanged<String> onCompareTap;
@@ -157,15 +179,32 @@ class _InventoryBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
+    final ally = allyId != null
+        ? session.recruitedAllies.firstWhere(
+            (a) => a.companionId == allyId,
+            orElse: () => AllyState(companionId: allyId!, currentHealth: 0),
+          )
+        : null;
+
+    void Function(String itemId, {String? slot}) equipFn = allyId != null
+        ? (itemId, {slot}) => ref
+            .read(playerSessionProvider.notifier)
+            .equipAllyItem(allyId!, itemId, slot: slot, items: items)
+        : (itemId, {slot}) =>
+            ref.read(playerSessionProvider.notifier).equipItem(itemId, slot: slot, items: items);
+    void Function(String itemId) unequipFn = allyId != null
+        ? (itemId) => ref.read(playerSessionProvider.notifier).unequipAllyItem(allyId!, itemId)
+        : (itemId) => ref.read(playerSessionProvider.notifier).unequipItem(itemId);
 
     final counts = <String, int>{};
     for (final id in session.inventoryItemIds) {
       counts[id] = (counts[id] ?? 0) + 1;
     }
     final ownedIds = counts.keys.toList()..sort();
-    final equippedIds = session.equippedItemIds;
+    final equippedIds = ally?.equippedItemIds ?? session.equippedItemIds;
 
-    final equippedDiceId = session.equippedDiceId;
+    final allySignatureDiceId = companion?['signatureDiceId']?.toString();
+    final equippedDiceId = allyId != null ? allySignatureDiceId : session.equippedDiceId;
     final equippedDie = equippedDiceId != null ? dice[equippedDiceId] as Map<String, dynamic>? : null;
     final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
 
@@ -179,13 +218,17 @@ class _InventoryBody extends ConsumerWidget {
             leading: const Icon(Icons.casino),
             title: Text(tr(ref, 'dice_label')),
             subtitle: Text(equippedDie != null ? equippedDiceId! : tr(ref, 'none_equipped')),
-            trailing: IconButton(
-              icon: const Icon(Icons.edit_outlined),
-              tooltip: tr(ref, 'choose_die'),
-              onPressed: ownedDiceIds.isEmpty
-                  ? null
-                  : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
-            ),
+            // An ally's signature die is fixed at recruitment and never
+            // player-swappable, so no edit affordance for that case.
+            trailing: allyId != null
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.edit_outlined),
+                    tooltip: tr(ref, 'choose_die'),
+                    onPressed: ownedDiceIds.isEmpty
+                        ? null
+                        : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
+                  ),
           ),
         ),
         ...equipSlotOptions.map((slot) {
@@ -209,15 +252,14 @@ class _InventoryBody extends ConsumerWidget {
                     IconButton(
                       icon: const Icon(Icons.close),
                       tooltip: tr(ref, 'unequip'),
-                      onPressed: () =>
-                          ref.read(playerSessionProvider.notifier).unequipItem(equippedId),
+                      onPressed: () => unequipFn(equippedId),
                     ),
                   IconButton(
                     icon: const Icon(Icons.edit_outlined),
                     tooltip: tr(ref, 'choose_item'),
                     onPressed: candidates.isEmpty
                         ? null
-                        : () => _pickForSlot(context, ref, slot, candidates, equippedId),
+                        : () => _pickForSlot(context, ref, slot, candidates, equippedId, equipFn),
                   ),
                 ],
               ),
@@ -255,14 +297,8 @@ class _InventoryBody extends ConsumerWidget {
               compareMode: compareMode,
               selectedForCompare: firstCompareId == id,
               onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable && !isEquipped)
-                  ? () => ref
-                      .read(playerSessionProvider.notifier)
-                      .equipItem(id, slot: equipSlot, items: items)
-                  : null,
-              onUnequip: isEquipped
-                  ? () => ref.read(playerSessionProvider.notifier).unequipItem(id)
-                  : null,
+              onEquip: (isEquippable && !isEquipped) ? () => equipFn(id, slot: equipSlot) : null,
+              onUnequip: isEquipped ? () => unequipFn(id) : null,
             );
           }),
       ],
@@ -307,6 +343,7 @@ class _InventoryBody extends ConsumerWidget {
     String slot,
     List<String> candidates,
     String? currentlyEquippedId,
+    void Function(String itemId, {String? slot}) equipFn,
   ) {
     return showModalBottomSheet<void>(
       context: context,
@@ -321,7 +358,7 @@ class _InventoryBody extends ConsumerWidget {
               title: Text(itemName),
               trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
               onTap: () {
-                ref.read(playerSessionProvider.notifier).equipItem(id, slot: slot, items: items);
+                equipFn(id, slot: slot);
                 Navigator.of(sheetContext).pop();
               },
             );
