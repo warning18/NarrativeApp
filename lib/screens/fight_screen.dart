@@ -175,18 +175,15 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   bool _partyBuilt = false;
   List<_PartyMember> _party = [];
 
-  /// Index into [_party] of whoever's turn it currently is during the party
-  /// phase of a round (player first, then each active ally in order,
-  /// skipping anyone knocked out).
-  int _currentPartyIndex = 0;
+  /// This round's rolled face per conscious party member id — every
+  /// conscious member (the player, plus each active ally) rolls their own
+  /// die together as one combined action instead of taking separate
+  /// sequential turns. Cleared once a roll is confirmed.
+  final Map<String, DiceFaceResult> _currentFaces = {};
 
-  /// The most recently rolled face — kept on screen (never cleared) once a
-  /// fight has its first roll, so the player always has the face they're
-  /// looking at in view, right up until the next roll replaces it.
-  DiceFaceResult? _lastFace;
-
-  /// How many times the die has been rolled so far *this turn* (0-3).
-  /// Resets to 0 once a roll is confirmed and the turn resolves.
+  /// How many times the party has rolled so far *this round* (0-3) — a
+  /// single shared budget covering every member's die at once, not a
+  /// per-member count.
   int _rollCount = 0;
 
   /// True right after a roll lands and before the player has chosen to
@@ -328,29 +325,43 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     };
   }
 
-  /// Rolls the acting party member's die once. The first roll of a turn
-  /// just shows its result and waits for a keep/reroll decision (see
-  /// [_confirmRoll]); the 3rd roll is forced — there's no more choice left,
-  /// so it locks in and resolves automatically after a beat.
+  /// Every party member able to act this round — the player (always
+  /// conscious here, since their own knockout already ends the fight before
+  /// another round could start) plus every active ally still standing.
+  List<_PartyMember> get _actingParty => _party.where((m) => !m.isKnockedOut).toList();
+
+  /// Rolls a die for every acting party member at once — one face per
+  /// member, shown side by side — instead of each combatant taking a
+  /// separate sequential turn. The first roll of a round just shows its
+  /// results and waits for a keep/reroll decision (see [_confirmRoll]); the
+  /// 3rd roll is forced — there's no more choice left, so it locks in and
+  /// resolves automatically after a beat.
   Future<void> _rollDice(
     Map<String, dynamic> diceDb,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) async {
     if (_over || _rolling || _rollCount >= _maxRolls) return;
-    final actor = _party[_currentPartyIndex];
-    final actorDice =
-        actor.equippedDiceId != null ? diceDb[actor.equippedDiceId] as Map<String, dynamic>? : null;
-    final faces = (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
-    if (faces.isEmpty) return;
+    final acting = _actingParty;
 
-    var face = rollDie(faces, _random);
-    if (face.type == 'Skill') {
-      final assigned = actor.diceSkillAssignments[face.faceIndex.toString()];
-      if (assigned != null && assigned.isNotEmpty) {
-        face = face.withLinkedSkillID(assigned);
+    final rolled = <String, DiceFaceResult>{};
+    for (final actor in acting) {
+      final actorDice = actor.equippedDiceId != null
+          ? diceDb[actor.equippedDiceId] as Map<String, dynamic>?
+          : null;
+      final faces = (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+      if (faces.isEmpty) continue;
+
+      var face = rollDie(faces, _random);
+      if (face.type == 'Skill') {
+        final assigned = actor.diceSkillAssignments[face.faceIndex.toString()];
+        if (assigned != null && assigned.isNotEmpty) {
+          face = face.withLinkedSkillID(assigned);
+        }
       }
+      rolled[actor.id] = face;
     }
+    if (rolled.isEmpty) return;
 
     setState(() => _rolling = true);
     await _rollController.forward(from: 0);
@@ -361,50 +372,64 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     setState(() {
       _rolling = false;
       _rollCount = rollNumber;
-      _lastFace = face;
+      _currentFaces
+        ..clear()
+        ..addAll(rolled);
       _awaitingDecision = !forced;
     });
 
     if (forced) {
-      // No choice left — give the player a beat to see the 3rd face land
-      // before it resolves on its own.
+      // No choice left — give the player a beat to see the 3rd faces land
+      // before they resolve on their own.
       await Future.delayed(const Duration(milliseconds: 700));
       if (!mounted) return;
       await _confirmRoll(skills, items);
     }
   }
 
-  /// Locks in the currently-shown rolled face and applies its effect for
-  /// whichever party member is currently acting, whether by tapping
-  /// Confirm or the 3rd roll forcing it.
+  /// Locks in every acting member's currently-shown rolled face and applies
+  /// all of their effects together, whether by tapping Confirm or the 3rd
+  /// roll forcing it — then, once the enemy still stands, hands the turn
+  /// straight to them (there's no more per-member turn order to advance
+  /// through).
   Future<void> _confirmRoll(Map<String, dynamic> skills, Map<String, dynamic> items) async {
-    final face = _lastFace;
-    if (face == null || _over) return;
-    final actor = _party[_currentPartyIndex];
+    if (_currentFaces.isEmpty || _over) return;
+    final lang = ref.read(appLanguageProvider);
 
-    final totalDamage =
-        actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
-    final result = resolvePlayerFace(
-      face,
-      _availableSkillsFor(actor, skills),
-      totalDamage,
-      language: ref.read(appLanguageProvider),
-    );
-    final kind = result.damageDealt > 0
-        ? _LogKind.playerDamage
-        : result.healingDone > 0
-            ? _LogKind.playerHeal
-            : result.blockAmount > 0
-                ? _LogKind.playerBlock
-                : _LogKind.info;
+    var totalDamageToEnemy = 0;
+    final newEntries = <_LogEntry>[];
+    for (final actor in _actingParty) {
+      final face = _currentFaces[actor.id];
+      if (face == null) continue;
+
+      final totalDamage =
+          actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
+      final result = resolvePlayerFace(
+        face,
+        _availableSkillsFor(actor, skills),
+        totalDamage,
+        language: lang,
+      );
+      final kind = result.damageDealt > 0
+          ? _LogKind.playerDamage
+          : result.healingDone > 0
+              ? _LogKind.playerHeal
+              : result.blockAmount > 0
+                  ? _LogKind.playerBlock
+                  : _LogKind.info;
+
+      totalDamageToEnemy += result.damageDealt;
+      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + result.healingDone);
+      actor.block = result.blockAmount;
+      newEntries.add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+    }
 
     setState(() {
       _awaitingDecision = false;
       _rollCount = 0;
-      _enemyHealth = max(0, _enemyHealth - result.damageDealt);
-      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + result.healingDone);
-      actor.block = result.blockAmount;
-      _log.add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+      _currentFaces.clear();
+      _enemyHealth = max(0, _enemyHealth - totalDamageToEnemy);
+      _log.addAll(newEntries);
     });
 
     await Future.delayed(const Duration(milliseconds: 400));
@@ -415,39 +440,15 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       return;
     }
 
-    _advanceToNextTurn(skills, items);
+    _takeEnemyTurn(skills, items);
   }
 
-  /// Advances to the next conscious party member's turn, or — once
-  /// everyone able to act has acted — runs the enemy's turn.
-  void _advanceToNextTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
-    var next = _currentPartyIndex + 1;
-    while (next < _party.length && _party[next].isKnockedOut) {
-      next += 1;
-    }
-    if (next >= _party.length) {
-      _takeEnemyTurn(skills, items);
-      return;
-    }
-    setState(() {
-      _currentPartyIndex = next;
-      _rollCount = 0;
-      _lastFace = null;
-      _awaitingDecision = false;
-    });
-  }
-
-  /// Starts a fresh round at the first conscious party member (always at
-  /// least the player, or the fight would already be over).
+  /// Resets the shared roll state for a fresh round — called once the
+  /// enemy's turn resolves without ending the fight.
   void _startPartyRound() {
-    var index = 0;
-    while (index < _party.length && _party[index].isKnockedOut) {
-      index += 1;
-    }
     setState(() {
-      _currentPartyIndex = index;
       _rollCount = 0;
-      _lastFace = null;
+      _currentFaces.clear();
       _awaitingDecision = false;
     });
   }
@@ -748,10 +749,10 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     Map<String, dynamic> items,
     PlayerSession session,
   ) {
-    final actor = _party[_currentPartyIndex];
-    final actorDice =
-        actor.equippedDiceId != null ? dice[actor.equippedDiceId] as Map<String, dynamic>? : null;
-    final isPlayerTurn = actor.isPlayer;
+    final acting = _actingParty;
+    final anyDieAvailable = acting.any((m) =>
+        m.equippedDiceId != null &&
+        ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)?.isNotEmpty == true);
 
     return AnimatedBuilder(
       animation: _shakeController,
@@ -776,17 +777,6 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               max: _enemyMaxHealth,
               statLine: '⚔ $_enemyDamage',
             ),
-            if (_party.length > 1) ...[
-              const SizedBox(height: 12),
-              Text(
-                '${tr(ref, 'whose_turn_label')} ${actor.displayName}'
-                '${actor.isKnockedOut ? " (${tr(ref, 'knocked_out_label')})" : ""}',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleSmall
-                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
-              ),
-            ],
             const SizedBox(height: 16),
             Expanded(
               child: Container(
@@ -827,9 +817,13 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               ),
             ),
             const SizedBox(height: 16),
-            if (_lastFace != null) ...[
-              _buildDieFaceCard(skills, items),
-              const SizedBox(height: 12),
+            if (_currentFaces.isNotEmpty) ...[
+              for (final actor in acting)
+                if (_currentFaces[actor.id] != null) ...[
+                  _buildDieFaceCard(actor, _currentFaces[actor.id]!, skills, items),
+                  const SizedBox(height: 8),
+                ],
+              const SizedBox(height: 4),
             ],
             if (_over)
               ElevatedButton(
@@ -881,15 +875,19 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 )
               else
                 ElevatedButton.icon(
-                  onPressed: (actorDice == null || _rolling)
+                  onPressed: (!anyDieAvailable || _rolling)
                       ? null
                       : () => _rollDice(dice, skills, items),
                   icon: const Icon(Icons.casino),
-                  label: Text(tr(ref, 'roll_dice_button')),
+                  label: Text(
+                    acting.length > 1
+                        ? '${tr(ref, 'roll_dice_button')} (${acting.length}×)'
+                        : tr(ref, 'roll_dice_button'),
+                  ),
                 ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
-                onPressed: (isPlayerTurn && session.potionCount > 0 && !_rolling) ? _usePotion : null,
+                onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
                 icon: const Icon(Icons.local_drink),
                 label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
               ),
@@ -937,9 +935,12 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   /// knows what they're looking at — spinning while a roll is in flight,
   /// settled (face name, which skill it maps to if it's a Skill face, and
   /// a preview of what confirming it will do) once it lands.
-  Widget _buildDieFaceCard(Map<String, dynamic> skills, Map<String, dynamic> items) {
-    final face = _lastFace!;
-    final actor = _party[_currentPartyIndex];
+  Widget _buildDieFaceCard(
+    _PartyMember actor,
+    DiceFaceResult face,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
 
     Widget content;
@@ -958,6 +959,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          if (_party.length > 1)
+            Text(
+              actor.displayName,
+              style: Theme.of(context)
+                  .textTheme
+                  .labelSmall
+                  ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold),
+            ),
           Text(
             face.faceName.isEmpty ? face.type : face.faceName,
             style: Theme.of(context).textTheme.titleSmall,

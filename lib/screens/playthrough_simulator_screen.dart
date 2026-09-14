@@ -301,6 +301,70 @@ Map<String, int> _endingCounts(List<_SimResult> results) {
   return Map.fromEntries(entries);
 }
 
+/// How many of [results]' runs discovered each companion's recruit quest —
+/// derived purely from [_SimResult.questsDiscovered] (this graph-walk
+/// simulator has no quest-completion model, so "discovered the recruit
+/// quest" is the closest available proxy for "encountered this companion"),
+/// cross-referenced against [quests] for which quest ids actually grant a
+/// companion (a non-empty `rewardAllyId`). Most-encountered first.
+Map<String, int> _companionEncounterCounts(List<_SimResult> results, Map<String, dynamic> quests) {
+  final counts = <String, int>{};
+  for (final r in results) {
+    final companionsThisRun = <String>{};
+    for (final questId in r.questsDiscovered) {
+      final quest = quests[questId] as Map<String, dynamic>?;
+      final allyId = quest?['rewardAllyId']?.toString() ?? '';
+      if (allyId.isNotEmpty) companionsThisRun.add(allyId);
+    }
+    for (final allyId in companionsThisRun) {
+      counts[allyId] = (counts[allyId] ?? 0) + 1;
+    }
+  }
+  final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+  return Map.fromEntries(entries);
+}
+
+/// A stable, distinct color per companion id (cycled from a small fixed
+/// palette by insertion order) — just enough to tell chips apart at a
+/// glance, not meaningful per-companion branding.
+const List<Color> _companionColors = [
+  Colors.teal,
+  Colors.deepPurple,
+  Colors.orange,
+  Colors.indigo,
+  Colors.pink,
+];
+
+Color _companionColor(String companionId, Map<String, int> allCounts) {
+  final index = allCounts.keys.toList().indexOf(companionId);
+  return _companionColors[index % _companionColors.length];
+}
+
+/// One colored, icon-led stat row in a batch's recap — a lightweight,
+/// scan-friendly alternative to the plain uncolored [Text] lines this
+/// section used before.
+class _StatLine extends StatelessWidget {
+  const _StatLine({required this.icon, required this.color, required this.text});
+
+  final IconData icon;
+  final Color color;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 6),
+          Text(text, style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+        ],
+      ),
+    );
+  }
+}
+
 /// A grouping bucket (a chapter, a location, or a mood) with the tallies
 /// needed to summarize how a batch of runs spent their time in it.
 class _GroupStat {
@@ -630,6 +694,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   Widget build(BuildContext context) {
     final shops = ref.watch(gameDbProvider(shopsSchema)).value ?? const {};
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final batches = ref.watch(_simulatorBatchesProvider);
     final showFullControls = batches.isEmpty || _controlsExpanded;
     final reversedBatches = batches.reversed.toList();
@@ -673,6 +738,7 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
                             batch: reversedBatches[i],
                             shops: shops,
                             quests: quests,
+                            companions: companions,
                             initiallyExpanded: i == 0,
                           ),
                       ],
@@ -875,12 +941,14 @@ class _BatchCard extends ConsumerStatefulWidget {
     required this.batch,
     required this.shops,
     required this.quests,
+    required this.companions,
     this.initiallyExpanded = true,
   });
 
   final _SimBatch batch;
   final Map<String, dynamic> shops;
   final Map<String, dynamic> quests;
+  final Map<String, dynamic> companions;
 
   /// Older batches start collapsed to their header line so a page of past
   /// runs doesn't bury the newest one — only the most recent batch (index
@@ -1156,16 +1224,40 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
             if (results.isEmpty)
               Text(tr(ref, 'no_runs_match_filter'))
             else ...[
-              Text(
-                '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
-              ),
-              Text('${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}'),
-              Text(
-                '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalAlignment)))}',
-              ),
-              Text(
-                '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
-              ),
+              Builder(builder: (context) {
+                final avgAlignment = _avg(results.map((r) => r.finalAlignment));
+                final alignmentColor = avgAlignment > 0.5
+                    ? Colors.blue
+                    : (avgAlignment < -0.5 ? Colors.deepOrange : Colors.blueGrey);
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _StatLine(
+                      icon: Icons.route,
+                      color: Colors.blueGrey,
+                      text:
+                          '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
+                    ),
+                    _StatLine(
+                      icon: Icons.paid,
+                      color: Colors.amber.shade800,
+                      text:
+                          '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
+                    ),
+                    _StatLine(
+                      icon: Icons.balance,
+                      color: alignmentColor,
+                      text: '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(avgAlignment)}',
+                    ),
+                    _StatLine(
+                      icon: Icons.sports_martial_arts,
+                      color: Colors.red.shade400,
+                      text:
+                          '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
+                    ),
+                  ],
+                );
+              }),
               if (results.where((r) => r.reachedStepCap).isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 4),
@@ -1180,6 +1272,35 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
               const SizedBox(height: 4),
               for (final entry in _endingCounts(results).entries)
                 Text('${entry.value}× ${entry.key}', style: Theme.of(context).textTheme.bodySmall),
+              const SizedBox(height: 12),
+              Text(tr(ref, 'companions_encountered_label'),
+                  style: Theme.of(context).textTheme.titleSmall),
+              const SizedBox(height: 4),
+              Builder(builder: (context) {
+                final counts = _companionEncounterCounts(results, widget.quests);
+                if (counts.isEmpty) {
+                  return Text(
+                    tr(ref, 'none_label'),
+                    style: Theme.of(context).textTheme.bodySmall,
+                  );
+                }
+                return Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final entry in counts.entries)
+                      Chip(
+                        avatar: CircleAvatar(
+                          backgroundColor: _companionColor(entry.key, counts),
+                        ),
+                        label: Text(
+                          '${widget.companions[entry.key]?['companionName']?.toString() ?? entry.key} '
+                          '· ${entry.value}/${results.length}',
+                        ),
+                      ),
+                  ],
+                );
+              }),
               const Divider(height: 24),
               ExpansionTile(
                 tilePadding: EdgeInsets.zero,

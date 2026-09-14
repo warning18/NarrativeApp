@@ -196,65 +196,61 @@ class _StoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Collapsed shows nothing but the toggle itself -- previously
-            // this used Expanded(child: statusBarCollapsed ? SizedBox.shrink()
-            // : ...) inside a Row, which still left the row's own height and
-            // the Expanded's claimed width in place, so "collapsing" left a
-            // blank band rather than actually reclaiming the space.
+            // No dedicated expand/collapse icon button — it only ever sat
+            // alone taking up its own row, in the way without adding much.
+            // Tapping the header itself now toggles it, on top of the
+            // existing auto-collapse on scroll-down below.
             if (statusBarCollapsed)
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.expand_more),
-                  tooltip: tr(ref, 'expand_status_bar'),
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state = false,
+              InkWell(
+                borderRadius: BorderRadius.circular(8),
+                onTap: () => ref.read(_statusBarCollapsedProvider.notifier).state = false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Center(
+                    child: Container(
+                      width: 36,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.outlineVariant,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
                 ),
               )
             else
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => ref.read(_statusBarCollapsedProvider.notifier).state = true,
+                    child: const PlayerStatsBar(),
+                  ),
+                  if (session.activeQuestIds.isNotEmpty ||
+                      session.unlockedShopIds.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
                       children: [
-                        const PlayerStatsBar(),
-                        if (session.activeQuestIds.isNotEmpty ||
-                            session.unlockedShopIds.isNotEmpty) ...[
-                          const SizedBox(height: 8),
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 4,
-                            children: [
-                              if (session.activeQuestIds.isNotEmpty)
-                                ActionChip(
-                                  avatar: const Icon(Icons.assignment, size: 16),
-                                  label: Text(
-                                      '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                                  onPressed: () =>
-                                      ref.read(homeTabIndexProvider.notifier).state = 1,
-                                ),
-                              if (session.unlockedShopIds.isNotEmpty)
-                                ActionChip(
-                                  avatar: const Icon(Icons.storefront, size: 16),
-                                  label: Text(
-                                      '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                                  onPressed: () =>
-                                      ref.read(homeTabIndexProvider.notifier).state = 1,
-                                ),
-                            ],
+                        if (session.activeQuestIds.isNotEmpty)
+                          ActionChip(
+                            avatar: const Icon(Icons.assignment, size: 16),
+                            label:
+                                Text('${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                            onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
                           ),
-                        ],
+                        if (session.unlockedShopIds.isNotEmpty)
+                          ActionChip(
+                            avatar: const Icon(Icons.storefront, size: 16),
+                            label:
+                                Text('${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                            onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
+                          ),
                       ],
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.expand_less),
-                    tooltip: tr(ref, 'collapse_status_bar'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => ref.read(_statusBarCollapsedProvider.notifier).state = true,
-                  ),
+                  ],
                 ],
               ),
             const SizedBox(height: 8),
@@ -695,6 +691,47 @@ String storyBodyFor(String text) {
   return (match != null ? text.substring(match.end) : text).trim();
 }
 
+/// Builds the body's [TextSpan]s for quick skim-reading: the opening
+/// sentence (the scene's "hook") is bolded so a reader can tell what a
+/// passage is about at a glance, and any quoted dialogue is italicized so
+/// spoken lines stand out from surrounding narration. Every node's
+/// description in this game is one continuous block (no author-inserted
+/// paragraph breaks), so this only ever needs to highlight within a single
+/// run of text, not across paragraphs.
+List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
+  if (body.isEmpty) return const [];
+
+  final firstSentenceMatch = RegExp(r'[.!?]+(\s|$)').firstMatch(body);
+  final firstSentenceEnd = firstSentenceMatch?.end ?? 0;
+
+  final quoteRanges = <List<int>>[
+    for (final m in RegExp('["“][^"”]{3,}["”]').allMatches(body)) [m.start, m.end],
+  ];
+
+  final breakpoints = <int>{0, firstSentenceEnd, body.length};
+  for (final range in quoteRanges) {
+    breakpoints.addAll(range);
+  }
+  final sorted = breakpoints.toList()..sort();
+
+  final spans = <TextSpan>[];
+  for (var i = 0; i < sorted.length - 1; i++) {
+    final start = sorted[i];
+    final end = sorted[i + 1];
+    if (start >= end) continue;
+    final isBold = start < firstSentenceEnd;
+    final isDialogue = quoteRanges.any((r) => start >= r[0] && end <= r[1]);
+    spans.add(TextSpan(
+      text: body.substring(start, end),
+      style: baseStyle.copyWith(
+        fontWeight: isBold ? FontWeight.w700 : null,
+        fontStyle: isDialogue ? FontStyle.italic : null,
+      ),
+    ));
+  }
+  return spans;
+}
+
 /// Renders a story node's narrative text with a book-like presentation:
 /// a leading `[CHAPTER N: TITLE]`-style header (if present) is pulled out
 /// and styled as a centered heading with a divider, and the body gets
@@ -709,6 +746,12 @@ class _StoryText extends StatelessWidget {
     final header = storyHeaderFor(text);
     final body = storyBodyFor(text);
     final colorScheme = Theme.of(context).colorScheme;
+    final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
+          fontFamily: 'serif',
+          height: 1.55,
+          letterSpacing: 0.2,
+        ) ??
+        const TextStyle();
 
     return Container(
       width: double.infinity,
@@ -741,14 +784,9 @@ class _StoryText extends StatelessWidget {
             ),
             const SizedBox(height: 16),
           ],
-          Text(
-            body,
+          Text.rich(
+            TextSpan(children: _highlightedSpans(body, baseStyle)),
             textAlign: TextAlign.justify,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontFamily: 'serif',
-                  height: 1.55,
-                  letterSpacing: 0.2,
-                ),
           ),
         ],
       ),

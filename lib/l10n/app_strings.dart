@@ -48,6 +48,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'node_kind_combat': {AppLanguage.en: 'Combat', AppLanguage.fr: 'Combat'},
   'node_kind_shop': {AppLanguage.en: 'Shop', AppLanguage.fr: 'Boutique'},
   'node_kind_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'node_kind_companion_quest': {
+    AppLanguage.en: 'Companion Quest',
+    AppLanguage.fr: 'Quête de compagnon',
+  },
   'node_kind_generic': {AppLanguage.en: 'Generic', AppLanguage.fr: 'Générique'},
   'main_story_beat': {
     AppLanguage.en: 'Main Story Beat',
@@ -108,14 +112,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'game_loaded_message': {AppLanguage.en: 'Game loaded.', AppLanguage.fr: 'Partie chargée.'},
   'close_legend': {AppLanguage.en: 'Close legend', AppLanguage.fr: 'Fermer la légende'},
   'show_legend': {AppLanguage.en: 'Show legend', AppLanguage.fr: 'Afficher la légende'},
-  'collapse_status_bar': {
-    AppLanguage.en: 'Collapse status bar',
-    AppLanguage.fr: 'Réduire la barre de statut',
-  },
-  'expand_status_bar': {
-    AppLanguage.en: 'Expand status bar',
-    AppLanguage.fr: 'Afficher la barre de statut',
-  },
   'hide_companion': {AppLanguage.en: 'Hide companion', AppLanguage.fr: 'Masquer le compagnon'},
   'show_companion': {AppLanguage.en: 'Show companion', AppLanguage.fr: 'Afficher le compagnon'},
   'map_theme_section': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
@@ -656,7 +652,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'is knocked out!',
     AppLanguage.fr: 'est mis hors combat !',
   },
-  'whose_turn_label': {AppLanguage.en: 'Turn:', AppLanguage.fr: 'Tour :'},
   'knocked_out_label': {AppLanguage.en: 'Knocked Out', AppLanguage.fr: 'Hors combat'},
   'fighting_alongside_prefix': {
     AppLanguage.en: 'Fighting alongside',
@@ -1076,6 +1071,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Lancez une simulation pour voir les résultats ici.',
   },
   'endings_label': {AppLanguage.en: 'Endings', AppLanguage.fr: 'Fins'},
+  'companions_encountered_label': {
+    AppLanguage.en: 'Companions encountered',
+    AppLanguage.fr: 'Compagnons rencontrés',
+  },
   'individual_runs_label': {AppLanguage.en: 'Individual Runs', AppLanguage.fr: 'Parties individuelles'},
   'exceeded_step_cap_label': {
     AppLanguage.en: 'did not reach an ending (hit the step limit)',
