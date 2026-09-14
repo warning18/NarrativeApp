@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/origin_stories.dart';
+import '../data/random_names.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -256,6 +257,13 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                   border: const OutlineInputBorder(),
                   labelText: trFor(lang, 'character_name_field_label'),
                   hintText: trFor(lang, 'character_name_field_hint'),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.casino_outlined),
+                    tooltip: trFor(lang, 'random_name_tooltip'),
+                    onPressed: () => setDialogState(() {
+                      controller.text = randomCharacterName(_selectedRaceId);
+                    }),
+                  ),
                 ),
                 onChanged: (_) => setDialogState(() {}),
                 onSubmitted: (value) {

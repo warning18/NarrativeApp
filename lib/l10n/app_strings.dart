@@ -473,6 +473,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Nom du personnage',
   },
   'character_name_field_hint': {AppLanguage.en: 'e.g. Kaelen', AppLanguage.fr: 'ex. Kaelen'},
+  'random_name_tooltip': {
+    AppLanguage.en: 'Generate a random name',
+    AppLanguage.fr: 'Générer un nom aléatoire',
+  },
   'begin_story_button': {
     AppLanguage.en: 'Begin Your Story',
     AppLanguage.fr: 'Commencer ton histoire',

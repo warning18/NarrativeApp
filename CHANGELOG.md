@@ -8,6 +8,11 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.59.0+86]
+
+### Added
+- **Random name generation.** A dice-icon button next to the character-name field on the lock-in dialog fills it with a random name drawn from a race-matched pool (`lib/data/random_names.dart`, 20 names per race) — Kelda-style dwarven names for a dwarf, elvish for an elf, and so on. Purely a convenience for players who don't want to type one; the field stays freely editable either way.
+
 ## [1.58.0+85]
 
 A full audit of the story graph's 133 choice→node transitions, requested to make sure every scene follows sensibly from the choice that leads into it — found and fixed two structural bugs and two smaller routing/wording issues. Followed by 50 simulated full playthroughs (graph walk + real combat/quest/shop/companion resolution) judging narration coverage, feature usage, item usage, and combat difficulty — which turned up a game-breaking combat bug and two economy bugs, also fixed here.
