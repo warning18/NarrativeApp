@@ -861,7 +861,8 @@
       {
         "text": "Die Monster! (Start Boss)",
         "text_fr": "Meurs, monstre ! (Commencer le combat de boss)",
-        "next_id": "960"
+        "next_id": "960",
+        "triggerEnemyId": "kroll_the_branded"
       }
     ]
   },
@@ -886,13 +887,13 @@
       {
         "text": "End it quickly, no more suffering",
         "text_fr": "En finir vite, plus de souffrance",
-        "next_id": "965",
+        "next_id": "965_mercy",
         "alignmentMod": 5
       },
       {
         "text": "Make him pay for every session",
         "text_fr": "Lui faire payer chaque séance",
-        "next_id": "965",
+        "next_id": "965_vengeance",
         "alignmentMod": -5
       }
     ]
@@ -945,7 +946,10 @@
       {
         "text": "Proceed to Chapter 2",
         "text_fr": "Passer au chapitre 2",
-        "next_id": "2001"
+        "next_id": "2001",
+        "flagsToAdd": [
+          "void_banner_bearer"
+        ]
       }
     ]
   },
@@ -965,7 +969,10 @@
       {
         "text": "Proceed to Chapter 2 (The Rat Path)",
         "text_fr": "Passer au chapitre 2 (La voie du Rat)",
-        "next_id": "2001"
+        "next_id": "2001",
+        "flagsToAdd": [
+          "void_banner_seeker"
+        ]
       }
     ]
   },
@@ -986,7 +993,10 @@
       {
         "text": "Proceed to Chapter 2 (The Broken Path)",
         "text_fr": "Passer au chapitre 2 (La voie du Brisé)",
-        "next_id": "2001"
+        "next_id": "2001",
+        "flagsToAdd": [
+          "void_banner_seeker"
+        ]
       }
     ]
   },
@@ -1410,8 +1420,8 @@
   },
   "3005": {
     "id": "3005",
-    "description": "Before committing to a path into the cathedral proper, the outer district still offered a few things worth doing, and rather more things worth avoiding, in roughly the proportion I had come to expect from every district I'd passed through since this business began.",
-    "description_fr": "Avant de m'engager sur une voie vers l'intérieur de la cathédrale, le quartier extérieur offrait encore quelques occasions à saisir, et bien davantage de dangers à éviter, dans à peu près les proportions auxquelles je m'étais habitué dans chaque quartier traversé depuis le début de cette affaire.",
+    "description": "The rooftop route into the cloisters was no longer on the table — whatever way back into the Spire I found from here, it would be through the ground-level archives instead. First, though, the outer district still offered a few things worth doing, and rather more things worth avoiding, in roughly the proportion I had come to expect from every district I'd passed through since this business began.",
+    "description_fr": "La voie des toits vers les cloîtres n'était plus envisageable — quel que fût le chemin qui me ramènerait vers la Flèche, ce serait désormais par les archives, au niveau du sol. Mais avant cela, le quartier extérieur offrait encore quelques occasions à saisir, et bien davantage de dangers à éviter, dans à peu près les proportions auxquelles je m'étais habitué dans chaque quartier traversé depuis le début de cette affaire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
@@ -1545,9 +1555,10 @@
     },
     "choices": [
       {
-        "text": "Proceed to the inner sanctum",
-        "text_fr": "Se rendre au sanctuaire intérieur",
-        "next_id": "4999"
+        "text": "Use the signet to bluff past the inner guard, then fight through to the sanctum",
+        "text_fr": "Utiliser la chevalière pour bluffer la garde intérieure, puis se battre jusqu'au sanctuaire",
+        "next_id": "4999",
+        "triggerEnemyId": "inquisition_high_warden"
       }
     ]
   },
@@ -1565,9 +1576,10 @@
     },
     "choices": [
       {
-        "text": "Move deeper into the cathedral",
-        "text_fr": "S'enfoncer plus profondément dans la cathédrale",
-        "next_id": "4999"
+        "text": "Move deeper into the cathedral, and fight past the vanguard guarding the sanctum",
+        "text_fr": "S'enfoncer plus profondément dans la cathédrale et combattre l'avant-garde qui garde le sanctuaire",
+        "next_id": "4999",
+        "triggerEnemyId": "inquisition_high_warden"
       }
     ]
   },
@@ -1578,7 +1590,7 @@
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "triumphant",
-      "speaker": "High Inquisitor"
+      "speaker": "Narrator"
     },
     "automations": {
       "script_trigger": "on_load_node_4999"
@@ -1593,8 +1605,8 @@
   },
   "5001": {
     "id": "5001",
-    "description": "The Spire's bells had stopped ringing, but a different, more attentive kind of silence followed me down from the ashes — the specific silence that precedes someone telling you a secret they have been expressly forbidden to share. In the rubble of the outer district, survivors traded the same word in voices lowered out of genuine fear rather than mere discretion: the Hollow Court. Inquisitors, they said, who knelt to no living authority and had, as a professional courtesy to themselves, never officially existed at all. Whatever waited down there, I had the distinct and unwelcome impression that it had known my family's name rather longer than I had known its.",
-    "description_fr": "Les cloches de la Flèche s'étaient tues, mais un silence différent, plus attentif, me suivit hors des cendres — ce silence précis qui précède l'aveu d'un secret qu'on vous a formellement interdit de partager. Dans les décombres du quartier extérieur, les survivants échangeaient le même mot d'une voix baissée par une peur véritable plutôt que par simple discrétion : la Cour Creuse. Des inquisiteurs, disait-on, qui ne s'agenouillaient devant aucune autorité vivante et n'avaient, par courtoisie professionnelle envers eux-mêmes, jamais officiellement existé. Quoi qu'il m'attendît là-dessous, j'avais la nette et désagréable impression que cette chose connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
+    "description": "[CHAPTER 4: THE HOLLOW COURT] The Spire's bells had stopped ringing, but a different, more attentive kind of silence followed me down from the ashes — the specific silence that precedes someone telling you a secret they have been expressly forbidden to share. In the rubble of the outer district, survivors traded the same word in voices lowered out of genuine fear rather than mere discretion: the Hollow Court. Inquisitors, they said, who knelt to no living authority and had, as a professional courtesy to themselves, never officially existed at all. Whatever waited down there, I had the distinct and unwelcome impression that it had known my family's name rather longer than I had known its.",
+    "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Les cloches de la Flèche s'étaient tues, mais un silence différent, plus attentif, me suivit hors des cendres — ce silence précis qui précède l'aveu d'un secret qu'on vous a formellement interdit de partager. Dans les décombres du quartier extérieur, les survivants échangeaient le même mot d'une voix baissée par une peur véritable plutôt que par simple discrétion : la Cour Creuse. Des inquisiteurs, disait-on, qui ne s'agenouillaient devant aucune autorité vivante et n'avaient, par courtoisie professionnelle envers eux-mêmes, jamais officiellement existé. Quoi qu'il m'attendît là-dessous, j'avais la nette et désagréable impression que cette chose connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "tense",
@@ -1627,7 +1639,16 @@
       {
         "text": "Press onward",
         "text_fr": "Continuer",
-        "next_id": "5003"
+        "next_id": "5003",
+        "lockedText": "Whatever this way forward wanted from me, it wasn't the echo of a Shroud I'd never carried.",
+        "lockedText_fr": "Quoi que cette voie attendît de moi, ce n'était pas l'écho d'un Linceul que je n'avais jamais porté."
+      },
+      {
+        "text": "Press onward",
+        "text_fr": "Continuer",
+        "next_id": "5003_seeker",
+        "lockedText": "The Shroud at my back already answered that particular pull; I had no need to go looking for its cousin.",
+        "lockedText_fr": "Le Linceul contre mon dos avait déjà répondu à cet appel précis ; je n'avais nul besoin d'aller chercher sa cousine."
       }
     ]
   },
@@ -1655,6 +1676,9 @@
         "next_id": "5004b",
         "triggerEnemyId": "hollow_court_zealot"
       }
+    ],
+    "reqFlags": [
+      "void_banner_bearer"
     ]
   },
   "5004": {
@@ -1693,7 +1717,16 @@
       {
         "text": "Climb back to the surface",
         "text_fr": "Remonter à la surface",
-        "next_id": "6001"
+        "next_id": "6001",
+        "lockedText": "Whatever waited at the surface, it wasn't a Shroud of my own greeting the daylight.",
+        "lockedText_fr": "Quoi qui m'attendît en surface, ce n'était pas un Linceul bien à moi qui saluait le jour."
+      },
+      {
+        "text": "Climb back to the surface",
+        "text_fr": "Remonter à la surface",
+        "next_id": "6001_seeker",
+        "lockedText": "I already knew what waited at the surface for me, warm and familiar against my back.",
+        "lockedText_fr": "Je savais déjà ce qui m'attendait en surface, chaud et familier contre mon dos."
       }
     ]
   },
@@ -1715,6 +1748,9 @@
         "text_fr": "Lire le registre à la lumière du jour",
         "next_id": "6002"
       }
+    ],
+    "reqFlags": [
+      "void_banner_bearer"
     ]
   },
   "6002": {
@@ -1759,8 +1795,8 @@
   },
   "6004": {
     "id": "6004",
-    "description": "On the other side there was no light, no sound, no ground obliging enough to remain beneath my feet — only the Shroud, speaking at last in the single language it apparently possessed: certainty, delivered directly into the bone without the courtesy of translation. The invasion, whatever anyone had feared, had never been the ending. It had been the opening act of something considerably larger, and somewhere, patient in a way nothing living has any business being, a clock was still running on the delay it had bought us.",
-    "description_fr": "De l'autre côté, il n'y avait ni lumière, ni son, ni sol assez complaisant pour demeurer sous mes pieds — seulement le Linceul, parlant enfin dans l'unique langage qu'il possédait apparemment : une certitude, livrée directement dans les os, sans la courtoisie d'une traduction. L'invasion, quoi qu'on en eût redouté, n'avait jamais été la fin. Elle n'était que le premier acte de quelque chose de considérablement plus vaste, et quelque part, patient d'une manière qu'aucun être vivant n'a le droit d'être, une horloge courait encore sur le sursis qu'elle nous avait acheté.",
+    "description": "On the other side there was no light, no sound, no ground obliging enough to remain beneath my feet — only the Void itself, speaking at last in the single language it apparently possessed: certainty, delivered directly into the bone without the courtesy of translation. The invasion, whatever anyone had feared, had never been the ending. It had been the opening act of something considerably larger, and somewhere, patient in a way nothing living has any business being, a clock was still running on the delay it had bought us.",
+    "description_fr": "De l'autre côté, il n'y avait ni lumière, ni son, ni sol assez complaisant pour demeurer sous mes pieds — seulement le Néant lui-même, parlant enfin dans l'unique langage qu'il possédait apparemment : une certitude, livrée directement dans les os, sans la courtoisie d'une traduction. L'invasion, quoi qu'on en eût redouté, n'avait jamais été la fin. Elle n'était que le premier acte de quelque chose de considérablement plus vaste, et quelque part, patient d'une manière qu'aucun être vivant n'a le droit d'être, une horloge courait encore sur le sursis qu'elle nous avait acheté.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -1771,9 +1807,18 @@
     },
     "choices": [
       {
-        "text": "Accept what the Shroud shows me",
-        "text_fr": "Accepter ce que le Linceul me montre",
-        "next_id": "6005"
+        "text": "Accept what the Void shows me",
+        "text_fr": "Accepter ce que le Néant me montre",
+        "next_id": "6005",
+        "lockedText": "Whatever finality waited for me here, it wasn't the quiet of a Banner I'd never carried.",
+        "lockedText_fr": "Quelle que fût la finalité qui m'attendait ici, ce n'était pas le silence d'une Bannière que je n'avais jamais portée."
+      },
+      {
+        "text": "Accept what the Void shows me",
+        "text_fr": "Accepter ce que le Néant me montre",
+        "next_id": "6005_seeker",
+        "lockedText": "The Banner at my back had already told me how this part ended.",
+        "lockedText_fr": "La Bannière contre mon dos m'avait déjà annoncé comment cette partie se terminait."
       }
     ]
   },
@@ -1795,6 +1840,9 @@
         "text_fr": "Recommencer, transformé",
         "next_id": "EXIT"
       }
+    ],
+    "reqFlags": [
+      "void_banner_bearer"
     ]
   },
   "5004b": {
@@ -1819,8 +1867,8 @@
   },
   "6003b": {
     "id": "6003b",
-    "description": "The tear did not simply admit me. Something pulled itself free of the air beside it instead — no clearer shape than smoke deciding, briefly and with great effort, to imitate a man — and it wore, for reasons my stomach understood before my mind did, several faces I recognized. Wardens I had put down on a bridge, in a hallway, on a dock, all of them folded into one patient, borrowed silhouette between me and whatever waited on the other side. It did not seem interested in a conversation. Neither, by that point, was I.",
-    "description_fr": "La déchirure ne se contenta pas de m’admettre. Quelque chose se dégagea plutôt de l’air à ses côtés — pas plus de forme que de la fumée décidant, brièvement et avec un grand effort, d’imiter un homme — et cela portait, pour des raisons que mon estomac comprit avant mon esprit, plusieurs visages que je reconnaissais. Des Gardiens que j’avais abattus sur un pont, dans un couloir, sur un quai, tous repliés en une seule silhouette patiente et empruntée, dressée entre moi et ce qui m’attendait de l’autre côté. Cela ne semblait guère d’humeur à converser. Moi non plus, à ce stade.",
+    "description": "The tear did not simply admit me. Something pulled itself free of the air beside it instead — no clearer shape than smoke deciding, briefly and with great effort, to imitate a man — and it wore, for reasons my stomach understood before my mind did, several faces I recognized. Faces I had put down on a bridge, in a locked chamber, on the docks, all of them folded into one patient, borrowed silhouette between me and whatever waited on the other side. It did not seem interested in a conversation. Neither, by that point, was I.",
+    "description_fr": "La déchirure ne se contenta pas de m’admettre. Quelque chose se dégagea plutôt de l’air à ses côtés — pas plus de forme que de la fumée décidant, brièvement et avec un grand effort, d’imiter un homme — et cela portait, pour des raisons que mon estomac comprit avant mon esprit, plusieurs visages que je reconnaissais. Des visages que j’avais abattus sur un pont, dans une chambre verrouillée, sur les quais, tous repliés en une seule silhouette patiente et empruntée, dressée entre moi et ce qui m’attendait de l’autre côté. Cela ne semblait guère d’humeur à converser. Moi non plus, à ce stade.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "action",
@@ -1835,6 +1883,139 @@
         "text_fr": "Le combattre pour passer",
         "next_id": "6004",
         "triggerEnemyId": "void_manifestation"
+      }
+    ]
+  },
+  "965_mercy": {
+    "id": "965_mercy",
+    "description": "Kroll's grip finally failed him, sooner than it might have — I had seen to that myself, unwilling to stretch even a monster's dying out the slow, deliberate way he had once stretched out mine. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like triumph and more like a debt quietly marked paid. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because a man who has just chosen mercy over an available cruelty generally prefers not to stand around admiring the choice.",
+    "description_fr": "La prise de Kroll finit par céder, plus tôt qu'elle n'aurait pu — j'y avais veillé moi-même, refusant d'étirer, même pour un monstre, l'agonie lente et délibérée qu'il avait jadis fait durer pour moi. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à un triomphe qu'à une dette discrètement soldée. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce qu'un homme qui vient de choisir la clémence plutôt qu'une cruauté à portée de main préfère généralement ne pas s'attarder à admirer son choix.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_965_mercy"
+    },
+    "choices": [
+      {
+        "text": "Climb toward Lysa",
+        "text_fr": "Grimper vers Lysa",
+        "next_id": "1000",
+        "lockedText": "There was no one waiting up there for me anymore, and climbing toward a person who no longer existed struck me, even in extremity, as a poor use of the little strength I had left.",
+        "lockedText_fr": "Il n'y avait plus personne qui m'attendait là-haut, et grimper vers une personne qui n'existait plus me sembla, même dans l'extrémité où je me trouvais, un piètre usage du peu de force qu'il me restait."
+      },
+      {
+        "text": "Climb up alone",
+        "text_fr": "Grimper seul",
+        "next_id": "1003",
+        "lockedText": "I had not survived any of this alone, whatever my instincts insisted, and Lysa was waiting above for exactly the kind of company I had apparently decided, out of habit rather than sense, to refuse.",
+        "lockedText_fr": "Je n'avais survécu à rien de tout cela seul, quoi qu'en dît mon instinct, et Lysa m'attendait là-haut pour exactement le genre de compagnie que j'avais apparemment décidé, par habitude plus que par raison, de refuser."
+      }
+    ]
+  },
+  "965_vengeance": {
+    "id": "965_vengeance",
+    "description": "Kroll's grip finally failed him, and not quickly — I had made certain of that, keeping careful, deliberate count against the three days he had once spent doing the same to me. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like victory and more like the first installment on a debt I suspected I had only just started collecting. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because I found I did not, just yet, want to examine too closely what kind of man kept that particular kind of ledger.",
+    "description_fr": "La prise de Kroll finit par céder, et pas vite — je m'en étais assuré, tenant un compte soigneux et délibéré contre les trois jours qu'il avait jadis passés à me faire subir la même chose. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à une victoire qu'au premier versement d'une dette dont je soupçonnais n'avoir fait que commencer le recouvrement. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que je préférais, pour l'instant, ne pas examiner de trop près quelle sorte d'homme tenait ce genre de registre.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_965_vengeance"
+    },
+    "choices": [
+      {
+        "text": "Climb toward Lysa",
+        "text_fr": "Grimper vers Lysa",
+        "next_id": "1000",
+        "lockedText": "There was no one waiting up there for me anymore, and climbing toward a person who no longer existed struck me, even in extremity, as a poor use of the little strength I had left.",
+        "lockedText_fr": "Il n'y avait plus personne qui m'attendait là-haut, et grimper vers une personne qui n'existait plus me sembla, même dans l'extrémité où je me trouvais, un piètre usage du peu de force qu'il me restait."
+      },
+      {
+        "text": "Climb up alone",
+        "text_fr": "Grimper seul",
+        "next_id": "1003",
+        "lockedText": "I had not survived any of this alone, whatever my instincts insisted, and Lysa was waiting above for exactly the kind of company I had apparently decided, out of habit rather than sense, to refuse.",
+        "lockedText_fr": "Je n'avais survécu à rien de tout cela seul, quoi qu'en dît mon instinct, et Lysa m'attendait là-haut pour exactement le genre de compagnie que j'avais apparemment décidé, par habitude plus que par raison, de refuser."
+      }
+    ]
+  },
+  "5003_seeker": {
+    "id": "5003_seeker",
+    "description": "The passage opened without warning into a chamber carved smooth by hands that had evidently possessed centuries to spare and no more urgent employment. Robed figures knelt in a loose circle around a black altar, and at its center hummed something my body recognized as wrong well before my mind consented to explain why — not the Banner I had spent this whole business chasing, though near enough its cousin that the difference hardly seemed worth arguing, restless in its cradle of stone and apparently no more at peace with its situation than I was with mine. Nobody had looked up yet. Experience, mine specifically, suggested that particular grace would not extend much further.",
+    "description_fr": "Le passage débouchait sans préavis sur une chambre polie par des mains ayant manifestement disposé de siècles entiers et d'aucune occupation plus urgente. Des silhouettes encapuchonnées s'agenouillaient en cercle lâche autour d'un autel noir, et en son centre vibrait quelque chose que mon corps reconnut comme mauvais bien avant que mon esprit ne consentît à expliquer pourquoi — non pas la Bannière que je pourchassais depuis le début de cette affaire, mais assez proche cousine pour que la différence parût à peine mériter discussion, agitée dans son berceau de pierre et apparemment pas plus en paix avec sa situation que je ne l'étais avec la mienne. Personne n'avait encore levé les yeux. L'expérience, la mienne en particulier, suggérait que cette grâce précise n'irait guère plus loin.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_5003_seeker"
+    },
+    "reqFlags": [
+      "void_banner_seeker"
+    ],
+    "choices": [
+      {
+        "text": "Confront them",
+        "text_fr": "Les affronter",
+        "next_id": "5004"
+      },
+      {
+        "text": "Cut them down before they can scatter",
+        "text_fr": "Les abattre avant qu’ils ne se dispersent",
+        "next_id": "5004b",
+        "triggerEnemyId": "hollow_court_zealot"
+      }
+    ]
+  },
+  "6001_seeker": {
+    "id": "6001_seeker",
+    "description": "[CHAPTER 5: THE SHROUD'S TRUTH] Daylight hit like a slap after so long spent underground — too bright, too loud, altogether too ordinary a world for the particular cargo I had brought back up into it. I had no Banner warming against my back to make the moment feel earned, only a ledger tucked under my arm and the same old absence I had been hauling around since a burning tavern first introduced me to the word Heirloom. I found a doorway sheltered from the wind and sat, because whatever this book had to say, I intended to be steady on my feet, or at least sitting comfortably, when it finally said it.",
+    "description_fr": "[CHAPITRE 5 : LA VÉRITÉ DU LINCEUL] La lumière du jour frappa comme une gifle après si longtemps passé sous terre — trop vive, trop bruyante, un monde décidément trop ordinaire pour la cargaison précise que j'y ramenais. Je n'avais aucune Bannière se réchauffant contre mon dos pour donner à l'instant un air mérité, rien qu'un registre glissé sous mon bras et la même vieille absence que je traînais depuis qu'une taverne en flammes m'avait présenté le mot Héritage. Je trouvai une embrasure à l'abri du vent et m'assis, car quoi que ce livre eût à dire, je comptais bien être stable sur mes jambes, ou du moins confortablement assis, quand il finirait par le dire.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6001_seeker"
+    },
+    "reqFlags": [
+      "void_banner_seeker"
+    ],
+    "choices": [
+      {
+        "text": "Read the ledger in the light",
+        "text_fr": "Lire le registre à la lumière du jour",
+        "next_id": "6002"
+      }
+    ]
+  },
+  "6005_seeker": {
+    "id": "6005_seeker",
+    "description": "[JOURNEY'S END] I stepped back into my own world without the Banner I had spent this entire business chasing, still chasing it in every sense that mattered — but for the first time since a tavern door swung, broken, on its last hinge and started all of this, I found I knew exactly what I intended to do about that, too. The invasion, at least, was over. What came after it was not, and would not be for some considerable time. A man can build quite a lot on knowing where he's headed, even carrying rather less than he set out to.",
+    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde sans la Bannière que j'avais poursuivie tout au long de cette affaire, la poursuivant encore, dans tous les sens qui comptaient — mais pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela, je découvris savoir exactement ce que je comptais faire à ce sujet aussi. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment. Un homme peut bâtir bien des choses en sachant où il va, même en portant nettement moins qu'il n'était parti chercher.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "triumphant",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_6005_seeker"
+    },
+    "reqFlags": [
+      "void_banner_seeker"
+    ],
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transformé",
+        "next_id": "EXIT"
       }
     ]
   }
