@@ -71,7 +71,10 @@ void main() {
       },
       'minor_heal': {
         'damageMod': 0,
-        'damageMultiplier': 1.0,
+        // A Skill face's damage is (baseDamage + damageMod) * damageMultiplier,
+        // computed unconditionally -- damageMod:0 alone still lets baseDamage
+        // through. Only a zero multiplier makes this a pure heal, no damage.
+        'damageMultiplier': 0.0,
         'healAmount': 15,
         'battleMessage': 'Warmth spreads.',
       },
