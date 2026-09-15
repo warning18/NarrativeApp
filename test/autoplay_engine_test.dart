@@ -6,10 +6,20 @@
 // autoplayToNode nor autoplayToChapter used to handle the
 // `opensCharacterCreation` choice at node 0, so the simulated session never
 // got a race/profession/equipped die, and `_simulateFight` auto-loses any
-// fight once the equipped die has no faces. This pumps the real widget tree
-// (same as widget_test.dart) to get a genuine WidgetRef, then drives
-// autoplayToChapter from the very start of the game and asserts it actually
-// makes progress instead of getting stuck on the very first fight.
+// fight once the equipped die has no faces.
+//
+// This pumps the real widget tree (same as widget_test.dart) to get a
+// genuine WidgetRef, then drives autoplayToNode from the very start of the
+// game to node "100" -- the node immediately past node 0's
+// opensCharacterCreation choice, reached in a single hop with no combat
+// along the way -- and asserts a character actually gets created. An
+// earlier version of this test targeted a whole chapter via
+// autoplayToChapter instead, which pulled in real (unseeded) combat along
+// an arbitrary path; that made the test flaky, since a fresh level-1
+// character can legitimately lose a tough, unlucky early fight 8/8 retries
+// for reasons that have nothing to do with this bug. Targeting the node
+// right after character creation tests the actual fix directly, with no
+// combat RNG involved at all.
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,9 +38,8 @@ void main() {
   });
 
   testWidgets(
-      'autoplayToChapter creates a character before its first fight, '
-      'instead of getting stuck in combat with no equipped die',
-      (WidgetTester tester) async {
+      'autoplayToNode creates a character while walking through node 0\'s '
+      'opensCharacterCreation choice', (WidgetTester tester) async {
     late WidgetRef capturedRef;
     await tester.pumpWidget(
       ProviderScope(
@@ -78,11 +87,10 @@ void main() {
       expect(sessionBefore.raceId, isEmpty);
       expect(sessionBefore.equippedDiceId ?? '', isEmpty);
 
-      final result = await autoplayToChapter(
+      final result = await autoplayToNode(
         capturedRef,
         story: story,
-        targetChapter: 2,
-        strategy: AutoplayStrategy.random,
+        targetNodeId: '100',
         dice: dice,
         skills: skills,
         items: items,
@@ -91,11 +99,8 @@ void main() {
         professions: professions,
       );
 
-      expect(result.status, isNot(AutoplayStatus.stuckInCombat),
-          reason: 'stuck against ${result.stuckEnemyName} after '
-              '${result.stepsApplied} steps -- autoplay must create a '
-              'character before its first fight');
-      expect(result.stepsApplied, greaterThan(0));
+      expect(result.status, AutoplayStatus.reachedTarget);
+      expect(result.stepsApplied, 1);
 
       final sessionAfter = capturedRef.read(playerSessionProvider);
       expect(sessionAfter.raceId, isNotEmpty);
