@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
+import '../data/autoplay_engine.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
@@ -386,21 +387,11 @@ class _GraphViewState extends ConsumerState<_GraphView> {
   }
 }
 
-/// The first main-beat node of [chapter] — the target a chapter-jump chip
-/// lands on. Chapter 0 is the prologue/start node; chapters beyond
-/// [chapterSpines] have no defined entry point yet. When a beat has more
-/// than one node (a bearer/seeker fork), the lexicographically-first one
-/// is picked — jumping ahead is inherently approximate about which branch
-/// state you'd actually have earned by then.
-String? _firstNodeIdForChapter(int chapter) {
-  if (chapter == 0) return StoryRepository.startNodeId;
-  for (final spine in chapterSpines) {
-    if (spine.chapter != chapter) continue;
-    final sortedBeatNodes = spine.beats.first.toList()..sort();
-    return sortedBeatNodes.isEmpty ? null : sortedBeatNodes.first;
-  }
-  return null;
-}
+/// The target a chapter-jump chip lands on — jumping ahead this way is
+/// inherently approximate about which branch state you'd actually have
+/// earned by then (see [firstNodeIdForChapter]).
+String? _firstNodeIdForChapter(int chapter) =>
+    firstNodeIdForChapter(chapter, prologueNodeId: StoryRepository.startNodeId);
 
 /// A small "jump ahead" panel for testing/browsing: one chip per chapter,
 /// each landing on that chapter's opening beat via the same
@@ -443,11 +434,126 @@ class _ChapterJumpBar extends ConsumerWidget {
                   ),
               ],
             ),
+            const SizedBox(height: 4),
+            TextButton.icon(
+              onPressed: () => _showAutoplayChapterPicker(context, ref, chapterEntries),
+              style: TextButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+              ),
+              icon: const Icon(Icons.fast_forward, size: 16),
+              label: Text(tr(ref, 'autoplay_to_chapter_button')),
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+/// Lets the player pick a chapter to [_runAutoplay] toward — a real-state
+/// counterpart to the quick preview jump chips above, which just move the
+/// displayed node without earning anything along the way.
+Future<void> _showAutoplayChapterPicker(
+  BuildContext context,
+  WidgetRef ref,
+  List<MapEntry<int, String>> chapterEntries,
+) async {
+  final lang = ref.read(appLanguageProvider);
+  String t(String key) => trFor(lang, key);
+  final target = await showDialog<String>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(t('autoplay_to_chapter_title')),
+      content: SizedBox(
+        width: double.maxFinite,
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            for (final entry in chapterEntries)
+              ListTile(
+                title: Text(
+                  entry.key == 0 ? t('chapter_band_prologue') : '${t('chapter_band_prefix')} ${entry.key}',
+                ),
+                onTap: () => Navigator.of(dialogContext).pop(entry.value),
+              ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(),
+          child: Text(t('close_button')),
+        ),
+      ],
+    ),
+  );
+  if (target == null || !context.mounted) return;
+  await _runAutoplay(context, ref, targetNodeId: target);
+}
+
+/// Runs [autoplayToNode] toward [targetNodeId], showing a busy dialog while
+/// it works and a result summary once it's done.
+Future<void> _runAutoplay(
+  BuildContext context,
+  WidgetRef ref, {
+  required String targetNodeId,
+}) async {
+  final lang = ref.read(appLanguageProvider);
+  String t(String key) => trFor(lang, key);
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => Center(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 16),
+              Text(t('autoplay_running')),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  final story = await ref.read(storyDataProvider.future);
+  final dice = await ref.read(gameDbProvider(diceSchema).future);
+  final skills = await ref.read(gameDbProvider(skillsSchema).future);
+  final items = await ref.read(gameDbProvider(itemsSchema).future);
+  final enemies = await ref.read(gameDbProvider(enemiesSchema).future);
+
+  final result = await autoplayToNode(
+    ref,
+    story: story,
+    targetNodeId: targetNodeId,
+    dice: dice,
+    skills: skills,
+    items: items,
+    enemies: enemies,
+  );
+
+  if (!context.mounted) return;
+  Navigator.of(context).pop();
+
+  final message = switch (result.status) {
+    AutoplayStatus.alreadyThere => t('autoplay_already_there'),
+    AutoplayStatus.noPathFound => t('autoplay_no_path'),
+    AutoplayStatus.stuckInCombat => '${t('autoplay_stuck_prefix')} '
+        '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    AutoplayStatus.reachedTarget =>
+      '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+  };
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
 /// Detects a tap (and optionally a double-tap) using raw pointer events
@@ -723,6 +829,15 @@ Future<void> _showNodeInfo(
                     },
                     icon: const Icon(Icons.play_arrow),
                     label: Text(t('jump_to_node')),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.of(sheetContext).pop();
+                      await _runAutoplay(context, ref, targetNodeId: node.id);
+                    },
+                    icon: const Icon(Icons.fast_forward),
+                    label: Text(t('autoplay_to_node')),
                   ),
                 ],
               ],

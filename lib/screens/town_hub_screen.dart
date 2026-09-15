@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
 import '../l10n/app_strings.dart';
+import '../providers/combat_active_provider.dart';
+import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../widgets/immersive_notice.dart';
 import 'expedition_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -28,6 +31,9 @@ class TownHubScreen extends ConsumerWidget {
     final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
     final shops = shopsAsync.value;
     final zones = zonesAsync.value;
+    // See camp_screen.dart's own restBlocked -- same reasoning applies here.
+    final restBlocked =
+        ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
 
     if (shops == null || zones == null) {
       return Scaffold(
@@ -48,6 +54,25 @@ class TownHubScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Tooltip(
+            message: restBlocked ? tr(ref, 'rest_blocked_hint') : '',
+            child: OutlinedButton.icon(
+              onPressed: restBlocked
+                  ? null
+                  : () async {
+                      await ref.read(playerSessionProvider.notifier).healPartyToFull();
+                      if (!context.mounted) return;
+                      showImmersiveNotice(
+                        context,
+                        icon: Icons.local_fire_department,
+                        message: tr(ref, 'party_rested_message'),
+                      );
+                    },
+              icon: const Icon(Icons.local_fire_department_outlined),
+              label: Text(tr(ref, 'rest_button')),
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(tr(ref, 'basic_shops_section'), style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           for (final shopId in _starterShopIds)
@@ -94,11 +119,15 @@ class TownHubScreen extends ConsumerWidget {
                   trailing: completed
                       ? Text(tr(ref, 'zone_cleared_label'))
                       : ElevatedButton(
-                          onPressed: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ExpeditionScreen(zoneId: zoneId, zone: zone),
-                            ),
-                          ),
+                          onPressed: () async {
+                            ref.read(expeditionActiveProvider.notifier).state = true;
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => ExpeditionScreen(zoneId: zoneId, zone: zone),
+                              ),
+                            );
+                            ref.read(expeditionActiveProvider.notifier).state = false;
+                          },
                           child: Text(tr(ref, 'begin_expedition_button')),
                         ),
                 ),

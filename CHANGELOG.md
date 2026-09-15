@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.68.0+95]
+
+The remaining two of five requested UX improvements, scoped after a clarifying round: a real-state "autoplay ahead" testing tool, and closing the Camp Rest gap.
+
+### Added
+- **Autoplay to a node or chapter (Edit Mode).** `lib/data/autoplay_engine.dart` finds the shortest forward path through the story graph to a target node, then walks it applying every choice's real effects (gold/alignment/heal/flags/quest-progress, shop/quest unlocks, achievement checks) through the exact same `PlayerSessionNotifier` methods a live choice tap calls — including a genuine simulated combat (the same `combat_engine.dart` functions and scaling a real fight uses, retried a bounded number of times on a loss) for any triggered fight, so the state you land in is a real earned one, not a fabricated snapshot. Reachable from the map: "Autoplay to this node" in a node's detail sheet, and "Autoplay to chapter…" next to the existing Jump-to-Chapter chips. Both Edit-Mode-only, like the quick-preview jump they sit beside. Deliberately skips procedural excursions and ignores active allies in the simulated fight — a testing tool, not a faithful full replay.
+- **Rest at the Town Hub, not just Camp.** Town Hub gets its own "Rest" action (same `healPartyToFull()`), since a town is as much a safe haven as camp.
+
+### Fixed
+- **Camp Rest is now blocked while a fight or expedition is in progress** (`expedition_active_provider.dart`, mirroring the existing `combat_active_provider.dart`), applied to both Camp's and Town Hub's Rest buttons. Mostly a defensive check today — both already cover the bottom nav with their own full-screen route — but closes the gap for good.
+
 ## [1.67.0+94]
 
 Three of five requested UX improvements (the other two — a "simulate ahead to a node/chapter" testing tool, and precisely scoping where Camp's Rest action should be allowed — need a design decision first and are being scoped separately).

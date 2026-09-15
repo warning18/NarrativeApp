@@ -6,6 +6,8 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/combat_active_provider.dart';
+import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -51,6 +53,14 @@ class CampScreen extends ConsumerWidget {
 
     final recruitedIds = session.recruitedAllies.map((a) => a.companionId).toList()..sort();
 
+    // Rest is a safe-haven action -- it shouldn't be reachable while a fight
+    // or an expedition is actively in progress. In practice both already
+    // cover the bottom nav with their own full-screen route, so this is
+    // mostly a defensive belt-and-suspenders check rather than the only
+    // thing standing in the way.
+    final restBlocked =
+        ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
       body: ListView(
@@ -68,18 +78,23 @@ class CampScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          OutlinedButton.icon(
-            onPressed: () async {
-              await ref.read(playerSessionProvider.notifier).healPartyToFull();
-              if (!context.mounted) return;
-              showImmersiveNotice(
-                context,
-                icon: Icons.local_fire_department,
-                message: tr(ref, 'party_rested_message'),
-              );
-            },
-            icon: const Icon(Icons.local_fire_department_outlined),
-            label: Text(tr(ref, 'rest_button')),
+          Tooltip(
+            message: restBlocked ? tr(ref, 'rest_blocked_hint') : '',
+            child: OutlinedButton.icon(
+              onPressed: restBlocked
+                  ? null
+                  : () async {
+                      await ref.read(playerSessionProvider.notifier).healPartyToFull();
+                      if (!context.mounted) return;
+                      showImmersiveNotice(
+                        context,
+                        icon: Icons.local_fire_department,
+                        message: tr(ref, 'party_rested_message'),
+                      );
+                    },
+              icon: const Icon(Icons.local_fire_department_outlined),
+              label: Text(tr(ref, 'rest_button')),
+            ),
           ),
           const SizedBox(height: 12),
           if (recruitedIds.isEmpty)

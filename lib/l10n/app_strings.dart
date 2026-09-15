@@ -68,6 +68,42 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '(aucun — ceci est une fin)',
   },
   'jump_to_node': {AppLanguage.en: 'Jump to this node', AppLanguage.fr: 'Aller à ce nœud'},
+  'autoplay_to_node': {
+    AppLanguage.en: 'Autoplay to this node',
+    AppLanguage.fr: 'Jouer automatiquement jusqu\'à ce nœud',
+  },
+  'autoplay_to_chapter_button': {
+    AppLanguage.en: 'Autoplay to chapter…',
+    AppLanguage.fr: 'Jouer automatiquement jusqu\'au chapitre…',
+  },
+  'autoplay_to_chapter_title': {
+    AppLanguage.en: 'Autoplay to which chapter?',
+    AppLanguage.fr: 'Jouer automatiquement jusqu\'à quel chapitre ?',
+  },
+  'autoplay_running': {
+    AppLanguage.en: 'Playing ahead…',
+    AppLanguage.fr: 'Avancement automatique…',
+  },
+  'autoplay_already_there': {
+    AppLanguage.en: 'Already there.',
+    AppLanguage.fr: 'Déjà arrivé.',
+  },
+  'autoplay_no_path': {
+    AppLanguage.en: 'No forward path to that node from here.',
+    AppLanguage.fr: "Aucun chemin possible jusqu'à ce nœud depuis ici.",
+  },
+  'autoplay_stuck_prefix': {
+    AppLanguage.en: 'Stuck — couldn\'t win the fight against',
+    AppLanguage.fr: 'Bloqué — impossible de gagner le combat contre',
+  },
+  'autoplay_reached_prefix': {
+    AppLanguage.en: 'Reached the target.',
+    AppLanguage.fr: 'Cible atteinte.',
+  },
+  'autoplay_steps_suffix': {
+    AppLanguage.en: 'steps applied',
+    AppLanguage.fr: 'étapes appliquées',
+  },
   'end_label': {AppLanguage.en: 'End', AppLanguage.fr: 'Fin'},
   'tap_to_filter': {
     AppLanguage.en: 'Tap a legend row to hide/show that node type',
@@ -788,6 +824,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vous et vos compagnons vous reposez et récupérez entièrement.',
   },
   'rest_button': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Se reposer'},
+  'rest_blocked_hint': {
+    AppLanguage.en: 'Not while a fight or expedition is in progress.',
+    AppLanguage.fr: "Impossible pendant un combat ou une expédition.",
+  },
   'no_companions_recruited': {
     AppLanguage.en: 'No companions recruited yet — their quests are out there.',
     AppLanguage.fr: "Aucun compagnon recruté pour l'instant — leurs quêtes vous attendent.",

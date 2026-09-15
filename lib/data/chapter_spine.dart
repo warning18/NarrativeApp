@@ -63,3 +63,19 @@ int? chapterForNode(String nodeId) {
 /// passes through. Leaving such a node is where a procedural excursion may
 /// be inserted before the player reaches the next beat.
 bool isMainBeatNode(String nodeId) => chapterForNode(nodeId) != null;
+
+/// The first main-beat node of [chapter] — chapter 0 is the prologue/start
+/// node; a chapter beyond [chapterSpines] has no defined entry point yet.
+/// When a beat has more than one node (a bearer/seeker fork), the
+/// lexicographically-first one is picked. Used both by the map's "Jump to
+/// Chapter" shortcut and the autoplay-to-chapter feature as the concrete
+/// node either one actually targets.
+String? firstNodeIdForChapter(int chapter, {required String prologueNodeId}) {
+  if (chapter == 0) return prologueNodeId;
+  for (final spine in chapterSpines) {
+    if (spine.chapter != chapter) continue;
+    final sortedBeatNodes = spine.beats.first.toList()..sort();
+    return sortedBeatNodes.isEmpty ? null : sortedBeatNodes.first;
+  }
+  return null;
+}
