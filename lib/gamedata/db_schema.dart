@@ -296,7 +296,35 @@ final DbSchema skillsSchema = DbSchema(
       label: 'Requires Alignment At Most',
       type: FieldType.integer,
     ),
+    FieldSchema(
+      key: 'unlockedViaMergeOnly',
+      label: 'Unlocked Via Merge Only',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
     visualAssetFieldSchema('skills'),
+  ],
+);
+
+final DbSchema skillMergesSchema = DbSchema(
+  id: 'skillMerges',
+  label: 'Skill Merges',
+  assetPath: 'assets/gamedata/skill_merges.json',
+  primaryKeyField: 'id',
+  fields: [
+    FieldSchema(key: 'id', label: 'ID', type: FieldType.text),
+    FieldSchema(
+      key: 'inputSkillIDs',
+      label: 'Input Skills (exactly 2)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'skills',
+    ),
+    FieldSchema(
+      key: 'resultSkillID',
+      label: 'Result Skill',
+      type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
   ],
 );
 
@@ -1079,6 +1107,7 @@ final DbSchema npcsSchema = DbSchema(
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
+  skillMergesSchema,
   diceSchema,
   enemiesSchema,
   enemyShipsSchema,

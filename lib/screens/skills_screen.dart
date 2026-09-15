@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -11,6 +12,7 @@ import '../utils/game_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/merge_skills_dialog.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
   const SkillsScreen({super.key, this.allyId});
@@ -91,7 +93,10 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final companions =
         ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final merges =
+        ref.watch(gameDbProvider(skillMergesSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
+    final isPlayer = widget.allyId == null;
 
     final companion = widget.allyId != null
         ? companions[widget.allyId] as Map<String, dynamic>?
@@ -120,6 +125,18 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
       appBar: AppBar(
         title: Text('${tr(ref, 'skills')}$titleSuffix'),
         actions: [
+          if (isPlayer)
+            IconButton(
+              icon: const Icon(Icons.auto_fix_high),
+              tooltip: tr(ref, 'craft_skill_button'),
+              onPressed: () => showMergeSkillsDialog(
+                context,
+                ref,
+                skills: skillsAsync.value ?? const {},
+                merges: merges,
+                unlockedSkillIds: session.unlockedSkillIds,
+              ),
+            ),
           IconButton(
             icon: Icon(_compareMode
                 ? Icons.compare_arrows
@@ -140,6 +157,11 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                   '${tr(ref, 'skill_points_label')}: $skillPoints',
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
+                if (isPlayer)
+                  Text(
+                    '${tr(ref, 'skill_essence_label')}: ${session.skillEssence}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
               ],
             ),
           ),
@@ -172,6 +194,13 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     : (id) => ref
                         .read(playerSessionProvider.notifier)
                         .unlockSkill(id),
+                skillEssence: isPlayer ? session.skillEssence : null,
+                skillTiers: isPlayer ? session.skillTiers : null,
+                onUpgradeTier: isPlayer
+                    ? (id) => ref
+                        .read(playerSessionProvider.notifier)
+                        .upgradeSkillTier(id)
+                    : null,
                 compareMode: _compareMode,
                 firstCompareId: _firstCompareId,
                 onCompareTap: (id) => _onCompareTap(context, records, id),
@@ -198,6 +227,9 @@ class _SkillList extends ConsumerWidget {
     required this.skillPoints,
     required this.unlockedSkillIds,
     required this.onUnlock,
+    this.skillEssence,
+    this.skillTiers,
+    this.onUpgradeTier,
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
@@ -220,6 +252,14 @@ class _SkillList extends ConsumerWidget {
   final int skillPoints;
   final List<String> unlockedSkillIds;
   final ValueChanged<String> onUnlock;
+
+  /// Non-null only for the player's own list (never a companion's) — see
+  /// [PlayerSession.skillEssence]/[PlayerSession.skillTiers]. Null suppresses
+  /// the tier/upgrade UI entirely rather than showing it in a meaningless
+  /// always-empty state for an ally.
+  final int? skillEssence;
+  final Map<String, int>? skillTiers;
+  final ValueChanged<String>? onUpgradeTier;
 
   final bool compareMode;
   final String? firstCompareId;
@@ -313,14 +353,46 @@ class _SkillList extends ConsumerWidget {
             requiredSkillId.isEmpty || isAvailable(requiredSkillId);
         final restrictionOk = meetsRestriction(skill);
         final restriction = restrictionLabel(skill);
+        final mergeOnly = skill['unlockedViaMergeOnly'] as bool? ?? false;
+        final tier = skillTiers?[id] ?? 0;
 
         Widget? trailing;
         if (compareMode) {
           trailing = null;
         } else if (available) {
-          trailing = const Icon(Icons.check_circle, color: Colors.green);
+          final upgradeCallback = onUpgradeTier;
+          if (skillTiers != null && upgradeCallback != null) {
+            final essence = skillEssence ?? 0;
+            final maxed = tier >= maxSkillTier;
+            final upgradeCost = skillTierUpgradeCost(tier);
+            trailing = Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  '${tr(ref, 'tier_label')} $tier/$maxSkillTier',
+                  style: Theme.of(context).textTheme.labelSmall,
+                ),
+                const SizedBox(height: 4),
+                maxed
+                    ? const Icon(Icons.check_circle, color: Colors.green)
+                    : OutlinedButton(
+                        onPressed: essence >= upgradeCost
+                            ? () => upgradeCallback(id)
+                            : null,
+                        child:
+                            Text('${tr(ref, 'upgrade_button')} ($upgradeCost)'),
+                      ),
+              ],
+            );
+          } else {
+            trailing = const Icon(Icons.check_circle, color: Colors.green);
+          }
         } else if (!restrictionOk) {
           trailing = const Icon(Icons.lock_outline);
+        } else if (mergeOnly) {
+          trailing = Icon(Icons.auto_fix_high,
+              color: Theme.of(context).colorScheme.outline);
         } else {
           trailing = ElevatedButton(
             onPressed: (skillPoints > 0 && prereqMet)
@@ -345,7 +417,10 @@ class _SkillList extends ConsumerWidget {
           if (requiredSkillId.isNotEmpty)
             '${tr(ref, 'requires_label')} $requiredSkillId',
           if (restriction.isNotEmpty) restriction,
-          '${tr(ref, 'cost_label')}: $cost',
+          if (mergeOnly && !available)
+            tr(ref, 'merge_only_hint')
+          else
+            '${tr(ref, 'cost_label')}: $cost',
         ];
 
         return Card(

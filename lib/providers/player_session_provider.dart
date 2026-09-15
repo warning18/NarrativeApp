@@ -4,6 +4,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -67,6 +68,8 @@ class PlayerSession {
     this.enemyKillCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
+    this.skillEssence = 0,
+    this.skillTiers = const {},
   });
 
   final int level;
@@ -214,6 +217,20 @@ class PlayerSession {
   /// these (see quest_objectives.dart).
   final List<String> talkedToNpcIds;
 
+  /// Roguelike skill-upgrade currency — earned 1:1 alongside XP (see
+  /// [PlayerSessionNotifier._applyXp]), spent via [PlayerSessionNotifier.
+  /// upgradeSkillTier] to raise an already-unlocked skill's tier. Unlike
+  /// [skillPoints] (which unlocks new skills), this only powers up skills
+  /// you already have. Reset to 0 on permadeath, alongside [unlockedSkillIds]
+  /// and [skillTiers] — the whole build starts over each life.
+  final int skillEssence;
+
+  /// skillId -> tier (0 = just unlocked, up to [maxSkillTier] in
+  /// combat_engine.dart). Only skills present here have been upgraded past
+  /// their base numbers; an unlocked skill with no entry is tier 0. Reset to
+  /// {} on permadeath along with [unlockedSkillIds].
+  final Map<String, int> skillTiers;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -293,6 +310,8 @@ class PlayerSession {
     Map<String, int>? enemyKillCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
+    int? skillEssence,
+    Map<String, int>? skillTiers,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -347,6 +366,8 @@ class PlayerSession {
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
       talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
+      skillEssence: skillEssence ?? this.skillEssence,
+      skillTiers: skillTiers ?? this.skillTiers,
     );
   }
 
@@ -400,6 +421,8 @@ class PlayerSession {
         'enemyKillCounts': enemyKillCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
+        'skillEssence': skillEssence,
+        'skillTiers': skillTiers,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -541,6 +564,11 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      skillEssence: (json['skillEssence'] as num?)?.toInt() ?? 0,
+      skillTiers: (json['skillTiers'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
     );
   }
 }
@@ -881,6 +909,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       unlockedQuestIds: newUnlockedQuests,
       ownedDiceIds: newOwnedDice,
       xpEarnedThisRun: state.xpEarnedThisRun + rewardXP,
+      skillEssence: state.skillEssence + rewardXP,
       recruitedAllies: newAllies,
       bannerPiecesCollected: newBannerPieces,
     );
@@ -1403,6 +1432,51 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Spends [skillEssence] to raise an already-unlocked skill's tier by
+  /// one, up to [maxSkillTier] — see combat_engine.dart's [applySkillTier]
+  /// for what a tier actually does in combat. No-ops if the skill isn't
+  /// unlocked, is already maxed, or essence is short.
+  Future<void> upgradeSkillTier(String skillId) async {
+    if (!state.unlockedSkillIds.contains(skillId)) return;
+    final currentTier = state.skillTiers[skillId] ?? 0;
+    if (currentTier >= maxSkillTier) return;
+    final cost = skillTierUpgradeCost(currentTier);
+    if (state.skillEssence < cost) return;
+    state = state.copyWith(
+      skillEssence: state.skillEssence - cost,
+      skillTiers: {...state.skillTiers, skillId: currentTier + 1},
+    );
+    await _persist();
+  }
+
+  /// Fuses two unlocked skills into a new one, per a skill_merges.json
+  /// recipe: both [inputSkillIds] are consumed (removed from
+  /// unlockedSkillIds, along with any tier progress on them) and
+  /// [resultSkillId] is unlocked in their place — a real trade-off, not a
+  /// strict upgrade. No-ops unless both inputs are currently unlocked and
+  /// the result isn't already unlocked.
+  Future<void> mergeSkills({
+    required List<String> inputSkillIds,
+    required String resultSkillId,
+  }) async {
+    if (state.unlockedSkillIds.contains(resultSkillId)) return;
+    for (final id in inputSkillIds) {
+      if (!state.unlockedSkillIds.contains(id)) return;
+    }
+    final newUnlocked = [
+      for (final id in state.unlockedSkillIds)
+        if (!inputSkillIds.contains(id)) id,
+      resultSkillId,
+    ];
+    final newTiers = {...state.skillTiers}
+      ..removeWhere((id, _) => inputSkillIds.contains(id));
+    state = state.copyWith(
+      unlockedSkillIds: newUnlocked,
+      skillTiers: newTiers,
+    );
+    await _persist();
+  }
+
   Future<void> spendStatPoint({required String stat}) async {
     if (state.statPoints <= 0) return;
     var newBaseDamage = state.baseDamage;
@@ -1619,6 +1693,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
+      skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,
       enemyKillCounts: newKillCounts,
     );
@@ -1626,19 +1701,53 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return leveled.leveledUp;
   }
 
-  /// Permadeath: clears the player's inventory and equipped items but keeps
-  /// level, XP, gold, stats, skills, dice and story flags/quests intact.
+  /// Permadeath: clears the player's inventory and equipped items, and
+  /// resets the skill build back to class basics — a roguelike run starts
+  /// over each life. Keeps level, XP, gold, stats, dice (as items) and
+  /// story flags/quests intact; only the *skill build itself* (unlocked
+  /// skills, tier upgrades, skill essence, and unspent skill points) is
+  /// wiped, back to exactly what [startNewGame] would grant: the race and
+  /// profession's own standard skill, wired onto the starter die's
+  /// Heritage/Profession Technique faces. [race]/[profession] are the raw
+  /// records from the Races/Professions db, same as [startNewGame] takes.
   /// Returns a summary of the run for a death-screen recap.
-  Future<PermadeathResult> applyPermadeath() async {
+  Future<PermadeathResult> applyPermadeath({
+    required Map<String, dynamic> race,
+    required Map<String, dynamic> profession,
+  }) async {
     final result = PermadeathResult(
       lostItemIds: [...state.inventoryItemIds],
       xpEarnedThisRun: state.xpEarnedThisRun,
+      skillsLost: state.unlockedSkillIds.length,
     );
+
+    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
+    final raceSkillId = race['standardSkillID']?.toString() ?? '';
+    final starterUnlockedSkills = <String>[
+      if (professionSkillId.isNotEmpty) professionSkillId,
+      if (raceSkillId.isNotEmpty) raceSkillId,
+    ];
+    final starterAssignments = <String, String>{
+      if (professionSkillId.isNotEmpty)
+        _starterDieProfessionFaceIndex.toString(): professionSkillId,
+      if (raceSkillId.isNotEmpty)
+        _starterDieRaceFaceIndex.toString(): raceSkillId,
+    };
+    final starterSkillPoints =
+        (profession['startingSkillPoints'] as num?)?.toInt() ?? 0;
+
     state = state.copyWith(
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
       equippedItemIds: const [],
       xpEarnedThisRun: 0,
+      unlockedSkillIds: starterUnlockedSkills,
+      skillTiers: const {},
+      skillEssence: 0,
+      skillPoints: starterSkillPoints,
+      diceSkillAssignments: {
+        if (starterAssignments.isNotEmpty) _starterDiceId: starterAssignments,
+      },
     );
     await _persist();
     return result;
@@ -1647,10 +1756,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
 /// Summary of a run that ended in permadeath, for the death screen.
 class PermadeathResult {
-  const PermadeathResult(
-      {required this.lostItemIds, required this.xpEarnedThisRun});
+  const PermadeathResult({
+    required this.lostItemIds,
+    required this.xpEarnedThisRun,
+    required this.skillsLost,
+  });
 
   final List<String> lostItemIds;
+
+  /// How many skills were unlocked right before the reset wiped them back
+  /// to class basics — for the death-screen recap.
+  final int skillsLost;
   final int xpEarnedThisRun;
 }
 

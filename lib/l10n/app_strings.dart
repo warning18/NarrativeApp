@@ -591,6 +591,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Evil-aligned',
     AppLanguage.fr: 'Aligné mal',
   },
+  'skill_essence_label': {
+    AppLanguage.en: 'Skill Essence',
+    AppLanguage.fr: "Essence de compétence",
+  },
+  'tier_label': {AppLanguage.en: 'Tier', AppLanguage.fr: 'Niveau'},
+  'upgrade_button': {
+    AppLanguage.en: 'Upgrade',
+    AppLanguage.fr: 'Améliorer',
+  },
+  'craft_skill_button': {
+    AppLanguage.en: 'Craft a Skill',
+    AppLanguage.fr: 'Fusionner une compétence',
+  },
+  'merge_button': {AppLanguage.en: 'Merge', AppLanguage.fr: 'Fusionner'},
+  'merge_only_hint': {
+    AppLanguage.en:
+        'Crafted by merging two skills — tap the craft button above.',
+    AppLanguage.fr:
+        'Obtenue en fusionnant deux compétences — touchez le bouton de fusion ci-dessus.',
+  },
+  'merge_consumes_hint': {
+    AppLanguage.en: 'Both skills below are consumed by this merge.',
+    AppLanguage.fr:
+        'Les deux compétences ci-dessous seront consommées par cette fusion.',
+  },
+  'merge_confirm_message': {
+    AppLanguage.en: 'Merge these skills? Both are lost for good this life:',
+    AppLanguage.fr:
+        'Fusionner ces compétences ? Les deux seront perdues pour cette vie :',
+  },
+  'already_crafted_label': {
+    AppLanguage.en: 'Already crafted',
+    AppLanguage.fr: 'Déjà fusionnée',
+  },
+  'no_merge_recipes': {
+    AppLanguage.en: 'No merge recipes defined yet.',
+    AppLanguage.fr: 'Aucune recette de fusion définie pour le moment.',
+  },
+  'skills_reset_label': {
+    AppLanguage.en: 'Skills Reset',
+    AppLanguage.fr: 'Compétences réinitialisées',
+  },
   'shop_no_stock': {
     AppLanguage.en: 'This shop has no stock configured.',
     AppLanguage.fr: "Cette boutique n'a aucun stock configuré.",

@@ -125,6 +125,7 @@ class _PartyMember {
     required this.unlockedSkillIds,
     required this.diceSkillAssignments,
     required this.equippedDiceId,
+    this.skillTiers = const {},
   });
 
   final String id;
@@ -135,6 +136,11 @@ class _PartyMember {
   final int armor;
   final List<String> equippedItemIds;
   final List<String> unlockedSkillIds;
+
+  /// skillId -> tier — only the player has these (see
+  /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
+  /// always resolve at base numbers.
+  final Map<String, int> skillTiers;
 
   /// faceIndex (as string) -> skillId. For the player this is their
   /// currently-equipped die's slice of [PlayerSession.diceSkillAssignments];
@@ -273,6 +279,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       unlockedSkillIds: session.unlockedSkillIds,
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
+      skillTiers: session.skillTiers,
     );
 
     final activeAllies = <_PartyMember>[];
@@ -341,7 +348,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
         if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
                 false) ||
             actor.unlockedSkillIds.contains(entry.key))
-          entry.key: entry.value,
+          entry.key: applySkillTier(
+            entry.value as Map<String, dynamic>,
+            actor.skillTiers[entry.key] ?? 0,
+          ),
     };
   }
 
@@ -881,9 +891,22 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   if (!_won && ref.read(permadeathEnabledProvider)) {
                     final nodesVisited =
                         ref.read(storyPlayProvider).history.length + 1;
+                    final playerSession = ref.read(playerSessionProvider);
+                    final races =
+                        ref.read(gameDbProvider(racesSchema)).value ?? const {};
+                    final professions =
+                        ref.read(gameDbProvider(professionsSchema)).value ??
+                            const {};
                     final result = await ref
                         .read(playerSessionProvider.notifier)
-                        .applyPermadeath();
+                        .applyPermadeath(
+                          race: races[playerSession.raceId]
+                                  as Map<String, dynamic>? ??
+                              const {},
+                          profession: professions[playerSession.professionId]
+                                  as Map<String, dynamic>? ??
+                              const {},
+                        );
                     ref
                         .read(storyPlayProvider.notifier)
                         .restart(StoryRepository.startNodeId);
@@ -894,6 +917,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                         builder: (_) => DeathScreen(
                           lostItemIds: result.lostItemIds,
                           xpEarned: result.xpEarnedThisRun,
+                          skillsLost: result.skillsLost,
                           nodesVisited: nodesVisited,
                         ),
                       ),

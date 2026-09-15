@@ -360,4 +360,44 @@ void main() {
       expect(scaledReward(50, 5), 70);
     });
   });
+
+  group('skill tiers', () {
+    final baseSkill = {
+      'damageMod': 10,
+      'healAmount': 8,
+      'damageMultiplier': 1.5,
+    };
+
+    test('tier 0 returns the skill unchanged', () {
+      final result = applySkillTier(baseSkill, 0);
+      expect(result['damageMod'], 10);
+      expect(result['healAmount'], 8);
+      expect(result['damageMultiplier'], 1.5);
+    });
+
+    test('each tier adds 25% to damageMod/healAmount and 0.1 to the multiplier',
+        () {
+      final tier1 = applySkillTier(baseSkill, 1);
+      expect(tier1['damageMod'], 13); // 10 * 1.25 = 12.5 -> rounds to 13
+      expect(tier1['healAmount'], 10); // 8 * 1.25 = 10
+      expect(tier1['damageMultiplier'], closeTo(1.6, 0.0001));
+
+      final tier3 = applySkillTier(baseSkill, 3);
+      expect(tier3['damageMod'], 18); // 10 * 1.75 = 17.5 -> rounds to 18
+      expect(tier3['healAmount'], 14); // 8 * 1.75 = 14
+      expect(tier3['damageMultiplier'], closeTo(1.8, 0.0001));
+    });
+
+    test('never mutates the input map (enemies share the same skills db)', () {
+      final original = Map<String, dynamic>.from(baseSkill);
+      applySkillTier(baseSkill, 2);
+      expect(baseSkill, original);
+    });
+
+    test('upgrade cost rises per tier (3, 6, 9)', () {
+      expect(skillTierUpgradeCost(0), 3);
+      expect(skillTierUpgradeCost(1), 6);
+      expect(skillTierUpgradeCost(2), 9);
+    });
+  });
 }

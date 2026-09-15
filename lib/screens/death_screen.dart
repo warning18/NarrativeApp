@@ -13,11 +13,15 @@ class DeathScreen extends ConsumerWidget {
     required this.lostItemIds,
     required this.xpEarned,
     required this.nodesVisited,
+    required this.skillsLost,
   });
 
   final List<String> lostItemIds;
   final int xpEarned;
   final int nodesVisited;
+
+  /// How many unlocked skills the reset wiped back to class basics.
+  final int skillsLost;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,6 +72,10 @@ class DeathScreen extends ConsumerWidget {
                           _StatLine(
                             label: tr(ref, 'items_lost_label'),
                             value: '${lostItemIds.length}',
+                          ),
+                          _StatLine(
+                            label: tr(ref, 'skills_reset_label'),
+                            value: '$skillsLost',
                           ),
                         ],
                       ),

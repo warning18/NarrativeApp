@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.79.0+107]
+
+Reworked the skill system to play like a roguelike build each run: skills
+now level up in place, two skills can be fused into a new one, and dying
+wipes the build back to class basics so every life is its own experiment.
+
+### Added
+- **Skill tiers** — any unlocked skill can be upgraded up to 3 times,
+  each tier adding +25% to its damage/heal numbers and +0.1 to its damage
+  multiplier (`combat_engine.dart`'s new `applySkillTier`). Upgrades are
+  applied live at combat-resolution time from a per-player tier map, never
+  by mutating the shared skills database (enemies read from that same
+  table via their own skill references).
+- **Skill Essence** — a new resource earned 1:1 alongside XP from combat
+  wins and quest completions, spent to buy tiers (rising cost: 3/6/9
+  essence per tier). Shown next to Skill Points at the top of the Skills
+  screen.
+- **Merging skills** — a new "Craft a Skill" button on the Skills screen
+  opens a recipe list (`assets/gamedata/skill_merges.json`) of two-skill
+  fusions; picking a ready recipe consumes both input skills and unlocks a
+  new, more powerful hybrid in their place. Six recipes ship with this
+  release: Blazing Shadow, Unbreakable Will, Bastion of Stone, Arcane
+  Convergence, Venomous Ambush, and Wrath of Dawn — each crafted from two
+  existing race/profession or starter skills.
+- **Skills reset on death** — permadeath now wipes the skill build back to
+  exactly what a fresh character would have (the race and profession's
+  own standard skill, wired onto the starter die), clearing every other
+  unlocked skill, all tier progress, and skill essence, and refunding
+  skill points back to the profession's starting amount. Level, gold,
+  stats, owned dice, and story progress are untouched — only the skill
+  build itself restarts, so each life is a genuinely new roguelike run.
+  The death screen now shows how many skills were lost in the reset.
+
 ## [1.78.0+106]
 
 The Level Up popup was unreadable on narrow phone screens — stat labels like

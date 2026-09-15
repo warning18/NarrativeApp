@@ -1,0 +1,32 @@
+{
+  "blazing_shadow": {
+    "id": "blazing_shadow",
+    "inputSkillIDs": ["fireball", "shadow_step"],
+    "resultSkillID": "blazing_shadow"
+  },
+  "unbreakable_will": {
+    "id": "unbreakable_will",
+    "inputSkillIDs": ["second_wind", "human_resolve"],
+    "resultSkillID": "unbreakable_will"
+  },
+  "bastion_of_stone": {
+    "id": "bastion_of_stone",
+    "inputSkillIDs": ["dwarf_stoneskin", "warrior_iron_stance"],
+    "resultSkillID": "bastion_of_stone"
+  },
+  "arcane_convergence": {
+    "id": "arcane_convergence",
+    "inputSkillIDs": ["elf_arcane_focus", "mage_arcane_missile"],
+    "resultSkillID": "arcane_convergence"
+  },
+  "venomous_ambush": {
+    "id": "venomous_ambush",
+    "inputSkillIDs": ["rogue_backstab", "rogue_poison_blade"],
+    "resultSkillID": "venomous_ambush"
+  },
+  "wrath_of_dawn": {
+    "id": "wrath_of_dawn",
+    "inputSkillIDs": ["cleric_holy_light", "cleric_smite"],
+    "resultSkillID": "wrath_of_dawn"
+  }
+}

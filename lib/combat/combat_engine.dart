@@ -219,6 +219,33 @@ EnemyMoveResult resolveEnemyMove({
       damage: baseDamage, message: '$enemyName ${t('attacks_suffix')}');
 }
 
+/// Skill tiers run 0 (just unlocked, base numbers) through [maxSkillTier]
+/// (fully upgraded). Each tier above 0 costs [skillTierUpgradeCost] essence.
+const int maxSkillTier = 3;
+
+/// Cost, in skill essence, to go from [currentTier] to `currentTier + 1`.
+/// Rising cost per tier (3/6/9) makes maxing out one skill a real
+/// commitment rather than something every skill gets by mid-run.
+int skillTierUpgradeCost(int currentTier) => (currentTier + 1) * 3;
+
+/// Returns a copy of [skill] with its combat numbers boosted for [tier] —
+/// +25% damageMod/healAmount and +0.1 damageMultiplier per tier. Never
+/// mutates the shared skills-db record itself (enemies read from the same
+/// table via their own skillID references), so callers apply this to a
+/// per-actor copy right before resolving a face, not to the db in place.
+Map<String, dynamic> applySkillTier(Map<String, dynamic> skill, int tier) {
+  if (tier <= 0) return skill;
+  final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
+  final healAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
+  final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
+  return {
+    ...skill,
+    'damageMod': (damageMod * (1 + 0.25 * tier)).round(),
+    'healAmount': (healAmount * (1 + 0.25 * tier)).round(),
+    'damageMultiplier': multiplier + 0.1 * tier,
+  };
+}
+
 int scaledMaxHealth(int base, int playerLevel) {
   return (base * (1 + 0.12 * (playerLevel - 1))).round();
 }

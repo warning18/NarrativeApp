@@ -11,6 +11,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 
@@ -37,6 +38,9 @@ PlayerSession baseSession({
   List<String> completedZoneIds = const [],
   List<String> bannerPiecesCollected = const [],
   List<String> talkedToNpcIds = const [],
+  List<String> unlockedSkillIds = const [],
+  int skillEssence = 0,
+  Map<String, int> skillTiers = const {},
   int luck = 0,
   int charisma = 0,
   int strength = 0,
@@ -70,7 +74,9 @@ PlayerSession baseSession({
     completedQuestIds: completedQuestIds,
     inventoryItemIds: inventoryItemIds,
     equippedItemIds: const [],
-    unlockedSkillIds: const [],
+    unlockedSkillIds: unlockedSkillIds,
+    skillEssence: skillEssence,
+    skillTiers: skillTiers,
     unlockedShopIds: unlockedShopIds,
     unlockedQuestIds: const [],
     unlockedEnemyIds: const [],
@@ -412,6 +418,138 @@ void main() {
           baseSession().copyWith(enemyKillCounts: {'slum_thug': 3});
       final restored = PlayerSession.fromJson(original.toJson());
       expect(restored.enemyKillCounts['slum_thug'], 3);
+    });
+  });
+
+  group('upgradeSkillTier', () {
+    test('spends essence and raises the tier by one', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball'],
+        skillEssence: 10,
+      ));
+      await notifier.upgradeSkillTier('fireball');
+      expect(notifier.state.skillTiers['fireball'], 1);
+      expect(notifier.state.skillEssence, 7); // cost of tier 0->1 is 3
+    });
+
+    test('cost rises each subsequent tier', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball'],
+        skillEssence: 100,
+      ));
+      await notifier.upgradeSkillTier('fireball'); // 0->1, costs 3
+      await notifier.upgradeSkillTier('fireball'); // 1->2, costs 6
+      expect(notifier.state.skillTiers['fireball'], 2);
+      expect(notifier.state.skillEssence, 91);
+    });
+
+    test('is a no-op if the skill is not unlocked', () async {
+      final notifier = await notifierWith(baseSession(skillEssence: 100));
+      await notifier.upgradeSkillTier('fireball');
+      expect(notifier.state.skillTiers, isEmpty);
+      expect(notifier.state.skillEssence, 100);
+    });
+
+    test('is a no-op if essence is short', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball'],
+        skillEssence: 2,
+      ));
+      await notifier.upgradeSkillTier('fireball');
+      expect(notifier.state.skillTiers['fireball'], isNull);
+      expect(notifier.state.skillEssence, 2);
+    });
+
+    test('is a no-op once the skill is already at max tier', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball'],
+        skillTiers: {'fireball': maxSkillTier},
+        skillEssence: 1000,
+      ));
+      await notifier.upgradeSkillTier('fireball');
+      expect(notifier.state.skillTiers['fireball'], maxSkillTier);
+    });
+  });
+
+  group('mergeSkills', () {
+    test('consumes both inputs and unlocks the result', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball', 'shadow_step'],
+        skillTiers: {'fireball': 2},
+      ));
+      await notifier.mergeSkills(
+        inputSkillIds: ['fireball', 'shadow_step'],
+        resultSkillId: 'blazing_shadow',
+      );
+      expect(notifier.state.unlockedSkillIds, contains('blazing_shadow'));
+      expect(notifier.state.unlockedSkillIds, isNot(contains('fireball')));
+      expect(notifier.state.unlockedSkillIds, isNot(contains('shadow_step')));
+      // Tier progress on a consumed skill is dropped, not carried over.
+      expect(notifier.state.skillTiers.containsKey('fireball'), isFalse);
+    });
+
+    test('is a no-op if either input is not unlocked', () async {
+      final notifier = await notifierWith(
+        baseSession(unlockedSkillIds: ['fireball']),
+      );
+      await notifier.mergeSkills(
+        inputSkillIds: ['fireball', 'shadow_step'],
+        resultSkillId: 'blazing_shadow',
+      );
+      expect(
+          notifier.state.unlockedSkillIds, isNot(contains('blazing_shadow')));
+      expect(notifier.state.unlockedSkillIds, contains('fireball'));
+    });
+
+    test('is a no-op if the result is already unlocked', () async {
+      final notifier = await notifierWith(baseSession(
+        unlockedSkillIds: ['fireball', 'shadow_step', 'blazing_shadow'],
+      ));
+      await notifier.mergeSkills(
+        inputSkillIds: ['fireball', 'shadow_step'],
+        resultSkillId: 'blazing_shadow',
+      );
+      // Nothing consumed -- inputs stay put.
+      expect(notifier.state.unlockedSkillIds, contains('fireball'));
+      expect(notifier.state.unlockedSkillIds, contains('shadow_step'));
+    });
+  });
+
+  group('applyPermadeath', () {
+    test(
+        'resets the skill build to class basics but keeps level/gold/dice intact',
+        () async {
+      final notifier = await notifierWith(baseSession(
+        level: 5,
+        gold: 200,
+        unlockedSkillIds: ['warrior_shield_bash', 'fireball', 'power_strike'],
+        skillTiers: {'fireball': 2},
+        skillEssence: 40,
+        skillPoints: 3,
+        ownedDiceIds: ['starter_die', 'kelda_die'],
+        inventoryItemIds: ['sword_iron'],
+      ));
+      final result = await notifier.applyPermadeath(
+        race: const {'standardSkillID': 'human_resolve'},
+        profession: const {
+          'standardSkillID': 'warrior_shield_bash',
+          'startingSkillPoints': 1,
+        },
+      );
+
+      expect(result.skillsLost, 3);
+      expect(notifier.state.unlockedSkillIds,
+          unorderedEquals(['human_resolve', 'warrior_shield_bash']));
+      expect(notifier.state.skillTiers, isEmpty);
+      expect(notifier.state.skillEssence, 0);
+      expect(notifier.state.skillPoints, 1);
+      // Untouched by a skill-build reset.
+      expect(notifier.state.level, 5);
+      expect(notifier.state.gold, 200);
+      expect(notifier.state.ownedDiceIds, contains('kelda_die'));
+      // Inventory is still cleared, per the existing permadeath behavior.
+      expect(notifier.state.inventoryItemIds, isEmpty);
+      expect(result.lostItemIds, contains('sword_iron'));
     });
   });
 }
