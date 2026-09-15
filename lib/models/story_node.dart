@@ -14,6 +14,9 @@ class StoryChoice {
     this.opensCharacterCreation = false,
     this.textFr,
     this.lockedTextFr,
+    this.checkAbility,
+    this.checkDC,
+    this.failNextId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -36,6 +39,9 @@ class StoryChoice {
       opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
       textFr: json['text_fr'] as String?,
       lockedTextFr: json['lockedText_fr'] as String?,
+      checkAbility: json['checkAbility'] as String?,
+      checkDC: (json['checkDC'] as num?)?.toInt(),
+      failNextId: json['failNextId'] as String?,
     );
   }
 
@@ -57,6 +63,28 @@ class StoryChoice {
 
   /// Optional French translation of [lockedText]; falls back to English when absent.
   final String? lockedTextFr;
+
+  /// One of [abilityScoreKeys] (ability_check.dart) — when set, tapping
+  /// this choice rolls a d20 + the player's bonus for that ability against
+  /// [checkDC] before anything else happens, the BG3/D&D "attempt" pattern
+  /// rather than a hard gate like [StoryNode.reqCharisma]. Kept as a plain
+  /// string, not an enum, so this model (used by the offline
+  /// graph-integrity tooling too) never needs to import gameplay code.
+  final String? checkAbility;
+
+  /// The difficulty class the roll must meet or beat. Only meaningful
+  /// alongside [checkAbility].
+  final int? checkDC;
+
+  /// Where a failed check leads instead of [nextId]. Empty/null means a
+  /// failure still proceeds to [nextId] as normal, just without this
+  /// choice's [goldMod]/[alignmentMod]/[healAmount]/[flagsToAdd]/
+  /// [questIDToProgress] applied — the "you tried, but gained nothing
+  /// extra" outcome. Set it when failure should tell a genuinely different
+  /// beat instead.
+  final String? failNextId;
+
+  bool get hasAbilityCheck => checkAbility != null && checkAbility!.isNotEmpty;
 
   String textFor(bool french) =>
       french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
@@ -86,6 +114,11 @@ class StoryChoice {
           'unlockQuestId': unlockQuestId,
         if (opensCharacterCreation)
           'opensCharacterCreation': opensCharacterCreation,
+        if (checkAbility != null && checkAbility!.isNotEmpty)
+          'checkAbility': checkAbility,
+        if (checkDC != null) 'checkDC': checkDC,
+        if (failNextId != null && failNextId!.isNotEmpty)
+          'failNextId': failNextId,
       };
 
   bool get triggersCombat =>

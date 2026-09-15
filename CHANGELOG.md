@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.74.0+101]
+
+A D&D/Baldur's Gate 3-style ability check system: five new stats and a
+dice-roll "attempt" mechanic for story choices, layered alongside last
+round's flat Charisma gate rather than replacing it.
+
+### Added
+- **Strength, Dexterity, Constitution, Intelligence, and Wisdom** join
+  Luck and Charisma as full character stats — derived at creation from
+  `game_config.json` + race/profession bonuses (e.g. Dwarves run high
+  Constitution, Mages run high Intelligence, Rogues run high Dexterity),
+  spendable from the level-up dialog/screen, and editable from the debug
+  stats panel like every other stat.
+- **Ability checks on story choices.** `StoryChoice` gained
+  `checkAbility`/`checkDC`/`failNextId`: tapping a checked choice rolls a
+  d20 plus the matching stat against the DC (`lib/data/ability_check.dart`)
+  and shows the roll in a themed popup before anything else happens — the
+  BG3 "attempt" pattern, distinct from `reqCharisma`'s hard, deterministic
+  gate. Success applies the choice's effects as normal; failure either
+  routes to `failNextId` when the author set one, or continues to the same
+  destination without the reward. Authorable from the Story Node Editor's
+  choice panel, and the graph-integrity checker now walks `failNextId` too,
+  so a check-only branch is neither flagged orphaned nor left unvalidated.
+  Wired into a new optional choice at the Ashen Quarter hub (a Dexterity
+  check to pick a sealed archive's lock) as a worked example.
+
 ## [1.73.0+100]
 
 A round of new-mechanics requests: a proper celebration for leveling up,

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/ability_check.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/map_themes.dart';
@@ -580,6 +581,44 @@ class _ChoiceButton extends ConsumerWidget {
       onPressed: locked
           ? null
           : () async {
+              var skipRewardEffects = false;
+              if (choice.hasAbilityCheck) {
+                final result = rollAbilityCheck(
+                  ability: choice.checkAbility!,
+                  dc: choice.checkDC ?? 10,
+                  session: session,
+                );
+                final abilityLabel = tr(ref, '${result.ability}_label');
+                final outcomeKey = result.success
+                    ? 'ability_check_success'
+                    : 'ability_check_fail';
+                await showImmersiveNotice(
+                  context,
+                  icon: result.success ? Icons.check_circle : Icons.cancel,
+                  message: '$abilityLabel ${tr(ref, 'check_label')}: '
+                      '${result.roll} + ${result.modifier} = ${result.total} '
+                      '${tr(ref, 'vs_dc_label')} ${result.dc} — '
+                      '${tr(ref, outcomeKey)}',
+                );
+                if (!context.mounted) return;
+                if (!result.success) {
+                  final failTarget = choice.failNextId;
+                  if (failTarget != null &&
+                      failTarget.isNotEmpty &&
+                      !isExcursion) {
+                    if (failTarget == 'EXIT' || failTarget == 'END') {
+                      ref
+                          .read(storyPlayProvider.notifier)
+                          .restart(StoryRepository.startNodeId);
+                    } else {
+                      ref.read(storyPlayProvider.notifier).choose(failTarget);
+                    }
+                    return;
+                  }
+                  skipRewardEffects = true;
+                }
+              }
+
               if (choice.opensCharacterCreation) {
                 await ref.read(playerSessionProvider.notifier).resetSession();
                 if (!context.mounted) return;
@@ -620,7 +659,7 @@ class _ChoiceButton extends ConsumerWidget {
               }
 
               final playNotifier = ref.read(storyPlayProvider.notifier);
-              if (choice.hasEffects) {
+              if (choice.hasEffects && !skipRewardEffects) {
                 ref.read(playerSessionProvider.notifier).applyChoiceEffects(
                       goldMod: choice.goldMod,
                       alignmentMod: choice.alignmentMod,
@@ -698,7 +737,22 @@ class _ChoiceButton extends ConsumerWidget {
             },
       child: Align(
         alignment: Alignment.centerLeft,
-        child: Text(label),
+        child: choice.hasAbilityCheck
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.casino_outlined, size: 16),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      '$label '
+                      '(${tr(ref, '${choice.checkAbility}_label')} '
+                      'DC ${choice.checkDC ?? 10})',
+                    ),
+                  ),
+                ],
+              )
+            : Text(label),
       ),
     );
   }

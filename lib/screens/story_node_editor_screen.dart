@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/ability_check.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
@@ -263,7 +264,11 @@ class _ChoiceEditState {
             TextEditingController(text: choice.unlockShopId ?? ''),
         unlockQuestIdController =
             TextEditingController(text: choice.unlockQuestId ?? ''),
-        opensCharacterCreation = choice.opensCharacterCreation;
+        opensCharacterCreation = choice.opensCharacterCreation,
+        checkAbility = choice.checkAbility,
+        checkDCController =
+            TextEditingController(text: choice.checkDC?.toString() ?? ''),
+        failNextId = choice.failNextId;
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
 
@@ -281,6 +286,9 @@ class _ChoiceEditState {
   final TextEditingController unlockShopIdController;
   final TextEditingController unlockQuestIdController;
   bool opensCharacterCreation;
+  String? checkAbility;
+  final TextEditingController checkDCController;
+  String? failNextId;
 
   void dispose() {
     textController.dispose();
@@ -295,6 +303,7 @@ class _ChoiceEditState {
     triggerEnemyIdController.dispose();
     unlockShopIdController.dispose();
     unlockQuestIdController.dispose();
+    checkDCController.dispose();
   }
 
   StoryChoice toChoice() => StoryChoice(
@@ -330,6 +339,9 @@ class _ChoiceEditState {
             ? null
             : unlockQuestIdController.text.trim(),
         opensCharacterCreation: opensCharacterCreation,
+        checkAbility: (checkAbility?.isEmpty ?? true) ? null : checkAbility,
+        checkDC: int.tryParse(checkDCController.text.trim()),
+        failNextId: (failNextId?.isEmpty ?? true) ? null : failNextId,
       );
 }
 
@@ -503,6 +515,57 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   value: state.opensCharacterCreation,
                   onChanged: (value) =>
                       setState(() => state.opensCharacterCreation = value),
+                ),
+                const Divider(),
+                Text(t('ability_check_section'),
+                    style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  // ignore: deprecated_member_use
+                  value: abilityScoreKeys.contains(state.checkAbility)
+                      ? state.checkAbility
+                      : null,
+                  decoration: InputDecoration(
+                    labelText: t('check_ability'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                        value: null, child: Text(t('none_option'))),
+                    for (final ability in abilityScoreKeys)
+                      DropdownMenuItem(
+                          value: ability, child: Text(t('${ability}_label'))),
+                  ],
+                  onChanged: (value) =>
+                      setState(() => state.checkAbility = value),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.checkDCController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: t('check_dc'),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  // ignore: deprecated_member_use
+                  value: options.contains(state.failNextId)
+                      ? state.failNextId
+                      : null,
+                  decoration: InputDecoration(
+                    labelText: t('fail_destination_node'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                        value: null, child: Text(t('none_option'))),
+                    ...options.map(
+                        (id) => DropdownMenuItem(value: id, child: Text(id))),
+                  ],
+                  onChanged: (value) =>
+                      setState(() => state.failNextId = value),
                 ),
               ],
             ),

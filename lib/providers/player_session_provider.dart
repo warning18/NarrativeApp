@@ -28,6 +28,11 @@ class PlayerSession {
     required this.baseArmor,
     required this.luck,
     required this.charisma,
+    required this.strength,
+    required this.dexterity,
+    required this.constitution,
+    required this.intelligence,
+    required this.wisdom,
     required this.potionCount,
     required this.statPoints,
     required this.skillPoints,
@@ -81,6 +86,18 @@ class PlayerSession {
   /// Gates persuasion-flavored story nodes via [StoryNode.reqCharisma],
   /// alongside the existing reqGold/reqAlignment/reqFlags requirements.
   final int charisma;
+
+  /// The classic D&D-style ability scores, alongside [luck] and
+  /// [charisma]. Each feeds `rollAbilityCheck` (see ability_check.dart) as
+  /// a flat bonus on a d20 roll for `StoryChoice.checkAbility` — story
+  /// choices phrased as an attempt ("Force the door", "Talk your way
+  /// past") rather than a hard gate. Not used in combat; [baseDamage] and
+  /// [baseArmor] remain the only stats that affect a fight.
+  final int strength;
+  final int dexterity;
+  final int constitution;
+  final int intelligence;
+  final int wisdom;
   final int potionCount;
   final int statPoints;
   final int skillPoints;
@@ -237,6 +254,11 @@ class PlayerSession {
     int? baseArmor,
     int? luck,
     int? charisma,
+    int? strength,
+    int? dexterity,
+    int? constitution,
+    int? intelligence,
+    int? wisdom,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -283,6 +305,11 @@ class PlayerSession {
       baseArmor: baseArmor ?? this.baseArmor,
       luck: luck ?? this.luck,
       charisma: charisma ?? this.charisma,
+      strength: strength ?? this.strength,
+      dexterity: dexterity ?? this.dexterity,
+      constitution: constitution ?? this.constitution,
+      intelligence: intelligence ?? this.intelligence,
+      wisdom: wisdom ?? this.wisdom,
       potionCount: potionCount ?? this.potionCount,
       statPoints: statPoints ?? this.statPoints,
       skillPoints: skillPoints ?? this.skillPoints,
@@ -334,6 +361,11 @@ class PlayerSession {
         'baseArmor': baseArmor,
         'luck': luck,
         'charisma': charisma,
+        'strength': strength,
+        'dexterity': dexterity,
+        'constitution': constitution,
+        'intelligence': intelligence,
+        'wisdom': wisdom,
         'potionCount': potionCount,
         'statPoints': statPoints,
         'skillPoints': skillPoints,
@@ -392,6 +424,11 @@ class PlayerSession {
       baseArmor: (json['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (json['luck'] as num?)?.toInt() ?? 0,
       charisma: (json['charisma'] as num?)?.toInt() ?? 0,
+      strength: (json['strength'] as num?)?.toInt() ?? 0,
+      dexterity: (json['dexterity'] as num?)?.toInt() ?? 0,
+      constitution: (json['constitution'] as num?)?.toInt() ?? 0,
+      intelligence: (json['intelligence'] as num?)?.toInt() ?? 0,
+      wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
       potionCount: (json['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
@@ -521,6 +558,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           baseArmor: 0,
           luck: 0,
           charisma: 0,
+          strength: 0,
+          dexterity: 0,
+          constitution: 0,
+          intelligence: 0,
+          wisdom: 0,
           potionCount: 0,
           statPoints: 0,
           skillPoints: 0,
@@ -575,6 +617,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseArmor: (defaults['baseArmor'] as num?)?.toInt() ?? 0,
       luck: (defaults['luck'] as num?)?.toInt() ?? 0,
       charisma: (defaults['charisma'] as num?)?.toInt() ?? 0,
+      strength: (defaults['strength'] as num?)?.toInt() ?? 0,
+      dexterity: (defaults['dexterity'] as num?)?.toInt() ?? 0,
+      constitution: (defaults['constitution'] as num?)?.toInt() ?? 0,
+      intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
+      wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: 0,
@@ -634,6 +681,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final charisma = ((defaults['charisma'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusCharisma') +
         bonus(profession, 'bonusCharisma');
+    final strength = ((defaults['strength'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusStrength') +
+        bonus(profession, 'bonusStrength');
+    final dexterity = ((defaults['dexterity'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusDexterity') +
+        bonus(profession, 'bonusDexterity');
+    final constitution = ((defaults['constitution'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusConstitution') +
+        bonus(profession, 'bonusConstitution');
+    final intelligence = ((defaults['intelligence'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusIntelligence') +
+        bonus(profession, 'bonusIntelligence');
+    final wisdom = ((defaults['wisdom'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusWisdom') +
+        bonus(profession, 'bonusWisdom');
     final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
@@ -668,6 +730,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseArmor: baseArmor,
       luck: luck,
       charisma: charisma,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+      wisdom: wisdom,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: skillPoints,
@@ -1344,6 +1411,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newCurrentHealth = state.currentHealth;
     var newLuck = state.luck;
     var newCharisma = state.charisma;
+    var newStrength = state.strength;
+    var newDexterity = state.dexterity;
+    var newConstitution = state.constitution;
+    var newIntelligence = state.intelligence;
+    var newWisdom = state.wisdom;
     switch (stat) {
       case 'damage':
         newBaseDamage += 1;
@@ -1361,6 +1433,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case 'charisma':
         newCharisma += 1;
         break;
+      case 'strength':
+        newStrength += 1;
+        break;
+      case 'dexterity':
+        newDexterity += 1;
+        break;
+      case 'constitution':
+        newConstitution += 1;
+        break;
+      case 'intelligence':
+        newIntelligence += 1;
+        break;
+      case 'wisdom':
+        newWisdom += 1;
+        break;
       default:
         break;
     }
@@ -1372,6 +1459,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: newCurrentHealth,
       luck: newLuck,
       charisma: newCharisma,
+      strength: newStrength,
+      dexterity: newDexterity,
+      constitution: newConstitution,
+      intelligence: newIntelligence,
+      wisdom: newWisdom,
     );
     await _persist();
   }
@@ -1392,6 +1484,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? baseArmor,
     int? luck,
     int? charisma,
+    int? strength,
+    int? dexterity,
+    int? constitution,
+    int? intelligence,
+    int? wisdom,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -1407,6 +1504,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseArmor: baseArmor,
       luck: luck,
       charisma: charisma,
+      strength: strength,
+      dexterity: dexterity,
+      constitution: constitution,
+      intelligence: intelligence,
+      wisdom: wisdom,
       potionCount: potionCount,
       statPoints: statPoints,
       skillPoints: skillPoints,

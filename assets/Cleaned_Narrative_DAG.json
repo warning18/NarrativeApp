@@ -1609,6 +1609,14 @@
         "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
         "next_id": "3005_maren",
         "unlockQuestId": "q_ch3_marens_penance"
+      },
+      {
+        "text": "Pick the lock on a sealed archive door, untouched since the invasion",
+        "text_fr": "Crocheter la serrure d'une porte d'archives scellée, intacte depuis l'invasion",
+        "next_id": "3005_archive",
+        "checkAbility": "dexterity",
+        "checkDC": 13,
+        "goldMod": 40
       }
     ]
   },
@@ -2289,6 +2297,18 @@
         "text": "Begin again, changed",
         "text_fr": "Recommencer, transformé",
         "next_id": "EXIT"
+      }
+    ]
+  },
+  "3005_archive": {
+    "id": "3005_archive",
+    "description": "The door had been sealed since the invasion, its lock the stubborn, old-fashioned kind that rewards patience over force. I knelt to it anyway, half convinced I was wasting the minute. Inside, the archive smelled of dust and neglect in roughly equal measure — record cabinets, most rotted through, a few still intact enough to be worth the trouble of checking.",
+    "description_fr": "La porte était scellée depuis l'invasion, sa serrure du genre ténace et démodé qui récompense la patience plutôt que la force. Je m'agenouillai quand même, à moitié convaincu de perdre mon temps. À l'intérieur, l'archive sentait la poussière et la négligence en parts à peu près égales — des classeurs, pour la plupart pourris, quelques-uns encore assez intacts pour valoir la peine d'être fouillés.",
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
       }
     ]
   }

@@ -104,6 +104,25 @@ StoryGraphReport checkStoryGraphIntegrity(
       }
       hasForwardPath = true;
       if (!visited.contains(choice.nextId)) queue.add(choice.nextId);
+
+      // A failed ability check can route the player to failNextId instead
+      // of nextId (see StoryChoice.failNextId) -- walk it the same way, so
+      // a node reached only via a check failure isn't wrongly flagged
+      // unreachable, and a typo'd failNextId is still caught as broken.
+      final failNextId = choice.failNextId;
+      if (failNextId != null && failNextId.isNotEmpty) {
+        if (failNextId != 'EXIT' && failNextId != 'END') {
+          if (nodes.containsKey(failNextId)) {
+            if (!visited.contains(failNextId)) queue.add(failNextId);
+          } else {
+            brokenReferences.add(BrokenReference(
+              fromNodeId: id,
+              choiceText: '${choice.text} (failNextId)',
+              targetId: failNextId,
+            ));
+          }
+        }
+      }
     }
 
     if (hasEnding) reachableEndingCount++;

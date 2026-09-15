@@ -39,6 +39,11 @@ PlayerSession baseSession({
   List<String> talkedToNpcIds = const [],
   int luck = 0,
   int charisma = 0,
+  int strength = 0,
+  int dexterity = 0,
+  int constitution = 0,
+  int intelligence = 0,
+  int wisdom = 0,
 }) {
   return PlayerSession(
     level: level,
@@ -51,6 +56,11 @@ PlayerSession baseSession({
     baseArmor: 0,
     luck: luck,
     charisma: charisma,
+    strength: strength,
+    dexterity: dexterity,
+    constitution: constitution,
+    intelligence: intelligence,
+    wisdom: wisdom,
     potionCount: 0,
     statPoints: statPoints,
     skillPoints: skillPoints,

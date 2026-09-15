@@ -198,6 +198,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Required charisma (minimum)',
     AppLanguage.fr: 'Charisme requis (minimum)',
   },
+  'ability_check_section': {
+    AppLanguage.en:
+        'Ability Check (rolled attempt, not a hard gate — see Charisma above)',
+    AppLanguage.fr:
+        'Jet de caractéristique (tentative, pas un verrou strict — voir Charisme ci-dessus)',
+  },
+  'check_ability': {
+    AppLanguage.en: 'Ability to check',
+    AppLanguage.fr: 'Caractéristique testée',
+  },
+  'check_dc': {
+    AppLanguage.en: 'Difficulty Class (DC)',
+    AppLanguage.fr: 'Classe de Difficulté (DD)',
+  },
+  'fail_destination_node': {
+    AppLanguage.en: 'Fail Destination Node (empty = same node, no reward)',
+    AppLanguage.fr:
+        'Nœud de destination en cas d\'échec (vide = même nœud, sans récompense)',
+  },
+  'none_option': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun(e)'},
+  'check_label': {AppLanguage.en: 'check', AppLanguage.fr: 'jet de'},
+  'vs_dc_label': {AppLanguage.en: 'vs DC', AppLanguage.fr: 'contre DD'},
+  'ability_check_success': {
+    AppLanguage.en: 'Success!',
+    AppLanguage.fr: 'Réussite !',
+  },
+  'ability_check_fail': {
+    AppLanguage.en: 'Failure.',
+    AppLanguage.fr: 'Échec.',
+  },
   'node_saved': {
     AppLanguage.en: 'Node saved.',
     AppLanguage.fr: 'Nœud enregistré.'
@@ -410,6 +440,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'damage_label': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
   'luck_label': {AppLanguage.en: 'Luck', AppLanguage.fr: 'Chance'},
   'charisma_label': {AppLanguage.en: 'Charisma', AppLanguage.fr: 'Charisme'},
+  'strength_label': {AppLanguage.en: 'Strength', AppLanguage.fr: 'Force'},
+  'dexterity_label': {AppLanguage.en: 'Dexterity', AppLanguage.fr: 'Dextérité'},
+  'constitution_label': {
+    AppLanguage.en: 'Constitution',
+    AppLanguage.fr: 'Constitution',
+  },
+  'intelligence_label': {
+    AppLanguage.en: 'Intelligence',
+    AppLanguage.fr: 'Intelligence',
+  },
+  'wisdom_label': {AppLanguage.en: 'Wisdom', AppLanguage.fr: 'Sagesse'},
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
   'level_abbrev': {AppLanguage.en: 'Lvl', AppLanguage.fr: 'Niv.'},
@@ -645,6 +686,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'equipped_prefix': {AppLanguage.en: 'Equipped', AppLanguage.fr: 'Équipé'},
   'atk_abbrev': {AppLanguage.en: 'ATK', AppLanguage.fr: 'ATQ'},
   'arm_abbrev': {AppLanguage.en: 'ARM', AppLanguage.fr: 'ARM'},
+  'str_abbrev': {AppLanguage.en: 'STR', AppLanguage.fr: 'FOR'},
+  'dex_abbrev': {AppLanguage.en: 'DEX', AppLanguage.fr: 'DEX'},
+  'con_abbrev': {AppLanguage.en: 'CON', AppLanguage.fr: 'CON'},
+  'int_abbrev': {AppLanguage.en: 'INT', AppLanguage.fr: 'INT'},
+  'wis_abbrev': {AppLanguage.en: 'WIS', AppLanguage.fr: 'SAG'},
   'level_field_label': {AppLanguage.en: 'Level', AppLanguage.fr: 'Niveau'},
   'experience_label': {
     AppLanguage.en: 'Experience',

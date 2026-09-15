@@ -86,4 +86,89 @@ void main() {
       expect(report.isClean, isTrue);
     });
   });
+
+  group('failNextId traversal (synthetic graph)', () {
+    test('a node reachable only via a check failure is not flagged orphaned',
+        () {
+      final nodes = {
+        '0': const StoryNode(
+          id: '0',
+          description: 'start',
+          choices: [
+            StoryChoice(
+              text: 'Try the lock',
+              nextId: 'success',
+              checkAbility: 'dexterity',
+              checkDC: 12,
+              failNextId: 'failure',
+            ),
+          ],
+        ),
+        'success': const StoryNode(
+          id: 'success',
+          description: 'it opens',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+        'failure': const StoryNode(
+          id: 'failure',
+          description: 'it jams',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+      };
+      final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
+      expect(report.unreachableNodeIds, isEmpty);
+      expect(report.brokenReferences, isEmpty);
+    });
+
+    test('a failNextId pointing nowhere is reported as a broken reference', () {
+      final nodes = {
+        '0': const StoryNode(
+          id: '0',
+          description: 'start',
+          choices: [
+            StoryChoice(
+              text: 'Try the lock',
+              nextId: 'success',
+              checkAbility: 'dexterity',
+              checkDC: 12,
+              failNextId: 'does_not_exist',
+            ),
+          ],
+        ),
+        'success': const StoryNode(
+          id: 'success',
+          description: 'it opens',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+      };
+      final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
+      expect(report.brokenReferences, hasLength(1));
+      expect(report.brokenReferences.single.targetId, 'does_not_exist');
+    });
+
+    test('a failNextId of EXIT is not treated as a broken reference', () {
+      final nodes = {
+        '0': const StoryNode(
+          id: '0',
+          description: 'start',
+          choices: [
+            StoryChoice(
+              text: 'Try the lock',
+              nextId: 'success',
+              checkAbility: 'dexterity',
+              checkDC: 12,
+              failNextId: 'EXIT',
+            ),
+          ],
+        ),
+        'success': const StoryNode(
+          id: 'success',
+          description: 'it opens',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+      };
+      final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
+      expect(report.brokenReferences, isEmpty);
+    });
+  });
 }

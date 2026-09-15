@@ -185,6 +185,11 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final armor = (preset['bonusBaseArmor'] as num?)?.toInt() ?? 0;
     final luck = (preset['bonusLuck'] as num?)?.toInt() ?? 0;
     final charisma = (preset['bonusCharisma'] as num?)?.toInt() ?? 0;
+    final strength = (preset['bonusStrength'] as num?)?.toInt() ?? 0;
+    final dexterity = (preset['bonusDexterity'] as num?)?.toInt() ?? 0;
+    final constitution = (preset['bonusConstitution'] as num?)?.toInt() ?? 0;
+    final intelligence = (preset['bonusIntelligence'] as num?)?.toInt() ?? 0;
+    final wisdom = (preset['bonusWisdom'] as num?)?.toInt() ?? 0;
     final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
     final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
     final parts = <String>[
@@ -195,6 +200,16 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       if (luck != 0) '${luck >= 0 ? '+' : ''}$luck ${tr(ref, 'luck_label')}',
       if (charisma != 0)
         '${charisma >= 0 ? '+' : ''}$charisma ${tr(ref, 'charisma_label')}',
+      if (strength != 0)
+        '${strength >= 0 ? '+' : ''}$strength ${tr(ref, 'str_abbrev')}',
+      if (dexterity != 0)
+        '${dexterity >= 0 ? '+' : ''}$dexterity ${tr(ref, 'dex_abbrev')}',
+      if (constitution != 0)
+        '${constitution >= 0 ? '+' : ''}$constitution ${tr(ref, 'con_abbrev')}',
+      if (intelligence != 0)
+        '${intelligence >= 0 ? '+' : ''}$intelligence ${tr(ref, 'int_abbrev')}',
+      if (wisdom != 0)
+        '${wisdom >= 0 ? '+' : ''}$wisdom ${tr(ref, 'wis_abbrev')}',
       if (showSkillPoints && skillPoints > 0)
         '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
     ];
@@ -596,6 +611,11 @@ class _CharacterSheet extends StatelessWidget {
                 statRow(t('base_armor_label'), '${session.baseArmor}'),
                 statRow(t('luck_label'), '${session.luck}'),
                 statRow(t('charisma_label'), '${session.charisma}'),
+                statRow(t('strength_label'), '${session.strength}'),
+                statRow(t('dexterity_label'), '${session.dexterity}'),
+                statRow(t('constitution_label'), '${session.constitution}'),
+                statRow(t('intelligence_label'), '${session.intelligence}'),
+                statRow(t('wisdom_label'), '${session.wisdom}'),
                 statRow(t('gold_field_label'), '${session.gold}'),
                 statRow(
                   t('alignment_label'),
