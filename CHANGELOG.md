@@ -8,6 +8,52 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.81.0+109]
+
+Investigated a "speedrun" playthrough to see how far the fastest route
+through the story could actually get, which surfaced a real problem: three
+late-game bosses were effectively unwinnable for a normal (non-optimal,
+non-party-boosted) character, hard-blocking the story at three separate
+points. Diagnosed with a proper simulation (30 full playthroughs, real
+combat resolution, correctly modeling that a lost story fight blocks
+progress and must be retried) rather than guesswork — also used the same
+diagnostic to check an unrelated report that Slum Thug was blocking
+progress, and cleared it: 33 encounters, 100% first-attempt win rate,
+not the culprit.
+
+### Fixed
+- **Inquisition High Warden (Ch3), Hollow Court Zealot (Ch4), and Void
+  Manifestation (Ch5, the climax) were near-unwinnable walls.** The
+  diagnostic simulation showed a normal playthrough needed an average of
+  93, 176, and **249** retry attempts respectively to clear these three —
+  Void Manifestation regularly hit the 300-attempt cap outright (a genuine
+  soft-lock). Root cause: `scaledMaxHealth`/`scaledDamage` scale *every*
+  enemy's stats up with player level, but these three had such a high base
+  that the scaling compounded faster than a character's own (linear,
+  stat-point-driven) growth could keep pace — checked directly, win rate
+  against Void Manifestation barely moved between level 3 and level 10
+  (0% → 7%), so grinding wasn't a real way past it either.
+  Reduced each boss's base stats (found via a win-rate search targeting
+  ~30-50% for a solo, unassisted character at the level a normal
+  playthrough actually reaches them):
+  - Inquisition High Warden: 200hp/23dmg → 150hp/17dmg (~47% win rate at
+    level 3)
+  - Hollow Court Zealot: 218hp/25dmg → 142hp/16dmg (~34% win rate at
+    level 4)
+  - Void Manifestation: 236hp/27dmg → 154hp/18dmg (~30% win rate at
+    level 4, matching this fight's original "tough but fair" design
+    intent) — and critically, this win rate now actually **rises with
+    level** (~30% → 40% → 64% → 75% from level 4 to 8), so a player who
+    grinds a bit more before attempting the climax is meaningfully
+    rewarded for it, instead of hitting a wall that doesn't move no
+    matter how strong they get.
+
+Added `test/boss_balance_test.dart`, a permanent regression test asserting
+each boss's win rate stays in a healthy band (catches both a regression
+back toward the old unwinnable stats and an over-correction that makes the
+fight trivial), and confirming Void Manifestation's win rate keeps rising
+with level.
+
 ## [1.80.0+108]
 
 Balanced difficulty across the early chapters so Chapter 1 reads as the

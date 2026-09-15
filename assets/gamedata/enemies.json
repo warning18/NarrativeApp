@@ -299,8 +299,8 @@
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
-    "maxHealth": 200,
-    "damage": 23,
+    "maxHealth": 150,
+    "damage": 17,
     "xpReward": 100,
     "goldReward": 75,
     "lootTable": [
@@ -372,8 +372,8 @@
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
-    "maxHealth": 218,
-    "damage": 25,
+    "maxHealth": 142,
+    "damage": 16,
     "xpReward": 109,
     "goldReward": 82,
     "lootTable": [
@@ -403,8 +403,8 @@
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
-    "maxHealth": 236,
-    "damage": 27,
+    "maxHealth": 154,
+    "damage": 18,
     "xpReward": 118,
     "goldReward": 89,
     "lootTable": [
