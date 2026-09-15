@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.83.0+111]
+
+Follow-up to a question about whether an NPC could actually mislead or trap
+the player: it turned out the narrative engine already had every piece
+needed (ability checks, `triggerEnemyId`, branching), but no NPC in the
+story graph actually used them that way. Added a real example.
+
+### Added
+- **The Chapter 2 harbor informant (node `2015_informant`) can now genuinely
+  set you up.** Trusting him outright — or trying to see through him and
+  failing a DC 12 Wisdom check — routes into a new node
+  (`2015_informant_trap`) where his "associates" spring an ambush
+  (`street_bandit`) the moment you go looking for the warden he named.
+  Catching the lie on a successful Wisdom check instead routes to
+  `2015_informant_exposed`: no fight, and he pays out 15 gold for your
+  discretion. The quest (`q_ch2_informants_tip`) still unlocks either way —
+  only whether you walk into the ambush changes.
+
 ## [1.82.0+110]
 
 Correction to the previous entry: "Slum Thug — cleared, not the culprit" was

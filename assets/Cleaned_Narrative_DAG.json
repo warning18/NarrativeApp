@@ -2430,7 +2430,52 @@
       {
         "text": "Go find Vane",
         "text_fr": "Aller trouver Vane",
+        "next_id": "2015_informant_trap"
+      },
+      {
+        "text": "Ask why a stranger's trouble suddenly matters to him",
+        "text_fr": "Demander pourquoi les ennuis d'un inconnu lui importent soudain",
+        "next_id": "2015_informant_exposed",
+        "checkAbility": "wisdom",
+        "checkDC": 12,
+        "failNextId": "2015_informant_trap"
+      }
+    ]
+  },
+  "2015_informant_trap": {
+    "id": "2015_informant_trap",
+    "description": "Vane's warehouse had opinions of its own about visitors. Three men peeled out of the shadows the moment I said the warden's name aloud, moving with the particular unhurried confidence of people who'd been told exactly when to expect me. The informant, it turned out, had been selling more than gossip.",
+    "description_fr": "L'entrepôt de Vane avait ses propres idées sur les visiteurs. Trois hommes se détachèrent de l'ombre à l'instant où je prononçai le nom du gardien, avec l'assurance tranquille de gens à qui l'on avait dit exactement quand m'attendre. L'informateur, semblait-il, vendait plus que des ragots.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight!",
+        "text_fr": "Combattre !",
         "next_id": "2030",
+        "triggerEnemyId": "street_bandit",
+        "unlockQuestId": "q_ch2_informants_tip"
+      }
+    ]
+  },
+  "2015_informant_exposed": {
+    "id": "2015_informant_exposed",
+    "description": "He held up under about four seconds of direct questioning, which was roughly four seconds longer than I'd expected. The warden story was real enough — but so was the ambush he'd arranged for whoever went looking, and my not walking into it blind clearly wasn't part of his plan. He paid rather more for my discretion than he'd meant to.",
+    "description_fr": "Il tint bon pendant environ quatre secondes d'interrogatoire direct, soit à peu près quatre secondes de plus que je ne l'attendais. L'histoire du gardien était bien réelle — tout comme l'embuscade qu'il avait montée pour quiconque irait voir, et le fait que je n'y marche pas les yeux fermés ne faisait manifestement pas partie de son plan. Il paya ma discrétion bien plus cher qu'il ne l'avait prévu.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "2030",
+        "goldMod": 15,
         "unlockQuestId": "q_ch2_informants_tip"
       }
     ]
