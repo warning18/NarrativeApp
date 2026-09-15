@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.82.0+110]
+
+Correction to the previous entry: "Slum Thug — cleared, not the culprit" was
+only true for the diagnostic's own hand-rolled combat loop, which always
+modeled a properly created character. It never actually exercised the real
+in-app autoplay tools those bosses were investigated with, and a real
+in-app **Play to Chapter** run hit exactly the "stuck against slum_thug"
+failure the earlier investigation had ruled out — caught from a player's own
+screenshot of that failure.
+
+### Fixed
+- **Autoplay (`Play to Chapter` and the map's node/chapter jump) lost every
+  single fight when starting from a brand-new game, reporting "stuck"
+  against whichever enemy happened to be first on the path — Slum Thug in
+  the reported case, but any enemy would have triggered it.** Root cause:
+  `autoplayToNode`/`autoplayToChapter` (`lib/data/autoplay_engine.dart`)
+  walked straight through the story's character-creation choice (node 0's
+  "Choose who you are...") like any other choice, without ever calling
+  `PlayerSessionNotifier.startNewGame(...)` — unlike the real story player
+  screen, which special-cases that choice. The simulated session was left
+  with no race, profession, or equipped die, so `_simulateFight`'s die-face
+  lookup came back empty and every combat auto-lost, exhausting all retries
+  against the first fight on the walked path. Fixed by handling
+  `StoryChoice.opensCharacterCreation` the same way the real player flow
+  does: autoplay now picks a random race/profession and starts a real game
+  the moment it walks through that choice, mirroring the "Randomize"
+  convenience already on the race/profession picker. Added a regression
+  test (`test/autoplay_engine_test.dart`) that drives a real
+  `autoplayToChapter` run from a fresh session and asserts it doesn't get
+  stuck on its first fight.
+
 ## [1.81.0+109]
 
 Investigated a "speedrun" playthrough to see how far the fastest route

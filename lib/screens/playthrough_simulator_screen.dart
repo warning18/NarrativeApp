@@ -579,6 +579,11 @@ class _PlaythroughSimulatorScreenState
         await ref.read(gameDbRepositoryProvider(itemsSchema)).loadRecords();
     final enemies =
         await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
+    final races =
+        await ref.read(gameDbRepositoryProvider(racesSchema)).loadRecords();
+    final professions = await ref
+        .read(gameDbRepositoryProvider(professionsSchema))
+        .loadRecords();
 
     final result = await autoplayToChapter(
       ref,
@@ -589,6 +594,8 @@ class _PlaythroughSimulatorScreenState
       skills: skills,
       items: items,
       enemies: enemies,
+      races: races,
+      professions: professions,
     );
 
     if (!mounted) return;

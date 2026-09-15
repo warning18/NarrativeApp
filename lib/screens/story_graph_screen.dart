@@ -461,6 +461,8 @@ Future<void> _runAutoplay(
   final skills = await _awaitGameDb(ref, skillsSchema);
   final items = await _awaitGameDb(ref, itemsSchema);
   final enemies = await _awaitGameDb(ref, enemiesSchema);
+  final races = await _awaitGameDb(ref, racesSchema);
+  final professions = await _awaitGameDb(ref, professionsSchema);
 
   final result = await autoplayToNode(
     ref,
@@ -470,6 +472,8 @@ Future<void> _runAutoplay(
     skills: skills,
     items: items,
     enemies: enemies,
+    races: races,
+    professions: professions,
   );
 
   if (!context.mounted) return;

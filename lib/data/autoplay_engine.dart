@@ -90,6 +90,40 @@ List<MapEntry<String, StoryChoice>>? _findChoicePath(
   return null;
 }
 
+/// Creates a character the moment autoplay walks through a
+/// `opensCharacterCreation` choice (always node 0's "Choose who you
+/// are..." today) — without this, the simulated session never gets a
+/// race/profession/equipped die, and every subsequent fight is an
+/// automatic, unwinnable loss (`_simulateFight` bails out immediately once
+/// it finds no faces on a null equipped die), surfacing as "stuck" against
+/// whichever enemy happens to be first on the path. Picks a random
+/// race/profession, mirroring the live game's own "Randomize" convenience
+/// on [RaceProfessionScreen] — this is a testing tool, not a place to make
+/// a considered build choice. No-ops if the session somehow already has a
+/// character (shouldn't happen in practice: this choice only exists at the
+/// very first node, so autoplay can only ever walk through it once, at the
+/// very start of a fresh session).
+Future<void> _maybeCreateCharacter(
+  WidgetRef ref, {
+  required Map<String, dynamic> races,
+  required Map<String, dynamic> professions,
+}) async {
+  final session = ref.read(playerSessionProvider);
+  if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) return;
+  if (races.isEmpty || professions.isEmpty) return;
+  final random = Random();
+  final raceIds = races.keys.toList();
+  final professionIds = professions.keys.toList();
+  final raceId = raceIds[random.nextInt(raceIds.length)];
+  final professionId = professionIds[random.nextInt(professionIds.length)];
+  await ref.read(playerSessionProvider.notifier).startNewGame(
+        raceId: raceId,
+        race: races[raceId] as Map<String, dynamic>,
+        professionId: professionId,
+        profession: professions[professionId] as Map<String, dynamic>,
+      );
+}
+
 /// Plays out one simulated fight against [enemy] for the player alone (an
 /// active ally's presence doesn't change this — a testing-tool
 /// simplification, not something a real fight would do), using the exact
@@ -202,6 +236,8 @@ Future<AutoplayResult> autoplayToNode(
   required Map<String, dynamic> skills,
   required Map<String, dynamic> items,
   required Map<String, dynamic> enemies,
+  required Map<String, dynamic> races,
+  required Map<String, dynamic> professions,
   int maxCombatRetries = 8,
 }) async {
   final playState = ref.read(storyPlayProvider);
@@ -224,6 +260,13 @@ Future<AutoplayResult> autoplayToNode(
   for (final step in path) {
     final fromNodeId = step.key;
     final choice = step.value;
+
+    if (choice.opensCharacterCreation) {
+      await _maybeCreateCharacter(ref, races: races, professions: professions);
+      playNotifier.choose(choice.nextId);
+      stepsApplied += 1;
+      continue;
+    }
 
     if (choice.triggersCombat) {
       final enemy = enemies[choice.triggerEnemyId] as Map<String, dynamic>?;
@@ -305,6 +348,8 @@ Future<AutoplayResult> autoplayToChapter(
   required Map<String, dynamic> skills,
   required Map<String, dynamic> items,
   required Map<String, dynamic> enemies,
+  required Map<String, dynamic> races,
+  required Map<String, dynamic> professions,
   int maxSteps = 200,
   int maxCombatRetries = 8,
 }) async {
@@ -390,6 +435,13 @@ Future<AutoplayResult> autoplayToChapter(
     if (choice.isEnding) {
       return AutoplayResult(
           status: AutoplayStatus.noPathFound, stepsApplied: stepsApplied);
+    }
+
+    if (choice.opensCharacterCreation) {
+      await _maybeCreateCharacter(ref, races: races, professions: professions);
+      playNotifier.choose(choice.nextId);
+      stepsApplied += 1;
+      continue;
     }
 
     if (choice.triggersCombat) {
