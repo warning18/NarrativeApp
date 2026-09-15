@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -22,7 +23,13 @@ bool _isFixedSkillFace(Map<String, dynamic> face) {
 }
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
-  const DiceLoadoutScreen({super.key});
+  const DiceLoadoutScreen({super.key, this.allyId});
+
+  /// When set, this screen manages the named companion's signature die
+  /// instead of the player's own dice collection — same screen, pointed at
+  /// that companion's own [AllyState.diceSkillAssignments] and
+  /// [AllyState.unlockedSkillIds] instead of [PlayerSession]'s.
+  final String? allyId;
 
   @override
   ConsumerState<DiceLoadoutScreen> createState() => _DiceLoadoutScreenState();
@@ -36,12 +43,25 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
+    final companions = widget.allyId != null
+        ? ref.watch(gameDbProvider(companionsSchema)).value ?? const <String, dynamic>{}
+        : const <String, dynamic>{};
+    final companion =
+        widget.allyId != null ? companions[widget.allyId] as Map<String, dynamic>? : null;
+    final ally = widget.allyId != null
+        ? session.recruitedAllies.firstWhere(
+            (a) => a.companionId == widget.allyId,
+            orElse: () => AllyState(companionId: widget.allyId!, currentHealth: 0),
+          )
+        : null;
+    final titleSuffix =
+        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'dice_loadout'))),
+      appBar: AppBar(title: Text('${tr(ref, 'dice_loadout')}$titleSuffix')),
       body: diceAsync.when(
         data: (dice) => skillsAsync.when(
-          data: (skills) => _buildBody(context, dice, skills, session),
+          data: (skills) => _buildBody(context, dice, skills, session, companion, ally),
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, stack) =>
               Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
@@ -58,19 +78,32 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
     PlayerSession session,
+    Map<String, dynamic>? companion,
+    AllyState? ally,
   ) {
-    final diceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
-    if (diceIds.isEmpty) {
+    // An ally has exactly one die (their fixed signature die, never
+    // player-swappable) — no dropdown needed, unlike the player's own
+    // collection of owned dice.
+    final diceIds = ally != null
+        ? [companion?['signatureDiceId']?.toString() ?? '']
+        : (session.ownedDiceIds.where(dice.containsKey).toList()..sort());
+    if (diceIds.isEmpty || !dice.containsKey(diceIds.first)) {
       return Center(child: Text(tr(ref, 'own_no_dice')));
     }
-    _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
+    if (ally == null) {
+      _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
+    } else {
+      _selectedDiceId = diceIds.first;
+    }
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
     final faces = (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
-    final assignments = session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
+    final assignments = ally != null
+        ? ally.diceSkillAssignments
+        : session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
         if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ?? false) ||
-            session.unlockedSkillIds.contains(entry.key))
+            (ally?.unlockedSkillIds ?? session.unlockedSkillIds).contains(entry.key))
           entry.key,
     }.toList()
       ..sort();
@@ -78,21 +111,33 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: DropdownButtonFormField<String>(
-            // `value` (not `initialValue`) is needed here: this field must
-            // stay reactive to _selectedDiceId, not just seed from it once.
-            // ignore: deprecated_member_use
-            value: _selectedDiceId,
-            decoration: InputDecoration(
-              labelText: tr(ref, 'die_label'),
-              border: const OutlineInputBorder(),
+        if (ally == null)
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: DropdownButtonFormField<String>(
+              // `value` (not `initialValue`) is needed here: this field must
+              // stay reactive to _selectedDiceId, not just seed from it once.
+              // ignore: deprecated_member_use
+              value: _selectedDiceId,
+              decoration: InputDecoration(
+                labelText: tr(ref, 'die_label'),
+                border: const OutlineInputBorder(),
+              ),
+              items: diceIds.map((id) => DropdownMenuItem(value: id, child: Text(id))).toList(),
+              onChanged: (value) => setState(() => _selectedDiceId = value),
             ),
-            items: diceIds.map((id) => DropdownMenuItem(value: id, child: Text(id))).toList(),
-            onChanged: (value) => setState(() => _selectedDiceId = value),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '${tr(ref, 'die_label')}: ${_selectedDiceId ?? ''}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
           ),
-        ),
         Expanded(
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -124,14 +169,22 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                           locked: locked,
                           restrictionElement: faceElement != 'None' ? faceElement : null,
                           skills: skills,
-                          onAccept: (skillId) => ref
-                              .read(playerSessionProvider.notifier)
-                              .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
+                          onAccept: (skillId) => ally != null
+                              ? ref
+                                  .read(playerSessionProvider.notifier)
+                                  .assignSkillToAllyDiceFace(ally.companionId, index, skillId)
+                              : ref
+                                  .read(playerSessionProvider.notifier)
+                                  .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
                           onClear: (locked || assignedSkillId == null)
                               ? null
-                              : () => ref
-                                  .read(playerSessionProvider.notifier)
-                                  .clearDiceFaceSkill(_selectedDiceId!, index),
+                              : () => ally != null
+                                  ? ref
+                                      .read(playerSessionProvider.notifier)
+                                      .clearAllyDiceFaceSkill(ally.companionId, index)
+                                  : ref
+                                      .read(playerSessionProvider.notifier)
+                                      .clearDiceFaceSkill(_selectedDiceId!, index),
                           onShowDetail: (skillId) => _showSkillDetail(context, skillId, skills[skillId] as Map<String, dynamic>?),
                         );
                       })

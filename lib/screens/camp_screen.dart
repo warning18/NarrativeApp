@@ -10,6 +10,7 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../widgets/immersive_notice.dart';
+import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'skills_screen.dart';
 
@@ -181,6 +182,21 @@ class CampScreen extends ConsumerWidget {
                             ),
                           ),
                         ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: TextButton.icon(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => DiceLoadoutScreen(allyId: companionId),
+                            ),
+                          ),
+                          icon: const Icon(Icons.casino_outlined),
+                          label: Text(tr(ref, 'dice_loadout')),
+                        ),
                       ),
                     ),
                   ],

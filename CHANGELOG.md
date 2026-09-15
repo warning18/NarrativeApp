@@ -8,6 +8,14 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.66.0+93]
+
+Two regressions found by a fresh functional review of the companion/camp system (spawned as three parallel reviews covering combat/camp, Town Hub/expeditions/achievements, and map/UI/origin-story features — the latter two found no bugs).
+
+### Fixed
+- **A winning fight that leveled the player up would immediately undo that level-up's full heal for every active ally.** `applyCombatResult` already full-heals and grants skill points to every recruited ally when its XP gain crosses a level threshold, but `FightScreen._finishFight`'s very next loop unconditionally wrote each ally's stale, pre-level-up battle-end HP over that heal (and revived a knocked-out ally against their *old*, lower max health instead of the new one). That per-ally write is now skipped whenever the fight's win also leveled the player up.
+- **A companion's one customizable die face was permanently stuck on `heavy_attack`.** `InventoryScreen` and `SkillsScreen` were parameterized by `allyId` when the companion/camp system landed, but `DiceLoadoutScreen` never was — so there was no UI path to ever reassign a companion's single open Skill-die face, making their skill-point/unlock progression's actual combat payoff unreachable. `DiceLoadoutScreen` now takes an optional `allyId` (mirroring the other two screens: no die-switcher, since an ally only ever has their one fixed signature die) and Camp's roster cards got a third "Dice Loadout" button to reach it.
+
 ## [1.65.0+92]
 
 CI/build pipeline and test-coverage improvements, from a review of the setup itself rather than the game.

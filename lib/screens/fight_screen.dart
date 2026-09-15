@@ -554,11 +554,13 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       // A knocked-out ally is revived at partial health on a win; a
       // survivor's ending health is simply persisted as-is. Level-ups
       // already full-heal every recruited ally inside applyCombatResult
-      // itself, so nothing further is needed for that case here.
+      // itself, so skip writing each ally's stale pre-level-up battle-end
+      // HP over that full heal (and over the new, higher level-up max).
       var anyAllyRevived = false;
       for (final member in _party) {
         if (member.isPlayer) continue;
         if (member.isKnockedOut) anyAllyRevived = true;
+        if (leveledUp) continue;
         final hpAfter = member.isKnockedOut
             ? (member.maxHealth * _reviveHealthFraction).round()
             : member.currentHealth;
