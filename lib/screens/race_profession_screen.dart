@@ -275,8 +275,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                 ),
                 onChanged: (_) => setDialogState(() {}),
                 onSubmitted: (value) {
-                  if (value.trim().isNotEmpty)
+                  if (value.trim().isNotEmpty) {
                     Navigator.pop(dialogContext, value.trim());
+                  }
                 },
               ),
             ],

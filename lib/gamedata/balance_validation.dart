@@ -102,8 +102,9 @@ List<String> _validateMandatoryCombat(StoryData story) {
           final withoutThisFight =
               bfsForward(beatFrom, allowed, excludeChoice: choice);
           final stillReachesNextBeat = beatTo.any(withoutThisFight.contains);
-          if (stillReachesNextBeat)
+          if (stillReachesNextBeat) {
             continue; // there's another route — avoidable
+          }
 
           final ancestors =
               reachable.intersection(bfsBackward({nodeId}, allowed));

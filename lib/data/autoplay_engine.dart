@@ -55,8 +55,9 @@ List<MapEntry<String, StoryChoice>>? _findChoicePath(
     for (final choice in node.choices) {
       if (choice.isEnding) continue;
       final nextId = choice.nextId;
-      if (!story.nodes.containsKey(nextId) || visited.contains(nextId))
+      if (!story.nodes.containsKey(nextId) || visited.contains(nextId)) {
         continue;
+      }
       visited.add(nextId);
       cameFrom[nextId] = MapEntry(current, choice);
       if (nextId == toNodeId) {

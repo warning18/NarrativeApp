@@ -196,8 +196,10 @@ class CampScreen extends ConsumerWidget {
                                 final newAchievements = await ref
                                     .read(playerSessionProvider.notifier)
                                     .checkAchievements();
-                                if (newAchievements.isEmpty || !context.mounted)
+                                if (newAchievements.isEmpty ||
+                                    !context.mounted) {
                                   return;
+                                }
                                 _showAchievementNotice(context, ref,
                                     achievements, newAchievements);
                               },

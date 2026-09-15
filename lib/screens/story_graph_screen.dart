@@ -56,11 +56,13 @@ class _NodeStyle {
 /// to tell a companion-recruit quest (one with a non-empty `rewardAllyId`)
 /// apart from every other quest, so it gets its own legend entry.
 _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
-  if (node.choices.any((c) => c.opensCharacterCreation))
+  if (node.choices.any((c) => c.opensCharacterCreation)) {
     return _NodeKind.characterCreation;
+  }
   if (node.choices.any((c) => c.triggersCombat)) return _NodeKind.combat;
-  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty))
+  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty)) {
     return _NodeKind.shop;
+  }
   if (node.choices.any((c) {
     final questId = c.unlockQuestId ?? '';
     if (questId.isEmpty) return false;
@@ -69,8 +71,9 @@ _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
   })) {
     return _NodeKind.companionQuest;
   }
-  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty))
+  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) {
     return _NodeKind.quest;
+  }
   return _NodeKind.generic;
 }
 

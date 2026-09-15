@@ -147,8 +147,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     ),
                                   ],
                                   onChanged: (value) {
-                                    if (value != null)
+                                    if (value != null) {
                                       setState(() => _sort = value);
+                                    }
                                   },
                                 ),
                               ),

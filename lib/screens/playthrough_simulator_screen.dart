@@ -223,9 +223,13 @@ _SimResult _simulate(
       if (target == null || !target.hasRequirements) return true;
       if (gold < target.reqGold) return false;
       if (target.reqAlignmentScore != null &&
-          alignment < target.reqAlignmentScore!) return false;
-      if (target.reqAlignmentMax != null && alignment > target.reqAlignmentMax!)
+          alignment < target.reqAlignmentScore!) {
         return false;
+      }
+      if (target.reqAlignmentMax != null &&
+          alignment > target.reqAlignmentMax!) {
+        return false;
+      }
       return target.reqFlags.every(flags.contains);
     }
 
@@ -254,8 +258,9 @@ _SimResult _simulate(
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
     if ((choice.unlockShopId ?? '').isNotEmpty) shops.add(choice.unlockShopId!);
-    if ((choice.unlockQuestId ?? '').isNotEmpty)
+    if ((choice.unlockQuestId ?? '').isNotEmpty) {
       quests.add(choice.unlockQuestId!);
+    }
     if (choice.triggersCombat) combatCount++;
 
     if (choice.isEnding) {
@@ -1020,10 +1025,13 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
   List<_SimResult> get _filteredResults {
     return widget.batch.results.where((r) {
       if (_onlyStepCapFilter && !r.reachedStepCap) return false;
-      if (_endingFilter != null && r.endingSummary != _endingFilter)
+      if (_endingFilter != null && r.endingSummary != _endingFilter) {
         return false;
+      }
       if (_minChapterFilter != null &&
-          (r.furthestChapter ?? 0) < _minChapterFilter!) return false;
+          (r.furthestChapter ?? 0) < _minChapterFilter!) {
+        return false;
+      }
       return true;
     }).toList();
   }

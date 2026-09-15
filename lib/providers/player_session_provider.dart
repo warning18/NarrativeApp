@@ -173,10 +173,12 @@ class PlayerSession {
     List<String> reqFlags = const [],
   }) {
     if (gold < reqGold) return false;
-    if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore)
+    if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore) {
       return false;
-    if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax)
+    }
+    if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax) {
       return false;
+    }
     for (final flag in reqFlags) {
       if (!flags.contains(flag)) return false;
     }
@@ -731,8 +733,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> equipDice(String diceId) async {
-    if (!state.ownedDiceIds.contains(diceId) || state.equippedDiceId == diceId)
+    if (!state.ownedDiceIds.contains(diceId) ||
+        state.equippedDiceId == diceId) {
       return;
+    }
     state = state.copyWith(equippedDiceId: diceId);
     await _persist();
   }
@@ -955,8 +959,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [AllyState.skillPoints].
   Future<void> unlockAllySkill(String companionId, String skillId) async {
     await _updateAlly(companionId, (ally) {
-      if (ally.skillPoints <= 0 || ally.unlockedSkillIds.contains(skillId))
+      if (ally.skillPoints <= 0 || ally.unlockedSkillIds.contains(skillId)) {
         return ally;
+      }
       return ally.copyWith(
         skillPoints: ally.skillPoints - 1,
         unlockedSkillIds: [...ally.unlockedSkillIds, skillId],
@@ -978,8 +983,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   Future<void> clearAllyDiceFaceSkill(String companionId, int faceIndex) async {
     await _updateAlly(companionId, (ally) {
-      if (!ally.diceSkillAssignments.containsKey(faceIndex.toString()))
+      if (!ally.diceSkillAssignments.containsKey(faceIndex.toString())) {
         return ally;
+      }
       final updated = Map<String, String>.from(ally.diceSkillAssignments)
         ..remove(faceIndex.toString());
       return ally.copyWith(diceSkillAssignments: updated);
@@ -1210,8 +1216,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> unlockSkill(String skillId) async {
-    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId))
+    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId)) {
       return;
+    }
     state = state.copyWith(
       skillPoints: state.skillPoints - 1,
       unlockedSkillIds: [...state.unlockedSkillIds, skillId],

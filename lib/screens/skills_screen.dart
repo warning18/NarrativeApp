@@ -232,8 +232,9 @@ class _SkillList extends ConsumerWidget {
 
     bool meetsRestriction(Map<String, dynamic> skill) {
       final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
-      if (restrictedRaceId.isNotEmpty && restrictedRaceId != raceId)
+      if (restrictedRaceId.isNotEmpty && restrictedRaceId != raceId) {
         return false;
+      }
       final restrictedProfessionId =
           skill['restrictedProfessionID']?.toString() ?? '';
       if (restrictedProfessionId.isNotEmpty &&

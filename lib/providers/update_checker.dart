@@ -92,8 +92,9 @@ Future<UpdateInfo?> checkForUpdate({String? githubToken}) async {
 
   final downloadUrl = apkAsset.first['browser_download_url']?.toString();
   final assetId = (apkAsset.first['id'] as num?)?.toInt();
-  if (downloadUrl == null || downloadUrl.isEmpty || assetId == null)
+  if (downloadUrl == null || downloadUrl.isEmpty || assetId == null) {
     return null;
+  }
 
   return UpdateInfo(
     version: tagName.startsWith('v') ? tagName.substring(1) : tagName,
