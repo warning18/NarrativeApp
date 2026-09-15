@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.80.0+108]
+
+Balanced difficulty across the early chapters so Chapter 1 reads as the
+safe tutorial it's meant to be, and Chapter 2's roguelike expeditions are
+where real death risk actually starts — before the escalation continues
+into Chapter 3 and beyond.
+
+### Fixed
+- **Expeditions could roll any enemy in the game, with zero chapter
+  gating.** `ExpeditionScreen._rollEvent` built its enemy pool from every
+  entry in `enemies.json`, filtering only by "already fought" — unlike
+  regular excursions, it never checked `minChapter`. A Chapter 2
+  expedition (a level ~2 character) could randomly draw a Chapter 5
+  endgame monster (236hp/27dmg) with no way to decline the fight and no
+  way to win it. Extracted the excursion engine's existing chapter-gate
+  logic into a new shared `SubNodeEngine.filterEnemyPool`, used by both
+  excursions and expeditions now, so a zone's encounters are always
+  capped to enemies that chapter's story has actually introduced.
+- **Rat Matriarch and Inquisitor Kroll could ambush a brand-new
+  character.** Both are scripted Chapter 1 story bosses fought near the
+  chapter's end (nodes 850/855 and 955, right before the Chapter 1
+  finale) — strong enough to be a real threat at that point — but were
+  flagged `minChapter: 1`, making them eligible for a *random* Chapter 1
+  excursion from the very first node. Bumped both to `minChapter: 2`:
+  their scripted story fights are unaffected (main-path encounters never
+  consult `minChapter`), but they can no longer ambush an early Chapter 1
+  run, and they now also fold into Chapter 2's random pool — one more
+  reason expeditions there feel noticeably more dangerous than the
+  tutorial chapter that came before them.
+
+Net effect: Chapter 1's random encounters are now capped at Inquisition
+Warden (80hp/12dmg) — safe, teaches the mechanics, essentially unlosable
+for a fresh character. Chapter 2's pool tops out around Plague Hound
+(146hp/17dmg) and the now-included Kroll/Rat Matriarch (145/120hp,
+18/15dmg) — a real chance of going down in an expedition's three-encounter
+run, especially back-to-back with no healing between fights, exactly
+where the "start to die a little" ramp should begin.
+
+Added `test/sub_node_engine_test.dart` covering the shared chapter gate,
+including the exact regression (a chapter-2 pool never contains a
+chapter-5 enemy).
+
 ## [1.79.0+107]
 
 Reworked the skill system to play like a roguelike build each run: skills

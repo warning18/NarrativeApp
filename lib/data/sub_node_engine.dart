@@ -34,22 +34,11 @@ class SubNodeEngine {
 
     final shopPool =
         shops.keys.where((id) => !unlockedShopIds.contains(id)).toList();
-    // Unfiltered, this could roll a late-game enemy (e.g. a 230hp/27dmg
-    // chapter-5 monster) into the very first chapter-1 excursion -- an
-    // unwinnable fight for a level-1 character with no way to decline it
-    // and no way to progress past it. minChapter (see enemies.json) caps
-    // the pool to enemies the main story has already introduced by now.
-    final enemyPool = enemies.entries
-        .where((e) => !unlockedEnemyIds.contains(e.key))
-        .where((e) {
-          final minChapter =
-              ((e.value as Map<String, dynamic>)['minChapter'] as num?)
-                      ?.toInt() ??
-                  1;
-          return minChapter <= chapter;
-        })
-        .map((e) => e.key)
-        .toList();
+    final enemyPool = filterEnemyPool(
+      enemies: enemies,
+      unlockedEnemyIds: unlockedEnemyIds,
+      chapter: chapter,
+    );
     // A quest already completed shouldn't come back around in a later
     // excursion -- questIDToProgress (the main-path way into a quest) only
     // ever adds to activeQuestIds, never unlockedQuestIds, so that alone
@@ -93,6 +82,33 @@ class SubNodeEngine {
           questId: i == 0 ? questSlotId : null,
         ),
     ];
+  }
+
+  /// Enemies eligible to appear in a randomly-drawn encounter at [chapter]
+  /// -- shared by excursions ([maybeGenerate]) and expeditions
+  /// (ExpeditionScreen) so both draw from the same chapter-appropriate
+  /// pool. Unfiltered, this could roll a late-game enemy (e.g. a
+  /// 230hp/27dmg chapter-5 monster) into a chapter-1 excursion or a
+  /// chapter-2 expedition -- an unwinnable fight for a low-level character
+  /// with no way to decline it and no way to progress past it. minChapter
+  /// (see enemies.json) caps the pool to enemies the main story has
+  /// already introduced by [chapter].
+  static List<String> filterEnemyPool({
+    required Map<String, dynamic> enemies,
+    required List<String> unlockedEnemyIds,
+    required int chapter,
+  }) {
+    return enemies.entries
+        .where((e) => !unlockedEnemyIds.contains(e.key))
+        .where((e) {
+          final minChapter =
+              ((e.value as Map<String, dynamic>)['minChapter'] as num?)
+                      ?.toInt() ??
+                  1;
+          return minChapter <= chapter;
+        })
+        .map((e) => e.key)
+        .toList();
   }
 
   /// Builds a single typed flavor-pool node (shop/enemy/treasure/rest/quest,

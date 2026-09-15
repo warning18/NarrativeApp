@@ -56,12 +56,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       (t) => t.name == (widget.zone['mapTheme']?.toString() ?? ''),
       orElse: () => defaultMapTheme,
     );
+    final zoneChapter = (widget.zone['chapter'] as num?)?.toInt() ?? 1;
     final shopPool = shops.keys
         .where((id) => !session.unlockedShopIds.contains(id))
         .toList();
-    final enemyPool = enemies.keys
-        .where((id) => !session.unlockedEnemyIds.contains(id))
-        .toList();
+    final enemyPool = SubNodeEngine.filterEnemyPool(
+      enemies: enemies,
+      unlockedEnemyIds: session.unlockedEnemyIds,
+      chapter: zoneChapter,
+    );
     return SubNodeEngine.buildNode(
       random: _random,
       flavor: flavorFor(theme),

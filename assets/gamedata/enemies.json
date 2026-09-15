@@ -81,7 +81,7 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 1
+    "minChapter": 2
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -368,7 +368,7 @@
         "priority": 1
       }
     ],
-    "minChapter": 1
+    "minChapter": 2
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
