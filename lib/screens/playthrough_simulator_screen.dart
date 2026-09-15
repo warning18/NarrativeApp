@@ -9,6 +9,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../data/autoplay_engine.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
@@ -17,8 +18,22 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/home_tab_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
+
+AutoplayStrategy _toAutoplayStrategy(SimStrategy strategy) {
+  switch (strategy) {
+    case SimStrategy.random:
+      return AutoplayStrategy.random;
+    case SimStrategy.favorGood:
+      return AutoplayStrategy.favorGood;
+    case SimStrategy.favorEvil:
+      return AutoplayStrategy.favorEvil;
+    case SimStrategy.maximizeGold:
+      return AutoplayStrategy.maximizeGold;
+  }
+}
 
 /// How the simulator picks among a node's valid (non-locked) choices. Lets
 /// the user compare "what if the player always chased gold" against "what
@@ -502,6 +517,14 @@ class _PlaythroughSimulatorScreenState
   SimStrategy _strategy = SimStrategy.random;
   int _runCount = 1;
 
+  /// Real-session counterpart to [_run] -- rather than an isolated
+  /// statistics-only walk, [_playToChapter] plays [_strategy]-weighted
+  /// choices forward against the actual player session and lands them
+  /// back in live Story view once [_targetChapter] is reached. `null`
+  /// means "not chosen yet" (the button stays disabled).
+  int? _targetChapter;
+  bool _autoplayRunning = false;
+
   /// Whether the strategy/runs/simulate controls are shown in full. They
   /// collapse to a compact bar the moment there's a result to look at, so
   /// results don't start halfway down a small screen — and re-expand
@@ -533,6 +556,65 @@ class _PlaythroughSimulatorScreenState
       setState(() => _controlsExpanded = false);
     }
     _lastResultsScrollOffset = offset;
+  }
+
+  /// Plays [_strategy]-weighted real choices forward against the actual
+  /// player session until [_targetChapter] (via [autoplayToChapter]),
+  /// applying true effects at every step, then lands the player back in
+  /// live Story view to keep going manually -- unlike [_run], which only
+  /// ever produces disposable statistics.
+  Future<void> _playToChapter() async {
+    final target = _targetChapter;
+    if (target == null) return;
+    final lang = ref.read(appLanguageProvider);
+    String t(String key) => trFor(lang, key);
+
+    setState(() => _autoplayRunning = true);
+    final story = await ref.read(storyDataProvider.future);
+    final dice =
+        await ref.read(gameDbRepositoryProvider(diceSchema)).loadRecords();
+    final skills =
+        await ref.read(gameDbRepositoryProvider(skillsSchema)).loadRecords();
+    final items =
+        await ref.read(gameDbRepositoryProvider(itemsSchema)).loadRecords();
+    final enemies =
+        await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
+
+    final result = await autoplayToChapter(
+      ref,
+      story: story,
+      targetChapter: target,
+      strategy: _toAutoplayStrategy(_strategy),
+      dice: dice,
+      skills: skills,
+      items: items,
+      enemies: enemies,
+    );
+
+    if (!mounted) return;
+    setState(() => _autoplayRunning = false);
+
+    final message = switch (result.status) {
+      AutoplayStatus.alreadyThere => t('autoplay_already_there'),
+      AutoplayStatus.noPathFound => t('autoplay_no_path'),
+      AutoplayStatus.stuckInCombat => '${t('autoplay_stuck_prefix')} '
+          '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+      AutoplayStatus.reachedTarget =>
+        '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+      AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
+    };
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+
+    // Land the player on the Story tab, ready to keep going manually from
+    // wherever the walk ended up -- the whole point of this feature. This
+    // screen is reached via two pushed routes (Settings, then here), so
+    // switching the tab alone leaves it invisible underneath both until
+    // they're popped back to the root.
+    if (result.stepsApplied > 0) {
+      ref.read(homeTabIndexProvider.notifier).state = 0;
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
   Future<void> _run() async {
@@ -675,9 +757,55 @@ class _PlaythroughSimulatorScreenState
             ],
           ],
         ),
+        const Divider(height: 32),
+        Text(tr(ref, 'play_to_chapter_title'),
+            style: Theme.of(context).textTheme.labelLarge),
+        const SizedBox(height: 4),
+        Text(
+          tr(ref, 'play_to_chapter_subtitle'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (var chapter = 0; chapter <= _maxChapter; chapter++)
+              if (firstNodeIdForChapter(chapter,
+                      prologueNodeId: StoryRepository.startNodeId) !=
+                  null)
+                ChoiceChip(
+                  label: Text(chapter == 0
+                      ? tr(ref, 'chapter_band_prologue')
+                      : '$chapter'),
+                  selected: _targetChapter == chapter,
+                  onSelected: (_) => setState(() => _targetChapter = chapter),
+                ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ElevatedButton.icon(
+          onPressed: (_autoplayRunning || _targetChapter == null)
+              ? null
+              : _playToChapter,
+          icon: _autoplayRunning
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.fast_forward),
+          label: Text(_autoplayRunning
+              ? tr(ref, 'autoplay_running')
+              : tr(ref, 'play_to_chapter_button')),
+        ),
       ],
     );
   }
+
+  int get _maxChapter => chapterSpines.isEmpty
+      ? 0
+      : chapterSpines.map((s) => s.chapter).reduce((a, b) => a > b ? a : b);
 
   Widget _compactControlsBar(BuildContext context) {
     return Material(

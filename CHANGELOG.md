@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.72.0+99]
+
+Follow-up to the last round of live-device feedback: relocate a
+half-discoverable feature, make character creation faster to start, and
+make quest completion actually mean something.
+
+### Changed
+- **"Play to Chapter" moved from the Story Map to Settings → Simulate a
+  Playthrough.** The strategy-driven chapter autoplay added last round sat
+  awkwardly on the Map's node-jump picker; it now lives alongside the
+  batch-simulation controls it's a natural sibling of, sharing the same
+  strategy selector. Still lands the player back in live Story view with a
+  real, earned session once the target chapter is reached.
+
+### Added
+- **Randomize button on the Race & Profession screen.** Picks a random race
+  and profession in one tap, next to the existing random-name die — for
+  players who just want to jump in without reading five race/profession
+  cards first.
+- **Real quest objective tracking.** `quests.json`'s `objectives` field
+  (previously unread by any gameplay code) is now enforced: a quest's
+  Complete button stays disabled until its Kill objectives (tracked via a
+  new lifetime `PlayerSession.enemyKillCounts`, bumped on every combat win)
+  and Fetch objectives (checked against current inventory) are satisfied.
+  The active quest card shows each objective as its own checklist line,
+  which doubles as sub-quest tracking for any quest with more than one
+  objective — no new "quest group" concept was needed, since a multi-part
+  quest is just a quest with multiple `objectives` entries. Talk objectives
+  are left ungated (no reliable signal exists yet to detect them). Existing
+  saves with quests already active before this change are grandfathered so
+  they're never stuck unable to complete.
+
 ## [1.71.0+98]
 
 Live-device UX feedback from actually playing the app: the story map's

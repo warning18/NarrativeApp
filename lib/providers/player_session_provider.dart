@@ -57,6 +57,8 @@ class PlayerSession {
     this.unlockedAchievementIds = const [],
     this.completedZoneIds = const [],
     this.bannerPiecesCollected = const [],
+    this.enemyKillCounts = const {},
+    this.grandfatheredQuestIds = const [],
   });
 
   final int level;
@@ -158,6 +160,25 @@ class PlayerSession {
   /// one.
   final List<String> bannerPiecesCollected;
 
+  /// Lifetime count of each enemy defeated (enemyId -> times beaten),
+  /// incremented in [PlayerSessionNotifier.applyCombatResult]'s win path.
+  /// Backs Kill-type quest objectives (see quest_objectives.dart) —
+  /// lifetime rather than "since the quest was accepted" is a deliberate
+  /// simplification: every current Kill objective needs exactly 1, so a
+  /// player who beat the target enemy before picking up the quest gets
+  /// immediate credit instead of being made to grind out a second, purely
+  /// bureaucratic kill.
+  final Map<String, int> enemyKillCounts;
+
+  /// Quest ids grandfathered past objective-completion gating entirely —
+  /// populated once, automatically, the first time a save from before this
+  /// field existed loads (see [fromJson]), from whatever was in
+  /// [activeQuestIds] at that moment. Without this, a save already holding
+  /// an active quest whose objective was satisfied before this feature
+  /// shipped (so never got logged) would suddenly find that quest
+  /// permanently uncompletable.
+  final List<String> grandfatheredQuestIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -225,6 +246,8 @@ class PlayerSession {
     List<String>? unlockedAchievementIds,
     List<String>? completedZoneIds,
     List<String>? bannerPiecesCollected,
+    Map<String, int>? enemyKillCounts,
+    List<String>? grandfatheredQuestIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -268,6 +291,9 @@ class PlayerSession {
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
+      enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
+      grandfatheredQuestIds:
+          grandfatheredQuestIds ?? this.grandfatheredQuestIds,
     );
   }
 
@@ -311,9 +337,21 @@ class PlayerSession {
         'unlockedAchievementIds': unlockedAchievementIds,
         'completedZoneIds': completedZoneIds,
         'bannerPiecesCollected': bannerPiecesCollected,
+        'enemyKillCounts': enemyKillCounts,
+        'grandfatheredQuestIds': grandfatheredQuestIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
+    // A save with no 'enemyKillCounts' key at all predates objective
+    // tracking entirely -- every quest already active in it was accepted
+    // (and may well have already been earned) under the old, ungated
+    // rules, so grandfather all of them past the new gate rather than
+    // strand the save on quests it can no longer prove completion for.
+    // A save that already has the key (even an empty {}) went through
+    // this exact branch once before and must never repeat it, or a
+    // Complete-quest'd-and-moved-on run would re-grandfather every quest
+    // accepted since.
+    final isPreObjectiveTrackingSave = !json.containsKey('enemyKillCounts');
     return PlayerSession(
       level: (json['level'] as num?)?.toInt() ?? 1,
       currentXP: (json['currentXP'] as num?)?.toInt() ?? 0,
@@ -418,6 +456,19 @@ class PlayerSession {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      enemyKillCounts: (json['enemyKillCounts'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
+      grandfatheredQuestIds: isPreObjectiveTrackingSave
+          ? ((json['activeQuestIds'] as List?)
+                  ?.map((e) => e.toString())
+                  .toList() ??
+              const [])
+          : ((json['grandfatheredQuestIds'] as List?)
+                  ?.map((e) => e.toString())
+                  .toList() ??
+              const []),
     );
   }
 }
@@ -1353,9 +1404,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Applies a fight's outcome to the player's stats. Returns true if the
   /// XP gain pushed the player up one or more levels, so the caller can
-  /// show a level-up celebration.
+  /// show a level-up celebration. [enemyId] (the enemy just beaten) is
+  /// optional only for callers with no real enemy to name (there are
+  /// none today, but nothing here strictly requires one) — passing it is
+  /// what credits Kill-type quest objectives (see quest_objectives.dart)
+  /// via [PlayerSession.enemyKillCounts].
   Future<bool> applyCombatResult({
     required int hpAfter,
+    String? enemyId,
     int goldGain = 0,
     int xpGain = 0,
     List<String> itemsGained = const [],
@@ -1371,6 +1427,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)
         : state.recruitedAllies;
 
+    final newKillCounts = (enemyId == null || enemyId.isEmpty)
+        ? state.enemyKillCounts
+        : {
+            ...state.enemyKillCounts,
+            enemyId: (state.enemyKillCounts[enemyId] ?? 0) + 1,
+          };
+
     state = state.copyWith(
       level: leveled.level,
       currentXP: leveled.xp,
@@ -1382,6 +1445,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
       recruitedAllies: newAllies,
+      enemyKillCounts: newKillCounts,
     );
     await _persist();
     return leveled.leveledUp;

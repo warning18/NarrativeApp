@@ -99,14 +99,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Autoplay to this node',
     AppLanguage.fr: 'Jouer automatiquement jusqu\'à ce nœud',
   },
-  'autoplay_to_chapter_button': {
-    AppLanguage.en: 'Autoplay to chapter…',
-    AppLanguage.fr: 'Jouer automatiquement jusqu\'au chapitre…',
-  },
-  'autoplay_to_chapter_title': {
-    AppLanguage.en: 'Autoplay to which chapter?',
-    AppLanguage.fr: 'Jouer automatiquement jusqu\'à quel chapitre ?',
-  },
   'autoplay_running': {
     AppLanguage.en: 'Playing ahead…',
     AppLanguage.fr: 'Avancement automatique…',
@@ -699,6 +691,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Choose who you are. This sets your starting stats and starts a new game.',
     AppLanguage.fr:
         'Choisissez qui vous êtes. Ceci définit vos statistiques de départ et démarre une nouvelle partie.',
+  },
+  'randomize_character_button': {
+    AppLanguage.en: 'Randomize',
+    AppLanguage.fr: 'Aléatoire',
   },
   'race_label': {AppLanguage.en: 'Race', AppLanguage.fr: 'Race'},
   'profession_label': {
@@ -1839,6 +1835,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'push_button': {AppLanguage.en: 'Push', AppLanguage.fr: 'Envoyer'},
   'strategy_label': {AppLanguage.en: 'Strategy', AppLanguage.fr: 'Stratégie'},
+  'play_to_chapter_title': {
+    AppLanguage.en: 'Play to Chapter',
+    AppLanguage.fr: 'Jouer jusqu\'au chapitre',
+  },
+  'play_to_chapter_subtitle': {
+    AppLanguage.en: 'Plays real choices forward using the strategy above, '
+        'earning true gold/alignment/flags/combat along the way, then '
+        'hands control back to you in Story view once the chapter is '
+        'reached.',
+    AppLanguage.fr:
+        "Enchaîne de vrais choix selon la stratégie ci-dessus, avec de "
+            "l'or, un alignement, des drapeaux et des combats réellement "
+            "gagnés, puis vous redonne la main dans la vue Histoire une "
+            'fois le chapitre atteint.',
+  },
+  'play_to_chapter_button': {
+    AppLanguage.en: 'Play to Chapter',
+    AppLanguage.fr: 'Jouer jusqu\'au chapitre',
+  },
   'sim_strategy_random': {
     AppLanguage.en: 'Random',
     AppLanguage.fr: 'Aléatoire'

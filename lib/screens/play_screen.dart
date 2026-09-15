@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
+import '../data/quest_objectives.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -428,6 +429,9 @@ class _QuestList extends ConsumerWidget {
         final meetsRequirements = isEditMode ||
             session.meetsRequirements(
                 reqGold: requiredGold, reqFlags: requiredFlags);
+        final objectiveStatuses = objectiveStatusesFor(questId, quest, session);
+        final objectivesMet =
+            isEditMode || allObjectivesMet(questId, quest, session);
 
         String statusLabel;
         if (isCompleted) {
@@ -449,73 +453,81 @@ class _QuestList extends ConsumerWidget {
           trailing = const Icon(Icons.lock_outline);
         } else if (isActive) {
           trailing = ElevatedButton(
-            onPressed: () async {
-              final rewardGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
-              final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
-              final rewardItemId = quest['rewardItemID']?.toString();
-              final nextQuestId = quest['nextQuestID']?.toString();
-              final rewardDiceId = quest['rewardDiceID']?.toString();
-              final rewardAllyId = quest['rewardAllyId']?.toString();
-              final grantsBannerPieceId =
-                  quest['grantsBannerPieceId']?.toString();
-              final alignmentMod =
-                  (quest['alignmentChange'] as num?)?.toInt() ?? 0;
-              final leveledUp =
-                  await ref.read(playerSessionProvider.notifier).completeQuest(
-                        questId,
-                        rewardGold: rewardGold,
-                        rewardXP: rewardXp,
-                        rewardItemId: rewardItemId,
-                        nextQuestId: nextQuestId,
-                        rewardDiceId: rewardDiceId,
-                        grantsBannerPieceId: grantsBannerPieceId,
-                        alignmentMod: alignmentMod,
-                      );
-              String? recruitedName;
-              if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
-                final companion =
-                    companions[rewardAllyId] as Map<String, dynamic>?;
-                final race = races[companion?['raceId']?.toString() ?? '']
-                    as Map<String, dynamic>?;
-                final profession =
-                    professions[companion?['professionId']?.toString() ?? '']
-                        as Map<String, dynamic>?;
-                await ref.read(playerSessionProvider.notifier).recruitAlly(
-                      rewardAllyId,
-                      race: race,
-                      profession: profession,
+            onPressed: !objectivesMet
+                ? null
+                : () async {
+                    final rewardGold =
+                        (quest['rewardGold'] as num?)?.toInt() ?? 0;
+                    final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
+                    final rewardItemId = quest['rewardItemID']?.toString();
+                    final nextQuestId = quest['nextQuestID']?.toString();
+                    final rewardDiceId = quest['rewardDiceID']?.toString();
+                    final rewardAllyId = quest['rewardAllyId']?.toString();
+                    final grantsBannerPieceId =
+                        quest['grantsBannerPieceId']?.toString();
+                    final alignmentMod =
+                        (quest['alignmentChange'] as num?)?.toInt() ?? 0;
+                    final leveledUp = await ref
+                        .read(playerSessionProvider.notifier)
+                        .completeQuest(
+                          questId,
+                          rewardGold: rewardGold,
+                          rewardXP: rewardXp,
+                          rewardItemId: rewardItemId,
+                          nextQuestId: nextQuestId,
+                          rewardDiceId: rewardDiceId,
+                          grantsBannerPieceId: grantsBannerPieceId,
+                          alignmentMod: alignmentMod,
+                        );
+                    String? recruitedName;
+                    if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
+                      final companion =
+                          companions[rewardAllyId] as Map<String, dynamic>?;
+                      final race = races[companion?['raceId']?.toString() ?? '']
+                          as Map<String, dynamic>?;
+                      final profession = professions[
+                              companion?['professionId']?.toString() ?? '']
+                          as Map<String, dynamic>?;
+                      await ref
+                          .read(playerSessionProvider.notifier)
+                          .recruitAlly(
+                            rewardAllyId,
+                            race: race,
+                            profession: profession,
+                          );
+                      recruitedName = companion?['companionName']?.toString() ??
+                          rewardAllyId;
+                    }
+                    final newAchievements = await ref
+                        .read(playerSessionProvider.notifier)
+                        .checkAchievements(
+                            totalCompanionCount: companions.length);
+                    if (!context.mounted) return;
+                    final lang = ref.read(appLanguageProvider);
+                    final achievementNames = newAchievements
+                        .map((id) =>
+                            (achievements[id] as Map<String, dynamic>?)?[
+                                    'achievementName']
+                                ?.toString() ??
+                            id)
+                        .toList();
+                    showImmersiveNotice(
+                      context,
+                      icon: Icons.emoji_events_outlined,
+                      message:
+                          '${trFor(lang, 'quest_complete_prefix')}: $questName '
+                          '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
+                          '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
+                          '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
+                          '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
+                          '${grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty ? "\n${trFor(lang, 'banner_piece_found_prefix')}" : ""}'
+                          '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
                     );
-                recruitedName =
-                    companion?['companionName']?.toString() ?? rewardAllyId;
-              }
-              final newAchievements = await ref
-                  .read(playerSessionProvider.notifier)
-                  .checkAchievements(totalCompanionCount: companions.length);
-              if (!context.mounted) return;
-              final lang = ref.read(appLanguageProvider);
-              final achievementNames = newAchievements
-                  .map((id) =>
-                      (achievements[id]
-                              as Map<String, dynamic>?)?['achievementName']
-                          ?.toString() ??
-                      id)
-                  .toList();
-              showImmersiveNotice(
-                context,
-                icon: Icons.emoji_events_outlined,
-                message: '${trFor(lang, 'quest_complete_prefix')}: $questName '
-                    '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
-                    '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
-                    '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
-                    '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
-                    '${grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty ? "\n${trFor(lang, 'banner_piece_found_prefix')}" : ""}'
-                    '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
-              );
-              if (leveledUp) {
-                final newLevel = ref.read(playerSessionProvider).level;
-                showLevelUpDialog(context, ref, newLevel: newLevel);
-              }
-            },
+                    if (leveledUp) {
+                      final newLevel = ref.read(playerSessionProvider).level;
+                      showLevelUpDialog(context, ref, newLevel: newLevel);
+                    }
+                  },
             child: Text(tr(ref, 'complete')),
           );
         } else {
@@ -565,6 +577,45 @@ class _QuestList extends ConsumerWidget {
                           letterSpacing: 0.1,
                         ),
                   ),
+                ],
+                if (isActive && objectiveStatuses.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  ...objectiveStatuses.map((status) => Padding(
+                        padding: const EdgeInsets.only(top: 2),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              status.met
+                                  ? Icons.check_circle
+                                  : Icons.radio_button_unchecked,
+                              size: 16,
+                              color: status.met
+                                  ? Colors.green
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: Text(
+                                status.required > 1
+                                    ? '${status.description} '
+                                        '(${status.current}/${status.required})'
+                                    : status.description,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      decoration: status.met
+                                          ? TextDecoration.lineThrough
+                                          : null,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                 ],
                 const SizedBox(height: 12),
                 Row(

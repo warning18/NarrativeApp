@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -108,9 +110,25 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(
-          tr(ref, 'choose_who_desc'),
-          style: Theme.of(context).textTheme.bodySmall,
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                tr(ref, 'choose_who_desc'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+            const SizedBox(width: 8),
+            OutlinedButton.icon(
+              onPressed: () => setState(() {
+                _selectedRaceId = raceIds[Random().nextInt(raceIds.length)];
+                _selectedProfessionId =
+                    professionIds[Random().nextInt(professionIds.length)];
+              }),
+              icon: const Icon(Icons.casino_outlined, size: 18),
+              label: Text(tr(ref, 'randomize_character_button')),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
         Text(tr(ref, 'race_label'),

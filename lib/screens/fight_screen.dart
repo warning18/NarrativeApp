@@ -577,6 +577,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
       final leveledUp = await notifier.applyCombatResult(
         hpAfter: player.currentHealth,
+        enemyId: widget.enemyId,
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,

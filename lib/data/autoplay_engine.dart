@@ -104,6 +104,7 @@ List<MapEntry<String, StoryChoice>>? _findChoicePath(
 /// skip replicating here).
 Future<bool> _simulateFight({
   required WidgetRef ref,
+  required String? enemyId,
   required Map<String, dynamic> enemy,
   required Map<String, dynamic> dice,
   required Map<String, dynamic> skills,
@@ -176,6 +177,7 @@ Future<bool> _simulateFight({
   }
   await ref.read(playerSessionProvider.notifier).applyCombatResult(
         hpAfter: playerHealth,
+        enemyId: enemyId,
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
@@ -230,6 +232,7 @@ Future<AutoplayResult> autoplayToNode(
         for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
           won = await _simulateFight(
             ref: ref,
+            enemyId: choice.triggerEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,
@@ -395,6 +398,7 @@ Future<AutoplayResult> autoplayToChapter(
         for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
           won = await _simulateFight(
             ref: ref,
+            enemyId: choice.triggerEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,

@@ -204,6 +204,27 @@ void main() {
       await notifier.applyCombatResult(hpAfter: -50);
       expect(notifier.state.currentHealth, 0);
     });
+
+    test('a win with enemyId logs a kill for that enemy', () async {
+      final notifier = await notifierWith(baseSession(currentHealth: 100));
+      await notifier.applyCombatResult(hpAfter: 100, enemyId: 'slum_thug');
+      expect(notifier.state.enemyKillCounts['slum_thug'], 1);
+    });
+
+    test('repeated wins against the same enemy accumulate', () async {
+      final notifier = await notifierWith(baseSession(currentHealth: 100));
+      await notifier.applyCombatResult(hpAfter: 100, enemyId: 'slum_thug');
+      await notifier.applyCombatResult(hpAfter: 100, enemyId: 'slum_thug');
+      await notifier.applyCombatResult(hpAfter: 100, enemyId: 'rat_matriarch');
+      expect(notifier.state.enemyKillCounts['slum_thug'], 2);
+      expect(notifier.state.enemyKillCounts['rat_matriarch'], 1);
+    });
+
+    test('a win with no enemyId leaves enemyKillCounts untouched', () async {
+      final notifier = await notifierWith(baseSession(currentHealth: 100));
+      await notifier.applyCombatResult(hpAfter: 100);
+      expect(notifier.state.enemyKillCounts, isEmpty);
+    });
   });
 
   group('recruitAlly', () {
@@ -299,6 +320,37 @@ void main() {
       );
       expect(await fullNotifier.checkAchievements(totalCompanionCount: 3),
           contains('full_roster'));
+    });
+  });
+
+  group('PlayerSession.fromJson objective-tracking migration', () {
+    test('a save with no enemyKillCounts key grandfathers its active quests',
+        () {
+      final session = PlayerSession.fromJson({
+        'activeQuestIds': ['q_first_blood', 'q_retrieve_banner'],
+        // No 'enemyKillCounts' key at all -- the pre-this-feature shape.
+      });
+      expect(session.grandfatheredQuestIds,
+          containsAll(['q_first_blood', 'q_retrieve_banner']));
+      expect(session.enemyKillCounts, isEmpty);
+    });
+
+    test(
+        'a save that already has enemyKillCounts (even empty) is never '
+        're-grandfathered', () {
+      final session = PlayerSession.fromJson({
+        'activeQuestIds': ['q_new_quest'],
+        'enemyKillCounts': <String, dynamic>{},
+        'grandfatheredQuestIds': <String>[],
+      });
+      expect(session.grandfatheredQuestIds, isEmpty);
+    });
+
+    test('enemyKillCounts round-trips through toJson/fromJson', () {
+      final original =
+          baseSession().copyWith(enemyKillCounts: {'slum_thug': 3});
+      final restored = PlayerSession.fromJson(original.toJson());
+      expect(restored.enemyKillCounts['slum_thug'], 3);
     });
   });
 }
