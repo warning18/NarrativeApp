@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.70.0+97]
+
+The remaining CI/polish loose ends from the last review round.
+
+### Added
+- **A one-time nudge toward In-Game Mode.** Every fresh install defaults to Edit Mode (the full authoring app) since that's what this project's own development relies on — flipping that default would work against the developer's own daily workflow, so it stays. Instead, a dismissible banner on the Play tab now points a genuine first-time player at the Settings toggle, shown once until dismissed either by switching or by closing it outright.
+- **`docs/quest-progress-tracking.md`** — a scoping writeup (not an implementation) for enforcing quest objectives for real, grounding the plan in the `objectives` schema that already exists in `quests.json` but was never read anywhere in gameplay code.
+- **`.github/workflows/format.yml`** — a manual (`workflow_dispatch`-only) way to actually apply `dart format` via CI's Flutter install, since this dev environment has no local Dart SDK to run it directly.
+
+### Changed
+- **The codebase is now actually `dart format`-clean** (71 files reformatted via the new workflow) and **the CI format check is a real gate** — dropped the `continue-on-error` that was only ever meant to be temporary, pending a pass that confirmed the repo was clean.
+
 ## [1.69.0+96]
 
 Fixes from a 40-run simulated-playthrough analysis (built as an accurate Python port of the real combat/quest/achievement logic, cross-checked against `test/combat_engine_test.dart`'s hand-verified values). 3 confirmed bugs fixed, 2 of 3 balance findings addressed; the third needs a product decision rather than a code fix (see below).
