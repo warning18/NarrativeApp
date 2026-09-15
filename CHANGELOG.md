@@ -8,6 +8,20 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.65.0+92]
+
+CI/build pipeline and test-coverage improvements, from a review of the setup itself rather than the game.
+
+### Added
+- **Real unit tests for game logic, for the first time.** `test/combat_engine_test.dart` covers dice rolling, player/enemy move resolution (Attack/Defend/Heal/Skill faces, Always/Chance/OnLowHealth enemy conditions, priority ordering including the "a match consumes the turn even if its skill doesn't resolve" edge case), and the three level-scaling formulas. `test/player_session_provider_test.dart` covers `completeQuest` (gold/XP/item rewards, leveling up, banner-piece de-dup), `completeZone` (rewards, one-time payout), `applyCombatResult` (rewards, leveling, HP clamping), `recruitAlly` (starter skills, no duplicate recruits), and `checkAchievements` (including a regression test pinning `full_party` at exactly 2 active allies — the threshold bug fixed a few versions back). Every one of this session's real balance bugs was previously only ever caught by a hand-written Python simulation run manually, outside CI; this is the start of closing that gap for real.
+- `.github/dependabot.yml` — weekly update PRs for pub packages and GitHub Actions, so "N packages have newer versions" is an actual PR to review instead of a CI log line nobody acts on.
+
+### Changed
+- **CI workflow (`build_apk.yml`)**: added `concurrency` with `cancel-in-progress` so a branch that gets several quick follow-up pushes stops burning minutes on runs whose result is already superseded; enabled `subosito/flutter-action`'s built-in SDK+pub caching (was off) and added a Gradle cache, both aimed at the 7-9 minute build-APK step being the slowest thing in every run; bumped `actions/setup-java` from the now-deprecated v3 to v5; added a `dart format --set-exit-if-changed` check (non-blocking for now — the repo's formatting hasn't been verified clean without a local Dart SDK to check first); tightened the workflow-level permissions default from `contents: write` to `read`, with `build` granting itself `write` explicitly for its own release step.
+
+### Investigated, no change needed
+- `flutter_tts` (the package CI warns applies the Kotlin Gradle Plugin directly) is already pinned to its latest published release, 4.2.5 — there's no newer version to bump to yet. Dependabot will now surface one automatically whenever the maintainers ship a fix.
+
 ## [1.64.0+91]
 
 ### Added
