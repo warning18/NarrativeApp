@@ -601,5 +601,45 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "maren"
+  },
+  "q_ch2_informants_tip": {
+    "questID": "q_ch2_informants_tip",
+    "questName": "The Informant's Tip",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Deal with the warden the informant named",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_warden",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 45,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "Word on the docks is a warden's been skimming smuggled goods for himself. Deal with him and there's a cut in it for you.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_informants_tip_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }

@@ -76,6 +76,14 @@
         "text": "Move on",
         "text_fr": "Poursuivre son chemin",
         "next_id": "300"
+      },
+      {
+        "text": "Push through the smoke-choked forge to reach the back room",
+        "text_fr": "Se frayer un chemin dans la forge enfumée jusqu'à l'arrière-boutique",
+        "next_id": "151_forge",
+        "checkAbility": "constitution",
+        "checkDC": 12,
+        "failNextId": "300"
       }
     ]
   },
@@ -270,7 +278,10 @@
       {
         "text": "Touch the Tear (Luck Check)",
         "text_fr": "Toucher la Déchirure (Jet de chance)",
-        "next_id": "281"
+        "next_id": "281",
+        "checkAbility": "luck",
+        "checkDC": 10,
+        "failNextId": "281_scarred"
       },
       {
         "text": "Keep moving",
@@ -1133,6 +1144,14 @@
         "text": "Browse the harbor market before deciding",
         "text_fr": "Parcourir le marché du port avant de décider",
         "next_id": "2015"
+      },
+      {
+        "text": "Force the loading crane's jammed winch open",
+        "text_fr": "Forcer le treuil grippé de la grue de chargement",
+        "next_id": "2010_crane",
+        "checkAbility": "strength",
+        "checkDC": 13,
+        "failNextId": "2040"
       }
     ]
   },
@@ -1215,6 +1234,14 @@
         "unlockQuestId": "q_ch2_sables_wager",
         "lockedText": "She sized me up the way a card player sizes up a mark, decided I wasn't worth the risk of a shared secret, and went back to nursing her grudge alone. Whatever reputation I'd been building, it apparently wasn't the kind that opened doors like hers.",
         "lockedText_fr": "Elle me jaugea comme une joueuse de cartes jauge sa prochaine dupe, décida que je ne valais pas le risque d'un secret partagé, et retourna nourrir seule sa rancune. Quelle que fût la réputation que je m'étais forgée, ce n'était visiblement pas le genre qui ouvrait des portes comme les siennes."
+      },
+      {
+        "text": "Read the crowd for signs of an informant",
+        "text_fr": "Observer la foule à la recherche d'un informateur",
+        "next_id": "2015_informant",
+        "checkAbility": "wisdom",
+        "checkDC": 13,
+        "failNextId": "2015_hound"
       }
     ]
   },
@@ -1625,6 +1652,14 @@
         "checkAbility": "dexterity",
         "checkDC": 13,
         "goldMod": 40
+      },
+      {
+        "text": "Decipher the scorched ledger fragments scattered outside the archive",
+        "text_fr": "Déchiffrer les fragments de registre calcinés éparpillés devant les archives",
+        "next_id": "3005_ledger",
+        "checkAbility": "intelligence",
+        "checkDC": 13,
+        "failNextId": "3005_acolyte"
       }
     ]
   },
@@ -2320,6 +2355,104 @@
         "text": "Head for the Hall of Records",
         "text_fr": "Se diriger vers la Salle des Archives",
         "next_id": "3020"
+      }
+    ]
+  },
+  "281_scarred": {
+    "id": "281_scarred",
+    "description": "The tear didn't so much open as flinch, and something in that flinch caught on me — a thin, cold thread that stayed after the light had gone, humming faintly under my skin like a struck bell that hadn't decided whether to stop. I told myself it would fade. I did not entirely believe myself.",
+    "description_fr": "La déchirure ne s'ouvrit pas tant qu'elle ne tressaillit, et quelque chose dans ce tressaillement s'accrocha à moi — un fil mince et froid qui resta après que la lumière eut disparu, vibrant faiblement sous ma peau comme une cloche frappée qui n'aurait pas décidé de s'arrêter. Je me dis que cela s'estomperait. Je ne me croyais pas entièrement.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "300",
+        "flagsToAdd": [
+          "void_marked"
+        ]
+      }
+    ]
+  },
+  "2010_crane": {
+    "id": "2010_crane",
+    "description": "The winch fought me for exactly as long as winches always fight, which is to say right up until the moment it stops fighting entirely and lets you fall into the machinery it was protecting. Whatever Vane had been planning to charge me for passage, the crane apparently disagreed with his pricing, and dropped a loose crate of salvage into my arms as an editorial comment on the matter.",
+    "description_fr": "Le treuil résista exactement aussi longtemps que résistent toujours les treuils, c'est-à-dire jusqu'au moment précis où il cesse totalement de résister et vous laisse tomber dans la machinerie qu'il protégeait. Quoi que Vane eût compté me facturer pour le passage, la grue semblait en désaccord avec ses tarifs, et laissa tomber dans mes bras une caisse de récupération, en guise de commentaire éditorial sur la question.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue through the Docks",
+        "text_fr": "Continuer à travers les Docks",
+        "next_id": "2900",
+        "goldMod": 35
+      }
+    ]
+  },
+  "2015_informant": {
+    "id": "2015_informant",
+    "description": "Most of the crowd was exactly what it appeared to be, which is to say uninteresting, but one man's stillness gave him away — the particular stillness of someone working very hard not to be noticed noticing things. He didn't want coin so much as an audience, and once I gave him one, he named a warden skimming smuggled goods off the top with a confidence that suggested he'd been waiting a long time for someone worth telling.",
+    "description_fr": "La majeure partie de la foule était exactement ce qu'elle paraissait, c'est-à-dire sans intérêt, mais l'immobilité d'un homme le trahit — cette immobilité particulière de quelqu'un qui s'efforce de ne pas se faire remarquer en train de remarquer les choses. Il ne voulait pas tant de l'argent qu'un auditoire, et une fois que je lui en offris un, il désigna un gardien qui détournait des marchandises de contrebande, avec l'assurance de quelqu'un qui avait longtemps attendu quelqu'un à qui parler.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030",
+        "unlockQuestId": "q_ch2_informants_tip"
+      }
+    ]
+  },
+  "3005_ledger": {
+    "id": "3005_ledger",
+    "description": "Most of the pages had burned past reading, but enough survived in the margins — a shipment manifest, a name crossed out twice and rewritten once — to be worth the time it took to piece together. Whoever had kept these records had expected them to outlast the people they recorded, which struck me, given the circumstances, as a reasonably safe bet.",
+    "description_fr": "La plupart des pages avaient trop brûlé pour être lues, mais assez survivait dans les marges — un manifeste d'expédition, un nom barré deux fois puis réécrit — pour valoir le temps d'assembler les morceaux. Quiconque avait tenu ces registres s'était attendu à ce qu'ils survivent aux gens qu'ils recensaient, ce qui, vu les circonstances, me sembla un pari raisonnablement sûr.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020",
+        "goldMod": 30,
+        "flagsToAdd": [
+          "ashen_ledger_decoded"
+        ]
+      }
+    ]
+  },
+  "151_forge": {
+    "id": "151_forge",
+    "description": "The smoke was the kind that settles into your lungs and makes itself at home there, but I'd breathed worse for less reason, so I kept going. The back room turned out to be less a room than a hiding place, and whoever had stashed the cache in it clearly hadn't been planning on a customer with this much patience for poor air quality.",
+    "description_fr": "La fumée était du genre qui s'installe dans les poumons et s'y sent chez elle, mais j'en avais respiré de pire pour de moins bonnes raisons, alors je continuai. L'arrière-boutique se révéla moins une pièce qu'une cachette, et quiconque y avait entreposé cette réserve n'avait manifestement pas prévu de client avec autant de patience pour la mauvaise qualité de l'air.",
+    "context_taxonomy": {
+      "ui_theme": "market",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Move on",
+        "text_fr": "Continuer",
+        "next_id": "300",
+        "goldMod": 25,
+        "flagsToAdd": [
+          "forge_cache_found"
+        ]
       }
     ]
   }

@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.76.0+104]
+
+Five new build-specific interactions and a new quest, so every one of the
+six core stats (plus Luck) now has at least one real moment where it
+changes what happens — reinforcing that a playthrough's build determines
+what it can actually do, not just how hard it hits in combat.
+
+### Added
+- **Five new ability checks**, each exercising a stat that had no story
+  moment of its own yet:
+  - **Luck** — the Chapter 1 "Touch the Tear" choice was flavor-text only
+    (labeled "Luck Check" but never actually rolled); it now rolls for
+    real (DC 10), with a new failure scene (`281_scarred`) for a bad roll.
+  - **Strength** (DC 13, Chapter 2 harbor) — force a jammed loading crane
+    open for bonus gold, or fail and draw Vane's crossbow.
+  - **Constitution** (DC 12, Chapter 1 market) — push through a
+    smoke-choked forge to find a stashed cache.
+  - **Wisdom** (DC 13, Chapter 2 harbor market) — read the crowd for an
+    informant, unlocking the new quest below; fail and a plague hound
+    notices you instead.
+  - **Intelligence** (DC 13, Chapter 3 Ashen Quarter) — decipher scorched
+    ledger fragments outside the archive for bonus gold and a flag; fail
+    and a cultist acolyte notices you rifling through their things.
+
+  `ability_check.dart`'s `abilityScoreKeys` now includes `luck` alongside
+  the six D&D-style stats, reusing the exact same roll/DC/`failNextId`
+  machinery already proven out by the Dexterity check from last round —
+  every failure route reuses an existing sibling node instead of adding
+  new dead ends.
+- **New quest: The Informant's Tip** (`q_ch2_informants_tip`) — unlocked by
+  the Wisdom check above, a bounty on a corrupt warden skimming smuggled
+  goods.
+
 ## [1.75.1+103]
 
 ### Fixed

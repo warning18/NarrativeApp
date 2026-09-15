@@ -13,10 +13,12 @@ import 'player_session_provider_test.dart' show baseSession;
 void main() {
   group('abilityModifierFor', () {
     test('reads the matching stat off the session', () {
-      final session = baseSession(strength: 3, dexterity: 5, charisma: 7);
+      final session =
+          baseSession(strength: 3, dexterity: 5, charisma: 7, luck: 2);
       expect(abilityModifierFor('strength', session), 3);
       expect(abilityModifierFor('dexterity', session), 5);
       expect(abilityModifierFor('charisma', session), 7);
+      expect(abilityModifierFor('luck', session), 2);
     });
 
     test('an unknown ability key is a zero bonus', () {
