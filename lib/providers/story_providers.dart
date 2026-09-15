@@ -62,12 +62,10 @@ class StoryPlayState {
 }
 
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
-  StoryPlayNotifier(this._startId)
-      : super(StoryPlayState(currentNodeId: _startId, history: const [])) {
+  StoryPlayNotifier(String startId)
+      : super(StoryPlayState(currentNodeId: startId, history: const [])) {
     _loadAutosave();
   }
-
-  final String _startId;
 
   /// On construction the state above is a placeholder (always the story's
   /// very first node) so the widget tree has something to render
