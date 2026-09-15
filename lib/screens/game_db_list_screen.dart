@@ -29,8 +29,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
 
   static FieldSchema? _findEnumField(DbSchema schema) {
     for (final field in schema.fields) {
-      if (field.type == FieldType.enumeration &&
-          field.enumOptions.isNotEmpty) {
+      if (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty) {
         return field;
       }
     }
