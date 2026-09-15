@@ -322,38 +322,68 @@ class _StoryView extends ConsumerWidget {
               // just be pushed off-screen anyway), so collapse both
               // automatically the moment the player starts reading down the
               // page. The manual chevrons stay available to re-expand.
-              child: NotificationListener<ScrollNotification>(
-                onNotification: (notification) {
-                  if (notification is ScrollUpdateNotification &&
-                      (notification.scrollDelta ?? 0) > 0) {
-                    if (!statusBarCollapsed) {
-                      ref.read(_statusBarCollapsedProvider.notifier).state =
-                          true;
-                    }
-                    if (!companionCollapsed) {
-                      ref.read(_companionCollapsedProvider.notifier).state =
-                          true;
-                    }
-                  }
-                  return false;
-                },
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onDoubleTap: () => ref
-                      .read(_fullscreenReadingProvider.notifier)
-                      .state = !fullscreenReading,
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 320),
-                    switchInCurve: Curves.easeOut,
-                    switchOutCurve: Curves.easeIn,
-                    transitionBuilder: _nodeTransition,
-                    child: SingleChildScrollView(
-                      key: ValueKey(
-                          '${node.id}_${playState.isInExcursion}_text'),
-                      child: _StoryText(text: displayDescription),
+              child: LayoutBuilder(
+                // Captured here, above the SingleChildScrollView, because
+                // that view gives its child unbounded height on the scroll
+                // axis -- a LayoutBuilder nested inside it would only ever
+                // see infinite height, not the actual viewport size.
+                builder: (context, viewportConstraints) {
+                  return NotificationListener<ScrollNotification>(
+                    onNotification: (notification) {
+                      if (notification is ScrollUpdateNotification &&
+                          (notification.scrollDelta ?? 0) > 0) {
+                        if (!statusBarCollapsed) {
+                          ref.read(_statusBarCollapsedProvider.notifier).state =
+                              true;
+                        }
+                        if (!companionCollapsed) {
+                          ref.read(_companionCollapsedProvider.notifier).state =
+                              true;
+                        }
+                      }
+                      return false;
+                    },
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onDoubleTap: () => ref
+                          .read(_fullscreenReadingProvider.notifier)
+                          .state = !fullscreenReading,
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 320),
+                        switchInCurve: Curves.easeOut,
+                        switchOutCurve: Curves.easeIn,
+                        transitionBuilder: _nodeTransition,
+                        child: SingleChildScrollView(
+                          key: ValueKey(
+                              '${node.id}_${playState.isInExcursion}_text'),
+                          // Short narration otherwise leaves the freed-up
+                          // space (status bar, node header, companion strip,
+                          // choices all hidden) as dead blank area below the
+                          // text card, which reads as "nothing happened"
+                          // rather than an actual fullscreen mode. Centering
+                          // it in the full viewport height makes the
+                          // toggle's effect obvious.
+                          child: fullscreenReading
+                              ? SizedBox(
+                                  // A ConstrainedBox with only minHeight set
+                                  // still leaves maxHeight unbounded here
+                                  // (SingleChildScrollView never bounds its
+                                  // child's height) -- and Center collapses
+                                  // to wrap-content, ignoring minHeight,
+                                  // whenever its incoming max is unbounded.
+                                  // A fixed-height SizedBox forces a tight
+                                  // constraint so Center actually centers.
+                                  height: viewportConstraints.maxHeight,
+                                  child: Center(
+                                    child: _StoryText(text: displayDescription),
+                                  ),
+                                )
+                              : _StoryText(text: displayDescription),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
             if (!fullscreenReading) ...[
@@ -837,6 +867,7 @@ class _StoryText extends StatelessWidget {
         border: Border.all(color: colorScheme.outlineVariant),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (header != null && header.isNotEmpty) ...[

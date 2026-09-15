@@ -8,10 +8,24 @@ import '../models/ally_state.dart' show equipmentBonusFor;
 import '../models/story_node.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import 'chapter_spine.dart';
 import 'story_repository.dart';
 
-/// How an [autoplayToNode] run ended.
-enum AutoplayStatus { reachedTarget, alreadyThere, noPathFound, stuckInCombat }
+/// How an [autoplayToNode] or [autoplayToChapter] run ended.
+enum AutoplayStatus {
+  reachedTarget,
+  alreadyThere,
+  noPathFound,
+  stuckInCombat,
+  stepCapReached,
+}
+
+/// Which choice [autoplayToChapter] favors at each branch point, mirroring
+/// `playthrough_simulator_screen.dart`'s [SimStrategy] — that screen only
+/// ever plays out an isolated, throwaway copy of gold/alignment/flags for
+/// statistics, though, never the real session, so its logic can't be reused
+/// directly here.
+enum AutoplayStrategy { random, favorGood, favorEvil, maximizeGold }
 
 class AutoplayResult {
   const AutoplayResult({
@@ -261,4 +275,169 @@ Future<AutoplayResult> autoplayToNode(
 
   return AutoplayResult(
       status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
+}
+
+/// Plays real choices forward from the player's current story position
+/// until reaching [targetChapter] (or a node beyond it), applying every
+/// step's true effects exactly like [autoplayToNode] does -- the
+/// difference is *which* choice gets taken at each branch. [autoplayToNode]
+/// walks the single shortest graph path to one fixed node; this instead
+/// makes an ongoing, branching choice at every node using [strategy] (the
+/// same weighting `playthrough_simulator_screen.dart`'s statistics-only
+/// simulator uses), stopping the moment the live position reaches the
+/// target chapter so the player can keep going manually from there with a
+/// real, earned session -- the "simulate up to a chapter, then take over"
+/// capability [firstNodeIdForChapter]'s doc comment already anticipated.
+///
+/// Deliberately skips procedural excursions ([SubNodeEngine]), same as
+/// [autoplayToNode] and for the same reason: this is a fast way to reach a
+/// target with real state, not a faithful replay of everything a human
+/// could see along the way.
+Future<AutoplayResult> autoplayToChapter(
+  WidgetRef ref, {
+  required StoryData story,
+  required int targetChapter,
+  required AutoplayStrategy strategy,
+  required Map<String, dynamic> dice,
+  required Map<String, dynamic> skills,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> enemies,
+  int maxSteps = 200,
+  int maxCombatRetries = 8,
+}) async {
+  final startChapter =
+      chapterForNode(ref.read(storyPlayProvider).currentNodeId);
+  if (startChapter != null && startChapter >= targetChapter) {
+    return const AutoplayResult(
+        status: AutoplayStatus.alreadyThere, stepsApplied: 0);
+  }
+
+  final sessionNotifier = ref.read(playerSessionProvider.notifier);
+  final playNotifier = ref.read(storyPlayProvider.notifier);
+  final random = Random();
+  var stepsApplied = 0;
+
+  StoryChoice pickChoice(List<StoryChoice> pool) {
+    if (strategy == AutoplayStrategy.random || pool.length == 1) {
+      return pool[random.nextInt(pool.length)];
+    }
+    int score(StoryChoice c) {
+      switch (strategy) {
+        case AutoplayStrategy.favorGood:
+          return c.alignmentMod;
+        case AutoplayStrategy.favorEvil:
+          return -c.alignmentMod;
+        case AutoplayStrategy.maximizeGold:
+          return c.goldMod;
+        case AutoplayStrategy.random:
+          return 0;
+      }
+    }
+
+    final best = pool.map(score).reduce(max);
+    final tied = pool.where((c) => score(c) == best).toList();
+    return tied[random.nextInt(tied.length)];
+  }
+
+  for (var step = 0; step < maxSteps; step++) {
+    final currentNodeId = ref.read(storyPlayProvider).currentNodeId;
+    final currentChapter = chapterForNode(currentNodeId);
+    if (currentChapter != null && currentChapter >= targetChapter) {
+      return AutoplayResult(
+          status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
+    }
+
+    final node = story.nodeFor(currentNodeId);
+    if (node == null || node.choices.isEmpty) {
+      // A dead end or true ending short of the target chapter -- there's
+      // nowhere further forward to walk.
+      return AutoplayResult(
+          status: AutoplayStatus.noPathFound, stepsApplied: stepsApplied);
+    }
+
+    // Never deliberately walk into a true ending while still short of the
+    // target -- that would strand the player with nothing left to play,
+    // exactly what this feature exists to avoid. Only fall back to one if
+    // every choice here ends the story.
+    final nonEndingChoices = node.choices.where((c) => !c.isEnding).toList();
+    final candidatePool =
+        nonEndingChoices.isNotEmpty ? nonEndingChoices : node.choices;
+
+    final session = ref.read(playerSessionProvider);
+    bool meetsRequirements(StoryChoice c) {
+      final target = story.nodeFor(c.nextId);
+      if (target == null || !target.hasRequirements) return true;
+      if (session.gold < target.reqGold) return false;
+      if (target.reqAlignmentScore != null &&
+          session.alignmentScore < target.reqAlignmentScore!) {
+        return false;
+      }
+      if (target.reqAlignmentMax != null &&
+          session.alignmentScore > target.reqAlignmentMax!) {
+        return false;
+      }
+      return target.reqFlags.every(session.flags.contains);
+    }
+
+    final meeting = candidatePool.where(meetsRequirements).toList();
+    final pool = meeting.isNotEmpty ? meeting : candidatePool;
+    final choice = pickChoice(pool);
+
+    if (choice.isEnding) {
+      return AutoplayResult(
+          status: AutoplayStatus.noPathFound, stepsApplied: stepsApplied);
+    }
+
+    if (choice.triggersCombat) {
+      final enemy = enemies[choice.triggerEnemyId] as Map<String, dynamic>?;
+      if (enemy != null) {
+        var won = false;
+        for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
+          won = await _simulateFight(
+            ref: ref,
+            enemy: enemy,
+            dice: dice,
+            skills: skills,
+            items: items,
+            random: random,
+          );
+        }
+        if (!won) {
+          return AutoplayResult(
+            status: AutoplayStatus.stuckInCombat,
+            stepsApplied: stepsApplied,
+            stuckEnemyName:
+                enemy['enemyName']?.toString() ?? choice.triggerEnemyId,
+          );
+        }
+      }
+    }
+
+    if (choice.hasEffects) {
+      await sessionNotifier.applyChoiceEffects(
+        goldMod: choice.goldMod,
+        alignmentMod: choice.alignmentMod,
+        healAmount: choice.healAmount,
+        flagsToAdd: choice.flagsToAdd,
+        questIDToProgress: choice.questIDToProgress,
+      );
+    }
+    if (choice.hasUnlocks) {
+      await sessionNotifier.unlockContent(
+        shopId: choice.unlockShopId,
+        questId: choice.unlockQuestId,
+        enemyId: choice.triggerEnemyId,
+        shopUnlockNodeId: currentNodeId,
+      );
+      if ((choice.unlockShopId ?? '').isNotEmpty) {
+        await sessionNotifier.checkAchievements();
+      }
+    }
+
+    playNotifier.choose(choice.nextId);
+    stepsApplied += 1;
+  }
+
+  return AutoplayResult(
+      status: AutoplayStatus.stepCapReached, stepsApplied: stepsApplied);
 }

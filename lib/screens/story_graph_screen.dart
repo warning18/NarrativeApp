@@ -389,7 +389,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
         ),
         Positioned(
           left: 12,
-          top: 12,
+          bottom: 12,
           child: _legendVisible
               ? _Legend(
                   styles: styles,
@@ -488,7 +488,22 @@ class _ChapterJumpBar extends ConsumerWidget {
   }
 }
 
-/// Lets the player pick a chapter to [_runAutoplay] toward — a real-state
+String _autoplayStrategyLabelKey(AutoplayStrategy strategy) {
+  switch (strategy) {
+    case AutoplayStrategy.random:
+      return 'sim_strategy_random';
+    case AutoplayStrategy.favorGood:
+      return 'sim_strategy_favor_good';
+    case AutoplayStrategy.favorEvil:
+      return 'sim_strategy_favor_evil';
+    case AutoplayStrategy.maximizeGold:
+      return 'sim_strategy_maximize_gold';
+  }
+}
+
+/// Lets the player pick a strategy (the same weighting
+/// `playthrough_simulator_screen.dart`'s statistics-only simulator offers)
+/// and a chapter to [_runAutoplayToChapter] toward — a real-state
 /// counterpart to the quick preview jump chips above, which just move the
 /// displayed node without earning anything along the way.
 Future<void> _showAutoplayChapterPicker(
@@ -498,37 +513,64 @@ Future<void> _showAutoplayChapterPicker(
 ) async {
   final lang = ref.read(appLanguageProvider);
   String t(String key) => trFor(lang, key);
-  final target = await showDialog<String>(
+  var strategy = AutoplayStrategy.random;
+  final target = await showDialog<int>(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: Text(t('autoplay_to_chapter_title')),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            for (final entry in chapterEntries)
-              ListTile(
-                title: Text(
-                  entry.key == 0
-                      ? t('chapter_band_prologue')
-                      : '${t('chapter_band_prefix')} ${entry.key}',
-                ),
-                onTap: () => Navigator.of(dialogContext).pop(entry.value),
+    builder: (dialogContext) => StatefulBuilder(
+      builder: (dialogContext, setDialogState) => AlertDialog(
+        title: Text(t('autoplay_to_chapter_title')),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(t('strategy_label'),
+                  style: Theme.of(dialogContext).textTheme.labelLarge),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: AutoplayStrategy.values.map((s) {
+                  return ChoiceChip(
+                    label: Text(t(_autoplayStrategyLabelKey(s))),
+                    selected: strategy == s,
+                    onSelected: (_) => setDialogState(() => strategy = s),
+                  );
+                }).toList(),
               ),
-          ],
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    for (final entry in chapterEntries)
+                      ListTile(
+                        title: Text(
+                          entry.key == 0
+                              ? t('chapter_band_prologue')
+                              : '${t('chapter_band_prefix')} ${entry.key}',
+                        ),
+                        onTap: () => Navigator.of(dialogContext).pop(entry.key),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(t('close_button')),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(dialogContext).pop(),
-          child: Text(t('close_button')),
-        ),
-      ],
     ),
   );
   if (target == null || !context.mounted) return;
-  await _runAutoplay(context, ref, targetNodeId: target);
+  await _runAutoplayToChapter(context, ref,
+      targetChapter: target, strategy: strategy);
 }
 
 /// `gameDbProvider` is a [StateNotifierProvider] (not a `FutureProvider`),
@@ -607,8 +649,87 @@ Future<void> _runAutoplay(
         '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
     AutoplayStatus.reachedTarget =>
       '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    // autoplayToNode (the only engine this function drives) never actually
+    // produces this status -- only autoplayToChapter's open-ended branching
+    // walk can run out of steps -- but the switch must stay exhaustive
+    // against the shared AutoplayStatus enum.
+    AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
   };
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
+/// [_runAutoplay]'s counterpart for [autoplayToChapter]: same busy-dialog
+/// and result-summary pattern, but strategy-driven and chapter-targeted
+/// rather than walking the single shortest path to one fixed node.
+Future<void> _runAutoplayToChapter(
+  BuildContext context,
+  WidgetRef ref, {
+  required int targetChapter,
+  required AutoplayStrategy strategy,
+}) async {
+  final lang = ref.read(appLanguageProvider);
+  String t(String key) => trFor(lang, key);
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => Center(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 16),
+              Text(t('autoplay_running')),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  final story = await ref.read(storyDataProvider.future);
+  final dice = await _awaitGameDb(ref, diceSchema);
+  final skills = await _awaitGameDb(ref, skillsSchema);
+  final items = await _awaitGameDb(ref, itemsSchema);
+  final enemies = await _awaitGameDb(ref, enemiesSchema);
+
+  final result = await autoplayToChapter(
+    ref,
+    story: story,
+    targetChapter: targetChapter,
+    strategy: strategy,
+    dice: dice,
+    skills: skills,
+    items: items,
+    enemies: enemies,
+  );
+
+  if (!context.mounted) return;
+  Navigator.of(context).pop();
+
+  final message = switch (result.status) {
+    AutoplayStatus.alreadyThere => t('autoplay_already_there'),
+    AutoplayStatus.noPathFound => t('autoplay_no_path'),
+    AutoplayStatus.stuckInCombat => '${t('autoplay_stuck_prefix')} '
+        '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    AutoplayStatus.reachedTarget =>
+      '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
+  };
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+
+  // Land the player on the Story tab, ready to keep going manually from
+  // wherever the walk ended up -- the whole point of this feature.
+  if (result.stepsApplied > 0) {
+    ref.read(homeTabIndexProvider.notifier).state = 0;
+  }
 }
 
 /// Detects a tap (and optionally a double-tap) using raw pointer events

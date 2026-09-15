@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.71.0+98]
+
+Live-device UX feedback from actually playing the app: the story map's
+overlapping panels, a genuinely useful "simulate up to a chapter" feature
+that turned out to be half-built, and a fullscreen-reading toggle that
+fired but was too subtle to notice.
+
+### Fixed
+- Story Map: the Legend panel and the "Jump to Chapter" panel both sat at
+  the top of the screen, overlapping on narrower viewports. Legend now
+  anchors to the bottom-left instead.
+- Double-tapping the story text to enter distraction-free fullscreen
+  reading worked, but the narration card stayed pinned at its normal small
+  size with the freed-up space left as dead blank area below it — easy to
+  read as "nothing happened." It now fills and centers in the available
+  viewport height.
+
+### Added
+- `autoplayToChapter`: a strategy-driven counterpart to the existing
+  shortest-path `autoplayToNode` — walks real choices forward from the
+  player's current position toward a target chapter, favoring good/evil/
+  gold (or random) at each branch, applying every step's true effects
+  (gold, alignment, flags, shop/quest unlocks, real simulated combat) via
+  the same session methods a live choice tap uses. Wired into the Story
+  Map's "Autoplay to chapter" picker alongside a strategy selector, so
+  picking a chapter now plays a real, strategy-flavored path there instead
+  of always taking the single shortest route — and lands the player back
+  in live Story view afterward, ready to keep going manually with a real
+  earned session. This is the "simulate up to a chapter, then take over"
+  capability `firstNodeIdForChapter`'s doc comment had anticipated but
+  never actually existed.
+
 ## [1.70.0+97]
 
 The remaining CI/polish loose ends from the last review round.

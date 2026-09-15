@@ -119,6 +119,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No forward path to that node from here.',
     AppLanguage.fr: "Aucun chemin possible jusqu'à ce nœud depuis ici.",
   },
+  'autoplay_step_cap_reached': {
+    AppLanguage.en: 'Stopped after many steps without reaching the chapter — '
+        'progress made so far is still saved.',
+    AppLanguage.fr:
+        "Arrêt après de nombreuses étapes sans atteindre le chapitre — "
+            'la progression réalisée est tout de même conservée.',
+  },
   'autoplay_stuck_prefix': {
     AppLanguage.en: 'Stuck — couldn\'t win the fight against',
     AppLanguage.fr: 'Bloqué — impossible de gagner le combat contre',
