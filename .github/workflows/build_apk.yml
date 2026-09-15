@@ -99,12 +99,10 @@ jobs:
         run: flutter pub get
 
       - name: Check formatting
-        # Non-blocking for now: the codebase hasn't been verified clean
-        # against `dart format` (no local Dart SDK to check before adding
-        # this gate for real), so this surfaces drift without risking an
-        # unrelated CI break. Drop continue-on-error once a pass confirms
-        # the repo is already clean, to make it a real gate.
-        continue-on-error: true
+        # Was non-blocking until the codebase was actually run through
+        # `dart format` for real (see .github/workflows/format.yml --
+        # there's no local Dart SDK in the dev environment to have
+        # verified this before adding the gate). Now a real gate.
         run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze
