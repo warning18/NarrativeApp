@@ -1,0 +1,43 @@
+name: Format Code
+
+# Manual-only (workflow_dispatch) -- this repo's dev environment has no local
+# Dart/Flutter SDK to run `dart format` with, so this is the only way to
+# actually apply formatting rather than just detect drift (which
+# build_apk.yml's own non-blocking `dart format --set-exit-if-changed`
+# step already does on every push/PR). Never runs automatically.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Apply dart format
+        run: dart format .
+
+      - name: Commit and push if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "Apply dart format"
+            git push
+          else
+            echo "Nothing to format -- already clean."
+          fi
