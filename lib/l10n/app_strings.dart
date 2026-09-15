@@ -1354,6 +1354,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'edit_mode_label': {AppLanguage.en: 'Edit', AppLanguage.fr: 'Édition'},
   'in_game_mode_label': {AppLanguage.en: 'In-Game', AppLanguage.fr: 'En jeu'},
+  'mode_nudge_message': {
+    AppLanguage.en: "You're in Edit Mode, which shows story/data-editing tools alongside the "
+        'game. Just here to play? Switch to In-Game Mode in Settings for a clean, '
+        'player-only view.',
+    AppLanguage.fr: "Vous êtes en mode Édition, qui affiche les outils d'édition de l'histoire "
+        'et des données en plus du jeu. Juste ici pour jouer ? Passez en mode En jeu dans les '
+        "paramètres pour une vue réservée au joueur.",
+  },
+  'switch_to_in_game_mode_button': {
+    AppLanguage.en: 'Switch to In-Game Mode',
+    AppLanguage.fr: 'Passer en mode En jeu',
+  },
   'tutorial_setting_title': {AppLanguage.en: 'Guided tour', AppLanguage.fr: 'Visite guidée'},
   'tutorial_setting_desc': {
     AppLanguage.en: 'Show a short walkthrough the first time you enter In-Game mode.',

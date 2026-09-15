@@ -9,6 +9,7 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/mode_nudge_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
@@ -31,6 +32,7 @@ class PlayScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final playState = ref.watch(storyPlayProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final hasSeenModeNudge = ref.watch(hasSeenModeNudgeProvider);
     final hasSavedGame = ref.watch(savedGameExistsProvider);
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
@@ -49,6 +51,58 @@ class PlayScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
+        // Edit Mode is every fresh install's default (the full authoring
+        // app, not just the game) since that's what this project's own
+        // development relies on -- a genuine first-time player wouldn't
+        // otherwise know the player-only mode exists. One-time nudge,
+        // dismissible either by switching or by closing it outright.
+        if (isEditMode && !hasSeenModeNudge)
+          Card(
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.sports_esports_outlined,
+                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          tr(ref, 'mode_nudge_message'),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondaryContainer,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        visualDensity: VisualDensity.compact,
+                        tooltip: tr(ref, 'close_button'),
+                        onPressed: () => ref.read(hasSeenModeNudgeProvider.notifier).dismiss(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () async {
+                        await ref.read(appModeProvider.notifier).setMode(AppMode.inGame);
+                        await ref.read(hasSeenModeNudgeProvider.notifier).dismiss();
+                      },
+                      child: Text(tr(ref, 'switch_to_in_game_mode_button')),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         const PlayerStatsBar(),
         const SizedBox(height: 16),
         Row(
