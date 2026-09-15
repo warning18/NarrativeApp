@@ -492,6 +492,21 @@ Future<void> _showAutoplayChapterPicker(
   await _runAutoplay(context, ref, targetNodeId: target);
 }
 
+/// `gameDbProvider` is a [StateNotifierProvider] (not a `FutureProvider`),
+/// so it has no `.future` to await like `storyDataProvider` does — its
+/// [GameDbNotifier] loads asynchronously in the background right from its
+/// own construction. Polls the current [AsyncValue] until it settles,
+/// rather than adding a Future-returning method to that shared provider
+/// just for this one caller.
+Future<Map<String, dynamic>> _awaitGameDb(WidgetRef ref, DbSchema schema) async {
+  for (var i = 0; i < 150; i++) {
+    final value = ref.read(gameDbProvider(schema)).value;
+    if (value != null) return value;
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
+  return const {};
+}
+
 /// Runs [autoplayToNode] toward [targetNodeId], showing a busy dialog while
 /// it works and a result summary once it's done.
 Future<void> _runAutoplay(
@@ -527,10 +542,10 @@ Future<void> _runAutoplay(
   );
 
   final story = await ref.read(storyDataProvider.future);
-  final dice = await ref.read(gameDbProvider(diceSchema).future);
-  final skills = await ref.read(gameDbProvider(skillsSchema).future);
-  final items = await ref.read(gameDbProvider(itemsSchema).future);
-  final enemies = await ref.read(gameDbProvider(enemiesSchema).future);
+  final dice = await _awaitGameDb(ref, diceSchema);
+  final skills = await _awaitGameDb(ref, skillsSchema);
+  final items = await _awaitGameDb(ref, itemsSchema);
+  final enemies = await _awaitGameDb(ref, enemiesSchema);
 
   final result = await autoplayToNode(
     ref,
