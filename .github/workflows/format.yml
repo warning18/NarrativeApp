@@ -7,6 +7,12 @@ name: Format Code
 # step already does on every push/PR). Never runs automatically.
 on:
   workflow_dispatch:
+  # TEMPORARY bootstrap trigger: workflow_dispatch can't be invoked via the
+  # API until this file exists on the default branch, which it doesn't yet.
+  # This push trigger exists only to fire the very first run on this
+  # branch; removed again immediately after (see the next commit).
+  push:
+    branches: [claude/apk-workflow-issue-24c8hx]
 
 permissions:
   contents: write
