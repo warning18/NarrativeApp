@@ -24,6 +24,7 @@ class SubNodeEngine {
     required List<String> unlockedShopIds,
     required List<String> unlockedEnemyIds,
     required List<String> unlockedQuestIds,
+    required List<String> completedQuestIds,
     MapTheme theme = defaultMapTheme,
     double triggerChance = 0.7,
   }) {
@@ -32,19 +33,51 @@ class SubNodeEngine {
     final flavor = flavorFor(theme);
 
     final shopPool = shops.keys.where((id) => !unlockedShopIds.contains(id)).toList();
-    final enemyPool = enemies.keys.where((id) => !unlockedEnemyIds.contains(id)).toList();
+    // Unfiltered, this could roll a late-game enemy (e.g. a 230hp/27dmg
+    // chapter-5 monster) into the very first chapter-1 excursion -- an
+    // unwinnable fight for a level-1 character with no way to decline it
+    // and no way to progress past it. minChapter (see enemies.json) caps
+    // the pool to enemies the main story has already introduced by now.
+    final enemyPool = enemies.entries
+        .where((e) => !unlockedEnemyIds.contains(e.key))
+        .where((e) {
+          final minChapter =
+              ((e.value as Map<String, dynamic>)['minChapter'] as num?)?.toInt() ?? 1;
+          return minChapter <= chapter;
+        })
+        .map((e) => e.key)
+        .toList();
+    // A quest already completed shouldn't come back around in a later
+    // excursion -- questIDToProgress (the main-path way into a quest) only
+    // ever adds to activeQuestIds, never unlockedQuestIds, so that alone
+    // isn't enough to keep a finished quest out of this pool.
     final questPool = quests.entries
         .where((e) {
           final q = e.value as Map<String, dynamic>;
           final questChapter = (q['chapter'] as num?)?.toInt() ?? 1;
-          return questChapter == chapter && !unlockedQuestIds.contains(e.key);
+          return questChapter == chapter &&
+              !unlockedQuestIds.contains(e.key) &&
+              !completedQuestIds.contains(e.key);
         })
         .map((e) => e.key)
         .toList();
 
     final includeQuest = questPool.isNotEmpty && random.nextDouble() < 0.35;
     final length = includeQuest ? 4 + random.nextInt(4) : 1 + random.nextInt(3);
-    final questSlotId = includeQuest ? (questPool..shuffle(random)).first : null;
+    // A companion-recruit quest (rewardAllyId set) that's still eligible
+    // this chapter is a second chance at a companion the player didn't
+    // pick at their one-shot recruitment hub (e.g. node 2015's Kelda-vs-
+    // Sable choice) -- worth surfacing over an ordinary side quest instead
+    // of leaving it to compete equally in the full pool.
+    final recruitQuestPool = questPool.where((id) {
+      final rewardAllyId = (quests[id] as Map<String, dynamic>?)?['rewardAllyId']?.toString();
+      return rewardAllyId != null && rewardAllyId.isNotEmpty;
+    }).toList();
+    final questSlotId = !includeQuest
+        ? null
+        : recruitQuestPool.isNotEmpty
+            ? (recruitQuestPool..shuffle(random)).first
+            : (questPool..shuffle(random)).first;
 
     return [
       for (var i = 0; i < length; i++)

@@ -121,7 +121,32 @@ class PlayScreen extends ConsumerWidget {
               '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
               '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
             ),
-            trailing: const Icon(Icons.chevron_right),
+            // Spending stat/skill points is entirely manual and nothing else
+            // nudges toward it, so an unspent balance is easy to forget —
+            // same badge treatment as the unseen-content sections below.
+            trailing: session.statPoints + session.skillPoints > 0
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.error,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${session.statPoints + session.skillPoints}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onError,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right),
+                    ],
+                  )
+                : const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const CharacterScreen()),
@@ -343,6 +368,7 @@ class _QuestList extends ConsumerWidget {
               final rewardDiceId = quest['rewardDiceID']?.toString();
               final rewardAllyId = quest['rewardAllyId']?.toString();
               final grantsBannerPieceId = quest['grantsBannerPieceId']?.toString();
+              final alignmentMod = (quest['alignmentChange'] as num?)?.toInt() ?? 0;
               final leveledUp = await ref.read(playerSessionProvider.notifier).completeQuest(
                     questId,
                     rewardGold: rewardGold,
@@ -351,6 +377,7 @@ class _QuestList extends ConsumerWidget {
                     nextQuestId: nextQuestId,
                     rewardDiceId: rewardDiceId,
                     grantsBannerPieceId: grantsBannerPieceId,
+                    alignmentMod: alignmentMod,
                   );
               String? recruitedName;
               if (rewardAllyId != null && rewardAllyId.isNotEmpty) {

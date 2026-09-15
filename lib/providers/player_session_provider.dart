@@ -625,6 +625,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? nextQuestId,
     String? rewardDiceId,
     String? grantsBannerPieceId,
+    int alignmentMod = 0,
   }) async {
     final newActive = state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
@@ -664,6 +665,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
       gold: state.gold + rewardGold,
+      alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,

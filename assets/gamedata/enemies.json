@@ -34,7 +34,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 1
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
@@ -64,7 +65,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 1
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
@@ -78,7 +80,8 @@
         "dropRate": 80
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 1
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -92,7 +95,8 @@
         "dropRate": 40
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 2
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
@@ -110,7 +114,8 @@
         "dropRate": 30
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 1
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
@@ -136,7 +141,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 3
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -154,7 +160,8 @@
         "dropRate": 40
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 2
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
@@ -180,7 +187,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 3
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
@@ -210,7 +218,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 2
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -224,7 +233,8 @@
         "dropRate": 35
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 2
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
@@ -242,7 +252,8 @@
         "dropRate": 50
       }
     ],
-    "skillMoves": []
+    "skillMoves": [],
+    "minChapter": 3
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
@@ -283,7 +294,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 3
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -324,7 +336,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 3
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
@@ -354,7 +367,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 1
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -384,7 +398,8 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 4
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -425,6 +440,7 @@
         "blockThreshold": 0,
         "priority": 1
       }
-    ]
+    ],
+    "minChapter": 5
   }
 }

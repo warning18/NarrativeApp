@@ -353,6 +353,12 @@ final DbSchema enemiesSchema = DbSchema(
     FieldSchema(key: 'xpReward', label: 'XP Reward', type: FieldType.integer, defaultValue: 0),
     FieldSchema(key: 'goldReward', label: 'Gold Reward', type: FieldType.integer, defaultValue: 0),
     FieldSchema(
+      key: 'minChapter',
+      label: 'Min Chapter (earliest a random excursion may draw this enemy)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
       key: 'lootTable',
       label: 'Loot Table [{itemID, dropRate}]',
       type: FieldType.json,

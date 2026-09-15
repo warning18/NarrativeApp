@@ -8,6 +8,22 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.69.0+96]
+
+Fixes from a 40-run simulated-playthrough analysis (built as an accurate Python port of the real combat/quest/achievement logic, cross-checked against `test/combat_engine_test.dart`'s hand-verified values). 3 confirmed bugs fixed, 2 of 3 balance findings addressed; the third needs a product decision rather than a code fix (see below).
+
+### Fixed
+- **A level-1 character could roll an unwinnable fight in the very first random encounter.** `SubNodeEngine`'s procedural "excursion" encounters drew from the *entire* enemy roster with no level/chapter filter, so a chapter-1 side-fight could occasionally draw a chapter-4/5-tier monster (230 HP / 27 dmg vs. a fresh character) — unwinnable, with no way to decline or route around it. Traced in simulation to every one of 12/300 permanently-stuck sample runs. Every `enemies.json` entry now carries a `minChapter` (derived from where the main story itself first uses that enemy), and excursions only draw from enemies already at-or-below the current chapter.
+- **Quest `alignmentChange` was defined in data but never applied.** `completeQuest()` had no alignment parameter at all, so `quests.json`'s `alignmentChange` field (set on several quests, including the near-mandatory banner quest) was silently dropped every time — quietly denying players alignment the content was designed to grant, on a game that gates real story branches on alignment thresholds. Now threaded through from the quest record into the same `alignmentScore` update `applyChoiceEffects` already uses for choice-driven alignment.
+- **A completed quest could be re-offered by a later excursion.** The excursion quest pool excluded `unlockedQuestIds`, but a quest reached via `questIDToProgress` (rather than `unlockQuestId`) never lands in that list — so `q_first_blood` specifically could resurface after completion. The pool now also excludes `completedQuestIds`.
+
+### Changed
+- **Companion co-recruitment is more reliable.** Kelda and Sable are offered as a single, mutually-exclusive, non-revisitable pick at node 2015 (by design — every other recruitment/vignette hub in this story works the same way), so getting both in one run depended entirely on a later excursion randomly re-offering the one not picked, at roughly a 1-in-N chance against the whole side-quest pool. Excursions now prioritize an eligible companion-recruit quest over an ordinary side quest whenever one is available, without changing the main-path structure.
+- **Unspent stat/skill points now show a badge on the Character card** (matching the existing unseen-quest/shop/enemy badge style) — spending them is entirely manual and nothing else calls attention to it; a full-game simulation with points never spent saw Chapter 4-5 win rates roughly halve.
+
+### Investigated, not changed
+- **Quest "objectives" (kill X, fetch Y) aren't enforced — completion is gated on nothing**, so reward chains resolve the instant they unlock regardless of whether the described events happened. This inflates the in-game economy (~30% of average simulated end-game gold is quest rewards) but may be an intentional lightweight quest-log design rather than a bug. Actually enforcing objectives would mean building real progress-tracking (kill counts, item possession, flag state) per quest — a new feature, not a fix — so left alone pending a product decision.
+
 ## [1.68.0+95]
 
 The remaining two of five requested UX improvements, scoped after a clarifying round: a real-state "autoplay ahead" testing tool, and closing the Camp Rest gap.

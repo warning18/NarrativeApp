@@ -609,6 +609,7 @@ class _ChoiceButton extends ConsumerWidget {
                   unlockedShopIds: session.unlockedShopIds,
                   unlockedEnemyIds: session.unlockedEnemyIds,
                   unlockedQuestIds: session.unlockedQuestIds,
+                  completedQuestIds: session.completedQuestIds,
                   theme: resolvedTheme,
                 );
                 if (excursion != null) {
