@@ -568,9 +568,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final lootTable =
           (widget.enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
               const [];
+      // Luck nudges the drop-rate roll directly (in percentage points), so
+      // a lucky character sees noticeably better loot without any roll
+      // ever becoming guaranteed unless the base rate was already close.
+      final luckBonus = ref.read(playerSessionProvider).luck;
       for (final entry in lootTable) {
         final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
-        if (_random.nextDouble() * 100 <= dropRate) {
+        if (_random.nextDouble() * 100 <= dropRate + luckBonus) {
           final itemId = entry['itemID']?.toString();
           if (itemId != null && itemId.isNotEmpty) loot.add(itemId);
         }

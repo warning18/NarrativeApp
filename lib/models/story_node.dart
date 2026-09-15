@@ -117,6 +117,7 @@ class StoryNode {
     this.reqAlignmentScore,
     this.reqAlignmentMax,
     this.reqFlags = const [],
+    this.reqCharisma = 0,
     this.descriptionFr,
     this.uiTheme,
     this.mood,
@@ -142,6 +143,7 @@ class StoryNode {
       reqFlags:
           (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      reqCharisma: (json['reqCharisma'] as num?)?.toInt() ?? 0,
       descriptionFr: json['description_fr'] as String?,
       uiTheme: taxonomy?['ui_theme'] as String?,
       mood: taxonomy?['mood'] as String?,
@@ -162,6 +164,11 @@ class StoryNode {
   /// not just a minimum threshold.
   final int? reqAlignmentMax;
   final List<String> reqFlags;
+
+  /// Minimum charisma required to take this node's choice — the
+  /// persuasion-flavored counterpart to [reqGold]'s "can you afford it"
+  /// gate.
+  final int reqCharisma;
 
   /// French translation of [description]; falls back to English if a node
   /// is ever added without one.
@@ -195,7 +202,8 @@ class StoryNode {
       reqGold > 0 ||
       reqAlignmentScore != null ||
       reqAlignmentMax != null ||
-      reqFlags.isNotEmpty;
+      reqFlags.isNotEmpty ||
+      reqCharisma > 0;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -214,6 +222,7 @@ class StoryNode {
         if (reqAlignmentScore != null) 'reqAlignmentScore': reqAlignmentScore,
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,
         if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
+        if (reqCharisma != 0) 'reqCharisma': reqCharisma,
         'choices': choices.map((c) => c.toJson()).toList(),
       };
 }

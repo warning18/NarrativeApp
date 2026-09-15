@@ -481,6 +481,7 @@ bool _isChoiceLocked(
         reqAlignmentScore: targetNode.reqAlignmentScore,
         reqAlignmentMax: targetNode.reqAlignmentMax,
         reqFlags: targetNode.reqFlags,
+        reqCharisma: targetNode.reqCharisma,
       );
 }
 

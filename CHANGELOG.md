@@ -8,6 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.73.0+100]
+
+A round of new-mechanics requests: a proper celebration for leveling up,
+two new stats with real gameplay teeth, and NPCs the player can actually
+talk to.
+
+### Added
+- **Colored level-up dialog.** The plain gray "Level Up!" alert is now a
+  gold-gradient trophy icon with a soft glow, a gold title, and each
+  spendable stat given its own themed color (red damage, blue armor, pink
+  health, purple luck, teal charisma) instead of identical gray rows.
+- **Luck and Charisma stats.** Derived at character creation the same way
+  as every other stat (`game_config.json` base + race bonus + profession
+  bonus — e.g. Rogues run high luck, Clerics and Humans run high
+  charisma), spendable from the level-up dialog/screen alongside Damage,
+  Armor, and Health.
+  - **Luck** boosts the drop-rate roll on combat loot directly (in
+    percentage points), so a lucky character sees noticeably better item
+    drops.
+  - **Charisma** gates story content: `StoryNode` gained a `reqCharisma`
+    requirement (checked in `PlayerSession.meetsRequirements` alongside
+    the existing reqGold/reqAlignment/reqFlags), authorable from the
+    Story Node Editor like every other requirement, for
+    persuasion-flavored choices a low-charisma character can't take.
+- **NPCs you can talk to.** A new `npcs.json`/`npcsSchema` (three NPCs to
+  start: a returning companion from the opening chapter, and two flavor
+  encounters), surfaced as a new NPCs section in the Play tab —
+  flag-gated the same way node requirements already are, so an NPC can be
+  tied to a story event before they're discoverable. Tapping one opens a
+  simple conversation screen (description + a few flavor lines) with a
+  Talk button that records the conversation
+  (`PlayerSession.talkedToNpcIds`). Quests' existing `Talk`-type
+  objectives (previously always auto-met, with nothing to actually check)
+  now gate on a new `targetNPCID` field against that record when one is
+  set — wired end-to-end for one real quest (`q_ch3_alsters_dawn`) as a
+  worked example, with older/other Talk objectives left ungated exactly
+  as before if they don't specify a target NPC.
+
 ## [1.72.0+99]
 
 Follow-up to the last round of live-device feedback: relocate a

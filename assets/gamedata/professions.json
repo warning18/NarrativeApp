@@ -6,6 +6,8 @@
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 3,
+    "bonusLuck": 0,
+    "bonusCharisma": 0,
     "startingGoldBonus": 0,
     "startingSkillPoints": 0,
     "standardSkillID": "warrior_shield_bash"
@@ -17,6 +19,8 @@
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -2,
+    "bonusLuck": 0,
+    "bonusCharisma": 0,
     "startingGoldBonus": 0,
     "startingSkillPoints": 1,
     "standardSkillID": "mage_arcane_missile"
@@ -28,6 +32,8 @@
     "bonusMaxHealth": -5,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": 0,
+    "bonusLuck": 4,
+    "bonusCharisma": 1,
     "startingGoldBonus": 30,
     "startingSkillPoints": 0,
     "standardSkillID": "rogue_backstab"
@@ -39,6 +45,8 @@
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 2,
+    "bonusLuck": 0,
+    "bonusCharisma": 4,
     "startingGoldBonus": 0,
     "startingSkillPoints": 1,
     "standardSkillID": "cleric_holy_light"
@@ -50,6 +58,8 @@
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 1,
+    "bonusLuck": 2,
+    "bonusCharisma": 0,
     "startingGoldBonus": 10,
     "startingSkillPoints": 0,
     "standardSkillID": "ranger_aimed_shot"

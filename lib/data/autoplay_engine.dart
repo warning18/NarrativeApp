@@ -379,6 +379,7 @@ Future<AutoplayResult> autoplayToChapter(
           session.alignmentScore > target.reqAlignmentMax!) {
         return false;
       }
+      if (session.charisma < target.reqCharisma) return false;
       return target.reqFlags.every(session.flags.contains);
     }
 

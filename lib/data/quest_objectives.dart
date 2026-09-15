@@ -111,10 +111,30 @@ ObjectiveStatus _statusFor(
         met: met,
       );
 
+    case 'Talk':
+      final targetNpcId = objective['targetNPCID']?.toString() ?? '';
+      // No linked npcs.json entry -- treat as flavor text, same as the
+      // other types' empty-target case, rather than strand quests authored
+      // before NPCs existed.
+      if (targetNpcId.isEmpty) {
+        return ObjectiveStatus(
+          description: description,
+          current: requiredAmount,
+          required: requiredAmount,
+          met: true,
+        );
+      }
+      final met = session.talkedToNpcIds.contains(targetNpcId);
+      return ObjectiveStatus(
+        description: description,
+        current: met ? 1 : 0,
+        required: 1,
+        met: met,
+      );
+
     default:
-      // Talk (no target data at all yet -- see
-      // docs/quest-progress-tracking.md's convention question) and any
-      // other/future type stay ungated until their own signal is decided.
+      // Any other/future type stays ungated until its own signal is
+      // decided (see docs/quest-progress-tracking.md).
       return ObjectiveStatus(
         description: description,
         current: requiredAmount,

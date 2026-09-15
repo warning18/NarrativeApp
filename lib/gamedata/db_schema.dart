@@ -644,7 +644,7 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(
       key: 'objectives',
       label:
-          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID, targetItemID, targetNPCName, locationID, requiredAmount}]',
+          'Objectives [{description, type: [Kill, Gather, Talk, Reach], targetEnemyID, targetItemID, targetNPCName, targetNPCID (npcs.json id, for Talk gating), locationID, requiredAmount}]',
       type: FieldType.json,
     ),
     FieldSchema(
@@ -1024,6 +1024,48 @@ final DbSchema achievementsSchema = DbSchema(
   ],
 );
 
+final DbSchema npcsSchema = DbSchema(
+  id: 'npcs',
+  label: 'NPCs',
+  assetPath: 'assets/gamedata/npcs.json',
+  primaryKeyField: 'npcID',
+  titleField: 'npcName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'npcID', label: 'NPC ID', type: FieldType.text),
+    FieldSchema(key: 'npcName', label: 'NPC Name', type: FieldType.text),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (French)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'requiredFlag',
+      label: 'Required Flag (empty = always discoverable)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'dialogueLines',
+      label: 'Dialogue Lines',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'dialogueLines_fr',
+      label: 'Dialogue Lines (French)',
+      type: FieldType.stringList,
+    ),
+    visualAssetFieldSchema('npcs'),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
@@ -1042,4 +1084,5 @@ final List<DbSchema> gameDbSchemas = [
   housesSchema,
   achievementsSchema,
   zonesSchema,
+  npcsSchema,
 ];

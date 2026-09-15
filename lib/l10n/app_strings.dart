@@ -47,6 +47,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'quests': {AppLanguage.en: 'Quests', AppLanguage.fr: 'Quêtes'},
   'shops': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Boutiques'},
   'bestiary': {AppLanguage.en: 'Bestiary', AppLanguage.fr: 'Bestiaire'},
+  'npcs_section': {AppLanguage.en: 'NPCs', AppLanguage.fr: 'PNJ'},
   'character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'language': {AppLanguage.en: 'Language', AppLanguage.fr: 'Langue'},
   'legend_title': {AppLanguage.en: 'Legend', AppLanguage.fr: 'Légende'},
@@ -193,6 +194,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Required flags (comma-separated)',
     AppLanguage.fr: 'Drapeaux requis (séparés par des virgules)',
   },
+  'required_charisma': {
+    AppLanguage.en: 'Required charisma (minimum)',
+    AppLanguage.fr: 'Charisme requis (minimum)',
+  },
   'node_saved': {
     AppLanguage.en: 'Node saved.',
     AppLanguage.fr: 'Nœud enregistré.'
@@ -332,6 +337,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Failed to load enemies',
     AppLanguage.fr: 'Échec du chargement des ennemis',
   },
+  'failed_to_load_npcs': {
+    AppLanguage.en: 'Failed to load NPCs',
+    AppLanguage.fr: 'Échec du chargement des PNJ',
+  },
   'no_quests_defined': {
     AppLanguage.en: 'No quests defined yet.',
     AppLanguage.fr: 'Aucune quête définie pour le moment.',
@@ -343,6 +352,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'no_enemies_defined': {
     AppLanguage.en: 'No enemies defined yet.',
     AppLanguage.fr: 'Aucun ennemi défini pour le moment.',
+  },
+  'no_npcs_defined': {
+    AppLanguage.en: 'No NPCs defined yet.',
+    AppLanguage.fr: 'Aucun PNJ défini pour le moment.',
   },
   'status_completed': {AppLanguage.en: 'Completed', AppLanguage.fr: 'Terminée'},
   'status_active': {AppLanguage.en: 'Active', AppLanguage.fr: 'En cours'},
@@ -379,8 +392,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Not yet encountered.',
     AppLanguage.fr: 'Pas encore rencontré.',
   },
+  'npc_not_yet_met': {
+    AppLanguage.en: 'Not yet met — find them during the story.',
+    AppLanguage.fr:
+        'Pas encore rencontré — trouvez-les au cours de l\'histoire.',
+  },
+  'npc_talked_message': {
+    AppLanguage.en: 'Conversation recorded.',
+    AppLanguage.fr: 'Conversation enregistrée.',
+  },
+  'npc_already_talked': {
+    AppLanguage.en: 'Already talked',
+    AppLanguage.fr: 'Déjà discuté',
+  },
+  'talk_button': {AppLanguage.en: 'Talk', AppLanguage.fr: 'Discuter'},
   'hp_label': {AppLanguage.en: 'HP', AppLanguage.fr: 'PV'},
   'damage_label': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
+  'luck_label': {AppLanguage.en: 'Luck', AppLanguage.fr: 'Chance'},
+  'charisma_label': {AppLanguage.en: 'Charisma', AppLanguage.fr: 'Charisme'},
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
   'level_abbrev': {AppLanguage.en: 'Lvl', AppLanguage.fr: 'Niv.'},

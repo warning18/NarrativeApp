@@ -23,6 +23,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _reqAlignmentController;
   late final TextEditingController _reqAlignmentMaxController;
   late final TextEditingController _reqFlagsController;
+  late final TextEditingController _reqCharismaController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
 
@@ -41,6 +42,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         text: widget.node.reqAlignmentMax?.toString() ?? '');
     _reqFlagsController =
         TextEditingController(text: widget.node.reqFlags.join(', '));
+    _reqCharismaController =
+        TextEditingController(text: widget.node.reqCharisma.toString());
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
 
@@ -52,6 +55,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqAlignmentController.dispose();
     _reqAlignmentMaxController.dispose();
     _reqFlagsController.dispose();
+    _reqCharismaController.dispose();
     for (final choice in _choices) {
       choice.dispose();
     }
@@ -79,6 +83,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
           .map((s) => s.trim())
           .where((s) => s.isNotEmpty)
           .toList(),
+      reqCharisma: int.tryParse(_reqCharismaController.text.trim()) ?? 0,
       uiTheme: widget.node.uiTheme,
       mood: widget.node.mood,
       speaker: widget.node.speaker,
@@ -194,6 +199,15 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
                 controller: _reqFlagsController,
                 decoration: InputDecoration(
                   labelText: t('required_flags'),
+                  border: const OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _reqCharismaController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: t('required_charisma'),
                   border: const OutlineInputBorder(),
                 ),
               ),

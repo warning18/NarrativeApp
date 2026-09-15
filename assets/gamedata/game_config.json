@@ -5,5 +5,7 @@
   "maxHealth": 100,
   "baseDamage": 10,
   "baseArmor": 0,
+  "luck": 0,
+  "charisma": 0,
   "maxSkillSlots": 3
 }

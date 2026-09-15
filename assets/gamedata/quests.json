@@ -455,7 +455,8 @@
         "targetItemID": "",
         "targetNPCName": "Lysa",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "targetNPCID": "lysa"
       }
     ],
     "rewardGold": 100,

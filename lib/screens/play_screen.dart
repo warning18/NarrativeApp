@@ -22,6 +22,7 @@ import 'achievements_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
+import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
 import 'town_hub_screen.dart';
 
@@ -38,6 +39,7 @@ class PlayScreen extends ConsumerWidget {
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
+    final npcsAsync = ref.watch(gameDbProvider(npcsSchema));
     final achievementsCount =
         ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
 
@@ -324,6 +326,16 @@ class PlayScreen extends ConsumerWidget {
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, stack) =>
                 Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+          ),
+        ),
+        const Divider(height: 24),
+        _CollapsibleSection(
+          title: tr(ref, 'npcs_section'),
+          child: npcsAsync.when(
+            data: (records) => _NpcList(records: records),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) =>
+                Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
           ),
         ),
       ],
@@ -738,6 +750,62 @@ class _EnemyList extends ConsumerWidget {
                     icon: const Icon(Icons.sports_martial_arts),
                     label: Text(tr(ref, 'fight')),
                   ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _NpcList extends ConsumerWidget {
+  const _NpcList({required this.records});
+
+  final Map<String, dynamic> records;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (records.isEmpty) {
+      return Text(tr(ref, 'no_npcs_defined'));
+    }
+    final session = ref.watch(playerSessionProvider);
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final keys = records.keys.toList()..sort();
+
+    return Column(
+      children: keys.map((npcId) {
+        final npc = records[npcId] as Map<String, dynamic>;
+        final npcName = npc['npcName']?.toString() ?? npcId;
+        final requiredFlag = npc['requiredFlag']?.toString() ?? '';
+        final discovered =
+            requiredFlag.isEmpty || session.flags.contains(requiredFlag);
+        final accessible = isEditMode || discovered;
+        final talkedTo = session.talkedToNpcIds.contains(npcId);
+        return Card(
+          child: ListTile(
+            leading: Icon(accessible
+                ? (talkedTo ? Icons.check_circle : Icons.person_outline)
+                : Icons.lock_outline),
+            title: Text(npcName),
+            subtitle: Text(
+              accessible
+                  ? (french
+                      ? (npc['description_fr']?.toString().isNotEmpty ?? false)
+                          ? npc['description_fr'].toString()
+                          : npc['description']?.toString() ?? ''
+                      : npc['description']?.toString() ?? '')
+                  : tr(ref, 'npc_not_yet_met'),
+            ),
+            trailing: accessible ? const Icon(Icons.chevron_right) : null,
+            onTap: !accessible
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => NpcDetailScreen(npcId: npcId, npc: npc),
+                      ),
+                    );
+                  },
           ),
         );
       }).toList(),

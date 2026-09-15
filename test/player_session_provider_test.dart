@@ -36,6 +36,9 @@ PlayerSession baseSession({
   List<String> unlockedAchievementIds = const [],
   List<String> completedZoneIds = const [],
   List<String> bannerPiecesCollected = const [],
+  List<String> talkedToNpcIds = const [],
+  int luck = 0,
+  int charisma = 0,
 }) {
   return PlayerSession(
     level: level,
@@ -46,6 +49,8 @@ PlayerSession baseSession({
     currentHealth: currentHealth ?? maxHealth,
     baseDamage: 10,
     baseArmor: 0,
+    luck: luck,
+    charisma: charisma,
     potionCount: 0,
     statPoints: statPoints,
     skillPoints: skillPoints,
@@ -70,6 +75,7 @@ PlayerSession baseSession({
     unlockedAchievementIds: unlockedAchievementIds,
     completedZoneIds: completedZoneIds,
     bannerPiecesCollected: bannerPiecesCollected,
+    talkedToNpcIds: talkedToNpcIds,
   );
 }
 
@@ -249,6 +255,51 @@ void main() {
       await notifier.recruitAlly('kelda', race: race, profession: profession);
       await notifier.recruitAlly('kelda', race: race, profession: profession);
       expect(notifier.state.recruitedAllies, hasLength(1));
+    });
+  });
+
+  group('talkToNpc', () {
+    test('records the NPC as talked to', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.talkToNpc('lysa');
+      expect(notifier.state.talkedToNpcIds, ['lysa']);
+    });
+
+    test('talking to the same NPC twice does not duplicate it', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.talkToNpc('lysa');
+      await notifier.talkToNpc('lysa');
+      expect(notifier.state.talkedToNpcIds, ['lysa']);
+    });
+
+    test('an empty npc id is a no-op', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.talkToNpc('');
+      expect(notifier.state.talkedToNpcIds, isEmpty);
+    });
+  });
+
+  group('spendStatPoint', () {
+    test('luck increases luck by 1 and consumes a stat point', () async {
+      final notifier = await notifierWith(baseSession(statPoints: 1, luck: 2));
+      await notifier.spendStatPoint(stat: 'luck');
+      expect(notifier.state.luck, 3);
+      expect(notifier.state.statPoints, 0);
+    });
+
+    test('charisma increases charisma by 1 and consumes a stat point',
+        () async {
+      final notifier =
+          await notifierWith(baseSession(statPoints: 1, charisma: 4));
+      await notifier.spendStatPoint(stat: 'charisma');
+      expect(notifier.state.charisma, 5);
+      expect(notifier.state.statPoints, 0);
+    });
+
+    test('spending with no stat points available is a no-op', () async {
+      final notifier = await notifierWith(baseSession(statPoints: 0, luck: 2));
+      await notifier.spendStatPoint(stat: 'luck');
+      expect(notifier.state.luck, 2);
     });
   });
 

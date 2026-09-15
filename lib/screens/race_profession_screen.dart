@@ -183,6 +183,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final health = (preset['bonusMaxHealth'] as num?)?.toInt() ?? 0;
     final damage = (preset['bonusBaseDamage'] as num?)?.toInt() ?? 0;
     final armor = (preset['bonusBaseArmor'] as num?)?.toInt() ?? 0;
+    final luck = (preset['bonusLuck'] as num?)?.toInt() ?? 0;
+    final charisma = (preset['bonusCharisma'] as num?)?.toInt() ?? 0;
     final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
     final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
     final parts = <String>[
@@ -190,6 +192,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       '${damage >= 0 ? '+' : ''}$damage ${tr(ref, 'damage_label')}',
       '${armor >= 0 ? '+' : ''}$armor ${tr(ref, 'arm_abbrev')}',
       '${gold >= 0 ? '+' : ''}$gold ${tr(ref, 'gold_field_label')}',
+      if (luck != 0) '${luck >= 0 ? '+' : ''}$luck ${tr(ref, 'luck_label')}',
+      if (charisma != 0)
+        '${charisma >= 0 ? '+' : ''}$charisma ${tr(ref, 'charisma_label')}',
       if (showSkillPoints && skillPoints > 0)
         '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
     ];
@@ -589,6 +594,8 @@ class _CharacterSheet extends StatelessWidget {
                 ),
                 statRow(t('base_damage_label'), '${session.baseDamage}'),
                 statRow(t('base_armor_label'), '${session.baseArmor}'),
+                statRow(t('luck_label'), '${session.luck}'),
+                statRow(t('charisma_label'), '${session.charisma}'),
                 statRow(t('gold_field_label'), '${session.gold}'),
                 statRow(
                   t('alignment_label'),

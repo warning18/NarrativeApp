@@ -26,6 +26,8 @@ class PlayerSession {
     required this.currentHealth,
     required this.baseDamage,
     required this.baseArmor,
+    required this.luck,
+    required this.charisma,
     required this.potionCount,
     required this.statPoints,
     required this.skillPoints,
@@ -59,6 +61,7 @@ class PlayerSession {
     this.bannerPiecesCollected = const [],
     this.enemyKillCounts = const {},
     this.grandfatheredQuestIds = const [],
+    this.talkedToNpcIds = const [],
   });
 
   final int level;
@@ -69,6 +72,15 @@ class PlayerSession {
   final int currentHealth;
   final int baseDamage;
   final int baseArmor;
+
+  /// Boosts the drop-rate roll on combat loot (see [FightScreen]'s win
+  /// handling) — the "item luck" half of the stat pair; unlike the other
+  /// combat stats, it never affects a fight's outcome directly.
+  final int luck;
+
+  /// Gates persuasion-flavored story nodes via [StoryNode.reqCharisma],
+  /// alongside the existing reqGold/reqAlignment/reqFlags requirements.
+  final int charisma;
   final int potionCount;
   final int statPoints;
   final int skillPoints;
@@ -179,6 +191,12 @@ class PlayerSession {
   /// permanently uncompletable.
   final List<String> grandfatheredQuestIds;
 
+  /// NPC ids the player has talked to at least once (see npcs.json /
+  /// NpcDetailScreen) — permanent, append-only, like [completedQuestIds].
+  /// Backs Talk-type quest objectives whose `targetNPCID` names one of
+  /// these (see quest_objectives.dart).
+  final List<String> talkedToNpcIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -192,6 +210,7 @@ class PlayerSession {
     int? reqAlignmentScore,
     int? reqAlignmentMax,
     List<String> reqFlags = const [],
+    int reqCharisma = 0,
   }) {
     if (gold < reqGold) return false;
     if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore) {
@@ -200,6 +219,7 @@ class PlayerSession {
     if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax) {
       return false;
     }
+    if (charisma < reqCharisma) return false;
     for (final flag in reqFlags) {
       if (!flags.contains(flag)) return false;
     }
@@ -215,6 +235,8 @@ class PlayerSession {
     int? currentHealth,
     int? baseDamage,
     int? baseArmor,
+    int? luck,
+    int? charisma,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -248,6 +270,7 @@ class PlayerSession {
     List<String>? bannerPiecesCollected,
     Map<String, int>? enemyKillCounts,
     List<String>? grandfatheredQuestIds,
+    List<String>? talkedToNpcIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -258,6 +281,8 @@ class PlayerSession {
       currentHealth: currentHealth ?? this.currentHealth,
       baseDamage: baseDamage ?? this.baseDamage,
       baseArmor: baseArmor ?? this.baseArmor,
+      luck: luck ?? this.luck,
+      charisma: charisma ?? this.charisma,
       potionCount: potionCount ?? this.potionCount,
       statPoints: statPoints ?? this.statPoints,
       skillPoints: skillPoints ?? this.skillPoints,
@@ -294,6 +319,7 @@ class PlayerSession {
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
+      talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
     );
   }
 
@@ -306,6 +332,8 @@ class PlayerSession {
         'currentHealth': currentHealth,
         'baseDamage': baseDamage,
         'baseArmor': baseArmor,
+        'luck': luck,
+        'charisma': charisma,
         'potionCount': potionCount,
         'statPoints': statPoints,
         'skillPoints': skillPoints,
@@ -339,6 +367,7 @@ class PlayerSession {
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
+        'talkedToNpcIds': talkedToNpcIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -361,6 +390,8 @@ class PlayerSession {
       currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 100,
       baseDamage: (json['baseDamage'] as num?)?.toInt() ?? 10,
       baseArmor: (json['baseArmor'] as num?)?.toInt() ?? 0,
+      luck: (json['luck'] as num?)?.toInt() ?? 0,
+      charisma: (json['charisma'] as num?)?.toInt() ?? 0,
       potionCount: (json['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
@@ -469,6 +500,10 @@ class PlayerSession {
                   ?.map((e) => e.toString())
                   .toList() ??
               const []),
+      talkedToNpcIds: (json['talkedToNpcIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 }
@@ -484,6 +519,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           currentHealth: 100,
           baseDamage: 10,
           baseArmor: 0,
+          luck: 0,
+          charisma: 0,
           potionCount: 0,
           statPoints: 0,
           skillPoints: 0,
@@ -536,6 +573,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: maxHealth,
       baseDamage: (defaults['baseDamage'] as num?)?.toInt() ?? 10,
       baseArmor: (defaults['baseArmor'] as num?)?.toInt() ?? 0,
+      luck: (defaults['luck'] as num?)?.toInt() ?? 0,
+      charisma: (defaults['charisma'] as num?)?.toInt() ?? 0,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: 0,
@@ -589,6 +628,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final baseArmor = ((defaults['baseArmor'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusBaseArmor') +
         bonus(profession, 'bonusBaseArmor');
+    final luck = ((defaults['luck'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusLuck') +
+        bonus(profession, 'bonusLuck');
+    final charisma = ((defaults['charisma'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusCharisma') +
+        bonus(profession, 'bonusCharisma');
     final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
@@ -621,6 +666,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: maxHealth,
       baseDamage: baseDamage,
       baseArmor: baseArmor,
+      luck: luck,
+      charisma: charisma,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: skillPoints,
@@ -1194,6 +1241,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Records a conversation with an NPC — permanent, append-only, like
+  /// [completedQuestIds]. Backs Talk-type quest objectives (see
+  /// quest_objectives.dart) and is otherwise purely a flavor record of who
+  /// the player has met.
+  Future<void> talkToNpc(String npcId) async {
+    if (npcId.isEmpty || state.talkedToNpcIds.contains(npcId)) return;
+    state = state.copyWith(
+      talkedToNpcIds: [...state.talkedToNpcIds, npcId],
+    );
+    await _persist();
+  }
+
   /// Marks a shop/quest/enemy id as viewed in the Play tab, clearing its
   /// "newly unlocked" badge contribution.
   Future<void> markSeen(
@@ -1283,6 +1342,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newBaseArmor = state.baseArmor;
     var newMaxHealth = state.maxHealth;
     var newCurrentHealth = state.currentHealth;
+    var newLuck = state.luck;
+    var newCharisma = state.charisma;
     switch (stat) {
       case 'damage':
         newBaseDamage += 1;
@@ -1294,6 +1355,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         newMaxHealth += 10;
         newCurrentHealth += 10;
         break;
+      case 'luck':
+        newLuck += 1;
+        break;
+      case 'charisma':
+        newCharisma += 1;
+        break;
       default:
         break;
     }
@@ -1303,6 +1370,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       baseArmor: newBaseArmor,
       maxHealth: newMaxHealth,
       currentHealth: newCurrentHealth,
+      luck: newLuck,
+      charisma: newCharisma,
     );
     await _persist();
   }
@@ -1321,6 +1390,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? currentHealth,
     int? baseDamage,
     int? baseArmor,
+    int? luck,
+    int? charisma,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -1334,6 +1405,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: currentHealth,
       baseDamage: baseDamage,
       baseArmor: baseArmor,
+      luck: luck,
+      charisma: charisma,
       potionCount: potionCount,
       statPoints: statPoints,
       skillPoints: skillPoints,

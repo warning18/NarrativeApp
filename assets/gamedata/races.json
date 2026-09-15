@@ -6,6 +6,8 @@
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
+    "bonusLuck": 0,
+    "bonusCharisma": 3,
     "startingGoldBonus": 20,
     "standardSkillID": "human_resolve"
   },
@@ -16,6 +18,8 @@
     "bonusMaxHealth": -10,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 0,
+    "bonusLuck": 3,
+    "bonusCharisma": 0,
     "startingGoldBonus": 0,
     "standardSkillID": "elf_arcane_focus"
   },
@@ -26,6 +30,8 @@
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 3,
+    "bonusLuck": 0,
+    "bonusCharisma": 0,
     "startingGoldBonus": 0,
     "standardSkillID": "dwarf_stoneskin"
   },
@@ -36,6 +42,8 @@
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": -2,
+    "bonusLuck": 0,
+    "bonusCharisma": -2,
     "startingGoldBonus": 0,
     "standardSkillID": "orc_berserk_rage"
   },
@@ -46,6 +54,8 @@
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -1,
+    "bonusLuck": -2,
+    "bonusCharisma": -1,
     "startingGoldBonus": 0,
     "standardSkillID": "voidkin_umbral_veil"
   }

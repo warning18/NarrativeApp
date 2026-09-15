@@ -88,6 +88,34 @@ void main() {
     });
   });
 
+  group('Talk objectives', () {
+    final talkQuest = <String, dynamic>{
+      'objectives': [
+        {
+          'description': 'Carry word back to Alster',
+          'type': 'Talk',
+          'targetNPCID': 'lysa',
+          'requiredAmount': 1,
+        },
+      ],
+    };
+
+    test('not met before talking to the target NPC', () {
+      final session = baseSession();
+      expect(allObjectivesMet('q_alster', talkQuest, session), isFalse);
+    });
+
+    test('met once the NPC has been talked to', () {
+      final session = baseSession().copyWith(talkedToNpcIds: ['lysa']);
+      expect(allObjectivesMet('q_alster', talkQuest, session), isTrue);
+    });
+
+    test('talking to a different NPC does not satisfy it', () {
+      final session = baseSession().copyWith(talkedToNpcIds: ['old_harker']);
+      expect(allObjectivesMet('q_alster', talkQuest, session), isFalse);
+    });
+  });
+
   group('objectives with no target data', () {
     test('a Kill objective with no targetEnemyID is always met', () {
       final quest = <String, dynamic>{
@@ -98,7 +126,7 @@ void main() {
       expect(allObjectivesMet('q_vague', quest, baseSession()), isTrue);
     });
 
-    test('a Talk objective (no enforcement convention yet) is always met', () {
+    test('a Talk objective with no targetNPCID is always met', () {
       final quest = <String, dynamic>{
         'objectives': [
           {'description': 'Talk to them', 'type': 'Talk'},

@@ -74,6 +74,10 @@ class LevelUpScreen extends ConsumerWidget {
             '${session.currentHealth} / ${session.maxHealth}',
             'health',
           ),
+          statRow(tr(ref, 'luck_label'), Icons.auto_awesome, '${session.luck}',
+              'luck'),
+          statRow(tr(ref, 'charisma_label'), Icons.forum, '${session.charisma}',
+              'charisma'),
         ],
       ),
     );

@@ -820,6 +820,7 @@ Future<void> _showNodeInfo(
                     '${node.reqGold > 0 ? "${node.reqGold}g " : ""}'
                     '${node.reqAlignmentScore != null ? "${t('alignment_label')}≥${node.reqAlignmentScore} " : ""}'
                     '${node.reqAlignmentMax != null ? "${t('alignment_label')}≤${node.reqAlignmentMax} " : ""}'
+                    '${node.reqCharisma > 0 ? "${t('charisma_label')}≥${node.reqCharisma} " : ""}'
                     '${node.reqFlags.isNotEmpty ? node.reqFlags.join(", ") : ""}',
                     style: Theme.of(innerContext).textTheme.bodySmall,
                   ),

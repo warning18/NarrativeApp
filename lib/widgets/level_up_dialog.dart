@@ -21,6 +21,8 @@ class _LevelUpDialog extends ConsumerWidget {
 
   final int newLevel;
 
+  static const _gold = Color(0xFFD4A017);
+
   Widget _statButton(
     BuildContext context,
     WidgetRef ref, {
@@ -29,14 +31,28 @@ class _LevelUpDialog extends ConsumerWidget {
     required String valueText,
     required String statKey,
     required bool enabled,
+    required Color color,
   }) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
+      color: color.withValues(alpha: 0.07),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: color.withValues(alpha: 0.25)),
+      ),
       child: ListTile(
-        leading: Icon(icon),
+        leading: CircleAvatar(
+          backgroundColor: color.withValues(alpha: 0.15),
+          foregroundColor: color,
+          child: Icon(icon, size: 20),
+        ),
         title: Text(label),
         subtitle: Text(valueText),
         trailing: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: color,
+            foregroundColor: Colors.white,
+          ),
           onPressed: enabled
               ? () => ref
                   .read(playerSessionProvider.notifier)
@@ -54,9 +70,28 @@ class _LevelUpDialog extends ConsumerWidget {
     final hasPoints = session.statPoints > 0;
 
     return AlertDialog(
-      icon: const Icon(Icons.military_tech, size: 36),
+      icon: Container(
+        width: 56,
+        height: 56,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFF5D57A), _gold],
+          ),
+          boxShadow: [
+            BoxShadow(
+                color: Color(0x55D4A017), blurRadius: 16, spreadRadius: 2),
+          ],
+        ),
+        child: const Icon(Icons.military_tech, size: 32, color: Colors.white),
+      ),
       title: Text(
-          '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel'),
+        '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel',
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -64,7 +99,10 @@ class _LevelUpDialog extends ConsumerWidget {
           children: [
             Text(
               '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: _gold, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 12),
             _statButton(
@@ -75,6 +113,7 @@ class _LevelUpDialog extends ConsumerWidget {
               valueText: '${session.baseDamage}',
               statKey: 'damage',
               enabled: hasPoints,
+              color: Colors.redAccent,
             ),
             _statButton(
               context,
@@ -84,6 +123,7 @@ class _LevelUpDialog extends ConsumerWidget {
               valueText: '${session.baseArmor}',
               statKey: 'armor',
               enabled: hasPoints,
+              color: Colors.blueAccent,
             ),
             _statButton(
               context,
@@ -93,6 +133,27 @@ class _LevelUpDialog extends ConsumerWidget {
               valueText: '${session.currentHealth} / ${session.maxHealth}',
               statKey: 'health',
               enabled: hasPoints,
+              color: Colors.pinkAccent,
+            ),
+            _statButton(
+              context,
+              ref,
+              label: tr(ref, 'luck_label'),
+              icon: Icons.auto_awesome,
+              valueText: '${session.luck}',
+              statKey: 'luck',
+              enabled: hasPoints,
+              color: Colors.purpleAccent,
+            ),
+            _statButton(
+              context,
+              ref,
+              label: tr(ref, 'charisma_label'),
+              icon: Icons.forum,
+              valueText: '${session.charisma}',
+              statKey: 'charisma',
+              enabled: hasPoints,
+              color: Colors.teal,
             ),
           ],
         ),
