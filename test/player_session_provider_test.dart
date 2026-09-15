@@ -90,7 +90,8 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('completeQuest', () {
-    test('applies gold, XP, and item rewards, and marks the quest complete', () async {
+    test('applies gold, XP, and item rewards, and marks the quest complete',
+        () async {
       final notifier = await notifierWith(
         baseSession(activeQuestIds: ['q_test']),
       );
@@ -108,7 +109,8 @@ void main() {
       expect(notifier.state.activeQuestIds, isNot(contains('q_test')));
     });
 
-    test('XP that crosses the level threshold levels the player up and full-heals them',
+    test(
+        'XP that crosses the level threshold levels the player up and full-heals them',
         () async {
       // Level 1 needs level*100 = 100 XP to reach level 2.
       final notifier = await notifierWith(
@@ -130,20 +132,24 @@ void main() {
       expect(notifier.state.currentHealth, 120); // full-healed on level-up
     });
 
-    test('grantsBannerPieceId adds the piece once, even if called again', () async {
+    test('grantsBannerPieceId adds the piece once, even if called again',
+        () async {
       final notifier = await notifierWith(
         baseSession(activeQuestIds: ['q_test']),
       );
-      await notifier.completeQuest('q_test', grantsBannerPieceId: 'heirloom_shroud');
+      await notifier.completeQuest('q_test',
+          grantsBannerPieceId: 'heirloom_shroud');
       expect(notifier.state.bannerPiecesCollected, ['heirloom_shroud']);
 
-      await notifier.completeQuest('q_test', grantsBannerPieceId: 'heirloom_shroud');
+      await notifier.completeQuest('q_test',
+          grantsBannerPieceId: 'heirloom_shroud');
       expect(notifier.state.bannerPiecesCollected, ['heirloom_shroud']);
     });
   });
 
   group('completeZone', () {
-    test('banks gold, item, and flag rewards and marks the zone complete', () async {
+    test('banks gold, item, and flag rewards and marks the zone complete',
+        () async {
       final notifier = await notifierWith(baseSession());
       await notifier.completeZone(
         'z_test',
@@ -161,7 +167,8 @@ void main() {
       final notifier = await notifierWith(baseSession());
       await notifier.completeZone('z_test', rewardGold: 40);
       await notifier.completeZone('z_test', rewardGold: 40);
-      expect(notifier.state.gold, 40, reason: 'the second completion should be a no-op');
+      expect(notifier.state.gold, 40,
+          reason: 'the second completion should be a no-op');
     });
   });
 
@@ -185,7 +192,8 @@ void main() {
       final notifier = await notifierWith(
         baseSession(level: 1, currentXP: 95, maxHealth: 100),
       );
-      final leveledUp = await notifier.applyCombatResult(hpAfter: 5, xpGain: 10);
+      final leveledUp =
+          await notifier.applyCombatResult(hpAfter: 5, xpGain: 10);
       expect(leveledUp, isTrue);
       expect(notifier.state.level, 2);
       expect(notifier.state.currentHealth, notifier.state.maxHealth);
@@ -202,7 +210,8 @@ void main() {
     const race = {'standardSkillID': 'human_resolve'};
     const profession = {'standardSkillID': 'warrior_technique'};
 
-    test('adds a new ally at full health with starter skills unlocked', () async {
+    test('adds a new ally at full health with starter skills unlocked',
+        () async {
       final notifier = await notifierWith(baseSession());
       await notifier.recruitAlly('kelda', race: race, profession: profession);
 
@@ -210,7 +219,8 @@ void main() {
       final ally = notifier.state.recruitedAllies.single;
       expect(ally.companionId, 'kelda');
       expect(ally.currentHealth, AllyState.fullHealthSentinel);
-      expect(ally.unlockedSkillIds, containsAll(['human_resolve', 'warrior_technique']));
+      expect(ally.unlockedSkillIds,
+          containsAll(['human_resolve', 'warrior_technique']));
     });
 
     test('recruiting the same companion twice is a no-op', () async {
@@ -225,7 +235,9 @@ void main() {
     test('first_companion unlocks once an ally is recruited', () async {
       final notifier = await notifierWith(
         baseSession(recruitedAllies: const [
-          AllyState(companionId: 'kelda', currentHealth: AllyState.fullHealthSentinel),
+          AllyState(
+              companionId: 'kelda',
+              currentHealth: AllyState.fullHealthSentinel),
         ]),
       );
       final newly = await notifier.checkAchievements();
@@ -247,7 +259,9 @@ void main() {
       expect(await withOne.checkAchievements(), isNot(contains('full_party')));
     });
 
-    test('an already-unlocked achievement is never reported as newly unlocked again', () async {
+    test(
+        'an already-unlocked achievement is never reported as newly unlocked again',
+        () async {
       final notifier = await notifierWith(
         baseSession(
           completedQuestIds: const ['q_anything'],
@@ -258,10 +272,13 @@ void main() {
       expect(newly, isNot(contains('first_quest')));
     });
 
-    test('full_roster only unlocks once totalCompanionCount is reached', () async {
+    test('full_roster only unlocks once totalCompanionCount is reached',
+        () async {
       final notifier = await notifierWith(
         baseSession(recruitedAllies: const [
-          AllyState(companionId: 'kelda', currentHealth: AllyState.fullHealthSentinel),
+          AllyState(
+              companionId: 'kelda',
+              currentHealth: AllyState.fullHealthSentinel),
         ]),
       );
       expect(await notifier.checkAchievements(totalCompanionCount: 3),
@@ -269,9 +286,15 @@ void main() {
 
       final fullNotifier = await notifierWith(
         baseSession(recruitedAllies: const [
-          AllyState(companionId: 'kelda', currentHealth: AllyState.fullHealthSentinel),
-          AllyState(companionId: 'sable', currentHealth: AllyState.fullHealthSentinel),
-          AllyState(companionId: 'maren', currentHealth: AllyState.fullHealthSentinel),
+          AllyState(
+              companionId: 'kelda',
+              currentHealth: AllyState.fullHealthSentinel),
+          AllyState(
+              companionId: 'sable',
+              currentHealth: AllyState.fullHealthSentinel),
+          AllyState(
+              companionId: 'maren',
+              currentHealth: AllyState.fullHealthSentinel),
         ]),
       );
       expect(await fullNotifier.checkAchievements(totalCompanionCount: 3),

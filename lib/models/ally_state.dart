@@ -84,13 +84,18 @@ class AllyState {
     return AllyState(
       companionId: json['companionId'] as String? ?? '',
       currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 0,
-      equippedItemIds:
-          (json['equippedItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedSkillIds:
-          (json['unlockedSkillIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      equippedItemIds: (json['equippedItemIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedSkillIds: (json['unlockedSkillIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       diceSkillAssignments: (json['diceSkillAssignments'] as Map?)?.map(
-            (faceIndex, skillId) => MapEntry(faceIndex.toString(), skillId.toString()),
+            (faceIndex, skillId) =>
+                MapEntry(faceIndex.toString(), skillId.toString()),
           ) ??
           const {},
     );
@@ -119,7 +124,8 @@ AllyBaseStats deriveAllyBaseStats({
   required Map<String, dynamic> race,
   required Map<String, dynamic> profession,
 }) {
-  int bonus(Map<String, dynamic> preset, String key) => (preset[key] as num?)?.toInt() ?? 0;
+  int bonus(Map<String, dynamic> preset, String key) =>
+      (preset[key] as num?)?.toInt() ?? 0;
   return AllyBaseStats(
     maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 100) +
         bonus(race, 'bonusMaxHealth') +

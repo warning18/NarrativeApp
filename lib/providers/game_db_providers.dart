@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../gamedata/game_db_repository.dart';
 
-final gameDbRepositoryProvider = Provider.family<GameDbRepository, DbSchema>((ref, schema) {
+final gameDbRepositoryProvider =
+    Provider.family<GameDbRepository, DbSchema>((ref, schema) {
   return GameDbRepository(schema);
 });
 
@@ -25,14 +26,16 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   }
 
   Future<void> upsertRecord(String key, Map<String, dynamic> record) async {
-    final current = Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
+    final current =
+        Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current[key] = record;
     await _repository.saveRecords(current);
     state = AsyncValue.data(current);
   }
 
   Future<void> deleteRecord(String key) async {
-    final current = Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
+    final current =
+        Map<String, dynamic>.from(state.value ?? <String, dynamic>{});
     current.remove(key);
     await _repository.saveRecords(current);
     state = AsyncValue.data(current);
@@ -49,8 +52,8 @@ class GameDbNotifier extends StateNotifier<AsyncValue<Map<String, dynamic>>> {
   }
 }
 
-final gameDbProvider =
-    StateNotifierProvider.family<GameDbNotifier, AsyncValue<Map<String, dynamic>>, DbSchema>(
+final gameDbProvider = StateNotifierProvider.family<GameDbNotifier,
+    AsyncValue<Map<String, dynamic>>, DbSchema>(
   (ref, schema) {
     final repository = ref.watch(gameDbRepositoryProvider(schema));
     return GameDbNotifier(repository);

@@ -44,7 +44,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   bool _busy = false;
   List<String> _summaryLines = const [];
 
-  int get _expeditionCount => (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
+  int get _expeditionCount =>
+      (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
 
   StoryNode _rollEvent({
     required Map<String, dynamic> shops,
@@ -55,9 +56,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       (t) => t.name == (widget.zone['mapTheme']?.toString() ?? ''),
       orElse: () => defaultMapTheme,
     );
-    final shopPool = shops.keys.where((id) => !session.unlockedShopIds.contains(id)).toList();
-    final enemyPool =
-        enemies.keys.where((id) => !session.unlockedEnemyIds.contains(id)).toList();
+    final shopPool = shops.keys
+        .where((id) => !session.unlockedShopIds.contains(id))
+        .toList();
+    final enemyPool = enemies.keys
+        .where((id) => !session.unlockedEnemyIds.contains(id))
+        .toList();
     return SubNodeEngine.buildNode(
       random: _random,
       flavor: flavorFor(theme),
@@ -98,7 +102,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         return;
       }
       final won = await Navigator.of(context).push<bool>(
-        MaterialPageRoute(builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy)),
+        MaterialPageRoute(
+            builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy)),
       );
       if (!mounted) return;
       if (won != true) {
@@ -117,7 +122,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       await notifier.unlockContent(shopId: shopId);
       if (shop != null && mounted) {
         await Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop)),
+          MaterialPageRoute(
+              builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop)),
         );
       }
       if (!mounted) return;
@@ -154,7 +160,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
     final lang = ref.read(appLanguageProvider);
-    final companions = ref.read(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.read(gameDbProvider(companionsSchema)).value ?? const {};
 
     await notifier.completeZone(
       widget.zoneId,
@@ -170,22 +177,30 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
     if (rewardItemId.isNotEmpty) {
       final items = ref.read(gameDbProvider(itemsSchema)).value ?? const {};
-      final itemName = (items[rewardItemId] as Map<String, dynamic>?)?['itemName']?.toString();
+      final itemName =
+          (items[rewardItemId] as Map<String, dynamic>?)?['itemName']
+              ?.toString();
       lines.add(itemName ?? rewardItemId);
     }
     if (rewardDiceId.isNotEmpty) {
       final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
-      final diceName = (dice[rewardDiceId] as Map<String, dynamic>?)?['diceName']?.toString();
+      final diceName =
+          (dice[rewardDiceId] as Map<String, dynamic>?)?['diceName']
+              ?.toString();
       lines.add(diceName ?? rewardDiceId);
     }
     if (rewardAllyId.isNotEmpty) {
       final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
-      final professions = ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+      final professions =
+          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
       final companion = companions[rewardAllyId] as Map<String, dynamic>?;
-      final race = races[companion?['raceId']?.toString() ?? ''] as Map<String, dynamic>?;
+      final race = races[companion?['raceId']?.toString() ?? '']
+          as Map<String, dynamic>?;
       final profession =
-          professions[companion?['professionId']?.toString() ?? ''] as Map<String, dynamic>?;
-      await notifier.recruitAlly(rewardAllyId, race: race, profession: profession);
+          professions[companion?['professionId']?.toString() ?? '']
+              as Map<String, dynamic>?;
+      await notifier.recruitAlly(rewardAllyId,
+          race: race, profession: profession);
       lines.add(companion?['companionName']?.toString() ?? rewardAllyId);
     }
     if (rewardFlag.isNotEmpty) {
@@ -194,13 +209,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       if (flagLine != flagKey) lines.add(flagLine);
     }
 
-    final newAchievements =
-        await notifier.checkAchievements(totalCompanionCount: companions.length);
+    final newAchievements = await notifier.checkAchievements(
+        totalCompanionCount: companions.length);
     if (newAchievements.isNotEmpty) {
-      final achievements = ref.read(gameDbProvider(achievementsSchema)).value ?? const {};
+      final achievements =
+          ref.read(gameDbProvider(achievementsSchema)).value ?? const {};
       for (final id in newAchievements) {
-        final name = (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString();
-        lines.add('${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}');
+        final name =
+            (achievements[id] as Map<String, dynamic>?)?['achievementName']
+                ?.toString();
+        lines.add(
+            '${trFor(lang, 'achievement_unlocked_prefix')}: ${name ?? id}');
       }
     }
 
@@ -219,7 +238,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       _summaryLines = [
         trFor(
           ref.read(appLanguageProvider),
-          defeated ? 'expedition_defeated_message' : 'expedition_retreat_message',
+          defeated
+              ? 'expedition_defeated_message'
+              : 'expedition_retreat_message',
         ),
       ];
       _busy = false;
@@ -227,7 +248,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   }
 
   String _choiceLabel(StoryChoice choice) =>
-      ref.watch(appLanguageProvider) == AppLanguage.fr && (choice.textFr?.isNotEmpty ?? false)
+      ref.watch(appLanguageProvider) == AppLanguage.fr &&
+              (choice.textFr?.isNotEmpty ?? false)
           ? choice.textFr!
           : choice.text;
 
@@ -294,7 +316,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           child: SingleChildScrollView(
             child: Text(
               node.descriptionFor(lang == AppLanguage.fr),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+              style:
+                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
             ),
           ),
         ),
@@ -303,7 +326,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           ElevatedButton(
             onPressed: _busy
                 ? null
-                : () => _resolveChoice(node.choices.first, shops: shops, enemies: enemies),
+                : () => _resolveChoice(node.choices.first,
+                    shops: shops, enemies: enemies),
             child: Text(_choiceLabel(node.choices.first)),
           ),
         const SizedBox(height: 8),
@@ -316,13 +340,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     );
   }
 
-  Widget _buildSummary(BuildContext context, {required IconData icon, required String title}) {
+  Widget _buildSummary(BuildContext context,
+      {required IconData icon, required String title}) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(icon, size: 56, color: Theme.of(context).colorScheme.primary),
         const SizedBox(height: 16),
-        Text(title, style: Theme.of(context).textTheme.headlineSmall, textAlign: TextAlign.center),
+        Text(title,
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center),
         const SizedBox(height: 12),
         for (final line in _summaryLines)
           Padding(
@@ -331,8 +358,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           ),
         const SizedBox(height: 24),
         FilledButton(
-          onPressed: () => Navigator.of(context).pop(_phase == _ExpeditionPhase.completed),
-          child: Text(trFor(ref.watch(appLanguageProvider), 'return_to_town_button')),
+          onPressed: () =>
+              Navigator.of(context).pop(_phase == _ExpeditionPhase.completed),
+          child: Text(
+              trFor(ref.watch(appLanguageProvider), 'return_to_town_button')),
         ),
       ],
     );

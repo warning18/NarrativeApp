@@ -56,7 +56,8 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
         ),
       ]);
       if (!mounted) return;
-      setState(() => _result = response.text ?? trFor(lang, 'no_response_generated'));
+      setState(() =>
+          _result = response.text ?? trFor(lang, 'no_response_generated'));
     } catch (e) {
       if (!mounted) return;
       setState(() => _error = '${trFor(lang, 'generation_failed_prefix')}: $e');
@@ -111,7 +112,9 @@ class _AiGeneratorScreenState extends ConsumerState<AiGeneratorScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.auto_awesome),
-                label: Text(_isLoading ? trFor(lang, 'generating_label') : trFor(lang, 'generate_button')),
+                label: Text(_isLoading
+                    ? trFor(lang, 'generating_label')
+                    : trFor(lang, 'generate_button')),
               ),
               const SizedBox(height: 16),
               if (_error != null)

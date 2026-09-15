@@ -25,10 +25,18 @@ import '../providers/story_providers.dart';
 /// through between columns.
 const double _nodeBoxWidth = 150;
 
-enum _NodeKind { characterCreation, combat, shop, quest, companionQuest, generic }
+enum _NodeKind {
+  characterCreation,
+  combat,
+  shop,
+  quest,
+  companionQuest,
+  generic
+}
 
 class _NodeStyle {
-  const _NodeStyle({required this.color, required this.icon, required this.radius});
+  const _NodeStyle(
+      {required this.color, required this.icon, required this.radius});
   final Color color;
   final IconData icon;
   final double radius;
@@ -38,18 +46,21 @@ class _NodeStyle {
   /// pastel for most kinds, but the generic kind uses a theme-adaptive
   /// surface color that turns dark in dark mode, where a hardcoded dark
   /// text color would be unreadable.
-  Color get onColor => ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-      ? Colors.white
-      : Colors.black87;
+  Color get onColor =>
+      ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+          ? Colors.white
+          : Colors.black87;
 }
 
 /// [quests] is the loaded `quests.json` table, keyed by quest id — used only
 /// to tell a companion-recruit quest (one with a non-empty `rewardAllyId`)
 /// apart from every other quest, so it gets its own legend entry.
 _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
-  if (node.choices.any((c) => c.opensCharacterCreation)) return _NodeKind.characterCreation;
+  if (node.choices.any((c) => c.opensCharacterCreation))
+    return _NodeKind.characterCreation;
   if (node.choices.any((c) => c.triggersCombat)) return _NodeKind.combat;
-  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty)) return _NodeKind.shop;
+  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty))
+    return _NodeKind.shop;
   if (node.choices.any((c) {
     final questId = c.unlockQuestId ?? '';
     if (questId.isEmpty) return false;
@@ -58,7 +69,8 @@ _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
   })) {
     return _NodeKind.companionQuest;
   }
-  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) return _NodeKind.quest;
+  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty))
+    return _NodeKind.quest;
   return _NodeKind.generic;
 }
 
@@ -157,7 +169,9 @@ class ChapterGridAlgorithm extends Algorithm {
       if (slot == null) continue;
       node.position = Offset(
         shiftX + slot.column * columnWidth,
-        shiftY + (bandLayout.bandStartY[slot.chapter] ?? 0) + slot.row * rowHeight,
+        shiftY +
+            (bandLayout.bandStartY[slot.chapter] ?? 0) +
+            slot.row * rowHeight,
       );
     }
     return Size(
@@ -243,7 +257,8 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final styles = _styles(colorScheme);
-    final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const <String, dynamic>{};
+    final quests = ref.watch(gameDbProvider(questsSchema)).value ??
+        const <String, dynamic>{};
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
     return Stack(
@@ -259,82 +274,97 @@ class _GraphViewState extends ConsumerState<_GraphView> {
               children: [
                 GraphView(
                   graph: graph,
-                  algorithm: ChapterGridAlgorithm(slots: slots, bandLayout: bandLayout),
+                  algorithm: ChapterGridAlgorithm(
+                      slots: slots, bandLayout: bandLayout),
                   paint: Paint()
                     ..color = colorScheme.outline
                     ..strokeWidth = 1.5
                     ..style = PaintingStyle.stroke,
                   builder: (Node node) {
-                  final id = node.key!.value as String;
-                  final isCurrent = id == playState.currentNodeId;
-                  final storyNode = story.nodeFor(id);
-                  final kind = storyNode != null ? _classify(storyNode, quests) : _NodeKind.generic;
-                  final style = styles[kind]!;
-                  final isMainBeat = isMainBeatNode(id);
-                  final hidden = _hiddenKinds.contains(kind);
+                    final id = node.key!.value as String;
+                    final isCurrent = id == playState.currentNodeId;
+                    final storyNode = story.nodeFor(id);
+                    final kind = storyNode != null
+                        ? _classify(storyNode, quests)
+                        : _NodeKind.generic;
+                    final style = styles[kind]!;
+                    final isMainBeat = isMainBeatNode(id);
+                    final hidden = _hiddenKinds.contains(kind);
 
-                  final container = Container(
-                    width: _nodeBoxWidth,
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isCurrent ? colorScheme.primary : style.color,
-                      borderRadius: BorderRadius.circular(style.radius),
-                      border: Border.all(
-                        color: isMainBeat ? colorScheme.primary : colorScheme.outline,
-                        width: isMainBeat ? 3 : 1,
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          style.icon,
-                          size: 14,
-                          color: isCurrent ? colorScheme.onPrimary : style.onColor,
+                    final container = Container(
+                      width: _nodeBoxWidth,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isCurrent ? colorScheme.primary : style.color,
+                        borderRadius: BorderRadius.circular(style.radius),
+                        border: Border.all(
+                          color: isMainBeat
+                              ? colorScheme.primary
+                              : colorScheme.outline,
+                          width: isMainBeat ? 3 : 1,
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            id,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            style: TextStyle(
-                              color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                              fontWeight: FontWeight.bold,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            style.icon,
+                            size: 14,
+                            color: isCurrent
+                                ? colorScheme.onPrimary
+                                : style.onColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              id,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: isCurrent
+                                    ? colorScheme.onPrimary
+                                    : style.onColor,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
+                        ],
+                      ),
+                    );
 
-                  if (hidden) {
-                    return Opacity(opacity: 0.18, child: IgnorePointer(child: container));
-                  }
+                    if (hidden) {
+                      return Opacity(
+                          opacity: 0.18,
+                          child: IgnorePointer(child: container));
+                    }
 
-                  // A plain GestureDetector's tap recognizer competes with
-                  // InteractiveViewer's pan/scale recognizer in the gesture
-                  // arena, which can eat one-finger drags that start on a
-                  // node. Listener never joins the arena, so panning always
-                  // wins immediately; tap is detected manually instead.
-                  return _NodeTapArea(
-                    onTap: () {
-                      if (storyNode != null) {
-                        _showNodeInfo(context, ref, storyNode, style);
-                      }
-                    },
-                    onDoubleTap: (!isEditMode || storyNode == null)
-                        ? null
-                        : () {
-                            ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
-                            ref.read(homeTabIndexProvider.notifier).state = 0;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(tr(ref, 'node_activated'))),
-                            );
-                          },
-                    child: container,
-                  );
-                },
+                    // A plain GestureDetector's tap recognizer competes with
+                    // InteractiveViewer's pan/scale recognizer in the gesture
+                    // arena, which can eat one-finger drags that start on a
+                    // node. Listener never joins the arena, so panning always
+                    // wins immediately; tap is detected manually instead.
+                    return _NodeTapArea(
+                      onTap: () {
+                        if (storyNode != null) {
+                          _showNodeInfo(context, ref, storyNode, style);
+                        }
+                      },
+                      onDoubleTap: (!isEditMode || storyNode == null)
+                          ? null
+                          : () {
+                              ref
+                                  .read(storyPlayProvider.notifier)
+                                  .jumpTo(storyNode.id);
+                              ref.read(homeTabIndexProvider.notifier).state = 0;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(tr(ref, 'node_activated'))),
+                              );
+                            },
+                      child: container,
+                    );
+                  },
                 ),
                 for (final entry in bandLayout.bandStartY.entries)
                   Positioned(
@@ -421,7 +451,8 @@ class _ChapterJumpBar extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(tr(ref, 'jump_to_chapter_title'), style: Theme.of(context).textTheme.labelLarge),
+            Text(tr(ref, 'jump_to_chapter_title'),
+                style: Theme.of(context).textTheme.labelLarge),
             const SizedBox(height: 6),
             Wrap(
               spacing: 6,
@@ -429,14 +460,17 @@ class _ChapterJumpBar extends ConsumerWidget {
               children: [
                 for (final entry in chapterEntries)
                   ActionChip(
-                    label: Text(entry.key == 0 ? tr(ref, 'chapter_band_prologue') : '${entry.key}'),
+                    label: Text(entry.key == 0
+                        ? tr(ref, 'chapter_band_prologue')
+                        : '${entry.key}'),
                     onPressed: () => onJump(entry.value),
                   ),
               ],
             ),
             const SizedBox(height: 4),
             TextButton.icon(
-              onPressed: () => _showAutoplayChapterPicker(context, ref, chapterEntries),
+              onPressed: () =>
+                  _showAutoplayChapterPicker(context, ref, chapterEntries),
               style: TextButton.styleFrom(
                 visualDensity: VisualDensity.compact,
                 padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -473,7 +507,9 @@ Future<void> _showAutoplayChapterPicker(
             for (final entry in chapterEntries)
               ListTile(
                 title: Text(
-                  entry.key == 0 ? t('chapter_band_prologue') : '${t('chapter_band_prefix')} ${entry.key}',
+                  entry.key == 0
+                      ? t('chapter_band_prologue')
+                      : '${t('chapter_band_prefix')} ${entry.key}',
                 ),
                 onTap: () => Navigator.of(dialogContext).pop(entry.value),
               ),
@@ -498,7 +534,8 @@ Future<void> _showAutoplayChapterPicker(
 /// own construction. Polls the current [AsyncValue] until it settles,
 /// rather than adding a Future-returning method to that shared provider
 /// just for this one caller.
-Future<Map<String, dynamic>> _awaitGameDb(WidgetRef ref, DbSchema schema) async {
+Future<Map<String, dynamic>> _awaitGameDb(
+    WidgetRef ref, DbSchema schema) async {
   for (var i = 0; i < 150; i++) {
     final value = ref.read(gameDbProvider(schema)).value;
     if (value != null) return value;
@@ -576,7 +613,8 @@ Future<void> _runAutoplay(
 /// [InteractiveViewer] for the gesture arena — one-finger drag-to-pan
 /// always starts immediately, even when the drag begins on top of a node.
 class _NodeTapArea extends StatefulWidget {
-  const _NodeTapArea({required this.onTap, this.onDoubleTap, required this.child});
+  const _NodeTapArea(
+      {required this.onTap, this.onDoubleTap, required this.child});
 
   final VoidCallback onTap;
   final VoidCallback? onDoubleTap;
@@ -624,7 +662,8 @@ class _NodeTapAreaState extends State<_NodeTapArea> {
         }
 
         final pending = _pendingTapPosition;
-        if (pending != null && (event.position - pending).distance <= _tapSlop) {
+        if (pending != null &&
+            (event.position - pending).distance <= _tapSlop) {
           _singleTapTimer?.cancel();
           _singleTapTimer = null;
           _pendingTapPosition = null;
@@ -696,13 +735,15 @@ class _Legend extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
+                Text(tr(ref, 'legend_title'),
+                    style: Theme.of(context).textTheme.labelLarge),
                 const SizedBox(width: 12),
                 InkWell(
                   onTap: onClose,
                   child: Tooltip(
                     message: tr(ref, 'close_legend'),
-                    child: Icon(Icons.close, size: 16, color: colorScheme.outline),
+                    child:
+                        Icon(Icons.close, size: 16, color: colorScheme.outline),
                   ),
                 ),
               ],
@@ -724,14 +765,19 @@ class _Legend extends ConsumerWidget {
                           height: 14,
                           decoration: BoxDecoration(
                             color: entry.value.color,
-                            borderRadius: BorderRadius.circular(entry.value.radius / 2),
+                            borderRadius:
+                                BorderRadius.circular(entry.value.radius / 2),
                           ),
                         ),
                         const SizedBox(width: 6),
                         Text(
                           tr(ref, _nodeKindLabelKey(entry.key)),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                decoration: hidden ? TextDecoration.lineThrough : null,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                decoration:
+                                    hidden ? TextDecoration.lineThrough : null,
                               ),
                         ),
                       ],
@@ -753,13 +799,17 @@ class _Legend extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(tr(ref, 'main_story_beat'), style: Theme.of(context).textTheme.bodySmall),
+                Text(tr(ref, 'main_story_beat'),
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
             const SizedBox(height: 4),
             Text(
               tr(ref, 'tap_to_filter'),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: colorScheme.outline),
             ),
           ],
         ),
@@ -804,7 +854,9 @@ Future<void> _showNodeInfo(
                     ),
                     const SizedBox(width: 8),
                     if (isMainBeatNode(node.id))
-                      Chip(label: Text(t('main_beat_chip')), visualDensity: VisualDensity.compact),
+                      Chip(
+                          label: Text(t('main_beat_chip')),
+                          visualDensity: VisualDensity.compact),
                   ],
                 ),
                 if (node.hasRequirements) ...[
@@ -821,7 +873,8 @@ Future<void> _showNodeInfo(
                 const SizedBox(height: 12),
                 Text(node.descriptionFor(french)),
                 const SizedBox(height: 16),
-                Text(t('choices_label'), style: Theme.of(innerContext).textTheme.titleMedium),
+                Text(t('choices_label'),
+                    style: Theme.of(innerContext).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 if (node.choices.isEmpty)
                   Text(t('no_choices_ending'))

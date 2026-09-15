@@ -9,17 +9,23 @@ import '../app_info.dart';
 
 const String _owner = 'warning18';
 const String _repo = 'NarrativeApp';
-const String _releasesApiUrl = 'https://api.github.com/repos/$_owner/$_repo/releases/latest';
+const String _releasesApiUrl =
+    'https://api.github.com/repos/$_owner/$_repo/releases/latest';
 
-Map<String, String> _authHeaders(String? githubToken, {String accept = 'application/vnd.github+json'}) {
+Map<String, String> _authHeaders(String? githubToken,
+    {String accept = 'application/vnd.github+json'}) {
   return {
     'Accept': accept,
-    if (githubToken != null && githubToken.isNotEmpty) 'Authorization': 'Bearer $githubToken',
+    if (githubToken != null && githubToken.isNotEmpty)
+      'Authorization': 'Bearer $githubToken',
   };
 }
 
 class UpdateInfo {
-  const UpdateInfo({required this.version, required this.downloadUrl, required this.assetId});
+  const UpdateInfo(
+      {required this.version,
+      required this.downloadUrl,
+      required this.assetId});
 
   final String version;
 
@@ -38,7 +44,12 @@ class UpdateInfo {
 bool isNewerVersion(String remote, String local) {
   List<int> parts(String v) {
     final clean = v.startsWith('v') ? v.substring(1) : v;
-    return clean.split('+').first.split('.').map((p) => int.tryParse(p) ?? 0).toList();
+    return clean
+        .split('+')
+        .first
+        .split('.')
+        .map((p) => int.tryParse(p) ?? 0)
+        .toList();
   }
 
   final r = parts(remote);
@@ -73,13 +84,16 @@ Future<UpdateInfo?> checkForUpdate({String? githubToken}) async {
   final tagName = json['tag_name']?.toString() ?? '';
   if (tagName.isEmpty || !isNewerVersion(tagName, AppInfo.version)) return null;
 
-  final assets = (json['assets'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
-  final apkAsset = assets.where((a) => (a['name']?.toString() ?? '').endsWith('.apk'));
+  final assets =
+      (json['assets'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+  final apkAsset =
+      assets.where((a) => (a['name']?.toString() ?? '').endsWith('.apk'));
   if (apkAsset.isEmpty) return null;
 
   final downloadUrl = apkAsset.first['browser_download_url']?.toString();
   final assetId = (apkAsset.first['id'] as num?)?.toInt();
-  if (downloadUrl == null || downloadUrl.isEmpty || assetId == null) return null;
+  if (downloadUrl == null || downloadUrl.isEmpty || assetId == null)
+    return null;
 
   return UpdateInfo(
     version: tagName.startsWith('v') ? tagName.substring(1) : tagName,
@@ -102,10 +116,12 @@ Future<String> downloadApk(
   void Function(double)? onProgress,
 }) async {
   final uri = githubToken != null && githubToken.isNotEmpty
-      ? Uri.parse('https://api.github.com/repos/$_owner/$_repo/releases/assets/${info.assetId}')
+      ? Uri.parse(
+          'https://api.github.com/repos/$_owner/$_repo/releases/assets/${info.assetId}')
       : Uri.parse(info.downloadUrl);
   final request = http.Request('GET', uri)
-    ..headers.addAll(_authHeaders(githubToken, accept: 'application/octet-stream'));
+    ..headers
+        .addAll(_authHeaders(githubToken, accept: 'application/octet-stream'));
   final response = await http.Client().send(request);
   if (response.statusCode != 200) {
     throw Exception('Download failed with status ${response.statusCode}');

@@ -12,7 +12,8 @@ class LevelUpScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final notifier = ref.read(playerSessionProvider.notifier);
 
-    Widget statRow(String label, IconData icon, String valueText, String statKey) {
+    Widget statRow(
+        String label, IconData icon, String valueText, String statKey) {
       return Card(
         child: ListTile(
           leading: Icon(icon),
@@ -24,7 +25,9 @@ class LevelUpScreen extends ConsumerWidget {
                     await notifier.spendStatPoint(stat: statKey);
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('$label ${tr(ref, 'increased_suffix')}')),
+                      SnackBar(
+                          content:
+                              Text('$label ${tr(ref, 'increased_suffix')}')),
                     );
                   }
                 : null,
@@ -34,8 +37,9 @@ class LevelUpScreen extends ConsumerWidget {
       );
     }
 
-    final xpRatio =
-        session.xpToNextLevel == 0 ? 0.0 : session.currentXP / session.xpToNextLevel;
+    final xpRatio = session.xpToNextLevel == 0
+        ? 0.0
+        : session.currentXP / session.xpToNextLevel;
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'level_up'))),
@@ -47,7 +51,8 @@ class LevelUpScreen extends ConsumerWidget {
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 4),
-          Text('${tr(ref, 'xp_label')}: ${session.currentXP} / ${session.xpToNextLevel}'),
+          Text(
+              '${tr(ref, 'xp_label')}: ${session.currentXP} / ${session.xpToNextLevel}'),
           const SizedBox(height: 8),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -59,8 +64,10 @@ class LevelUpScreen extends ConsumerWidget {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           const SizedBox(height: 8),
-          statRow(tr(ref, 'base_damage_label'), Icons.gavel, '${session.baseDamage}', 'damage'),
-          statRow(tr(ref, 'base_armor_label'), Icons.shield, '${session.baseArmor}', 'armor'),
+          statRow(tr(ref, 'base_damage_label'), Icons.gavel,
+              '${session.baseDamage}', 'damage'),
+          statRow(tr(ref, 'base_armor_label'), Icons.shield,
+              '${session.baseArmor}', 'armor'),
           statRow(
             tr(ref, 'max_health_label'),
             Icons.favorite,

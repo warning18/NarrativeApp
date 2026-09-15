@@ -8,7 +8,8 @@ import '../providers/player_session_provider.dart';
 /// spend their new stat point(s) immediately, right in the modal, or close
 /// it and distribute them later from the Level Up screen — either way the
 /// points aren't lost.
-Future<void> showLevelUpDialog(BuildContext context, WidgetRef ref, {required int newLevel}) {
+Future<void> showLevelUpDialog(BuildContext context, WidgetRef ref,
+    {required int newLevel}) {
   return showDialog<void>(
     context: context,
     builder: (context) => _LevelUpDialog(newLevel: newLevel),
@@ -37,7 +38,9 @@ class _LevelUpDialog extends ConsumerWidget {
         subtitle: Text(valueText),
         trailing: ElevatedButton(
           onPressed: enabled
-              ? () => ref.read(playerSessionProvider.notifier).spendStatPoint(stat: statKey)
+              ? () => ref
+                  .read(playerSessionProvider.notifier)
+                  .spendStatPoint(stat: statKey)
               : null,
           child: Text(tr(ref, 'plus_one_point')),
         ),
@@ -52,7 +55,8 @@ class _LevelUpDialog extends ConsumerWidget {
 
     return AlertDialog(
       icon: const Icon(Icons.military_tech, size: 36),
-      title: Text('${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel'),
+      title: Text(
+          '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -96,7 +100,8 @@ class _LevelUpDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).maybePop(),
-          child: Text(tr(ref, hasPoints ? 'distribute_later_button' : 'close_button')),
+          child: Text(
+              tr(ref, hasPoints ? 'distribute_later_button' : 'close_button')),
         ),
       ],
     );

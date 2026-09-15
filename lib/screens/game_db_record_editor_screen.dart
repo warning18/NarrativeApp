@@ -21,10 +21,12 @@ class GameDbRecordEditorScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic>? initialRecord;
 
   @override
-  ConsumerState<GameDbRecordEditorScreen> createState() => _GameDbRecordEditorScreenState();
+  ConsumerState<GameDbRecordEditorScreen> createState() =>
+      _GameDbRecordEditorScreenState();
 }
 
-class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScreen> {
+class _GameDbRecordEditorScreenState
+    extends ConsumerState<GameDbRecordEditorScreen> {
   final Map<String, TextEditingController> _textControllers = {};
   final Map<String, bool> _boolValues = {};
   final Map<String, String> _enumValues = {};
@@ -41,19 +43,23 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
       final value = record[field.key];
       switch (field.type) {
         case FieldType.boolean:
-          _boolValues[field.key] = value as bool? ?? (field.defaultValue as bool? ?? false);
+          _boolValues[field.key] =
+              value as bool? ?? (field.defaultValue as bool? ?? false);
           break;
         case FieldType.enumeration:
         case FieldType.reference:
           _enumValues[field.key] = (value as String?) ??
               (field.defaultValue as String?) ??
-              (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty
+              (field.type == FieldType.enumeration &&
+                      field.enumOptions.isNotEmpty
                   ? field.enumOptions.first
                   : '');
           break;
         case FieldType.stringList:
-          final list = (value as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
-          _textControllers[field.key] = TextEditingController(text: list.join(', '));
+          final list = (value as List?)?.map((e) => e.toString()).toList() ??
+              const <String>[];
+          _textControllers[field.key] =
+              TextEditingController(text: list.join(', '));
           break;
         case FieldType.referenceList:
         case FieldType.multiEnum:
@@ -61,8 +67,9 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
               (value as List?)?.map((e) => e.toString()).toList() ?? <String>[];
           break;
         case FieldType.json:
-          final encoded =
-              value == null ? '[]' : const JsonEncoder.withIndent('  ').convert(value);
+          final encoded = value == null
+              ? '[]'
+              : const JsonEncoder.withIndent('  ').convert(value);
           _textControllers[field.key] = TextEditingController(text: encoded);
           break;
         case FieldType.text:
@@ -77,7 +84,9 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           _textControllers[field.key] = TextEditingController(
             text: value != null
                 ? value.toString()
-                : (field.defaultValue != null ? field.defaultValue.toString() : ''),
+                : (field.defaultValue != null
+                    ? field.defaultValue.toString()
+                    : ''),
           );
           break;
       }
@@ -105,8 +114,11 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           break;
         case FieldType.stringList:
           final raw = _textControllers[field.key]!.text;
-          result[field.key] =
-              raw.split(',').map((s) => s.trim()).where((s) => s.isNotEmpty).toList();
+          result[field.key] = raw
+              .split(',')
+              .map((s) => s.trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
           break;
         case FieldType.referenceList:
         case FieldType.multiEnum:
@@ -137,9 +149,11 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
       }
     }
 
-    final newKey = (result[widget.schema.primaryKeyField]?.toString() ?? '').trim();
+    final newKey =
+        (result[widget.schema.primaryKeyField]?.toString() ?? '').trim();
     if (newKey.isEmpty) {
-      setState(() => _error = 'The "${widget.schema.primaryKeyField}" field cannot be empty.');
+      setState(() => _error =
+          'The "${widget.schema.primaryKeyField}" field cannot be empty.');
       return;
     }
 
@@ -180,9 +194,12 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isNew ? 'New ${widget.schema.label} entry' : (widget.recordKey ?? '')),
+        title: Text(_isNew
+            ? 'New ${widget.schema.label} entry'
+            : (widget.recordKey ?? '')),
         actions: [
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
+          IconButton(
+              icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
         ],
       ),
       body: ListView(
@@ -191,7 +208,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: Text(_error!, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+              child: Text(_error!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error)),
             ),
           ...widget.schema.fields.map(_buildField),
         ],
@@ -210,8 +228,9 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
       case FieldType.enumeration:
         final options = field.enumOptions;
         final current = _enumValues[field.key];
-        final dropdownValue =
-            options.contains(current) ? current : (options.isNotEmpty ? options.first : null);
+        final dropdownValue = options.contains(current)
+            ? current
+            : (options.isNotEmpty ? options.first : null);
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: DropdownButtonFormField<String>(
@@ -220,17 +239,21 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             // stay reactive to _enumValues.
             // ignore: deprecated_member_use
             value: dropdownValue,
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
             items: options
-                .map((option) => DropdownMenuItem(value: option, child: Text(option)))
+                .map((option) =>
+                    DropdownMenuItem(value: option, child: Text(option)))
                 .toList(),
-            onChanged: (value) => setState(() => _enumValues[field.key] = value ?? ''),
+            onChanged: (value) =>
+                setState(() => _enumValues[field.key] = value ?? ''),
           ),
         );
       case FieldType.reference:
         final options = _referenceOptions(field.referenceSchemaId ?? '');
         final current = _enumValues[field.key] ?? '';
-        final dropdownValue = current.isEmpty || options.contains(current) ? current : '';
+        final dropdownValue =
+            current.isEmpty || options.contains(current) ? current : '';
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: DropdownButtonFormField<String>(
@@ -238,16 +261,20 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             // just an initial seed.
             // ignore: deprecated_member_use
             value: dropdownValue,
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
             items: [
               const DropdownMenuItem(value: '', child: Text('(none)')),
-              ...options.map((option) => DropdownMenuItem(value: option, child: Text(option))),
+              ...options.map((option) =>
+                  DropdownMenuItem(value: option, child: Text(option))),
             ],
-            onChanged: (value) => setState(() => _enumValues[field.key] = value ?? ''),
+            onChanged: (value) =>
+                setState(() => _enumValues[field.key] = value ?? ''),
           ),
         );
       case FieldType.referenceList:
-        return _buildMultiSelect(field, _referenceOptions(field.referenceSchemaId ?? ''));
+        return _buildMultiSelect(
+            field, _referenceOptions(field.referenceSchemaId ?? ''));
       case FieldType.multiEnum:
         return _buildMultiSelect(field, field.enumOptions);
       case FieldType.stringList:
@@ -283,7 +310,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             controller: _textControllers[field.key],
             minLines: 2,
             maxLines: 6,
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
           ),
         );
       case FieldType.integer:
@@ -292,7 +320,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           child: TextField(
             controller: _textControllers[field.key],
             keyboardType: const TextInputType.numberWithOptions(signed: true),
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
           ),
         );
       case FieldType.decimal:
@@ -300,8 +329,10 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           padding: const EdgeInsets.only(bottom: 12),
           child: TextField(
             controller: _textControllers[field.key],
-            keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            keyboardType: const TextInputType.numberWithOptions(
+                signed: true, decimal: true),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
           ),
         );
       case FieldType.text:
@@ -309,7 +340,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
           padding: const EdgeInsets.only(bottom: 12),
           child: TextField(
             controller: _textControllers[field.key],
-            decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+            decoration: InputDecoration(
+                labelText: field.label, border: const OutlineInputBorder()),
           ),
         );
       case FieldType.image:
@@ -343,11 +375,13 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
 
   Widget _buildMultiSelect(FieldSchema field, List<String> availableOptions) {
     final selected = _multiSelectValues[field.key] ?? const <String>[];
-    final addable = availableOptions.where((o) => !selected.contains(o)).toList();
+    final addable =
+        availableOptions.where((o) => !selected.contains(o)).toList();
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: InputDecorator(
-        decoration: InputDecoration(labelText: field.label, border: const OutlineInputBorder()),
+        decoration: InputDecoration(
+            labelText: field.label, border: const OutlineInputBorder()),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -371,7 +405,9 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
             if (selected.isNotEmpty) const SizedBox(height: 8),
             if (addable.isEmpty)
               Text(
-                selected.isEmpty ? 'Nothing available to add yet.' : 'All options added.',
+                selected.isEmpty
+                    ? 'Nothing available to add yet.'
+                    : 'All options added.',
                 style: Theme.of(context).textTheme.bodySmall,
               )
             else
@@ -380,7 +416,8 @@ class _GameDbRecordEditorScreenState extends ConsumerState<GameDbRecordEditorScr
                 hint: const Text('Add...'),
                 value: null,
                 items: addable
-                    .map((option) => DropdownMenuItem(value: option, child: Text(option)))
+                    .map((option) =>
+                        DropdownMenuItem(value: option, child: Text(option)))
                     .toList(),
                 onChanged: (value) {
                   if (value == null) return;
@@ -404,7 +441,9 @@ class _ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final path = filename.trim().isEmpty ? null : '${visualAssetFolder(schema)}${filename.trim()}';
+    final path = filename.trim().isEmpty
+        ? null
+        : '${visualAssetFolder(schema)}${filename.trim()}';
     return Container(
       width: 48,
       height: 48,
@@ -414,7 +453,8 @@ class _ImagePreview extends StatelessWidget {
       ),
       clipBehavior: Clip.antiAlias,
       child: path == null
-          ? Icon(Icons.image_outlined, color: Theme.of(context).colorScheme.outline)
+          ? Icon(Icons.image_outlined,
+              color: Theme.of(context).colorScheme.outline)
           : Image.asset(
               path,
               fit: BoxFit.cover,

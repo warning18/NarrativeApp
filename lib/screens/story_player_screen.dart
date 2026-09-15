@@ -102,7 +102,8 @@ class _StoryView extends ConsumerWidget {
     final playState = ref.watch(storyPlayProvider);
     final notifier = ref.read(storyPlayProvider.notifier);
     final session = ref.watch(playerSessionProvider);
-    final node = playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
+    final node =
+        playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
     final displayDescription = node == null
@@ -121,7 +122,8 @@ class _StoryView extends ConsumerWidget {
     // Stop any in-progress narration when the story moves to a different
     // node, so stale audio never plays over newly-displayed text.
     ref.listen<StoryPlayState>(storyPlayProvider, (previous, next) {
-      final prevId = previous?.activeExcursionNode?.id ?? previous?.currentNodeId;
+      final prevId =
+          previous?.activeExcursionNode?.id ?? previous?.currentNodeId;
       final nextId = next.activeExcursionNode?.id ?? next.currentNodeId;
       if (prevId != nextId) {
         _stopAllNarration(ref);
@@ -161,7 +163,8 @@ class _StoryView extends ConsumerWidget {
     // rebuild is cheap.
     final geminiVoiceForPreload = ref.watch(geminiVoiceSettingsProvider);
     final apiKeyForPreload = ref.watch(apiKeyProvider);
-    if (geminiVoiceForPreload.enabled && (apiKeyForPreload?.isNotEmpty ?? false)) {
+    if (geminiVoiceForPreload.enabled &&
+        (apiKeyForPreload?.isNotEmpty ?? false)) {
       ref.read(geminiTtsProvider.notifier).preload(
             text: storyBodyFor(displayDescription),
             apiKey: apiKeyForPreload!,
@@ -182,7 +185,8 @@ class _StoryView extends ConsumerWidget {
           ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
           ref.read(geminiTtsProvider.notifier).stop();
           try {
-            await _speakNarration(ref, storyBodyFor(displayDescription), language);
+            await _speakNarration(
+                ref, storyBodyFor(displayDescription), language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
             // failure here must still surface — otherwise it just looks
@@ -213,7 +217,9 @@ class _StoryView extends ConsumerWidget {
             else if (statusBarCollapsed)
               InkWell(
                 borderRadius: BorderRadius.circular(8),
-                onTap: () => ref.read(_statusBarCollapsedProvider.notifier).state = false,
+                onTap: () => ref
+                    .read(_statusBarCollapsedProvider.notifier)
+                    .state = false,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Center(
@@ -234,7 +240,9 @@ class _StoryView extends ConsumerWidget {
                 children: [
                   InkWell(
                     borderRadius: BorderRadius.circular(8),
-                    onTap: () => ref.read(_statusBarCollapsedProvider.notifier).state = true,
+                    onTap: () => ref
+                        .read(_statusBarCollapsedProvider.notifier)
+                        .state = true,
                     child: const PlayerStatsBar(),
                   ),
                   if (session.activeQuestIds.isNotEmpty ||
@@ -247,16 +255,20 @@ class _StoryView extends ConsumerWidget {
                         if (session.activeQuestIds.isNotEmpty)
                           ActionChip(
                             avatar: const Icon(Icons.assignment, size: 16),
-                            label:
-                                Text('${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                            onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
+                            label: Text(
+                                '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                            onPressed: () => ref
+                                .read(homeTabIndexProvider.notifier)
+                                .state = 1,
                           ),
                         if (session.unlockedShopIds.isNotEmpty)
                           ActionChip(
                             avatar: const Icon(Icons.storefront, size: 16),
-                            label:
-                                Text('${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                            onPressed: () => ref.read(homeTabIndexProvider.notifier).state = 1,
+                            label: Text(
+                                '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                            onPressed: () => ref
+                                .read(homeTabIndexProvider.notifier)
+                                .state = 1,
                           ),
                       ],
                     ),
@@ -275,13 +287,17 @@ class _StoryView extends ConsumerWidget {
                       label: Text(tr(ref, 'back')),
                     ),
                   const Spacer(),
-                  _ReadAloudButton(text: displayDescription, language: language),
+                  _ReadAloudButton(
+                      text: displayDescription, language: language),
                   const SizedBox(width: 4),
                   Text(
-                    playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
+                    playState.isInExcursion
+                        ? tr(ref, 'detour')
+                        : '${tr(ref, 'node')} ${node.id}',
                     style: Theme.of(context).textTheme.labelMedium,
                   ),
-                  if (!playState.isInExcursion && ref.watch(appModeProvider) == AppMode.edit) ...[
+                  if (!playState.isInExcursion &&
+                      ref.watch(appModeProvider) == AppMode.edit) ...[
                     const SizedBox(width: 4),
                     IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
@@ -311,25 +327,29 @@ class _StoryView extends ConsumerWidget {
                   if (notification is ScrollUpdateNotification &&
                       (notification.scrollDelta ?? 0) > 0) {
                     if (!statusBarCollapsed) {
-                      ref.read(_statusBarCollapsedProvider.notifier).state = true;
+                      ref.read(_statusBarCollapsedProvider.notifier).state =
+                          true;
                     }
                     if (!companionCollapsed) {
-                      ref.read(_companionCollapsedProvider.notifier).state = true;
+                      ref.read(_companionCollapsedProvider.notifier).state =
+                          true;
                     }
                   }
                   return false;
                 },
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onDoubleTap: () => ref.read(_fullscreenReadingProvider.notifier).state =
-                      !fullscreenReading,
+                  onDoubleTap: () => ref
+                      .read(_fullscreenReadingProvider.notifier)
+                      .state = !fullscreenReading,
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 320),
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
                     transitionBuilder: _nodeTransition,
                     child: SingleChildScrollView(
-                      key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
+                      key: ValueKey(
+                          '${node.id}_${playState.isInExcursion}_text'),
                       child: _StoryText(text: displayDescription),
                     ),
                   ),
@@ -342,18 +362,27 @@ class _StoryView extends ConsumerWidget {
                   WalkingCompanionStrip(
                     trigger: '${node.id}_${playState.isInExcursion}',
                     fightAvailable: node.choices.any(
-                      (c) => c.triggersCombat &&
-                          !_isChoiceLocked(c, story, session, playState.isInExcursion),
+                      (c) =>
+                          c.triggersCombat &&
+                          !_isChoiceLocked(
+                              c, story, session, playState.isInExcursion),
                     ),
                   ),
                 Align(
                   alignment: Alignment.center,
                   child: IconButton(
-                    icon: Icon(companionCollapsed ? Icons.expand_more : Icons.expand_less),
-                    tooltip: tr(ref, companionCollapsed ? 'show_companion' : 'hide_companion'),
+                    icon: Icon(companionCollapsed
+                        ? Icons.expand_more
+                        : Icons.expand_less),
+                    tooltip: tr(
+                        ref,
+                        companionCollapsed
+                            ? 'show_companion'
+                            : 'hide_companion'),
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => ref.read(_companionCollapsedProvider.notifier).state =
-                        !companionCollapsed,
+                    onPressed: () => ref
+                        .read(_companionCollapsedProvider.notifier)
+                        .state = !companionCollapsed,
                   ),
                 ),
               ] else
@@ -364,7 +393,8 @@ class _StoryView extends ConsumerWidget {
                 switchOutCurve: Curves.easeIn,
                 transitionBuilder: _nodeTransition,
                 child: Column(
-                  key: ValueKey('${node.id}_${playState.isInExcursion}_choices'),
+                  key:
+                      ValueKey('${node.id}_${playState.isInExcursion}_choices'),
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (node.choices.isEmpty)
@@ -372,7 +402,8 @@ class _StoryView extends ConsumerWidget {
                         title: tr(ref, 'the_end'),
                         message: tr(ref, 'branch_end_message'),
                         restartLabel: tr(ref, 'restart_story'),
-                        onRestart: () => notifier.restart(StoryRepository.startNodeId),
+                        onRestart: () =>
+                            notifier.restart(StoryRepository.startNodeId),
                         session: session,
                       )
                     else
@@ -411,7 +442,8 @@ bool _isChoiceLocked(
   PlayerSession session,
   bool isExcursion,
 ) {
-  final targetNode = (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
+  final targetNode =
+      (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
   return targetNode != null &&
       targetNode.hasRequirements &&
       !session.meetsRequirements(
@@ -426,7 +458,8 @@ bool _isChoiceLocked(
 /// different node (or leaves/enters an excursion), for both the narrative
 /// text and the choice list below it.
 Widget _nodeTransition(Widget child, Animation<double> animation) {
-  final offset = Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero).animate(animation);
+  final offset = Tween<Offset>(begin: const Offset(0, 0.04), end: Offset.zero)
+      .animate(animation);
   return FadeTransition(
     opacity: animation,
     child: SlideTransition(position: offset, child: child),
@@ -446,7 +479,8 @@ class _StaggeredReveal extends StatefulWidget {
   State<_StaggeredReveal> createState() => _StaggeredRevealState();
 }
 
-class _StaggeredRevealState extends State<_StaggeredReveal> with SingleTickerProviderStateMixin {
+class _StaggeredRevealState extends State<_StaggeredReveal>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _opacity;
   late final Animation<Offset> _offset;
@@ -454,7 +488,8 @@ class _StaggeredRevealState extends State<_StaggeredReveal> with SingleTickerPro
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
     _opacity = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
     _offset = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
@@ -500,7 +535,9 @@ class _ChoiceButton extends ConsumerWidget {
     final locked = _isChoiceLocked(choice, story, session, isExcursion);
 
     final lockedLabel = locked ? choice.lockedTextFor(french) : null;
-    final label = (lockedLabel?.isNotEmpty ?? false) ? lockedLabel! : choice.textFor(french);
+    final label = (lockedLabel?.isNotEmpty ?? false)
+        ? lockedLabel!
+        : choice.textFor(french);
 
     if (choice.triggersCombat) {
       // Keep the enemies database warm so it's ready by the time this
@@ -516,7 +553,8 @@ class _ChoiceButton extends ConsumerWidget {
                 await ref.read(playerSessionProvider.notifier).resetSession();
                 if (!context.mounted) return;
                 final started = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(builder: (_) => const RaceProfessionScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const RaceProfessionScreen()),
                 );
                 if (started != true) return;
                 // Show the guided tour once the player is back on the story
@@ -532,7 +570,8 @@ class _ChoiceButton extends ConsumerWidget {
 
               if (choice.triggersCombat) {
                 final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
-                final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
+                final enemy =
+                    enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
                 if (enemy != null) {
                   ref.read(combatActiveProvider.notifier).state = true;
                   if (!context.mounted) return;
@@ -570,12 +609,16 @@ class _ChoiceButton extends ConsumerWidget {
                   // Silent — no popup here (the discovery modal below already
                   // covers "something new happened"); the Achievements
                   // screen is where this becomes visible.
-                  await ref.read(playerSessionProvider.notifier).checkAchievements();
+                  await ref
+                      .read(playerSessionProvider.notifier)
+                      .checkAchievements();
                 }
                 final newShopId = choice.unlockShopId ?? '';
                 final newQuestId = choice.unlockQuestId ?? '';
-                if (!isExcursion && (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
-                  ref.read(pendingDiscoveryProvider.notifier).state = PendingDiscovery(
+                if (!isExcursion &&
+                    (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
+                  ref.read(pendingDiscoveryProvider.notifier).state =
+                      PendingDiscovery(
                     shopId: newShopId.isNotEmpty ? newShopId : null,
                     questId: newQuestId.isNotEmpty ? newQuestId : null,
                   );
@@ -594,12 +637,15 @@ class _ChoiceButton extends ConsumerWidget {
 
               final chapter = chapterForNode(currentNodeId);
               if (chapter != null && !choice.opensCharacterCreation) {
-                final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
-                final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
-                final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
+                final shops =
+                    ref.read(gameDbProvider(shopsSchema)).value ?? const {};
+                final enemies =
+                    ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
+                final quests =
+                    ref.read(gameDbProvider(questsSchema)).value ?? const {};
                 final manualTheme = ref.read(mapThemeProvider);
-                final resolvedTheme =
-                    manualTheme ?? mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
+                final resolvedTheme = manualTheme ??
+                    mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
                 final excursion = SubNodeEngine.maybeGenerate(
                   random: Random(),
                   chapter: chapter,
@@ -644,8 +690,9 @@ class _ReadAloudButton extends ConsumerWidget {
 
     final geminiState = useGemini ? ref.watch(geminiTtsProvider) : null;
     final isLoading = geminiState == GeminiTtsPlaybackState.loading;
-    final isSpeaking =
-        useGemini ? geminiState != GeminiTtsPlaybackState.idle : ref.watch(ttsProvider);
+    final isSpeaking = useGemini
+        ? geminiState != GeminiTtsPlaybackState.idle
+        : ref.watch(ttsProvider);
 
     return IconButton(
       icon: isLoading
@@ -654,10 +701,16 @@ class _ReadAloudButton extends ConsumerWidget {
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
-          : Icon(isSpeaking ? Icons.stop_circle_outlined : Icons.volume_up_outlined, size: 18),
+          : Icon(
+              isSpeaking
+                  ? Icons.stop_circle_outlined
+                  : Icons.volume_up_outlined,
+              size: 18),
       tooltip: isLoading
           ? tr(ref, 'loading_voice_tooltip')
-          : (isSpeaking ? tr(ref, 'stop_reading_tooltip') : tr(ref, 'read_aloud_tooltip')),
+          : (isSpeaking
+              ? tr(ref, 'stop_reading_tooltip')
+              : tr(ref, 'read_aloud_tooltip')),
       visualDensity: VisualDensity.compact,
       onPressed: () async {
         if (useGemini) {
@@ -701,7 +754,8 @@ class _ReadAloudButton extends ConsumerWidget {
 final RegExp _storyHeaderPattern = RegExp(r'^\[(.+?)\]\s*');
 
 /// This node's `[CHAPTER N: TITLE]`-style leading header, if present.
-String? storyHeaderFor(String text) => _storyHeaderPattern.firstMatch(text)?.group(1);
+String? storyHeaderFor(String text) =>
+    _storyHeaderPattern.firstMatch(text)?.group(1);
 
 /// This node's narrative text with any leading `[CHAPTER N: TITLE]`-style
 /// header stripped off — used both for on-screen rendering and for what
@@ -725,7 +779,8 @@ List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
   final firstSentenceEnd = firstSentenceMatch?.end ?? 0;
 
   final quoteRanges = <List<int>>[
-    for (final m in RegExp('["“][^"”]{3,}["”]').allMatches(body)) [m.start, m.end],
+    for (final m in RegExp('["“][^"”]{3,}["”]').allMatches(body))
+      [m.start, m.end],
   ];
 
   final breakpoints = <int>{0, firstSentenceEnd, body.length};
@@ -767,10 +822,10 @@ class _StoryText extends StatelessWidget {
     final body = storyBodyFor(text);
     final colorScheme = Theme.of(context).colorScheme;
     final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          fontFamily: 'serif',
-          height: 1.55,
-          letterSpacing: 0.2,
-        ) ??
+              fontFamily: 'serif',
+              height: 1.55,
+              letterSpacing: 0.2,
+            ) ??
         const TextStyle();
 
     return Container(
@@ -858,8 +913,10 @@ class _EndingView extends ConsumerWidget {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       const SizedBox(height: 8),
-                      Text('${tr(ref, 'final_level_label')}: ${recapSession.level}'),
-                      Text('${tr(ref, 'final_gold_label')}: ${recapSession.gold}'),
+                      Text(
+                          '${tr(ref, 'final_level_label')}: ${recapSession.level}'),
+                      Text(
+                          '${tr(ref, 'final_gold_label')}: ${recapSession.gold}'),
                       Text(
                         '${tr(ref, 'final_alignment_label')}: '
                         '${trAlignmentLabel(ref, recapSession.alignmentLabel)} '
@@ -900,7 +957,8 @@ Future<void> _showDiscoveryModal(
   final shopId = discovery.shopId;
   final questId = discovery.questId;
   final shop = shopId != null ? shops[shopId] as Map<String, dynamic>? : null;
-  final quest = questId != null ? quests[questId] as Map<String, dynamic>? : null;
+  final quest =
+      questId != null ? quests[questId] as Map<String, dynamic>? : null;
   final session = ref.read(playerSessionProvider);
   // In play mode a shop is only reachable from the node that unlocked it
   // (see PlayerSession.shopUnlockNodeIds) — walking away without opening it
@@ -909,11 +967,14 @@ Future<void> _showDiscoveryModal(
   final isPlayMode = ref.read(appModeProvider) == AppMode.inGame;
   final showMaybeLater = !(isPlayMode && shopId != null);
 
-  final questActive = questId != null && session.activeQuestIds.contains(questId);
-  final questCompleted = questId != null && session.completedQuestIds.contains(questId);
+  final questActive =
+      questId != null && session.activeQuestIds.contains(questId);
+  final questCompleted =
+      questId != null && session.completedQuestIds.contains(questId);
   final requiredGold = (quest?['requiredGold'] as num?)?.toInt() ?? 0;
   final requiredFlags =
-      (quest?['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
+      (quest?['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ??
+          const <String>[];
   final questEligible = questId != null &&
       !questActive &&
       !questCompleted &&
@@ -948,18 +1009,25 @@ Future<void> _showDiscoveryModal(
       rows: [
         if (category != null && category.isNotEmpty)
           MapEntry(trFor(lang, 'category_label'), category),
-        if (requiredGold > 0) MapEntry(trFor(lang, 'required_gold_label'), '$requiredGold'),
+        if (requiredGold > 0)
+          MapEntry(trFor(lang, 'required_gold_label'), '$requiredGold'),
         if (requiredFlags.isNotEmpty)
-          MapEntry(trFor(lang, 'required_flags_label'), requiredFlags.join(', ')),
-        if (rewardGold > 0) MapEntry(trFor(lang, 'reward_gold_label'), '$rewardGold'),
+          MapEntry(
+              trFor(lang, 'required_flags_label'), requiredFlags.join(', ')),
+        if (rewardGold > 0)
+          MapEntry(trFor(lang, 'reward_gold_label'), '$rewardGold'),
         if (rewardXp > 0) MapEntry(trFor(lang, 'reward_xp_label'), '$rewardXp'),
-        if (rewardItemId.isNotEmpty) MapEntry(trFor(lang, 'reward_item_label'), rewardItemId),
-        if (rewardDiceId.isNotEmpty) MapEntry(trFor(lang, 'reward_dice_label'), rewardDiceId),
+        if (rewardItemId.isNotEmpty)
+          MapEntry(trFor(lang, 'reward_item_label'), rewardItemId),
+        if (rewardDiceId.isNotEmpty)
+          MapEntry(trFor(lang, 'reward_dice_label'), rewardDiceId),
         MapEntry(
           trFor(lang, 'status_label'),
           questCompleted
               ? trFor(lang, 'status_completed')
-              : (questActive ? trFor(lang, 'status_active') : trFor(lang, 'status_available')),
+              : (questActive
+                  ? trFor(lang, 'status_active')
+                  : trFor(lang, 'status_available')),
         ),
       ],
       extraActionLabel: questEligible ? trFor(lang, 'accept') : null,
@@ -1005,7 +1073,9 @@ Future<void> _showDiscoveryModal(
             onPressed: () {
               Navigator.pop(dialogContext);
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop)),
+                MaterialPageRoute(
+                    builder: (_) =>
+                        ShopDetailScreen(shopId: shopId, shop: shop)),
               );
             },
             child: Text(trFor(lang, 'open_shop_button')),

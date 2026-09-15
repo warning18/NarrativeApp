@@ -32,7 +32,8 @@ class SubNodeEngine {
 
     final flavor = flavorFor(theme);
 
-    final shopPool = shops.keys.where((id) => !unlockedShopIds.contains(id)).toList();
+    final shopPool =
+        shops.keys.where((id) => !unlockedShopIds.contains(id)).toList();
     // Unfiltered, this could roll a late-game enemy (e.g. a 230hp/27dmg
     // chapter-5 monster) into the very first chapter-1 excursion -- an
     // unwinnable fight for a level-1 character with no way to decline it
@@ -42,7 +43,9 @@ class SubNodeEngine {
         .where((e) => !unlockedEnemyIds.contains(e.key))
         .where((e) {
           final minChapter =
-              ((e.value as Map<String, dynamic>)['minChapter'] as num?)?.toInt() ?? 1;
+              ((e.value as Map<String, dynamic>)['minChapter'] as num?)
+                      ?.toInt() ??
+                  1;
           return minChapter <= chapter;
         })
         .map((e) => e.key)
@@ -70,7 +73,8 @@ class SubNodeEngine {
     // Sable choice) -- worth surfacing over an ordinary side quest instead
     // of leaving it to compete equally in the full pool.
     final recruitQuestPool = questPool.where((id) {
-      final rewardAllyId = (quests[id] as Map<String, dynamic>?)?['rewardAllyId']?.toString();
+      final rewardAllyId =
+          (quests[id] as Map<String, dynamic>?)?['rewardAllyId']?.toString();
       return rewardAllyId != null && rewardAllyId.isNotEmpty;
     }).toList();
     final questSlotId = !includeQuest
@@ -182,7 +186,11 @@ class SubNodeEngine {
         description: flavor.rest[idx],
         descriptionFr: flavor.restFr[idx],
         choices: const [
-          StoryChoice(text: 'Rest a while', textFr: 'Se reposer un moment', nextId: '', healAmount: 20),
+          StoryChoice(
+              text: 'Rest a while',
+              textFr: 'Se reposer un moment',
+              nextId: '',
+              healAmount: 20),
         ],
       );
     }

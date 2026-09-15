@@ -19,12 +19,15 @@ class StoryChoice {
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
     return StoryChoice(
       text: json['text'] as String? ?? '',
-      nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID']) as String? ?? '',
+      nextId: (json['next_id'] ?? json['nextEventId'] ?? json['nextEventID'])
+              as String? ??
+          '',
       goldMod: (json['goldMod'] as num?)?.toInt() ?? 0,
       alignmentMod: (json['alignmentMod'] as num?)?.toInt() ?? 0,
       healAmount: (json['healAmount'] as num?)?.toInt() ?? 0,
       flagsToAdd:
-          (json['flagsToAdd'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['flagsToAdd'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       questIDToProgress: json['questIDToProgress'] as String?,
       lockedText: json['lockedText'] as String?,
       triggerEnemyId: json['triggerEnemyId'] as String?,
@@ -55,7 +58,8 @@ class StoryChoice {
   /// Optional French translation of [lockedText]; falls back to English when absent.
   final String? lockedTextFr;
 
-  String textFor(bool french) => french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
+  String textFor(bool french) =>
+      french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
 
   String? lockedTextFor(bool french) =>
       french && (lockedTextFr?.isNotEmpty ?? false) ? lockedTextFr : lockedText;
@@ -70,15 +74,22 @@ class StoryChoice {
         if (flagsToAdd.isNotEmpty) 'flagsToAdd': flagsToAdd,
         if (questIDToProgress != null && questIDToProgress!.isNotEmpty)
           'questIDToProgress': questIDToProgress,
-        if (lockedText != null && lockedText!.isNotEmpty) 'lockedText': lockedText,
-        if (lockedTextFr != null && lockedTextFr!.isNotEmpty) 'lockedText_fr': lockedTextFr,
-        if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty) 'triggerEnemyId': triggerEnemyId,
-        if (unlockShopId != null && unlockShopId!.isNotEmpty) 'unlockShopId': unlockShopId,
-        if (unlockQuestId != null && unlockQuestId!.isNotEmpty) 'unlockQuestId': unlockQuestId,
-        if (opensCharacterCreation) 'opensCharacterCreation': opensCharacterCreation,
+        if (lockedText != null && lockedText!.isNotEmpty)
+          'lockedText': lockedText,
+        if (lockedTextFr != null && lockedTextFr!.isNotEmpty)
+          'lockedText_fr': lockedTextFr,
+        if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty)
+          'triggerEnemyId': triggerEnemyId,
+        if (unlockShopId != null && unlockShopId!.isNotEmpty)
+          'unlockShopId': unlockShopId,
+        if (unlockQuestId != null && unlockQuestId!.isNotEmpty)
+          'unlockQuestId': unlockQuestId,
+        if (opensCharacterCreation)
+          'opensCharacterCreation': opensCharacterCreation,
       };
 
-  bool get triggersCombat => triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
+  bool get triggersCombat =>
+      triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
 
   bool get hasUnlocks =>
       triggersCombat ||
@@ -115,7 +126,8 @@ class StoryNode {
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
     final choicesJson =
-        (json['choices'] ?? json['possibleChoices']) as List<dynamic>? ?? const [];
+        (json['choices'] ?? json['possibleChoices']) as List<dynamic>? ??
+            const [];
     final taxonomy = json['context_taxonomy'] as Map<String, dynamic>?;
     final automations = json['automations'] as Map<String, dynamic>?;
     return StoryNode(
@@ -127,7 +139,9 @@ class StoryNode {
       reqGold: (json['reqGold'] as num?)?.toInt() ?? 0,
       reqAlignmentScore: (json['reqAlignmentScore'] as num?)?.toInt(),
       reqAlignmentMax: (json['reqAlignmentMax'] as num?)?.toInt(),
-      reqFlags: (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      reqFlags:
+          (json['reqFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       descriptionFr: json['description_fr'] as String?,
       uiTheme: taxonomy?['ui_theme'] as String?,
       mood: taxonomy?['mood'] as String?,
@@ -173,15 +187,21 @@ class StoryNode {
   final String? scriptTrigger;
 
   String descriptionFor(bool french) =>
-      french && (descriptionFr?.isNotEmpty ?? false) ? descriptionFr! : description;
+      french && (descriptionFr?.isNotEmpty ?? false)
+          ? descriptionFr!
+          : description;
 
   bool get hasRequirements =>
-      reqGold > 0 || reqAlignmentScore != null || reqAlignmentMax != null || reqFlags.isNotEmpty;
+      reqGold > 0 ||
+      reqAlignmentScore != null ||
+      reqAlignmentMax != null ||
+      reqFlags.isNotEmpty;
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'description': description,
-        if (descriptionFr != null && descriptionFr!.isNotEmpty) 'description_fr': descriptionFr,
+        if (descriptionFr != null && descriptionFr!.isNotEmpty)
+          'description_fr': descriptionFr,
         if (uiTheme != null || mood != null || speaker != null)
           'context_taxonomy': {
             if (uiTheme != null) 'ui_theme': uiTheme,

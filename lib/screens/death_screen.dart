@@ -32,7 +32,8 @@ class DeathScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.dangerous, color: Colors.redAccent, size: 64),
+                  const Icon(Icons.dangerous,
+                      color: Colors.redAccent, size: 64),
                   const SizedBox(height: 16),
                   Text(
                     tr(ref, 'you_died_title'),
@@ -103,7 +104,8 @@ class _StatLine extends StatelessWidget {
           Text(label, style: const TextStyle(color: Colors.white70)),
           Text(
             value,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ],
       ),

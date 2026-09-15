@@ -29,4 +29,5 @@ class CompanionNameNotifier extends StateNotifier<String> {
 /// (generic "your companion" phrasing is used instead). Persisted via
 /// [SharedPreferences].
 final companionNameProvider =
-    StateNotifierProvider<CompanionNameNotifier, String>((ref) => CompanionNameNotifier());
+    StateNotifierProvider<CompanionNameNotifier, String>(
+        (ref) => CompanionNameNotifier());

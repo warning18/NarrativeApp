@@ -38,7 +38,11 @@ class CampScreen extends ConsumerWidget {
     final gameConfig = gameConfigAsync.value;
     final achievements = achievementsAsync.value ?? const {};
 
-    if (companions == null || houses == null || races == null || professions == null || gameConfig == null) {
+    if (companions == null ||
+        houses == null ||
+        races == null ||
+        professions == null ||
+        gameConfig == null) {
       return Scaffold(
         appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
         body: const Center(child: CircularProgressIndicator()),
@@ -48,10 +52,15 @@ class CampScreen extends ConsumerWidget {
     final partyCapacity = _basePartyCapacity +
         houses.values
             .whereType<Map<String, dynamic>>()
-            .where((h) => session.builtHouseIds.contains(h['houseID']?.toString() ?? ''))
-            .fold<int>(0, (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
+            .where((h) =>
+                session.builtHouseIds.contains(h['houseID']?.toString() ?? ''))
+            .fold<int>(
+                0,
+                (sum, h) =>
+                    sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 
-    final recruitedIds = session.recruitedAllies.map((a) => a.companionId).toList()..sort();
+    final recruitedIds =
+        session.recruitedAllies.map((a) => a.companionId).toList()..sort();
 
     // Rest is a safe-haven action -- it shouldn't be reachable while a fight
     // or an expedition is actively in progress. In practice both already
@@ -69,7 +78,8 @@ class CampScreen extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(tr(ref, 'roster_section'), style: Theme.of(context).textTheme.titleMedium),
+              Text(tr(ref, 'roster_section'),
+                  style: Theme.of(context).textTheme.titleMedium),
               Text(
                 '${tr(ref, 'active_party_label')}: '
                 '${session.activeAllyIds.length} / $partyCapacity',
@@ -84,7 +94,9 @@ class CampScreen extends ConsumerWidget {
               onPressed: restBlocked
                   ? null
                   : () async {
-                      await ref.read(playerSessionProvider.notifier).healPartyToFull();
+                      await ref
+                          .read(playerSessionProvider.notifier)
+                          .healPartyToFull();
                       if (!context.mounted) return;
                       showImmersiveNotice(
                         context,
@@ -104,33 +116,45 @@ class CampScreen extends ConsumerWidget {
             )
           else
             ...recruitedIds.map((companionId) {
-              final companion = companions[companionId] as Map<String, dynamic>?;
-              final ally = session.recruitedAllies.firstWhere((a) => a.companionId == companionId);
+              final companion =
+                  companions[companionId] as Map<String, dynamic>?;
+              final ally = session.recruitedAllies
+                  .firstWhere((a) => a.companionId == companionId);
               final raceId = companion?['raceId']?.toString() ?? '';
               final professionId = companion?['professionId']?.toString() ?? '';
               final race = races[raceId] as Map<String, dynamic>? ?? const {};
-              final profession = professions[professionId] as Map<String, dynamic>? ?? const {};
-              final base =
-                  deriveAllyBaseStats(gameConfig: gameConfig, race: race, profession: profession);
-              final liveMaxHealth = scaledMaxHealth(base.maxHealth, session.level);
+              final profession =
+                  professions[professionId] as Map<String, dynamic>? ??
+                      const {};
+              final base = deriveAllyBaseStats(
+                  gameConfig: gameConfig, race: race, profession: profession);
+              final liveMaxHealth =
+                  scaledMaxHealth(base.maxHealth, session.level);
               final liveHealth = ally.currentHealth.clamp(0, liveMaxHealth);
               final raceName = race['raceName']?.toString() ?? raceId;
-              final professionName = profession['professionName']?.toString() ?? professionId;
+              final professionName =
+                  profession['professionName']?.toString() ?? professionId;
               final isActive = session.activeAllyIds.contains(companionId);
-              final requiredHouseId = companion?['requiredHouseId']?.toString() ?? '';
-              final requiredHouseBuilt =
-                  requiredHouseId.isEmpty || session.builtHouseIds.contains(requiredHouseId);
+              final requiredHouseId =
+                  companion?['requiredHouseId']?.toString() ?? '';
+              final requiredHouseBuilt = requiredHouseId.isEmpty ||
+                  session.builtHouseIds.contains(requiredHouseId);
               final requiredHouseName = requiredHouseId.isNotEmpty
-                  ? ((houses[requiredHouseId] as Map<String, dynamic>?)?['houseName']?.toString() ??
+                  ? ((houses[requiredHouseId]
+                              as Map<String, dynamic>?)?['houseName']
+                          ?.toString() ??
                       requiredHouseId)
                   : null;
-              final atCapacity = !isActive && session.activeAllyIds.length >= partyCapacity;
-              final canActivate = !isActive && requiredHouseBuilt && !atCapacity;
+              final atCapacity =
+                  !isActive && session.activeAllyIds.length >= partyCapacity;
+              final canActivate =
+                  !isActive && requiredHouseBuilt && !atCapacity;
 
               String lockReason = '';
               if (!isActive) {
                 if (!requiredHouseBuilt) {
-                  lockReason = '${tr(ref, 'requires_house_prefix')}: $requiredHouseName';
+                  lockReason =
+                      '${tr(ref, 'requires_house_prefix')}: $requiredHouseName';
                 } else if (atCapacity) {
                   lockReason = tr(ref, 'party_at_capacity');
                 }
@@ -141,8 +165,10 @@ class CampScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ListTile(
-                      leading: Icon(isActive ? Icons.shield : Icons.shield_outlined),
-                      title: Text(companion?['companionName']?.toString() ?? companionId),
+                      leading:
+                          Icon(isActive ? Icons.shield : Icons.shield_outlined),
+                      title: Text(companion?['companionName']?.toString() ??
+                          companionId),
                       subtitle: Text(
                         '$raceName $professionName · $liveHealth / $liveMaxHealth '
                         '${tr(ref, 'hp_label')}'
@@ -150,35 +176,44 @@ class CampScreen extends ConsumerWidget {
                       ),
                       isThreeLine: lockReason.isNotEmpty,
                       trailing: FilterChip(
-                        label: Text(isActive ? tr(ref, 'active_label') : tr(ref, 'benched_label')),
+                        label: Text(isActive
+                            ? tr(ref, 'active_label')
+                            : tr(ref, 'benched_label')),
                         selected: isActive,
                         onSelected: (!isActive && !canActivate)
                             ? null
                             : (_) async {
                                 final wasActive = isActive;
-                                await ref.read(playerSessionProvider.notifier).setAllyActive(
+                                await ref
+                                    .read(playerSessionProvider.notifier)
+                                    .setAllyActive(
                                       companionId,
                                       !wasActive,
                                       partyCapacity: partyCapacity,
                                       requiredHouseId: requiredHouseId,
                                     );
                                 if (wasActive) return;
-                                final newAchievements =
-                                    await ref.read(playerSessionProvider.notifier).checkAchievements();
-                                if (newAchievements.isEmpty || !context.mounted) return;
-                                _showAchievementNotice(context, ref, achievements, newAchievements);
+                                final newAchievements = await ref
+                                    .read(playerSessionProvider.notifier)
+                                    .checkAchievements();
+                                if (newAchievements.isEmpty || !context.mounted)
+                                  return;
+                                _showAchievementNotice(context, ref,
+                                    achievements, newAchievements);
                               },
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                       child: Row(
                         children: [
                           Expanded(
                             child: TextButton.icon(
                               onPressed: () => Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => InventoryScreen(allyId: companionId),
+                                  builder: (_) =>
+                                      InventoryScreen(allyId: companionId),
                                 ),
                               ),
                               icon: const Icon(Icons.backpack_outlined),
@@ -189,7 +224,8 @@ class CampScreen extends ConsumerWidget {
                             child: TextButton.icon(
                               onPressed: () => Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => SkillsScreen(allyId: companionId),
+                                  builder: (_) =>
+                                      SkillsScreen(allyId: companionId),
                                 ),
                               ),
                               icon: const Icon(Icons.auto_awesome_outlined),
@@ -200,13 +236,15 @@ class CampScreen extends ConsumerWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                      padding:
+                          const EdgeInsets.only(left: 8, right: 8, bottom: 8),
                       child: SizedBox(
                         width: double.infinity,
                         child: TextButton.icon(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => DiceLoadoutScreen(allyId: companionId),
+                              builder: (_) =>
+                                  DiceLoadoutScreen(allyId: companionId),
                             ),
                           ),
                           icon: const Icon(Icons.casino_outlined),
@@ -219,19 +257,22 @@ class CampScreen extends ConsumerWidget {
               );
             }),
           const Divider(height: 32),
-          Text(tr(ref, 'houses_section'), style: Theme.of(context).textTheme.titleMedium),
+          Text(tr(ref, 'houses_section'),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           ...(houses.keys.toList()..sort()).map((houseId) {
             final house = houses[houseId] as Map<String, dynamic>;
             final houseName = house['houseName']?.toString() ?? houseId;
             final description = house['description']?.toString() ?? '';
             final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-            final capacityBonus = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+            final capacityBonus =
+                (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
             final built = session.builtHouseIds.contains(houseId);
             final affordable = session.gold >= cost;
 
             final statsParts = <String>[
-              if (capacityBonus > 0) '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
+              if (capacityBonus > 0)
+                '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
             ];
 
             return Card(
@@ -254,21 +295,25 @@ class CampScreen extends ConsumerWidget {
                                 await ref
                                     .read(playerSessionProvider.notifier)
                                     .buildHouse(houseId, cost);
-                                final newAchievements =
-                                    await ref.read(playerSessionProvider.notifier).checkAchievements();
+                                final newAchievements = await ref
+                                    .read(playerSessionProvider.notifier)
+                                    .checkAchievements();
                                 if (!context.mounted) return;
-                                final achievementSuffix = newAchievements.isEmpty
+                                final achievementSuffix = newAchievements
+                                        .isEmpty
                                     ? ''
                                     : '\n${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: '
                                         '${newAchievements.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
                                 showImmersiveNotice(
                                   context,
                                   icon: Icons.home,
-                                  message: '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: '
+                                  message:
+                                      '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: '
                                       '$houseName$achievementSuffix',
                                 );
                               },
-                        child: Text('${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
+                        child: Text(
+                            '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
                       ),
               ),
             );
@@ -286,11 +331,15 @@ void _showAchievementNotice(
   List<String> newlyUnlockedIds,
 ) {
   final names = newlyUnlockedIds
-      .map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id)
+      .map((id) =>
+          (achievements[id] as Map<String, dynamic>?)?['achievementName']
+              ?.toString() ??
+          id)
       .join(', ');
   showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
-    message: '${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: $names',
+    message:
+        '${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: $names',
   );
 }

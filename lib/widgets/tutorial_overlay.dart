@@ -11,7 +11,8 @@ final List<String> _tutorialFrames = companionFrames('Walking/north', 8);
 const double _tutorialMascotSize = 192;
 
 class _TutorialStep {
-  const _TutorialStep({required this.icon, required this.titleKey, required this.bodyKey});
+  const _TutorialStep(
+      {required this.icon, required this.titleKey, required this.bodyKey});
 
   final IconData icon;
   final String titleKey;
@@ -57,9 +58,11 @@ Future<void> showTutorialOverlay(BuildContext context, WidgetRef ref) {
     barrierLabel: 'Tutorial',
     barrierColor: Colors.black.withValues(alpha: 0.85),
     transitionDuration: const Duration(milliseconds: 220),
-    pageBuilder: (context, animation, secondaryAnimation) => const _TutorialDialog(),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const _TutorialDialog(),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
-      final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutBack);
+      final curved =
+          CurvedAnimation(parent: animation, curve: Curves.easeOutBack);
       return FadeTransition(
         opacity: animation,
         child: ScaleTransition(
@@ -86,7 +89,8 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
   @override
   void initState() {
     super.initState();
-    _walkController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+    _walkController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200))
       ..repeat();
   }
 
@@ -123,7 +127,9 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: colorScheme.primary.withValues(alpha: 0.6), width: 1.5),
+              border: Border.all(
+                  color: colorScheme.primary.withValues(alpha: 0.6),
+                  width: 1.5),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),
@@ -139,7 +145,8 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
                   animation: _walkController,
                   builder: (context, _) {
                     final frame =
-                        (_walkController.value * _tutorialFrames.length).floor() %
+                        (_walkController.value * _tutorialFrames.length)
+                                .floor() %
                             _tutorialFrames.length;
                     return Image.asset(
                       _tutorialFrames[frame],
@@ -192,7 +199,9 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
                         height: 7,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: i == _step ? colorScheme.primary : colorScheme.outlineVariant,
+                          color: i == _step
+                              ? colorScheme.primary
+                              : colorScheme.outlineVariant,
                         ),
                       ),
                   ],
@@ -200,7 +209,9 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
                 const SizedBox(height: 20),
                 Row(
                   children: [
-                    TextButton(onPressed: _finish, child: Text(tr(ref, 'tutorial_skip_button'))),
+                    TextButton(
+                        onPressed: _finish,
+                        child: Text(tr(ref, 'tutorial_skip_button'))),
                     const Spacer(),
                     FilledButton(
                       onPressed: () {
@@ -211,7 +222,9 @@ class _TutorialDialogState extends ConsumerState<_TutorialDialog>
                         }
                       },
                       child: Text(
-                        isLast ? tr(ref, 'tutorial_done_button') : tr(ref, 'tutorial_next_button'),
+                        isLast
+                            ? tr(ref, 'tutorial_done_button')
+                            : tr(ref, 'tutorial_next_button'),
                       ),
                     ),
                   ],

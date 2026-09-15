@@ -16,12 +16,13 @@ class TutorialSettings {
   /// time In-Game mode is entered). Reset from Settings to replay it.
   final bool seen;
 
-  TutorialSettings copyWith({bool? enabled, bool? seen}) =>
-      TutorialSettings(enabled: enabled ?? this.enabled, seen: seen ?? this.seen);
+  TutorialSettings copyWith({bool? enabled, bool? seen}) => TutorialSettings(
+      enabled: enabled ?? this.enabled, seen: seen ?? this.seen);
 }
 
 class TutorialNotifier extends StateNotifier<TutorialSettings> {
-  TutorialNotifier() : super(const TutorialSettings(enabled: true, seen: false)) {
+  TutorialNotifier()
+      : super(const TutorialSettings(enabled: true, seen: false)) {
     _load();
   }
 
@@ -56,4 +57,5 @@ class TutorialNotifier extends StateNotifier<TutorialSettings> {
 }
 
 final tutorialProvider =
-    StateNotifierProvider<TutorialNotifier, TutorialSettings>((ref) => TutorialNotifier());
+    StateNotifierProvider<TutorialNotifier, TutorialSettings>(
+        (ref) => TutorialNotifier());

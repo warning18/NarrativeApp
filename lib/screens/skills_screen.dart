@@ -36,7 +36,8 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     });
   }
 
-  void _onCompareTap(BuildContext context, Map<String, dynamic> records, String skillId) {
+  void _onCompareTap(
+      BuildContext context, Map<String, dynamic> records, String skillId) {
     if (_firstCompareId == null) {
       setState(() => _firstCompareId = skillId);
       return;
@@ -46,7 +47,8 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     final skillA = records[firstId] as Map<String, dynamic>?;
     final skillB = records[skillId] as Map<String, dynamic>?;
     final lang = ref.read(appLanguageProvider);
-    num v(Map<String, dynamic>? skill, String key) => (skill?[key] as num?) ?? 0;
+    num v(Map<String, dynamic>? skill, String key) =>
+        (skill?[key] as num?) ?? 0;
     showCompareDialog(
       context,
       titleA: firstId,
@@ -87,32 +89,41 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
 
-    final companion =
-        widget.allyId != null ? companions[widget.allyId] as Map<String, dynamic>? : null;
+    final companion = widget.allyId != null
+        ? companions[widget.allyId] as Map<String, dynamic>?
+        : null;
     final ally = widget.allyId != null
         ? session.recruitedAllies.firstWhere(
             (a) => a.companionId == widget.allyId,
-            orElse: () => AllyState(companionId: widget.allyId!, currentHealth: 0),
+            orElse: () =>
+                AllyState(companionId: widget.allyId!, currentHealth: 0),
           )
         : null;
 
-    final raceId = ally != null ? (companion?['raceId']?.toString() ?? '') : session.raceId;
-    final professionId =
-        ally != null ? (companion?['professionId']?.toString() ?? '') : session.professionId;
+    final raceId = ally != null
+        ? (companion?['raceId']?.toString() ?? '')
+        : session.raceId;
+    final professionId = ally != null
+        ? (companion?['professionId']?.toString() ?? '')
+        : session.professionId;
     final skillPoints = ally?.skillPoints ?? session.skillPoints;
     final unlockedSkillIds = ally?.unlockedSkillIds ?? session.unlockedSkillIds;
-    final titleSuffix =
-        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
+    final titleSuffix = widget.allyId != null
+        ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}'
+        : '';
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${tr(ref, 'skills')}$titleSuffix'),
         actions: [
           IconButton(
-            icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
+            icon: Icon(_compareMode
+                ? Icons.compare_arrows
+                : Icons.compare_arrows_outlined),
             tooltip: tr(ref, 'compare_button'),
             onPressed: _toggleCompareMode,
           ),
@@ -157,14 +168,16 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                     ? (id) => ref
                         .read(playerSessionProvider.notifier)
                         .unlockAllySkill(widget.allyId!, id)
-                    : (id) => ref.read(playerSessionProvider.notifier).unlockSkill(id),
+                    : (id) => ref
+                        .read(playerSessionProvider.notifier)
+                        .unlockSkill(id),
                 compareMode: _compareMode,
                 firstCompareId: _firstCompareId,
                 onCompareTap: (id) => _onCompareTap(context, records, id),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) =>
-                  Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+              error: (error, stack) => Center(
+                  child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
             ),
           ),
         ],
@@ -219,9 +232,12 @@ class _SkillList extends ConsumerWidget {
 
     bool meetsRestriction(Map<String, dynamic> skill) {
       final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
-      if (restrictedRaceId.isNotEmpty && restrictedRaceId != raceId) return false;
-      final restrictedProfessionId = skill['restrictedProfessionID']?.toString() ?? '';
-      if (restrictedProfessionId.isNotEmpty && restrictedProfessionId != professionId) {
+      if (restrictedRaceId.isNotEmpty && restrictedRaceId != raceId)
+        return false;
+      final restrictedProfessionId =
+          skill['restrictedProfessionID']?.toString() ?? '';
+      if (restrictedProfessionId.isNotEmpty &&
+          restrictedProfessionId != professionId) {
         return false;
       }
       return true;
@@ -229,16 +245,23 @@ class _SkillList extends ConsumerWidget {
 
     String restrictionLabel(Map<String, dynamic> skill) {
       final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
-      final restrictedProfessionId = skill['restrictedProfessionID']?.toString() ?? '';
+      final restrictedProfessionId =
+          skill['restrictedProfessionID']?.toString() ?? '';
       if (restrictedRaceId.isEmpty && restrictedProfessionId.isEmpty) return '';
       final race = races[restrictedRaceId] as Map<String, dynamic>?;
-      final profession = professions[restrictedProfessionId] as Map<String, dynamic>?;
-      final raceName =
-          restrictedRaceId.isNotEmpty ? (race?['raceName']?.toString() ?? restrictedRaceId) : null;
-      final professionName = restrictedProfessionId.isNotEmpty
-          ? (profession?['professionName']?.toString() ?? restrictedProfessionId)
+      final profession =
+          professions[restrictedProfessionId] as Map<String, dynamic>?;
+      final raceName = restrictedRaceId.isNotEmpty
+          ? (race?['raceName']?.toString() ?? restrictedRaceId)
           : null;
-      return '${tr(ref, 'reserved_prefix')}: ${[raceName, professionName].whereType<String>().join(' · ')}';
+      final professionName = restrictedProfessionId.isNotEmpty
+          ? (profession?['professionName']?.toString() ??
+              restrictedProfessionId)
+          : null;
+      return '${tr(ref, 'reserved_prefix')}: ${[
+        raceName,
+        professionName
+      ].whereType<String>().join(' · ')}';
     }
 
     return ListView(
@@ -250,7 +273,8 @@ class _SkillList extends ConsumerWidget {
         final cost = (skill['cost'] as num?)?.toInt() ?? 0;
         final requiredSkillId = skill['requiredSkillID']?.toString() ?? '';
         final available = isAvailable(id);
-        final prereqMet = requiredSkillId.isEmpty || isAvailable(requiredSkillId);
+        final prereqMet =
+            requiredSkillId.isEmpty || isAvailable(requiredSkillId);
         final restrictionOk = meetsRestriction(skill);
         final restriction = restrictionLabel(skill);
 
@@ -282,13 +306,16 @@ class _SkillList extends ConsumerWidget {
 
         final subtitleParts = <String>[
           if (description.isNotEmpty) description,
-          if (requiredSkillId.isNotEmpty) '${tr(ref, 'requires_label')} $requiredSkillId',
+          if (requiredSkillId.isNotEmpty)
+            '${tr(ref, 'requires_label')} $requiredSkillId',
           if (restriction.isNotEmpty) restriction,
           '${tr(ref, 'cost_label')}: $cost',
         ];
 
         return Card(
-          color: firstCompareId == id ? Theme.of(context).colorScheme.tertiaryContainer : null,
+          color: firstCompareId == id
+              ? Theme.of(context).colorScheme.tertiaryContainer
+              : null,
           child: ListTile(
             leading: Icon(elementIcon(element)),
             title: Text(id),
@@ -304,14 +331,17 @@ class _SkillList extends ConsumerWidget {
                       icon: elementIcon(element),
                       closeLabel: tr(ref, 'close_button'),
                       rows: [
-                        MapEntry(tr(ref, 'element_label'), element ?? tr(ref, 'none_label')),
+                        MapEntry(tr(ref, 'element_label'),
+                            element ?? tr(ref, 'none_label')),
                         MapEntry(tr(ref, 'cost_label'), '$cost'),
-                        MapEntry(tr(ref, 'damage_mod_label'), '${skill['damageMod'] ?? 0}'),
+                        MapEntry(tr(ref, 'damage_mod_label'),
+                            '${skill['damageMod'] ?? 0}'),
                         MapEntry(
                           tr(ref, 'damage_multiplier_label'),
                           '${skill['damageMultiplier'] ?? 1.0}',
                         ),
-                        MapEntry(tr(ref, 'heal_amount'), '${skill['healAmount'] ?? 0}'),
+                        MapEntry(tr(ref, 'heal_amount'),
+                            '${skill['healAmount'] ?? 0}'),
                         if (requiredSkillId.isNotEmpty)
                           MapEntry(tr(ref, 'requires_label'), requiredSkillId),
                         if (restriction.isNotEmpty)
@@ -324,7 +354,9 @@ class _SkillList extends ConsumerWidget {
                         ),
                         MapEntry(
                           tr(ref, 'status_label'),
-                          available ? tr(ref, 'unlocked_prefix') : tr(ref, 'status_locked'),
+                          available
+                              ? tr(ref, 'unlocked_prefix')
+                              : tr(ref, 'status_locked'),
                         ),
                       ],
                     ),

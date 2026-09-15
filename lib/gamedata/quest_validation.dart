@@ -18,8 +18,10 @@ List<String> validateQuestChapters(Map<String, dynamic> quests) {
         if ((e.value['nextQuestID']?.toString() ?? '').isNotEmpty)
           e.value['nextQuestID'].toString(),
     };
-    final starts =
-        questsInChapter.where((e) => !targeted.contains(e.key)).map((e) => e.key).toList();
+    final starts = questsInChapter
+        .where((e) => !targeted.contains(e.key))
+        .map((e) => e.key)
+        .toList();
     final ends = questsInChapter
         .where((e) => (e.value['nextQuestID']?.toString() ?? '').isEmpty)
         .map((e) => e.key)

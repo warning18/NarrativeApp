@@ -16,7 +16,8 @@ class BrokenReference {
   final String targetId;
 
   @override
-  String toString() => '$fromNodeId -> "$choiceText" -> "$targetId" (no such node)';
+  String toString() =>
+      '$fromNodeId -> "$choiceText" -> "$targetId" (no such node)';
 }
 
 /// Result of a structural audit of the story graph: every choice followed

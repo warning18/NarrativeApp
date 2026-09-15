@@ -7,8 +7,10 @@ import '../providers/companion_name_provider.dart';
 import '../providers/player_session_provider.dart';
 
 final List<String> _neutralWalkFrames = companionFrames('Walking/east', 8);
-final List<String> _fightFrames = companionFrames('Fight_-_Attack/animations/Bark/south', 6);
-const String _neutralIdleSprite = '$companionAssetsRoot/Sitting_down/rotations/south.png';
+final List<String> _fightFrames =
+    companionFrames('Fight_-_Attack/animations/Bark/south', 6);
+const String _neutralIdleSprite =
+    '$companionAssetsRoot/Sitting_down/rotations/south.png';
 
 // A Good/Evil character's companion swaps its neutral dog look for an
 // angelic/demonic one while walking (an 8-frame east-facing cycle each,
@@ -17,8 +19,10 @@ const String _neutralIdleSprite = '$companionAssetsRoot/Sitting_down/rotations/s
 // while idling (a single south-facing pose).
 final List<String> _angelWalkFrames = companionFrames('walking_angel/east', 8);
 final List<String> _demonWalkFrames = companionFrames('walking_evil/east', 8);
-const String _angelIdleSprite = '$companionAssetsRoot/Make_it_with_angel_w/rotations/south.png';
-const String _demonIdleSprite = '$companionAssetsRoot/Make_it_with_demon_w/rotations/south.png';
+const String _angelIdleSprite =
+    '$companionAssetsRoot/Make_it_with_angel_w/rotations/south.png';
+const String _demonIdleSprite =
+    '$companionAssetsRoot/Make_it_with_demon_w/rotations/south.png';
 
 // Every pose's source frames sit on a slightly different native canvas
 // (padding varies per upload), so each is scaled by the same factor
@@ -65,7 +69,8 @@ class WalkingCompanionStrip extends ConsumerStatefulWidget {
   final double height;
 
   @override
-  ConsumerState<WalkingCompanionStrip> createState() => _WalkingCompanionStripState();
+  ConsumerState<WalkingCompanionStrip> createState() =>
+      _WalkingCompanionStripState();
 }
 
 class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
@@ -77,17 +82,20 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
   @override
   void initState() {
     super.initState();
-    _walkOutController = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))
+    _walkOutController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 2600))
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _walkInController.forward(from: 0);
         }
       });
-    _walkInController = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
+    _walkInController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
     // Drives frame cycling for the fighting stance. Only runs while
     // actually fighting (see build's isAnimating guard) so idling doesn't
     // repaint every frame for no reason.
-    _poseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 900));
+    _poseController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900));
     // Walk in and sit down on first appearance too, instead of popping in.
     _walkInController.forward(from: 0);
   }
@@ -140,12 +148,14 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       height: widget.height,
       width: double.infinity,
       child: AnimatedBuilder(
-        animation: Listenable.merge([_walkOutController, _walkInController, _poseController]),
+        animation: Listenable.merge(
+            [_walkOutController, _walkInController, _poseController]),
         builder: (context, _) {
           return LayoutBuilder(
             builder: (context, constraints) {
               final walkingOut = !fighting && _walkOutController.isAnimating;
-              final walkingIn = !fighting && !walkingOut && _walkInController.isAnimating;
+              final walkingIn =
+                  !fighting && !walkingOut && _walkInController.isAnimating;
               final stationary = !fighting && !walkingOut && !walkingIn;
 
               final String framePath;
@@ -153,19 +163,22 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
               double size;
               if (fighting) {
                 final frame =
-                    (_poseController.value * _fightFrames.length).floor() % _fightFrames.length;
+                    (_poseController.value * _fightFrames.length).floor() %
+                        _fightFrames.length;
                 framePath = _fightFrames[frame];
                 size = _restDisplaySize;
               } else if (walkingOut) {
                 final t = Curves.linear.transform(_walkOutController.value);
                 x = (constraints.maxWidth + _maxWalkDisplaySize) * t;
-                final frame = (t * walkFrames.length * 4).floor() % walkFrames.length;
+                final frame =
+                    (t * walkFrames.length * 4).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;
               } else if (walkingIn) {
                 final t = Curves.linear.transform(_walkInController.value);
                 x = -_maxWalkDisplaySize + _maxWalkDisplaySize * t;
-                final frame = (t * walkFrames.length).floor() % walkFrames.length;
+                final frame =
+                    (t * walkFrames.length).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;
               } else {
@@ -200,7 +213,8 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
                       height: size,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.none,
-                      errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox.shrink(),
                     ),
                   ),
                 ],

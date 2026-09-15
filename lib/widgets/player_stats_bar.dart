@@ -33,12 +33,14 @@ class PlayerStatsBar extends ConsumerWidget {
             ),
           ),
           const SizedBox(width: 6),
-          _PulseOnChange(value: session.gold, child: chip(Icons.paid, '${session.gold}g')),
+          _PulseOnChange(
+              value: session.gold, child: chip(Icons.paid, '${session.gold}g')),
           const SizedBox(width: 6),
           chip(Icons.balance, trAlignmentLabel(ref, session.alignmentLabel)),
           if (session.flags.isNotEmpty) ...[
             const SizedBox(width: 6),
-            chip(Icons.flag, '${session.flags.length} ${tr(ref, 'flags_count_label')}'),
+            chip(Icons.flag,
+                '${session.flags.length} ${tr(ref, 'flags_count_label')}'),
           ],
         ],
       ),
@@ -59,21 +61,25 @@ class _PulseOnChange extends StatefulWidget {
   State<_PulseOnChange> createState() => _PulseOnChangeState();
 }
 
-class _PulseOnChangeState extends State<_PulseOnChange> with SingleTickerProviderStateMixin {
+class _PulseOnChangeState extends State<_PulseOnChange>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _scale;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 260));
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 260));
     _scale = TweenSequence<double>([
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 1.25).chain(CurveTween(curve: Curves.easeOut)),
+        tween: Tween(begin: 1.0, end: 1.25)
+            .chain(CurveTween(curve: Curves.easeOut)),
         weight: 1,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: 1.25, end: 1.0).chain(CurveTween(curve: Curves.easeIn)),
+        tween: Tween(begin: 1.25, end: 1.0)
+            .chain(CurveTween(curve: Curves.easeIn)),
         weight: 1,
       ),
     ]).animate(_controller);
@@ -97,7 +103,8 @@ class _PulseOnChangeState extends State<_PulseOnChange> with SingleTickerProvide
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _scale,
-      builder: (context, child) => Transform.scale(scale: _scale.value, child: child),
+      builder: (context, child) =>
+          Transform.scale(scale: _scale.value, child: child),
       child: widget.child,
     );
   }

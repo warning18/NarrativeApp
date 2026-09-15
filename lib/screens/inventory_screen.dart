@@ -37,7 +37,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     });
   }
 
-  void _onCompareTap(BuildContext context, Map<String, dynamic> items, String itemId) {
+  void _onCompareTap(
+      BuildContext context, Map<String, dynamic> items, String itemId) {
     if (_firstCompareId == null) {
       setState(() => _firstCompareId = itemId);
       return;
@@ -64,20 +65,24 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   Widget build(BuildContext context) {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
 
     final companion = widget.allyId != null
         ? companions[widget.allyId] as Map<String, dynamic>?
         : null;
-    final titleSuffix =
-        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
+    final titleSuffix = widget.allyId != null
+        ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}'
+        : '';
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
         actions: [
           IconButton(
-            icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
+            icon: Icon(_compareMode
+                ? Icons.compare_arrows
+                : Icons.compare_arrows_outlined),
             tooltip: tr(ref, 'compare_button'),
             onPressed: _toggleCompareMode,
           ),
@@ -106,15 +111,16 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   companion: companion,
                   compareMode: _compareMode,
                   firstCompareId: _firstCompareId,
-                  onCompareTap: (itemId) => _onCompareTap(context, items, itemId),
+                  onCompareTap: (itemId) =>
+                      _onCompareTap(context, items, itemId),
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) =>
-                    Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+                error: (error, stack) => Center(
+                    child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) =>
-                  Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+              error: (error, stack) => Center(
+                  child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
             ),
           ),
         ],
@@ -125,21 +131,55 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
 /// Stat rows shared by the manual item-vs-item compare dialog and the
 /// automatic item-vs-currently-equipped delta shown in item details.
-List<CompareRow> itemCompareRows(Map<String, dynamic>? a, Map<String, dynamic>? b) {
+List<CompareRow> itemCompareRows(
+    Map<String, dynamic>? a, Map<String, dynamic>? b) {
   num v(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
   return [
-    CompareRow(label: 'ATK', valueA: v(a, 'attackDamage'), valueB: v(b, 'attackDamage')),
+    CompareRow(
+        label: 'ATK',
+        valueA: v(a, 'attackDamage'),
+        valueB: v(b, 'attackDamage')),
     CompareRow(label: 'ARM', valueA: v(a, 'armor'), valueB: v(b, 'armor')),
-    CompareRow(label: 'Fire Dmg', valueA: v(a, 'fireDmgBonus'), valueB: v(b, 'fireDmgBonus')),
-    CompareRow(label: 'Wind Dmg', valueA: v(a, 'windDmgBonus'), valueB: v(b, 'windDmgBonus')),
-    CompareRow(label: 'Earth Dmg', valueA: v(a, 'earthDmgBonus'), valueB: v(b, 'earthDmgBonus')),
-    CompareRow(label: 'Water Dmg', valueA: v(a, 'waterDmgBonus'), valueB: v(b, 'waterDmgBonus')),
-    CompareRow(label: 'Elec Dmg', valueA: v(a, 'elecDmgBonus'), valueB: v(b, 'elecDmgBonus')),
-    CompareRow(label: 'Fire Resist', valueA: v(a, 'fireResist'), valueB: v(b, 'fireResist')),
-    CompareRow(label: 'Wind Resist', valueA: v(a, 'windResist'), valueB: v(b, 'windResist')),
-    CompareRow(label: 'Earth Resist', valueA: v(a, 'earthResist'), valueB: v(b, 'earthResist')),
-    CompareRow(label: 'Water Resist', valueA: v(a, 'waterResist'), valueB: v(b, 'waterResist')),
-    CompareRow(label: 'Elec Resist', valueA: v(a, 'elecResist'), valueB: v(b, 'elecResist')),
+    CompareRow(
+        label: 'Fire Dmg',
+        valueA: v(a, 'fireDmgBonus'),
+        valueB: v(b, 'fireDmgBonus')),
+    CompareRow(
+        label: 'Wind Dmg',
+        valueA: v(a, 'windDmgBonus'),
+        valueB: v(b, 'windDmgBonus')),
+    CompareRow(
+        label: 'Earth Dmg',
+        valueA: v(a, 'earthDmgBonus'),
+        valueB: v(b, 'earthDmgBonus')),
+    CompareRow(
+        label: 'Water Dmg',
+        valueA: v(a, 'waterDmgBonus'),
+        valueB: v(b, 'waterDmgBonus')),
+    CompareRow(
+        label: 'Elec Dmg',
+        valueA: v(a, 'elecDmgBonus'),
+        valueB: v(b, 'elecDmgBonus')),
+    CompareRow(
+        label: 'Fire Resist',
+        valueA: v(a, 'fireResist'),
+        valueB: v(b, 'fireResist')),
+    CompareRow(
+        label: 'Wind Resist',
+        valueA: v(a, 'windResist'),
+        valueB: v(b, 'windResist')),
+    CompareRow(
+        label: 'Earth Resist',
+        valueA: v(a, 'earthResist'),
+        valueB: v(b, 'earthResist')),
+    CompareRow(
+        label: 'Water Resist',
+        valueA: v(a, 'waterResist'),
+        valueB: v(b, 'waterResist')),
+    CompareRow(
+        label: 'Elec Resist',
+        valueA: v(a, 'elecResist'),
+        valueB: v(b, 'elecResist')),
     CompareRow(
       label: 'Cost',
       valueA: v(a, 'cost'),
@@ -190,11 +230,15 @@ class _InventoryBody extends ConsumerWidget {
         ? (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipAllyItem(allyId!, itemId, slot: slot, items: items)
-        : (itemId, {slot}) =>
-            ref.read(playerSessionProvider.notifier).equipItem(itemId, slot: slot, items: items);
+        : (itemId, {slot}) => ref
+            .read(playerSessionProvider.notifier)
+            .equipItem(itemId, slot: slot, items: items);
     void Function(String itemId) unequipFn = allyId != null
-        ? (itemId) => ref.read(playerSessionProvider.notifier).unequipAllyItem(allyId!, itemId)
-        : (itemId) => ref.read(playerSessionProvider.notifier).unequipItem(itemId);
+        ? (itemId) => ref
+            .read(playerSessionProvider.notifier)
+            .unequipAllyItem(allyId!, itemId)
+        : (itemId) =>
+            ref.read(playerSessionProvider.notifier).unequipItem(itemId);
 
     final counts = <String, int>{};
     for (final id in session.inventoryItemIds) {
@@ -204,20 +248,27 @@ class _InventoryBody extends ConsumerWidget {
     final equippedIds = ally?.equippedItemIds ?? session.equippedItemIds;
 
     final allySignatureDiceId = companion?['signatureDiceId']?.toString();
-    final equippedDiceId = allyId != null ? allySignatureDiceId : session.equippedDiceId;
-    final equippedDie = equippedDiceId != null ? dice[equippedDiceId] as Map<String, dynamic>? : null;
-    final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
+    final equippedDiceId =
+        allyId != null ? allySignatureDiceId : session.equippedDiceId;
+    final equippedDie = equippedDiceId != null
+        ? dice[equippedDiceId] as Map<String, dynamic>?
+        : null;
+    final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()
+      ..sort();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(tr(ref, 'equipment_section'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'equipment_section'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         Card(
           child: ListTile(
             leading: const Icon(Icons.casino),
             title: Text(tr(ref, 'dice_label')),
-            subtitle: Text(equippedDie != null ? equippedDiceId! : tr(ref, 'none_equipped')),
+            subtitle: Text(equippedDie != null
+                ? equippedDiceId!
+                : tr(ref, 'none_equipped')),
             // An ally's signature die is fixed at recruitment and never
             // player-swappable, so no edit affordance for that case.
             trailing: allyId != null
@@ -227,13 +278,16 @@ class _InventoryBody extends ConsumerWidget {
                     tooltip: tr(ref, 'choose_die'),
                     onPressed: ownedDiceIds.isEmpty
                         ? null
-                        : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
+                        : () => _pickDice(
+                            context, ref, ownedDiceIds, equippedDiceId),
                   ),
           ),
         ),
         ...equipSlotOptions.map((slot) {
           final equippedId = _equippedInSlot(equippedIds, slot);
-          final equippedItem = equippedId != null ? items[equippedId] as Map<String, dynamic>? : null;
+          final equippedItem = equippedId != null
+              ? items[equippedId] as Map<String, dynamic>?
+              : null;
           final candidates = ownedIds.where((id) {
             final item = items[id] as Map<String, dynamic>?;
             return (item?['isEquippable'] as bool? ?? false) &&
@@ -242,9 +296,11 @@ class _InventoryBody extends ConsumerWidget {
 
           return Card(
             child: ListTile(
-              leading: Icon(itemTypeIcon(equippedItem?['itemType']?.toString())),
+              leading:
+                  Icon(itemTypeIcon(equippedItem?['itemType']?.toString())),
               title: Text(slot),
-              subtitle: Text(equippedItem?['itemName']?.toString() ?? tr(ref, 'empty_slot_label')),
+              subtitle: Text(equippedItem?['itemName']?.toString() ??
+                  tr(ref, 'empty_slot_label')),
               trailing: Wrap(
                 spacing: 4,
                 children: [
@@ -259,7 +315,8 @@ class _InventoryBody extends ConsumerWidget {
                     tooltip: tr(ref, 'choose_item'),
                     onPressed: candidates.isEmpty
                         ? null
-                        : () => _pickForSlot(context, ref, slot, candidates, equippedId, equipFn),
+                        : () => _pickForSlot(context, ref, slot, candidates,
+                            equippedId, equipFn),
                   ),
                 ],
               ),
@@ -267,7 +324,8 @@ class _InventoryBody extends ConsumerWidget {
           );
         }),
         const Divider(height: 32),
-        Text(tr(ref, 'all_items'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'all_items'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         if (ownedIds.isEmpty)
           Padding(
@@ -284,8 +342,9 @@ class _InventoryBody extends ConsumerWidget {
             if (isEquippable && !isEquipped && equipSlot.isNotEmpty) {
               comparisonId = _equippedInSlot(equippedIds, equipSlot);
             }
-            final comparisonItem =
-                comparisonId != null ? items[comparisonId] as Map<String, dynamic>? : null;
+            final comparisonItem = comparisonId != null
+                ? items[comparisonId] as Map<String, dynamic>?
+                : null;
             return _ItemTile(
               itemId: id,
               item: item,
@@ -297,7 +356,9 @@ class _InventoryBody extends ConsumerWidget {
               compareMode: compareMode,
               selectedForCompare: firstCompareId == id,
               onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable && !isEquipped) ? () => equipFn(id, slot: equipSlot) : null,
+              onEquip: (isEquippable && !isEquipped)
+                  ? () => equipFn(id, slot: equipSlot)
+                  : null,
               onUnequip: isEquipped ? () => unequipFn(id) : null,
             );
           }),
@@ -318,14 +379,16 @@ class _InventoryBody extends ConsumerWidget {
         child: ListView(
           shrinkWrap: true,
           children: ownedDiceIds.map((id) {
-            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces'] is List
+            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces']
+                    is List
                 ? ((dice[id] as Map<String, dynamic>)['faces'] as List).length
                 : 0;
             return ListTile(
               leading: const Icon(Icons.casino),
               title: Text(id),
               subtitle: Text('$faceCount $facesLabel'),
-              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              trailing:
+                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
               onTap: () {
                 ref.read(playerSessionProvider.notifier).equipDice(id);
                 Navigator.of(sheetContext).pop();
@@ -356,7 +419,8 @@ class _InventoryBody extends ConsumerWidget {
             return ListTile(
               leading: Icon(itemTypeIcon(item?['itemType']?.toString())),
               title: Text(itemName),
-              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              trailing:
+                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
               onTap: () {
                 equipFn(id, slot: slot);
                 Navigator.of(sheetContext).pop();
@@ -447,8 +511,11 @@ class _ItemTile extends StatelessWidget {
             ? null
             : (onEquip != null || onUnequip != null)
                 ? IconButton(
-                    icon: Icon(onUnequip != null ? Icons.remove_circle_outline : Icons.add_circle_outline),
-                    tooltip: onUnequip != null ? t('unequip') : t('equip_button'),
+                    icon: Icon(onUnequip != null
+                        ? Icons.remove_circle_outline
+                        : Icons.add_circle_outline),
+                    tooltip:
+                        onUnequip != null ? t('unequip') : t('equip_button'),
                     onPressed: onUnequip ?? onEquip,
                   )
                 : null,
@@ -460,29 +527,36 @@ class _ItemTile extends StatelessWidget {
                   icon: itemTypeIcon(itemType),
                   closeLabel: t('close_button'),
                   rows: [
-                    MapEntry(t('item_type_label'), itemType ?? t('unknown_label')),
+                    MapEntry(
+                        t('item_type_label'), itemType ?? t('unknown_label')),
                     MapEntry(t('cost_label'), '${item?['cost'] ?? 0}'),
                     if (equipSlot != null && equipSlot.isNotEmpty)
                       MapEntry(t('equip_slot_label'), equipSlot),
-                    MapEntry(t('attack_damage_label'), _statValue('attackDamage')),
+                    MapEntry(
+                        t('attack_damage_label'), _statValue('attackDamage')),
                     MapEntry(t('armor_label'), _statValue('armor')),
                     for (final entry in {
-                      'fireDmgBonus': t('fire_dmg_label'), 'windDmgBonus': t('wind_dmg_label'),
-                      'earthDmgBonus': t('earth_dmg_label'), 'waterDmgBonus': t('water_dmg_label'),
+                      'fireDmgBonus': t('fire_dmg_label'),
+                      'windDmgBonus': t('wind_dmg_label'),
+                      'earthDmgBonus': t('earth_dmg_label'),
+                      'waterDmgBonus': t('water_dmg_label'),
                       'elecDmgBonus': t('elec_dmg_label'),
                     }.entries)
                       if (((item?[entry.key] as num?) ?? 0) != 0 ||
                           ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
                         MapEntry(entry.value, _statValue(entry.key)),
                     for (final entry in {
-                      'fireResist': t('fire_resist_label'), 'windResist': t('wind_resist_label'),
-                      'earthResist': t('earth_resist_label'), 'waterResist': t('water_resist_label'),
+                      'fireResist': t('fire_resist_label'),
+                      'windResist': t('wind_resist_label'),
+                      'earthResist': t('earth_resist_label'),
+                      'waterResist': t('water_resist_label'),
                       'elecResist': t('elec_resist_label'),
                     }.entries)
                       if (((item?[entry.key] as num?) ?? 0) != 0 ||
                           ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
                         MapEntry(entry.value, _statValue(entry.key)),
-                    if (count != null && count! > 1) MapEntry(t('owned_label'), '$count'),
+                    if (count != null && count! > 1)
+                      MapEntry(t('owned_label'), '$count'),
                   ],
                 ),
       ),

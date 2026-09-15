@@ -22,7 +22,8 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('app launches and renders its main navigation chrome', (WidgetTester tester) async {
+  testWidgets('app launches and renders its main navigation chrome',
+      (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     // A handful of bounded pumps lets async providers (story data load,

@@ -39,7 +39,8 @@ const Map<int, Set<String>> _chapterRoots = {
 /// [row] is its slot within that column, 0-based and always < the grid's
 /// max-per-column cap.
 class GridSlot {
-  const GridSlot({required this.chapter, required this.column, required this.row});
+  const GridSlot(
+      {required this.chapter, required this.column, required this.row});
 
   final int chapter;
   final int column;
@@ -54,7 +55,8 @@ class GridSlot {
 /// would otherwise overflow the cap. A node with no path back to its
 /// chapter's root (a back-reference, a disconnected fragment) still gets
 /// placed — appended past the deepest column reached so nothing is lost.
-Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn = 5}) {
+Map<String, GridSlot> computeChapterGridSlots(StoryData story,
+    {int maxPerColumn = 5}) {
   final byChapter = <int, List<String>>{};
   for (final id in story.nodes.keys) {
     byChapter.putIfAbsent(chapterOfNode(id), () => []).add(id);
@@ -78,8 +80,9 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
   final chapters = byChapter.keys.toList()..sort();
   for (final chapter in chapters) {
     final nodes = byChapter[chapter]!;
-    final roots =
-        (_chapterRoots[chapter] ?? const <String>{}).where(nodes.contains).toList();
+    final roots = (_chapterRoots[chapter] ?? const <String>{})
+        .where(nodes.contains)
+        .toList();
     final effectiveRoots = roots.isNotEmpty ? roots : [nodes.first];
 
     final depth = <String, int>{};
@@ -97,7 +100,8 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
         }
       }
     }
-    var maxSeen = depth.values.isEmpty ? 0 : depth.values.reduce((a, b) => a > b ? a : b);
+    var maxSeen =
+        depth.values.isEmpty ? 0 : depth.values.reduce((a, b) => a > b ? a : b);
     for (final id in nodes) {
       if (!depth.containsKey(id)) {
         maxSeen += 1;
@@ -143,8 +147,7 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
           return rows.reduce((a, b) => a + b) / rows.length;
         }
 
-        members = [...byDepth[d]!]
-          ..sort((a, b) {
+        members = [...byDepth[d]!]..sort((a, b) {
             final cmp = barycenter(a).compareTo(barycenter(b));
             return cmp != 0 ? cmp : a.compareTo(b);
           });
@@ -152,7 +155,8 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
       for (var i = 0; i < members.length; i += maxPerColumn) {
         final chunk = members.skip(i).take(maxPerColumn).toList();
         for (var row = 0; row < chunk.length; row++) {
-          slots[chunk[row]] = GridSlot(chapter: chapter, column: column, row: row);
+          slots[chunk[row]] =
+              GridSlot(chapter: chapter, column: column, row: row);
           placedRow[chunk[row]] = row;
         }
         column += 1;
@@ -200,5 +204,6 @@ ChapterBandLayout computeChapterBandLayout(
     final rows = (maxRowByChapter[chapter] ?? 0) + 1;
     y += rows * rowHeight + chapterGap;
   }
-  return ChapterBandLayout(bandStartY: bandStartY, maxColumn: maxColumn, totalHeight: y);
+  return ChapterBandLayout(
+      bandStartY: bandStartY, maxColumn: maxColumn, totalHeight: y);
 }

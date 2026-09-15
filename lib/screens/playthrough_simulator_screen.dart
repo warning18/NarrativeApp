@@ -222,8 +222,10 @@ _SimResult _simulate(
       final target = story.nodeFor(c.nextId);
       if (target == null || !target.hasRequirements) return true;
       if (gold < target.reqGold) return false;
-      if (target.reqAlignmentScore != null && alignment < target.reqAlignmentScore!) return false;
-      if (target.reqAlignmentMax != null && alignment > target.reqAlignmentMax!) return false;
+      if (target.reqAlignmentScore != null &&
+          alignment < target.reqAlignmentScore!) return false;
+      if (target.reqAlignmentMax != null && alignment > target.reqAlignmentMax!)
+        return false;
       return target.reqFlags.every(flags.contains);
     }
 
@@ -252,7 +254,8 @@ _SimResult _simulate(
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
     if ((choice.unlockShopId ?? '').isNotEmpty) shops.add(choice.unlockShopId!);
-    if ((choice.unlockQuestId ?? '').isNotEmpty) quests.add(choice.unlockQuestId!);
+    if ((choice.unlockQuestId ?? '').isNotEmpty)
+      quests.add(choice.unlockQuestId!);
     if (choice.triggersCombat) combatCount++;
 
     if (choice.isEnding) {
@@ -297,7 +300,8 @@ Map<String, int> _endingCounts(List<_SimResult> results) {
   for (final r in results) {
     counts[r.endingSummary] = (counts[r.endingSummary] ?? 0) + 1;
   }
-  final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+  final entries = counts.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
   return Map.fromEntries(entries);
 }
 
@@ -307,7 +311,8 @@ Map<String, int> _endingCounts(List<_SimResult> results) {
 /// quest" is the closest available proxy for "encountered this companion"),
 /// cross-referenced against [quests] for which quest ids actually grant a
 /// companion (a non-empty `rewardAllyId`). Most-encountered first.
-Map<String, int> _companionEncounterCounts(List<_SimResult> results, Map<String, dynamic> quests) {
+Map<String, int> _companionEncounterCounts(
+    List<_SimResult> results, Map<String, dynamic> quests) {
   final counts = <String, int>{};
   for (final r in results) {
     final companionsThisRun = <String>{};
@@ -320,7 +325,8 @@ Map<String, int> _companionEncounterCounts(List<_SimResult> results, Map<String,
       counts[allyId] = (counts[allyId] ?? 0) + 1;
     }
   }
-  final entries = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+  final entries = counts.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
   return Map.fromEntries(entries);
 }
 
@@ -344,7 +350,8 @@ Color _companionColor(String companionId, Map<String, int> allCounts) {
 /// scan-friendly alternative to the plain uncolored [Text] lines this
 /// section used before.
 class _StatLine extends StatelessWidget {
-  const _StatLine({required this.icon, required this.color, required this.text});
+  const _StatLine(
+      {required this.icon, required this.color, required this.text});
 
   final IconData icon;
   final Color color;
@@ -358,7 +365,8 @@ class _StatLine extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: color),
           const SizedBox(width: 6),
-          Text(text, style: TextStyle(color: color, fontWeight: FontWeight.w600)),
+          Text(text,
+              style: TextStyle(color: color, fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -378,7 +386,8 @@ class _GroupStat {
   int runsReaching = 0;
 }
 
-String _chapterLabel(int? chapter) => chapter == null ? 'Prologue' : 'Chapter $chapter';
+String _chapterLabel(int? chapter) =>
+    chapter == null ? 'Prologue' : 'Chapter $chapter';
 
 /// Buckets every step of every run by the chapter it counts toward,
 /// tracking node/combat counts, gold & alignment swing, and how many runs
@@ -415,7 +424,8 @@ List<_GroupStat> _chapterBreakdown(List<_SimResult> results) {
 /// A simple node-count distribution over some per-step attribute (mood or
 /// location), most-visited first — how much of the story, on average,
 /// reads as "grim" vs "tense", or plays out on the "docks" vs "cathedral".
-List<_GroupStat> _distributionBy(List<_SimResult> results, String? Function(_SimStep) keyOf) {
+List<_GroupStat> _distributionBy(
+    List<_SimResult> results, String? Function(_SimStep) keyOf) {
   final map = <String, _GroupStat>{};
   for (final r in results) {
     for (final s in r.steps) {
@@ -423,7 +433,8 @@ List<_GroupStat> _distributionBy(List<_SimResult> results, String? Function(_Sim
       map.putIfAbsent(key, () => _GroupStat(key)).nodeCount++;
     }
   }
-  final entries = map.values.toList()..sort((a, b) => b.nodeCount.compareTo(a.nodeCount));
+  final entries = map.values.toList()
+    ..sort((a, b) => b.nodeCount.compareTo(a.nodeCount));
   return entries;
 }
 
@@ -455,7 +466,10 @@ class _SimulatorBatchesNotifier extends StateNotifier<List<_SimBatch>> {
   int _nextId = 0;
 
   void addBatch(SimStrategy strategy, List<_SimResult> results) {
-    state = [...state, _SimBatch(id: _nextId++, strategy: strategy, results: results)];
+    state = [
+      ...state,
+      _SimBatch(id: _nextId++, strategy: strategy, results: results)
+    ];
   }
 
   void clear() {
@@ -473,10 +487,12 @@ class PlaythroughSimulatorScreen extends ConsumerStatefulWidget {
   const PlaythroughSimulatorScreen({super.key});
 
   @override
-  ConsumerState<PlaythroughSimulatorScreen> createState() => _PlaythroughSimulatorScreenState();
+  ConsumerState<PlaythroughSimulatorScreen> createState() =>
+      _PlaythroughSimulatorScreenState();
 }
 
-class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulatorScreen> {
+class _PlaythroughSimulatorScreenState
+    extends ConsumerState<PlaythroughSimulatorScreen> {
   bool _running = false;
   SimStrategy _strategy = SimStrategy.random;
   int _runCount = 1;
@@ -517,12 +533,14 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   Future<void> _run() async {
     setState(() => _running = true);
     final story = await ref.read(storyDataProvider.future);
-    final enemies = await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
+    final enemies =
+        await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
     final results = [
       for (var i = 0; i < _runCount; i++)
-        _simulate(story, random, enemies: enemies, strategy: _strategy, french: french),
+        _simulate(story, random,
+            enemies: enemies, strategy: _strategy, french: french),
     ];
     if (!mounted) return;
     ref.read(_simulatorBatchesProvider.notifier).addBatch(_strategy, results);
@@ -538,7 +556,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   /// hand after a content pass.
   Future<void> _runStructuralAudit() async {
     final story = await ref.read(storyDataProvider.future);
-    final report = checkStoryGraphIntegrity(story.nodes, startNodeId: StoryRepository.startNodeId);
+    final report = checkStoryGraphIntegrity(story.nodes,
+        startNodeId: StoryRepository.startNodeId);
     if (!mounted) return;
     showDialog<void>(
       context: context,
@@ -553,7 +572,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('${tr(ref, 'structural_audit_endings_label')}: ${report.reachableEndingCount}'),
+              Text(
+                  '${tr(ref, 'structural_audit_endings_label')}: ${report.reachableEndingCount}'),
               if (report.unreachableNodeIds.isNotEmpty) ...[
                 const SizedBox(height: 8),
                 Text(
@@ -588,7 +608,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(tr(ref, 'strategy_label'), style: Theme.of(context).textTheme.labelLarge),
+        Text(tr(ref, 'strategy_label'),
+            style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -602,7 +623,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
           }).toList(),
         ),
         const SizedBox(height: 16),
-        Text(tr(ref, 'runs_label'), style: Theme.of(context).textTheme.labelLarge),
+        Text(tr(ref, 'runs_label'),
+            style: Theme.of(context).textTheme.labelLarge),
         const SizedBox(height: 8),
         Wrap(
           spacing: 8,
@@ -627,8 +649,9 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.play_circle_outline),
-                label:
-                    Text(_running ? tr(ref, 'simulating_label') : tr(ref, 'auto_playthrough_button')),
+                label: Text(_running
+                    ? tr(ref, 'simulating_label')
+                    : tr(ref, 'auto_playthrough_button')),
               ),
             ),
             const SizedBox(width: 8),
@@ -662,7 +685,9 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              Icon(Icons.tune, size: 18, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(Icons.tune,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -682,7 +707,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
                 tooltip: tr(ref, 'auto_playthrough_button'),
                 onPressed: _running ? null : _run,
               ),
-              Icon(Icons.expand_more, color: Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(Icons.expand_more,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
             ],
           ),
         ),
@@ -694,7 +720,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
   Widget build(BuildContext context) {
     final shops = ref.watch(gameDbProvider(shopsSchema)).value ?? const {};
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final batches = ref.watch(_simulatorBatchesProvider);
     final showFullControls = batches.isEmpty || _controlsExpanded;
     final reversedBatches = batches.reversed.toList();
@@ -755,7 +782,8 @@ class _PlaythroughSimulatorScreenState extends ConsumerState<PlaythroughSimulato
 /// sheet / a text viewer), for a real "export" rather than just a
 /// clipboard copy. Falls back to telling the user what went wrong — some
 /// devices have nothing registered to open a bare .txt file.
-Future<void> _exportToFile(BuildContext context, WidgetRef ref, String content, String filename) async {
+Future<void> _exportToFile(BuildContext context, WidgetRef ref, String content,
+    String filename) async {
   try {
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/$filename');
@@ -764,12 +792,15 @@ Future<void> _exportToFile(BuildContext context, WidgetRef ref, String content, 
   } catch (e) {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${trFor(ref.read(appLanguageProvider), 'export_failed_prefix')}: $e')),
+      SnackBar(
+          content: Text(
+              '${trFor(ref.read(appLanguageProvider), 'export_failed_prefix')}: $e')),
     );
   }
 }
 
-Future<void> _copyToClipboard(BuildContext context, WidgetRef ref, String content) async {
+Future<void> _copyToClipboard(
+    BuildContext context, WidgetRef ref, String content) async {
   await Clipboard.setData(ClipboardData(text: content));
   if (!context.mounted) return;
   ScaffoldMessenger.of(context).showSnackBar(
@@ -780,18 +811,23 @@ Future<void> _copyToClipboard(BuildContext context, WidgetRef ref, String conten
 /// Renders one run as a plain-text transcript: its summary stats, then
 /// every node visited with its narrative text and the choice taken from
 /// it — the "node and text" export the QA workflow needs.
-String _runTranscript(_SimResult result, String strategyLabel, {int? runNumber}) {
+String _runTranscript(_SimResult result, String strategyLabel,
+    {int? runNumber}) {
   final b = StringBuffer();
-  b.writeln('=== Playthrough Transcript${runNumber != null ? ' — Run #$runNumber' : ''} ===');
+  b.writeln(
+      '=== Playthrough Transcript${runNumber != null ? ' — Run #$runNumber' : ''} ===');
   b.writeln('Strategy: $strategyLabel');
   b.writeln('Ending: ${result.endingSummary}');
   b.writeln(
     'Final gold: ${result.finalGold} | Final alignment: ${result.finalAlignment} | '
     'Nodes visited: ${result.steps.length} (unique: ${result.uniqueNodesVisited})',
   );
-  b.writeln('Shops discovered: ${result.shopsDiscovered.isEmpty ? 'none' : result.shopsDiscovered.join(', ')}');
-  b.writeln('Quests discovered: ${result.questsDiscovered.isEmpty ? 'none' : result.questsDiscovered.join(', ')}');
-  b.writeln('Flags collected: ${result.flags.isEmpty ? 'none' : result.flags.join(', ')}');
+  b.writeln(
+      'Shops discovered: ${result.shopsDiscovered.isEmpty ? 'none' : result.shopsDiscovered.join(', ')}');
+  b.writeln(
+      'Quests discovered: ${result.questsDiscovered.isEmpty ? 'none' : result.questsDiscovered.join(', ')}');
+  b.writeln(
+      'Flags collected: ${result.flags.isEmpty ? 'none' : result.flags.join(', ')}');
   b.writeln();
   b.writeln('--- Steps ---');
   for (final s in result.steps) {
@@ -804,7 +840,8 @@ String _runTranscript(_SimResult result, String strategyLabel, {int? runNumber})
     b.writeln('[Node ${s.nodeId}] ($tags)');
     b.writeln(s.description);
     if (s.choiceText != null) {
-      b.writeln('→ Chose: "${s.choiceText}"${s.enemyId != null ? ' [combat: ${s.enemyId}]' : ''}');
+      b.writeln(
+          '→ Chose: "${s.choiceText}"${s.enemyId != null ? ' [combat: ${s.enemyId}]' : ''}');
     }
   }
   return b.toString();
@@ -815,13 +852,18 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
   b.writeln('=== Batch Summary ===');
   b.writeln('Strategy: $strategyLabel');
   b.writeln('Runs: ${results.length}');
-  b.writeln('Average nodes visited: ${_avg(results.map((r) => r.steps.length)).toStringAsFixed(1)}');
-  b.writeln('Average final gold: ${_avg(results.map((r) => r.finalGold)).toStringAsFixed(1)}');
-  b.writeln('Average final alignment: ${_avg(results.map((r) => r.finalAlignment)).toStringAsFixed(1)}');
-  b.writeln('Average combat encounters: ${_avg(results.map((r) => r.combatEncounters)).toStringAsFixed(1)}');
+  b.writeln(
+      'Average nodes visited: ${_avg(results.map((r) => r.steps.length)).toStringAsFixed(1)}');
+  b.writeln(
+      'Average final gold: ${_avg(results.map((r) => r.finalGold)).toStringAsFixed(1)}');
+  b.writeln(
+      'Average final alignment: ${_avg(results.map((r) => r.finalAlignment)).toStringAsFixed(1)}');
+  b.writeln(
+      'Average combat encounters: ${_avg(results.map((r) => r.combatEncounters)).toStringAsFixed(1)}');
   final stepCap = results.where((r) => r.reachedStepCap).length;
   if (stepCap > 0) {
-    b.writeln('$stepCap/${results.length} runs never reached an ending (hit the step cap).');
+    b.writeln(
+        '$stepCap/${results.length} runs never reached an ending (hit the step cap).');
   }
   b.writeln();
   b.writeln('Ending distribution:');
@@ -978,8 +1020,10 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
   List<_SimResult> get _filteredResults {
     return widget.batch.results.where((r) {
       if (_onlyStepCapFilter && !r.reachedStepCap) return false;
-      if (_endingFilter != null && r.endingSummary != _endingFilter) return false;
-      if (_minChapterFilter != null && (r.furthestChapter ?? 0) < _minChapterFilter!) return false;
+      if (_endingFilter != null && r.endingSummary != _endingFilter)
+        return false;
+      if (_minChapterFilter != null &&
+          (r.furthestChapter ?? 0) < _minChapterFilter!) return false;
       return true;
     }).toList();
   }
@@ -1034,12 +1078,15 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
     });
     try {
       final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
-      final response = await model.generateContent([Content.text(_buildPrompt(lang, results))]);
+      final response = await model
+          .generateContent([Content.text(_buildPrompt(lang, results))]);
       if (!mounted) return;
-      setState(() => _analysisText = response.text ?? trFor(lang, 'no_response_generated'));
+      setState(() => _analysisText =
+          response.text ?? trFor(lang, 'no_response_generated'));
     } catch (e) {
       if (!mounted) return;
-      setState(() => _analysisError = '${trFor(lang, 'generation_failed_prefix')}: $e');
+      setState(() =>
+          _analysisError = '${trFor(lang, 'generation_failed_prefix')}: $e');
     } finally {
       if (mounted) setState(() => _analyzing = false);
     }
@@ -1130,7 +1177,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     tooltip: tr(ref, 'export_all_runs_button'),
                     enabled: results.isNotEmpty,
                     onSelected: (format) {
-                      final strategyLabel = tr(ref, _strategyLabelKey(batch.strategy));
+                      final strategyLabel =
+                          tr(ref, _strategyLabelKey(batch.strategy));
                       switch (format) {
                         case 'txt':
                           _exportToFile(
@@ -1159,14 +1207,23 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                       }
                     },
                     itemBuilder: (context) => [
-                      PopupMenuItem(value: 'txt', child: Text(tr(ref, 'export_as_text'))),
-                      PopupMenuItem(value: 'csv', child: Text(tr(ref, 'export_as_csv'))),
-                      PopupMenuItem(value: 'json', child: Text(tr(ref, 'export_as_json'))),
+                      PopupMenuItem(
+                          value: 'txt', child: Text(tr(ref, 'export_as_text'))),
+                      PopupMenuItem(
+                          value: 'csv', child: Text(tr(ref, 'export_as_csv'))),
+                      PopupMenuItem(
+                          value: 'json',
+                          child: Text(tr(ref, 'export_as_json'))),
                     ],
                   ),
                   IconButton(
-                    icon: Icon(_expanded ? Icons.expand_less : Icons.expand_more),
-                    tooltip: tr(ref, _expanded ? 'collapse_batch_label' : 'expand_batch_label'),
+                    icon:
+                        Icon(_expanded ? Icons.expand_less : Icons.expand_more),
+                    tooltip: tr(
+                        ref,
+                        _expanded
+                            ? 'collapse_batch_label'
+                            : 'expand_batch_label'),
                     onPressed: () => setState(() => _expanded = !_expanded),
                   ),
                 ],
@@ -1174,304 +1231,347 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
             ),
             if (_expanded) ...[
               if (batch.runCount > 1) ...[
-              const SizedBox(height: 8),
-              Text(tr(ref, 'filter_runs_label'), style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  DropdownButton<String?>(
-                    value: _endingFilter,
-                    hint: Text(tr(ref, 'ending_filter_all')),
-                    items: [
-                      DropdownMenuItem(value: null, child: Text(tr(ref, 'ending_filter_all'))),
-                      for (final e in endingOptions) DropdownMenuItem(value: e, child: Text(e)),
-                    ],
-                    onChanged: (v) => setState(() => _endingFilter = v),
-                  ),
-                  if (hasChapterData)
-                    DropdownButton<int?>(
-                      value: _minChapterFilter,
-                      hint: Text(tr(ref, 'min_chapter_filter_label')),
+                const SizedBox(height: 8),
+                Text(tr(ref, 'filter_runs_label'),
+                    style: Theme.of(context).textTheme.labelLarge),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    DropdownButton<String?>(
+                      value: _endingFilter,
+                      hint: Text(tr(ref, 'ending_filter_all')),
                       items: [
-                        DropdownMenuItem(value: null, child: Text(tr(ref, 'any_label'))),
-                        for (var c = 1; c <= 5; c++)
-                          DropdownMenuItem(value: c, child: Text('${tr(ref, 'min_chapter_filter_label')} $c')),
+                        DropdownMenuItem(
+                            value: null,
+                            child: Text(tr(ref, 'ending_filter_all'))),
+                        for (final e in endingOptions)
+                          DropdownMenuItem(value: e, child: Text(e)),
                       ],
-                      onChanged: (v) => setState(() => _minChapterFilter = v),
+                      onChanged: (v) => setState(() => _endingFilter = v),
                     ),
-                  if (batch.stepCapCount > 0)
-                    FilterChip(
-                      label: Text(tr(ref, 'stuck_only_filter')),
-                      selected: _onlyStepCapFilter,
-                      onSelected: (v) => setState(() => _onlyStepCapFilter = v),
-                    ),
-                  if (_filterActive)
-                    TextButton(
-                      onPressed: () => setState(() {
-                        _endingFilter = null;
-                        _onlyStepCapFilter = false;
-                        _minChapterFilter = null;
-                      }),
-                      child: Text(tr(ref, 'clear_all_button')),
-                    ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 12),
-            if (results.isEmpty)
-              Text(tr(ref, 'no_runs_match_filter'))
-            else ...[
-              Builder(builder: (context) {
-                final avgAlignment = _avg(results.map((r) => r.finalAlignment));
-                final alignmentColor = avgAlignment > 0.5
-                    ? Colors.blue
-                    : (avgAlignment < -0.5 ? Colors.deepOrange : Colors.blueGrey);
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _StatLine(
-                      icon: Icons.route,
-                      color: Colors.blueGrey,
-                      text:
-                          '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
-                    ),
-                    _StatLine(
-                      icon: Icons.paid,
-                      color: Colors.amber.shade800,
-                      text:
-                          '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
-                    ),
-                    _StatLine(
-                      icon: Icons.balance,
-                      color: alignmentColor,
-                      text: '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(avgAlignment)}',
-                    ),
-                    _StatLine(
-                      icon: Icons.sports_martial_arts,
-                      color: Colors.red.shade400,
-                      text:
-                          '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
-                    ),
+                    if (hasChapterData)
+                      DropdownButton<int?>(
+                        value: _minChapterFilter,
+                        hint: Text(tr(ref, 'min_chapter_filter_label')),
+                        items: [
+                          DropdownMenuItem(
+                              value: null, child: Text(tr(ref, 'any_label'))),
+                          for (var c = 1; c <= 5; c++)
+                            DropdownMenuItem(
+                                value: c,
+                                child: Text(
+                                    '${tr(ref, 'min_chapter_filter_label')} $c')),
+                        ],
+                        onChanged: (v) => setState(() => _minChapterFilter = v),
+                      ),
+                    if (batch.stepCapCount > 0)
+                      FilterChip(
+                        label: Text(tr(ref, 'stuck_only_filter')),
+                        selected: _onlyStepCapFilter,
+                        onSelected: (v) =>
+                            setState(() => _onlyStepCapFilter = v),
+                      ),
+                    if (_filterActive)
+                      TextButton(
+                        onPressed: () => setState(() {
+                          _endingFilter = null;
+                          _onlyStepCapFilter = false;
+                          _minChapterFilter = null;
+                        }),
+                        child: Text(tr(ref, 'clear_all_button')),
+                      ),
                   ],
-                );
-              }),
-              if (results.where((r) => r.reachedStepCap).isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    '${results.where((r) => r.reachedStepCap).length}/${results.length} '
-                    '${tr(ref, 'exceeded_step_cap_label')}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
                 ),
+              ],
               const SizedBox(height: 12),
-              Text(tr(ref, 'endings_label'), style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 4),
-              for (final entry in _endingCounts(results).entries)
-                Text('${entry.value}× ${entry.key}', style: Theme.of(context).textTheme.bodySmall),
-              const SizedBox(height: 12),
-              Text(tr(ref, 'companions_encountered_label'),
-                  style: Theme.of(context).textTheme.titleSmall),
-              const SizedBox(height: 4),
-              Builder(builder: (context) {
-                final counts = _companionEncounterCounts(results, widget.quests);
-                if (counts.isEmpty) {
-                  return Text(
-                    tr(ref, 'none_label'),
-                    style: Theme.of(context).textTheme.bodySmall,
+              if (results.isEmpty)
+                Text(tr(ref, 'no_runs_match_filter'))
+              else ...[
+                Builder(builder: (context) {
+                  final avgAlignment =
+                      _avg(results.map((r) => r.finalAlignment));
+                  final alignmentColor = avgAlignment > 0.5
+                      ? Colors.blue
+                      : (avgAlignment < -0.5
+                          ? Colors.deepOrange
+                          : Colors.blueGrey);
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _StatLine(
+                        icon: Icons.route,
+                        color: Colors.blueGrey,
+                        text:
+                            '${tr(ref, 'nodes_visited_label')}: ${_oneDecimal(_avg(results.map((r) => r.steps.length)))}',
+                      ),
+                      _StatLine(
+                        icon: Icons.paid,
+                        color: Colors.amber.shade800,
+                        text:
+                            '${tr(ref, 'final_gold_label')}: ${_oneDecimal(_avg(results.map((r) => r.finalGold)))}',
+                      ),
+                      _StatLine(
+                        icon: Icons.balance,
+                        color: alignmentColor,
+                        text:
+                            '${tr(ref, 'final_alignment_label')}: ${_oneDecimal(avgAlignment)}',
+                      ),
+                      _StatLine(
+                        icon: Icons.sports_martial_arts,
+                        color: Colors.red.shade400,
+                        text:
+                            '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
+                      ),
+                    ],
                   );
-                }
-                return Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    for (final entry in counts.entries)
-                      Chip(
-                        avatar: CircleAvatar(
-                          backgroundColor: _companionColor(entry.key, counts),
-                        ),
-                        label: Text(
-                          '${widget.companions[entry.key]?['companionName']?.toString() ?? entry.key} '
-                          '· ${entry.value}/${results.length}',
-                        ),
-                      ),
-                  ],
-                );
-              }),
-              const Divider(height: 24),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(tr(ref, 'chapter_breakdown_label')),
-                initiallyExpanded: hasChapterData,
-                children: [
-                  for (final g in _chapterBreakdown(results))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${g.label} · ${g.runsReaching}/${results.length}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          Text(
-                            [
-                              '${(g.nodeCount / g.runsReaching).toStringAsFixed(1)} '
-                                  '${tr(ref, 'nodes_visited_label').toLowerCase()}',
-                              if (g.combatCount > 0)
-                                '${g.combatCount} ${tr(ref, 'combat_encounters_label').toLowerCase()}',
-                              if (g.goldDelta != 0) 'gold Δ${g.goldDelta}',
-                              if (g.alignmentDelta != 0) 'align Δ${g.alignmentDelta}',
-                            ].join(' • '),
-                            style: Theme.of(context).textTheme.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(tr(ref, 'by_location_label')),
-                children: [
-                  for (final g in _distributionBy(results, (s) => s.uiTheme))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(g.label, style: Theme.of(context).textTheme.bodySmall)),
-                          Text(
-                            '${g.nodeCount}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                title: Text(tr(ref, 'by_mood_label')),
-                children: [
-                  for (final g in _distributionBy(results, (s) => s.mood))
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(g.label, style: Theme.of(context).textTheme.bodySmall)),
-                          Text(
-                            '${g.nodeCount}',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-              const Divider(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _analyzing ? null : _analyze,
-                      icon: _analyzing
-                          ? const SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.auto_awesome),
-                      label: Text(
-                        _analyzing
-                            ? tr(ref, 'analyzing_label')
-                            : tr(ref, 'analyze_with_gemini_button'),
-                      ),
+                }),
+                if (results.where((r) => r.reachedStepCap).isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      '${results.where((r) => r.reachedStepCap).length}/${results.length} '
+                      '${tr(ref, 'exceeded_step_cap_label')}',
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
-                  if (_analysisText != null) ...[
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.copy_outlined),
-                      tooltip: tr(ref, 'copy_button'),
-                      onPressed: () => _copyToClipboard(context, ref, _analysisText!),
-                    ),
-                  ],
-                ],
-              ),
-              if (_analysisError != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    _analysisError!,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
-                ),
-              if (_analysisText != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: SelectableText(_analysisText!),
-                  ),
-                ),
-              if (single != null) ...[
-                const Divider(height: 24),
-                _SingleRunDetail(
-                  result: single,
-                  shops: widget.shops,
-                  quests: widget.quests,
-                  strategyLabel: tr(ref, _strategyLabelKey(batch.strategy)),
-                ),
-              ] else ...[
-                const Divider(height: 24),
-                Text(tr(ref, 'individual_runs_label'), style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 12),
+                Text(tr(ref, 'endings_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 4),
-                for (var i = 0; i < (_showAllRuns ? results.length : results.length.clamp(0, _runListPreviewCount)); i++)
-                  InkWell(
-                    onTap: () => _viewRun(results[i], batch.results.indexOf(results[i])),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '#${batch.results.indexOf(results[i]) + 1}: ${results[i].finalGold}g, '
-                              '${tr(ref, 'final_alignment_label')} ${results[i].finalAlignment}, '
-                              '${results[i].steps.length} ${tr(ref, 'nodes_visited_label')}',
+                for (final entry in _endingCounts(results).entries)
+                  Text('${entry.value}× ${entry.key}',
+                      style: Theme.of(context).textTheme.bodySmall),
+                const SizedBox(height: 12),
+                Text(tr(ref, 'companions_encountered_label'),
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 4),
+                Builder(builder: (context) {
+                  final counts =
+                      _companionEncounterCounts(results, widget.quests);
+                  if (counts.isEmpty) {
+                    return Text(
+                      tr(ref, 'none_label'),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    );
+                  }
+                  return Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      for (final entry in counts.entries)
+                        Chip(
+                          avatar: CircleAvatar(
+                            backgroundColor: _companionColor(entry.key, counts),
+                          ),
+                          label: Text(
+                            '${widget.companions[entry.key]?['companionName']?.toString() ?? entry.key} '
+                            '· ${entry.value}/${results.length}',
+                          ),
+                        ),
+                    ],
+                  );
+                }),
+                const Divider(height: 24),
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(tr(ref, 'chapter_breakdown_label')),
+                  initiallyExpanded: hasChapterData,
+                  children: [
+                    for (final g in _chapterBreakdown(results))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${g.label} · ${g.runsReaching}/${results.length}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              [
+                                '${(g.nodeCount / g.runsReaching).toStringAsFixed(1)} '
+                                    '${tr(ref, 'nodes_visited_label').toLowerCase()}',
+                                if (g.combatCount > 0)
+                                  '${g.combatCount} ${tr(ref, 'combat_encounters_label').toLowerCase()}',
+                                if (g.goldDelta != 0) 'gold Δ${g.goldDelta}',
+                                if (g.alignmentDelta != 0)
+                                  'align Δ${g.alignmentDelta}',
+                              ].join(' • '),
                               style: Theme.of(context).textTheme.bodySmall,
                             ),
-                          ),
-                          const Icon(Icons.chevron_right, size: 18),
-                        ],
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(tr(ref, 'by_location_label')),
+                  children: [
+                    for (final g in _distributionBy(results, (s) => s.uiTheme))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(g.label,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall)),
+                            Text(
+                              '${g.nodeCount}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  title: Text(tr(ref, 'by_mood_label')),
+                  children: [
+                    for (final g in _distributionBy(results, (s) => s.mood))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Text(g.label,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall)),
+                            Text(
+                              '${g.nodeCount}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+                const Divider(height: 24),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _analyzing ? null : _analyze,
+                        icon: _analyzing
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.auto_awesome),
+                        label: Text(
+                          _analyzing
+                              ? tr(ref, 'analyzing_label')
+                              : tr(ref, 'analyze_with_gemini_button'),
+                        ),
                       ),
                     ),
-                  ),
-                if (results.length > _runListPreviewCount)
-                  TextButton(
-                    onPressed: () => setState(() => _showAllRuns = !_showAllRuns),
+                    if (_analysisText != null) ...[
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.copy_outlined),
+                        tooltip: tr(ref, 'copy_button'),
+                        onPressed: () =>
+                            _copyToClipboard(context, ref, _analysisText!),
+                      ),
+                    ],
+                  ],
+                ),
+                if (_analysisError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      _showAllRuns
-                          ? tr(ref, 'show_less_label')
-                          : '${tr(ref, 'show_all_runs_label')} (${results.length})',
+                      _analysisError!,
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
+                if (_analysisText != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: SelectableText(_analysisText!),
+                    ),
+                  ),
+                if (single != null) ...[
+                  const Divider(height: 24),
+                  _SingleRunDetail(
+                    result: single,
+                    shops: widget.shops,
+                    quests: widget.quests,
+                    strategyLabel: tr(ref, _strategyLabelKey(batch.strategy)),
+                  ),
+                ] else ...[
+                  const Divider(height: 24),
+                  Text(tr(ref, 'individual_runs_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 4),
+                  for (var i = 0;
+                      i <
+                          (_showAllRuns
+                              ? results.length
+                              : results.length.clamp(0, _runListPreviewCount));
+                      i++)
+                    InkWell(
+                      onTap: () => _viewRun(
+                          results[i], batch.results.indexOf(results[i])),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                '#${batch.results.indexOf(results[i]) + 1}: ${results[i].finalGold}g, '
+                                '${tr(ref, 'final_alignment_label')} ${results[i].finalAlignment}, '
+                                '${results[i].steps.length} ${tr(ref, 'nodes_visited_label')}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right, size: 18),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (results.length > _runListPreviewCount)
+                    TextButton(
+                      onPressed: () =>
+                          setState(() => _showAllRuns = !_showAllRuns),
+                      child: Text(
+                        _showAllRuns
+                            ? tr(ref, 'show_less_label')
+                            : '${tr(ref, 'show_all_runs_label')} (${results.length})',
+                      ),
+                    ),
+                ],
               ],
-            ],
             ],
           ],
         ),
@@ -1502,22 +1602,29 @@ class _SingleRunDetail extends ConsumerStatefulWidget {
 }
 
 class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
-  int? _chapterFilter; // null = show all chapters. Use -1 as the "Prologue" sentinel.
+  int?
+      _chapterFilter; // null = show all chapters. Use -1 as the "Prologue" sentinel.
 
-  String _namesFor(Set<String> ids, Map<String, dynamic> records, String nameField) {
+  String _namesFor(
+      Set<String> ids, Map<String, dynamic> records, String nameField) {
     if (ids.isEmpty) return '—';
     return ids
-        .map((id) => (records[id] as Map<String, dynamic>?)?[nameField]?.toString() ?? id)
+        .map((id) =>
+            (records[id] as Map<String, dynamic>?)?[nameField]?.toString() ??
+            id)
         .join(', ');
   }
 
   @override
   Widget build(BuildContext context) {
     final result = widget.result;
-    final chapters = result.steps.map((s) => s.chapter ?? -1).toSet().toList()..sort();
+    final chapters = result.steps.map((s) => s.chapter ?? -1).toSet().toList()
+      ..sort();
     final filteredSteps = _chapterFilter == null
         ? result.steps
-        : result.steps.where((s) => (s.chapter ?? -1) == _chapterFilter).toList();
+        : result.steps
+            .where((s) => (s.chapter ?? -1) == _chapterFilter)
+            .toList();
 
     final content = <Widget>[
       Row(
@@ -1536,7 +1643,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
             onPressed: () => _copyToClipboard(
               context,
               ref,
-              _runTranscript(result, widget.strategyLabel, runNumber: widget.runNumber),
+              _runTranscript(result, widget.strategyLabel,
+                  runNumber: widget.runNumber),
             ),
           ),
           IconButton(
@@ -1545,7 +1653,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
             onPressed: () => _exportToFile(
               context,
               ref,
-              _runTranscript(result, widget.strategyLabel, runNumber: widget.runNumber),
+              _runTranscript(result, widget.strategyLabel,
+                  runNumber: widget.runNumber),
               'playthrough_run_${widget.runNumber ?? 1}.txt',
             ),
           ),
@@ -1559,7 +1668,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
         '${tr(ref, 'unique_nodes_visited_label')}: ${result.uniqueNodesVisited} '
         '(${result.steps.length} ${tr(ref, 'total_steps_label')})',
       ),
-      Text('${tr(ref, 'shops_discovered_label')}: ${_namesFor(result.shopsDiscovered, widget.shops, 'shopName')}'),
+      Text(
+          '${tr(ref, 'shops_discovered_label')}: ${_namesFor(result.shopsDiscovered, widget.shops, 'shopName')}'),
       Text(
         '${tr(ref, 'quests_discovered_label')}: ${_namesFor(result.questsDiscovered, widget.quests, 'questName')}',
       ),
@@ -1567,7 +1677,8 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
         '${tr(ref, 'flags_collected_label')}: ${result.flags.isEmpty ? '—' : result.flags.join(', ')}',
       ),
       const SizedBox(height: 12),
-      Text(tr(ref, 'path_summary_label'), style: Theme.of(context).textTheme.titleSmall),
+      Text(tr(ref, 'path_summary_label'),
+          style: Theme.of(context).textTheme.titleSmall),
       const SizedBox(height: 8),
       Wrap(
         spacing: 6,
