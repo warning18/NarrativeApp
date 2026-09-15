@@ -73,14 +73,17 @@ class PlayScreen extends ConsumerWidget {
                     children: [
                       Icon(
                         Icons.sports_esports_outlined,
-                        color: Theme.of(context).colorScheme.onSecondaryContainer,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer,
                       ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           tr(ref, 'mode_nudge_message'),
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSecondaryContainer,
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSecondaryContainer,
                           ),
                         ),
                       ),
@@ -88,7 +91,9 @@ class PlayScreen extends ConsumerWidget {
                         icon: const Icon(Icons.close),
                         visualDensity: VisualDensity.compact,
                         tooltip: tr(ref, 'close_button'),
-                        onPressed: () => ref.read(hasSeenModeNudgeProvider.notifier).dismiss(),
+                        onPressed: () => ref
+                            .read(hasSeenModeNudgeProvider.notifier)
+                            .dismiss(),
                       ),
                     ],
                   ),
@@ -97,8 +102,12 @@ class PlayScreen extends ConsumerWidget {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () async {
-                        await ref.read(appModeProvider.notifier).setMode(AppMode.inGame);
-                        await ref.read(hasSeenModeNudgeProvider.notifier).dismiss();
+                        await ref
+                            .read(appModeProvider.notifier)
+                            .setMode(AppMode.inGame);
+                        await ref
+                            .read(hasSeenModeNudgeProvider.notifier)
+                            .dismiss();
                       },
                       child: Text(tr(ref, 'switch_to_in_game_mode_button')),
                     ),

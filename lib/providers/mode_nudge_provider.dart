@@ -27,5 +27,5 @@ class ModeNudgeNotifier extends StateNotifier<bool> {
   }
 }
 
-final hasSeenModeNudgeProvider =
-    StateNotifierProvider<ModeNudgeNotifier, bool>((ref) => ModeNudgeNotifier());
+final hasSeenModeNudgeProvider = StateNotifierProvider<ModeNudgeNotifier, bool>(
+    (ref) => ModeNudgeNotifier());
