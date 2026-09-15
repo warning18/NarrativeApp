@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/story_repository.dart';
 import '../models/story_node.dart';
+
+const String _autosaveNodePrefsKey = 'autosave_story_node';
+const String _autosaveHistoryPrefsKey = 'autosave_story_history';
 
 final storyRepositoryProvider = Provider<StoryRepository>((ref) {
   return StoryRepository();
@@ -56,14 +62,44 @@ class StoryPlayState {
 }
 
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
-  StoryPlayNotifier(String startId)
-      : super(StoryPlayState(currentNodeId: startId, history: const []));
+  StoryPlayNotifier(this._startId)
+      : super(StoryPlayState(currentNodeId: _startId, history: const [])) {
+    _loadAutosave();
+  }
+
+  final String _startId;
+
+  /// On construction the state above is a placeholder (always the story's
+  /// very first node) so the widget tree has something to render
+  /// immediately; if an autosaved position exists, this quietly replaces it
+  /// a moment later — the same fire-and-forget-then-overwrite pattern
+  /// PlayerSessionNotifier uses for its own async load. Without this, every
+  /// app relaunch would silently reset the visible story position back to
+  /// the very start even though the player's stats/inventory (which persist
+  /// continuously via PlayerSessionNotifier) still reflect real progress.
+  Future<void> _loadAutosave() async {
+    final prefs = await SharedPreferences.getInstance();
+    final nodeId = prefs.getString(_autosaveNodePrefsKey);
+    if (nodeId == null) return;
+    final historyJson = prefs.getString(_autosaveHistoryPrefsKey);
+    final history = historyJson != null
+        ? (json.decode(historyJson) as List).map((e) => e.toString()).toList()
+        : const <String>[];
+    state = StoryPlayState(currentNodeId: nodeId, history: history);
+  }
+
+  Future<void> _persistAutosave() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_autosaveNodePrefsKey, state.currentNodeId);
+    await prefs.setString(_autosaveHistoryPrefsKey, json.encode(state.history));
+  }
 
   void choose(String nextId) {
     state = StoryPlayState(
       currentNodeId: nextId,
       history: [...state.history, state.currentNodeId],
     );
+    _persistAutosave();
   }
 
   void jumpTo(String nodeId) => choose(nodeId);
@@ -73,10 +109,16 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     final newHistory = List<String>.from(state.history);
     final previousId = newHistory.removeLast();
     state = StoryPlayState(currentNodeId: previousId, history: newHistory);
+    _persistAutosave();
   }
 
+  /// Resets to the very start — also overwrites the autosave, since a
+  /// restart (only reachable via the Edit Mode "Reset" action) is a
+  /// deliberate "begin again," and the next relaunch should honor that
+  /// rather than silently reviving the position it just left.
   void restart(String startId) {
     state = StoryPlayState(currentNodeId: startId, history: const []);
+    _persistAutosave();
   }
 
   /// Restores play position to [nodeId] with the given [history] — used to
@@ -85,6 +127,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// survive a save/load round trip.
   void loadState(String nodeId, List<String> history) {
     state = StoryPlayState(currentNodeId: nodeId, history: history);
+    _persistAutosave();
   }
 
   /// Inserts a procedurally generated chain of nodes before the player

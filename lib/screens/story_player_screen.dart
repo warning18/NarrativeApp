@@ -53,6 +53,13 @@ final _statusBarCollapsedProvider = StateProvider<bool>((ref) => false);
 /// hide the dog without turning the feature off.
 final _companionCollapsedProvider = StateProvider<bool>((ref) => false);
 
+/// Whether the story text is showing in distraction-free fullscreen —
+/// toggled by double-tapping the narration itself, hiding everything else
+/// (status bar, header row, companion strip, choices) so only the prose
+/// remains. Resets on app restart, same as the other reading-view toggles
+/// above.
+final _fullscreenReadingProvider = StateProvider<bool>((ref) => false);
+
 /// Speaks [text] via the device's on-device text-to-speech engine — the
 /// fast default voice, used for auto-read and as read-aloud's fallback
 /// when the (opt-in) Gemini voice isn't enabled.
@@ -109,6 +116,7 @@ class _StoryView extends ConsumerWidget {
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
     final companionCollapsed = ref.watch(_companionCollapsedProvider);
+    final fullscreenReading = ref.watch(_fullscreenReadingProvider);
 
     // Stop any in-progress narration when the story moves to a different
     // node, so stale audio never plays over newly-displayed text.
@@ -200,7 +208,9 @@ class _StoryView extends ConsumerWidget {
             // alone taking up its own row, in the way without adding much.
             // Tapping the header itself now toggles it, on top of the
             // existing auto-collapse on scroll-down below.
-            if (statusBarCollapsed)
+            if (fullscreenReading)
+              const SizedBox.shrink()
+            else if (statusBarCollapsed)
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () => ref.read(_statusBarCollapsedProvider.notifier).state = false,
@@ -253,41 +263,43 @@ class _StoryView extends ConsumerWidget {
                   ],
                 ],
               ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                if (playState.history.isNotEmpty &&
-                    ref.watch(appModeProvider) == AppMode.edit)
-                  TextButton.icon(
-                    onPressed: notifier.goBack,
-                    icon: const Icon(Icons.arrow_back),
-                    label: Text(tr(ref, 'back')),
-                  ),
-                const Spacer(),
-                _ReadAloudButton(text: displayDescription, language: language),
-                const SizedBox(width: 4),
-                Text(
-                  playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
-                if (!playState.isInExcursion && ref.watch(appModeProvider) == AppMode.edit) ...[
+            if (!fullscreenReading) ...[
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  if (playState.history.isNotEmpty &&
+                      ref.watch(appModeProvider) == AppMode.edit)
+                    TextButton.icon(
+                      onPressed: notifier.goBack,
+                      icon: const Icon(Icons.arrow_back),
+                      label: Text(tr(ref, 'back')),
+                    ),
+                  const Spacer(),
+                  _ReadAloudButton(text: displayDescription, language: language),
                   const SizedBox(width: 4),
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, size: 18),
-                    tooltip: tr(ref, 'edit_node'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => StoryNodeEditorScreen(node: node),
-                        ),
-                      );
-                    },
+                  Text(
+                    playState.isInExcursion ? tr(ref, 'detour') : '${tr(ref, 'node')} ${node.id}',
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
+                  if (!playState.isInExcursion && ref.watch(appModeProvider) == AppMode.edit) ...[
+                    const SizedBox(width: 4),
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, size: 18),
+                      tooltip: tr(ref, 'edit_node'),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => StoryNodeEditorScreen(node: node),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ],
-              ],
-            ),
-            const SizedBox(height: 8),
+              ),
+              const SizedBox(height: 8),
+            ],
             Expanded(
               // Scrolling down into the narration gives the status bar and
               // companion collapse toggles above/below no purpose (they'd
@@ -307,75 +319,82 @@ class _StoryView extends ConsumerWidget {
                   }
                   return false;
                 },
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 320),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  transitionBuilder: _nodeTransition,
-                  child: SingleChildScrollView(
-                    key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
-                    child: _StoryText(text: displayDescription),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onDoubleTap: () => ref.read(_fullscreenReadingProvider.notifier).state =
+                      !fullscreenReading,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 320),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: _nodeTransition,
+                    child: SingleChildScrollView(
+                      key: ValueKey('${node.id}_${playState.isInExcursion}_text'),
+                      child: _StoryText(text: displayDescription),
+                    ),
                   ),
                 ),
               ),
             ),
-            if (walkCompanionEnabled) ...[
-              if (!companionCollapsed)
-                WalkingCompanionStrip(
-                  trigger: '${node.id}_${playState.isInExcursion}',
-                  fightAvailable: node.choices.any(
-                    (c) => c.triggersCombat &&
-                        !_isChoiceLocked(c, story, session, playState.isInExcursion),
+            if (!fullscreenReading) ...[
+              if (walkCompanionEnabled) ...[
+                if (!companionCollapsed)
+                  WalkingCompanionStrip(
+                    trigger: '${node.id}_${playState.isInExcursion}',
+                    fightAvailable: node.choices.any(
+                      (c) => c.triggersCombat &&
+                          !_isChoiceLocked(c, story, session, playState.isInExcursion),
+                    ),
+                  ),
+                Align(
+                  alignment: Alignment.center,
+                  child: IconButton(
+                    icon: Icon(companionCollapsed ? Icons.expand_more : Icons.expand_less),
+                    tooltip: tr(ref, companionCollapsed ? 'show_companion' : 'hide_companion'),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => ref.read(_companionCollapsedProvider.notifier).state =
+                        !companionCollapsed,
                   ),
                 ),
-              Align(
-                alignment: Alignment.center,
-                child: IconButton(
-                  icon: Icon(companionCollapsed ? Icons.expand_more : Icons.expand_less),
-                  tooltip: tr(ref, companionCollapsed ? 'show_companion' : 'hide_companion'),
-                  visualDensity: VisualDensity.compact,
-                  onPressed: () =>
-                      ref.read(_companionCollapsedProvider.notifier).state = !companionCollapsed,
-                ),
-              ),
-            ] else
-              const SizedBox(height: 16),
-            AnimatedSwitcher(
-              duration: const Duration(milliseconds: 320),
-              switchInCurve: Curves.easeOut,
-              switchOutCurve: Curves.easeIn,
-              transitionBuilder: _nodeTransition,
-              child: Column(
-                key: ValueKey('${node.id}_${playState.isInExcursion}_choices'),
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (node.choices.isEmpty)
-                    _EndingView(
-                      title: tr(ref, 'the_end'),
-                      message: tr(ref, 'branch_end_message'),
-                      restartLabel: tr(ref, 'restart_story'),
-                      onRestart: () => notifier.restart(StoryRepository.startNodeId),
-                      session: session,
-                    )
-                  else
-                    for (var i = 0; i < node.choices.length; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: _StaggeredReveal(
-                          delay: Duration(milliseconds: 60 * i),
-                          child: _ChoiceButton(
-                            choice: node.choices[i],
-                            story: story,
-                            session: session,
-                            currentNodeId: playState.currentNodeId,
-                            isExcursion: playState.isInExcursion,
-                            french: french,
+              ] else
+                const SizedBox(height: 16),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 320),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: _nodeTransition,
+                child: Column(
+                  key: ValueKey('${node.id}_${playState.isInExcursion}_choices'),
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (node.choices.isEmpty)
+                      _EndingView(
+                        title: tr(ref, 'the_end'),
+                        message: tr(ref, 'branch_end_message'),
+                        restartLabel: tr(ref, 'restart_story'),
+                        onRestart: () => notifier.restart(StoryRepository.startNodeId),
+                        session: session,
+                      )
+                    else
+                      for (var i = 0; i < node.choices.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: _StaggeredReveal(
+                            delay: Duration(milliseconds: 60 * i),
+                            child: _ChoiceButton(
+                              choice: node.choices[i],
+                              story: story,
+                              session: session,
+                              currentNodeId: playState.currentNodeId,
+                              isExcursion: playState.isInExcursion,
+                              french: french,
+                            ),
                           ),
                         ),
-                      ),
-                ],
+                  ],
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

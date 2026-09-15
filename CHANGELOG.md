@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.67.0+94]
+
+Three of five requested UX improvements (the other two — a "simulate ahead to a node/chapter" testing tool, and precisely scoping where Camp's Rest action should be allowed — need a design decision first and are being scoped separately).
+
+### Added
+- **Autosave for story position.** `PlayerSession` (stats, inventory, quests) has always auto-persisted continuously, but the *story position* (`StoryPlayNotifier`'s current node + history) only ever lived in memory — closing and reopening the app silently reset the narration back to the very first node while every stat/item earned since stayed intact. It's now autosaved on every real position change, to its own slot separate from the existing manual Save/Load checkpoint, and restored on launch. A restart (permadeath, or the Edit Mode reset) correctly clears it too, and an autosave pointing at a since-deleted node still degrades to the existing "trail went cold" recovery screen rather than crashing.
+- **Double-tap the story text for a distraction-free fullscreen read.** Hides the status bar, header row, walking companion, and choices, leaving just the narration; double-tap again to bring them back.
+
+### Changed
+- **Story map readability.** Node labels were unbounded-width text, so a long id (e.g. `2015_dockside`) could render wider than its column and visually overlap the next one — now fixed-width and ellipsized. Same-depth nodes were ordered alphabetically with no regard for which column their edges actually connected to, producing heavy crossing clutter in fan-out/fan-in clusters like the Chapter 3 companion-quest diamond; they're now ordered by a barycenter heuristic (each node sorted near the average row of its already-placed predecessors), which measurably cuts down edge-crossing on the real story graph. Column and row spacing widened slightly to match.
+
 ## [1.66.0+93]
 
 Two regressions found by a fresh functional review of the companion/camp system (spawned as three parallel reviews covering combat/camp, Town Hub/expeditions/achievements, and map/UI/origin-story features — the latter two found no bugs).

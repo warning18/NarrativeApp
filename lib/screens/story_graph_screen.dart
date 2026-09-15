@@ -16,6 +16,14 @@ import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
 
+/// A node box's fixed width — capped and ellipsized (see the node
+/// `builder` below) rather than left to grow with the id's length, so a
+/// long id (e.g. "2015_dockside") can never spill past its column and
+/// overlap the next one. Kept comfortably under [ChapterGridAlgorithm]'s
+/// own `columnWidth` so there's always a visible gap for edges to route
+/// through between columns.
+const double _nodeBoxWidth = 150;
+
 enum _NodeKind { characterCreation, combat, shop, quest, companionQuest, generic }
 
 class _NodeStyle {
@@ -112,8 +120,8 @@ class ChapterGridAlgorithm extends Algorithm {
   ChapterGridAlgorithm({
     required this.slots,
     required this.bandLayout,
-    this.columnWidth = 170,
-    this.rowHeight = 64,
+    this.columnWidth = 190,
+    this.rowHeight = 72,
   });
 
   final Map<String, GridSlot> slots;
@@ -226,7 +234,10 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     // nodes per column (column = hops from that chapter's opening beat),
     // stacked in vertical bands so no chapter's branching crowds another's.
     final slots = computeChapterGridSlots(story);
-    final bandLayout = computeChapterBandLayout(slots);
+    // rowHeight here must match ChapterGridAlgorithm's own rowHeight below
+    // -- it's what the band start-Y offsets are measured in, and a mismatch
+    // would leave later chapters' bands overlapping the ones before them.
+    final bandLayout = computeChapterBandLayout(slots, rowHeight: 72);
 
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
@@ -262,6 +273,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                   final hidden = _hiddenKinds.contains(kind);
 
                   final container = Container(
+                    width: _nodeBoxWidth,
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: isCurrent ? colorScheme.primary : style.color,
@@ -280,11 +292,15 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                           color: isCurrent ? colorScheme.onPrimary : style.onColor,
                         ),
                         const SizedBox(width: 4),
-                        Text(
-                          id,
-                          style: TextStyle(
-                            color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                            fontWeight: FontWeight.bold,
+                        Expanded(
+                          child: Text(
+                            id,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: isCurrent ? colorScheme.onPrimary : style.onColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],

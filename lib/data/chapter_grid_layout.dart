@@ -61,6 +61,7 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
   }
 
   final adjacency = <String, List<String>>{};
+  final predecessors = <String, List<String>>{};
   for (final entry in story.nodes.entries) {
     final chapter = chapterOfNode(entry.key);
     for (final choice in entry.value.choices) {
@@ -68,6 +69,7 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
       final nextId = choice.nextId;
       if (story.nodes.containsKey(nextId) && chapterOfNode(nextId) == chapter) {
         adjacency.putIfAbsent(entry.key, () => []).add(nextId);
+        predecessors.putIfAbsent(nextId, () => []).add(entry.key);
       }
     }
   }
@@ -108,14 +110,50 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story, {int maxPerColumn
       byDepth.putIfAbsent(depth[id]!, () => []).add(id);
     }
 
+    // The row a node already landed on, filled in as each depth level is
+    // placed (always earlier than any depth that could reference it, since
+    // edges only ever point to a strictly greater depth or across chapters
+    // -- both excluded from `predecessors` above).
+    final placedRow = <String, int>{};
+
     var column = 0;
     final depths = byDepth.keys.toList()..sort();
     for (final d in depths) {
-      final members = byDepth[d]!..sort();
+      List<String> members;
+      if (d == depths.first) {
+        // The opening column has no predecessors to sort by; alphabetical
+        // keeps it deterministic.
+        members = [...byDepth[d]!]..sort();
+      } else {
+        // A same-depth-level cluster fanning out from (or converging back
+        // into) a shared parent reads as a tangle of crossing lines if its
+        // members are ordered alphabetically, since that has nothing to do
+        // with where their edges actually land. Ordering by the average
+        // row of each node's already-placed predecessors (a single-pass
+        // barycenter heuristic) keeps a predecessor's fan-out roughly
+        // aligned with it instead, which is what actually cuts down on
+        // crossings for the diamond-shaped branch/rejoin patterns this
+        // story graph is full of.
+        double barycenter(String id) {
+          final rows = (predecessors[id] ?? const [])
+              .map((p) => placedRow[p])
+              .whereType<int>()
+              .toList();
+          if (rows.isEmpty) return double.infinity;
+          return rows.reduce((a, b) => a + b) / rows.length;
+        }
+
+        members = [...byDepth[d]!]
+          ..sort((a, b) {
+            final cmp = barycenter(a).compareTo(barycenter(b));
+            return cmp != 0 ? cmp : a.compareTo(b);
+          });
+      }
       for (var i = 0; i < members.length; i += maxPerColumn) {
         final chunk = members.skip(i).take(maxPerColumn).toList();
         for (var row = 0; row < chunk.length; row++) {
           slots[chunk[row]] = GridSlot(chapter: chapter, column: column, row: row);
+          placedRow[chunk[row]] = row;
         }
         column += 1;
       }
