@@ -71,10 +71,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Prologue',
     AppLanguage.fr: 'Prologue'
   },
-  'jump_to_chapter_title': {
-    AppLanguage.en: 'Jump to Chapter',
-    AppLanguage.fr: 'Aller au chapitre'
-  },
   'main_story_beat': {
     AppLanguage.en: 'Main Story Beat',
     AppLanguage.fr: "Étape principale de l'histoire",

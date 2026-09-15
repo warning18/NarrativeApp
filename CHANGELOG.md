@@ -8,6 +8,17 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.75.1+103]
+
+### Fixed
+- **Story Map panning.** Removed the Edit Mode "Jump to Chapter" panel,
+  which sat over the top-right corner of the map and silently swallowed
+  any drag gesture that started on it — the likely cause of the map
+  feeling unscrollable in that area. The map's `InteractiveViewer` always
+  supported free pan/zoom in every direction; with the panel gone, nothing
+  on screen blocks it anymore. (Jumping to a chapter is still available
+  from the map by tapping a node and using "Jump to this node".)
+
 ## [1.75.0+102]
 
 Sharper item/quest icons, and the first choices whose consequences reach past

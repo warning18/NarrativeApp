@@ -401,78 +401,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                   onTap: () => setState(() => _legendVisible = true),
                 ),
         ),
-        if (isEditMode)
-          Positioned(
-            right: 12,
-            top: 12,
-            child: _ChapterJumpBar(
-              onJump: (nodeId) {
-                ref.read(storyPlayProvider.notifier).jumpTo(nodeId);
-                ref.read(homeTabIndexProvider.notifier).state = 0;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(tr(ref, 'node_activated'))),
-                );
-              },
-            ),
-          ),
       ],
-    );
-  }
-}
-
-/// The target a chapter-jump chip lands on — jumping ahead this way is
-/// inherently approximate about which branch state you'd actually have
-/// earned by then (see [firstNodeIdForChapter]).
-String? _firstNodeIdForChapter(int chapter) =>
-    firstNodeIdForChapter(chapter, prologueNodeId: StoryRepository.startNodeId);
-
-/// A small "jump ahead" panel for testing/browsing: one chip per chapter,
-/// each landing on that chapter's opening beat via the same
-/// [StoryPlayNotifier.jumpTo] the map's per-node double-tap already uses.
-/// Complements that (undiscoverable, one node at a time) gesture with a
-/// visible, chapter-granularity shortcut.
-class _ChapterJumpBar extends ConsumerWidget {
-  const _ChapterJumpBar({required this.onJump});
-
-  final ValueChanged<String> onJump;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final maxChapter = chapterSpines.isEmpty
-        ? 0
-        : chapterSpines.map((s) => s.chapter).reduce((a, b) => a > b ? a : b);
-    final chapterEntries = <MapEntry<int, String>>[
-      for (var chapter = 0; chapter <= maxChapter; chapter++)
-        if (_firstNodeIdForChapter(chapter) != null)
-          MapEntry(chapter, _firstNodeIdForChapter(chapter)!),
-    ];
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(tr(ref, 'jump_to_chapter_title'),
-                style: Theme.of(context).textTheme.labelLarge),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final entry in chapterEntries)
-                  ActionChip(
-                    label: Text(entry.key == 0
-                        ? tr(ref, 'chapter_band_prologue')
-                        : '${entry.key}'),
-                    onPressed: () => onJump(entry.value),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
