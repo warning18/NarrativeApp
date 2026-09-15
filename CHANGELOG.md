@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.75.0+102]
+
+Sharper item/quest icons, and the first choices whose consequences reach past
+their own scene: which companions you can recruit, and which skills you can
+learn, now depend on who you've been so far.
+
+### Added
+- **Choice-driven build divergence.** Recruiting Kelda (the dwarf
+  shieldbearer) now requires an alignment score of at least 2; recruiting
+  Sable (the rogue) requires -2 or lower; recruiting Sister Maren requires
+  having saved Lysa back in Chapter 1 (`lysa_survived`). All three use the
+  existing node-level `reqAlignmentScore`/`reqAlignmentMax`/`reqFlags` gates,
+  each with its own in-voice locked reason instead of a generic message. Two
+  new signature skills, `zealous_conviction` (alignment ≥ 3) and
+  `ruthless_edge` (alignment ≤ -3), extend the same idea to skills via new
+  `requiredAlignmentMin`/`requiredAlignmentMax` fields on the skill schema,
+  shown in the Skills screen as "Reserved: Good-aligned"/"Evil-aligned"
+  alongside the existing race/profession restriction. The point: who you
+  recruit and what you can learn is no longer available to every
+  playthrough — it's shaped by the choices you already made.
+
+### Changed
+- **Item and quest icons are sharper.** Weapon items now render a
+  sword/dagger/spear/staff/shield-specific icon instead of one generic
+  glyph for the whole "Weapon" category (`itemIcon`), and quests render an
+  icon for what their first objective actually asks — a fight, a fetch, or
+  a conversation — instead of just their Main/Side category
+  (`questIcon`), across Inventory, Shops, and the Quests tab.
+
 ## [1.74.0+101]
 
 A D&D/Baldur's Gate 3-style ability check system: five new stats and a

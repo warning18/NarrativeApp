@@ -162,6 +162,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 professions: professionsAsync.value ?? const {},
                 raceId: raceId,
                 professionId: professionId,
+                alignmentScore: session.alignmentScore,
                 skillPoints: skillPoints,
                 unlockedSkillIds: unlockedSkillIds,
                 onUnlock: widget.allyId != null
@@ -193,6 +194,7 @@ class _SkillList extends ConsumerWidget {
     required this.professions,
     required this.raceId,
     required this.professionId,
+    required this.alignmentScore,
     required this.skillPoints,
     required this.unlockedSkillIds,
     required this.onUnlock,
@@ -209,6 +211,12 @@ class _SkillList extends ConsumerWidget {
   /// by default, or a companion's when [SkillsScreen.allyId] is set.
   final String raceId;
   final String professionId;
+
+  /// Always the player's own alignment, even when browsing a companion's
+  /// skill list — allies don't track a separate alignment, and a skill
+  /// gated on it (e.g. [requiredAlignmentMin]) reads as "your reputation
+  /// opened this up for the whole party," not the ally's own conduct.
+  final int alignmentScore;
   final int skillPoints;
   final List<String> unlockedSkillIds;
   final ValueChanged<String> onUnlock;
@@ -241,6 +249,18 @@ class _SkillList extends ConsumerWidget {
           restrictedProfessionId != professionId) {
         return false;
       }
+      final requiredAlignmentMin =
+          (skill['requiredAlignmentMin'] as num?)?.toInt();
+      if (requiredAlignmentMin != null &&
+          alignmentScore < requiredAlignmentMin) {
+        return false;
+      }
+      final requiredAlignmentMax =
+          (skill['requiredAlignmentMax'] as num?)?.toInt();
+      if (requiredAlignmentMax != null &&
+          alignmentScore > requiredAlignmentMax) {
+        return false;
+      }
       return true;
     }
 
@@ -248,7 +268,16 @@ class _SkillList extends ConsumerWidget {
       final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
       final restrictedProfessionId =
           skill['restrictedProfessionID']?.toString() ?? '';
-      if (restrictedRaceId.isEmpty && restrictedProfessionId.isEmpty) return '';
+      final requiredAlignmentMin =
+          (skill['requiredAlignmentMin'] as num?)?.toInt();
+      final requiredAlignmentMax =
+          (skill['requiredAlignmentMax'] as num?)?.toInt();
+      if (restrictedRaceId.isEmpty &&
+          restrictedProfessionId.isEmpty &&
+          requiredAlignmentMin == null &&
+          requiredAlignmentMax == null) {
+        return '';
+      }
       final race = races[restrictedRaceId] as Map<String, dynamic>?;
       final profession =
           professions[restrictedProfessionId] as Map<String, dynamic>?;
@@ -259,9 +288,15 @@ class _SkillList extends ConsumerWidget {
           ? (profession?['professionName']?.toString() ??
               restrictedProfessionId)
           : null;
+      final alignmentLabel = requiredAlignmentMin != null
+          ? tr(ref, 'good_aligned_label')
+          : requiredAlignmentMax != null
+              ? tr(ref, 'evil_aligned_label')
+              : null;
       return '${tr(ref, 'reserved_prefix')}: ${[
         raceName,
-        professionName
+        professionName,
+        alignmentLabel,
       ].whereType<String>().join(' · ')}';
     }
 

@@ -286,6 +286,16 @@ final DbSchema skillsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'professions',
     ),
+    FieldSchema(
+      key: 'requiredAlignmentMin',
+      label: 'Requires Alignment At Least',
+      type: FieldType.integer,
+    ),
+    FieldSchema(
+      key: 'requiredAlignmentMax',
+      label: 'Requires Alignment At Most',
+      type: FieldType.integer,
+    ),
     visualAssetFieldSchema('skills'),
   ],
 );

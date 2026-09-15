@@ -1038,5 +1038,39 @@
     "battleMessage": "You wind up and strike with everything you have.",
     "restrictedRaceID": "",
     "restrictedProfessionID": ""
+  },
+  "zealous_conviction": {
+    "id": "zealous_conviction",
+    "element": "None",
+    "cost": 3,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Strike with the clean, unhesitating force of someone who no longer has to lie to themselves about which side they're on.",
+    "healAmount": 0,
+    "damageMod": 8,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.3,
+    "battleMessage": "Conviction burns clean.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "requiredAlignmentMin": 3
+  },
+  "ruthless_edge": {
+    "id": "ruthless_edge",
+    "element": "None",
+    "cost": 3,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Strike without the hesitation a more scrupulous person would have talked themselves into.",
+    "healAmount": 0,
+    "damageMod": 10,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.2,
+    "battleMessage": "No mercy, no wasted motion.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "requiredAlignmentMax": -3
   }
 }

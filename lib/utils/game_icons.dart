@@ -23,6 +23,20 @@ IconData itemTypeIcon(String? itemType) {
   }
 }
 
+/// A specific item's icon — sharper than [itemTypeIcon] for the "Weapon"
+/// category, where sword/dagger/spear/staff/shield items would otherwise
+/// all render as the same gavel glyph. Falls back to [itemTypeIcon] for
+/// every other type, and for a weapon id that doesn't match a known prefix.
+IconData itemIcon(String? id, String? itemType) {
+  if (itemType == 'Weapon' && id != null) {
+    if (id.startsWith('dagger')) return Icons.content_cut;
+    if (id.startsWith('spear')) return Icons.double_arrow;
+    if (id.startsWith('staff')) return Icons.auto_fix_high;
+    if (id.startsWith('shield')) return Icons.security;
+  }
+  return itemTypeIcon(itemType);
+}
+
 IconData elementIcon(String? element) {
   switch (element) {
     case 'Fire':
@@ -54,6 +68,24 @@ IconData questCategoryIcon(String? category) {
       return Icons.celebration;
     default:
       return Icons.assignment;
+  }
+}
+
+/// A quest's icon, keyed off what its first objective actually asks the
+/// player to do — sharper than [questCategoryIcon] alone, which otherwise
+/// gives every "Main" quest the same star regardless of whether it's a
+/// fight, a fetch, or a conversation. Falls back to [questCategoryIcon] for
+/// an objective type this doesn't recognize (or a quest with none).
+IconData questIcon(String? category, String? firstObjectiveType) {
+  switch (firstObjectiveType) {
+    case 'Kill':
+      return Icons.sports_martial_arts;
+    case 'Fetch':
+      return Icons.backpack;
+    case 'Talk':
+      return Icons.chat_bubble_outline;
+    default:
+      return questCategoryIcon(category);
   }
 }
 

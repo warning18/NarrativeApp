@@ -526,6 +526,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'unlocked_prefix': {AppLanguage.en: 'Unlocked', AppLanguage.fr: 'Débloqué'},
   'unlock_button': {AppLanguage.en: 'Unlock', AppLanguage.fr: 'Débloquer'},
   'reserved_prefix': {AppLanguage.en: 'Reserved', AppLanguage.fr: 'Réservé'},
+  'good_aligned_label': {
+    AppLanguage.en: 'Good-aligned',
+    AppLanguage.fr: 'Aligné bien',
+  },
+  'evil_aligned_label': {
+    AppLanguage.en: 'Evil-aligned',
+    AppLanguage.fr: 'Aligné mal',
+  },
   'shop_no_stock': {
     AppLanguage.en: 'This shop has no stock configured.',
     AppLanguage.fr: "Cette boutique n'a aucun stock configuré.",

@@ -1204,13 +1204,17 @@
         "text": "Hear out a dwarf holding the gate alone",
         "text_fr": "Écouter une naine tenant seule la porte",
         "next_id": "2015_kelda",
-        "unlockQuestId": "q_ch2_keldas_stand"
+        "unlockQuestId": "q_ch2_keldas_stand",
+        "lockedText": "She looked me over once, the particular assessment of someone deciding whether a stranger was worth trusting at her back, and apparently didn't like what she found. I couldn't fault her judgment — a man with my recent conduct wasn't exactly advertising himself as gate-holding material.",
+        "lockedText_fr": "Elle m'évalua d'un regard, avec l'attention particulière de quelqu'un qui décide si un inconnu mérite sa confiance à ses côtés, et n'apprécia visiblement pas ce qu'elle y trouva. Je ne pouvais lui donner tort — un homme à ma conduite récente ne se présentait guère comme une garde de porte fiable."
       },
       {
         "text": "Listen to a rogue's complaint about a card game gone wrong",
         "text_fr": "Écouter la plainte d'une voleuse au sujet d'une partie de cartes ratée",
         "next_id": "2015_sable",
-        "unlockQuestId": "q_ch2_sables_wager"
+        "unlockQuestId": "q_ch2_sables_wager",
+        "lockedText": "She sized me up the way a card player sizes up a mark, decided I wasn't worth the risk of a shared secret, and went back to nursing her grudge alone. Whatever reputation I'd been building, it apparently wasn't the kind that opened doors like hers.",
+        "lockedText_fr": "Elle me jaugea comme une joueuse de cartes jauge sa prochaine dupe, décida que je ne valais pas le risque d'un secret partagé, et retourna nourrir seule sa rancune. Quelle que fût la réputation que je m'étais forgée, ce n'était visiblement pas le genre qui ouvrait des portes comme les siennes."
       }
     ]
   },
@@ -1314,7 +1318,8 @@
         "text_fr": "Aller trouver Vane",
         "next_id": "2030"
       }
-    ]
+    ],
+    "reqAlignmentScore": 2
   },
   "2015_sable": {
     "id": "2015_sable",
@@ -1331,7 +1336,8 @@
         "text_fr": "Aller trouver Vane",
         "next_id": "2030"
       }
-    ]
+    ],
+    "reqAlignmentMax": -2
   },
   "2020": {
     "id": "2020",
@@ -1608,7 +1614,9 @@
         "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
         "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
         "next_id": "3005_maren",
-        "unlockQuestId": "q_ch3_marens_penance"
+        "unlockQuestId": "q_ch3_marens_penance",
+        "lockedText": "She had the look of someone deciding whether a stranger deserved a confession, and whatever she saw in me didn't pass the test. I told myself it was nothing personal, though given who I'd left behind to get this far, I suspected it rather was.",
+        "lockedText_fr": "Elle avait l'air de quelqu'un qui se demande si un inconnu mérite une confession, et ce qu'elle vit en moi ne passa pas l'épreuve. Je me dis que ce n'était rien de personnel, bien que, vu qui j'avais laissé derrière moi pour arriver jusque-là, je soupçonnasse le contraire."
       },
       {
         "text": "Pick the lock on a sealed archive door, untouched since the invasion",
@@ -1754,6 +1762,9 @@
         "text_fr": "Se diriger vers la Salle des Archives",
         "next_id": "3020"
       }
+    ],
+    "reqFlags": [
+      "lysa_survived"
     ]
   },
   "3010": {

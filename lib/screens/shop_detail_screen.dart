@@ -216,7 +216,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         final equipSlot = item?['equipSlot']?.toString();
                         return Card(
                           child: ListTile(
-                            leading: Icon(itemTypeIcon(itemType)),
+                            leading: Icon(itemIcon(itemId, itemType)),
                             title: Text(itemName),
                             subtitle: Text(
                               soldOut

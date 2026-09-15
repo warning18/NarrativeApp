@@ -426,6 +426,12 @@ class _QuestList extends ConsumerWidget {
         final quest = records[questId] as Map<String, dynamic>;
         final questName = quest['questName']?.toString() ?? questId;
         final category = quest['category']?.toString();
+        final objectivesList =
+            (quest['objectives'] as List?)?.cast<Map<String, dynamic>>() ??
+                const [];
+        final firstObjectiveType = objectivesList.isEmpty
+            ? null
+            : objectivesList.first['type']?.toString();
         final dialogue = quest['npcDialogueText']?.toString() ?? '';
         final isCompleted = session.completedQuestIds.contains(questId);
         final isActive = session.activeQuestIds.contains(questId);
@@ -571,7 +577,7 @@ class _QuestList extends ConsumerWidget {
               children: [
                 Row(
                   children: [
-                    Icon(questCategoryIcon(category)),
+                    Icon(questIcon(category, firstObjectiveType)),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(questName,

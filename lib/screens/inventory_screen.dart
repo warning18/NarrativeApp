@@ -296,8 +296,8 @@ class _InventoryBody extends ConsumerWidget {
 
           return Card(
             child: ListTile(
-              leading:
-                  Icon(itemTypeIcon(equippedItem?['itemType']?.toString())),
+              leading: Icon(
+                  itemIcon(equippedId, equippedItem?['itemType']?.toString())),
               title: Text(slot),
               subtitle: Text(equippedItem?['itemName']?.toString() ??
                   tr(ref, 'empty_slot_label')),
@@ -417,7 +417,7 @@ class _InventoryBody extends ConsumerWidget {
             final item = items[id] as Map<String, dynamic>?;
             final itemName = item?['itemName']?.toString() ?? id;
             return ListTile(
-              leading: Icon(itemTypeIcon(item?['itemType']?.toString())),
+              leading: Icon(itemIcon(id, item?['itemType']?.toString())),
               title: Text(itemName),
               trailing:
                   id == currentlyEquippedId ? const Icon(Icons.check) : null,
@@ -504,7 +504,7 @@ class _ItemTile extends StatelessWidget {
           ? colorScheme.tertiaryContainer
           : (isEquipped ? colorScheme.primaryContainer : null),
       child: ListTile(
-        leading: Icon(itemTypeIcon(itemType)),
+        leading: Icon(itemIcon(itemId, itemType)),
         title: Text(itemName),
         subtitle: Text(statsParts.join(' · ')),
         trailing: compareMode
@@ -524,7 +524,7 @@ class _ItemTile extends StatelessWidget {
             : () => showDetailDialog(
                   context,
                   title: itemName,
-                  icon: itemTypeIcon(itemType),
+                  icon: itemIcon(itemId, itemType),
                   closeLabel: t('close_button'),
                   rows: [
                     MapEntry(
