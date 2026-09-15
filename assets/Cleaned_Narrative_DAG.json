@@ -84,6 +84,13 @@
         "checkAbility": "constitution",
         "checkDC": 12,
         "failNextId": "300"
+      },
+      {
+        "text": "Approach a cloaked figure trading whispers at the edge of the stalls",
+        "text_fr": "Approcher une silhouette encapuchonnée échangeant des murmures en bordure des étals",
+        "next_id": "151_vess",
+        "lockedText": "A cloaked figure stood at the edge of the stalls with the specific stillness of someone waiting for a very particular kind of person to walk past, and it was clear enough, even from a distance, that I was not that person — not yet, anyway.",
+        "lockedText_fr": "Une silhouette encapuchonnée se tenait en bordure des étals, avec cette immobilité particulière de quelqu'un attendant un genre bien précis de passant, et il était clair, même de loin, que je n'étais pas ce genre de passant — pas encore, du moins."
       }
     ]
   },
@@ -1152,6 +1159,13 @@
         "checkAbility": "strength",
         "checkDC": 13,
         "failNextId": "2040"
+      },
+      {
+        "text": "Notice an archer watching the docks from a collapsed rooftop",
+        "text_fr": "Remarquer une archère observant les docks depuis un toit effondré",
+        "next_id": "2010_liora",
+        "lockedText": "She had at least four clean shots at me by the time I noticed her, and nothing I could think to say from the ground struck me as worth the risk of finding out whether she'd take one. I decided, on reflection, that some conversations are better held with a professional intermediary — namely, distance.",
+        "lockedText_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, et rien de ce que je pouvais imaginer dire depuis le sol ne me semblait valoir le risque de découvrir si elle en saisirait un. Je décidai, à la réflexion, que certaines conversations se tiennent mieux par l'entremise d'un intermédiaire professionnel — à savoir, la distance."
       }
     ]
   },
@@ -1660,6 +1674,13 @@
         "checkAbility": "intelligence",
         "checkDC": 13,
         "failNextId": "3005_acolyte"
+      },
+      {
+        "text": "Haggle with a scarred orc mercenary sizing up the ruins",
+        "text_fr": "Négocier avec un mercenaire orc balafré évaluant les ruines",
+        "next_id": "3005_grosh",
+        "lockedText": "He looked me over with the particular disinterest of a man who has already been offered enough unpaid work to last several lifetimes, did the arithmetic on my boots and my purse, and returned to his own business before I had finished deciding how to open the conversation.",
+        "lockedText_fr": "Il me jaugea avec ce désintérêt particulier d'un homme à qui l'on a déjà proposé assez de travail non payé pour plusieurs vies, fit le calcul sur mes bottes et ma bourse, et retourna à ses affaires avant même que j'aie fini de décider comment engager la conversation."
       }
     ]
   },
@@ -2453,6 +2474,65 @@
         "flagsToAdd": [
           "forge_cache_found"
         ]
+      }
+    ]
+  },
+  "2010_liora": {
+    "id": "2010_liora",
+    "description": "She'd had at least four clean shots at me by the time I noticed her, which told me either she wasn't planning to take one or she was waiting to see if I'd earn it. I made my case from the ground, the way you do with someone who could end the conversation from forty feet up, and whatever I said landed better than I expected — she came down without lowering the bow first, which I took as roughly the elvish equivalent of a handshake.",
+    "description_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, ce qui signifiait soit qu'elle ne comptait pas en saisir un, soit qu'elle attendait de voir si je le méritais. Je plaidai ma cause depuis le sol, comme on le fait avec quelqu'un qui pourrait mettre fin à la conversation depuis douze mètres de haut, et ce que je dis porta mieux que je ne l'espérais — elle descendit sans baisser son arc au préalable, ce que je pris pour l'équivalent elfique approximatif d'une poignée de main.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "reqCharisma": 3,
+    "choices": [
+      {
+        "text": "Continue through the Docks",
+        "text_fr": "Continuer à travers les Docks",
+        "next_id": "2900",
+        "unlockQuestId": "q_ch2_lioras_watch"
+      }
+    ]
+  },
+  "151_vess": {
+    "id": "151_vess",
+    "description": "She didn't have a stall, or wares, or any of the ordinary reasons to be standing where she was standing, and the few people who passed gave her the specific wide berth you give something your instincts have flagged before your reason gets a vote. Up close, the reason became obvious enough — a thread of the same cold, patient wrongness the Tear had left in me, worn on her like a garment she'd long since stopped trying to take off. She looked at me the way you look at someone wearing your own coat.",
+    "description_fr": "Elle n'avait ni étal, ni marchandise, ni aucune des raisons ordinaires de se tenir là où elle se tenait, et les rares passants lui laissaient cette large marge particulière que l'on accorde à ce que l'instinct a signalé avant que la raison n'ait voix au chapitre. De près, la raison devenait assez évidente — un fil de cette même étrangeté froide et patiente que la Déchirure avait laissée en moi, qu'elle portait comme un vêtement qu'elle avait depuis longtemps cessé d'essayer d'ôter. Elle me regarda comme on regarde quelqu'un portant son propre manteau.",
+    "context_taxonomy": {
+      "ui_theme": "market",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "reqFlags": [
+      "void_marked"
+    ],
+    "choices": [
+      {
+        "text": "Move on",
+        "text_fr": "Continuer",
+        "next_id": "300",
+        "unlockQuestId": "q_ch1_vess_in_the_dark"
+      }
+    ]
+  },
+  "3005_grosh": {
+    "id": "3005_grosh",
+    "description": "He was doing the arithmetic that mercenaries do on strangers — armor, boots, the number of scars that suggested I'd survived things rather than merely witnessed them — and whatever total he arrived at cleared whatever bar he'd set, because he didn't bother introducing himself before naming a price.",
+    "description_fr": "Il faisait ce calcul que font les mercenaires sur les inconnus — l'armure, les bottes, le nombre de cicatrices suggérant que j'avais survécu à des choses plutôt que simplement assisté à elles — et quel que fût le total auquel il parvint, il franchit le seuil qu'il s'était fixé, car il ne prit pas la peine de se présenter avant d'annoncer un prix.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "reqGold": 80,
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020",
+        "unlockQuestId": "q_ch3_groshs_price"
       }
     ]
   }

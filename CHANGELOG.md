@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.77.0+105]
+
+Three new recruitable companions, each gated behind a different kind of
+requirement — so which allies a playthrough can actually reach depends on
+the build and the choices that got it there, not just on finding the right
+hub node.
+
+### Added
+- **Liora** (Elf Ranger) — a wary rooftop archer at the Chapter 2 harbor
+  hub (node `2010`), who only comes down if you can talk your way past her
+  (`reqCharisma: 3`). Signature die: `liora_die` (aimed shots, evasive
+  steps, `ranger_aimed_shot`/`ranger_beast_bond`).
+- **Vess** (Voidkin Mage) — a fellow void-marked stranger at the Chapter 1
+  market hub (node `151`), reachable only by players carrying the
+  `void_marked` flag from a failed Luck check at the Tear (node `280`) —
+  a direct consequence chain from an earlier round's content, not a new
+  gate type in isolation. Signature die: `vess_die` (void/arcane, `mage_arcane_missile`,
+  `voidkin_umbral_veil`/`voidkin_entropy_touch`).
+- **Grosh** (Orc Warrior) — a mercenary at the Chapter 3 Ashen Quarter hub
+  (node `3005`) who only takes clients who look like they can pay
+  (`reqGold: 80`). Signature die: `grosh_die` (`orc_berserk_rage`,
+  `warrior_shield_bash`).
+
+  Each ships with its own recruit quest (`q_ch2_lioras_watch`,
+  `q_ch1_vess_in_the_dark`, `q_ch3_groshs_price`) and bridge node, following
+  the exact pattern Kelda/Sable/Maren established — no new mechanics, just
+  new data reusing `reqCharisma`/`reqFlags`/`reqGold` node gating and the
+  existing companion/signature-die/recruit-quest schema.
+
 ## [1.76.0+104]
 
 Five new build-specific interactions and a new quest, so every one of the

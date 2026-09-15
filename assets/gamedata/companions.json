@@ -25,5 +25,32 @@
     "signatureDiceId": "holy_die",
     "recruitQuestId": "q_ch3_marens_penance",
     "requiredHouseId": ""
+  },
+  "liora": {
+    "companionID": "liora",
+    "companionName": "Liora",
+    "raceId": "elf",
+    "professionId": "ranger",
+    "signatureDiceId": "liora_die",
+    "recruitQuestId": "q_ch2_lioras_watch",
+    "requiredHouseId": ""
+  },
+  "vess": {
+    "companionID": "vess",
+    "companionName": "Vess",
+    "raceId": "voidkin",
+    "professionId": "mage",
+    "signatureDiceId": "vess_die",
+    "recruitQuestId": "q_ch1_vess_in_the_dark",
+    "requiredHouseId": ""
+  },
+  "grosh": {
+    "companionID": "grosh",
+    "companionName": "Grosh",
+    "raceId": "orc",
+    "professionId": "warrior",
+    "signatureDiceId": "grosh_die",
+    "recruitQuestId": "q_ch3_groshs_price",
+    "requiredHouseId": ""
   }
 }

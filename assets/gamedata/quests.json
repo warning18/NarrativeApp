@@ -641,5 +641,127 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_ch2_lioras_watch": {
+    "questID": "q_ch2_lioras_watch",
+    "questName": "Liora's Watch",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Help Liora end the smuggler captain's raids on refugee boats",
+        "type": "Kill",
+        "targetEnemyID": "smuggler_captain",
+        "targetItemID": "",
+        "targetNPCName": "Liora",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 50,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I've watched this stretch of roofline for three days,\" she says, not lowering the bow, \"and you're the first thing to cross it worth aiming at instead of past.\" The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I'll consider the rest of this city marginally less worth watching alone.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take the shot together",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_lioras_watch_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "liora"
+  },
+  "q_ch1_vess_in_the_dark": {
+    "questID": "q_ch1_vess_in_the_dark",
+    "questName": "Vess in the Dark",
+    "chapter": 1,
+    "category": "Side",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Hear Vess out about what the Shroud left behind in her",
+        "type": "Talk",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Vess",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 25,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"You're marked too,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you've worn the mark long enough yourself. \"Mine took longer to settle in. Yours is still deciding what it wants from you. I don't know that I can help with that, but I know what it costs to face it alone, and I'd rather not watch someone else find out the same way I did.\"",
+    "requiredGold": 0,
+    "requiredFlags": [
+      "void_marked"
+    ],
+    "questChoices": [
+      {
+        "buttonText": "Listen",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch1_vess_in_the_dark_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "vess"
+  },
+  "q_ch3_groshs_price": {
+    "questID": "q_ch3_groshs_price",
+    "questName": "Grosh's Price",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Prove your coin is good by clearing a Hollow Court zealot with Grosh",
+        "type": "Kill",
+        "targetEnemyID": "hollow_court_zealot",
+        "targetItemID": "",
+        "targetNPCName": "Grosh",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 55,
+    "rewardXP": 65,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I don't work for free, and I don't work for promises,\" he says, looking me over the way a butcher looks over livestock he hasn't decided is worth the knife yet. \"You look like you can actually pay, which already puts you ahead of the last four people who tried to hire me this week. Clear one of the Hollow Court's zealots with me, and we'll call the interview finished.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Hire him on the spot",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_groshs_price_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "grosh"
   }
 }

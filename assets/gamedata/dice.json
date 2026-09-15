@@ -642,5 +642,170 @@
       }
     ],
     "cost": 105
+  },
+  "liora_die": {
+    "diceName": "liora_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Aimed Shot",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Evasive Step",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Called Shot",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_aimed_shot",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Beast Bond",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "ranger_beast_bond",
+        "weight": 0.4,
+        "element": "None"
+      },
+      {
+        "faceName": "Field Dressing",
+        "type": "Heal",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heavy Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.4,
+        "element": "None"
+      }
+    ],
+    "cost": 100
+  },
+  "vess_die": {
+    "diceName": "vess_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Void Lance",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Void"
+      },
+      {
+        "faceName": "Frost Ward",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Water"
+      },
+      {
+        "faceName": "Umbral Veil",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "voidkin_umbral_veil",
+        "weight": 0.5,
+        "element": "Void"
+      },
+      {
+        "faceName": "Arcane Missile",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_arcane_missile",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Entropy Touch",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "voidkin_entropy_touch",
+        "weight": 0.3,
+        "element": "Void"
+      },
+      {
+        "faceName": "Siphon",
+        "type": "Heal",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "Void"
+      }
+    ],
+    "cost": 120
+  },
+  "grosh_die": {
+    "diceName": "grosh_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Cleave",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Brace",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Berserk Rage",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "orc_berserk_rage",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Shield Bash",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "warrior_shield_bash",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Adrenaline Surge",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "adrenaline_surge",
+        "weight": 0.4,
+        "element": "None"
+      },
+      {
+        "faceName": "Field Patch",
+        "type": "Heal",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ],
+    "cost": 95
   }
 }
