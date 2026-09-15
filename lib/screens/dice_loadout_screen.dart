@@ -44,27 +44,32 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
     final companions = widget.allyId != null
-        ? ref.watch(gameDbProvider(companionsSchema)).value ?? const <String, dynamic>{}
+        ? ref.watch(gameDbProvider(companionsSchema)).value ??
+            const <String, dynamic>{}
         : const <String, dynamic>{};
-    final companion =
-        widget.allyId != null ? companions[widget.allyId] as Map<String, dynamic>? : null;
+    final companion = widget.allyId != null
+        ? companions[widget.allyId] as Map<String, dynamic>?
+        : null;
     final ally = widget.allyId != null
         ? session.recruitedAllies.firstWhere(
             (a) => a.companionId == widget.allyId,
-            orElse: () => AllyState(companionId: widget.allyId!, currentHealth: 0),
+            orElse: () =>
+                AllyState(companionId: widget.allyId!, currentHealth: 0),
           )
         : null;
-    final titleSuffix =
-        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
+    final titleSuffix = widget.allyId != null
+        ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}'
+        : '';
 
     return Scaffold(
       appBar: AppBar(title: Text('${tr(ref, 'dice_loadout')}$titleSuffix')),
       body: diceAsync.when(
         data: (dice) => skillsAsync.when(
-          data: (skills) => _buildBody(context, dice, skills, session, companion, ally),
+          data: (skills) =>
+              _buildBody(context, dice, skills, session, companion, ally),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+          error: (error, stack) => Center(
+              child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) =>
@@ -91,19 +96,25 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       return Center(child: Text(tr(ref, 'own_no_dice')));
     }
     if (ally == null) {
-      _selectedDiceId = diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
+      _selectedDiceId =
+          diceIds.contains(_selectedDiceId) ? _selectedDiceId : diceIds.first;
     } else {
       _selectedDiceId = diceIds.first;
     }
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
-    final faces = (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    final faces =
+        (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ??
+            const [];
     final assignments = ally != null
         ? ally.diceSkillAssignments
-        : session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
+        : session.diceSkillAssignments[_selectedDiceId] ??
+            const <String, String>{};
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
-        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ?? false) ||
-            (ally?.unlockedSkillIds ?? session.unlockedSkillIds).contains(entry.key))
+        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
+                false) ||
+            (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
+                .contains(entry.key))
           entry.key,
     }.toList()
       ..sort();
@@ -123,7 +134,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 labelText: tr(ref, 'die_label'),
                 border: const OutlineInputBorder(),
               ),
-              items: diceIds.map((id) => DropdownMenuItem(value: id, child: Text(id))).toList(),
+              items: diceIds
+                  .map((id) => DropdownMenuItem(value: id, child: Text(id)))
+                  .toList(),
               onChanged: (value) => setState(() => _selectedDiceId = value),
             ),
           )
@@ -142,7 +155,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             children: [
-              Text(tr(ref, 'skill_faces_title'), style: Theme.of(context).textTheme.titleMedium),
+              Text(tr(ref, 'skill_faces_title'),
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 4),
               Text(
                 tr(ref, 'drag_skill_hint'),
@@ -158,34 +172,44 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                       Builder(builder: (context) {
                         final face = faces[index];
                         final assignedSkillId = assignments[index.toString()];
-                        final defaultSkillId = face['linkedSkillID']?.toString() ?? '';
+                        final defaultSkillId =
+                            face['linkedSkillID']?.toString() ?? '';
                         final locked = _isFixedSkillFace(face);
-                        final faceElement = face['element']?.toString() ?? 'None';
+                        final faceElement =
+                            face['element']?.toString() ?? 'None';
                         return _FaceSlot(
                           face: face,
                           assignedSkillId: assignedSkillId,
                           defaultSkillId: defaultSkillId,
                           language: language,
                           locked: locked,
-                          restrictionElement: faceElement != 'None' ? faceElement : null,
+                          restrictionElement:
+                              faceElement != 'None' ? faceElement : null,
                           skills: skills,
                           onAccept: (skillId) => ally != null
                               ? ref
                                   .read(playerSessionProvider.notifier)
-                                  .assignSkillToAllyDiceFace(ally.companionId, index, skillId)
+                                  .assignSkillToAllyDiceFace(
+                                      ally.companionId, index, skillId)
                               : ref
                                   .read(playerSessionProvider.notifier)
-                                  .assignSkillToDiceFace(_selectedDiceId!, index, skillId),
+                                  .assignSkillToDiceFace(
+                                      _selectedDiceId!, index, skillId),
                           onClear: (locked || assignedSkillId == null)
                               ? null
                               : () => ally != null
                                   ? ref
                                       .read(playerSessionProvider.notifier)
-                                      .clearAllyDiceFaceSkill(ally.companionId, index)
+                                      .clearAllyDiceFaceSkill(
+                                          ally.companionId, index)
                                   : ref
                                       .read(playerSessionProvider.notifier)
-                                      .clearDiceFaceSkill(_selectedDiceId!, index),
-                          onShowDetail: (skillId) => _showSkillDetail(context, skillId, skills[skillId] as Map<String, dynamic>?),
+                                      .clearDiceFaceSkill(
+                                          _selectedDiceId!, index),
+                          onShowDetail: (skillId) => _showSkillDetail(
+                              context,
+                              skillId,
+                              skills[skillId] as Map<String, dynamic>?),
                         );
                       })
                     else
@@ -193,7 +217,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 ],
               ),
               const Divider(height: 40),
-              Text(tr(ref, 'your_unlocked_skills'), style: Theme.of(context).textTheme.titleMedium),
+              Text(tr(ref, 'your_unlocked_skills'),
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               if (unlockedSkillIds.isEmpty)
                 Padding(
@@ -221,7 +246,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     );
   }
 
-  void _showSkillDetail(BuildContext context, String skillId, Map<String, dynamic>? skill) {
+  void _showSkillDetail(
+      BuildContext context, String skillId, Map<String, dynamic>? skill) {
     final lang = ref.read(appLanguageProvider);
     String t(String key) => trFor(lang, key);
     final element = skill?['element']?.toString();
@@ -238,12 +264,16 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         MapEntry(t('element_label'), element ?? t('none_label')),
         MapEntry(t('cost_label'), '$cost'),
         MapEntry(t('damage_mod_label'), '${skill?['damageMod'] ?? 0}'),
-        MapEntry(t('damage_multiplier_label'), '${skill?['damageMultiplier'] ?? 1.0}'),
+        MapEntry(t('damage_multiplier_label'),
+            '${skill?['damageMultiplier'] ?? 1.0}'),
         MapEntry(t('heal_amount'), '${skill?['healAmount'] ?? 0}'),
-        if (requiredSkillId.isNotEmpty) MapEntry(t('requires_label'), requiredSkillId),
+        if (requiredSkillId.isNotEmpty)
+          MapEntry(t('requires_label'), requiredSkillId),
         MapEntry(
           t('active_skill_label'),
-          (skill?['isActiveSkill'] as bool? ?? true) ? t('yes_label') : t('no_label'),
+          (skill?['isActiveSkill'] as bool? ?? true)
+              ? t('yes_label')
+              : t('no_label'),
         ),
       ],
     );
@@ -336,8 +366,10 @@ class _FaceSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final faceName = face['faceName']?.toString() ?? trFor(language, 'skill_singular');
-    final effectiveSkillId = assignedSkillId ?? (defaultSkillId.isNotEmpty ? defaultSkillId : null);
+    final faceName =
+        face['faceName']?.toString() ?? trFor(language, 'skill_singular');
+    final effectiveSkillId =
+        assignedSkillId ?? (defaultSkillId.isNotEmpty ? defaultSkillId : null);
     final colorScheme = Theme.of(context).colorScheme;
 
     Widget content(bool isHovering, bool isInvalidHover) {
@@ -351,7 +383,9 @@ class _FaceSlot extends StatelessWidget {
           decoration: BoxDecoration(
             color: isInvalidHover
                 ? colorScheme.errorContainer
-                : (isHovering ? colorScheme.primaryContainer : colorScheme.surfaceContainerHighest),
+                : (isHovering
+                    ? colorScheme.primaryContainer
+                    : colorScheme.surfaceContainerHighest),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isInvalidHover
@@ -368,10 +402,12 @@ class _FaceSlot extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    child: Text(faceName, style: Theme.of(context).textTheme.titleSmall),
+                    child: Text(faceName,
+                        style: Theme.of(context).textTheme.titleSmall),
                   ),
                   if (locked)
-                    Icon(Icons.lock_outline, size: 16, color: colorScheme.outline)
+                    Icon(Icons.lock_outline,
+                        size: 16, color: colorScheme.outline)
                   else if (onClear != null)
                     IconButton(
                       icon: const Icon(Icons.close, size: 16),
@@ -385,7 +421,9 @@ class _FaceSlot extends StatelessWidget {
               Text(
                 effectiveSkillId ?? trFor(language, 'drop_skill_here'),
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      fontStyle: effectiveSkillId == null ? FontStyle.italic : FontStyle.normal,
+                      fontStyle: effectiveSkillId == null
+                          ? FontStyle.italic
+                          : FontStyle.normal,
                     ),
               ),
               if (locked)
@@ -418,7 +456,9 @@ class _FaceSlot extends StatelessWidget {
       onWillAcceptWithDetails: (details) {
         final restriction = restrictionElement;
         if (restriction == null) return true;
-        final skillElement = (skills[details.data] as Map<String, dynamic>?)?['element']?.toString();
+        final skillElement =
+            (skills[details.data] as Map<String, dynamic>?)?['element']
+                ?.toString();
         return skillElement == restriction;
       },
       onAcceptWithDetails: (details) => onAccept(details.data),

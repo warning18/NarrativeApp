@@ -30,21 +30,25 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
     final session = ref.watch(playerSessionProvider);
-    final stock =
-        (widget.shop['initialStock'] as List?)?.map((e) => e.toString()).toList() ??
-            const <String>[];
-    final diceStock =
-        (widget.shop['diceStock'] as List?)?.map((e) => e.toString()).toList() ??
-            const <String>[];
+    final stock = (widget.shop['initialStock'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+    final diceStock = (widget.shop['diceStock'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
     final rawStockQuantities = widget.shop['stockQuantities'];
     final stockQuantities = rawStockQuantities is Map
         ? rawStockQuantities.map(
-            (key, value) => MapEntry(key.toString(), (value as num?)?.toInt() ?? 1),
+            (key, value) =>
+                MapEntry(key.toString(), (value as num?)?.toInt() ?? 1),
           )
         : const <String, int>{};
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.shop['shopName']?.toString() ?? widget.shopId)),
+      appBar: AppBar(
+          title: Text(widget.shop['shopName']?.toString() ?? widget.shopId)),
       body: itemsAsync.when(
         data: (items) => diceAsync.when(
           data: (dice) {
@@ -54,18 +58,24 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
 
             int remainingFor(String itemId) {
               final limit = stockQuantities[itemId] ?? 1;
-              final purchased = session.shopPurchaseCounts['${widget.shopId}::$itemId'] ?? 0;
+              final purchased =
+                  session.shopPurchaseCounts['${widget.shopId}::$itemId'] ?? 0;
               return limit - purchased;
             }
 
             String nameFor(String itemId) =>
-                (items[itemId] as Map<String, dynamic>?)?['itemName']?.toString() ?? itemId;
+                (items[itemId] as Map<String, dynamic>?)?['itemName']
+                    ?.toString() ??
+                itemId;
 
             int costFor(String itemId) =>
-                ((items[itemId] as Map<String, dynamic>?)?['cost'] as num?)?.toInt() ?? 0;
+                ((items[itemId] as Map<String, dynamic>?)?['cost'] as num?)
+                    ?.toInt() ??
+                0;
 
             final availableTypes = stock
-                .map((id) => (items[id] as Map<String, dynamic>?)?['itemType']?.toString())
+                .map((id) => (items[id] as Map<String, dynamic>?)?['itemType']
+                    ?.toString())
                 .whereType<String>()
                 .toSet()
                 .toList()
@@ -90,7 +100,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                 sortedStock.sort((a, b) => costFor(b).compareTo(costFor(a)));
                 break;
               case _ShopSort.stockLeft:
-                sortedStock.sort((a, b) => remainingFor(b).compareTo(remainingFor(a)));
+                sortedStock
+                    .sort((a, b) => remainingFor(b).compareTo(remainingFor(a)));
                 break;
             }
 
@@ -107,7 +118,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             Icon(
                               Icons.sort,
                               size: 18,
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                             const SizedBox(width: 8),
                             Expanded(
@@ -134,7 +147,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     ),
                                   ],
                                   onChanged: (value) {
-                                    if (value != null) setState(() => _sort = value);
+                                    if (value != null)
+                                      setState(() => _sort = value);
                                   },
                                 ),
                               ),
@@ -152,17 +166,20 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                   child: ChoiceChip(
                                     label: Text(tr(ref, 'filter_all')),
                                     selected: _typeFilter == null,
-                                    onSelected: (_) => setState(() => _typeFilter = null),
+                                    onSelected: (_) =>
+                                        setState(() => _typeFilter = null),
                                   ),
                                 ),
                                 ...availableTypes.map(
                                   (type) => Padding(
                                     padding: const EdgeInsets.only(right: 6),
                                     child: ChoiceChip(
-                                      avatar: Icon(itemTypeIcon(type), size: 16),
+                                      avatar:
+                                          Icon(itemTypeIcon(type), size: 16),
                                       label: Text(type),
                                       selected: _typeFilter == type,
-                                      onSelected: (_) => setState(() => _typeFilter = type),
+                                      onSelected: (_) =>
+                                          setState(() => _typeFilter = type),
                                     ),
                                   ),
                                 ),
@@ -181,7 +198,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       if (sortedStock.isEmpty && stock.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
-                          child: Center(child: Text(tr(ref, 'shop_filtered_empty'))),
+                          child: Center(
+                              child: Text(tr(ref, 'shop_filtered_empty'))),
                         ),
                       ...sortedStock.map((itemId) {
                         final item = items[itemId] as Map<String, dynamic>?;
@@ -192,7 +210,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         final stockLimit = stockQuantities[itemId] ?? 1;
                         final remaining = remainingFor(itemId);
                         final soldOut = remaining <= 0;
-                        final isEquippable = item?['isEquippable'] as bool? ?? false;
+                        final isEquippable =
+                            item?['isEquippable'] as bool? ?? false;
                         final equipSlot = item?['equipSlot']?.toString();
                         return Card(
                           child: ListTile(
@@ -209,21 +228,27 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                   : () async {
                                       await ref
                                           .read(playerSessionProvider.notifier)
-                                          .buyItem(widget.shopId, itemId, cost, stockLimit);
+                                          .buyItem(widget.shopId, itemId, cost,
+                                              stockLimit);
                                       if (!context.mounted) return;
-                                      final lang = ref.read(appLanguageProvider);
+                                      final lang =
+                                          ref.read(appLanguageProvider);
                                       showImmersiveNotice(
                                         context,
                                         icon: Icons.shopping_bag_outlined,
                                         message:
                                             '${trFor(lang, 'bought_prefix')} $itemName '
                                             '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
-                                        actionLabel:
-                                            isEquippable ? trFor(lang, 'equip_button') : null,
+                                        actionLabel: isEquippable
+                                            ? trFor(lang, 'equip_button')
+                                            : null,
                                         onAction: isEquippable
                                             ? () => ref
-                                                .read(playerSessionProvider.notifier)
-                                                .equipItem(itemId, slot: equipSlot, items: items)
+                                                .read(playerSessionProvider
+                                                    .notifier)
+                                                .equipItem(itemId,
+                                                    slot: equipSlot,
+                                                    items: items)
                                             : null,
                                       );
                                     },
@@ -234,7 +259,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       }),
                       if (diceStock.isNotEmpty) ...[
                         if (sortedStock.isNotEmpty) const Divider(height: 32),
-                        Text(tr(ref, 'dice_label'), style: Theme.of(context).textTheme.titleMedium),
+                        Text(tr(ref, 'dice_label'),
+                            style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 8),
                         ...diceStock.map((diceId) {
                           final die = dice[diceId] as Map<String, dynamic>?;
@@ -246,19 +272,24 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                               leading: const Icon(Icons.casino),
                               title: Text(diceId),
                               subtitle: Text(
-                                owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}',
+                                owned
+                                    ? tr(ref, 'owned_label')
+                                    : '$cost ${tr(ref, 'gold_label')}',
                               ),
                               trailing: owned
-                                  ? const Icon(Icons.check_circle, color: Colors.green)
+                                  ? const Icon(Icons.check_circle,
+                                      color: Colors.green)
                                   : ElevatedButton(
                                       onPressed: !canAfford
                                           ? null
                                           : () async {
                                               await ref
-                                                  .read(playerSessionProvider.notifier)
+                                                  .read(playerSessionProvider
+                                                      .notifier)
                                                   .buyDice(diceId, cost);
                                               if (!context.mounted) return;
-                                              final lang = ref.read(appLanguageProvider);
+                                              final lang =
+                                                  ref.read(appLanguageProvider);
                                               showImmersiveNotice(
                                                 context,
                                                 icon: Icons.casino,
@@ -285,7 +316,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
               Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+        error: (error, stack) =>
+            Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
       ),
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.fromLTRB(16, 8, 16, 12),

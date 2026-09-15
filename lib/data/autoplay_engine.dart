@@ -55,7 +55,8 @@ List<MapEntry<String, StoryChoice>>? _findChoicePath(
     for (final choice in node.choices) {
       if (choice.isEnding) continue;
       final nextId = choice.nextId;
-      if (!story.nodes.containsKey(nextId) || visited.contains(nextId)) continue;
+      if (!story.nodes.containsKey(nextId) || visited.contains(nextId))
+        continue;
       visited.add(nextId);
       cameFrom[nextId] = MapEntry(current, choice);
       if (nextId == toNodeId) {
@@ -100,17 +101,20 @@ Future<bool> _simulateFight({
       const [];
   if (diceFaces.isEmpty) return false;
 
-  final playerDamage =
-      session.baseDamage + equipmentBonusFor(session.equippedItemIds, items, 'attackDamage');
-  final playerArmor =
-      session.baseArmor + equipmentBonusFor(session.equippedItemIds, items, 'armor');
-  final assignments =
-      session.diceSkillAssignments[session.equippedDiceId] ?? const <String, String>{};
+  final playerDamage = session.baseDamage +
+      equipmentBonusFor(session.equippedItemIds, items, 'attackDamage');
+  final playerArmor = session.baseArmor +
+      equipmentBonusFor(session.equippedItemIds, items, 'armor');
+  final assignments = session.diceSkillAssignments[session.equippedDiceId] ??
+      const <String, String>{};
 
-  var enemyHealth = scaledMaxHealth((enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
+  var enemyHealth = scaledMaxHealth(
+      (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
   final enemyMaxHealth = enemyHealth;
-  final enemyDamage = scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);
-  var playerHealth = session.currentHealth > 0 ? session.currentHealth : session.maxHealth;
+  final enemyDamage =
+      scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);
+  var playerHealth =
+      session.currentHealth > 0 ? session.currentHealth : session.maxHealth;
 
   // A real fight can't run forever either (the player or the enemy always
   // eventually hits 0); this is just a safety valve against a pathological
@@ -141,10 +145,13 @@ Future<bool> _simulateFight({
   }
   if (enemyHealth > 0) return false;
 
-  final goldGain = scaledReward((enemy['goldReward'] as num?)?.toInt() ?? 0, session.level);
-  final xpGain = scaledReward((enemy['xpReward'] as num?)?.toInt() ?? 0, session.level);
+  final goldGain =
+      scaledReward((enemy['goldReward'] as num?)?.toInt() ?? 0, session.level);
+  final xpGain =
+      scaledReward((enemy['xpReward'] as num?)?.toInt() ?? 0, session.level);
   final loot = <String>[];
-  final lootTable = (enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+  final lootTable =
+      (enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
   for (final entry in lootTable) {
     final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
     if (random.nextDouble() * 100 <= dropRate) {
@@ -182,12 +189,14 @@ Future<AutoplayResult> autoplayToNode(
 }) async {
   final playState = ref.read(storyPlayProvider);
   if (playState.currentNodeId == targetNodeId) {
-    return const AutoplayResult(status: AutoplayStatus.alreadyThere, stepsApplied: 0);
+    return const AutoplayResult(
+        status: AutoplayStatus.alreadyThere, stepsApplied: 0);
   }
-  final path =
-      _findChoicePath(story, fromNodeId: playState.currentNodeId, toNodeId: targetNodeId);
+  final path = _findChoicePath(story,
+      fromNodeId: playState.currentNodeId, toNodeId: targetNodeId);
   if (path == null) {
-    return const AutoplayResult(status: AutoplayStatus.noPathFound, stepsApplied: 0);
+    return const AutoplayResult(
+        status: AutoplayStatus.noPathFound, stepsApplied: 0);
   }
 
   final sessionNotifier = ref.read(playerSessionProvider.notifier);
@@ -217,7 +226,8 @@ Future<AutoplayResult> autoplayToNode(
           return AutoplayResult(
             status: AutoplayStatus.stuckInCombat,
             stepsApplied: stepsApplied,
-            stuckEnemyName: enemy['enemyName']?.toString() ?? choice.triggerEnemyId,
+            stuckEnemyName:
+                enemy['enemyName']?.toString() ?? choice.triggerEnemyId,
           );
         }
       }
@@ -248,5 +258,6 @@ Future<AutoplayResult> autoplayToNode(
     stepsApplied += 1;
   }
 
-  return AutoplayResult(status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
+  return AutoplayResult(
+      status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
 }

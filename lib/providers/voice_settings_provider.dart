@@ -27,7 +27,8 @@ class GeminiVoiceSettings {
   final bool enabled;
   final String voiceName;
 
-  GeminiVoiceSettings copyWith({bool? enabled, String? voiceName}) => GeminiVoiceSettings(
+  GeminiVoiceSettings copyWith({bool? enabled, String? voiceName}) =>
+      GeminiVoiceSettings(
         enabled: enabled ?? this.enabled,
         voiceName: voiceName ?? this.voiceName,
       );
@@ -35,7 +36,8 @@ class GeminiVoiceSettings {
 
 class GeminiVoiceSettingsNotifier extends StateNotifier<GeminiVoiceSettings> {
   GeminiVoiceSettingsNotifier()
-      : super(const GeminiVoiceSettings(enabled: false, voiceName: defaultGeminiVoiceName)) {
+      : super(const GeminiVoiceSettings(
+            enabled: false, voiceName: defaultGeminiVoiceName)) {
     _load();
   }
 
@@ -43,7 +45,8 @@ class GeminiVoiceSettingsNotifier extends StateNotifier<GeminiVoiceSettings> {
     final prefs = await SharedPreferences.getInstance();
     state = GeminiVoiceSettings(
       enabled: prefs.getBool(_geminiVoiceEnabledPrefsKey) ?? false,
-      voiceName: prefs.getString(_geminiVoiceNamePrefsKey) ?? defaultGeminiVoiceName,
+      voiceName:
+          prefs.getString(_geminiVoiceNamePrefsKey) ?? defaultGeminiVoiceName,
     );
   }
 
@@ -95,4 +98,5 @@ class AutoReadAloudNotifier extends StateNotifier<bool> {
 /// would make painfully slow. Off by default; persisted via
 /// [SharedPreferences].
 final autoReadAloudProvider =
-    StateNotifierProvider<AutoReadAloudNotifier, bool>((ref) => AutoReadAloudNotifier());
+    StateNotifierProvider<AutoReadAloudNotifier, bool>(
+        (ref) => AutoReadAloudNotifier());

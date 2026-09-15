@@ -31,7 +31,8 @@ class DiceFaceResult {
 }
 
 DiceFaceResult rollDie(List<Map<String, dynamic>> faces, Random random) {
-  final weights = faces.map((f) => (f['weight'] as num?)?.toDouble() ?? 1.0).toList();
+  final weights =
+      faces.map((f) => (f['weight'] as num?)?.toDouble() ?? 1.0).toList();
   final totalWeight = weights.fold<double>(0, (sum, w) => sum + w);
 
   var roll = totalWeight <= 0 ? 0.0 : random.nextDouble() * totalWeight;
@@ -83,17 +84,20 @@ PlayerActionResult resolvePlayerFace(
         damageDealt: damage,
         healingDone: 0,
         blockAmount: 0,
-        message: '${face.faceName}: ${t('you_deal_prefix')} $damage ${t('damage_word')}.',
+        message:
+            '${face.faceName}: ${t('you_deal_prefix')} $damage ${t('damage_word')}.',
       );
     case 'Defend':
       return PlayerActionResult(
         damageDealt: 0,
         healingDone: 0,
         blockAmount: face.value,
-        message: '${face.faceName}: ${t('you_brace_prefix')} ${face.value} ${t('block_word')}.',
+        message:
+            '${face.faceName}: ${t('you_brace_prefix')} ${face.value} ${t('block_word')}.',
       );
     case 'Skill':
-      final effectiveSkillId = face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
+      final effectiveSkillId =
+          face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
       final skill = skills[effectiveSkillId] as Map<String, dynamic>?;
       if (skill == null) {
         return PlayerActionResult(
@@ -113,9 +117,11 @@ PlayerActionResult resolvePlayerFace(
       // different, on top of whatever flavor text the skill defines.
       final statParts = <String>[
         if (damage > 0) '${t('you_deal_prefix')} $damage ${t('damage_word')}',
-        if (healAmount > 0) '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
+        if (healAmount > 0)
+          '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
       ];
-      final message = statParts.isEmpty ? flavor : '$flavor ${statParts.join(', ')}.';
+      final message =
+          statParts.isEmpty ? flavor : '$flavor ${statParts.join(', ')}.';
       return PlayerActionResult(
         damageDealt: damage,
         healingDone: healAmount,
@@ -127,7 +133,8 @@ PlayerActionResult resolvePlayerFace(
         damageDealt: 0,
         healingDone: face.value,
         blockAmount: 0,
-        message: '${face.faceName}: ${t('you_recover_prefix')} ${face.value} ${t('hp_label')}.',
+        message:
+            '${face.faceName}: ${t('you_recover_prefix')} ${face.value} ${t('hp_label')}.',
       );
     case 'Empty':
     default:
@@ -135,7 +142,8 @@ PlayerActionResult resolvePlayerFace(
         damageDealt: 0,
         healingDone: 0,
         blockAmount: 0,
-        message: '${face.faceName.isEmpty ? t('miss_label') : face.faceName}: ${t('nothing_happens')}',
+        message:
+            '${face.faceName.isEmpty ? t('miss_label') : face.faceName}: ${t('nothing_happens')}',
       );
   }
 }
@@ -156,14 +164,14 @@ EnemyMoveResult resolveEnemyMove({
   AppLanguage language = AppLanguage.en,
 }) {
   String t(String key) => trFor(language, key);
-  final moves = (enemy['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+  final moves =
+      (enemy['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
   final healthPercent =
       enemyMaxHealth <= 0 ? 100.0 : (enemyCurrentHealth / enemyMaxHealth) * 100;
   final enemyName = enemy['enemyName']?.toString() ?? t('the_enemy_label');
   final baseDamage = (enemy['damage'] as num?)?.toInt() ?? 0;
 
-  final sortedMoves = [...moves]
-    ..sort((a, b) {
+  final sortedMoves = [...moves]..sort((a, b) {
       final priorityA = (a['priority'] as num?)?.toInt() ?? 0;
       final priorityB = (b['priority'] as num?)?.toInt() ?? 0;
       return priorityB.compareTo(priorityA);
@@ -200,13 +208,15 @@ EnemyMoveResult resolveEnemyMove({
       final damage = (baseDamage + (damageMod * multiplier)).round();
       return EnemyMoveResult(
         damage: damage,
-        message: skill['battleMessage']?.toString() ?? '$enemyName ${t('attacks_suffix')}',
+        message: skill['battleMessage']?.toString() ??
+            '$enemyName ${t('attacks_suffix')}',
       );
     }
     break;
   }
 
-  return EnemyMoveResult(damage: baseDamage, message: '$enemyName ${t('attacks_suffix')}');
+  return EnemyMoveResult(
+      damage: baseDamage, message: '$enemyName ${t('attacks_suffix')}');
 }
 
 int scaledMaxHealth(int base, int playerLevel) {

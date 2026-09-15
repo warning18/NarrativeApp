@@ -19,7 +19,8 @@ class GameDataHomeScreen extends StatelessWidget {
           child: ListTile(
             leading: const Icon(Icons.insights_outlined),
             title: const Text('Data Summary'),
-            subtitle: const Text('KPIs across all collections: record counts, visual coverage, issues'),
+            subtitle: const Text(
+                'KPIs across all collections: record counts, visual coverage, issues'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
@@ -45,7 +46,8 @@ class GameDataHomeScreen extends StatelessWidget {
           child: ListTile(
             leading: const Icon(Icons.map_outlined),
             title: const Text('Main Story'),
-            subtitle: const Text('The fixed chapter beats every playthrough passes through'),
+            subtitle: const Text(
+                'The fixed chapter beats every playthrough passes through'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               Navigator.of(context).push(
@@ -63,11 +65,13 @@ class GameDataHomeScreen extends StatelessWidget {
             child: ListTile(
               leading: Icon(gameDbIcon(schema.id)),
               title: Text(schema.label),
-              subtitle: Text('key: ${schema.primaryKeyField} · ${schema.fields.length} fields'),
+              subtitle: Text(
+                  'key: ${schema.primaryKeyField} · ${schema.fields.length} fields'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => GameDbListScreen(schema: schema)),
+                  MaterialPageRoute(
+                      builder: (_) => GameDbListScreen(schema: schema)),
                 );
               },
             ),

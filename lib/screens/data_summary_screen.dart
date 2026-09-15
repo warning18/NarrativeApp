@@ -35,7 +35,8 @@ class DataSummaryScreen extends ConsumerWidget {
     }
 
     final quests = recordsBySchema[questsSchema];
-    final questIssues = quests != null ? validateQuestChapters(quests).length : 0;
+    final questIssues =
+        quests != null ? validateQuestChapters(quests).length : 0;
     final visualCoverage = visualTotal == 0 ? 0.0 : visualFilled / visualTotal;
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -43,9 +44,11 @@ class DataSummaryScreen extends ConsumerWidget {
     final skills = recordsBySchema[skillsSchema];
     final shops = recordsBySchema[shopsSchema];
     final enemies = recordsBySchema[enemiesSchema];
-    final balanceIssues = (story != null && skills != null && shops != null && enemies != null)
-        ? validateBalance(story: story, skills: skills, shops: shops, enemies: enemies)
-        : null;
+    final balanceIssues =
+        (story != null && skills != null && shops != null && enemies != null)
+            ? validateBalance(
+                story: story, skills: skills, shops: shops, enemies: enemies)
+            : null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Data Summary')),
@@ -74,10 +77,13 @@ class DataSummaryScreen extends ConsumerWidget {
               _KpiCard(
                 icon: Icons.image_outlined,
                 label: 'Visual Coverage',
-                value: '${(visualCoverage * 100).round()}% ($visualFilled/$visualTotal)',
+                value:
+                    '${(visualCoverage * 100).round()}% ($visualFilled/$visualTotal)',
               ),
               _KpiCard(
-                icon: questIssues == 0 ? Icons.check_circle_outline : Icons.error_outline,
+                icon: questIssues == 0
+                    ? Icons.check_circle_outline
+                    : Icons.error_outline,
                 label: 'Quest Chapter Issues',
                 value: '$questIssues',
                 warning: questIssues > 0,
@@ -96,12 +102,16 @@ class DataSummaryScreen extends ConsumerWidget {
           ),
           if (balanceIssues != null && balanceIssues.isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Reachability & Balance', style: Theme.of(context).textTheme.titleMedium),
+            Text('Reachability & Balance',
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
             Text(
               'Mandatory fights with no shop access first, dead-end skill chains, '
               'and story requirements that can never be satisfied.',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: colorScheme.outline),
             ),
             const SizedBox(height: 8),
             Card(
@@ -116,7 +126,8 @@ class DataSummaryScreen extends ConsumerWidget {
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
                             '• $issue',
-                            style: TextStyle(color: colorScheme.onErrorContainer),
+                            style:
+                                TextStyle(color: colorScheme.onErrorContainer),
                           ),
                         ),
                       )
@@ -130,11 +141,15 @@ class DataSummaryScreen extends ConsumerWidget {
           const SizedBox(height: 4),
           Text(
             'Record counts and how many entries have a visual asset assigned.',
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: colorScheme.outline),
           ),
           const SizedBox(height: 8),
           ...gameDbSchemas.map(
-            (schema) => _CollectionRow(schema: schema, records: recordsBySchema[schema]),
+            (schema) => _CollectionRow(
+                schema: schema, records: recordsBySchema[schema]),
           ),
         ],
       ),
@@ -205,7 +220,8 @@ class _CollectionRow extends StatelessWidget {
         return (map[visualField]?.toString() ?? '').isNotEmpty;
       }).length;
     }
-    final progress = (withVisual != null && count > 0) ? withVisual / count : null;
+    final progress =
+        (withVisual != null && count > 0) ? withVisual / count : null;
 
     return Card(
       child: Padding(
@@ -218,7 +234,8 @@ class _CollectionRow extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(schema.label, style: Theme.of(context).textTheme.titleSmall),
+                  Text(schema.label,
+                      style: Theme.of(context).textTheme.titleSmall),
                   const SizedBox(height: 2),
                   Text(
                     records == null ? 'Loading…' : '$count records',
@@ -237,7 +254,10 @@ class _CollectionRow extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '$withVisual / $count have a visual asset',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: colorScheme.outline),
                     ),
                   ],
                 ],

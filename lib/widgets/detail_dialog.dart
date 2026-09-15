@@ -48,7 +48,8 @@ Future<void> showDetailDialog(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(row.key, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(row.key,
+                          style: Theme.of(context).textTheme.bodyMedium),
                       Text(
                         row.value,
                         style: Theme.of(context)

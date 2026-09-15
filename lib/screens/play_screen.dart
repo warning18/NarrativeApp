@@ -35,16 +35,20 @@ class PlayScreen extends ConsumerWidget {
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
-    final achievementsCount = ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
+    final achievementsCount =
+        ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
 
     final townHubUnlocked = chapterOfNode(playState.currentNodeId) >= 2;
 
-    final unseenQuests =
-        session.unlockedQuestIds.where((id) => !session.seenQuestIds.contains(id)).length;
-    final unseenShops =
-        session.unlockedShopIds.where((id) => !session.seenShopIds.contains(id)).length;
-    final unseenEnemies =
-        session.unlockedEnemyIds.where((id) => !session.seenEnemyIds.contains(id)).length;
+    final unseenQuests = session.unlockedQuestIds
+        .where((id) => !session.seenQuestIds.contains(id))
+        .length;
+    final unseenShops = session.unlockedShopIds
+        .where((id) => !session.seenShopIds.contains(id))
+        .length;
+    final unseenEnemies = session.unlockedEnemyIds
+        .where((id) => !session.seenEnemyIds.contains(id))
+        .length;
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -54,7 +58,8 @@ class PlayScreen extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(tr(ref, 'player_session'), style: Theme.of(context).textTheme.titleMedium),
+            Text(tr(ref, 'player_session'),
+                style: Theme.of(context).textTheme.titleMedium),
             Wrap(
               spacing: 4,
               children: [
@@ -81,9 +86,12 @@ class PlayScreen extends ConsumerWidget {
                   onPressed: !hasSavedGame
                       ? null
                       : () async {
-                          final saved = await ref.read(savedGameExistsProvider.notifier).load();
+                          final saved = await ref
+                              .read(savedGameExistsProvider.notifier)
+                              .load();
                           if (saved == null) return;
-                          final (savedSession, savedNodeId, savedHistory) = saved;
+                          final (savedSession, savedNodeId, savedHistory) =
+                              saved;
                           await ref
                               .read(playerSessionProvider.notifier)
                               .loadSession(savedSession);
@@ -101,8 +109,12 @@ class PlayScreen extends ConsumerWidget {
                 if (isEditMode)
                   TextButton.icon(
                     onPressed: () async {
-                      await ref.read(playerSessionProvider.notifier).resetSession();
-                      ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+                      await ref
+                          .read(playerSessionProvider.notifier)
+                          .resetSession();
+                      ref
+                          .read(storyPlayProvider.notifier)
+                          .restart(StoryRepository.startNodeId);
                     },
                     icon: const Icon(Icons.restart_alt),
                     label: Text(tr(ref, 'reset')),
@@ -129,7 +141,8 @@ class PlayScreen extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.error,
                           borderRadius: BorderRadius.circular(12),
@@ -172,7 +185,8 @@ class PlayScreen extends ConsumerWidget {
         ),
         Card(
           child: ListTile(
-            leading: Icon(townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
+            leading: Icon(
+                townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
             title: Text(tr(ref, 'town_hub_title')),
             subtitle: Text(
               townHubUnlocked
@@ -210,36 +224,42 @@ class PlayScreen extends ConsumerWidget {
         _CollapsibleSection(
           title: tr(ref, 'quests'),
           badgeCount: unseenQuests,
-          onExpanded: () =>
-              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(quests: true),
+          onExpanded: () => ref
+              .read(playerSessionProvider.notifier)
+              .markAllSeenInCategory(quests: true),
           child: questsAsync.when(
             data: (records) => _QuestList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+            error: (error, stack) =>
+                Text('${tr(ref, 'failed_to_load_quests')}: $error'),
           ),
         ),
         const Divider(height: 24),
         _CollapsibleSection(
           title: tr(ref, 'shops'),
           badgeCount: unseenShops,
-          onExpanded: () =>
-              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(shops: true),
+          onExpanded: () => ref
+              .read(playerSessionProvider.notifier)
+              .markAllSeenInCategory(shops: true),
           child: shopsAsync.when(
             data: (records) => _ShopList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Text('${tr(ref, 'failed_to_load_shops')}: $error'),
+            error: (error, stack) =>
+                Text('${tr(ref, 'failed_to_load_shops')}: $error'),
           ),
         ),
         const Divider(height: 24),
         _CollapsibleSection(
           title: tr(ref, 'bestiary'),
           badgeCount: unseenEnemies,
-          onExpanded: () =>
-              ref.read(playerSessionProvider.notifier).markAllSeenInCategory(enemies: true),
+          onExpanded: () => ref
+              .read(playerSessionProvider.notifier)
+              .markAllSeenInCategory(enemies: true),
           child: enemiesAsync.when(
             data: (records) => _EnemyList(records: records),
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+            error: (error, stack) =>
+                Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
           ),
         ),
       ],
@@ -316,10 +336,13 @@ class _QuestList extends ConsumerWidget {
     }
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
-    final professions = ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
-    final achievements = ref.watch(gameDbProvider(achievementsSchema)).value ?? const {};
+    final professions =
+        ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+    final achievements =
+        ref.watch(gameDbProvider(achievementsSchema)).value ?? const {};
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -335,10 +358,13 @@ class _QuestList extends ConsumerWidget {
             isActive ||
             session.unlockedQuestIds.contains(questId);
         final requiredGold = (quest['requiredGold'] as num?)?.toInt() ?? 0;
-        final requiredFlags =
-            (quest['requiredFlags'] as List?)?.map((e) => e.toString()).toList() ?? const [];
+        final requiredFlags = (quest['requiredFlags'] as List?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const [];
         final meetsRequirements = isEditMode ||
-            session.meetsRequirements(reqGold: requiredGold, reqFlags: requiredFlags);
+            session.meetsRequirements(
+                reqGold: requiredGold, reqFlags: requiredFlags);
 
         String statusLabel;
         if (isCompleted) {
@@ -367,30 +393,37 @@ class _QuestList extends ConsumerWidget {
               final nextQuestId = quest['nextQuestID']?.toString();
               final rewardDiceId = quest['rewardDiceID']?.toString();
               final rewardAllyId = quest['rewardAllyId']?.toString();
-              final grantsBannerPieceId = quest['grantsBannerPieceId']?.toString();
-              final alignmentMod = (quest['alignmentChange'] as num?)?.toInt() ?? 0;
-              final leveledUp = await ref.read(playerSessionProvider.notifier).completeQuest(
-                    questId,
-                    rewardGold: rewardGold,
-                    rewardXP: rewardXp,
-                    rewardItemId: rewardItemId,
-                    nextQuestId: nextQuestId,
-                    rewardDiceId: rewardDiceId,
-                    grantsBannerPieceId: grantsBannerPieceId,
-                    alignmentMod: alignmentMod,
-                  );
+              final grantsBannerPieceId =
+                  quest['grantsBannerPieceId']?.toString();
+              final alignmentMod =
+                  (quest['alignmentChange'] as num?)?.toInt() ?? 0;
+              final leveledUp =
+                  await ref.read(playerSessionProvider.notifier).completeQuest(
+                        questId,
+                        rewardGold: rewardGold,
+                        rewardXP: rewardXp,
+                        rewardItemId: rewardItemId,
+                        nextQuestId: nextQuestId,
+                        rewardDiceId: rewardDiceId,
+                        grantsBannerPieceId: grantsBannerPieceId,
+                        alignmentMod: alignmentMod,
+                      );
               String? recruitedName;
               if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
-                final companion = companions[rewardAllyId] as Map<String, dynamic>?;
-                final race = races[companion?['raceId']?.toString() ?? ''] as Map<String, dynamic>?;
-                final profession = professions[companion?['professionId']?.toString() ?? '']
+                final companion =
+                    companions[rewardAllyId] as Map<String, dynamic>?;
+                final race = races[companion?['raceId']?.toString() ?? '']
                     as Map<String, dynamic>?;
+                final profession =
+                    professions[companion?['professionId']?.toString() ?? '']
+                        as Map<String, dynamic>?;
                 await ref.read(playerSessionProvider.notifier).recruitAlly(
                       rewardAllyId,
                       race: race,
                       profession: profession,
                     );
-                recruitedName = companion?['companionName']?.toString() ?? rewardAllyId;
+                recruitedName =
+                    companion?['companionName']?.toString() ?? rewardAllyId;
               }
               final newAchievements = await ref
                   .read(playerSessionProvider.notifier)
@@ -398,7 +431,11 @@ class _QuestList extends ConsumerWidget {
               if (!context.mounted) return;
               final lang = ref.read(appLanguageProvider);
               final achievementNames = newAchievements
-                  .map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id)
+                  .map((id) =>
+                      (achievements[id]
+                              as Map<String, dynamic>?)?['achievementName']
+                          ?.toString() ??
+                      id)
                   .toList();
               showImmersiveNotice(
                 context,
@@ -423,13 +460,16 @@ class _QuestList extends ConsumerWidget {
             onPressed: !meetsRequirements
                 ? null
                 : () async {
-                    await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
+                    await ref
+                        .read(playerSessionProvider.notifier)
+                        .acceptQuest(questId);
                     if (!context.mounted) return;
                     final lang = ref.read(appLanguageProvider);
                     showImmersiveNotice(
                       context,
                       icon: Icons.assignment_turned_in_outlined,
-                      message: '${trFor(lang, 'quest_accepted_prefix')}: $questName',
+                      message:
+                          '${trFor(lang, 'quest_accepted_prefix')}: $questName',
                     );
                   },
             child: Text(tr(ref, 'accept')),
@@ -447,7 +487,8 @@ class _QuestList extends ConsumerWidget {
                     Icon(questCategoryIcon(category)),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(questName, style: Theme.of(context).textTheme.titleMedium),
+                      child: Text(questName,
+                          style: Theme.of(context).textTheme.titleMedium),
                     ),
                   ],
                 ),
@@ -504,7 +545,8 @@ class _ShopList extends ConsumerWidget {
         final shop = records[shopId] as Map<String, dynamic>;
         final shopName = shop['shopName']?.toString() ?? shopId;
         final discovered = session.unlockedShopIds.contains(shopId);
-        final onTriggerNode = session.shopUnlockNodeIds[shopId] == currentNodeId;
+        final onTriggerNode =
+            session.shopUnlockNodeIds[shopId] == currentNodeId;
         final accessible = isEditMode || (discovered && onTriggerNode);
         return Card(
           child: ListTile(
@@ -513,7 +555,9 @@ class _ShopList extends ConsumerWidget {
             subtitle: Text(
               accessible
                   ? shop['shopDescription']?.toString() ?? ''
-                  : (discovered ? tr(ref, 'shop_left_behind') : tr(ref, 'shop_undiscovered')),
+                  : (discovered
+                      ? tr(ref, 'shop_left_behind')
+                      : tr(ref, 'shop_undiscovered')),
             ),
             trailing: accessible ? const Icon(Icons.chevron_right) : null,
             onTap: !accessible
@@ -521,7 +565,8 @@ class _ShopList extends ConsumerWidget {
                 : () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => ShopDetailScreen(shopId: shopId, shop: shop),
+                        builder: (_) =>
+                            ShopDetailScreen(shopId: shopId, shop: shop),
                       ),
                     );
                   },
@@ -552,7 +597,8 @@ class _EnemyList extends ConsumerWidget {
         final enemyName = enemy['enemyName']?.toString() ?? enemyId;
         final maxHealth = (enemy['maxHealth'] as num?)?.toInt() ?? 0;
         final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
-        final accessible = isEditMode || session.unlockedEnemyIds.contains(enemyId);
+        final accessible =
+            isEditMode || session.unlockedEnemyIds.contains(enemyId);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? enemyIcon : Icons.lock_outline),
@@ -569,7 +615,8 @@ class _EnemyList extends ConsumerWidget {
                       ref.read(combatActiveProvider.notifier).state = true;
                       await Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy),
+                          builder: (_) =>
+                              FightScreen(enemyId: enemyId, enemy: enemy),
                         ),
                       );
                       ref.read(combatActiveProvider.notifier).state = false;

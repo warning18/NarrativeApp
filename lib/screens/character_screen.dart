@@ -28,9 +28,11 @@ class CharacterScreen extends ConsumerWidget {
     final professions = professionsAsync.value;
     if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
       final race = races?[session.raceId] as Map<String, dynamic>?;
-      final profession = professions?[session.professionId] as Map<String, dynamic>?;
+      final profession =
+          professions?[session.professionId] as Map<String, dynamic>?;
       final raceName = race?['raceName']?.toString() ?? session.raceId;
-      final professionName = profession?['professionName']?.toString() ?? session.professionId;
+      final professionName =
+          profession?['professionName']?.toString() ?? session.professionId;
       subtitle = '$raceName $professionName';
     }
 
@@ -47,13 +49,11 @@ class CharacterScreen extends ConsumerWidget {
                 leading: const Icon(Icons.auto_stories_outlined),
                 title: Text(tr(ref, 'banner_pieces_title')),
                 subtitle: Text(
-                  session.bannerPiecesCollected
-                      .map((id) {
-                        final key = 'banner_piece_$id';
-                        final label = tr(ref, key);
-                        return label == key ? id : label;
-                      })
-                      .join(' · '),
+                  session.bannerPiecesCollected.map((id) {
+                    final key = 'banner_piece_$id';
+                    final label = tr(ref, key);
+                    return label == key ? id : label;
+                  }).join(' · '),
                 ),
               ),
             ),
@@ -65,7 +65,8 @@ class CharacterScreen extends ConsumerWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const RaceProfessionScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const RaceProfessionScreen()),
                 );
               },
             ),
@@ -149,7 +150,8 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
       'level': TextEditingController(text: '${session.level}'),
       'currentXP': TextEditingController(text: '${session.currentXP}'),
       'gold': TextEditingController(text: '${session.gold}'),
-      'alignmentScore': TextEditingController(text: '${session.alignmentScore}'),
+      'alignmentScore':
+          TextEditingController(text: '${session.alignmentScore}'),
       'currentHealth': TextEditingController(text: '${session.currentHealth}'),
       'maxHealth': TextEditingController(text: '${session.maxHealth}'),
       'baseDamage': TextEditingController(text: '${session.baseDamage}'),

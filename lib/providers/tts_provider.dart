@@ -29,4 +29,5 @@ class TtsNotifier extends StateNotifier<bool> {
   }
 }
 
-final ttsProvider = StateNotifierProvider<TtsNotifier, bool>((ref) => TtsNotifier());
+final ttsProvider =
+    StateNotifierProvider<TtsNotifier, bool>((ref) => TtsNotifier());

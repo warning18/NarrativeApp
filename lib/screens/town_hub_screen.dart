@@ -22,7 +22,10 @@ class TownHubScreen extends ConsumerWidget {
 
   final int chapter;
 
-  static const List<String> _starterShopIds = ['blind_beggar_stall', 'weaponsmith_forge'];
+  static const List<String> _starterShopIds = [
+    'blind_beggar_stall',
+    'weaponsmith_forge'
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +47,9 @@ class TownHubScreen extends ConsumerWidget {
 
     final chapterZoneIds = zones.entries
         .where((e) => e.value is Map<String, dynamic>)
-        .where((e) => ((e.value as Map<String, dynamic>)['chapter'] as num?)?.toInt() == chapter)
+        .where((e) =>
+            ((e.value as Map<String, dynamic>)['chapter'] as num?)?.toInt() ==
+            chapter)
         .map((e) => e.key)
         .toList()
       ..sort();
@@ -60,7 +65,9 @@ class TownHubScreen extends ConsumerWidget {
               onPressed: restBlocked
                   ? null
                   : () async {
-                      await ref.read(playerSessionProvider.notifier).healPartyToFull();
+                      await ref
+                          .read(playerSessionProvider.notifier)
+                          .healPartyToFull();
                       if (!context.mounted) return;
                       showImmersiveNotice(
                         context,
@@ -73,16 +80,22 @@ class TownHubScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text(tr(ref, 'basic_shops_section'), style: Theme.of(context).textTheme.titleMedium),
+          Text(tr(ref, 'basic_shops_section'),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           for (final shopId in _starterShopIds)
             if (shops[shopId] is Map<String, dynamic>)
               Card(
                 child: ListTile(
                   leading: const Icon(Icons.storefront_outlined),
-                  title: Text((shops[shopId] as Map<String, dynamic>)['shopName']?.toString() ?? shopId),
+                  title: Text(
+                      (shops[shopId] as Map<String, dynamic>)['shopName']
+                              ?.toString() ??
+                          shopId),
                   subtitle: Text(
-                    (shops[shopId] as Map<String, dynamic>)['shopDescription']?.toString() ?? '',
+                    (shops[shopId] as Map<String, dynamic>)['shopDescription']
+                            ?.toString() ??
+                        '',
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => Navigator.of(context).push(
@@ -96,7 +109,8 @@ class TownHubScreen extends ConsumerWidget {
                 ),
               ),
           const Divider(height: 32),
-          Text(tr(ref, 'zones_section'), style: Theme.of(context).textTheme.titleMedium),
+          Text(tr(ref, 'zones_section'),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           if (chapterZoneIds.isEmpty)
             Padding(
@@ -120,13 +134,16 @@ class TownHubScreen extends ConsumerWidget {
                       ? Text(tr(ref, 'zone_cleared_label'))
                       : ElevatedButton(
                           onPressed: () async {
-                            ref.read(expeditionActiveProvider.notifier).state = true;
+                            ref.read(expeditionActiveProvider.notifier).state =
+                                true;
                             await Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => ExpeditionScreen(zoneId: zoneId, zone: zone),
+                                builder: (_) => ExpeditionScreen(
+                                    zoneId: zoneId, zone: zone),
                               ),
                             );
-                            ref.read(expeditionActiveProvider.notifier).state = false;
+                            ref.read(expeditionActiveProvider.notifier).state =
+                                false;
                           },
                           child: Text(tr(ref, 'begin_expedition_button')),
                         ),

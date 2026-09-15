@@ -23,7 +23,8 @@ Future<Map<String, StoryNode>> _loadStoryNodes() async {
   final decoded = json.decode(raw) as Map<String, dynamic>;
   return {
     for (final entry in decoded.entries)
-      entry.key: StoryNode.fromJson(entry.key, entry.value as Map<String, dynamic>),
+      entry.key:
+          StoryNode.fromJson(entry.key, entry.value as Map<String, dynamic>),
   };
 }
 
@@ -38,16 +39,19 @@ void main() {
     });
 
     test('every node is reachable from the start node', () async {
-      final report = checkStoryGraphIntegrity(nodes, startNodeId: StoryRepository.startNodeId);
+      final report = checkStoryGraphIntegrity(nodes,
+          startNodeId: StoryRepository.startNodeId);
       expect(
         report.unreachableNodeIds,
         isEmpty,
-        reason: 'Orphaned nodes no choice can ever reach: ${report.unreachableNodeIds}',
+        reason:
+            'Orphaned nodes no choice can ever reach: ${report.unreachableNodeIds}',
       );
     });
 
     test('no node is a dead end', () async {
-      final report = checkStoryGraphIntegrity(nodes, startNodeId: StoryRepository.startNodeId);
+      final report = checkStoryGraphIntegrity(nodes,
+          startNodeId: StoryRepository.startNodeId);
       expect(
         report.deadEndNodeIds,
         isEmpty,
@@ -56,7 +60,8 @@ void main() {
     });
 
     test('every choice points at a real node or an EXIT/END marker', () async {
-      final report = checkStoryGraphIntegrity(nodes, startNodeId: StoryRepository.startNodeId);
+      final report = checkStoryGraphIntegrity(nodes,
+          startNodeId: StoryRepository.startNodeId);
       expect(
         report.brokenReferences,
         isEmpty,
@@ -65,7 +70,8 @@ void main() {
     });
 
     test('at least one reachable node can actually end the story', () async {
-      final report = checkStoryGraphIntegrity(nodes, startNodeId: StoryRepository.startNodeId);
+      final report = checkStoryGraphIntegrity(nodes,
+          startNodeId: StoryRepository.startNodeId);
       expect(
         report.reachableEndingCount,
         greaterThan(0),
@@ -75,7 +81,8 @@ void main() {
     });
 
     test('overall report is clean', () async {
-      final report = checkStoryGraphIntegrity(nodes, startNodeId: StoryRepository.startNodeId);
+      final report = checkStoryGraphIntegrity(nodes,
+          startNodeId: StoryRepository.startNodeId);
       expect(report.isClean, isTrue);
     });
   });

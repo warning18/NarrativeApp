@@ -97,20 +97,23 @@ void main() {
         );
 
     test('Attack face adds its value to base damage', () {
-      final result = resolvePlayerFace(face(type: 'Attack', value: 7), skills, 10);
+      final result =
+          resolvePlayerFace(face(type: 'Attack', value: 7), skills, 10);
       expect(result.damageDealt, 17);
       expect(result.healingDone, 0);
       expect(result.blockAmount, 0);
     });
 
     test('Defend face blocks for its value and deals no damage', () {
-      final result = resolvePlayerFace(face(type: 'Defend', value: 12), skills, 10);
+      final result =
+          resolvePlayerFace(face(type: 'Defend', value: 12), skills, 10);
       expect(result.blockAmount, 12);
       expect(result.damageDealt, 0);
     });
 
     test('Heal face heals for its value', () {
-      final result = resolvePlayerFace(face(type: 'Heal', value: 20), skills, 10);
+      final result =
+          resolvePlayerFace(face(type: 'Heal', value: 20), skills, 10);
       expect(result.healingDone, 20);
       expect(result.damageDealt, 0);
     });
@@ -128,9 +131,14 @@ void main() {
 
     test('Skill face with no linkedSkillID falls back to heavy_attack', () {
       const skillsWithHeavy = <String, dynamic>{
-        'heavy_attack': {'damageMod': 3, 'damageMultiplier': 1.0, 'healAmount': 0},
+        'heavy_attack': {
+          'damageMod': 3,
+          'damageMultiplier': 1.0,
+          'healAmount': 0
+        },
       };
-      final result = resolvePlayerFace(face(type: 'Skill'), skillsWithHeavy, 10);
+      final result =
+          resolvePlayerFace(face(type: 'Skill'), skillsWithHeavy, 10);
       expect(result.damageDealt, 13);
     });
 
@@ -194,7 +202,12 @@ void main() {
         'enemyName': 'Test Foe',
         'damage': 10,
         'skillMoves': [
-          {'skillID': 'never_happens', 'condition': 'Chance', 'chance': 0, 'priority': 1},
+          {
+            'skillID': 'never_happens',
+            'condition': 'Chance',
+            'chance': 0,
+            'priority': 1
+          },
         ],
       };
       const skills = <String, dynamic>{
@@ -210,7 +223,8 @@ void main() {
           enemyMaxHealth: 100,
           random: Random(seed),
         );
-        expect(result.damage, 10, reason: 'seed $seed produced the 0%-chance move');
+        expect(result.damage, 10,
+            reason: 'seed $seed produced the 0%-chance move');
       }
     });
 
@@ -219,7 +233,12 @@ void main() {
         'enemyName': 'Test Foe',
         'damage': 10,
         'skillMoves': [
-          {'skillID': 'always_at_100', 'condition': 'Chance', 'chance': 100, 'priority': 1},
+          {
+            'skillID': 'always_at_100',
+            'condition': 'Chance',
+            'chance': 100,
+            'priority': 1
+          },
         ],
       };
       const skills = <String, dynamic>{
@@ -233,7 +252,8 @@ void main() {
           enemyMaxHealth: 100,
           random: Random(seed),
         );
-        expect(result.damage, 15, reason: 'seed $seed did not produce the 100%-chance move');
+        expect(result.damage, 15,
+            reason: 'seed $seed did not produce the 100%-chance move');
       }
     });
 
@@ -260,7 +280,8 @@ void main() {
         enemyMaxHealth: 100,
         random: Random(1),
       );
-      expect(atFullHealth.damage, 10, reason: 'should not fire above the health threshold');
+      expect(atFullHealth.damage, 10,
+          reason: 'should not fire above the health threshold');
 
       final atLowHealth = resolveEnemyMove(
         enemy: enemy,
@@ -269,11 +290,14 @@ void main() {
         enemyMaxHealth: 100,
         random: Random(1),
       );
-      expect(atLowHealth.damage, 50, reason: 'should fire at or below the health threshold');
+      expect(atLowHealth.damage, 50,
+          reason: 'should fire at or below the health threshold');
     });
 
-    test('higher-priority move is checked first, but a match always wins the '
-        'turn even without a resolvable skill (no fallthrough to lower moves)', () {
+    test(
+        'higher-priority move is checked first, but a match always wins the '
+        'turn even without a resolvable skill (no fallthrough to lower moves)',
+        () {
       final enemy = <String, dynamic>{
         'enemyName': 'Test Foe',
         'damage': 10,
@@ -314,7 +338,8 @@ void main() {
   });
 
   group('level scaling formulas', () {
-    test('at level 1, every scaling function returns the base value unchanged', () {
+    test('at level 1, every scaling function returns the base value unchanged',
+        () {
       expect(scaledMaxHealth(100, 1), 100);
       expect(scaledDamage(20, 1), 20);
       expect(scaledReward(50, 1), 50);

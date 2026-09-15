@@ -46,7 +46,8 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
   Future<void> _save() async {
     final values = <String, dynamic>{};
     for (final field in gameConfigFields) {
-      values[field.key] = int.tryParse(_controllers[field.key]!.text.trim()) ?? 0;
+      values[field.key] =
+          int.tryParse(_controllers[field.key]!.text.trim()) ?? 0;
     }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(gameConfigPrefsKey, json.encode(values));
@@ -61,7 +62,8 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Reset to defaults?'),
-        content: const Text('This discards your saved New Game Defaults and reloads the bundled values.'),
+        content: const Text(
+            'This discards your saved New Game Defaults and reloads the bundled values.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -98,7 +100,8 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
       appBar: AppBar(
         title: const Text('New Game Defaults'),
         actions: [
-          IconButton(icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
+          IconButton(
+              icon: const Icon(Icons.check), tooltip: 'Save', onPressed: _save),
           IconButton(
             icon: const Icon(Icons.restore),
             tooltip: 'Reset to defaults',
@@ -116,7 +119,8 @@ class _GameConfigScreenState extends State<GameConfigScreen> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: TextField(
                         controller: _controllers[field.key],
-                        keyboardType: const TextInputType.numberWithOptions(signed: true),
+                        keyboardType:
+                            const TextInputType.numberWithOptions(signed: true),
                         decoration: InputDecoration(
                           labelText: field.label,
                           border: const OutlineInputBorder(),

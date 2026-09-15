@@ -90,7 +90,9 @@ class MainStoryScreen extends ConsumerWidget {
                                         : () {
                                             Navigator.of(context).push(
                                               MaterialPageRoute(
-                                                builder: (_) => StoryNodeEditorScreen(node: node),
+                                                builder: (_) =>
+                                                    StoryNodeEditorScreen(
+                                                        node: node),
                                               ),
                                             );
                                           },
@@ -101,7 +103,8 @@ class MainStoryScreen extends ConsumerWidget {
                               Text(
                                 spine.beats[i]
                                     .map((id) =>
-                                        story.nodeFor(id)?.description ?? tr(ref, 'missing_node_label'))
+                                        story.nodeFor(id)?.description ??
+                                        tr(ref, 'missing_node_label'))
                                     .join('\n'),
                                 maxLines: 3,
                                 overflow: TextOverflow.ellipsis,

@@ -173,8 +173,10 @@ class PlayerSession {
     List<String> reqFlags = const [],
   }) {
     if (gold < reqGold) return false;
-    if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore) return false;
-    if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax) return false;
+    if (reqAlignmentScore != null && alignmentScore < reqAlignmentScore)
+      return false;
+    if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax)
+      return false;
     for (final flag in reqFlags) {
       if (!flags.contains(flag)) return false;
     }
@@ -259,9 +261,11 @@ class PlayerSession {
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
-      unlockedAchievementIds: unlockedAchievementIds ?? this.unlockedAchievementIds,
+      unlockedAchievementIds:
+          unlockedAchievementIds ?? this.unlockedAchievementIds,
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
-      bannerPiecesCollected: bannerPiecesCollected ?? this.bannerPiecesCollected,
+      bannerPiecesCollected:
+          bannerPiecesCollected ?? this.bannerPiecesCollected,
     );
   }
 
@@ -321,28 +325,46 @@ class PlayerSession {
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       maxSkillSlots: (json['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: (json['flags'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      activeQuestIds:
-          (json['activeQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      completedQuestIds:
-          (json['completedQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      inventoryItemIds:
-          (json['inventoryItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      equippedItemIds:
-          (json['equippedItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedSkillIds:
-          (json['unlockedSkillIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedShopIds:
-          (json['unlockedShopIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedQuestIds:
-          (json['unlockedQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedEnemyIds:
-          (json['unlockedEnemyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      flags: (json['flags'] as List?)?.map((e) => e.toString()).toList() ??
+          const [],
+      activeQuestIds: (json['activeQuestIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      completedQuestIds: (json['completedQuestIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      inventoryItemIds: (json['inventoryItemIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      equippedItemIds: (json['equippedItemIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedSkillIds: (json['unlockedSkillIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedShopIds: (json['unlockedShopIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedQuestIds: (json['unlockedQuestIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedEnemyIds: (json['unlockedEnemyIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       diceSkillAssignments: (json['diceSkillAssignments'] as Map?)?.map(
             (diceId, faces) => MapEntry(
               diceId.toString(),
               (faces as Map).map(
-                (faceIndex, skillId) => MapEntry(faceIndex.toString(), skillId.toString()),
+                (faceIndex, skillId) =>
+                    MapEntry(faceIndex.toString(), skillId.toString()),
               ),
             ),
           ) ??
@@ -350,7 +372,8 @@ class PlayerSession {
       raceId: json['raceId'] as String? ?? '',
       professionId: json['professionId'] as String? ?? '',
       ownedDiceIds:
-          (json['ownedDiceIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['ownedDiceIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       equippedDiceId: json['equippedDiceId'] as String?,
       xpEarnedThisRun: (json['xpEarnedThisRun'] as num?)?.toInt() ?? 0,
       shopPurchaseCounts: (json['shopPurchaseCounts'] as Map?)?.map(
@@ -362,25 +385,37 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), value.toString()),
           ) ??
           const {},
-      seenShopIds: (json['seenShopIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      seenShopIds:
+          (json['seenShopIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       seenQuestIds:
-          (json['seenQuestIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['seenQuestIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       seenEnemyIds:
-          (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
       activeAllyIds:
-          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       builtHouseIds:
-          (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedAchievementIds:
-          (json['unlockedAchievementIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      completedZoneIds:
-          (json['completedZoneIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      bannerPiecesCollected:
-          (json['bannerPiecesCollected'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+          (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      unlockedAchievementIds: (json['unlockedAchievementIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      completedZoneIds: (json['completedZoneIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      bannerPiecesCollected: (json['bannerPiecesCollected'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 }
@@ -422,7 +457,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_playerSessionPrefsKey);
     if (saved != null) {
-      state = PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
+      state =
+          PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
       return;
     }
     await _resetToDefaults(prefs);
@@ -488,7 +524,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       defaults = json.decode(raw) as Map<String, dynamic>;
     }
 
-    int bonus(Map<String, dynamic> preset, String key) => (preset[key] as num?)?.toInt() ?? 0;
+    int bonus(Map<String, dynamic> preset, String key) =>
+        (preset[key] as num?)?.toInt() ?? 0;
 
     final maxHealth = ((defaults['maxHealth'] as num?)?.toInt() ?? 100) +
         bonus(race, 'bonusMaxHealth') +
@@ -509,7 +546,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final starterAssignments = <String, String>{
       if (professionSkillId.isNotEmpty)
         _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty) _starterDieRaceFaceIndex.toString(): raceSkillId,
+      if (raceSkillId.isNotEmpty)
+        _starterDieRaceFaceIndex.toString(): raceSkillId,
     };
     // Race/profession signature skills default to isUnlocked: false in the
     // skills db (most skills are locked until earned) but are wired
@@ -600,7 +638,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: newGoldRaw < 0 ? 0 : newGoldRaw,
       alignmentScore: state.alignmentScore + alignmentMod,
-      currentHealth: newHealthRaw > state.maxHealth ? state.maxHealth : newHealthRaw,
+      currentHealth:
+          newHealthRaw > state.maxHealth ? state.maxHealth : newHealthRaw,
       flags: newFlags,
       activeQuestIds: newActiveQuests,
     );
@@ -608,7 +647,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> acceptQuest(String questId) async {
-    if (state.activeQuestIds.contains(questId) || state.completedQuestIds.contains(questId)) {
+    if (state.activeQuestIds.contains(questId) ||
+        state.completedQuestIds.contains(questId)) {
       return;
     }
     state = state.copyWith(activeQuestIds: [...state.activeQuestIds, questId]);
@@ -627,7 +667,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? grantsBannerPieceId,
     int alignmentMod = 0,
   }) async {
-    final newActive = state.activeQuestIds.where((id) => id != questId).toList();
+    final newActive =
+        state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
     final newInventory = [...state.inventoryItemIds];
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
@@ -661,7 +702,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       level: leveled.level,
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
-      currentHealth: leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
+      currentHealth:
+          leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
       gold: state.gold + rewardGold,
@@ -689,7 +731,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> equipDice(String diceId) async {
-    if (!state.ownedDiceIds.contains(diceId) || state.equippedDiceId == diceId) return;
+    if (!state.ownedDiceIds.contains(diceId) || state.equippedDiceId == diceId)
+      return;
     state = state.copyWith(equippedDiceId: diceId);
     await _persist();
   }
@@ -697,7 +740,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Buys [itemId] from [shopId]. Shops have a fixed stock per item
   /// ([stockLimit], from the shop's stockQuantities data) that this tracks
   /// via [PlayerSession.shopPurchaseCounts] and never replenishes.
-  Future<void> buyItem(String shopId, String itemId, int cost, int stockLimit) async {
+  Future<void> buyItem(
+      String shopId, String itemId, int cost, int stockLimit) async {
     final key = '$shopId::$itemId';
     final purchased = state.shopPurchaseCounts[key] ?? 0;
     if (state.gold < cost || purchased >= stockLimit) return;
@@ -732,7 +776,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> unequipItem(String itemId) async {
     if (!state.equippedItemIds.contains(itemId)) return;
     state = state.copyWith(
-      equippedItemIds: state.equippedItemIds.where((id) => id != itemId).toList(),
+      equippedItemIds:
+          state.equippedItemIds.where((id) => id != itemId).toList(),
     );
     await _persist();
   }
@@ -784,7 +829,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (!active) {
       if (!state.activeAllyIds.contains(companionId)) return;
       state = state.copyWith(
-        activeAllyIds: state.activeAllyIds.where((id) => id != companionId).toList(),
+        activeAllyIds:
+            state.activeAllyIds.where((id) => id != companionId).toList(),
       );
       await _persist();
       return;
@@ -796,7 +842,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !state.builtHouseIds.contains(requiredHouseId)) {
       return;
     }
-    state = state.copyWith(activeAllyIds: [...state.activeAllyIds, companionId]);
+    state =
+        state.copyWith(activeAllyIds: [...state.activeAllyIds, companionId]);
     await _persist();
   }
 
@@ -838,7 +885,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       newOwnedDice = [...newOwnedDice, rewardDiceId];
     }
     var newFlags = state.flags;
-    if (rewardFlag != null && rewardFlag.isNotEmpty && !newFlags.contains(rewardFlag)) {
+    if (rewardFlag != null &&
+        rewardFlag.isNotEmpty &&
+        !newFlags.contains(rewardFlag)) {
       newFlags = [...newFlags, rewardFlag];
     }
     state = state.copyWith(
@@ -859,7 +908,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String companionId,
     AllyState Function(AllyState ally) update,
   ) async {
-    final index = state.recruitedAllies.indexWhere((a) => a.companionId == companionId);
+    final index =
+        state.recruitedAllies.indexWhere((a) => a.companionId == companionId);
     if (index == -1) return;
     final newAllies = [...state.recruitedAllies];
     newAllies[index] = update(newAllies[index]);
@@ -895,7 +945,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _updateAlly(
       companionId,
       (ally) => ally.copyWith(
-        equippedItemIds: ally.equippedItemIds.where((id) => id != itemId).toList(),
+        equippedItemIds:
+            ally.equippedItemIds.where((id) => id != itemId).toList(),
       ),
     );
   }
@@ -904,7 +955,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [AllyState.skillPoints].
   Future<void> unlockAllySkill(String companionId, String skillId) async {
     await _updateAlly(companionId, (ally) {
-      if (ally.skillPoints <= 0 || ally.unlockedSkillIds.contains(skillId)) return ally;
+      if (ally.skillPoints <= 0 || ally.unlockedSkillIds.contains(skillId))
+        return ally;
       return ally.copyWith(
         skillPoints: ally.skillPoints - 1,
         unlockedSkillIds: [...ally.unlockedSkillIds, skillId],
@@ -915,7 +967,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// The ally equivalent of [assignSkillToDiceFace]/[clearDiceFaceSkill] —
   /// flat by faceIndex rather than dice-keyed, since an ally only ever has
   /// their one fixed signature die (see [AllyState.diceSkillAssignments]).
-  Future<void> assignSkillToAllyDiceFace(String companionId, int faceIndex, String skillId) async {
+  Future<void> assignSkillToAllyDiceFace(
+      String companionId, int faceIndex, String skillId) async {
     await _updateAlly(companionId, (ally) {
       final updated = Map<String, String>.from(ally.diceSkillAssignments);
       updated[faceIndex.toString()] = skillId;
@@ -925,7 +978,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   Future<void> clearAllyDiceFaceSkill(String companionId, int faceIndex) async {
     await _updateAlly(companionId, (ally) {
-      if (!ally.diceSkillAssignments.containsKey(faceIndex.toString())) return ally;
+      if (!ally.diceSkillAssignments.containsKey(faceIndex.toString()))
+        return ally;
       final updated = Map<String, String>.from(ally.diceSkillAssignments)
         ..remove(faceIndex.toString());
       return ally.copyWith(diceSkillAssignments: updated);
@@ -937,7 +991,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// mid-fight damage is never persisted on a loss (mirrors the player not
   /// being HP-punished on a loss either, via the existing full-heal-on-loss
   /// behavior in [applyCombatResult]).
-  Future<void> applyAllyCombatResult(String companionId, {required int hpAfter}) async {
+  Future<void> applyAllyCombatResult(String companionId,
+      {required int hpAfter}) async {
     await _updateAlly(
       companionId,
       (ally) => ally.copyWith(currentHealth: hpAfter < 0 ? 0 : hpAfter),
@@ -966,7 +1021,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// a caller can show a notice only the first time.
   Future<bool> unlockAchievement(String id) async {
     if (state.unlockedAchievementIds.contains(id)) return false;
-    state = state.copyWith(unlockedAchievementIds: [...state.unlockedAchievementIds, id]);
+    state = state.copyWith(
+        unlockedAchievementIds: [...state.unlockedAchievementIds, id]);
     await _persist();
     return true;
   }
@@ -983,7 +1039,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<List<String>> checkAchievements({int totalCompanionCount = 0}) async {
     final newly = <String>[];
     void check(String id, bool condition) {
-      if (condition && !state.unlockedAchievementIds.contains(id) && !newly.contains(id)) {
+      if (condition &&
+          !state.unlockedAchievementIds.contains(id) &&
+          !newly.contains(id)) {
         newly.add(id);
       }
     }
@@ -1033,7 +1091,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         newShops = [...newShops, shopId];
       }
       if (shopUnlockNodeId != null && shopUnlockNodeId.isNotEmpty) {
-        newShopUnlockNodeIds = {...newShopUnlockNodeIds, shopId: shopUnlockNodeId};
+        newShopUnlockNodeIds = {
+          ...newShopUnlockNodeIds,
+          shopId: shopUnlockNodeId
+        };
       }
       if (newSeenShopIds.contains(shopId)) {
         newSeenShopIds = newSeenShopIds.where((id) => id != shopId).toList();
@@ -1078,17 +1139,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Marks a shop/quest/enemy id as viewed in the Play tab, clearing its
   /// "newly unlocked" badge contribution.
-  Future<void> markSeen({String? shopId, String? questId, String? enemyId}) async {
+  Future<void> markSeen(
+      {String? shopId, String? questId, String? enemyId}) async {
     var newSeenShopIds = state.seenShopIds;
     var newSeenQuestIds = state.seenQuestIds;
     var newSeenEnemyIds = state.seenEnemyIds;
-    if (shopId != null && shopId.isNotEmpty && !newSeenShopIds.contains(shopId)) {
+    if (shopId != null &&
+        shopId.isNotEmpty &&
+        !newSeenShopIds.contains(shopId)) {
       newSeenShopIds = [...newSeenShopIds, shopId];
     }
-    if (questId != null && questId.isNotEmpty && !newSeenQuestIds.contains(questId)) {
+    if (questId != null &&
+        questId.isNotEmpty &&
+        !newSeenQuestIds.contains(questId)) {
       newSeenQuestIds = [...newSeenQuestIds, questId];
     }
-    if (enemyId != null && enemyId.isNotEmpty && !newSeenEnemyIds.contains(enemyId)) {
+    if (enemyId != null &&
+        enemyId.isNotEmpty &&
+        !newSeenEnemyIds.contains(enemyId)) {
       newSeenEnemyIds = [...newSeenEnemyIds, enemyId];
     }
     if (identical(newSeenShopIds, state.seenShopIds) &&
@@ -1106,7 +1174,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Marks every currently-unlocked shop/quest/enemy id as seen at once —
   /// used when a Play-tab section is expanded, clearing its whole badge.
-  Future<void> markAllSeenInCategory({bool shops = false, bool quests = false, bool enemies = false}) async {
+  Future<void> markAllSeenInCategory(
+      {bool shops = false, bool quests = false, bool enemies = false}) async {
     state = state.copyWith(
       seenShopIds: shops ? state.unlockedShopIds : state.seenShopIds,
       seenQuestIds: quests ? state.unlockedQuestIds : state.seenQuestIds,
@@ -1115,7 +1184,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> assignSkillToDiceFace(String diceId, int faceIndex, String skillId) async {
+  Future<void> assignSkillToDiceFace(
+      String diceId, int faceIndex, String skillId) async {
     final updated = <String, Map<String, String>>{
       for (final entry in state.diceSkillAssignments.entries)
         entry.key: Map<String, String>.from(entry.value),
@@ -1140,7 +1210,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> unlockSkill(String skillId) async {
-    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId)) return;
+    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId))
+      return;
     state = state.copyWith(
       skillPoints: state.skillPoints - 1,
       unlockedSkillIds: [...state.unlockedSkillIds, skillId],
@@ -1330,7 +1401,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
 /// Summary of a run that ended in permadeath, for the death screen.
 class PermadeathResult {
-  const PermadeathResult({required this.lostItemIds, required this.xpEarnedThisRun});
+  const PermadeathResult(
+      {required this.lostItemIds, required this.xpEarnedThisRun});
 
   final List<String> lostItemIds;
   final int xpEarnedThisRun;

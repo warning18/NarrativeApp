@@ -63,7 +63,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             tooltip: tr(ref, 'language'),
             onPressed: () {
               ref.read(appLanguageProvider.notifier).setLanguage(
-                    language == AppLanguage.fr ? AppLanguage.en : AppLanguage.fr,
+                    language == AppLanguage.fr
+                        ? AppLanguage.en
+                        : AppLanguage.fr,
                   );
             },
           ),
@@ -81,20 +83,25 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       body: IndexedStack(index: index, children: screens),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
-        onDestinationSelected: (i) => ref.read(homeTabIndexProvider.notifier).state = i,
+        onDestinationSelected: (i) =>
+            ref.read(homeTabIndexProvider.notifier).state = i,
         destinations: [
-          NavigationDestination(icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
+          NavigationDestination(
+              icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
           NavigationDestination(
             icon: const Icon(Icons.videogame_asset),
             label: tr(ref, 'nav_play'),
           ),
           if (isEditMode) ...[
-            NavigationDestination(icon: const Icon(Icons.account_tree), label: tr(ref, 'nav_map')),
+            NavigationDestination(
+                icon: const Icon(Icons.account_tree),
+                label: tr(ref, 'nav_map')),
             NavigationDestination(
               icon: const Icon(Icons.auto_awesome),
               label: tr(ref, 'nav_generate'),
             ),
-            NavigationDestination(icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
+            NavigationDestination(
+                icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
           ],
         ],
       ),

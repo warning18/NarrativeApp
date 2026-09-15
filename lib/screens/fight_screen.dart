@@ -27,7 +27,15 @@ const double _reviveHealthFraction = 0.3;
 
 /// Broad categories a combat-log line falls into, used to color and icon
 /// each line so the log reads at a glance instead of as a wall of text.
-enum _LogKind { info, playerDamage, playerHeal, playerBlock, enemyDamage, victory, defeat }
+enum _LogKind {
+  info,
+  playerDamage,
+  playerHeal,
+  playerBlock,
+  enemyDamage,
+  victory,
+  defeat
+}
 
 class _LogEntry {
   const _LogEntry(this.text, this.kind);
@@ -150,7 +158,8 @@ class FightScreen extends ConsumerStatefulWidget {
   ConsumerState<FightScreen> createState() => _FightScreenState();
 }
 
-class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderStateMixin {
+class _FightScreenState extends ConsumerState<FightScreen>
+    with TickerProviderStateMixin {
   final Random _random = Random();
   final List<_LogEntry> _log = [];
 
@@ -199,10 +208,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
-    _enemyMaxHealth =
-        scaledMaxHealth((widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
+    _enemyMaxHealth = scaledMaxHealth(
+        (widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     _enemyHealth = _enemyMaxHealth;
-    _enemyDamage = scaledDamage((widget.enemy['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+    _enemyDamage = scaledDamage(
+        (widget.enemy['damage'] as num?)?.toInt() ?? 0, _playerLevel);
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
     _shakeController = AnimationController(
@@ -245,7 +255,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     _partyBuilt = true;
 
     final playerDiceAssignments =
-        session.diceSkillAssignments[_selectedDiceId] ?? const <String, String>{};
+        session.diceSkillAssignments[_selectedDiceId] ??
+            const <String, String>{};
     final playerLabel = session.characterName.isNotEmpty
         ? session.characterName
         : trFor(ref.read(appLanguageProvider), 'you_label');
@@ -256,7 +267,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       maxHealth: session.maxHealth,
       baseDamage: session.baseDamage,
       armor: session.baseArmor,
-      currentHealth: session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+      currentHealth:
+          session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
       equippedItemIds: session.equippedItemIds,
       unlockedSkillIds: session.unlockedSkillIds,
       diceSkillAssignments: playerDiceAssignments,
@@ -269,14 +281,19 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       if (companion == null) continue;
       final allyState = session.recruitedAllies.firstWhere(
         (a) => a.companionId == companionId,
-        orElse: () =>
-            AllyState(companionId: companionId, currentHealth: AllyState.fullHealthSentinel),
+        orElse: () => AllyState(
+            companionId: companionId,
+            currentHealth: AllyState.fullHealthSentinel),
       );
-      final race = races[companion['raceId']?.toString() ?? ''] as Map<String, dynamic>? ?? const {};
+      final race = races[companion['raceId']?.toString() ?? '']
+              as Map<String, dynamic>? ??
+          const {};
       final profession =
-          professions[companion['professionId']?.toString() ?? ''] as Map<String, dynamic>? ??
+          professions[companion['professionId']?.toString() ?? '']
+                  as Map<String, dynamic>? ??
               const {};
-      final base = deriveAllyBaseStats(gameConfig: gameConfig, race: race, profession: profession);
+      final base = deriveAllyBaseStats(
+          gameConfig: gameConfig, race: race, profession: profession);
       final liveMaxHealth = scaledMaxHealth(base.maxHealth, _playerLevel);
       activeAllies.add(_PartyMember(
         id: companionId,
@@ -300,7 +317,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   /// combatant on the player's side, so a solo player (the common case
   /// through most of the game, before any ally is both recruited and
   /// active) sees the exact same unprefixed log this screen always had.
-  String _actorPrefix(_PartyMember actor) => _party.length > 1 ? '${actor.displayName}: ' : '';
+  String _actorPrefix(_PartyMember actor) =>
+      _party.length > 1 ? '${actor.displayName}: ' : '';
 
   void _startFight() {
     final lang = ref.read(appLanguageProvider);
@@ -316,10 +334,12 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     });
   }
 
-  Map<String, dynamic> _availableSkillsFor(_PartyMember actor, Map<String, dynamic> skills) {
+  Map<String, dynamic> _availableSkillsFor(
+      _PartyMember actor, Map<String, dynamic> skills) {
     return <String, dynamic>{
       for (final entry in skills.entries)
-        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ?? false) ||
+        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
+                false) ||
             actor.unlockedSkillIds.contains(entry.key))
           entry.key: entry.value,
     };
@@ -328,7 +348,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   /// Every party member able to act this round — the player (always
   /// conscious here, since their own knockout already ends the fight before
   /// another round could start) plus every active ally still standing.
-  List<_PartyMember> get _actingParty => _party.where((m) => !m.isKnockedOut).toList();
+  List<_PartyMember> get _actingParty =>
+      _party.where((m) => !m.isKnockedOut).toList();
 
   /// Rolls a die for every acting party member at once — one face per
   /// member, shown side by side — instead of each combatant taking a
@@ -349,7 +370,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       final actorDice = actor.equippedDiceId != null
           ? diceDb[actor.equippedDiceId] as Map<String, dynamic>?
           : null;
-      final faces = (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+      final faces =
+          (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ??
+              const [];
       if (faces.isEmpty) continue;
 
       var face = rollDie(faces, _random);
@@ -392,7 +415,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
   /// roll forcing it — then, once the enemy still stands, hands the turn
   /// straight to them (there's no more per-member turn order to advance
   /// through).
-  Future<void> _confirmRoll(Map<String, dynamic> skills, Map<String, dynamic> items) async {
+  Future<void> _confirmRoll(
+      Map<String, dynamic> skills, Map<String, dynamic> items) async {
     if (_currentFaces.isEmpty || _over) return;
     final lang = ref.read(appLanguageProvider);
 
@@ -402,8 +426,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       final face = _currentFaces[actor.id];
       if (face == null) continue;
 
-      final totalDamage =
-          actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
+      final totalDamage = actor.baseDamage +
+          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
       final result = resolvePlayerFace(
         face,
         _availableSkillsFor(actor, skills),
@@ -419,9 +443,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                   : _LogKind.info;
 
       totalDamageToEnemy += result.damageDealt;
-      actor.currentHealth = min(actor.maxHealth, actor.currentHealth + result.healingDone);
+      actor.currentHealth =
+          min(actor.maxHealth, actor.currentHealth + result.healingDone);
       actor.block = result.blockAmount;
-      newEntries.add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+      newEntries
+          .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
     }
 
     setState(() {
@@ -468,7 +494,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     // the player is always conscious here (their own knockout already ends
     // the fight via _finishFight before another enemy turn could start).
     final target = conscious[_random.nextInt(conscious.length)];
-    final totalArmor = target.armor + equipmentBonusFor(target.equippedItemIds, items, 'armor');
+    final totalArmor = target.armor +
+        equipmentBonusFor(target.equippedItemIds, items, 'armor');
     final damageTaken = max(0, move.damage - target.block - totalArmor);
     final lang = ref.read(appLanguageProvider);
     final wasKnockedOutAlready = target.isKnockedOut;
@@ -484,7 +511,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
           : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
               '$damageTaken ${trFor(lang, 'damage_word')}.';
       _log.add(
-        _LogEntry(damageLine, damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
+        _LogEntry(damageLine,
+            damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
       );
       if (!target.isPlayer && !wasKnockedOutAlready && target.isKnockedOut) {
         _log.add(
@@ -512,7 +540,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
     setState(() {
-      player.currentHealth = min(player.maxHealth, player.currentHealth + _potionHealAmount);
+      player.currentHealth =
+          min(player.maxHealth, player.currentHealth + _potionHealAmount);
       _log.add(
         _LogEntry(
           '${trFor(lang, 'drink_potion_prefix')} $_potionHealAmount ${trFor(lang, 'hp_label')}.',
@@ -531,13 +560,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
     if (won) {
-      final goldGain =
-          scaledReward((widget.enemy['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
-      final xpGain =
-          scaledReward((widget.enemy['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
+      final goldGain = scaledReward(
+          (widget.enemy['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
+      final xpGain = scaledReward(
+          (widget.enemy['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
       final loot = <String>[];
       final lootTable =
-          (widget.enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+          (widget.enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
+              const [];
       for (final entry in lootTable) {
         final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
         if (_random.nextDouble() * 100 <= dropRate) {
@@ -566,8 +596,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             : member.currentHealth;
         await notifier.applyAllyCombatResult(member.id, hpAfter: hpAfter);
       }
-      final newlyUnlockedAchievement =
-          anyAllyRevived ? await notifier.unlockAchievement('ally_revival') : false;
+      final newlyUnlockedAchievement = anyAllyRevived
+          ? await notifier.unlockAchievement('ally_revival')
+          : false;
       if (!mounted) return;
       final lang = ref.read(appLanguageProvider);
       setState(() {
@@ -599,7 +630,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       await notifier.applyCombatResult(hpAfter: player.maxHealth);
       if (!mounted) return;
       setState(() {
-        _log.add(_LogEntry(trFor(ref.read(appLanguageProvider), 'defeat_message'), _LogKind.defeat));
+        _log.add(_LogEntry(
+            trFor(ref.read(appLanguageProvider), 'defeat_message'),
+            _LogKind.defeat));
       });
     }
   }
@@ -639,7 +672,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
           gameConfigAsync.error;
       return Scaffold(
         appBar: AppBar(
-          title: Text('${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
+          title: Text(
+              '${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
         ),
         body: Center(
           child: error != null
@@ -653,7 +687,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
+        title: Text(
+            '${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
       ),
       body: !_started
           ? _buildSetup(dice, items)
@@ -663,10 +698,13 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
 
   Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
     final player = _party.first;
-    final damageBonus = equipmentBonusFor(player.equippedItemIds, items, 'attackDamage');
-    final armorBonus = equipmentBonusFor(player.equippedItemIds, items, 'armor');
-    final equippedDie =
-        _selectedDiceId != null ? dice[_selectedDiceId] as Map<String, dynamic>? : null;
+    final damageBonus =
+        equipmentBonusFor(player.equippedItemIds, items, 'attackDamage');
+    final armorBonus =
+        equipmentBonusFor(player.equippedItemIds, items, 'armor');
+    final equippedDie = _selectedDiceId != null
+        ? dice[_selectedDiceId] as Map<String, dynamic>?
+        : null;
     final faceCount = (equippedDie?['faces'] as List?)?.length ?? 0;
     final activeAllies = _party.skip(1).toList();
 
@@ -716,7 +754,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             ),
           ],
           const SizedBox(height: 24),
-          Text(tr(ref, 'equipped_die_label'), style: Theme.of(context).textTheme.titleMedium),
+          Text(tr(ref, 'equipped_die_label'),
+              style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 8),
           if (equippedDie == null)
             Card(
@@ -754,7 +793,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     final acting = _actingParty;
     final anyDieAvailable = acting.any((m) =>
         m.equippedDiceId != null &&
-        ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)?.isNotEmpty == true);
+        ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+                ?.isNotEmpty ==
+            true);
 
     return AnimatedBuilder(
       animation: _shakeController,
@@ -784,7 +825,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.outline),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: ListView.builder(
@@ -822,7 +864,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             if (_currentFaces.isNotEmpty) ...[
               for (final actor in acting)
                 if (_currentFaces[actor.id] != null) ...[
-                  _buildDieFaceCard(actor, _currentFaces[actor.id]!, skills, items),
+                  _buildDieFaceCard(
+                      actor, _currentFaces[actor.id]!, skills, items),
                   const SizedBox(height: 8),
                 ],
               const SizedBox(height: 4),
@@ -831,9 +874,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               ElevatedButton(
                 onPressed: () async {
                   if (!_won && ref.read(permadeathEnabledProvider)) {
-                    final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
-                    final result = await ref.read(playerSessionProvider.notifier).applyPermadeath();
-                    ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+                    final nodesVisited =
+                        ref.read(storyPlayProvider).history.length + 1;
+                    final result = await ref
+                        .read(playerSessionProvider.notifier)
+                        .applyPermadeath();
+                    ref
+                        .read(storyPlayProvider.notifier)
+                        .restart(StoryRepository.startNodeId);
                     ref.read(homeTabIndexProvider.notifier).state = 0;
                     if (!mounted) return;
                     await Navigator.of(context).pushAndRemoveUntil(
@@ -850,7 +898,9 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                   }
                   Navigator.of(context).pop(_won);
                 },
-                child: Text(_won ? tr(ref, 'victory_return_button') : tr(ref, 'retreat_button')),
+                child: Text(_won
+                    ? tr(ref, 'victory_return_button')
+                    : tr(ref, 'retreat_button')),
               )
             else ...[
               if (_awaitingDecision)
@@ -859,16 +909,20 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                     if (_rollCount < _maxRolls) ...[
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: _rolling ? null : () => _rollDice(dice, skills, items),
+                          onPressed: _rolling
+                              ? null
+                              : () => _rollDice(dice, skills, items),
                           icon: const Icon(Icons.refresh),
-                          label: Text('${tr(ref, 'reroll_button')} ($_rollCount/$_maxRolls)'),
+                          label: Text(
+                              '${tr(ref, 'reroll_button')} ($_rollCount/$_maxRolls)'),
                         ),
                       ),
                       const SizedBox(width: 8),
                     ],
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: _rolling ? null : () => _confirmRoll(skills, items),
+                        onPressed:
+                            _rolling ? null : () => _confirmRoll(skills, items),
                         icon: const Icon(Icons.check),
                         label: Text(tr(ref, 'confirm_roll_button')),
                       ),
@@ -889,9 +943,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                 ),
               const SizedBox(height: 8),
               OutlinedButton.icon(
-                onPressed: (session.potionCount > 0 && !_rolling) ? _usePotion : null,
+                onPressed:
+                    (session.potionCount > 0 && !_rolling) ? _usePotion : null,
                 icon: const Icon(Icons.local_drink),
-                label: Text('${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
+                label: Text(
+                    '${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
               ),
             ],
           ],
@@ -900,15 +956,21 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
     );
   }
 
-  Widget _buildMemberHealthBar(_PartyMember member, Map<String, dynamic> items) {
-    final armorBonus = equipmentBonusFor(member.equippedItemIds, items, 'armor');
-    final damageBonus = equipmentBonusFor(member.equippedItemIds, items, 'attackDamage');
+  Widget _buildMemberHealthBar(
+      _PartyMember member, Map<String, dynamic> items) {
+    final armorBonus =
+        equipmentBonusFor(member.equippedItemIds, items, 'armor');
+    final damageBonus =
+        equipmentBonusFor(member.equippedItemIds, items, 'attackDamage');
     final label = member.displayName;
     final bar = _HealthBar(
-      label: member.isKnockedOut ? '$label (${tr(ref, 'knocked_out_label')})' : label,
+      label: member.isKnockedOut
+          ? '$label (${tr(ref, 'knocked_out_label')})'
+          : label,
       current: member.currentHealth,
       max: member.maxHealth,
-      statLine: '⚔ ${member.baseDamage + damageBonus}  ·  🛡 ${member.armor + armorBonus}',
+      statLine:
+          '⚔ ${member.baseDamage + damageBonus}  ·  🛡 ${member.armor + armorBonus}',
     );
     if (_lastDamagedMemberId != member.id || _lastDamageTaken <= 0) return bar;
     return Stack(
@@ -924,7 +986,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
               opacity: (1 - _shakeController.value).clamp(0.0, 1.0),
               child: Text(
                 '-$_lastDamageTaken',
-                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    color: Colors.red, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -947,10 +1010,11 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
 
     Widget content;
     if (_rolling) {
-      content = Text(tr(ref, 'rolling_label'), style: Theme.of(context).textTheme.bodySmall);
+      content = Text(tr(ref, 'rolling_label'),
+          style: Theme.of(context).textTheme.bodySmall);
     } else {
-      final totalDamage =
-          actor.baseDamage + equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
+      final totalDamage = actor.baseDamage +
+          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
       final preview = resolvePlayerFace(
         face,
         _availableSkillsFor(actor, skills),
@@ -964,10 +1028,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
           if (_party.length > 1)
             Text(
               actor.displayName,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(color: colorScheme.primary, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: colorScheme.primary, fontWeight: FontWeight.bold),
             ),
           Text(
             face.faceName.isEmpty ? face.type : face.faceName,
@@ -977,10 +1039,8 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
             const SizedBox(height: 2),
             Text(
               '${tr(ref, 'skill_label')}: ${_effectiveSkillId(face)}',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(fontStyle: FontStyle.italic, color: colorScheme.primary),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  fontStyle: FontStyle.italic, color: colorScheme.primary),
             ),
           ],
           const SizedBox(height: 2),
@@ -993,9 +1053,13 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: _awaitingDecision ? colorScheme.primaryContainer.withValues(alpha: 0.25) : null,
+        color: _awaitingDecision
+            ? colorScheme.primaryContainer.withValues(alpha: 0.25)
+            : null,
         border: Border.all(
-          color: _awaitingDecision ? colorScheme.primary : colorScheme.outlineVariant,
+          color: _awaitingDecision
+              ? colorScheme.primary
+              : colorScheme.outlineVariant,
           width: _awaitingDecision ? 2 : 1,
         ),
       ),
@@ -1017,12 +1081,14 @@ class _FightScreenState extends ConsumerState<FightScreen> with TickerProviderSt
                           angle: angle,
                           child: Transform.scale(
                             scale: scale,
-                            child: Icon(Icons.casino, size: 30, color: colorScheme.primary),
+                            child: Icon(Icons.casino,
+                                size: 30, color: colorScheme.primary),
                           ),
                         );
                       },
                     )
-                  : Icon(_faceTypeIcon(face.type), size: 30, color: colorScheme.primary),
+                  : Icon(_faceTypeIcon(face.type),
+                      size: 30, color: colorScheme.primary),
             ),
           ),
           const SizedBox(width: 12),

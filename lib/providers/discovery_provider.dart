@@ -11,4 +11,5 @@ class PendingDiscovery {
 /// reader can show a one-shot "discovered!" modal on the node the player
 /// just arrived at, letting them jump straight to it instead of only
 /// noticing the Play-tab CTA chip. Cleared immediately after being shown.
-final pendingDiscoveryProvider = StateProvider<PendingDiscovery?>((ref) => null);
+final pendingDiscoveryProvider =
+    StateProvider<PendingDiscovery?>((ref) => null);

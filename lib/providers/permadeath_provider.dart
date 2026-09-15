@@ -24,4 +24,5 @@ class PermadeathNotifier extends StateNotifier<bool> {
 /// (keeping level/stats/skills, losing items). Off by default; persisted
 /// via [SharedPreferences].
 final permadeathEnabledProvider =
-    StateNotifierProvider<PermadeathNotifier, bool>((ref) => PermadeathNotifier());
+    StateNotifierProvider<PermadeathNotifier, bool>(
+        (ref) => PermadeathNotifier());
