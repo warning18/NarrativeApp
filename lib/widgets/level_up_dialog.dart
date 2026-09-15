@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import 'detail_dialog.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
 /// spend their new stat point(s) immediately, right in the modal, or close
@@ -30,6 +31,7 @@ class _LevelUpDialog extends ConsumerWidget {
     required IconData icon,
     required String valueText,
     required String statKey,
+    required String description,
     required bool enabled,
     required Color color,
   }) {
@@ -40,25 +42,62 @@ class _LevelUpDialog extends ConsumerWidget {
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(color: color.withValues(alpha: 0.25)),
       ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withValues(alpha: 0.15),
-          foregroundColor: color,
-          child: Icon(icon, size: 20),
-        ),
-        title: Text(label),
-        subtitle: Text(valueText),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-          ),
-          onPressed: enabled
-              ? () => ref
-                  .read(playerSessionProvider.notifier)
-                  .spendStatPoint(stat: statKey)
-              : null,
-          child: Text(tr(ref, 'plus_one_point')),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        child: Row(
+          children: [
+            InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => showDetailDialog(
+                context,
+                title: label,
+                description: description,
+                icon: icon,
+                closeLabel: tr(ref, 'close_button'),
+              ),
+              child: CircleAvatar(
+                radius: 14,
+                backgroundColor: color.withValues(alpha: 0.15),
+                foregroundColor: color,
+                child: Icon(icon, size: 14),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    maxLines: 1,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontSize: 13),
+                  ),
+                  Text(valueText, style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ),
+            const SizedBox(width: 6),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: color,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                minimumSize: const Size(0, 32),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                textStyle: const TextStyle(fontSize: 12),
+              ),
+              onPressed: enabled
+                  ? () => ref
+                      .read(playerSessionProvider.notifier)
+                      .spendStatPoint(stat: statKey)
+                  : null,
+              child: Text(tr(ref, 'plus_one_point')),
+            ),
+          ],
         ),
       ),
     );
@@ -70,6 +109,8 @@ class _LevelUpDialog extends ConsumerWidget {
     final hasPoints = session.statPoints > 0;
 
     return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       icon: Container(
         width: 56,
         height: 56,
@@ -112,6 +153,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.gavel,
               valueText: '${session.baseDamage}',
               statKey: 'damage',
+              description: tr(ref, 'base_damage_desc'),
               enabled: hasPoints,
               color: Colors.redAccent,
             ),
@@ -122,6 +164,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.shield,
               valueText: '${session.baseArmor}',
               statKey: 'armor',
+              description: tr(ref, 'base_armor_desc'),
               enabled: hasPoints,
               color: Colors.blueAccent,
             ),
@@ -132,6 +175,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.favorite,
               valueText: '${session.currentHealth} / ${session.maxHealth}',
               statKey: 'health',
+              description: tr(ref, 'max_health_desc'),
               enabled: hasPoints,
               color: Colors.pinkAccent,
             ),
@@ -142,6 +186,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.auto_awesome,
               valueText: '${session.luck}',
               statKey: 'luck',
+              description: tr(ref, 'luck_desc'),
               enabled: hasPoints,
               color: Colors.purpleAccent,
             ),
@@ -152,6 +197,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.forum,
               valueText: '${session.charisma}',
               statKey: 'charisma',
+              description: tr(ref, 'charisma_desc'),
               enabled: hasPoints,
               color: Colors.teal,
             ),
@@ -162,6 +208,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.fitness_center,
               valueText: '${session.strength}',
               statKey: 'strength',
+              description: tr(ref, 'strength_desc'),
               enabled: hasPoints,
               color: Colors.deepOrange,
             ),
@@ -172,6 +219,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.directions_run,
               valueText: '${session.dexterity}',
               statKey: 'dexterity',
+              description: tr(ref, 'dexterity_desc'),
               enabled: hasPoints,
               color: Colors.lightGreen,
             ),
@@ -182,6 +230,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.health_and_safety,
               valueText: '${session.constitution}',
               statKey: 'constitution',
+              description: tr(ref, 'constitution_desc'),
               enabled: hasPoints,
               color: Colors.brown,
             ),
@@ -192,6 +241,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.psychology,
               valueText: '${session.intelligence}',
               statKey: 'intelligence',
+              description: tr(ref, 'intelligence_desc'),
               enabled: hasPoints,
               color: Colors.indigo,
             ),
@@ -202,6 +252,7 @@ class _LevelUpDialog extends ConsumerWidget {
               icon: Icons.visibility,
               valueText: '${session.wisdom}',
               statKey: 'wisdom',
+              description: tr(ref, 'wisdom_desc'),
               enabled: hasPoints,
               color: Colors.cyan,
             ),

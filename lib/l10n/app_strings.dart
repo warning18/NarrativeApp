@@ -447,6 +447,67 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Intelligence',
   },
   'wisdom_label': {AppLanguage.en: 'Wisdom', AppLanguage.fr: 'Sagesse'},
+  'base_damage_desc': {
+    AppLanguage.en: 'Added to every attack you land in combat.',
+    AppLanguage.fr: 'S\'ajoute à chaque attaque que vous portez en combat.',
+  },
+  'base_armor_desc': {
+    AppLanguage.en: 'Reduces the damage you take from enemy attacks.',
+    AppLanguage.fr: 'Réduit les dégâts subis lors des attaques ennemies.',
+  },
+  'max_health_desc': {
+    AppLanguage.en: 'How much damage you can take before you go down.',
+    AppLanguage.fr:
+        'La quantité de dégâts que vous pouvez encaisser avant de tomber.',
+  },
+  'luck_desc': {
+    AppLanguage.en: 'Improves your odds of finding better loot after a fight.',
+    AppLanguage.fr:
+        'Améliore vos chances de trouver un meilleur butin après un combat.',
+  },
+  'charisma_desc': {
+    AppLanguage.en: 'Opens persuasion-gated dialogue and story choices.',
+    AppLanguage.fr:
+        'Débloque des dialogues et choix narratifs liés à la persuasion.',
+  },
+  'strength_desc': {
+    AppLanguage.en: 'Backs Strength checks on story choices — forcing your way '
+        'through, moving what won\'t move.',
+    AppLanguage.fr:
+        'Intervient dans les jets de Force des choix narratifs — forcer '
+            'un passage, déplacer ce qui ne bouge pas.',
+  },
+  'dexterity_desc': {
+    AppLanguage.en: 'Backs Dexterity checks on story choices — picking locks, '
+        'staying light on your feet.',
+    AppLanguage.fr:
+        'Intervient dans les jets de Dextérité des choix narratifs — '
+            'crocheter une serrure, rester agile.',
+  },
+  'constitution_desc': {
+    AppLanguage.en:
+        'Backs Constitution checks on story choices — enduring what '
+            'would stop most people.',
+    AppLanguage.fr:
+        'Intervient dans les jets de Constitution des choix narratifs — '
+            'endurer ce qui arrêterait la plupart des gens.',
+  },
+  'intelligence_desc': {
+    AppLanguage.en:
+        'Backs Intelligence checks on story choices — puzzling things '
+            'out, reading what others missed.',
+    AppLanguage.fr:
+        'Intervient dans les jets d\'Intelligence des choix narratifs — '
+            'comprendre ce que d\'autres ont manqué.',
+  },
+  'wisdom_desc': {
+    AppLanguage.en:
+        'Backs Wisdom checks on story choices — reading people, sensing '
+            'what\'s really going on.',
+    AppLanguage.fr:
+        'Intervient dans les jets de Sagesse des choix narratifs — lire '
+            'les gens, sentir ce qui se trame vraiment.',
+  },
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
   'level_abbrev': {AppLanguage.en: 'Lvl', AppLanguage.fr: 'Niv.'},

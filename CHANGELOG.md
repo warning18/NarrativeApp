@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.78.0+106]
+
+The Level Up popup was unreadable on narrow phone screens — stat labels like
+"Damage" and "Armor" were being split mid-word ("Dam"/"age", "Armo"/"r")
+because the dialog's default insets plus a wide leading icon and trailing
+button left almost no room for the label text. Also adds tap-to-learn stat
+descriptions, previously only implicitly understood from context.
+
+### Fixed
+- **Level Up modal readability on mobile** — rebuilt each stat row's layout
+  in `level_up_dialog.dart` with a tighter, width-budgeted `Row`
+  (smaller icon avatar, single-line label, compact `+1 Point` button) and
+  added explicit `insetPadding`/`contentPadding` overrides to the
+  `AlertDialog`, so labels render on one line instead of wrapping mid-word
+  on narrow viewports. Verified numerically via a widget test measuring
+  rendered text height at 412px and 360px simulated screen widths.
+
+### Added
+- **Stat descriptions on tap** — tapping a stat's icon on either the Level
+  Up modal or the full-screen Level Up tab now opens a short description of
+  what that stat actually does in-game (e.g. Luck improves post-fight loot
+  odds, Strength/Dexterity/Constitution/Intelligence/Wisdom back their
+  respective story-choice ability checks, Charisma opens persuasion-gated
+  dialogue), reusing the existing `showDetailDialog` helper. All ten
+  descriptions are localized in English and French.
+
 ## [1.77.0+105]
 
 Three new recruitable companions, each gated behind a different kind of
