@@ -9,6 +9,7 @@
 // requirements, so it catches orphaned nodes, dead ends, and broken
 // next_id links a gated playthrough sample could easily miss.
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
@@ -169,6 +170,68 @@ void main() {
       };
       final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
       expect(report.brokenReferences, isEmpty);
+    });
+  });
+
+  group('flag-gated reachability (regression)', () {
+    // checkStoryGraphIntegrity deliberately ignores reqFlags/reqGold/
+    // reqAlignment gating (see its doc comment) -- it only proves a node is
+    // reachable at all, not that some real path actually satisfies the
+    // flags gating it. That gap let node "151_vess" (Vess's questline) go
+    // permanently unreachable in a real content pass: it requires
+    // "void_marked", which only "281_scarred" (reached by *failing* the
+    // luck check at node "280") ever sets, but the old graph routed that
+    // failure straight past the market stall that leads to 151_vess. This
+    // walks every path from the start node tracking which flags are set
+    // along the way, so a future edit that breaks this link again fails
+    // loudly instead of silently stranding the content.
+    late Map<String, StoryNode> nodes;
+
+    setUpAll(() async {
+      nodes = await _loadStoryNodes();
+    });
+
+    test('151_vess is reachable on some path that has set void_marked', () {
+      final seenStates = <String>{};
+      final queue = Queue<MapEntry<String, Set<String>>>()
+        ..add(const MapEntry(StoryRepository.startNodeId, {}));
+      var reachedWithMark = false;
+
+      while (queue.isNotEmpty) {
+        final entry = queue.removeFirst();
+        final nodeId = entry.key;
+        final flags = entry.value;
+        final stateKey = '$nodeId|${(flags.toList()..sort()).join(',')}';
+        if (!seenStates.add(stateKey)) continue;
+
+        if (nodeId == '151_vess' && flags.contains('void_marked')) {
+          reachedWithMark = true;
+          break;
+        }
+
+        final node = nodes[nodeId];
+        if (node == null) continue;
+        for (final choice in node.choices) {
+          final next = choice.nextId;
+          if (next != 'EXIT' && next != 'END' && nodes.containsKey(next)) {
+            queue.add(MapEntry(next, {...flags, ...choice.flagsToAdd}));
+          }
+          final fail = choice.failNextId;
+          if (fail != null &&
+              fail.isNotEmpty &&
+              fail != 'EXIT' &&
+              fail != 'END' &&
+              nodes.containsKey(fail)) {
+            // A failed check never applies this choice's own flagsToAdd.
+            queue.add(MapEntry(fail, flags));
+          }
+        }
+      }
+
+      expect(reachedWithMark, isTrue,
+          reason: '151_vess requires void_marked, but no path from the '
+              'start node ever reaches it with that flag set -- the Vess '
+              'questline is stranded.');
     });
   });
 }

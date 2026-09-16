@@ -8,6 +8,55 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.85.0+113]
+
+Acted on a full Chapter 1-2 audit: one game-breaking bug fixed, two smaller
+balance/continuity issues cleaned up, plus a requested change moving the
+chapter's first shop access next to its boss fight. (One audit finding —
+`rat_matriarch`/`kroll_the_branded` tagged `minChapter: 2` despite fighting
+in Chapter 1 — turned out to be correct as shipped: that field only gates
+the *random* excursion pool, not their scripted story fights, and was
+deliberately set that way in a previous pass to keep Chapter 1's random
+encounters safe. Left unchanged. Also skipped a purely cosmetic finding —
+missing `npcs.json` entries for Kelda/Sable/Liora — since nothing currently
+reads that data for them and adding unused records isn't worth the churn.)
+
+### Fixed
+- **Vess's questline (`q_ch1_vess_in_the_dark`) was permanently
+  unreachable.** Node `151_vess` requires the `void_marked` flag, but the
+  only choice that ever sets it (`281_scarred`, reached by *failing* the
+  luck check at the Tear) routed straight past the market stall that leads
+  to her — no playthrough could ever satisfy the gate. `281_scarred`'s
+  "Continue" now routes through node `151` first, so a void-marked player
+  can actually find her. Added a permanent regression test
+  (`test/story_graph_integrity_test.dart`) that walks every path from the
+  start node tracking which flags are set along the way, since the
+  existing integrity check deliberately ignores `reqFlags` gating and
+  wouldn't have caught this.
+- **Failing the Chapter 2 "read the crowd for an informant" Wisdom check
+  landed the player on the *aftermath* text for a plague-hound fight they
+  never actually had.** `failNextId` jumps straight to a node, skipping
+  combat entirely — so the old target (`2015_hound`, the hardest fight at
+  that hub) played as pure narration of a win that never happened. Added a
+  proper failure node (`2015_informant_caught`) with its own light,
+  appropriately-scaled consequence (a real `street_bandit` fight).
+- Reworded node `2030`'s arrival text at Vane's, which assumed "whatever
+  I'd brought him" — a real mismatch for the newer branches (Kelda, Sable,
+  Tern Row) where nothing was physically brought. Now frames it as Vane
+  having heard about the player's evening generally, which fits every
+  incoming path.
+
+### Changed
+- **Moved the Chapter 1 market's first shop access to node `891`**, the
+  single node every Chapter 1 branch (Surrender or Unfurl the Bundle)
+  passes through immediately before the boss fight — previously it only
+  lived at node `151`, an optional detour skippable outright by two of the
+  three choices at the node before it, so a real playthrough had no
+  guarantee of ever seeing a shop before Chapter 1's climax. Also added an
+  explicit heal choice at the same node, so a player who took the harsher
+  Surrender branch (which stacks two unhealed fights) isn't forced into
+  the boss below full health while the Bundle branch always was.
+
 ## [1.84.0+112]
 
 Added narrative/world content: a new dockside location and side quest

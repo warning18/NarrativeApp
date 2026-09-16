@@ -55,18 +55,6 @@
     },
     "choices": [
       {
-        "text": "Visit the Weaponsmith's Forge",
-        "text_fr": "Visiter la forge de l'armurier",
-        "next_id": "300",
-        "unlockShopId": "weaponsmith_forge"
-      },
-      {
-        "text": "Check the Shieldwright's Hall",
-        "text_fr": "Examiner la halle du fabricant de boucliers",
-        "next_id": "300",
-        "unlockShopId": "shieldwrights_hall"
-      },
-      {
         "text": "Fight off a street bandit",
         "text_fr": "Repousser un bandit des rues",
         "next_id": "300",
@@ -731,6 +719,24 @@
         "unlockShopId": "black_market_docks"
       },
       {
+        "text": "Patch yourself up before whatever's coming",
+        "text_fr": "Se soigner avant ce qui s'annonce",
+        "next_id": "895",
+        "healAmount": 35
+      },
+      {
+        "text": "Duck into a dockside armory first",
+        "text_fr": "Faire d'abord un détour par un arsenal du port",
+        "next_id": "895",
+        "unlockShopId": "weaponsmith_forge"
+      },
+      {
+        "text": "Check a shieldwright's stall for anything sturdier",
+        "text_fr": "Examiner l'étal d'un fabricant de boucliers pour trouver plus solide",
+        "next_id": "895",
+        "unlockShopId": "shieldwrights_hall"
+      },
+      {
         "text": "Whistle for the hound",
         "text_fr": "Siffler le chien",
         "next_id": "892",
@@ -1255,7 +1261,7 @@
         "next_id": "2015_informant",
         "checkAbility": "wisdom",
         "checkDC": 13,
-        "failNextId": "2015_hound"
+        "failNextId": "2015_informant_caught"
       },
       {
         "text": "Follow a trail of paper lanterns down a side alley",
@@ -1349,6 +1355,24 @@
       }
     ]
   },
+  "2015_informant_caught": {
+    "id": "2015_informant_caught",
+    "description": "Whatever gave me away, it wasn't subtlety — a knife-happy opportunist peeled off the crowd before I'd finished my sweep, apparently deciding a stranger caught staring too hard was worth the trouble of relieving of his coin.",
+    "description_fr": "Quoi qui m'eût trahi, ce n'était pas la discrétion — un opportuniste au couteau facile se détacha de la foule avant même que j'eusse fini mon inspection, jugeant apparemment qu'un inconnu surpris à observer d'un peu trop près valait la peine qu'on le soulage de sa bourse.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight!",
+        "text_fr": "Combattre !",
+        "next_id": "2030",
+        "triggerEnemyId": "street_bandit"
+      }
+    ]
+  },
   "2015_kelda": {
     "id": "2015_kelda",
     "description": "She held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. Vane could wait a little longer.",
@@ -1433,8 +1457,8 @@
   },
   "2030": {
     "id": "2030",
-    "description": "Vane listened closely, his eyes narrowing the way a man's eyes narrow when he is doing mental arithmetic on the value of a thing. Whatever I'd brought him — and along that wharf, I had learned, there was always something worth bringing — he turned it over for a long moment as though tasting it for weaknesses. \"That has currency,\" he said finally. He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
-    "description_fr": "Vane écouta attentivement, les yeux se plissant comme se plissent les yeux d'un homme faisant mentalement le calcul de la valeur d'une chose. Quoi que je lui eusse apporté — et le long de ce quai, je l'avais appris, il y avait toujours quelque chose qui valait la peine — il le retourna un long moment comme pour en déceler les faiblesses. « Voilà qui a de la valeur », dit-il enfin. Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
+    "description": "Vane had already heard enough about my evening — news travels along a wharf faster than any of its actual cargo — and looked me over the way a man looks over an asset he's still pricing. Whatever I'd done to earn his attention, it seemed to have worked. \"That's worth something,\" he said finally. He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
+    "description_fr": "Vane avait déjà entendu parler de ma soirée — les nouvelles voyagent le long d'un quai plus vite qu'aucune de ses cargaisons — et me jaugea comme on jauge un bien dont on n'a pas encore fixé le prix. Quoi que j'eusse fait pour mériter son attention, cela semblait avoir porté. « Voilà qui a de la valeur », dit-il enfin. Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -2397,7 +2421,7 @@
       {
         "text": "Continue",
         "text_fr": "Continuer",
-        "next_id": "300",
+        "next_id": "151",
         "flagsToAdd": [
           "void_marked"
         ]
