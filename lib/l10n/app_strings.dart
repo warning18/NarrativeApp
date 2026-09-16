@@ -890,6 +890,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Alignement'
   },
   'potion_count_label': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'antidote_count_label': {
+    AppLanguage.en: 'Antidotes',
+    AppLanguage.fr: 'Antidotes',
+  },
   'current_xp_label': {
     AppLanguage.en: 'Current XP',
     AppLanguage.fr: 'XP actuelle'
@@ -900,6 +904,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Statistiques mises à jour.',
   },
   'potions_label': {AppLanguage.en: 'Potions', AppLanguage.fr: 'Potions'},
+  'antidotes_label': {AppLanguage.en: 'Antidotes', AppLanguage.fr: 'Antidotes'},
   'inventory_items_label': {
     AppLanguage.en: 'Inventory Items',
     AppLanguage.fr: "Objets d'inventaire",
@@ -1495,6 +1500,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You drink a potion and recover',
     AppLanguage.fr: 'Vous buvez une potion et récupérez',
   },
+  'drink_antidote_prefix': {
+    AppLanguage.en: 'You drink the antidote. Your afflictions fade.',
+    AppLanguage.fr: "Vous buvez l'antidote. Vos afflictions se dissipent.",
+  },
   'victory_prefix': {AppLanguage.en: 'Victory!', AppLanguage.fr: 'Victoire !'},
   'loot_label': {AppLanguage.en: 'loot', AppLanguage.fr: 'butin'},
   'defeat_message': {
@@ -1555,6 +1564,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Lancer en cours…'
   },
   'potion_button_prefix': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'antidote_button_prefix': {
+    AppLanguage.en: 'Antidote',
+    AppLanguage.fr: 'Antidote',
+  },
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',
     AppLanguage.fr: "Tremblement d'écran à l'impact",

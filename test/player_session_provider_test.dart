@@ -552,4 +552,20 @@ void main() {
       expect(result.lostItemIds, contains('sword_iron'));
     });
   });
+
+  group('consumeAntidote', () {
+    test('decrements antidoteCount by one', () async {
+      final notifier =
+          await notifierWith(baseSession().copyWith(antidoteCount: 2));
+      await notifier.consumeAntidote();
+      expect(notifier.state.antidoteCount, 1);
+    });
+
+    test('is a no-op once antidoteCount reaches zero', () async {
+      final notifier =
+          await notifierWith(baseSession().copyWith(antidoteCount: 0));
+      await notifier.consumeAntidote();
+      expect(notifier.state.antidoteCount, 0);
+    });
+  });
 }

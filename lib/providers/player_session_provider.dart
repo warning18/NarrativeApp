@@ -70,6 +70,7 @@ class PlayerSession {
     this.talkedToNpcIds = const [],
     this.skillEssence = 0,
     this.skillTiers = const {},
+    this.antidoteCount = 0,
   });
 
   final int level;
@@ -231,6 +232,12 @@ class PlayerSession {
   /// {} on permadeath along with [unlockedSkillIds].
   final Map<String, int> skillTiers;
 
+  /// Cures every active status effect (Poison/Stun/Weaken) off the player
+  /// on use — see [FightScreen]'s antidote button. A separate counter from
+  /// [potionCount], mirroring its own plumbing exactly (a starting count
+  /// from game_config.json, no other way to gain more yet).
+  final int antidoteCount;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -312,6 +319,7 @@ class PlayerSession {
     List<String>? talkedToNpcIds,
     int? skillEssence,
     Map<String, int>? skillTiers,
+    int? antidoteCount,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -368,6 +376,7 @@ class PlayerSession {
       talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
       skillEssence: skillEssence ?? this.skillEssence,
       skillTiers: skillTiers ?? this.skillTiers,
+      antidoteCount: antidoteCount ?? this.antidoteCount,
     );
   }
 
@@ -423,6 +432,7 @@ class PlayerSession {
         'talkedToNpcIds': talkedToNpcIds,
         'skillEssence': skillEssence,
         'skillTiers': skillTiers,
+        'antidoteCount': antidoteCount,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -569,6 +579,7 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
+      antidoteCount: (json['antidoteCount'] as num?)?.toInt() ?? 0,
     );
   }
 }
@@ -668,6 +679,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       professionId: '',
       ownedDiceIds: const [],
       equippedDiceId: null,
+      antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
     );
     await _persist();
   }
@@ -783,6 +795,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       professionId: professionId,
       ownedDiceIds: const [_starterDiceId],
       equippedDiceId: _starterDiceId,
+      antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
     );
     await _persist();
   }
@@ -1566,6 +1579,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? potionCount,
     int? statPoints,
     int? skillPoints,
+    int? antidoteCount,
   }) async {
     state = state.copyWith(
       level: level,
@@ -1586,6 +1600,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       potionCount: potionCount,
       statPoints: statPoints,
       skillPoints: skillPoints,
+      antidoteCount: antidoteCount,
     );
     await _persist();
   }
@@ -1593,6 +1608,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> consumePotion() async {
     if (state.potionCount <= 0) return;
     state = state.copyWith(potionCount: state.potionCount - 1);
+    await _persist();
+  }
+
+  Future<void> consumeAntidote() async {
+    if (state.antidoteCount <= 0) return;
+    state = state.copyWith(antidoteCount: state.antidoteCount - 1);
     await _persist();
   }
 

@@ -164,6 +164,7 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
       'intelligence': TextEditingController(text: '${session.intelligence}'),
       'wisdom': TextEditingController(text: '${session.wisdom}'),
       'potionCount': TextEditingController(text: '${session.potionCount}'),
+      'antidoteCount': TextEditingController(text: '${session.antidoteCount}'),
       'statPoints': TextEditingController(text: '${session.statPoints}'),
       'skillPoints': TextEditingController(text: '${session.skillPoints}'),
     };
@@ -211,6 +212,7 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
           intelligence: parse('intelligence'),
           wisdom: parse('wisdom'),
           potionCount: parse('potionCount'),
+          antidoteCount: parse('antidoteCount'),
           statPoints: parse('statPoints'),
           skillPoints: parse('skillPoints'),
         );
@@ -257,6 +259,7 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
                 _field('intelligence', 'intelligence_label'),
                 _field('wisdom', 'wisdom_label'),
                 _field('potionCount', 'potion_count_label'),
+                _field('antidoteCount', 'antidote_count_label'),
                 _field('statPoints', 'stat_points_label'),
                 _field('skillPoints', 'skill_points_label'),
               ],

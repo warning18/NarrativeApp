@@ -22,6 +22,23 @@ StatusEffect? _inflictedStatusFrom(Map<String, dynamic> record) {
   );
 }
 
+/// Maps an `element` value (as used on dice faces, skills, and enemy
+/// moves — see [elementOptions] in `lib/gamedata/db_schema.dart`, kept in
+/// sync with this map by hand since the schema layer deliberately doesn't
+/// depend on gameplay code) to the item-field prefix items.json already
+/// stores elemental gear bonuses under (e.g. `fireDmgBonus`/`fireResist`).
+/// 'None' has no entry — it never earns a bonus or suffers a resist.
+const Map<String, String> elementFieldPrefixes = {
+  'Fire': 'fire',
+  'Wind': 'wind',
+  'Earth': 'earth',
+  'Water': 'water',
+  'Electricity': 'elec',
+  'Void': 'void',
+  'Ice': 'ice',
+  'Light': 'light',
+};
+
 class DiceFaceResult {
   const DiceFaceResult({
     required this.faceIndex,
@@ -183,6 +200,7 @@ class EnemyMoveResult {
     required this.damage,
     required this.message,
     this.inflictedStatus,
+    this.element = 'None',
   });
 
   final int damage;
@@ -192,6 +210,12 @@ class EnemyMoveResult {
   /// the referenced skill's own `inflictsStatus` fields; a move with no
   /// `skillID` (a plain attack) never inflicts one.
   final StatusEffect? inflictedStatus;
+
+  /// The element this move hits with — the referenced skill's own
+  /// `element` field, or 'None' for a plain base attack. Lets the caller
+  /// apply the target's matching `<prefix>Resist` gear bonus the same way
+  /// it already applies armor/block.
+  final String element;
 }
 
 EnemyMoveResult resolveEnemyMove({
@@ -202,6 +226,7 @@ EnemyMoveResult resolveEnemyMove({
   required Random random,
   AppLanguage language = AppLanguage.en,
   List<StatusEffect> activeEffects = const [],
+  Set<String> elementsHitThisRound = const {},
 }) {
   String t(String key) => trFor(language, key);
   final moves =
@@ -233,6 +258,10 @@ EnemyMoveResult resolveEnemyMove({
       case 'OnLowHealth':
         matches = healthPercent <= healthThreshold;
         break;
+      case 'OnHitByElement':
+        matches = elementsHitThisRound
+            .contains(move['requiredElement']?.toString() ?? '');
+        break;
       default:
         matches = false;
         break;
@@ -254,6 +283,7 @@ EnemyMoveResult resolveEnemyMove({
         message: skill['battleMessage']?.toString() ??
             '$enemyName ${t('attacks_suffix')}',
         inflictedStatus: _inflictedStatusFrom(skill),
+        element: skill['element']?.toString() ?? 'None',
       );
     }
     break;

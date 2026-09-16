@@ -2,6 +2,7 @@
   "playerLevel": 1,
   "gold": 100,
   "potionCount": 3,
+  "antidoteCount": 1,
   "maxHealth": 100,
   "baseDamage": 10,
   "baseArmor": 0,

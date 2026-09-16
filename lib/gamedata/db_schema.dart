@@ -72,6 +72,8 @@ const List<String> elementOptions = [
   'Water',
   'Electricity',
   'Void',
+  'Ice',
+  'Light',
 ];
 
 // 'Empty' is intentionally excluded: no die face may be empty in play, so
@@ -212,6 +214,36 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(
         key: 'elecResist',
         label: 'Elec Resist',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'voidDmgBonus',
+        label: 'Void Dmg Bonus',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'voidResist',
+        label: 'Void Resist',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'iceDmgBonus',
+        label: 'Ice Dmg Bonus',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'iceResist',
+        label: 'Ice Resist',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'lightDmgBonus',
+        label: 'Light Dmg Bonus',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'lightResist',
+        label: 'Light Resist',
         type: FieldType.integer,
         defaultValue: 0),
     visualAssetFieldSchema('items'),

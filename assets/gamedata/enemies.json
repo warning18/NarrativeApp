@@ -231,6 +231,10 @@
       {
         "itemID": "potion_major",
         "dropRate": 35
+      },
+      {
+        "itemID": "antidote",
+        "dropRate": 30
       }
     ],
     "skillMoves": [
@@ -262,9 +266,25 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 50
+      },
+      {
+        "itemID": "plate_emberproof",
+        "dropRate": 18
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "molten_backlash",
+        "condition": "OnHitByElement",
+        "requiredElement": "Fire",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 5
+      }
+    ],
     "minChapter": 3
   },
   "void_stalker": {
@@ -376,9 +396,24 @@
       {
         "itemID": "potion_major",
         "dropRate": 35
+      },
+      {
+        "itemID": "circlet_radiance",
+        "dropRate": 20
       }
     ],
     "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
       {
         "skillID": "",
         "condition": "OnLowHealth",
@@ -491,9 +526,25 @@
       {
         "itemID": "potion_minor",
         "dropRate": 40
+      },
+      {
+        "itemID": "cloak_frostward",
+        "dropRate": 18
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
     "minChapter": 2
   },
   "inquisition_auxiliary": {

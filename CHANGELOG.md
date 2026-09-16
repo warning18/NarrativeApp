@@ -8,6 +8,47 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.90.0+118]
+
+Elements go from flavor text to a real combat layer, and last patch's
+status-effect system gets a wider footprint across skills, companions, and
+items.
+
+### Added
+- **Elemental damage/resistance, finally wired up.** `items.json` has
+  carried per-element `<element>DmgBonus`/`<element>Resist` fields (and a
+  fully-authored Fire→Wind→Earth→Water→Electricity staff progression) since
+  early in this project, completely unread by combat. `resolvePlayerFace`
+  and `resolveEnemyMove` now both apply them: a party member's outgoing
+  Attack/Skill damage is boosted by their gear's matching element bonus (the
+  element comes from the skill's own `element` field for Skill faces, the
+  die face's own for Attack faces), and an enemy move's damage is cut by the
+  target's matching resist gear the same way armor and block already are.
+- **Two new elements: Ice and Light.** Added to `elementOptions` alongside
+  Fire/Wind/Earth/Water/Electricity/Void, with their own `iceDmgBonus`/
+  `iceResist`/`lightDmgBonus`/`lightResist` item fields (Void picked up the
+  matching `voidDmgBonus`/`voidResist` pair too, completing `void_banner`'s
+  existing all-elements bonus).
+- **`OnHitByElement` is a real condition now.** `skillMoveConditionOptions`
+  has listed it since enemy moves first shipped; it always evaluated to
+  false. `FightScreen` now tracks which elements the party actually hit the
+  enemy with each round and feeds it to `resolveEnemyMove`, so a move can
+  react to it — `iron_golem` now shrugs off Fire and flings it right back
+  (`molten_backlash`, a real reason to *not* bring fire against a golem).
+- **New elemental content:** `frigid_grip` (Ice) for the docks' Overseer
+  Renn, `radiant_judgment` (Light) for Inquisitor Kroll, plus three new
+  elemental-gear drops (`plate_emberproof`, `cloak_frostward`,
+  `circlet_radiance`).
+- **Status effects reach further.** Three more signature skills now inflict
+  one: `warrior_shield_bash` (Stun — a shield bash staggers), `rogue_backstab`
+  (Weaken — thrown off balance), and `voidkin_entropy_touch` (Poison —
+  unraveling flesh, matching last patch's "void corruption" pitch).
+- **A cure for them, too.** New `antidoteCount` resource (mirrors
+  `potionCount`'s plumbing exactly) and `consumeAntidote()` clear every
+  active Poison/Stun/Weaken off the player. A new Antidote button appears in
+  `FightScreen` whenever the player actually has something to cure; a new
+  `antidote` item drops from Plague Hounds.
+
 ## [1.89.0+117]
 
 Combat gets a status-effect system: Poison, Stun, and Weaken now exist as

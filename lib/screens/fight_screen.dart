@@ -106,6 +106,44 @@ IconData _faceTypeIcon(String type) {
 String _effectiveSkillId(DiceFaceResult face) =>
     face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
 
+/// The element a rolled face actually hits with — the linked skill's own
+/// `element` for a Skill face (the skill is what's actually cast; the face
+/// is just its delivery), or the face's own `element` for a plain
+/// Attack/Defend/Heal face. Used to look up gear's `<prefix>DmgBonus` and
+/// to record what the enemy was just hit with for `OnHitByElement`.
+String _elementFor(DiceFaceResult face, Map<String, dynamic> skills) {
+  if (face.type == 'Skill') {
+    final skill = skills[_effectiveSkillId(face)] as Map<String, dynamic>?;
+    return skill?['element']?.toString() ?? 'None';
+  }
+  return face.element;
+}
+
+/// The equipment bonus for [element] off [equippedItemIds] — 0 for 'None'
+/// or any element without a known item-field prefix (see
+/// [elementFieldPrefixes]).
+int _elementalDamageBonus(
+  String element,
+  List<String> equippedItemIds,
+  Map<String, dynamic> items,
+) {
+  final prefix = elementFieldPrefixes[element];
+  if (prefix == null) return 0;
+  return equipmentBonusFor(equippedItemIds, items, '${prefix}DmgBonus');
+}
+
+/// The equipment resist for [element] off [equippedItemIds] — 0 for 'None'
+/// or any element without a known item-field prefix.
+int _elementalResist(
+  String element,
+  List<String> equippedItemIds,
+  Map<String, dynamic> items,
+) {
+  final prefix = elementFieldPrefixes[element];
+  if (prefix == null) return 0;
+  return equipmentBonusFor(equippedItemIds, items, '${prefix}Resist');
+}
+
 /// The log line announcing a status effect just landed on [targetName] —
 /// shared by the player/ally-inflicted (enemy target) and enemy-inflicted
 /// (party target) paths so both read the same way.
@@ -201,6 +239,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Poison/Stun/Weaken currently afflicting the enemy — see
   /// status_effect.dart. Ticked down once per round in [_takeEnemyTurn].
   List<StatusEffect> _enemyStatusEffects = [];
+
+  /// Elements the party actually hit the enemy with in the round that just
+  /// resolved (set fresh each [_confirmRoll], not accumulated across
+  /// rounds) — feeds a move's `OnHitByElement` condition in
+  /// [_takeEnemyTurn].
+  Set<String> _elementsHitThisRound = {};
 
   /// Which party member most recently took damage from the enemy, so the
   /// floating "-N" indicator lands on the right health bar. Null until the
@@ -457,15 +501,21 @@ class _FightScreenState extends ConsumerState<FightScreen>
     var totalDamageToEnemy = 0;
     var enemyEffects = _enemyStatusEffects;
     final newEntries = <_LogEntry>[];
+    final hitElements = <String>{};
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
 
+      final availableSkills = _availableSkillsFor(actor, skills);
+      final element = _elementFor(face, availableSkills);
+      final elementalBonus =
+          _elementalDamageBonus(element, actor.equippedItemIds, items);
       final totalDamage = actor.baseDamage +
-          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
+          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+          elementalBonus;
       final result = resolvePlayerFace(
         face,
-        _availableSkillsFor(actor, skills),
+        availableSkills,
         totalDamage,
         language: lang,
         activeEffects: actor.statusEffects,
@@ -479,6 +529,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   : _LogKind.info;
 
       totalDamageToEnemy += result.damageDealt;
+      if (element != 'None' && result.damageDealt > 0) hitElements.add(element);
       actor.currentHealth =
           min(actor.maxHealth, actor.currentHealth + result.healingDone);
       actor.block = result.blockAmount;
@@ -505,6 +556,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _currentFaces.clear();
       _enemyHealth = max(0, _enemyHealth - totalDamageToEnemy);
       _enemyStatusEffects = enemyEffects;
+      _elementsHitThisRound = hitElements;
       _log.addAll(newEntries);
     });
 
@@ -631,6 +683,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       random: _random,
       language: lang,
       activeEffects: _enemyStatusEffects,
+      elementsHitThisRound: _elementsHitThisRound,
     );
 
     final conscious = _party.where((m) => !m.isKnockedOut).toList();
@@ -640,7 +693,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final target = conscious[_random.nextInt(conscious.length)];
     final totalArmor = target.armor +
         equipmentBonusFor(target.equippedItemIds, items, 'armor');
-    final damageTaken = max(0, move.damage - target.block - totalArmor);
+    final elementalResist =
+        _elementalResist(move.element, target.equippedItemIds, items);
+    final damageTaken =
+        max(0, move.damage - target.block - totalArmor - elementalResist);
     final wasKnockedOutAlready = target.isKnockedOut;
 
     setState(() {
@@ -700,6 +756,27 @@ class _FightScreenState extends ConsumerState<FightScreen>
           '${trFor(lang, 'drink_potion_prefix')} $_potionHealAmount ${trFor(lang, 'hp_label')}.',
           _LogKind.playerHeal,
         ),
+      );
+    });
+  }
+
+  /// Cures every active status effect (Poison/Stun/Weaken) off the player —
+  /// mirrors [_usePotion]'s plumbing exactly, just against
+  /// [PlayerSessionNotifier.consumeAntidote] and [_PartyMember.statusEffects]
+  /// instead of health. Allies aren't cured (matches how potions are
+  /// player-only too).
+  void _useAntidote() {
+    final session = ref.read(playerSessionProvider);
+    final player = _party.firstWhere((m) => m.isPlayer);
+    if (session.antidoteCount <= 0 || _over || player.statusEffects.isEmpty) {
+      return;
+    }
+    ref.read(playerSessionProvider.notifier).consumeAntidote();
+    final lang = ref.read(appLanguageProvider);
+    setState(() {
+      player.statusEffects = [];
+      _log.add(
+        _LogEntry(trFor(lang, 'drink_antidote_prefix'), _LogKind.playerHeal),
       );
     });
   }
@@ -1122,6 +1199,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 label: Text(
                     '${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
               ),
+              if (_party.first.statusEffects.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: (session.antidoteCount > 0 && !_rolling)
+                      ? _useAntidote
+                      : null,
+                  icon: const Icon(Icons.healing),
+                  label: Text(
+                      '${tr(ref, 'antidote_button_prefix')} (${session.antidoteCount})'),
+                ),
+              ],
             ],
           ],
         ),
@@ -1187,11 +1275,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
       content = Text(tr(ref, 'rolling_label'),
           style: Theme.of(context).textTheme.bodySmall);
     } else {
+      final availableSkills = _availableSkillsFor(actor, skills);
+      final elementalBonus = _elementalDamageBonus(
+          _elementFor(face, availableSkills), actor.equippedItemIds, items);
       final totalDamage = actor.baseDamage +
-          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage');
+          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+          elementalBonus;
       final preview = resolvePlayerFace(
         face,
-        _availableSkillsFor(actor, skills),
+        availableSkills,
         totalDamage,
         language: ref.read(appLanguageProvider),
         activeEffects: actor.statusEffects,

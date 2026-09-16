@@ -624,6 +624,7 @@ class _CharacterSheet extends StatelessWidget {
                 statRow(t('stat_points_label'), '${session.statPoints}'),
                 statRow(t('skill_points_label'), '${session.skillPoints}'),
                 statRow(t('potions_label'), '${session.potionCount}'),
+                statRow(t('antidotes_label'), '${session.antidoteCount}'),
                 statRow(t('inventory_items_label'),
                     '${session.inventoryItemIds.length}'),
                 statRow(t('equipped_items_label'),

@@ -285,7 +285,10 @@
     "damageMultiplier": 1.6,
     "battleMessage": "Reality frays where you touch.",
     "restrictedRaceID": "voidkin",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "inflictsStatus": "Poison",
+    "statusDuration": 3,
+    "statusMagnitude": 7
   },
   "voidkin_starless_gaze": {
     "id": "voidkin_starless_gaze",
@@ -317,7 +320,10 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your shield rings against them.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "warrior"
+    "restrictedProfessionID": "warrior",
+    "inflictsStatus": "Stun",
+    "statusDuration": 1,
+    "statusMagnitude": 0
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -477,7 +483,10 @@
     "damageMultiplier": 1.5,
     "battleMessage": "The blade finds its mark unseen.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "rogue"
+    "restrictedProfessionID": "rogue",
+    "inflictsStatus": "Weaken",
+    "statusDuration": 2,
+    "statusMagnitude": 20
   },
   "rogue_smoke_bomb": {
     "id": "rogue_smoke_bomb",
@@ -1234,5 +1243,53 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0
+  },
+  "molten_backlash": {
+    "id": "molten_backlash",
+    "element": "Fire",
+    "cost": 0,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Iron doesn't burn -- it just gets angrier. Flung back at whoever lit it.",
+    "healAmount": 0,
+    "damageMod": 14,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.4,
+    "battleMessage": "The golem shrugs off the flame and flings molten slag back at you!",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": ""
+  },
+  "frigid_grip": {
+    "id": "frigid_grip",
+    "element": "Ice",
+    "cost": 0,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Harbor water in the dead of winter, thrown by a hand that doesn't feel the cold anymore.",
+    "healAmount": 0,
+    "damageMod": 7,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.2,
+    "battleMessage": "Freezing harbor water sluices over you, and your grip goes numb!",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": ""
+  },
+  "radiant_judgment": {
+    "id": "radiant_judgment",
+    "element": "Light",
+    "cost": 0,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "The Inquisition's own light, turned on whoever it decides doesn't deserve it.",
+    "healAmount": 0,
+    "damageMod": 10,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.4,
+    "battleMessage": "Kroll calls down a column of searing white light!",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": ""
   }
 }

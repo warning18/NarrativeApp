@@ -493,6 +493,121 @@ void main() {
       );
       expect(result.damage, 10);
     });
+
+    test('the resolved move carries the underlying skill\'s element', () {
+      final enemy = <String, dynamic>{
+        'enemyName': 'Test Foe',
+        'damage': 10,
+        'skillMoves': [
+          {'skillID': 'fireball', 'condition': 'Always', 'priority': 1},
+        ],
+      };
+      const skills = <String, dynamic>{
+        'fireball': {
+          'damageMod': 5,
+          'damageMultiplier': 1.0,
+          'element': 'Fire'
+        },
+      };
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: skills,
+        enemyCurrentHealth: 100,
+        enemyMaxHealth: 100,
+        random: Random(1),
+      );
+      expect(result.element, 'Fire');
+    });
+
+    test('a plain base attack (no skillID) carries element None', () {
+      final enemy = <String, dynamic>{'enemyName': 'Plain Foe', 'damage': 7};
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: const {},
+        enemyCurrentHealth: 50,
+        enemyMaxHealth: 50,
+        random: Random(1),
+      );
+      expect(result.element, 'None');
+    });
+
+    group('OnHitByElement condition', () {
+      final enemy = <String, dynamic>{
+        'enemyName': 'Iron Golem',
+        'damage': 19,
+        'skillMoves': [
+          {
+            'skillID': 'molten_backlash',
+            'condition': 'OnHitByElement',
+            'requiredElement': 'Fire',
+            'priority': 5,
+          },
+        ],
+      };
+      const skills = <String, dynamic>{
+        'molten_backlash': {'damageMod': 14, 'damageMultiplier': 1.4},
+      };
+
+      test('fires when the required element is in elementsHitThisRound', () {
+        final result = resolveEnemyMove(
+          enemy: enemy,
+          skills: skills,
+          enemyCurrentHealth: 100,
+          enemyMaxHealth: 100,
+          random: Random(1),
+          elementsHitThisRound: {'Fire'},
+        );
+        // (baseDamage + damageMod * multiplier).round() = (19 + 19.6).round() = 39
+        expect(result.damage, 39);
+      });
+
+      test(
+          'does not fire when the element is absent, falling back to the '
+          'plain attack', () {
+        final result = resolveEnemyMove(
+          enemy: enemy,
+          skills: skills,
+          enemyCurrentHealth: 100,
+          enemyMaxHealth: 100,
+          random: Random(1),
+          elementsHitThisRound: {'Water'},
+        );
+        expect(result.damage, 19);
+      });
+
+      test('does not fire with no elementsHitThisRound at all (the default)',
+          () {
+        final result = resolveEnemyMove(
+          enemy: enemy,
+          skills: skills,
+          enemyCurrentHealth: 100,
+          enemyMaxHealth: 100,
+          random: Random(1),
+        );
+        expect(result.damage, 19);
+      });
+    });
+  });
+
+  group('elementFieldPrefixes', () {
+    test('covers every non-None element option', () {
+      // Mirrors elementOptions in lib/gamedata/db_schema.dart minus 'None'
+      // -- kept in sync by hand since the schema layer deliberately avoids
+      // depending on gameplay code.
+      expect(
+        elementFieldPrefixes.keys.toSet(),
+        {
+          'Fire',
+          'Wind',
+          'Earth',
+          'Water',
+          'Electricity',
+          'Void',
+          'Ice',
+          'Light',
+        },
+      );
+    });
   });
 
   group('level scaling formulas', () {
