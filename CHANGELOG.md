@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.86.0+114]
+
+Second round of narrative/world diversity content, this time in Chapter 3:
+a population the story had repeatedly referenced as backstory (the
+Inquisition's slum purge, mentioned at nodes `100`/`3001` and named as the
+High Warden's crime in `q_ch3_the_high_wardens_fall`) but never gave real
+presence to.
+
+### Added
+- **The Reckoning Wall, a new Chapter 3 location, and its side quest.**
+  Reached via a new choice on the Ashen Quarter hub (node `3005`), the wall
+  is where purge survivors — led by a woman named Reya — chalk the names of
+  everyone the Inquisition's official record insists simply "relocated," a
+  counter-record to the same erasure already running through this chapter's
+  Hall of Records content. An Inquisition auxiliary (a new
+  `inquisition_auxiliary` enemy) is sent to burn the wall before it becomes
+  evidence. Players can talk him down with a DC 13 Intelligence check —
+  quoting Inquisition procedure back at him, deliberately a different stat
+  and angle than Tern Row's Charisma-based resolution — for a no-combat
+  outcome (25 gold, +5 alignment, its own flag), or fight him directly,
+  which registers the formal quest (`q_ch3_reckoning_wall`, 50 gold/60 XP/+5
+  alignment on completion). Failing the check still leads to the fight
+  rather than a dead end, same pattern as Tern Row.
+
 ## [1.85.0+113]
 
 Acted on a full Chapter 1-2 audit: one game-breaking bug fixed, two smaller

@@ -1710,6 +1710,11 @@
         "next_id": "3005_grosh",
         "lockedText": "He looked me over with the particular disinterest of a man who has already been offered enough unpaid work to last several lifetimes, did the arithmetic on my boots and my purse, and returned to his own business before I had finished deciding how to open the conversation.",
         "lockedText_fr": "Il me jaugea avec ce désintérêt particulier d'un homme à qui l'on a déjà proposé assez de travail non payé pour plusieurs vies, fit le calcul sur mes bottes et ma bourse, et retourna à ses affaires avant même que j'aie fini de décider comment engager la conversation."
+      },
+      {
+        "text": "Follow chalk-marks to a wall crowded with names",
+        "text_fr": "Suivre des marques de craie jusqu'à un mur couvert de noms",
+        "next_id": "3005_wall"
       }
     ]
   },
@@ -2673,6 +2678,72 @@
         "text_fr": "Se diriger vers la Salle des Archives",
         "next_id": "3020",
         "unlockQuestId": "q_ch3_groshs_price"
+      }
+    ]
+  },
+  "3005_wall": {
+    "id": "3005_wall",
+    "description": "The chalk-marks led to a stretch of scorched wall someone had clearly decided was worth more than the ash piled around it — names, hundreds of them, scratched and re-chalked each time rain tried to take a few, tended by a handful of people who'd apparently appointed themselves the purge's memory since no one official seemed inclined to keep one. Their keeper gave her name as Reya, in the flat, appraising tone of someone who'd already decided what she thought of me and was waiting, without much hope, to be proven wrong. An Inquisition auxiliary had been by twice already, she said, asking pointed questions about who exactly maintained a shrine to people the official record insisted had simply 'relocated.' He was due back before dark to settle the matter more permanently.",
+    "description_fr": "Les marques de craie menaient à un pan de mur calciné que quelqu'un avait manifestement jugé plus précieux que les cendres alentour — des noms, des centaines, griffonnés et sans cesse recraiés chaque fois que la pluie tentait d'en effacer quelques-uns, entretenus par une poignée de gens qui s'étaient apparemment nommés eux-mêmes gardiens de la mémoire de la purge, puisque personne d'officiel ne semblait s'en soucier. Leur gardienne se présenta sous le nom de Reya, du ton plat et évaluateur de quelqu'un qui avait déjà décidé ce qu'elle pensait de moi et attendait, sans grand espoir, d'être détrompée. Un auxiliaire de l'Inquisition était déjà passé deux fois, dit-elle, posant des questions pointues sur qui, au juste, entretenait un sanctuaire pour des gens que le registre officiel prétendait simplement « relocalisés ». Il devait revenir avant la nuit pour régler l'affaire plus définitivement.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Argue that burning the wall won't unburn the truth",
+        "text_fr": "Faire valoir que brûler le mur ne brûlera pas la vérité",
+        "next_id": "3005_wall_argued",
+        "checkAbility": "intelligence",
+        "checkDC": 13,
+        "failNextId": "3005_wall_fight"
+      },
+      {
+        "text": "Stay and make sure he doesn't get the chance",
+        "text_fr": "Rester pour l'empêcher d'en avoir l'occasion",
+        "next_id": "3005_wall_fight"
+      }
+    ]
+  },
+  "3005_wall_fight": {
+    "id": "3005_wall_fight",
+    "description": "The auxiliary arrived with a lantern's worth of oil and the brisk, unbothered efficiency of a man who considered this errand beneath him but intended to finish it quickly regardless. He did not seem inclined to discuss the matter further.",
+    "description_fr": "L'auxiliaire arriva avec de quoi remplir une lanterne d'huile et l'efficacité vive et indifférente d'un homme qui jugeait cette corvée en dessous de lui mais comptait bien l'expédier rapidement malgré tout. Il ne semblait guère disposé à discuter davantage de la question.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight!",
+        "text_fr": "Combattre !",
+        "next_id": "3020",
+        "triggerEnemyId": "inquisition_auxiliary",
+        "unlockQuestId": "q_ch3_reckoning_wall"
+      }
+    ]
+  },
+  "3005_wall_argued": {
+    "id": "3005_wall_argued",
+    "description": "He'd come prepared to argue with grieving squatters, not with someone who could quote the Inquisition's own procedural code back at him more accurately than he could — a wall, I pointed out, was not evidence of anything a competent tribunal couldn't already establish from the Warden's own service record, and burning it would only make the timing considerably harder to explain away. He left less certain of his errand than he'd arrived, muttering about escalating the matter to someone who could actually authorize the oil. Reya watched him go with the particular flatness of someone recalculating exactly how much credit I'd just earned.",
+    "description_fr": "Il était venu préparé à discuter avec des squatters endeuillés, pas avec quelqu'un capable de lui citer le code de procédure de l'Inquisition avec plus de précision que lui — un mur, fis-je remarquer, n'était la preuve de rien qu'un tribunal compétent ne pût déjà établir à partir du dossier de service du Gardien lui-même, et le brûler ne ferait que rendre la coïncidence des dates considérablement plus difficile à expliquer. Il repartit moins assuré de sa mission qu'il n'était arrivé, marmonnant qu'il faudrait en référer à quelqu'un habilité à réellement autoriser l'huile. Reya le regarda s'éloigner avec l'impassibilité particulière de quelqu'un recalculant exactement combien de crédit je venais de gagner.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "3020",
+        "goldMod": 25,
+        "alignmentMod": 5,
+        "flagsToAdd": [
+          "reckoning_wall_saved"
+        ]
       }
     ]
   }

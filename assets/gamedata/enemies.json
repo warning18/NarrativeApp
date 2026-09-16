@@ -461,5 +461,24 @@
     ],
     "skillMoves": [],
     "minChapter": 2
+  },
+  "inquisition_auxiliary": {
+    "enemyName": "Inquisition Auxiliary",
+    "maxHealth": 95,
+    "damage": 12,
+    "xpReward": 46,
+    "goldReward": 34,
+    "lootTable": [
+      {
+        "itemID": "sword_t2",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [],
+    "minChapter": 3
   }
 }

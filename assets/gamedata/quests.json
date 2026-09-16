@@ -803,5 +803,45 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "grosh"
+  },
+  "q_ch3_reckoning_wall": {
+    "questID": "q_ch3_reckoning_wall",
+    "questName": "The Reckoning Wall",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Stop the Inquisition auxiliary sent to destroy the survivors' wall",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_auxiliary",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 50,
+    "rewardXP": 60,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"They call it relocation in the reports,\" Reya says, not looking up from the wall. \"I call it a list. He wants the list gone before anyone official has to explain the difference.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_reckoning_wall_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }
