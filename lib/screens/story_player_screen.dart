@@ -9,6 +9,7 @@ import '../data/chapter_spine.dart';
 import '../data/map_themes.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
+import '../data/ui_theme_palettes.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -377,10 +378,16 @@ class _StoryView extends ConsumerWidget {
                                   // constraint so Center actually centers.
                                   height: viewportConstraints.maxHeight,
                                   child: Center(
-                                    child: _StoryText(text: displayDescription),
+                                    child: _StoryText(
+                                      text: displayDescription,
+                                      uiTheme: node.uiTheme,
+                                    ),
                                   ),
                                 )
-                              : _StoryText(text: displayDescription),
+                              : _StoryText(
+                                  text: displayDescription,
+                                  uiTheme: node.uiTheme,
+                                ),
                         ),
                       ),
                     ),
@@ -915,19 +922,28 @@ List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
 /// and styled as a centered heading with a divider, and the body gets
 /// generous spacing, justified alignment, and a soft parchment-like card.
 class _StoryText extends StatelessWidget {
-  const _StoryText({required this.text});
+  const _StoryText({required this.text, this.uiTheme});
 
   final String text;
+
+  /// The current node's `context_taxonomy.ui_theme` (docks, cathedral,
+  /// slums, ...) — looked up against [uiThemePalettes] to give a few
+  /// locations their own subtle color/type accent. Null, or a value with no
+  /// entry, leaves this card looking exactly as it always has.
+  final String? uiTheme;
 
   @override
   Widget build(BuildContext context) {
     final header = storyHeaderFor(text);
     final body = storyBodyFor(text);
     final colorScheme = Theme.of(context).colorScheme;
+    final palette = uiThemePaletteFor(uiTheme);
+    final accent = resolveUiAccent(colorScheme, palette);
+
     final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontFamily: 'serif',
-              height: 1.55,
-              letterSpacing: 0.2,
+              height: palette?.lineHeight ?? 1.55,
+              letterSpacing: palette?.letterSpacing ?? 0.2,
             ) ??
         const TextStyle();
 
@@ -935,9 +951,9 @@ class _StoryText extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+        color: accent.cardTint.withValues(alpha: 0.35),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.outlineVariant),
+        border: Border.all(color: accent.border),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -948,9 +964,9 @@ class _StoryText extends StatelessWidget {
               header.toUpperCase(),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: palette?.headerWeight ?? FontWeight.bold,
                     letterSpacing: 1.5,
-                    color: colorScheme.primary,
+                    color: accent.text,
                   ),
             ),
             const SizedBox(height: 10),
@@ -958,7 +974,7 @@ class _StoryText extends StatelessWidget {
               child: Container(
                 width: 56,
                 height: 2,
-                color: colorScheme.primary.withValues(alpha: 0.5),
+                color: accent.text.withValues(alpha: 0.5),
               ),
             ),
             const SizedBox(height: 16),

@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.88.0+116]
+
+Interface diversity, this time: the story graph has tagged every node with
+its setting (`context_taxonomy.ui_theme` — docks, cathedral, slums,
+catacombs, sewers, torture chamber...) since the very first version of this
+app, but that field only ever picked which flavor pool random excursions
+drew from. The reading screen itself always looked identical no matter
+where the player was.
+
+### Added
+- **Location-based accent theming on the story reading screen.** Eight
+  settings with real narrative weight — docks, cathedral, torture chamber,
+  slums, catacombs, sewers, and the two ending flavors (origin_ending,
+  epilogue) — now shift the prose card's border, header color, and a faint
+  background tint to match, plus a light typographic nudge (letter-spacing,
+  line height) for a few of them: tighter and quicker through interrogation
+  scenes, slower and heavier through the catacombs and sewers. The
+  remaining, rarer settings (bridge, market, hovel, gate, prologue,
+  battlements — each under 5 nodes) are left exactly as they were.
+  Deliberately layered on top of the player's own selectable app palette
+  (Settings → 7 color options) rather than replacing it: only this one
+  card's colors move, never the app's chrome, navigation, or any other
+  screen. New `lib/data/ui_theme_palettes.dart` holds the per-location
+  palette data and a pure `resolveUiAccent` blending function — accent
+  hues are blended into the scheme's own `onSurface`/`outlineVariant`
+  colors (not used raw) so every location stays legible in both light and
+  dark mode and against all 7 base palettes, verified with unit tests
+  checking luminance in both directions.
+
 ## [1.87.0+115]
 
 Gameplay diversity, as opposed to the last two entries' narrative/world
