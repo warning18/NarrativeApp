@@ -442,5 +442,24 @@
       }
     ],
     "minChapter": 5
+  },
+  "dock_overseer": {
+    "enemyName": "Overseer Renn",
+    "maxHealth": 85,
+    "damage": 10,
+    "xpReward": 40,
+    "goldReward": 28,
+    "lootTable": [
+      {
+        "itemID": "sword_t2",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [],
+    "minChapter": 2
   }
 }

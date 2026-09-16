@@ -642,6 +642,46 @@
     "rewardDiceID": "",
     "rewardAllyId": ""
   },
+  "q_ch2_terns_toll": {
+    "questID": "q_ch2_terns_toll",
+    "questName": "Tern's Toll",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Deal with the overseer extorting Tern Row",
+        "type": "Kill",
+        "targetEnemyID": "dock_overseer",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 45,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"He calls it a landing toll,\" Nadira says, each word weighed before she spends it. \"There is no such toll. There is only how much he thinks we are worth threatening. Make him reconsider the arithmetic, and Tern Row will remember it.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_terns_toll_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
   "q_ch2_lioras_watch": {
     "questID": "q_ch2_lioras_watch",
     "questName": "Liora's Watch",

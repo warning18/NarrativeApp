@@ -1256,6 +1256,11 @@
         "checkAbility": "wisdom",
         "checkDC": 13,
         "failNextId": "2015_hound"
+      },
+      {
+        "text": "Follow a trail of paper lanterns down a side alley",
+        "text_fr": "Suivre une traînée de lanternes de papier dans une ruelle",
+        "next_id": "2015_ternrow"
       }
     ]
   },
@@ -2477,6 +2482,72 @@
         "next_id": "2030",
         "goldMod": 15,
         "unlockQuestId": "q_ch2_informants_tip"
+      }
+    ]
+  },
+  "2015_ternrow": {
+    "id": "2015_ternrow",
+    "description": "The lanterns led to a footbridge, and the footbridge led to a quarter the map I'd been given hadn't bothered to name — narrow, salt-scoured, hung with more paper boats than living people, each one lit and set adrift at dusk for someone the sea hadn't given back. Tern Row, the woman who caught me staring called it, in the layered, call-and-response cadence of the Tide-Kin, a people who'd come up the coast one drowned island at a time and never quite been asked to stay. Her name was Nadira, and she had the particular tiredness of someone explaining, again, to someone who might finally listen: an Inquisition customs officer named Renn had taken to charging Tern Row a 'landing toll' that existed nowhere in the city's actual ledgers, and had lately taken to using the word 'deportation' the way other men use a fist.",
+    "description_fr": "Les lanternes menaient à une passerelle, et la passerelle menait à un quartier que la carte qu'on m'avait donnée n'avait pas jugé bon de nommer — étroit, rongé par le sel, hérissé de plus de bateaux de papier que d'habitants vivants, chacun allumé et lâché à la dérive chaque soir pour quelqu'un que la mer n'avait pas rendu. Tern Row, m'apprit la femme qui me surprit à la fixer, dans la cadence en écho des Gens de la Marée, un peuple remonté la côte une île engloutie après l'autre, sans qu'on ne lui ait jamais vraiment demandé de rester. Elle s'appelait Nadira, et elle avait la lassitude particulière de quelqu'un qui explique, encore, à quelqu'un qui pourrait enfin écouter : un douanier de l'Inquisition nommé Renn avait pris l'habitude de faire payer à Tern Row un « péage de débarquement » qui n'existait dans aucun registre réel de la ville, et employait depuis peu le mot « expulsion » comme d'autres emploient un poing.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Offer to reason with the overseer first",
+        "text_fr": "Proposer de raisonner d'abord l'inspecteur",
+        "next_id": "2015_ternrow_talked",
+        "checkAbility": "charisma",
+        "checkDC": 13,
+        "failNextId": "2015_ternrow_fight"
+      },
+      {
+        "text": "His enforcers won't listen to reason — end this now",
+        "text_fr": "Ses hommes n'écouteront pas la raison — en finir maintenant",
+        "next_id": "2015_ternrow_fight"
+      }
+    ]
+  },
+  "2015_ternrow_fight": {
+    "id": "2015_ternrow_fight",
+    "description": "Renn, it turned out, had budgeted for reasonable people and not at all for the other kind. He called for his man before I'd finished my sentence, which struck me as a poor advertisement for his own negotiating skills, and left me very little choice about how the rest of this conversation was going to go.",
+    "description_fr": "Renn, s'avéra-t-il, avait prévu le cas des gens raisonnables, mais pas du tout celui des autres. Il appela son homme avant même que j'aie fini ma phrase, ce qui me parut une piètre publicité pour ses talents de négociateur, et ne me laissa guère le choix quant à la suite de cette conversation.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight!",
+        "text_fr": "Combattre !",
+        "next_id": "2030",
+        "triggerEnemyId": "dock_overseer",
+        "unlockQuestId": "q_ch2_terns_toll"
+      }
+    ]
+  },
+  "2015_ternrow_talked": {
+    "id": "2015_ternrow_talked",
+    "description": "It took less persuading than I'd braced for — Renn was the kind of petty tyrant who mostly wanted to be seen backing down gracefully rather than actually caught doing anything, and I was happy to let him keep the graceful part. He left Tern Row without another word about tolls. Nadira didn't thank me exactly, in the way people who've learned not to trust rescues don't thank anyone exactly, but she pressed something into my hand on the way out anyway, and didn't wait to see if I'd try to give it back.",
+    "description_fr": "Il fallut moins d'efforts que je ne l'avais craint — Renn était de ces petits tyrans qui souhaitent surtout qu'on les voie reculer avec grâce plutôt que d'être réellement pris en faute, et je fus ravi de le laisser garder la grâce. Il quitta Tern Row sans un mot de plus sur les péages. Nadira ne me remercia pas vraiment, à la manière de ceux qui ont appris à ne faire confiance à aucun sauvetage, mais elle me glissa quelque chose dans la main en partant, sans attendre de voir si j'allais tenter de le lui rendre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "2030",
+        "goldMod": 20,
+        "alignmentMod": 5,
+        "flagsToAdd": [
+          "tern_row_spared"
+        ]
       }
     ]
   },

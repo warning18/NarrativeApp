@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.84.0+112]
+
+Added narrative/world content: a new dockside location and side quest
+giving real presence to a population the story had only ever mentioned in
+passing.
+
+### Added
+- **Tern Row, a new Chapter 2 location, and its side quest "Tern's
+  Toll."** `Liora's Watch` has always referenced smuggler-run "refugee
+  boats," but the refugees themselves never appeared as people — Tern Row
+  fixes that: a quarter of the Tide-Kin, seafaring refugees from the
+  Drowned Isles, with their own funerary custom of setting lit paper boats
+  adrift at dusk. Reached via a new choice on the harbor hub (node
+  `2015`), the quarter's organizer, Nadira, explains that an Inquisition
+  customs officer (Overseer Renn, a new `dock_overseer` enemy) is
+  extorting the quarter with an invented "landing toll" and threats of
+  deportation. Players can talk him down with a DC 13 Charisma check for a
+  no-combat resolution (20 gold, +5 alignment, its own flag), or refuse
+  and fight him directly, which registers the formal quest
+  (`q_ch2_terns_toll`, 40 gold/45 XP/+5 alignment on completion). Either
+  way, failing the talk-down still leads to the fight rather than a dead
+  end.
+
 ## [1.83.0+111]
 
 Follow-up to a question about whether an NPC could actually mislead or trap
