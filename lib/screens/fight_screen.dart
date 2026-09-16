@@ -632,6 +632,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _rollCount = 0;
       _currentFaces.clear();
       _awaitingDecision = false;
+      // A fresh round with nothing hit yet — otherwise a round skipped
+      // outright below (nobody able to act) would hand _takeEnemyTurn last
+      // round's stale hits, letting an OnHitByElement reaction fire again
+      // for an element nobody actually struck with this round.
+      _elementsHitThisRound = {};
     });
 
     if (playerDied) {
