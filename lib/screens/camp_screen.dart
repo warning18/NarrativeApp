@@ -13,10 +13,14 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../widgets/immersive_notice.dart';
 import 'dice_loadout_screen.dart';
+import 'expedition_screen.dart';
 import 'inventory_screen.dart';
 import 'skills_screen.dart';
 
-const int _basePartyCapacity = 2;
+/// Camp's own expedition pool picks up where Town Hub's leaves off — every
+/// zone from this chapter onward, not just one exact chapter, so later
+/// chapters' zones show up here automatically without further wiring.
+const int _campZonesFromChapter = 3;
 
 class CampScreen extends ConsumerWidget {
   const CampScreen({super.key});
@@ -30,6 +34,7 @@ class CampScreen extends ConsumerWidget {
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
     final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
+    final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;
@@ -37,27 +42,31 @@ class CampScreen extends ConsumerWidget {
     final professions = professionsAsync.value;
     final gameConfig = gameConfigAsync.value;
     final achievements = achievementsAsync.value ?? const {};
+    final zones = zonesAsync.value;
 
     if (companions == null ||
         houses == null ||
         races == null ||
         professions == null ||
-        gameConfig == null) {
+        gameConfig == null ||
+        zones == null) {
       return Scaffold(
         appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    final partyCapacity = _basePartyCapacity +
-        houses.values
-            .whereType<Map<String, dynamic>>()
-            .where((h) =>
-                session.builtHouseIds.contains(h['houseID']?.toString() ?? ''))
-            .fold<int>(
-                0,
-                (sum, h) =>
-                    sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
+    final partyCapacity = partyCapacityFor(session.builtHouseIds, houses);
+
+    final campZoneIds = zones.entries
+        .where((e) => e.value is Map<String, dynamic>)
+        .where((e) =>
+            (((e.value as Map<String, dynamic>)['chapter'] as num?)?.toInt() ??
+                1) >=
+            _campZonesFromChapter)
+        .map((e) => e.key)
+        .toList()
+      ..sort();
 
     final recruitedIds =
         session.recruitedAllies.map((a) => a.companionId).toList()..sort();
@@ -320,6 +329,52 @@ class CampScreen extends ConsumerWidget {
               ),
             );
           }),
+          const Divider(height: 32),
+          Text(tr(ref, 'zones_section'),
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          if (campZoneIds.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(tr(ref, 'no_zones_available')),
+            )
+          else
+            ...campZoneIds.map((zoneId) {
+              final zone = zones[zoneId] as Map<String, dynamic>;
+              final completed = session.completedZoneIds.contains(zoneId);
+              return Card(
+                child: ListTile(
+                  leading: Icon(
+                    completed ? Icons.check_circle : Icons.explore_outlined,
+                    color: completed ? Colors.green : null,
+                  ),
+                  title: Text(zone['zoneName']?.toString() ?? zoneId),
+                  subtitle: Text(zone['flavorText']?.toString() ?? ''),
+                  isThreeLine: true,
+                  trailing: completed
+                      ? Text(tr(ref, 'zone_cleared_label'))
+                      : ElevatedButton(
+                          onPressed: restBlocked
+                              ? null
+                              : () async {
+                                  ref
+                                      .read(expeditionActiveProvider.notifier)
+                                      .state = true;
+                                  await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (_) => ExpeditionScreen(
+                                          zoneId: zoneId, zone: zone),
+                                    ),
+                                  );
+                                  ref
+                                      .read(expeditionActiveProvider.notifier)
+                                      .state = false;
+                                },
+                          child: Text(tr(ref, 'begin_expedition_button')),
+                        ),
+                ),
+              );
+            }),
         ],
       ),
     );

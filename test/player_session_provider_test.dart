@@ -272,6 +272,36 @@ void main() {
       await notifier.recruitAlly('kelda', race: race, profession: profession);
       expect(notifier.state.recruitedAllies, hasLength(1));
     });
+
+    test(
+        'auto-activates the new ally when the party has room -- Camp is '
+        'where the roster is managed, not a precondition for a fresh '
+        'recruit actually fighting', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.recruitAlly('kelda', race: race, profession: profession);
+      expect(notifier.state.activeAllyIds, ['kelda']);
+    });
+
+    test('does not auto-activate once the party is already at capacity',
+        () async {
+      final notifier =
+          await notifierWith(baseSession(activeAllyIds: ['sable', 'liora']));
+      await notifier.recruitAlly('kelda', race: race, profession: profession);
+      expect(notifier.state.activeAllyIds, ['sable', 'liora']);
+    });
+
+    test(
+        'does not auto-activate a companion whose required house is not '
+        'yet built', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.recruitAlly(
+        'kelda',
+        race: race,
+        profession: profession,
+        requiredHouseId: 'keldas_hall',
+      );
+      expect(notifier.state.activeAllyIds, isEmpty);
+    });
   });
 
   group('talkToNpc', () {
@@ -566,6 +596,36 @@ void main() {
           await notifierWith(baseSession().copyWith(antidoteCount: 0));
       await notifier.consumeAntidote();
       expect(notifier.state.antidoteCount, 0);
+    });
+  });
+
+  group('partyCapacityFor', () {
+    test('is the base capacity with no houses built', () {
+      expect(partyCapacityFor(const [], const {}), basePartyCapacity);
+    });
+
+    test('adds every built house\'s own partyCapacityBonus', () {
+      const houses = {
+        'keldas_hall': {'houseID': 'keldas_hall', 'partyCapacityBonus': 0},
+        'barracks_annex': {
+          'houseID': 'barracks_annex',
+          'partyCapacityBonus': 1
+        },
+      };
+      expect(
+        partyCapacityFor(['keldas_hall', 'barracks_annex'], houses),
+        basePartyCapacity + 1,
+      );
+    });
+
+    test('ignores a house\'s bonus if it hasn\'t been built', () {
+      const houses = {
+        'barracks_annex': {
+          'houseID': 'barracks_annex',
+          'partyCapacityBonus': 1
+        },
+      };
+      expect(partyCapacityFor(const [], houses), basePartyCapacity);
     });
   });
 }

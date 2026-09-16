@@ -1554,6 +1554,48 @@
     },
     "choices": [
       {
+        "text": "Check on the Rusty Eel one last time",
+        "text_fr": "Vérifier une dernière fois l'état du Rusty Eel",
+        "next_id": "2900_boat_fixed",
+        "lockedText": "The Rusty Eel was still listing at her berth, hull unpatched and sail torn in the same place it had been torn since the docks -- whatever debt I owed that ship, I hadn't found the time to pay it, and time, in the Lower City, was not a currency anyone extended twice.",
+        "lockedText_fr": "Le Rusty Eel gîtait encore à son mouillage, coque non colmatée et voile déchirée au même endroit qu'aux docks -- quelle que fût la dette que je devais à ce navire, je n'avais pas trouvé le temps de m'en acquitter, et le temps, dans la Ville Basse, n'était une monnaie que personne n'accordait deux fois."
+      },
+      {
+        "text": "Approach the Upper Gate",
+        "text_fr": "S'approcher de la Porte Supérieure",
+        "next_id": "2900_boat_unfixed"
+      }
+    ]
+  },
+  "2900_boat_fixed": {
+    "id": "2900_boat_fixed",
+    "description": "The Rusty Eel sat lower in the water than I remembered, but evenly now, her hull sound and her sail patched in a shade of canvas that didn't quite match the rest -- honest work, done by hands that hadn't asked for thanks and hadn't gotten any from me either, until now. It wasn't much of a debt, as debts went. It was, at least, one I'd actually paid.",
+    "description_fr": "Le Rusty Eel était plus bas sur l'eau que dans mon souvenir, mais à plat désormais, sa coque saine et sa voile rapiécée d'une toile qui ne s'accordait pas tout à fait au reste -- un travail honnête, accompli par des mains qui n'avaient rien demandé et n'avaient, jusqu'ici, rien reçu de moi non plus. Ce n'était pas grand-chose, comme dettes. C'en était, au moins, une que j'avais réellement payée.",
+    "context_taxonomy": {
+      "ui_theme": "gate",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Approach the Upper Gate",
+        "text_fr": "S'approcher de la Porte Supérieure",
+        "next_id": "2999"
+      }
+    ],
+    "reqFlags": ["hull_patched", "sail_mended"]
+  },
+  "2900_boat_unfixed": {
+    "id": "2900_boat_unfixed",
+    "description": "The Rusty Eel was still listing where I'd left her, hull unpatched, sail torn in the same place it had been torn since the docks. I told myself there hadn't been time. It was even mostly true. Some debts, in the Lower City, simply went unpaid, and the city had long since stopped keeping count of which ones were mine.",
+    "description_fr": "Le Rusty Eel gîtait encore là où je l'avais laissé, coque non colmatée, voile déchirée au même endroit qu'aux docks. Je me dis qu'il n'y avait pas eu le temps. C'était même, en grande partie, vrai. Certaines dettes, dans la Ville Basse, restaient tout simplement impayées, et la ville avait depuis longtemps cessé de compter lesquelles étaient les miennes.",
+    "context_taxonomy": {
+      "ui_theme": "gate",
+      "mood": "wistful",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
         "text": "Approach the Upper Gate",
         "text_fr": "S'approcher de la Porte Supérieure",
         "next_id": "2999"

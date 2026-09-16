@@ -5,12 +5,12 @@
     "chapter": 2,
     "expeditionCount": 3,
     "mapTheme": "saltRoads",
-    "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbor wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they've learned not to ask why.",
+    "flavorText": "A crooked stretch of net-sheds and gutting tables between the harbor wall and the tide line. Nobody who works it looks twice at a stranger asking questions -- not because they trust you, but because they've learned not to ask why, which suited someone quietly scavenging pitch and spare timber for a leaking hull just fine.",
     "rewardGold": 60,
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": ""
+    "rewardFlag": "hull_patched"
   },
   "z_tanners_court": {
     "zoneID": "z_tanners_court",
@@ -18,12 +18,12 @@
     "chapter": 2,
     "expeditionCount": 3,
     "mapTheme": "saltRoads",
-    "flavorText": "The smell reaches you before the court does -- lime, salt, and something under it best not examined too closely. Whatever's worth finding here, someone tanned a hide over it first.",
+    "flavorText": "The smell reaches you before the court does -- lime, salt, and something under it best not examined too closely. Whatever's worth finding here, someone tanned a hide over it first -- including, if you asked the right tanner, hide tough enough to patch a torn sail.",
     "rewardGold": 0,
     "rewardItemId": "armor_leather",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": ""
+    "rewardFlag": "sail_mended"
   },
   "z_lantern_docks": {
     "zoneID": "z_lantern_docks",
@@ -37,5 +37,31 @@
     "rewardDiceId": "",
     "rewardAllyId": "",
     "rewardFlag": "banner_second_piece_lead"
+  },
+  "z_cinder_row": {
+    "zoneID": "z_cinder_row",
+    "zoneName": "Cinder Row",
+    "chapter": 3,
+    "expeditionCount": 3,
+    "mapTheme": "ashenStreets",
+    "flavorText": "What the purge left of the Ashen Quarter's market stalls, picked over by the same crowds twice: once for anything still worth selling, once for anything still worth burning. There's a particular kind of person who comes back a third time.",
+    "rewardGold": 90,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": ""
+  },
+  "z_scaffold_yards": {
+    "zoneID": "z_scaffold_yards",
+    "zoneName": "The Scaffold Yards",
+    "chapter": 3,
+    "expeditionCount": 3,
+    "mapTheme": "ashenStreets",
+    "flavorText": "The ironworkers who forged the Inquisition's plate abandoned their yard once the golems started outlasting their masters. The forges have gone cold, but cold iron still holds its shape better than most promises made in this district.",
+    "rewardGold": 0,
+    "rewardItemId": "plate_emberproof",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": ""
   }
 }

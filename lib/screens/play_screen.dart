@@ -44,6 +44,7 @@ class PlayScreen extends ConsumerWidget {
         ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
 
     final townHubUnlocked = chapterOfNode(playState.currentNodeId) >= 2;
+    final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
 
     final unseenQuests = session.unlockedQuestIds
         .where((id) => !session.seenQuestIds.contains(id))
@@ -235,18 +236,24 @@ class PlayScreen extends ConsumerWidget {
         ),
         Card(
           child: ListTile(
-            leading: const Icon(Icons.local_fire_department_outlined),
+            leading: Icon(campUnlocked
+                ? Icons.local_fire_department_outlined
+                : Icons.lock_outline),
             title: Text(tr(ref, 'camp_title')),
             subtitle: Text(
-              '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
-              '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}',
+              campUnlocked
+                  ? '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
+                      '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}'
+                  : tr(ref, 'camp_locked_subtitle'),
             ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CampScreen()),
-              );
-            },
+            trailing: campUnlocked ? const Icon(Icons.chevron_right) : null,
+            onTap: !campUnlocked
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const CampScreen()),
+                    );
+                  },
           ),
         ),
         Card(
@@ -512,6 +519,11 @@ class _QuestList extends ConsumerWidget {
                             rewardAllyId,
                             race: race,
                             profession: profession,
+                            houses:
+                                ref.read(gameDbProvider(housesSchema)).value ??
+                                    const {},
+                            requiredHouseId:
+                                companion?['requiredHouseId']?.toString(),
                           );
                       recruitedName = companion?['companionName']?.toString() ??
                           rewardAllyId;

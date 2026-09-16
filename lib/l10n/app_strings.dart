@@ -1414,6 +1414,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Reach Chapter 2 to unlock',
     AppLanguage.fr: 'Atteignez le chapitre 2 pour débloquer',
   },
+  'camp_locked_subtitle': {
+    AppLanguage.en: 'Reach Chapter 3 to unlock',
+    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+  },
   'zones_cleared_label': {
     AppLanguage.en: 'Zones Cleared',
     AppLanguage.fr: 'Zones nettoyées'
@@ -1463,6 +1467,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zone_flag_banner_second_piece_lead': {
     AppLanguage.en: "A lead on the Shroud's second piece",
     AppLanguage.fr: "Une piste vers le deuxième fragment du Linceul",
+  },
+  'zone_flag_hull_patched': {
+    AppLanguage.en: "The Rusty Eel's hull, patched",
+    AppLanguage.fr: "La coque du Rusty Eel, colmatée",
+  },
+  'zone_flag_sail_mended': {
+    AppLanguage.en: "The Rusty Eel's sail, mended",
+    AppLanguage.fr: "La voile du Rusty Eel, rapiécée",
   },
   'banner_piece_found_prefix': {
     AppLanguage.en: 'A piece of the Shroud, recovered',

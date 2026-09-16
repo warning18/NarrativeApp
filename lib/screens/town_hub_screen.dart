@@ -24,7 +24,8 @@ class TownHubScreen extends ConsumerWidget {
 
   static const List<String> _starterShopIds = [
     'blind_beggar_stall',
-    'weaponsmith_forge'
+    'weaponsmith_forge',
+    'apothecary_row',
   ];
 
   @override

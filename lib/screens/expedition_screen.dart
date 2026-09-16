@@ -202,8 +202,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       final profession =
           professions[companion?['professionId']?.toString() ?? '']
               as Map<String, dynamic>?;
-      await notifier.recruitAlly(rewardAllyId,
-          race: race, profession: profession);
+      final houses = ref.read(gameDbProvider(housesSchema)).value ?? const {};
+      await notifier.recruitAlly(
+        rewardAllyId,
+        race: race,
+        profession: profession,
+        houses: houses,
+        requiredHouseId: companion?['requiredHouseId']?.toString(),
+      );
       lines.add(companion?['companionName']?.toString() ?? rewardAllyId);
     }
     if (rewardFlag.isNotEmpty) {

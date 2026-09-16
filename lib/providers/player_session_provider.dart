@@ -17,6 +17,23 @@ const String _starterDiceId = 'starter_die';
 const int _starterDieProfessionFaceIndex = 4;
 const int _starterDieRaceFaceIndex = 5;
 
+/// The active party's size before any house bonus -- the player plus one
+/// ally fits by default. Each built house's own `partyCapacityBonus`
+/// (houses.json) adds to this.
+const int basePartyCapacity = 2;
+
+/// The player's current active-party capacity: [basePartyCapacity] plus
+/// every built house's own bonus. Shared by [PlayerSessionNotifier
+/// .recruitAlly] (auto-activating a fresh recruit up to capacity) and
+/// CampScreen's own roster display, so the two never drift apart.
+int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
+  return basePartyCapacity +
+      houses.values.whereType<Map<String, dynamic>>().where((h) {
+        return builtHouseIds.contains(h['houseID']?.toString() ?? '');
+      }).fold<int>(0,
+          (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
+}
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -1007,6 +1024,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String companionId, {
     Map<String, dynamic>? race,
     Map<String, dynamic>? profession,
+    Map<String, dynamic> houses = const {},
+    String? requiredHouseId,
   }) async {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
@@ -1015,14 +1034,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       if (professionSkillId.isNotEmpty) professionSkillId,
       if (raceSkillId.isNotEmpty) raceSkillId,
     ];
-    state = state.copyWith(recruitedAllies: [
-      ...state.recruitedAllies,
-      AllyState(
-        companionId: companionId,
-        currentHealth: AllyState.fullHealthSentinel,
-        unlockedSkillIds: starterUnlocked,
-      ),
-    ]);
+    // A freshly recruited companion joins the fight immediately, up to
+    // capacity -- Camp is where the roster is *managed*, not a
+    // precondition for a new ally actually helping in combat (and Camp
+    // itself may not even be unlocked yet when an early companion is
+    // recruited).
+    final houseBuilt = requiredHouseId == null ||
+        requiredHouseId.isEmpty ||
+        state.builtHouseIds.contains(requiredHouseId);
+    final autoActivate = houseBuilt &&
+        state.activeAllyIds.length <
+            partyCapacityFor(state.builtHouseIds, houses);
+    state = state.copyWith(
+      recruitedAllies: [
+        ...state.recruitedAllies,
+        AllyState(
+          companionId: companionId,
+          currentHealth: AllyState.fullHealthSentinel,
+          unlockedSkillIds: starterUnlocked,
+        ),
+      ],
+      activeAllyIds: autoActivate
+          ? [...state.activeAllyIds, companionId]
+          : state.activeAllyIds,
+    );
     await _persist();
   }
 

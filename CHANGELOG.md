@@ -8,6 +8,49 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.91.0+119]
+
+Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
+distinct, sequential stops rather than one thing available from the start
+and another available from the very first chapter.
+
+### Changed
+- **Town Hub is genuinely "the first stop between Chapter 1 and 2"** now
+  that it has more than two shops: added Apothecary Row to its permanent
+  boutique list (alongside the Blind Beggar Stall and the Weaponsmith's
+  Forge). Its unlock point was already exactly this seam
+  (`chapterOfNode >= 2`, flipping the moment Chapter 2's opening node
+  fires) — this was a content gap, not a gating one.
+- **Camp is now discovered at the start of Chapter 3**, not available from
+  the very first minute of a new game. `PlayScreen`'s Camp entry mirrors
+  Town Hub's own lock/subtitle treatment, unlocking once
+  `chapterOfNode >= 3`.
+- **A freshly recruited companion now joins the active party immediately**
+  (up to capacity, respecting their own house gate if they have one) —
+  `recruitAlly` no longer requires a trip to Camp to actually help in a
+  fight. Needed once Camp stopped being available from turn one: Kelda,
+  Sable, and Liora all recruit in Chapter 2, before Camp exists.
+- **Camp becomes the second expedition hub, picking up where Town Hub
+  leaves off.** Camp's Roster/Houses now sit above a new Zones section
+  showing every zone from Chapter 3 onward (two new ones: Cinder Row and
+  the Scaffold Yards, `ashenStreets`-themed, dropping gold and the new
+  `plate_emberproof` armor respectively) — forward-compatible with future
+  chapters' zones without further wiring.
+
+### Added
+- **A quiet payoff for actually doing Town Hub's expeditions**: completing
+  Fisherman's Row and Tanner's Court (2 of Town Hub's 3 zones) now marks
+  the Rusty Eel's hull patched and sail mended. At Chapter 2's close (node
+  `2900`, the approach to the Upper Gate), a new choice lets the player
+  check on the ship one last time and see it seaworthy again — locked with
+  in-character flavor text if they never got around to it. Deliberately a
+  narrative acknowledgment, not a hard requirement: skipping every
+  expedition still lets the story continue exactly as before, just without
+  that beat.
+- `partyCapacityFor` (`player_session_provider.dart`), extracted out of
+  `CampScreen` so its own roster capacity math and `recruitAlly`'s new
+  auto-activate logic can never drift apart.
+
 ## [1.90.0+118]
 
 Elements go from flavor text to a real combat layer, and last patch's
