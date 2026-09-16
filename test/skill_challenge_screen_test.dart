@@ -15,8 +15,7 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets(
-      'Begin reveals every round, then Continue pops a bool result',
+  testWidgets('Begin reveals every round, then Continue pops a bool result',
       (WidgetTester tester) async {
     bool? popped;
     await tester.pumpWidget(
