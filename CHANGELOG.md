@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.89.0+117]
+
+Combat gets a status-effect system: Poison, Stun, and Weaken now exist as
+real, persistent afflictions rather than one-off numbers, on both sides of a
+fight.
+
+### Added
+- **Poison/Stun/Weaken status effects.** New `lib/combat/status_effect.dart`
+  holds the pure model (`StatusEffect`, `applyStatusEffect`,
+  `poisonDamageFor`, `isStunned`, `applyWeaken`, `tickStatusEffects`) and
+  `FightScreen` wires it into the party's simultaneous-round turn loop:
+  Poison ticks flat damage at the start of the afflicted side's round,
+  Stun excludes a combatant from acting that round (with the whole party
+  round auto-skipped straight to the enemy's turn if everyone able to act
+  is stunned, rather than stalling on a roll nobody can make), and Weaken
+  cuts the afflicted combatant's own outgoing damage for its duration.
+  A new row of small chips under each health bar (party and enemy) shows
+  every active effect with its remaining rounds.
+- **Skills and enemy moves can inflict them.** `skills.json` records gained
+  optional `inflictsStatus`/`statusDuration`/`statusMagnitude` fields, read
+  by both `resolvePlayerFace` (Skill faces) and `resolveEnemyMove` (enemy
+  `skillMoves`, via the same referenced skill record) in
+  `combat_engine.dart`. Wired into real content: the player's existing
+  `venomous_ambush` merge-skill now actually poisons on hit (matching its
+  "the wound that doesn't stop" flavor text), a new `plague_bite` gives
+  Plague Hounds their disease bite, and two new Void-flavored abilities —
+  `void_drain` (Weaken) and `disorienting_pulse` (Stun) — round out Void
+  Stalkers and the Void Manifestation boss.
+
+### Changed
+- `resolvePlayerFace`/`resolveEnemyMove` take an optional `activeEffects`
+  parameter so a Weakened attacker's damage is correct in both the
+  resolved number and its preview/log message, not just applied
+  after the fact.
+
 ## [1.88.0+116]
 
 Interface diversity, this time: the story graph has tagged every node with

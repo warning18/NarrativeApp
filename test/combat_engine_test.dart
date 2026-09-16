@@ -12,6 +12,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/combat_engine.dart';
+import 'package:narrative_data_app/combat/status_effect.dart';
 
 void main() {
   group('rollDie', () {
@@ -168,6 +169,99 @@ void main() {
       expect(result.damageDealt, 0);
       expect(result.healingDone, 0);
       expect(result.blockAmount, 0);
+    });
+
+    test(
+        'a Skill face whose skill sets inflictsStatus returns it on the '
+        'result', () {
+      const skillsWithStatus = <String, dynamic>{
+        'venomous_ambush': {
+          'damageMod': 20,
+          'damageMultiplier': 1.8,
+          'healAmount': 0,
+          'inflictsStatus': 'Poison',
+          'statusDuration': 3,
+          'statusMagnitude': 6,
+        },
+      };
+      final result = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'venomous_ambush'),
+        skillsWithStatus,
+        10,
+      );
+      expect(result.inflictedStatus, isNotNull);
+      expect(result.inflictedStatus!.type, StatusEffectType.poison);
+      expect(result.inflictedStatus!.remainingTurns, 3);
+      expect(result.inflictedStatus!.magnitude, 6);
+    });
+
+    test('a Skill face with no inflictsStatus field returns null', () {
+      final result = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'power_strike'),
+        skills,
+        10,
+      );
+      expect(result.inflictedStatus, isNull);
+    });
+
+    test(
+        'a statusDuration of 0 (or missing) never inflicts anything even '
+        'if inflictsStatus is set', () {
+      const skillsWithStatus = <String, dynamic>{
+        'harmless': {
+          'damageMod': 0,
+          'damageMultiplier': 1.0,
+          'healAmount': 0,
+          'inflictsStatus': 'Stun',
+          'statusDuration': 0,
+        },
+      };
+      final result = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'harmless'),
+        skillsWithStatus,
+        10,
+      );
+      expect(result.inflictedStatus, isNull);
+    });
+
+    test('active Weaken reduces Attack/Skill damage and the message matches',
+        () {
+      const effects = [
+        StatusEffect(
+            type: StatusEffectType.weaken, remainingTurns: 2, magnitude: 50),
+      ];
+      final attack = resolvePlayerFace(
+        face(type: 'Attack', value: 10),
+        skills,
+        10,
+        activeEffects: effects,
+      );
+      // (10 base + 10 value) halved by 50% Weaken = 10.
+      expect(attack.damageDealt, 10);
+      expect(attack.message, contains('10 damage'));
+
+      final skillHit = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'power_strike'),
+        skills,
+        10,
+        activeEffects: effects,
+      );
+      // Unweakened this is (10 + 5) * 2.0 = 30; halved = 15.
+      expect(skillHit.damageDealt, 15);
+    });
+
+    test('Weaken never applies to Heal/Defend faces', () {
+      const effects = [
+        StatusEffect(
+            type: StatusEffectType.weaken, remainingTurns: 2, magnitude: 100),
+      ];
+      final heal = resolvePlayerFace(face(type: 'Heal', value: 20), skills, 10,
+          activeEffects: effects);
+      expect(heal.healingDone, 20);
+      final block = resolvePlayerFace(
+          face(type: 'Defend', value: 12), skills, 10,
+          activeEffects: effects);
+      expect(block.blockAmount, 12);
     });
   });
 
@@ -334,6 +428,70 @@ void main() {
         random: Random(1),
       );
       expect(result.damage, 7);
+    });
+
+    test('a move whose skill sets inflictsStatus returns it on the result', () {
+      final enemy = <String, dynamic>{
+        'enemyName': 'Plague Hound',
+        'damage': 17,
+        'skillMoves': [
+          {'skillID': 'plague_bite', 'condition': 'Always', 'priority': 1},
+        ],
+      };
+      const skills = <String, dynamic>{
+        'plague_bite': {
+          'damageMod': 4,
+          'damageMultiplier': 1.0,
+          'inflictsStatus': 'Poison',
+          'statusDuration': 3,
+          'statusMagnitude': 5,
+        },
+      };
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: skills,
+        enemyCurrentHealth: 100,
+        enemyMaxHealth: 100,
+        random: Random(1),
+      );
+      expect(result.inflictedStatus, isNotNull);
+      expect(result.inflictedStatus!.type, StatusEffectType.poison);
+      expect(result.inflictedStatus!.remainingTurns, 3);
+      expect(result.inflictedStatus!.magnitude, 5);
+    });
+
+    test('a plain base attack (no skillID) never inflicts a status', () {
+      final enemy = <String, dynamic>{'enemyName': 'Plain Foe', 'damage': 10};
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: const {},
+        enemyCurrentHealth: 50,
+        enemyMaxHealth: 50,
+        random: Random(1),
+      );
+      expect(result.inflictedStatus, isNull);
+    });
+
+    test(
+        'the enemy\'s own active Weaken reduces its move damage, including '
+        'the plain-attack fallback', () {
+      const effects = [
+        StatusEffect(
+            type: StatusEffectType.weaken, remainingTurns: 2, magnitude: 50),
+      ];
+      final enemy = <String, dynamic>{
+        'enemyName': 'Weakened Foe',
+        'damage': 20
+      };
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: const {},
+        enemyCurrentHealth: 50,
+        enemyMaxHealth: 50,
+        random: Random(1),
+        activeEffects: effects,
+      );
+      expect(result.damage, 10);
     });
   });
 

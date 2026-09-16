@@ -233,7 +233,19 @@
         "dropRate": 35
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "plague_bite",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 45,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
     "minChapter": 2
   },
   "iron_golem": {
@@ -293,6 +305,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 3
@@ -439,6 +462,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 5

@@ -2,6 +2,25 @@ import 'dart:math';
 
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import 'status_effect.dart';
+
+/// Reads a skill or enemy-move record's `inflictsStatus`/`statusDuration`/
+/// `statusMagnitude` fields into a [StatusEffect], or null if the record
+/// doesn't inflict anything (the common case — most skills are plain
+/// damage/heal). Shared by [resolvePlayerFace]'s Skill case and
+/// [resolveEnemyMove] so both sides read the same three field names the
+/// same way.
+StatusEffect? _inflictedStatusFrom(Map<String, dynamic> record) {
+  final type = statusEffectTypeFromString(record['inflictsStatus']?.toString());
+  if (type == null) return null;
+  final duration = (record['statusDuration'] as num?)?.toInt() ?? 0;
+  if (duration <= 0) return null;
+  return StatusEffect(
+    type: type,
+    remainingTurns: duration,
+    magnitude: (record['statusMagnitude'] as num?)?.toInt() ?? 0,
+  );
+}
 
 class DiceFaceResult {
   const DiceFaceResult({
@@ -62,12 +81,18 @@ class PlayerActionResult {
     required this.healingDone,
     required this.blockAmount,
     required this.message,
+    this.inflictedStatus,
   });
 
   final int damageDealt;
   final int healingDone;
   final int blockAmount;
   final String message;
+
+  /// A status effect this face's skill inflicts on the enemy, if any —
+  /// only Skill faces can carry one (see the skill's own
+  /// `inflictsStatus`/`statusDuration`/`statusMagnitude` fields).
+  final StatusEffect? inflictedStatus;
 }
 
 PlayerActionResult resolvePlayerFace(
@@ -75,11 +100,12 @@ PlayerActionResult resolvePlayerFace(
   Map<String, dynamic> skills,
   int baseDamage, {
   AppLanguage language = AppLanguage.en,
+  List<StatusEffect> activeEffects = const [],
 }) {
   String t(String key) => trFor(language, key);
   switch (face.type) {
     case 'Attack':
-      final damage = baseDamage + face.value;
+      final damage = applyWeaken(baseDamage + face.value, activeEffects);
       return PlayerActionResult(
         damageDealt: damage,
         healingDone: 0,
@@ -110,7 +136,10 @@ PlayerActionResult resolvePlayerFace(
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
       final healAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
-      final damage = ((baseDamage + damageMod) * multiplier).round();
+      final damage = applyWeaken(
+        ((baseDamage + damageMod) * multiplier).round(),
+        activeEffects,
+      );
       final flavor = skill['battleMessage']?.toString() ?? '${face.faceName}!';
       // Standard dice faces (Attack/Defend/Heal) always spell out the exact
       // numbers in their preview message; skill faces should be no
@@ -127,6 +156,7 @@ PlayerActionResult resolvePlayerFace(
         healingDone: healAmount,
         blockAmount: 0,
         message: message,
+        inflictedStatus: _inflictedStatusFrom(skill),
       );
     case 'Heal':
       return PlayerActionResult(
@@ -149,10 +179,19 @@ PlayerActionResult resolvePlayerFace(
 }
 
 class EnemyMoveResult {
-  const EnemyMoveResult({required this.damage, required this.message});
+  const EnemyMoveResult({
+    required this.damage,
+    required this.message,
+    this.inflictedStatus,
+  });
 
   final int damage;
   final String message;
+
+  /// A status effect this move inflicts on its target, if any — read from
+  /// the referenced skill's own `inflictsStatus` fields; a move with no
+  /// `skillID` (a plain attack) never inflicts one.
+  final StatusEffect? inflictedStatus;
 }
 
 EnemyMoveResult resolveEnemyMove({
@@ -162,6 +201,7 @@ EnemyMoveResult resolveEnemyMove({
   required int enemyMaxHealth,
   required Random random,
   AppLanguage language = AppLanguage.en,
+  List<StatusEffect> activeEffects = const [],
 }) {
   String t(String key) => trFor(language, key);
   final moves =
@@ -205,18 +245,23 @@ EnemyMoveResult resolveEnemyMove({
       final skill = skills[skillId] as Map<String, dynamic>;
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
-      final damage = (baseDamage + (damageMod * multiplier)).round();
+      final damage = applyWeaken(
+        (baseDamage + (damageMod * multiplier)).round(),
+        activeEffects,
+      );
       return EnemyMoveResult(
         damage: damage,
         message: skill['battleMessage']?.toString() ??
             '$enemyName ${t('attacks_suffix')}',
+        inflictedStatus: _inflictedStatusFrom(skill),
       );
     }
     break;
   }
 
   return EnemyMoveResult(
-      damage: baseDamage, message: '$enemyName ${t('attacks_suffix')}');
+      damage: applyWeaken(baseDamage, activeEffects),
+      message: '$enemyName ${t('attacks_suffix')}');
 }
 
 /// Skill tiers run 0 (just unlocked, base numbers) through [maxSkillTier]

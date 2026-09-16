@@ -118,6 +118,10 @@ const List<String> skillMoveConditionOptions = [
   'OnPlayerHighBlock',
 ];
 
+// Mirrors StatusEffectType in lib/combat/status_effect.dart, plus 'None'
+// for "this skill doesn't inflict a status" — the common case.
+const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
+
 final DbSchema itemsSchema = DbSchema(
   id: 'items',
   label: 'Items & Equipment',
@@ -301,6 +305,25 @@ final DbSchema skillsSchema = DbSchema(
       label: 'Unlocked Via Merge Only',
       type: FieldType.boolean,
       defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'inflictsStatus',
+      label: 'Inflicts Status Effect (on hit)',
+      type: FieldType.enumeration,
+      enumOptions: statusEffectOptions,
+    ),
+    FieldSchema(
+      key: 'statusDuration',
+      label: 'Status Duration (rounds; ignored if no status)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'statusMagnitude',
+      label:
+          'Status Magnitude (Poison: damage/round, Weaken: % damage reduction)',
+      type: FieldType.integer,
+      defaultValue: 0,
     ),
     visualAssetFieldSchema('skills'),
   ],

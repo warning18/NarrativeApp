@@ -1335,6 +1335,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Knocked Out',
     AppLanguage.fr: 'Hors combat'
   },
+  'from_poison_suffix': {
+    AppLanguage.en: 'from poison',
+    AppLanguage.fr: 'à cause du poison',
+  },
+  'poisoned_suffix': {
+    AppLanguage.en: 'is poisoned!',
+    AppLanguage.fr: 'est empoisonné(e) !',
+  },
+  'stunned_suffix': {
+    AppLanguage.en: 'is stunned!',
+    AppLanguage.fr: 'est étourdi(e) !',
+  },
+  'weakened_suffix': {
+    AppLanguage.en: 'is weakened!',
+    AppLanguage.fr: 'est affaibli(e) !',
+  },
+  'stunned_skip_turn_suffix': {
+    AppLanguage.en: "is stunned and can't act this round.",
+    AppLanguage.fr: 'est étourdi(e) et ne peut pas agir ce tour.',
+  },
   'fighting_alongside_prefix': {
     AppLanguage.en: 'Fighting alongside',
     AppLanguage.fr: 'Combat aux côtés de',

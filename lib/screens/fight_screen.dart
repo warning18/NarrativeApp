@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/status_effect.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -105,6 +106,19 @@ IconData _faceTypeIcon(String type) {
 String _effectiveSkillId(DiceFaceResult face) =>
     face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
 
+/// The log line announcing a status effect just landed on [targetName] —
+/// shared by the player/ally-inflicted (enemy target) and enemy-inflicted
+/// (party target) paths so both read the same way.
+String _statusInflictedMessage(
+    StatusEffect effect, String targetName, AppLanguage lang) {
+  final suffixKey = switch (effect.type) {
+    StatusEffectType.poison => 'poisoned_suffix',
+    StatusEffectType.stun => 'stunned_suffix',
+    StatusEffectType.weaken => 'weakened_suffix',
+  };
+  return '$targetName ${trFor(lang, suffixKey)}';
+}
+
 const int _maxRolls = 3;
 
 /// One combatant on the player's side of a fight — the player themself, or
@@ -151,6 +165,11 @@ class _PartyMember {
   int currentHealth;
   int block = 0;
 
+  /// Poison/Stun/Weaken currently afflicting this member — see
+  /// status_effect.dart. Applied by the enemy's moves, ticked down once per
+  /// round in [_FightScreenState._startPartyRound].
+  List<StatusEffect> statusEffects = [];
+
   bool get isKnockedOut => currentHealth <= 0;
 }
 
@@ -178,6 +197,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late int _enemyHealth;
   late int _enemyDamage;
   int _lastDamageTaken = 0;
+
+  /// Poison/Stun/Weaken currently afflicting the enemy — see
+  /// status_effect.dart. Ticked down once per round in [_takeEnemyTurn].
+  List<StatusEffect> _enemyStatusEffects = [];
 
   /// Which party member most recently took damage from the enemy, so the
   /// floating "-N" indicator lands on the right health bar. Null until the
@@ -355,11 +378,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
     };
   }
 
-  /// Every party member able to act this round — the player (always
-  /// conscious here, since their own knockout already ends the fight before
-  /// another round could start) plus every active ally still standing.
-  List<_PartyMember> get _actingParty =>
-      _party.where((m) => !m.isKnockedOut).toList();
+  /// Every party member able to act this round — conscious, and not
+  /// currently Stunned (see status_effect.dart; a stunned member is
+  /// skipped for the round entirely, announced in [_startPartyRound]).
+  List<_PartyMember> get _actingParty => _party
+      .where((m) => !m.isKnockedOut && !isStunned(m.statusEffects))
+      .toList();
 
   /// Rolls a die for every acting party member at once — one face per
   /// member, shown side by side — instead of each combatant taking a
@@ -431,6 +455,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final lang = ref.read(appLanguageProvider);
 
     var totalDamageToEnemy = 0;
+    var enemyEffects = _enemyStatusEffects;
     final newEntries = <_LogEntry>[];
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
@@ -443,6 +468,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         _availableSkillsFor(actor, skills),
         totalDamage,
         language: lang,
+        activeEffects: actor.statusEffects,
       );
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
@@ -458,6 +484,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
       actor.block = result.blockAmount;
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+
+      final inflicted = result.inflictedStatus;
+      if (inflicted != null) {
+        enemyEffects = applyStatusEffect(enemyEffects, inflicted);
+        newEntries.add(_LogEntry(
+          _statusInflictedMessage(
+            inflicted,
+            widget.enemy['enemyName']?.toString() ?? widget.enemyId,
+            lang,
+          ),
+          _LogKind.info,
+        ));
+      }
     }
 
     setState(() {
@@ -465,6 +504,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _rollCount = 0;
       _currentFaces.clear();
       _enemyHealth = max(0, _enemyHealth - totalDamageToEnemy);
+      _enemyStatusEffects = enemyEffects;
       _log.addAll(newEntries);
     });
 
@@ -479,24 +519,118 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _takeEnemyTurn(skills, items);
   }
 
-  /// Resets the shared roll state for a fresh round — called once the
-  /// enemy's turn resolves without ending the fight.
-  void _startPartyRound() {
+  /// Starts a fresh party round — called once the enemy's turn resolves
+  /// without ending the fight. This is also where every still-conscious
+  /// party member's own status effects take hold for the round about to
+  /// start: Poison ticks its damage, Stun determines who's excluded from
+  /// [_actingParty], and (after those checks use the current durations)
+  /// every effect's own duration counts down by one round. If that leaves
+  /// nobody able to act at all, the round is skipped straight through to
+  /// the enemy's next turn rather than stalling on a roll nobody can make.
+  void _startPartyRound(
+      Map<String, dynamic> skills, Map<String, dynamic> items) {
+    final lang = ref.read(appLanguageProvider);
+    final newEntries = <_LogEntry>[];
+    var playerDied = false;
+
+    for (final member in _party) {
+      if (member.isKnockedOut) continue;
+      final poison = poisonDamageFor(member.statusEffects);
+      if (poison > 0) {
+        member.currentHealth = max(0, member.currentHealth - poison);
+        newEntries.add(_LogEntry(
+          member.isPlayer
+              ? '${trFor(lang, 'you_take_damage_prefix')} $poison '
+                  '${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.'
+              : '${member.displayName} ${trFor(lang, 'takes_damage_word')} '
+                  '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
+          _LogKind.enemyDamage,
+        ));
+        if (member.isKnockedOut) {
+          if (member.isPlayer) {
+            playerDied = true;
+          } else {
+            newEntries.add(_LogEntry(
+              '${member.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
+              _LogKind.defeat,
+            ));
+          }
+        }
+      }
+      if (!member.isKnockedOut && isStunned(member.statusEffects)) {
+        newEntries.add(_LogEntry(
+          '${member.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+          _LogKind.info,
+        ));
+      }
+    }
+
+    // Snapshot before ticking — a member stunned this round must still be
+    // excluded from acting this round even though the same tick below may
+    // expire that very stun for the round after.
+    final canAct = _actingParty.isNotEmpty;
+
+    for (final member in _party) {
+      if (member.isKnockedOut) continue;
+      member.statusEffects = tickStatusEffects(member.statusEffects);
+    }
+
     setState(() {
+      _log.addAll(newEntries);
       _rollCount = 0;
       _currentFaces.clear();
       _awaitingDecision = false;
     });
+
+    if (playerDied) {
+      _finishFight(won: false);
+      return;
+    }
+
+    if (!canAct) {
+      _takeEnemyTurn(skills, items);
+    }
   }
 
   void _takeEnemyTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
+    final lang = ref.read(appLanguageProvider);
+
+    final enemyPoison = poisonDamageFor(_enemyStatusEffects);
+    if (enemyPoison > 0) {
+      setState(() {
+        _enemyHealth = max(0, _enemyHealth - enemyPoison);
+        _log.add(_LogEntry(
+          '${widget.enemy['enemyName']} ${trFor(lang, 'takes_damage_word')} '
+          '$enemyPoison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
+          _LogKind.playerDamage,
+        ));
+      });
+    }
+    if (_enemyHealth <= 0) {
+      _finishFight(won: true);
+      return;
+    }
+
+    if (isStunned(_enemyStatusEffects)) {
+      setState(() {
+        _log.add(_LogEntry(
+          '${widget.enemy['enemyName']} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+          _LogKind.info,
+        ));
+        _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
+      });
+      _startPartyRound(skills, items);
+      return;
+    }
+
     final move = resolveEnemyMove(
       enemy: {...widget.enemy, 'damage': _enemyDamage},
       skills: skills,
       enemyCurrentHealth: _enemyHealth,
       enemyMaxHealth: _enemyMaxHealth,
       random: _random,
-      language: ref.read(appLanguageProvider),
+      language: lang,
+      activeEffects: _enemyStatusEffects,
     );
 
     final conscious = _party.where((m) => !m.isKnockedOut).toList();
@@ -507,7 +641,6 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final totalArmor = target.armor +
         equipmentBonusFor(target.equippedItemIds, items, 'armor');
     final damageTaken = max(0, move.damage - target.block - totalArmor);
-    final lang = ref.read(appLanguageProvider);
     final wasKnockedOutAlready = target.isKnockedOut;
 
     setState(() {
@@ -532,6 +665,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
           ),
         );
       }
+      final inflicted = move.inflictedStatus;
+      if (inflicted != null && !target.isKnockedOut) {
+        target.statusEffects =
+            applyStatusEffect(target.statusEffects, inflicted);
+        _log.add(_LogEntry(
+          _statusInflictedMessage(inflicted, target.displayName, lang),
+          _LogKind.info,
+        ));
+      }
+      _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
     });
     if (damageTaken > 0 && target.isPlayer) _triggerShake();
 
@@ -540,7 +683,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       return;
     }
 
-    _startPartyRound();
+    _startPartyRound(skills, items);
   }
 
   void _usePotion() {
@@ -834,6 +977,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
               current: _enemyHealth,
               max: _enemyMaxHealth,
               statLine: '⚔ $_enemyDamage',
+              statusEffects: _enemyStatusEffects,
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -1000,6 +1144,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       max: member.maxHealth,
       statLine:
           '⚔ ${member.baseDamage + damageBonus}  ·  🛡 ${member.armor + armorBonus}',
+      statusEffects: member.statusEffects,
     );
     if (_lastDamagedMemberId != member.id || _lastDamageTaken <= 0) return bar;
     return Stack(
@@ -1049,6 +1194,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         _availableSkillsFor(actor, skills),
         totalDamage,
         language: ref.read(appLanguageProvider),
+        activeEffects: actor.statusEffects,
       );
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1134,6 +1280,7 @@ class _HealthBar extends StatelessWidget {
     required this.current,
     required this.max,
     this.statLine,
+    this.statusEffects = const [],
   });
 
   final String label;
@@ -1142,6 +1289,10 @@ class _HealthBar extends StatelessWidget {
 
   /// An optional line of extra stats (e.g. "⚔ 12 · 🛡 4") shown under the bar.
   final String? statLine;
+
+  /// Poison/Stun/Weaken currently afflicting this combatant, shown as a row
+  /// of small chips below the bar — empty renders nothing extra.
+  final List<StatusEffect> statusEffects;
 
   @override
   Widget build(BuildContext context) {
@@ -1198,7 +1349,57 @@ class _HealthBar extends StatelessWidget {
           const SizedBox(height: 2),
           Text(statLine!, style: Theme.of(context).textTheme.bodySmall),
         ],
+        if (statusEffects.isNotEmpty) ...[
+          const SizedBox(height: 4),
+          Wrap(
+            spacing: 6,
+            runSpacing: 4,
+            children: [
+              for (final effect in statusEffects)
+                _StatusEffectChip(effect: effect),
+            ],
+          ),
+        ],
       ],
+    );
+  }
+}
+
+/// A small pill showing one active status effect's icon and how many
+/// rounds it has left — the visual half of the status-effect system,
+/// paired with the log lines [_FightScreenState] writes when one is
+/// inflicted or ticks.
+class _StatusEffectChip extends StatelessWidget {
+  const _StatusEffectChip({required this.effect});
+
+  final StatusEffect effect;
+
+  @override
+  Widget build(BuildContext context) {
+    final (icon, color) = switch (effect.type) {
+      StatusEffectType.poison => (Icons.coronavirus, Colors.green),
+      StatusEffectType.stun => (Icons.flash_on, Colors.amber),
+      StatusEffectType.weaken => (Icons.trending_down, Colors.purple),
+    };
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withValues(alpha: 0.5)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 3),
+          Text(
+            '${effect.remainingTurns}',
+            style: TextStyle(
+                fontSize: 11, color: color, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }
