@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.87.0+115]
+
+Gameplay diversity, as opposed to the last two entries' narrative/world
+content: a genuinely new non-combat interaction type, not just another
+single ability-check roll.
+
+### Added
+- **Skill Challenges: a new multi-round "push your luck" mechanic**, distinct
+  from both a one-shot ability check (a single roll settles it) and full
+  combat (health, dice faces, an enemy). A skill challenge is a sequence of
+  rolls against the same ability and DC, won by reaching a set number of
+  successes before a set number of failures — an early bad roll doesn't end
+  the attempt, it just narrows the margin, which is the whole point of
+  offering it as its own thing. Implemented as two new optional fields on a
+  story choice (`challengeSuccessesNeeded`/`challengeMaxFailures`, alongside
+  the existing `checkAbility`/`checkDC`/`failNextId`) resolved by a new pure,
+  independently-testable function (`lib/data/skill_challenge.dart`) and
+  presented through a new dedicated screen
+  (`lib/screens/skill_challenge_screen.dart`) that reveals each round in
+  turn with a running success/failure tally before the final result — pushed
+  and popped the same way the combat screen reports a win. Added editor
+  support for the two new fields alongside the existing ability-check editor
+  UI, so more of this content can be authored later.
+- **First real use: a card game at the Chapter 2 harbor market** (new choice
+  on node `2015`, "Sit in on a card game with dock regulars"). Win 3 hands
+  before 2 losses (a Luck-based skill challenge, DC 12) for a solid payout;
+  lose the challenge and it costs a little instead — either way, the story
+  continues normally.
+
 ## [1.86.0+114]
 
 Second round of narrative/world diversity content, this time in Chapter 3:

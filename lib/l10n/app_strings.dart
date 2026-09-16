@@ -204,6 +204,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ability to check',
     AppLanguage.fr: 'Caractéristique testée',
   },
+  'challenge_successes_needed': {
+    AppLanguage.en: 'Skill challenge: successes needed',
+    AppLanguage.fr: 'Épreuve de compétence : réussites requises',
+  },
+  'challenge_max_failures': {
+    AppLanguage.en: 'Skill challenge: max failures',
+    AppLanguage.fr: 'Épreuve de compétence : échecs max.',
+  },
+  'challenge_hint': {
+    AppLanguage.en:
+        'Leave both blank for an ordinary single-roll check. Set both to turn '
+            'this into a multi-round skill challenge instead.',
+    AppLanguage.fr:
+        'Laissez les deux champs vides pour un simple jet unique. Remplissez '
+            'les deux pour en faire une épreuve de compétence à plusieurs manches.',
+  },
   'check_dc': {
     AppLanguage.en: 'Difficulty Class (DC)',
     AppLanguage.fr: 'Classe de Difficulté (DD)',
@@ -223,6 +239,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ability_check_fail': {
     AppLanguage.en: 'Failure.',
     AppLanguage.fr: 'Échec.',
+  },
+  'skill_challenge_title': {
+    AppLanguage.en: 'Skill Challenge',
+    AppLanguage.fr: 'Épreuve de compétence',
+  },
+  'skill_challenge_begin': {
+    AppLanguage.en: 'Begin',
+    AppLanguage.fr: 'Commencer',
+  },
+  'skill_challenge_continue': {
+    AppLanguage.en: 'Continue',
+    AppLanguage.fr: 'Continuer',
+  },
+  'skill_challenge_round_label': {
+    AppLanguage.en: 'Round',
+    AppLanguage.fr: 'Manche',
+  },
+  'skill_challenge_successes_label': {
+    AppLanguage.en: 'Successes',
+    AppLanguage.fr: 'Réussites',
+  },
+  'skill_challenge_failures_label': {
+    AppLanguage.en: 'Failures',
+    AppLanguage.fr: 'Échecs',
+  },
+  'skill_challenge_success_banner': {
+    AppLanguage.en: 'You pulled it off.',
+    AppLanguage.fr: 'Vous y êtes arrivé.',
+  },
+  'skill_challenge_fail_banner': {
+    AppLanguage.en: 'Not this time.',
+    AppLanguage.fr: 'Pas cette fois.',
   },
   'node_saved': {
     AppLanguage.en: 'Node saved.',

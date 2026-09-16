@@ -17,6 +17,8 @@ class StoryChoice {
     this.checkAbility,
     this.checkDC,
     this.failNextId,
+    this.challengeSuccessesNeeded,
+    this.challengeMaxFailures,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -42,6 +44,9 @@ class StoryChoice {
       checkAbility: json['checkAbility'] as String?,
       checkDC: (json['checkDC'] as num?)?.toInt(),
       failNextId: json['failNextId'] as String?,
+      challengeSuccessesNeeded:
+          (json['challengeSuccessesNeeded'] as num?)?.toInt(),
+      challengeMaxFailures: (json['challengeMaxFailures'] as num?)?.toInt(),
     );
   }
 
@@ -84,7 +89,25 @@ class StoryChoice {
   /// beat instead.
   final String? failNextId;
 
+  /// Set alongside [checkAbility]/[checkDC] to turn a single roll into a
+  /// "skill challenge": a sequence of rolls against the same ability and
+  /// DC, won by reaching [challengeSuccessesNeeded] successes before
+  /// [challengeMaxFailures] failures — a push-your-luck tension curve
+  /// distinct from both a one-shot ability check (pass or fail on one
+  /// roll) and full combat (health, dice faces, an enemy). Null/0 means
+  /// this choice is an ordinary single-roll check.
+  final int? challengeSuccessesNeeded;
+
+  /// How many failed rolls the challenge tolerates before it's lost.
+  /// Only meaningful alongside [challengeSuccessesNeeded].
+  final int? challengeMaxFailures;
+
   bool get hasAbilityCheck => checkAbility != null && checkAbility!.isNotEmpty;
+
+  bool get hasSkillChallenge =>
+      hasAbilityCheck &&
+      (challengeSuccessesNeeded ?? 0) > 0 &&
+      (challengeMaxFailures ?? 0) > 0;
 
   String textFor(bool french) =>
       french && (textFr?.isNotEmpty ?? false) ? textFr! : text;
@@ -119,6 +142,10 @@ class StoryChoice {
         if (checkDC != null) 'checkDC': checkDC,
         if (failNextId != null && failNextId!.isNotEmpty)
           'failNextId': failNextId,
+        if (challengeSuccessesNeeded != null)
+          'challengeSuccessesNeeded': challengeSuccessesNeeded,
+        if (challengeMaxFailures != null)
+          'challengeMaxFailures': challengeMaxFailures,
       };
 
   bool get triggersCombat =>

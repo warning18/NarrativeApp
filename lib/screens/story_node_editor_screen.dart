@@ -268,7 +268,11 @@ class _ChoiceEditState {
         checkAbility = choice.checkAbility,
         checkDCController =
             TextEditingController(text: choice.checkDC?.toString() ?? ''),
-        failNextId = choice.failNextId;
+        failNextId = choice.failNextId,
+        challengeSuccessesNeededController = TextEditingController(
+            text: choice.challengeSuccessesNeeded?.toString() ?? ''),
+        challengeMaxFailuresController = TextEditingController(
+            text: choice.challengeMaxFailures?.toString() ?? '');
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
 
@@ -289,6 +293,8 @@ class _ChoiceEditState {
   String? checkAbility;
   final TextEditingController checkDCController;
   String? failNextId;
+  final TextEditingController challengeSuccessesNeededController;
+  final TextEditingController challengeMaxFailuresController;
 
   void dispose() {
     textController.dispose();
@@ -304,6 +310,8 @@ class _ChoiceEditState {
     unlockShopIdController.dispose();
     unlockQuestIdController.dispose();
     checkDCController.dispose();
+    challengeSuccessesNeededController.dispose();
+    challengeMaxFailuresController.dispose();
   }
 
   StoryChoice toChoice() => StoryChoice(
@@ -342,6 +350,10 @@ class _ChoiceEditState {
         checkAbility: (checkAbility?.isEmpty ?? true) ? null : checkAbility,
         checkDC: int.tryParse(checkDCController.text.trim()),
         failNextId: (failNextId?.isEmpty ?? true) ? null : failNextId,
+        challengeSuccessesNeeded:
+            int.tryParse(challengeSuccessesNeededController.text.trim()),
+        challengeMaxFailures:
+            int.tryParse(challengeMaxFailuresController.text.trim()),
       );
 }
 
@@ -567,6 +579,34 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   onChanged: (value) =>
                       setState(() => state.failNextId = value),
                 ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: state.challengeSuccessesNeededController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: t('challenge_successes_needed'),
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: state.challengeMaxFailuresController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: t('challenge_max_failures'),
+                          border: const OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text(t('challenge_hint'),
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ],

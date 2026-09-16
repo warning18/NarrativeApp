@@ -1267,6 +1267,11 @@
         "text": "Follow a trail of paper lanterns down a side alley",
         "text_fr": "Suivre une traînée de lanternes de papier dans une ruelle",
         "next_id": "2015_ternrow"
+      },
+      {
+        "text": "Sit in on a card game with dock regulars",
+        "text_fr": "Se joindre à une partie de cartes avec des habitués du port",
+        "next_id": "2015_cards"
       }
     ]
   },
@@ -2744,6 +2749,64 @@
         "flagsToAdd": [
           "reckoning_wall_saved"
         ]
+      }
+    ]
+  },
+  "2015_cards": {
+    "id": "2015_cards",
+    "description": "Four dockhands had claimed a barrel as a card table, playing a game I half-recognized from a dozen worse taverns — stakes modest enough that losing wouldn't ruin anyone, large enough that winning would be worth the trouble. One of them waved me toward the last open stool with the easy hospitality of a man who has never once, in his life, actually lost at cards, and has long since stopped expecting to start.",
+    "description_fr": "Quatre dockers avaient réquisitionné un tonneau en guise de table de jeu, disputant une partie que je reconnus à moitié pour l'avoir vue dans une douzaine de tavernes pires que celle-ci — des mises assez modestes pour que perdre ne ruine personne, assez conséquentes pour que gagner en vaille la peine. L'un d'eux m'indiqua le dernier tabouret libre avec l'hospitalité facile d'un homme qui n'a, de toute sa vie, jamais perdu une seule fois aux cartes, et qui a depuis longtemps cessé de s'y attendre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Play to win",
+        "text_fr": "Jouer pour gagner",
+        "next_id": "2015_cards_won",
+        "checkAbility": "luck",
+        "checkDC": 12,
+        "challengeSuccessesNeeded": 3,
+        "challengeMaxFailures": 2,
+        "failNextId": "2015_cards_lost"
+      }
+    ]
+  },
+  "2015_cards_won": {
+    "id": "2015_cards_won",
+    "description": "Three hands in, the dockhand's easy hospitality had curdled into something considerably less easy, and by the fourth he'd stopped pretending to enjoy the company. I left the barrel with my purse meaningfully heavier and a small, petty satisfaction I decided not to examine too closely.",
+    "description_fr": "Trois manches plus tard, l'hospitalité facile du docker avait tourné en quelque chose de nettement moins facile, et à la quatrième il avait cessé de feindre apprécier la compagnie. Je quittai le tonneau la bourse sensiblement plus lourde, avec une petite satisfaction mesquine que je préférai ne pas examiner de trop près.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "2030",
+        "goldMod": 35
+      }
+    ]
+  },
+  "2015_cards_lost": {
+    "id": "2015_cards_lost",
+    "description": "The dockhands, it turned out, had been letting me win the first two hands purely to see how I'd take the third, which I took considerably worse than I'd have liked. I left the barrel lighter in the purse and heavier in the specific, useless wisdom that some hospitality really is exactly what it looks like.",
+    "description_fr": "Les dockers, comme il s'avéra, m'avaient laissé gagner les deux premières manches dans le seul but de voir comment j'encaisserais la troisième, ce que je fis nettement moins bien que je ne l'aurais souhaité. Je quittai le tonneau la bourse plus légère, mais riche d'une sagesse aussi précise qu'inutile : certaines hospitalités sont exactement ce qu'elles paraissent être.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Continue",
+        "text_fr": "Continuer",
+        "next_id": "2030",
+        "goldMod": -15
       }
     ]
   }

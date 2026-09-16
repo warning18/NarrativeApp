@@ -35,6 +35,7 @@ import '../widgets/walking_companion_strip.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
+import 'skill_challenge_screen.dart';
 import 'story_node_editor_screen.dart';
 
 /// Tracks the id of the last scene auto-read aloud, so the auto-read
@@ -583,25 +584,42 @@ class _ChoiceButton extends ConsumerWidget {
           : () async {
               var skipRewardEffects = false;
               if (choice.hasAbilityCheck) {
-                final result = rollAbilityCheck(
-                  ability: choice.checkAbility!,
-                  dc: choice.checkDC ?? 10,
-                  session: session,
-                );
-                final abilityLabel = tr(ref, '${result.ability}_label');
-                final outcomeKey = result.success
-                    ? 'ability_check_success'
-                    : 'ability_check_fail';
-                await showImmersiveNotice(
-                  context,
-                  icon: result.success ? Icons.check_circle : Icons.cancel,
-                  message: '$abilityLabel ${tr(ref, 'check_label')}: '
-                      '${result.roll} + ${result.modifier} = ${result.total} '
-                      '${tr(ref, 'vs_dc_label')} ${result.dc} — '
-                      '${tr(ref, outcomeKey)}',
-                );
-                if (!context.mounted) return;
-                if (!result.success) {
+                bool success;
+                if (choice.hasSkillChallenge) {
+                  final challengeResult =
+                      await Navigator.of(context).push<bool>(MaterialPageRoute(
+                    builder: (_) => SkillChallengeScreen(
+                      promptText: choice.textFor(french),
+                      ability: choice.checkAbility!,
+                      dc: choice.checkDC ?? 10,
+                      successesNeeded: choice.challengeSuccessesNeeded!,
+                      maxFailures: choice.challengeMaxFailures!,
+                    ),
+                  ));
+                  if (!context.mounted) return;
+                  success = challengeResult ?? false;
+                } else {
+                  final result = rollAbilityCheck(
+                    ability: choice.checkAbility!,
+                    dc: choice.checkDC ?? 10,
+                    session: session,
+                  );
+                  final abilityLabel = tr(ref, '${result.ability}_label');
+                  final outcomeKey = result.success
+                      ? 'ability_check_success'
+                      : 'ability_check_fail';
+                  await showImmersiveNotice(
+                    context,
+                    icon: result.success ? Icons.check_circle : Icons.cancel,
+                    message: '$abilityLabel ${tr(ref, 'check_label')}: '
+                        '${result.roll} + ${result.modifier} = ${result.total} '
+                        '${tr(ref, 'vs_dc_label')} ${result.dc} — '
+                        '${tr(ref, outcomeKey)}',
+                  );
+                  if (!context.mounted) return;
+                  success = result.success;
+                }
+                if (!success) {
                   final failTarget = choice.failNextId;
                   if (failTarget != null &&
                       failTarget.isNotEmpty &&
