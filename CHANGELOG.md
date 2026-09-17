@@ -8,7 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.91.0+119]
+## [1.92.0+120]
+
+Chapter 1 follow-up to the Town Hub/Camp redesign: two of Chapter 1's own
+shop unlocks turned out to duplicate Town Hub's now-permanent boutique list,
+undercutting "Town Hub is the first shopping stop between Chapter 1 and 2."
+
+### Fixed
+- **Removed two Chapter 1 shop unlocks that now duplicate Town Hub's
+  permanent boutiques.** Node 100 (the opening tavern scene) no longer
+  unlocks the Blind Beggar Stall, and node 891 (the pre-boss docks scene) no
+  longer unlocks the Weaponsmith's Forge — both are already always available
+  at Town Hub from the Chapter 1/2 seam, so granting them again mid-Chapter-1
+  was redundant and made the boutiques feel like they "arrived too early."
+  Node 891's other two shop unlocks (Black Market Docks, Shieldwright's
+  Hall) are untouched: neither is part of Town Hub's curated list, and
+  neither has any other unlock point in the story graph, so removing them
+  would have made those shops permanently unobtainable.
+
+
 
 Reshapes the mid-game meta-progression loop so Town Hub and Camp read as two
 distinct, sequential stops rather than one thing available from the start

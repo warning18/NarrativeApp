@@ -36,8 +36,7 @@
       {
         "text": "Enter the Tavern",
         "text_fr": "Entrer dans la taverne",
-        "next_id": "200",
-        "unlockShopId": "blind_beggar_stall"
+        "next_id": "200"
       }
     ]
   },
@@ -727,8 +726,7 @@
       {
         "text": "Duck into a dockside armory first",
         "text_fr": "Faire d'abord un détour par un arsenal du port",
-        "next_id": "895",
-        "unlockShopId": "weaponsmith_forge"
+        "next_id": "895"
       },
       {
         "text": "Check a shieldwright's stall for anything sturdier",
