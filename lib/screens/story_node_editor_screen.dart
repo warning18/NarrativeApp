@@ -25,6 +25,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   late final TextEditingController _reqAlignmentMaxController;
   late final TextEditingController _reqFlagsController;
   late final TextEditingController _reqCharismaController;
+  late final TextEditingController _authoringCommentController;
   late List<_ChoiceEditState> _choices;
   bool _saving = false;
 
@@ -45,6 +46,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
         TextEditingController(text: widget.node.reqFlags.join(', '));
     _reqCharismaController =
         TextEditingController(text: widget.node.reqCharisma.toString());
+    _authoringCommentController =
+        TextEditingController(text: widget.node.authoringComment ?? '');
     _choices = widget.node.choices.map((c) => _ChoiceEditState(c)).toList();
   }
 
@@ -57,6 +60,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
     _reqAlignmentMaxController.dispose();
     _reqFlagsController.dispose();
     _reqCharismaController.dispose();
+    _authoringCommentController.dispose();
     for (final choice in _choices) {
       choice.dispose();
     }
@@ -89,6 +93,9 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       mood: widget.node.mood,
       speaker: widget.node.speaker,
       scriptTrigger: widget.node.scriptTrigger,
+      authoringComment: _authoringCommentController.text.trim().isEmpty
+          ? null
+          : _authoringCommentController.text.trim(),
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -141,6 +148,20 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          TextField(
+            controller: _authoringCommentController,
+            minLines: 1,
+            maxLines: 4,
+            decoration: InputDecoration(
+              labelText: t('authoring_comment_label'),
+              hintText: t('authoring_comment_hint'),
+              hintMaxLines: 2,
+              prefixIcon: const Icon(Icons.comment_outlined),
+              border: const OutlineInputBorder(),
+              alignLabelWithHint: true,
+            ),
+          ),
+          const SizedBox(height: 16),
           TextField(
             controller: _descriptionController,
             minLines: 3,

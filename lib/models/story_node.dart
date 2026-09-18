@@ -183,6 +183,7 @@ class StoryNode {
     this.mood,
     this.speaker,
     this.scriptTrigger,
+    this.authoringComment,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -209,6 +210,7 @@ class StoryNode {
       mood: taxonomy?['mood'] as String?,
       speaker: taxonomy?['speaker'] as String?,
       scriptTrigger: automations?['script_trigger'] as String?,
+      authoringComment: json['authoring_comment'] as String?,
     );
   }
 
@@ -253,10 +255,19 @@ class StoryNode {
   /// Not currently read by the app.
   final String? scriptTrigger;
 
+  /// A free-text reviewer/authoring note attached to this node in Edit
+  /// Mode — never shown to a player, purely so a note left while
+  /// reading/testing ("pacing feels off here", "needs a 3rd choice") can be
+  /// found again later via the Review Comments screen instead of relying
+  /// on memory.
+  final String? authoringComment;
+
   String descriptionFor(bool french) =>
       french && (descriptionFr?.isNotEmpty ?? false)
           ? descriptionFr!
           : description;
+
+  bool get hasComment => authoringComment?.isNotEmpty ?? false;
 
   bool get hasRequirements =>
       reqGold > 0 ||
@@ -278,6 +289,8 @@ class StoryNode {
           },
         if (scriptTrigger != null && scriptTrigger!.isNotEmpty)
           'automations': {'script_trigger': scriptTrigger},
+        if (authoringComment != null && authoringComment!.isNotEmpty)
+          'authoring_comment': authoringComment,
         if (reqGold != 0) 'reqGold': reqGold,
         if (reqAlignmentScore != null) 'reqAlignmentScore': reqAlignmentScore,
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,

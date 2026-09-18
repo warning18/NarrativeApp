@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.94.0+122]
+
+A reviewer-comment system for story nodes: leave a private note while
+reading/testing in Edit Mode, then find every note again in one place.
+
+### Added
+- **Reviewer comments on story nodes.** The node editor (`StoryNodeEditorScreen`)
+  has a new "Reviewer comment" field, saved on `StoryNode.authoringComment` —
+  a free-text note never shown to players, for things like "pacing feels
+  rushed here" or "needs a 3rd choice". Persists through the same local
+  edit-override mechanism every other node edit already uses.
+- **Review Comments screen**, reached from the Data tab: lists every node
+  with a comment (id, chapter, comment text), tap to jump straight into
+  that node's editor, plus Copy/Export actions (reusing a newly-extracted
+  `lib/utils/export_utils.dart`) so the whole list can be pulled off the
+  device as plain text.
+- The Map (story graph) view now marks commented nodes with a small badge,
+  and its node-info sheet shows the comment inline plus a new "Edit Node"
+  button, so a comment is discoverable without leaving the graph.
+
+### Known issue (pre-existing, not touched here)
+- While live-verifying this feature, found the choice editor's "destination
+  node" dropdown overflows at phone width — unrelated to this change, left
+  as-is; flagged for a follow-up fix.
+
 ## [1.93.0+121]
 
 Over-branched story nodes (10-12 choices piled into one flat button list)

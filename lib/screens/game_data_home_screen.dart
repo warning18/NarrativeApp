@@ -6,6 +6,7 @@ import 'data_summary_screen.dart';
 import 'game_config_screen.dart';
 import 'game_db_list_screen.dart';
 import 'main_story_screen.dart';
+import 'story_comments_review_screen.dart';
 
 class GameDataHomeScreen extends StatelessWidget {
   const GameDataHomeScreen({super.key});
@@ -52,6 +53,21 @@ class GameDataHomeScreen extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (_) => const MainStoryScreen()),
+              );
+            },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.comment_outlined),
+            title: const Text('Review Comments'),
+            subtitle: const Text(
+                'Every story node with a reviewer note left in Edit Mode'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => const StoryCommentsReviewScreen()),
               );
             },
           ),

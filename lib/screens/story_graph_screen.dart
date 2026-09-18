@@ -16,6 +16,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
+import 'story_node_editor_screen.dart';
 
 /// A node box's fixed width — capped and ellipsized (see the node
 /// `builder` below) rather than left to grow with the id's length, so a
@@ -336,10 +337,33 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                       ),
                     );
 
+                    // Positioned inside the node's own bounds (not
+                    // overflowing via a negative offset) so this can't
+                    // interfere with GraphView's own size measurement of
+                    // each node.
+                    final withCommentBadge = (storyNode?.hasComment ?? false)
+                        ? Stack(
+                            children: [
+                              container,
+                              Positioned(
+                                top: 2,
+                                right: 2,
+                                child: Icon(
+                                  Icons.comment,
+                                  size: 12,
+                                  color: isCurrent
+                                      ? colorScheme.onPrimary
+                                      : style.onColor,
+                                ),
+                              ),
+                            ],
+                          )
+                        : container;
+
                     if (hidden) {
                       return Opacity(
                           opacity: 0.18,
-                          child: IgnorePointer(child: container));
+                          child: IgnorePointer(child: withCommentBadge));
                     }
 
                     // A plain GestureDetector's tap recognizer competes with
@@ -365,7 +389,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                                     content: Text(tr(ref, 'node_activated'))),
                               );
                             },
-                      child: container,
+                      child: withCommentBadge,
                     );
                   },
                 ),
@@ -760,6 +784,28 @@ Future<void> _showNodeInfo(
                 ],
                 const SizedBox(height: 12),
                 Text(node.descriptionFor(french)),
+                if (node.hasComment) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(innerContext)
+                          .colorScheme
+                          .tertiaryContainer
+                          .withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.comment_outlined, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(node.authoringComment!)),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 16),
                 Text(t('choices_label'),
                     style: Theme.of(innerContext).textTheme.titleMedium),
@@ -794,6 +840,19 @@ Future<void> _showNodeInfo(
                     },
                     icon: const Icon(Icons.fast_forward),
                     label: Text(t('autoplay_to_node')),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => StoryNodeEditorScreen(node: node),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit_outlined),
+                    label: Text(t('edit_node')),
                   ),
                 ],
               ],

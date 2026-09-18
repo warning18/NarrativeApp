@@ -2397,6 +2397,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Défis',
   },
   'hub_people_section': {AppLanguage.en: 'People', AppLanguage.fr: 'Habitants'},
+  'authoring_comment_label': {
+    AppLanguage.en: 'Reviewer comment',
+    AppLanguage.fr: 'Commentaire de relecture',
+  },
+  'authoring_comment_hint': {
+    AppLanguage.en: 'A private note about this node, never shown to players',
+    AppLanguage.fr: 'Une note privée sur ce nœud, jamais visible des joueurs',
+  },
+  'review_comments_title': {
+    AppLanguage.en: 'Review Comments',
+    AppLanguage.fr: 'Commentaires de relecture',
+  },
+  'no_review_comments_message': {
+    AppLanguage.en:
+        'No nodes have a reviewer comment yet. Open a node in Edit Mode to leave one.',
+    AppLanguage.fr:
+        "Aucun nœud n'a de commentaire pour l'instant. Ouvrez un nœud en mode édition pour en laisser un.",
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
