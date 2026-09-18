@@ -11,6 +11,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 
 /// Formats a skill id like "human_resolve" into "Human Resolve" — skills
@@ -551,16 +552,44 @@ class _CharacterSheet extends StatelessWidget {
         profession?['professionName']?.toString() ?? session.professionId;
     String t(String key) => trFor(language, key);
 
-    Widget statRow(String label, String value) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    // A row with a [description] is long-press-able: holding it shows what
+    // the stat actually does, reusing the same explanations the level-up
+    // screen already offers so the two never drift apart. Rows without one
+    // (plain counters like gold or inventory size) stay static -- their
+    // value already says everything there is to know.
+    Widget statRow(String label, String value,
+        {IconData? icon, String? description}) {
+      final row = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18),
+                const SizedBox(width: 8),
+              ],
               Text(label),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
-        );
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: description == null
+            ? row
+            : InkWell(
+                onLongPress: () => showDetailDialog(
+                  context,
+                  title: label,
+                  description: description,
+                  icon: icon,
+                  closeLabel: t('close_button'),
+                ),
+                child: row,
+              ),
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -592,6 +621,11 @@ class _CharacterSheet extends StatelessWidget {
         const SizedBox(height: 16),
         Text(t('character_sheet_title'),
             style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 2),
+        Text(
+          t('hold_stat_for_details_hint'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
         const SizedBox(height: 8),
         Card(
           child: Padding(
@@ -606,16 +640,31 @@ class _CharacterSheet extends StatelessWidget {
                 statRow(
                   t('health_label'),
                   '${session.currentHealth} / ${session.maxHealth}',
+                  icon: Icons.favorite,
+                  description: t('max_health_desc'),
                 ),
-                statRow(t('base_damage_label'), '${session.baseDamage}'),
-                statRow(t('base_armor_label'), '${session.baseArmor}'),
-                statRow(t('luck_label'), '${session.luck}'),
-                statRow(t('charisma_label'), '${session.charisma}'),
-                statRow(t('strength_label'), '${session.strength}'),
-                statRow(t('dexterity_label'), '${session.dexterity}'),
-                statRow(t('constitution_label'), '${session.constitution}'),
-                statRow(t('intelligence_label'), '${session.intelligence}'),
-                statRow(t('wisdom_label'), '${session.wisdom}'),
+                statRow(t('base_damage_label'), '${session.baseDamage}',
+                    icon: Icons.gavel, description: t('base_damage_desc')),
+                statRow(t('base_armor_label'), '${session.baseArmor}',
+                    icon: Icons.shield, description: t('base_armor_desc')),
+                statRow(t('luck_label'), '${session.luck}',
+                    icon: Icons.auto_awesome, description: t('luck_desc')),
+                statRow(t('charisma_label'), '${session.charisma}',
+                    icon: Icons.forum, description: t('charisma_desc')),
+                statRow(t('strength_label'), '${session.strength}',
+                    icon: Icons.fitness_center,
+                    description: t('strength_desc')),
+                statRow(t('dexterity_label'), '${session.dexterity}',
+                    icon: Icons.directions_run,
+                    description: t('dexterity_desc')),
+                statRow(t('constitution_label'), '${session.constitution}',
+                    icon: Icons.health_and_safety,
+                    description: t('constitution_desc')),
+                statRow(t('intelligence_label'), '${session.intelligence}',
+                    icon: Icons.psychology,
+                    description: t('intelligence_desc')),
+                statRow(t('wisdom_label'), '${session.wisdom}',
+                    icon: Icons.visibility, description: t('wisdom_desc')),
                 statRow(t('gold_field_label'), '${session.gold}'),
                 statRow(
                   t('alignment_label'),

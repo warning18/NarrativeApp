@@ -15,17 +15,19 @@ class LevelUpScreen extends ConsumerWidget {
 
     Widget statRow(String label, IconData icon, String valueText,
         String statKey, String description) {
+      void showExplanation() => showDetailDialog(
+            context,
+            title: label,
+            description: description,
+            icon: icon,
+            closeLabel: tr(ref, 'close_button'),
+          );
       return Card(
         child: ListTile(
+          onLongPress: showExplanation,
           leading: InkWell(
             customBorder: const CircleBorder(),
-            onTap: () => showDetailDialog(
-              context,
-              title: label,
-              description: description,
-              icon: icon,
-              closeLabel: tr(ref, 'close_button'),
-            ),
+            onTap: showExplanation,
             child: Padding(
               padding: const EdgeInsets.all(6),
               child: Icon(icon),
@@ -76,6 +78,11 @@ class LevelUpScreen extends ConsumerWidget {
           Text(
             '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
             style: Theme.of(context).textTheme.titleMedium,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            tr(ref, 'hold_stat_for_details_hint'),
+            style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
           statRow(tr(ref, 'base_damage_label'), Icons.gavel,

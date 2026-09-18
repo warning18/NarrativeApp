@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.95.0+123]
+
+Hold a stat to see what it does.
+
+### Added
+- **Long-press stat explanations.** Every core stat row (Health, Base
+  Damage, Base Armor, Luck, Charisma, Strength, Dexterity, Constitution,
+  Intelligence, Wisdom) on the character sheet (`RaceProfessionScreen`) and
+  the level-up screen (`LevelUpScreen`) can now be held to pop up its
+  purpose and gameplay impact, reusing the existing `*_desc` strings so the
+  two screens' explanations never drift apart. The level-up screen's
+  existing tap-the-icon shortcut still works alongside it.
+- A small hint ("Hold a stat to see what it does") on both screens so the
+  new interaction is discoverable.
+
 ## [1.94.0+122]
 
 A reviewer-comment system for story nodes: leave a private note while

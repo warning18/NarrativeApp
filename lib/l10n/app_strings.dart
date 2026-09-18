@@ -2409,6 +2409,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Review Comments',
     AppLanguage.fr: 'Commentaires de relecture',
   },
+  'hold_stat_for_details_hint': {
+    AppLanguage.en: 'Hold a stat to see what it does',
+    AppLanguage.fr: 'Maintenez une statistique pour voir son effet',
+  },
   'no_review_comments_message': {
     AppLanguage.en:
         'No nodes have a reviewer comment yet. Open a node in Edit Mode to leave one.',
