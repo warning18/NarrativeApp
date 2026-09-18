@@ -205,6 +205,14 @@ class _StoryView extends ConsumerWidget {
       }
     }
 
+    final isHubNode = _isHubNode(node);
+    final mainChoices = isHubNode
+        ? node.choices.where((c) => _hubCategoryFor(c) == null).toList()
+        : node.choices;
+    final hubChoices = isHubNode
+        ? node.choices.where((c) => _hubCategoryFor(c) != null).toList()
+        : const <StoryChoice>[];
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -445,14 +453,14 @@ class _StoryView extends ConsumerWidget {
                             notifier.restart(StoryRepository.startNodeId),
                         session: session,
                       )
-                    else
-                      for (var i = 0; i < node.choices.length; i++)
+                    else ...[
+                      for (var i = 0; i < mainChoices.length; i++)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: _StaggeredReveal(
                             delay: Duration(milliseconds: 60 * i),
                             child: _ChoiceButton(
-                              choice: node.choices[i],
+                              choice: mainChoices[i],
                               story: story,
                               session: session,
                               currentNodeId: playState.currentNodeId,
@@ -461,6 +469,16 @@ class _StoryView extends ConsumerWidget {
                             ),
                           ),
                         ),
+                      if (isHubNode)
+                        _HubSections(
+                          choices: hubChoices,
+                          story: story,
+                          session: session,
+                          currentNodeId: playState.currentNodeId,
+                          isExcursion: playState.isInExcursion,
+                          french: french,
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -492,6 +510,391 @@ bool _isChoiceLocked(
         reqFlags: targetNode.reqFlags,
         reqCharisma: targetNode.reqCharisma,
       );
+}
+
+/// A node with this many choices or fewer keeps the plain flat list it's
+/// always had — most nodes are a handful of genuinely distinct narrative
+/// branches, and boxing those into sections would just add ceremony. Above
+/// it, a node reads less like "a decision" and more like "a place with
+/// several independent things to do" (shop here, fight that, talk to
+/// them), so [_HubSections] takes over presenting everything but the node's
+/// own main branches.
+const int _hubChoiceThreshold = 5;
+
+bool _isHubNode(StoryNode node) => node.choices.length > _hubChoiceThreshold;
+
+/// Which "village" section a hub node's choice belongs in, derived from
+/// fields the choice already carries — no new JSON authoring needed. A
+/// choice that grants a shop reads as shopping even if it also happens to
+/// carry a skill check; combat and ability checks share one "Challenges"
+/// bucket since both are the same "risk something, maybe get hurt" beat;
+/// a quest grant with neither reads as talking to someone. `null` means
+/// this choice stays in the node's own main list instead of being sorted
+/// into a section.
+enum _HubCategory { shop, challenge, people }
+
+_HubCategory? _hubCategoryFor(StoryChoice choice) {
+  if ((choice.unlockShopId ?? '').isNotEmpty) return _HubCategory.shop;
+  if (choice.triggersCombat || choice.hasAbilityCheck) {
+    return _HubCategory.challenge;
+  }
+  if ((choice.unlockQuestId ?? '').isNotEmpty) return _HubCategory.people;
+  return null;
+}
+
+IconData _hubIconFor(StoryChoice choice) {
+  switch (_hubCategoryFor(choice)) {
+    case _HubCategory.shop:
+      return Icons.storefront_outlined;
+    case _HubCategory.challenge:
+      return choice.triggersCombat
+          ? Icons.gpp_maybe_outlined
+          : Icons.casino_outlined;
+    case _HubCategory.people:
+      return Icons.chat_bubble_outline;
+    case null:
+      return Icons.arrow_forward;
+  }
+}
+
+/// Runs a chosen [StoryChoice]'s full effect chain: ability checks or a
+/// combat gate first, then reward effects and unlocks, then routing to
+/// whatever comes next (an excursion sub-node, this choice's own
+/// [StoryChoice.nextId], or a restart on an ending). Shared by every widget
+/// that lets the player pick a choice — [_ChoiceButton]'s flat list and
+/// [_HubChoiceCard]'s categorized "village" cards alike — so both act on a
+/// chosen choice identically and never drift apart.
+Future<void> _selectChoice({
+  required BuildContext context,
+  required WidgetRef ref,
+  required StoryChoice choice,
+  required StoryData story,
+  required PlayerSession session,
+  required String currentNodeId,
+  required bool isExcursion,
+  required bool french,
+}) async {
+  var skipRewardEffects = false;
+  if (choice.hasAbilityCheck) {
+    bool success;
+    if (choice.hasSkillChallenge) {
+      final challengeResult =
+          await Navigator.of(context).push<bool>(MaterialPageRoute(
+        builder: (_) => SkillChallengeScreen(
+          promptText: choice.textFor(french),
+          ability: choice.checkAbility!,
+          dc: choice.checkDC ?? 10,
+          successesNeeded: choice.challengeSuccessesNeeded!,
+          maxFailures: choice.challengeMaxFailures!,
+        ),
+      ));
+      if (!context.mounted) return;
+      success = challengeResult ?? false;
+    } else {
+      final result = rollAbilityCheck(
+        ability: choice.checkAbility!,
+        dc: choice.checkDC ?? 10,
+        session: session,
+      );
+      final abilityLabel = tr(ref, '${result.ability}_label');
+      final outcomeKey =
+          result.success ? 'ability_check_success' : 'ability_check_fail';
+      await showImmersiveNotice(
+        context,
+        icon: result.success ? Icons.check_circle : Icons.cancel,
+        message: '$abilityLabel ${tr(ref, 'check_label')}: '
+            '${result.roll} + ${result.modifier} = ${result.total} '
+            '${tr(ref, 'vs_dc_label')} ${result.dc} — '
+            '${tr(ref, outcomeKey)}',
+      );
+      if (!context.mounted) return;
+      success = result.success;
+    }
+    if (!success) {
+      final failTarget = choice.failNextId;
+      if (failTarget != null && failTarget.isNotEmpty && !isExcursion) {
+        if (failTarget == 'EXIT' || failTarget == 'END') {
+          ref
+              .read(storyPlayProvider.notifier)
+              .restart(StoryRepository.startNodeId);
+        } else {
+          ref.read(storyPlayProvider.notifier).choose(failTarget);
+        }
+        return;
+      }
+      skipRewardEffects = true;
+    }
+  }
+
+  if (choice.opensCharacterCreation) {
+    await ref.read(playerSessionProvider.notifier).resetSession();
+    if (!context.mounted) return;
+    final started = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(builder: (_) => const RaceProfessionScreen()));
+    if (started != true) return;
+    // Show the guided tour once the player is back on the story
+    // view with a freshly created character, rather than on any
+    // generic "entered the app" trigger.
+    final tutorial = ref.read(tutorialProvider);
+    if (tutorial.enabled && !tutorial.seen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) showTutorialOverlay(context, ref);
+      });
+    }
+  }
+
+  if (choice.triggersCombat) {
+    final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
+    final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
+    if (enemy != null) {
+      ref.read(combatActiveProvider.notifier).state = true;
+      if (!context.mounted) return;
+      final won = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => FightScreen(
+            enemyId: choice.triggerEnemyId!,
+            enemy: enemy,
+          ),
+        ),
+      );
+      ref.read(combatActiveProvider.notifier).state = false;
+      if (won != true) return;
+    }
+  }
+
+  final playNotifier = ref.read(storyPlayProvider.notifier);
+  if (choice.hasEffects && !skipRewardEffects) {
+    ref.read(playerSessionProvider.notifier).applyChoiceEffects(
+          goldMod: choice.goldMod,
+          alignmentMod: choice.alignmentMod,
+          healAmount: choice.healAmount,
+          flagsToAdd: choice.flagsToAdd,
+          questIDToProgress: choice.questIDToProgress,
+        );
+  }
+  if (choice.hasUnlocks) {
+    await ref.read(playerSessionProvider.notifier).unlockContent(
+          shopId: choice.unlockShopId,
+          questId: choice.unlockQuestId,
+          enemyId: choice.triggerEnemyId,
+          shopUnlockNodeId: currentNodeId,
+        );
+    if ((choice.unlockShopId ?? '').isNotEmpty) {
+      // Silent — no popup here (the discovery modal below already
+      // covers "something new happened"); the Achievements
+      // screen is where this becomes visible.
+      await ref.read(playerSessionProvider.notifier).checkAchievements();
+    }
+    final newShopId = choice.unlockShopId ?? '';
+    final newQuestId = choice.unlockQuestId ?? '';
+    if (!isExcursion && (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
+      ref.read(pendingDiscoveryProvider.notifier).state = PendingDiscovery(
+        shopId: newShopId.isNotEmpty ? newShopId : null,
+        questId: newQuestId.isNotEmpty ? newQuestId : null,
+      );
+    }
+  }
+
+  if (isExcursion) {
+    playNotifier.advanceExcursion();
+    return;
+  }
+
+  if (choice.isEnding) {
+    playNotifier.restart(StoryRepository.startNodeId);
+    return;
+  }
+
+  final chapter = chapterForNode(currentNodeId);
+  if (chapter != null && !choice.opensCharacterCreation) {
+    final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
+    final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
+    final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
+    final manualTheme = ref.read(mapThemeProvider);
+    final resolvedTheme = manualTheme ??
+        mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
+    final excursion = SubNodeEngine.maybeGenerate(
+      random: Random(),
+      chapter: chapter,
+      shops: shops,
+      enemies: enemies,
+      quests: quests,
+      unlockedShopIds: session.unlockedShopIds,
+      unlockedEnemyIds: session.unlockedEnemyIds,
+      unlockedQuestIds: session.unlockedQuestIds,
+      completedQuestIds: session.completedQuestIds,
+      theme: resolvedTheme,
+    );
+    if (excursion != null) {
+      playNotifier.startExcursion(excursion, choice.nextId);
+      return;
+    }
+  }
+  playNotifier.choose(choice.nextId);
+}
+
+/// Presents a hub node's non-main choices — shops, fights/skill checks, and
+/// people to talk to — as grouped "village" sections (a Rest option, then a
+/// Card per choice under a section header) instead of piling them into the
+/// same flat button list as the node's main branches. Reuses
+/// [_selectChoice] for the actual effect/routing logic, so a categorized
+/// card behaves exactly like a [_ChoiceButton] would have.
+class _HubSections extends ConsumerWidget {
+  const _HubSections({
+    required this.choices,
+    required this.story,
+    required this.session,
+    required this.currentNodeId,
+    required this.isExcursion,
+    required this.french,
+  });
+
+  final List<StoryChoice> choices;
+  final StoryData story;
+  final PlayerSession session;
+  final String currentNodeId;
+  final bool isExcursion;
+  final bool french;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final shops =
+        choices.where((c) => _hubCategoryFor(c) == _HubCategory.shop).toList();
+    final challenges = choices
+        .where((c) => _hubCategoryFor(c) == _HubCategory.challenge)
+        .toList();
+    final people = choices
+        .where((c) => _hubCategoryFor(c) == _HubCategory.people)
+        .toList();
+
+    Widget section(String title, List<StoryChoice> items) {
+      if (items.isEmpty) return const SizedBox.shrink();
+      return Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(title, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            for (final choice in items)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _HubChoiceCard(
+                  choice: choice,
+                  story: story,
+                  session: session,
+                  currentNodeId: currentNodeId,
+                  isExcursion: isExcursion,
+                  french: french,
+                ),
+              ),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          OutlinedButton.icon(
+            onPressed: () async {
+              await ref.read(playerSessionProvider.notifier).healPartyToFull();
+              if (!context.mounted) return;
+              showImmersiveNotice(
+                context,
+                icon: Icons.local_fire_department,
+                message: tr(ref, 'party_rested_message'),
+              );
+            },
+            icon: const Icon(Icons.local_fire_department_outlined),
+            label: Text(tr(ref, 'rest_button')),
+          ),
+          // A hub node can carry a lot of categorized choices (up to a
+          // dozen), and the choice area below the narration isn't itself
+          // scrollable -- without its own cap this can overflow the
+          // screen on shorter devices. Capping and scrolling just this
+          // block keeps the Rest button and the node's own main choices
+          // (rendered above this widget) always on screen.
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 320),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  section(tr(ref, 'hub_shops_section'), shops),
+                  section(tr(ref, 'hub_challenges_section'), challenges),
+                  section(tr(ref, 'hub_people_section'), people),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A single card within a [_HubSections] section — the categorized,
+/// icon-led counterpart to [_ChoiceButton], reached only for choices a
+/// hub node sorted out of its main list.
+class _HubChoiceCard extends ConsumerWidget {
+  const _HubChoiceCard({
+    required this.choice,
+    required this.story,
+    required this.session,
+    required this.currentNodeId,
+    required this.isExcursion,
+    required this.french,
+  });
+
+  final StoryChoice choice;
+  final StoryData story;
+  final PlayerSession session;
+  final String currentNodeId;
+  final bool isExcursion;
+  final bool french;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locked = _isChoiceLocked(choice, story, session, isExcursion);
+    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final label = (lockedLabel?.isNotEmpty ?? false)
+        ? lockedLabel!
+        : choice.textFor(french);
+
+    if (choice.triggersCombat) {
+      // Keep the enemies database warm so it's ready by the time this
+      // card is tapped.
+      ref.watch(gameDbProvider(enemiesSchema));
+    }
+
+    final subtitle = choice.hasAbilityCheck
+        ? '${tr(ref, '${choice.checkAbility}_label')} DC ${choice.checkDC ?? 10}'
+        : null;
+
+    return Card(
+      child: ListTile(
+        leading: Icon(_hubIconFor(choice)),
+        title: Text(label),
+        subtitle: subtitle != null ? Text(subtitle) : null,
+        trailing: Icon(locked ? Icons.lock_outline : Icons.chevron_right),
+        onTap: locked
+            ? null
+            : () => _selectChoice(
+                  context: context,
+                  ref: ref,
+                  choice: choice,
+                  story: story,
+                  session: session,
+                  currentNodeId: currentNodeId,
+                  isExcursion: isExcursion,
+                  french: french,
+                ),
+      ),
+    );
+  }
 }
 
 /// Fade + subtle upward slide used whenever the story advances to a
@@ -588,178 +991,16 @@ class _ChoiceButton extends ConsumerWidget {
     return ElevatedButton(
       onPressed: locked
           ? null
-          : () async {
-              var skipRewardEffects = false;
-              if (choice.hasAbilityCheck) {
-                bool success;
-                if (choice.hasSkillChallenge) {
-                  final challengeResult =
-                      await Navigator.of(context).push<bool>(MaterialPageRoute(
-                    builder: (_) => SkillChallengeScreen(
-                      promptText: choice.textFor(french),
-                      ability: choice.checkAbility!,
-                      dc: choice.checkDC ?? 10,
-                      successesNeeded: choice.challengeSuccessesNeeded!,
-                      maxFailures: choice.challengeMaxFailures!,
-                    ),
-                  ));
-                  if (!context.mounted) return;
-                  success = challengeResult ?? false;
-                } else {
-                  final result = rollAbilityCheck(
-                    ability: choice.checkAbility!,
-                    dc: choice.checkDC ?? 10,
-                    session: session,
-                  );
-                  final abilityLabel = tr(ref, '${result.ability}_label');
-                  final outcomeKey = result.success
-                      ? 'ability_check_success'
-                      : 'ability_check_fail';
-                  await showImmersiveNotice(
-                    context,
-                    icon: result.success ? Icons.check_circle : Icons.cancel,
-                    message: '$abilityLabel ${tr(ref, 'check_label')}: '
-                        '${result.roll} + ${result.modifier} = ${result.total} '
-                        '${tr(ref, 'vs_dc_label')} ${result.dc} — '
-                        '${tr(ref, outcomeKey)}',
-                  );
-                  if (!context.mounted) return;
-                  success = result.success;
-                }
-                if (!success) {
-                  final failTarget = choice.failNextId;
-                  if (failTarget != null &&
-                      failTarget.isNotEmpty &&
-                      !isExcursion) {
-                    if (failTarget == 'EXIT' || failTarget == 'END') {
-                      ref
-                          .read(storyPlayProvider.notifier)
-                          .restart(StoryRepository.startNodeId);
-                    } else {
-                      ref.read(storyPlayProvider.notifier).choose(failTarget);
-                    }
-                    return;
-                  }
-                  skipRewardEffects = true;
-                }
-              }
-
-              if (choice.opensCharacterCreation) {
-                await ref.read(playerSessionProvider.notifier).resetSession();
-                if (!context.mounted) return;
-                final started = await Navigator.of(context).push<bool>(
-                  MaterialPageRoute(
-                      builder: (_) => const RaceProfessionScreen()),
-                );
-                if (started != true) return;
-                // Show the guided tour once the player is back on the story
-                // view with a freshly created character, rather than on any
-                // generic "entered the app" trigger.
-                final tutorial = ref.read(tutorialProvider);
-                if (tutorial.enabled && !tutorial.seen) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (context.mounted) showTutorialOverlay(context, ref);
-                  });
-                }
-              }
-
-              if (choice.triggersCombat) {
-                final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
-                final enemy =
-                    enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
-                if (enemy != null) {
-                  ref.read(combatActiveProvider.notifier).state = true;
-                  if (!context.mounted) return;
-                  final won = await Navigator.of(context).push<bool>(
-                    MaterialPageRoute(
-                      builder: (_) => FightScreen(
-                        enemyId: choice.triggerEnemyId!,
-                        enemy: enemy,
-                      ),
-                    ),
-                  );
-                  ref.read(combatActiveProvider.notifier).state = false;
-                  if (won != true) return;
-                }
-              }
-
-              final playNotifier = ref.read(storyPlayProvider.notifier);
-              if (choice.hasEffects && !skipRewardEffects) {
-                ref.read(playerSessionProvider.notifier).applyChoiceEffects(
-                      goldMod: choice.goldMod,
-                      alignmentMod: choice.alignmentMod,
-                      healAmount: choice.healAmount,
-                      flagsToAdd: choice.flagsToAdd,
-                      questIDToProgress: choice.questIDToProgress,
-                    );
-              }
-              if (choice.hasUnlocks) {
-                await ref.read(playerSessionProvider.notifier).unlockContent(
-                      shopId: choice.unlockShopId,
-                      questId: choice.unlockQuestId,
-                      enemyId: choice.triggerEnemyId,
-                      shopUnlockNodeId: currentNodeId,
-                    );
-                if ((choice.unlockShopId ?? '').isNotEmpty) {
-                  // Silent — no popup here (the discovery modal below already
-                  // covers "something new happened"); the Achievements
-                  // screen is where this becomes visible.
-                  await ref
-                      .read(playerSessionProvider.notifier)
-                      .checkAchievements();
-                }
-                final newShopId = choice.unlockShopId ?? '';
-                final newQuestId = choice.unlockQuestId ?? '';
-                if (!isExcursion &&
-                    (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
-                  ref.read(pendingDiscoveryProvider.notifier).state =
-                      PendingDiscovery(
-                    shopId: newShopId.isNotEmpty ? newShopId : null,
-                    questId: newQuestId.isNotEmpty ? newQuestId : null,
-                  );
-                }
-              }
-
-              if (isExcursion) {
-                playNotifier.advanceExcursion();
-                return;
-              }
-
-              if (choice.isEnding) {
-                playNotifier.restart(StoryRepository.startNodeId);
-                return;
-              }
-
-              final chapter = chapterForNode(currentNodeId);
-              if (chapter != null && !choice.opensCharacterCreation) {
-                final shops =
-                    ref.read(gameDbProvider(shopsSchema)).value ?? const {};
-                final enemies =
-                    ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
-                final quests =
-                    ref.read(gameDbProvider(questsSchema)).value ?? const {};
-                final manualTheme = ref.read(mapThemeProvider);
-                final resolvedTheme = manualTheme ??
-                    mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
-                final excursion = SubNodeEngine.maybeGenerate(
-                  random: Random(),
-                  chapter: chapter,
-                  shops: shops,
-                  enemies: enemies,
-                  quests: quests,
-                  unlockedShopIds: session.unlockedShopIds,
-                  unlockedEnemyIds: session.unlockedEnemyIds,
-                  unlockedQuestIds: session.unlockedQuestIds,
-                  completedQuestIds: session.completedQuestIds,
-                  theme: resolvedTheme,
-                );
-                if (excursion != null) {
-                  playNotifier.startExcursion(excursion, choice.nextId);
-                  return;
-                }
-              }
-              playNotifier.choose(choice.nextId);
-            },
+          : () => _selectChoice(
+                context: context,
+                ref: ref,
+                choice: choice,
+                story: story,
+                session: session,
+                currentNodeId: currentNodeId,
+                isExcursion: isExcursion,
+                french: french,
+              ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: choice.hasAbilityCheck

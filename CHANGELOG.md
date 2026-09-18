@@ -8,6 +8,21 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.93.0+121]
+
+Over-branched story nodes (10-12 choices piled into one flat button list)
+now present like a village instead of a wall of text.
+
+### Changed
+- **Nodes with more than 5 choices** (currently 2010, 2015, 3005) now split
+  their non-core choices — shops, fights/skill checks, and people to talk
+  to — into categorized "Shops" / "Challenges" / "People" sections with a
+  Rest option, rendered as icon-led cards below the node's own main
+  branches, instead of one long list of identical-looking buttons. Nodes
+  with 5 or fewer choices are unchanged. All existing choice logic (ability
+  checks, combat, unlocks, routing) is shared via one extracted function,
+  so the new cards behave exactly like the buttons they replace.
+
 ## [1.92.0+120]
 
 Chapter 1 follow-up to the Town Hub/Camp redesign: two of Chapter 1's own

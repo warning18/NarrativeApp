@@ -2391,6 +2391,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Allez dans les paramètres à tout moment pour ajuster le mode sombre, la '
             "narration vocale, et plus encore — y compris m'activer ou me désactiver.",
   },
+  'hub_shops_section': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Commerces'},
+  'hub_challenges_section': {
+    AppLanguage.en: 'Challenges',
+    AppLanguage.fr: 'Défis',
+  },
+  'hub_people_section': {AppLanguage.en: 'People', AppLanguage.fr: 'Habitants'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value
