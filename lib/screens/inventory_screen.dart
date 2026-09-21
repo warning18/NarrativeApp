@@ -5,6 +5,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -189,6 +190,37 @@ List<CompareRow> itemCompareRows(
   ];
 }
 
+/// "10 STR, 4 CON" style summary of an item's reqStrength/reqDexterity/
+/// reqConstitution/reqIntelligence fields (only the nonzero ones) — shown
+/// wherever an unmet requirement needs explaining.
+String requirementSummary(Map<String, dynamic>? item, AppLanguage lang) {
+  int req(String key) => (item?[key] as num?)?.toInt() ?? 0;
+  final parts = <String>[
+    if (req('reqStrength') > 0)
+      '${req('reqStrength')} ${trFor(lang, 'str_abbrev')}',
+    if (req('reqDexterity') > 0)
+      '${req('reqDexterity')} ${trFor(lang, 'dex_abbrev')}',
+    if (req('reqConstitution') > 0)
+      '${req('reqConstitution')} ${trFor(lang, 'con_abbrev')}',
+    if (req('reqIntelligence') > 0)
+      '${req('reqIntelligence')} ${trFor(lang, 'int_abbrev')}',
+  ];
+  return parts.join(', ');
+}
+
+/// The scaling stat's display abbreviation (e.g. "strength" -> "STR"), or
+/// null if [item] doesn't scale with anything.
+String? scalingStatAbbrev(Map<String, dynamic>? item, AppLanguage lang) {
+  final key = switch (item?['scalingStat']?.toString() ?? '') {
+    'strength' => 'str_abbrev',
+    'dexterity' => 'dex_abbrev',
+    'constitution' => 'con_abbrev',
+    'intelligence' => 'int_abbrev',
+    _ => null,
+  };
+  return key == null ? null : trFor(lang, key);
+}
+
 class _InventoryBody extends ConsumerWidget {
   const _InventoryBody({
     required this.items,
@@ -225,6 +257,42 @@ class _InventoryBody extends ConsumerWidget {
             orElse: () => AllyState(companionId: allyId!, currentHealth: 0),
           )
         : null;
+
+    // Whichever character is actually being equipped -- the player, or (when
+    // allyId is set) the ally's own race/profession-derived ability scores
+    // (see deriveAllyBaseStats) -- gates and scales gear identically either
+    // way, via the same pure helpers combat already uses.
+    int equipperStrength = session.strength;
+    int equipperDexterity = session.dexterity;
+    int equipperConstitution = session.constitution;
+    int equipperIntelligence = session.intelligence;
+    if (allyId != null) {
+      final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+      final professions =
+          ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+      final gameConfig = ref.watch(gameConfigProvider).value ?? const {};
+      final race = races[companion?['raceId']?.toString() ?? '']
+              as Map<String, dynamic>? ??
+          const {};
+      final profession =
+          professions[companion?['professionId']?.toString() ?? '']
+                  as Map<String, dynamic>? ??
+              const {};
+      final allyBase = deriveAllyBaseStats(
+          gameConfig: gameConfig, race: race, profession: profession);
+      equipperStrength = allyBase.strength;
+      equipperDexterity = allyBase.dexterity;
+      equipperConstitution = allyBase.constitution;
+      equipperIntelligence = allyBase.intelligence;
+    }
+
+    bool canEquip(String itemId) => meetsItemStatRequirement(
+          items[itemId] as Map<String, dynamic>?,
+          strength: equipperStrength,
+          dexterity: equipperDexterity,
+          constitution: equipperConstitution,
+          intelligence: equipperIntelligence,
+        );
 
     void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
@@ -316,7 +384,7 @@ class _InventoryBody extends ConsumerWidget {
                     onPressed: candidates.isEmpty
                         ? null
                         : () => _pickForSlot(context, ref, slot, candidates,
-                            equippedId, equipFn),
+                            equippedId, equipFn, canEquip),
                   ),
                 ],
               ),
@@ -356,10 +424,11 @@ class _InventoryBody extends ConsumerWidget {
               compareMode: compareMode,
               selectedForCompare: firstCompareId == id,
               onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable && !isEquipped)
+              onEquip: (isEquippable && !isEquipped && canEquip(id))
                   ? () => equipFn(id, slot: equipSlot)
                   : null,
               onUnequip: isEquipped ? () => unequipFn(id) : null,
+              requirementUnmet: isEquippable && !isEquipped && !canEquip(id),
             );
           }),
       ],
@@ -407,7 +476,9 @@ class _InventoryBody extends ConsumerWidget {
     List<String> candidates,
     String? currentlyEquippedId,
     void Function(String itemId, {String? slot}) equipFn,
+    bool Function(String itemId) canEquip,
   ) {
+    final lang = ref.read(appLanguageProvider);
     return showModalBottomSheet<void>(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -416,15 +487,25 @@ class _InventoryBody extends ConsumerWidget {
           children: candidates.map((id) {
             final item = items[id] as Map<String, dynamic>?;
             final itemName = item?['itemName']?.toString() ?? id;
+            final equippable = canEquip(id);
             return ListTile(
               leading: Icon(itemIcon(id, item?['itemType']?.toString())),
               title: Text(itemName),
+              subtitle: equippable
+                  ? null
+                  : Text(
+                      '${trFor(lang, 'stat_requirement_label')}: '
+                      '${requirementSummary(item, lang)}',
+                    ),
+              enabled: equippable,
               trailing:
                   id == currentlyEquippedId ? const Icon(Icons.check) : null,
-              onTap: () {
-                equipFn(id, slot: slot);
-                Navigator.of(sheetContext).pop();
-              },
+              onTap: !equippable
+                  ? null
+                  : () {
+                      equipFn(id, slot: slot);
+                      Navigator.of(sheetContext).pop();
+                    },
             );
           }).toList(),
         ),
@@ -447,6 +528,7 @@ class _ItemTile extends StatelessWidget {
     this.onCompareTap,
     this.onEquip,
     this.onUnequip,
+    this.requirementUnmet = false,
   });
 
   final String itemId;
@@ -465,6 +547,12 @@ class _ItemTile extends StatelessWidget {
   final VoidCallback? onCompareTap;
   final VoidCallback? onEquip;
   final VoidCallback? onUnequip;
+
+  /// True when this item is equippable, not already equipped, but the
+  /// equipping character's ability scores don't meet its
+  /// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate — shows
+  /// why the equip action is unavailable instead of just hiding it.
+  final bool requirementUnmet;
 
   /// Formats [value], appending a "(+n)"/"(-n)" delta against
   /// [comparisonItem]'s value for the same stat when one is set.
@@ -487,6 +575,9 @@ class _ItemTile extends StatelessWidget {
     final armor = (item?['armor'] as num?)?.toInt() ?? 0;
     String t(String key) => trFor(language, key);
     final colorScheme = Theme.of(context).colorScheme;
+    final scalingAbbrev = scalingStatAbbrev(item, language);
+    final requirementText =
+        requirementUnmet ? requirementSummary(item, language) : null;
 
     final statsParts = <String>[
       if (itemType != null) itemType,
@@ -494,6 +585,9 @@ class _ItemTile extends StatelessWidget {
         '${t('equipped_prefix')}: $equipSlot',
       if (attackDamage > 0) '${t('atk_abbrev')} +$attackDamage',
       if (armor > 0) '${t('arm_abbrev')} +$armor',
+      if (scalingAbbrev != null) '${t('scales_with_label')}: $scalingAbbrev',
+      if (requirementText != null && requirementText.isNotEmpty)
+        '${t('stat_requirement_label')}: $requirementText',
       if (count != null && count! > 1) 'x$count',
       if (comparisonItem != null)
         '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',
@@ -518,7 +612,10 @@ class _ItemTile extends StatelessWidget {
                         onUnequip != null ? t('unequip') : t('equip_button'),
                     onPressed: onUnequip ?? onEquip,
                   )
-                : null,
+                : requirementUnmet
+                    ? Icon(Icons.lock_outline,
+                        color: colorScheme.onSurfaceVariant)
+                    : null,
         onTap: compareMode
             ? onCompareTap
             : () => showDetailDialog(
@@ -535,6 +632,10 @@ class _ItemTile extends StatelessWidget {
                     MapEntry(
                         t('attack_damage_label'), _statValue('attackDamage')),
                     MapEntry(t('armor_label'), _statValue('armor')),
+                    if (scalingAbbrev != null)
+                      MapEntry(t('scales_with_label'), scalingAbbrev),
+                    if (requirementText != null && requirementText.isNotEmpty)
+                      MapEntry(t('stat_requirement_label'), requirementText),
                     for (final entry in {
                       'fireDmgBonus': t('fire_dmg_label'),
                       'windDmgBonus': t('wind_dmg_label'),

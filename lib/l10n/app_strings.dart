@@ -520,33 +520,44 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'strength_desc': {
     AppLanguage.en: 'Backs Strength checks on story choices — forcing your way '
-        'through, moving what won\'t move.',
+        'through, moving what won\'t move. Also boosts damage on '
+        'Strength-scaling weapons like swords and spears, and unlocks the '
+        'heaviest ones.',
     AppLanguage.fr:
         'Intervient dans les jets de Force des choix narratifs — forcer '
-            'un passage, déplacer ce qui ne bouge pas.',
+            'un passage, déplacer ce qui ne bouge pas. Augmente aussi les '
+            'dégâts des armes liées à la Force (épées, lances) et débloque '
+            'les plus lourdes.',
   },
   'dexterity_desc': {
     AppLanguage.en: 'Backs Dexterity checks on story choices — picking locks, '
-        'staying light on your feet.',
+        'staying light on your feet. Also boosts damage on Dexterity-scaling '
+        'weapons like daggers.',
     AppLanguage.fr:
         'Intervient dans les jets de Dextérité des choix narratifs — '
-            'crocheter une serrure, rester agile.',
+            'crocheter une serrure, rester agile. Augmente aussi les dégâts '
+            'des armes liées à la Dextérité (dagues).',
   },
   'constitution_desc': {
     AppLanguage.en:
         'Backs Constitution checks on story choices — enduring what '
-            'would stop most people.',
+            'would stop most people. Also boosts the armor of '
+            'Constitution-scaling shields, and unlocks the heaviest gear.',
     AppLanguage.fr:
         'Intervient dans les jets de Constitution des choix narratifs — '
-            'endurer ce qui arrêterait la plupart des gens.',
+            'endurer ce qui arrêterait la plupart des gens. Augmente aussi '
+            'l\'armure des boucliers liés à la Constitution et débloque '
+            'l\'équipement le plus lourd.',
   },
   'intelligence_desc': {
     AppLanguage.en:
         'Backs Intelligence checks on story choices — puzzling things '
-            'out, reading what others missed.',
+            'out, reading what others missed. Also boosts damage on '
+            'Intelligence-scaling weapons like staves.',
     AppLanguage.fr:
         'Intervient dans les jets d\'Intelligence des choix narratifs — '
-            'comprendre ce que d\'autres ont manqué.',
+            'comprendre ce que d\'autres ont manqué. Augmente aussi les '
+            'dégâts des armes liées à l\'Intelligence (bâtons).',
   },
   'wisdom_desc': {
     AppLanguage.en:
@@ -846,6 +857,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'con_abbrev': {AppLanguage.en: 'CON', AppLanguage.fr: 'CON'},
   'int_abbrev': {AppLanguage.en: 'INT', AppLanguage.fr: 'INT'},
   'wis_abbrev': {AppLanguage.en: 'WIS', AppLanguage.fr: 'SAG'},
+  'stat_requirement_label': {
+    AppLanguage.en: 'Requires',
+    AppLanguage.fr: 'Requiert',
+  },
+  'scales_with_label': {
+    AppLanguage.en: 'Scales with',
+    AppLanguage.fr: 'Évolue avec',
+  },
   'level_field_label': {AppLanguage.en: 'Level', AppLanguage.fr: 'Niveau'},
   'experience_label': {
     AppLanguage.en: 'Experience',

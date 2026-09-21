@@ -112,11 +112,27 @@ class AllyBaseStats {
     required this.maxHealth,
     required this.baseDamage,
     required this.baseArmor,
+    required this.strength,
+    required this.dexterity,
+    required this.constitution,
+    required this.intelligence,
   });
 
   final int maxHealth;
   final int baseDamage;
   final int baseArmor;
+
+  /// Ability scores, derived the same additive way as the player's own (see
+  /// `PlayerSessionNotifier.startNewGame`) -- feed [equipmentScalingBonusFor]
+  /// and [meetsItemStatRequirement] so an ally's gear scales with, and is
+  /// gated by, their own race/profession-derived scores, exactly like the
+  /// player. Wisdom/Luck/Charisma aren't included: they don't affect combat
+  /// for the player either (see [PlayerSession]'s doc comment), so an ally
+  /// has no use for them.
+  final int strength;
+  final int dexterity;
+  final int constitution;
+  final int intelligence;
 }
 
 AllyBaseStats deriveAllyBaseStats({
@@ -136,6 +152,18 @@ AllyBaseStats deriveAllyBaseStats({
     baseArmor: ((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusBaseArmor') +
         bonus(profession, 'bonusBaseArmor'),
+    strength: ((gameConfig['strength'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusStrength') +
+        bonus(profession, 'bonusStrength'),
+    dexterity: ((gameConfig['dexterity'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusDexterity') +
+        bonus(profession, 'bonusDexterity'),
+    constitution: ((gameConfig['constitution'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusConstitution') +
+        bonus(profession, 'bonusConstitution'),
+    intelligence: ((gameConfig['intelligence'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusIntelligence') +
+        bonus(profession, 'bonusIntelligence'),
   );
 }
 
@@ -154,4 +182,69 @@ int equipmentBonusFor(
     bonus += (item?[bonusField] as num?)?.toInt() ?? 0;
   }
   return bonus;
+}
+
+/// The extra attackDamage/armor an equipped-item list contributes on top of
+/// its own flat bonuses, from each item's `scalingStat` (e.g. a staff
+/// scaling with Intelligence). Only ever adds — a low or negative stat never
+/// subtracts below an item's flat value, so picking up gear your build
+/// doesn't favor never actively hurts, it just doesn't reach its full
+/// potential. The modifier is the classic D&D-style ability-score halving
+/// (`stat ~/ 2`), matching the doc comment on [PlayerSession]'s ability
+/// scores.
+class EquipmentScalingBonus {
+  const EquipmentScalingBonus({this.damageBonus = 0, this.armorBonus = 0});
+
+  final int damageBonus;
+  final int armorBonus;
+}
+
+EquipmentScalingBonus equipmentScalingBonusFor(
+  List<String> equippedItemIds,
+  Map<String, dynamic> items, {
+  required int strength,
+  required int dexterity,
+  required int constitution,
+  required int intelligence,
+}) {
+  var damageBonus = 0;
+  var armorBonus = 0;
+  for (final id in equippedItemIds) {
+    final item = items[id] as Map<String, dynamic>?;
+    final scalingStat = item?['scalingStat']?.toString() ?? '';
+    if (scalingStat.isEmpty) continue;
+    final statValue = switch (scalingStat) {
+      'strength' => strength,
+      'dexterity' => dexterity,
+      'constitution' => constitution,
+      'intelligence' => intelligence,
+      _ => 0,
+    };
+    final modifier = statValue ~/ 2;
+    if (modifier <= 0) continue;
+    if (((item?['attackDamage'] as num?) ?? 0) > 0) damageBonus += modifier;
+    if (((item?['armor'] as num?) ?? 0) > 0) armorBonus += modifier;
+  }
+  return EquipmentScalingBonus(
+      damageBonus: damageBonus, armorBonus: armorBonus);
+}
+
+/// Whether the equipping character's own ability scores meet [item]'s
+/// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate, if it has
+/// one — e.g. a heavy sword's top tiers require both Strength and
+/// Constitution. An item with no requirement fields set (the common case —
+/// most gear, and every early weapon tier) is always equippable.
+bool meetsItemStatRequirement(
+  Map<String, dynamic>? item, {
+  required int strength,
+  required int dexterity,
+  required int constitution,
+  required int intelligence,
+}) {
+  if (item == null) return true;
+  int req(String key) => (item[key] as num?)?.toInt() ?? 0;
+  return strength >= req('reqStrength') &&
+      dexterity >= req('reqDexterity') &&
+      constitution >= req('reqConstitution') &&
+      intelligence >= req('reqIntelligence');
 }

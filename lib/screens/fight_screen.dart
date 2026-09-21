@@ -178,6 +178,10 @@ class _PartyMember {
     required this.diceSkillAssignments,
     required this.equippedDiceId,
     this.skillTiers = const {},
+    this.strength = 0,
+    this.dexterity = 0,
+    this.constitution = 0,
+    this.intelligence = 0,
   });
 
   final String id;
@@ -188,6 +192,14 @@ class _PartyMember {
   final int armor;
   final List<String> equippedItemIds;
   final List<String> unlockedSkillIds;
+
+  /// Ability scores, used only to resolve each equipped item's own
+  /// `scalingStat` bonus (see [equipmentScalingBonusFor]) — not part of the
+  /// die-roll math itself, exactly like [PlayerSession]'s own scores.
+  final int strength;
+  final int dexterity;
+  final int constitution;
+  final int intelligence;
 
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
@@ -347,6 +359,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
       skillTiers: session.skillTiers,
+      strength: session.strength,
+      dexterity: session.dexterity,
+      constitution: session.constitution,
+      intelligence: session.intelligence,
     );
 
     final activeAllies = <_PartyMember>[];
@@ -381,6 +397,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
         unlockedSkillIds: allyState.unlockedSkillIds,
         diceSkillAssignments: allyState.diceSkillAssignments,
         equippedDiceId: companion['signatureDiceId']?.toString(),
+        strength: base.strength,
+        dexterity: base.dexterity,
+        constitution: base.constitution,
+        intelligence: base.intelligence,
       ));
     }
 
@@ -510,8 +530,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final element = _elementFor(face, availableSkills);
       final elementalBonus =
           _elementalDamageBonus(element, actor.equippedItemIds, items);
+      final scalingBonus = equipmentScalingBonusFor(
+        actor.equippedItemIds,
+        items,
+        strength: actor.strength,
+        dexterity: actor.dexterity,
+        constitution: actor.constitution,
+        intelligence: actor.intelligence,
+      );
       final totalDamage = actor.baseDamage +
           equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+          scalingBonus.damageBonus +
           elementalBonus;
       final result = resolvePlayerFace(
         face,
@@ -696,8 +725,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
     // the player is always conscious here (their own knockout already ends
     // the fight via _finishFight before another enemy turn could start).
     final target = conscious[_random.nextInt(conscious.length)];
+    final targetScalingBonus = equipmentScalingBonusFor(
+      target.equippedItemIds,
+      items,
+      strength: target.strength,
+      dexterity: target.dexterity,
+      constitution: target.constitution,
+      intelligence: target.intelligence,
+    );
     final totalArmor = target.armor +
-        equipmentBonusFor(target.equippedItemIds, items, 'armor');
+        equipmentBonusFor(target.equippedItemIds, items, 'armor') +
+        targetScalingBonus.armorBonus;
     final elementalResist =
         _elementalResist(move.element, target.equippedItemIds, items);
     final damageTaken =
@@ -938,10 +976,20 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
     final player = _party.first;
+    final playerScalingBonus = equipmentScalingBonusFor(
+      player.equippedItemIds,
+      items,
+      strength: player.strength,
+      dexterity: player.dexterity,
+      constitution: player.constitution,
+      intelligence: player.intelligence,
+    );
     final damageBonus =
-        equipmentBonusFor(player.equippedItemIds, items, 'attackDamage');
+        equipmentBonusFor(player.equippedItemIds, items, 'attackDamage') +
+            playerScalingBonus.damageBonus;
     final armorBonus =
-        equipmentBonusFor(player.equippedItemIds, items, 'armor');
+        equipmentBonusFor(player.equippedItemIds, items, 'armor') +
+            playerScalingBonus.armorBonus;
     final equippedDie = _selectedDiceId != null
         ? dice[_selectedDiceId] as Map<String, dynamic>?
         : null;
@@ -1224,10 +1272,20 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   Widget _buildMemberHealthBar(
       _PartyMember member, Map<String, dynamic> items) {
+    final memberScalingBonus = equipmentScalingBonusFor(
+      member.equippedItemIds,
+      items,
+      strength: member.strength,
+      dexterity: member.dexterity,
+      constitution: member.constitution,
+      intelligence: member.intelligence,
+    );
     final armorBonus =
-        equipmentBonusFor(member.equippedItemIds, items, 'armor');
+        equipmentBonusFor(member.equippedItemIds, items, 'armor') +
+            memberScalingBonus.armorBonus;
     final damageBonus =
-        equipmentBonusFor(member.equippedItemIds, items, 'attackDamage');
+        equipmentBonusFor(member.equippedItemIds, items, 'attackDamage') +
+            memberScalingBonus.damageBonus;
     final label = member.displayName;
     final bar = _HealthBar(
       label: member.isKnockedOut
@@ -1283,8 +1341,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final availableSkills = _availableSkillsFor(actor, skills);
       final elementalBonus = _elementalDamageBonus(
           _elementFor(face, availableSkills), actor.equippedItemIds, items);
+      final previewScalingBonus = equipmentScalingBonusFor(
+        actor.equippedItemIds,
+        items,
+        strength: actor.strength,
+        dexterity: actor.dexterity,
+        constitution: actor.constitution,
+        intelligence: actor.intelligence,
+      );
       final totalDamage = actor.baseDamage +
           equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+          previewScalingBonus.damageBonus +
           elementalBonus;
       final preview = resolvePlayerFace(
         face,

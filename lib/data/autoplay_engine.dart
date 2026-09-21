@@ -4,7 +4,8 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
-import '../models/ally_state.dart' show equipmentBonusFor;
+import '../models/ally_state.dart'
+    show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
@@ -151,10 +152,20 @@ Future<bool> _simulateFight({
       const [];
   if (diceFaces.isEmpty) return false;
 
+  final playerScalingBonus = equipmentScalingBonusFor(
+    session.equippedItemIds,
+    items,
+    strength: session.strength,
+    dexterity: session.dexterity,
+    constitution: session.constitution,
+    intelligence: session.intelligence,
+  );
   final playerDamage = session.baseDamage +
-      equipmentBonusFor(session.equippedItemIds, items, 'attackDamage');
+      equipmentBonusFor(session.equippedItemIds, items, 'attackDamage') +
+      playerScalingBonus.damageBonus;
   final playerArmor = session.baseArmor +
-      equipmentBonusFor(session.equippedItemIds, items, 'armor');
+      equipmentBonusFor(session.equippedItemIds, items, 'armor') +
+      playerScalingBonus.armorBonus;
   final assignments = session.diceSkillAssignments[session.equippedDiceId] ??
       const <String, String>{};
 

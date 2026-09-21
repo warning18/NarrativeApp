@@ -56,6 +56,16 @@ const List<String> itemTypeOptions = [
   'Artifact',
 ];
 
+/// The ability score an equippable item's flat attackDamage/armor scales
+/// with -- e.g. a staff scales with Intelligence, a sword with Strength.
+/// Empty means the item doesn't scale (most Armor-slot pieces).
+const List<String> statScalingOptions = [
+  'strength',
+  'dexterity',
+  'constitution',
+  'intelligence',
+];
+
 const List<String> equipSlotOptions = [
   'Head',
   'Top',
@@ -244,6 +254,32 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(
         key: 'lightResist',
         label: 'Light Resist',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+      key: 'scalingStat',
+      label: 'Damage/Armor Scales With',
+      type: FieldType.enumeration,
+      enumOptions: statScalingOptions,
+    ),
+    FieldSchema(
+        key: 'reqStrength',
+        label: 'Requires Strength',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'reqDexterity',
+        label: 'Requires Dexterity',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'reqConstitution',
+        label: 'Requires Constitution',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'reqIntelligence',
+        label: 'Requires Intelligence',
         type: FieldType.integer,
         defaultValue: 0),
     visualAssetFieldSchema('items'),

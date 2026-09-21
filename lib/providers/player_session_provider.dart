@@ -112,8 +112,15 @@ class PlayerSession {
   /// [charisma]. Each feeds `rollAbilityCheck` (see ability_check.dart) as
   /// a flat bonus on a d20 roll for `StoryChoice.checkAbility` — story
   /// choices phrased as an attempt ("Force the door", "Talk your way
-  /// past") rather than a hard gate. Not used in combat; [baseDamage] and
-  /// [baseArmor] remain the only stats that affect a fight.
+  /// past") rather than a hard gate. [baseDamage]/[baseArmor] remain the
+  /// only stats the die-roll math itself reads directly, but Strength/
+  /// Dexterity/Constitution/Intelligence also matter in a fight indirectly,
+  /// through gear: an equipped item's own `scalingStat` (see
+  /// `equipmentScalingBonusFor` in ally_state.dart) adds `stat ~/ 2` on top
+  /// of its flat attackDamage/armor, and some items gate equipping behind a
+  /// minimum score (`meetsItemStatRequirement`) — a staff rewards
+  /// Intelligence, a sword rewards Strength, matching whichever build
+  /// actually wields it. Wisdom has no combat tie-in of any kind.
   final int strength;
   final int dexterity;
   final int constitution;

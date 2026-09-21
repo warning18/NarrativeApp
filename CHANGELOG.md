@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.96.0+124]
+
+Gear that actually cares who's wielding it: weapons now scale with your
+ability scores, and the heaviest ones require enough of them to wield at all.
+
+### Added
+- **Ability-score weapon/shield scaling.** Every sword, spear, dagger,
+  staff, and shield now declares which ability score it scales with
+  (Strength for sword/spear, Dexterity for dagger, Intelligence for staff,
+  Constitution for shield), adding `stat ~/ 2` on top of its flat
+  attackDamage (or armor, for shields) — a Mage's staff hits harder with
+  Intelligence, a Warrior's sword with Strength, without any profession-
+  specific code: the effect is entirely driven by which weapon type is
+  equipped. Never subtracts below an item's flat value, so an off-build
+  weapon just doesn't reach its full potential. Applies to allies' own
+  equipment too, scaled off their race/profession-derived scores.
+- **Stat-gated equipment requirements.** The heaviest three tiers of every
+  sword and spear now require both Strength and Constitution to equip (a
+  "heavy sword" needs the power to swing it and the stamina to keep
+  swinging); daggers, staves, and shields scale their own single-stat
+  requirement up through their tiers. Early-tier gear (t1-t3) stays
+  unrestricted so no build is locked out of basic equipment. The
+  Inventory/Equipment screen shows a lock icon and a "Requires: N STR, M
+  CON"-style note on anything not yet met, for both the player and any
+  ally.
+- Updated the four ability-score stat-hold explanations (Strength,
+  Dexterity, Constitution, Intelligence) to mention their new gear tie-in.
+
 ## [1.95.0+123]
 
 Hold a stat to see what it does.

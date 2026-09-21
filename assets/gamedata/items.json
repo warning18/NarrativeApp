@@ -18,7 +18,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "potion_minor": {
     "id": "potion_minor",
@@ -104,7 +109,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t1": {
     "id": "spear_t1",
@@ -125,7 +135,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t1": {
     "id": "dagger_t1",
@@ -146,7 +161,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t1": {
     "id": "shield_t1",
@@ -167,7 +187,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "staff_t1": {
     "id": "staff_t1",
@@ -188,7 +213,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "sword_t2": {
     "id": "sword_t2",
@@ -209,7 +239,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t2": {
     "id": "spear_t2",
@@ -230,7 +265,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t2": {
     "id": "dagger_t2",
@@ -251,7 +291,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t2": {
     "id": "shield_t2",
@@ -272,7 +317,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "staff_t2": {
     "id": "staff_t2",
@@ -293,7 +343,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "sword_t3": {
     "id": "sword_t3",
@@ -314,7 +369,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t3": {
     "id": "spear_t3",
@@ -335,7 +395,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t3": {
     "id": "dagger_t3",
@@ -356,7 +421,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t3": {
     "id": "shield_t3",
@@ -377,7 +447,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "staff_t3": {
     "id": "staff_t3",
@@ -398,7 +473,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "sword_t4": {
     "id": "sword_t4",
@@ -419,7 +499,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 2,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t4": {
     "id": "spear_t4",
@@ -440,7 +525,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 2,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t4": {
     "id": "dagger_t4",
@@ -461,7 +551,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 2,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t4": {
     "id": "shield_t4",
@@ -482,7 +577,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0
   },
   "staff_t4": {
     "id": "staff_t4",
@@ -503,7 +603,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 2
   },
   "sword_t5": {
     "id": "sword_t5",
@@ -524,7 +629,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 4,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t5": {
     "id": "spear_t5",
@@ -545,7 +655,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 4,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t5": {
     "id": "dagger_t5",
@@ -566,7 +681,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 3,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t5": {
     "id": "shield_t5",
@@ -587,7 +707,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 3,
+    "reqIntelligence": 0
   },
   "staff_t5": {
     "id": "staff_t5",
@@ -608,7 +733,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 3
   },
   "sword_t6": {
     "id": "sword_t6",
@@ -629,7 +759,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 6,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t6": {
     "id": "spear_t6",
@@ -650,7 +785,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 6,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t6": {
     "id": "dagger_t6",
@@ -671,7 +811,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 4,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t6": {
     "id": "shield_t6",
@@ -692,7 +837,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 4,
+    "reqIntelligence": 0
   },
   "staff_t6": {
     "id": "staff_t6",
@@ -713,7 +863,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 4
   },
   "sword_t7": {
     "id": "sword_t7",
@@ -734,7 +889,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 8,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "spear_t7": {
     "id": "spear_t7",
@@ -755,7 +915,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 8,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "dagger_t7": {
     "id": "dagger_t7",
@@ -776,7 +941,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 5,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t7": {
     "id": "shield_t7",
@@ -797,7 +967,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 5,
+    "reqIntelligence": 0
   },
   "staff_t7": {
     "id": "staff_t7",
@@ -818,7 +993,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 5
   },
   "sword_t8": {
     "id": "sword_t8",
@@ -839,7 +1019,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 10,
+    "reqDexterity": 0,
+    "reqConstitution": 4,
+    "reqIntelligence": 0
   },
   "spear_t8": {
     "id": "spear_t8",
@@ -860,7 +1045,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 10,
+    "reqDexterity": 0,
+    "reqConstitution": 4,
+    "reqIntelligence": 0
   },
   "dagger_t8": {
     "id": "dagger_t8",
@@ -881,7 +1071,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 6,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t8": {
     "id": "shield_t8",
@@ -902,7 +1097,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 6,
+    "reqIntelligence": 0
   },
   "staff_t8": {
     "id": "staff_t8",
@@ -923,7 +1123,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 6
   },
   "sword_t9": {
     "id": "sword_t9",
@@ -944,7 +1149,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 12,
+    "reqDexterity": 0,
+    "reqConstitution": 6,
+    "reqIntelligence": 0
   },
   "spear_t9": {
     "id": "spear_t9",
@@ -965,7 +1175,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 12,
+    "reqDexterity": 0,
+    "reqConstitution": 6,
+    "reqIntelligence": 0
   },
   "dagger_t9": {
     "id": "dagger_t9",
@@ -986,7 +1201,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 7,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t9": {
     "id": "shield_t9",
@@ -1007,7 +1227,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 7,
+    "reqIntelligence": 0
   },
   "staff_t9": {
     "id": "staff_t9",
@@ -1028,7 +1253,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 7
   },
   "sword_t10": {
     "id": "sword_t10",
@@ -1049,7 +1279,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 14,
+    "reqDexterity": 0,
+    "reqConstitution": 8,
+    "reqIntelligence": 0
   },
   "spear_t10": {
     "id": "spear_t10",
@@ -1070,7 +1305,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "strength",
+    "reqStrength": 14,
+    "reqDexterity": 0,
+    "reqConstitution": 8,
+    "reqIntelligence": 0
   },
   "dagger_t10": {
     "id": "dagger_t10",
@@ -1091,7 +1331,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 8,
+    "reqConstitution": 0,
+    "reqIntelligence": 0
   },
   "shield_t10": {
     "id": "shield_t10",
@@ -1112,7 +1357,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 8,
+    "reqIntelligence": 0
   },
   "staff_t10": {
     "id": "staff_t10",
@@ -1133,7 +1383,12 @@
     "windResist": 0,
     "earthResist": 0,
     "waterResist": 0,
-    "elecResist": 0
+    "elecResist": 0,
+    "scalingStat": "intelligence",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 8
   },
   "potion_major": {
     "id": "potion_major",
