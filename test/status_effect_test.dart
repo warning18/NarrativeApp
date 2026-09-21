@@ -127,6 +127,37 @@ void main() {
     });
   });
 
+  group('applyWisdomResistance', () {
+    test('shortens duration by 1 round per 5 points of Wisdom, rounded down',
+        () {
+      const effect = StatusEffect(
+          type: StatusEffectType.poison, remainingTurns: 4, magnitude: 5);
+      expect(applyWisdomResistance(effect, 10).remainingTurns, 2);
+      expect(applyWisdomResistance(effect, 7).remainingTurns, 3);
+    });
+
+    test('never drops the duration below 1 round even with very high Wisdom',
+        () {
+      const effect = StatusEffect(
+          type: StatusEffectType.stun, remainingTurns: 1, magnitude: 0);
+      expect(applyWisdomResistance(effect, 100).remainingTurns, 1);
+    });
+
+    test('zero or negative Wisdom leaves the effect unchanged', () {
+      const effect = StatusEffect(
+          type: StatusEffectType.weaken, remainingTurns: 3, magnitude: 20);
+      expect(applyWisdomResistance(effect, 0), same(effect));
+    });
+
+    test('never touches type or magnitude', () {
+      const effect = StatusEffect(
+          type: StatusEffectType.weaken, remainingTurns: 5, magnitude: 30);
+      final result = applyWisdomResistance(effect, 10);
+      expect(result.type, StatusEffectType.weaken);
+      expect(result.magnitude, 30);
+    });
+  });
+
   group('tickStatusEffects', () {
     test('decrements remainingTurns by 1', () {
       const effects = [

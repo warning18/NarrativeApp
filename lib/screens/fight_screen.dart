@@ -182,6 +182,7 @@ class _PartyMember {
     this.dexterity = 0,
     this.constitution = 0,
     this.intelligence = 0,
+    this.wisdom = 0,
   });
 
   final String id;
@@ -200,6 +201,12 @@ class _PartyMember {
   final int dexterity;
   final int constitution;
   final int intelligence;
+
+  /// Amplifies this member's own healing (see [resolvePlayerFace]'s
+  /// `wisdomHealBonus`) and shortens the duration of status effects landed
+  /// on them (see [applyWisdomResistance]) -- not part of the equipment
+  /// scaling system above, since it isn't gear-driven.
+  final int wisdom;
 
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
@@ -363,6 +370,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       dexterity: session.dexterity,
       constitution: session.constitution,
       intelligence: session.intelligence,
+      wisdom: session.wisdom,
     );
 
     final activeAllies = <_PartyMember>[];
@@ -401,6 +409,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         dexterity: base.dexterity,
         constitution: base.constitution,
         intelligence: base.intelligence,
+        wisdom: base.wisdom,
       ));
     }
 
@@ -548,6 +557,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         totalDamage,
         language: lang,
         activeEffects: actor.statusEffects,
+        wisdomHealBonus: actor.wisdom ~/ 2,
       );
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
@@ -766,8 +776,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
       final inflicted = move.inflictedStatus;
       if (inflicted != null && !target.isKnockedOut) {
-        target.statusEffects =
-            applyStatusEffect(target.statusEffects, inflicted);
+        target.statusEffects = applyStatusEffect(
+          target.statusEffects,
+          applyWisdomResistance(inflicted, target.wisdom),
+        );
         _log.add(_LogEntry(
           _statusInflictedMessage(inflicted, target.displayName, lang),
           _LogKind.info,

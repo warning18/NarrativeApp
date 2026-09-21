@@ -237,7 +237,10 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The blow lands like a landslide.",
     "restrictedRaceID": "orc",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "inflictsStatus": "Weaken",
+    "statusDuration": 2,
+    "statusMagnitude": 15
   },
   "orc_bloodlust": {
     "id": "orc_bloodlust",
@@ -419,7 +422,10 @@
     "damageMultiplier": 1.3,
     "battleMessage": "Frost bursts outward in a ring.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "mage"
+    "restrictedProfessionID": "mage",
+    "inflictsStatus": "Weaken",
+    "statusDuration": 2,
+    "statusMagnitude": 15
   },
   "mage_mana_shield": {
     "id": "mage_mana_shield",
@@ -518,7 +524,10 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The wound weeps green.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "rogue"
+    "restrictedProfessionID": "rogue",
+    "inflictsStatus": "Poison",
+    "statusDuration": 2,
+    "statusMagnitude": 4
   },
   "rogue_shadow_clone": {
     "id": "rogue_shadow_clone",
@@ -710,7 +719,10 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The trap snaps shut on cue.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "ranger"
+    "restrictedProfessionID": "ranger",
+    "inflictsStatus": "Stun",
+    "statusDuration": 1,
+    "statusMagnitude": 0
   },
   "power_strike": {
     "id": "power_strike",
@@ -1258,7 +1270,10 @@
     "damageMultiplier": 1.4,
     "battleMessage": "The golem shrugs off the flame and flings molten slag back at you!",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "inflictsStatus": "Weaken",
+    "statusDuration": 2,
+    "statusMagnitude": 10
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1274,7 +1289,10 @@
     "damageMultiplier": 1.2,
     "battleMessage": "Freezing harbor water sluices over you, and your grip goes numb!",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "inflictsStatus": "Stun",
+    "statusDuration": 1,
+    "statusMagnitude": 0
   },
   "radiant_judgment": {
     "id": "radiant_judgment",
@@ -1290,6 +1308,9 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Kroll calls down a column of searing white light!",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "inflictsStatus": "Stun",
+    "statusDuration": 1,
+    "statusMagnitude": 0
   }
 }

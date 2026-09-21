@@ -90,6 +90,20 @@ int applyWeaken(int damage, List<StatusEffect> effects) {
   return (damage * (1 - totalPercent / 100)).round();
 }
 
+/// Shortens [effect]'s duration by [wisdom]'s resistance — 1 round off per
+/// 5 points of Wisdom, rounded down. Never drops it below 1 round: Wisdom
+/// makes a status wear off faster, it doesn't grant outright immunity, so
+/// even a very high-Wisdom character still feels an affliction land.
+StatusEffect applyWisdomResistance(StatusEffect effect, int wisdom) {
+  if (wisdom <= 0) return effect;
+  final reduced = effect.remainingTurns - (wisdom ~/ 5);
+  return StatusEffect(
+    type: effect.type,
+    remainingTurns: reduced < 1 ? 1 : reduced,
+    magnitude: effect.magnitude,
+  );
+}
+
 /// Advances every effect in [effects] by one round, dropping any that have
 /// now expired. Called once per combatant per round, at the point their
 /// own turn ends — so a freshly-applied effect always gets its full stated

@@ -1,8 +1,8 @@
 {
   "slum_thug": {
     "enemyName": "slum_thug",
-    "maxHealth": 40,
-    "damage": 6,
+    "maxHealth": 46,
+    "damage": 7,
     "xpReward": 15,
     "goldReward": 10,
     "lootTable": [
@@ -39,8 +39,8 @@
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
-    "maxHealth": 80,
-    "damage": 12,
+    "maxHealth": 92,
+    "damage": 14,
     "xpReward": 45,
     "goldReward": 30,
     "lootTable": [
@@ -70,8 +70,8 @@
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
-    "maxHealth": 120,
-    "damage": 15,
+    "maxHealth": 162,
+    "damage": 20,
     "xpReward": 80,
     "goldReward": 50,
     "lootTable": [
@@ -85,8 +85,8 @@
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
-    "maxHealth": 38,
-    "damage": 5,
+    "maxHealth": 51,
+    "damage": 7,
     "xpReward": 19,
     "goldReward": 12,
     "lootTable": [
@@ -100,8 +100,8 @@
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
-    "maxHealth": 56,
-    "damage": 7,
+    "maxHealth": 64,
+    "damage": 8,
     "xpReward": 28,
     "goldReward": 19,
     "lootTable": [
@@ -119,8 +119,8 @@
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
-    "maxHealth": 74,
-    "damage": 9,
+    "maxHealth": 81,
+    "damage": 10,
     "xpReward": 37,
     "goldReward": 26,
     "lootTable": [
@@ -146,8 +146,8 @@
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
-    "maxHealth": 92,
-    "damage": 11,
+    "maxHealth": 124,
+    "damage": 15,
     "xpReward": 46,
     "goldReward": 33,
     "lootTable": [
@@ -165,8 +165,8 @@
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
-    "maxHealth": 110,
-    "damage": 13,
+    "maxHealth": 121,
+    "damage": 14,
     "xpReward": 55,
     "goldReward": 40,
     "lootTable": [
@@ -192,8 +192,8 @@
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
-    "maxHealth": 128,
-    "damage": 15,
+    "maxHealth": 173,
+    "damage": 20,
     "xpReward": 64,
     "goldReward": 47,
     "lootTable": [
@@ -223,8 +223,8 @@
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
-    "maxHealth": 146,
-    "damage": 17,
+    "maxHealth": 197,
+    "damage": 23,
     "xpReward": 73,
     "goldReward": 54,
     "lootTable": [
@@ -254,8 +254,8 @@
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
-    "maxHealth": 164,
-    "damage": 19,
+    "maxHealth": 180,
+    "damage": 21,
     "xpReward": 82,
     "goldReward": 61,
     "lootTable": [
@@ -289,8 +289,8 @@
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
-    "maxHealth": 182,
-    "damage": 21,
+    "maxHealth": 200,
+    "damage": 23,
     "xpReward": 91,
     "goldReward": 68,
     "lootTable": [
@@ -308,7 +308,7 @@
         "skillID": "void_blast",
         "condition": "Chance",
         "requiredElement": "Void",
-        "chance": 35,
+        "chance": 25,
         "healthThreshold": 0,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
@@ -319,7 +319,7 @@
         "skillID": "shadow_step",
         "condition": "OnLowHealth",
         "requiredElement": "Wind",
-        "chance": 60,
+        "chance": 40,
         "healthThreshold": 30,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
@@ -342,8 +342,8 @@
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
-    "maxHealth": 150,
-    "damage": 17,
+    "maxHealth": 165,
+    "damage": 19,
     "xpReward": 100,
     "goldReward": 75,
     "lootTable": [
@@ -384,8 +384,8 @@
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
-    "maxHealth": 145,
-    "damage": 18,
+    "maxHealth": 196,
+    "damage": 24,
     "xpReward": 70,
     "goldReward": 55,
     "lootTable": [
@@ -514,8 +514,8 @@
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
-    "maxHealth": 85,
-    "damage": 10,
+    "maxHealth": 115,
+    "damage": 14,
     "xpReward": 40,
     "goldReward": 28,
     "lootTable": [
@@ -549,8 +549,8 @@
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
-    "maxHealth": 95,
-    "damage": 12,
+    "maxHealth": 105,
+    "damage": 13,
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [

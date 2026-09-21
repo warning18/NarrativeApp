@@ -562,10 +562,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'wisdom_desc': {
     AppLanguage.en:
         'Backs Wisdom checks on story choices — reading people, sensing '
-            'what\'s really going on.',
+            'what\'s really going on. In a fight, it also strengthens every '
+            'point you heal and shortens how long Poison, Stun, or Weaken '
+            'holds on to you.',
     AppLanguage.fr:
         'Intervient dans les jets de Sagesse des choix narratifs — lire '
-            'les gens, sentir ce qui se trame vraiment.',
+            'les gens, sentir ce qui se trame vraiment. En combat, elle '
+            'renforce aussi chaque soin et raccourcit la durée du Poison, '
+            'de l\'Étourdissement ou de l\'Affaiblissement.',
   },
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},

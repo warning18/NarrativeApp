@@ -263,6 +263,47 @@ void main() {
           activeEffects: effects);
       expect(block.blockAmount, 12);
     });
+
+    test('wisdomHealBonus adds straight onto a Heal face\'s value', () {
+      final result = resolvePlayerFace(
+        face(type: 'Heal', value: 20),
+        skills,
+        10,
+        wisdomHealBonus: 6,
+      );
+      expect(result.healingDone, 26);
+    });
+
+    test('wisdomHealBonus adds onto a healing Skill face', () {
+      final result = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'minor_heal'),
+        skills,
+        10,
+        wisdomHealBonus: 6,
+      );
+      expect(result.healingDone, 21); // 15 + 6
+    });
+
+    test('wisdomHealBonus never applies to a Skill face with no healing', () {
+      final result = resolvePlayerFace(
+        face(type: 'Skill', linkedSkillID: 'power_strike'),
+        skills,
+        10,
+        wisdomHealBonus: 6,
+      );
+      expect(result.healingDone, 0);
+    });
+
+    test('wisdomHealBonus never applies to damage-only faces', () {
+      final result = resolvePlayerFace(
+        face(type: 'Attack', value: 7),
+        skills,
+        10,
+        wisdomHealBonus: 6,
+      );
+      expect(result.damageDealt, 17);
+      expect(result.healingDone, 0);
+    });
   });
 
   group('resolveEnemyMove', () {

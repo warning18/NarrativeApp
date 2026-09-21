@@ -118,6 +118,7 @@ PlayerActionResult resolvePlayerFace(
   int baseDamage, {
   AppLanguage language = AppLanguage.en,
   List<StatusEffect> activeEffects = const [],
+  int wisdomHealBonus = 0,
 }) {
   String t(String key) => trFor(language, key);
   switch (face.type) {
@@ -152,7 +153,9 @@ PlayerActionResult resolvePlayerFace(
       }
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
-      final healAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
+      final baseHealAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
+      final healAmount =
+          baseHealAmount > 0 ? baseHealAmount + wisdomHealBonus : 0;
       final damage = applyWeaken(
         ((baseDamage + damageMod) * multiplier).round(),
         activeEffects,
@@ -176,12 +179,13 @@ PlayerActionResult resolvePlayerFace(
         inflictedStatus: _inflictedStatusFrom(skill),
       );
     case 'Heal':
+      final healAmount = face.value + wisdomHealBonus;
       return PlayerActionResult(
         damageDealt: 0,
-        healingDone: face.value,
+        healingDone: healAmount,
         blockAmount: 0,
         message:
-            '${face.faceName}: ${t('you_recover_prefix')} ${face.value} ${t('hp_label')}.',
+            '${face.faceName}: ${t('you_recover_prefix')} $healAmount ${t('hp_label')}.',
       );
     case 'Empty':
     default:

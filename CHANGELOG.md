@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.98.0+126]
+
+Wisdom finally does something in a fight, status effects show up more often,
+and combat is meaningfully harder across the first three chapters.
+
+### Added
+- **Wisdom's combat role.** Beyond backing Wisdom story checks, it now
+  amplifies every point healed (by `wisdom ÷ 2`, both dice-face Heal and
+  healing Skill faces) and shortens the duration of Poison/Stun/Weaken
+  landed on you by 1 round per 5 points, never below 1 round. Applies to
+  active allies too, derived from their own race/profession the same way
+  Strength/Dexterity/Constitution/Intelligence already were.
+- **7 more status-inflicting skills** (up from 7 to 14 of 79): Rogue's
+  Poison Blade now actually poisons, Mage's Frost Nova and Orc's Savage
+  Cleave inflict Weaken, and Ranger's Trap Set plus 3 elemental enemy moves
+  (Frigid Grip, Molten Backlash, Radiant Judgment) inflict Stun/Weaken —
+  status effects show up in noticeably more fights.
+
+### Changed
+- **Harder combat in Chapters 1-3.** Enemy health and damage scale up by
+  chapter (+15% in Ch1, +35% in Ch2, +10% in Ch3), pulling the overall
+  combat win rate down from ~95% to ~87% and roguelike-style "close calls"
+  (lost fights — permadeath is off by default, so these cost time, not the
+  run) up to an average of 3 per playthrough. Chapters 4-5 are intentionally
+  left alone: an existing regression test (`boss_balance_test.dart`) locks
+  in win-rate floors for 3 late-game bosses that a prior session already
+  found could become unwinnable, and that ceiling is the reason overall
+  difficulty stops short of an even harder target.
+
+### Fixed
+- The playthrough simulator never actually visited Camp's own Expedition
+  zones (chapter 3 onward) — only Town Hub's chapter-2 zones were ever
+  driven, so `z_cinder_row`/`z_scaffold_yards` always showed 0 attempts in
+  every prior simulation batch. Fixed in the (non-shipping) Python
+  simulator only.
+
 ## [1.97.0+125]
 
 Three new camp buildings that finally give endgame gear somewhere to be

@@ -116,6 +116,7 @@ class AllyBaseStats {
     required this.dexterity,
     required this.constitution,
     required this.intelligence,
+    required this.wisdom,
   });
 
   final int maxHealth;
@@ -126,13 +127,20 @@ class AllyBaseStats {
   /// `PlayerSessionNotifier.startNewGame`) -- feed [equipmentScalingBonusFor]
   /// and [meetsItemStatRequirement] so an ally's gear scales with, and is
   /// gated by, their own race/profession-derived scores, exactly like the
-  /// player. Wisdom/Luck/Charisma aren't included: they don't affect combat
-  /// for the player either (see [PlayerSession]'s doc comment), so an ally
-  /// has no use for them.
+  /// player. Luck/Charisma aren't included: they're pure loot/story stats
+  /// that don't affect combat for the player either (see [PlayerSession]'s
+  /// doc comment), so an ally has no use for them.
   final int strength;
   final int dexterity;
   final int constitution;
   final int intelligence;
+
+  /// Backs the same in-combat role as the player's own Wisdom (see
+  /// [PlayerSession.wisdom]): amplifies healing this ally does and shortens
+  /// the duration of status effects landed on them. An ally with a
+  /// Wisdom-heavy background -- Maren the cleric, chiefly -- is meaningfully
+  /// harder to lock down or wear away with poison than one without.
+  final int wisdom;
 }
 
 AllyBaseStats deriveAllyBaseStats({
@@ -164,6 +172,9 @@ AllyBaseStats deriveAllyBaseStats({
     intelligence: ((gameConfig['intelligence'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusIntelligence') +
         bonus(profession, 'bonusIntelligence'),
+    wisdom: ((gameConfig['wisdom'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusWisdom') +
+        bonus(profession, 'bonusWisdom'),
   );
 }
 
