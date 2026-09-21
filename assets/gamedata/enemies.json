@@ -1,8 +1,8 @@
 {
   "slum_thug": {
     "enemyName": "slum_thug",
-    "maxHealth": 46,
-    "damage": 7,
+    "maxHealth": 56,
+    "damage": 9,
     "xpReward": 15,
     "goldReward": 10,
     "lootTable": [
@@ -39,8 +39,8 @@
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
-    "maxHealth": 92,
-    "damage": 14,
+    "maxHealth": 111,
+    "damage": 17,
     "xpReward": 45,
     "goldReward": 30,
     "lootTable": [
@@ -70,8 +70,8 @@
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
-    "maxHealth": 162,
-    "damage": 20,
+    "maxHealth": 195,
+    "damage": 24,
     "xpReward": 80,
     "goldReward": 50,
     "lootTable": [
@@ -85,8 +85,8 @@
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
-    "maxHealth": 51,
-    "damage": 7,
+    "maxHealth": 62,
+    "damage": 9,
     "xpReward": 19,
     "goldReward": 12,
     "lootTable": [
@@ -100,8 +100,8 @@
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
-    "maxHealth": 64,
-    "damage": 8,
+    "maxHealth": 78,
+    "damage": 10,
     "xpReward": 28,
     "goldReward": 19,
     "lootTable": [
@@ -146,8 +146,8 @@
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
-    "maxHealth": 124,
-    "damage": 15,
+    "maxHealth": 150,
+    "damage": 18,
     "xpReward": 46,
     "goldReward": 33,
     "lootTable": [
@@ -192,8 +192,8 @@
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
-    "maxHealth": 173,
-    "damage": 20,
+    "maxHealth": 210,
+    "damage": 24,
     "xpReward": 64,
     "goldReward": 47,
     "lootTable": [
@@ -223,8 +223,8 @@
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
-    "maxHealth": 197,
-    "damage": 23,
+    "maxHealth": 205,
+    "damage": 24,
     "xpReward": 73,
     "goldReward": 54,
     "lootTable": [
@@ -242,7 +242,7 @@
         "skillID": "plague_bite",
         "condition": "Chance",
         "requiredElement": "None",
-        "chance": 45,
+        "chance": 33,
         "healthThreshold": 0,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
@@ -384,8 +384,8 @@
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
-    "maxHealth": 196,
-    "damage": 24,
+    "maxHealth": 145,
+    "damage": 19,
     "xpReward": 70,
     "goldReward": 55,
     "lootTable": [
@@ -407,7 +407,7 @@
         "skillID": "radiant_judgment",
         "condition": "Chance",
         "requiredElement": "None",
-        "chance": 35,
+        "chance": 18,
         "healthThreshold": 0,
         "attackCountRequirement": 0,
         "playerPatternThreshold": 0,
@@ -514,8 +514,8 @@
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
-    "maxHealth": 115,
-    "damage": 14,
+    "maxHealth": 139,
+    "damage": 17,
     "xpReward": 40,
     "goldReward": 28,
     "lootTable": [

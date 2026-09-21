@@ -631,7 +631,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 4,
+    "reqStrength": 3,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -657,7 +657,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 4,
+    "reqStrength": 3,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -761,7 +761,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 6,
+    "reqStrength": 4,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -787,7 +787,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 6,
+    "reqStrength": 4,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -891,7 +891,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 8,
+    "reqStrength": 5,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -917,7 +917,7 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 8,
+    "reqStrength": 5,
     "reqDexterity": 0,
     "reqConstitution": 0,
     "reqIntelligence": 0
@@ -1021,9 +1021,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 10,
+    "reqStrength": 6,
     "reqDexterity": 0,
-    "reqConstitution": 4,
+    "reqConstitution": 0,
     "reqIntelligence": 0
   },
   "spear_t8": {
@@ -1047,9 +1047,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 10,
+    "reqStrength": 6,
     "reqDexterity": 0,
-    "reqConstitution": 4,
+    "reqConstitution": 0,
     "reqIntelligence": 0
   },
   "dagger_t8": {
@@ -1151,9 +1151,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 12,
+    "reqStrength": 7,
     "reqDexterity": 0,
-    "reqConstitution": 6,
+    "reqConstitution": 2,
     "reqIntelligence": 0
   },
   "spear_t9": {
@@ -1177,9 +1177,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 12,
+    "reqStrength": 7,
     "reqDexterity": 0,
-    "reqConstitution": 6,
+    "reqConstitution": 2,
     "reqIntelligence": 0
   },
   "dagger_t9": {
@@ -1281,9 +1281,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 14,
+    "reqStrength": 8,
     "reqDexterity": 0,
-    "reqConstitution": 8,
+    "reqConstitution": 3,
     "reqIntelligence": 0
   },
   "spear_t10": {
@@ -1307,9 +1307,9 @@
     "waterResist": 0,
     "elecResist": 0,
     "scalingStat": "strength",
-    "reqStrength": 14,
+    "reqStrength": 8,
     "reqDexterity": 0,
-    "reqConstitution": 8,
+    "reqConstitution": 3,
     "reqIntelligence": 0
   },
   "dagger_t10": {

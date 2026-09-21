@@ -8,6 +8,55 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.100.0+128]
+
+A follow-up balance pass on the last two updates: endgame gear is reachable
+again, `kroll_the_branded`'s signature move is no longer a stun-lock trap,
+achievement copy matches the current roster, and the playthrough simulator
+finally models Wisdom and status effects — which is what surfaced the real
+size of kroll's problem in the first place.
+
+### Changed
+- **Endgame sword/spear requirements loosened.** Tier 8-10 swords and spears
+  required Strength 10-14 plus Constitution 4-8 — thresholds high enough
+  that a normally-leveled character could reach the late chapters without
+  ever qualifying for their own tier of gear. Now Strength 6/7/8 with only a
+  small Constitution add-on at t9-10 (2/3); t4-7 unchanged.
+- **`kroll_the_branded` rebalanced twice this batch**, once before and once
+  after extending the simulator (see Fixed below): `maxHealth` 196 → 145,
+  `damage` 24 → 19. Its signature move, Radiant Judgment, inflicts Stun on
+  top of a heavy hit — `damageMultiplier` 1.4 → 1.2 and trigger `chance`
+  35 → 18, so the stun-then-big-hit combo is rarer and less punishing when
+  it lands, rather than the near-guaranteed spiral it was.
+- **`plague_hound` trimmed to its actual weight class**: `maxHealth` 239 →
+  205, `damage` 28 → 24 (matching `rat_matriarch`/`smuggler_captain`, the
+  next enemies down), and its Poison-inflicting bite's trigger chance
+  45% → 33% — it had drifted well above its chapter-2 peers.
+- **`full_roster`/`full_party` achievement copy corrected** to match the
+  current 6-companion roster and 2-active-ally party cap: "Three's
+  Company" → "Full House" ("Recruit all three companions" → "all six"),
+  and "Field a full 3-member active party" → "Field two active companions
+  at once."
+
+### Fixed
+- **The (non-shipping) Python playthrough simulator never modeled Wisdom's
+  combat role or status effects** (Poison/Stun/Weaken), even though both
+  have been live in the shipped game since v1.98.0 — every simulation
+  batch since then was blind to them. Fixed: the simulator now ticks
+  Poison, skips a Stunned combatant's round, applies Weaken to a
+  combatant's own outgoing damage, and gives Wisdom its real heal-bonus
+  and status-resistance effect, turn-for-turn matching
+  `_startPartyRound`/`_confirmRoll`/`_takeEnemyTurn` in `fight_screen.dart`.
+  This immediately surfaced that `kroll_the_branded`'s Stun move made it a
+  genuine outlier (a ~36% true win rate, invisible to every earlier,
+  status-blind simulation) — the deeper kroll rebalance above is a direct
+  result of this fix.
+
+Re-simulated after this batch: 85.7% combat win rate, no enemy below a 50%
+win rate (down from `kroll_the_branded` at ~36% once status effects were
+actually counted), 100% true-ending rate across 40 runs, and
+`boss_balance_test.dart` still passes unchanged.
+
 ## [1.99.0+127]
 
 Real pixel-art icons for every item, skill, enemy, and shop, replacing the

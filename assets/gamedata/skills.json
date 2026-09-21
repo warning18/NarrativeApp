@@ -1305,7 +1305,7 @@
     "damageMod": 10,
     "healthMod": 0,
     "isActiveSkill": true,
-    "damageMultiplier": 1.4,
+    "damageMultiplier": 1.2,
     "battleMessage": "Kroll calls down a column of searing white light!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
