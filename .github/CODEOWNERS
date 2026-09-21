@@ -1,0 +1,4 @@
+# Every file in this repository requires review from the project owner.
+# Pair with a branch protection rule on `main` requiring this review before
+# merging, or this file is advisory only.
+* @warning18
