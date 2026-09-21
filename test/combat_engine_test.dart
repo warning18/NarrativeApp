@@ -673,4 +673,31 @@ void main() {
       expect(skillTierUpgradeCost(2), 9);
     });
   });
+
+  group('professionLootAffinityBonus', () {
+    test('a matching scalingStat grants the bonus', () {
+      final staff = {'itemID': 'staff_t3', 'scalingStat': 'intelligence'};
+      expect(professionLootAffinityBonus(staff, 'intelligence'), 20);
+    });
+
+    test('a non-matching scalingStat grants nothing', () {
+      final staff = {'itemID': 'staff_t3', 'scalingStat': 'intelligence'};
+      expect(professionLootAffinityBonus(staff, 'strength'), 0);
+    });
+
+    test('an empty preferredScalingStat (e.g. Cleric) never grants a bonus',
+        () {
+      final staff = {'itemID': 'staff_t3', 'scalingStat': 'intelligence'};
+      expect(professionLootAffinityBonus(staff, ''), 0);
+    });
+
+    test('an item with no scalingStat field grants nothing', () {
+      final potion = {'itemID': 'health_potion'};
+      expect(professionLootAffinityBonus(potion, 'intelligence'), 0);
+    });
+
+    test('a null item grants nothing', () {
+      expect(professionLootAffinityBonus(null, 'intelligence'), 0);
+    });
+  });
 }

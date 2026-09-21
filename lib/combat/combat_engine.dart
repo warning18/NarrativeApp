@@ -332,3 +332,20 @@ int scaledDamage(int base, int playerLevel) {
 int scaledReward(int base, int playerLevel) {
   return (base * (1 + 0.10 * (playerLevel - 1))).round();
 }
+
+/// Percentage-point drop-rate bonus (same units as the flat luck bonus a
+/// win's loot roll already adds) for a loot item whose own `scalingStat`
+/// matches the player's profession's `preferredScalingStat` — a Mage sees
+/// noticeably more staves than a Warrior would off the exact same enemy,
+/// without any single drop ever becoming guaranteed. 0 for a non-matching
+/// item, an item with no scalingStat, or a profession with no affinity
+/// (e.g. Cleric, whose dominant stat is Wisdom, which nothing scales
+/// with).
+int professionLootAffinityBonus(
+  Map<String, dynamic>? item,
+  String preferredScalingStat,
+) {
+  if (preferredScalingStat.isEmpty) return 0;
+  final itemScalingStat = item?['scalingStat']?.toString() ?? '';
+  return itemScalingStat == preferredScalingStat ? 20 : 0;
+}

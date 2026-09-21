@@ -12,5 +12,29 @@
     "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion's claim on it, just more camp than you started with.",
     "buildCost": 200,
     "partyCapacityBonus": 1
+  },
+  "hammersmith": {
+    "houseID": "hammersmith",
+    "houseName": "Hammersmith",
+    "description": "A proper forge, not a market stall — anvil, bellows, and a hammersmith who only works metal worth the effort. Opens the Forge's finest work to anyone strong and sturdy enough to carry it.",
+    "buildCost": 350,
+    "partyCapacityBonus": 0,
+    "unlocksShopId": "hammersmith_forge"
+  },
+  "academy": {
+    "houseID": "academy",
+    "houseName": "Academy",
+    "description": "A study built for one purpose: giving whatever's left of your arcane education somewhere real to go. The staves it can now order in aren't for browsing — they're for a mind that's already done the work.",
+    "buildCost": 350,
+    "partyCapacityBonus": 0,
+    "unlocksShopId": "arcane_academy"
+  },
+  "sharpweave_den": {
+    "houseID": "sharpweave_den",
+    "houseName": "Sharpweave Den",
+    "description": "A back room with no sign, kept quiet on purpose — the kind of contact only a light-footed, fast-handed sort ever manages to make. Opens a door most people never know is there.",
+    "buildCost": 350,
+    "partyCapacityBonus": 0,
+    "unlocksShopId": "sharpweave_den"
   }
 }

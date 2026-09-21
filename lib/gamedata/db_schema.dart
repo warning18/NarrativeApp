@@ -519,6 +519,12 @@ final DbSchema professionsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'skills',
     ),
+    FieldSchema(
+      key: 'preferredScalingStat',
+      label: 'Loot Affinity (Scaling Stat)',
+      type: FieldType.enumeration,
+      enumOptions: statScalingOptions,
+    ),
     visualAssetFieldSchema('professions'),
   ],
 );
@@ -1063,6 +1069,12 @@ final DbSchema housesSchema = DbSchema(
       label: 'Party Capacity Bonus',
       type: FieldType.integer,
       defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'unlocksShopId',
+      label: 'Unlocks Shop',
+      type: FieldType.reference,
+      referenceSchemaId: 'shops',
     ),
     visualAssetFieldSchema('houses'),
   ],

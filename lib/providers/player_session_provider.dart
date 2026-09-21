@@ -1101,14 +1101,22 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Spends gold to build a camp house. No-ops if already built or
-  /// unaffordable.
-  Future<void> buildHouse(String houseId, int cost) async {
+  /// unaffordable. [unlocksShopId] (the house's own `unlocksShopId` field,
+  /// e.g. Hammersmith opening its Forge) is passed through to
+  /// [unlockContent] so building the house and gaining access to its shop
+  /// are one atomic action, exactly like [recruitAlly]'s starter-skill
+  /// unlock is one action rather than two.
+  Future<void> buildHouse(String houseId, int cost,
+      {String? unlocksShopId}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     state = state.copyWith(
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],
     );
     await _persist();
+    if (unlocksShopId != null && unlocksShopId.isNotEmpty) {
+      await unlockContent(shopId: unlocksShopId);
+    }
   }
 
   // --- Expedition zones ----------------------------------------------------

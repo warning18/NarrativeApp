@@ -1425,6 +1425,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
+  'unlocks_shop_prefix': {
+    AppLanguage.en: 'Unlocks',
+    AppLanguage.fr: 'Débloque',
+  },
+  'boutiques_section': {
+    AppLanguage.en: 'Boutiques',
+    AppLanguage.fr: 'Boutiques',
+  },
+  'no_boutiques_yet': {
+    AppLanguage.en:
+        'Build a house that unlocks a shop (see Houses above) to browse one here.',
+    AppLanguage.fr:
+        'Construisez une maison qui débloque un commerce (voir Maisons '
+            'ci-dessus) pour en visiter un ici.',
+  },
   'town_hub_title': {
     AppLanguage.en: 'Town Hub',
     AppLanguage.fr: 'Place du village'

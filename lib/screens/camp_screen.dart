@@ -15,6 +15,7 @@ import '../widgets/immersive_notice.dart';
 import 'dice_loadout_screen.dart';
 import 'expedition_screen.dart';
 import 'inventory_screen.dart';
+import 'shop_detail_screen.dart';
 import 'skills_screen.dart';
 
 /// Camp's own expedition pool picks up where Town Hub's leaves off — every
@@ -35,6 +36,7 @@ class CampScreen extends ConsumerWidget {
     final gameConfigAsync = ref.watch(gameConfigProvider);
     final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
     final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
+    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;
@@ -43,13 +45,15 @@ class CampScreen extends ConsumerWidget {
     final gameConfig = gameConfigAsync.value;
     final achievements = achievementsAsync.value ?? const {};
     final zones = zonesAsync.value;
+    final shops = shopsAsync.value;
 
     if (companions == null ||
         houses == null ||
         races == null ||
         professions == null ||
         gameConfig == null ||
-        zones == null) {
+        zones == null ||
+        shops == null) {
       return Scaffold(
         appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
         body: const Center(child: CircularProgressIndicator()),
@@ -70,6 +74,17 @@ class CampScreen extends ConsumerWidget {
 
     final recruitedIds =
         session.recruitedAllies.map((a) => a.companionId).toList()..sort();
+
+    // Which houses' shops are actually browsable right now -- built, with
+    // an unlocksShopId that still resolves to a real shop record.
+    final boutiqueShopIds = session.builtHouseIds
+        .map((houseId) =>
+            (houses[houseId] as Map<String, dynamic>?)?['unlocksShopId']
+                ?.toString() ??
+            '')
+        .where((shopId) => shopId.isNotEmpty && shops[shopId] is Map)
+        .toList()
+      ..sort();
 
     // Rest is a safe-haven action -- it shouldn't be reachable while a fight
     // or an expedition is actively in progress. In practice both already
@@ -278,12 +293,20 @@ class CampScreen extends ConsumerWidget {
             final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
             final capacityBonus =
                 (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+            final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
+            final unlocksShopName = unlocksShopId.isNotEmpty
+                ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
+                        ?.toString() ??
+                    unlocksShopId)
+                : null;
             final built = session.builtHouseIds.contains(houseId);
             final affordable = session.gold >= cost;
 
             final statsParts = <String>[
               if (capacityBonus > 0)
                 '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
+              if (unlocksShopName != null)
+                '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
             ];
 
             return Card(
@@ -305,7 +328,8 @@ class CampScreen extends ConsumerWidget {
                             : () async {
                                 await ref
                                     .read(playerSessionProvider.notifier)
-                                    .buildHouse(houseId, cost);
+                                    .buildHouse(houseId, cost,
+                                        unlocksShopId: unlocksShopId);
                                 final newAchievements = await ref
                                     .read(playerSessionProvider.notifier)
                                     .checkAchievements();
@@ -329,6 +353,33 @@ class CampScreen extends ConsumerWidget {
               ),
             );
           }),
+          const Divider(height: 32),
+          Text(tr(ref, 'boutiques_section'),
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          if (boutiqueShopIds.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Text(tr(ref, 'no_boutiques_yet')),
+            )
+          else
+            ...boutiqueShopIds.map((shopId) {
+              final shop = shops[shopId] as Map<String, dynamic>;
+              return Card(
+                child: ListTile(
+                  leading: const Icon(Icons.storefront_outlined),
+                  title: Text(shop['shopName']?.toString() ?? shopId),
+                  subtitle: Text(shop['shopDescription']?.toString() ?? ''),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ShopDetailScreen(shopId: shopId, shop: shop),
+                    ),
+                  ),
+                ),
+              );
+            }),
           const Divider(height: 32),
           Text(tr(ref, 'zones_section'),
               style: Theme.of(context).textTheme.titleMedium),

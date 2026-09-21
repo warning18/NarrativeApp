@@ -844,11 +844,25 @@ class _FightScreenState extends ConsumerState<FightScreen>
       // Luck nudges the drop-rate roll directly (in percentage points), so
       // a lucky character sees noticeably better loot without any roll
       // ever becoming guaranteed unless the base rate was already close.
-      final luckBonus = ref.read(playerSessionProvider).luck;
+      // A profession-matching item (a Mage's own staves, say) gets its own
+      // separate bonus on top -- see professionLootAffinityBonus.
+      final session = ref.read(playerSessionProvider);
+      final luckBonus = session.luck;
+      final items = ref.read(gameDbProvider(itemsSchema)).value ?? const {};
+      final professions =
+          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+      final preferredScalingStat = (professions[session.professionId]
+              as Map<String, dynamic>?)?['preferredScalingStat']
+              ?.toString() ??
+          '';
       for (final entry in lootTable) {
         final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
-        if (_random.nextDouble() * 100 <= dropRate + luckBonus) {
-          final itemId = entry['itemID']?.toString();
+        final itemId = entry['itemID']?.toString();
+        final affinityBonus = professionLootAffinityBonus(
+            itemId != null ? items[itemId] as Map<String, dynamic>? : null,
+            preferredScalingStat);
+        if (_random.nextDouble() * 100 <=
+            dropRate + luckBonus + affinityBonus) {
           if (itemId != null && itemId.isNotEmpty) loot.add(itemId);
         }
       }

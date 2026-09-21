@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.97.0+125]
+
+Three new camp buildings that finally give endgame gear somewhere to be
+bought, and loot that leans toward what your profession actually wants.
+
+### Added
+- **Three new camp houses: Hammersmith, Academy, and Sharpweave Den.** Each
+  is buildable from Camp for 350 gold and, on completion, immediately
+  unlocks a themed shop — the Hammersmith's Forge (swords/spears/shields),
+  the Arcane Academy (staves), and the Sharpweave Den (daggers) — stocking
+  tier 6-10 gear that was previously only obtainable as loot, quest, or zone
+  rewards and had no purchasable source anywhere in the game. Built houses
+  now show an "Unlocks: ..." line alongside their existing stats, and Camp
+  gained a new Boutiques section listing every shop a built house has
+  opened, reusing the same shop-browsing screen as Town Hub.
+- **Profession loot affinity.** Every profession now favors one ability
+  score's gear (Warrior → Strength, Mage → Intelligence, Rogue/Ranger →
+  Dexterity; Cleric has none, since Wisdom has no gear-scaling tie-in) via a
+  new `preferredScalingStat` field. A combat loot roll for an item whose own
+  `scalingStat` matches gets a flat +20 percentage-point bump on top of the
+  existing luck bonus — a Mage sees noticeably more staves off the same
+  enemy a Warrior would fight, without any single drop ever becoming
+  guaranteed.
+
 ## [1.96.0+124]
 
 Gear that actually cares who's wielding it: weapons now scale with your

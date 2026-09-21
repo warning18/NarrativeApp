@@ -628,4 +628,40 @@ void main() {
       expect(partyCapacityFor(const [], houses), basePartyCapacity);
     });
   });
+
+  group('buildHouse', () {
+    test('spends gold, marks the house built, and unlocks its shop', () async {
+      final notifier = await notifierWith(baseSession(gold: 500));
+      await notifier.buildHouse('hammersmith', 350,
+          unlocksShopId: 'hammersmith_forge');
+      expect(notifier.state.gold, 150);
+      expect(notifier.state.builtHouseIds, contains('hammersmith'));
+      expect(notifier.state.unlockedShopIds, contains('hammersmith_forge'));
+    });
+
+    test('a house with no unlocksShopId never touches unlockedShopIds', () async {
+      final notifier = await notifierWith(baseSession(gold: 500));
+      await notifier.buildHouse('barracks_annex', 200);
+      expect(notifier.state.builtHouseIds, contains('barracks_annex'));
+      expect(notifier.state.unlockedShopIds, isEmpty);
+    });
+
+    test('is a no-op if unaffordable', () async {
+      final notifier = await notifierWith(baseSession(gold: 100));
+      await notifier.buildHouse('hammersmith', 350,
+          unlocksShopId: 'hammersmith_forge');
+      expect(notifier.state.gold, 100);
+      expect(notifier.state.builtHouseIds, isEmpty);
+      expect(notifier.state.unlockedShopIds, isEmpty);
+    });
+
+    test('is a no-op if the house is already built', () async {
+      final notifier = await notifierWith(
+          baseSession(gold: 500, builtHouseIds: ['hammersmith']));
+      await notifier.buildHouse('hammersmith', 350,
+          unlocksShopId: 'hammersmith_forge');
+      expect(notifier.state.gold, 500);
+      expect(notifier.state.unlockedShopIds, isEmpty);
+    });
+  });
 }
