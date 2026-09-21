@@ -8,7 +8,7 @@ import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 
@@ -364,8 +364,8 @@ class _InventoryBody extends ConsumerWidget {
 
           return Card(
             child: ListTile(
-              leading: Icon(
-                  itemIcon(equippedId, equippedItem?['itemType']?.toString())),
+              leading: ItemPixelIcon(
+                  equippedId, equippedItem?['itemType']?.toString()),
               title: Text(slot),
               subtitle: Text(equippedItem?['itemName']?.toString() ??
                   tr(ref, 'empty_slot_label')),
@@ -489,7 +489,7 @@ class _InventoryBody extends ConsumerWidget {
             final itemName = item?['itemName']?.toString() ?? id;
             final equippable = canEquip(id);
             return ListTile(
-              leading: Icon(itemIcon(id, item?['itemType']?.toString())),
+              leading: ItemPixelIcon(id, item?['itemType']?.toString()),
               title: Text(itemName),
               subtitle: equippable
                   ? null
@@ -598,7 +598,7 @@ class _ItemTile extends StatelessWidget {
           ? colorScheme.tertiaryContainer
           : (isEquipped ? colorScheme.primaryContainer : null),
       child: ListTile(
-        leading: Icon(itemIcon(itemId, itemType)),
+        leading: ItemPixelIcon(itemId, itemType),
         title: Text(itemName),
         subtitle: Text(statsParts.join(' · ')),
         trailing: compareMode
@@ -621,7 +621,7 @@ class _ItemTile extends StatelessWidget {
             : () => showDetailDialog(
                   context,
                   title: itemName,
-                  icon: itemIcon(itemId, itemType),
+                  leading: ItemPixelIcon(itemId, itemType, size: 24),
                   closeLabel: t('close_button'),
                   rows: [
                     MapEntry(

@@ -17,6 +17,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/level_up_dialog.dart';
 import 'death_screen.dart';
 
@@ -1032,10 +1033,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
               CircleAvatar(
                 radius: 24,
                 backgroundColor: Theme.of(context).colorScheme.errorContainer,
-                child: Icon(
-                  Icons.sports_martial_arts,
-                  color: Theme.of(context).colorScheme.onErrorContainer,
-                ),
+                child: EnemyPixelIcon(widget.enemyId, size: 36),
               ),
               const SizedBox(width: 12),
               Expanded(

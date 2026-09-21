@@ -11,6 +11,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import 'dice_loadout_screen.dart';
 import 'expedition_screen.dart';
@@ -367,7 +368,7 @@ class CampScreen extends ConsumerWidget {
               final shop = shops[shopId] as Map<String, dynamic>;
               return Card(
                 child: ListTile(
-                  leading: const Icon(Icons.storefront_outlined),
+                  leading: ShopPixelIcon(shopId),
                   title: Text(shop['shopName']?.toString() ?? shopId),
                   subtitle: Text(shop['shopDescription']?.toString() ?? ''),
                   trailing: const Icon(Icons.chevron_right),

@@ -11,6 +11,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 
@@ -537,7 +538,7 @@ class _CharacterSheet extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: ListTile(
           dense: true,
-          leading: const Icon(Icons.auto_awesome),
+          leading: SkillPixelIcon(skillId),
           title: Text('$label: $name'),
           subtitle: desc.isNotEmpty ? Text(desc) : null,
         ),

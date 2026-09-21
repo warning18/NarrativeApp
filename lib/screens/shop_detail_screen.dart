@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
@@ -216,7 +217,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         final equipSlot = item?['equipSlot']?.toString();
                         return Card(
                           child: ListTile(
-                            leading: Icon(itemIcon(itemId, itemType)),
+                            leading: ItemPixelIcon(itemId, itemType),
                             title: Text(itemName),
                             subtitle: Text(
                               soldOut

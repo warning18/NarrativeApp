@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.99.0+127]
+
+Real pixel-art icons for every item, skill, enemy, and shop, replacing the
+generic Material glyphs that stood in for them since launch.
+
+### Added
+- **170 procedurally-generated pixel-art icons** (16x16, upscaled with
+  crisp-pixel rendering) covering all 63 items, 79 skills, 18 enemies, and
+  10 shops -- full 1:1 coverage with the current game data, verified by a
+  new coverage test. Wired into every place a player actually sees one of
+  these by its own identity: the Inventory/Equipment screen (equipped
+  slots, item list, item-picker sheet, detail dialog), shop stock lists,
+  the Skills screen (list rows and detail dialog), the race/profession
+  skill preview during character creation, the Fight screen's enemy
+  portrait, and the Boutiques/basic-shops lists in Camp and Town Hub. Falls
+  back to the existing generic icon for any id without a matching asset
+  (defensive, not expected to trigger today).
+
 ## [1.98.0+126]
 
 Wisdom finally does something in a fight, status effects show up more often,

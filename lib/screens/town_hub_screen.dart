@@ -7,6 +7,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import 'expedition_screen.dart';
 import 'shop_detail_screen.dart';
@@ -88,7 +89,7 @@ class TownHubScreen extends ConsumerWidget {
             if (shops[shopId] is Map<String, dynamic>)
               Card(
                 child: ListTile(
-                  leading: const Icon(Icons.storefront_outlined),
+                  leading: ShopPixelIcon(shopId),
                   title: Text(
                       (shops[shopId] as Map<String, dynamic>)['shopName']
                               ?.toString() ??

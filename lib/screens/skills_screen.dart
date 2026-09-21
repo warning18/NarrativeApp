@@ -8,7 +8,7 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
@@ -428,7 +428,7 @@ class _SkillList extends ConsumerWidget {
               ? Theme.of(context).colorScheme.tertiaryContainer
               : null,
           child: ListTile(
-            leading: Icon(elementIcon(element)),
+            leading: SkillPixelIcon(id),
             title: Text(id),
             subtitle: Text(subtitleParts.join(' · ')),
             isThreeLine: description.isNotEmpty,
@@ -439,7 +439,7 @@ class _SkillList extends ConsumerWidget {
                       context,
                       title: id,
                       description: description,
-                      icon: elementIcon(element),
+                      leading: SkillPixelIcon(id, size: 24),
                       closeLabel: tr(ref, 'close_button'),
                       rows: [
                         MapEntry(tr(ref, 'element_label'),
