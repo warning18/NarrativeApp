@@ -639,7 +639,8 @@ void main() {
       expect(notifier.state.unlockedShopIds, contains('hammersmith_forge'));
     });
 
-    test('a house with no unlocksShopId never touches unlockedShopIds', () async {
+    test('a house with no unlocksShopId never touches unlockedShopIds',
+        () async {
       final notifier = await notifierWith(baseSession(gold: 500));
       await notifier.buildHouse('barracks_annex', 200);
       expect(notifier.state.builtHouseIds, contains('barracks_annex'));

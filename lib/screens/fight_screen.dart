@@ -852,7 +852,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final professions =
           ref.read(gameDbProvider(professionsSchema)).value ?? const {};
       final preferredScalingStat = (professions[session.professionId]
-              as Map<String, dynamic>?)?['preferredScalingStat']
+                  as Map<String, dynamic>?)?['preferredScalingStat']
               ?.toString() ??
           '';
       for (final entry in lootTable) {
