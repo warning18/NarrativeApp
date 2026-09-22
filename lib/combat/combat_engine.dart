@@ -138,7 +138,35 @@ const double _criticalDamageMultiplier = 1.5;
 int _withCritical(int damage, int luck, Random? random) {
   if (damage <= 0 || random == null) return damage;
   if (random.nextDouble() * 100 >= criticalChanceFor(luck)) return damage;
-  return (damage * _criticalDamageMultiplier).round();
+  return criticalDamage(damage);
+}
+
+/// [damage] as a critical hit -- what [_withCritical] deals when the Luck
+/// roll lands, exposed so a guaranteed crit (see FightScreen's momentum)
+/// hits for exactly the same amount a lucky one would.
+int criticalDamage(int damage) =>
+    damage <= 0 ? damage : (damage * _criticalDamageMultiplier).round();
+
+/// Damage/heal multiplier a skill gets from the wielder's alignment: a
+/// skill tagged `alignment: 'Good'` or `'Evil'` in skills.json is
+/// [alignedSkillMultiplier] times stronger in the hands of a character of
+/// that alignment and [opposedSkillMultiplier] times weaker in the hands
+/// of the opposite one; a Neutral character, or an untagged skill, gets
+/// 1.0. The player's own alignment stands for the whole party (allies
+/// don't track one), exactly as the skills screen's alignment gate does.
+const double alignedSkillMultiplier = 1.25;
+const double opposedSkillMultiplier = 0.75;
+
+double alignmentSkillMultiplier(
+    Map<String, dynamic>? skill, String alignmentLabel) {
+  final skillAlignment = skill?['alignment']?.toString() ?? '';
+  if (skillAlignment.isEmpty || alignmentLabel == 'Neutral') return 1.0;
+  if (skillAlignment == alignmentLabel) return alignedSkillMultiplier;
+  if ((skillAlignment == 'Good' && alignmentLabel == 'Evil') ||
+      (skillAlignment == 'Evil' && alignmentLabel == 'Good')) {
+    return opposedSkillMultiplier;
+  }
+  return 1.0;
 }
 
 PlayerActionResult resolvePlayerFace(
@@ -150,12 +178,17 @@ PlayerActionResult resolvePlayerFace(
   int wisdomHealBonus = 0,
   int luck = 0,
   Random? random,
+  bool forceCritical = false,
+  String alignmentLabel = 'Neutral',
 }) {
   String t(String key) => trFor(language, key);
+  int withCrit(int rawDamage) => forceCritical
+      ? criticalDamage(rawDamage)
+      : _withCritical(rawDamage, luck, random);
   switch (face.type) {
     case 'Attack':
       final rawDamage = applyWeaken(baseDamage + face.value, activeEffects);
-      final damage = _withCritical(rawDamage, luck, random);
+      final damage = withCrit(rawDamage);
       final crit = damage != rawDamage;
       return PlayerActionResult(
         damageDealt: damage,
@@ -187,14 +220,17 @@ PlayerActionResult resolvePlayerFace(
       }
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
+      final alignmentMultiplier =
+          alignmentSkillMultiplier(skill, alignmentLabel);
       final baseHealAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
-      final healAmount =
-          baseHealAmount > 0 ? baseHealAmount + wisdomHealBonus : 0;
+      final healAmount = baseHealAmount > 0
+          ? ((baseHealAmount + wisdomHealBonus) * alignmentMultiplier).round()
+          : 0;
       final rawDamage = applyWeaken(
-        ((baseDamage + damageMod) * multiplier).round(),
+        ((baseDamage + damageMod) * multiplier * alignmentMultiplier).round(),
         activeEffects,
       );
-      final damage = _withCritical(rawDamage, luck, random);
+      final damage = withCrit(rawDamage);
       final crit = damage != rawDamage;
       final flavor = skill['battleMessage']?.toString() ?? '${face.faceName}!';
       // Standard dice faces (Attack/Defend/Heal) always spell out the exact

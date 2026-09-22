@@ -13,6 +13,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
+import 'package:narrative_data_app/models/story_node.dart';
 
 void main() {
   group('filterEnemyPool', () {
@@ -191,6 +192,75 @@ void main() {
         enemyPool: enemies.keys.toList(),
       );
       expect(pool, ['harbor_rat']);
+    });
+  });
+
+  group('hunts', () {
+    final flavor = flavorFor(defaultMapTheme);
+    final enemies = {
+      'harbor_rat': {'enemyName': 'Harbor Rat', 'packEligible': true},
+      'street_bandit': {'enemyName': 'Street Bandit', 'packEligible': true},
+    };
+
+    test('buildHuntNodes yields a trail then a named quarry fight', () {
+      final nodes = SubNodeEngine.buildHuntNodes(
+        quarryId: 'street_bandit',
+        quarryBaseName: 'Street Bandit',
+        random: Random(7),
+      );
+      expect(nodes.length, 2);
+      expect(nodes.first.choices.single.triggersCombat, isFalse);
+      final fight = nodes.last.choices.single;
+      expect(fight.triggerEnemyId, 'street_bandit');
+      expect(fight.huntName, isNotEmpty);
+      expect(fight.huntAffixes.length, 2);
+      expect(fight.chestFloor, 'gold');
+      expect(nodes.last.description, contains(fight.huntName!));
+    });
+
+    test('withHunts splices a hunt right after the first pack fight', () {
+      const pack = StoryNode(
+        id: 'p',
+        description: 'pack',
+        choices: [
+          StoryChoice(
+              text: 'Fight',
+              nextId: '',
+              triggerEnemyIds: ['harbor_rat', 'street_bandit']),
+        ],
+      );
+      const rest = StoryNode(
+        id: 'r',
+        description: 'rest',
+        choices: [StoryChoice(text: 'Rest', nextId: '', healAmount: 20)],
+      );
+      final chain = SubNodeEngine.withHunts(
+        [rest, pack, rest],
+        enemies: enemies,
+        random: Random(3),
+        flavor: flavor,
+        chance: 1.0,
+      );
+      expect(chain.length, 5);
+      expect(chain[1].id, 'p');
+      expect(chain[3].choices.single.huntName, isNotEmpty);
+      expect(chain[4].id, 'r');
+    });
+
+    test('a chain without a pack fight is returned untouched', () {
+      const rest = StoryNode(
+        id: 'r',
+        description: 'rest',
+        choices: [StoryChoice(text: 'Rest', nextId: '', healAmount: 20)],
+      );
+      final chain = SubNodeEngine.withHunts(
+        [rest],
+        enemies: enemies,
+        random: Random(3),
+        flavor: flavor,
+        chance: 1.0,
+      );
+      expect(chain.single.id, 'r');
     });
   });
 }

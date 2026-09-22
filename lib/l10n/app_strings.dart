@@ -2537,6 +2537,252 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Export as JSON (.json)',
     AppLanguage.fr: 'Exporter en JSON (.json)',
   },
+  // --- Spoils chest, affixes, battlefield conditions, momentum, charms ---
+  'spoils_title': {AppLanguage.en: 'Spoils', AppLanguage.fr: 'Butin'},
+  'chest_tier_wooden': {
+    AppLanguage.en: 'Wooden Chest',
+    AppLanguage.fr: 'Coffre en bois',
+  },
+  'chest_tier_iron': {
+    AppLanguage.en: 'Iron Chest',
+    AppLanguage.fr: 'Coffre en fer',
+  },
+  'chest_tier_silver': {
+    AppLanguage.en: 'Silver Chest',
+    AppLanguage.fr: "Coffre d'argent",
+  },
+  'chest_tier_gold': {
+    AppLanguage.en: 'Gold Chest',
+    AppLanguage.fr: "Coffre d'or",
+  },
+  'chest_tier_void': {
+    AppLanguage.en: 'Void Chest',
+    AppLanguage.fr: 'Coffre du Néant',
+  },
+  'chest_tap_hint': {
+    AppLanguage.en: 'Tap the chest to open it.',
+    AppLanguage.fr: "Touchez le coffre pour l'ouvrir.",
+  },
+  'chest_slot_hint': {
+    AppLanguage.en: 'Tap each slot to see what you found.',
+    AppLanguage.fr: 'Touchez chaque case pour voir ce que vous avez trouvé.',
+  },
+  'chest_all_revealed_hint': {
+    AppLanguage.en: 'Everything is yours.',
+    AppLanguage.fr: 'Tout est à vous.',
+  },
+  'chest_take_button': {AppLanguage.en: 'Take', AppLanguage.fr: 'Prendre'},
+  'chest_take_all_button': {
+    AppLanguage.en: 'Take all',
+    AppLanguage.fr: 'Tout prendre',
+  },
+  'chest_extra_slot_note': {
+    AppLanguage.en: 'Your keen eye found a hidden pouch (+1 slot).',
+    AppLanguage.fr: 'Votre œil perçant a trouvé une bourse cachée (+1 case).',
+  },
+  'fortune_roll_label': {
+    AppLanguage.en: 'Fortune roll',
+    AppLanguage.fr: 'Jet de fortune',
+  },
+  'fortune_floor_label': {
+    AppLanguage.en: 'Guaranteed at least',
+    AppLanguage.fr: 'Garanti au moins',
+  },
+  'fortune_luck': {AppLanguage.en: 'Luck', AppLanguage.fr: 'Chance'},
+  'fortune_elite': {AppLanguage.en: 'Elite', AppLanguage.fr: 'Élite'},
+  'fortune_pack': {AppLanguage.en: 'Pack', AppLanguage.fr: 'Meute'},
+  'fortune_flawless': {
+    AppLanguage.en: 'Flawless',
+    AppLanguage.fr: 'Sans faute',
+  },
+  'fortune_swift': {AppLanguage.en: 'Swift', AppLanguage.fr: 'Rapide'},
+  'fortune_critical_finish': {
+    AppLanguage.en: 'Critical finish',
+    AppLanguage.fr: 'Coup de grâce critique',
+  },
+  'fortune_affixes': {
+    AppLanguage.en: 'Affixed foes',
+    AppLanguage.fr: 'Ennemis affixés',
+  },
+  'fortune_condition': {
+    AppLanguage.en: 'Battlefield',
+    AppLanguage.fr: 'Terrain',
+  },
+  'fortune_pity': {
+    AppLanguage.en: 'Overdue luck',
+    AppLanguage.fr: 'Chance due',
+  },
+  'chest_auto_open_setting_title': {
+    AppLanguage.en: 'Open spoils chests automatically',
+    AppLanguage.fr: 'Ouvrir les coffres de butin automatiquement',
+  },
+  'chest_auto_open_setting_desc': {
+    AppLanguage.en:
+        'Skips the tap-to-open and reveals every slot at once after a fight.',
+    AppLanguage.fr:
+        "Saute l'ouverture au toucher et révèle toutes les cases d'un coup après un combat.",
+  },
+  'alignment_hunters_setting_title': {
+    AppLanguage.en: 'Alignment has consequences',
+    AppLanguage.fr: "L'alignement a des conséquences",
+  },
+  'alignment_hunters_setting_desc': {
+    AppLanguage.en:
+        'Angels hunt the wicked, demons hunt the righteous, and both court the undecided.',
+    AppLanguage.fr:
+        'Les anges traquent les méchants, les démons traquent les justes, et les deux courtisent les indécis.',
+  },
+  'affix_venomous': {AppLanguage.en: 'Venomous', AppLanguage.fr: 'Venimeux'},
+  'affix_venomous_desc': {
+    AppLanguage.en: 'Its attacks poison whoever they hit.',
+    AppLanguage.fr: 'Ses attaques empoisonnent leur cible.',
+  },
+  'affix_armored': {AppLanguage.en: 'Armored', AppLanguage.fr: 'Cuirassé'},
+  'affix_armored_desc': {
+    AppLanguage.en:
+        'Shrugs off 4 damage from every Attack face. Skills cut through.',
+    AppLanguage.fr:
+        'Encaisse 4 dégâts de chaque face Attaque. Les compétences passent.',
+  },
+  'affix_skittish': {AppLanguage.en: 'Skittish', AppLanguage.fr: 'Craintif'},
+  'affix_skittish_desc': {
+    AppLanguage.en: 'Flees below a quarter health, taking part of the spoils.',
+    AppLanguage.fr:
+        "Fuit sous un quart de sa vie, emportant une partie du butin.",
+  },
+  'affix_frenzied': {AppLanguage.en: 'Frenzied', AppLanguage.fr: 'Enragé'},
+  'affix_frenzied_desc': {
+    AppLanguage.en: 'Hits much harder once below half health.',
+    AppLanguage.fr: 'Frappe bien plus fort sous la moitié de sa vie.',
+  },
+  'affix_pack_leader': {
+    AppLanguage.en: 'Pack Leader',
+    AppLanguage.fr: 'Chef de meute',
+  },
+  'affix_pack_leader_desc': {
+    AppLanguage.en:
+        'While it stands, the rest of the pack hits harder. Kill it first.',
+    AppLanguage.fr:
+        "Tant qu'il tient debout, le reste de la meute frappe plus fort. Abattez-le en premier.",
+  },
+  'armored_absorbs_suffix': {
+    AppLanguage.en: 'shrugs off part of the blow (armored).',
+    AppLanguage.fr: 'encaisse une partie du coup (cuirassé).',
+  },
+  'flees_suffix': {
+    AppLanguage.en: 'breaks and flees the fight!',
+    AppLanguage.fr: 'panique et fuit le combat !',
+  },
+  'holds_back_suffix': {
+    AppLanguage.en: "can't reach you in the press and holds back.",
+    AppLanguage.fr: 'ne peut vous atteindre dans la cohue et reste en retrait.',
+  },
+  'condition_ambush': {AppLanguage.en: 'Ambush', AppLanguage.fr: 'Embuscade'},
+  'condition_ambush_desc': {
+    AppLanguage.en:
+        'They strike first, and nothing can be read off them this opening round.',
+    AppLanguage.fr:
+        "Ils frappent en premier, et rien ne peut être lu sur eux lors de ce premier tour.",
+  },
+  'condition_dark': {AppLanguage.en: 'Darkness', AppLanguage.fr: 'Ténèbres'},
+  'condition_dark_desc': {
+    AppLanguage.en: 'Every telegraph reads one tier worse.',
+    AppLanguage.fr: 'Chaque anticipation se lit un niveau en dessous.',
+  },
+  'condition_cramped': {
+    AppLanguage.en: 'Cramped',
+    AppLanguage.fr: 'Exigu',
+  },
+  'condition_cramped_desc': {
+    AppLanguage.en:
+        'Only two enemies can reach you each round; the rest hold back.',
+    AppLanguage.fr:
+        'Seuls deux ennemis peuvent vous atteindre chaque tour ; les autres restent en retrait.',
+  },
+  'condition_high_ground': {
+    AppLanguage.en: 'High Ground',
+    AppLanguage.fr: 'Position dominante',
+  },
+  'condition_high_ground_desc': {
+    AppLanguage.en: 'Every Defend face blocks half again as much.',
+    AppLanguage.fr: 'Chaque face Défense bloque moitié plus.',
+  },
+  'condition_shrine': {AppLanguage.en: 'Shrine', AppLanguage.fr: 'Sanctuaire'},
+  'condition_shrine_desc': {
+    AppLanguage.en: 'Every Heal face and potion restores half again as much.',
+    AppLanguage.fr: 'Chaque face Soin et chaque potion soigne moitié plus.',
+  },
+  'momentum_label': {AppLanguage.en: 'Momentum', AppLanguage.fr: 'Élan'},
+  'momentum_ready_label': {
+    AppLanguage.en: 'Momentum: next strike crits!',
+    AppLanguage.fr: 'Élan : le prochain coup est critique !',
+  },
+  'momentum_ready_message': {
+    AppLanguage.en: 'Momentum builds -- the next strike is a sure critical.',
+    AppLanguage.fr: "L'élan monte : le prochain coup sera critique à coup sûr.",
+  },
+  'momentum_surge_message': {
+    AppLanguage.en: 'Momentum surges into the blow!',
+    AppLanguage.fr: "L'élan se déchaîne dans le coup !",
+  },
+  'charms_label': {AppLanguage.en: 'Charms', AppLanguage.fr: 'Charmes'},
+  'charms_hint': {
+    AppLanguage.en: 'Pick charms to burn for this fight only.',
+    AppLanguage.fr:
+        'Choisissez les charmes à consumer pour ce combat seulement.',
+  },
+  'charm_used_prefix': {
+    AppLanguage.en: 'Charm burned:',
+    AppLanguage.fr: 'Charme consumé :',
+  },
+  'charm_fourth_roll_desc': {
+    AppLanguage.en: 'One extra reroll every round this fight.',
+    AppLanguage.fr: 'Une relance supplémentaire à chaque tour de ce combat.',
+  },
+  'charm_lucky_coin_desc': {
+    AppLanguage.en: 'Your critical-hit chance rises by 15% this fight.',
+    AppLanguage.fr: 'Votre chance de coup critique augmente de 15 % ce combat.',
+  },
+  'charm_iron_skin_desc': {
+    AppLanguage.en: '+5 armor this fight.',
+    AppLanguage.fr: '+5 armure ce combat.',
+  },
+  'charm_warding_desc': {
+    AppLanguage.en: 'The first hit you take this fight is negated.',
+    AppLanguage.fr: 'Le premier coup que vous subissez ce combat est annulé.',
+  },
+  'warding_absorbs_message': {
+    AppLanguage.en: 'The warding knot unravels and the blow never lands.',
+    AppLanguage.fr: 'Le nœud de garde se défait et le coup ne porte jamais.',
+  },
+  'hunt_fight_note': {
+    AppLanguage.en:
+        'A hunt: the quarry is tougher than its kind and carries two traits, but its lair holds a Gold chest at least.',
+    AppLanguage.fr:
+        "Une traque : la proie est plus coriace que ses semblables et porte deux traits, mais son repaire recèle au moins un coffre d'or.",
+  },
+  'hunter_fight_note': {
+    AppLanguage.en:
+        'A hunter sent for you. It yields more than its kind, and never less than a Silver chest.',
+    AppLanguage.fr:
+        "Un chasseur envoyé pour vous. Il rapporte plus que ses semblables, et jamais moins qu'un coffre d'argent.",
+  },
+  'aligned_gear_label': {
+    AppLanguage.en: 'Aligned',
+    AppLanguage.fr: 'Aligné',
+  },
+  'aligned_bonus_suffix': {
+    AppLanguage.en: 'bonus when your alignment matches',
+    AppLanguage.fr: 'bonus si votre alignement correspond',
+  },
+  'alignment_rejects_label': {
+    AppLanguage.en: 'Rejects your alignment',
+    AppLanguage.fr: 'Rejette votre alignement',
+  },
+  'aligned_skill_note': {
+    AppLanguage.en: '+25% for a matching alignment, -25% for the opposite',
+    AppLanguage.fr: "+25 % pour un alignement assorti, -25 % pour l'opposé",
+  },
   'export_as_csv_option': {
     AppLanguage.en: 'Export as CSV (.csv)',
     AppLanguage.fr: 'Exporter en CSV (.csv)',

@@ -54,4 +54,33 @@ void main() {
       expect(choice.triggersCombat, isFalse);
     });
   });
+
+  group('hunt and hunter fields', () {
+    test('round-trip through JSON and default to empty', () {
+      const choice = StoryChoice(
+        text: 'Hunt it down',
+        nextId: '',
+        triggerEnemyId: 'harbor_rat',
+        huntName: 'Old Scar',
+        huntAffixes: ['frenzied', 'armored'],
+        chestFloor: 'gold',
+      );
+      final restored = StoryChoice.fromJson(choice.toJson());
+      expect(restored.huntName, 'Old Scar');
+      expect(restored.huntAffixes, ['frenzied', 'armored']);
+      expect(restored.chestFloor, 'gold');
+      expect(restored.isHunterAmbush, isFalse);
+
+      const plain = StoryChoice(text: 'Go', nextId: 'n1');
+      expect(plain.toJson().containsKey('huntName'), isFalse);
+      expect(plain.toJson().containsKey('isHunterAmbush'), isFalse);
+      final ambush = StoryChoice.fromJson({
+        'text': 'Fight',
+        'next_id': '',
+        'triggerEnemyId': 'demon_imp',
+        'isHunterAmbush': true,
+      });
+      expect(ambush.isHunterAmbush, isTrue);
+    });
+  });
 }

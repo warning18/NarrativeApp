@@ -18,6 +18,10 @@ IconData itemTypeIcon(String? itemType) {
       return Icons.flag;
     case 'Artifact':
       return Icons.auto_awesome;
+    case 'Charm':
+      return Icons.token;
+    case 'Tome':
+      return Icons.menu_book;
     default:
       return Icons.inventory_2;
   }

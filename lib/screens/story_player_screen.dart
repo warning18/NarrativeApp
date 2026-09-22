@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/encounter.dart';
 import '../data/ability_check.dart';
+import '../data/alignment_events.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/map_themes.dart';
@@ -16,6 +18,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/gemini_tts_provider.dart';
@@ -661,6 +664,7 @@ Future<void> _selectChoice({
             additionalEnemies: {
               for (final eid in ids.skip(1)) eid: resolvedEnemies[eid]!,
             },
+            modifiers: EncounterModifiers.fromChoice(choice),
           ),
         ),
       );
@@ -730,6 +734,23 @@ Future<void> _selectChoice({
     final manualTheme = ref.read(mapThemeProvider);
     final resolvedTheme = manualTheme ??
         mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
+    // Alignment has consequences on the road before anything else rolls:
+    // a hunter's ambush for a Good/Evil character, a temptation for a
+    // Neutral one (see alignment_events.dart). One fires instead of, not
+    // on top of, an ordinary excursion this transition.
+    final alignmentEvent = maybeAlignmentEvent(
+      alignmentScore: session.alignmentScore,
+      activeQuestIds: session.activeQuestIds,
+      completedQuestIds: session.completedQuestIds,
+      enemies: enemies,
+      chapter: chapter,
+      random: Random(),
+      enabled: ref.read(alignmentHuntersEnabledProvider),
+    );
+    if (alignmentEvent != null) {
+      playNotifier.startExcursion(alignmentEvent, choice.nextId);
+      return;
+    }
     final excursion = SubNodeEngine.maybeGenerate(
       random: Random(),
       chapter: chapter,

@@ -8,6 +8,92 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.108.0+136]
+
+The dynamics batch: a clickable spoils chest after every win, enemy
+affixes, battlefield conditions, momentum, charms and tomes, hunts, and an
+alignment layer in which angels hunt the wicked, demons hunt the righteous,
+and both court the undecided.
+
+### Added
+- **Spoils chest.** Every won fight now ends on a chest the player taps
+  open, then flips slot by slot (or takes all at once; a Settings toggle
+  auto-opens it). Its tier — Wooden, Iron, Silver, Gold or Void — comes from
+  one visible fortune roll: d100 plus Luck (×2 for the player, ×1 for the
+  best ally), +25 for an Elite, +6 per extra pack member, +8 for a
+  flawless fight (no potion, nobody knocked out), +8 for two rounds or
+  fewer, +8 for a critical killing blow, +8 per affixed enemy, +10 under
+  an Ambush or Darkness, and +15 per consecutive Wooden chest. An Elite is
+  never below Silver, a boss never below Gold, a first kill of an enemy
+  type never below Iron, and a full telegraph read finds one extra slot.
+  Contents are drawn by tier from a chapter window of items.json's new
+  `rarity`/`lootChapter` bands: gear the party already carries never drops
+  again, the last three drops weigh half, profession affinity and a
+  matching alignment weigh more, and an enemy's old `lootTable` now only
+  marks its signature drops (×3, ×6 on a first kill). Replaces the
+  per-enemy drop-rate roll entirely; gold and XP are unchanged, the chest's
+  own gold comes on top.
+- **New item kinds.** Four charms (Gambler's Knucklebone: one extra reroll;
+  Lucky Coin: +15% crit; Ironskin Salve: +5 armor; Warding Knot: the first
+  hit taken is negated), picked on the fight's setup screen and burned for
+  that fight only; two tomes read on the spot (Tome of Insight: +1 stat
+  point; Tome of Mastery: +1 skill point); eight named pieces of gear, four
+  of them alignment-bound.
+- **Enemy affixes.** A solo enemy has a 20% chance (a pack member 15%) of
+  one trait: Venomous (attacks poison), Armored (ignores 4 damage from
+  Attack faces; Skill faces cut through), Skittish (flees below a quarter
+  health with half its reward and one chest tier), Frenzied (×1.4 damage
+  below half health) or, in packs only, Pack Leader (+20% health, and the
+  rest of the pack hits ×1.25 while it stands). Bosses, uniques and Elites
+  never carry one. Shown as a title ("Venomous Harbor Rat") with its rules
+  on the setup screen.
+- **Battlefield conditions.** A quarter of fights open under one: Ambush
+  (enemies strike first, nothing reads off them that round), Darkness
+  (every telegraph one tier worse), Cramped (packs of three: only two reach
+  the party each round), High Ground (Defend ×1.5), Shrine (Heal faces and
+  potions ×1.5).
+- **Momentum.** Three damaging party hits with no enemy hit landing in
+  between make the next Attack/Skill face a guaranteed critical.
+- **Hunts.** After a random pack fight, a 35% chance of a trail leading to
+  the pack's named survivor ("Merrick the Half-Faced", "Old Scar"): 20% more
+  health, two affixes, ×1.5 rewards and a chest never below Gold. Expedition
+  hunts are extra events, never a substitute for the zone's own.
+- **Alignment on the road.** Off a Good or Evil score (±20), a hunter of
+  the other side ambushes 10–22% of story transitions and expedition draws:
+  angels (Sentinel and Judicator of the Choir) for the wicked, demons (Pit
+  Imp and Tormentor of the Pit) for the righteous, the stronger pair from
+  chapter 3. Hunters yield ×1.25 rewards and never less than a Silver chest,
+  and never appear as ordinary random enemies. A Neutral character instead
+  meets temptations (10%): four short scenes that pull the score one way or
+  the other for gold, and two quest offers — "A Charge of Light" (kill a Pit
+  Imp, +15) and "A Bargain in Shadow" (kill a Sentinel, −15) — which let the
+  hunted side come looking while active. A Settings toggle turns the whole
+  layer off.
+- **Alignment on skills and gear.** A skill tagged `alignment` in
+  skills.json is ×1.25 for a matching character and ×0.75 for the opposite
+  (fourteen existing skills are tagged: the cleric's light and the void/
+  poison kit chiefly); two new gated skills, Celestial Ward (Good) and
+  Infernal Pact (Evil). Gear tagged with an alignment can't be worn by the
+  opposite one and pays an `alignedAttackBonus`/`alignedArmorBonus` to a
+  match; opposed gear never drops. The inventory and skills screens say so.
+- **Companion banter** for four more moments (fight start, a pack sighted,
+  an ally knocked out, a Gold-or-better chest), authored EN/FR for all six
+  companions.
+
+### Changed
+- The Inquisition Warden leaves the random pack pool (17 damage is the
+  chapter-1 heavy; a pair of them stuck a level-1 character for 25
+  attempts in simulation). It stays a solo encounter with its own
+  signature drop.
+- Simulator port (sim_v3.py) of every rule above, run over the same 40
+  seeds as the v1.107 batch: 40/40 endings, 98.4% combat win rate (98.0%
+  before), affixed fights 98.1% vs plain 98.4%, chests Iron 25% / Silver
+  25% / Gold 45% (about 26 points of that from the boss and hunt floors) /
+  Void 3%, 2.5 tomes and 7.7 charms per run, 83 hunts and hunter ambushes
+  across the batch (the Judicator, at 55%, is now the hardest fight in the
+  game and only stalks the wicked), and end-of-run gold roughly doubled
+  (1191 vs 604) from chest gold and the extra fights.
+
 ## [1.107.0+135]
 
 The review's remaining P2 items: the Chapter-1 difficulty wall, three

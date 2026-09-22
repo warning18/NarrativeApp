@@ -844,5 +844,85 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_temptation_light": {
+    "questID": "q_temptation_light",
+    "questName": "A Charge of Light",
+    "chapter": 0,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down a Pit Imp",
+        "type": "Kill",
+        "targetEnemyID": "demon_imp",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 90,
+    "rewardItemID": "saint_reliquary",
+    "alignmentChange": 15,
+    "nextQuestID": "",
+    "npcDialogueText": "A creature of the pit walks these streets wearing a stolen face. Hunt it down, and you will be counted among the just.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take up the charge",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_temptation_light_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_temptation_dark": {
+    "questID": "q_temptation_dark",
+    "questName": "A Bargain in Shadow",
+    "chapter": 0,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down a Sentinel of the Choir",
+        "type": "Kill",
+        "targetEnemyID": "angel_sentinel",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 90,
+    "rewardItemID": "blackened_fang",
+    "alignmentChange": -15,
+    "nextQuestID": "",
+    "npcDialogueText": "Their sentinel sniffs at your heels. Put it down for me, and I will pay in gold and in secrets.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Strike the bargain",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_temptation_dark_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }

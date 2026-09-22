@@ -65,6 +65,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final palette = ref.watch(appPaletteProvider);
     final themeMode = ref.watch(themeModeProvider);
     final trembleEnabled = ref.watch(trembleEnabledProvider);
+    final chestAutoOpen = ref.watch(chestAutoOpenProvider);
+    final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final tutorial = ref.watch(tutorialProvider);
@@ -315,6 +317,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: permadeathEnabled,
               onChanged: (value) => ref
                   .read(permadeathEnabledProvider.notifier)
+                  .setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'chest_auto_open_setting_title')),
+              subtitle: Text(tr(ref, 'chest_auto_open_setting_desc')),
+              value: chestAutoOpen,
+              onChanged: (value) =>
+                  ref.read(chestAutoOpenProvider.notifier).setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'alignment_hunters_setting_title')),
+              subtitle: Text(tr(ref, 'alignment_hunters_setting_desc')),
+              value: alignmentHunters,
+              onChanged: (value) => ref
+                  .read(alignmentHuntersEnabledProvider.notifier)
                   .setEnabled(value),
             ),
             const SizedBox(height: 24),

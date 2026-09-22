@@ -49,6 +49,8 @@ const List<String> itemTypeOptions = [
   'Weapon',
   'Armor',
   'Potion',
+  'Charm',
+  'Tome',
   'Scroll',
   'Ship',
   'Material',
@@ -133,6 +135,16 @@ const List<String> skillMoveConditionOptions = [
 // Mirrors StatusEffectType in lib/combat/status_effect.dart, plus 'None'
 // for "this skill doesn't inflict a status" — the common case.
 const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
+
+/// Rarity band the spoils chest draws gear from (see loot_box.dart).
+const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare'];
+
+/// An item's or skill's alignment affinity -- empty for none. Matching
+/// gear/skills are stronger for that alignment; opposed gear can't be
+/// worn and opposed skills are weaker (see ally_state.dart's
+/// meetsItemAlignment/alignmentGearBonusFor and combat_engine.dart's
+/// alignmentSkillMultiplier).
+const List<String> affinityAlignmentOptions = ['', 'Good', 'Evil'];
 
 final DbSchema itemsSchema = DbSchema(
   id: 'items',
@@ -282,6 +294,36 @@ final DbSchema itemsSchema = DbSchema(
         label: 'Requires Intelligence',
         type: FieldType.integer,
         defaultValue: 0),
+    FieldSchema(
+      key: 'rarity',
+      label: 'Rarity (spoils chest band)',
+      type: FieldType.enumeration,
+      enumOptions: rarityOptions,
+      defaultValue: 'Common',
+    ),
+    FieldSchema(
+      key: 'lootChapter',
+      label:
+          'Loot Chapter (earliest chapter a spoils chest drops this; 0 = never)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'alignment',
+      label: 'Alignment Affinity (empty = none)',
+      type: FieldType.enumeration,
+      enumOptions: affinityAlignmentOptions,
+    ),
+    FieldSchema(
+        key: 'alignedAttackBonus',
+        label: 'Aligned Attack Bonus (when wielder matches alignment)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'alignedArmorBonus',
+        label: 'Aligned Armor Bonus (when wielder matches alignment)',
+        type: FieldType.integer,
+        defaultValue: 0),
     visualAssetFieldSchema('items'),
   ],
 );
@@ -367,6 +409,12 @@ final DbSchema skillsSchema = DbSchema(
       key: 'requiredAlignmentMax',
       label: 'Requires Alignment At Most',
       type: FieldType.integer,
+    ),
+    FieldSchema(
+      key: 'alignment',
+      label: 'Alignment Affinity (+25% for a matching wielder, -25% opposed)',
+      type: FieldType.enumeration,
+      enumOptions: affinityAlignmentOptions,
     ),
     FieldSchema(
       key: 'unlockedViaMergeOnly',
@@ -583,6 +631,18 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',
         type: FieldType.boolean,
         defaultValue: false),
+    FieldSchema(
+      key: 'hunterAlignment',
+      label:
+          'Hunter Of (alignment this enemy hunts: Good = stalks Good characters; empty = ordinary enemy)',
+      type: FieldType.enumeration,
+      enumOptions: affinityAlignmentOptions,
+    ),
+    FieldSchema(
+        key: 'hunterTier',
+        label: 'Hunter Tier (1 = from chapter 1, 2 = from chapter 3)',
+        type: FieldType.integer,
+        defaultValue: 0),
     FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
@@ -1069,6 +1129,46 @@ final DbSchema companionsSchema = DbSchema(
     FieldSchema(
       key: 'dodgeLineFr',
       label: 'Dodge Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'fightStartLine',
+      label: 'Fight Start Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'fightStartLineFr',
+      label: 'Fight Start Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'packLine',
+      label: 'Pack Sighted Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'packLineFr',
+      label: 'Pack Sighted Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'koLine',
+      label: 'Ally Knocked Out Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'koLineFr',
+      label: 'Ally Knocked Out Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'chestLine',
+      label: 'Big Chest Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'chestLineFr',
+      label: 'Big Chest Banter (FR)',
       type: FieldType.text,
     ),
     visualAssetFieldSchema('companions'),

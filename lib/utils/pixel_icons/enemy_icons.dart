@@ -6,7 +6,11 @@ class EnemyIcons {
   static String pathFor(String enemyId) => 'assets/icons/enemies/$enemyId.png';
 
   static const List<String> allIds = [
+    'angel_judicator',
+    'angel_sentinel',
     'cultist_acolyte',
+    'demon_imp',
+    'demon_tormentor',
     'dock_overseer',
     'harbor_rat',
     'hollow_court_zealot',

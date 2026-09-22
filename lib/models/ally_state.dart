@@ -284,3 +284,39 @@ bool meetsItemStatRequirement(
       constitution >= req('reqConstitution') &&
       intelligence >= req('reqIntelligence');
 }
+
+/// Whether [item] can be worn by a character whose alignment label is
+/// [alignmentLabel]: gear tagged `alignment: 'Good'` rejects an Evil
+/// wielder and vice versa (a relic simply won't answer to the wrong hands);
+/// a Neutral character, or untagged gear, is never blocked. The player's
+/// alignment stands for the whole party, as it does for skills.
+bool meetsItemAlignment(Map<String, dynamic>? item, String alignmentLabel) {
+  final itemAlignment = item?['alignment']?.toString() ?? '';
+  if (itemAlignment.isEmpty) return true;
+  if (itemAlignment == 'Good' && alignmentLabel == 'Evil') return false;
+  if (itemAlignment == 'Evil' && alignmentLabel == 'Good') return false;
+  return true;
+}
+
+/// The extra attackDamage/armor an equipped-item list contributes from each
+/// aligned item's own `alignedAttackBonus`/`alignedArmorBonus` fields when
+/// the wielder's alignment matches the item's -- the reward half of
+/// [meetsItemAlignment]'s gate: a Good character's relic hits harder for
+/// them than the same relic would for a Neutral one.
+EquipmentScalingBonus alignmentGearBonusFor(
+  List<String> equippedItemIds,
+  Map<String, dynamic> items,
+  String alignmentLabel,
+) {
+  var damageBonus = 0;
+  var armorBonus = 0;
+  for (final id in equippedItemIds) {
+    final item = items[id] as Map<String, dynamic>?;
+    final itemAlignment = item?['alignment']?.toString() ?? '';
+    if (itemAlignment.isEmpty || itemAlignment != alignmentLabel) continue;
+    damageBonus += (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
+    armorBonus += (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
+  }
+  return EquipmentScalingBonus(
+      damageBonus: damageBonus, armorBonus: armorBonus);
+}

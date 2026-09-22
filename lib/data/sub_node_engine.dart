@@ -1,7 +1,11 @@
 import 'dart:math';
 
 import '../combat/combat_engine.dart';
+import '../combat/enemy_affix.dart';
+import '../combat/loot_box.dart';
 import '../models/story_node.dart';
+import 'alignment_events.dart';
+import 'hunt_names.dart';
 import 'map_themes.dart';
 
 /// Generates short chains of procedural "excursion" nodes inserted between
@@ -74,7 +78,7 @@ class SubNodeEngine {
             ? (recruitQuestPool..shuffle(random)).first
             : (questPool..shuffle(random)).first;
 
-    return [
+    final chain = [
       for (var i = 0; i < length; i++)
         buildNode(
           random: random,
@@ -85,6 +89,121 @@ class SubNodeEngine {
           maxPackSize: maxPackSizeFor(chapter, partySize: partySize),
           questId: i == 0 ? questSlotId : null,
         ),
+    ];
+    return withHunts(chain, enemies: enemies, random: random, flavor: flavor);
+  }
+
+  /// Odds a pack fight in a chain is followed by a hunt: a trail node, then
+  /// the pack's named survivor -- a tougher specimen with two affixes and a
+  /// guaranteed Gold chest (see [buildHuntNodes]).
+  static const double huntChance = 0.35;
+
+  /// [chain] with a hunt spliced in after its first pack fight, when one
+  /// rolls. A chain with no pack fight is returned as-is.
+  static List<StoryNode> withHunts(
+    List<StoryNode> chain, {
+    required Map<String, dynamic> enemies,
+    required Random random,
+    required ExcursionFlavor flavor,
+    double chance = huntChance,
+  }) {
+    for (var i = 0; i < chain.length; i++) {
+      final choice = chain[i].choices.isEmpty ? null : chain[i].choices.first;
+      final ids = choice?.allTriggerEnemyIds ?? const [];
+      if (ids.length < 2) continue;
+      if (random.nextDouble() >= chance) return chain;
+      final quarryId = ids[random.nextInt(ids.length)];
+      final hunt = buildHuntNodes(
+        quarryId: quarryId,
+        quarryBaseName:
+            (enemies[quarryId] as Map<String, dynamic>?)?['enemyName']
+                    ?.toString() ??
+                quarryId,
+        random: random,
+      );
+      return [...chain.take(i + 1), ...hunt, ...chain.skip(i + 1)];
+    }
+    return chain;
+  }
+
+  static const List<String> _trailEn = [
+    'One of them got away. The blood trail is fresh, and it leads somewhere '
+        'that was clearly a lair long before tonight.',
+    'Tracks in the dust, dragging on one side -- the one that ran is hurt, '
+        'and hurt things go home.',
+    'A dropped scrap of cloth, then another. Whoever fled this fight was '
+        'not being careful, and was not alone where it was going.',
+  ];
+  static const List<String> _trailFr = [
+    "L'un d'eux s'est échappé. La traînée de sang est fraîche, et elle mène "
+        'quelque part qui était manifestement un repaire bien avant ce soir.',
+    "Des traces dans la poussière, traînantes d'un côté : celui qui a fui "
+        'est blessé, et les bêtes blessées rentrent chez elles.',
+    "Un lambeau d'étoffe tombé, puis un autre. Celui qui a fui ce combat "
+        "ne prenait aucune précaution, et n'était pas seul là où il allait.",
+  ];
+  static const List<String> _quarryEn = [
+    'It is waiting at the end of the trail, bigger than the ones you killed '
+        'and far angrier, and it has clearly been the reason the others '
+        'were bold.',
+    'The lair is a hollow of stolen things and old bones, and the thing '
+        'that owns it rises to meet you with no intention of running.',
+  ];
+  static const List<String> _quarryFr = [
+    "Il attend au bout de la piste, plus gros que ceux que vous avez tués "
+        'et bien plus furieux, et il est clairement la raison pour laquelle '
+        'les autres étaient si hardis.',
+    "Le repaire est un creux de choses volées et de vieux os, et la chose "
+        "qui le possède se dresse pour vous affronter, sans la moindre "
+        'intention de fuir.',
+  ];
+
+  /// The two hunt nodes: the trail, then the quarry's fight. [quarryId]
+  /// is a member of the pack just beaten; its one-off name, two affixes
+  /// and Gold-floor chest ride on the fight choice (see
+  /// [StoryChoice.huntName]).
+  static List<StoryNode> buildHuntNodes({
+    required String quarryId,
+    required String quarryBaseName,
+    required Random random,
+  }) {
+    _counter++;
+    final trailId = 'gen_$_counter';
+    _counter++;
+    final quarryNodeId = 'gen_$_counter';
+    final name = huntNameFor(quarryId, random);
+    final affixes = rollNamedVariantAffixes(random);
+    final trailIdx = random.nextInt(_trailEn.length);
+    final quarryIdx = random.nextInt(_quarryEn.length);
+    return [
+      StoryNode(
+        id: trailId,
+        description: _trailEn[trailIdx],
+        descriptionFr: _trailFr[trailIdx],
+        choices: const [
+          StoryChoice(
+            text: 'Follow the trail',
+            textFr: 'Suivre la piste',
+            nextId: '',
+          ),
+        ],
+      ),
+      StoryNode(
+        id: quarryNodeId,
+        description: '${_quarryEn[quarryIdx]} ($name, $quarryBaseName)',
+        descriptionFr: '${_quarryFr[quarryIdx]} ($name, $quarryBaseName)',
+        choices: [
+          StoryChoice(
+            text: 'Hunt it down',
+            textFr: 'Le traquer',
+            nextId: '',
+            triggerEnemyId: quarryId,
+            huntName: name,
+            huntAffixes: [for (final a in affixes) a.name],
+            chestFloor: chestTierAssetName(ChestTier.gold),
+          ),
+        ],
+      ),
     ];
   }
 
@@ -131,6 +250,9 @@ class SubNodeEngine {
   }) {
     return enemies.entries
         .where((e) => !unlockedEnemyIds.contains(e.key))
+        // An alignment hunter only ever arrives through
+        // alignment_events.dart, never as an ordinary random draw.
+        .where((e) => !isHunterEnemy(e.value as Map<String, dynamic>?))
         .where((e) {
           final minChapter =
               ((e.value as Map<String, dynamic>)['minChapter'] as num?)

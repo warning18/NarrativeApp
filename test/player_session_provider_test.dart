@@ -756,4 +756,44 @@ void main() {
       expect(notifier.state.unlockedShopIds, isEmpty);
     });
   });
+
+  group('spoils chest bookkeeping', () {
+    test('a looted tome is read on the spot instead of carried', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.applyCombatResult(
+        hpAfter: 50,
+        itemsGained: const ['tome_of_insight', 'tome_of_mastery', 'sword_t1'],
+        items: const {
+          'tome_of_insight': {'itemType': 'Tome'},
+          'tome_of_mastery': {'itemType': 'Tome'},
+          'sword_t1': {'itemType': 'Weapon'},
+        },
+      );
+      expect(notifier.state.statPoints, 1);
+      expect(notifier.state.skillPoints, 1);
+      expect(notifier.state.inventoryItemIds, ['sword_t1']);
+    });
+
+    test('pity streak and recent drops persist through applyCombatResult',
+        () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.applyCombatResult(
+        hpAfter: 50,
+        lootPityStreak: 2,
+        recentLootIds: const ['a', 'b'],
+      );
+      expect(notifier.state.lootPityStreak, 2);
+      expect(notifier.state.recentLootIds, ['a', 'b']);
+      final restored = PlayerSession.fromJson(notifier.state.toJson());
+      expect(restored.lootPityStreak, 2);
+      expect(restored.recentLootIds, ['a', 'b']);
+    });
+
+    test('consumeInventoryItems removes one copy per id', () async {
+      final notifier = await notifierWith(baseSession(
+          inventoryItemIds: const ['charm_x', 'charm_x', 'sword_t1']));
+      await notifier.consumeInventoryItems(const ['charm_x', 'missing']);
+      expect(notifier.state.inventoryItemIds, ['charm_x', 'sword_t1']);
+    });
+  });
 }

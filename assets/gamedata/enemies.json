@@ -10,11 +10,17 @@
       {
         "itemID": "potion_minor",
         "dropRate": 25
+      },
+      {
+        "itemID": "thug_knuckle_wrap",
+        "dropRate": 10
       }
     ],
     "skillMoves": [],
     "minChapter": 1,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
@@ -31,6 +37,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 50
+      },
+      {
+        "itemID": "warden_signet",
+        "dropRate": 10
       }
     ],
     "skillMoves": [
@@ -47,7 +57,9 @@
       }
     ],
     "minChapter": 1,
-    "packEligible": true
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
@@ -60,11 +72,17 @@
       {
         "itemID": "potion_minor",
         "dropRate": 80
+      },
+      {
+        "itemID": "rat_king_tooth",
+        "dropRate": 10
       }
     ],
     "skillMoves": [],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -77,11 +95,17 @@
       {
         "itemID": "potion_minor",
         "dropRate": 40
+      },
+      {
+        "itemID": "rat_king_tooth",
+        "dropRate": 10
       }
     ],
     "skillMoves": [],
     "minChapter": 2,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
@@ -98,11 +122,17 @@
       {
         "itemID": "potion_minor",
         "dropRate": 30
+      },
+      {
+        "itemID": "blackened_fang",
+        "dropRate": 10
       }
     ],
     "skillMoves": [],
     "minChapter": 1,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
@@ -115,6 +145,10 @@
       {
         "itemID": "scroll_fireball",
         "dropRate": 15
+      },
+      {
+        "itemID": "cultist_hood",
+        "dropRate": 10
       }
     ],
     "skillMoves": [
@@ -131,7 +165,9 @@
       }
     ],
     "minChapter": 3,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -152,7 +188,9 @@
     ],
     "skillMoves": [],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
@@ -165,6 +203,10 @@
       {
         "itemID": "material_iron_ore",
         "dropRate": 25
+      },
+      {
+        "itemID": "wisp_ember",
+        "dropRate": 10
       }
     ],
     "skillMoves": [
@@ -181,7 +223,9 @@
       }
     ],
     "minChapter": 3,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
@@ -214,7 +258,9 @@
       }
     ],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -247,7 +293,9 @@
       }
     ],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
@@ -284,7 +332,9 @@
       }
     ],
     "minChapter": 3,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
@@ -339,7 +389,9 @@
       }
     ],
     "minChapter": 3,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -383,7 +435,9 @@
       }
     ],
     "minChapter": 3,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
@@ -420,7 +474,9 @@
       }
     ],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -453,7 +509,9 @@
       }
     ],
     "minChapter": 4,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -508,7 +566,9 @@
       }
     ],
     "minChapter": 5,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
@@ -545,7 +605,9 @@
       }
     ],
     "minChapter": 2,
-    "packEligible": false
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
@@ -562,10 +624,230 @@
       {
         "itemID": "potion_minor",
         "dropRate": 40
+      },
+      {
+        "itemID": "warden_signet",
+        "dropRate": 10
       }
     ],
     "skillMoves": [],
     "minChapter": 3,
-    "packEligible": true
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "angel_sentinel": {
+    "enemyName": "Sentinel of the Choir",
+    "maxHealth": 120,
+    "damage": 15,
+    "guile": 5,
+    "xpReward": 60,
+    "goldReward": 45,
+    "lootTable": [
+      {
+        "itemID": "saint_reliquary",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "Evil",
+    "hunterTier": 1
+  },
+  "angel_judicator": {
+    "enemyName": "Judicator of the Choir",
+    "maxHealth": 175,
+    "damage": 20,
+    "guile": 8,
+    "xpReward": 115,
+    "goldReward": 85,
+    "lootTable": [
+      {
+        "itemID": "halo_lance",
+        "dropRate": 20
+      },
+      {
+        "itemID": "dawnward_shield",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 35
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "wrath_of_dawn",
+        "condition": "OnLowHealth",
+        "requiredElement": "Fire",
+        "chance": 40,
+        "healthThreshold": 50,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 4
+      },
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
+      },
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "Evil",
+    "hunterTier": 2
+  },
+  "demon_imp": {
+    "enemyName": "Pit Imp",
+    "maxHealth": 105,
+    "damage": 14,
+    "guile": 4,
+    "xpReward": 55,
+    "goldReward": 40,
+    "lootTable": [
+      {
+        "itemID": "blackened_fang",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_minor",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "fireball",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "plague_bite",
+        "condition": "Chance",
+        "requiredElement": "",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "Good",
+    "hunterTier": 1
+  },
+  "demon_tormentor": {
+    "enemyName": "Tormentor of the Pit",
+    "maxHealth": 185,
+    "damage": 22,
+    "guile": 8,
+    "xpReward": 110,
+    "goldReward": 80,
+    "lootTable": [
+      {
+        "itemID": "cultist_hood",
+        "dropRate": 20
+      },
+      {
+        "itemID": "blackened_fang",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 35
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_drain",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 40,
+        "healthThreshold": 50,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 4
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
+      },
+      {
+        "skillID": "fireball",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "Good",
+    "hunterTier": 2
   }
 }

@@ -20,6 +20,10 @@ class StoryChoice {
     this.failNextId,
     this.challengeSuccessesNeeded,
     this.challengeMaxFailures,
+    this.huntName,
+    this.huntAffixes = const [],
+    this.chestFloor,
+    this.isHunterAmbush = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -52,6 +56,12 @@ class StoryChoice {
       challengeSuccessesNeeded:
           (json['challengeSuccessesNeeded'] as num?)?.toInt(),
       challengeMaxFailures: (json['challengeMaxFailures'] as num?)?.toInt(),
+      huntName: json['huntName'] as String?,
+      huntAffixes:
+          (json['huntAffixes'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      chestFloor: json['chestFloor'] as String?,
+      isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
     );
   }
 
@@ -113,6 +123,19 @@ class StoryChoice {
   /// Only meaningful alongside [challengeSuccessesNeeded].
   final int? challengeMaxFailures;
 
+  /// Set on a generated hunt node's fight choice (see SubNodeEngine's hunt
+  /// chain): the quarry's one-off display name. Alongside it,
+  /// [huntAffixes] (EnemyAffix enum names forced onto that enemy) and
+  /// [chestFloor] (a ChestTier asset name the spoils chest can't fall
+  /// below). Never set on hand-authored story content.
+  final String? huntName;
+  final List<String> huntAffixes;
+  final String? chestFloor;
+
+  /// Set on a generated alignment-hunter ambush (see alignment_events.dart)
+  /// so FightScreen applies that encounter's own reward/chest rules.
+  final bool isHunterAmbush;
+
   bool get hasAbilityCheck => checkAbility != null && checkAbility!.isNotEmpty;
 
   bool get hasSkillChallenge =>
@@ -158,6 +181,11 @@ class StoryChoice {
           'challengeSuccessesNeeded': challengeSuccessesNeeded,
         if (challengeMaxFailures != null)
           'challengeMaxFailures': challengeMaxFailures,
+        if (huntName != null && huntName!.isNotEmpty) 'huntName': huntName,
+        if (huntAffixes.isNotEmpty) 'huntAffixes': huntAffixes,
+        if (chestFloor != null && chestFloor!.isNotEmpty)
+          'chestFloor': chestFloor,
+        if (isHunterAmbush) 'isHunterAmbush': isHunterAmbush,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]

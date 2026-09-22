@@ -13,7 +13,8 @@
     "damageMultiplier": 1.5,
     "battleMessage": "Flames erupt!",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "second_wind": {
     "id": "second_wind",
@@ -29,7 +30,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You catch your breath.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "void_blast": {
     "id": "void_blast",
@@ -45,7 +47,8 @@
     "damageMultiplier": 1.8,
     "battleMessage": "A tear in reality rips across the battlefield!",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": "Evil"
   },
   "shadow_step": {
     "id": "shadow_step",
@@ -61,7 +64,8 @@
     "damageMultiplier": 1.2,
     "battleMessage": "You vanish into the dim smoke.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "human_resolve": {
     "id": "human_resolve",
@@ -77,7 +81,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You grit your teeth and push on.",
     "restrictedRaceID": "human",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "human_quick_study": {
     "id": "human_quick_study",
@@ -93,7 +98,8 @@
     "damageMultiplier": 1.2,
     "battleMessage": "You spot the opening instantly.",
     "restrictedRaceID": "human",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "human_diplomacy": {
     "id": "human_diplomacy",
@@ -109,7 +115,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your words cut deeper than steel.",
     "restrictedRaceID": "human",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "elf_arcane_focus": {
     "id": "elf_arcane_focus",
@@ -125,7 +132,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The air bends around your blade.",
     "restrictedRaceID": "elf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "elf_moonlight_step": {
     "id": "elf_moonlight_step",
@@ -141,7 +149,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You slip through like moonlight.",
     "restrictedRaceID": "elf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "elf_keen_eye": {
     "id": "elf_keen_eye",
@@ -157,7 +166,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Your aim is unerring.",
     "restrictedRaceID": "elf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "dwarf_stoneskin": {
     "id": "dwarf_stoneskin",
@@ -173,7 +183,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your skin turns to granite for a moment.",
     "restrictedRaceID": "dwarf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "dwarf_hammer_blow": {
     "id": "dwarf_hammer_blow",
@@ -189,7 +200,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "The ground shudders under the blow.",
     "restrictedRaceID": "dwarf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "dwarf_forgeheart": {
     "id": "dwarf_forgeheart",
@@ -205,7 +217,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Old forge-fire kindles in your veins.",
     "restrictedRaceID": "dwarf",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "orc_berserk_rage": {
     "id": "orc_berserk_rage",
@@ -221,7 +234,8 @@
     "damageMultiplier": 1.5,
     "battleMessage": "A red haze takes you.",
     "restrictedRaceID": "orc",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "orc_savage_cleave": {
     "id": "orc_savage_cleave",
@@ -240,7 +254,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 15
+    "statusMagnitude": 15,
+    "alignment": ""
   },
   "orc_bloodlust": {
     "id": "orc_bloodlust",
@@ -256,7 +271,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "The fight feeds your strength.",
     "restrictedRaceID": "orc",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": "Evil"
   },
   "voidkin_umbral_veil": {
     "id": "voidkin_umbral_veil",
@@ -272,7 +288,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "The Shroud folds around you.",
     "restrictedRaceID": "voidkin",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "voidkin_entropy_touch": {
     "id": "voidkin_entropy_touch",
@@ -291,7 +308,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Poison",
     "statusDuration": 3,
-    "statusMagnitude": 7
+    "statusMagnitude": 7,
+    "alignment": "Evil"
   },
   "voidkin_starless_gaze": {
     "id": "voidkin_starless_gaze",
@@ -307,7 +325,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Something ancient looks through your eyes.",
     "restrictedRaceID": "voidkin",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "warrior_shield_bash": {
     "id": "warrior_shield_bash",
@@ -326,7 +345,8 @@
     "restrictedProfessionID": "warrior",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "alignment": ""
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -342,7 +362,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Steel flashes in a full circle.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "warrior"
+    "restrictedProfessionID": "warrior",
+    "alignment": ""
   },
   "warrior_iron_stance": {
     "id": "warrior_iron_stance",
@@ -358,7 +379,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You plant your feet and hold.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "warrior"
+    "restrictedProfessionID": "warrior",
+    "alignment": ""
   },
   "warrior_execute": {
     "id": "warrior_execute",
@@ -374,7 +396,8 @@
     "damageMultiplier": 1.6,
     "battleMessage": "The killing blow lands true.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "warrior"
+    "restrictedProfessionID": "warrior",
+    "alignment": ""
   },
   "warrior_rally_cry": {
     "id": "warrior_rally_cry",
@@ -390,7 +413,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your cry echoes off the walls.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "warrior"
+    "restrictedProfessionID": "warrior",
+    "alignment": ""
   },
   "mage_arcane_missile": {
     "id": "mage_arcane_missile",
@@ -406,7 +430,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "A crackling bolt streaks out.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "mage"
+    "restrictedProfessionID": "mage",
+    "alignment": ""
   },
   "mage_frost_nova": {
     "id": "mage_frost_nova",
@@ -425,7 +450,8 @@
     "restrictedProfessionID": "mage",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 15
+    "statusMagnitude": 15,
+    "alignment": ""
   },
   "mage_mana_shield": {
     "id": "mage_mana_shield",
@@ -441,7 +467,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "A shimmering shield forms around you.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "mage"
+    "restrictedProfessionID": "mage",
+    "alignment": ""
   },
   "mage_meteor": {
     "id": "mage_meteor",
@@ -457,7 +484,8 @@
     "damageMultiplier": 1.8,
     "battleMessage": "A meteor screams down from above.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "mage"
+    "restrictedProfessionID": "mage",
+    "alignment": ""
   },
   "mage_teleport_strike": {
     "id": "mage_teleport_strike",
@@ -473,7 +501,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "You vanish and reappear mid-swing.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "mage"
+    "restrictedProfessionID": "mage",
+    "alignment": ""
   },
   "rogue_backstab": {
     "id": "rogue_backstab",
@@ -492,7 +521,8 @@
     "restrictedProfessionID": "rogue",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 20
+    "statusMagnitude": 20,
+    "alignment": ""
   },
   "rogue_smoke_bomb": {
     "id": "rogue_smoke_bomb",
@@ -508,7 +538,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Smoke swallows the fight.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "rogue"
+    "restrictedProfessionID": "rogue",
+    "alignment": ""
   },
   "rogue_poison_blade": {
     "id": "rogue_poison_blade",
@@ -527,7 +558,8 @@
     "restrictedProfessionID": "rogue",
     "inflictsStatus": "Poison",
     "statusDuration": 2,
-    "statusMagnitude": 4
+    "statusMagnitude": 4,
+    "alignment": "Evil"
   },
   "rogue_shadow_clone": {
     "id": "rogue_shadow_clone",
@@ -543,7 +575,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "A second shape lunges from the dark.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "rogue"
+    "restrictedProfessionID": "rogue",
+    "alignment": ""
   },
   "rogue_quick_pockets": {
     "id": "rogue_quick_pockets",
@@ -559,7 +592,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your hand is faster than their eye.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "rogue"
+    "restrictedProfessionID": "rogue",
+    "alignment": ""
   },
   "cleric_holy_light": {
     "id": "cleric_holy_light",
@@ -575,7 +609,8 @@
     "damageMultiplier": 1.2,
     "battleMessage": "Light lances down from above.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "cleric"
+    "restrictedProfessionID": "cleric",
+    "alignment": "Good"
   },
   "cleric_smite": {
     "id": "cleric_smite",
@@ -591,7 +626,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Judgment falls in fire.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "cleric"
+    "restrictedProfessionID": "cleric",
+    "alignment": "Good"
   },
   "cleric_sanctuary": {
     "id": "cleric_sanctuary",
@@ -607,7 +643,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "A soft glow surrounds you.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "cleric"
+    "restrictedProfessionID": "cleric",
+    "alignment": "Good"
   },
   "cleric_revive_prayer": {
     "id": "cleric_revive_prayer",
@@ -623,7 +660,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Your voice steadies, and so do you.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "cleric"
+    "restrictedProfessionID": "cleric",
+    "alignment": ""
   },
   "cleric_purify": {
     "id": "cleric_purify",
@@ -639,7 +677,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Warmth washes the wounds away.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "cleric"
+    "restrictedProfessionID": "cleric",
+    "alignment": "Good"
   },
   "ranger_aimed_shot": {
     "id": "ranger_aimed_shot",
@@ -655,7 +694,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The shot lands exactly where you aimed.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "ranger"
+    "restrictedProfessionID": "ranger",
+    "alignment": ""
   },
   "ranger_beast_bond": {
     "id": "ranger_beast_bond",
@@ -671,7 +711,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Something wild answers your call.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "ranger"
+    "restrictedProfessionID": "ranger",
+    "alignment": ""
   },
   "ranger_camouflage": {
     "id": "ranger_camouflage",
@@ -687,7 +728,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You strike from where no one was looking.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "ranger"
+    "restrictedProfessionID": "ranger",
+    "alignment": ""
   },
   "ranger_multi_shot": {
     "id": "ranger_multi_shot",
@@ -703,7 +745,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "Arrows fan out in a deadly spread.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": "ranger"
+    "restrictedProfessionID": "ranger",
+    "alignment": ""
   },
   "ranger_trap_set": {
     "id": "ranger_trap_set",
@@ -722,7 +765,8 @@
     "restrictedProfessionID": "ranger",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "alignment": ""
   },
   "power_strike": {
     "id": "power_strike",
@@ -738,7 +782,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You put your full weight behind it.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "guard_break": {
     "id": "guard_break",
@@ -754,7 +799,8 @@
     "damageMultiplier": 1.2,
     "battleMessage": "Their guard splinters.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "adrenaline_surge": {
     "id": "adrenaline_surge",
@@ -770,7 +816,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "Your pulse spikes and your blade follows.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "iron_will": {
     "id": "iron_will",
@@ -786,7 +833,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You grit through the pain.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "quick_heal": {
     "id": "quick_heal",
@@ -802,7 +850,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You bind the worst of it.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "focus_mind": {
     "id": "focus_mind",
@@ -818,7 +867,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "The world narrows to a single point.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "rallying_shout": {
     "id": "rallying_shout",
@@ -834,7 +884,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "The shout settles your racing heart.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "lucky_strike": {
     "id": "lucky_strike",
@@ -850,7 +901,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "It shouldn't have worked, but it did.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "bulwark_stance": {
     "id": "bulwark_stance",
@@ -866,7 +918,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You brace like an old wall.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "cauterize_wound": {
     "id": "cauterize_wound",
@@ -882,7 +935,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "The wound hisses shut.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "battle_trance": {
     "id": "battle_trance",
@@ -898,7 +952,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "Everything else falls away.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "steady_aim": {
     "id": "steady_aim",
@@ -914,7 +969,8 @@
     "damageMultiplier": 1.2,
     "battleMessage": "The strike lands exactly right.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "improvised_strike": {
     "id": "improvised_strike",
@@ -930,7 +986,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "Not elegant, but it connects.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "second_chance": {
     "id": "second_chance",
@@ -946,7 +1003,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You refuse to fall here.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "warcry": {
     "id": "warcry",
@@ -962,7 +1020,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "Your voice carries real menace.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "mending_touch": {
     "id": "mending_touch",
@@ -978,7 +1037,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "The bleeding slows.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "precision_thrust": {
     "id": "precision_thrust",
@@ -994,7 +1054,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "It finds the one weak point.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "inner_fire": {
     "id": "inner_fire",
@@ -1010,7 +1071,8 @@
     "damageMultiplier": 1.3,
     "battleMessage": "Something in you catches alight.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "stone_resolve": {
     "id": "stone_resolve",
@@ -1026,7 +1088,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You will not yield this ground.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "final_stand": {
     "id": "final_stand",
@@ -1042,7 +1105,8 @@
     "damageMultiplier": 1.5,
     "battleMessage": "There's nothing held back now.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "heavy_attack": {
     "id": "heavy_attack",
@@ -1058,7 +1122,8 @@
     "damageMultiplier": 1.4,
     "battleMessage": "You wind up and strike with everything you have.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "zealous_conviction": {
     "id": "zealous_conviction",
@@ -1075,7 +1140,8 @@
     "battleMessage": "Conviction burns clean.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "requiredAlignmentMin": 3
+    "requiredAlignmentMin": 3,
+    "alignment": "Good"
   },
   "ruthless_edge": {
     "id": "ruthless_edge",
@@ -1092,7 +1158,8 @@
     "battleMessage": "No mercy, no wasted motion.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "requiredAlignmentMax": -3
+    "requiredAlignmentMax": -3,
+    "alignment": "Evil"
   },
   "blazing_shadow": {
     "id": "blazing_shadow",
@@ -1109,7 +1176,8 @@
     "damageMultiplier": 1.8,
     "battleMessage": "You melt into shadow and erupt as fire.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "unbreakable_will": {
     "id": "unbreakable_will",
@@ -1126,7 +1194,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You simply refuse.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "bastion_of_stone": {
     "id": "bastion_of_stone",
@@ -1143,7 +1212,8 @@
     "damageMultiplier": 1.0,
     "battleMessage": "You become a wall that was always going to be here.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "arcane_convergence": {
     "id": "arcane_convergence",
@@ -1160,7 +1230,8 @@
     "damageMultiplier": 1.9,
     "battleMessage": "Two currents of force meet and detonate as one.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": ""
   },
   "venomous_ambush": {
     "id": "venomous_ambush",
@@ -1180,7 +1251,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Poison",
     "statusDuration": 3,
-    "statusMagnitude": 6
+    "statusMagnitude": 6,
+    "alignment": "Evil"
   },
   "wrath_of_dawn": {
     "id": "wrath_of_dawn",
@@ -1197,7 +1269,8 @@
     "damageMultiplier": 1.6,
     "battleMessage": "Dawn breaks all at once, and it does not ask who's ready.",
     "restrictedRaceID": "",
-    "restrictedProfessionID": ""
+    "restrictedProfessionID": "",
+    "alignment": "Good"
   },
   "plague_bite": {
     "id": "plague_bite",
@@ -1216,7 +1289,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Poison",
     "statusDuration": 3,
-    "statusMagnitude": 5
+    "statusMagnitude": 5,
+    "alignment": ""
   },
   "void_drain": {
     "id": "void_drain",
@@ -1235,7 +1309,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 30
+    "statusMagnitude": 30,
+    "alignment": "Evil"
   },
   "disorienting_pulse": {
     "id": "disorienting_pulse",
@@ -1254,7 +1329,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "alignment": ""
   },
   "molten_backlash": {
     "id": "molten_backlash",
@@ -1273,7 +1349,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 10
+    "statusMagnitude": 10,
+    "alignment": ""
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1292,7 +1369,8 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "alignment": ""
   },
   "radiant_judgment": {
     "id": "radiant_judgment",
@@ -1311,6 +1389,43 @@
     "restrictedProfessionID": "",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "alignment": "Good"
+  },
+  "celestial_ward": {
+    "id": "celestial_ward",
+    "element": "Light",
+    "cost": 2,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "A ring of pale fire closes around you: it burns whatever it touches and mends whatever it circles. Only the truly just can hold it steady.",
+    "healAmount": 18,
+    "damageMod": 5,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.1,
+    "battleMessage": "A ring of pale fire closes around you.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "requiredAlignmentMin": 20,
+    "alignment": "Good"
+  },
+  "infernal_pact": {
+    "id": "infernal_pact",
+    "element": "Fire",
+    "cost": 2,
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "You spend a sliver of something you will not get back, and the flames answer with everything they have. Only the truly damned can afford the price.",
+    "healAmount": 0,
+    "damageMod": 16,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.5,
+    "battleMessage": "You spend a sliver of your soul and the flames answer.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "requiredAlignmentMax": -20,
+    "alignment": "Evil"
   }
 }

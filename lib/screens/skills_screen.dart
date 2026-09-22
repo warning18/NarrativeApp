@@ -412,11 +412,16 @@ class _SkillList extends ConsumerWidget {
           );
         }
 
+        final skillAlignment = skill['alignment']?.toString() ?? '';
         final subtitleParts = <String>[
           if (description.isNotEmpty) description,
           if (requiredSkillId.isNotEmpty)
             '${tr(ref, 'requires_label')} $requiredSkillId',
           if (restriction.isNotEmpty) restriction,
+          if (skillAlignment.isNotEmpty)
+            '${tr(ref, 'aligned_gear_label')}: '
+                '${skillAlignment == 'Good' ? tr(ref, 'alignment_good') : tr(ref, 'alignment_evil')}'
+                ' (${tr(ref, 'aligned_skill_note')})',
           if (mergeOnly && !available)
             tr(ref, 'merge_only_hint')
           else

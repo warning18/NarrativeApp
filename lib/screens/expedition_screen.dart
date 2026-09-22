@@ -3,12 +3,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/encounter.dart';
+import '../data/alignment_events.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import 'fight_screen.dart';
@@ -44,6 +47,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   bool _busy = false;
   List<String> _summaryLines = const [];
 
+  /// Bonus events queued ahead of the zone's own next draw -- a hunt's
+  /// trail and quarry after a pack win (see [SubNodeEngine.buildHuntNodes]).
+  /// They don't count toward [_expeditionCount]: a hunt is extra, never a
+  /// substitute for the zone's own events.
+  final List<StoryNode> _bonusQueue = [];
+
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
 
@@ -57,6 +66,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       orElse: () => defaultMapTheme,
     );
     final zoneChapter = (widget.zone['chapter'] as num?)?.toInt() ?? 1;
+    final alignmentEvent = maybeAlignmentEvent(
+      alignmentScore: session.alignmentScore,
+      activeQuestIds: session.activeQuestIds,
+      completedQuestIds: session.completedQuestIds,
+      enemies: enemies,
+      chapter: zoneChapter,
+      random: _random,
+      enabled: ref.read(alignmentHuntersEnabledProvider),
+    );
+    if (alignmentEvent != null) return alignmentEvent.first;
     final shopPool = shops.keys
         .where((id) => !session.unlockedShopIds.contains(id))
         .toList();
@@ -82,8 +101,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   Future<void> _advance({
     required Map<String, dynamic> shops,
     required Map<String, dynamic> enemies,
+    bool countsTowardZone = true,
   }) async {
-    final nextIndex = _index + 1;
+    if (_bonusQueue.isNotEmpty) {
+      setState(() {
+        _current = _bonusQueue.removeAt(0);
+        _busy = false;
+      });
+      return;
+    }
+    final nextIndex = countsTowardZone ? _index + 1 : _index;
     if (nextIndex >= _expeditionCount) {
       await _completeZone();
       return;
@@ -102,6 +129,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   }) async {
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
+    // A bonus event (a hunt's trail or quarry, or an alignment ambush that
+    // replaced a draw) is extra: resolving it never advances the zone's
+    // own event count.
+    final countsTowardZone = !_isBonusNode(_current);
 
     final enemyIds = choice.allTriggerEnemyIds;
     if (enemyIds.isNotEmpty) {
@@ -109,7 +140,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         for (final eid in enemyIds) eid: enemies[eid] as Map<String, dynamic>?,
       };
       if (resolvedEnemies.values.any((e) => e == null)) {
-        await _advance(shops: shops, enemies: enemies);
+        await _advance(
+            shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
         return;
       }
       final won = await Navigator.of(context).push<bool>(
@@ -121,6 +153,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             additionalEnemies: {
               for (final eid in enemyIds.skip(1)) eid: resolvedEnemies[eid]!,
             },
+            modifiers: EncounterModifiers.fromChoice(choice),
           ),
         ),
       );
@@ -133,7 +166,23 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         await notifier.unlockContent(enemyId: eid);
       }
       if (!mounted) return;
-      await _advance(shops: shops, enemies: enemies);
+      // A pack win may open a hunt: the trail, then the pack's named
+      // survivor, queued as bonus events before the zone's next draw.
+      final wasBonus = !countsTowardZone;
+      if (enemyIds.length >= 2 &&
+          _random.nextDouble() < SubNodeEngine.huntChance) {
+        final quarryId = enemyIds[_random.nextInt(enemyIds.length)];
+        _bonusQueue.addAll(SubNodeEngine.buildHuntNodes(
+          quarryId: quarryId,
+          quarryBaseName:
+              (enemies[quarryId] as Map<String, dynamic>?)?['enemyName']
+                      ?.toString() ??
+                  quarryId,
+          random: _random,
+        ));
+      }
+      await _advance(
+          shops: shops, enemies: enemies, countsTowardZone: !wasBonus);
       return;
     }
 
@@ -148,7 +197,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         );
       }
       if (!mounted) return;
-      await _advance(shops: shops, enemies: enemies);
+      await _advance(
+          shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
       return;
     }
 
@@ -156,7 +206,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (questId != null && questId.isNotEmpty) {
       await notifier.unlockContent(questId: questId);
       if (!mounted) return;
-      await _advance(shops: shops, enemies: enemies);
+      await _advance(
+          shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
       return;
     }
 
@@ -170,7 +221,21 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       );
     }
     if (!mounted) return;
-    await _advance(shops: shops, enemies: enemies);
+    await _advance(
+        shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
+  }
+
+  /// A hunt node (trail or quarry), a hunter ambush, or a temptation --
+  /// anything not drawn from the zone's own pools.
+  bool _isBonusNode(StoryNode? node) {
+    if (node == null) return false;
+    if (node.id.startsWith('hunter_') || node.id.startsWith('temptation_')) {
+      return true;
+    }
+    final choice = node.choices.isEmpty ? null : node.choices.first;
+    return choice != null &&
+        ((choice.huntName ?? '').isNotEmpty ||
+            (choice.text == 'Follow the trail'));
   }
 
   Future<void> _completeZone() async {
@@ -351,15 +416,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        if (node.choices.isNotEmpty)
+        // A temptation scene offers two answers; every other event has one.
+        for (final choice in node.choices) ...[
           ElevatedButton(
             onPressed: _busy
                 ? null
-                : () => _resolveChoice(node.choices.first,
-                    shops: shops, enemies: enemies),
-            child: Text(_choiceLabel(node.choices.first)),
+                : () => _resolveChoice(choice, shops: shops, enemies: enemies),
+            child: Text(_choiceLabel(choice)),
           ),
-        const SizedBox(height: 8),
+          const SizedBox(height: 8),
+        ],
         OutlinedButton.icon(
           onPressed: _busy ? null : () => _endAsRetreat(defeated: false),
           icon: const Icon(Icons.directions_walk),

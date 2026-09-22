@@ -286,13 +286,18 @@ class _InventoryBody extends ConsumerWidget {
       equipperIntelligence = allyBase.intelligence;
     }
 
-    bool canEquip(String itemId) => meetsItemStatRequirement(
+    // Aligned gear answers to the player's alignment for the whole party
+    // (an ally doesn't track one), exactly as aligned skills do.
+    bool canEquip(String itemId) =>
+        meetsItemStatRequirement(
           items[itemId] as Map<String, dynamic>?,
           strength: equipperStrength,
           dexterity: equipperDexterity,
           constitution: equipperConstitution,
           intelligence: equipperIntelligence,
-        );
+        ) &&
+        meetsItemAlignment(
+            items[itemId] as Map<String, dynamic>?, session.alignmentLabel);
 
     void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
@@ -578,6 +583,13 @@ class _ItemTile extends StatelessWidget {
     final scalingAbbrev = scalingStatAbbrev(item, language);
     final requirementText =
         requirementUnmet ? requirementSummary(item, language) : null;
+    final itemAlignment = item?['alignment']?.toString() ?? '';
+    final alignedAttack = (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
+    final alignedArmor = (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
+    final alignedParts = <String>[
+      if (alignedAttack > 0) '${t('atk_abbrev')} +$alignedAttack',
+      if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
+    ];
 
     final statsParts = <String>[
       if (itemType != null) itemType,
@@ -588,6 +600,14 @@ class _ItemTile extends StatelessWidget {
       if (scalingAbbrev != null) '${t('scales_with_label')}: $scalingAbbrev',
       if (requirementText != null && requirementText.isNotEmpty)
         '${t('stat_requirement_label')}: $requirementText',
+      if (itemAlignment.isNotEmpty)
+        '${t('aligned_gear_label')}: ${itemAlignment == 'Good' ? t('alignment_good') : t('alignment_evil')}'
+            '${alignedParts.isNotEmpty ? ' (${alignedParts.join(', ')} ${t('aligned_bonus_suffix')})' : ''}',
+      if (itemAlignment.isNotEmpty &&
+          requirementUnmet &&
+          requirementText != null &&
+          requirementText.isEmpty)
+        t('alignment_rejects_label'),
       if (count != null && count! > 1) 'x$count',
       if (comparisonItem != null)
         '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',

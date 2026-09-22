@@ -89,6 +89,8 @@ class PlayerSession {
     this.skillEssence = 0,
     this.skillTiers = const {},
     this.antidoteCount = 0,
+    this.lootPityStreak = 0,
+    this.recentLootIds = const [],
   });
 
   final int level;
@@ -269,6 +271,15 @@ class PlayerSession {
   /// from game_config.json, no other way to gain more yet).
   final int antidoteCount;
 
+  /// Consecutive Wooden spoils chests (see loot_box.dart) -- each one
+  /// raises the next chest's fortune roll a little, so a cold streak
+  /// can't run forever. Reset by any Silver-or-better chest.
+  final int lootPityStreak;
+
+  /// The last few spoils-chest drops, weighted down in the next chest so
+  /// the same piece of gear doesn't come up fight after fight.
+  final List<String> recentLootIds;
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -355,6 +366,8 @@ class PlayerSession {
     int? skillEssence,
     Map<String, int>? skillTiers,
     int? antidoteCount,
+    int? lootPityStreak,
+    List<String>? recentLootIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -413,6 +426,8 @@ class PlayerSession {
       skillEssence: skillEssence ?? this.skillEssence,
       skillTiers: skillTiers ?? this.skillTiers,
       antidoteCount: antidoteCount ?? this.antidoteCount,
+      lootPityStreak: lootPityStreak ?? this.lootPityStreak,
+      recentLootIds: recentLootIds ?? this.recentLootIds,
     );
   }
 
@@ -470,6 +485,8 @@ class PlayerSession {
         'skillEssence': skillEssence,
         'skillTiers': skillTiers,
         'antidoteCount': antidoteCount,
+        'lootPityStreak': lootPityStreak,
+        'recentLootIds': recentLootIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -618,6 +635,10 @@ class PlayerSession {
           ) ??
           const {},
       antidoteCount: (json['antidoteCount'] as num?)?.toInt() ?? 0,
+      lootPityStreak: (json['lootPityStreak'] as num?)?.toInt() ?? 0,
+      recentLootIds:
+          (json['recentLootIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
     );
   }
 }
@@ -1815,17 +1836,28 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int xpGain = 0,
     List<String> itemsGained = const [],
     Map<String, dynamic> items = const {},
+    int? lootPityStreak,
+    List<String>? recentLootIds,
   }) async {
     final leveled = _applyXp(xpGain);
 
-    // Looted potions/antidotes become charges (see [consumableChargesFor]);
-    // everything else is carried in the inventory.
+    // Looted potions/antidotes become charges (see [consumableChargesFor]),
+    // a looted tome is read on the spot (see [tomeGrantFor]); everything
+    // else is carried in the inventory.
     var potionsGained = 0;
     var antidotesGained = 0;
+    var statPointsGained = 0;
+    var skillPointsGained = 0;
     final carried = <String>[];
     for (final itemId in itemsGained) {
-      final charges =
-          consumableChargesFor(itemId, items[itemId] as Map<String, dynamic>?);
+      final item = items[itemId] as Map<String, dynamic>?;
+      final tome = tomeGrantFor(itemId, item);
+      if (tome != null) {
+        statPointsGained += tome.statPoints;
+        skillPointsGained += tome.skillPoints;
+        continue;
+      }
+      final charges = consumableChargesFor(itemId, item);
       if (charges == null) {
         carried.add(itemId);
         continue;
@@ -1865,8 +1897,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentXP: leveled.xp,
       maxHealth: leveled.maxHealth,
       currentHealth: newHealth,
-      statPoints: leveled.statPoints,
-      skillPoints: leveled.skillPoints,
+      statPoints: leveled.statPoints + statPointsGained,
+      skillPoints: leveled.skillPoints + skillPointsGained,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       potionCount: state.potionCount + potionsGained,
@@ -1875,9 +1907,35 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,
       enemyKillCounts: newKillCounts,
+      lootPityStreak: lootPityStreak,
+      recentLootIds: recentLootIds,
     );
     await _persist();
     return leveled.leveledUp;
+  }
+
+  /// What reading a looted tome grants on the spot -- a Tome-type item
+  /// never enters the inventory, exactly like a potion becomes a charge.
+  /// `tome_of_mastery` grants a skill point; every other Tome grants a
+  /// stat point. Null for anything that isn't a Tome.
+  static ({int statPoints, int skillPoints})? tomeGrantFor(
+      String itemId, Map<String, dynamic>? item) {
+    if (item?['itemType']?.toString() != 'Tome') return null;
+    if (itemId == 'tome_of_mastery') return (statPoints: 0, skillPoints: 1);
+    return (statPoints: 1, skillPoints: 0);
+  }
+
+  /// Removes one carried copy of each id in [itemIds] -- a charm burned
+  /// at the start of a fight (see FightScreen's setup screen). Ids not in
+  /// the inventory are ignored.
+  Future<void> consumeInventoryItems(List<String> itemIds) async {
+    if (itemIds.isEmpty) return;
+    final remaining = [...state.inventoryItemIds];
+    for (final id in itemIds) {
+      remaining.remove(id);
+    }
+    state = state.copyWith(inventoryItemIds: remaining);
+    await _persist();
   }
 
   /// Permadeath: clears the player's inventory and equipped items, and

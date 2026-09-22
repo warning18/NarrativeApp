@@ -10,7 +10,15 @@
     "critLine": "Ha! Strike true and strike hard!",
     "critLineFr": "Ha ! Frappe fort et frappe juste !",
     "dodgeLine": "Not today, you don't.",
-    "dodgeLineFr": "Pas aujourd'hui, mon gaillard."
+    "dodgeLineFr": "Pas aujourd'hui, mon gaillard.",
+    "fightStartLine": "Shields up. Let's see what they're made of.",
+    "fightStartLineFr": "Boucliers levés. Voyons de quoi ils sont faits.",
+    "packLine": "More of them? Good. I was getting bored.",
+    "packLineFr": "Ils sont plusieurs ? Tant mieux. Je commençais à m'ennuyer.",
+    "koLine": "Stay down! I'll hold them off!",
+    "koLineFr": "Reste au sol ! Je les retiens !",
+    "chestLine": "Now THAT is a proper day's wages.",
+    "chestLineFr": "Ça, c'est une vraie paie de journée."
   },
   "sable": {
     "companionID": "sable",
@@ -23,7 +31,15 @@
     "critLine": "Right where it hurts.",
     "critLineFr": "Pile où ça fait mal.",
     "dodgeLine": "Too slow, love.",
-    "dodgeLineFr": "Trop lent, mon chou."
+    "dodgeLineFr": "Trop lent, mon chou.",
+    "fightStartLine": "Try not to bleed on anything valuable.",
+    "fightStartLineFr": "Essaie de ne pas saigner sur quoi que ce soit de valeur.",
+    "packLine": "Three of them, one of me. Hardly fair. For them.",
+    "packLineFr": "Trois contre moi. Pas très équitable. Pour eux.",
+    "koLine": "Oh, get up, you're embarrassing me.",
+    "koLineFr": "Oh, relève-toi, tu me fais honte.",
+    "chestLine": "Don't touch the lock. Locks are mine.",
+    "chestLineFr": "Ne touche pas à la serrure. Les serrures, c'est moi."
   },
   "maren": {
     "companionID": "maren",
@@ -36,7 +52,15 @@
     "critLine": "The Light guides this blow.",
     "critLineFr": "La Lumière guide ce coup.",
     "dodgeLine": "Watched over, still.",
-    "dodgeLineFr": "Toujours protégée."
+    "dodgeLineFr": "Toujours protégée.",
+    "fightStartLine": "The Light keep us. All of us.",
+    "fightStartLineFr": "Que la Lumière nous garde. Tous.",
+    "packLine": "So many of them. So many to forgive.",
+    "packLineFr": "Tant d'entre eux. Tant à pardonner.",
+    "koLine": "No. Not this one. Not today.",
+    "koLineFr": "Non. Pas celui-là. Pas aujourd'hui.",
+    "chestLine": "Take only what you need. Then take a little more.",
+    "chestLineFr": "Ne prends que ce dont tu as besoin. Puis un peu plus."
   },
   "liora": {
     "companionID": "liora",
@@ -49,7 +73,15 @@
     "critLine": "The arrow finds its mark.",
     "critLineFr": "La flèche trouve sa cible.",
     "dodgeLine": "The wind moves faster than you.",
-    "dodgeLineFr": "Le vent va plus vite que toi."
+    "dodgeLineFr": "Le vent va plus vite que toi.",
+    "fightStartLine": "I count their steps. They don't count mine.",
+    "fightStartLineFr": "Je compte leurs pas. Eux ne comptent pas les miens.",
+    "packLine": "Spread out. They can't all be watched at once.",
+    "packLineFr": "Dispersez-vous. On ne peut pas tous les surveiller à la fois.",
+    "koLine": "Cover! I have the line!",
+    "koLineFr": "À couvert ! Je tiens la ligne !",
+    "chestLine": "The wood is warped. Somebody buried this in a hurry.",
+    "chestLineFr": "Le bois a gauchi. Quelqu'un a enterré ça à la hâte."
   },
   "vess": {
     "companionID": "vess",
@@ -62,7 +94,15 @@
     "critLine": "The void does not miss.",
     "critLineFr": "Le néant ne rate jamais.",
     "dodgeLine": "You grasped at shadow.",
-    "dodgeLineFr": "Tu n'as saisi que l'ombre."
+    "dodgeLineFr": "Tu n'as saisi que l'ombre.",
+    "fightStartLine": "The void has already decided this. Let's see what it chose.",
+    "fightStartLineFr": "Le néant a déjà tranché. Voyons ce qu'il a choisi.",
+    "packLine": "More fuel.",
+    "packLineFr": "Plus de combustible.",
+    "koLine": "Get. Up. I am not carrying you.",
+    "koLineFr": "Debout. Je ne te porterai pas.",
+    "chestLine": "Something in there hums. Open it slowly.",
+    "chestLineFr": "Quelque chose vibre là-dedans. Ouvre doucement."
   },
   "grosh": {
     "companionID": "grosh",
@@ -75,6 +115,14 @@
     "critLine": "CRUSHED! Ha ha!",
     "critLineFr": "ÉCRASÉ ! Ha ha !",
     "dodgeLine": "Grosh still standing!",
-    "dodgeLineFr": "Grosh toujours debout !"
+    "dodgeLineFr": "Grosh toujours debout !",
+    "fightStartLine": "GROSH SMASH FIRST. Ask questions after.",
+    "fightStartLineFr": "GROSH FRAPPE D'ABORD. Questions après.",
+    "packLine": "Ha! Little ones! Grosh likes when they come in bunches!",
+    "packLineFr": "Ha ! Des petits ! Grosh aime quand ils viennent en grappe !",
+    "koLine": "NO! Grosh will break the one who did this!",
+    "koLineFr": "NON ! Grosh va briser celui qui a fait ça !",
+    "chestLine": "Grosh open it! Grosh good at opening!",
+    "chestLineFr": "Grosh l'ouvre ! Grosh est bon pour ouvrir !"
   }
 }

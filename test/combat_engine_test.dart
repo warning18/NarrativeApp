@@ -933,4 +933,64 @@ void main() {
       expect(professionLootAffinityBonus(null, 'intelligence'), 0);
     });
   });
+
+  group('forced criticals and alignment', () {
+    final skills = <String, dynamic>{
+      'smite': {
+        'damageMod': 4,
+        'damageMultiplier': 1.0,
+        'healAmount': 0,
+        'alignment': 'Good',
+      },
+      'ward': {
+        'damageMod': 0,
+        'damageMultiplier': 1.0,
+        'healAmount': 20,
+        'alignment': 'Good',
+      },
+    };
+    DiceFaceResult face(
+            {required String type, int value = 0, String skill = ''}) =>
+        DiceFaceResult(
+          faceIndex: 0,
+          faceName: 'f',
+          type: type,
+          value: value,
+          linkedSkillID: skill,
+          element: 'None',
+        );
+
+    test('forceCritical lands a crit with no Luck and no RNG', () {
+      final result = resolvePlayerFace(
+          face(type: 'Attack', value: 6), skills, 10,
+          forceCritical: true);
+      expect(result.isCritical, isTrue);
+      expect(result.damageDealt, criticalDamage(16));
+    });
+
+    test('a matching alignment strengthens a tagged skill by a quarter', () {
+      final good = resolvePlayerFace(
+          face(type: 'Skill', skill: 'smite'), skills, 10,
+          alignmentLabel: 'Good');
+      final neutral =
+          resolvePlayerFace(face(type: 'Skill', skill: 'smite'), skills, 10);
+      final evil = resolvePlayerFace(
+          face(type: 'Skill', skill: 'smite'), skills, 10,
+          alignmentLabel: 'Evil');
+      expect(neutral.damageDealt, 14);
+      expect(good.damageDealt, 18);
+      expect(evil.damageDealt, 11);
+    });
+
+    test('the multiplier applies to a tagged heal too', () {
+      final good = resolvePlayerFace(
+          face(type: 'Skill', skill: 'ward'), skills, 10,
+          alignmentLabel: 'Good');
+      expect(good.healingDone, 25);
+      final evil = resolvePlayerFace(
+          face(type: 'Skill', skill: 'ward'), skills, 10,
+          alignmentLabel: 'Evil');
+      expect(evil.healingDone, 15);
+    });
+  });
 }
