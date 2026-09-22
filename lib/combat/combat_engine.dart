@@ -99,6 +99,7 @@ class PlayerActionResult {
     required this.blockAmount,
     required this.message,
     this.inflictedStatus,
+    this.isCritical = false,
   });
 
   final int damageDealt;
@@ -110,6 +111,34 @@ class PlayerActionResult {
   /// only Skill faces can carry one (see the skill's own
   /// `inflictsStatus`/`statusDuration`/`statusMagnitude` fields).
   final StatusEffect? inflictedStatus;
+
+  /// True when [criticalChanceFor] rolled a hit on this face's damage --
+  /// always false for a face that dealt no damage (a pure heal/block, or a
+  /// fizzled skill), so it never surfaces on something with nothing to
+  /// amplify.
+  final bool isCritical;
+}
+
+/// Critical-hit chance (0-100) for an attacker with the given Luck score --
+/// a flat 5% baseline (everyone gets the occasional lucky hit) plus 1.5
+/// points per Luck, capped at 35% so even a heavily luck-built character
+/// still lands a normal hit more often than not.
+double criticalChanceFor(int luck) => min(35, 5 + luck * 1.5);
+
+/// Dodge chance (0-100) for a defender with the given Dexterity score --
+/// same shape as [criticalChanceFor], capped a little lower (30%) since a
+/// dodge blocks 100% of the incoming hit rather than just adding a bonus.
+double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
+
+/// A critical hit multiplies the face's already-computed damage by this
+/// much -- shared by every damaging face type so a crit means the same
+/// thing everywhere it can happen.
+const double _criticalDamageMultiplier = 1.5;
+
+int _withCritical(int damage, int luck, Random? random) {
+  if (damage <= 0 || random == null) return damage;
+  if (random.nextDouble() * 100 >= criticalChanceFor(luck)) return damage;
+  return (damage * _criticalDamageMultiplier).round();
 }
 
 PlayerActionResult resolvePlayerFace(
@@ -119,17 +148,22 @@ PlayerActionResult resolvePlayerFace(
   AppLanguage language = AppLanguage.en,
   List<StatusEffect> activeEffects = const [],
   int wisdomHealBonus = 0,
+  int luck = 0,
+  Random? random,
 }) {
   String t(String key) => trFor(language, key);
   switch (face.type) {
     case 'Attack':
-      final damage = applyWeaken(baseDamage + face.value, activeEffects);
+      final rawDamage = applyWeaken(baseDamage + face.value, activeEffects);
+      final damage = _withCritical(rawDamage, luck, random);
+      final crit = damage != rawDamage;
       return PlayerActionResult(
         damageDealt: damage,
         healingDone: 0,
         blockAmount: 0,
-        message:
-            '${face.faceName}: ${t('you_deal_prefix')} $damage ${t('damage_word')}.',
+        isCritical: crit,
+        message: '${face.faceName}: ${t('you_deal_prefix')} $damage '
+            '${t('damage_word')}${crit ? ' ${t('critical_hit_suffix')}' : ''}.',
       );
     case 'Defend':
       return PlayerActionResult(
@@ -156,16 +190,20 @@ PlayerActionResult resolvePlayerFace(
       final baseHealAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
       final healAmount =
           baseHealAmount > 0 ? baseHealAmount + wisdomHealBonus : 0;
-      final damage = applyWeaken(
+      final rawDamage = applyWeaken(
         ((baseDamage + damageMod) * multiplier).round(),
         activeEffects,
       );
+      final damage = _withCritical(rawDamage, luck, random);
+      final crit = damage != rawDamage;
       final flavor = skill['battleMessage']?.toString() ?? '${face.faceName}!';
       // Standard dice faces (Attack/Defend/Heal) always spell out the exact
       // numbers in their preview message; skill faces should be no
       // different, on top of whatever flavor text the skill defines.
       final statParts = <String>[
-        if (damage > 0) '${t('you_deal_prefix')} $damage ${t('damage_word')}',
+        if (damage > 0)
+          '${t('you_deal_prefix')} $damage ${t('damage_word')}'
+              '${crit ? ' ${t('critical_hit_suffix')}' : ''}',
         if (healAmount > 0)
           '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
       ];
@@ -175,6 +213,7 @@ PlayerActionResult resolvePlayerFace(
         damageDealt: damage,
         healingDone: healAmount,
         blockAmount: 0,
+        isCritical: crit,
         message: message,
         inflictedStatus: _inflictedStatusFrom(skill),
       );

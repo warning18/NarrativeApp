@@ -117,6 +117,7 @@ class AllyBaseStats {
     required this.constitution,
     required this.intelligence,
     required this.wisdom,
+    required this.luck,
   });
 
   final int maxHealth;
@@ -127,10 +128,13 @@ class AllyBaseStats {
   /// `PlayerSessionNotifier.startNewGame`) -- feed [equipmentScalingBonusFor]
   /// and [meetsItemStatRequirement] so an ally's gear scales with, and is
   /// gated by, their own race/profession-derived scores, exactly like the
-  /// player. Luck/Charisma aren't included: they're pure loot/story stats
-  /// that don't affect combat for the player either (see [PlayerSession]'s
-  /// doc comment), so an ally has no use for them.
+  /// player. Charisma isn't included: it's a pure story-gating stat (see
+  /// [PlayerSession.charisma]'s doc comment) that an ally has no use for.
   final int strength;
+
+  /// Also backs [dodgeChanceFor] in `combat_engine.dart`: a nimble ally
+  /// (Sable the rogue, chiefly) evades an incoming hit outright more often
+  /// than a slower one does.
   final int dexterity;
   final int constitution;
   final int intelligence;
@@ -141,6 +145,12 @@ class AllyBaseStats {
   /// Wisdom-heavy background -- Maren the cleric, chiefly -- is meaningfully
   /// harder to lock down or wear away with poison than one without.
   final int wisdom;
+
+  /// Backs the same in-combat role as the player's own Luck (see
+  /// [PlayerSession.luck]): feeds [criticalChanceFor] in
+  /// `combat_engine.dart`, on top of its existing loot-roll bonus for the
+  /// player.
+  final int luck;
 }
 
 AllyBaseStats deriveAllyBaseStats({
@@ -175,6 +185,9 @@ AllyBaseStats deriveAllyBaseStats({
     wisdom: ((gameConfig['wisdom'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusWisdom') +
         bonus(profession, 'bonusWisdom'),
+    luck: ((gameConfig['luck'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusLuck') +
+        bonus(profession, 'bonusLuck'),
   );
 }
 

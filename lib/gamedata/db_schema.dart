@@ -1041,6 +1041,26 @@ final DbSchema companionsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'houses',
     ),
+    FieldSchema(
+      key: 'critLine',
+      label: 'Critical Hit Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'critLineFr',
+      label: 'Critical Hit Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'dodgeLine',
+      label: 'Dodge Banter (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'dodgeLineFr',
+      label: 'Dodge Banter (FR)',
+      type: FieldType.text,
+    ),
     visualAssetFieldSchema('companions'),
   ],
 );

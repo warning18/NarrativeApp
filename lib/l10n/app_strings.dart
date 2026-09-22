@@ -1790,6 +1790,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
   'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L'ennemi"},
+  'elite_prefix': {AppLanguage.en: 'Elite', AppLanguage.fr: 'Élite'},
+  'critical_hit_suffix': {
+    AppLanguage.en: '(Critical Hit!)',
+    AppLanguage.fr: '(Coup Critique !)',
+  },
+  'you_dodge_suffix': {
+    AppLanguage.en: 'you dodge it!',
+    AppLanguage.fr: 'vous esquivez !',
+  },
+  'dodges_suffix': {
+    AppLanguage.en: 'dodges it!',
+    AppLanguage.fr: 'esquive !',
+  },
   'updates_section': {
     AppLanguage.en: 'Updates',
     AppLanguage.fr: 'Mises à jour'

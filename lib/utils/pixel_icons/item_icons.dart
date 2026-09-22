@@ -20,6 +20,7 @@ class ItemIcons {
     'dagger_t7',
     'dagger_t8',
     'dagger_t9',
+    'elite_trophy',
     'material_iron_ore',
     'plate_emberproof',
     'potion_major',

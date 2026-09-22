@@ -27,6 +27,43 @@ const int _potionHealAmount = 30;
 /// max health after a won fight — see [_FightScreenState._finishFight].
 const double _reviveHealthFraction = 0.3;
 
+/// Odds any given fight against an enemy not in
+/// [_eliteIneligibleEnemyIds] is promoted to an Elite encounter — see
+/// [_FightScreenState._isElite].
+const double _eliteChance = 0.12;
+
+/// An Elite's health/damage are both multiplied by this on top of the
+/// normal player-level scaling -- a real, noticeable step up, not a
+/// rounding error, without being so far past the enemy's own tuned
+/// baseline that it stops feeling like a harder version of the same fight.
+const double _eliteStatMultiplier = 1.35;
+
+/// An Elite's gold/XP reward on a win are multiplied by this -- the
+/// "worth the extra risk" payoff, alongside the guaranteed trophy drop
+/// (see [_FightScreenState._finishFight]).
+const double _eliteRewardMultiplier = 1.5;
+
+/// Enemies already distinctive/tuned as their own set-piece -- the three
+/// regression-tested "wall" bosses (see boss_balance_test.dart) plus
+/// kroll_the_branded and void_stalker, both individually rebalanced this
+/// session -- never roll Elite. Elite exists to keep the *generic* trash
+/// pool from feeling flat on repeat encounters, not to reskin a boss fight
+/// that's already a deliberately tuned challenge.
+const Set<String> _eliteIneligibleEnemyIds = {
+  'inquisition_high_warden',
+  'hollow_court_zealot',
+  'void_manifestation',
+  'kroll_the_branded',
+  'void_stalker',
+};
+
+/// Odds a still-active, non-acting ally reacts with a short banter line
+/// (see companions.json's `critLine`/`dodgeLine` fields) when a crit or a
+/// dodge lands -- rolled independently of the crit/dodge chance itself, so
+/// the moment stays a pleasant surprise rather than a guaranteed line
+/// every single time.
+const double _banterChance = 0.35;
+
 /// Broad categories a combat-log line falls into, used to color and icon
 /// each line so the log reads at a glance instead of as a wall of text.
 enum _LogKind {
@@ -36,7 +73,8 @@ enum _LogKind {
   playerBlock,
   enemyDamage,
   victory,
-  defeat
+  defeat,
+  banter
 }
 
 class _LogEntry {
@@ -62,6 +100,8 @@ Color _logColor(BuildContext context, _LogKind kind) {
       return Colors.amber.shade800;
     case _LogKind.defeat:
       return Colors.red.shade900;
+    case _LogKind.banter:
+      return Colors.indigo;
   }
 }
 
@@ -81,6 +121,8 @@ IconData _logIcon(_LogKind kind) {
       return Icons.emoji_events;
     case _LogKind.defeat:
       return Icons.heart_broken;
+    case _LogKind.banter:
+      return Icons.chat_bubble_outline;
   }
 }
 
@@ -184,6 +226,7 @@ class _PartyMember {
     this.constitution = 0,
     this.intelligence = 0,
     this.wisdom = 0,
+    this.luck = 0,
   });
 
   final String id;
@@ -208,6 +251,11 @@ class _PartyMember {
   /// on them (see [applyWisdomResistance]) -- not part of the equipment
   /// scaling system above, since it isn't gear-driven.
   final int wisdom;
+
+  /// Feeds this member's own critical-hit chance (see
+  /// [criticalChanceFor]) -- not part of the equipment scaling system
+  /// above, since it isn't gear-driven either.
+  final int luck;
 
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
@@ -256,6 +304,23 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late int _enemyDamage;
   int _lastDamageTaken = 0;
 
+  /// True for a fight promoted to an Elite encounter (see [_eliteChance]) --
+  /// rolled once in [initState] and fixed for the rest of the fight.
+  bool _isElite = false;
+
+  /// [FightScreen.enemy], with its `enemyName` prefixed for an Elite
+  /// encounter — read everywhere this screen previously read
+  /// `widget.enemy` directly, so the Elite name (and anything built from
+  /// it, like [resolveEnemyMove]'s own generated move messages) shows up
+  /// consistently without threading a separate "is this elite" flag
+  /// through every call site.
+  late final Map<String, dynamic> _enemyData;
+
+  /// The loaded companions.json table, kept for [_rollBanter]'s
+  /// crit/dodge reaction-line lookup -- set once in [_ensurePartyBuilt],
+  /// alongside the party itself.
+  Map<String, dynamic> _companions = const {};
+
   /// Poison/Stun/Weaken currently afflicting the enemy — see
   /// status_effect.dart. Ticked down once per round in [_takeEnemyTurn].
   List<StatusEffect> _enemyStatusEffects = [];
@@ -301,11 +366,26 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
+    _isElite = !_eliteIneligibleEnemyIds.contains(widget.enemyId) &&
+        _random.nextDouble() < _eliteChance;
+    _enemyData = _isElite
+        ? {
+            ...widget.enemy,
+            'enemyName':
+                '${trFor(ref.read(appLanguageProvider), 'elite_prefix')} '
+                    '${widget.enemy['enemyName']}',
+          }
+        : widget.enemy;
     _enemyMaxHealth = scaledMaxHealth(
         (widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     _enemyHealth = _enemyMaxHealth;
     _enemyDamage = scaledDamage(
         (widget.enemy['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+    if (_isElite) {
+      _enemyMaxHealth = (_enemyMaxHealth * _eliteStatMultiplier).round();
+      _enemyHealth = _enemyMaxHealth;
+      _enemyDamage = (_enemyDamage * _eliteStatMultiplier).round();
+    }
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
     _shakeController = AnimationController(
@@ -346,6 +426,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
+    _companions = companions;
 
     final playerDiceAssignments =
         session.diceSkillAssignments[_selectedDiceId] ??
@@ -372,6 +453,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       constitution: session.constitution,
       intelligence: session.intelligence,
       wisdom: session.wisdom,
+      luck: session.luck,
     );
 
     final activeAllies = <_PartyMember>[];
@@ -411,6 +493,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         constitution: base.constitution,
         intelligence: base.intelligence,
         wisdom: base.wisdom,
+        luck: base.luck,
       ));
     }
 
@@ -424,13 +507,39 @@ class _FightScreenState extends ConsumerState<FightScreen>
   String _actorPrefix(_PartyMember actor) =>
       _party.length > 1 ? '${actor.displayName}: ' : '';
 
+  /// Rolls [_banterChance] for a random active, still-conscious ally
+  /// (other than [excludeId], so nobody reacts to their own crit or dodge)
+  /// to say a short line from their own companions.json `critLine`/
+  /// `dodgeLine` — null whenever there's simply nobody around to react (a
+  /// solo player, or every ally already knocked out), the line rolled
+  /// against and missed, or the chosen companion has no line authored for
+  /// this language/event.
+  _LogEntry? _rollBanter({required bool isCrit, String? excludeId}) {
+    final candidates = _party
+        .where((m) => !m.isPlayer && !m.isKnockedOut && m.id != excludeId)
+        .toList();
+    if (candidates.isEmpty || _random.nextDouble() >= _banterChance) {
+      return null;
+    }
+    final speaker = candidates[_random.nextInt(candidates.length)];
+    final companion = _companions[speaker.id] as Map<String, dynamic>?;
+    if (companion == null) return null;
+    final lang = ref.read(appLanguageProvider);
+    final key = isCrit
+        ? (lang == AppLanguage.fr ? 'critLineFr' : 'critLine')
+        : (lang == AppLanguage.fr ? 'dodgeLineFr' : 'dodgeLine');
+    final line = companion[key]?.toString();
+    if (line == null || line.isEmpty) return null;
+    return _LogEntry('${speaker.displayName}: "$line"', _LogKind.banter);
+  }
+
   void _startFight() {
     final lang = ref.read(appLanguageProvider);
     setState(() {
       _started = true;
       _log.add(
         _LogEntry(
-          '${trFor(lang, 'fight_begins_prefix')} ${widget.enemy['enemyName']} '
+          '${trFor(lang, 'fight_begins_prefix')} ${_enemyData['enemyName']} '
           '${trFor(lang, 'has_label')} $_enemyMaxHealth ${trFor(lang, 'hp_label')}.',
           _LogKind.info,
         ),
@@ -532,6 +641,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     var enemyEffects = _enemyStatusEffects;
     final newEntries = <_LogEntry>[];
     final hitElements = <String>{};
+    String? lastCritActorId;
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
@@ -559,6 +669,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         language: lang,
         activeEffects: actor.statusEffects,
         wisdomHealBonus: actor.wisdom ~/ 2,
+        luck: actor.luck,
+        random: _random,
       );
       final kind = result.damageDealt > 0
           ? _LogKind.playerDamage
@@ -569,6 +681,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   : _LogKind.info;
 
       totalDamageToEnemy += result.damageDealt;
+      if (result.isCritical) lastCritActorId = actor.id;
       if (element != 'None' && result.damageDealt > 0) hitElements.add(element);
       actor.currentHealth =
           min(actor.maxHealth, actor.currentHealth + result.healingDone);
@@ -582,12 +695,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
         newEntries.add(_LogEntry(
           _statusInflictedMessage(
             inflicted,
-            widget.enemy['enemyName']?.toString() ?? widget.enemyId,
+            _enemyData['enemyName']?.toString() ?? widget.enemyId,
             lang,
           ),
           _LogKind.info,
         ));
       }
+    }
+
+    if (lastCritActorId != null) {
+      final banter = _rollBanter(isCrit: true, excludeId: lastCritActorId);
+      if (banter != null) newEntries.add(banter);
     }
 
     setState(() {
@@ -697,7 +815,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       setState(() {
         _enemyHealth = max(0, _enemyHealth - enemyPoison);
         _log.add(_LogEntry(
-          '${widget.enemy['enemyName']} ${trFor(lang, 'takes_damage_word')} '
+          '${_enemyData['enemyName']} ${trFor(lang, 'takes_damage_word')} '
           '$enemyPoison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
           _LogKind.playerDamage,
         ));
@@ -711,7 +829,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     if (isStunned(_enemyStatusEffects)) {
       setState(() {
         _log.add(_LogEntry(
-          '${widget.enemy['enemyName']} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+          '${_enemyData['enemyName']} ${trFor(lang, 'stunned_skip_turn_suffix')}',
           _LogKind.info,
         ));
         _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
@@ -721,7 +839,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     final move = resolveEnemyMove(
-      enemy: {...widget.enemy, 'damage': _enemyDamage},
+      enemy: {..._enemyData, 'damage': _enemyDamage},
       skills: skills,
       enemyCurrentHealth: _enemyHealth,
       enemyMaxHealth: _enemyMaxHealth,
@@ -749,8 +867,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
         targetScalingBonus.armorBonus;
     final elementalResist =
         _elementalResist(move.element, target.equippedItemIds, items);
-    final damageTaken =
-        max(0, move.damage - target.block - totalArmor - elementalResist);
+    // A dodge evades the hit outright -- no damage, no status effect --
+    // rather than just softening it further on top of block/armor/resist.
+    final wasDodged =
+        _random.nextDouble() * 100 < dodgeChanceFor(target.dexterity);
+    final damageTaken = wasDodged
+        ? 0
+        : max(0, move.damage - target.block - totalArmor - elementalResist);
     final wasKnockedOutAlready = target.isKnockedOut;
 
     setState(() {
@@ -758,33 +881,45 @@ class _FightScreenState extends ConsumerState<FightScreen>
       target.block = 0;
       _lastDamageTaken = damageTaken;
       _lastDamagedMemberId = target.id;
-      final damageLine = target.isPlayer
-          ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
-              '${trFor(lang, 'damage_word')}.'
-          : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
-              '$damageTaken ${trFor(lang, 'damage_word')}.';
-      _log.add(
-        _LogEntry(damageLine,
-            damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
-      );
-      if (!target.isPlayer && !wasKnockedOutAlready && target.isKnockedOut) {
-        _log.add(
-          _LogEntry(
-            '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
-            _LogKind.defeat,
-          ),
-        );
-      }
-      final inflicted = move.inflictedStatus;
-      if (inflicted != null && !target.isKnockedOut) {
-        target.statusEffects = applyStatusEffect(
-          target.statusEffects,
-          applyWisdomResistance(inflicted, target.wisdom),
-        );
+      if (wasDodged) {
         _log.add(_LogEntry(
-          _statusInflictedMessage(inflicted, target.displayName, lang),
-          _LogKind.info,
+          target.isPlayer
+              ? '${move.message} ${trFor(lang, 'you_dodge_suffix')}'
+              : '${move.message} ${target.displayName} '
+                  '${trFor(lang, 'dodges_suffix')}',
+          _LogKind.playerBlock,
         ));
+        final banter = _rollBanter(isCrit: false, excludeId: target.id);
+        if (banter != null) _log.add(banter);
+      } else {
+        final damageLine = target.isPlayer
+            ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
+                '${trFor(lang, 'damage_word')}.'
+            : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
+                '$damageTaken ${trFor(lang, 'damage_word')}.';
+        _log.add(
+          _LogEntry(damageLine,
+              damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
+        );
+        if (!target.isPlayer && !wasKnockedOutAlready && target.isKnockedOut) {
+          _log.add(
+            _LogEntry(
+              '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
+              _LogKind.defeat,
+            ),
+          );
+        }
+        final inflicted = move.inflictedStatus;
+        if (inflicted != null && !target.isKnockedOut) {
+          target.statusEffects = applyStatusEffect(
+            target.statusEffects,
+            applyWisdomResistance(inflicted, target.wisdom),
+          );
+          _log.add(_LogEntry(
+            _statusInflictedMessage(inflicted, target.displayName, lang),
+            _LogKind.info,
+          ));
+        }
       }
       _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
     });
@@ -846,11 +981,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
     if (won) {
-      final goldGain = scaledReward(
+      var goldGain = scaledReward(
           (widget.enemy['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
-      final xpGain = scaledReward(
+      var xpGain = scaledReward(
           (widget.enemy['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
-      final loot = <String>[];
+      if (_isElite) {
+        goldGain = (goldGain * _eliteRewardMultiplier).round();
+        xpGain = (xpGain * _eliteRewardMultiplier).round();
+      }
+      // An Elite always drops its trophy on top of the enemy's own loot
+      // table roll below -- the guaranteed "that was worth it" payoff for
+      // the harder fight, on top of the reward multiplier above.
+      final loot = <String>[if (_isElite) 'elite_trophy'];
       final lootTable =
           (widget.enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
               const [];
@@ -978,7 +1120,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       return Scaffold(
         appBar: AppBar(
           title: Text(
-              '${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
+              '${tr(ref, 'fight_prefix')}: ${_enemyData['enemyName'] ?? widget.enemyId}'),
         ),
         body: Center(
           child: error != null
@@ -993,7 +1135,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            '${tr(ref, 'fight_prefix')}: ${widget.enemy['enemyName'] ?? widget.enemyId}'),
+            '${tr(ref, 'fight_prefix')}: ${_enemyData['enemyName'] ?? widget.enemyId}'),
       ),
       body: !_started
           ? _buildSetup(dice, items)
@@ -1032,14 +1174,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
             children: [
               CircleAvatar(
                 radius: 24,
-                backgroundColor: Theme.of(context).colorScheme.errorContainer,
+                backgroundColor: _isElite
+                    ? Colors.amber.shade700
+                    : Theme.of(context).colorScheme.errorContainer,
                 child: EnemyPixelIcon(widget.enemyId, size: 36),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  widget.enemy['enemyName']?.toString() ?? widget.enemyId,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  _enemyData['enemyName']?.toString() ?? widget.enemyId,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: _isElite ? Colors.amber.shade800 : null,
+                        fontWeight: _isElite ? FontWeight.bold : null,
+                      ),
                 ),
               ),
             ],
@@ -1127,7 +1274,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
               const SizedBox(height: 8),
             ],
             _HealthBar(
-              label: widget.enemy['enemyName']?.toString() ?? widget.enemyId,
+              label: _enemyData['enemyName']?.toString() ?? widget.enemyId,
               current: _enemyHealth,
               max: _enemyMaxHealth,
               statLine: '⚔ $_enemyDamage',

@@ -6,7 +6,11 @@
     "professionId": "warrior",
     "signatureDiceId": "iron_die",
     "recruitQuestId": "q_ch2_keldas_stand",
-    "requiredHouseId": "keldas_hall"
+    "requiredHouseId": "keldas_hall",
+    "critLine": "Ha! Strike true and strike hard!",
+    "critLineFr": "Ha ! Frappe fort et frappe juste !",
+    "dodgeLine": "Not today, you don't.",
+    "dodgeLineFr": "Pas aujourd'hui, mon gaillard."
   },
   "sable": {
     "companionID": "sable",
@@ -15,7 +19,11 @@
     "professionId": "rogue",
     "signatureDiceId": "shadow_die",
     "recruitQuestId": "q_ch2_sables_wager",
-    "requiredHouseId": ""
+    "requiredHouseId": "",
+    "critLine": "Right where it hurts.",
+    "critLineFr": "Pile où ça fait mal.",
+    "dodgeLine": "Too slow, love.",
+    "dodgeLineFr": "Trop lent, mon chou."
   },
   "maren": {
     "companionID": "maren",
@@ -24,7 +32,11 @@
     "professionId": "cleric",
     "signatureDiceId": "holy_die",
     "recruitQuestId": "q_ch3_marens_penance",
-    "requiredHouseId": ""
+    "requiredHouseId": "",
+    "critLine": "The Light guides this blow.",
+    "critLineFr": "La Lumière guide ce coup.",
+    "dodgeLine": "Watched over, still.",
+    "dodgeLineFr": "Toujours protégée."
   },
   "liora": {
     "companionID": "liora",
@@ -33,7 +45,11 @@
     "professionId": "ranger",
     "signatureDiceId": "liora_die",
     "recruitQuestId": "q_ch2_lioras_watch",
-    "requiredHouseId": ""
+    "requiredHouseId": "",
+    "critLine": "The arrow finds its mark.",
+    "critLineFr": "La flèche trouve sa cible.",
+    "dodgeLine": "The wind moves faster than you.",
+    "dodgeLineFr": "Le vent va plus vite que toi."
   },
   "vess": {
     "companionID": "vess",
@@ -42,7 +58,11 @@
     "professionId": "mage",
     "signatureDiceId": "vess_die",
     "recruitQuestId": "q_ch1_vess_in_the_dark",
-    "requiredHouseId": ""
+    "requiredHouseId": "",
+    "critLine": "The void does not miss.",
+    "critLineFr": "Le néant ne rate jamais.",
+    "dodgeLine": "You grasped at shadow.",
+    "dodgeLineFr": "Tu n'as saisi que l'ombre."
   },
   "grosh": {
     "companionID": "grosh",
@@ -51,6 +71,10 @@
     "professionId": "warrior",
     "signatureDiceId": "grosh_die",
     "recruitQuestId": "q_ch3_groshs_price",
-    "requiredHouseId": ""
+    "requiredHouseId": "",
+    "critLine": "CRUSHED! Ha ha!",
+    "critLineFr": "ÉCRASÉ ! Ha ha !",
+    "dodgeLine": "Grosh still standing!",
+    "dodgeLineFr": "Grosh toujours debout !"
   }
 }

@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.104.0+132]
+
+Critical hits, dodging, companion banter, and Elite enemy encounters.
+
+### Added
+- **Critical hits and dodging in combat.** Luck now drives a critical-hit
+  chance (5% baseline, +1.5% per point, capped at 35%) on every damaging
+  Attack/Skill die face for the player and every active ally alike — a crit
+  multiplies the hit's damage by 1.5x and is called out in the log. Dexterity
+  now drives a dodge chance (5% baseline, +1.5% per point, capped at 30%) for
+  whoever the enemy targets — a dodge evades the hit entirely, no damage, no
+  status effect. Allies derive their own Luck the same way they already
+  derive Wisdom, from their race/profession bonuses, so the mechanic applies
+  uniformly across the whole party.
+- **Companion banter.** An active ally has a chance to react with a short,
+  personality-voiced line in the fight log when a crit lands or a hit is
+  dodged — six new lines per companion (crit + dodge, EN + FR).
+- **Elite enemy encounters.** Roughly 12% of eligible fights promote the
+  enemy to an "Elite" version: +35% health/damage, +50% gold/XP reward, and
+  a guaranteed unique "Elite Mark" trophy drop, with a gold-accented name and
+  portrait in the fight UI. The game's tuned boss fights are excluded, so
+  Elite stays a trash-pool variance mechanic rather than a boss reskin.
+
 ## [1.103.0+131]
 
 ### Added

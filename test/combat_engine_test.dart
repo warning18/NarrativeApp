@@ -14,6 +14,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/combat/status_effect.dart';
 
+/// A [Random] stand-in that always returns the same [nextDouble] value, so
+/// crit/dodge-roll tests can force a guaranteed hit or guaranteed miss
+/// instead of depending on a fixed seed's empirical behavior.
+class _FixedRandom implements Random {
+  _FixedRandom(this._value);
+  final double _value;
+  @override
+  double nextDouble() => _value;
+  @override
+  int nextInt(int max) => 0;
+  @override
+  bool nextBool() => false;
+}
+
 void main() {
   group('rollDie', () {
     test('a single face is always returned regardless of weight', () {
@@ -303,6 +317,100 @@ void main() {
       );
       expect(result.damageDealt, 17);
       expect(result.healingDone, 0);
+    });
+
+    group('critical hits', () {
+      test('criticalChanceFor scales with luck and caps at 35', () {
+        expect(criticalChanceFor(0), 5.0);
+        expect(criticalChanceFor(10), 20.0);
+        expect(criticalChanceFor(100), 35.0);
+      });
+
+      test('dodgeChanceFor scales with dexterity and caps at 30', () {
+        expect(dodgeChanceFor(0), 5.0);
+        expect(dodgeChanceFor(10), 20.0);
+        expect(dodgeChanceFor(100), 30.0);
+      });
+
+      test('an Attack face crits when the roll lands under the chance', () {
+        final result = resolvePlayerFace(
+          face(type: 'Attack', value: 7),
+          skills,
+          10,
+          luck: 10,
+          random: _FixedRandom(0.0),
+        );
+        // rawDamage = 17; crit multiplier 1.5 rounded away from zero = 26.
+        expect(result.damageDealt, 26);
+        expect(result.isCritical, isTrue);
+        expect(result.message, contains('Critical Hit'));
+      });
+
+      test('an Attack face does not crit when the roll lands over the chance',
+          () {
+        final result = resolvePlayerFace(
+          face(type: 'Attack', value: 7),
+          skills,
+          10,
+          luck: 10,
+          random: _FixedRandom(0.99),
+        );
+        expect(result.damageDealt, 17);
+        expect(result.isCritical, isFalse);
+        expect(result.message, isNot(contains('Critical Hit')));
+      });
+
+      test('no random passed means no crit ever, regardless of luck', () {
+        final result = resolvePlayerFace(
+          face(type: 'Attack', value: 7),
+          skills,
+          10,
+          luck: 100,
+        );
+        expect(result.damageDealt, 17);
+        expect(result.isCritical, isFalse);
+      });
+
+      test('a Skill face crits its damage but never its healAmount', () {
+        const skillsWithBoth = <String, dynamic>{
+          'both': {
+            'damageMod': 0,
+            'damageMultiplier': 1.0,
+            'healAmount': 5,
+          },
+        };
+        final result = resolvePlayerFace(
+          face(type: 'Skill', linkedSkillID: 'both'),
+          skillsWithBoth,
+          10,
+          luck: 10,
+          random: _FixedRandom(0.0),
+        );
+        // rawDamage = (10 + 0) * 1.0 = 10; crit multiplier 1.5 = 15.
+        expect(result.damageDealt, 15);
+        expect(result.healingDone, 5);
+        expect(result.isCritical, isTrue);
+      });
+
+      test('Defend/Heal faces never report a critical hit', () {
+        final defend = resolvePlayerFace(
+          face(type: 'Defend', value: 12),
+          skills,
+          10,
+          luck: 100,
+          random: _FixedRandom(0.0),
+        );
+        expect(defend.isCritical, isFalse);
+
+        final heal = resolvePlayerFace(
+          face(type: 'Heal', value: 20),
+          skills,
+          10,
+          luck: 100,
+          random: _FixedRandom(0.0),
+        );
+        expect(heal.isCritical, isFalse);
+      });
     });
   });
 

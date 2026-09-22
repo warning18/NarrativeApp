@@ -100,8 +100,8 @@ class PlayerSession {
   final int baseArmor;
 
   /// Boosts the drop-rate roll on combat loot (see [FightScreen]'s win
-  /// handling) — the "item luck" half of the stat pair; unlike the other
-  /// combat stats, it never affects a fight's outcome directly.
+  /// handling), and feeds `criticalChanceFor` in combat_engine.dart — a
+  /// lucky character both finds better gear and lands harder hits.
   final int luck;
 
   /// Gates persuasion-flavored story nodes via [StoryNode.reqCharisma],
