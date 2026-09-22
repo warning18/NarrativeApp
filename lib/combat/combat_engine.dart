@@ -490,6 +490,39 @@ int scaledReward(int base, int playerLevel) {
   return (base * (1 + 0.10 * (playerLevel - 1))).round();
 }
 
+/// Per-chapter step of the chapter difficulty curve (see
+/// [chapterDifficultyMultiplier]).
+const double chapterDifficultyStep = 0.12;
+
+/// Enemy max-health multiplier by story chapter, applied on top of the
+/// player-level scaling above and before the Elite/pack multipliers.
+/// Level scaling alone let a chapter-5 boss meet a level-10 party as a
+/// slightly larger chapter-1 thug; the curve keeps each chapter's enemies
+/// a step ahead of the gear and levels the previous one handed out
+/// (chapter 1 ×1.0, chapter 3 ×1.24, chapter 6 ×1.6). Damage climbs half
+/// as fast (see [damageShareOf]): more health makes a fight longer, more
+/// damage makes it lethal, and a 40-run simulation showed a full-rate
+/// damage curve turning tuned chapter-2 fights from sure wins into
+/// coin flips.
+double chapterDifficultyMultiplier(int chapter) =>
+    1 + chapterDifficultyStep * (max(1, chapter) - 1);
+
+/// The damage multiplier that goes with a health multiplier from the
+/// chapter curve or a zone's tier: half the excess (×1.24 health → ×1.12
+/// damage).
+double damageShareOf(double healthMultiplier) => 1 + (healthMultiplier - 1) / 2;
+
+/// Gold/XP multiplier by chapter -- a lighter curve than the difficulty
+/// one, so later chapters pay more but never enough to outrun their own
+/// enemies (chapter 1 ×1.0, chapter 6 ×1.5).
+double chapterRewardMultiplier(int chapter) => 1 + 0.10 * (max(1, chapter) - 1);
+
+/// Max-health multiplier for a zone's `tier` (zones.json): each tier past
+/// the first is a tenth harder than the chapter's story fights (damage
+/// again half that, see [damageShareOf]), so a chapter's zones climb toward
+/// its main zone (tier 1 ×1.0, tier 3 ×1.2).
+double zoneTierMultiplier(int tier) => 1 + 0.10 * (max(1, tier) - 1);
+
 /// Percentage-point drop-rate bonus (same units as the flat luck bonus a
 /// win's loot roll already adds) for a loot item whose own `scalingStat`
 /// matches the player's profession's `preferredScalingStat` — a Mage sees

@@ -1198,9 +1198,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [unlockContent] so building the house and gaining access to its shop
   /// are one atomic action, exactly like [recruitAlly]'s starter-skill
   /// unlock is one action rather than two.
+  /// Spends [cost] and marks [houseId] built, unlocking [unlocksShopId] if
+  /// any. A no-op if unaffordable, already built, or any of
+  /// [requiredFlags] (houses.json) is still unset -- the camp's late
+  /// workshops wait on the zones that supply them.
   Future<void> buildHouse(String houseId, int cost,
-      {String? unlocksShopId}) async {
+      {String? unlocksShopId, List<String> requiredFlags = const []}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
+    if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
     state = state.copyWith(
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],

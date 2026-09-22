@@ -10,7 +10,14 @@
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": "hull_patched"
+    "rewardFlag": "hull_patched",
+    "tier": 1,
+    "bossEnemyId": "dock_overseer",
+    "requiredFlags": [],
+    "isMainZone": false,
+    "bossFlavorText": "The dock overseer had been watching me work the sheds since the second one, and had apparently decided that pitch and timber leaving his wharf without a tithe was a personal insult. He came down the gangway with two boys carrying his ledger and a cudgel that had clearly settled arguments before.",
+    "bossFlavorTextFr": "Le contremaître des docks m'observait fouiller les hangars depuis le deuxième, et avait manifestement décidé que de la poix et du bois quittant son quai sans dîme constituaient une insulte personnelle. Il descendit la passerelle avec deux gamins portant son registre et un gourdin qui avait de toute évidence déjà tranché des querelles.",
+    "recommendedLevel": 3
   },
   "z_tanners_court": {
     "zoneID": "z_tanners_court",
@@ -23,7 +30,14 @@
     "rewardItemId": "armor_leather",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": "sail_mended"
+    "rewardFlag": "sail_mended",
+    "tier": 1,
+    "bossEnemyId": "plague_hound",
+    "requiredFlags": [],
+    "isMainZone": false,
+    "bossFlavorText": "Something had been living under the lime pits, and the tanners had been feeding it what they couldn't sell. It came out of the drain yellow-eyed and patient, with the particular calm of an animal that has never once gone hungry.",
+    "bossFlavorTextFr": "Quelque chose vivait sous les fosses à chaux, et les tanneurs le nourrissaient de ce qu'ils ne pouvaient vendre. Il sortit du caniveau, les yeux jaunes et patient, avec le calme particulier d'une bête qui n'a jamais eu faim.",
+    "recommendedLevel": 4
   },
   "z_lantern_docks": {
     "zoneID": "z_lantern_docks",
@@ -36,7 +50,16 @@
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": "banner_second_piece_lead"
+    "rewardFlag": "banner_second_piece_lead",
+    "tier": 2,
+    "bossEnemyId": "smuggler_captain",
+    "requiredFlags": [
+      "hull_patched"
+    ],
+    "isMainZone": false,
+    "bossFlavorText": "The chart-seller's lantern went out mid-sentence, and the man who had paid her to keep it lit stepped out of the boathouse with a cutlass and four decades of not being caught behind him. He knew exactly which piece of the Shroud I was asking about.",
+    "bossFlavorTextFr": "La lanterne de la vendeuse de cartes s'éteignit au milieu d'une phrase, et l'homme qui l'avait payée pour la garder allumée sortit du hangar à bateaux avec un sabre et quatre décennies d'impunité derrière lui. Il savait exactement de quel fragment du Linceul je parlais.",
+    "recommendedLevel": 5
   },
   "z_cinder_row": {
     "zoneID": "z_cinder_row",
@@ -49,7 +72,14 @@
     "rewardItemId": "",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": ""
+    "rewardFlag": "cinder_row_cleared",
+    "tier": 2,
+    "bossEnemyId": "iron_golem",
+    "requiredFlags": [],
+    "isMainZone": false,
+    "bossFlavorText": "What the purge had left standing at the end of the row was not a stall. It was one of the Inquisition's iron sentinels, cold and half-buried in ash, and it woke the moment my boot touched the sigil under the cinders.",
+    "bossFlavorTextFr": "Ce que la purge avait laissé debout au bout de la rangée n'était pas un étal. C'était une des sentinelles de fer de l'Inquisition, froide et à moitié ensevelie sous la cendre, et elle s'éveilla à l'instant où ma botte toucha le sigil sous les braises.",
+    "recommendedLevel": 6
   },
   "z_scaffold_yards": {
     "zoneID": "z_scaffold_yards",
@@ -62,6 +92,15 @@
     "rewardItemId": "plate_emberproof",
     "rewardDiceId": "",
     "rewardAllyId": "",
-    "rewardFlag": ""
+    "rewardFlag": "scaffold_yards_cleared",
+    "tier": 3,
+    "bossEnemyId": "void_stalker",
+    "requiredFlags": [
+      "cinder_row_cleared"
+    ],
+    "isMainZone": true,
+    "bossFlavorText": "The forges were cold, but something in the yard was not. It had been following me between the scaffolds for an hour, folding itself into shadows the lanterns should have burned away, and it finally stepped out where the ironworkers had stacked their last unpaid plate.",
+    "bossFlavorTextFr": "Les forges étaient froides, mais quelque chose dans le chantier ne l'était pas. Cela me suivait entre les échafaudages depuis une heure, se pliant dans des ombres que les lanternes auraient dû brûler, et cela sortit enfin là où les ferronniers avaient empilé leurs dernières plaques impayées.",
+    "recommendedLevel": 8
   }
 }

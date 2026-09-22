@@ -755,6 +755,27 @@ void main() {
       expect(notifier.state.gold, 500);
       expect(notifier.state.unlockedShopIds, isEmpty);
     });
+
+    test('is a no-op while a required flag is unset', () async {
+      final notifier = await notifierWith(baseSession(gold: 500));
+      await notifier.buildHouse('hammersmith', 350,
+          unlocksShopId: 'hammersmith_forge',
+          requiredFlags: ['scaffold_yards_cleared']);
+      expect(notifier.state.gold, 500);
+      expect(notifier.state.builtHouseIds, isEmpty);
+      expect(notifier.state.unlockedShopIds, isEmpty);
+    });
+
+    test('builds once every required flag is set', () async {
+      final notifier = await notifierWith(baseSession(gold: 500));
+      await notifier.applyChoiceEffects(flagsToAdd: ['scaffold_yards_cleared']);
+      await notifier.buildHouse('hammersmith', 350,
+          unlocksShopId: 'hammersmith_forge',
+          requiredFlags: ['scaffold_yards_cleared']);
+      expect(notifier.state.gold, 150);
+      expect(notifier.state.builtHouseIds, contains('hammersmith'));
+      expect(notifier.state.unlockedShopIds, contains('hammersmith_forge'));
+    });
   });
 
   group('spoils chest bookkeeping', () {

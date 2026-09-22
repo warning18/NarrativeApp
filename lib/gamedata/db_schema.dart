@@ -1206,6 +1206,12 @@ final DbSchema housesSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'shops',
     ),
+    FieldSchema(
+      key: 'requiredFlags',
+      label:
+          'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
+      type: FieldType.stringList,
+    ),
     visualAssetFieldSchema('houses'),
   ],
 );
@@ -1268,6 +1274,46 @@ final DbSchema zonesSchema = DbSchema(
       label:
           'Reward Flag (empty = none) — for narrative beats short of a full item/ally, e.g. a story flag',
       type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'tier',
+      label: 'Tier (1 = the chapter\'s easiest zone; each tier is 10% harder)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'bossEnemyId',
+      label: 'Boss Enemy (fought after the last event; guards the reward)',
+      type: FieldType.reference,
+      referenceSchemaId: 'enemies',
+    ),
+    FieldSchema(
+      key: 'bossFlavorText',
+      label: 'Boss Flavor Text (the boss event\'s narration)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
+      key: 'bossFlavorTextFr',
+      label: 'Boss Flavor Text (FR)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
+      key: 'requiredFlags',
+      label:
+          'Required Flags (all must be set to begin; another zone\'s rewardFlag gates on that zone)',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+      key: 'recommendedLevel',
+      label: 'Recommended Level (shown on the zone card; advice, not a gate)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'isMainZone',
+      label: 'Main Zone (the chapter\'s headline zone)',
+      type: FieldType.boolean,
+      defaultValue: false,
     ),
     visualAssetFieldSchema('zones'),
   ],

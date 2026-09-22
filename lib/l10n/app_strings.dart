@@ -2788,6 +2788,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Masquer dès que l\'un de ces drapeaux est détenu (séparés par des virgules)',
   },
+  'zone_tier_label': {AppLanguage.en: 'Tier', AppLanguage.fr: 'Palier'},
+  'zone_main_label': {
+    AppLanguage.en: 'Main zone',
+    AppLanguage.fr: 'Zone principale'
+  },
+  'zone_boss_prefix': {AppLanguage.en: 'Boss', AppLanguage.fr: 'Boss'},
+  'zone_level_chip': {AppLanguage.en: 'Lv', AppLanguage.fr: 'Niv'},
+  'requires_zone_prefix': {
+    AppLanguage.en: 'Requires',
+    AppLanguage.fr: 'Nécessite'
+  },
+  'zone_boss_face_prefix': {
+    AppLanguage.en: 'Face',
+    AppLanguage.fr: 'Affronter'
+  },
+  'expedition_boss_label': {
+    AppLanguage.en: 'Zone boss',
+    AppLanguage.fr: 'Boss de zone'
+  },
+  'zone_boss_fight_note': {
+    AppLanguage.en:
+        "The zone's master guards its reward. Win, and the spoils chest is never below Gold.",
+    AppLanguage.fr:
+        "Le maître de la zone garde sa récompense. Gagnez, et le coffre de butin ne sera jamais en dessous de l'or.",
+  },
+  'zone_flag_cinder_row_cleared': {
+    AppLanguage.en: 'Cinder Row, cleared',
+    AppLanguage.fr: 'Cinder Row, nettoyée',
+  },
+  'zone_flag_scaffold_yards_cleared': {
+    AppLanguage.en: 'The Scaffold Yards, cleared',
+    AppLanguage.fr: 'Les Scaffold Yards, nettoyés',
+  },
   'export_as_csv_option': {
     AppLanguage.en: 'Export as CSV (.csv)',
     AppLanguage.fr: 'Exporter en CSV (.csv)',

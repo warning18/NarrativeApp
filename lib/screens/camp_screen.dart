@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -13,6 +14,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/zone_card.dart';
 import 'dice_loadout_screen.dart';
 import 'expedition_screen.dart';
 import 'inventory_screen.dart';
@@ -38,6 +40,7 @@ class CampScreen extends ConsumerWidget {
     final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
     final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;
@@ -47,6 +50,7 @@ class CampScreen extends ConsumerWidget {
     final achievements = achievementsAsync.value ?? const {};
     final zones = zonesAsync.value;
     final shops = shopsAsync.value;
+    final enemies = enemiesAsync.value ?? const <String, dynamic>{};
 
     if (companions == null ||
         houses == null ||
@@ -302,17 +306,28 @@ class CampScreen extends ConsumerWidget {
                 : null;
             final built = session.builtHouseIds.contains(houseId);
             final affordable = session.gold >= cost;
+            final requiredFlags = requiredFlagsOf(house);
+            final unlocked = meetsRequiredFlags(house, session.flags);
+            final lockName = unlocked
+                ? null
+                : lockRequirementName(house, session.flags, zones);
 
             final statsParts = <String>[
               if (capacityBonus > 0)
                 '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
               if (unlocksShopName != null)
                 '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
+              if (!built && lockName != null)
+                '${tr(ref, 'requires_zone_prefix')}: $lockName',
             ];
 
             return Card(
               child: ListTile(
-                leading: Icon(built ? Icons.home : Icons.home_outlined),
+                leading: Icon(built
+                    ? Icons.home
+                    : unlocked
+                        ? Icons.home_outlined
+                        : Icons.lock_outline),
                 title: Text(houseName),
                 subtitle: Text(
                   [
@@ -324,13 +339,14 @@ class CampScreen extends ConsumerWidget {
                 trailing: built
                     ? const Icon(Icons.check_circle, color: Colors.green)
                     : ElevatedButton(
-                        onPressed: !affordable
+                        onPressed: (!affordable || !unlocked)
                             ? null
                             : () async {
                                 await ref
                                     .read(playerSessionProvider.notifier)
                                     .buildHouse(houseId, cost,
-                                        unlocksShopId: unlocksShopId);
+                                        unlocksShopId: unlocksShopId,
+                                        requiredFlags: requiredFlags);
                                 final newAchievements = await ref
                                     .read(playerSessionProvider.notifier)
                                     .checkAchievements();
@@ -393,38 +409,22 @@ class CampScreen extends ConsumerWidget {
           else
             ...campZoneIds.map((zoneId) {
               final zone = zones[zoneId] as Map<String, dynamic>;
-              final completed = session.completedZoneIds.contains(zoneId);
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    completed ? Icons.check_circle : Icons.explore_outlined,
-                    color: completed ? Colors.green : null,
-                  ),
-                  title: Text(zone['zoneName']?.toString() ?? zoneId),
-                  subtitle: Text(zone['flavorText']?.toString() ?? ''),
-                  isThreeLine: true,
-                  trailing: completed
-                      ? Text(tr(ref, 'zone_cleared_label'))
-                      : ElevatedButton(
-                          onPressed: restBlocked
-                              ? null
-                              : () async {
-                                  ref
-                                      .read(expeditionActiveProvider.notifier)
-                                      .state = true;
-                                  await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => ExpeditionScreen(
-                                          zoneId: zoneId, zone: zone),
-                                    ),
-                                  );
-                                  ref
-                                      .read(expeditionActiveProvider.notifier)
-                                      .state = false;
-                                },
-                          child: Text(tr(ref, 'begin_expedition_button')),
-                        ),
-                ),
+              return ZoneCard(
+                zoneId: zoneId,
+                zone: zone,
+                zones: zones,
+                enemies: enemies,
+                enabled: !restBlocked,
+                onBegin: () async {
+                  ref.read(expeditionActiveProvider.notifier).state = true;
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ExpeditionScreen(zoneId: zoneId, zone: zone),
+                    ),
+                  );
+                  ref.read(expeditionActiveProvider.notifier).state = false;
+                },
               );
             }),
         ],

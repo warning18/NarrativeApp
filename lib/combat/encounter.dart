@@ -1,4 +1,5 @@
 import '../models/story_node.dart';
+import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
 import 'loot_box.dart';
 
@@ -14,8 +15,11 @@ class EncounterModifiers {
     this.chestTierFloor,
     this.rewardMultiplier = 1.0,
     this.healthMultiplier = 1.0,
+    this.difficultyMultiplier = 1.0,
+    this.chapter,
     this.isHunt = false,
     this.isHunterAmbush = false,
+    this.isZoneBoss = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -38,11 +42,24 @@ class EncounterModifiers {
   /// tougher specimen of its kind).
   final double healthMultiplier;
 
+  /// Health AND damage multiplier on every enemy of the fight -- a zone's
+  /// tier (see [zoneTierMultiplier]); stacks with the chapter curve.
+  final double difficultyMultiplier;
+
+  /// The story chapter this fight belongs to, for the chapter difficulty
+  /// curve and the chest's loot window; null derives it from the current
+  /// story node (every fight launched from the story itself).
+  final int? chapter;
+
   /// A hunt's named-variant fight (see SubNodeEngine's hunt chain).
   final bool isHunt;
 
   /// An alignment hunter's ambush (see alignment_events.dart).
   final bool isHunterAmbush;
+
+  /// A zone's boss fight, guarding the zone's banked reward (see
+  /// ExpeditionScreen and zones.json's `bossEnemyId`).
+  final bool isZoneBoss;
 
   bool get isDefault =>
       forcedAffixes.isEmpty &&
@@ -50,8 +67,41 @@ class EncounterModifiers {
       chestTierFloor == null &&
       rewardMultiplier == 1.0 &&
       healthMultiplier == 1.0 &&
+      difficultyMultiplier == 1.0 &&
+      chapter == null &&
       !isHunt &&
-      !isHunterAmbush;
+      !isHunterAmbush &&
+      !isZoneBoss;
+
+  /// The same modifiers stamped with a fight's chapter and/or zone-tier
+  /// multiplier (an expedition applies its zone's to every draw).
+  EncounterModifiers copyWith({int? chapter, double? difficultyMultiplier}) =>
+      EncounterModifiers(
+        forcedAffixes: forcedAffixes,
+        namedEnemyName: namedEnemyName,
+        chestTierFloor: chestTierFloor,
+        rewardMultiplier: rewardMultiplier,
+        healthMultiplier: healthMultiplier,
+        difficultyMultiplier: difficultyMultiplier ?? this.difficultyMultiplier,
+        chapter: chapter ?? this.chapter,
+        isHunt: isHunt,
+        isHunterAmbush: isHunterAmbush,
+        isZoneBoss: isZoneBoss,
+      );
+
+  /// A zone boss: never below a Gold chest, half again the reward, at the
+  /// zone's own chapter and tier.
+  factory EncounterModifiers.zoneBoss({
+    required int chapter,
+    double difficultyMultiplier = 1.0,
+  }) =>
+      EncounterModifiers(
+        chestTierFloor: ChestTier.gold,
+        rewardMultiplier: 1.5,
+        difficultyMultiplier: difficultyMultiplier,
+        chapter: chapter,
+        isZoneBoss: true,
+      );
 
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.

@@ -609,6 +609,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _shakeController.forward(from: 0);
   }
 
+  /// The story chapter this fight belongs to: the caller's (an expedition
+  /// passes its zone's), else the current story node's, else 1. Drives the
+  /// chapter difficulty curve and the chest's loot window.
+  int get _chapter =>
+      widget.modifiers.chapter ??
+      chapterForNode(ref.read(storyPlayProvider).currentNodeId) ??
+      1;
+
   /// Builds [_enemies] — a solo fight rolls Elite (see [_eliteChance]); a
   /// pack (`widget.additionalEnemyIds` non-empty) never does. A pack member
   /// sharing a base name with another gets a " #2"/" #3" suffix on its own
@@ -699,6 +707,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
         scaledMaxHealth((raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     var damage =
         scaledDamage((raw['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+    // The chapter curve (and a zone's tier) scale every enemy before the
+    // Elite/pack multipliers, so those keep their tuned ratios.
+    final healthCurve = chapterDifficultyMultiplier(_chapter) *
+        widget.modifiers.difficultyMultiplier;
+    if (healthCurve != 1.0) {
+      maxHealth = max(1, (maxHealth * healthCurve).round());
+      damage = (damage * damageShareOf(healthCurve)).round();
+    }
     if (_isElite) {
       maxHealth = (maxHealth * _eliteStatMultiplier).round();
       damage = (damage * _eliteStatMultiplier).round();
@@ -1774,7 +1790,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   as Map<String, dynamic>?)?['preferredScalingStat']
               ?.toString() ??
           '';
-      final rewardMultiplier = widget.modifiers.rewardMultiplier;
+      final rewardMultiplier =
+          widget.modifiers.rewardMultiplier * chapterRewardMultiplier(_chapter);
       var affixCount = 0;
       var anyFled = false;
       var firstKill = false;
@@ -1830,8 +1847,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         if (member.luck > bestAllyLuck) bestAllyLuck = member.luck;
         ownedItemIds.addAll(member.equippedItemIds);
       }
-      final chapter =
-          chapterForNode(ref.read(storyPlayProvider).currentNodeId) ?? 1;
+      final chapter = _chapter;
       final lootContext = LootContext(
         chapter: chapter,
         playerLuck: player.luck,
@@ -2050,13 +2066,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
             _buildConditionBanner(condition),
             const SizedBox(height: 12),
           ],
-          if (widget.modifiers.isHunt || widget.modifiers.isHunterAmbush) ...[
+          if (widget.modifiers.isHunt ||
+              widget.modifiers.isHunterAmbush ||
+              widget.modifiers.isZoneBoss) ...[
             Text(
-              tr(
-                  ref,
-                  widget.modifiers.isHunt
-                      ? 'hunt_fight_note'
-                      : 'hunter_fight_note'),
+              tr(ref, _encounterNoteKey(widget.modifiers)),
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
@@ -2907,4 +2921,11 @@ class _StatusEffectChip extends StatelessWidget {
       ),
     );
   }
+}
+
+/// The setup screen's one-line note for a special encounter.
+String _encounterNoteKey(EncounterModifiers modifiers) {
+  if (modifiers.isHunt) return 'hunt_fight_note';
+  if (modifiers.isZoneBoss) return 'zone_boss_fight_note';
+  return 'hunter_fight_note';
 }

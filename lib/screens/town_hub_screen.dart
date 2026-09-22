@@ -9,6 +9,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/zone_card.dart';
 import 'expedition_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -31,11 +32,12 @@ class TownHubScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
+    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
     final shops = shopsAsync.value;
     final zones = zonesAsync.value;
+    final enemies = enemiesAsync.value ?? const <String, dynamic>{};
     // See camp_screen.dart's own restBlocked -- same reasoning applies here.
     final restBlocked =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
@@ -122,34 +124,22 @@ class TownHubScreen extends ConsumerWidget {
           else
             ...chapterZoneIds.map((zoneId) {
               final zone = zones[zoneId] as Map<String, dynamic>;
-              final completed = session.completedZoneIds.contains(zoneId);
-              return Card(
-                child: ListTile(
-                  leading: Icon(
-                    completed ? Icons.check_circle : Icons.explore_outlined,
-                    color: completed ? Colors.green : null,
-                  ),
-                  title: Text(zone['zoneName']?.toString() ?? zoneId),
-                  subtitle: Text(zone['flavorText']?.toString() ?? ''),
-                  isThreeLine: true,
-                  trailing: completed
-                      ? Text(tr(ref, 'zone_cleared_label'))
-                      : ElevatedButton(
-                          onPressed: () async {
-                            ref.read(expeditionActiveProvider.notifier).state =
-                                true;
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => ExpeditionScreen(
-                                    zoneId: zoneId, zone: zone),
-                              ),
-                            );
-                            ref.read(expeditionActiveProvider.notifier).state =
-                                false;
-                          },
-                          child: Text(tr(ref, 'begin_expedition_button')),
-                        ),
-                ),
+              return ZoneCard(
+                zoneId: zoneId,
+                zone: zone,
+                zones: zones,
+                enemies: enemies,
+                enabled: !restBlocked,
+                onBegin: () async {
+                  ref.read(expeditionActiveProvider.notifier).state = true;
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          ExpeditionScreen(zoneId: zoneId, zone: zone),
+                    ),
+                  );
+                  ref.read(expeditionActiveProvider.notifier).state = false;
+                },
               );
             }),
         ],

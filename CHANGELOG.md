@@ -8,6 +8,59 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.110.0+138]
+
+The difficulty batch, second step of the chapter-flow roadmap: enemies now
+scale with the chapter as well as the party's level, every expedition zone
+has a tier, a recommended level and a boss guarding its reward, zones and
+the camp's workshops unlock in order, and the Smugglers' Vault no longer
+sells endgame steel in chapter 3.
+
+### Added
+- **Chapter difficulty curve.** Every enemy's max health is multiplied by
+  1 + 0.12 × (chapter − 1) and its damage by half that excess (chapter 3:
+  ×1.24 health, ×1.12 damage; chapter 6: ×1.6 / ×1.3), on top of level
+  scaling and before the Elite and pack multipliers. Gold and XP climb
+  more gently (+10% per chapter). A fight's chapter is its story node's,
+  or the zone's for an expedition.
+- **Zone tiers and bosses.** zones.json rows carry `tier` (each tier past
+  the first adds a tenth to health and half that to damage),
+  `recommendedLevel`, `bossEnemyId` with EN/FR boss narration,
+  `requiredFlags` and `isMainZone`. Once a zone's events are done its boss
+  steps out: the dock overseer at Fisherman's Row, the plague hound under
+  Tanner's Court, the smuggler captain at Lantern Docks, an iron sentinel
+  on Cinder Row and a void stalker in the Scaffold Yards. Beating it banks
+  the zone's reward with a Gold chest at least and half again the gold and
+  XP; losing ends the expedition as a defeat.
+- **Zone gating and cards.** Lantern Docks waits on the hull being patched
+  (Fisherman's Row), the Scaffold Yards on Cinder Row; a locked card names
+  the zone to clear first. Town Hub and Camp share one zone card with
+  tier, recommended-level (highlighted while the party is below it) and
+  Main-zone chips, plus the boss's name.
+- **Camp workshops gated on zones.** houses.json `requiredFlags`: the
+  Hammersmith waits on the Scaffold Yards, the Academy on Cinder Row, the
+  Sharpweave Den on the Lantern Docks' lead; the camp shows the lock and
+  `buildHouse` refuses an early build.
+- Cinder Row and the Scaffold Yards now set `cinder_row_cleared` /
+  `scaffold_yards_cleared` when cleared.
+
+### Changed
+- **Smugglers' Vault** stocks tier 6–7 weapons and shields plus the Void
+  Banner instead of tier 8–10 (those stay behind the camp's workshops).
+- The fight setup screen shows a "Zone boss" note alongside the hunt and
+  hunter notes.
+
+### Simulation
+40 seeded runs with a player who heeds the recommended level: 40/40 true
+endings, combat win rate 91.7% (94.7% with the curve off on the same
+seeds), deaths per run 3.4 (2.2), zone bosses won 200 of 201 expeditions
+(dock overseer 70% per attempt at level 3, smuggler captain 47% at level
+5, void stalker 85% at level 8), chapter-2 story fights 93%, chapter 3
+still 100% at a mean level of 9.6 -- the later chapters' new enemies (next
+batch) are what that end of the curve is waiting on. A first pass with a
+full-rate damage curve (+15% per chapter on both stats) collapsed the
+tuned chapter-2 fights (smuggler captain 100% → 16%) and was dropped.
+
 ## [1.109.0+137]
 
 The hub-loops batch, first step of the chapter-flow roadmap: the harbor

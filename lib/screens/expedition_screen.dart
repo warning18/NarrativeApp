@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../data/alignment_events.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
+import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -53,8 +55,47 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// substitute for the zone's own events.
   final List<StoryNode> _bonusQueue = [];
 
+  /// Set once the zone's boss (zones.json `bossEnemyId`) has been beaten
+  /// this run, so the zone completes instead of re-offering it.
+  bool _bossDone = false;
+
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
+
+  int get _zoneChapter => (widget.zone['chapter'] as num?)?.toInt() ?? 1;
+
+  String get _bossEnemyId => widget.zone['bossEnemyId']?.toString() ?? '';
+
+  /// Every fight in this zone carries the zone's chapter (for the chapter
+  /// difficulty curve and the chest's loot window) and its tier multiplier.
+  EncounterModifiers _zoneModifiers(EncounterModifiers base) => base.copyWith(
+        chapter: _zoneChapter,
+        difficultyMultiplier: zoneTierMultiplier(zoneTier(widget.zone)),
+      );
+
+  bool _isBossNode(StoryNode? node) =>
+      node != null && node.id == 'zone_boss_${widget.zoneId}';
+
+  /// The zone-boss event: the zone's `bossFlavorText` and a single fight
+  /// choice against `bossEnemyId`, shown once the zone's own events are
+  /// done. Winning completes the zone; losing ends the run as a defeat.
+  StoryNode _buildBossNode(Map<String, dynamic> boss) {
+    final bossName = boss['enemyName']?.toString() ?? _bossEnemyId;
+    final flavorFr = widget.zone['bossFlavorTextFr']?.toString() ?? '';
+    return StoryNode(
+      id: 'zone_boss_${widget.zoneId}',
+      description: widget.zone['bossFlavorText']?.toString() ?? '',
+      descriptionFr: flavorFr.isEmpty ? null : flavorFr,
+      choices: [
+        StoryChoice(
+          text: '${trFor(AppLanguage.en, 'zone_boss_face_prefix')} $bossName',
+          textFr: '${trFor(AppLanguage.fr, 'zone_boss_face_prefix')} $bossName',
+          nextId: '',
+          triggerEnemyId: _bossEnemyId,
+        ),
+      ],
+    );
+  }
 
   StoryNode _rollEvent({
     required Map<String, dynamic> shops,
@@ -65,7 +106,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       (t) => t.name == (widget.zone['mapTheme']?.toString() ?? ''),
       orElse: () => defaultMapTheme,
     );
-    final zoneChapter = (widget.zone['chapter'] as num?)?.toInt() ?? 1;
+    final zoneChapter = _zoneChapter;
     final alignmentEvent = maybeAlignmentEvent(
       alignmentScore: session.alignmentScore,
       activeQuestIds: session.activeQuestIds,
@@ -112,6 +153,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
     final nextIndex = countsTowardZone ? _index + 1 : _index;
     if (nextIndex >= _expeditionCount) {
+      // The zone's own events are done: its boss (if it has one) guards
+      // the banked reward; a zone without one completes outright.
+      final boss = enemies[_bossEnemyId] as Map<String, dynamic>?;
+      if (_bossEnemyId.isNotEmpty && !_bossDone && boss != null) {
+        setState(() {
+          _index = nextIndex;
+          _current = _buildBossNode(boss);
+          _busy = false;
+        });
+        return;
+      }
       await _completeZone();
       return;
     }
@@ -133,6 +185,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     // replaced a draw) is extra: resolving it never advances the zone's
     // own event count.
     final countsTowardZone = !_isBonusNode(_current);
+    final isBoss = _isBossNode(_current);
 
     final enemyIds = choice.allTriggerEnemyIds;
     if (enemyIds.isNotEmpty) {
@@ -153,7 +206,13 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             additionalEnemies: {
               for (final eid in enemyIds.skip(1)) eid: resolvedEnemies[eid]!,
             },
-            modifiers: EncounterModifiers.fromChoice(choice),
+            modifiers: isBoss
+                ? EncounterModifiers.zoneBoss(
+                    chapter: _zoneChapter,
+                    difficultyMultiplier:
+                        zoneTierMultiplier(zoneTier(widget.zone)),
+                  )
+                : _zoneModifiers(EncounterModifiers.fromChoice(choice)),
           ),
         ),
       );
@@ -166,6 +225,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         await notifier.unlockContent(enemyId: eid);
       }
       if (!mounted) return;
+      if (isBoss) {
+        _bossDone = true;
+        await _completeZone();
+        return;
+      }
       // A pack win may open a hunt: the trail, then the pack's named
       // survivor, queued as bonus events before the zone's next draw.
       final wasBonus = !countsTowardZone;
@@ -399,10 +463,13 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        LinearProgressIndicator(value: _index / _expeditionCount),
+        LinearProgressIndicator(
+            value: (_index / _expeditionCount).clamp(0.0, 1.0)),
         const SizedBox(height: 8),
         Text(
-          '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
+          _isBossNode(node)
+              ? trFor(lang, 'expedition_boss_label')
+              : '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(height: 24),
