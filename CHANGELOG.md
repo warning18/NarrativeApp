@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.101.0+129]
+
+A quicker way to hand a reviewer (human or AI) your authoring notes without
+sharing the whole repository.
+
+### Added
+- **JSON and CSV export for Review Comments.** The Review Comments screen's
+  export button (Edit Mode → the notes left on story nodes while reading or
+  testing) now offers a format picker — plain text as before, plus a
+  compact JSON array and a CSV file, each just `id`/`chapter`/`comment` per
+  commented node. Meant to be pasted straight into a prompt when a repo
+  link isn't the easiest way to hand someone your notes.
+
+### Changed
+- Extracted the Review Comments export formatters into
+  `lib/utils/comment_export_format.dart`, shared by the screen and now
+  covered by dedicated unit tests independent of the widget tree.
+
 ## [1.100.0+128]
 
 A follow-up balance pass on the last two updates: endgame gear is reachable

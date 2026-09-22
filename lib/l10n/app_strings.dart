@@ -2457,6 +2457,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Aucun nœud n'a de commentaire pour l'instant. Ouvrez un nœud en mode édition pour en laisser un.",
   },
+  'export_as_text_option': {
+    AppLanguage.en: 'Export as text (.txt)',
+    AppLanguage.fr: 'Exporter en texte (.txt)',
+  },
+  'export_as_json_option': {
+    AppLanguage.en: 'Export as JSON (.json)',
+    AppLanguage.fr: 'Exporter en JSON (.json)',
+  },
+  'export_as_csv_option': {
+    AppLanguage.en: 'Export as CSV (.csv)',
+    AppLanguage.fr: 'Exporter en CSV (.csv)',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

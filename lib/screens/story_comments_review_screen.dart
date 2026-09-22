@@ -6,6 +6,7 @@ import '../data/story_repository.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/story_providers.dart';
+import '../utils/comment_export_format.dart';
 import '../utils/export_utils.dart';
 import 'story_node_editor_screen.dart';
 
@@ -19,15 +20,8 @@ List<StoryNode> _commentedNodes(StoryData story) {
     ..sort((a, b) => _nodeSortKey(a).compareTo(_nodeSortKey(b)));
 }
 
-String _asExportText(List<StoryNode> nodes) {
-  final b = StringBuffer();
-  for (final node in nodes) {
-    b.writeln('[${node.id}] (Chapter ${chapterOfNode(node.id)})');
-    b.writeln(node.authoringComment);
-    b.writeln();
-  }
-  return b.toString().trim();
-}
+String _asExportText(List<StoryNode> nodes) =>
+    asCommentExportText(nodes, chapterOfNode);
 
 /// Lists every story node with an [StoryNode.authoringComment] left in Edit
 /// Mode, so a note jotted down while reading/testing ("pacing feels off
@@ -56,11 +50,40 @@ class StoryCommentsReviewScreen extends ConsumerWidget {
               onPressed: () =>
                   copyTextToClipboard(context, ref, _asExportText(commented)),
             ),
-            IconButton(
+            PopupMenuButton<String>(
               icon: const Icon(Icons.ios_share_outlined),
               tooltip: tr(ref, 'export_button'),
-              onPressed: () => exportTextToFile(context, ref,
-                  _asExportText(commented), 'story_review_comments.txt'),
+              onSelected: (format) {
+                switch (format) {
+                  case 'json':
+                    exportTextToFile(
+                        context,
+                        ref,
+                        asCommentExportJson(commented, chapterOfNode),
+                        'story_review_comments.json');
+                    break;
+                  case 'csv':
+                    exportTextToFile(
+                        context,
+                        ref,
+                        asCommentExportCsv(commented, chapterOfNode),
+                        'story_review_comments.csv');
+                    break;
+                  default:
+                    exportTextToFile(context, ref, _asExportText(commented),
+                        'story_review_comments.txt');
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                    value: 'txt',
+                    child: Text(tr(ref, 'export_as_text_option'))),
+                PopupMenuItem(
+                    value: 'json',
+                    child: Text(tr(ref, 'export_as_json_option'))),
+                PopupMenuItem(
+                    value: 'csv', child: Text(tr(ref, 'export_as_csv_option'))),
+              ],
             ),
           ],
         ],
