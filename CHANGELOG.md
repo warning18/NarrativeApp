@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.103.0+131]
+
+### Added
+- **A Map tab in normal (in-game) play**, not just Edit Mode. Now that the
+  map shadows nodes you haven't reached yet (previous release), it's safe
+  to hand to players — same fog-of-war rules apply, so nothing about a
+  future chapter is spoiled. Edit Mode keeps its extra Generate/Data tabs;
+  Map now shows in both.
+
 ## [1.102.0+130]
 
 Fog of war for the story map: outside Edit Mode, it now shows your journey

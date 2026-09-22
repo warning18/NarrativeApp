@@ -31,6 +31,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   static const List<Widget> _inGameScreens = [
     StoryPlayerScreen(),
     PlayScreen(),
+    StoryGraphScreen(),
   ];
 
   @override
@@ -50,7 +51,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       tr(ref, 'title_generate'),
       tr(ref, 'title_data'),
     ];
-    final titles = isEditMode ? allTitles : allTitles.sublist(0, 2);
+    final titles = isEditMode ? allTitles : allTitles.sublist(0, 3);
     final language = ref.watch(appLanguageProvider);
     final index = ref.watch(homeTabIndexProvider);
 
@@ -92,10 +93,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             icon: const Icon(Icons.videogame_asset),
             label: tr(ref, 'nav_play'),
           ),
+          NavigationDestination(
+              icon: const Icon(Icons.account_tree), label: tr(ref, 'nav_map')),
           if (isEditMode) ...[
-            NavigationDestination(
-                icon: const Icon(Icons.account_tree),
-                label: tr(ref, 'nav_map')),
             NavigationDestination(
               icon: const Icon(Icons.auto_awesome),
               label: tr(ref, 'nav_generate'),
