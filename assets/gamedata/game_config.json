@@ -13,6 +13,6 @@
   "constitution": 0,
   "intelligence": 0,
   "wisdom": 0,
-  "perception": 0,
+  "perception": 1,
   "maxSkillSlots": 3
 }

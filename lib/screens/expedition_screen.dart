@@ -70,6 +70,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       flavor: flavorFor(theme),
       shopPool: shopPool,
       enemyPool: enemyPool,
+      packPool:
+          SubNodeEngine.filterPackPool(enemies: enemies, enemyPool: enemyPool),
+      maxPackSize: SubNodeEngine.maxPackSizeFor(zoneChapter),
     );
   }
 
@@ -219,6 +222,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         rewardAllyId,
         race: race,
         profession: profession,
+        companion: companion,
+        dice: ref.read(gameDbProvider(diceSchema)).value ?? const {},
         houses: houses,
         requiredHouseId: companion?['requiredHouseId']?.toString(),
       );

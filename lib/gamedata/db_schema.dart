@@ -579,6 +579,11 @@ final DbSchema enemiesSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
+        key: 'packEligible',
+        label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',
+        type: FieldType.boolean,
+        defaultValue: false),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,

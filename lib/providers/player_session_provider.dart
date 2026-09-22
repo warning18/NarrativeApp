@@ -291,7 +291,10 @@ class PlayerSession {
     if (reqAlignmentMax != null && alignmentScore > reqAlignmentMax) {
       return false;
     }
-    if (charisma < reqCharisma) return false;
+    // Only a node that actually asks for Charisma gates on it -- with the
+    // default of 0 this would otherwise lock every flag/gold/alignment-gated
+    // node for a negative-Charisma race (Orc -2, Voidkin -1).
+    if (reqCharisma > 0 && charisma < reqCharisma) return false;
     for (final flag in reqFlags) {
       if (!flags.contains(flag)) return false;
     }
@@ -915,13 +918,22 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? rewardDiceId,
     String? grantsBannerPieceId,
     int alignmentMod = 0,
+    Map<String, dynamic>? rewardItem,
   }) async {
     final newActive =
         state.activeQuestIds.where((id) => id != questId).toList();
     final newCompleted = <String>{...state.completedQuestIds, questId}.toList();
     final newInventory = [...state.inventoryItemIds];
+    var potionsGained = 0;
+    var antidotesGained = 0;
     if (rewardItemId != null && rewardItemId.isNotEmpty) {
-      newInventory.add(rewardItemId);
+      final charges = consumableChargesFor(rewardItemId, rewardItem);
+      if (charges == null) {
+        newInventory.add(rewardItemId);
+      } else {
+        potionsGained = charges.potions;
+        antidotesGained = charges.antidotes;
+      }
     }
     var newUnlockedQuests = state.unlockedQuestIds;
     if (nextQuestId != null &&
@@ -960,6 +972,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       activeQuestIds: newActive,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
+      potionCount: state.potionCount + potionsGained,
+      antidoteCount: state.antidoteCount + antidotesGained,
       unlockedQuestIds: newUnlockedQuests,
       ownedDiceIds: newOwnedDice,
       xpEarnedThisRun: state.xpEarnedThisRun + rewardXP,
@@ -993,16 +1007,42 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// ([stockLimit], from the shop's stockQuantities data) that this tracks
   /// via [PlayerSession.shopPurchaseCounts] and never replenishes.
   Future<void> buyItem(
-      String shopId, String itemId, int cost, int stockLimit) async {
+    String shopId,
+    String itemId,
+    int cost,
+    int stockLimit, {
+    Map<String, dynamic>? item,
+  }) async {
     final key = '$shopId::$itemId';
     final purchased = state.shopPurchaseCounts[key] ?? 0;
     if (state.gold < cost || purchased >= stockLimit) return;
+    final charges = consumableChargesFor(itemId, item);
     state = state.copyWith(
       gold: state.gold - cost,
-      inventoryItemIds: [...state.inventoryItemIds, itemId],
+      inventoryItemIds: charges == null
+          ? [...state.inventoryItemIds, itemId]
+          : state.inventoryItemIds,
+      potionCount: state.potionCount + (charges?.potions ?? 0),
+      antidoteCount: state.antidoteCount + (charges?.antidotes ?? 0),
       shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
     );
     await _persist();
+  }
+
+  /// How a Potion-type item converts into drinkable charges when it's
+  /// bought or looted -- [PlayerSession.potionCount] / [antidoteCount] are
+  /// what the fight screen's Potion/Antidote buttons actually read, so a
+  /// potion that only ever landed in [PlayerSession.inventoryItemIds] could
+  /// never be drunk. A Major Healing Potion is worth two charges (it costs
+  /// nearly three times a Minor one). Null for any non-consumable item,
+  /// which goes into the inventory as before.
+  static ({int potions, int antidotes})? consumableChargesFor(
+    String itemId,
+    Map<String, dynamic>? item,
+  ) {
+    if (item?['itemType']?.toString() != 'Potion') return null;
+    if (itemId == 'antidote') return (potions: 0, antidotes: 1);
+    return (potions: itemId == 'potion_major' ? 2 : 1, antidotes: 0);
   }
 
   /// Equips [itemId]. When [slot] is given, any other equipped item sharing
@@ -1048,16 +1088,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String companionId, {
     Map<String, dynamic>? race,
     Map<String, dynamic>? profession,
+    Map<String, dynamic>? companion,
+    Map<String, dynamic> dice = const {},
     Map<String, dynamic> houses = const {},
     String? requiredHouseId,
   }) async {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
     final raceSkillId = race?['standardSkillID']?.toString() ?? '';
-    final starterUnlocked = <String>[
+    // A companion's signature die IS their kit: every skill one of its
+    // faces links to has to resolve from their very first fight, not
+    // fizzle until the player happens to spend ally skill points on that
+    // exact id (Maren shipped with 2 of her 3 skill faces dead that way).
+    final signatureDiceId = companion?['signatureDiceId']?.toString() ?? '';
+    final signatureFaces =
+        ((dice[signatureDiceId] as Map<String, dynamic>?)?['faces'] as List?)
+                ?.cast<Map<String, dynamic>>() ??
+            const [];
+    final starterUnlocked = <String>{
       if (professionSkillId.isNotEmpty) professionSkillId,
       if (raceSkillId.isNotEmpty) raceSkillId,
-    ];
+      for (final face in signatureFaces)
+        if ((face['linkedSkillID']?.toString() ?? '').isNotEmpty)
+          face['linkedSkillID'].toString(),
+    }.toList();
     // A freshly recruited companion joins the fight immediately, up to
     // capacity -- Camp is where the roster is *managed*, not a
     // precondition for a new ally actually helping in combat (and Camp
@@ -1760,8 +1814,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int goldGain = 0,
     int xpGain = 0,
     List<String> itemsGained = const [],
+    Map<String, dynamic> items = const {},
   }) async {
     final leveled = _applyXp(xpGain);
+
+    // Looted potions/antidotes become charges (see [consumableChargesFor]);
+    // everything else is carried in the inventory.
+    var potionsGained = 0;
+    var antidotesGained = 0;
+    final carried = <String>[];
+    for (final itemId in itemsGained) {
+      final charges =
+          consumableChargesFor(itemId, items[itemId] as Map<String, dynamic>?);
+      if (charges == null) {
+        carried.add(itemId);
+        continue;
+      }
+      potionsGained += charges.potions;
+      antidotesGained += charges.antidotes;
+    }
 
     final clampedHp = hpAfter < 0
         ? 0
@@ -1797,7 +1868,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
       gold: state.gold + goldGain,
-      inventoryItemIds: [...state.inventoryItemIds, ...itemsGained],
+      inventoryItemIds: [...state.inventoryItemIds, ...carried],
+      potionCount: state.potionCount + potionsGained,
+      antidoteCount: state.antidoteCount + antidotesGained,
       xpEarnedThisRun: state.xpEarnedThisRun + xpGain,
       skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,

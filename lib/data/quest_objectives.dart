@@ -111,6 +111,27 @@ ObjectiveStatus _statusFor(
         met: met,
       );
 
+    case 'Flag':
+      // Met once a story choice has set [targetFlag] -- for beats the
+      // story grants directly (picking up the heirloom at the hovel) rather
+      // than via an item, a kill, or an NPC.
+      final targetFlag = objective['targetFlag']?.toString() ?? '';
+      if (targetFlag.isEmpty) {
+        return ObjectiveStatus(
+          description: description,
+          current: 1,
+          required: 1,
+          met: true,
+        );
+      }
+      final flagMet = session.flags.contains(targetFlag);
+      return ObjectiveStatus(
+        description: description,
+        current: flagMet ? 1 : 0,
+        required: 1,
+        met: flagMet,
+      );
+
     case 'Talk':
       final targetNpcId = objective['targetNPCID']?.toString() ?? '';
       // No linked npcs.json entry -- treat as flavor text, same as the

@@ -56,7 +56,7 @@
   },
   "void_die": {
     "diceName": "void_die",
-    "numberOfFaces": 6,
+    "numberOfFaces": 4,
     "faces": [
       {
         "faceName": "Void Rip",

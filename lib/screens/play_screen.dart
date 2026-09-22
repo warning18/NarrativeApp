@@ -503,6 +503,12 @@ class _QuestList extends ConsumerWidget {
                           rewardDiceId: rewardDiceId,
                           grantsBannerPieceId: grantsBannerPieceId,
                           alignmentMod: alignmentMod,
+                          rewardItem: rewardItemId == null
+                              ? null
+                              : ref
+                                      .read(gameDbProvider(itemsSchema))
+                                      .value?[rewardItemId]
+                                  as Map<String, dynamic>?,
                         );
                     String? recruitedName;
                     if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
@@ -519,6 +525,9 @@ class _QuestList extends ConsumerWidget {
                             rewardAllyId,
                             race: race,
                             profession: profession,
+                            companion: companion,
+                            dice: ref.read(gameDbProvider(diceSchema)).value ??
+                                const {},
                             houses:
                                 ref.read(gameDbProvider(housesSchema)).value ??
                                     const {},

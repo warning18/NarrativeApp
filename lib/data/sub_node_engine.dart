@@ -80,9 +80,33 @@ class SubNodeEngine {
           flavor: flavor,
           shopPool: shopPool,
           enemyPool: enemyPool,
+          packPool: filterPackPool(enemies: enemies, enemyPool: enemyPool),
+          maxPackSize: maxPackSizeFor(chapter),
           questId: i == 0 ? questSlotId : null,
         ),
     ];
+  }
+
+  /// The largest pack a random encounter may draw at [chapter] -- a pair
+  /// through chapter 2 (a level-1 party against three of anything is a
+  /// coin flip at best), three from chapter 3 on.
+  static int maxPackSizeFor(int chapter) => chapter <= 2 ? 2 : 3;
+
+  /// The subset of [enemyPool] a pack may be drawn from: enemies flagged
+  /// `packEligible` in enemies.json (the trash tier), never a
+  /// [soloOnlyEnemyIds] boss/unique, and never an unflagged heavy -- a
+  /// 200-hp / 24-damage chapter-2 heavy is a tuned solo fight, and two or
+  /// three of them at once out-stat every boss in the game.
+  static List<String> filterPackPool({
+    required Map<String, dynamic> enemies,
+    required List<String> enemyPool,
+  }) {
+    return enemyPool
+        .where((id) =>
+            !soloOnlyEnemyIds.contains(id) &&
+            ((enemies[id] as Map<String, dynamic>?)?['packEligible'] as bool? ??
+                false))
+        .toList();
   }
 
   /// Enemies eligible to appear in a randomly-drawn encounter at [chapter]
@@ -117,11 +141,16 @@ class SubNodeEngine {
   /// draw [maybeGenerate] chains together for excursions, exposed on its
   /// own so other callers (e.g. the expedition system) can draw one event
   /// at a time from the same themed pools instead of a whole chain.
+  /// [packPool] is the subset of [enemyPool] a 2-[maxPackSize] pack may be
+  /// drawn from (see [filterPackPool]); left null, every non-solo-only id
+  /// in [enemyPool] is eligible.
   static StoryNode buildNode({
     required Random random,
     required ExcursionFlavor flavor,
     required List<String> shopPool,
     required List<String> enemyPool,
+    List<String>? packPool,
+    int maxPackSize = 3,
     String? questId,
   }) {
     _counter++;
@@ -167,10 +196,10 @@ class SubNodeEngine {
       // A pack fight never draws a solo-only enemy (the tuned bosses and
       // uniques -- see soloOnlyEnemyIds) -- those stay solo encounters
       // exclusively, drawn only through the plain single-enemy path below.
-      final packEligible =
+      final packEligible = packPool ??
           enemyPool.where((eid) => !soloOnlyEnemyIds.contains(eid)).toList();
       if (packEligible.isNotEmpty && random.nextDouble() < 0.3) {
-        final size = 2 + random.nextInt(2);
+        final size = 2 + random.nextInt(max(1, maxPackSize - 1));
         final ids = [
           for (var i = 0; i < size; i++)
             packEligible[random.nextInt(packEligible.length)],

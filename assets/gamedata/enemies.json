@@ -1,6 +1,6 @@
 {
   "slum_thug": {
-    "enemyName": "slum_thug",
+    "enemyName": "Slum Thug",
     "maxHealth": 56,
     "damage": 9,
     "guile": 0,
@@ -12,37 +12,15 @@
         "dropRate": 25
       }
     ],
-    "skillMoves": [
-      {
-        "skillID": "",
-        "condition": "Always",
-        "requiredElement": "None",
-        "chance": 100,
-        "healthThreshold": 0,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
-        "priority": 0
-      },
-      {
-        "skillID": "",
-        "condition": "OnLowHealth",
-        "requiredElement": "None",
-        "chance": 60,
-        "healthThreshold": 25,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
-        "priority": 1
-      }
-    ],
-    "minChapter": 1
+    "skillMoves": [],
+    "minChapter": 1,
+    "packEligible": true
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
     "maxHealth": 111,
     "damage": 17,
-    "guile": 2,
+    "guile": 1,
     "xpReward": 45,
     "goldReward": 30,
     "lootTable": [
@@ -68,13 +46,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 1
+    "minChapter": 1,
+    "packEligible": true
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
     "maxHealth": 195,
     "damage": 24,
-    "guile": 4,
+    "guile": 2,
     "xpReward": 80,
     "goldReward": 50,
     "lootTable": [
@@ -84,13 +63,14 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": false
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
     "maxHealth": 62,
     "damage": 9,
-    "guile": 1,
+    "guile": 0,
     "xpReward": 19,
     "goldReward": 12,
     "lootTable": [
@@ -100,13 +80,14 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": true
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
     "maxHealth": 78,
     "damage": 10,
-    "guile": 1,
+    "guile": 0,
     "xpReward": 28,
     "goldReward": 19,
     "lootTable": [
@@ -120,13 +101,14 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 1
+    "minChapter": 1,
+    "packEligible": true
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
     "maxHealth": 81,
     "damage": 10,
-    "guile": 2,
+    "guile": 1,
     "xpReward": 37,
     "goldReward": 26,
     "lootTable": [
@@ -148,13 +130,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": true
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
     "maxHealth": 150,
     "damage": 18,
-    "guile": 3,
+    "guile": 2,
     "xpReward": 46,
     "goldReward": 33,
     "lootTable": [
@@ -168,13 +151,14 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": true
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
     "maxHealth": 121,
     "damage": 14,
-    "guile": 5,
+    "guile": 3,
     "xpReward": 55,
     "goldReward": 40,
     "lootTable": [
@@ -196,13 +180,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": true
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
     "maxHealth": 210,
     "damage": 24,
-    "guile": 4,
+    "guile": 3,
     "xpReward": 64,
     "goldReward": 47,
     "lootTable": [
@@ -228,13 +213,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": false
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
     "maxHealth": 205,
     "damage": 24,
-    "guile": 4,
+    "guile": 2,
     "xpReward": 73,
     "goldReward": 54,
     "lootTable": [
@@ -260,13 +246,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": false
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
     "maxHealth": 180,
     "damage": 21,
-    "guile": 5,
+    "guile": 3,
     "xpReward": 82,
     "goldReward": 61,
     "lootTable": [
@@ -296,13 +283,14 @@
         "priority": 5
       }
     ],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": false
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
     "maxHealth": 200,
     "damage": 23,
-    "guile": 9,
+    "guile": 5,
     "xpReward": 91,
     "goldReward": 68,
     "lootTable": [
@@ -350,13 +338,14 @@
         "priority": 0
       }
     ],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": false
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
     "maxHealth": 165,
     "damage": 19,
-    "guile": 11,
+    "guile": 6,
     "xpReward": 100,
     "goldReward": 75,
     "lootTable": [
@@ -393,13 +382,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": false
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
     "maxHealth": 145,
     "damage": 19,
-    "guile": 8,
+    "guile": 4,
     "xpReward": 70,
     "goldReward": 55,
     "lootTable": [
@@ -427,26 +417,16 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 2
-      },
-      {
-        "skillID": "",
-        "condition": "OnLowHealth",
-        "requiredElement": "None",
-        "chance": 55,
-        "healthThreshold": 35,
-        "attackCountRequirement": 0,
-        "playerPatternThreshold": 0,
-        "blockThreshold": 0,
-        "priority": 1
       }
     ],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": false
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
     "maxHealth": 142,
     "damage": 16,
-    "guile": 12,
+    "guile": 7,
     "xpReward": 109,
     "goldReward": 82,
     "lootTable": [
@@ -472,13 +452,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 4
+    "minChapter": 4,
+    "packEligible": false
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
     "maxHealth": 154,
     "damage": 18,
-    "guile": 12,
+    "guile": 7,
     "xpReward": 118,
     "goldReward": 89,
     "lootTable": [
@@ -526,13 +507,14 @@
         "priority": 0
       }
     ],
-    "minChapter": 5
+    "minChapter": 5,
+    "packEligible": false
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
     "maxHealth": 139,
     "damage": 17,
-    "guile": 3,
+    "guile": 2,
     "xpReward": 40,
     "goldReward": 28,
     "lootTable": [
@@ -562,13 +544,14 @@
         "priority": 1
       }
     ],
-    "minChapter": 2
+    "minChapter": 2,
+    "packEligible": true
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
     "maxHealth": 105,
     "damage": 13,
-    "guile": 3,
+    "guile": 1,
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [
@@ -582,6 +565,7 @@
       }
     ],
     "skillMoves": [],
-    "minChapter": 3
+    "minChapter": 3,
+    "packEligible": true
   }
 }

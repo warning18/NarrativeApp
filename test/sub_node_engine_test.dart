@@ -124,5 +124,65 @@ void main() {
         expect(node.choices.first.triggerEnemyIds, isEmpty);
       }
     });
+
+    test('maxPackSize 2 (chapters 1-2) never draws a 3-enemy pack', () {
+      final pool = ['harbor_rat', 'street_bandit', 'dock_overseer'];
+      var sawPack = false;
+      for (var seed = 0; seed < 500; seed++) {
+        final node = SubNodeEngine.buildNode(
+          random: Random(seed),
+          flavor: flavor,
+          shopPool: const [],
+          enemyPool: pool,
+          maxPackSize: 2,
+        );
+        final ids = node.choices.first.triggerEnemyIds;
+        if (ids.isNotEmpty) {
+          sawPack = true;
+          expect(ids.length, 2);
+        }
+      }
+      expect(sawPack, isTrue);
+    });
+
+    test('an explicit packPool is the only source of pack members', () {
+      final pool = ['harbor_rat', 'rat_matriarch', 'smuggler_captain'];
+      for (var seed = 0; seed < 300; seed++) {
+        final node = SubNodeEngine.buildNode(
+          random: Random(seed),
+          flavor: flavor,
+          shopPool: const [],
+          enemyPool: pool,
+          packPool: const ['harbor_rat'],
+        );
+        for (final id in node.choices.first.triggerEnemyIds) {
+          expect(id, 'harbor_rat');
+        }
+      }
+    });
+  });
+
+  group('maxPackSizeFor / filterPackPool', () {
+    test('packs are pairs through chapter 2 and up to three from chapter 3',
+        () {
+      expect(SubNodeEngine.maxPackSizeFor(1), 2);
+      expect(SubNodeEngine.maxPackSizeFor(2), 2);
+      expect(SubNodeEngine.maxPackSizeFor(3), 3);
+      expect(SubNodeEngine.maxPackSizeFor(5), 3);
+    });
+
+    test('only packEligible, non-solo-only enemies may form a pack', () {
+      final enemies = {
+        'harbor_rat': {'packEligible': true},
+        'rat_matriarch': {'packEligible': false},
+        'no_flag_at_all': <String, dynamic>{},
+        'inquisition_high_warden': {'packEligible': true},
+      };
+      final pool = SubNodeEngine.filterPackPool(
+        enemies: enemies,
+        enemyPool: enemies.keys.toList(),
+      );
+      expect(pool, ['harbor_rat']);
+    });
   });
 }

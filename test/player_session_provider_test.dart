@@ -249,6 +249,65 @@ void main() {
       await notifier.applyCombatResult(hpAfter: 100);
       expect(notifier.state.enemyKillCounts, isEmpty);
     });
+
+    test(
+        'looted potions and antidotes become drinkable charges, not inert '
+        'inventory items', () async {
+      final notifier = await notifierWith(baseSession(currentHealth: 100));
+      await notifier.applyCombatResult(
+        hpAfter: 100,
+        itemsGained: ['potion_minor', 'potion_major', 'antidote', 'sword_001'],
+        items: {
+          'potion_minor': {'itemType': 'Potion'},
+          'potion_major': {'itemType': 'Potion'},
+          'antidote': {'itemType': 'Potion'},
+          'sword_001': {'itemType': 'Weapon'},
+        },
+      );
+      expect(notifier.state.potionCount, 3);
+      expect(notifier.state.antidoteCount, 1);
+      expect(notifier.state.inventoryItemIds, ['sword_001']);
+    });
+  });
+
+  group('buyItem', () {
+    test('a bought potion adds a charge and never lands in the inventory',
+        () async {
+      final notifier = await notifierWith(baseSession(gold: 100));
+      await notifier.buyItem('shop', 'potion_minor', 15, 3,
+          item: const {'itemType': 'Potion'});
+      await notifier.buyItem('shop', 'antidote', 45, 1,
+          item: const {'itemType': 'Potion'});
+      expect(notifier.state.gold, 40);
+      expect(notifier.state.potionCount, 1);
+      expect(notifier.state.antidoteCount, 1);
+      expect(notifier.state.inventoryItemIds, isEmpty);
+    });
+
+    test('a bought weapon still goes into the inventory', () async {
+      final notifier = await notifierWith(baseSession(gold: 100));
+      await notifier.buyItem('shop', 'sword_001', 30, 1,
+          item: const {'itemType': 'Weapon', 'isEquippable': true});
+      expect(notifier.state.inventoryItemIds, ['sword_001']);
+      expect(notifier.state.potionCount, 0);
+    });
+  });
+
+  group('meetsRequirements', () {
+    test(
+        'a negative-Charisma character is not locked out of a node that '
+        'never asked for Charisma', () {
+      final session = baseSession(charisma: -2).copyWith(flags: ['hull_ok']);
+      expect(session.meetsRequirements(reqFlags: ['hull_ok']), isTrue);
+      expect(session.meetsRequirements(reqAlignmentScore: -5), isTrue);
+    });
+
+    test('a real reqCharisma gate still applies', () {
+      expect(
+          baseSession(charisma: 2).meetsRequirements(reqCharisma: 3), isFalse);
+      expect(
+          baseSession(charisma: 3).meetsRequirements(reqCharisma: 3), isTrue);
+    });
   });
 
   group('recruitAlly', () {
@@ -303,6 +362,36 @@ void main() {
         requiredHouseId: 'keldas_hall',
       );
       expect(notifier.state.activeAllyIds, isEmpty);
+    });
+
+    test(
+        'every skill linked on the signature die is unlocked at recruit, so '
+        'no face fizzles', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.recruitAlly(
+        'maren',
+        race: race,
+        profession: profession,
+        companion: const {'signatureDiceId': 'holy_die'},
+        dice: const {
+          'holy_die': {
+            'faces': [
+              {'type': 'Heal', 'linkedSkillID': ''},
+              {'type': 'Skill', 'linkedSkillID': 'cleric_smite'},
+              {'type': 'Skill', 'linkedSkillID': 'cleric_revive_prayer'},
+            ],
+          },
+        },
+      );
+      expect(
+        notifier.state.recruitedAllies.single.unlockedSkillIds,
+        containsAll([
+          'human_resolve',
+          'warrior_technique',
+          'cleric_smite',
+          'cleric_revive_prayer',
+        ]),
+      );
     });
   });
 

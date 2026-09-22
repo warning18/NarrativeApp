@@ -325,7 +325,10 @@
       {
         "text": "Take the Bundle",
         "text_fr": "Prendre le balluchon",
-        "next_id": "400"
+        "next_id": "400",
+        "flagsToAdd": [
+          "took_bundle"
+        ]
       }
     ]
   },
@@ -412,8 +415,8 @@
   },
   "810": {
     "id": "810",
-    "description": "The wall vanished in a cloud of brick-dust and fire with an enthusiasm that suggested whoever had planted the charge had personal grievances of their own to settle. Resistance fighters had breached the perimeter — men and women I did not know and, in the moment, did not particularly care to, so long as they kept doing exactly what they were doing. My torturer stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and covered in a filth I preferred not to examine too closely. But I was free, and a man can build quite a lot on that particular foundation.",
-    "description_fr": "Le mur disparut dans un nuage de poussière de brique et de feu avec un enthousiasme qui laissait penser que quiconque avait posé la charge nourrissait des griefs bien personnels. Des combattants de la résistance avaient percé le périmètre — des hommes et des femmes que je ne connaissais pas et, sur l'instant, ne tenais pas particulièrement à connaître, tant qu'ils continuaient exactement ce qu'ils faisaient. Mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, couvert d'une crasse que je préférais ne pas examiner de trop près. Mais j'étais libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
+    "description": "The wall vanished in a cloud of brick-dust and fire with an enthusiasm that suggested whoever had planted the charge had personal grievances of their own to settle. Resistance fighters had breached the perimeter — men and women I did not know and, in the moment, did not particularly care to, so long as they kept doing exactly what they were doing. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and covered in a filth I preferred not to examine too closely. But I was free, and a man can build quite a lot on that particular foundation.",
+    "description_fr": "Le mur disparut dans un nuage de poussière de brique et de feu avec un enthousiasme qui laissait penser que quiconque avait posé la charge nourrissait des griefs bien personnels. Des combattants de la résistance avaient percé le périmètre — des hommes et des femmes que je ne connaissais pas et, sur l'instant, ne tenais pas particulièrement à connaître, tant qu'ils continuaient exactement ce qu'ils faisaient. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, couvert d'une crasse que je préférais ne pas examiner de trop près. Mais j'étais libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -562,7 +565,8 @@
       {
         "text": "Back to the fight",
         "text_fr": "Retour au combat",
-        "next_id": "823"
+        "next_id": "823",
+        "triggerEnemyId": "inquisition_warden"
       }
     ]
   },
@@ -1241,7 +1245,10 @@
         "text": "Wade into a pair of harbor rats squabbling over spoiled cargo",
         "text_fr": "Affronter une paire de rats des quais se disputant une cargaison avariée",
         "next_id": "2015_rats",
-        "triggerEnemyIds": ["harbor_rat", "harbor_rat"]
+        "triggerEnemyIds": [
+          "harbor_rat",
+          "harbor_rat"
+        ]
       },
       {
         "text": "Hear out a dwarf holding the gate alone",
@@ -1324,9 +1331,10 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Clear the rats from the stores, then go find Vane",
+        "text_fr": "Débarrasser les réserves des rats, puis aller trouver Vane",
+        "next_id": "2030",
+        "triggerEnemyId": "harbor_rat"
       }
     ]
   },
@@ -1410,9 +1418,10 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Hold the gate beside her, then go find Vane",
+        "text_fr": "Tenir la porte à ses côtés, puis aller trouver Vane",
+        "next_id": "2030",
+        "triggerEnemyId": "inquisition_soldier"
       }
     ],
     "reqAlignmentScore": 2
@@ -1517,7 +1526,11 @@
       {
         "text": "Fight back (Combat Encounter)",
         "text_fr": "Riposter (Rencontre de combat)",
-        "next_id": "2070"
+        "next_id": "2070",
+        "triggerEnemyIds": [
+          "street_bandit",
+          "street_bandit"
+        ]
       }
     ]
   },
@@ -1604,12 +1617,15 @@
         "next_id": "2999"
       }
     ],
-    "reqFlags": ["hull_patched", "sail_mended"]
+    "reqFlags": [
+      "hull_patched",
+      "sail_mended"
+    ]
   },
   "2900_boat_unfixed": {
     "id": "2900_boat_unfixed",
-    "description": "The Rusty Eel was still listing where I'd left her, hull unpatched, sail torn in the same place it had been torn since the docks. I told myself there hadn't been time. It was even mostly true. Some debts, in the Lower City, simply went unpaid, and the city had long since stopped keeping count of which ones were mine.",
-    "description_fr": "Le Rusty Eel gîtait encore là où je l'avais laissé, coque non colmatée, voile déchirée au même endroit qu'aux docks. Je me dis qu'il n'y avait pas eu le temps. C'était même, en grande partie, vrai. Certaines dettes, dans la Ville Basse, restaient tout simplement impayées, et la ville avait depuis longtemps cessé de compter lesquelles étaient les miennes.",
+    "description": "The Rusty Eel waited where I'd left her, riding the same tired swell as every other hull in the Lower City. Whatever I had or hadn't managed to do for her, I told myself there hadn't been time for more. It was even mostly true. Some debts, in the Lower City, simply went unpaid, and the city had long since stopped keeping count of which ones were mine.",
+    "description_fr": "Le Rusty Eel attendait là où je l'avais laissé, ballotté par la même houle lasse que toutes les autres coques de la Ville Basse. Quoi que j'aie ou non réussi à faire pour lui, je me dis qu'il n'y avait pas eu le temps d'en faire davantage. C'était même, en grande partie, vrai. Certaines dettes, dans la Ville Basse, restaient tout simplement impayées, et la ville avait depuis longtemps cessé de compter lesquelles étaient les miennes.",
     "context_taxonomy": {
       "ui_theme": "gate",
       "mood": "wistful",
@@ -1752,7 +1768,10 @@
         "text": "Face down two Inquisition auxiliaries sifting the ash for anything worth reporting",
         "text_fr": "Affronter deux auxiliaires de l'Inquisition fouillant les cendres pour tout ce qui vaut d'être signalé",
         "next_id": "3005_auxiliaries",
-        "triggerEnemyIds": ["inquisition_auxiliary", "inquisition_auxiliary"]
+        "triggerEnemyIds": [
+          "inquisition_auxiliary",
+          "inquisition_auxiliary"
+        ]
       },
       {
         "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
@@ -1776,7 +1795,7 @@
         "next_id": "3005_ledger",
         "checkAbility": "intelligence",
         "checkDC": 13,
-        "failNextId": "3005_acolyte"
+        "failNextId": "3020"
       },
       {
         "text": "Haggle with a scarred orc mercenary sizing up the ruins",
@@ -1803,9 +1822,10 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Find the chanting acolyte and silence him",
+        "text_fr": "Trouver l'acolyte qui psalmodie et le faire taire",
+        "next_id": "3020",
+        "triggerEnemyId": "cultist_acolyte"
       }
     ]
   },
@@ -1854,9 +1874,10 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Track the shard's hum to the wisp carrying it",
+        "text_fr": "Suivre le bourdonnement de l'éclat jusqu'au feu follet qui le porte",
+        "next_id": "3020",
+        "triggerEnemyId": "void_wisp"
       }
     ]
   },
@@ -2626,7 +2647,8 @@
       {
         "text": "His enforcers won't listen to reason — end this now",
         "text_fr": "Ses hommes n'écouteront pas la raison — en finir maintenant",
-        "next_id": "2015_ternrow_fight"
+        "next_id": "2015_ternrow_fight",
+        "unlockQuestId": "q_ch2_terns_toll"
       }
     ]
   },
@@ -2725,10 +2747,11 @@
     "reqCharisma": 3,
     "choices": [
       {
-        "text": "Continue through the Docks",
-        "text_fr": "Continuer à travers les Docks",
+        "text": "Follow her to the captain's raiding skiff",
+        "text_fr": "La suivre jusqu'au skiff de pillage du capitaine",
         "next_id": "2900",
-        "unlockQuestId": "q_ch2_lioras_watch"
+        "unlockQuestId": "q_ch2_lioras_watch",
+        "triggerEnemyId": "smuggler_captain"
       }
     ]
   },
@@ -2793,7 +2816,8 @@
       {
         "text": "Stay and make sure he doesn't get the chance",
         "text_fr": "Rester pour l'empêcher d'en avoir l'occasion",
-        "next_id": "3005_wall_fight"
+        "next_id": "3005_wall_fight",
+        "unlockQuestId": "q_ch3_reckoning_wall"
       }
     ]
   },

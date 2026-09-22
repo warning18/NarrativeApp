@@ -53,6 +53,20 @@ const double _eliteRewardMultiplier = 1.5;
 /// every single time.
 const double _banterChance = 0.35;
 
+/// Per-member hp/damage multiplier for a multi-enemy pack, by pack size. A
+/// pack's threat is its action economy -- two or three hits a round against
+/// one party's worth of rolls -- so each member is scaled down to keep the
+/// fight winnable for a party at the pack's own chapter level (unscaled,
+/// three chapter-2 heavies were a 0% fight at level 3). Solo fights are
+/// never scaled.
+const Map<int, double> _packStatMultipliers = {2: 0.85, 3: 0.75};
+
+/// A Defend face rolled by the party member an enemy is visibly (see
+/// [telegraphTierFor]) about to hit blocks this many times its face value
+/// -- the tactical payoff for reading a telegraph: brace where the blow is
+/// coming, not where it isn't.
+const int _telegraphBraceMultiplier = 2;
+
 /// Broad categories a combat-log line falls into, used to color and icon
 /// each line so the log reads at a glance instead of as a wall of text.
 enum _LogKind {
@@ -531,6 +545,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           baseName: baseNames[i],
           isDuplicateName: (totalCounts[baseNames[i]] ?? 1) > 1,
           seenSoFar: seenSoFar,
+          packSize: entries.length,
           lang: lang,
         ),
     ];
@@ -543,6 +558,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     required String baseName,
     required bool isDuplicateName,
     required Map<String, int> seenSoFar,
+    required int packSize,
     required AppLanguage lang,
   }) {
     final elitePrefixedName =
@@ -562,6 +578,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
     if (_isElite) {
       maxHealth = (maxHealth * _eliteStatMultiplier).round();
       damage = (damage * _eliteStatMultiplier).round();
+    }
+    final packMultiplier = _packStatMultipliers[packSize];
+    if (packMultiplier != null) {
+      maxHealth = max(1, (maxHealth * packMultiplier).round());
+      damage = (damage * packMultiplier).round();
     }
     final moves =
         (raw['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
@@ -687,6 +708,24 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (member.perception > best) best = member.perception;
     }
     return best;
+  }
+
+  /// True when some living enemy's pre-rolled next move is aimed at
+  /// [member] AND the party can currently read that telegraph at all (see
+  /// [telegraphTierFor]) -- the condition under which a Defend face rolled
+  /// by [member] braces for the visible blow ([_telegraphBraceMultiplier]).
+  bool _isTelegraphedTarget(_PartyMember member) {
+    final perception = _bestPartyPerception();
+    for (final enemy in _enemies) {
+      final pending = enemy.pendingMove;
+      if (!enemy.isAlive || pending == null || pending.targetId != member.id) {
+        continue;
+      }
+      if (telegraphTierFor(perception, enemy.guile) != TelegraphTier.none) {
+        return true;
+      }
+    }
+    return false;
   }
 
   _PartyMember? _memberById(String id) {
@@ -949,9 +988,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (result.isCritical) lastCritActorId = actor.id;
       actor.currentHealth =
           min(actor.maxHealth, actor.currentHealth + result.healingDone);
-      actor.block = result.blockAmount;
+      final braced = result.blockAmount > 0 && _isTelegraphedTarget(actor);
+      actor.block = braced
+          ? result.blockAmount * _telegraphBraceMultiplier
+          : result.blockAmount;
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
+      if (braced) {
+        newEntries.add(_LogEntry(
+          '${actor.displayName} ${trFor(lang, 'braced_suffix')} (${actor.block})',
+          _LogKind.playerBlock,
+        ));
+      }
 
       _EnemyMember? target;
       if (face.type == 'Attack' || face.type == 'Skill') {
@@ -988,6 +1036,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
     }
 
+    // Each acting member's own effects count down once their turn is over
+    // (see tickStatusEffects) -- ticking at the start of the round instead
+    // silently ate the first (and, under Wisdom resistance, only) turn of
+    // every Weaken landed on the party.
+    for (final actor in _actingParty) {
+      actor.statusEffects = tickStatusEffects(actor.statusEffects);
+    }
+
     if (lastCritActorId != null) {
       final banter = _rollBanter(isCrit: true, excludeId: lastCritActorId);
       if (banter != null) newEntries.add(banter);
@@ -1019,11 +1075,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Starts a fresh party round — called once every enemy's turn resolves
   /// without ending the fight. This is also where every still-conscious
   /// party member's own status effects take hold for the round about to
-  /// start: Poison ticks its damage, Stun determines who's excluded from
-  /// [_actingParty], and (after those checks use the current durations)
-  /// every effect's own duration counts down by one round. If that leaves
-  /// nobody able to act at all, the round is skipped straight through to
-  /// the enemies' next turn rather than stalling on a roll nobody can make.
+  /// start: Poison ticks its damage and Stun determines who's excluded from
+  /// [_actingParty]. A stunned member's effects count down here (the stun
+  /// consumed their turn); everyone else's count down once they've actually
+  /// acted, in [_confirmRoll]. If nobody is able to act at all, the round is
+  /// skipped straight through to the enemies' next turn rather than
+  /// stalling on a roll nobody can make.
   void _startPartyRound(
       Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
@@ -1068,7 +1125,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final canAct = _actingParty.isNotEmpty;
 
     for (final member in _party) {
-      if (member.isKnockedOut) continue;
+      if (member.isKnockedOut || !isStunned(member.statusEffects)) continue;
       member.statusEffects = tickStatusEffects(member.statusEffects);
     }
 
@@ -1128,6 +1185,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   _PendingEnemyMove _rollMoveAndTargetFor(
       _EnemyMember enemy, Map<String, dynamic> skills) {
     final lang = ref.read(appLanguageProvider);
+    // Rolled un-Weakened: a Weaken is applied at execution time in
+    // [_takeEnemyTurn] against the enemy's effects as they stand THEN, so a
+    // Weaken the party lands this round cuts the very next hit rather than
+    // the one after (a pre-rolled move baked the debuff in a turn late).
     final move = resolveEnemyMove(
       enemy: {...enemy.data, 'damage': enemy.damage},
       skills: skills,
@@ -1135,7 +1196,6 @@ class _FightScreenState extends ConsumerState<FightScreen>
       enemyMaxHealth: enemy.maxHealth,
       random: _random,
       language: lang,
-      activeEffects: enemy.statusEffects,
       elementsHitThisRound: enemy.elementsHitThisRound,
     );
     final conscious = _party.where((m) => !m.isKnockedOut).toList();
@@ -1187,6 +1247,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
       final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
       final move = pending.move;
+      final moveDamage = applyWeaken(move.damage, enemy.statusEffects);
 
       final _PartyMember target;
       final cachedTarget = _memberById(pending.targetId);
@@ -1216,7 +1277,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           _random.nextDouble() * 100 < dodgeChanceFor(target.dexterity);
       final damageTaken = wasDodged
           ? 0
-          : max(0, move.damage - target.block - totalArmor - elementalResist);
+          : max(0, moveDamage - target.block - totalArmor - elementalResist);
       final wasKnockedOutAlready = target.isKnockedOut;
 
       setState(() {
@@ -1393,6 +1454,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
+        items: items,
       );
       // A knocked-out ally is revived at partial health on a win; a
       // survivor's ending health is simply persisted as-is. Level-ups

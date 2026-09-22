@@ -8,6 +8,60 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.106.0+134]
+
+Fixes from the full mechanics/narrative review and the 40-playthrough
+simulation.
+
+### Fixed
+- **Orc and Voidkin characters could not finish Chapter 1.** Any node with
+  a flag/gold/alignment requirement also silently required Charisma ≥ 0
+  (the default `reqCharisma` of 0 was compared against a negative starting
+  Charisma), which locked all three doors at the smuggler gate (node 895)
+  and every later gated node. Only a node that actually sets `reqCharisma`
+  gates on it now.
+- **Random enemy packs were unwinnable.** Packs of two or three chapter-2
+  heavies (Rat Matriarch, Smuggler Captain, Plague Hound) out-statted every
+  boss; in simulation a third of chapter-2 expedition fights were lost and 4
+  of 40 runs ended stuck on one. Packs now draw only from `packEligible`
+  trash-tier enemies, are capped at pairs through chapter 2, and each member
+  is scaled to 85% (pairs) / 75% (triples) of its solo stats. Rewards are
+  unchanged, so a pack still pays more than the same enemy alone.
+- **Bought and looted potions/antidotes were inert.** They landed in the
+  inventory where nothing could drink them; only the starting 3 potions and
+  1 antidote ever existed. Potion-type items now become charges (a Major
+  Healing Potion is worth two) when bought, looted, or granted by a quest.
+- **Weaken lost a turn on both sides.** Party members' effects ticked before
+  they acted (a 2-turn Weaken weakened one swing; with Wisdom ≥5, none), and
+  a Weaken landed on an enemy was baked into its already-pre-rolled move a
+  turn late. Members now tick after acting, and enemy moves are pre-rolled
+  un-weakened with the debuff applied when the hit actually lands.
+- **Companion signature-die faces fizzled.** Maren's Smite/Revive Prayer,
+  Sable's Void Blast, Liora's Beast Bond, Vess's Entropy Touch and Grosh's
+  Adrenaline Surge were all "Skill fizzles" until that exact skill was
+  bought; every skill linked on a companion's signature die is now unlocked
+  at recruit.
+- Story: Vane's guards (2040) and the pushed-past Wardens (822) now actually
+  fight; a failed ledger check at 3005 no longer lands on the acolyte's
+  post-fight text; the torturer no longer dies at 810 before returning at
+  955; the Rusty Eel beat reads correctly whether or not it was repaired.
+- Quests: the Ashen Oath, Void Relic, Liora's Watch, Kelda's Stand and
+  Dockside Debts kill targets are fought on the bridge node that hands out
+  the quest, instead of being unreachable once the one-shot hub is left;
+  Tern Row and Reckoning Wall quests are offered before their kill, not with
+  it; The Heirloom of Alster completes by taking the bundle at the hovel
+  (new `Flag` objective type) instead of only by buying the heirloom back.
+
+### Changed
+- **Perception is readable earlier and pays off tactically.** Every
+  character starts with 1 Perception (Elf/Ranger +4 as before), enemy Guile
+  is rescaled (trash 0–1, mid-tier 2–3, uniques 4–5, bosses 6–7) so an early
+  investment reads trash immediately and a dedicated build can read a boss,
+  and a Defend face rolled by the member a readable telegraph is aimed at
+  blocks double.
+- Data polish: Slum Thug shows its name instead of its id, two no-op enemy
+  moves are gone, and `void_die` declares its real face count.
+
 ## [1.105.0+133]
 
 Perception-gated enemy telegraphing and multi-enemy pack combat.

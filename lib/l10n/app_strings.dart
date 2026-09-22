@@ -1805,6 +1805,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'vous vous préparez à bloquer',
   },
   'block_word': {AppLanguage.en: 'block', AppLanguage.fr: 'blocage'},
+  'braced_suffix': {
+    AppLanguage.en: 'braces for the telegraphed blow — block doubled',
+    AppLanguage.fr: 'se prépare au coup annoncé — blocage doublé',
+  },
   'skill_fizzles': {
     AppLanguage.en: 'The skill fizzles.',
     AppLanguage.fr: 'La compétence échoue.',

@@ -88,6 +88,28 @@ void main() {
     });
   });
 
+  group('Flag objectives', () {
+    final flagQuest = <String, dynamic>{
+      'objectives': [
+        {
+          'description': 'Retrieve the Grey Shroud from the hovel',
+          'type': 'Flag',
+          'targetFlag': 'took_bundle',
+          'requiredAmount': 1,
+        },
+      ],
+    };
+
+    test('not met until the story sets the flag', () {
+      expect(allObjectivesMet('q_banner', flagQuest, baseSession()), isFalse);
+    });
+
+    test('met once the flag is set', () {
+      final session = baseSession().copyWith(flags: ['took_bundle']);
+      expect(allObjectivesMet('q_banner', flagQuest, session), isTrue);
+    });
+  });
+
   group('Talk objectives', () {
     final talkQuest = <String, dynamic>{
       'objectives': [

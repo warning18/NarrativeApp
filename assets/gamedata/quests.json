@@ -49,12 +49,13 @@
     "objectives": [
       {
         "description": "Retrieve the Grey Shroud from the hovel",
-        "type": "Fetch",
+        "type": "Flag",
         "targetEnemyID": "",
-        "targetItemID": "void_banner",
+        "targetItemID": "",
         "targetNPCName": "Lysa",
         "locationID": "hovel",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "targetFlag": "took_bundle"
       }
     ],
     "rewardGold": 100,

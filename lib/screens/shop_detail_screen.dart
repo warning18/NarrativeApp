@@ -231,7 +231,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                       await ref
                                           .read(playerSessionProvider.notifier)
                                           .buyItem(widget.shopId, itemId, cost,
-                                              stockLimit);
+                                              stockLimit,
+                                              item: item);
                                       if (!context.mounted) return;
                                       final lang =
                                           ref.read(appLanguageProvider);
