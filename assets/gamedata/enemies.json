@@ -185,8 +185,8 @@
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
-    "maxHealth": 210,
-    "damage": 24,
+    "maxHealth": 180,
+    "damage": 21,
     "guile": 3,
     "xpReward": 64,
     "goldReward": 47,
@@ -218,8 +218,8 @@
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
-    "maxHealth": 205,
-    "damage": 24,
+    "maxHealth": 175,
+    "damage": 21,
     "guile": 2,
     "xpReward": 73,
     "goldReward": 54,

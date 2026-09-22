@@ -28,7 +28,11 @@ combat-engine/data outliers, and the continuity nits.
   on it get a small base bump to stay in their tuned win-rate bands (High
   Warden 170 HP, Zealot 20 dmg / 160 HP, Manifestation 21 dmg / 165 HP).
 - **`heavy_attack` no longer beats every purchasable skill for free**
-  (8 × 1.6 → 5 × 1.3; still the default for any unassigned Skill face).
+  (8 × 1.6 → 6 × 1.4; still the default for any unassigned Skill face).
+  The Plague Hound and Smuggler Captain — the other two Chapter-2 heavies
+  a random excursion can force on a level-3 character — come down with it
+  (175 / 21 and 180 / 21, from 205–210 / 24) so neither is a wall for a
+  weak solo build.
 - **Packs scale to the party.** A random pack never outnumbers the party's
   dice — a solo character meets at most a pair — and pair/triple members
   now fight at 80% / 70% of their solo stats (a level-5 solo mage went 0

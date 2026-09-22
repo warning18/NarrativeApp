@@ -1052,10 +1052,10 @@
     "isUnlocked": true,
     "description": "A heavy, telegraphed strike thrown with everything you have.",
     "healAmount": 0,
-    "damageMod": 5,
+    "damageMod": 6,
     "healthMod": 0,
     "isActiveSkill": true,
-    "damageMultiplier": 1.3,
+    "damageMultiplier": 1.4,
     "battleMessage": "You wind up and strike with everything you have.",
     "restrictedRaceID": "",
     "restrictedProfessionID": ""
