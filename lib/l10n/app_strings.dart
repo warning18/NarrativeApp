@@ -379,6 +379,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Trigger enemy ID',
     AppLanguage.fr: "ID d'ennemi déclenché"
   },
+  'trigger_enemy_ids': {
+    AppLanguage.en: 'Trigger enemy IDs (pack, comma-separated)',
+    AppLanguage.fr: "IDs d'ennemis déclenchés (groupe, séparés par virgule)"
+  },
+  'trigger_enemy_ids_helper': {
+    AppLanguage.en:
+        'Overrides Trigger enemy ID above when set — a 2-3 enemy pack fight. '
+            'Never include a tuned boss/unique enemy here.',
+    AppLanguage.fr:
+        "Remplace l'ID d'ennemi déclenché ci-dessus si renseigné — un combat "
+            "de groupe de 2 à 3 ennemis. N'incluez jamais un boss ou un "
+            "ennemi unique ici.",
+  },
   'unlock_shop_id': {
     AppLanguage.en: 'Unlock shop ID',
     AppLanguage.fr: 'ID de boutique débloquée'
@@ -504,6 +517,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Intelligence',
   },
   'wisdom_label': {AppLanguage.en: 'Wisdom', AppLanguage.fr: 'Sagesse'},
+  'perception_label': {
+    AppLanguage.en: 'Perception',
+    AppLanguage.fr: 'Perspicacité',
+  },
   'base_damage_desc': {
     AppLanguage.en: 'Added to every attack you land in combat.',
     AppLanguage.fr: 'S\'ajoute à chaque attaque que vous portez en combat.',
@@ -579,6 +596,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
             'les gens, sentir ce qui se trame vraiment. En combat, elle '
             'renforce aussi chaque soin et raccourcit la durée du Poison, '
             'de l\'Étourdissement ou de l\'Affaiblissement.',
+  },
+  'perception_desc': {
+    AppLanguage.en:
+        'Lets you read an enemy\'s next move before it happens — who '
+            'they\'ll target, and (with enough Perception relative to '
+            'their Guile) what kind of move it is or exactly what it '
+            'does.',
+    AppLanguage.fr:
+        'Vous permet de lire le prochain coup d\'un ennemi avant qu\'il '
+            'ne survienne — qui il va viser, et (avec assez de '
+            'Perspicacité face à sa Ruse) le type de coup ou exactement '
+            'ce qu\'il fait.',
   },
   'fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combattre'},
   'gold_label': {AppLanguage.en: 'gold', AppLanguage.fr: 'or'},
@@ -870,6 +899,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'con_abbrev': {AppLanguage.en: 'CON', AppLanguage.fr: 'CON'},
   'int_abbrev': {AppLanguage.en: 'INT', AppLanguage.fr: 'INT'},
   'wis_abbrev': {AppLanguage.en: 'WIS', AppLanguage.fr: 'SAG'},
+  'per_abbrev': {AppLanguage.en: 'PER', AppLanguage.fr: 'PER'},
   'stat_requirement_label': {
     AppLanguage.en: 'Requires',
     AppLanguage.fr: 'Requiert',
@@ -1789,6 +1819,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'il ne se passe rien.',
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  'telegraph_category_attack': {
+    AppLanguage.en: 'Attack',
+    AppLanguage.fr: 'Attaque',
+  },
+  'telegraph_category_heal': {
+    AppLanguage.en: 'Self-heal',
+    AppLanguage.fr: 'Soin',
+  },
+  'telegraph_category_debuff': {
+    AppLanguage.en: 'Debuff',
+    AppLanguage.fr: 'Affaiblissement',
+  },
   'the_enemy_label': {AppLanguage.en: 'The enemy', AppLanguage.fr: "L'ennemi"},
   'elite_prefix': {AppLanguage.en: 'Elite', AppLanguage.fr: 'Élite'},
   'critical_hit_suffix': {

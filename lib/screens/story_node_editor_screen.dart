@@ -281,6 +281,8 @@ class _ChoiceEditState {
             TextEditingController(text: choice.lockedTextFr ?? ''),
         triggerEnemyIdController =
             TextEditingController(text: choice.triggerEnemyId ?? ''),
+        triggerEnemyIdsController =
+            TextEditingController(text: choice.triggerEnemyIds.join(', ')),
         unlockShopIdController =
             TextEditingController(text: choice.unlockShopId ?? ''),
         unlockQuestIdController =
@@ -308,6 +310,14 @@ class _ChoiceEditState {
   final TextEditingController lockedTextController;
   final TextEditingController lockedTextFrController;
   final TextEditingController triggerEnemyIdController;
+
+  /// Comma-separated enemy ids for a multi-enemy pack fight, mirroring
+  /// [flagsToAddController]'s comma-split pattern. Overrides
+  /// [triggerEnemyIdController] when non-empty (see
+  /// [StoryChoice.allTriggerEnemyIds]) -- must exclude any of the
+  /// solo-only boss/unique ids (see combat_engine.dart's
+  /// `soloOnlyEnemyIds`).
+  final TextEditingController triggerEnemyIdsController;
   final TextEditingController unlockShopIdController;
   final TextEditingController unlockQuestIdController;
   bool opensCharacterCreation;
@@ -328,6 +338,7 @@ class _ChoiceEditState {
     lockedTextController.dispose();
     lockedTextFrController.dispose();
     triggerEnemyIdController.dispose();
+    triggerEnemyIdsController.dispose();
     unlockShopIdController.dispose();
     unlockQuestIdController.dispose();
     checkDCController.dispose();
@@ -361,6 +372,11 @@ class _ChoiceEditState {
         triggerEnemyId: triggerEnemyIdController.text.trim().isEmpty
             ? null
             : triggerEnemyIdController.text.trim(),
+        triggerEnemyIds: triggerEnemyIdsController.text
+            .split(',')
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList(),
         unlockShopId: unlockShopIdController.text.trim().isEmpty
             ? null
             : unlockShopIdController.text.trim(),
@@ -511,6 +527,15 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   decoration: InputDecoration(
                       labelText: t('trigger_enemy_id'),
                       border: const OutlineInputBorder()),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.triggerEnemyIdsController,
+                  decoration: InputDecoration(
+                    labelText: t('trigger_enemy_ids'),
+                    helperText: t('trigger_enemy_ids_helper'),
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 TextField(

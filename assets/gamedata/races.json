@@ -13,6 +13,7 @@
     "bonusConstitution": 0,
     "bonusIntelligence": 0,
     "bonusWisdom": 2,
+    "bonusPerception": 0,
     "startingGoldBonus": 20,
     "standardSkillID": "human_resolve"
   },
@@ -30,6 +31,7 @@
     "bonusConstitution": 0,
     "bonusIntelligence": 2,
     "bonusWisdom": 0,
+    "bonusPerception": 4,
     "startingGoldBonus": 0,
     "standardSkillID": "elf_arcane_focus"
   },
@@ -47,6 +49,7 @@
     "bonusConstitution": 4,
     "bonusIntelligence": 0,
     "bonusWisdom": 0,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "standardSkillID": "dwarf_stoneskin"
   },
@@ -64,6 +67,7 @@
     "bonusConstitution": 2,
     "bonusIntelligence": -1,
     "bonusWisdom": 0,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "standardSkillID": "orc_berserk_rage"
   },
@@ -81,6 +85,7 @@
     "bonusConstitution": -2,
     "bonusIntelligence": 3,
     "bonusWisdom": -1,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "standardSkillID": "voidkin_umbral_veil"
   }

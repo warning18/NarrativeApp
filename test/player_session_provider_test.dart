@@ -48,6 +48,7 @@ PlayerSession baseSession({
   int constitution = 0,
   int intelligence = 0,
   int wisdom = 0,
+  int perception = 0,
 }) {
   return PlayerSession(
     level: level,
@@ -65,6 +66,7 @@ PlayerSession baseSession({
     constitution: constitution,
     intelligence: intelligence,
     wisdom: wisdom,
+    perception: perception,
     potionCount: 0,
     statPoints: statPoints,
     skillPoints: skillPoints,

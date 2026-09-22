@@ -118,6 +118,7 @@ class AllyBaseStats {
     required this.intelligence,
     required this.wisdom,
     required this.luck,
+    required this.perception,
   });
 
   final int maxHealth;
@@ -151,6 +152,14 @@ class AllyBaseStats {
   /// `combat_engine.dart`, on top of its existing loot-roll bonus for the
   /// player.
   final int luck;
+
+  /// Backs the same role as the player's own Perception (see
+  /// [PlayerSession.perception]): feeds `telegraphTierFor` in
+  /// `combat_engine.dart`, sharpening the whole party's read on an enemy's
+  /// telegraphed next move — a Perception-built ally (Liora the ranger,
+  /// chiefly) can carry the party's tactical read even if the player's own
+  /// Perception is low.
+  final int perception;
 }
 
 AllyBaseStats deriveAllyBaseStats({
@@ -188,6 +197,9 @@ AllyBaseStats deriveAllyBaseStats({
     luck: ((gameConfig['luck'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusLuck') +
         bonus(profession, 'bonusLuck'),
+    perception: ((gameConfig['perception'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusPerception') +
+        bonus(profession, 'bonusPerception'),
   );
 }
 

@@ -609,6 +609,52 @@ void main() {
       expect(result.inflictedStatus!.magnitude, 5);
     });
 
+    test('a resolved move reads its skill\'s healAmount through unchanged', () {
+      final enemy = <String, dynamic>{
+        'enemyName': 'Void Stalker',
+        'damage': 17,
+        'skillMoves': [
+          {'skillID': 'shadow_step', 'condition': 'Always', 'priority': 1},
+        ],
+      };
+      const skills = <String, dynamic>{
+        'shadow_step': {
+          'damageMod': 0,
+          'damageMultiplier': 0.0,
+          'healAmount': 10,
+        },
+      };
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: skills,
+        enemyCurrentHealth: 100,
+        enemyMaxHealth: 100,
+        random: Random(1),
+      );
+      expect(result.healAmount, 10);
+    });
+
+    test('a move whose skill has no healAmount field reads 0', () {
+      final enemy = <String, dynamic>{
+        'enemyName': 'Plague Hound',
+        'damage': 17,
+        'skillMoves': [
+          {'skillID': 'plague_bite', 'condition': 'Always', 'priority': 1},
+        ],
+      };
+      const skills = <String, dynamic>{
+        'plague_bite': {'damageMod': 4, 'damageMultiplier': 1.0},
+      };
+      final result = resolveEnemyMove(
+        enemy: enemy,
+        skills: skills,
+        enemyCurrentHealth: 100,
+        enemyMaxHealth: 100,
+        random: Random(1),
+      );
+      expect(result.healAmount, 0);
+    });
+
     test('a plain base attack (no skillID) never inflicts a status', () {
       final enemy = <String, dynamic>{'enemyName': 'Plain Foe', 'damage': 10};
       final result = resolveEnemyMove(

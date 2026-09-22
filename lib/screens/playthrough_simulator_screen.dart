@@ -144,8 +144,12 @@ _SimResult _simulate(
 }) {
   int combatGoldReward(StoryChoice c) {
     if (!c.triggersCombat) return 0;
-    final enemy = enemies[c.triggerEnemyId] as Map<String, dynamic>?;
-    return (enemy?['goldReward'] as num?)?.toInt() ?? 0;
+    var total = 0;
+    for (final id in c.allTriggerEnemyIds) {
+      final enemy = enemies[id] as Map<String, dynamic>?;
+      total += (enemy?['goldReward'] as num?)?.toInt() ?? 0;
+    }
+    return total;
   }
 
   var currentId = StoryRepository.startNodeId;
@@ -264,7 +268,9 @@ _SimResult _simulate(
       uiTheme: node.uiTheme,
       description: node.descriptionFor(french),
       choiceText: choice.textFor(french),
-      enemyId: choice.triggerEnemyId,
+      enemyId: choice.allTriggerEnemyIds.isEmpty
+          ? null
+          : choice.allTriggerEnemyIds.first,
       goldMod: effectiveGoldMod,
       alignmentMod: choice.alignmentMod,
     ));

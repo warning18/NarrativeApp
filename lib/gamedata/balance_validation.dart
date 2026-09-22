@@ -118,7 +118,7 @@ List<String> _validateMandatoryCombat(StoryData story) {
           if (!hasShopOpportunity) {
             issues.add(
               'Chapter ${spine.chapter} (beat ${i + 1} → ${i + 2}): node $nodeId forces '
-              'combat with "${choice.triggerEnemyId}" with no shop visit possible first.',
+              'combat with "${choice.allTriggerEnemyIds.join(", ")}" with no shop visit possible first.',
             );
           }
         }
@@ -224,11 +224,10 @@ List<String> _validateDanglingReferences(
   final issues = <String>[];
   for (final node in story.nodes.values) {
     for (final choice in node.choices) {
-      final enemyId = choice.triggerEnemyId;
-      if (enemyId != null &&
-          enemyId.isNotEmpty &&
-          !enemies.containsKey(enemyId)) {
-        issues.add('Node ${node.id} triggers unknown enemy "$enemyId".');
+      for (final enemyId in choice.allTriggerEnemyIds) {
+        if (!enemies.containsKey(enemyId)) {
+          issues.add('Node ${node.id} triggers unknown enemy "$enemyId".');
+        }
       }
       final shopId = choice.unlockShopId;
       if (shopId != null && shopId.isNotEmpty && !shops.containsKey(shopId)) {

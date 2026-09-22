@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.105.0+133]
+
+Perception-gated enemy telegraphing and multi-enemy pack combat.
+
+### Added
+- **Perception stat and enemy telegraphing.** A new Perception stat (mirrored
+  onto allies, race/profession bonuses — Elf and Ranger both get +4, making
+  it their signature stat) is compared against a new enemy-side Guile stat to
+  determine how much of an enemy's next move the party can see ahead of
+  time: nothing below 1 net Perception, just who's targeted from 1-4, who
+  plus a rough move category (attack/heal/debuff icon) from 5-9, and full
+  detail (move name, element, effect) at 10+. Guile is deterministic and
+  subtractive (`perception − guile`), not a per-turn roll, so bosses stay
+  harder to read even for a heavily invested Perception build. Enemy moves
+  are now decided one step ahead and shown as a telegraph badge, then
+  applied unchanged on that enemy's actual turn.
+- **Multi-enemy pack combat.** Fights can now pit the party against 2-3
+  enemies at once, with an explicit target picker letting each attacking
+  party member choose which living enemy to hit. Random expedition/excursion
+  encounters have a chance to roll a pack instead of a single enemy, and two
+  hand-placed pack encounters were added to the Chapter 2 and Chapter 3 hub
+  nodes. The game's tuned boss/unique fights are excluded from packs (and
+  packs are never Elite), so their balance is untouched. Rewards, loot, and
+  kill-count credit are summed across every enemy defeated in a pack.
+
 ## [1.104.0+132]
 
 Critical hits, dodging, companion banter, and Elite enemy encounters.

@@ -574,6 +574,11 @@ final DbSchema enemiesSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
+        key: 'guile',
+        label: 'Guile (resists Perception telegraphing)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,

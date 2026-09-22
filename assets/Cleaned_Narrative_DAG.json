@@ -1238,6 +1238,12 @@
         "triggerEnemyId": "plague_hound"
       },
       {
+        "text": "Wade into a pair of harbor rats squabbling over spoiled cargo",
+        "text_fr": "Affronter une paire de rats des quais se disputant une cargaison avariée",
+        "next_id": "2015_rats",
+        "triggerEnemyIds": ["harbor_rat", "harbor_rat"]
+      },
+      {
         "text": "Hear out a dwarf holding the gate alone",
         "text_fr": "Écouter une naine tenant seule la porte",
         "next_id": "2015_kelda",
@@ -1345,6 +1351,23 @@
     "id": "2015_hound",
     "description": "The plague hound went down snarling, which seemed only fair given how it had spent its last moments trying to introduce me to whatever was rotting under its fur. A few nearby traders applauded with the restrained enthusiasm of people who had clearly been hoping someone else would deal with it first. I wiped off what I could and decided the rest was a problem for later — Vane, at least, wouldn't care what I smelled like, so long as I had something worth his while.",
     "description_fr": "Le chien pestiféré s'effondra en grognant, ce qui me parut juste étant donné qu'il avait passé ses derniers instants à tenter de me présenter à ce qui pourrissait sous sa fourrure. Quelques marchands proches applaudirent avec l'enthousiasme mesuré de gens qui avaient manifestement espéré que quelqu'un d'autre s'en chargerait en premier. J'essuyai ce que je pus et décidai que le reste attendrait — Vane, au moins, se moquerait de mon odeur, tant que j'aurais quelque chose qui vaille la peine.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Go find Vane",
+        "text_fr": "Aller trouver Vane",
+        "next_id": "2030"
+      }
+    ]
+  },
+  "2015_rats": {
+    "id": "2015_rats",
+    "description": "Two harbor rats, considerably larger and considerably more committed to violence than their name suggested, had staked a claim on a crate of spoiled fish and were unwilling to discuss the matter further. I settled it the way most disagreements on this wharf eventually got settled, and left both of them a good deal less interested in cargo disputes than they'd been a minute earlier. The crate, for what it was worth, remained thoroughly spoiled.",
+    "description_fr": "Deux rats des quais, sensiblement plus gros et bien plus enclins à la violence que leur nom ne le laissait supposer, avaient revendiqué une caisse de poisson avarié et refusaient d'en discuter davantage. Je réglai l'affaire comme se réglaient la plupart des différends sur ce quai, et laissai les deux bien moins intéressés par les litiges de cargaison qu'une minute plus tôt. La caisse, quant à elle, resta pleinement avariée.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "action",
@@ -1726,6 +1749,12 @@
         "triggerEnemyId": "iron_golem"
       },
       {
+        "text": "Face down two Inquisition auxiliaries sifting the ash for anything worth reporting",
+        "text_fr": "Affronter deux auxiliaires de l'Inquisition fouillant les cendres pour tout ce qui vaut d'être signalé",
+        "next_id": "3005_auxiliaries",
+        "triggerEnemyIds": ["inquisition_auxiliary", "inquisition_auxiliary"]
+      },
+      {
         "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
         "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
         "next_id": "3005_maren",
@@ -1835,6 +1864,23 @@
     "id": "3005_wisp",
     "description": "The wisp drifted like something that had never once considered itself in danger, right up until the moment it very much was. Small things that wrong, I've learned, are rarely as harmless as their size suggests, and this one left a smear of something cold and faintly luminous behind when it finally stopped drifting altogether. I wiped my blade twice before I trusted it was actually clean, and turned back toward the archives.",
     "description_fr": "L'esprit voletait comme une chose qui ne s'était jamais crue en danger, jusqu'à l'instant où elle le fut très nettement. Les petites choses aussi mauvaises que celle-ci, je l'ai appris, sont rarement aussi inoffensives que leur taille le laisse croire, et celle-ci laissa derrière elle une traînée froide et faiblement luminescente quand elle cessa enfin tout à fait de voleter. J'essuyai ma lame deux fois avant de la croire vraiment propre, et me retournai vers les archives.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head for the Hall of Records",
+        "text_fr": "Se diriger vers la Salle des Archives",
+        "next_id": "3020"
+      }
+    ]
+  },
+  "3005_auxiliaries": {
+    "id": "3005_auxiliaries",
+    "description": "The two auxiliaries had the particular nervous thoroughness of soldiers left behind to catalogue a warzone and trying very hard to look like it mattered. It stopped mattering to either of them fairly quickly. I left their reports, such as they were, considerably less complete than the Inquisition would have liked, and turned back toward the archives.",
+    "description_fr": "Les deux auxiliaires avaient cette application nerveuse particulière des soldats laissés pour cataloguer une zone de guerre et s'efforçant fort de donner l'impression que cela comptait. Cela cessa assez vite de compter pour l'un comme pour l'autre. Je laissai leurs rapports, tels qu'ils étaient, sensiblement moins complets que ce que l'Inquisition aurait souhaité, et me retournai vers les archives.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "action",

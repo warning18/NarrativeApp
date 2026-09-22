@@ -279,14 +279,23 @@ Future<AutoplayResult> autoplayToNode(
       continue;
     }
 
+    // Autoplay only ever resolves the first enemy of a multi-enemy pack
+    // choice -- it's a dev "jump ahead in the story" tool, not a
+    // balance-accurate pack simulator (see FightScreen for the real
+    // multi-enemy resolution). This keeps every existing single-enemy
+    // choice (the overwhelming majority) completely unaffected.
+    final firstEnemyId = choice.allTriggerEnemyIds.isEmpty
+        ? null
+        : choice.allTriggerEnemyIds.first;
+
     if (choice.triggersCombat) {
-      final enemy = enemies[choice.triggerEnemyId] as Map<String, dynamic>?;
+      final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
         var won = false;
         for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
           won = await _simulateFight(
             ref: ref,
-            enemyId: choice.triggerEnemyId,
+            enemyId: firstEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,
@@ -298,8 +307,7 @@ Future<AutoplayResult> autoplayToNode(
           return AutoplayResult(
             status: AutoplayStatus.stuckInCombat,
             stepsApplied: stepsApplied,
-            stuckEnemyName:
-                enemy['enemyName']?.toString() ?? choice.triggerEnemyId,
+            stuckEnemyName: enemy['enemyName']?.toString() ?? firstEnemyId,
           );
         }
       }
@@ -318,7 +326,7 @@ Future<AutoplayResult> autoplayToNode(
       await sessionNotifier.unlockContent(
         shopId: choice.unlockShopId,
         questId: choice.unlockQuestId,
-        enemyId: choice.triggerEnemyId,
+        enemyId: firstEnemyId,
         shopUnlockNodeId: fromNodeId,
       );
       if ((choice.unlockShopId ?? '').isNotEmpty) {
@@ -455,14 +463,20 @@ Future<AutoplayResult> autoplayToChapter(
       continue;
     }
 
+    // See the matching comment in autoplayToNode -- autoplay only ever
+    // resolves the first enemy of a multi-enemy pack choice.
+    final firstEnemyId = choice.allTriggerEnemyIds.isEmpty
+        ? null
+        : choice.allTriggerEnemyIds.first;
+
     if (choice.triggersCombat) {
-      final enemy = enemies[choice.triggerEnemyId] as Map<String, dynamic>?;
+      final enemy = enemies[firstEnemyId] as Map<String, dynamic>?;
       if (enemy != null) {
         var won = false;
         for (var attempt = 0; attempt < maxCombatRetries && !won; attempt++) {
           won = await _simulateFight(
             ref: ref,
-            enemyId: choice.triggerEnemyId,
+            enemyId: firstEnemyId,
             enemy: enemy,
             dice: dice,
             skills: skills,
@@ -474,8 +488,7 @@ Future<AutoplayResult> autoplayToChapter(
           return AutoplayResult(
             status: AutoplayStatus.stuckInCombat,
             stepsApplied: stepsApplied,
-            stuckEnemyName:
-                enemy['enemyName']?.toString() ?? choice.triggerEnemyId,
+            stuckEnemyName: enemy['enemyName']?.toString() ?? firstEnemyId,
           );
         }
       }
@@ -494,7 +507,7 @@ Future<AutoplayResult> autoplayToChapter(
       await sessionNotifier.unlockContent(
         shopId: choice.unlockShopId,
         questId: choice.unlockQuestId,
-        enemyId: choice.triggerEnemyId,
+        enemyId: firstEnemyId,
         shopUnlockNodeId: currentNodeId,
       );
       if ((choice.unlockShopId ?? '').isNotEmpty) {

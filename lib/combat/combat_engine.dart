@@ -244,6 +244,7 @@ class EnemyMoveResult {
     required this.message,
     this.inflictedStatus,
     this.element = 'None',
+    this.healAmount = 0,
   });
 
   final int damage;
@@ -259,6 +260,11 @@ class EnemyMoveResult {
   /// apply the target's matching `<prefix>Resist` gear bonus the same way
   /// it already applies armor/block.
   final String element;
+
+  /// The referenced skill's own `healAmount` field (self-heal), if any —
+  /// read here purely so a telegraph preview (see [categoryFor]) can tell
+  /// a self-heal move apart from a plain attack.
+  final int healAmount;
 }
 
 EnemyMoveResult resolveEnemyMove({
@@ -327,6 +333,7 @@ EnemyMoveResult resolveEnemyMove({
             '$enemyName ${t('attacks_suffix')}',
         inflictedStatus: _inflictedStatusFrom(skill),
         element: skill['element']?.toString() ?? 'None',
+        healAmount: (skill['healAmount'] as num?)?.toInt() ?? 0,
       );
     }
     break;
@@ -335,6 +342,72 @@ EnemyMoveResult resolveEnemyMove({
   return EnemyMoveResult(
       damage: applyWeaken(baseDamage, activeEffects),
       message: '$enemyName ${t('attacks_suffix')}');
+}
+
+/// Enemies excluded from both the Elite-promotion roll (see
+/// `fight_screen.dart`'s `_eliteChance`) and any multi-enemy pack draw (see
+/// `SubNodeEngine`'s pack rolling) — the game's tuned "wall" bosses
+/// (`inquisition_high_warden`, `hollow_court_zealot`, `void_manifestation`,
+/// all three regression-tested by `test/boss_balance_test.dart`) plus the
+/// two other individually-tuned uniques (`kroll_the_branded`,
+/// `void_stalker`). These fights stay exactly as tuned -- solo, never
+/// reskinned, never diluted into a pack -- so their win-rate bands hold.
+const Set<String> soloOnlyEnemyIds = {
+  'inquisition_high_warden',
+  'hollow_court_zealot',
+  'void_manifestation',
+  'kroll_the_branded',
+  'void_stalker',
+};
+
+/// How much detail the party can currently see into an enemy's telegraphed
+/// next move -- a hard threshold on `effectivePerception`, not a percentage
+/// chance like [criticalChanceFor]/[dodgeChanceFor]: whether a telegraph is
+/// visible is always yes/no, never a coinflip.
+enum TelegraphTier {
+  /// effectivePerception < 1 -- no telegraph UI at all for this enemy.
+  none,
+
+  /// 1-4 -- WHO the enemy will target, nothing else.
+  target,
+
+  /// 5-9 -- WHO, plus a broad category of the incoming move (see
+  /// [MoveCategory]) -- an icon-level hint, not the exact skill or element.
+  category,
+
+  /// >=10 -- WHO, the move's real flavor/name, its element, and roughly
+  /// what it does.
+  full,
+}
+
+/// The detail tier the party can currently read one enemy's telegraphed
+/// next move at, from [perception] (the highest Perception among currently
+/// conscious party members -- see `FightScreen`'s `_bestPartyPerception`)
+/// and that enemy's own [guile]. `effectivePerception = max(0, perception -
+/// guile)`, bucketed into [TelegraphTier]. Pure and RNG-free -- every enemy
+/// in a pack can sit at a different tier at once, since each has its own
+/// Guile.
+TelegraphTier telegraphTierFor(int perception, int guile) {
+  final effectivePerception = max(0, perception - guile);
+  if (effectivePerception < 1) return TelegraphTier.none;
+  if (effectivePerception < 5) return TelegraphTier.target;
+  if (effectivePerception < 10) return TelegraphTier.category;
+  return TelegraphTier.full;
+}
+
+/// Broad category an enemy's move falls into, for a [TelegraphTier.category]
+/// preview -- coarser than the move's real effect, matching what a
+/// mid-Perception read can actually tell. A status-inflicting move always
+/// reads as [statusDebuff], even if it also deals damage (the debuff is the
+/// scarier, more decision-relevant half of "roughly what it does");
+/// otherwise a positive [EnemyMoveResult.healAmount] with no damage reads
+/// as [healSelf]; everything else is a plain [attack].
+enum MoveCategory { attack, healSelf, statusDebuff }
+
+MoveCategory categoryFor(EnemyMoveResult move) {
+  if (move.inflictedStatus != null) return MoveCategory.statusDebuff;
+  if (move.healAmount > 0 && move.damage <= 0) return MoveCategory.healSelf;
+  return MoveCategory.attack;
 }
 
 /// Skill tiers run 0 (just unlocked, base numbers) through [maxSkillTier]

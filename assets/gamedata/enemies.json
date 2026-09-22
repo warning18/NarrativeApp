@@ -3,6 +3,7 @@
     "enemyName": "slum_thug",
     "maxHealth": 56,
     "damage": 9,
+    "guile": 0,
     "xpReward": 15,
     "goldReward": 10,
     "lootTable": [
@@ -41,6 +42,7 @@
     "enemyName": "Inquisition Warden",
     "maxHealth": 111,
     "damage": 17,
+    "guile": 2,
     "xpReward": 45,
     "goldReward": 30,
     "lootTable": [
@@ -72,6 +74,7 @@
     "enemyName": "Rat Matriarch",
     "maxHealth": 195,
     "damage": 24,
+    "guile": 4,
     "xpReward": 80,
     "goldReward": 50,
     "lootTable": [
@@ -87,6 +90,7 @@
     "enemyName": "Harbor Rat",
     "maxHealth": 62,
     "damage": 9,
+    "guile": 1,
     "xpReward": 19,
     "goldReward": 12,
     "lootTable": [
@@ -102,6 +106,7 @@
     "enemyName": "Street Bandit",
     "maxHealth": 78,
     "damage": 10,
+    "guile": 1,
     "xpReward": 28,
     "goldReward": 19,
     "lootTable": [
@@ -121,6 +126,7 @@
     "enemyName": "Cultist Acolyte",
     "maxHealth": 81,
     "damage": 10,
+    "guile": 2,
     "xpReward": 37,
     "goldReward": 26,
     "lootTable": [
@@ -148,6 +154,7 @@
     "enemyName": "Inquisition Soldier",
     "maxHealth": 150,
     "damage": 18,
+    "guile": 3,
     "xpReward": 46,
     "goldReward": 33,
     "lootTable": [
@@ -167,6 +174,7 @@
     "enemyName": "Void Wisp",
     "maxHealth": 121,
     "damage": 14,
+    "guile": 5,
     "xpReward": 55,
     "goldReward": 40,
     "lootTable": [
@@ -194,6 +202,7 @@
     "enemyName": "Smuggler Captain",
     "maxHealth": 210,
     "damage": 24,
+    "guile": 4,
     "xpReward": 64,
     "goldReward": 47,
     "lootTable": [
@@ -225,6 +234,7 @@
     "enemyName": "Plague Hound",
     "maxHealth": 205,
     "damage": 24,
+    "guile": 4,
     "xpReward": 73,
     "goldReward": 54,
     "lootTable": [
@@ -256,6 +266,7 @@
     "enemyName": "Iron Golem",
     "maxHealth": 180,
     "damage": 21,
+    "guile": 5,
     "xpReward": 82,
     "goldReward": 61,
     "lootTable": [
@@ -291,6 +302,7 @@
     "enemyName": "Void Stalker",
     "maxHealth": 200,
     "damage": 23,
+    "guile": 9,
     "xpReward": 91,
     "goldReward": 68,
     "lootTable": [
@@ -344,6 +356,7 @@
     "enemyName": "Inquisition High Warden",
     "maxHealth": 165,
     "damage": 19,
+    "guile": 11,
     "xpReward": 100,
     "goldReward": 75,
     "lootTable": [
@@ -386,6 +399,7 @@
     "enemyName": "Inquisitor Kroll",
     "maxHealth": 145,
     "damage": 19,
+    "guile": 8,
     "xpReward": 70,
     "goldReward": 55,
     "lootTable": [
@@ -432,6 +446,7 @@
     "enemyName": "Hollow Court Zealot",
     "maxHealth": 142,
     "damage": 16,
+    "guile": 12,
     "xpReward": 109,
     "goldReward": 82,
     "lootTable": [
@@ -463,6 +478,7 @@
     "enemyName": "Void Manifestation",
     "maxHealth": 154,
     "damage": 18,
+    "guile": 12,
     "xpReward": 118,
     "goldReward": 89,
     "lootTable": [
@@ -516,6 +532,7 @@
     "enemyName": "Overseer Renn",
     "maxHealth": 139,
     "damage": 17,
+    "guile": 3,
     "xpReward": 40,
     "goldReward": 28,
     "lootTable": [
@@ -551,6 +568,7 @@
     "enemyName": "Inquisition Auxiliary",
     "maxHealth": 105,
     "damage": 13,
+    "guile": 3,
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [

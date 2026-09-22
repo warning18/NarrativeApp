@@ -17,6 +17,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/level_up_dialog.dart';
 import 'death_screen.dart';
@@ -27,9 +28,11 @@ const int _potionHealAmount = 30;
 /// max health after a won fight — see [_FightScreenState._finishFight].
 const double _reviveHealthFraction = 0.3;
 
-/// Odds any given fight against an enemy not in
-/// [_eliteIneligibleEnemyIds] is promoted to an Elite encounter — see
-/// [_FightScreenState._isElite].
+/// Odds a solo fight against an enemy not in [soloOnlyEnemyIds] is promoted
+/// to an Elite encounter — see [_FightScreenState._isElite]. Never rolled
+/// for a multi-enemy pack (see [_FightScreenState._ensureEnemiesBuilt]) —
+/// Elite and packs are two separate variance mechanics, deliberately never
+/// combined.
 const double _eliteChance = 0.12;
 
 /// An Elite's health/damage are both multiplied by this on top of the
@@ -42,20 +45,6 @@ const double _eliteStatMultiplier = 1.35;
 /// "worth the extra risk" payoff, alongside the guaranteed trophy drop
 /// (see [_FightScreenState._finishFight]).
 const double _eliteRewardMultiplier = 1.5;
-
-/// Enemies already distinctive/tuned as their own set-piece -- the three
-/// regression-tested "wall" bosses (see boss_balance_test.dart) plus
-/// kroll_the_branded and void_stalker, both individually rebalanced this
-/// session -- never roll Elite. Elite exists to keep the *generic* trash
-/// pool from feeling flat on repeat encounters, not to reskin a boss fight
-/// that's already a deliberately tuned challenge.
-const Set<String> _eliteIneligibleEnemyIds = {
-  'inquisition_high_warden',
-  'hollow_court_zealot',
-  'void_manifestation',
-  'kroll_the_branded',
-  'void_stalker',
-};
 
 /// Odds a still-active, non-acting ally reacts with a short banter line
 /// (see companions.json's `critLine`/`dodgeLine` fields) when a crit or a
@@ -227,6 +216,7 @@ class _PartyMember {
     this.intelligence = 0,
     this.wisdom = 0,
     this.luck = 0,
+    this.perception = 0,
   });
 
   final String id;
@@ -257,6 +247,11 @@ class _PartyMember {
   /// above, since it isn't gear-driven either.
   final int luck;
 
+  /// Feeds [telegraphTierFor] via [_FightScreenState._bestPartyPerception]
+  /// -- the whole party reads an enemy's telegraphed next move off
+  /// whoever's Perception is currently highest, not the player's alone.
+  final int perception;
+
   /// skillId -> tier — only the player has these (see
   /// [PlayerSession.skillTiers]); allies leave this empty, so their skills
   /// always resolve at base numbers.
@@ -272,18 +267,132 @@ class _PartyMember {
   int block = 0;
 
   /// Poison/Stun/Weaken currently afflicting this member — see
-  /// status_effect.dart. Applied by the enemy's moves, ticked down once per
+  /// status_effect.dart. Applied by an enemy's moves, ticked down once per
   /// round in [_FightScreenState._startPartyRound].
   List<StatusEffect> statusEffects = [];
 
   bool get isKnockedOut => currentHealth <= 0;
 }
 
+/// One enemy's move+target for its NEXT turn, pre-rolled and cached ahead
+/// of time so a telegraph preview can show the party exactly what's coming
+/// -- see [_FightScreenState._preRollMoveFor]. [_FightScreenState._takeEnemyTurn]
+/// applies this same cached result rather than re-rolling either half; only
+/// [targetId] ever gets a live fallback re-pick, if the cached target was
+/// knocked out in the meantime.
+class _PendingEnemyMove {
+  const _PendingEnemyMove({required this.move, required this.targetId});
+
+  final EnemyMoveResult move;
+
+  /// The [_PartyMember.id] this move is aimed at.
+  final String targetId;
+}
+
+/// One enemy on the opposing side of a fight — the pack-fight counterpart to
+/// [_PartyMember]. A solo fight is simply a pack of one; every fight this
+/// screen ran before multi-enemy packs existed is `_enemies.length == 1`,
+/// behaviorally unchanged.
+class _EnemyMember {
+  _EnemyMember({
+    required this.key,
+    required this.enemyId,
+    required this.displayName,
+    required this.data,
+    required this.maxHealth,
+    required this.damage,
+    required this.guile,
+    required this.hasReactiveMoves,
+    required this.currentHealth,
+  });
+
+  /// Fight-scoped unique id (e.g. `enemy_0`, `enemy_1`) -- NOT [enemyId],
+  /// since a pack may contain two of the same enemy. Used to key
+  /// [_FightScreenState._selectedTargets] and this fight's health bars.
+  final String key;
+
+  /// The raw gamedata id (e.g. `harbor_rat`) -- may repeat across pack
+  /// members. Used for reward/loot summing and unlock-tracking on a win.
+  final String enemyId;
+
+  /// This enemy's display name -- Elite-prefixed for a solo Elite
+  /// encounter, and disambiguated with a " #2"/" #3" suffix when a pack
+  /// has more than one enemy sharing the same base name.
+  final String displayName;
+
+  /// This enemy's own gamedata record (Elite-name-adjusted for a solo
+  /// Elite) — everywhere this screen used to read `widget.enemy`/
+  /// `_enemyData` directly, per-enemy code now reads this instead. Base
+  /// numeric fields (`maxHealth`/`damage`/`goldReward`/`xpReward`/
+  /// `lootTable`/`guile`) are read straight from here since Elite only
+  /// changes the display name, never these.
+  final Map<String, dynamic> data;
+
+  final int maxHealth;
+
+  /// Player-level-scaled (and Elite-multiplied for a solo Elite) damage.
+  final int damage;
+
+  /// This enemy's own Guile (see db_schema.dart's enemiesSchema) — read
+  /// once at fight start, never changes mid-fight.
+  final int guile;
+
+  /// True if this enemy's own skillMoves include an `OnHitByElement`
+  /// condition — such an enemy is never pre-rolled (see
+  /// [_FightScreenState._preRollMoveFor]'s doc comment) and so never
+  /// telegraphs; it live-rolls its move exactly as every enemy did before
+  /// telegraphing existed.
+  final bool hasReactiveMoves;
+
+  int currentHealth;
+
+  /// Poison/Stun/Weaken currently afflicting THIS enemy.
+  List<StatusEffect> statusEffects = [];
+
+  /// Elements the party hit THIS enemy with in the round that just
+  /// resolved — per-enemy (a sibling enemy being hit with Fire shouldn't
+  /// make this one react to Fire too), reset fresh at the top of every
+  /// [_FightScreenState._confirmRoll].
+  Set<String> elementsHitThisRound = {};
+
+  /// This enemy's move+target for its NEXT turn, pre-rolled and cached --
+  /// see [_FightScreenState._preRollMoveFor]. Null for a
+  /// [hasReactiveMoves] enemy (never pre-rolled) or before the first
+  /// pre-roll has run.
+  _PendingEnemyMove? pendingMove;
+
+  bool get isAlive => currentHealth > 0;
+}
+
 class FightScreen extends ConsumerStatefulWidget {
-  const FightScreen({super.key, required this.enemyId, required this.enemy});
+  const FightScreen({
+    super.key,
+    required this.enemyId,
+    required this.enemy,
+    this.additionalEnemyIds = const [],
+    this.additionalEnemies = const {},
+  });
 
   final String enemyId;
   final Map<String, dynamic> enemy;
+
+  /// Extra enemy ids alongside [enemyId] for a 2-3-enemy pack fight — empty
+  /// for a solo fight (every call site from before packs existed), which
+  /// leaves this screen's behavior completely unaffected.
+  final List<String> additionalEnemyIds;
+
+  /// [additionalEnemyIds]' own gamedata records, keyed by id — parallels
+  /// how [enemy] is [enemyId]'s own record.
+  final Map<String, Map<String, dynamic>> additionalEnemies;
+
+  /// Every enemy in this fight as (id, data) pairs, [enemyId]/[enemy] first
+  /// followed by [additionalEnemyIds] in order — the one place that
+  /// resolves "which enemies" for the whole screen.
+  List<MapEntry<String, Map<String, dynamic>>> get _allEnemyEntries => [
+        MapEntry(enemyId, enemy),
+        for (final id in additionalEnemyIds)
+          MapEntry(id, additionalEnemies[id] ?? const {}),
+      ];
 
   @override
   ConsumerState<FightScreen> createState() => _FightScreenState();
@@ -299,42 +408,40 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _won = false;
 
   late int _playerLevel;
-  late int _enemyMaxHealth;
-  late int _enemyHealth;
-  late int _enemyDamage;
   int _lastDamageTaken = 0;
 
-  /// True for a fight promoted to an Elite encounter (see [_eliteChance]) --
-  /// rolled once in [initState] and fixed for the rest of the fight.
+  /// True only for a solo fight promoted to Elite — rolled once in
+  /// [_ensureEnemiesBuilt] and fixed for the rest of the fight. Always
+  /// false for a multi-enemy pack (Elite and packs are never combined).
   bool _isElite = false;
 
-  /// [FightScreen.enemy], with its `enemyName` prefixed for an Elite
-  /// encounter — read everywhere this screen previously read
-  /// `widget.enemy` directly, so the Elite name (and anything built from
-  /// it, like [resolveEnemyMove]'s own generated move messages) shows up
-  /// consistently without threading a separate "is this elite" flag
-  /// through every call site.
-  late final Map<String, dynamic> _enemyData;
+  /// Every enemy in this fight — a solo fight is `_enemies.length == 1`.
+  /// Built once in [_ensureEnemiesBuilt], mutated in place for the rest of
+  /// the fight (mirrors how [_party] already worked).
+  List<_EnemyMember> _enemies = [];
 
   /// The loaded companions.json table, kept for [_rollBanter]'s
   /// crit/dodge reaction-line lookup -- set once in [_ensurePartyBuilt],
   /// alongside the party itself.
   Map<String, dynamic> _companions = const {};
 
-  /// Poison/Stun/Weaken currently afflicting the enemy — see
-  /// status_effect.dart. Ticked down once per round in [_takeEnemyTurn].
-  List<StatusEffect> _enemyStatusEffects = [];
-
-  /// Elements the party actually hit the enemy with in the round that just
-  /// resolved (set fresh each [_confirmRoll], not accumulated across
-  /// rounds) — feeds a move's `OnHitByElement` condition in
-  /// [_takeEnemyTurn].
-  Set<String> _elementsHitThisRound = {};
-
-  /// Which party member most recently took damage from the enemy, so the
+  /// Which party member most recently took damage from an enemy, so the
   /// floating "-N" indicator lands on the right health bar. Null until the
   /// first hit lands.
   String? _lastDamagedMemberId;
+
+  /// The mirror of [_lastDamagedMemberId]/[_lastDamageTaken] for the enemy
+  /// side — which enemy (by [_EnemyMember.key]) most recently took damage
+  /// from the party, and how much, so its own floating "-N" indicator lands
+  /// on the right health bar.
+  String? _lastDamagedEnemyKey;
+  int _lastEnemyDamageTaken = 0;
+
+  /// actorId -> target [_EnemyMember.key], this round's picks — only
+  /// meaningful once `_enemies.length > 1`; a solo fight never populates
+  /// this (every Attack/Skill face implicitly targets the only enemy).
+  /// Cleared each [_confirmRoll], same lifecycle as [_currentFaces].
+  final Map<String, String> _selectedTargets = {};
 
   String? _selectedDiceId;
   bool _rolling = false;
@@ -366,26 +473,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
-    _isElite = !_eliteIneligibleEnemyIds.contains(widget.enemyId) &&
-        _random.nextDouble() < _eliteChance;
-    _enemyData = _isElite
-        ? {
-            ...widget.enemy,
-            'enemyName':
-                '${trFor(ref.read(appLanguageProvider), 'elite_prefix')} '
-                    '${widget.enemy['enemyName']}',
-          }
-        : widget.enemy;
-    _enemyMaxHealth = scaledMaxHealth(
-        (widget.enemy['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
-    _enemyHealth = _enemyMaxHealth;
-    _enemyDamage = scaledDamage(
-        (widget.enemy['damage'] as num?)?.toInt() ?? 0, _playerLevel);
-    if (_isElite) {
-      _enemyMaxHealth = (_enemyMaxHealth * _eliteStatMultiplier).round();
-      _enemyHealth = _enemyMaxHealth;
-      _enemyDamage = (_enemyDamage * _eliteStatMultiplier).round();
-    }
+    _ensureEnemiesBuilt();
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
     _shakeController = AnimationController(
@@ -410,6 +498,85 @@ class _FightScreenState extends ConsumerState<FightScreen>
   void _triggerShake() {
     if (!ref.read(trembleEnabledProvider)) return;
     _shakeController.forward(from: 0);
+  }
+
+  /// Builds [_enemies] — a solo fight rolls Elite (see [_eliteChance]); a
+  /// pack (`widget.additionalEnemyIds` non-empty) never does. A pack member
+  /// sharing a base name with another gets a " #2"/" #3" suffix on its own
+  /// [_EnemyMember.displayName] so the two are distinguishable in the UI;
+  /// a solo fight or an all-distinct pack never shows one.
+  void _ensureEnemiesBuilt() {
+    final entries = widget._allEnemyEntries;
+    final lang = ref.read(appLanguageProvider);
+    _isElite = entries.length == 1 &&
+        !soloOnlyEnemyIds.contains(entries.first.key) &&
+        _random.nextDouble() < _eliteChance;
+
+    final baseNames = [
+      for (final entry in entries)
+        entry.value['enemyName']?.toString() ?? entry.key,
+    ];
+    final totalCounts = <String, int>{};
+    for (final name in baseNames) {
+      totalCounts[name] = (totalCounts[name] ?? 0) + 1;
+    }
+    final seenSoFar = <String, int>{};
+
+    _enemies = [
+      for (var i = 0; i < entries.length; i++)
+        _buildEnemyMember(
+          index: i,
+          id: entries[i].key,
+          raw: entries[i].value,
+          baseName: baseNames[i],
+          isDuplicateName: (totalCounts[baseNames[i]] ?? 1) > 1,
+          seenSoFar: seenSoFar,
+          lang: lang,
+        ),
+    ];
+  }
+
+  _EnemyMember _buildEnemyMember({
+    required int index,
+    required String id,
+    required Map<String, dynamic> raw,
+    required String baseName,
+    required bool isDuplicateName,
+    required Map<String, int> seenSoFar,
+    required AppLanguage lang,
+  }) {
+    final elitePrefixedName =
+        _isElite ? '${trFor(lang, 'elite_prefix')} $baseName' : baseName;
+    final data = _isElite ? {...raw, 'enemyName': elitePrefixedName} : raw;
+    String displayName;
+    if (isDuplicateName) {
+      seenSoFar[baseName] = (seenSoFar[baseName] ?? 0) + 1;
+      displayName = '$elitePrefixedName #${seenSoFar[baseName]}';
+    } else {
+      displayName = elitePrefixedName;
+    }
+    var maxHealth =
+        scaledMaxHealth((raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
+    var damage =
+        scaledDamage((raw['damage'] as num?)?.toInt() ?? 0, _playerLevel);
+    if (_isElite) {
+      maxHealth = (maxHealth * _eliteStatMultiplier).round();
+      damage = (damage * _eliteStatMultiplier).round();
+    }
+    final moves =
+        (raw['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+    return _EnemyMember(
+      key: 'enemy_$index',
+      enemyId: id,
+      displayName: displayName,
+      data: data,
+      maxHealth: maxHealth,
+      damage: damage,
+      guile: (raw['guile'] as num?)?.toInt() ?? 0,
+      hasReactiveMoves:
+          moves.any((m) => m['condition']?.toString() == 'OnHitByElement'),
+      currentHealth: maxHealth,
+    );
   }
 
   /// Builds [_party] (the player plus every currently-active ally) once
@@ -454,6 +621,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       intelligence: session.intelligence,
       wisdom: session.wisdom,
       luck: session.luck,
+      perception: session.perception,
     );
 
     final activeAllies = <_PartyMember>[];
@@ -494,6 +662,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         intelligence: base.intelligence,
         wisdom: base.wisdom,
         luck: base.luck,
+        perception: base.perception,
       ));
     }
 
@@ -506,6 +675,63 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// active) sees the exact same unprefixed log this screen always had.
   String _actorPrefix(_PartyMember actor) =>
       _party.length > 1 ? '${actor.displayName}: ' : '';
+
+  /// The highest Perception among currently-conscious party members — feeds
+  /// [telegraphTierFor] for every enemy's telegraph badge. A
+  /// Perception-built ally can carry the party's tactical read even if the
+  /// player's own Perception is low.
+  int _bestPartyPerception() {
+    var best = 0;
+    for (final member in _party) {
+      if (member.isKnockedOut) continue;
+      if (member.perception > best) best = member.perception;
+    }
+    return best;
+  }
+
+  _PartyMember? _memberById(String id) {
+    for (final member in _party) {
+      if (member.id == id) return member;
+    }
+    return null;
+  }
+
+  _EnemyMember? _enemyByKey(String key) {
+    for (final enemy in _enemies) {
+      if (enemy.key == key) return enemy;
+    }
+    return null;
+  }
+
+  _EnemyMember? _firstLivingEnemy() {
+    for (final enemy in _enemies) {
+      if (enemy.isAlive) return enemy;
+    }
+    return null;
+  }
+
+  /// A single display string naming every enemy in this fight — the
+  /// enemy's own name for a solo fight (unchanged from before packs
+  /// existed), or every distinct name in the pack joined together, each
+  /// prefixed with a "Nx " count when it appears more than once (e.g. "2x
+  /// Harbor Rat, Dock Overseer").
+  String _battleTitle() {
+    if (_enemies.length == 1) {
+      return _enemies.first.data['enemyName']?.toString() ??
+          _enemies.first.enemyId;
+    }
+    final counts = <String, int>{};
+    final order = <String>[];
+    for (final enemy in _enemies) {
+      final name = enemy.data['enemyName']?.toString() ?? enemy.enemyId;
+      if (!counts.containsKey(name)) order.add(name);
+      counts[name] = (counts[name] ?? 0) + 1;
+    }
+    return order
+        .map(
+            (name) => (counts[name] ?? 1) > 1 ? '${counts[name]}x $name' : name)
+        .join(', ');
+  }
 
   /// Rolls [_banterChance] for a random active, still-conscious ally
   /// (other than [excludeId], so nobody reacts to their own crit or dodge)
@@ -533,14 +759,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
     return _LogEntry('${speaker.displayName}: "$line"', _LogKind.banter);
   }
 
-  void _startFight() {
+  void _startFight(Map<String, dynamic> skills) {
     final lang = ref.read(appLanguageProvider);
+    for (final enemy in _enemies) {
+      _preRollMoveFor(enemy, skills);
+    }
+    final hpSuffix = _enemies.length == 1
+        ? ' ${trFor(lang, 'has_label')} ${_enemies.first.maxHealth} ${trFor(lang, 'hp_label')}'
+        : '';
     setState(() {
       _started = true;
       _log.add(
         _LogEntry(
-          '${trFor(lang, 'fight_begins_prefix')} ${_enemyData['enemyName']} '
-          '${trFor(lang, 'has_label')} $_enemyMaxHealth ${trFor(lang, 'hp_label')}.',
+          '${trFor(lang, 'fight_begins_prefix')} ${_battleTitle()}$hpSuffix.',
           _LogKind.info,
         ),
       );
@@ -627,21 +858,56 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
   }
 
+  /// True once every acting member currently showing an Attack/Skill face
+  /// has picked a target — always true for a solo fight (nothing to pick),
+  /// used to gate the Confirm button when `_enemies.length > 1` so a roll
+  /// can never resolve against an unset target.
+  bool get _allTargetsPicked {
+    if (_enemies.length <= 1) return true;
+    for (final actor in _actingParty) {
+      final face = _currentFaces[actor.id];
+      if (face == null) continue;
+      if ((face.type == 'Attack' || face.type == 'Skill') &&
+          !_selectedTargets.containsKey(actor.id)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// Locks in every acting member's currently-shown rolled face and applies
   /// all of their effects together, whether by tapping Confirm or the 3rd
-  /// roll forcing it — then, once the enemy still stands, hands the turn
-  /// straight to them (there's no more per-member turn order to advance
-  /// through).
+  /// roll forcing it — then, once at least one enemy still stands, hands
+  /// the turn straight to them (there's no more per-member turn order to
+  /// advance through).
   Future<void> _confirmRoll(
       Map<String, dynamic> skills, Map<String, dynamic> items) async {
     if (_currentFaces.isEmpty || _over) return;
     final lang = ref.read(appLanguageProvider);
 
-    var totalDamageToEnemy = 0;
-    var enemyEffects = _enemyStatusEffects;
+    // Safety-net backfill for the forced-3rd-roll path (no player input is
+    // possible there) -- picks the first living enemy so a roll can never
+    // silently miss for lack of a target.
+    if (_enemies.length > 1) {
+      for (final actor in _actingParty) {
+        final face = _currentFaces[actor.id];
+        if (face == null) continue;
+        if ((face.type == 'Attack' || face.type == 'Skill') &&
+            !_selectedTargets.containsKey(actor.id)) {
+          final fallback = _firstLivingEnemy() ?? _enemies.first;
+          _selectedTargets[actor.id] = fallback.key;
+        }
+      }
+    }
+
+    for (final enemy in _enemies) {
+      enemy.elementsHitThisRound = {};
+    }
+
     final newEntries = <_LogEntry>[];
-    final hitElements = <String>{};
     String? lastCritActorId;
+    String? lastDamagedEnemyKey;
+    var lastEnemyDamage = 0;
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
@@ -680,26 +946,45 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   ? _LogKind.playerBlock
                   : _LogKind.info;
 
-      totalDamageToEnemy += result.damageDealt;
       if (result.isCritical) lastCritActorId = actor.id;
-      if (element != 'None' && result.damageDealt > 0) hitElements.add(element);
       actor.currentHealth =
           min(actor.maxHealth, actor.currentHealth + result.healingDone);
       actor.block = result.blockAmount;
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
 
-      final inflicted = result.inflictedStatus;
-      if (inflicted != null) {
-        enemyEffects = applyStatusEffect(enemyEffects, inflicted);
-        newEntries.add(_LogEntry(
-          _statusInflictedMessage(
+      _EnemyMember? target;
+      if (face.type == 'Attack' || face.type == 'Skill') {
+        if (_enemies.length == 1) {
+          target = _enemies.first.isAlive ? _enemies.first : null;
+        } else {
+          final key = _selectedTargets[actor.id];
+          final picked = key == null ? null : _enemyByKey(key);
+          target = (picked != null && picked.isAlive) ? picked : null;
+        }
+      }
+
+      if (target != null) {
+        target.currentHealth =
+            max(0, target.currentHealth - result.damageDealt);
+        if (result.damageDealt > 0) {
+          lastDamagedEnemyKey = target.key;
+          lastEnemyDamage = result.damageDealt;
+        }
+        if (element != 'None' && result.damageDealt > 0) {
+          target.elementsHitThisRound.add(element);
+        }
+        final inflicted = result.inflictedStatus;
+        if (inflicted != null) {
+          target.statusEffects = applyStatusEffect(
+            target.statusEffects,
             inflicted,
-            _enemyData['enemyName']?.toString() ?? widget.enemyId,
-            lang,
-          ),
-          _LogKind.info,
-        ));
+          );
+          newEntries.add(_LogEntry(
+            _statusInflictedMessage(inflicted, target.displayName, lang),
+            _LogKind.info,
+          ));
+        }
       }
     }
 
@@ -712,16 +997,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _awaitingDecision = false;
       _rollCount = 0;
       _currentFaces.clear();
-      _enemyHealth = max(0, _enemyHealth - totalDamageToEnemy);
-      _enemyStatusEffects = enemyEffects;
-      _elementsHitThisRound = hitElements;
+      _selectedTargets.clear();
+      if (lastDamagedEnemyKey != null) {
+        _lastDamagedEnemyKey = lastDamagedEnemyKey;
+        _lastEnemyDamageTaken = lastEnemyDamage;
+      }
       _log.addAll(newEntries);
     });
 
     await Future.delayed(const Duration(milliseconds: 400));
     if (!mounted) return;
 
-    if (_enemyHealth <= 0) {
+    if (_enemies.every((e) => !e.isAlive)) {
       _finishFight(won: true);
       return;
     }
@@ -729,14 +1016,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _takeEnemyTurn(skills, items);
   }
 
-  /// Starts a fresh party round — called once the enemy's turn resolves
+  /// Starts a fresh party round — called once every enemy's turn resolves
   /// without ending the fight. This is also where every still-conscious
   /// party member's own status effects take hold for the round about to
   /// start: Poison ticks its damage, Stun determines who's excluded from
   /// [_actingParty], and (after those checks use the current durations)
   /// every effect's own duration counts down by one round. If that leaves
   /// nobody able to act at all, the round is skipped straight through to
-  /// the enemy's next turn rather than stalling on a roll nobody can make.
+  /// the enemies' next turn rather than stalling on a roll nobody can make.
   void _startPartyRound(
       Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
@@ -789,12 +1076,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _log.addAll(newEntries);
       _rollCount = 0;
       _currentFaces.clear();
+      _selectedTargets.clear();
       _awaitingDecision = false;
-      // A fresh round with nothing hit yet — otherwise a round skipped
-      // outright below (nobody able to act) would hand _takeEnemyTurn last
-      // round's stale hits, letting an OnHitByElement reaction fire again
-      // for an element nobody actually struck with this round.
-      _elementsHitThisRound = {};
+      // A fresh round with nothing hit yet on any enemy — otherwise a
+      // round skipped outright below (nobody able to act) would hand
+      // _takeEnemyTurn last round's stale hits, letting an
+      // OnHitByElement reaction fire again for an element nobody
+      // actually struck with this round.
+      for (final enemy in _enemies) {
+        enemy.elementsHitThisRound = {};
+      }
     });
 
     if (playerDied) {
@@ -807,127 +1098,191 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
   }
 
+  /// Pre-rolls and caches [enemy]'s move+target for its NEXT turn -- called
+  /// once per enemy at fight start (see [_startFight]), and again after
+  /// every enemy-turn-phase resolves (see [_takeEnemyTurn]), so the
+  /// upcoming party round can show a Perception/Guile-gated preview of
+  /// exactly what's coming. Deliberately skipped for a
+  /// [_EnemyMember.hasReactiveMoves] enemy: pre-rolling immediately after
+  /// its own turn would hand it the SAME elements-hit set that already
+  /// justified that turn's OnHitByElement reaction, risking a stale
+  /// double-fire on a hit that already fired -- rather than resolve that
+  /// ambiguity, that one enemy (iron_golem is the only current example)
+  /// simply isn't pre-rolled at all: it live-rolls at execution time
+  /// exactly as every enemy did before telegraphing existed, and shows no
+  /// telegraph.
+  void _preRollMoveFor(_EnemyMember enemy, Map<String, dynamic> skills) {
+    if (!enemy.isAlive || enemy.hasReactiveMoves) {
+      enemy.pendingMove = null;
+      return;
+    }
+    enemy.pendingMove = _rollMoveAndTargetFor(enemy, skills);
+  }
+
+  /// Rolls [enemy]'s move+target — shared by [_preRollMoveFor] (ahead of
+  /// time) and [_takeEnemyTurn] (live, for a [_EnemyMember.hasReactiveMoves]
+  /// enemy that's never pre-rolled). Reads [_EnemyMember.elementsHitThisRound]
+  /// as of the moment it's called, so calling it live at execution time
+  /// (rather than ahead of time) is exactly what every enemy did before
+  /// pre-rolling existed.
+  _PendingEnemyMove _rollMoveAndTargetFor(
+      _EnemyMember enemy, Map<String, dynamic> skills) {
+    final lang = ref.read(appLanguageProvider);
+    final move = resolveEnemyMove(
+      enemy: {...enemy.data, 'damage': enemy.damage},
+      skills: skills,
+      enemyCurrentHealth: enemy.currentHealth,
+      enemyMaxHealth: enemy.maxHealth,
+      random: _random,
+      language: lang,
+      activeEffects: enemy.statusEffects,
+      elementsHitThisRound: enemy.elementsHitThisRound,
+    );
+    final conscious = _party.where((m) => !m.isKnockedOut).toList();
+    final targetId = conscious[_random.nextInt(conscious.length)].id;
+    return _PendingEnemyMove(move: move, targetId: targetId);
+  }
+
+  /// Resolves every living enemy's turn once each, in [_enemies] order --
+  /// each independently poison-ticks, checks its own Stun, then applies its
+  /// own pre-rolled move (see [_preRollMoveFor]) against its own target,
+  /// exactly mirroring how a solo enemy's single turn always worked, just
+  /// looped once per pack member. An enemy with no cached
+  /// [_EnemyMember.pendingMove] (a [_EnemyMember.hasReactiveMoves] enemy)
+  /// rolls its move+target on the spot instead, exactly as every enemy did
+  /// before telegraphing existed. A cached target that's no longer valid
+  /// (knocked out since the roll, e.g. by an earlier enemy's turn this same
+  /// phase) gets a fresh target pick without touching the move itself -- a
+  /// pre-rolled move was already shown to the player as a promise, so only
+  /// who it lands on is renegotiated.
   void _takeEnemyTurn(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
 
-    final enemyPoison = poisonDamageFor(_enemyStatusEffects);
-    if (enemyPoison > 0) {
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive) continue;
+
+      final poison = poisonDamageFor(enemy.statusEffects);
+      if (poison > 0) {
+        setState(() {
+          enemy.currentHealth = max(0, enemy.currentHealth - poison);
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} '
+            '$poison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
+            _LogKind.playerDamage,
+          ));
+        });
+        if (!enemy.isAlive) continue;
+      }
+
+      if (isStunned(enemy.statusEffects)) {
+        setState(() {
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
+            _LogKind.info,
+          ));
+          enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
+        });
+        continue;
+      }
+
+      final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
+      final move = pending.move;
+
+      final _PartyMember target;
+      final cachedTarget = _memberById(pending.targetId);
+      if (cachedTarget != null && !cachedTarget.isKnockedOut) {
+        target = cachedTarget;
+      } else {
+        final conscious = _party.where((m) => !m.isKnockedOut).toList();
+        target = conscious[_random.nextInt(conscious.length)];
+      }
+
+      final targetScalingBonus = equipmentScalingBonusFor(
+        target.equippedItemIds,
+        items,
+        strength: target.strength,
+        dexterity: target.dexterity,
+        constitution: target.constitution,
+        intelligence: target.intelligence,
+      );
+      final totalArmor = target.armor +
+          equipmentBonusFor(target.equippedItemIds, items, 'armor') +
+          targetScalingBonus.armorBonus;
+      final elementalResist =
+          _elementalResist(move.element, target.equippedItemIds, items);
+      // A dodge evades the hit outright -- no damage, no status effect --
+      // rather than just softening it further on top of block/armor/resist.
+      final wasDodged =
+          _random.nextDouble() * 100 < dodgeChanceFor(target.dexterity);
+      final damageTaken = wasDodged
+          ? 0
+          : max(0, move.damage - target.block - totalArmor - elementalResist);
+      final wasKnockedOutAlready = target.isKnockedOut;
+
       setState(() {
-        _enemyHealth = max(0, _enemyHealth - enemyPoison);
-        _log.add(_LogEntry(
-          '${_enemyData['enemyName']} ${trFor(lang, 'takes_damage_word')} '
-          '$enemyPoison ${trFor(lang, 'damage_word')} ${trFor(lang, 'from_poison_suffix')}.',
-          _LogKind.playerDamage,
-        ));
+        target.currentHealth = max(0, target.currentHealth - damageTaken);
+        target.block = 0;
+        _lastDamageTaken = damageTaken;
+        _lastDamagedMemberId = target.id;
+        if (wasDodged) {
+          _log.add(_LogEntry(
+            target.isPlayer
+                ? '${move.message} ${trFor(lang, 'you_dodge_suffix')}'
+                : '${move.message} ${target.displayName} '
+                    '${trFor(lang, 'dodges_suffix')}',
+            _LogKind.playerBlock,
+          ));
+          final banter = _rollBanter(isCrit: false, excludeId: target.id);
+          if (banter != null) _log.add(banter);
+        } else {
+          final damageLine = target.isPlayer
+              ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
+                  '${trFor(lang, 'damage_word')}.'
+              : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
+                  '$damageTaken ${trFor(lang, 'damage_word')}.';
+          _log.add(
+            _LogEntry(damageLine,
+                damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
+          );
+          if (!target.isPlayer &&
+              !wasKnockedOutAlready &&
+              target.isKnockedOut) {
+            _log.add(
+              _LogEntry(
+                '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
+                _LogKind.defeat,
+              ),
+            );
+          }
+          final inflicted = move.inflictedStatus;
+          if (inflicted != null && !target.isKnockedOut) {
+            target.statusEffects = applyStatusEffect(
+              target.statusEffects,
+              applyWisdomResistance(inflicted, target.wisdom),
+            );
+            _log.add(_LogEntry(
+              _statusInflictedMessage(inflicted, target.displayName, lang),
+              _LogKind.info,
+            ));
+          }
+        }
+        enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
       });
+      if (damageTaken > 0 && target.isPlayer) _triggerShake();
+
+      if (target.isPlayer && target.currentHealth <= 0) {
+        _finishFight(won: false);
+        return;
+      }
     }
-    if (_enemyHealth <= 0) {
+
+    if (_enemies.every((e) => !e.isAlive)) {
       _finishFight(won: true);
       return;
     }
 
-    if (isStunned(_enemyStatusEffects)) {
-      setState(() {
-        _log.add(_LogEntry(
-          '${_enemyData['enemyName']} ${trFor(lang, 'stunned_skip_turn_suffix')}',
-          _LogKind.info,
-        ));
-        _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
-      });
-      _startPartyRound(skills, items);
-      return;
-    }
-
-    final move = resolveEnemyMove(
-      enemy: {..._enemyData, 'damage': _enemyDamage},
-      skills: skills,
-      enemyCurrentHealth: _enemyHealth,
-      enemyMaxHealth: _enemyMaxHealth,
-      random: _random,
-      language: lang,
-      activeEffects: _enemyStatusEffects,
-      elementsHitThisRound: _elementsHitThisRound,
-    );
-
-    final conscious = _party.where((m) => !m.isKnockedOut).toList();
-    // Only the player is ever a valid target once every ally is down, and
-    // the player is always conscious here (their own knockout already ends
-    // the fight via _finishFight before another enemy turn could start).
-    final target = conscious[_random.nextInt(conscious.length)];
-    final targetScalingBonus = equipmentScalingBonusFor(
-      target.equippedItemIds,
-      items,
-      strength: target.strength,
-      dexterity: target.dexterity,
-      constitution: target.constitution,
-      intelligence: target.intelligence,
-    );
-    final totalArmor = target.armor +
-        equipmentBonusFor(target.equippedItemIds, items, 'armor') +
-        targetScalingBonus.armorBonus;
-    final elementalResist =
-        _elementalResist(move.element, target.equippedItemIds, items);
-    // A dodge evades the hit outright -- no damage, no status effect --
-    // rather than just softening it further on top of block/armor/resist.
-    final wasDodged =
-        _random.nextDouble() * 100 < dodgeChanceFor(target.dexterity);
-    final damageTaken = wasDodged
-        ? 0
-        : max(0, move.damage - target.block - totalArmor - elementalResist);
-    final wasKnockedOutAlready = target.isKnockedOut;
-
-    setState(() {
-      target.currentHealth = max(0, target.currentHealth - damageTaken);
-      target.block = 0;
-      _lastDamageTaken = damageTaken;
-      _lastDamagedMemberId = target.id;
-      if (wasDodged) {
-        _log.add(_LogEntry(
-          target.isPlayer
-              ? '${move.message} ${trFor(lang, 'you_dodge_suffix')}'
-              : '${move.message} ${target.displayName} '
-                  '${trFor(lang, 'dodges_suffix')}',
-          _LogKind.playerBlock,
-        ));
-        final banter = _rollBanter(isCrit: false, excludeId: target.id);
-        if (banter != null) _log.add(banter);
-      } else {
-        final damageLine = target.isPlayer
-            ? '${move.message} ${trFor(lang, 'you_take_damage_prefix')} $damageTaken '
-                '${trFor(lang, 'damage_word')}.'
-            : '${move.message} ${target.displayName} ${trFor(lang, 'takes_damage_word')} '
-                '$damageTaken ${trFor(lang, 'damage_word')}.';
-        _log.add(
-          _LogEntry(damageLine,
-              damageTaken > 0 ? _LogKind.enemyDamage : _LogKind.playerBlock),
-        );
-        if (!target.isPlayer && !wasKnockedOutAlready && target.isKnockedOut) {
-          _log.add(
-            _LogEntry(
-              '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
-              _LogKind.defeat,
-            ),
-          );
-        }
-        final inflicted = move.inflictedStatus;
-        if (inflicted != null && !target.isKnockedOut) {
-          target.statusEffects = applyStatusEffect(
-            target.statusEffects,
-            applyWisdomResistance(inflicted, target.wisdom),
-          );
-          _log.add(_LogEntry(
-            _statusInflictedMessage(inflicted, target.displayName, lang),
-            _LogKind.info,
-          ));
-        }
-      }
-      _enemyStatusEffects = tickStatusEffects(_enemyStatusEffects);
-    });
-    if (damageTaken > 0 && target.isPlayer) _triggerShake();
-
-    if (target.isPlayer && target.currentHealth <= 0) {
-      _finishFight(won: false);
-      return;
+    for (final enemy in _enemies) {
+      _preRollMoveFor(enemy, skills);
     }
 
     _startPartyRound(skills, items);
@@ -981,21 +1336,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
     if (won) {
-      var goldGain = scaledReward(
-          (widget.enemy['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
-      var xpGain = scaledReward(
-          (widget.enemy['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
-      if (_isElite) {
-        goldGain = (goldGain * _eliteRewardMultiplier).round();
-        xpGain = (xpGain * _eliteRewardMultiplier).round();
-      }
+      // Every enemy that died in this fight -- a pack's rewards/loot are
+      // summed across all of them, not just the one FightScreen was
+      // originally constructed with.
+      final defeated = _enemies.where((e) => !e.isAlive).toList();
+      var goldGain = 0;
+      var xpGain = 0;
       // An Elite always drops its trophy on top of the enemy's own loot
       // table roll below -- the guaranteed "that was worth it" payoff for
-      // the harder fight, on top of the reward multiplier above.
+      // the harder fight, on top of the reward multiplier applied per
+      // enemy. Elite is solo-only, so this never double-applies for a pack.
       final loot = <String>[if (_isElite) 'elite_trophy'];
-      final lootTable =
-          (widget.enemy['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
-              const [];
       // Luck nudges the drop-rate roll directly (in percentage points), so
       // a lucky character sees noticeably better loot without any roll
       // ever becoming guaranteed unless the base rate was already close.
@@ -1010,20 +1361,35 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   as Map<String, dynamic>?)?['preferredScalingStat']
               ?.toString() ??
           '';
-      for (final entry in lootTable) {
-        final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
-        final itemId = entry['itemID']?.toString();
-        final affinityBonus = professionLootAffinityBonus(
-            itemId != null ? items[itemId] as Map<String, dynamic>? : null,
-            preferredScalingStat);
-        if (_random.nextDouble() * 100 <=
-            dropRate + luckBonus + affinityBonus) {
-          if (itemId != null && itemId.isNotEmpty) loot.add(itemId);
+      for (final enemy in defeated) {
+        var enemyGold = scaledReward(
+            (enemy.data['goldReward'] as num?)?.toInt() ?? 0, _playerLevel);
+        var enemyXp = scaledReward(
+            (enemy.data['xpReward'] as num?)?.toInt() ?? 0, _playerLevel);
+        if (_isElite) {
+          enemyGold = (enemyGold * _eliteRewardMultiplier).round();
+          enemyXp = (enemyXp * _eliteRewardMultiplier).round();
+        }
+        goldGain += enemyGold;
+        xpGain += enemyXp;
+        final lootTable =
+            (enemy.data['lootTable'] as List?)?.cast<Map<String, dynamic>>() ??
+                const [];
+        for (final entry in lootTable) {
+          final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
+          final itemId = entry['itemID']?.toString();
+          final affinityBonus = professionLootAffinityBonus(
+              itemId != null ? items[itemId] as Map<String, dynamic>? : null,
+              preferredScalingStat);
+          if (_random.nextDouble() * 100 <=
+              dropRate + luckBonus + affinityBonus) {
+            if (itemId != null && itemId.isNotEmpty) loot.add(itemId);
+          }
         }
       }
       final leveledUp = await notifier.applyCombatResult(
         hpAfter: player.currentHealth,
-        enemyId: widget.enemyId,
+        enemyIds: defeated.map((e) => e.enemyId).toList(),
         goldGain: goldGain,
         xpGain: xpGain,
         itemsGained: loot,
@@ -1119,8 +1485,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           gameConfigAsync.error;
       return Scaffold(
         appBar: AppBar(
-          title: Text(
-              '${tr(ref, 'fight_prefix')}: ${_enemyData['enemyName'] ?? widget.enemyId}'),
+          title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
         ),
         body: Center(
           child: error != null
@@ -1134,16 +1499,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '${tr(ref, 'fight_prefix')}: ${_enemyData['enemyName'] ?? widget.enemyId}'),
+        title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
       ),
       body: !_started
-          ? _buildSetup(dice, items)
+          ? _buildSetup(dice, skills, items)
           : _buildBattle(dice, skills, items, session),
     );
   }
 
-  Widget _buildSetup(Map<String, dynamic> dice, Map<String, dynamic> items) {
+  Widget _buildSetup(
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
     final player = _party.first;
     final playerScalingBonus = equipmentScalingBonusFor(
       player.equippedItemIds,
@@ -1170,32 +1538,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: _isElite
-                    ? Colors.amber.shade700
-                    : Theme.of(context).colorScheme.errorContainer,
-                child: EnemyPixelIcon(widget.enemyId, size: 36),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  _enemyData['enemyName']?.toString() ?? widget.enemyId,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: _isElite ? Colors.amber.shade800 : null,
-                        fontWeight: _isElite ? FontWeight.bold : null,
-                      ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${tr(ref, 'hp_label')} $_enemyMaxHealth · ${tr(ref, 'damage_label')} $_enemyDamage '
-            '(${tr(ref, 'scaled_to_level')} $_playerLevel)',
-          ),
+          for (final enemy in _enemies) ...[
+            _buildEnemySetupCard(enemy),
+            const SizedBox(height: 8),
+          ],
           if (damageBonus > 0 || armorBonus > 0) ...[
             const SizedBox(height: 4),
             Text(
@@ -1234,12 +1580,48 @@ class _FightScreenState extends ConsumerState<FightScreen>
             ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: equippedDie == null ? null : _startFight,
+            onPressed: equippedDie == null ? null : () => _startFight(skills),
             icon: const Icon(Icons.sports_martial_arts),
             label: Text(tr(ref, 'enter_battle_button')),
           ),
         ],
       ),
+    );
+  }
+
+  /// One enemy's card on the pre-fight setup screen — a solo fight renders
+  /// exactly what this screen always showed for its one enemy; a pack
+  /// renders one of these per member.
+  Widget _buildEnemySetupCard(_EnemyMember enemy) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 24,
+          backgroundColor: _isElite
+              ? Colors.amber.shade700
+              : Theme.of(context).colorScheme.errorContainer,
+          child: EnemyPixelIcon(enemy.enemyId, size: 36),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                enemy.displayName,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: _isElite ? Colors.amber.shade800 : null,
+                      fontWeight: _isElite ? FontWeight.bold : null,
+                    ),
+              ),
+              Text(
+                '${tr(ref, 'hp_label')} ${enemy.maxHealth} · ${tr(ref, 'damage_label')} ${enemy.damage} '
+                '(${tr(ref, 'scaled_to_level')} $_playerLevel)',
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -1273,14 +1655,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
               _buildMemberHealthBar(member, items),
               const SizedBox(height: 8),
             ],
-            _HealthBar(
-              label: _enemyData['enemyName']?.toString() ?? widget.enemyId,
-              current: _enemyHealth,
-              max: _enemyMaxHealth,
-              statLine: '⚔ $_enemyDamage',
-              statusEffects: _enemyStatusEffects,
-            ),
-            const SizedBox(height: 16),
+            for (final enemy in _enemies) ...[
+              _buildEnemyHealthBar(enemy),
+              const SizedBox(height: 8),
+            ],
+            const SizedBox(height: 8),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(8),
@@ -1395,8 +1774,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
                     ],
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed:
-                            _rolling ? null : () => _confirmRoll(skills, items),
+                        onPressed: (_rolling || !_allTargetsPicked)
+                            ? null
+                            : () => _confirmRoll(skills, items),
                         icon: const Icon(Icons.check),
                         label: Text(tr(ref, 'confirm_roll_button')),
                       ),
@@ -1492,6 +1872,127 @@ class _FightScreenState extends ConsumerState<FightScreen>
     );
   }
 
+  /// One enemy's health bar during battle -- mirrors
+  /// [_buildMemberHealthBar]'s floating "-N" indicator, and adds the
+  /// telegraph badge (see [_buildEnemyTelegraphBadge]) underneath.
+  Widget _buildEnemyHealthBar(_EnemyMember enemy) {
+    final bar = _HealthBar(
+      label: enemy.displayName,
+      current: enemy.currentHealth,
+      max: enemy.maxHealth,
+      statLine: '⚔ ${enemy.damage}',
+      statusEffects: enemy.statusEffects,
+    );
+    final withIndicator =
+        (_lastDamagedEnemyKey != enemy.key || _lastEnemyDamageTaken <= 0)
+            ? bar
+            : Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  bar,
+                  Positioned(
+                    right: 0,
+                    top: -4,
+                    child: Text(
+                      '-$_lastEnemyDamageTaken',
+                      style: const TextStyle(
+                          color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+    final badge = _buildEnemyTelegraphBadge(enemy);
+    if (badge == null) return withIndicator;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        withIndicator,
+        const SizedBox(height: 2),
+        badge,
+      ],
+    );
+  }
+
+  /// A tiered preview of [enemy]'s pre-rolled next move (see
+  /// [_preRollMoveFor]), gated by [telegraphTierFor] -- null (nothing
+  /// rendered) when the party's best Perception can't read this enemy at
+  /// all, or when it hasn't got a cached move to preview yet (a
+  /// [_EnemyMember.hasReactiveMoves] enemy, or before the fight's first
+  /// pre-roll runs).
+  Widget? _buildEnemyTelegraphBadge(_EnemyMember enemy) {
+    final pending = enemy.pendingMove;
+    if (pending == null) return null;
+    final tier = telegraphTierFor(_bestPartyPerception(), enemy.guile);
+    if (tier == TelegraphTier.none) return null;
+
+    final target = _memberById(pending.targetId);
+    final targetName = target?.displayName ?? '?';
+    final chips = <Widget>[
+      _telegraphChip(Icons.gps_fixed, targetName),
+    ];
+    if (tier == TelegraphTier.category || tier == TelegraphTier.full) {
+      final (icon, labelKey) = switch (categoryFor(pending.move)) {
+        MoveCategory.attack => (Icons.bolt, 'telegraph_category_attack'),
+        MoveCategory.healSelf => (Icons.healing, 'telegraph_category_heal'),
+        MoveCategory.statusDebuff => (Icons.sick, 'telegraph_category_debuff'),
+      };
+      chips.add(_telegraphChip(icon, tr(ref, labelKey)));
+    }
+    if (tier == TelegraphTier.full) {
+      if (pending.move.element != 'None') {
+        chips.add(_telegraphChip(
+            elementIcon(pending.move.element), pending.move.element));
+      }
+      chips.add(_telegraphChip(Icons.forum, pending.move.message));
+    }
+
+    return Wrap(spacing: 6, runSpacing: 2, children: chips);
+  }
+
+  Widget _telegraphChip(IconData icon, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: colorScheme.onTertiaryContainer),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style:
+                TextStyle(fontSize: 11, color: colorScheme.onTertiaryContainer),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// The target-picker row shown under an acting member's Attack/Skill face
+  /// when there's more than one enemy to choose from -- a `ChoiceChip` per
+  /// living enemy, tapped to set [_selectedTargets]. Not shown at all for a
+  /// solo fight, or for a Defend/Heal face (nothing for it to hit).
+  Widget _buildTargetPicker(_PartyMember actor) {
+    final selectedKey = _selectedTargets[actor.id];
+    return Wrap(
+      spacing: 6,
+      runSpacing: 4,
+      children: [
+        for (final enemy in _enemies.where((e) => e.isAlive))
+          ChoiceChip(
+            label: Text('${enemy.displayName} (${enemy.currentHealth})'),
+            selected: enemy.key == selectedKey,
+            onSelected: (_) =>
+                setState(() => _selectedTargets[actor.id] = enemy.key),
+          ),
+      ],
+    );
+  }
+
   /// The most recently rolled face, kept on screen so the player always
   /// knows what they're looking at — spinning while a roll is in flight,
   /// settled (face name, which skill it maps to if it's a Skill face, and
@@ -1531,6 +2032,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         language: ref.read(appLanguageProvider),
         activeEffects: actor.statusEffects,
       );
+      final needsTarget = _enemies.length > 1 &&
+          (face.type == 'Attack' || face.type == 'Skill');
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -1555,6 +2058,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
           ],
           const SizedBox(height: 2),
           Text(preview.message, style: Theme.of(context).textTheme.bodySmall),
+          if (needsTarget) ...[
+            const SizedBox(height: 6),
+            _buildTargetPicker(actor),
+          ],
         ],
       );
     }

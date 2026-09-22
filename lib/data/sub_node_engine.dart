@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../combat/combat_engine.dart';
 import '../models/story_node.dart';
 import 'map_themes.dart';
 
@@ -162,8 +163,33 @@ class SubNodeEngine {
       );
     }
     if (enemyPool.isNotEmpty && roll < 0.5) {
-      final enemyId = enemyPool[random.nextInt(enemyPool.length)];
       final idx = random.nextInt(flavor.enemy.length);
+      // A pack fight never draws a solo-only enemy (the tuned bosses and
+      // uniques -- see soloOnlyEnemyIds) -- those stay solo encounters
+      // exclusively, drawn only through the plain single-enemy path below.
+      final packEligible =
+          enemyPool.where((eid) => !soloOnlyEnemyIds.contains(eid)).toList();
+      if (packEligible.isNotEmpty && random.nextDouble() < 0.3) {
+        final size = 2 + random.nextInt(2);
+        final ids = [
+          for (var i = 0; i < size; i++)
+            packEligible[random.nextInt(packEligible.length)],
+        ];
+        return StoryNode(
+          id: id,
+          description: flavor.enemy[idx],
+          descriptionFr: flavor.enemyFr[idx],
+          choices: [
+            StoryChoice(
+              text: 'Fight',
+              textFr: 'Combattre',
+              nextId: id,
+              triggerEnemyIds: ids,
+            ),
+          ],
+        );
+      }
+      final enemyId = enemyPool[random.nextInt(enemyPool.length)];
       return StoryNode(
         id: id,
         description: flavor.enemy[idx],

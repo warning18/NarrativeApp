@@ -17,6 +17,7 @@ const List<String> abilityScoreKeys = [
   'wisdom',
   'charisma',
   'luck',
+  'perception',
 ];
 
 /// [session]'s current value for [ability] (one of [abilityScoreKeys]),
@@ -41,6 +42,8 @@ int abilityModifierFor(String ability, PlayerSession session) {
       return session.charisma;
     case 'luck':
       return session.luck;
+    case 'perception':
+      return session.perception;
     default:
       return 0;
   }

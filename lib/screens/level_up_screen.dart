@@ -118,6 +118,12 @@ class LevelUpScreen extends ConsumerWidget {
               tr(ref, 'intelligence_desc')),
           statRow(tr(ref, 'wisdom_label'), Icons.visibility,
               '${session.wisdom}', 'wisdom', tr(ref, 'wisdom_desc')),
+          statRow(
+              tr(ref, 'perception_label'),
+              Icons.radar,
+              '${session.perception}',
+              'perception',
+              tr(ref, 'perception_desc')),
         ],
       ),
     );

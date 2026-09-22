@@ -192,6 +192,7 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final constitution = (preset['bonusConstitution'] as num?)?.toInt() ?? 0;
     final intelligence = (preset['bonusIntelligence'] as num?)?.toInt() ?? 0;
     final wisdom = (preset['bonusWisdom'] as num?)?.toInt() ?? 0;
+    final perception = (preset['bonusPerception'] as num?)?.toInt() ?? 0;
     final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
     final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
     final parts = <String>[
@@ -212,6 +213,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         '${intelligence >= 0 ? '+' : ''}$intelligence ${tr(ref, 'int_abbrev')}',
       if (wisdom != 0)
         '${wisdom >= 0 ? '+' : ''}$wisdom ${tr(ref, 'wis_abbrev')}',
+      if (perception != 0)
+        '${perception >= 0 ? '+' : ''}$perception ${tr(ref, 'per_abbrev')}',
       if (showSkillPoints && skillPoints > 0)
         '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
     ];
@@ -666,6 +669,8 @@ class _CharacterSheet extends StatelessWidget {
                     description: t('intelligence_desc')),
                 statRow(t('wisdom_label'), '${session.wisdom}',
                     icon: Icons.visibility, description: t('wisdom_desc')),
+                statRow(t('perception_label'), '${session.perception}',
+                    icon: Icons.radar, description: t('perception_desc')),
                 statRow(t('gold_field_label'), '${session.gold}'),
                 statRow(
                   t('alignment_label'),

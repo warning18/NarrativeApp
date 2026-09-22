@@ -645,15 +645,22 @@ Future<void> _selectChoice({
 
   if (choice.triggersCombat) {
     final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
-    final enemy = enemies?[choice.triggerEnemyId] as Map<String, dynamic>?;
-    if (enemy != null) {
+    final ids = choice.allTriggerEnemyIds;
+    final resolvedEnemies = {
+      for (final eid in ids) eid: enemies?[eid] as Map<String, dynamic>?,
+    };
+    if (resolvedEnemies.values.every((e) => e != null)) {
       ref.read(combatActiveProvider.notifier).state = true;
       if (!context.mounted) return;
       final won = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
           builder: (_) => FightScreen(
-            enemyId: choice.triggerEnemyId!,
-            enemy: enemy,
+            enemyId: ids.first,
+            enemy: resolvedEnemies[ids.first]!,
+            additionalEnemyIds: ids.skip(1).toList(),
+            additionalEnemies: {
+              for (final eid in ids.skip(1)) eid: resolvedEnemies[eid]!,
+            },
           ),
         ),
       );
@@ -673,12 +680,22 @@ Future<void> _selectChoice({
         );
   }
   if (choice.hasUnlocks) {
+    final enemyIds = choice.allTriggerEnemyIds.toSet();
     await ref.read(playerSessionProvider.notifier).unlockContent(
           shopId: choice.unlockShopId,
           questId: choice.unlockQuestId,
-          enemyId: choice.triggerEnemyId,
+          enemyId: enemyIds.isEmpty ? null : enemyIds.first,
           shopUnlockNodeId: currentNodeId,
         );
+    // A pack's remaining distinct enemy ids each get their own unlock
+    // call -- the common (single-enemy) case above already covers the
+    // first, so this is a no-op loop for every existing single-enemy
+    // choice.
+    for (final enemyId in enemyIds.skip(1)) {
+      await ref
+          .read(playerSessionProvider.notifier)
+          .unlockContent(enemyId: enemyId);
+    }
     if ((choice.unlockShopId ?? '').isNotEmpty) {
       // Silent — no popup here (the discovery modal below already
       // covers "something new happened"); the Achievements

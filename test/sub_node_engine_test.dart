@@ -6,8 +6,12 @@
 // against a level-2 character -- exactly the shape of bug this file guards
 // against now that both excursions and expeditions share this one helper.
 
+import 'dart:math';
+
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/combat/combat_engine.dart';
+import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 
 void main() {
@@ -65,6 +69,60 @@ void main() {
         chapter: 5,
       );
       expect(pool, containsAll(['tutorial_rat', 'ch2_bandit', 'ch5_horror']));
+    });
+  });
+
+  group('buildNode pack rolling', () {
+    final flavor = flavorFor(defaultMapTheme);
+
+    test('a pack never includes a soloOnlyEnemyIds member', () {
+      final pool = ['harbor_rat', 'street_bandit', 'inquisition_high_warden'];
+      for (var seed = 0; seed < 500; seed++) {
+        final node = SubNodeEngine.buildNode(
+          random: Random(seed),
+          flavor: flavor,
+          shopPool: const [],
+          enemyPool: pool,
+        );
+        for (final id in node.choices.first.triggerEnemyIds) {
+          expect(soloOnlyEnemyIds.contains(id), isFalse);
+        }
+      }
+    });
+
+    test('a drawn pack always has 2 or 3 enemies', () {
+      final pool = ['harbor_rat', 'street_bandit', 'dock_overseer'];
+      var sawPack = false;
+      for (var seed = 0; seed < 500; seed++) {
+        final node = SubNodeEngine.buildNode(
+          random: Random(seed),
+          flavor: flavor,
+          shopPool: const [],
+          enemyPool: pool,
+        );
+        final ids = node.choices.first.triggerEnemyIds;
+        if (ids.isNotEmpty) {
+          sawPack = true;
+          expect(ids.length, anyOf(2, 3));
+        }
+      }
+      // Not a hard guarantee at any single seed, but virtually certain
+      // across 500 trials at the documented ~15% combined draw rate --
+      // if this ever flakes, the pack-rolling odds themselves changed.
+      expect(sawPack, isTrue);
+    });
+
+    test('a pool of only solo-only enemies never produces a pack', () {
+      final pool = ['inquisition_high_warden', 'hollow_court_zealot'];
+      for (var seed = 0; seed < 200; seed++) {
+        final node = SubNodeEngine.buildNode(
+          random: Random(seed),
+          flavor: flavor,
+          shopPool: const [],
+          enemyPool: pool,
+        );
+        expect(node.choices.first.triggerEnemyIds, isEmpty);
+      }
     });
   });
 }

@@ -97,23 +97,35 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
 
-    final enemyId = choice.triggerEnemyId;
-    if (enemyId != null && enemyId.isNotEmpty) {
-      final enemy = enemies[enemyId] as Map<String, dynamic>?;
-      if (enemy == null) {
+    final enemyIds = choice.allTriggerEnemyIds;
+    if (enemyIds.isNotEmpty) {
+      final resolvedEnemies = {
+        for (final eid in enemyIds) eid: enemies[eid] as Map<String, dynamic>?,
+      };
+      if (resolvedEnemies.values.any((e) => e == null)) {
         await _advance(shops: shops, enemies: enemies);
         return;
       }
       final won = await Navigator.of(context).push<bool>(
         MaterialPageRoute(
-            builder: (_) => FightScreen(enemyId: enemyId, enemy: enemy)),
+          builder: (_) => FightScreen(
+            enemyId: enemyIds.first,
+            enemy: resolvedEnemies[enemyIds.first]!,
+            additionalEnemyIds: enemyIds.skip(1).toList(),
+            additionalEnemies: {
+              for (final eid in enemyIds.skip(1)) eid: resolvedEnemies[eid]!,
+            },
+          ),
+        ),
       );
       if (!mounted) return;
       if (won != true) {
         await _endAsRetreat(defeated: true);
         return;
       }
-      await notifier.unlockContent(enemyId: enemyId);
+      for (final eid in enemyIds.toSet()) {
+        await notifier.unlockContent(enemyId: eid);
+      }
       if (!mounted) return;
       await _advance(shops: shops, enemies: enemies);
       return;

@@ -9,6 +9,7 @@ class StoryChoice {
     this.questIDToProgress,
     this.lockedText,
     this.triggerEnemyId,
+    this.triggerEnemyIds = const [],
     this.unlockShopId,
     this.unlockQuestId,
     this.opensCharacterCreation = false,
@@ -36,6 +37,10 @@ class StoryChoice {
       questIDToProgress: json['questIDToProgress'] as String?,
       lockedText: json['lockedText'] as String?,
       triggerEnemyId: json['triggerEnemyId'] as String?,
+      triggerEnemyIds: (json['triggerEnemyIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       unlockShopId: json['unlockShopId'] as String?,
       unlockQuestId: json['unlockQuestId'] as String?,
       opensCharacterCreation: json['opensCharacterCreation'] as bool? ?? false,
@@ -59,6 +64,12 @@ class StoryChoice {
   final String? questIDToProgress;
   final String? lockedText;
   final String? triggerEnemyId;
+
+  /// A 2-3-id pack for a multi-enemy fight, coexisting with (never
+  /// replacing) [triggerEnemyId] -- when non-empty, takes precedence (see
+  /// [allTriggerEnemyIds]). Every existing single-enemy choice leaves this
+  /// empty and is completely unaffected.
+  final List<String> triggerEnemyIds;
   final String? unlockShopId;
   final String? unlockQuestId;
   final bool opensCharacterCreation;
@@ -131,6 +142,7 @@ class StoryChoice {
           'lockedText_fr': lockedTextFr,
         if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty)
           'triggerEnemyId': triggerEnemyId,
+        if (triggerEnemyIds.isNotEmpty) 'triggerEnemyIds': triggerEnemyIds,
         if (unlockShopId != null && unlockShopId!.isNotEmpty)
           'unlockShopId': unlockShopId,
         if (unlockQuestId != null && unlockQuestId!.isNotEmpty)
@@ -148,8 +160,19 @@ class StoryChoice {
           'challengeMaxFailures': challengeMaxFailures,
       };
 
-  bool get triggersCombat =>
-      triggerEnemyId != null && triggerEnemyId!.isNotEmpty;
+  /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
+  /// when set (a multi-enemy pack), otherwise [triggerEnemyId] wrapped as a
+  /// single-item list, or empty if this choice doesn't trigger combat at
+  /// all. The one place that resolves "which enemy/enemies" for a choice.
+  List<String> get allTriggerEnemyIds {
+    if (triggerEnemyIds.isNotEmpty) return triggerEnemyIds;
+    if (triggerEnemyId != null && triggerEnemyId!.isNotEmpty) {
+      return [triggerEnemyId!];
+    }
+    return const [];
+  }
+
+  bool get triggersCombat => allTriggerEnemyIds.isNotEmpty;
 
   bool get hasUnlocks =>
       triggersCombat ||

@@ -51,6 +51,7 @@ class PlayerSession {
     required this.constitution,
     required this.intelligence,
     required this.wisdom,
+    required this.perception,
     required this.potionCount,
     required this.statPoints,
     required this.skillPoints,
@@ -126,6 +127,12 @@ class PlayerSession {
   final int constitution;
   final int intelligence;
   final int wisdom;
+
+  /// Feeds `telegraphTierFor` in combat_engine.dart, offset by an enemy's
+  /// own Guile — how much detail the party can read about an enemy's
+  /// telegraphed next move in [FightScreen]. Uses the highest Perception
+  /// among conscious party members, not just the player's own.
+  final int perception;
   final int potionCount;
   final int statPoints;
   final int skillPoints;
@@ -307,6 +314,7 @@ class PlayerSession {
     int? constitution,
     int? intelligence,
     int? wisdom,
+    int? perception,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -361,6 +369,7 @@ class PlayerSession {
       constitution: constitution ?? this.constitution,
       intelligence: intelligence ?? this.intelligence,
       wisdom: wisdom ?? this.wisdom,
+      perception: perception ?? this.perception,
       potionCount: potionCount ?? this.potionCount,
       statPoints: statPoints ?? this.statPoints,
       skillPoints: skillPoints ?? this.skillPoints,
@@ -420,6 +429,7 @@ class PlayerSession {
         'constitution': constitution,
         'intelligence': intelligence,
         'wisdom': wisdom,
+        'perception': perception,
         'potionCount': potionCount,
         'statPoints': statPoints,
         'skillPoints': skillPoints,
@@ -486,6 +496,7 @@ class PlayerSession {
       constitution: (json['constitution'] as num?)?.toInt() ?? 0,
       intelligence: (json['intelligence'] as num?)?.toInt() ?? 0,
       wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
+      perception: (json['perception'] as num?)?.toInt() ?? 0,
       potionCount: (json['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
@@ -626,6 +637,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           constitution: 0,
           intelligence: 0,
           wisdom: 0,
+          perception: 0,
           potionCount: 0,
           statPoints: 0,
           skillPoints: 0,
@@ -685,6 +697,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       constitution: (defaults['constitution'] as num?)?.toInt() ?? 0,
       intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
       wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
+      perception: (defaults['perception'] as num?)?.toInt() ?? 0,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: 0,
@@ -760,6 +773,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final wisdom = ((defaults['wisdom'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusWisdom') +
         bonus(profession, 'bonusWisdom');
+    final perception = ((defaults['perception'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusPerception') +
+        bonus(profession, 'bonusPerception');
     final gold = ((defaults['gold'] as num?)?.toInt() ?? 0) +
         bonus(race, 'startingGoldBonus') +
         bonus(profession, 'startingGoldBonus');
@@ -799,6 +815,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       constitution: constitution,
       intelligence: intelligence,
       wisdom: wisdom,
+      perception: perception,
       potionCount: (defaults['potionCount'] as num?)?.toInt() ?? 0,
       statPoints: 0,
       skillPoints: skillPoints,
@@ -1553,6 +1570,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var newConstitution = state.constitution;
     var newIntelligence = state.intelligence;
     var newWisdom = state.wisdom;
+    var newPerception = state.perception;
     switch (stat) {
       case 'damage':
         newBaseDamage += 1;
@@ -1585,6 +1603,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case 'wisdom':
         newWisdom += 1;
         break;
+      case 'perception':
+        newPerception += 1;
+        break;
       default:
         break;
     }
@@ -1601,6 +1622,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       constitution: newConstitution,
       intelligence: newIntelligence,
       wisdom: newWisdom,
+      perception: newPerception,
     );
     await _persist();
   }
@@ -1626,6 +1648,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? constitution,
     int? intelligence,
     int? wisdom,
+    int? perception,
     int? potionCount,
     int? statPoints,
     int? skillPoints,
@@ -1647,6 +1670,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       constitution: constitution,
       intelligence: intelligence,
       wisdom: wisdom,
+      perception: perception,
       potionCount: potionCount,
       statPoints: statPoints,
       skillPoints: skillPoints,
@@ -1732,6 +1756,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<bool> applyCombatResult({
     required int hpAfter,
     String? enemyId,
+    List<String> enemyIds = const [],
     int goldGain = 0,
     int xpGain = 0,
     List<String> itemsGained = const [],
@@ -1747,12 +1772,22 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)
         : state.recruitedAllies;
 
-    final newKillCounts = (enemyId == null || enemyId.isEmpty)
-        ? state.enemyKillCounts
-        : {
-            ...state.enemyKillCounts,
-            enemyId: (state.enemyKillCounts[enemyId] ?? 0) + 1,
-          };
+    // A multi-enemy pack win credits one kill-count increment per defeated
+    // enemy *instance* (so two Harbor Rats in one pack credit
+    // enemyKillCounts['harbor_rat'] by 2), matching how a `Kill`-type quest
+    // objective already reads that map. [enemyIds] takes precedence when
+    // non-empty; [enemyId] alone still works for every existing solo-fight
+    // call site.
+    final idsToCredit = enemyIds.isNotEmpty
+        ? enemyIds
+        : (enemyId == null || enemyId.isEmpty ? const <String>[] : [enemyId]);
+    var newKillCounts = state.enemyKillCounts;
+    for (final id in idsToCredit) {
+      newKillCounts = {
+        ...newKillCounts,
+        id: (newKillCounts[id] ?? 0) + 1,
+      };
+    }
 
     state = state.copyWith(
       level: leveled.level,
