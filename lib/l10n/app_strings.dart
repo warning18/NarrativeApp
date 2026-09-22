@@ -2783,6 +2783,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+25% for a matching alignment, -25% for the opposite',
     AppLanguage.fr: "+25 % pour un alignement assorti, -25 % pour l'opposé",
   },
+  'hide_if_flags': {
+    AppLanguage.en: 'Hide once any of these flags is held (comma-separated)',
+    AppLanguage.fr:
+        'Masquer dès que l\'un de ces drapeaux est détenu (séparés par des virgules)',
+  },
   'export_as_csv_option': {
     AppLanguage.en: 'Export as CSV (.csv)',
     AppLanguage.fr: 'Exporter en CSV (.csv)',

@@ -83,4 +83,21 @@ void main() {
       expect(ambush.isHunterAmbush, isTrue);
     });
   });
+
+  group('hideIfFlags', () {
+    test('hides the choice once any listed flag is held', () {
+      const choice = StoryChoice(
+        text: 'Visit the Arcane Bazaar',
+        nextId: '2015_bazaar',
+        hideIfFlags: ['hub_2015_bazaar'],
+      );
+      expect(choice.isHiddenFor(const []), isFalse);
+      expect(choice.isHiddenFor(const ['other']), isFalse);
+      expect(choice.isHiddenFor(const ['other', 'hub_2015_bazaar']), isTrue);
+      final restored = StoryChoice.fromJson(choice.toJson());
+      expect(restored.hideIfFlags, ['hub_2015_bazaar']);
+      const plain = StoryChoice(text: 'Go', nextId: 'n1');
+      expect(plain.toJson().containsKey('hideIfFlags'), isFalse);
+    });
+  });
 }

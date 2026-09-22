@@ -208,12 +208,18 @@ class _StoryView extends ConsumerWidget {
       }
     }
 
+    // A hub activity already done this visit (see StoryChoice.hideIfFlags)
+    // drops out of the list entirely -- the hub keeps its "village" layout
+    // off the node's full authored choice count, not the remaining one, so
+    // it doesn't snap back to a flat list as the last activities are used.
     final isHubNode = _isHubNode(node);
+    final visibleChoices =
+        node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
     final mainChoices = isHubNode
-        ? node.choices.where((c) => _hubCategoryFor(c) == null).toList()
-        : node.choices;
+        ? visibleChoices.where((c) => _hubCategoryFor(c) == null).toList()
+        : visibleChoices;
     final hubChoices = isHubNode
-        ? node.choices.where((c) => _hubCategoryFor(c) != null).toList()
+        ? visibleChoices.where((c) => _hubCategoryFor(c) != null).toList()
         : const <StoryChoice>[];
 
     return SafeArea(
@@ -726,8 +732,13 @@ Future<void> _selectChoice({
     return;
   }
 
+  // A choice that loops back onto its own node (a shop visit at the docks
+  // hub, say) is a moment inside the same scene, not a step down the road
+  // -- no excursion or alignment event rolls for it.
   final chapter = chapterForNode(currentNodeId);
-  if (chapter != null && !choice.opensCharacterCreation) {
+  if (chapter != null &&
+      !choice.opensCharacterCreation &&
+      choice.nextId != currentNodeId) {
     final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
     final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
     final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};

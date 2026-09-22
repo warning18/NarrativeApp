@@ -273,6 +273,8 @@ class _ChoiceEditState {
             TextEditingController(text: choice.healAmount.toString()),
         flagsToAddController =
             TextEditingController(text: choice.flagsToAdd.join(', ')),
+        hideIfFlagsController =
+            TextEditingController(text: choice.hideIfFlags.join(', ')),
         questIDToProgressController =
             TextEditingController(text: choice.questIDToProgress ?? ''),
         lockedTextController =
@@ -306,6 +308,10 @@ class _ChoiceEditState {
   final TextEditingController alignmentModController;
   final TextEditingController healAmountController;
   final TextEditingController flagsToAddController;
+
+  /// Comma-separated flags that hide this choice once held (see
+  /// [StoryChoice.hideIfFlags]) -- a hub activity's "already done" marker.
+  final TextEditingController hideIfFlagsController;
   final TextEditingController questIDToProgressController;
   final TextEditingController lockedTextController;
   final TextEditingController lockedTextFrController;
@@ -334,6 +340,7 @@ class _ChoiceEditState {
     alignmentModController.dispose();
     healAmountController.dispose();
     flagsToAddController.dispose();
+    hideIfFlagsController.dispose();
     questIDToProgressController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
@@ -356,6 +363,11 @@ class _ChoiceEditState {
         alignmentMod: int.tryParse(alignmentModController.text.trim()) ?? 0,
         healAmount: int.tryParse(healAmountController.text.trim()) ?? 0,
         flagsToAdd: flagsToAddController.text
+            .split(',')
+            .map((s) => s.trim())
+            .where((s) => s.isNotEmpty)
+            .toList(),
+        hideIfFlags: hideIfFlagsController.text
             .split(',')
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
@@ -511,6 +523,14 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.flagsToAddController,
                   decoration: InputDecoration(
                     labelText: t('flags_to_add'),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.hideIfFlagsController,
+                  decoration: InputDecoration(
+                    labelText: t('hide_if_flags'),
                     border: const OutlineInputBorder(),
                   ),
                 ),

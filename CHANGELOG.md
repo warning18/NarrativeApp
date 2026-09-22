@@ -8,6 +8,61 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.109.0+137]
+
+The hub-loops batch, first step of the chapter-flow roadmap: the harbor
+market and the Spire district are now real hubs that every route passes
+through and that the party works through activity by activity, the
+chapter Main quests are handed out where their story happens, and quest
+items no longer depend on a drop roll.
+
+### Added
+- **Hub loops.** A story choice can now carry `hideIfFlags`: once any of
+  those flags is set, the choice disappears from its node. Every activity
+  on the harbor market (node 2015) and in the Spire district (node 3005)
+  sets its own flag and its bridge node ends on "Back to the market" /
+  "Back to the district", so a hub plays as a list of things to do that
+  shrinks as it is worked through instead of a one-shot pick. The Iron
+  Anvil's armoury, shieldwright and patch-up stalls loop the same way.
+  Choices that lead back to their own node never roll an excursion. The
+  story editor exposes the field ("Hide if flags", comma-separated).
+- **Harbor bounty.** A new market activity, the harbor master's bounty on
+  the wharf bandits (a two-bandit pack), hands out the Main quest The
+  Burning Manifest.
+- **Lysa's dawn.** If Lysa survived the Spire, a new district activity
+  delivers her message and starts Alster's Dawn.
+- **Failure branches** for the Spire archive and ledger checks: a failed
+  read now lands on its own consequence node instead of a dead end.
+- **Guaranteed drops.** A loot-table entry with a drop rate of 100 or more
+  is always awarded on a win, on top of the spoils chest, so the High
+  Warden's sealed letter can no longer be missed.
+
+### Changed
+- **Every route reaches the hubs.** Disembarking at the wharf now leads
+  straight into the market before Vane is dealt with (his three exits,
+  the crane and the rooftop archer sit on the hub itself); the stowaway
+  route's bilge drain and inspector ambush both come out under the wharf
+  and climb into the same market instead of skipping to the Upper Gate.
+  The Spire's first doors open onto the district hub, whose only exit
+  pushes deeper into the Spire; the openings of nodes 3002 and 3005 were
+  rewritten in both languages to fit the new order.
+- **Main quests wired to their beats.** The High Warden's Fall starts on
+  entering the Spire, the Inquisition Ledger on the ledger choice, the
+  Captain's Gambit on the smuggler and Harbor Reckoning on the plague
+  hound; the weaponsmith's forge unlocks from the market armoury and the
+  blind beggar's stall from the forge.
+- **Chapter spine.** The bilge-drain node (2050) moved to chapter 2's
+  arrival beat alongside 2010 and 2020.
+
+### Simulation
+40 seeded runs (4 strategies, alternating builds) with a player-like hub
+policy (take an untried activity 85% of the time): 40/40 true endings,
+combat win rate 97.0%, 8.3 harbor-market and 11.9 Spire activities per
+run (37/40 and 40/40 runs visit them), 16.7 quests completed per run
+(5.2 on v1.108), Kelda recruited in 29 runs (14 before), Sable in 25
+(15), full roster 5/40 (1/40), mean final level 10.2 (7.3). The same
+seeds under v1.107 rules still end 40/40.
+
 ## [1.108.0+136]
 
 The dynamics batch: a clickable spoils chest after every win, enemy

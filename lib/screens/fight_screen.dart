@@ -1809,7 +1809,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 const [];
         for (final entry in lootTable) {
           final itemId = entry['itemID']?.toString();
-          if (itemId != null && itemId.isNotEmpty) signatureIds.add(itemId);
+          if (itemId == null || itemId.isEmpty) continue;
+          // A 100% entry is a guaranteed drop (a quest item such as the
+          // High Warden's sealed letter), never a mere chest weighting.
+          if (((entry['dropRate'] as num?)?.toDouble() ?? 0) >= 100) {
+            loot.add(itemId);
+          } else {
+            signatureIds.add(itemId);
+          }
         }
       }
 

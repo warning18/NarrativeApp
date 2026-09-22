@@ -70,7 +70,8 @@
         "next_id": "151_forge",
         "checkAbility": "constitution",
         "checkDC": 12,
-        "failNextId": "300"
+        "failNextId": "300",
+        "unlockShopId": "blind_beggar_stall"
       },
       {
         "text": "Approach a cloaked figure trading whispers at the edge of the stalls",
@@ -728,19 +729,38 @@
       {
         "text": "Patch yourself up before whatever's coming",
         "text_fr": "Se soigner avant ce qui s'annonce",
-        "next_id": "895",
-        "healAmount": 35
+        "next_id": "891",
+        "healAmount": 35,
+        "hideIfFlags": [
+          "hub_891_patched"
+        ],
+        "flagsToAdd": [
+          "hub_891_patched"
+        ]
       },
       {
         "text": "Duck into a dockside armory first",
         "text_fr": "Faire d'abord un détour par un arsenal du port",
-        "next_id": "895"
+        "next_id": "891",
+        "unlockShopId": "weaponsmith_forge",
+        "hideIfFlags": [
+          "hub_891_armory"
+        ],
+        "flagsToAdd": [
+          "hub_891_armory"
+        ]
       },
       {
         "text": "Check a shieldwright's stall for anything sturdier",
         "text_fr": "Examiner l'étal d'un fabricant de boucliers pour trouver plus solide",
-        "next_id": "895",
-        "unlockShopId": "shieldwrights_hall"
+        "next_id": "891",
+        "unlockShopId": "shieldwrights_hall",
+        "hideIfFlags": [
+          "hub_891_shieldwright"
+        ],
+        "flagsToAdd": [
+          "hub_891_shieldwright"
+        ]
       },
       {
         "text": "Whistle for the hound",
@@ -1147,39 +1167,9 @@
     },
     "choices": [
       {
-        "text": "Bribe Vane with information",
-        "text_fr": "Soudoyer Vane avec des informations",
-        "next_id": "2030"
-      },
-      {
-        "text": "Threaten him to clear the path",
-        "text_fr": "Le menacer pour dégager le passage",
-        "next_id": "2040"
-      },
-      {
-        "text": "Push past him toward the exit",
-        "text_fr": "Le bousculer pour atteindre la sortie",
-        "next_id": "2011"
-      },
-      {
-        "text": "Browse the harbor market before deciding",
-        "text_fr": "Parcourir le marché du port avant de décider",
+        "text": "Take stock of the harbor market before dealing with Vane",
+        "text_fr": "Faire le tour du marché du port avant de traiter avec Vane",
         "next_id": "2015"
-      },
-      {
-        "text": "Force the loading crane's jammed winch open",
-        "text_fr": "Forcer le treuil grippé de la grue de chargement",
-        "next_id": "2010_crane",
-        "checkAbility": "strength",
-        "checkDC": 13,
-        "failNextId": "2011"
-      },
-      {
-        "text": "Notice an archer watching the docks from a collapsed rooftop",
-        "text_fr": "Remarquer une archère observant les docks depuis un toit effondré",
-        "next_id": "2010_liora",
-        "lockedText": "She had at least four clean shots at me by the time I noticed her, and nothing I could think to say from the ground struck me as worth the risk of finding out whether she'd take one. I decided, on reflection, that some conversations are better held with a professional intermediary — namely, distance.",
-        "lockedText_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, et rien de ce que je pouvais imaginer dire depuis le sol ne me semblait valoir le risque de découvrir si elle en saisirait un. Je décidai, à la réflexion, que certaines conversations se tiennent mieux par l'entremise d'un intermédiaire professionnel — à savoir, la distance."
       }
     ]
   },
@@ -1206,8 +1196,8 @@
   },
   "2015": {
     "id": "2015",
-    "description": "Even with the Inquisition patrolling in their tidy, self-satisfied ranks, merchants still plied their trade along the wharf, in the manner of merchants everywhere, who have correctly concluded that empires rise and fall but commerce, like rats, endures. Not everyone here was friendly, a fact I registered with the professional interest of someone who, at this point in his life, considers friendliness an unreliable and slightly suspicious quality. If I meant to give Vane something worth his while, I would first need to learn what was actually moving through this market — information, I have found, being the one currency that never quite runs out.",
-    "description_fr": "Même avec l'Inquisition patrouillant en rangs propres et satisfaits d'eux-mêmes, les marchands poursuivaient leur commerce le long du quai, à la manière des marchands de tous lieux, qui ont correctement conclu que les empires montent et tombent mais que le commerce, comme les rats, perdure. Tout le monde ici n'était pas amical, un fait que j'enregistrai avec l'intérêt professionnel de quelqu'un qui, à ce stade de sa vie, considère l'amabilité comme une qualité peu fiable et légèrement suspecte. Si je comptais offrir à Vane quelque chose qui vaille la peine, je devais d'abord apprendre ce qui circulait réellement sur ce marché — l'information étant, je l'ai constaté, la seule monnaie qui ne s'épuise jamais tout à fait.",
+    "description": "Even with the Inquisition patrolling in their tidy, self-satisfied ranks, merchants still plied their trade along the wharf, in the manner of merchants everywhere, who have correctly concluded that empires rise and fall but commerce, like rats, endures. Not everyone here was friendly, a fact I registered with the professional interest of someone who, at this point in his life, considers friendliness an unreliable and slightly suspicious quality. If I meant to give Vane something worth his while, I would first need to learn what was actually moving through this market — information, I have found, being the one currency that never quite runs out. Vane, and the gangplank he was guarding, would keep for exactly as long as the market kept me.",
+    "description_fr": "Même avec l'Inquisition patrouillant en rangs propres et satisfaits d'eux-mêmes, les marchands poursuivaient leur commerce le long du quai, à la manière des marchands de tous lieux, qui ont correctement conclu que les empires montent et tombent mais que le commerce, comme les rats, perdure. Tout le monde ici n'était pas amical, un fait que j'enregistrai avec l'intérêt professionnel de quelqu'un qui, à ce stade de sa vie, considère l'amabilité comme une qualité peu fiable et légèrement suspecte. Si je comptais offrir à Vane quelque chose qui vaille la peine, je devais d'abord apprendre ce qui circulait réellement sur ce marché — l'information étant, je l'ai constaté, la seule monnaie qui ne s'épuise jamais tout à fait. Vane, et la passerelle qu'il gardait, attendraient très exactement aussi longtemps que le marché me retiendrait.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1221,31 +1211,48 @@
         "text": "Visit the Arcane Bazaar",
         "text_fr": "Visiter le Bazar Arcanique",
         "next_id": "2015_bazaar",
-        "unlockShopId": "arcane_bazaar"
+        "unlockShopId": "arcane_bazaar",
+        "hideIfFlags": [
+          "hub_2015_bazaar"
+        ]
       },
       {
         "text": "Visit Apothecary Row",
         "text_fr": "Visiter la Rue des Apothicaires",
         "next_id": "2015_apothecary",
-        "unlockShopId": "apothecary_row"
+        "unlockShopId": "apothecary_row",
+        "hideIfFlags": [
+          "hub_2015_apothecary"
+        ]
       },
       {
         "text": "Take the harbor master's job",
         "text_fr": "Accepter la mission du maître du port",
         "next_id": "2015_dockside",
-        "unlockQuestId": "q_ch2_dockside_debts"
+        "unlockQuestId": "q_ch2_dockside_debts",
+        "hideIfFlags": [
+          "hub_2015_dockside"
+        ]
       },
       {
         "text": "Deal with a lurking smuggler captain",
         "text_fr": "S'occuper d'un capitaine contrebandier à l'affût",
         "next_id": "2015_smuggler",
-        "triggerEnemyId": "smuggler_captain"
+        "triggerEnemyId": "smuggler_captain",
+        "hideIfFlags": [
+          "hub_2015_smuggler"
+        ],
+        "unlockQuestId": "q_ch2_captains_gambit"
       },
       {
         "text": "Fend off a plague hound",
         "text_fr": "Repousser un chien pestiféré",
         "next_id": "2015_hound",
-        "triggerEnemyId": "plague_hound"
+        "triggerEnemyId": "plague_hound",
+        "hideIfFlags": [
+          "hub_2015_hound"
+        ],
+        "unlockQuestId": "q_ch2_harbor_reckoning"
       },
       {
         "text": "Wade into a pair of harbor rats squabbling over spoiled cargo",
@@ -1254,6 +1261,22 @@
         "triggerEnemyIds": [
           "harbor_rat",
           "harbor_rat"
+        ],
+        "hideIfFlags": [
+          "hub_2015_rats"
+        ]
+      },
+      {
+        "text": "Answer the harbor master's bounty on the wharf bandits",
+        "text_fr": "Répondre à la prime du maître du port sur les bandits du quai",
+        "next_id": "2015_bandits",
+        "triggerEnemyIds": [
+          "street_bandit",
+          "street_bandit"
+        ],
+        "unlockQuestId": "q_ch2_burning_manifest",
+        "hideIfFlags": [
+          "hub_2015_bandits"
         ]
       },
       {
@@ -1262,7 +1285,10 @@
         "next_id": "2015_kelda",
         "unlockQuestId": "q_ch2_keldas_stand",
         "lockedText": "She looked me over once, the particular assessment of someone deciding whether a stranger was worth trusting at her back, and apparently didn't like what she found. I couldn't fault her judgment — a man with my recent conduct wasn't exactly advertising himself as gate-holding material.",
-        "lockedText_fr": "Elle m'évalua d'un regard, avec l'attention particulière de quelqu'un qui décide si un inconnu mérite sa confiance à ses côtés, et n'apprécia visiblement pas ce qu'elle y trouva. Je ne pouvais lui donner tort — un homme à ma conduite récente ne se présentait guère comme une garde de porte fiable."
+        "lockedText_fr": "Elle m'évalua d'un regard, avec l'attention particulière de quelqu'un qui décide si un inconnu mérite sa confiance à ses côtés, et n'apprécia visiblement pas ce qu'elle y trouva. Je ne pouvais lui donner tort — un homme à ma conduite récente ne se présentait guère comme une garde de porte fiable.",
+        "hideIfFlags": [
+          "hub_2015_kelda"
+        ]
       },
       {
         "text": "Listen to a rogue's complaint about a card game gone wrong",
@@ -1270,7 +1296,10 @@
         "next_id": "2015_sable",
         "unlockQuestId": "q_ch2_sables_wager",
         "lockedText": "She sized me up the way a card player sizes up a mark, decided I wasn't worth the risk of a shared secret, and went back to nursing her grudge alone. Whatever reputation I'd been building, it apparently wasn't the kind that opened doors like hers.",
-        "lockedText_fr": "Elle me jaugea comme une joueuse de cartes jauge sa prochaine dupe, décida que je ne valais pas le risque d'un secret partagé, et retourna nourrir seule sa rancune. Quelle que fût la réputation que je m'étais forgée, ce n'était visiblement pas le genre qui ouvrait des portes comme les siennes."
+        "lockedText_fr": "Elle me jaugea comme une joueuse de cartes jauge sa prochaine dupe, décida que je ne valais pas le risque d'un secret partagé, et retourna nourrir seule sa rancune. Quelle que fût la réputation que je m'étais forgée, ce n'était visiblement pas le genre qui ouvrait des portes comme les siennes.",
+        "hideIfFlags": [
+          "hub_2015_sable"
+        ]
       },
       {
         "text": "Read the crowd for signs of an informant",
@@ -1278,17 +1307,56 @@
         "next_id": "2015_informant",
         "checkAbility": "wisdom",
         "checkDC": 13,
-        "failNextId": "2015_informant_caught"
+        "failNextId": "2015_informant_caught",
+        "hideIfFlags": [
+          "hub_2015_informant"
+        ]
       },
       {
         "text": "Follow a trail of paper lanterns down a side alley",
         "text_fr": "Suivre une traînée de lanternes de papier dans une ruelle",
-        "next_id": "2015_ternrow"
+        "next_id": "2015_ternrow",
+        "hideIfFlags": [
+          "hub_2015_ternrow"
+        ]
       },
       {
         "text": "Sit in on a card game with dock regulars",
         "text_fr": "Se joindre à une partie de cartes avec des habitués du port",
-        "next_id": "2015_cards"
+        "next_id": "2015_cards",
+        "hideIfFlags": [
+          "hub_2015_cards"
+        ]
+      },
+      {
+        "text": "Bribe Vane with information",
+        "text_fr": "Soudoyer Vane avec des informations",
+        "next_id": "2030"
+      },
+      {
+        "text": "Threaten him to clear the path",
+        "text_fr": "Le menacer pour dégager le passage",
+        "next_id": "2040"
+      },
+      {
+        "text": "Push past him toward the exit",
+        "text_fr": "Le bousculer pour atteindre la sortie",
+        "next_id": "2011"
+      },
+      {
+        "text": "Force the loading crane's jammed winch open",
+        "text_fr": "Forcer le treuil grippé de la grue de chargement",
+        "next_id": "2010_crane",
+        "checkAbility": "strength",
+        "checkDC": 13,
+        "failNextId": "2011"
+      },
+      {
+        "text": "Notice an archer watching the docks from a collapsed rooftop",
+        "text_fr": "Remarquer une archère observant les docks depuis un toit effondré",
+        "next_id": "2010_liora",
+        "lockedText": "She had at least four clean shots at me by the time I noticed her, and nothing I could think to say from the ground struck me as worth the risk of finding out whether she'd take one. I decided, on reflection, that some conversations are better held with a professional intermediary — namely, distance.",
+        "lockedText_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, et rien de ce que je pouvais imaginer dire depuis le sol ne me semblait valoir le risque de découvrir si elle en saisirait un. Je décidai, à la réflexion, que certaines conversations se tiennent mieux par l'entremise d'un intermédiaire professionnel — à savoir, la distance."
       }
     ]
   },
@@ -1303,9 +1371,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_bazaar"
+        ]
       }
     ]
   },
@@ -1320,9 +1391,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_apothecary"
+        ]
       }
     ]
   },
@@ -1337,10 +1411,13 @@
     },
     "choices": [
       {
-        "text": "Clear the rats from the stores, then go find Vane",
-        "text_fr": "Débarrasser les réserves des rats, puis aller trouver Vane",
-        "next_id": "2030",
-        "triggerEnemyId": "harbor_rat"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "triggerEnemyId": "harbor_rat",
+        "flagsToAdd": [
+          "hub_2015_dockside"
+        ]
       }
     ]
   },
@@ -1355,9 +1432,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_smuggler"
+        ]
       }
     ]
   },
@@ -1372,9 +1452,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_hound"
+        ]
       }
     ]
   },
@@ -1389,9 +1472,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_rats"
+        ]
       }
     ]
   },
@@ -1406,10 +1492,13 @@
     },
     "choices": [
       {
-        "text": "Fight!",
-        "text_fr": "Combattre !",
-        "next_id": "2030",
-        "triggerEnemyId": "street_bandit"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "triggerEnemyId": "street_bandit",
+        "flagsToAdd": [
+          "hub_2015_informant"
+        ]
       }
     ]
   },
@@ -1424,10 +1513,13 @@
     },
     "choices": [
       {
-        "text": "Hold the gate beside her, then go find Vane",
-        "text_fr": "Tenir la porte à ses côtés, puis aller trouver Vane",
-        "next_id": "2030",
-        "triggerEnemyId": "inquisition_soldier"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "triggerEnemyId": "inquisition_soldier",
+        "flagsToAdd": [
+          "hub_2015_kelda"
+        ]
       }
     ],
     "reqAlignmentScore": 2
@@ -1443,9 +1535,12 @@
     },
     "choices": [
       {
-        "text": "Go find Vane",
-        "text_fr": "Aller trouver Vane",
-        "next_id": "2030"
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ]
       }
     ],
     "reqAlignmentMax": -2
@@ -1478,8 +1573,8 @@
   },
   "2021": {
     "id": "2021",
-    "description": "I struck from the shadows, which is generally where I prefer to conduct my business, only to discover his armor considerably tougher than his manners had suggested it would need to be.",
-    "description_fr": "Je frappai depuis l'ombre, l'endroit d'où je préfère généralement conduire mes affaires, pour découvrir une armure nettement plus solide que ses manières ne laissaient présager qu'elle dût l'être.",
+    "description": "I struck from the shadows, which is generally where I prefer to conduct my business, only to discover his armor considerably tougher than his manners had suggested it would need to be. Below the rail, the harbor market was loud enough to lose a man in, and at its far end a scarred quartermaster — Vane, by the sound of the porters cursing him — held the gangplank to the Lower City as though it were his by birthright. I wiped the blade, straightened my coat, and went down to become a customer.",
+    "description_fr": "Je frappai depuis l'ombre, l'endroit d'où je préfère généralement conduire mes affaires, pour découvrir une armure nettement plus solide que ses manières ne laissaient présager qu'elle dût l'être. Sous le bastingage, le marché du port était assez bruyant pour y perdre un homme, et tout au bout un intendant balafré — Vane, à en juger par les jurons des porteurs — tenait la passerelle vers la Ville Basse comme si elle lui revenait de naissance. J'essuyai la lame, rajustai mon manteau et descendis me faire client.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1490,9 +1585,9 @@
     },
     "choices": [
       {
-        "text": "Escape into the Canals",
-        "text_fr": "Fuir dans les canaux",
-        "next_id": "2900"
+        "text": "Slip down into the market crowd",
+        "text_fr": "Se glisser dans la foule du marché",
+        "next_id": "2015"
       }
     ]
   },
@@ -1542,8 +1637,8 @@
   },
   "2050": {
     "id": "2050",
-    "description": "I plunged into bilge water cold enough to make me reconsider every decision that had led me to it, squeezing through an iron grate that had clearly not been designed with a grown man's shoulders in mind. The current, showing more consideration for my plans than anything else had that week, pulled me out toward the city canals and deposited me, more or less intact, directly into the shadow of the Upper Gate.",
-    "description_fr": "Je plongeai dans une eau de cale assez glacée pour me faire reconsidérer chaque décision m'y ayant conduit, me faufilant par une grille de fer manifestement pas conçue en pensant aux épaules d'un homme adulte. Le courant, montrant plus d'égard pour mes projets que quoi que ce fût d'autre cette semaine-là, m'entraîna vers les canaux de la ville et me déposa, plus ou moins intact, droit dans l'ombre de la Porte Supérieure.",
+    "description": "I plunged into bilge water cold enough to make me reconsider every decision that had led me to it, squeezing through an iron grate that had clearly not been designed with a grown man's shoulders in mind. The current, showing more consideration for my plans than anything else had that week, dragged me along the barnacled pilings and deposited me, more or less intact, beneath the wharf itself — where a rusted ladder climbed toward the noise of a market that had plainly decided the invasion was somebody else's problem. At the far end of it, the porters were cursing a scarred quartermaster named Vane, who held the gangplank to the Lower City as though it were his by birthright.",
+    "description_fr": "Je plongeai dans une eau de cale assez glacée pour me faire reconsidérer chaque décision m'y ayant conduit, me faufilant par une grille de fer manifestement pas conçue en pensant aux épaules d'un homme adulte. Le courant, montrant plus d'égard pour mes projets que quoi que ce fût d'autre cette semaine-là, me traîna le long des pilotis couverts de bernacles et me déposa, plus ou moins intact, sous le quai lui-même — où une échelle rouillée grimpait vers le vacarme d'un marché qui avait manifestement décidé que l'invasion était le problème de quelqu'un d'autre. Tout au bout, les porteurs maudissaient un intendant balafré du nom de Vane, qui tenait la passerelle vers la Ville Basse comme si elle lui revenait de naissance.",
     "context_taxonomy": {
       "ui_theme": "sewers",
       "mood": "creepy",
@@ -1554,9 +1649,9 @@
     },
     "choices": [
       {
-        "text": "Climb up to the Upper Gate",
-        "text_fr": "Grimper vers la Porte Supérieure",
-        "next_id": "2900"
+        "text": "Climb up into the harbor market",
+        "text_fr": "Grimper jusqu'au marché du port",
+        "next_id": "2015"
       }
     ]
   },
@@ -1679,21 +1774,17 @@
     },
     "choices": [
       {
-        "text": "Push deeper into the Spire",
-        "text_fr": "S'enfoncer plus profondément dans la Flèche",
-        "next_id": "3002"
-      },
-      {
-        "text": "Pause to take stock of the Spire district",
-        "text_fr": "Faire une pause pour observer le quartier de la Flèche",
-        "next_id": "3005"
+        "text": "Take stock of the Spire district",
+        "text_fr": "Faire le point sur le quartier de la Flèche",
+        "next_id": "3005",
+        "unlockQuestId": "q_ch3_the_high_wardens_fall"
       }
     ]
   },
   "3002": {
     "id": "3002",
-    "description": "The bronze doors sealed shut behind me with a resonant clang that continued echoing well past the point where any respectable clang ought to have had the courtesy to die. Incense smoke drifted down from somewhere above, thick enough to taste and, I suspected, thick enough to be doing some of its work quite deliberately. Two passages led deeper into the Spire, and I studied them both the way a man studies anything after learning, at considerable personal cost, that not every door bothers to forgive a wrong guess.",
-    "description_fr": "Les portes de bronze se refermèrent derrière moi dans un vacarme résonnant qui continua de retentir bien après le moment où tout vacarme respectable aurait dû avoir la courtoisie de s'éteindre. Une fumée d'encens descendait d'en haut, assez dense pour se goûter et, je le soupçonnais, assez dense pour accomplir délibérément une partie de son office. Deux passages menaient plus profondément dans la Flèche, et je les étudiai tous deux comme on étudie toute chose après avoir appris, à ses propres et considérables dépens, que toutes les portes ne prennent pas la peine de pardonner un mauvais choix.",
+    "description": "Deeper in, a second set of doors sealed behind me with a resonant clang that continued echoing well past the point where any respectable clang ought to have had the courtesy to die. Incense smoke drifted down from somewhere above, thick enough to taste and, I suspected, thick enough to be doing some of its work quite deliberately. Two passages led deeper into the Spire, and I studied them both the way a man studies anything after learning, at considerable personal cost, that not every door bothers to forgive a wrong guess.",
+    "description_fr": "Plus loin, une seconde série de portes se referma derrière moi dans un vacarme résonnant qui continua de retentir bien après le moment où tout vacarme respectable aurait dû avoir la courtoisie de s'éteindre. Une fumée d'encens descendait d'en haut, assez dense pour se goûter et, je le soupçonnais, assez dense pour accomplir délibérément une partie de son office. Deux passages menaient plus profondément dans la Flèche, et je les étudiai tous deux comme on étudie toute chose après avoir appris, à ses propres et considérables dépens, que toutes les portes ne prennent pas la peine de pardonner un mauvais choix.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "tense",
@@ -1717,8 +1808,8 @@
   },
   "3005": {
     "id": "3005",
-    "description": "I had ruled out the rooftop route into the cloisters — whatever way back into the Spire I found from here, it would be through the ground-level archives instead. First, though, the outer district still offered a few things worth doing, and rather more things worth avoiding, in roughly the proportion I had come to expect from every district I'd passed through since this business began.",
-    "description_fr": "J'avais écarté la voie des toits vers les cloîtres — quel que fût le chemin qui me ramènerait vers la Flèche, ce serait désormais par les archives, au niveau du sol. Mais avant cela, le quartier extérieur offrait encore quelques occasions à saisir, et bien davantage de dangers à éviter, dans à peu près les proportions auxquelles je m'étais habitué dans chaque quartier traversé depuis le début de cette affaire.",
+    "description": "Whichever way into the Spire I settled on in the end — the high cloisters or the ground-level archives — the outer district still offered a few things worth doing, and rather more things worth avoiding, in roughly the proportion I had come to expect from every district I'd passed through since this business began.",
+    "description_fr": "Quelle que fût la voie vers la Flèche sur laquelle je finirais par m'arrêter — les hauts cloîtres ou les archives au niveau du sol — le quartier extérieur offrait encore quelques occasions à saisir, et bien davantage de dangers à éviter, dans à peu près les proportions auxquelles je m'étais habitué dans chaque quartier traversé depuis le début de cette affaire.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "neutral",
@@ -1732,43 +1823,64 @@
         "text": "Take up the Ashen Oath",
         "text_fr": "Prêter le Serment de Cendres",
         "next_id": "3005_oath",
-        "unlockQuestId": "q_ch3_ashen_oath"
+        "unlockQuestId": "q_ch3_ashen_oath",
+        "hideIfFlags": [
+          "hub_3005_oath"
+        ]
       },
       {
         "text": "Face down a single cultist acolyte, still chanting among the ashes as though conviction alone might stop a blade",
         "text_fr": "Affronter un unique acolyte cultiste, psalmodiant encore parmi les cendres comme si la seule conviction pouvait arrêter une lame",
         "next_id": "3005_acolyte",
-        "triggerEnemyId": "cultist_acolyte"
+        "triggerEnemyId": "cultist_acolyte",
+        "hideIfFlags": [
+          "hub_3005_acolyte"
+        ]
       },
       {
         "text": "Trade at the Smugglers' Vault, relocated here",
         "text_fr": "Commercer au Coffre des Contrebandiers, relocalisé ici",
         "next_id": "3005_vault",
-        "unlockShopId": "smugglers_vault"
+        "unlockShopId": "smugglers_vault",
+        "hideIfFlags": [
+          "hub_3005_vault"
+        ]
       },
       {
         "text": "Take up the contract for the Void Relic, a shard rumored to hum with the same wrongness as the Shroud",
         "text_fr": "Accepter le contrat pour la Relique du Néant, un éclat que l'on dit vibrer de la même perversité que le Linceul",
         "next_id": "3005_relic",
-        "unlockQuestId": "q_ch3_void_relic"
+        "unlockQuestId": "q_ch3_void_relic",
+        "hideIfFlags": [
+          "hub_3005_relic"
+        ]
       },
       {
         "text": "Face a void wisp drifting low over the ashes, small enough to seem harmless and wrong enough to know better",
         "text_fr": "Affronter un esprit du néant voletant bas au-dessus des cendres, assez petit pour sembler inoffensif et assez inquiétant pour ne pas s'y fier",
         "next_id": "3005_wisp",
-        "triggerEnemyId": "void_wisp"
+        "triggerEnemyId": "void_wisp",
+        "hideIfFlags": [
+          "hub_3005_wisp"
+        ]
       },
       {
         "text": "Face a void stalker lurking in the ruins, the kind of thing the cultists themselves gave a wide berth",
         "text_fr": "Affronter un rôdeur du néant tapi dans les ruines, le genre de créature que les cultistes eux-mêmes évitaient soigneusement",
         "next_id": "3005_stalker",
-        "triggerEnemyId": "void_stalker"
+        "triggerEnemyId": "void_stalker",
+        "hideIfFlags": [
+          "hub_3005_stalker"
+        ]
       },
       {
         "text": "Face an iron golem guarding a vault, its bulk suggesting the contents were worth rather more trouble than most",
         "text_fr": "Affronter un golem de fer gardant un coffre, sa carrure suggérant que le contenu valait bien plus d'ennuis que la moyenne",
         "next_id": "3005_golem",
-        "triggerEnemyId": "iron_golem"
+        "triggerEnemyId": "iron_golem",
+        "hideIfFlags": [
+          "hub_3005_golem"
+        ]
       },
       {
         "text": "Face down two Inquisition auxiliaries sifting the ash for anything worth reporting",
@@ -1777,6 +1889,9 @@
         "triggerEnemyIds": [
           "inquisition_auxiliary",
           "inquisition_auxiliary"
+        ],
+        "hideIfFlags": [
+          "hub_3005_auxiliaries"
         ]
       },
       {
@@ -1785,7 +1900,10 @@
         "next_id": "3005_maren",
         "unlockQuestId": "q_ch3_marens_penance",
         "lockedText": "She had the look of someone deciding whether a stranger deserved a confession, and whatever she saw in me didn't pass the test. I told myself it was nothing personal, though given who I'd left behind to get this far, I suspected it rather was.",
-        "lockedText_fr": "Elle avait l'air de quelqu'un qui se demande si un inconnu mérite une confession, et ce qu'elle vit en moi ne passa pas l'épreuve. Je me dis que ce n'était rien de personnel, bien que, vu qui j'avais laissé derrière moi pour arriver jusque-là, je soupçonnasse le contraire."
+        "lockedText_fr": "Elle avait l'air de quelqu'un qui se demande si un inconnu mérite une confession, et ce qu'elle vit en moi ne passa pas l'épreuve. Je me dis que ce n'était rien de personnel, bien que, vu qui j'avais laissé derrière moi pour arriver jusque-là, je soupçonnasse le contraire.",
+        "hideIfFlags": [
+          "hub_3005_maren"
+        ]
       },
       {
         "text": "Pick the lock on a sealed archive door, untouched since the invasion",
@@ -1794,7 +1912,10 @@
         "checkAbility": "dexterity",
         "checkDC": 13,
         "goldMod": 40,
-        "failNextId": "3020"
+        "failNextId": "3005_archive_failed",
+        "hideIfFlags": [
+          "hub_3005_archive"
+        ]
       },
       {
         "text": "Decipher the scorched ledger fragments scattered outside the archive",
@@ -1802,19 +1923,45 @@
         "next_id": "3005_ledger",
         "checkAbility": "intelligence",
         "checkDC": 13,
-        "failNextId": "3020"
+        "failNextId": "3005_ledger_failed",
+        "hideIfFlags": [
+          "hub_3005_ledger"
+        ],
+        "unlockQuestId": "q_ch3_inquisition_ledger"
       },
       {
         "text": "Haggle with a scarred orc mercenary sizing up the ruins",
         "text_fr": "Négocier avec un mercenaire orc balafré évaluant les ruines",
         "next_id": "3005_grosh",
         "lockedText": "He looked me over with the particular disinterest of a man who has already been offered enough unpaid work to last several lifetimes, did the arithmetic on my boots and my purse, and returned to his own business before I had finished deciding how to open the conversation.",
-        "lockedText_fr": "Il me jaugea avec ce désintérêt particulier d'un homme à qui l'on a déjà proposé assez de travail non payé pour plusieurs vies, fit le calcul sur mes bottes et ma bourse, et retourna à ses affaires avant même que j'aie fini de décider comment engager la conversation."
+        "lockedText_fr": "Il me jaugea avec ce désintérêt particulier d'un homme à qui l'on a déjà proposé assez de travail non payé pour plusieurs vies, fit le calcul sur mes bottes et ma bourse, et retourna à ses affaires avant même que j'aie fini de décider comment engager la conversation.",
+        "hideIfFlags": [
+          "hub_3005_grosh"
+        ]
       },
       {
         "text": "Follow chalk-marks to a wall crowded with names",
         "text_fr": "Suivre des marques de craie jusqu'à un mur couvert de noms",
-        "next_id": "3005_wall"
+        "next_id": "3005_wall",
+        "hideIfFlags": [
+          "hub_3005_wall"
+        ]
+      },
+      {
+        "text": "Send word to Lysa through the refugee runners",
+        "text_fr": "Faire passer un message à Lysa par les coursiers des réfugiés",
+        "next_id": "3005_lysa",
+        "unlockQuestId": "q_ch3_alsters_dawn",
+        "hideIfFlags": [
+          "hub_3005_lysa"
+        ],
+        "lockedText": "There was no one left to send word to. The runners went past me with other people's letters, and I let them.",
+        "lockedText_fr": "Il ne restait personne à qui envoyer un message. Les coursiers passèrent devant moi avec les lettres d'autres gens, et je les laissai faire."
+      },
+      {
+        "text": "Push deeper into the Spire",
+        "text_fr": "S'enfoncer plus profondément dans la Flèche",
+        "next_id": "3002"
       }
     ]
   },
@@ -1829,10 +1976,13 @@
     },
     "choices": [
       {
-        "text": "Find the chanting acolyte and silence him",
-        "text_fr": "Trouver l'acolyte qui psalmodie et le faire taire",
-        "next_id": "3020",
-        "triggerEnemyId": "cultist_acolyte"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "triggerEnemyId": "cultist_acolyte",
+        "flagsToAdd": [
+          "hub_3005_oath"
+        ]
       }
     ]
   },
@@ -1847,9 +1997,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_acolyte"
+        ]
       }
     ]
   },
@@ -1864,9 +2017,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_vault"
+        ]
       }
     ]
   },
@@ -1881,10 +2037,13 @@
     },
     "choices": [
       {
-        "text": "Track the shard's hum to the wisp carrying it",
-        "text_fr": "Suivre le bourdonnement de l'éclat jusqu'au feu follet qui le porte",
-        "next_id": "3020",
-        "triggerEnemyId": "void_wisp"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "triggerEnemyId": "void_wisp",
+        "flagsToAdd": [
+          "hub_3005_relic"
+        ]
       }
     ]
   },
@@ -1899,9 +2058,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_wisp"
+        ]
       }
     ]
   },
@@ -1916,9 +2078,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_auxiliaries"
+        ]
       }
     ]
   },
@@ -1933,9 +2098,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_stalker"
+        ]
       }
     ]
   },
@@ -1950,9 +2118,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_golem"
+        ]
       }
     ]
   },
@@ -1967,9 +2138,12 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_maren"
+        ]
       }
     ],
     "reqFlags": [
@@ -2528,9 +2702,12 @@
     "description_fr": "La porte était scellée depuis l'invasion, sa serrure du genre ténace et démodé qui récompense la patience plutôt que la force. Je m'agenouillai quand même, à moitié convaincu de perdre mon temps. À l'intérieur, l'archive sentait la poussière et la négligence en parts à peu près égales — des classeurs, pour la plupart pourris, quelques-uns encore assez intacts pour valoir la peine d'être fouillés.",
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_archive"
+        ]
       }
     ]
   },
@@ -2608,14 +2785,17 @@
     },
     "choices": [
       {
-        "text": "Fight!",
-        "text_fr": "Combattre !",
-        "next_id": "2030",
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
         "unlockQuestId": "q_ch2_informants_tip",
         "triggerEnemyIds": [
           "street_bandit",
           "street_bandit",
           "street_bandit"
+        ],
+        "flagsToAdd": [
+          "hub_2015_informant"
         ]
       }
     ]
@@ -2631,11 +2811,14 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "2030",
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
         "goldMod": 15,
-        "unlockQuestId": "q_ch2_informants_tip"
+        "unlockQuestId": "q_ch2_informants_tip",
+        "flagsToAdd": [
+          "hub_2015_informant"
+        ]
       }
     ]
   },
@@ -2676,11 +2859,14 @@
     },
     "choices": [
       {
-        "text": "Fight!",
-        "text_fr": "Combattre !",
-        "next_id": "2030",
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
         "triggerEnemyId": "dock_overseer",
-        "unlockQuestId": "q_ch2_terns_toll"
+        "unlockQuestId": "q_ch2_terns_toll",
+        "flagsToAdd": [
+          "hub_2015_ternrow"
+        ]
       }
     ]
   },
@@ -2695,12 +2881,13 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "2030",
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
         "goldMod": 20,
         "alignmentMod": 5,
         "flagsToAdd": [
+          "hub_2015_ternrow",
           "tern_row_spared"
         ]
       }
@@ -2717,12 +2904,13 @@
     },
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020",
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
         "goldMod": 30,
         "flagsToAdd": [
-          "ashen_ledger_decoded"
+          "ashen_ledger_decoded",
+          "hub_3005_ledger"
         ]
       }
     ]
@@ -2801,10 +2989,13 @@
     "reqGold": 80,
     "choices": [
       {
-        "text": "Head for the Hall of Records",
-        "text_fr": "Se diriger vers la Salle des Archives",
-        "next_id": "3020",
-        "unlockQuestId": "q_ch3_groshs_price"
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "unlockQuestId": "q_ch3_groshs_price",
+        "flagsToAdd": [
+          "hub_3005_grosh"
+        ]
       }
     ]
   },
@@ -2845,11 +3036,14 @@
     },
     "choices": [
       {
-        "text": "Fight!",
-        "text_fr": "Combattre !",
-        "next_id": "3020",
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
         "triggerEnemyId": "inquisition_auxiliary",
-        "unlockQuestId": "q_ch3_reckoning_wall"
+        "unlockQuestId": "q_ch3_reckoning_wall",
+        "flagsToAdd": [
+          "hub_3005_wall"
+        ]
       }
     ]
   },
@@ -2864,12 +3058,13 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "3020",
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
         "goldMod": 25,
         "alignmentMod": 5,
         "flagsToAdd": [
+          "hub_3005_wall",
           "reckoning_wall_saved"
         ]
       }
@@ -2908,10 +3103,13 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "2030",
-        "goldMod": 35
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "goldMod": 35,
+        "flagsToAdd": [
+          "hub_2015_cards"
+        ]
       }
     ]
   },
@@ -2926,10 +3124,108 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "2030",
-        "goldMod": -15
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "goldMod": -15,
+        "flagsToAdd": [
+          "hub_2015_cards"
+        ]
+      }
+    ]
+  },
+  "2015_bandits": {
+    "id": "2015_bandits",
+    "description": "The bounty was pinned to the harbor master's door in a hand that had clearly written a great many of them: two men who had burned a season's worth of shipping manifests and then, with the poor judgment of the recently successful, stayed to drink on the proceeds. I found them exactly where the notice said I would, which is more than most notices can claim, and they came at me together with the confidence of men who had never once been the ones being hunted. It did not take long. What was left of the manifests was still in the taller one's coat, charred at the edges and readable at the middle, which struck me as a fair description of most things in this harbor.",
+    "description_fr": "La prime était clouée à la porte du maître du port, d'une main qui en avait manifestement rédigé un grand nombre : deux hommes qui avaient brûlé une saison entière de manifestes d'expédition puis, avec le mauvais jugement des gens fraîchement prospères, étaient restés boire le produit de leur forfait. Je les trouvai exactement là où l'avis l'annonçait, ce dont bien peu d'avis peuvent se vanter, et ils vinrent à moi ensemble avec l'assurance d'hommes qui n'avaient jamais été ceux qu'on traque. Ce ne fut pas long. Ce qui restait des manifestes était encore dans le manteau du plus grand, calciné sur les bords et lisible au milieu, ce qui me parut une description honnête de la plupart des choses dans ce port.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_2015_bandits"
+    },
+    "choices": [
+      {
+        "text": "Back to the market",
+        "text_fr": "Retour au marché",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_bandits"
+        ]
+      }
+    ]
+  },
+  "3005_lysa": {
+    "id": "3005_lysa",
+    "reqFlags": [
+      "lysa_survived"
+    ],
+    "description": "The refugee runners worked the ash-choked quarter in relays, children mostly, paid in bread and the specific kind of respect adults reserve for people who can get somewhere they can't. I gave the smallest of them a coin and a message for Lysa, kept short because the girl would have to remember it and because there was not, when it came to it, much I trusted myself to say. Where I was. That I was still standing. That the thing I had carried out of the slums had turned out to be a great deal more than an heirloom, and that she should not wait for me to come back with it. She repeated it back to me twice, word for word, and was gone before I could change my mind about the last part.",
+    "description_fr": "Les coursiers des réfugiés arpentaient le quartier étouffé de cendres par relais, des enfants pour la plupart, payés en pain et de ce respect particulier que les adultes réservent à ceux qui peuvent aller là où eux ne le peuvent pas. Je donnai à la plus petite une pièce et un message pour Lysa, bref parce que la gamine devrait le retenir, et parce qu'il n'y avait pas, tout compte fait, grand-chose que je me sentais capable de dire. Où j'étais. Que je tenais encore debout. Que la chose que j'avais emportée hors des taudis s'était révélée être bien plus qu'un héritage, et qu'elle ne devait pas m'attendre pour la rapporter. Elle me le répéta deux fois, mot pour mot, et disparut avant que je puisse changer d'avis sur la dernière partie.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3005_lysa"
+    },
+    "choices": [
+      {
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_lysa"
+        ]
+      }
+    ]
+  },
+  "3005_archive_failed": {
+    "id": "3005_archive_failed",
+    "description": "The lock had opinions about my technique, and after the third pick snapped off inside it I was forced to concede that its opinions were better informed than mine. Whatever the archive held would go on holding it. I left the door as I'd found it, minus some dignity and two picks, and told myself that patience was a virtue I would take up in some later, quieter life.",
+    "description_fr": "La serrure avait des opinions sur ma technique, et lorsque le troisième crochet se brisa à l'intérieur, je dus admettre que ses opinions étaient mieux fondées que les miennes. Ce que l'archive renfermait continuerait de l'être. Je laissai la porte telle que je l'avais trouvée, moins un peu de dignité et deux crochets, en me disant que la patience était une vertu que j'adopterais dans une vie ultérieure, plus calme.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3005_archive_failed"
+    },
+    "choices": [
+      {
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_archive"
+        ]
+      }
+    ]
+  },
+  "3005_ledger_failed": {
+    "id": "3005_ledger_failed",
+    "description": "The fragments refused to line up into anything I could read, the ash having done its work more thoroughly than the fire had, and after an hour of turning scraps against the light I had a headache and a great deal of soot on my hands and nothing else to show for either. Whoever had kept these records had at least the satisfaction of knowing they'd outlasted my patience.",
+    "description_fr": "Les fragments refusèrent de s'aligner en quoi que ce soit de lisible, la cendre ayant fait son œuvre plus soigneusement que le feu, et après une heure passée à tourner des lambeaux contre la lumière, j'avais une migraine, beaucoup de suie sur les mains, et rien d'autre à montrer pour l'une ou l'autre. Celui qui avait tenu ces registres avait au moins la satisfaction de savoir qu'ils avaient survécu à ma patience.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3005_ledger_failed"
+    },
+    "choices": [
+      {
+        "text": "Back into the quarter",
+        "text_fr": "Retour dans le quartier",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_ledger"
+        ]
       }
     ]
   }

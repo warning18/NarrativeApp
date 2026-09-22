@@ -24,6 +24,7 @@ class StoryChoice {
     this.huntAffixes = const [],
     this.chestFloor,
     this.isHunterAmbush = false,
+    this.hideIfFlags = const [],
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -62,6 +63,9 @@ class StoryChoice {
               const [],
       chestFloor: json['chestFloor'] as String?,
       isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
+      hideIfFlags:
+          (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
     );
   }
 
@@ -136,6 +140,17 @@ class StoryChoice {
   /// so FightScreen applies that encounter's own reward/chest rules.
   final bool isHunterAmbush;
 
+  /// The choice is not shown at all once the player holds ANY of these
+  /// flags -- how a hub's activities are consumed: the activity's bridge
+  /// node returns to the hub with a `flagsToAdd` marker, and the hub's
+  /// choice carries the same marker here, so a market visit or a fight is
+  /// offered once and then quietly leaves the list. Distinct from a
+  /// locked choice (see [lockedText]), which stays visible as a reminder.
+  final List<String> hideIfFlags;
+
+  bool isHiddenFor(Iterable<String> flags) =>
+      hideIfFlags.any((flag) => flags.contains(flag));
+
   bool get hasAbilityCheck => checkAbility != null && checkAbility!.isNotEmpty;
 
   bool get hasSkillChallenge =>
@@ -186,6 +201,7 @@ class StoryChoice {
         if (chestFloor != null && chestFloor!.isNotEmpty)
           'chestFloor': chestFloor,
         if (isHunterAmbush) 'isHunterAmbush': isHunterAmbush,
+        if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
