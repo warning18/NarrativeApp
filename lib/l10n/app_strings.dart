@@ -75,6 +75,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Main Story Beat',
     AppLanguage.fr: "Étape principale de l'histoire",
   },
+  'undiscovered_node_legend': {
+    AppLanguage.en: 'Undiscovered',
+    AppLanguage.fr: 'Non découvert',
+  },
+  'node_not_yet_discovered': {
+    AppLanguage.en: "You haven't reached this part of the story yet.",
+    AppLanguage.fr:
+        "Vous n'avez pas encore atteint cette partie de l'histoire.",
+  },
   'main_beat_chip': {
     AppLanguage.en: 'Main Beat',
     AppLanguage.fr: 'Étape principale'

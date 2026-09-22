@@ -295,6 +295,63 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                     final isMainBeat = isMainBeatNode(id);
                     final hidden = _hiddenKinds.contains(kind);
 
+                    // Fog of war: outside Edit Mode, a node the player
+                    // hasn't actually reached yet is shown as an
+                    // unrevealed shadow -- position and connections stay
+                    // visible (so the map still reads as a map), but its
+                    // kind, id and description stay hidden rather than
+                    // spoiling what's ahead. Edit Mode always sees
+                    // everything, same as every other authoring feature
+                    // gated to it.
+                    final isShadowed = !isEditMode &&
+                        !isCurrent &&
+                        !playState.visitedNodeIds.contains(id);
+                    if (isShadowed) {
+                      return _NodeTapArea(
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text(tr(ref, 'node_not_yet_discovered')))),
+                        onDoubleTap: null,
+                        child: Container(
+                          width: _nodeBoxWidth,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: colorScheme.outlineVariant, width: 1),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.nights_stay_outlined,
+                                size: 14,
+                                color: colorScheme.onSurfaceVariant
+                                    .withValues(alpha: 0.7),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '?????',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.7),
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     final container = Container(
                       width: _nodeBoxWidth,
                       padding: const EdgeInsets.symmetric(
@@ -420,6 +477,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                   hiddenKinds: _hiddenKinds,
                   onToggle: _toggleKind,
                   onClose: () => setState(() => _legendVisible = false),
+                  showUndiscovered: !isEditMode,
                 )
               : _LegendReopenButton(
                   onTap: () => setState(() => _legendVisible = true),
@@ -626,12 +684,18 @@ class _Legend extends ConsumerWidget {
     required this.hiddenKinds,
     required this.onToggle,
     required this.onClose,
+    required this.showUndiscovered,
   });
 
   final Map<_NodeKind, _NodeStyle> styles;
   final Set<_NodeKind> hiddenKinds;
   final ValueChanged<_NodeKind> onToggle;
   final VoidCallback onClose;
+
+  /// Whether the map is currently shadowing unvisited nodes (i.e. not in
+  /// Edit Mode) -- shows an explanatory legend row for that shadow style
+  /// only when it can actually appear on the map right now.
+  final bool showUndiscovered;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -714,6 +778,29 @@ class _Legend extends ConsumerWidget {
                     style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
+            if (showUndiscovered) ...[
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest
+                          .withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: colorScheme.outlineVariant),
+                    ),
+                    child: Icon(Icons.nights_stay_outlined,
+                        size: 10, color: colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(tr(ref, 'undiscovered_node_legend'),
+                      style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ],
             const SizedBox(height: 4),
             Text(
               tr(ref, 'tap_to_filter'),

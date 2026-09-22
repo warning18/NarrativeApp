@@ -8,6 +8,7 @@ import '../models/story_node.dart';
 
 const String _autosaveNodePrefsKey = 'autosave_story_node';
 const String _autosaveHistoryPrefsKey = 'autosave_story_history';
+const String _autosaveVisitedPrefsKey = 'autosave_story_visited';
 
 final storyRepositoryProvider = Provider<StoryRepository>((ref) {
   return StoryRepository();
@@ -40,6 +41,7 @@ class StoryPlayState {
   const StoryPlayState({
     required this.currentNodeId,
     required this.history,
+    required this.visitedNodeIds,
     this.activeExcursionNode,
     this.excursionQueue = const [],
     this.resumeNodeId,
@@ -47,6 +49,15 @@ class StoryPlayState {
 
   final String currentNodeId;
   final List<String> history;
+
+  /// Every real story-graph node id the player has ever actually landed on
+  /// this playthrough -- grows monotonically (a [goBack] never un-visits a
+  /// node, it just moves [currentNodeId] back to one already in this set).
+  /// Drives the story map's fog-of-war: a node not in here is shown as an
+  /// unrevealed shadow rather than its real content. Never includes
+  /// procedurally generated excursion nodes, which aren't part of the real
+  /// graph the map draws.
+  final Set<String> visitedNodeIds;
 
   /// The procedurally generated node currently being shown, if the player
   /// is mid-excursion (a detour inserted between two main story beats).
@@ -63,7 +74,11 @@ class StoryPlayState {
 
 class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   StoryPlayNotifier(String startId)
-      : super(StoryPlayState(currentNodeId: startId, history: const [])) {
+      : super(StoryPlayState(
+          currentNodeId: startId,
+          history: const [],
+          visitedNodeIds: {startId},
+        )) {
     _loadAutosave();
   }
 
@@ -83,19 +98,42 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     final history = historyJson != null
         ? (json.decode(historyJson) as List).map((e) => e.toString()).toList()
         : const <String>[];
-    state = StoryPlayState(currentNodeId: nodeId, history: history);
+    final visitedJson = prefs.getString(_autosaveVisitedPrefsKey);
+    // A save from before fog-of-war tracking existed has no visited-set key
+    // yet -- backfill from history + the current node rather than shadowing
+    // every node a returning player has already actually read.
+    final visitedNodeIds = visitedJson != null
+        ? (json.decode(visitedJson) as List).map((e) => e.toString()).toSet()
+        : {...history, nodeId};
+    state = StoryPlayState(
+      currentNodeId: nodeId,
+      history: history,
+      visitedNodeIds: visitedNodeIds,
+    );
   }
 
   Future<void> _persistAutosave() async {
+    // Snapshot everything from `state` before the first await -- this runs
+    // fire-and-forget from choose()/goBack()/etc, so by the time an awaited
+    // SharedPreferences call resumes, the notifier (and its `state` getter)
+    // may already have been disposed (e.g. the widget tree torn down right
+    // after a choice). Reading `state` only synchronously, up front, avoids
+    // that "Tried to use StoryPlayNotifier after dispose" race entirely.
+    final nodeId = state.currentNodeId;
+    final history = state.history;
+    final visitedNodeIds = state.visitedNodeIds;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_autosaveNodePrefsKey, state.currentNodeId);
-    await prefs.setString(_autosaveHistoryPrefsKey, json.encode(state.history));
+    await prefs.setString(_autosaveNodePrefsKey, nodeId);
+    await prefs.setString(_autosaveHistoryPrefsKey, json.encode(history));
+    await prefs.setString(
+        _autosaveVisitedPrefsKey, json.encode(visitedNodeIds.toList()));
   }
 
   void choose(String nextId) {
     state = StoryPlayState(
       currentNodeId: nextId,
       history: [...state.history, state.currentNodeId],
+      visitedNodeIds: {...state.visitedNodeIds, nextId},
     );
     _persistAutosave();
   }
@@ -106,25 +144,40 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     if (state.history.isEmpty) return;
     final newHistory = List<String>.from(state.history);
     final previousId = newHistory.removeLast();
-    state = StoryPlayState(currentNodeId: previousId, history: newHistory);
+    state = StoryPlayState(
+      currentNodeId: previousId,
+      history: newHistory,
+      visitedNodeIds: state.visitedNodeIds,
+    );
     _persistAutosave();
   }
 
   /// Resets to the very start — also overwrites the autosave, since a
   /// restart (only reachable via the Edit Mode "Reset" action) is a
   /// deliberate "begin again," and the next relaunch should honor that
-  /// rather than silently reviving the position it just left.
+  /// rather than silently reviving the position it just left. The map's
+  /// fog of war resets with it: a fresh run starts fully unrevealed again.
   void restart(String startId) {
-    state = StoryPlayState(currentNodeId: startId, history: const []);
+    state = StoryPlayState(
+      currentNodeId: startId,
+      history: const [],
+      visitedNodeIds: {startId},
+    );
     _persistAutosave();
   }
 
   /// Restores play position to [nodeId] with the given [history] — used to
   /// restore a manually saved checkpoint. Drops any in-progress excursion,
   /// since excursions are procedurally generated side content not meant to
-  /// survive a save/load round trip.
+  /// survive a save/load round trip. The fog-of-war set only ever grows, so
+  /// loading an earlier checkpoint doesn't re-shadow map ground already
+  /// revealed past that point.
   void loadState(String nodeId, List<String> history) {
-    state = StoryPlayState(currentNodeId: nodeId, history: history);
+    state = StoryPlayState(
+      currentNodeId: nodeId,
+      history: history,
+      visitedNodeIds: {...state.visitedNodeIds, ...history, nodeId},
+    );
     _persistAutosave();
   }
 
@@ -135,6 +188,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     state = StoryPlayState(
       currentNodeId: state.currentNodeId,
       history: state.history,
+      visitedNodeIds: state.visitedNodeIds,
       activeExcursionNode: chain.first,
       excursionQueue: chain.skip(1).toList(),
       resumeNodeId: resumeNodeId,
@@ -152,6 +206,7 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     state = StoryPlayState(
       currentNodeId: state.currentNodeId,
       history: state.history,
+      visitedNodeIds: state.visitedNodeIds,
       activeExcursionNode: state.excursionQueue.first,
       excursionQueue: state.excursionQueue.skip(1).toList(),
       resumeNodeId: state.resumeNodeId,

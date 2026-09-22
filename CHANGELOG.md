@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.102.0+130]
+
+Fog of war for the story map: outside Edit Mode, it now shows your journey
+so far rather than the entire spoiler-laden graph at once.
+
+### Added
+- **The story map shadows nodes you haven't reached yet.** A node the
+  player hasn't actually visited this playthrough now renders as an
+  unrevealed shadow (position and connecting edges still visible, so the
+  map's shape reads as a map) instead of its real kind, id, and
+  description — tapping it explains it hasn't been discovered yet rather
+  than opening the full node-info sheet. Edit Mode is unaffected and
+  always sees the whole graph, same as every other authoring feature
+  already gated to it. A new legend row explains the shadow style.
+- `StoryPlayState.visitedNodeIds`, a monotonically-growing set backing
+  this — persisted alongside the existing autosaved position/history, and
+  backfilled from history for a save written before this feature existed
+  so a returning player doesn't lose map progress they've actually made.
+
+### Fixed
+- `StoryPlayNotifier._persistAutosave` read `state` after an `await`,
+  which could throw ("Tried to use StoryPlayNotifier after dispose") if
+  the notifier was disposed while a fire-and-forget autosave was still in
+  flight — a pre-existing latent race, made easy to hit by this batch's
+  extra autosaved field. Now snapshots `state` synchronously before the
+  first await instead.
+
 ## [1.101.0+129]
 
 A quicker way to hand a reviewer (human or AI) your authoring notes without
