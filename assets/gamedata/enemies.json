@@ -51,8 +51,8 @@
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
-    "maxHealth": 195,
-    "damage": 24,
+    "maxHealth": 150,
+    "damage": 18,
     "guile": 2,
     "xpReward": 80,
     "goldReward": 50,
@@ -343,7 +343,7 @@
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
-    "maxHealth": 165,
+    "maxHealth": 170,
     "damage": 19,
     "guile": 6,
     "xpReward": 100,
@@ -424,8 +424,8 @@
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
-    "maxHealth": 142,
-    "damage": 16,
+    "maxHealth": 160,
+    "damage": 20,
     "guile": 7,
     "xpReward": 109,
     "goldReward": 82,
@@ -457,8 +457,8 @@
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
-    "maxHealth": 154,
-    "damage": 18,
+    "maxHealth": 165,
+    "damage": 21,
     "guile": 7,
     "xpReward": 118,
     "goldReward": 89,

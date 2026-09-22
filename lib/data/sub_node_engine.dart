@@ -28,6 +28,7 @@ class SubNodeEngine {
     required List<String> completedQuestIds,
     MapTheme theme = defaultMapTheme,
     double triggerChance = 0.7,
+    int partySize = 3,
   }) {
     if (random.nextDouble() > triggerChance) return null;
 
@@ -81,16 +82,21 @@ class SubNodeEngine {
           shopPool: shopPool,
           enemyPool: enemyPool,
           packPool: filterPackPool(enemies: enemies, enemyPool: enemyPool),
-          maxPackSize: maxPackSizeFor(chapter),
+          maxPackSize: maxPackSizeFor(chapter, partySize: partySize),
           questId: i == 0 ? questSlotId : null,
         ),
     ];
   }
 
-  /// The largest pack a random encounter may draw at [chapter] -- a pair
-  /// through chapter 2 (a level-1 party against three of anything is a
-  /// coin flip at best), three from chapter 3 on.
-  static int maxPackSizeFor(int chapter) => chapter <= 2 ? 2 : 3;
+  /// The largest pack a random encounter may draw at [chapter] for a party
+  /// of [partySize] (the player plus active allies): a pair through
+  /// chapter 2 (a level-1 party against three of anything is a coin flip at
+  /// best), three from chapter 3 on -- but never more enemies than the
+  /// party has dice. A pack's threat is its action economy, and three
+  /// enemies against a solo character is unwinnable on that alone, whatever
+  /// their stats (a level-5 solo mage went 0 for 25 against one).
+  static int maxPackSizeFor(int chapter, {int partySize = 3}) =>
+      min(chapter <= 2 ? 2 : 3, max(2, partySize));
 
   /// The subset of [enemyPool] a pack may be drawn from: enemies flagged
   /// `packEligible` in enemies.json (the trash tier), never a

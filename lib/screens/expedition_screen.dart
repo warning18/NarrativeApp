@@ -72,7 +72,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       enemyPool: enemyPool,
       packPool:
           SubNodeEngine.filterPackPool(enemies: enemies, enemyPool: enemyPool),
-      maxPackSize: SubNodeEngine.maxPackSizeFor(zoneChapter),
+      maxPackSize: SubNodeEngine.maxPackSizeFor(
+        zoneChapter,
+        partySize: 1 + session.activeAllyIds.length,
+      ),
     );
   }
 

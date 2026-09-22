@@ -1805,6 +1805,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'vous vous préparez à bloquer',
   },
   'block_word': {AppLanguage.en: 'block', AppLanguage.fr: 'blocage'},
+  'redirected_hit_prefix': {
+    AppLanguage.en: 'That one was already down — the blow lands on',
+    AppLanguage.fr: 'Celui-là était déjà à terre — le coup atteint',
+  },
   'braced_suffix': {
     AppLanguage.en: 'braces for the telegraphed blow — block doubled',
     AppLanguage.fr: 'se prépare au coup annoncé — blocage doublé',

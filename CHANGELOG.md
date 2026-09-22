@@ -8,6 +8,50 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.107.0+135]
+
+The review's remaining P2 items: the Chapter-1 difficulty wall, three
+combat-engine/data outliers, and the continuity nits.
+
+### Fixed
+- **The Rat Matriarch is no longer a Chapter-1 wall.** Node 855's forced
+  fight (195 HP / 24 damage, the lowest win rate in the game at 48–63%,
+  and a hard stop for a level-2 mage) is now 150 / 18, and the node offers
+  "Back away and look for another way through" — the sewer's other exit.
+- **`OnLowHealth` moves now honor their `chance`.** Every wounded-enemy
+  nuke in enemies.json is authored at 40–60%, but the engine fired it 100%
+  of turns below the threshold.
+- **`void_blast` is no longer a one-shot.** 25 × 2.5 gave a flat +62.5 to
+  every enemy that carries it (three times any other enemy skill) and
+  ~128 damage in a level-4 player's hands (Sable's die now carries it for
+  free). Retuned to 12 × 1.8. The three regression-tested bosses that leaned
+  on it get a small base bump to stay in their tuned win-rate bands (High
+  Warden 170 HP, Zealot 20 dmg / 160 HP, Manifestation 21 dmg / 165 HP).
+- **`heavy_attack` no longer beats every purchasable skill for free**
+  (8 × 1.6 → 5 × 1.3; still the default for any unassigned Skill face).
+- **Packs scale to the party.** A random pack never outnumbers the party's
+  dice — a solo character meets at most a pair — and pair/triple members
+  now fight at 80% / 70% of their solo stats (a level-5 solo mage went 0
+  for 25 against a triple on action economy alone; a pair of mid-tier
+  enemies was still the worst random fight in the game).
+- **Pack overkill is redirected instead of wasted.** A hit whose picked
+  enemy went down to an earlier blow this round now carries on to the next
+  one standing, with the log saying so — previously it vanished while the
+  log still claimed a hit.
+- A telegraph badge can no longer name a party member poison just knocked
+  out — the cached move is re-aimed at someone conscious.
+- Story continuity: the Chapter-2 rat swarm is in the ship's forward hold,
+  not a sewer; hiding in the cargo hold means slipping back aboard; a failed
+  winch roll no longer draws steel on Vane; Kroll's fight now follows his
+  taunt (the choice of mercy or vengeance is the fight, not its aftermath);
+  the informant's ambush is three men fighting for the informant, not one
+  for Vane; the smuggler waves *you* aboard on every path; the Chapter-3
+  climax names the High Warden and knows two chapters remain; bribing the
+  archivist costs 40 gold (and needs it); a failed archive lockpick skips
+  the archive; paying the bridge toll no longer starts a kill quest; and
+  `[COMBAT]`/`[TORTURE]`/`[SUCCESS]`-style authoring tags no longer leak
+  into the prose.
+
 ## [1.106.0+134]
 
 Fixes from the full mechanics/narrative review and the 40-playthrough

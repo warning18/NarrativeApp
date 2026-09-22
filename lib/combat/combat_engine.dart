@@ -305,7 +305,12 @@ EnemyMoveResult resolveEnemyMove({
         matches = random.nextDouble() * 100 <= chance;
         break;
       case 'OnLowHealth':
-        matches = healthPercent <= healthThreshold;
+        // The health gate opens the move; `chance` (authored 40-60 on
+        // every current entry) then decides whether it fires this turn,
+        // same as a plain Chance move -- otherwise a wounded enemy nukes
+        // every single turn regardless of what its data says.
+        matches = healthPercent <= healthThreshold &&
+            random.nextDouble() * 100 <= chance;
         break;
       case 'OnHitByElement':
         matches = elementsHitThisRound

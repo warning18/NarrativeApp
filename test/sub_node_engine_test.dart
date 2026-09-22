@@ -171,6 +171,14 @@ void main() {
       expect(SubNodeEngine.maxPackSizeFor(5), 3);
     });
 
+    test('a pack never outnumbers the party, and is never smaller than a pair',
+        () {
+      expect(SubNodeEngine.maxPackSizeFor(5, partySize: 1), 2);
+      expect(SubNodeEngine.maxPackSizeFor(5, partySize: 2), 2);
+      expect(SubNodeEngine.maxPackSizeFor(5, partySize: 3), 3);
+      expect(SubNodeEngine.maxPackSizeFor(2, partySize: 3), 2);
+    });
+
     test('only packEligible, non-solo-only enemies may form a pack', () {
       final enemies = {
         'harbor_rat': {'packEligible': true},

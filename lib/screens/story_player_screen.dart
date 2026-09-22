@@ -741,6 +741,7 @@ Future<void> _selectChoice({
       unlockedQuestIds: session.unlockedQuestIds,
       completedQuestIds: session.completedQuestIds,
       theme: resolvedTheme,
+      partySize: 1 + session.activeAllyIds.length,
     );
     if (excursion != null) {
       playNotifier.startExcursion(excursion, choice.nextId);

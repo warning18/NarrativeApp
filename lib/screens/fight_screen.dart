@@ -57,9 +57,10 @@ const double _banterChance = 0.35;
 /// pack's threat is its action economy -- two or three hits a round against
 /// one party's worth of rolls -- so each member is scaled down to keep the
 /// fight winnable for a party at the pack's own chapter level (unscaled,
-/// three chapter-2 heavies were a 0% fight at level 3). Solo fights are
-/// never scaled.
-const Map<int, double> _packStatMultipliers = {2: 0.85, 3: 0.75};
+/// three chapter-2 heavies were a 0% fight at level 3; at 0.85/0.75 a pair
+/// of mid-tier enemies was still the worst random fight in the game).
+/// Solo fights are never scaled.
+const Map<int, double> _packStatMultipliers = {2: 0.8, 3: 0.7};
 
 /// A Defend face rolled by the party member an enemy is visibly (see
 /// [telegraphTierFor]) about to hit blocks this many times its face value
@@ -1002,14 +1003,30 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
 
       _EnemyMember? target;
+      var redirected = false;
       if (face.type == 'Attack' || face.type == 'Skill') {
         if (_enemies.length == 1) {
           target = _enemies.first.isAlive ? _enemies.first : null;
         } else {
           final key = _selectedTargets[actor.id];
           final picked = key == null ? null : _enemyByKey(key);
-          target = (picked != null && picked.isAlive) ? picked : null;
+          if (picked != null && picked.isAlive) {
+            target = picked;
+          } else {
+            // The picked enemy went down to an earlier hit this same
+            // round -- the blow carries on to the next one standing rather
+            // than vanishing into a corpse while the log claims a hit.
+            target = _firstLivingEnemy();
+            redirected = target != null;
+          }
         }
+      }
+
+      if (redirected && target != null) {
+        newEntries.add(_LogEntry(
+          '${trFor(lang, 'redirected_hit_prefix')} ${target.displayName}',
+          _LogKind.info,
+        ));
       }
 
       if (target != null) {
@@ -1127,6 +1144,23 @@ class _FightScreenState extends ConsumerState<FightScreen>
     for (final member in _party) {
       if (member.isKnockedOut || !isStunned(member.statusEffects)) continue;
       member.statusEffects = tickStatusEffects(member.statusEffects);
+    }
+
+    // A telegraph is a promise about WHO gets hit -- if poison just took
+    // that member down, re-aim the cached move now so the badge never names
+    // someone who's already out (the move itself is untouched).
+    final conscious = _party.where((m) => !m.isKnockedOut).toList();
+    if (conscious.isNotEmpty) {
+      for (final enemy in _enemies) {
+        final pending = enemy.pendingMove;
+        if (pending == null || !enemy.isAlive) continue;
+        final cachedTarget = _memberById(pending.targetId);
+        if (cachedTarget != null && !cachedTarget.isKnockedOut) continue;
+        enemy.pendingMove = _PendingEnemyMove(
+          move: pending.move,
+          targetId: conscious[_random.nextInt(conscious.length)].id,
+        );
+      }
     }
 
     setState(() {

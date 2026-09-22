@@ -537,6 +537,44 @@ void main() {
           reason: 'should fire at or below the health threshold');
     });
 
+    test('OnLowHealth honors its chance once the health gate is open', () {
+      Map<String, dynamic> enemyWithChance(int chance) => <String, dynamic>{
+            'enemyName': 'Test Foe',
+            'damage': 10,
+            'skillMoves': [
+              {
+                'skillID': 'desperate_strike',
+                'condition': 'OnLowHealth',
+                'healthThreshold': 30,
+                'chance': chance,
+                'priority': 1,
+              },
+            ],
+          };
+      const skills = <String, dynamic>{
+        'desperate_strike': {'damageMod': 40, 'damageMultiplier': 1.0},
+      };
+      for (var seed = 0; seed < 20; seed++) {
+        final never = resolveEnemyMove(
+          enemy: enemyWithChance(0),
+          skills: skills,
+          enemyCurrentHealth: 20,
+          enemyMaxHealth: 100,
+          random: Random(seed),
+        );
+        expect(never.damage, 10,
+            reason: 'chance 0 must never fire, even below the threshold');
+        final always = resolveEnemyMove(
+          enemy: enemyWithChance(100),
+          skills: skills,
+          enemyCurrentHealth: 20,
+          enemyMaxHealth: 100,
+          random: Random(seed),
+        );
+        expect(always.damage, 50, reason: 'chance 100 always fires');
+      }
+    });
+
     test(
         'higher-priority move is checked first, but a match always wins the '
         'turn even without a resolvable skill (no fallthrough to lower moves)',
