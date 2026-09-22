@@ -2821,6 +2821,130 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Scaffold Yards, cleared',
     AppLanguage.fr: 'Les Scaffold Yards, nettoyés',
   },
+  'boat_title': {
+    AppLanguage.en: 'The Rusty Eel',
+    AppLanguage.fr: 'Le Rusty Eel'
+  },
+  'boat_locked_subtitle': {
+    AppLanguage.en: 'Reach Chapter 3 to unlock',
+    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+  },
+  'boat_at_port_prefix': {
+    AppLanguage.en: 'Moored at',
+    AppLanguage.fr: 'Amarré à'
+  },
+  'hull_label': {AppLanguage.en: 'Hull', AppLanguage.fr: 'Coque'},
+  'bulwark_label': {AppLanguage.en: 'Bulwark', AppLanguage.fr: 'Pavois'},
+  'repair_ship_button': {AppLanguage.en: 'Repair', AppLanguage.fr: 'Réparer'},
+  'ship_sound_label': {
+    AppLanguage.en: 'Hull sound',
+    AppLanguage.fr: 'Coque saine'
+  },
+  'shipwright_section': {
+    AppLanguage.en: 'Shipwright',
+    AppLanguage.fr: 'Charpentier de marine'
+  },
+  'install_button': {AppLanguage.en: 'Install', AppLanguage.fr: 'Installer'},
+  'installed_label': {AppLanguage.en: 'Installed', AppLanguage.fr: 'Installé'},
+  'slot_full_label': {
+    AppLanguage.en: 'No free slot',
+    AppLanguage.fr: 'Aucun emplacement libre'
+  },
+  'slot_weapon_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
+  'slot_shield_label': {AppLanguage.en: 'Bulwark', AppLanguage.fr: 'Pavois'},
+  'slot_utility_label': {AppLanguage.en: 'Rigging', AppLanguage.fr: 'Gréement'},
+  'ports_section': {AppLanguage.en: 'Chart', AppLanguage.fr: 'Carte marine'},
+  'sail_button': {AppLanguage.en: 'Set sail', AppLanguage.fr: "Lever l'ancre"},
+  'moored_here_label': {
+    AppLanguage.en: 'Moored here',
+    AppLanguage.fr: 'Amarré ici'
+  },
+  'days_at_sea_label': {
+    AppLanguage.en: 'days at sea',
+    AppLanguage.fr: 'jours en mer'
+  },
+  'voyage_title': {AppLanguage.en: 'Voyage', AppLanguage.fr: 'Traversée'},
+  'voyage_day_label': {AppLanguage.en: 'Day', AppLanguage.fr: 'Jour'},
+  'voyage_arrived_title': {
+    AppLanguage.en: 'Landfall',
+    AppLanguage.fr: 'Terre en vue'
+  },
+  'voyage_failed_title': {
+    AppLanguage.en: 'Limping home',
+    AppLanguage.fr: 'Retour en boitant'
+  },
+  'voyage_failed_message': {
+    AppLanguage.en:
+        'The Rusty Eel took on too much water. You put back to the port you left, hull barely holding.',
+    AppLanguage.fr:
+        "Le Rusty Eel a embarqué trop d'eau. Vous regagnez le port que vous aviez quitté, la coque tenant à peine.",
+  },
+  'sail_on_button': {AppLanguage.en: 'Sail on', AppLanguage.fr: 'Poursuivre'},
+  'go_ashore_button': {
+    AppLanguage.en: 'Go ashore',
+    AppLanguage.fr: 'Descendre à terre'
+  },
+  'ship_fight_title': {
+    AppLanguage.en: 'Ship battle',
+    AppLanguage.fr: 'Bataille navale'
+  },
+  'ready_in_prefix': {AppLanguage.en: 'ready in', AppLanguage.fr: 'prêt dans'},
+  'ship_log_you_strike': {
+    AppLanguage.en: 'You strike the {ship} for {n}',
+    AppLanguage.fr: 'Vous frappez {ship} pour {n}',
+  },
+  'ship_log_enemy_strikes': {
+    AppLanguage.en: 'The {ship} strikes for {n}',
+    AppLanguage.fr: '{ship} frappe pour {n}',
+  },
+  'ship_log_brace': {
+    AppLanguage.en: 'Bulwark braced, +{n}',
+    AppLanguage.fr: 'Pavois renforcé, +{n}',
+  },
+  'ship_log_repair': {
+    AppLanguage.en: 'Hull patched, +{n}',
+    AppLanguage.fr: 'Coque colmatée, +{n}',
+  },
+  'ship_log_sunk': {
+    AppLanguage.en: 'The {ship} goes down',
+    AppLanguage.fr: '{ship} sombre',
+  },
+  'ship_log_storm': {
+    AppLanguage.en: 'The storm costs {n} hull',
+    AppLanguage.fr: 'La tempête coûte {n} points de coque',
+  },
+  'ship_log_calm': {
+    AppLanguage.en: 'Repairs restore {n} hull',
+    AppLanguage.fr: 'Les réparations rendent {n} points de coque',
+  },
+  'ship_log_salvage': {
+    AppLanguage.en: 'Salvaged {n} gold',
+    AppLanguage.fr: '{n} pièces d\'or récupérées',
+  },
+  'ship_fight_won_prefix': {
+    AppLanguage.en: 'Prize taken',
+    AppLanguage.fr: 'Prise capturée'
+  },
+  'port_shops_section': {
+    AppLanguage.en: 'Harbor trade',
+    AppLanguage.fr: 'Commerce du port'
+  },
+  'port_sail_subtitle': {
+    AppLanguage.en: 'Other ports, other expeditions',
+    AppLanguage.fr: "D'autres ports, d'autres expéditions"
+  },
+  'home_port_label': {
+    AppLanguage.en: 'Home port',
+    AppLanguage.fr: "Port d'attache"
+  },
+  'chapter_short_prefix': {
+    AppLanguage.en: 'Chapter',
+    AppLanguage.fr: 'Chapitre'
+  },
+  'back_to_port_button': {
+    AppLanguage.en: 'Back to port',
+    AppLanguage.fr: 'Retour au port'
+  },
   'export_as_csv_option': {
     AppLanguage.en: 'Export as CSV (.csv)',
     AppLanguage.fr: 'Exporter en CSV (.csv)',

@@ -8,6 +8,62 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.111.0+139]
+
+The boat batch, third step of the chapter-flow roadmap: chapter 3 opens
+on raising the camp, and the Rusty Eel becomes the way to reach every
+port's expeditions -- a chart of ports, short voyages of sea events, ship
+battles fought with the parts aboard, and a shipwright to fit her out.
+
+### Added
+- **Camp founding beat.** A new node between the Upper Gate and the Spire
+  district: the refugees who followed the party up from the Lower City
+  raise a camp on the shingle below the Spire, with the Rusty Eel hauled
+  up above the tide, and the story flags `camp_founded`. The camp stays
+  there for the rest of the game.
+- **Ports** (ports.json, `portsSchema`): a name and description in both
+  languages, a chapter, the zones and shops found there, days at sea to
+  reach it, `isHome` and `requiredFlags`. Ashen Landing (the camp's
+  shore, home port: Cinder Row and the Scaffold Yards) and the Smugglers'
+  Wharf (chapter 2's harbor: Fisherman's Row, Tanner's Court, Lantern
+  Docks and the three starter shops). The Town Hub is now that port under
+  its familiar name; the Camp's zone list is the home port's.
+- **The Rusty Eel** (Play → The Rusty Eel, from chapter 3): hull and
+  bulwark, the parts fitted by slot (two weapon, one bulwark, one rigging
+  slot), repairs at one gold per hull point, the shipwright's six parts
+  (ballista to start; harpoon rack, fire pots, iron plating, tar-sealed
+  hull, spare canvas) and the chart of ports the story has reached, each
+  with its chapter, days at sea and zone count. Setting sail opens a
+  voyage; landfall moors the boat there and opens that port.
+- **Voyages** (`lib/data/sea_events.dart`): one event per day at sea --
+  calm days that mend the hull, storms that cost it, derelicts worth
+  salvaging, sightings, and raiders (from chapter 2: a raider skiff;
+  chapter 3: an Inquisition cutter; chapter 4: a void barge) that open a
+  **ship battle**: pick a fitted part each turn (loose the ballista,
+  brace the plating, patch the hull...), the bulwark absorbs before the
+  hull, cooldowns keep the heavy parts honest, and a sunk hull limps back
+  to the port it left at a quarter strength. Prizes pay gold and XP.
+- **Session state**: hull, fitted parts, current and visited ports, with
+  full save round-tripping.
+- Tests: ship-combat rules, sea-event drawing, ports/ship data validation,
+  session ship state.
+
+### Changed
+- ships.json / ship_parts.json / enemy_ships.json lose their sci-fi
+  placeholders (starter freighter, laser) for the Rusty Eel, fantasy
+  parts with FR names and labels, and three enemy ships gated by chapter.
+
+### Simulation
+40 seeded runs: 40/40 true endings, 92.2% win rate, every zone cleared,
+an attentive player buying the harpoon rack, iron plating and tar-sealed
+hull by the end (mean 439 gold on the ship) -- but zero voyages, because
+every current zone is either on foot in chapter 2 or at the home port:
+the later chapters' ports (next batch) are what make sailing mandatory.
+The ship battle itself, run 300 times per loadout: the ballista alone
+beats a skiff untouched and a cutter with half a hull, cannot beat a void
+barge; harpoons make the barge winnable (15 hull left), iron plating
+makes it comfortable (72).
+
 ## [1.110.0+138]
 
 The difficulty batch, second step of the chapter-flow roadmap: enemies now

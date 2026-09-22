@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
+import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -19,6 +20,7 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/player_stats_bar.dart';
 import 'achievements_screen.dart';
+import 'boat_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_screen.dart';
@@ -45,6 +47,14 @@ class PlayScreen extends ConsumerWidget {
 
     final townHubUnlocked = chapterOfNode(playState.currentNodeId) >= 2;
     final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
+    final boatUnlocked = campUnlocked;
+    final ports = ref.watch(gameDbProvider(portsSchema)).value ??
+        const <String, dynamic>{};
+    final mooredPortId = currentPortIdFor(ports, session.currentPortId);
+    final mooredPortName = mooredPortId == null
+        ? ''
+        : portNameFor(ports[mooredPortId] as Map<String, dynamic>,
+            ref.watch(appLanguageProvider) == AppLanguage.fr);
 
     final unseenQuests = session.unlockedQuestIds
         .where((id) => !session.seenQuestIds.contains(id))
@@ -252,6 +262,25 @@ class PlayScreen extends ConsumerWidget {
                 : () {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => const CampScreen()),
+                    );
+                  },
+          ),
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(boatUnlocked ? Icons.sailing : Icons.lock_outline),
+            title: Text(tr(ref, 'boat_title')),
+            subtitle: Text(
+              boatUnlocked
+                  ? '${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'
+                  : tr(ref, 'boat_locked_subtitle'),
+            ),
+            trailing: boatUnlocked ? const Icon(Icons.chevron_right) : null,
+            onTap: !boatUnlocked
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const BoatScreen()),
                     );
                   },
           ),

@@ -1776,7 +1776,7 @@
       {
         "text": "Take stock of the Spire district",
         "text_fr": "Faire le point sur le quartier de la Flèche",
-        "next_id": "3005",
+        "next_id": "3001_camp",
         "unlockQuestId": "q_ch3_the_high_wardens_fall"
       }
     ]
@@ -3225,6 +3225,29 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_ledger"
+        ]
+      }
+    ]
+  },
+  "3001_camp": {
+    "id": "3001_camp",
+    "description": "Below the Spire's shadow, where the ash flats ran down to a shingle beach, the refugees who had followed me up from the Lower City stopped walking and started, without anyone quite deciding it, to build. Someone found a kettle. Someone else found a wall that still stood. By nightfall there were fires, and a rope line, and the Rusty Eel hauled up above the tide in whatever state I had left her — and I understood, with the mild alarm of a man who has never owned anything he couldn't carry, that this was going to be the place I kept coming back to. Whatever the Spire wanted of me, it would have to wait for a camp to be raised first.",
+    "description_fr": "Sous l'ombre de la Flèche, là où les plaines de cendre descendaient jusqu'à une plage de galets, les réfugiés qui m'avaient suivi depuis la Ville Basse cessèrent de marcher et se mirent, sans que personne ne l'ait vraiment décidé, à bâtir. Quelqu'un trouva une bouilloire. Quelqu'un d'autre trouva un mur encore debout. À la tombée de la nuit, il y avait des feux, une ligne de corde, et le Rusty Eel hissé au-dessus de la marée dans l'état où je l'avais laissé — et je compris, avec l'inquiétude légère d'un homme qui n'a jamais possédé que ce qu'il pouvait porter, que ce serait l'endroit où je reviendrais toujours. Quoi que la Flèche attendît de moi, il faudrait d'abord dresser un campement.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_3001"
+    },
+    "choices": [
+      {
+        "text": "Raise the camp, then head for the district",
+        "text_fr": "Dresser le campement, puis gagner le district",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "camp_founded"
         ]
       }
     ]

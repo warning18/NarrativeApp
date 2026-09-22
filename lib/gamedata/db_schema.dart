@@ -683,6 +683,18 @@ final DbSchema enemyShipsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
     FieldSchema(
+        key: 'displayName', label: 'Display Name', type: FieldType.text),
+    FieldSchema(
+        key: 'displayName_fr',
+        label: 'Display Name (FR)',
+        type: FieldType.text),
+    FieldSchema(
+      key: 'minChapter',
+      label: 'Min Chapter (first chapter this ship may sail against you)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
+    FieldSchema(
         key: 'maxHull',
         label: 'Max Hull',
         type: FieldType.integer,
@@ -774,6 +786,8 @@ final DbSchema shipPartsSchema = DbSchema(
     FieldSchema(key: 'partID', label: 'Part ID', type: FieldType.text),
     FieldSchema(key: 'partName', label: 'Part Name', type: FieldType.text),
     FieldSchema(
+        key: 'partName_fr', label: 'Part Name (FR)', type: FieldType.text),
+    FieldSchema(
       key: 'slotType',
       label: 'Slot Type',
       type: FieldType.enumeration,
@@ -784,6 +798,10 @@ final DbSchema shipPartsSchema = DbSchema(
     FieldSchema(
         key: 'battleActionLabel',
         label: 'Battle Action Label',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'battleActionLabel_fr',
+        label: 'Battle Action Label (FR)',
         type: FieldType.text),
     FieldSchema(
       key: 'cooldownTurns',
@@ -1383,6 +1401,64 @@ final DbSchema npcsSchema = DbSchema(
   ],
 );
 
+final DbSchema portsSchema = DbSchema(
+  id: 'ports',
+  label: 'Ports (Boat)',
+  assetPath: 'assets/gamedata/ports.json',
+  primaryKeyField: 'portID',
+  titleField: 'portName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'portID', label: 'Port ID', type: FieldType.text),
+    FieldSchema(key: 'portName', label: 'Port Name', type: FieldType.text),
+    FieldSchema(
+        key: 'portName_fr', label: 'Port Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter (the port appears on the boat\'s chart from here on)',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'zoneIds',
+      label: 'Zones reachable from this port',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'zones',
+    ),
+    FieldSchema(
+      key: 'shopIds',
+      label: 'Shops trading at this port',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'shops',
+    ),
+    FieldSchema(
+      key: 'voyageLength',
+      label: 'Voyage Length (days at sea to reach it)',
+      type: FieldType.integer,
+      defaultValue: 2,
+    ),
+    FieldSchema(
+      key: 'isHome',
+      label: 'Home Port (the camp\'s own shore; exactly one)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'requiredFlags',
+      label: 'Required Flags (all must be set for the port to appear)',
+      type: FieldType.stringList,
+    ),
+    visualAssetFieldSchema('ports'),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
@@ -1402,5 +1478,6 @@ final List<DbSchema> gameDbSchemas = [
   housesSchema,
   achievementsSchema,
   zonesSchema,
+  portsSchema,
   npcsSchema,
 ];

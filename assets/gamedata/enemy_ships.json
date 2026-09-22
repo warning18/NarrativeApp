@@ -1,13 +1,74 @@
 {
   "raider_skiff": {
     "shipName": "raider_skiff",
+    "displayName": "Raider Skiff",
+    "displayName_fr": "Esquif de pillards",
     "maxHull": 60,
     "maxShield": 20,
     "weaponDamage": 8,
     "xpReward": 30,
     "goldReward": 25,
+    "minChapter": 2,
     "skillMoves": [
-      { "skillID": "", "condition": "Always", "requiredElement": "None", "chance": 100, "healthThreshold": 0, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 0 }
+      {
+        "skillID": "",
+        "condition": "Always",
+        "requiredElement": "None",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ]
+  },
+  "inquisition_cutter": {
+    "shipName": "inquisition_cutter",
+    "displayName": "Inquisition Cutter",
+    "displayName_fr": "Cotre de l'Inquisition",
+    "maxHull": 95,
+    "maxShield": 30,
+    "weaponDamage": 12,
+    "xpReward": 55,
+    "goldReward": 45,
+    "minChapter": 3,
+    "skillMoves": [
+      {
+        "skillID": "",
+        "condition": "Always",
+        "requiredElement": "None",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ]
+  },
+  "void_barge": {
+    "shipName": "void_barge",
+    "displayName": "Void Barge",
+    "displayName_fr": "Barge du Vide",
+    "maxHull": 140,
+    "maxShield": 40,
+    "weaponDamage": 16,
+    "xpReward": 90,
+    "goldReward": 70,
+    "minChapter": 4,
+    "skillMoves": [
+      {
+        "skillID": "",
+        "condition": "Always",
+        "requiredElement": "None",
+        "chance": 100,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
     ]
   }
 }

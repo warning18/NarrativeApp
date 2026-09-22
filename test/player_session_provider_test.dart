@@ -778,6 +778,59 @@ void main() {
     });
   });
 
+  group('the Rusty Eel', () {
+    test('a fresh session has a full hull, the ballista, and no port', () {
+      final session = baseSession();
+      expect(session.shipHull, -1);
+      expect(session.shipPartIds, ['ballista']);
+      expect(session.currentPortId, '');
+      expect(session.visitedPortIds, isEmpty);
+    });
+
+    test('ship state round-trips through toJson/fromJson', () async {
+      final notifier = await notifierWith(baseSession(gold: 500));
+      await notifier.setShipHull(42);
+      await notifier.installShipPart('harpoon_rack', 160);
+      await notifier.arriveAtPort('port_smugglers_wharf');
+      final restored = PlayerSession.fromJson(notifier.state.toJson());
+      expect(restored.shipHull, 42);
+      expect(restored.shipPartIds, ['ballista', 'harpoon_rack']);
+      expect(restored.currentPortId, 'port_smugglers_wharf');
+      expect(restored.visitedPortIds, ['port_smugglers_wharf']);
+      expect(restored.gold, 340);
+    });
+
+    test('installShipPart refuses duplicates and unaffordable parts', () async {
+      final notifier = await notifierWith(baseSession(gold: 100));
+      expect(await notifier.installShipPart('harpoon_rack', 160), isFalse);
+      expect(notifier.state.gold, 100);
+      expect(await notifier.installShipPart('spare_canvas', 90), isTrue);
+      expect(await notifier.installShipPart('spare_canvas', 0), isFalse);
+      expect(notifier.state.shipPartIds, ['ballista', 'spare_canvas']);
+      expect(notifier.state.gold, 10);
+    });
+
+    test('repairShip restores a full hull for the price, or not at all',
+        () async {
+      final notifier = await notifierWith(baseSession(gold: 30));
+      await notifier.setShipHull(60);
+      expect(await notifier.repairShip(40), isFalse);
+      expect(notifier.state.shipHull, 60);
+      expect(await notifier.repairShip(30), isTrue);
+      expect(notifier.state.shipHull, -1);
+      expect(notifier.state.gold, 0);
+    });
+
+    test('arriveAtPort records each port once', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.arriveAtPort('a');
+      await notifier.arriveAtPort('b');
+      await notifier.arriveAtPort('a');
+      expect(notifier.state.currentPortId, 'a');
+      expect(notifier.state.visitedPortIds, ['a', 'b']);
+    });
+  });
+
   group('spoils chest bookkeeping', () {
     test('a looted tome is read on the spot instead of carried', () async {
       final notifier = await notifierWith(baseSession());

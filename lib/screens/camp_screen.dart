@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -15,6 +16,7 @@ import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/zone_card.dart';
+import 'boat_screen.dart';
 import 'dice_loadout_screen.dart';
 import 'expedition_screen.dart';
 import 'inventory_screen.dart';
@@ -41,6 +43,7 @@ class CampScreen extends ConsumerWidget {
     final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
+    final portsAsync = ref.watch(gameDbProvider(portsSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;
@@ -67,15 +70,28 @@ class CampScreen extends ConsumerWidget {
 
     final partyCapacity = partyCapacityFor(session.builtHouseIds, houses);
 
-    final campZoneIds = zones.entries
-        .where((e) => e.value is Map<String, dynamic>)
-        .where((e) =>
-            (((e.value as Map<String, dynamic>)['chapter'] as num?)?.toInt() ??
-                1) >=
-            _campZonesFromChapter)
-        .map((e) => e.key)
-        .toList()
-      ..sort();
+    // The camp's own shore is the boat's home port (ports.json `isHome`):
+    // its zones are the ones on foot from here; every other port's are a
+    // voyage away (see BoatScreen). Without a home port, fall back to
+    // every zone from this chapter onward.
+    final ports = portsAsync.value ?? const <String, dynamic>{};
+    final homeId = homePortId(ports);
+    final homePort =
+        homeId == null ? null : ports[homeId] as Map<String, dynamic>?;
+    final campZoneIds = homePort != null
+        ? portZoneIds(homePort)
+            .where((id) => zones[id] is Map<String, dynamic>)
+            .toList()
+        : (zones.entries
+            .where((e) => e.value is Map<String, dynamic>)
+            .where((e) =>
+                (((e.value as Map<String, dynamic>)['chapter'] as num?)
+                        ?.toInt() ??
+                    1) >=
+                _campZonesFromChapter)
+            .map((e) => e.key)
+            .toList()
+          ..sort());
 
     final recruitedIds =
         session.recruitedAllies.map((a) => a.companionId).toList()..sort();
@@ -427,6 +443,20 @@ class CampScreen extends ConsumerWidget {
                 },
               );
             }),
+          const SizedBox(height: 8),
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.sailing),
+              title: Text(tr(ref, 'boat_title')),
+              subtitle: Text(tr(ref, 'port_sail_subtitle')),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: restBlocked
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const BoatScreen()),
+                      ),
+            ),
+          ),
         ],
       ),
     );

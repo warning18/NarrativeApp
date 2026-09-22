@@ -83,6 +83,10 @@ class PlayerSession {
     this.unlockedAchievementIds = const [],
     this.completedZoneIds = const [],
     this.bannerPiecesCollected = const [],
+    this.shipHull = -1,
+    this.shipPartIds = const ['ballista'],
+    this.currentPortId = '',
+    this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -216,6 +220,21 @@ class PlayerSession {
   /// anything beyond that run's own unbanked reward); once complete, it
   /// won't offer its reward again.
   final List<String> completedZoneIds;
+
+  /// The Rusty Eel's hull as of the last voyage event; -1 means full (a
+  /// fresh save, or just repaired). See ship_combat.dart's
+  /// buildPlayerShip.
+  final int shipHull;
+
+  /// ship_parts.json ids installed aboard the Rusty Eel; a new game starts
+  /// with the ballista.
+  final List<String> shipPartIds;
+
+  /// ports.json id the boat is moored at; empty means the home port.
+  final String currentPortId;
+
+  /// Every port the boat has made landfall at, append-only.
+  final List<String> visitedPortIds;
 
   /// Pieces of the Shroud (the "Void Banner" item, `void_banner` in
   /// items.json) actually recovered so far — the mechanical thread behind
@@ -360,6 +379,10 @@ class PlayerSession {
     List<String>? unlockedAchievementIds,
     List<String>? completedZoneIds,
     List<String>? bannerPiecesCollected,
+    int? shipHull,
+    List<String>? shipPartIds,
+    String? currentPortId,
+    List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -417,6 +440,10 @@ class PlayerSession {
       unlockedAchievementIds:
           unlockedAchievementIds ?? this.unlockedAchievementIds,
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
+      shipHull: shipHull ?? this.shipHull,
+      shipPartIds: shipPartIds ?? this.shipPartIds,
+      currentPortId: currentPortId ?? this.currentPortId,
+      visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
@@ -478,6 +505,10 @@ class PlayerSession {
         'builtHouseIds': builtHouseIds,
         'unlockedAchievementIds': unlockedAchievementIds,
         'completedZoneIds': completedZoneIds,
+        'shipHull': shipHull,
+        'shipPartIds': shipPartIds,
+        'currentPortId': currentPortId,
+        'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
@@ -605,6 +636,15 @@ class PlayerSession {
               .toList() ??
           const [],
       completedZoneIds: (json['completedZoneIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      shipHull: (json['shipHull'] as num?)?.toInt() ?? -1,
+      shipPartIds:
+          (json['shipPartIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const ['ballista'],
+      currentPortId: json['currentPortId']?.toString() ?? '',
+      visitedPortIds: (json['visitedPortIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
           const [],
@@ -1254,6 +1294,45 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: newOwnedDice,
       flags: newFlags,
       completedZoneIds: [...state.completedZoneIds, zoneId],
+    );
+    await _persist();
+  }
+
+  /// Stores the Rusty Eel's hull after a voyage event or ship battle
+  /// (-1 = full).
+  Future<void> setShipHull(int hull) async {
+    state = state.copyWith(shipHull: hull);
+    await _persist();
+  }
+
+  /// Buys and fits a ship part; false (and nothing spent) if it is already
+  /// aboard or unaffordable. Slot room is the caller's check (see
+  /// ship_combat.dart's canInstallPart).
+  Future<bool> installShipPart(String partId, int cost) async {
+    if (state.shipPartIds.contains(partId) || state.gold < cost) return false;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      shipPartIds: [...state.shipPartIds, partId],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Pays [cost] to restore the hull to full; false if unaffordable.
+  Future<bool> repairShip(int cost) async {
+    if (state.gold < cost) return false;
+    state = state.copyWith(gold: state.gold - cost, shipHull: -1);
+    await _persist();
+    return true;
+  }
+
+  /// Landfall: the boat is now moored at [portId].
+  Future<void> arriveAtPort(String portId) async {
+    state = state.copyWith(
+      currentPortId: portId,
+      visitedPortIds: state.visitedPortIds.contains(portId)
+          ? state.visitedPortIds
+          : [...state.visitedPortIds, portId],
     );
     await _persist();
   }

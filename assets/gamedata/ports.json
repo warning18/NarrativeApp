@@ -1,0 +1,39 @@
+{
+  "port_ashen_landing": {
+    "portID": "port_ashen_landing",
+    "portName": "Ashen Landing",
+    "portName_fr": "Le Débarcadère des Cendres",
+    "chapter": 3,
+    "description": "The shingle beach below the camp, where the Rusty Eel is hauled up above the tide line. Nothing is for sale here that the camp doesn't already make, but every voyage starts and ends on this stretch of grey stones.",
+    "description_fr": "La plage de galets sous le campement, où le Rusty Eel est hissé au-dessus de la ligne de marée. Rien ne s'y vend que le campement ne fabrique déjà, mais chaque traversée commence et finit sur cette bande de pierres grises.",
+    "zoneIds": [
+      "z_cinder_row",
+      "z_scaffold_yards"
+    ],
+    "shopIds": [],
+    "voyageLength": 2,
+    "isHome": true,
+    "requiredFlags": []
+  },
+  "port_smugglers_wharf": {
+    "portID": "port_smugglers_wharf",
+    "portName": "Smugglers' Wharf",
+    "portName_fr": "Le Quai des Contrebandiers",
+    "chapter": 2,
+    "description": "The Lower City's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
+    "description_fr": "Le marché du port de la Ville Basse, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
+    "zoneIds": [
+      "z_fishermans_row",
+      "z_tanners_court",
+      "z_lantern_docks"
+    ],
+    "shopIds": [
+      "blind_beggar_stall",
+      "weaponsmith_forge",
+      "apothecary_row"
+    ],
+    "voyageLength": 2,
+    "isHome": false,
+    "requiredFlags": []
+  }
+}
