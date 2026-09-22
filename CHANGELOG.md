@@ -32,8 +32,9 @@ combat-engine/data outliers, and the continuity nits.
 - **Packs scale to the party.** A random pack never outnumbers the party's
   dice — a solo character meets at most a pair — and pair/triple members
   now fight at 80% / 70% of their solo stats (a level-5 solo mage went 0
-  for 25 against a triple on action economy alone; a pair of mid-tier
-  enemies was still the worst random fight in the game).
+  for 25 against a triple on action economy alone). The Dock Overseer and
+  Inquisition Soldier leave the pack pool: two 40%-chance stunners lock a
+  solo character out of most rounds, whatever their stats.
 - **Pack overkill is redirected instead of wasted.** A hit whose picked
   enemy went down to an earlier blow this round now carries on to the next
   one standing, with the log saying so — previously it vanished while the

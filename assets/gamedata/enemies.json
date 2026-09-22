@@ -152,7 +152,7 @@
     ],
     "skillMoves": [],
     "minChapter": 2,
-    "packEligible": true
+    "packEligible": false
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
@@ -545,7 +545,7 @@
       }
     ],
     "minChapter": 2,
-    "packEligible": true
+    "packEligible": false
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
