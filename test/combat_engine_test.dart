@@ -993,4 +993,41 @@ void main() {
       expect(evil.healingDone, 15);
     });
   });
+
+  group('Mana face', () {
+    const face = DiceFaceResult(
+      faceIndex: 0,
+      faceName: 'Focus',
+      type: 'Mana',
+      value: 2,
+      linkedSkillID: '',
+      element: 'None',
+    );
+
+    test('restores its value as mana and does nothing else', () {
+      final result = resolvePlayerFace(face, const {}, 10, luck: 50);
+      expect(result.manaGained, 2);
+      expect(result.damageDealt, 0);
+      expect(result.healingDone, 0);
+      expect(result.blockAmount, 0);
+      expect(result.isCritical, isFalse);
+      expect(result.inflictedStatus, isNull);
+      expect(result.message, contains('Focus'));
+    });
+
+    test('no other face type gains mana', () {
+      for (final type in ['Attack', 'Defend', 'Heal', 'Empty']) {
+        final other = DiceFaceResult(
+          faceIndex: 0,
+          faceName: type,
+          type: type,
+          value: 3,
+          linkedSkillID: '',
+          element: 'None',
+        );
+        expect(resolvePlayerFace(other, const {}, 10).manaGained, 0,
+            reason: '$type gained mana');
+      }
+    });
+  });
 }

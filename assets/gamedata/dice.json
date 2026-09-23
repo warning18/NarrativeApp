@@ -468,11 +468,11 @@
         "element": "None"
       },
       {
-        "faceName": "Heavy Strike",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "heavy_attack",
-        "weight": 0.4,
+        "faceName": "Prayer",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 0.8,
         "element": "None"
       }
     ],
@@ -578,11 +578,11 @@
         "element": "None"
       },
       {
-        "faceName": "Heavy Strike",
-        "type": "Skill",
-        "value": 0,
-        "linkedSkillID": "heavy_attack",
-        "weight": 0.4,
+        "faceName": "Mana Well",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 0.8,
         "element": "None"
       }
     ],
@@ -807,5 +807,115 @@
       }
     ],
     "cost": 95
+  },
+  "apprentice_die": {
+    "diceName": "apprentice_die",
+    "cost": 60,
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Focus",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Focus",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Arcane Jab",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Ward",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Profession Technique",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Heritage Technique",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ]
+  },
+  "sage_die": {
+    "diceName": "sage_die",
+    "cost": 150,
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Deep Focus",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Deep Focus",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Staff Crack",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Sigil Ward",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Arcane Missile",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mage_arcane_missile",
+        "weight": 0.6,
+        "element": "Electricity"
+      },
+      {
+        "faceName": "Mend",
+        "type": "Heal",
+        "value": 10,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ]
   }
 }

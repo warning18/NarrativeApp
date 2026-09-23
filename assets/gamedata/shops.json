@@ -28,12 +28,14 @@
     "initialStock": [
       "void_banner",
       "armor_leather",
-      "sword_001"
+      "sword_001",
+      "spellbook_venom_hex"
     ],
     "merchantSpecialties": [
       "Artifact",
       "Armor",
-      "Weapon"
+      "Weapon",
+      "Spellbook"
     ],
     "diceStock": [
       "storm_die"
@@ -41,7 +43,8 @@
     "stockQuantities": {
       "void_banner": 1,
       "armor_leather": 1,
-      "sword_001": 1
+      "sword_001": 1,
+      "spellbook_venom_hex": 1
     }
   },
   "weaponsmith_forge": {
@@ -59,10 +62,13 @@
       "spear_t3",
       "dagger_t1",
       "dagger_t2",
-      "dagger_t3"
+      "dagger_t3",
+      "spellbook_war_shout",
+      "spellbook_hunters_mark"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Spellbook"
     ],
     "diceStock": [
       "iron_die",
@@ -77,7 +83,9 @@
       "spear_t3": 1,
       "dagger_t1": 1,
       "dagger_t2": 1,
-      "dagger_t3": 1
+      "dagger_t3": 1,
+      "spellbook_war_shout": 1,
+      "spellbook_hunters_mark": 1
     }
   },
   "shieldwrights_hall": {
@@ -120,16 +128,19 @@
       "staff_t4",
       "staff_t5",
       "scroll_fireball",
-      "artifact_moon_shard"
+      "artifact_moon_shard",
+      "spellbook_frost_bind"
     ],
     "merchantSpecialties": [
       "Weapon",
       "Scroll",
-      "Artifact"
+      "Artifact",
+      "Spellbook"
     ],
     "diceStock": [
       "arcane_die",
-      "flame_die"
+      "flame_die",
+      "apprentice_die"
     ],
     "stockQuantities": {
       "staff_t1": 1,
@@ -138,7 +149,8 @@
       "staff_t4": 1,
       "staff_t5": 1,
       "scroll_fireball": 4,
-      "artifact_moon_shard": 1
+      "artifact_moon_shard": 1,
+      "spellbook_frost_bind": 1
     }
   },
   "apothecary_row": {
@@ -150,11 +162,13 @@
     "initialStock": [
       "potion_minor",
       "potion_major",
-      "material_iron_ore"
+      "material_iron_ore",
+      "spellbook_sanctified_ground"
     ],
     "merchantSpecialties": [
       "Potion",
-      "Material"
+      "Material",
+      "Spellbook"
     ],
     "diceStock": [
       "tide_die",
@@ -163,7 +177,8 @@
     "stockQuantities": {
       "potion_minor": 4,
       "potion_major": 4,
-      "material_iron_ore": 4
+      "material_iron_ore": 4,
+      "spellbook_sanctified_ground": 1
     }
   },
   "smugglers_vault": {
@@ -263,18 +278,23 @@
       "staff_t7",
       "staff_t8",
       "staff_t9",
-      "staff_t10"
+      "staff_t10",
+      "spellbook_ember_wave"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Spellbook"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "sage_die"
+    ],
     "stockQuantities": {
       "staff_t6": 1,
       "staff_t7": 1,
       "staff_t8": 1,
       "staff_t9": 1,
-      "staff_t10": 1
+      "staff_t10": 1,
+      "spellbook_ember_wave": 1
     }
   },
   "sharpweave_den": {
@@ -320,7 +340,9 @@
       "Potion",
       "Artifact"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "sage_die"
+    ],
     "stockQuantities": {
       "potion_major": 4,
       "antidote": 3,
@@ -342,11 +364,13 @@
       "charm_fourth_roll",
       "tome_of_mastery",
       "staff_t9",
-      "dagger_t9"
+      "dagger_t9",
+      "spellbook_smite_the_wicked"
     ],
     "merchantSpecialties": [
       "Potion",
-      "Artifact"
+      "Artifact",
+      "Spellbook"
     ],
     "diceStock": [],
     "stockQuantities": {
@@ -355,7 +379,8 @@
       "charm_fourth_roll": 2,
       "tome_of_mastery": 1,
       "staff_t9": 1,
-      "dagger_t9": 1
+      "dagger_t9": 1,
+      "spellbook_smite_the_wicked": 1
     }
   }
 }

@@ -100,12 +100,17 @@ class PlayerActionResult {
     required this.message,
     this.inflictedStatus,
     this.isCritical = false,
+    this.manaGained = 0,
   });
 
   final int damageDealt;
   final int healingDone;
   final int blockAmount;
   final String message;
+
+  /// Mana a `Mana` face restores to the party's pool (see
+  /// `maxManaFor` in spells.dart) -- 0 for every other face type.
+  final int manaGained;
 
   /// A status effect this face's skill inflicts on the enemy, if any —
   /// only Skill faces can carry one (see the skill's own
@@ -261,6 +266,15 @@ PlayerActionResult resolvePlayerFace(
         blockAmount: 0,
         message:
             '${face.faceName}: ${t('you_recover_prefix')} $healAmount ${t('hp_label')}.',
+      );
+    case 'Mana':
+      return PlayerActionResult(
+        damageDealt: 0,
+        healingDone: 0,
+        blockAmount: 0,
+        manaGained: face.value,
+        message:
+            '${face.faceName}: ${t('you_recover_prefix')} ${face.value} ${t('mana_label')}.',
       );
     case 'Empty':
     default:

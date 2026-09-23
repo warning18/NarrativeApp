@@ -22,6 +22,8 @@ IconData itemTypeIcon(String? itemType) {
       return Icons.token;
     case 'Tome':
       return Icons.menu_book;
+    case 'Spellbook':
+      return Icons.auto_stories;
     default:
       return Icons.inventory_2;
   }

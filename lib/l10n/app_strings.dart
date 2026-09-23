@@ -1653,6 +1653,119 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Lancer en cours…'
   },
   'potion_button_prefix': {AppLanguage.en: 'Potion', AppLanguage.fr: 'Potion'},
+  'mana_label': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'spells_label': {AppLanguage.en: 'Spells', AppLanguage.fr: 'Sorts'},
+  'spell_known_label': {
+    AppLanguage.en: 'Already known',
+    AppLanguage.fr: 'Déjà connu',
+  },
+  'spell_profession_only_prefix': {
+    AppLanguage.en: 'Only for a',
+    AppLanguage.fr: 'Réservé à la classe',
+  },
+  'spell_learned_prefix': {
+    AppLanguage.en: 'Learned',
+    AppLanguage.fr: 'Appris :',
+  },
+  'round_label': {AppLanguage.en: 'Round', AppLanguage.fr: 'Manche'},
+  'roll_hint': {
+    AppLanguage.en: 'Roll the party\'s dice, then keep or reroll.',
+    AppLanguage.fr: 'Lancez les dés du groupe, puis gardez ou relancez.',
+  },
+  'lock_hint': {
+    AppLanguage.en:
+        'Tap a die to keep it through a reroll. Long-press for details.',
+    AppLanguage.fr:
+        'Touchez un dé pour le garder à la relance. Appui long pour les détails.',
+  },
+  'confirm_hint': {
+    AppLanguage.en: 'Last roll: these faces resolve when you confirm.',
+    AppLanguage.fr:
+        'Dernier lancer : ces faces s\'appliquent à la confirmation.',
+  },
+  'nobody_can_act_label': {
+    AppLanguage.en: 'Nobody can act this round.',
+    AppLanguage.fr: 'Personne ne peut agir ce tour-ci.',
+  },
+  'die_faces_label': {
+    AppLanguage.en: 'Every face of this die',
+    AppLanguage.fr: 'Toutes les faces de ce dé',
+  },
+  'intent_unknown_label': {
+    AppLanguage.en: 'Intent unknown',
+    AppLanguage.fr: 'Intention inconnue',
+  },
+  'intent_label': {
+    AppLanguage.en: 'Next move',
+    AppLanguage.fr: 'Prochain coup'
+  },
+  'intent_unknown_desc': {
+    AppLanguage.en:
+        'The party cannot read this enemy yet. More Perception than its Guile reveals who it will hit, then what with.',
+    AppLanguage.fr:
+        'Le groupe ne peut pas encore lire cet ennemi. Plus de Perception que sa Ruse révèle qui il frappera, puis avec quoi.',
+  },
+  'intent_target_prefix': {
+    AppLanguage.en: 'It is about to go for',
+    AppLanguage.fr: 'Il s\'apprête à viser',
+  },
+  'fled_label': {AppLanguage.en: 'Fled', AppLanguage.fr: 'En fuite'},
+  'battle_log_title': {
+    AppLanguage.en: 'Battle log',
+    AppLanguage.fr: 'Journal du combat',
+  },
+  'no_spells_hint': {
+    AppLanguage.en: 'No spells known -- spellbooks are sold in shops.',
+    AppLanguage.fr: 'Aucun sort connu -- les grimoires se vendent en boutique.',
+  },
+  'cast_prefix': {AppLanguage.en: 'You cast', AppLanguage.fr: 'Vous lancez'},
+  'recovers_word': {AppLanguage.en: 'recovers', AppLanguage.fr: 'récupère'},
+  'gains_block_word': {AppLanguage.en: 'gains', AppLanguage.fr: 'gagne'},
+  'cleansed_suffix': {
+    AppLanguage.en: 'is cleansed of every affliction.',
+    AppLanguage.fr: 'est purifié de toute affliction.',
+  },
+  'choose_target_title': {
+    AppLanguage.en: 'Choose a target',
+    AppLanguage.fr: 'Choisissez une cible',
+  },
+  'spell_effect_damage': {AppLanguage.en: 'Damage', AppLanguage.fr: 'Dégâts'},
+  'spell_effect_heal': {AppLanguage.en: 'Heals', AppLanguage.fr: 'Soigne'},
+  'spell_effect_block': {AppLanguage.en: 'Block', AppLanguage.fr: 'Blocage'},
+  'spell_effect_status': {
+    AppLanguage.en: 'Afflicts',
+    AppLanguage.fr: 'Afflige'
+  },
+  'spell_effect_cleanse': {
+    AppLanguage.en: 'Cleanses',
+    AppLanguage.fr: 'Purifie'
+  },
+  'spell_target_enemy': {
+    AppLanguage.en: 'one enemy',
+    AppLanguage.fr: 'un ennemi'
+  },
+  'spell_target_all_enemies': {
+    AppLanguage.en: 'every enemy',
+    AppLanguage.fr: 'tous les ennemis'
+  },
+  'spell_target_ally': {
+    AppLanguage.en: 'one party member',
+    AppLanguage.fr: 'un membre du groupe'
+  },
+  'spell_target_party': {
+    AppLanguage.en: 'the whole party',
+    AppLanguage.fr: 'tout le groupe'
+  },
+  'spell_target_self': {
+    AppLanguage.en: 'yourself',
+    AppLanguage.fr: 'vous-même'
+  },
+  'mana_faces_note': {
+    AppLanguage.en:
+        'Mana faces on your dice refill the pool mid-fight; resting refills it fully.',
+    AppLanguage.fr:
+        'Les faces Mana de vos dés remplissent la réserve en combat ; le repos la remplit entièrement.',
+  },
   'antidote_button_prefix': {
     AppLanguage.en: 'Antidote',
     AppLanguage.fr: 'Antidote',

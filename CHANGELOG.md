@@ -8,6 +8,117 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.113.0+141]
+
+Mana and spells, and a combat screen rebuilt around them. Spells are cast
+on demand during the party's turn, like potions, and cost mana; dice can
+carry a Mana face that refills the pool mid-fight; a Mage or Cleric starts
+with an apprentice die and two spells, everyone else can buy their
+profession's spellbooks. The battle screen now reads like a dice-battler:
+the party's dice in a tray on top (tap to keep one through a reroll,
+long-press for every face of the die), the party down the left with each
+member's die slot, the enemies down the right with an intent box, and one
+action bar at the bottom for mana, spells, potions, reroll and confirm.
+
+### Added
+- **Mana.** A pool of 4 plus half the higher of Intelligence and Wisdom
+  (a starting Mage or Cleric has 6). It carries over between fights like
+  health, refills on a rest, on a lost fight and at a new game, and comes
+  back mid-fight through a die's `Mana` faces (any party member's Mana
+  face feeds the one pool). Persisted on every cast and every Mana face,
+  so a fight abandoned half-way keeps what was spent. Saves from before
+  mana existed wake up with a full pool. The debug stats editor exposes
+  it.
+- **Spells** (`assets/gamedata/spells.json`, a new Data tab table): eleven
+  spells across the five professions -- Arcane Bolt, Frost Bind (damage
+  plus a one-turn Stun), Ember Wave (every enemy) and Mana Ward (block for
+  the whole party) for Mages; Mending Light, Sanctified Ground (party
+  heal), Smite the Wicked and Purge (cleanse) for Clerics; Venom Hex for
+  Rogues, Hunter's Mark for Rangers, War Shout for Warriors. A damage
+  spell reads like a skill: the caster's own damage (base, gear, stat
+  scaling, element) plus the spell's surge and half its stat, times its
+  multiplier (Arcane Bolt x1.6), so it stays the caster's strongest single
+  action from chapter 1 to chapter 6; healing and block grow with level
+  on the enemies' own health curve, a hex's poison with level like enemy
+  damage. Spells never crit, are never Weakened and ignore the Armored
+  affix, so the number on the button is the number that lands. A spell
+  that needs a single target asks for it in a sheet when there is a real
+  choice.
+- **Spellbooks**, a new item type: bought in a shop, the spell is learned
+  on the spot and the book never enters the inventory; a book the player
+  already knows, or another profession's, is greyed out with the reason.
+  Seven books across the Arcane Bazaar, the Academy, Apothecary Row, The
+  Last Lantern, the Black Market Docks and the Weaponsmith's Forge, each
+  with a pixel icon. A spellbook handed out as loot is read the same way.
+- **Dice.** The `apprentice_die` (two Focus faces for 1 mana, a jab and
+  a ward worth the starter die's own, and the two Technique faces at the
+  starter die's indexes) is a
+  Mage's and Cleric's starting die and sells at the Bazaar; the
+  `sage_die` (two Deep Focus faces for 2 mana, Arcane Missile, a mend) is
+  sold at the Academy and the Ossuary Trade; the Arcane and Holy dice
+  trade their Heavy Strike for a Mana Well / Prayer face. `Mana` joins
+  the Data tab's face types.
+- **Professions** carry `startingDiceId` and `startingSpellIds`; a new
+  character owns both the starter die and the profession's die with the
+  Technique faces wired on each, and permadeath resets spells to the
+  starting ones.
+
+### Changed
+- **Battle screen.** Dice tray on top with each party member's die in
+  their own accent color; a tap on a landed die keeps it (locks it)
+  through the next reroll, and only unlocked dice reroll; a long-press
+  shows what confirming would do and every face of the die. Party column
+  on the left: avatar, thin health bar with numbers, damage/armor/block
+  and status chips, and a die slot holding the rolled face; a crosshair
+  marks whoever a readable enemy is about to hit. Enemy column on the
+  right: portrait, health bar, affix and status chips, one colored dot
+  per party die aimed at it, and an intent box that shows what the
+  party's Perception can read (a question mark, the target, a move
+  category, or the damage number, element and the move's own words).
+  In a pack fight, tap a party card then an enemy to re-aim that die;
+  every strike is aimed at the first living enemy by default, so Confirm
+  is never blocked on a pick. The log shrinks to a two-line ticker that
+  opens the full log in a sheet. The bottom bar holds the mana meter and
+  one button per known spell (cost shown as pips, greyed when short),
+  potion and antidote as icon buttons with counts, and Reroll (rolls
+  left) / Confirm or Roll.
+- A `Mana` face resolves through `resolvePlayerFace` like every other face
+  type (`PlayerActionResult.manaGained`).
+
+### Tests
+`spells_test.dart` (mana formula, spell parsing, scaling, learning gate,
+spellbook lookup), `spells_data_test.dart` (every spell well-formed and
+obtainable, every spellbook teaches a real spell exactly once, starting
+spells and dice consistent with the profession, Technique faces at the
+starter die's indexes, Mana faces on the caster dice, the sage die on
+sale), a Mana-face group in `combat_engine_test.dart`, and a mana/spells
+group in `player_session_provider_test.dart` (round-trip, pre-mana save
+migration, clamping, learning, spellbook purchase, rest refill, combat
+persistence, new-game grant, permadeath reset). 377 tests pass.
+
+### Simulation
+40 seeded runs with the simulator taught to roll Mana faces, start a Mage
+or Cleric on the apprentice die, buy the profession's spellbooks and cast
+one spell a round (heal below half, cleanse, the best damage spell it can
+afford, block against a heavy swing, a hex on a long-lived enemy), against
+the same 40 seeds with spells off. Casters gained the most: the Mage's win
+rate rose from 56.6% to 75.0% with deaths per run down from 43.5 to 18.1,
+Mage and Cleric together from 62.6% to 79.1%; overall combat went from
+79.5% to 82.3% with 460 deaths against 565. Boss first-attempt rates are
+unchanged (Inquisitor 31/40 against 34/40, Void Archon 30/40 against
+31/40, Void Sovereign 27/39 against 28/40), so the pool is a caster's
+tool rather than a shortcut. 2,689 casts over 2,606 fights, 3,619 mana
+back from dice faces, Arcane Bolt 1,848 of the casts. A first pass with
+flat spell numbers (14 damage plus half of Intelligence) made the Mage
+worse (45% win rate): by chapter 5 a bolt was worth a third of a Slash
+and the apprentice die's two Focus faces were dead weight, which is why
+damage spells now ride the caster's own damage and heals grow with level.
+Two non-caster seeds diverged the other way (a Ranger and a Rogue reached
+the chapter-4 boss with one companion fewer on the spells-on path and died
+there repeatedly), a path effect of a spellbook's gold on recruitment, not
+of the spells themselves. The simulator never rests at camp, so its mana
+is the pessimistic read.
+
 ## [1.112.0+140]
 
 The late-game batch, fourth step of the chapter-flow roadmap: chapter 4

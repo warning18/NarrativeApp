@@ -870,4 +870,153 @@ void main() {
       expect(notifier.state.inventoryItemIds, ['charm_x', 'sword_t1']);
     });
   });
+
+  group('mana and spells', () {
+    test('maxMana follows the higher of Intelligence and Wisdom', () {
+      expect(baseSession().maxMana, 4);
+      expect(baseSession(intelligence: 4).maxMana, 6);
+      expect(baseSession(wisdom: 6).maxMana, 7);
+    });
+
+    test('mana and knownSpellIds round-trip through toJson/fromJson', () {
+      final session = baseSession(intelligence: 4)
+          .copyWith(mana: 3, knownSpellIds: const ['spell_arcane_bolt']);
+      final restored = PlayerSession.fromJson(session.toJson());
+      expect(restored.mana, 3);
+      expect(restored.knownSpellIds, ['spell_arcane_bolt']);
+      expect(restored.maxMana, 6);
+    });
+
+    test('a save from before mana existed wakes up with a full pool', () {
+      final json = baseSession(intelligence: 4).toJson()
+        ..remove('mana')
+        ..remove('knownSpellIds');
+      final restored = PlayerSession.fromJson(json);
+      expect(restored.mana, 6);
+      expect(restored.knownSpellIds, isEmpty);
+    });
+
+    test('setMana clamps to the pool and persists', () async {
+      final notifier = await notifierWith(baseSession(intelligence: 4));
+      await notifier.setMana(99);
+      expect(notifier.state.mana, 6);
+      await notifier.setMana(-2);
+      expect(notifier.state.mana, 0);
+      await notifier.setMana(3);
+      expect(notifier.state.mana, 3);
+    });
+
+    test('learnSpell adds a spell once and ignores empty ids', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.learnSpell('spell_war_shout');
+      await notifier.learnSpell('spell_war_shout');
+      await notifier.learnSpell('');
+      expect(notifier.state.knownSpellIds, ['spell_war_shout']);
+    });
+
+    test('a bought spellbook is learned, never carried, and never bought twice',
+        () async {
+      final notifier = await notifierWith(baseSession(gold: 200));
+      const book = {
+        'itemType': 'Spellbook',
+        'teachesSpellId': 'spell_war_shout',
+      };
+      await notifier.buyItem('shop', 'spellbook_war_shout', 80, 3, item: book);
+      expect(notifier.state.gold, 120);
+      expect(notifier.state.knownSpellIds, ['spell_war_shout']);
+      expect(notifier.state.inventoryItemIds, isEmpty);
+      await notifier.buyItem('shop', 'spellbook_war_shout', 80, 3, item: book);
+      expect(notifier.state.gold, 120);
+      expect(notifier.state.knownSpellIds, ['spell_war_shout']);
+    });
+
+    test('resting refills mana along with health', () async {
+      final notifier = await notifierWith(
+          baseSession(intelligence: 4, currentHealth: 10).copyWith(mana: 1));
+      await notifier.healPartyToFull();
+      expect(notifier.state.mana, 6);
+      expect(notifier.state.currentHealth, 100);
+    });
+
+    test(
+        'applyCombatResult persists manaAfter clamped, and reads a looted '
+        'spellbook', () async {
+      final notifier =
+          await notifierWith(baseSession(intelligence: 4).copyWith(mana: 6));
+      await notifier.applyCombatResult(
+        hpAfter: 50,
+        manaAfter: 2,
+        itemsGained: const ['spellbook_war_shout'],
+        items: const {
+          'spellbook_war_shout': {
+            'itemType': 'Spellbook',
+            'teachesSpellId': 'spell_war_shout',
+          },
+        },
+      );
+      expect(notifier.state.mana, 2);
+      expect(notifier.state.knownSpellIds, ['spell_war_shout']);
+      expect(notifier.state.inventoryItemIds, isEmpty);
+      await notifier.applyCombatResult(hpAfter: 50, manaAfter: 40);
+      expect(notifier.state.mana, 6);
+      await notifier.applyCombatResult(hpAfter: 50);
+      expect(notifier.state.mana, 6, reason: 'no manaAfter leaves mana alone');
+    });
+
+    test('startNewGame grants the profession\'s die and spells with full mana',
+        () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.startNewGame(
+        raceId: 'human',
+        race: const {'standardSkillID': 'human_resolve'},
+        professionId: 'mage',
+        profession: const {
+          'standardSkillID': 'mage_arcane_missile',
+          'bonusIntelligence': 4,
+          'startingDiceId': 'apprentice_die',
+          'startingSpellIds': ['spell_arcane_bolt', 'spell_mana_ward'],
+        },
+      );
+      final s = notifier.state;
+      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die']);
+      expect(s.equippedDiceId, 'apprentice_die');
+      expect(s.diceSkillAssignments['apprentice_die'],
+          s.diceSkillAssignments['starter_die']);
+      expect(s.diceSkillAssignments['apprentice_die']?['4'],
+          'mage_arcane_missile');
+      expect(s.knownSpellIds, ['spell_arcane_bolt', 'spell_mana_ward']);
+      expect(s.mana, s.maxMana);
+      expect(s.maxMana, greaterThanOrEqualTo(6));
+    });
+
+    test('a profession with no starting die keeps the starter die alone',
+        () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.startNewGame(
+        raceId: 'human',
+        race: const {},
+        professionId: 'warrior',
+        profession: const {'standardSkillID': 'warrior_shield_bash'},
+      );
+      expect(notifier.state.ownedDiceIds, ['starter_die']);
+      expect(notifier.state.equippedDiceId, 'starter_die');
+      expect(notifier.state.knownSpellIds, isEmpty);
+    });
+
+    test('permadeath resets spells to the starting ones and refills mana',
+        () async {
+      final notifier = await notifierWith(baseSession(intelligence: 4).copyWith(
+          mana: 0,
+          knownSpellIds: const ['spell_arcane_bolt', 'spell_ember_wave']));
+      await notifier.applyPermadeath(
+        race: const {},
+        profession: const {
+          'startingDiceId': 'apprentice_die',
+          'startingSpellIds': ['spell_arcane_bolt'],
+        },
+      );
+      expect(notifier.state.knownSpellIds, ['spell_arcane_bolt']);
+      expect(notifier.state.mana, 6);
+    });
+  });
 }

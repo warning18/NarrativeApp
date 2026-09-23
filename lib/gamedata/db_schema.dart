@@ -56,6 +56,7 @@ const List<String> itemTypeOptions = [
   'Material',
   'Quest',
   'Artifact',
+  'Spellbook',
 ];
 
 /// The ability score an equippable item's flat attackDamage/armor scales
@@ -90,7 +91,36 @@ const List<String> elementOptions = [
 
 // 'Empty' is intentionally excluded: no die face may be empty in play, so
 // the Data tab only offers face types that are actually usable in combat.
-const List<String> faceTypeOptions = ['Attack', 'Defend', 'Skill', 'Heal'];
+const List<String> faceTypeOptions = [
+  'Attack',
+  'Defend',
+  'Skill',
+  'Heal',
+  'Mana',
+];
+
+/// What a spell (spells.json) does when cast -- see `lib/combat/spells.dart`.
+const List<String> spellEffectOptions = [
+  'Damage',
+  'Heal',
+  'Block',
+  'Status',
+  'Cleanse',
+];
+
+/// Whom a spell is cast on: one enemy, every enemy, one party member, the
+/// whole party, or the caster alone.
+const List<String> spellTargetOptions = [
+  'Enemy',
+  'AllEnemies',
+  'Ally',
+  'Party',
+  'Self',
+];
+
+/// The ability score a spell's amount grows with (half the score is added
+/// to it) -- empty for a flat spell.
+const List<String> spellScalingOptions = ['', 'intelligence', 'wisdom'];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility'];
 
@@ -324,6 +354,12 @@ final DbSchema itemsSchema = DbSchema(
         label: 'Aligned Armor Bonus (when wielder matches alignment)',
         type: FieldType.integer,
         defaultValue: 0),
+    FieldSchema(
+      key: 'teachesSpellId',
+      label: 'Teaches Spell (Spellbook items: learned on purchase)',
+      type: FieldType.reference,
+      referenceSchemaId: 'spells',
+    ),
     visualAssetFieldSchema('items'),
   ],
 );
@@ -572,6 +608,19 @@ final DbSchema professionsSchema = DbSchema(
       label: 'Loot Affinity (Scaling Stat)',
       type: FieldType.enumeration,
       enumOptions: statScalingOptions,
+    ),
+    FieldSchema(
+      key: 'startingDiceId',
+      label: 'Starting Die (owned and equipped at character creation; '
+          'empty = the starter die)',
+      type: FieldType.reference,
+      referenceSchemaId: 'dice',
+    ),
+    FieldSchema(
+      key: 'startingSpellIds',
+      label: 'Starting Spells (known from character creation)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'spells',
     ),
     visualAssetFieldSchema('professions'),
   ],
@@ -1459,6 +1508,99 @@ final DbSchema portsSchema = DbSchema(
   ],
 );
 
+final DbSchema spellsSchema = DbSchema(
+  id: 'spells',
+  label: 'Spells (Mana)',
+  assetPath: 'assets/gamedata/spells.json',
+  primaryKeyField: 'spellID',
+  titleField: 'spellName',
+  visualAssetField: 'visualAsset',
+  fields: [
+    FieldSchema(key: 'spellID', label: 'Spell ID', type: FieldType.text),
+    FieldSchema(key: 'spellName', label: 'Spell Name', type: FieldType.text),
+    FieldSchema(
+        key: 'spellName_fr', label: 'Spell Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'professionID',
+      label: 'Profession (only this profession can learn it; empty = anyone)',
+      type: FieldType.reference,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+        key: 'manaCost',
+        label: 'Mana Cost',
+        type: FieldType.integer,
+        defaultValue: 2),
+    FieldSchema(
+      key: 'effect',
+      label: 'Effect',
+      type: FieldType.enumeration,
+      enumOptions: spellEffectOptions,
+    ),
+    FieldSchema(
+      key: 'target',
+      label: 'Target',
+      type: FieldType.enumeration,
+      enumOptions: spellTargetOptions,
+    ),
+    FieldSchema(
+        key: 'amount',
+        label: 'Amount (flat damage added to the caster\'s own / healing / '
+            'block; healing and block grow with level)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'damageMultiplier',
+        label: 'Damage Multiplier (Damage spells: (caster damage + Amount + '
+            'stat/2) x this)',
+        type: FieldType.decimal,
+        defaultValue: 1.0),
+    FieldSchema(
+      key: 'scalingStat',
+      label: 'Grows With (half the score is added to Amount)',
+      type: FieldType.enumeration,
+      enumOptions: spellScalingOptions,
+    ),
+    FieldSchema(
+      key: 'element',
+      label: 'Element',
+      type: FieldType.enumeration,
+      enumOptions: elementOptions,
+    ),
+    FieldSchema(
+      key: 'inflictsStatus',
+      label: 'Inflicts Status (Damage/Status spells on an enemy)',
+      type: FieldType.enumeration,
+      enumOptions: statusEffectOptions,
+    ),
+    FieldSchema(
+        key: 'statusDuration',
+        label: 'Status Duration (turns)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'statusMagnitude',
+        label: 'Status Magnitude (Poison damage / Weaken %)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'battleMessage', label: 'Battle Message', type: FieldType.text),
+    FieldSchema(
+        key: 'battleMessage_fr',
+        label: 'Battle Message (FR)',
+        type: FieldType.text),
+    visualAssetFieldSchema('spells'),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   skillsSchema,
@@ -1480,4 +1622,5 @@ final List<DbSchema> gameDbSchemas = [
   zonesSchema,
   portsSchema,
   npcsSchema,
+  spellsSchema,
 ];

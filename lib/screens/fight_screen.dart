@@ -8,6 +8,7 @@ import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/loot_box.dart';
+import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
@@ -117,7 +118,8 @@ enum _LogKind {
   enemyDamage,
   victory,
   defeat,
-  banter
+  banter,
+  mana,
 }
 
 class _LogEntry {
@@ -145,6 +147,8 @@ Color _logColor(BuildContext context, _LogKind kind) {
       return Colors.red.shade900;
     case _LogKind.banter:
       return Colors.indigo;
+    case _LogKind.mana:
+      return _manaColor;
   }
 }
 
@@ -166,6 +170,8 @@ IconData _logIcon(_LogKind kind) {
       return Icons.heart_broken;
     case _LogKind.banter:
       return Icons.chat_bubble_outline;
+    case _LogKind.mana:
+      return _manaIcon;
   }
 }
 
@@ -181,6 +187,8 @@ IconData _faceTypeIcon(String type) {
       return Icons.favorite;
     case 'Skill':
       return Icons.auto_awesome;
+    case 'Mana':
+      return _manaIcon;
     default:
       return Icons.remove_circle_outline;
   }
@@ -514,6 +522,26 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// Cleared each [_confirmRoll], same lifecycle as [_currentFaces].
   final Map<String, String> _selectedTargets = {};
 
+  /// Acting members whose current face is kept (locked) through the next
+  /// reroll -- tapping a landed die toggles it. Cleared with the round.
+  final Set<String> _lockedActorIds = {};
+
+  /// In a pack fight, the member whose die an enemy-card tap re-aims.
+  String? _selectedActorId;
+
+  /// Block granted by spells this round, per member id -- added on top of
+  /// whatever Defend face the member confirms (see [_confirmRoll]), so a
+  /// Mana Ward cast before the roll isn't overwritten by it.
+  final Map<String, int> _spellBlock = {};
+
+  /// The party's mana pool this fight -- seeded from the session, moved by
+  /// Mana faces and casts, written back through `setMana` as it moves.
+  int _mana = 0;
+  int _maxMana = 0;
+
+  /// spells.json, parsed -- set in [build].
+  Map<String, SpellSpec> _spells = const {};
+
   String? _selectedDiceId;
   bool _rolling = false;
 
@@ -582,6 +610,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
+    _maxMana = session.maxMana;
+    _mana = session.mana.clamp(0, _maxMana);
     _ensureEnemiesBuilt();
     _selectedDiceId = session.equippedDiceId ??
         (session.ownedDiceIds.isNotEmpty ? session.ownedDiceIds.first : null);
@@ -1067,7 +1097,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final acting = _actingParty;
 
     final rolled = <String, DiceFaceResult>{};
+    final isReroll = _rollCount > 0;
     for (final actor in acting) {
+      // A die kept (locked) through a reroll shows its current face again.
+      if (isReroll && _lockedActorIds.contains(actor.id)) {
+        final kept = _currentFaces[actor.id];
+        if (kept != null) rolled[actor.id] = kept;
+        continue;
+      }
       final actorDice = actor.equippedDiceId != null
           ? diceDb[actor.equippedDiceId] as Map<String, dynamic>?
           : null;
@@ -1100,6 +1137,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         ..clear()
         ..addAll(rolled);
       _awaitingDecision = !forced;
+      _autoAssignTargets();
     });
 
     if (forced) {
@@ -1108,6 +1146,31 @@ class _FightScreenState extends ConsumerState<FightScreen>
       await Future.delayed(const Duration(milliseconds: 700));
       if (!mounted) return;
       await _confirmRoll(skills, items);
+    }
+  }
+
+  /// Aims every acting member's Attack/Skill face at the first living enemy
+  /// unless they already picked one still standing -- a roll is never
+  /// blocked on a pick; the enemy column is where a pick is changed. Also
+  /// keeps [_selectedActorId] on a member who has something to aim.
+  void _autoAssignTargets() {
+    if (_enemies.length <= 1) return;
+    for (final actor in _actingParty) {
+      final face = _currentFaces[actor.id];
+      if (face == null || !(face.type == 'Attack' || face.type == 'Skill')) {
+        _selectedTargets.remove(actor.id);
+        continue;
+      }
+      final current = _selectedTargets[actor.id];
+      final picked = current == null ? null : _enemyByKey(current);
+      if (picked != null && picked.isAlive) continue;
+      final fallback = _firstLivingEnemy();
+      if (fallback != null) _selectedTargets[actor.id] = fallback.key;
+    }
+    final selected = _selectedActorId;
+    if (selected == null || !_selectedTargets.containsKey(selected)) {
+      _selectedActorId =
+          _selectedTargets.isEmpty ? null : _selectedTargets.keys.first;
     }
   }
 
@@ -1162,6 +1225,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     String? lastDamagedEnemyKey;
     var lastEnemyDamage = 0;
     var hitsLanded = 0;
+    var manaGained = 0;
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
@@ -1213,9 +1277,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
               ? _LogKind.playerHeal
               : result.blockAmount > 0
                   ? _LogKind.playerBlock
-                  : _LogKind.info;
+                  : result.manaGained > 0
+                      ? _LogKind.mana
+                      : _LogKind.info;
 
       if (result.isCritical) lastCritActorId = actor.id;
+      // Any member's Mana face feeds the one shared pool.
+      if (result.manaGained > 0) manaGained += result.manaGained;
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
       final braced = result.blockAmount > 0 && _isTelegraphedTarget(actor);
       var block = braced
@@ -1224,7 +1292,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (_condition == BattlefieldCondition.highGround && block > 0) {
         block = (block * highGroundBlockMultiplier).round();
       }
-      actor.block = block;
+      // A spell's block this round (Mana Ward, War Shout) stacks under the
+      // face's own -- see [_spellBlock].
+      actor.block = block + (_spellBlock[actor.id] ?? 0);
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
       if (surge) {
@@ -1326,25 +1396,20 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (banter != null) newEntries.add(banter);
     }
 
-    // A Skittish enemy that's been hurt enough runs for it -- out of the
-    // fight, but taking part of its share of the spoils with it.
-    for (final enemy in _enemies) {
-      if (!enemy.isAlive || !enemy.hasAffix(EnemyAffix.skittish)) continue;
-      if (enemy.currentHealth < enemy.maxHealth * skittishFleeThreshold) {
-        enemy.fled = true;
-        enemy.currentHealth = 0;
-        newEntries.add(_LogEntry(
-          '${enemy.displayName} ${trFor(lang, 'flees_suffix')}',
-          _LogKind.info,
-        ));
-      }
+    if (manaGained > 0) {
+      _mana = min(_maxMana, _mana + manaGained);
+      ref.read(playerSessionProvider.notifier).setMana(_mana);
     }
+
+    _noteSkittishFlights(newEntries, lang);
 
     setState(() {
       _awaitingDecision = false;
       _rollCount = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
+      _lockedActorIds.clear();
+      _selectedActorId = null;
       if (lastDamagedEnemyKey != null) {
         _lastDamagedEnemyKey = lastDamagedEnemyKey;
         _lastEnemyDamageTaken = lastEnemyDamage;
@@ -1361,6 +1426,24 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _takeEnemyTurn(skills, items);
+  }
+
+  /// A Skittish enemy that's been hurt enough runs for it -- out of the
+  /// fight, but taking part of its share of the spoils with it. Checked
+  /// after every party action that can hurt one: a confirmed roll and a
+  /// cast spell.
+  void _noteSkittishFlights(List<_LogEntry> entries, AppLanguage lang) {
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive || !enemy.hasAffix(EnemyAffix.skittish)) continue;
+      if (enemy.currentHealth < enemy.maxHealth * skittishFleeThreshold) {
+        enemy.fled = true;
+        enemy.currentHealth = 0;
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, 'flees_suffix')}',
+          _LogKind.info,
+        ));
+      }
+    }
   }
 
   /// Starts a fresh party round — called once every enemy's turn resolves
@@ -1448,6 +1531,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _rollCount = 0;
       _currentFaces.clear();
       _selectedTargets.clear();
+      _lockedActorIds.clear();
+      _spellBlock.clear();
+      _selectedActorId = null;
       _awaitingDecision = false;
       // A fresh round with nothing hit yet on any enemy — otherwise a
       // round skipped outright below (nobody able to act) would hand
@@ -1897,6 +1983,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         items: items,
         lootPityStreak: nextPityStreak(session.lootPityStreak, chest.tier),
         recentLootIds: nextRecentLootIds(session.recentLootIds, chest.itemIds),
+        manaAfter: _mana,
       );
       // A knocked-out ally is revived at partial health on a win; a
       // survivor's ending health is simply persisted as-is. Level-ups
@@ -1953,7 +2040,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       // Ally HP changes from a lost fight are never persisted (mirrors the
       // player's own full-heal-on-loss below — neither side is punished
       // HP-wise by a loss).
-      await notifier.applyCombatResult(hpAfter: player.maxHealth);
+      // A loss refills mana along with health -- neither is a lasting
+      // punishment.
+      await notifier.applyCombatResult(
+          hpAfter: player.maxHealth, manaAfter: _maxMana);
       if (!mounted) return;
       setState(() {
         _log.add(_LogEntry(
@@ -1972,6 +2062,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final racesAsync = ref.watch(gameDbProvider(racesSchema));
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
+    final spellsAsync = ref.watch(gameDbProvider(spellsSchema));
     final session = ref.watch(playerSessionProvider);
 
     final dice = diceAsync.value;
@@ -1981,6 +2072,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final races = racesAsync.value;
     final professions = professionsAsync.value;
     final gameConfig = gameConfigAsync.value;
+    final spellsDb = spellsAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -1988,14 +2080,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
         companions == null ||
         races == null ||
         professions == null ||
-        gameConfig == null) {
+        gameConfig == null ||
+        spellsDb == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
           companionsAsync.error ??
           racesAsync.error ??
           professionsAsync.error ??
-          gameConfigAsync.error;
+          gameConfigAsync.error ??
+          spellsAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -2009,6 +2103,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _ensurePartyBuilt(session, companions, races, professions, gameConfig);
+    _spells = parseSpells(spellsDb);
 
     return Scaffold(
       appBar: AppBar(
@@ -2056,6 +2151,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
         : null;
     final faceCount = (equippedDie?['faces'] as List?)?.length ?? 0;
     final activeAllies = _party.skip(1).toList();
+    final lang = ref.watch(appLanguageProvider);
+    final knownSpellNames = <String>[
+      for (final id in session.knownSpellIds)
+        if (_spells[id] != null) _spells[id]!.nameFor(lang),
+    ];
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -2130,6 +2230,23 @@ class _FightScreenState extends ConsumerState<FightScreen>
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ],
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(_manaIcon, size: 14, color: _manaColor),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  '${tr(ref, 'mana_label')} $_mana/$_maxMana · '
+                  '${tr(ref, 'spells_label')}: '
+                  '${knownSpellNames.isEmpty ? '—' : knownSpellNames.join(", ")}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+            ],
+          ),
+          Text(tr(ref, 'mana_faces_note'),
+              style: Theme.of(context).textTheme.labelSmall),
           const SizedBox(height: 24),
           Text(tr(ref, 'equipped_die_label'),
               style: Theme.of(context).textTheme.titleMedium),
@@ -2315,31 +2432,1115 @@ class _FightScreenState extends ConsumerState<FightScreen>
         final dx = sin(t * pi * 8) * decay * 8;
         return Transform.translate(offset: Offset(dx, 0), child: child);
       },
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            for (final member in _party) ...[
-              _buildMemberHealthBar(member, items),
-              const SizedBox(height: 8),
-            ],
-            for (final enemy in _enemies) ...[
-              _buildEnemyHealthBar(enemy),
-              const SizedBox(height: 8),
-            ],
-            _buildBattleChips(),
-            const SizedBox(height: 8),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.outline),
-                  borderRadius: BorderRadius.circular(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+            child: _buildTopStrip(),
+          ),
+          const SizedBox(height: 6),
+          _buildDiceTray(acting, dice, skills, items),
+          const SizedBox(height: 6),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 5, child: _buildPartyColumn(items)),
+                  const SizedBox(width: 8),
+                  Expanded(flex: 6, child: _buildEnemyColumn()),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 6),
+          _buildLogTicker(),
+          const SizedBox(height: 4),
+          _buildBottomBar(
+              acting, anyDieAvailable, dice, skills, items, session),
+        ],
+      ),
+    );
+  }
+
+  // --- Top strip -----------------------------------------------------------
+
+  /// The battlefield condition, the momentum meter and the round counter --
+  /// the fight-wide state, above the dice.
+  Widget _buildTopStrip() {
+    return Row(
+      children: [
+        Expanded(child: _buildBattleChips()),
+        _telegraphChip(
+            Icons.flag_outlined, '${tr(ref, 'round_label')} $_roundsStarted'),
+      ],
+    );
+  }
+
+  // --- Dice tray -----------------------------------------------------------
+
+  /// The party's rolled dice, one tile per acting member, in the member's
+  /// own accent color. A tap on a landed die keeps it through the next
+  /// reroll (tap again to release it); a long-press opens the face's
+  /// details and the whole die.
+  Widget _buildDiceTray(
+    List<_PartyMember> acting,
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final canLock =
+        _awaitingDecision && !_rolling && _rollCount < _maxRollsThisFight;
+    final hintKey = acting.isEmpty
+        ? 'nobody_can_act_label'
+        : _currentFaces.isEmpty
+            ? 'roll_hint'
+            : canLock
+                ? 'lock_hint'
+                : 'confirm_hint';
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.fromLTRB(8, 8, 8, 6),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              for (final actor in acting)
+                Expanded(
+                  child: Center(
+                    child: _buildDieTile(actor, dice, skills, items, canLock),
+                  ),
                 ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            tr(ref, hintKey),
+            style: Theme.of(context)
+                .textTheme
+                .labelSmall
+                ?.copyWith(color: colorScheme.onSurfaceVariant),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDieTile(
+    _PartyMember actor,
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+    bool canLock,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final accent = _accentFor(actor);
+    final face = _currentFaces[actor.id];
+    final locked = _lockedActorIds.contains(actor.id);
+    final spinning = _rolling && !locked;
+
+    Widget inner;
+    if (spinning) {
+      inner = AnimatedBuilder(
+        animation: _rollController,
+        builder: (context, _) {
+          final t = _rollController.value;
+          final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
+          final scale = 1 + (sin(t * pi) * 0.25);
+          return Transform.rotate(
+            angle: angle,
+            child: Transform.scale(
+              scale: scale,
+              child: Icon(Icons.casino, size: 30, color: accent),
+            ),
+          );
+        },
+      );
+    } else if (face == null) {
+      inner =
+          Icon(Icons.casino, size: 30, color: accent.withValues(alpha: 0.45));
+    } else {
+      inner = _buildFaceGlyph(face, size: 30);
+    }
+
+    final label = face == null || spinning
+        ? ''
+        : (face.faceName.isEmpty ? face.type : face.faceName);
+    return GestureDetector(
+      onTap: face == null
+          ? null
+          : () {
+              if (canLock) {
+                setState(() {
+                  if (locked) {
+                    _lockedActorIds.remove(actor.id);
+                  } else {
+                    _lockedActorIds.add(actor.id);
+                  }
+                });
+              } else {
+                _showFaceSheet(actor, face, dice, skills, items);
+              }
+            },
+      onLongPress: face == null
+          ? null
+          : () => _showFaceSheet(actor, face, dice, skills, items),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              color:
+                  locked ? accent.withValues(alpha: 0.22) : colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: accent, width: locked ? 3 : 2),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.18),
+                  blurRadius: 3,
+                  offset: const Offset(1, 2),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Center(child: inner),
+                if (locked)
+                  Positioned(
+                    top: 2,
+                    right: 2,
+                    child: Icon(Icons.lock, size: 12, color: accent),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 3),
+          SizedBox(
+            width: 72,
+            child: Text(
+              actor.displayName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: accent, fontWeight: FontWeight.bold, fontSize: 10),
+            ),
+          ),
+          SizedBox(
+            width: 72,
+            height: 12,
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 9),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// A rolled face as a glyph: its type icon over its value (a Skill face
+  /// shows the skill's own pixel icon instead).
+  Widget _buildFaceGlyph(DiceFaceResult face, {double size = 28}) {
+    if (face.type == 'Skill') {
+      return SkillPixelIcon(_effectiveSkillId(face), size: size);
+    }
+    final color = _faceTypeColor(face.type);
+    final showValue = face.value > 0;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(_faceTypeIcon(face.type),
+            size: showValue ? size * 0.62 : size, color: color),
+        if (showValue)
+          Text(
+            '${face.value}',
+            style: TextStyle(
+              fontSize: size * 0.42,
+              fontWeight: FontWeight.bold,
+              color: color,
+              height: 1,
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// The sheet behind a die tile: what confirming this face would do, which
+  /// skill it resolves to, and every face of the die it came from -- the
+  /// same read a long-press gives on a die in Slice & Dice.
+  Future<void> _showFaceSheet(
+    _PartyMember actor,
+    DiceFaceResult face,
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
+    final lang = ref.read(appLanguageProvider);
+    final availableSkills = _availableSkillsFor(actor, skills);
+    final elementalBonus = _elementalDamageBonus(
+        _elementFor(face, availableSkills), actor.equippedItemIds, items);
+    final scalingBonus = equipmentScalingBonusFor(
+      actor.equippedItemIds,
+      items,
+      strength: actor.strength,
+      dexterity: actor.dexterity,
+      constitution: actor.constitution,
+      intelligence: actor.intelligence,
+    );
+    final totalDamage = actor.baseDamage +
+        equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+        scalingBonus.damageBonus +
+        elementalBonus;
+    final preview = resolvePlayerFace(
+      face,
+      availableSkills,
+      totalDamage,
+      language: lang,
+      activeEffects: actor.statusEffects,
+      wisdomHealBonus: actor.wisdom ~/ 2,
+    );
+    final element = _elementFor(face, availableSkills);
+    final dieId = actor.equippedDiceId;
+    final faces = dieId == null
+        ? const <Map<String, dynamic>>[]
+        : ((dice[dieId] as Map<String, dynamic>?)?['faces'] as List?)
+                ?.cast<Map<String, dynamic>>() ??
+            const <Map<String, dynamic>>[];
+    final accent = _accentFor(actor);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: accent, width: 2),
+                      ),
+                      child: Center(child: _buildFaceGlyph(face, size: 26)),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            face.faceName.isEmpty ? face.type : face.faceName,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          Text(
+                            '${actor.displayName} · ${dieId ?? ''}',
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(color: accent),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(preview.message, style: theme.textTheme.bodyMedium),
+                if (face.type == 'Skill') ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    '${trFor(lang, 'skill_label')}: ${_effectiveSkillId(face)}',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+                if (element != 'None') ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(elementIcon(element), size: 14),
+                      const SizedBox(width: 4),
+                      Text('${trFor(lang, 'element_label')}: $element',
+                          style: theme.textTheme.bodySmall),
+                    ],
+                  ),
+                ],
+                if (faces.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Text(trFor(lang, 'die_faces_label'),
+                      style: theme.textTheme.titleSmall),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (var i = 0; i < faces.length; i++)
+                        _buildMiniFace(faces[i], i, i == face.faceIndex, accent,
+                            actor, sheetContext),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 10),
+                Text(trFor(lang, 'lock_hint'),
+                    style: theme.textTheme.labelSmall),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// One face of a whole die in [_showFaceSheet]'s grid.
+  Widget _buildMiniFace(
+    Map<String, dynamic> raw,
+    int index,
+    bool isRolled,
+    Color accent,
+    _PartyMember actor,
+    BuildContext sheetContext,
+  ) {
+    var face = DiceFaceResult(
+      faceIndex: index,
+      faceName: raw['faceName']?.toString() ?? '',
+      type: raw['type']?.toString() ?? 'Empty',
+      value: (raw['value'] as num?)?.toInt() ?? 0,
+      linkedSkillID: raw['linkedSkillID']?.toString() ?? '',
+      element: raw['element']?.toString() ?? 'None',
+    );
+    if (face.type == 'Skill') {
+      final assigned = actor.diceSkillAssignments[index.toString()];
+      if (assigned != null && assigned.isNotEmpty) {
+        face = face.withLinkedSkillID(assigned);
+      }
+    }
+    final colorScheme = Theme.of(sheetContext).colorScheme;
+    return SizedBox(
+      width: 60,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: isRolled ? accent.withValues(alpha: 0.2) : null,
+              border: Border.all(
+                color: isRolled ? accent : colorScheme.outlineVariant,
+                width: isRolled ? 2 : 1,
+              ),
+            ),
+            child: Center(child: _buildFaceGlyph(face, size: 22)),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            face.faceName.isEmpty ? face.type : face.faceName,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 9),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Party column --------------------------------------------------------
+
+  Widget _buildPartyColumn(Map<String, dynamic> items) {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        for (final member in _party) ...[
+          _buildPartyCard(member, items),
+          const SizedBox(height: 6),
+        ],
+      ],
+    );
+  }
+
+  /// One party member: avatar in their accent color, name, a thin health
+  /// bar with numbers, block/status chips, and the die slot showing the
+  /// face they're holding. In a pack fight, tapping the card selects whose
+  /// die the enemy column's taps aim.
+  Widget _buildPartyCard(_PartyMember member, Map<String, dynamic> items) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final accent = _accentFor(member);
+    final face = _currentFaces[member.id];
+    final isStrike =
+        face != null && (face.type == 'Attack' || face.type == 'Skill');
+    final canSelect =
+        _enemies.length > 1 && isStrike && _awaitingDecision && !_rolling;
+    final isSelected = canSelect && _selectedActorId == member.id;
+    final targeted = !member.isKnockedOut && _isTelegraphedTarget(member);
+    final scalingBonus = equipmentScalingBonusFor(
+      member.equippedItemIds,
+      items,
+      strength: member.strength,
+      dexterity: member.dexterity,
+      constitution: member.constitution,
+      intelligence: member.intelligence,
+    );
+    final armor = member.armor +
+        equipmentBonusFor(member.equippedItemIds, items, 'armor') +
+        scalingBonus.armorBonus;
+    final damage = member.baseDamage +
+        equipmentBonusFor(member.equippedItemIds, items, 'attackDamage') +
+        scalingBonus.damageBonus;
+    final initial =
+        member.displayName.isEmpty ? '?' : member.displayName[0].toUpperCase();
+
+    final card = GestureDetector(
+      onTap:
+          canSelect ? () => setState(() => _selectedActorId = member.id) : null,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: member.isKnockedOut
+              ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.4)
+              : colorScheme.surface,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: isSelected ? accent : colorScheme.outlineVariant,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 12,
+                  backgroundColor:
+                      member.isKnockedOut ? colorScheme.outline : accent,
+                  child: Text(
+                    initial,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    member.displayName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                if (targeted)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4),
+                    child: Icon(Icons.gps_fixed,
+                        size: 14, color: colorScheme.error),
+                  ),
+                _buildDieSlot(face, accent),
+              ],
+            ),
+            const SizedBox(height: 5),
+            _buildHpBar(member.currentHealth, member.maxHealth),
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 4,
+              runSpacing: 2,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                _miniStat(Icons.bolt, '$damage', Colors.deepOrange),
+                _miniStat(Icons.shield_outlined, '$armor', Colors.blueGrey),
+                if (member.block > 0)
+                  _miniStat(Icons.shield, '+${member.block}', Colors.blue),
+                for (final effect in member.statusEffects)
+                  _StatusEffectChip(effect: effect),
+                if (member.isKnockedOut)
+                  Text(
+                    tr(ref, 'knocked_out_label'),
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: colorScheme.error,
+                        fontWeight: FontWeight.bold),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+    return _withDamagePopup(
+      card,
+      show: _lastDamagedMemberId == member.id && _lastDamageTaken > 0,
+      amount: _lastDamageTaken,
+      fade: true,
+    );
+  }
+
+  /// The small square next to a party member's name holding the face they
+  /// rolled this round -- empty (dashed) before the roll.
+  Widget _buildDieSlot(DiceFaceResult? face, Color accent) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: face == null ? null : accent.withValues(alpha: 0.12),
+        border: Border.all(
+          color: face == null ? colorScheme.outlineVariant : accent,
+          width: face == null ? 1 : 1.5,
+        ),
+      ),
+      child: face == null || _rolling
+          ? Icon(Icons.casino,
+              size: 14, color: colorScheme.outline.withValues(alpha: 0.6))
+          : Center(child: _buildFaceGlyph(face, size: 18)),
+    );
+  }
+
+  Widget _miniStat(IconData icon, String value, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 12, color: color),
+        const SizedBox(width: 2),
+        Text(value,
+            style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.bold, color: color)),
+      ],
+    );
+  }
+
+  /// A thin health bar with its numbers inside -- shared by both columns.
+  Widget _buildHpBar(int current, int maxValue, {double height = 14}) {
+    final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
+    final ratio = rawRatio.clamp(0.0, 1.0);
+    final barColor = ratio > 0.5
+        ? Colors.green
+        : (ratio > 0.25 ? Colors.orange : Colors.red);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(height / 2),
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: barColor.withValues(alpha: 0.18),
+          border: Border.all(color: barColor.withValues(alpha: 0.5)),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            LayoutBuilder(
+              builder: (context, constraints) => Align(
+                alignment: Alignment.centerLeft,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                  width: constraints.maxWidth * ratio,
+                  height: height,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [barColor.withValues(alpha: 0.75), barColor],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              '$current / $maxValue',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: height * 0.68,
+                height: 1,
+                shadows: const [Shadow(color: Colors.black54, blurRadius: 2)],
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Overlays a floating "-N" on [child] for the combatant that was just
+  /// hit -- fading with the screen shake for the party, static for an enemy.
+  Widget _withDamagePopup(Widget child,
+      {required bool show, required int amount, bool fade = false}) {
+    if (!show) return child;
+    final label = Text(
+      '-$amount',
+      style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+    );
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          right: 4,
+          top: -6,
+          child: fade
+              ? AnimatedBuilder(
+                  animation: _shakeController,
+                  builder: (context, _) => Opacity(
+                    opacity: (1 - _shakeController.value).clamp(0.0, 1.0),
+                    child: label,
+                  ),
+                )
+              : label,
+        ),
+      ],
+    );
+  }
+
+  // --- Enemy column --------------------------------------------------------
+
+  Widget _buildEnemyColumn() {
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        for (final enemy in _enemies) ...[
+          _buildEnemyCard(enemy),
+          const SizedBox(height: 6),
+        ],
+      ],
+    );
+  }
+
+  /// One enemy: portrait, name, health bar, affix/status chips, the dots of
+  /// every party die currently aimed at it, and its intent box (see
+  /// [_buildIntentBox]). In a pack fight a tap aims the selected member's
+  /// die here; otherwise (or on a long-press) it opens the enemy's details.
+  Widget _buildEnemyCard(_EnemyMember enemy) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final selectedActor =
+        _selectedActorId == null ? null : _memberById(_selectedActorId!);
+    final canRetarget = selectedActor != null &&
+        _enemies.length > 1 &&
+        _awaitingDecision &&
+        !_rolling &&
+        enemy.isAlive &&
+        _selectedTargets.containsKey(selectedActor.id);
+    final aimingActors = <_PartyMember>[
+      for (final actor in _actingParty)
+        if (_currentFaces[actor.id] != null &&
+            (_currentFaces[actor.id]!.type == 'Attack' ||
+                _currentFaces[actor.id]!.type == 'Skill') &&
+            (_enemies.length == 1
+                ? enemy.isAlive
+                : _selectedTargets[actor.id] == enemy.key))
+          actor,
+    ];
+    final aimedBySelected =
+        canRetarget && _selectedTargets[selectedActor.id] == enemy.key;
+    final borderColor = aimedBySelected
+        ? _accentFor(selectedActor)
+        : _isElite && enemy.isAlive
+            ? Colors.amber.shade700
+            : colorScheme.outlineVariant;
+
+    final card = GestureDetector(
+      onTap: !enemy.isAlive
+          ? null
+          : canRetarget
+              ? () =>
+                  setState(() => _selectedTargets[selectedActor.id] = enemy.key)
+              : () => _showEnemySheet(enemy),
+      onLongPress: () => _showEnemySheet(enemy),
+      child: Opacity(
+        opacity: enemy.isAlive ? 1 : 0.45,
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: colorScheme.errorContainer.withValues(alpha: 0.18),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: borderColor,
+              width: aimedBySelected ? 2 : 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  EnemyPixelIcon(enemy.enemyId, size: 30),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      enemy.displayName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: _isElite ? Colors.amber.shade800 : null,
+                          ),
+                    ),
+                  ),
+                  if (aimingActors.isNotEmpty) ...[
+                    const SizedBox(width: 4),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final actor in aimingActors)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 2),
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _accentFor(actor),
+                                border:
+                                    Border.all(color: Colors.white, width: 1),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 5),
+              _buildHpBar(enemy.currentHealth, enemy.maxHealth),
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 4,
+                runSpacing: 2,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  _miniStat(Icons.bolt, '${enemy.damage}', Colors.deepOrange),
+                  if (enemy.fled)
+                    Text(tr(ref, 'fled_label'),
+                        style: const TextStyle(
+                            fontSize: 10, fontStyle: FontStyle.italic)),
+                  for (final effect in enemy.statusEffects)
+                    _StatusEffectChip(effect: effect),
+                ],
+              ),
+              if (enemy.affixes.isNotEmpty) ...[
+                const SizedBox(height: 3),
+                _buildAffixChips(enemy),
+              ],
+              if (enemy.isAlive) ...[
+                const SizedBox(height: 5),
+                _buildIntentBox(enemy),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+    return _withDamagePopup(
+      card,
+      show: _lastDamagedEnemyKey == enemy.key && _lastEnemyDamageTaken > 0,
+      amount: _lastEnemyDamageTaken,
+    );
+  }
+
+  /// The enemy's intent for its next turn, at whatever detail the party's
+  /// Perception reads it (see [telegraphTierFor]): a "?" box when nothing
+  /// can be read, the target's name from the first tier, a move-category
+  /// icon from the second, and the damage number, element and the move's
+  /// own words at the full tier.
+  Widget _buildIntentBox(_EnemyMember enemy) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final pending = enemy.pendingMove;
+    final tier =
+        pending == null ? TelegraphTier.none : _effectiveTierFor(enemy);
+    final textStyle = TextStyle(
+        fontSize: 10,
+        color: colorScheme.onErrorContainer,
+        fontWeight: FontWeight.w600);
+
+    Widget content;
+    if (pending == null || tier == TelegraphTier.none) {
+      content = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.help_outline,
+              size: 12, color: colorScheme.onErrorContainer),
+          const SizedBox(width: 4),
+          Text(tr(ref, 'intent_unknown_label'), style: textStyle),
+        ],
+      );
+    } else {
+      final targetName = _memberById(pending.targetId)?.displayName ?? '?';
+      final showCategory =
+          tier == TelegraphTier.category || tier == TelegraphTier.full;
+      final categoryIcon = switch (categoryFor(pending.move)) {
+        MoveCategory.attack => Icons.bolt,
+        MoveCategory.healSelf => Icons.healing,
+        MoveCategory.statusDebuff => Icons.sick,
+      };
+      content = Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(showCategory ? categoryIcon : Icons.visibility,
+                  size: 12, color: colorScheme.onErrorContainer),
+              if (tier == TelegraphTier.full) ...[
+                const SizedBox(width: 2),
+                Text('${pending.move.damage}', style: textStyle),
+              ],
+              const SizedBox(width: 3),
+              Icon(Icons.arrow_forward,
+                  size: 11, color: colorScheme.onErrorContainer),
+              const SizedBox(width: 3),
+              Expanded(
+                child: Text(targetName,
+                    style: textStyle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+              ),
+              if (tier == TelegraphTier.full && pending.move.element != 'None')
+                Icon(elementIcon(pending.move.element),
+                    size: 12, color: colorScheme.onErrorContainer),
+            ],
+          ),
+          if (tier == TelegraphTier.full)
+            Text(
+              pending.move.message,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 9,
+                  fontStyle: FontStyle.italic,
+                  color: colorScheme.onErrorContainer),
+            ),
+        ],
+      );
+    }
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      decoration: BoxDecoration(
+        color: colorScheme.errorContainer.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: colorScheme.error.withValues(alpha: 0.35)),
+      ),
+      child: content,
+    );
+  }
+
+  Widget _telegraphChip(IconData icon, String label) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: colorScheme.onTertiaryContainer),
+          const SizedBox(width: 3),
+          Text(
+            label,
+            style:
+                TextStyle(fontSize: 11, color: colorScheme.onTertiaryContainer),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// The sheet behind an enemy card: its numbers, every affix's rules text,
+  /// its active status effects and its readable intent, in full sentences.
+  Future<void> _showEnemySheet(_EnemyMember enemy) {
+    final lang = ref.read(appLanguageProvider);
+    final pending = enemy.pendingMove;
+    final tier =
+        pending == null ? TelegraphTier.none : _effectiveTierFor(enemy);
+    final targetName = pending == null
+        ? ''
+        : _memberById(pending.targetId)?.displayName ?? '?';
+    final categoryLabel = pending == null
+        ? ''
+        : trFor(
+            lang,
+            switch (categoryFor(pending.move)) {
+              MoveCategory.attack => 'telegraph_category_attack',
+              MoveCategory.healSelf => 'telegraph_category_heal',
+              MoveCategory.statusDebuff => 'telegraph_category_debuff',
+            });
+    final intentText = switch (tier) {
+      TelegraphTier.none => trFor(lang, 'intent_unknown_desc'),
+      TelegraphTier.target =>
+        '${trFor(lang, 'intent_target_prefix')} $targetName.',
+      TelegraphTier.category =>
+        '${trFor(lang, 'intent_target_prefix')} $targetName ($categoryLabel).',
+      TelegraphTier.full => '${trFor(lang, 'intent_target_prefix')} $targetName: '
+          '${pending!.move.message} '
+          '(${pending.move.damage} ${trFor(lang, 'damage_word')}'
+          '${pending.move.element != 'None' ? ', ${pending.move.element}' : ''}).',
+    };
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    EnemyPixelIcon(enemy.enemyId, size: 40),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(enemy.displayName,
+                          style: theme.textTheme.titleMedium),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${trFor(lang, 'hp_label')} ${enemy.currentHealth} / ${enemy.maxHealth}'
+                  ' · ${trFor(lang, 'damage_label')} ${enemy.damage}',
+                  style: theme.textTheme.bodyMedium,
+                ),
+                if (enemy.affixes.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  for (final affix in enemy.affixes)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 4),
+                      child: Text(
+                        '${trFor(lang, affixLabelKey(affix))}: '
+                        '${trFor(lang, affixDescriptionKey(affix))}',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    ),
+                ],
+                if (enemy.statusEffects.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 6,
+                    children: [
+                      for (final effect in enemy.statusEffects)
+                        _StatusEffectChip(effect: effect),
+                    ],
+                  ),
+                ],
+                const SizedBox(height: 10),
+                Text(trFor(lang, 'intent_label'),
+                    style: theme.textTheme.titleSmall),
+                const SizedBox(height: 4),
+                Text(intentText, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // --- Log ticker ----------------------------------------------------------
+
+  /// The last two log lines, tappable for the whole log.
+  Widget _buildLogTicker() {
+    final colorScheme = Theme.of(context).colorScheme;
+    final recent = _log.length <= 2 ? _log : _log.sublist(_log.length - 2);
+    return GestureDetector(
+      onTap: _showFullLog,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        decoration: BoxDecoration(
+          border: Border.all(color: colorScheme.outlineVariant),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final entry in recent)
+                    Row(
+                      children: [
+                        Icon(_logIcon(entry.kind),
+                            size: 12, color: _logColor(context, entry.kind)),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            entry.text,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: _logColor(context, entry.kind),
+                              fontWeight: entry.kind == _LogKind.info
+                                  ? FontWeight.normal
+                                  : FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (recent.isEmpty)
+                    Text(tr(ref, 'battle_log_title'),
+                        style: const TextStyle(fontSize: 11)),
+                ],
+              ),
+            ),
+            Icon(Icons.unfold_more, size: 16, color: colorScheme.outline),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showFullLog() {
+    final lang = ref.read(appLanguageProvider);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: SizedBox(
+          height: MediaQuery.of(sheetContext).size.height * 0.6,
+          child: Column(
+            children: [
+              Text(trFor(lang, 'battle_log_title'),
+                  style: Theme.of(sheetContext).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              Expanded(
                 child: ListView.builder(
                   reverse: true,
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                   itemCount: _log.length,
                   itemBuilder: (context, index) {
                     final entry = _log[_log.length - 1 - index];
@@ -2368,521 +3569,702 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   },
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            if (_currentFaces.isNotEmpty) ...[
-              for (final actor in acting)
-                if (_currentFaces[actor.id] != null) ...[
-                  _buildDieFaceCard(
-                      actor, _currentFaces[actor.id]!, skills, items),
-                  const SizedBox(height: 8),
-                ],
-              const SizedBox(height: 4),
             ],
-            if (_over)
-              ElevatedButton(
-                onPressed: () async {
-                  if (!_won && ref.read(permadeathEnabledProvider)) {
-                    final nodesVisited =
-                        ref.read(storyPlayProvider).history.length + 1;
-                    final playerSession = ref.read(playerSessionProvider);
-                    final races =
-                        ref.read(gameDbProvider(racesSchema)).value ?? const {};
-                    final professions =
-                        ref.read(gameDbProvider(professionsSchema)).value ??
-                            const {};
-                    final result = await ref
-                        .read(playerSessionProvider.notifier)
-                        .applyPermadeath(
-                          race: races[playerSession.raceId]
-                                  as Map<String, dynamic>? ??
-                              const {},
-                          profession: professions[playerSession.professionId]
-                                  as Map<String, dynamic>? ??
-                              const {},
-                        );
-                    ref
-                        .read(storyPlayProvider.notifier)
-                        .restart(StoryRepository.startNodeId);
-                    ref.read(homeTabIndexProvider.notifier).state = 0;
-                    if (!mounted) return;
-                    await Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => DeathScreen(
-                          lostItemIds: result.lostItemIds,
-                          xpEarned: result.xpEarnedThisRun,
-                          skillsLost: result.skillsLost,
-                          nodesVisited: nodesVisited,
-                        ),
-                      ),
-                      (route) => route.isFirst,
-                    );
-                    return;
-                  }
-                  Navigator.of(context).pop(_won);
-                },
-                child: Text(_won
-                    ? tr(ref, 'victory_return_button')
-                    : tr(ref, 'retreat_button')),
-              )
-            else ...[
-              if (_awaitingDecision)
-                Row(
-                  children: [
-                    if (_rollCount < _maxRollsThisFight) ...[
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: _rolling
-                              ? null
-                              : () => _rollDice(dice, skills, items),
-                          icon: const Icon(Icons.refresh),
-                          label: Text(
-                              '${tr(ref, 'reroll_button')} ($_rollCount/$_maxRollsThisFight)'),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                    ],
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: (_rolling || !_allTargetsPicked)
-                            ? null
-                            : () => _confirmRoll(skills, items),
-                        icon: const Icon(Icons.check),
-                        label: Text(tr(ref, 'confirm_roll_button')),
-                      ),
-                    ),
-                  ],
-                )
-              else
-                ElevatedButton.icon(
-                  onPressed: (!anyDieAvailable || _rolling)
-                      ? null
-                      : () => _rollDice(dice, skills, items),
-                  icon: const Icon(Icons.casino),
-                  label: Text(
-                    acting.length > 1
-                        ? '${tr(ref, 'roll_dice_button')} (${acting.length}×)'
-                        : tr(ref, 'roll_dice_button'),
-                  ),
-                ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed:
-                    (session.potionCount > 0 && !_rolling) ? _usePotion : null,
-                icon: const Icon(Icons.local_drink),
-                label: Text(
-                    '${tr(ref, 'potion_button_prefix')} (${session.potionCount})'),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // --- Bottom bar ----------------------------------------------------------
+
+  /// Mana and spells on the first line; potion/antidote, reroll and confirm
+  /// (or roll) on the second -- everything the player can press, in one
+  /// place, like the action bar under a Slice & Dice fight.
+  Widget _buildBottomBar(
+    List<_PartyMember> acting,
+    bool anyDieAvailable,
+    Map<String, dynamic> dice,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+    PlayerSession session,
+  ) {
+    final colorScheme = Theme.of(context).colorScheme;
+    if (_over) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+        child: _buildReturnButton(),
+      );
+    }
+    final rollsLeft = _maxRollsThisFight - _rollCount;
+    final allLocked = acting.isNotEmpty &&
+        acting.every((a) => _lockedActorIds.contains(a.id));
+    return Container(
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+        border: Border(top: BorderSide(color: colorScheme.outlineVariant)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildManaRow(session, skills, items),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              _buildConsumableButton(
+                icon: Icons.local_drink,
+                count: session.potionCount,
+                tooltip: tr(ref, 'potion_button_prefix'),
+                enabled: session.potionCount > 0 && !_rolling,
+                onTap: _usePotion,
               ),
               if (_party.first.statusEffects.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                OutlinedButton.icon(
-                  onPressed: (session.antidoteCount > 0 && !_rolling)
-                      ? _useAntidote
-                      : null,
-                  icon: const Icon(Icons.healing),
-                  label: Text(
-                      '${tr(ref, 'antidote_button_prefix')} (${session.antidoteCount})'),
+                const SizedBox(width: 6),
+                _buildConsumableButton(
+                  icon: Icons.healing,
+                  count: session.antidoteCount,
+                  tooltip: tr(ref, 'antidote_button_prefix'),
+                  enabled: session.antidoteCount > 0 && !_rolling,
+                  onTap: _useAntidote,
                 ),
               ],
+              const SizedBox(width: 8),
+              if (_awaitingDecision) ...[
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: (_rolling || rollsLeft <= 0 || allLocked)
+                        ? null
+                        : () => _rollDice(dice, skills, items),
+                    icon: const Icon(Icons.refresh, size: 18),
+                    label: Text('${tr(ref, 'reroll_button')} ($rollsLeft)'),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: (_rolling || !_allTargetsPicked)
+                        ? null
+                        : () => _confirmRoll(skills, items),
+                    icon: const Icon(Icons.check, size: 18),
+                    label: Text(tr(ref, 'confirm_roll_button')),
+                  ),
+                ),
+              ] else
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: (!anyDieAvailable || _rolling)
+                        ? null
+                        : () => _rollDice(dice, skills, items),
+                    icon: const Icon(Icons.casino, size: 18),
+                    label: Text(
+                      acting.length > 1
+                          ? '${tr(ref, 'roll_dice_button')} (${acting.length}×)'
+                          : tr(ref, 'roll_dice_button'),
+                    ),
+                  ),
+                ),
             ],
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildMemberHealthBar(
-      _PartyMember member, Map<String, dynamic> items) {
-    final memberScalingBonus = equipmentScalingBonusFor(
-      member.equippedItemIds,
-      items,
-      strength: member.strength,
-      dexterity: member.dexterity,
-      constitution: member.constitution,
-      intelligence: member.intelligence,
-    );
-    final armorBonus =
-        equipmentBonusFor(member.equippedItemIds, items, 'armor') +
-            memberScalingBonus.armorBonus;
-    final damageBonus =
-        equipmentBonusFor(member.equippedItemIds, items, 'attackDamage') +
-            memberScalingBonus.damageBonus;
-    final label = member.displayName;
-    final bar = _HealthBar(
-      label: member.isKnockedOut
-          ? '$label (${tr(ref, 'knocked_out_label')})'
-          : label,
-      current: member.currentHealth,
-      max: member.maxHealth,
-      statLine:
-          '⚔ ${member.baseDamage + damageBonus}  ·  🛡 ${member.armor + armorBonus}',
-      statusEffects: member.statusEffects,
-    );
-    if (_lastDamagedMemberId != member.id || _lastDamageTaken <= 0) return bar;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        bar,
-        Positioned(
-          right: 0,
-          top: -4,
-          child: AnimatedBuilder(
-            animation: _shakeController,
-            builder: (context, _) => Opacity(
-              opacity: (1 - _shakeController.value).clamp(0.0, 1.0),
-              child: Text(
-                '-$_lastDamageTaken',
-                style: const TextStyle(
-                    color: Colors.red, fontWeight: FontWeight.bold),
-              ),
+  /// A square icon button with a count badge -- potions and antidotes.
+  Widget _buildConsumableButton({
+    required IconData icon,
+    required int count,
+    required String tooltip,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: '$tooltip ($count)',
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(8),
+        child: Opacity(
+          opacity: enabled ? 1 : 0.4,
+          child: Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: colorScheme.outline),
+              color: colorScheme.surface,
+            ),
+            child: Stack(
+              children: [
+                Center(child: Icon(icon, size: 20, color: Colors.green)),
+                Positioned(
+                  right: 2,
+                  bottom: 1,
+                  child: Text(
+                    '$count',
+                    style: const TextStyle(
+                        fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  /// One enemy's health bar during battle -- mirrors
-  /// [_buildMemberHealthBar]'s floating "-N" indicator, and adds the
-  /// telegraph badge (see [_buildEnemyTelegraphBadge]) underneath.
-  Widget _buildEnemyHealthBar(_EnemyMember enemy) {
-    final bar = _HealthBar(
-      label: enemy.displayName,
-      current: enemy.currentHealth,
-      max: enemy.maxHealth,
-      statLine: '⚔ ${enemy.damage}',
-      statusEffects: enemy.statusEffects,
-    );
-    final withIndicator =
-        (_lastDamagedEnemyKey != enemy.key || _lastEnemyDamageTaken <= 0)
-            ? bar
-            : Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  bar,
-                  Positioned(
-                    right: 0,
-                    top: -4,
-                    child: Text(
-                      '-$_lastEnemyDamageTaken',
-                      style: const TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-    final badge = _buildEnemyTelegraphBadge(enemy);
-    final affixChips = enemy.affixes.isEmpty ? null : _buildAffixChips(enemy);
-    if (badge == null && affixChips == null) return withIndicator;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        withIndicator,
-        if (affixChips != null) ...[
-          const SizedBox(height: 2),
-          affixChips,
-        ],
-        if (badge != null) ...[
-          const SizedBox(height: 2),
-          badge,
-        ],
-      ],
-    );
-  }
-
-  /// A tiered preview of [enemy]'s pre-rolled next move (see
-  /// [_preRollMoveFor]), gated by [telegraphTierFor] -- null (nothing
-  /// rendered) when the party's best Perception can't read this enemy at
-  /// all, or when it hasn't got a cached move to preview yet (a
-  /// [_EnemyMember.hasReactiveMoves] enemy, or before the fight's first
-  /// pre-roll runs).
-  Widget? _buildEnemyTelegraphBadge(_EnemyMember enemy) {
-    final pending = enemy.pendingMove;
-    if (pending == null) return null;
-    final tier = _effectiveTierFor(enemy);
-    if (tier == TelegraphTier.none) return null;
-
-    final target = _memberById(pending.targetId);
-    final targetName = target?.displayName ?? '?';
-    final chips = <Widget>[
-      _telegraphChip(Icons.gps_fixed, targetName),
-    ];
-    if (tier == TelegraphTier.category || tier == TelegraphTier.full) {
-      final (icon, labelKey) = switch (categoryFor(pending.move)) {
-        MoveCategory.attack => (Icons.bolt, 'telegraph_category_attack'),
-        MoveCategory.healSelf => (Icons.healing, 'telegraph_category_heal'),
-        MoveCategory.statusDebuff => (Icons.sick, 'telegraph_category_debuff'),
-      };
-      chips.add(_telegraphChip(icon, tr(ref, labelKey)));
-    }
-    if (tier == TelegraphTier.full) {
-      if (pending.move.element != 'None') {
-        chips.add(_telegraphChip(
-            elementIcon(pending.move.element), pending.move.element));
-      }
-      chips.add(_telegraphChip(Icons.forum, pending.move.message));
-    }
-
-    return Wrap(spacing: 6, runSpacing: 2, children: chips);
-  }
-
-  Widget _telegraphChip(IconData icon, String label) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-      decoration: BoxDecoration(
-        color: colorScheme.tertiaryContainer.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: colorScheme.onTertiaryContainer),
-          const SizedBox(width: 3),
-          Text(
-            label,
-            style:
-                TextStyle(fontSize: 11, color: colorScheme.onTertiaryContainer),
-          ),
-        ],
       ),
     );
   }
 
-  /// The target-picker row shown under an acting member's Attack/Skill face
-  /// when there's more than one enemy to choose from -- a `ChoiceChip` per
-  /// living enemy, tapped to set [_selectedTargets]. Not shown at all for a
-  /// solo fight, or for a Defend/Heal face (nothing for it to hit).
-  Widget _buildTargetPicker(_PartyMember actor) {
-    final selectedKey = _selectedTargets[actor.id];
-    return Wrap(
-      spacing: 6,
-      runSpacing: 4,
-      children: [
-        for (final enemy in _enemies.where((e) => e.isAlive))
-          ChoiceChip(
-            label: Text('${enemy.displayName} (${enemy.currentHealth})'),
-            selected: enemy.key == selectedKey,
-            onSelected: (_) =>
-                setState(() => _selectedTargets[actor.id] = enemy.key),
-          ),
-      ],
-    );
-  }
-
-  /// The most recently rolled face, kept on screen so the player always
-  /// knows what they're looking at — spinning while a roll is in flight,
-  /// settled (face name, which skill it maps to if it's a Skill face, and
-  /// a preview of what confirming it will do) once it lands.
-  Widget _buildDieFaceCard(
-    _PartyMember actor,
-    DiceFaceResult face,
+  /// The mana meter and one button per known spell, scrolling sideways.
+  Widget _buildManaRow(
+    PlayerSession session,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
   ) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    Widget content;
-    if (_rolling) {
-      content = Text(tr(ref, 'rolling_label'),
-          style: Theme.of(context).textTheme.bodySmall);
-    } else {
-      final availableSkills = _availableSkillsFor(actor, skills);
-      final elementalBonus = _elementalDamageBonus(
-          _elementFor(face, availableSkills), actor.equippedItemIds, items);
-      final previewScalingBonus = equipmentScalingBonusFor(
-        actor.equippedItemIds,
-        items,
-        strength: actor.strength,
-        dexterity: actor.dexterity,
-        constitution: actor.constitution,
-        intelligence: actor.intelligence,
-      );
-      final totalDamage = actor.baseDamage +
-          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-          previewScalingBonus.damageBonus +
-          elementalBonus;
-      final preview = resolvePlayerFace(
-        face,
-        availableSkills,
-        totalDamage,
-        language: ref.read(appLanguageProvider),
-        activeEffects: actor.statusEffects,
-      );
-      final needsTarget = _enemies.length > 1 &&
-          (face.type == 'Attack' || face.type == 'Skill');
-      content = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_party.length > 1)
-            Text(
-              actor.displayName,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: colorScheme.primary, fontWeight: FontWeight.bold),
-            ),
-          Text(
-            face.faceName.isEmpty ? face.type : face.faceName,
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
-          if (face.type == 'Skill') ...[
-            const SizedBox(height: 2),
-            Text(
-              '${tr(ref, 'skill_label')}: ${_effectiveSkillId(face)}',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  fontStyle: FontStyle.italic, color: colorScheme.primary),
-            ),
-          ],
-          const SizedBox(height: 2),
-          Text(preview.message, style: Theme.of(context).textTheme.bodySmall),
-          if (needsTarget) ...[
-            const SizedBox(height: 6),
-            _buildTargetPicker(actor),
-          ],
-        ],
-      );
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: _awaitingDecision
-            ? colorScheme.primaryContainer.withValues(alpha: 0.25)
-            : null,
-        border: Border.all(
-          color: _awaitingDecision
-              ? colorScheme.primary
-              : colorScheme.outlineVariant,
-          width: _awaitingDecision ? 2 : 1,
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 36,
-            height: 36,
-            child: Center(
-              child: _rolling
-                  ? AnimatedBuilder(
-                      animation: _rollController,
-                      builder: (context, _) {
-                        final t = _rollController.value;
-                        final angle = Curves.easeOutCubic.transform(t) * 6 * pi;
-                        final scale = 1 + (sin(t * pi) * 0.25);
-                        return Transform.rotate(
-                          angle: angle,
-                          child: Transform.scale(
-                            scale: scale,
-                            child: Icon(Icons.casino,
-                                size: 30, color: colorScheme.primary),
-                          ),
-                        );
-                      },
-                    )
-                  : Icon(_faceTypeIcon(face.type),
-                      size: 30, color: colorScheme.primary),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(child: content),
-        ],
-      ),
-    );
-  }
-}
-
-class _HealthBar extends StatelessWidget {
-  const _HealthBar({
-    required this.label,
-    required this.current,
-    required this.max,
-    this.statLine,
-    this.statusEffects = const [],
-  });
-
-  final String label;
-  final int current;
-  final int max;
-
-  /// An optional line of extra stats (e.g. "⚔ 12 · 🛡 4") shown under the bar.
-  final String? statLine;
-
-  /// Poison/Stun/Weaken currently afflicting this combatant, shown as a row
-  /// of small chips below the bar — empty renders nothing extra.
-  final List<StatusEffect> statusEffects;
-
-  @override
-  Widget build(BuildContext context) {
-    final rawRatio = max <= 0 ? 0.0 : current / max;
-    final ratio = rawRatio < 0 ? 0.0 : (rawRatio > 1 ? 1.0 : rawRatio);
-    final barColor = ratio > 0.5
-        ? Colors.green
-        : (ratio > 0.25 ? Colors.orange : Colors.red);
-    const barHeight = 26.0;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final known = <SpellSpec>[
+      for (final id in session.knownSpellIds)
+        if (_spells[id] != null) _spells[id]!,
+    ];
+    return Row(
       children: [
-        Text(label, style: Theme.of(context).textTheme.titleSmall),
-        const SizedBox(height: 4),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Container(
-            height: barHeight,
-            decoration: BoxDecoration(
-              color: barColor.withValues(alpha: 0.18),
-              border: Border.all(color: barColor.withValues(alpha: 0.5)),
-            ),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                LayoutBuilder(
-                  builder: (context, constraints) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                    alignment: Alignment.centerLeft,
-                    width: constraints.maxWidth * ratio,
-                    height: barHeight,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [barColor.withValues(alpha: 0.75), barColor],
-                      ),
-                    ),
+        _buildManaMeter(),
+        const SizedBox(width: 8),
+        Expanded(
+          child: known.isEmpty
+              ? Text(
+                  tr(ref, 'no_spells_hint'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.labelSmall,
+                )
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (final spell in known)
+                        _buildSpellButton(spell, skills, items),
+                    ],
                   ),
                 ),
-                Text(
-                  '$current / $max',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                    shadows: [Shadow(color: Colors.black54, blurRadius: 2)],
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
-        if (statLine != null) ...[
-          const SizedBox(height: 2),
-          Text(statLine!, style: Theme.of(context).textTheme.bodySmall),
-        ],
-        if (statusEffects.isNotEmpty) ...[
-          const SizedBox(height: 4),
-          Wrap(
-            spacing: 6,
-            runSpacing: 4,
-            children: [
-              for (final effect in statusEffects)
-                _StatusEffectChip(effect: effect),
-            ],
-          ),
-        ],
       ],
     );
   }
+
+  Widget _buildManaMeter() {
+    final showPips = _maxMana <= 10;
+    return Tooltip(
+      message: '${tr(ref, 'mana_label')} $_mana / $_maxMana',
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(_manaIcon, size: 16, color: _manaColor),
+          const SizedBox(width: 2),
+          Text(
+            '$_mana/$_maxMana',
+            style: const TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 12, color: _manaColor),
+          ),
+          if (showPips) ...[
+            const SizedBox(width: 4),
+            for (var i = 0; i < _maxMana; i++)
+              Container(
+                width: 6,
+                height: 6,
+                margin: const EdgeInsets.only(right: 2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i < _mana
+                      ? _manaColor
+                      : _manaColor.withValues(alpha: 0.2),
+                ),
+              ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSpellButton(
+    SpellSpec spell,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
+    final lang = ref.watch(appLanguageProvider);
+    final enabled = _mana >= spell.manaCost && !_rolling && !_over;
+    final color = _spellColor(spell.effect);
+    return Padding(
+      padding: const EdgeInsets.only(right: 6),
+      child: Tooltip(
+        message: '${spell.nameFor(lang)} · ${spell.manaCost} '
+            '${tr(ref, 'mana_label')}\n${spell.descriptionFor(lang)}',
+        child: InkWell(
+          onTap: enabled ? () => _castSpell(spell, skills, items) : null,
+          onLongPress: () => _showSpellSheet(spell, items),
+          borderRadius: BorderRadius.circular(8),
+          child: Opacity(
+            opacity: enabled ? 1 : 0.45,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: color.withValues(alpha: 0.7)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(_spellIcon(spell.effect), size: 15, color: color),
+                  const SizedBox(width: 4),
+                  Text(
+                    spell.nameFor(lang),
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: color),
+                  ),
+                  const SizedBox(width: 5),
+                  for (var i = 0; i < spell.manaCost; i++)
+                    Container(
+                      width: 5,
+                      height: 5,
+                      margin: const EdgeInsets.only(left: 1.5),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: _manaColor),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// What [spell] would deal / heal / block if the player cast it right
+  /// now -- a Damage spell rides the same total the player's dice hit
+  /// with (base, gear, stat scaling, alignment, the spell's element).
+  int _spellAmountNow(SpellSpec spell, Map<String, dynamic> items) {
+    final player = _party.firstWhere((m) => m.isPlayer);
+    final scalingBonus = equipmentScalingBonusFor(
+      player.equippedItemIds,
+      items,
+      strength: player.strength,
+      dexterity: player.dexterity,
+      constitution: player.constitution,
+      intelligence: player.intelligence,
+    );
+    final alignedBonus =
+        alignmentGearBonusFor(player.equippedItemIds, items, _alignmentLabel);
+    final casterDamage = player.baseDamage +
+        equipmentBonusFor(player.equippedItemIds, items, 'attackDamage') +
+        scalingBonus.damageBonus +
+        alignedBonus.damageBonus +
+        _elementalDamageBonus(spell.element, player.equippedItemIds, items);
+    return spellAmountFor(
+      spell,
+      intelligence: player.intelligence,
+      wisdom: player.wisdom,
+      level: _playerLevel,
+      casterDamage: casterDamage,
+    );
+  }
+
+  /// A spell's full description, numbers as they'd land right now.
+  Future<void> _showSpellSheet(SpellSpec spell, Map<String, dynamic> items) {
+    final lang = ref.read(appLanguageProvider);
+    final amount = _spellAmountNow(spell, items);
+    final status = spellStatusFor(spell, level: _playerLevel);
+    final color = _spellColor(spell.effect);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(_spellIcon(spell.effect), color: color, size: 28),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(spell.nameFor(lang),
+                          style: theme.textTheme.titleMedium),
+                    ),
+                    const Icon(_manaIcon, size: 16, color: _manaColor),
+                    const SizedBox(width: 2),
+                    Text('${spell.manaCost}',
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, color: _manaColor)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(spell.descriptionFor(lang),
+                    style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 6),
+                Text(
+                  '${trFor(lang, _spellEffectLabelKey(spell.effect))}'
+                  '${amount > 0 ? ' $amount' : ''}'
+                  ' · ${trFor(lang, _spellTargetLabelKey(spell.target))}'
+                  '${spell.element != 'None' ? ' · ${spell.element}' : ''}',
+                  style: theme.textTheme.bodySmall,
+                ),
+                if (status != null)
+                  Text(
+                    '${_statusInflictedMessage(status, trFor(lang, 'the_enemy_label'), lang)}'
+                    '${status.type == StatusEffectType.poison ? ' (${status.magnitude} x ${status.remainingTurns})' : ' (${status.remainingTurns})'}',
+                    style: theme.textTheme.bodySmall,
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// The end-of-fight button: back to the story on a win, retreat (or the
+  /// permadeath flow) on a loss.
+  Widget _buildReturnButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        if (!_won && ref.read(permadeathEnabledProvider)) {
+          final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
+          final playerSession = ref.read(playerSessionProvider);
+          final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
+          final professions =
+              ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+          final result =
+              await ref.read(playerSessionProvider.notifier).applyPermadeath(
+                    race:
+                        races[playerSession.raceId] as Map<String, dynamic>? ??
+                            const {},
+                    profession: professions[playerSession.professionId]
+                            as Map<String, dynamic>? ??
+                        const {},
+                  );
+          ref
+              .read(storyPlayProvider.notifier)
+              .restart(StoryRepository.startNodeId);
+          ref.read(homeTabIndexProvider.notifier).state = 0;
+          if (!mounted) return;
+          await Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (_) => DeathScreen(
+                lostItemIds: result.lostItemIds,
+                xpEarned: result.xpEarnedThisRun,
+                skillsLost: result.skillsLost,
+                nodesVisited: nodesVisited,
+              ),
+            ),
+            (route) => route.isFirst,
+          );
+          return;
+        }
+        Navigator.of(context).pop(_won);
+      },
+      child: Text(
+          _won ? tr(ref, 'victory_return_button') : tr(ref, 'retreat_button')),
+    );
+  }
+
+  // --- Spells --------------------------------------------------------------
+
+  /// Casts [spell] right now, like drinking a potion: picks its target(s)
+  /// (a sheet when there's a real choice), applies the effect, spends the
+  /// mana and persists it. Spells never crit, are never Weakened and
+  /// ignore the Armored affix -- the number on the button is what lands.
+  Future<void> _castSpell(
+    SpellSpec spell,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) async {
+    if (_over || _rolling || !_started || _mana < spell.manaCost) return;
+    final lang = ref.read(appLanguageProvider);
+    final player = _party.firstWhere((m) => m.isPlayer);
+    final amount = _spellAmountNow(spell, items);
+    final status = spellStatusFor(spell, level: _playerLevel);
+
+    final enemyTargets = <_EnemyMember>[];
+    final memberTargets = <_PartyMember>[];
+    switch (spell.target) {
+      case SpellTarget.enemy:
+        final living = _enemies.where((e) => e.isAlive).toList();
+        if (living.isEmpty) return;
+        final picked =
+            living.length == 1 ? living.first : await _pickEnemy(living, spell);
+        if (picked == null) return;
+        enemyTargets.add(picked);
+      case SpellTarget.allEnemies:
+        enemyTargets.addAll(_enemies.where((e) => e.isAlive));
+      case SpellTarget.ally:
+        final conscious = _party.where((m) => !m.isKnockedOut).toList();
+        if (conscious.isEmpty) return;
+        final picked = conscious.length == 1
+            ? conscious.first
+            : await _pickMember(conscious, spell);
+        if (picked == null) return;
+        memberTargets.add(picked);
+      case SpellTarget.party:
+        memberTargets.addAll(_party.where((m) => !m.isKnockedOut));
+      case SpellTarget.self:
+        memberTargets.add(player);
+    }
+    if (!mounted || _over || _rolling) return;
+
+    final entries = <_LogEntry>[
+      _LogEntry(
+        '${trFor(lang, 'cast_prefix')} ${spell.nameFor(lang)} '
+        '(-${spell.manaCost} ${trFor(lang, 'mana_label')}). '
+        '${spell.battleMessageFor(lang)}',
+        _LogKind.mana,
+      ),
+    ];
+    var hitsLanded = 0;
+    for (final enemy in enemyTargets) {
+      if (spell.effect == SpellEffectKind.damage) {
+        final damage = amount;
+        final wasAlive = enemy.isAlive;
+        enemy.currentHealth = max(0, enemy.currentHealth - damage);
+        if (damage > 0) {
+          hitsLanded++;
+          _lastDamagedEnemyKey = enemy.key;
+          _lastEnemyDamageTaken = damage;
+          if (spell.element != 'None') {
+            enemy.elementsHitThisRound.add(spell.element);
+          }
+        }
+        if (wasAlive && !enemy.isAlive) _lastKillWasCritical = false;
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, 'takes_damage_word')} $damage '
+          '${trFor(lang, 'damage_word')}.',
+          _LogKind.playerDamage,
+        ));
+      }
+      if (status != null && enemy.isAlive) {
+        enemy.statusEffects = applyStatusEffect(enemy.statusEffects, status);
+        entries.add(_LogEntry(
+          _statusInflictedMessage(status, enemy.displayName, lang),
+          _LogKind.info,
+        ));
+      }
+    }
+    for (final member in memberTargets) {
+      switch (spell.effect) {
+        case SpellEffectKind.heal:
+          var healing = amount;
+          if (_condition == BattlefieldCondition.shrine) {
+            healing = (healing * shrineHealMultiplier).round();
+          }
+          member.currentHealth =
+              min(member.maxHealth, member.currentHealth + healing);
+          entries.add(_LogEntry(
+            '${member.displayName} ${trFor(lang, 'recovers_word')} $healing '
+            '${trFor(lang, 'hp_label')}.',
+            _LogKind.playerHeal,
+          ));
+        case SpellEffectKind.block:
+          var block = amount;
+          if (_condition == BattlefieldCondition.highGround) {
+            block = (block * highGroundBlockMultiplier).round();
+          }
+          _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + block;
+          member.block += block;
+          entries.add(_LogEntry(
+            '${member.displayName} ${trFor(lang, 'gains_block_word')} $block '
+            '${trFor(lang, 'block_word')}.',
+            _LogKind.playerBlock,
+          ));
+        case SpellEffectKind.cleanse:
+          member.statusEffects = [];
+          entries.add(_LogEntry(
+            '${member.displayName} ${trFor(lang, 'cleansed_suffix')}',
+            _LogKind.playerHeal,
+          ));
+        case SpellEffectKind.damage:
+        case SpellEffectKind.status:
+          break;
+      }
+    }
+    if (hitsLanded > 0) {
+      final before = _momentum;
+      _momentum = min(_momentumThreshold, _momentum + hitsLanded);
+      if (before < _momentumThreshold && _momentum >= _momentumThreshold) {
+        entries.add(
+            _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
+      }
+    }
+    _noteSkittishFlights(entries, lang);
+
+    _mana -= spell.manaCost;
+    ref.read(playerSessionProvider.notifier).setMana(_mana);
+    setState(() {
+      _log.addAll(entries);
+      _autoAssignTargets();
+    });
+
+    if (_enemies.every((e) => !e.isAlive)) {
+      await Future.delayed(const Duration(milliseconds: 400));
+      if (!mounted) return;
+      _finishFight(won: true);
+    }
+  }
+
+  Future<_EnemyMember?> _pickEnemy(
+      List<_EnemyMember> candidates, SpellSpec spell) {
+    final lang = ref.read(appLanguageProvider);
+    return showModalBottomSheet<_EnemyMember>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${spell.nameFor(lang)} · ${trFor(lang, 'choose_target_title')}',
+              style: Theme.of(sheetContext).textTheme.titleMedium,
+            ),
+            for (final enemy in candidates)
+              ListTile(
+                leading: EnemyPixelIcon(enemy.enemyId, size: 28),
+                title: Text(enemy.displayName),
+                subtitle: Text(
+                    '${trFor(lang, 'hp_label')} ${enemy.currentHealth} / ${enemy.maxHealth}'),
+                onTap: () => Navigator.of(sheetContext).pop(enemy),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<_PartyMember?> _pickMember(
+      List<_PartyMember> candidates, SpellSpec spell) {
+    final lang = ref.read(appLanguageProvider);
+    return showModalBottomSheet<_PartyMember>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${spell.nameFor(lang)} · ${trFor(lang, 'choose_target_title')}',
+              style: Theme.of(sheetContext).textTheme.titleMedium,
+            ),
+            for (final member in candidates)
+              ListTile(
+                leading: CircleAvatar(
+                  radius: 14,
+                  backgroundColor: _accentFor(member),
+                  child: Text(
+                    member.displayName.isEmpty
+                        ? '?'
+                        : member.displayName[0].toUpperCase(),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+                title: Text(member.displayName),
+                subtitle: Text(
+                    '${trFor(lang, 'hp_label')} ${member.currentHealth} / ${member.maxHealth}'),
+                onTap: () => Navigator.of(sheetContext).pop(member),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- Small helpers -------------------------------------------------------
+
+  static const List<Color> _allyAccents = [
+    Colors.teal,
+    Colors.deepPurple,
+    Colors.orange,
+    Colors.pink,
+    Colors.brown,
+  ];
+
+  /// The color that stands for [member] everywhere on the battle screen:
+  /// their die tile, their card, their target dot on an enemy.
+  Color _accentFor(_PartyMember member) {
+    if (member.isPlayer) return Theme.of(context).colorScheme.primary;
+    final index = _party.indexWhere((m) => m.id == member.id) - 1;
+    return _allyAccents[max(0, index) % _allyAccents.length];
+  }
 }
+
+const IconData _manaIcon = Icons.bubble_chart;
+const Color _manaColor = Colors.blue;
+
+Color _faceTypeColor(String type) {
+  switch (type) {
+    case 'Attack':
+      return Colors.deepOrange;
+    case 'Defend':
+      return Colors.blueGrey;
+    case 'Heal':
+      return Colors.green;
+    case 'Mana':
+      return _manaColor;
+    case 'Skill':
+      return Colors.deepPurple;
+    default:
+      return Colors.grey;
+  }
+}
+
+IconData _spellIcon(SpellEffectKind effect) {
+  switch (effect) {
+    case SpellEffectKind.damage:
+      return Icons.flare;
+    case SpellEffectKind.heal:
+      return Icons.favorite;
+    case SpellEffectKind.block:
+      return Icons.shield;
+    case SpellEffectKind.status:
+      return Icons.sick;
+    case SpellEffectKind.cleanse:
+      return Icons.water_drop;
+  }
+}
+
+Color _spellColor(SpellEffectKind effect) {
+  switch (effect) {
+    case SpellEffectKind.damage:
+      return Colors.deepOrange;
+    case SpellEffectKind.heal:
+      return Colors.green;
+    case SpellEffectKind.block:
+      return Colors.blueGrey;
+    case SpellEffectKind.status:
+      return Colors.purple;
+    case SpellEffectKind.cleanse:
+      return Colors.teal;
+  }
+}
+
+String _spellEffectLabelKey(SpellEffectKind effect) => switch (effect) {
+      SpellEffectKind.damage => 'spell_effect_damage',
+      SpellEffectKind.heal => 'spell_effect_heal',
+      SpellEffectKind.block => 'spell_effect_block',
+      SpellEffectKind.status => 'spell_effect_status',
+      SpellEffectKind.cleanse => 'spell_effect_cleanse',
+    };
+
+String _spellTargetLabelKey(SpellTarget target) => switch (target) {
+      SpellTarget.enemy => 'spell_target_enemy',
+      SpellTarget.allEnemies => 'spell_target_all_enemies',
+      SpellTarget.ally => 'spell_target_ally',
+      SpellTarget.party => 'spell_target_party',
+      SpellTarget.self => 'spell_target_self',
+    };
 
 /// A small pill showing one active status effect's icon and how many
 /// rounds it has left — the visual half of the status-effect system,

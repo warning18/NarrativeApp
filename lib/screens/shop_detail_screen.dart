@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spells.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -30,7 +31,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
   Widget build(BuildContext context) {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
+    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    // Spells are only needed to describe and gate spellbooks; a table
+    // that hasn't loaded yet just means those tiles say nothing extra.
+    final spells =
+        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
+    final professions = professionsAsync.value ?? const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
+    final lang = ref.watch(appLanguageProvider);
     final stock = (widget.shop['initialStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -215,17 +223,52 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         final isEquippable =
                             item?['isEquippable'] as bool? ?? false;
                         final equipSlot = item?['equipSlot']?.toString();
+                        // A spellbook: say which spell it teaches, and grey
+                        // it out for a spell already known or one of
+                        // another profession's.
+                        final taughtSpellId = spellbookSpellIdFor(item);
+                        final spell = taughtSpellId == null
+                            ? null
+                            : spells[taughtSpellId];
+                        String? spellNote;
+                        var spellLocked = false;
+                        if (spell != null) {
+                          if (session.knownSpellIds.contains(spell.id)) {
+                            spellNote = tr(ref, 'spell_known_label');
+                            spellLocked = true;
+                          } else if (!canLearnSpell(spell,
+                              professionId: session.professionId,
+                              knownSpellIds: session.knownSpellIds)) {
+                            final professionName = (professions[
+                                        spell.professionId]
+                                    as Map<String, dynamic>?)?['professionName']
+                                ?.toString();
+                            spellNote =
+                                '${tr(ref, 'spell_profession_only_prefix')} '
+                                '${professionName ?? spell.professionId}';
+                            spellLocked = true;
+                          } else {
+                            spellNote =
+                                '${spell.nameFor(lang)} · ${spell.manaCost} '
+                                '${tr(ref, 'mana_label')} · '
+                                '${spell.descriptionFor(lang)}';
+                          }
+                        }
+                        final priceLine = soldOut
+                            ? tr(ref, 'sold_out_label')
+                            : '$cost ${tr(ref, 'gold_label')} · $remaining ${tr(ref, 'left_suffix')}';
                         return Card(
                           child: ListTile(
                             leading: ItemPixelIcon(itemId, itemType),
                             title: Text(itemName),
                             subtitle: Text(
-                              soldOut
-                                  ? tr(ref, 'sold_out_label')
-                                  : '$cost ${tr(ref, 'gold_label')} · $remaining ${tr(ref, 'left_suffix')}',
+                              spellNote == null
+                                  ? priceLine
+                                  : '$priceLine\n$spellNote',
                             ),
+                            isThreeLine: spellNote != null,
                             trailing: ElevatedButton(
-                              onPressed: (!canAfford || soldOut)
+                              onPressed: (!canAfford || soldOut || spellLocked)
                                   ? null
                                   : () async {
                                       await ref
@@ -234,14 +277,16 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                               stockLimit,
                                               item: item);
                                       if (!context.mounted) return;
-                                      final lang =
-                                          ref.read(appLanguageProvider);
                                       showImmersiveNotice(
                                         context,
-                                        icon: Icons.shopping_bag_outlined,
-                                        message:
-                                            '${trFor(lang, 'bought_prefix')} $itemName '
-                                            '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                                        icon: spell != null
+                                            ? Icons.auto_stories
+                                            : Icons.shopping_bag_outlined,
+                                        message: spell != null
+                                            ? '${trFor(lang, 'spell_learned_prefix')} '
+                                                '${spell.nameFor(lang)}'
+                                            : '${trFor(lang, 'bought_prefix')} $itemName '
+                                                '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
                                         actionLabel: isEquippable
                                             ? trFor(lang, 'equip_button')
                                             : null,
@@ -291,8 +336,6 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                       .notifier)
                                                   .buyDice(diceId, cost);
                                               if (!context.mounted) return;
-                                              final lang =
-                                                  ref.read(appLanguageProvider);
                                               showImmersiveNotice(
                                                 context,
                                                 icon: Icons.casino,

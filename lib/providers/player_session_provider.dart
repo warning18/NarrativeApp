@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
+import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -95,6 +96,8 @@ class PlayerSession {
     this.antidoteCount = 0,
     this.lootPityStreak = 0,
     this.recentLootIds = const [],
+    this.mana = 0,
+    this.knownSpellIds = const [],
   });
 
   final int level;
@@ -299,6 +302,20 @@ class PlayerSession {
   /// the same piece of gear doesn't come up fight after fight.
   final List<String> recentLootIds;
 
+  /// The party's current mana, spent on spells in a fight (see
+  /// [knownSpellIds]) and restored by a die's `Mana` faces, a rest, or a
+  /// new game. Carries over between fights exactly like [currentHealth];
+  /// never above [maxMana].
+  final int mana;
+
+  /// Spells the player can cast (spells.json ids) -- the profession's
+  /// starting spells plus every spellbook bought since. Reset to the
+  /// starting spells on permadeath, like [unlockedSkillIds].
+  final List<String> knownSpellIds;
+
+  /// The mana pool's size -- see `maxManaFor` in spells.dart.
+  int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
+
   int get xpToNextLevel => level * 100;
 
   String get alignmentLabel {
@@ -391,6 +408,8 @@ class PlayerSession {
     int? antidoteCount,
     int? lootPityStreak,
     List<String>? recentLootIds,
+    int? mana,
+    List<String>? knownSpellIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -455,6 +474,8 @@ class PlayerSession {
       antidoteCount: antidoteCount ?? this.antidoteCount,
       lootPityStreak: lootPityStreak ?? this.lootPityStreak,
       recentLootIds: recentLootIds ?? this.recentLootIds,
+      mana: mana ?? this.mana,
+      knownSpellIds: knownSpellIds ?? this.knownSpellIds,
     );
   }
 
@@ -518,6 +539,8 @@ class PlayerSession {
         'antidoteCount': antidoteCount,
         'lootPityStreak': lootPityStreak,
         'recentLootIds': recentLootIds,
+        'mana': mana,
+        'knownSpellIds': knownSpellIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -679,6 +702,16 @@ class PlayerSession {
       recentLootIds:
           (json['recentLootIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      // A save from before mana existed wakes up with a full pool, the
+      // same as a fresh character.
+      mana: (json['mana'] as num?)?.toInt() ??
+          maxManaFor(
+            intelligence: (json['intelligence'] as num?)?.toInt() ?? 0,
+            wisdom: (json['wisdom'] as num?)?.toInt() ?? 0,
+          ),
+      knownSpellIds:
+          (json['knownSpellIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
     );
   }
 }
@@ -781,6 +814,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: const [],
       equippedDiceId: null,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
+      mana: maxManaFor(
+        intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
+        wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
+      ),
     );
     await _persist();
   }
@@ -862,6 +899,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       if (professionSkillId.isNotEmpty) professionSkillId,
       if (raceSkillId.isNotEmpty) raceSkillId,
     ];
+    final startingDiceId = _startingDiceIdFor(profession);
+    final startingSpellIds = _startingSpellIdsFor(profession);
 
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
@@ -893,17 +932,54 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       unlockedShopIds: const [],
       unlockedQuestIds: const [],
       unlockedEnemyIds: const [],
-      diceSkillAssignments: {
-        if (starterAssignments.isNotEmpty) _starterDiceId: starterAssignments,
-      },
+      diceSkillAssignments:
+          _starterAssignmentsByDie(starterAssignments, startingDiceId),
       raceId: raceId,
       professionId: professionId,
-      ownedDiceIds: const [_starterDiceId],
-      equippedDiceId: _starterDiceId,
+      ownedDiceIds: [
+        _starterDiceId,
+        if (startingDiceId != _starterDiceId) startingDiceId,
+      ],
+      equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
+      mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
+      knownSpellIds: startingSpellIds,
     );
     await _persist();
   }
+
+  /// The die a new character of [profession] starts with equipped -- its
+  /// own `startingDiceId` (a Mage's or Cleric's apprentice die, with its
+  /// Mana faces) or the starter die. Every profession's starting die keeps
+  /// the Profession/Heritage Technique faces at the starter die's own
+  /// indexes ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]),
+  /// so the same face assignments serve both dice.
+  static String _startingDiceIdFor(Map<String, dynamic> profession) {
+    final id = profession['startingDiceId']?.toString() ?? '';
+    return id.isEmpty ? _starterDiceId : id;
+  }
+
+  static List<String> _startingSpellIdsFor(Map<String, dynamic> profession) =>
+      (profession['startingSpellIds'] as List?)
+          ?.map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList() ??
+      const [];
+
+  /// [starterAssignments] under the starter die AND the profession's own
+  /// starting die (when it has one), so the Technique faces resolve on
+  /// whichever of the two is equipped.
+  static Map<String, Map<String, String>> _starterAssignmentsByDie(
+    Map<String, String> starterAssignments,
+    String startingDiceId,
+  ) =>
+      {
+        if (starterAssignments.isNotEmpty) ...{
+          _starterDiceId: starterAssignments,
+          if (startingDiceId != _starterDiceId)
+            startingDiceId: starterAssignments,
+        },
+      };
 
   /// Sets the character's name — called once from the lock-in dialog right
   /// after character creation (see RaceProfessionScreen), before the
@@ -1077,6 +1153,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final key = '$shopId::$itemId';
     final purchased = state.shopPurchaseCounts[key] ?? 0;
     if (state.gold < cost || purchased >= stockLimit) return;
+    // A spellbook is read on the spot: the spell joins [knownSpellIds] and
+    // the book never enters the inventory. One the player already knows
+    // is refused outright (the shop screen also greys it out).
+    final taughtSpellId = spellbookSpellIdFor(item);
+    if (taughtSpellId != null) {
+      if (state.knownSpellIds.contains(taughtSpellId)) return;
+      state = state.copyWith(
+        gold: state.gold - cost,
+        knownSpellIds: [...state.knownSpellIds, taughtSpellId],
+        shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
+      );
+      await _persist();
+      return;
+    }
     final charges = consumableChargesFor(itemId, item);
     state = state.copyWith(
       gold: state.gold - cost,
@@ -1443,6 +1533,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> healPartyToFull() async {
     state = state.copyWith(
       currentHealth: state.maxHealth,
+      mana: state.maxMana,
       recruitedAllies: [
         for (final ally in state.recruitedAllies)
           ally.copyWith(currentHealth: AllyState.fullHealthSentinel),
@@ -1812,6 +1903,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? statPoints,
     int? skillPoints,
     int? antidoteCount,
+    int? mana,
   }) async {
     state = state.copyWith(
       level: level,
@@ -1834,6 +1926,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       statPoints: statPoints,
       skillPoints: skillPoints,
       antidoteCount: antidoteCount,
+      mana: mana,
     );
     await _persist();
   }
@@ -1847,6 +1940,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> consumeAntidote() async {
     if (state.antidoteCount <= 0) return;
     state = state.copyWith(antidoteCount: state.antidoteCount - 1);
+    await _persist();
+  }
+
+  /// Sets the party's mana, clamped to `0..maxMana` -- the fight screen
+  /// writes through this after every cast and every Mana face, so a fight
+  /// abandoned mid-way keeps what was spent and gained, like potions.
+  Future<void> setMana(int value) async {
+    final clamped = value.clamp(0, state.maxMana);
+    if (clamped == state.mana) return;
+    state = state.copyWith(mana: clamped);
+    await _persist();
+  }
+
+  /// Adds [spellId] to [PlayerSession.knownSpellIds]; a no-op for a spell
+  /// already known or an empty id.
+  Future<void> learnSpell(String spellId) async {
+    if (spellId.isEmpty || state.knownSpellIds.contains(spellId)) return;
+    state = state.copyWith(knownSpellIds: [...state.knownSpellIds, spellId]);
     await _persist();
   }
 
@@ -1922,6 +2033,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, dynamic> items = const {},
     int? lootPityStreak,
     List<String>? recentLootIds,
+    int? manaAfter,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -1933,12 +2045,22 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     var statPointsGained = 0;
     var skillPointsGained = 0;
     final carried = <String>[];
+    final spellsLearned = <String>[];
     for (final itemId in itemsGained) {
       final item = items[itemId] as Map<String, dynamic>?;
       final tome = tomeGrantFor(itemId, item);
       if (tome != null) {
         statPointsGained += tome.statPoints;
         skillPointsGained += tome.skillPoints;
+        continue;
+      }
+      // A spellbook handed out as a reward is read like a bought one.
+      final taughtSpellId = spellbookSpellIdFor(item);
+      if (taughtSpellId != null) {
+        if (!state.knownSpellIds.contains(taughtSpellId) &&
+            !spellsLearned.contains(taughtSpellId)) {
+          spellsLearned.add(taughtSpellId);
+        }
         continue;
       }
       final charges = consumableChargesFor(itemId, item);
@@ -1993,6 +2115,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       enemyKillCounts: newKillCounts,
       lootPityStreak: lootPityStreak,
       recentLootIds: recentLootIds,
+      mana: manaAfter?.clamp(0, state.maxMana),
+      knownSpellIds: spellsLearned.isEmpty
+          ? null
+          : [...state.knownSpellIds, ...spellsLearned],
     );
     await _persist();
     return leveled.leveledUp;
@@ -2066,9 +2192,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillTiers: const {},
       skillEssence: 0,
       skillPoints: starterSkillPoints,
-      diceSkillAssignments: {
-        if (starterAssignments.isNotEmpty) _starterDiceId: starterAssignments,
-      },
+      diceSkillAssignments: _starterAssignmentsByDie(
+          starterAssignments, _startingDiceIdFor(profession)),
+      knownSpellIds: _startingSpellIdsFor(profession),
+      mana: state.maxMana,
     );
     await _persist();
     return result;
