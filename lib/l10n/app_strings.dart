@@ -1569,6 +1569,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The moon-shard piece',
     AppLanguage.fr: 'Le fragment de lune',
   },
+  'banner_piece_warden_standard': {
+    AppLanguage.en: "The Warden's standard",
+    AppLanguage.fr: "L'étendard du Gardien",
+  },
+  'banner_piece_reliquary_thread': {
+    AppLanguage.en: 'The reliquary thread',
+    AppLanguage.fr: 'Le fil du reliquaire',
+  },
+  'grants_banner_piece_id': {
+    AppLanguage.en: 'Grants Banner piece (id)',
+    AppLanguage.fr: 'Accorde un fragment de la Bannière (id)',
+  },
+  'lose_ally_id': {
+    AppLanguage.en: 'Companion lost for good (id, or * for the first active)',
+    AppLanguage.fr:
+        'Compagnon perdu pour de bon (id, ou * pour le premier actif)',
+  },
   'achievement_unlocked_prefix': {
     AppLanguage.en: 'Achievement unlocked',
     AppLanguage.fr: 'Haut fait débloqué',

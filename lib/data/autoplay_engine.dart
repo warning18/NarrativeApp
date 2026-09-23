@@ -319,6 +319,7 @@ Future<AutoplayResult> autoplayToNode(
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
+        bannerPieceId: choice.grantsBannerPieceId,
         questIDToProgress: choice.questIDToProgress,
       );
     }
@@ -500,6 +501,7 @@ Future<AutoplayResult> autoplayToChapter(
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
+        bannerPieceId: choice.grantsBannerPieceId,
         questIDToProgress: choice.questIDToProgress,
       );
     }

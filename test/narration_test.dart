@@ -486,6 +486,9 @@ void main() {
       expect(confront.speaker, 'The Sovereign');
       expect(confront.choices, hasLength(3));
       for (final choice in confront.choices) {
+        expect(choice.nextId, '7002_price');
+      }
+      for (final choice in nodes['7002_price']!.choices) {
         expect(choice.launchZoneId, 'z_beyond_the_tear');
         expect(choice.nextId, '7003');
       }

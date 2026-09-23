@@ -80,6 +80,7 @@ class PlayerSession {
     this.seenEnemyIds = const [],
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
+    this.lostAllyIds = const [],
     this.builtHouseIds = const [],
     this.unlockedAchievementIds = const [],
     this.completedZoneIds = const [],
@@ -210,6 +211,10 @@ class PlayerSession {
   /// alongside the player, bounded by party capacity (default 2, raised by
   /// built houses' partyCapacityBonus).
   final List<String> activeAllyIds;
+
+  /// Companions the story took for good (see [StoryChoice.loseAllyId]);
+  /// never re-recruited this run, cleared with a new game.
+  final List<String> lostAllyIds;
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
@@ -414,6 +419,7 @@ class PlayerSession {
     List<String>? seenEnemyIds,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
+    List<String>? lostAllyIds,
     List<String>? builtHouseIds,
     List<String>? unlockedAchievementIds,
     List<String>? completedZoneIds,
@@ -481,6 +487,7 @@ class PlayerSession {
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
+      lostAllyIds: lostAllyIds ?? this.lostAllyIds,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       unlockedAchievementIds:
           unlockedAchievementIds ?? this.unlockedAchievementIds,
@@ -553,6 +560,7 @@ class PlayerSession {
         'seenEnemyIds': seenEnemyIds,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
+        'lostAllyIds': lostAllyIds,
         'builtHouseIds': builtHouseIds,
         'unlockedAchievementIds': unlockedAchievementIds,
         'completedZoneIds': completedZoneIds,
@@ -684,6 +692,9 @@ class PlayerSession {
           const [],
       activeAllyIds:
           (json['activeAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      lostAllyIds:
+          (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
@@ -1097,12 +1108,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// A story choice's costs and rewards. A negative [healAmount] is a wound
+  /// the story deals (a storm, a burning cathedral) and never kills: health
+  /// stops at 1. [bannerPieceId] adds a piece of the Shroud; [loseAllyId]
+  /// (an id, or `*` for the first active ally) takes a companion for good.
   Future<void> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
     int healAmount = 0,
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
+    String? bannerPieceId,
+    String? loseAllyId,
   }) async {
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
@@ -1112,17 +1129,51 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !state.completedQuestIds.contains(questIDToProgress)) {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
     }
+    var newBannerPieces = state.bannerPiecesCollected;
+    if (bannerPieceId != null &&
+        bannerPieceId.isNotEmpty &&
+        !newBannerPieces.contains(bannerPieceId)) {
+      newBannerPieces = [...newBannerPieces, bannerPieceId];
+    }
     final newGoldRaw = state.gold + goldMod;
     final newHealthRaw = state.currentHealth + healAmount;
     state = state.copyWith(
       gold: newGoldRaw < 0 ? 0 : newGoldRaw,
       alignmentScore: state.alignmentScore + alignmentMod,
-      currentHealth:
-          newHealthRaw > state.maxHealth ? state.maxHealth : newHealthRaw,
+      currentHealth: newHealthRaw > state.maxHealth
+          ? state.maxHealth
+          : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
       activeQuestIds: newActiveQuests,
+      bannerPiecesCollected: newBannerPieces,
     );
+    if (loseAllyId != null && loseAllyId.isNotEmpty) {
+      final id = loseAllyId == '*'
+          ? (state.activeAllyIds.isEmpty ? null : state.activeAllyIds.first)
+          : loseAllyId;
+      if (id != null) loseAlly(id, persist: false);
+    }
     await _persist();
+  }
+
+  /// The story takes [companionId] for good: out of the roster and the
+  /// party, and never recruited again this run. A no-op for an unknown or
+  /// already-lost id.
+  void loseAlly(String companionId, {bool persist = true}) {
+    if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
+      return;
+    }
+    state = state.copyWith(
+      recruitedAllies: state.recruitedAllies
+          .where((a) => a.companionId != companionId)
+          .toList(),
+      activeAllyIds:
+          state.activeAllyIds.where((id) => id != companionId).toList(),
+      lostAllyIds: state.lostAllyIds.contains(companionId)
+          ? state.lostAllyIds
+          : [...state.lostAllyIds, companionId],
+    );
+    if (persist) _persist();
   }
 
   Future<void> acceptQuest(String questId) async {
@@ -1335,6 +1386,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? requiredHouseId,
   }) async {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
+    if (state.lostAllyIds.contains(companionId)) return;
     final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
     final raceSkillId = race?['standardSkillID']?.toString() ?? '';
     // A companion's signature die IS their kit: every skill one of its

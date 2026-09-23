@@ -548,6 +548,13 @@ final DbSchema racesSchema = DbSchema(
         label: 'Description',
         type: FieldType.multilineText),
     FieldSchema(
+        key: 'powerMedium',
+        label:
+            'Power Medium (how this race wears its power: banner, paint, mark, ink)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'powerMediumFr', label: 'Power Medium (FR)', type: FieldType.text),
+    FieldSchema(
       key: 'bonusMaxHealth',
       label: 'Bonus Max Health',
       type: FieldType.integer,

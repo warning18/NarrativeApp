@@ -733,6 +733,8 @@ Future<void> _selectChoice({
           healAmount: choice.healAmount,
           flagsToAdd: choice.flagsToAdd,
           questIDToProgress: choice.questIDToProgress,
+          bannerPieceId: choice.grantsBannerPieceId,
+          loseAllyId: choice.loseAllyId,
         );
   }
   if (choice.hasUnlocks) {

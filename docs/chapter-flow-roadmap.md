@@ -3,14 +3,28 @@
 The owner's intended structure, as stated when the difficulty/flow review
 was requested:
 
-- **Chapter 1** — introduction: fleeing the hometown.
+- **Chapter 1** — introduction: fleeing the hometown. Every origin leaves
+  with the first piece of the Shroud (the Void Banner); the rest of the
+  story is finding the other pieces.
 - **Chapter 2** — a second, bigger introduction to the roguelike mechanics.
-- **Chapter 3** — the camp and its builder mechanics; the first main zone.
+  It ends with building the transport out of the town: the Rusty Eel needs
+  a hull (Fisherman's Row) and a sail (Tanner's Court) before she can cast
+  off, and casting off is a choice about who comes along.
+- **Chapter 3** — after a long voyage, a remote coast: the camp is founded
+  in a cove a day's walk from the Spire of Judgment, and grows from a camp
+  into a town as the player builds it. The first main zone.
 - **Chapter 4** — the second, bigger zone.
 - **Chapter 5** — the last big zone.
-- **Chapter 6** — the final zone.
+- **Chapter 6** — the final zone, open only to a whole Shroud (four pieces:
+  the heirloom, the Warden's standard, the Court's twin, the reliquary
+  thread), each of the last three taken at a cost.
 - The camp stays in the same place; a boat (FTL-like) carries the party to
   the expeditions and later chapters.
+- Power is worn, not held: humans sew it into banners, elves paint it, the
+  dwarves cut it into stone, orcs ink it under scar tissue, the voidkin
+  carry the tear's own mark. There is no clean way through: the spine's
+  dilemmas (the unfurling, the wharf, the storm, the Warden, the altar, the
+  reliquary, the Sovereign's price) all cost something.
 
 This document records what the four batches (v1.109 to v1.112) shipped
 against that structure, how the chapters flow now, how difficulty is

@@ -197,7 +197,7 @@ const _death = _Pool([
       'lesson wrong. The road does not end here. Only I do.',
   'No last words worth keeping. {enemy}, the cold, and then a quiet so '
       'complete it felt like a kindness. The Banner, the ledger, the camp '
-      'below the Spire: all of it passes to whoever comes next.',
+      'on the Ashen Coast: all of it passes to whoever comes next.',
 ], [
   "Il y a un moment, m'a-t-on dit, où le corps comprend avant l'esprit. "
       "Le mien comprit au sol, {enemy} debout au-dessus de lui et le ciel "
@@ -212,7 +212,7 @@ const _death = _Pool([
       "{enemy} démente la leçon. La route ne s'arrête pas ici. Moi seul.",
   'Pas de dernières paroles dignes d\'être gardées. {enemy}, le froid, puis '
       'un silence si complet qu\'il ressemblait à une bonté. La Bannière, le '
-      'registre, le camp sous la Flèche : tout cela passe à qui viendra ensuite.',
+      'registre, le camp sur la Côte de Cendre : tout cela passe à qui viendra ensuite.',
 ]);
 
 /// The paragraph the next scene opens with after [outcome], picked by

@@ -27,6 +27,8 @@ class StoryChoice {
     this.hideIfFlags = const [],
     this.showIfFlags = const [],
     this.launchZoneId,
+    this.grantsBannerPieceId,
+    this.loseAllyId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -66,6 +68,8 @@ class StoryChoice {
       chestFloor: json['chestFloor'] as String?,
       isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
       launchZoneId: json['launchZoneId'] as String?,
+      grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
+      loseAllyId: json['loseAllyId'] as String?,
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -161,6 +165,16 @@ class StoryChoice {
   /// locked choice it leaves no trace until it is available.
   final List<String> showIfFlags;
 
+  /// A piece of the Shroud this choice hands the player (see
+  /// `PlayerSession.bannerPiecesCollected`): the origin epilogues grant the
+  /// heirloom piece, and the spine's three dilemmas the rest.
+  final String? grantsBannerPieceId;
+
+  /// A companion this choice costs for good -- their id, or `*` for the
+  /// first active ally (whoever steps forward). Nothing happens when the
+  /// character walks alone; the choice's other costs still do.
+  final String? loseAllyId;
+
   /// A zones.json id to run as an expedition BEFORE this choice resolves --
   /// a chapter's main zone launched from its story beat (the Drowned
   /// Stair, the Shroud's Vigil, Beyond the Tear). Clearing the zone
@@ -227,6 +241,10 @@ class StoryChoice {
         if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
         if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,
         if (launchesZone) 'launchZoneId': launchZoneId,
+        if (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty)
+          'grantsBannerPieceId': grantsBannerPieceId,
+        if (loseAllyId != null && loseAllyId!.isNotEmpty)
+          'loseAllyId': loseAllyId,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -257,7 +275,9 @@ class StoryChoice {
       alignmentMod != 0 ||
       healAmount != 0 ||
       flagsToAdd.isNotEmpty ||
-      (questIDToProgress != null && questIDToProgress!.isNotEmpty);
+      (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
+      (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
+      (loseAllyId != null && loseAllyId!.isNotEmpty);
 }
 
 class StoryNode {

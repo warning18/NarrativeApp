@@ -2,7 +2,7 @@
   "human": {
     "raceID": "human",
     "raceName": "Human",
-    "description": "Adaptable and resourceful, humans favor coin and connections over raw power.",
+    "description": "Adaptable and resourceful, humans favor coin and connections over raw power. Their power is sewn: a human's strength lives in the banner or standard they carry, and a human without one is a pair of empty hands.",
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 0,
@@ -15,12 +15,14 @@
     "bonusWisdom": 2,
     "bonusPerception": 0,
     "startingGoldBonus": 20,
-    "standardSkillID": "human_resolve"
+    "standardSkillID": "human_resolve",
+    "powerMedium": "banner",
+    "powerMediumFr": "bannière"
   },
   "elf": {
     "raceID": "elf",
     "raceName": "Elf",
-    "description": "Quick and attuned to the world's currents, at the cost of a frailer frame.",
+    "description": "Quick and attuned to the world's currents, at the cost of a frailer frame. The painted folk: an elf's power is a sigil painted on skin or bark, renewed by hand, and only as strong as its last coat.",
     "bonusMaxHealth": -10,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 0,
@@ -33,12 +35,14 @@
     "bonusWisdom": 0,
     "bonusPerception": 4,
     "startingGoldBonus": 0,
-    "standardSkillID": "elf_arcane_focus"
+    "standardSkillID": "elf_arcane_focus",
+    "powerMedium": "painted sigil",
+    "powerMediumFr": "sigil peint"
   },
   "dwarf": {
     "raceID": "dwarf",
     "raceName": "Dwarf",
-    "description": "Stout and stubborn, built to shrug off blows that would fell others.",
+    "description": "Stout and stubborn, built to shrug off blows that would fell others. The stone-marked: a dwarf's power is a mark cut into steel, stone or a buckle, and it does not wash off.",
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 3,
@@ -51,12 +55,14 @@
     "bonusWisdom": 0,
     "bonusPerception": 0,
     "startingGoldBonus": 0,
-    "standardSkillID": "dwarf_stoneskin"
+    "standardSkillID": "dwarf_stoneskin",
+    "powerMedium": "stone-mark",
+    "powerMediumFr": "marque de pierre"
   },
   "orc": {
     "raceID": "orc",
     "raceName": "Orc",
-    "description": "Brutal strength wins fights fast, but leaves little room for finesse.",
+    "description": "Brutal strength wins fights fast, but leaves little room for finesse. The inked: an orc's power sits under the scar tissue, in ash-ink, where no one can confiscate it.",
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": -2,
@@ -69,12 +75,14 @@
     "bonusWisdom": 0,
     "bonusPerception": 0,
     "startingGoldBonus": 0,
-    "standardSkillID": "orc_berserk_rage"
+    "standardSkillID": "orc_berserk_rage",
+    "powerMedium": "ink",
+    "powerMediumFr": "encre"
   },
   "voidkin": {
     "raceID": "voidkin",
     "raceName": "Voidkin",
-    "description": "Touched by the Shroud, they hit devastatingly hard but break easily.",
+    "description": "Touched by the Shroud, they hit devastatingly hard but break easily. The tear-marked: a voidkin's power was never sewn, painted, cut or inked; the tear left it, and no door in the world is glad to see it.",
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -1,
@@ -87,6 +95,8 @@
     "bonusWisdom": -1,
     "bonusPerception": 0,
     "startingGoldBonus": 0,
-    "standardSkillID": "voidkin_umbral_veil"
+    "standardSkillID": "voidkin_umbral_veil",
+    "powerMedium": "void-mark",
+    "powerMediumFr": "marque du Néant"
   }
 }

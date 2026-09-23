@@ -283,6 +283,10 @@ class _ChoiceEditState {
             TextEditingController(text: choice.launchZoneId ?? ''),
         questIDToProgressController =
             TextEditingController(text: choice.questIDToProgress ?? ''),
+        grantsBannerPieceIdController =
+            TextEditingController(text: choice.grantsBannerPieceId ?? ''),
+        loseAllyIdController =
+            TextEditingController(text: choice.loseAllyId ?? ''),
         lockedTextController =
             TextEditingController(text: choice.lockedText ?? ''),
         lockedTextFrController =
@@ -323,6 +327,8 @@ class _ChoiceEditState {
   /// [StoryChoice.launchZoneId]).
   final TextEditingController launchZoneIdController;
   final TextEditingController questIDToProgressController;
+  final TextEditingController grantsBannerPieceIdController;
+  final TextEditingController loseAllyIdController;
   final TextEditingController lockedTextController;
   final TextEditingController lockedTextFrController;
   final TextEditingController triggerEnemyIdController;
@@ -353,6 +359,8 @@ class _ChoiceEditState {
     hideIfFlagsController.dispose();
     launchZoneIdController.dispose();
     questIDToProgressController.dispose();
+    grantsBannerPieceIdController.dispose();
+    loseAllyIdController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
     triggerEnemyIdController.dispose();
@@ -389,6 +397,12 @@ class _ChoiceEditState {
         questIDToProgress: questIDToProgressController.text.trim().isEmpty
             ? null
             : questIDToProgressController.text.trim(),
+        grantsBannerPieceId: grantsBannerPieceIdController.text.trim().isEmpty
+            ? null
+            : grantsBannerPieceIdController.text.trim(),
+        loseAllyId: loseAllyIdController.text.trim().isEmpty
+            ? null
+            : loseAllyIdController.text.trim(),
         lockedText: lockedTextController.text.trim().isEmpty
             ? null
             : lockedTextController.text.trim(),
@@ -561,6 +575,20 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.questIDToProgressController,
                   decoration: InputDecoration(
                       labelText: t('quest_id_to_progress'),
+                      border: const OutlineInputBorder()),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.grantsBannerPieceIdController,
+                  decoration: InputDecoration(
+                      labelText: t('grants_banner_piece_id'),
+                      border: const OutlineInputBorder()),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.loseAllyIdController,
+                  decoration: InputDecoration(
+                      labelText: t('lose_ally_id'),
                       border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),

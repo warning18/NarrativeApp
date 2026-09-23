@@ -40,10 +40,27 @@ String professionNounFor(String professionId, {required bool french}) {
   return french ? noun.fr : noun.en;
 }
 
+/// How each race wears its power -- the `{sigil}` token. Mirrors
+/// races.json's `powerMedium` (the story data is the reference; this is
+/// the render-time lookup).
+const Map<String, ({String en, String fr})> _powerMedia = {
+  'human': (en: 'banner', fr: 'bannière'),
+  'elf': (en: 'painted sigil', fr: 'sigil peint'),
+  'dwarf': (en: 'stone-mark', fr: 'marque de pierre'),
+  'orc': (en: 'ink', fr: 'encre'),
+  'voidkin': (en: 'void-mark', fr: 'marque du Néant'),
+};
+
+String powerMediumFor(String raceId, {required bool french}) {
+  final medium = _powerMedia[raceId];
+  if (medium == null) return french ? 'marque' : 'mark';
+  return french ? medium.fr : medium.en;
+}
+
 bool hasNarrationTokens(String text) => text.contains('{');
 
-/// [text] with every `{name}`, `{race}`, `{profession}` and `{companion}`
-/// filled in. An unnamed character reads as "stranger"; a party with no
+/// [text] with every `{name}`, `{race}`, `{profession}`, `{companion}` and
+/// `{sigil}` (the race's power medium) filled in. An unnamed character reads as "stranger"; a party with no
 /// companion reads `{companion}` as "no one" -- authored lines that name a
 /// companion should sit behind a companion acknowledgment instead (see
 /// ally_acknowledgments.dart), this is only the safety net.
@@ -66,7 +83,8 @@ String personalizeNarration(
       .replaceAll('{race}', raceNounFor(raceId, french: french))
       .replaceAll(
           '{profession}', professionNounFor(professionId, french: french))
-      .replaceAll('{companion}', companion);
+      .replaceAll('{companion}', companion)
+      .replaceAll('{sigil}', powerMediumFor(raceId, french: french));
 }
 
 /// Display labels for the `speaker` values authored on story nodes -- a

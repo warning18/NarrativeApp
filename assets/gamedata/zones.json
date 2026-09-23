@@ -14,7 +14,7 @@
     "tier": 1,
     "bossEnemyId": "dock_overseer",
     "requiredFlags": [],
-    "isMainZone": false,
+    "isMainZone": true,
     "bossFlavorText": "The dock overseer had been watching me work the sheds since the second one, and had apparently decided that pitch and timber leaving his wharf without a tithe was a personal insult. He came down the gangway with two boys carrying his ledger and a cudgel that had clearly settled arguments before.",
     "bossFlavorTextFr": "Le contremaître des docks m'observait fouiller les hangars depuis le deuxième, et avait manifestement décidé que de la poix et du bois quittant son quai sans dîme constituaient une insulte personnelle. Il descendit la passerelle avec deux gamins portant son registre et un gourdin qui avait de toute évidence déjà tranché des querelles.",
     "recommendedLevel": 3
@@ -34,7 +34,7 @@
     "tier": 1,
     "bossEnemyId": "plague_hound",
     "requiredFlags": [],
-    "isMainZone": false,
+    "isMainZone": true,
     "bossFlavorText": "Something had been living under the lime pits, and the tanners had been feeding it what they couldn't sell. It came out of the drain yellow-eyed and patient, with the particular calm of an animal that has never once gone hungry.",
     "bossFlavorTextFr": "Quelque chose vivait sous les fosses à chaux, et les tanneurs le nourrissaient de ce qu'ils ne pouvaient vendre. Il sortit du caniveau, les yeux jaunes et patient, avec le calme particulier d'une bête qui n'a jamais eu faim.",
     "recommendedLevel": 4

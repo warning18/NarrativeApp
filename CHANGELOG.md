@@ -8,6 +8,75 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.118.0+146]
+
+The story reviewed against the owner's direction: one Shroud, in pieces,
+carried from the first chapter and completed on the spine at a cost; a
+transport built to leave the town; a camp on a remote coast after a long
+voyage; power that is worn, not held; and no clean way through.
+
+### Changed
+- **Every origin carries the Shroud.** The Rat steals the Bundle back
+  from the Black Hold's table and the Broken has it burned into his scars;
+  all three epilogues set `void_banner_bearer` and grant the heirloom
+  piece. The seeker branch (`void_banner_seeker`, `5003_seeker`,
+  `6001_seeker`) is retired; `7005_seeker` is now the wanderer's ending
+  (sailing for the other tears with the whole Shroud) open to anyone.
+- **Chapter 2 ends by building the transport.** Node 2900 is the harbor's
+  end: the Rusty Eel needs a hull (Fisherman's Row) and a sail (Tanner's
+  Court), both launched from the story and mandatory; "Cast off" appears
+  only with both done. Casting off is a choice about who sails: everyone
+  (stores thrown over), the twenty who can fight (the rest left to the
+  Crusade), or no one. The voyage (2999) is three weeks at sea and a storm
+  that costs the stores, the refugees' skiff, or the character's body.
+- **Chapter 3 is remote.** Landfall on the Ashen Coast after twenty days;
+  the Spire of Judgment (the Inquisition's mother-house, where the Crusade
+  sailed from) a day's walk inland; the camp founded in a hidden cove and
+  written to grow into whatever the player brings back. The old Upper
+  Gate/Lower City geography is gone from chapter 3 onward, including the
+  death narration and the ending texts.
+- **The Shroud's four pieces on the spine.** The heirloom (chapter 1); the
+  Warden's standard, stitched to the High Warden's living back
+  (`4999_standard`: cut it free alive, wait for him to die in the burning
+  Cathedral, or give him the blade first); the Court's twin, wrapped
+  around twelve sleeping taken (`5004_altar`: wake them to die as
+  themselves, or cut it free without waking them); the reliquary thread,
+  sewn around the chart-keeper's sister (`6010_thread`: open it yourself,
+  pay for the chapel and let her cut it, or hand the penitent the seal).
+  6002 explains the four pieces. `banner_whole` gates `7002_confront`, and
+  the Sovereign then names a price (`7002_price`): a companion, the
+  character's blood, or the camp.
+- **Power is worn.** Node 0 sets it out; races.json gains `powerMedium`
+  (banner, painted sigil, stone-mark, ink, void-mark) and a sentence per
+  race; the `{sigil}` token resolves to the character's medium; the Court's
+  ash-ink, the Warden's standard-into-skin and 13 new persona lines at
+  250, 450, 3001 and 7003 show it.
+- **No clean way through.** The unfurling costs 15 health and the
+  Beggar's keeper; every choice of the seven spine dilemmas (400,
+  2900_boat_fixed, 2999, 4999_standard, 5004_altar, 6010_thread,
+  7002_price) wounds, impoverishes, blackens, takes a companion or leaves
+  a mark; 24 new callbacks read those marks back from the camp's founding
+  to each ending.
+- Quests `q_ch1_*` and `q_ch3_alsters_dawn` no longer grant Shroud pieces
+  (the story does).
+
+### Added
+- `StoryChoice.grantsBannerPieceId` (adds to `bannerPiecesCollected`) and
+  `StoryChoice.loseAllyId` (a companion id, or `*` for the first active
+  ally, removed from the roster for good and never re-recruited:
+  `PlayerSession.lostAllyIds`, `loseAlly`). A negative `healAmount` is a
+  wound the story deals and stops at 1 health. Editor fields and l10n for
+  both; the character screen names the two new pieces.
+- `docs/chapter-flow-roadmap.md` records the refined structure.
+- Tests: `test/story_direction_test.dart` (origins, seeker retirement,
+  four pieces in order and unavoidable, the whole-Shroud gate, the
+  boat-building exit, the remote chapter 3 and the old geography's
+  absence, every dilemma choice costing something and its mark being read
+  back, races' media and `{sigil}`), session tests for the new effects.
+- The Python simulator applies the new costs; a 40-run batch reaches an
+  ending 40/40 through the mandatory boat zones and the dilemmas (94.2%
+  fight win rate).
+
 ## [1.117.0+145]
 
 Narration that remembers, reacts and varies: scenes that call back the

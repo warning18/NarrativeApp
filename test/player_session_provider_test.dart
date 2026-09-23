@@ -310,6 +310,66 @@ void main() {
     });
   });
 
+  group('story costs', () {
+    const race = {'standardSkillID': 'human_resolve'};
+    const profession = {'standardSkillID': 'warrior_technique'};
+
+    test('a choice can hand over a piece of the Shroud, once', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.applyChoiceEffects(bannerPieceId: 'warden_standard');
+      await notifier.applyChoiceEffects(bannerPieceId: 'warden_standard');
+      expect(notifier.state.bannerPiecesCollected, ['warden_standard']);
+    });
+
+    test('a wound the story deals never kills', () async {
+      final notifier = await notifierWith(baseSession());
+      final before = notifier.state.currentHealth;
+      await notifier.applyChoiceEffects(healAmount: -(before + 500));
+      expect(notifier.state.currentHealth, 1);
+      await notifier.applyChoiceEffects(healAmount: 10);
+      expect(notifier.state.currentHealth, 11);
+    });
+
+    test('losing a companion empties their seat for good', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.recruitAlly('kelda', race: race, profession: profession);
+      await notifier.recruitAlly('sable', race: race, profession: profession);
+      expect(notifier.state.activeAllyIds, ['kelda', 'sable']);
+
+      // `*` takes whoever stands first in the party.
+      await notifier.applyChoiceEffects(
+          loseAllyId: '*', flagsToAdd: const ['sovereign_took_companion']);
+      expect(
+          notifier.state.recruitedAllies.map((a) => a.companionId), ['sable']);
+      expect(notifier.state.activeAllyIds, ['sable']);
+      expect(notifier.state.lostAllyIds, ['kelda']);
+      expect(notifier.state.flags, contains('sovereign_took_companion'));
+
+      // Never recruited again this run.
+      await notifier.recruitAlly('kelda', race: race, profession: profession);
+      expect(
+          notifier.state.recruitedAllies.map((a) => a.companionId), ['sable']);
+
+      // A named id works too; an unknown one is a no-op.
+      await notifier.applyChoiceEffects(loseAllyId: 'nobody');
+      await notifier.applyChoiceEffects(loseAllyId: 'sable');
+      expect(notifier.state.recruitedAllies, isEmpty);
+      expect(notifier.state.lostAllyIds, ['kelda', 'sable']);
+
+      // With nobody left, `*` costs nothing but the choice's other prices.
+      await notifier.applyChoiceEffects(loseAllyId: '*', alignmentMod: -2);
+      expect(notifier.state.lostAllyIds, ['kelda', 'sable']);
+    });
+
+    test('lost companions round-trip through JSON', () async {
+      final notifier = await notifierWith(baseSession());
+      await notifier.recruitAlly('kelda', race: race, profession: profession);
+      notifier.loseAlly('kelda');
+      final restored = PlayerSession.fromJson(notifier.state.toJson());
+      expect(restored.lostAllyIds, ['kelda']);
+    });
+  });
+
   group('recruitAlly', () {
     const race = {'standardSkillID': 'human_resolve'};
     const profession = {'standardSkillID': 'warrior_technique'};
