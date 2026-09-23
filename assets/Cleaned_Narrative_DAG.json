@@ -2801,7 +2801,7 @@
       {
         "text": "Seek the source of the Void",
         "text_fr": "Chercher la source du Vide",
-        "next_id": "6010"
+        "next_id": "6010_gate"
       }
     ]
   },
@@ -3897,6 +3897,66 @@
         "flagsToAdd": [
           "hub_5010_wisps"
         ]
+      }
+    ]
+  },
+  "6010_gate": {
+    "id": "6010_gate",
+    "description": "The Reliquary Quarter had a gate still, though nothing was left of the wall on either side of it but a stump of ash-ink brick, and the penitents the Inquisition had made here kept it the way they kept everything: in porcelain masks and the white paint it uses for faces it means to keep, standing in the frost at the edge of the tear's slow weather. They let me through without a word. Beyond them the chapels began.",
+    "description_fr": "Le Quartier du Reliquaire avait encore une porte, bien qu'il ne restât du mur, de part et d'autre, qu'un moignon de brique à l'encre de cendre, et les pénitents que l'Inquisition avait faits ici la gardaient comme ils gardaient tout : sous des masques de porcelaine et la peinture blanche qu'elle réserve aux visages qu'elle entend garder, debout dans le givre, à la lisière du lent climat de la déchirure. Ils me laissèrent passer sans un mot. Au-delà commençaient les chapelles.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "One of them did not let me pass so easily. She stood at the edge of the frost and watched me the whole way in, and someone had chalked a line from where she stood to a chapel door where a name was scratched twelve times. I did not have to read it to know whose. There was no going in among the chapels until I had followed one or the other.",
+        "fr": "L'une d'eux ne me laissa pas passer si facilement. Elle se tenait à la lisière du givre et me regarda venir tout du long, et quelqu'un avait tracé à la craie une ligne depuis l'endroit où elle se tenait jusqu'à une porte de chapelle où un nom était gravé douze fois. Je n'eus pas besoin de le lire pour savoir de qui il s'agissait. Pas question d'entrer parmi les chapelles avant d'avoir suivi l'une ou l'autre."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa walked in at my shoulder and did not look at the masks. She had been meant for one, once, in a tavern cellar, and she knew it.",
+        "fr": "Lysa entra à mon côté sans regarder les masques. On lui en avait destiné un, autrefois, dans la cave d'une taverne, et elle le savait."
+      }
+    ],
+    "choices": [
+      {
+        "text": "Go in among the chapels",
+        "text_fr": "Entrer parmi les chapelles",
+        "next_id": "6010",
+        "hideIfFlags": [
+          "lysa_lost"
+        ]
+      },
+      {
+        "text": "Follow the chalk to a chapel where a name is scratched twelve times",
+        "text_fr": "Suivre la craie jusqu'à une chapelle où un nom est gravé douze fois",
+        "next_id": "6010_lysa_dead",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lysa_dead",
+          "hub_6010_masked"
+        ],
+        "lockedText": "The chapel was barred, and the frost on its door had a shape I did not want to read.",
+        "lockedText_fr": "La chapelle était barrée, et le givre sur sa porte avait une forme que je ne voulais pas lire."
+      },
+      {
+        "text": "Face the masked penitent who will not stop staring",
+        "text_fr": "Affronter la pénitente masquée qui ne cesse de fixer",
+        "next_id": "6010_masked",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lysa_dead",
+          "hub_6010_masked"
+        ],
+        "lockedText": "The masked penitent had gone back inside. Whoever had called her, it was not me.",
+        "lockedText_fr": "La pénitente masquée était rentrée. Qui que ce fût qui l'ait rappelée, ce n'était pas moi."
       }
     ]
   },

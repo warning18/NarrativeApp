@@ -366,6 +366,37 @@ void main() {
         expect(readBack, greaterThanOrEqualTo(3), reason: flag);
       }
     });
+
+    test('the Quarter\'s gate settles her fate before the hub opens', () {
+      // 6002 no longer walks straight into the hub: the gate stands
+      // between, and a character who lost Lysa cannot pass it without
+      // taking one of the two fate scenes (each open to one side of the
+      // alignment line, so exactly one is ever available).
+      expect(nodes['6002']!.choices.single.nextId, '6010_gate');
+      final gate = nodes['6010_gate']!;
+      final through = gate.choices.singleWhere((c) => c.nextId == '6010');
+      expect(through.hideIfFlags, contains('lysa_lost'));
+      expect(through.showIfFlags, isEmpty);
+      for (final target in ['6010_lysa_dead', '6010_masked']) {
+        final choice = gate.choices.singleWhere((c) => c.nextId == target);
+        expect(choice.showIfFlags, ['lysa_lost'], reason: target);
+        expect(choice.lockedText, isNotEmpty, reason: target);
+        expect(choice.hideIfFlags.toSet(),
+            {'hub_6010_lysa_dead', 'hub_6010_masked'},
+            reason: target);
+      }
+      // Both fate scenes come back to the hub proper.
+      expect(nodes['6010_lysa_dead']!.choices.single.nextId, '6010');
+      expect(nodes['6010_masked_after']!.choices.single.nextId, '6010');
+      // The gate reads both origins back, in both languages.
+      for (final flag in ['lysa_lost', 'lysa_survived']) {
+        final callback = gate.flagCallbacks.singleWhere((c) => c.flag == flag);
+        expect(callback.line.en, isNotEmpty, reason: flag);
+        expect(callback.line.fr, isNotEmpty, reason: flag);
+      }
+      expect(
+          gate.choices.any((c) => c.launchesZone || c.triggersCombat), isFalse);
+    });
   });
 
   group('the 1.118 regressions stay fixed', () {

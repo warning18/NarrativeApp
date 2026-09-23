@@ -8,6 +8,57 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.121.0+149]
+
+The four improvements the 1.120 simulation pass proposed and the owner
+approved: a gentler New Game+ step, Lysa's fate as a beat the story does
+not let you miss, Resolve (a small stacking edge against a boss that has
+beaten you), and a late gold sink in the camp.
+
+### Changed
+- **New Game+ is +10% per cycle** (was +15%): at +15% the Sovereign was
+  beaten first try by 8 of 32 simulated parties and two runs never
+  crossed; at +10% every run finishes.
+- **The Reliquary Quarter has a gate** (`6010_gate`, between 6002 and
+  the hub). A character who kept Lysa walks through with her at their
+  shoulder; one who lost her cannot go in among the chapels until they
+  have followed the chalk to the chair (alignment 5 and up) or faced the
+  masked penitent (4 and down). Before, the fate was one hub activity
+  among fifteen and 8 of 44 simulated players who lost her never took
+  it; now none miss it. The hub's own fate choices stay as a fallback
+  for saves already past the gate.
+
+### Added
+- **Resolve.** A lost boss fight goes on the books
+  (`PlayerSession.bossDefeatCounts`, one per boss in the fight), and the
+  next attempt against that boss gives the whole party +5% health and
+  damage per defeat, up to five stacks, shown on the fight's setup card.
+  It softens the tail without moving the median: with Resolve alone the
+  Sovereign's first-try rate is unchanged, but no simulated run lost to
+  it more than seven times (one lost 25 times before) and a run's worst
+  case fell from 26 losses to 7.
+- **The camp's works**, three late houses priced in the thousands with a
+  party-wide bonus: the Hearth-Hall (1,500 gold, +3% health, after
+  Cinder Row), the Banner Loft (2,500, +3% damage, after the Ossuary
+  Galleries) and the Shroud Shrine (4,000, +2% health and damage, after
+  the Dead Heart). Together +5%/+5%, deliberately small (a +10%/+10%
+  version pushed the Sovereign's first-try rate from 65% to 90%). Gold
+  left at the end of a simulated run falls from 14.5k to 6.4k.
+  `houses.json` gains `partyHealthBonus` / `partyDamageBonus`, the camp
+  card shows them, and `party_bonus.dart` resolves Resolve and the works
+  into one `PartyBonus` the fight screen applies at party build.
+
+### Simulation (80 runs, same seeds as 1.120; 32 New Game+ runs)
+- Base: 99% of fights won, 0.7 losses per run (max 6, 46 flawless runs),
+  the Sovereign first try 61/80 (was 52) with 29 losses across the batch
+  (was 139), the Archon 68/80 (was 59). New Game+ at +10% with both:
+  96% won, 2.4 losses per run, the Sovereign first try 19/32, all 32 runs
+  finishing (at the old +15%: 59%, 40.6 losses per run, 8/32, 30/32).
+
+### Tests
+- `party_bonus_test.dart` (stacks, cap, the works' data), the session's
+  boss-defeat book, and the gate's routing in `story_direction_test`.
+
 ## [1.120.0+148]
 
 Simulation pass on 1.119: 80 playthroughs on the shipped tuning, 32 more on

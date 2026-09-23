@@ -90,6 +90,7 @@ class PlayerSession {
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
+    this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
     this.skillEssence = 0,
@@ -267,6 +268,11 @@ class PlayerSession {
   /// bureaucratic kill.
   final Map<String, int> enemyKillCounts;
 
+  /// Defeats each boss has dealt the party this run (enemy id -> losses):
+  /// Resolve reads it back as a stacking bonus against that boss (see
+  /// party_bonus.dart). Reset with everything else on a new game.
+  final Map<String, int> bossDefeatCounts;
+
   /// Quest ids grandfathered past objective-completion gating entirely —
   /// populated once, automatically, the first time a save from before this
   /// field existed loads (see [fromJson]), from whatever was in
@@ -429,6 +435,7 @@ class PlayerSession {
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
+    Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
     int? skillEssence,
@@ -499,6 +506,7 @@ class PlayerSession {
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
+      bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
       talkedToNpcIds: talkedToNpcIds ?? this.talkedToNpcIds,
@@ -570,6 +578,7 @@ class PlayerSession {
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
+        'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
         'skillEssence': skillEssence,
@@ -721,6 +730,10 @@ class PlayerSession {
               .toList() ??
           const [],
       enemyKillCounts: (json['enemyKillCounts'] as Map?)?.map(
+            (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
+      bossDefeatCounts: (json['bossDefeatCounts'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
@@ -2161,6 +2174,18 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           skillPoints: ally.skillPoints + levelsGained,
         ),
     ];
+  }
+
+  /// A lost boss fight: one more defeat on the books for each boss in it,
+  /// read back as Resolve next time (see party_bonus.dart).
+  Future<void> recordBossDefeat(List<String> enemyIds) async {
+    if (enemyIds.isEmpty) return;
+    final counts = Map<String, int>.from(state.bossDefeatCounts);
+    for (final id in enemyIds) {
+      counts[id] = (counts[id] ?? 0) + 1;
+    }
+    state = state.copyWith(bossDefeatCounts: counts);
+    await _persist();
   }
 
   /// Applies a fight's outcome to the player's stats. Returns true if the

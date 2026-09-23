@@ -47,5 +47,39 @@
     "requiredFlags": [
       "banner_second_piece_lead"
     ]
+  },
+  "hearth_hall": {
+    "houseID": "hearth_hall",
+    "houseName": "Hearth-Hall",
+    "description": "A long hall with one fire that is never let go out, built the dwarven way with the stone-mark cut over the door. The party sleeps under it between crossings and carries a little of its warmth into every fight.",
+    "buildCost": 1500,
+    "partyCapacityBonus": 0,
+    "partyHealthBonus": 3,
+    "requiredFlags": [
+      "cinder_row_cleared"
+    ]
+  },
+  "banner_loft": {
+    "houseID": "banner_loft",
+    "houseName": "Banner Loft",
+    "description": "A loft where the camp's banners are sewn and painted, and where every companion's sigil is worked into the cloth the party fights under. Power is worn here, not held: the whole party hits harder for it.",
+    "buildCost": 2500,
+    "partyCapacityBonus": 0,
+    "partyDamageBonus": 3,
+    "requiredFlags": [
+      "ossuary_galleries_cleared"
+    ]
+  },
+  "shroud_shrine": {
+    "houseID": "shroud_shrine",
+    "houseName": "Shroud Shrine",
+    "description": "A shrine to hold the Shroud's pieces between the road and the crossing, built from the Dead Heart's stone. Whatever the Shroud has learned of the tear, the party wears a little of it.",
+    "buildCost": 4000,
+    "partyCapacityBonus": 0,
+    "partyHealthBonus": 2,
+    "partyDamageBonus": 2,
+    "requiredFlags": [
+      "dead_heart_cleared"
+    ]
   }
 }

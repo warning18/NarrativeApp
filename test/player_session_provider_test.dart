@@ -1149,4 +1149,22 @@ void main() {
       expect(PlayerSession.fromJson(const {}).newGamePlusCycle, 0);
     });
   });
+
+  group('Resolve', () {
+    test('a lost boss fight is remembered per boss and round-trips', () async {
+      final notifier = await notifierWith(baseSession());
+      expect(notifier.state.bossDefeatCounts, isEmpty);
+      await notifier.recordBossDefeat(const ['void_sovereign']);
+      await notifier.recordBossDefeat(const ['void_sovereign', 'void_archon']);
+      await notifier.recordBossDefeat(const []);
+      expect(notifier.state.bossDefeatCounts,
+          {'void_sovereign': 2, 'void_archon': 1});
+      final restored = PlayerSession.fromJson(notifier.state.toJson());
+      expect(
+          restored.bossDefeatCounts, {'void_sovereign': 2, 'void_archon': 1});
+      final older = notifier.state.toJson()..remove('bossDefeatCounts');
+      expect(PlayerSession.fromJson(older).bossDefeatCounts, isEmpty,
+          reason: 'an older save has no defeats on the books');
+    });
+  });
 }

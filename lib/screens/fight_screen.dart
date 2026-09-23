@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
 import '../combat/combat_aftermath.dart';
+import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
@@ -525,6 +526,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// false for a multi-enemy pack (Elite and packs are never combined).
   bool _isElite = false;
 
+  /// Resolve and the camp's works, resolved once at party build (see
+  /// party_bonus.dart).
+  PartyBonus _partyBonus = PartyBonus.none;
+
   /// Every enemy in this fight — a solo fight is `_enemies.length == 1`.
   /// Built once in [_ensureEnemiesBuilt], mutated in place for the rest of
   /// the fight (mirrors how [_party] already worked).
@@ -844,11 +849,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
     Map<String, dynamic> gameConfig,
     Map<String, dynamic> items,
     Map<String, ItemSet> itemSets,
+    Map<String, dynamic> houses,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
     _companions = companions;
     _alignmentLabel = session.alignmentLabel;
+    _partyBonus = partyBonusFor(
+      bossDefeatCounts: session.bossDefeatCounts,
+      enemyIds: [for (final e in _enemies) e.enemyId],
+      builtHouseIds: session.builtHouseIds,
+      houses: houses,
+    );
 
     final playerDiceAssignments =
         session.diceSkillAssignments[_selectedDiceId] ??
@@ -860,11 +872,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
       id: 'player',
       displayName: playerLabel,
       isPlayer: true,
-      maxHealth: session.maxHealth,
-      baseDamage: session.baseDamage,
+      maxHealth: _partyBonus.scaleMaxHealth(session.maxHealth),
+      baseDamage: _partyBonus.scaleDamage(session.baseDamage),
       armor: session.baseArmor,
-      currentHealth:
-          session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+      currentHealth: _partyBonus.scaleCurrentHealth(session.currentHealth > 0
+          ? session.currentHealth
+          : session.maxHealth),
       equippedItemIds: session.equippedItemIds,
       unlockedSkillIds: session.unlockedSkillIds,
       diceSkillAssignments: playerDiceAssignments,
@@ -899,15 +912,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
               const {};
       final base = deriveAllyBaseStats(
           gameConfig: gameConfig, race: race, profession: profession);
-      final liveMaxHealth = scaledMaxHealth(base.maxHealth, _playerLevel);
+      final liveMaxHealth = _partyBonus
+          .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel));
       activeAllies.add(_PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
         maxHealth: liveMaxHealth,
-        baseDamage: scaledDamage(base.baseDamage, _playerLevel),
+        baseDamage: _partyBonus
+            .scaleDamage(scaledDamage(base.baseDamage, _playerLevel)),
         armor: base.baseArmor,
-        currentHealth: allyState.currentHealth.clamp(0, liveMaxHealth),
+        currentHealth: _partyBonus
+            .scaleCurrentHealth(allyState.currentHealth)
+            .clamp(0, liveMaxHealth),
         equippedItemIds: allyState.equippedItemIds,
         unlockedSkillIds: allyState.unlockedSkillIds,
         diceSkillAssignments: allyState.diceSkillAssignments,
@@ -2246,7 +2263,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
       // player's own full-heal-on-loss below — neither side is punished
       // HP-wise by a loss).
       // A loss refills mana along with health -- neither is a lasting
-      // punishment.
+      // punishment. A boss's win is remembered, though: Resolve stacks
+      // against it next time (see party_bonus.dart).
+      final bossIds = [
+        for (final e in _enemies)
+          if (isBossEnemy(e.enemyId, e.data)) e.enemyId,
+      ];
+      if (bossIds.isNotEmpty) await notifier.recordBossDefeat(bossIds);
       await notifier.applyCombatResult(
           hpAfter: player.maxHealth, manaAfter: _maxMana);
       if (!mounted) return;
@@ -2269,6 +2292,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final gameConfigAsync = ref.watch(gameConfigProvider);
     final spellsAsync = ref.watch(gameDbProvider(spellsSchema));
     final itemSetsAsync = ref.watch(gameDbProvider(itemSetsSchema));
+    final housesAsync = ref.watch(gameDbProvider(housesSchema));
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
@@ -2281,6 +2305,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final gameConfig = gameConfigAsync.value;
     final spellsDb = spellsAsync.value;
     final itemSetsDb = itemSetsAsync.value;
+    final houses = housesAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -2290,7 +2315,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         professions == null ||
         gameConfig == null ||
         spellsDb == null ||
-        itemSetsDb == null) {
+        itemSetsDb == null ||
+        houses == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -2299,7 +2325,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
           professionsAsync.error ??
           gameConfigAsync.error ??
           spellsAsync.error ??
-          itemSetsAsync.error;
+          itemSetsAsync.error ??
+          housesAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -2313,8 +2340,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _itemSets = parseItemSets(itemSetsDb);
-    _ensurePartyBuilt(
-        session, companions, races, professions, gameConfig, items, _itemSets);
+    _ensurePartyBuilt(session, companions, races, professions, gameConfig,
+        items, _itemSets, houses);
     _spells = parseSpells(spellsDb);
 
     return Scaffold(
@@ -2388,6 +2415,29 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   .textTheme
                   .bodySmall
                   ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+          ],
+          if (_partyBonus.resolveStacks > 0) ...[
+            Text(
+              '${tr(ref, 'resolve_label')} ×${_partyBonus.resolveStacks} · '
+              '+${_partyBonus.resolvePercent}% '
+              '${tr(ref, 'resolve_bonus_suffix')}',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+          ],
+          if (_partyBonus.hasHouseBonus) ...[
+            Text(
+              '${tr(ref, 'camp_works_label')} · '
+              '+${_partyBonus.houseHealthPercent}% '
+              '${tr(ref, 'party_health_bonus_label')} · '
+              '+${_partyBonus.houseDamagePercent}% '
+              '${tr(ref, 'party_damage_bonus_label')}',
+              style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 8),
           ],

@@ -1466,6 +1466,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'party capacity',
     AppLanguage.fr: 'capacité du groupe'
   },
+  'party_health_bonus_label': {
+    AppLanguage.en: 'party health',
+    AppLanguage.fr: 'santé du groupe'
+  },
+  'party_damage_bonus_label': {
+    AppLanguage.en: 'party damage',
+    AppLanguage.fr: 'dégâts du groupe'
+  },
+  'camp_works_label': {
+    AppLanguage.en: 'Camp works',
+    AppLanguage.fr: 'Ouvrages du camp'
+  },
+  'resolve_label': {AppLanguage.en: 'Resolve', AppLanguage.fr: 'Résolution'},
+  'resolve_bonus_suffix': {
+    AppLanguage.en: 'health and damage: the Shroud has learned this enemy',
+    AppLanguage.fr: 'de santé et de dégâts : le Suaire a appris cet ennemi'
+  },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
   'unlocks_shop_prefix': {

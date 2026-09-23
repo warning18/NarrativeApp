@@ -1338,6 +1338,18 @@ final DbSchema housesSchema = DbSchema(
       defaultValue: 0,
     ),
     FieldSchema(
+      key: 'partyHealthBonus',
+      label: 'Party Health Bonus (%, every fight once built)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'partyDamageBonus',
+      label: 'Party Damage Bonus (%, every fight once built)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
       key: 'unlocksShopId',
       label: 'Unlocks Shop',
       type: FieldType.reference,

@@ -314,6 +314,10 @@ class CampScreen extends ConsumerWidget {
             final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
             final capacityBonus =
                 (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+            final healthBonus =
+                (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
+            final damageBonus =
+                (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
             final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
             final unlocksShopName = unlocksShopId.isNotEmpty
                 ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
@@ -331,6 +335,10 @@ class CampScreen extends ConsumerWidget {
             final statsParts = <String>[
               if (capacityBonus > 0)
                 '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
+              if (healthBonus > 0)
+                '+$healthBonus% ${tr(ref, 'party_health_bonus_label')}',
+              if (damageBonus > 0)
+                '+$damageBonus% ${tr(ref, 'party_damage_bonus_label')}',
               if (unlocksShopName != null)
                 '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
               if (!built && lockName != null)
