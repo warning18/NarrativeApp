@@ -54,7 +54,7 @@ unarmed is fixed.
   in the game and could equip nothing at all -- in the inventory screen
   as much as in the simulators. A requirement of 0 is now no gate, as
   the gate's own doc comment always said. The Python simulator had the
-  same comparison: 19 of the 40 seeded builds had fought unarmed in every
+  same comparison: 15 of the 40 seeded builds had fought unarmed in every
   batch to date, which is why the same 40 seeds re-run after the fix win
   99.6% of their fights (from 82.3%), with 9 losses against 460 and the
   chapter-4 to chapter-6 bosses beaten on the first attempt 37 to 40
