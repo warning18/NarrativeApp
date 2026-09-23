@@ -5,7 +5,11 @@
 // meant a chapter-2 expedition could roll a chapter-5 endgame monster
 // against a level-2 character -- exactly the shape of bug this file guards
 // against now that both excursions and expeditions share this one helper.
+// filterQuestPool is the same idea for quests: a quest written for one
+// alignment (Tobin's vigil, Malrik's cut) is never offered to another.
 
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -70,6 +74,67 @@ void main() {
         chapter: 5,
       );
       expect(pool, containsAll(['tutorial_rat', 'ch2_bandit', 'ch5_horror']));
+    });
+  });
+
+  group('filterQuestPool', () {
+    final quests = {
+      'q_open': {'chapter': 4, 'requiredAlignment': 'Neutral'},
+      'q_untagged': {'chapter': 4},
+      'q_good_only': {'chapter': 4, 'requiredAlignment': 'Good'},
+      'q_evil_only': {'chapter': 4, 'requiredAlignment': 'Evil'},
+      'q_next_chapter': {'chapter': 5, 'requiredAlignment': 'Good'},
+    };
+    List<String> pool(String alignment,
+            {List<String> unlocked = const [],
+            List<String> completed = const []}) =>
+        SubNodeEngine.filterQuestPool(
+          quests: quests,
+          chapter: 4,
+          unlockedQuestIds: unlocked,
+          completedQuestIds: completed,
+          alignmentLabel: alignment,
+        );
+
+    test('a Neutral character is never offered an aligned recruit quest', () {
+      expect(pool('Neutral'), unorderedEquals(['q_open', 'q_untagged']));
+    });
+
+    test('the Good get the Good quest, the Evil the Evil one, never both', () {
+      expect(pool('Good'),
+          unorderedEquals(['q_open', 'q_untagged', 'q_good_only']));
+      expect(pool('Evil'),
+          unorderedEquals(['q_open', 'q_untagged', 'q_evil_only']));
+    });
+
+    test('unlocked, completed and other-chapter quests stay out', () {
+      expect(pool('Good', unlocked: ['q_open'], completed: ['q_good_only']),
+          ['q_untagged']);
+      expect(pool('Good'), isNot(contains('q_next_chapter')));
+    });
+
+    test('the shipped recruit quests carry the gate their nodes carry', () {
+      final shipped = jsonDecode(
+              File('assets/gamedata/quests.json').existsSync()
+                  ? File('assets/gamedata/quests.json').readAsStringSync()
+                  : File('../assets/gamedata/quests.json').readAsStringSync())
+          as Map<String, dynamic>;
+      expect(
+          SubNodeEngine.questMeetsAlignment(
+              shipped['q_ch4_tobins_vigil'] as Map<String, dynamic>, 'Evil'),
+          isFalse);
+      expect(
+          SubNodeEngine.questMeetsAlignment(
+              shipped['q_ch4_tobins_vigil'] as Map<String, dynamic>, 'Good'),
+          isTrue);
+      expect(
+          SubNodeEngine.questMeetsAlignment(
+              shipped['q_ch5_malriks_cut'] as Map<String, dynamic>, 'Neutral'),
+          isFalse);
+      expect(
+          SubNodeEngine.questMeetsAlignment(
+              shipped['q_ch5_malriks_cut'] as Map<String, dynamic>, 'Evil'),
+          isTrue);
     });
   });
 

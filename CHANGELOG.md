@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.120.0+148]
+
+Simulation pass on 1.119: 80 playthroughs on the shipped tuning, 32 more on
+each of three New Game+ steps, and the one bug the numbers exposed, fixed.
+
+### Fixed
+- An excursion could offer Tobin's vigil (Good only) and Malrik's cut
+  (Evil only) to any character: the excursion quest pool never read a
+  quest's `requiredAlignment`, and it prioritizes companion-recruit
+  quests, so nearly every playthrough ended with both companions their
+  story nodes gate by alignment (Malrik in 78 of 80 simulated runs, Tobin
+  in 73). `SubNodeEngine.filterQuestPool` now applies the same gate as
+  the recruit nodes ('Good' or 'Evil' must match the character's
+  alignment label; 'Neutral' or unset means anyone), the story player
+  passes the session's label, and the Python simulator mirrors it. After
+  the fix: Tobin in 37 of 80 runs (all Good), Malrik in 20 (all Evil),
+  and a Neutral character in neither.
+
+### Tests
+- `sub_node_engine_test.dart`: the quest pool by alignment, and the two
+  shipped recruit quests against their gates.
+
 ## [1.119.0+147]
 
 The 1.118 seams closed, the Shroud given its meaning, the companions

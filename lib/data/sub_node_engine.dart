@@ -33,6 +33,7 @@ class SubNodeEngine {
     MapTheme theme = defaultMapTheme,
     double triggerChance = 0.7,
     int partySize = 3,
+    String alignmentLabel = 'Neutral',
   }) {
     if (random.nextDouble() > triggerChance) return null;
 
@@ -49,16 +50,17 @@ class SubNodeEngine {
     // excursion -- questIDToProgress (the main-path way into a quest) only
     // ever adds to activeQuestIds, never unlockedQuestIds, so that alone
     // isn't enough to keep a finished quest out of this pool.
-    final questPool = quests.entries
-        .where((e) {
-          final q = e.value as Map<String, dynamic>;
-          final questChapter = (q['chapter'] as num?)?.toInt() ?? 1;
-          return questChapter == chapter &&
-              !unlockedQuestIds.contains(e.key) &&
-              !completedQuestIds.contains(e.key);
-        })
-        .map((e) => e.key)
-        .toList();
+    // And a quest written for one alignment (Tobin's vigil is for the
+    // Good, Malrik's cut for the Evil -- the same gate their story
+    // recruit nodes carry) is never offered to the other; without this
+    // check the excursion path handed every character both companions.
+    final questPool = filterQuestPool(
+      quests: quests,
+      chapter: chapter,
+      unlockedQuestIds: unlockedQuestIds,
+      completedQuestIds: completedQuestIds,
+      alignmentLabel: alignmentLabel,
+    );
 
     final includeQuest = questPool.isNotEmpty && random.nextDouble() < 0.35;
     final length = includeQuest ? 4 + random.nextInt(4) : 1 + random.nextInt(3);
@@ -263,6 +265,39 @@ class SubNodeEngine {
             ((enemies[id] as Map<String, dynamic>?)?['packEligible'] as bool? ??
                 false))
         .toList();
+  }
+
+  /// The quests an excursion may offer this chapter: this chapter's, not
+  /// yet unlocked or completed, and not written for another alignment.
+  /// A quest's `requiredAlignment` of 'Good' or 'Evil' must match the
+  /// character's [alignmentLabel] (PlayerSession.alignmentLabel); 'Neutral'
+  /// or unset means anyone may take it.
+  static List<String> filterQuestPool({
+    required Map<String, dynamic> quests,
+    required int chapter,
+    required List<String> unlockedQuestIds,
+    required List<String> completedQuestIds,
+    String alignmentLabel = 'Neutral',
+  }) {
+    return quests.entries
+        .where((e) {
+          final q = e.value as Map<String, dynamic>;
+          final questChapter = (q['chapter'] as num?)?.toInt() ?? 1;
+          return questChapter == chapter &&
+              !unlockedQuestIds.contains(e.key) &&
+              !completedQuestIds.contains(e.key) &&
+              questMeetsAlignment(q, alignmentLabel);
+        })
+        .map((e) => e.key)
+        .toList();
+  }
+
+  /// Whether a quest's `requiredAlignment` admits [alignmentLabel].
+  static bool questMeetsAlignment(
+      Map<String, dynamic> quest, String alignmentLabel) {
+    final required = quest['requiredAlignment']?.toString() ?? '';
+    if (required.isEmpty || required == 'Neutral') return true;
+    return required == alignmentLabel;
   }
 
   /// Enemies eligible to appear in a randomly-drawn encounter at [chapter]

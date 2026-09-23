@@ -824,6 +824,7 @@ Future<void> _selectChoice({
       completedQuestIds: session.completedQuestIds,
       theme: resolvedTheme,
       partySize: 1 + session.activeAllyIds.length,
+      alignmentLabel: session.alignmentLabel,
     );
     if (excursion != null) {
       playNotifier.startExcursion(excursion, choice.nextId);
