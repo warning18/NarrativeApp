@@ -8,6 +8,104 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.116.0+144]
+
+A medium-hard difficulty curve, boss phases, item sets and unique gear,
+companions that aim their own strikes, New Game+ and alignment epilogues
+with two alignment-locked companions.
+
+### Changed
+- **Difficulty curve.** The v1.115 equip-gate fix had left the corrected
+  40-run batch winning 99.6% of its fights. Every regular enemy now
+  carries a flat floor (health ×1.15, damage ×1.10) under the unchanged
+  chapter curve (+12% health per chapter, damage half that); bosses skip
+  the floor and get their difficulty from phases instead. A steeper
+  global step was tried first and rejected: it left chapters 1–4 at 100%
+  while turning the chapter 5–6 bosses into walls. The same 40 seeds now
+  win 96.6% of fights (1.9 losses per run, 16 flawless runs, all 40
+  reach an ending); first-attempt rates are 100% on story fights, 96.6%
+  in chapter-4 zones, 91.8% in chapter-5 zones and 81.7% in chapter-6
+  zones, with the Void Archon beaten first try 27/40 and the Void
+  Sovereign 26/40 (from 37/40 and 38/40). Ordinary fights stay a resource
+  drain rather than a lethal threat for a full party of three; the risk
+  now lives in the bosses.
+- `difficultyCurveFor` in `combat_engine.dart` is the one place the fight
+  screen, the in-app simulator and the autoplay engine resolve a fight's
+  health and damage multipliers (floor, chapter, zone tier, New Game+).
+
+### Added
+- **Boss phases** (`phases` on an enemies.json record, `BossPhase` in
+  `combat_engine.dart`). Once a boss falls to a phase's health threshold
+  it changes stance, once: a heal, a cleanse of its afflictions, a
+  damage multiplier for the rest of the fight, and new moves added to
+  (or replacing) its list. The battle log announces the transition in
+  purple, the enemy card shows a phase chip, the enemy sheet lists how
+  many stances it has, and the telegraph is re-rolled so the new move
+  shows on its very next turn. Every zone boss, every solo-only unique
+  and both tier-2 alignment hunters have phases (18 enemies, the Void
+  Stalker, Hollow Court Inquisitor, Void Archon and Void Sovereign two
+  each), with eight new phase-only moves and pixel icons: brood call,
+  meltdown, bone storm, eclipse, unmaking, martyrdom, many faces,
+  stalker's ambush. Phase multipliers are capped at ×1.15 (×1.10 each on
+  a two-phase boss): the first cut at ×1.3 made the two final bosses
+  unwinnable for a fifth of the seeded builds.
+- **Item sets and unique gear** (`lib/combat/gear_effects.dart`, a new
+  `item_sets.json` table). The Harborwatch Kit (cutlass, coat, lantern;
+  chapter 2, sold across the chapter-2 shops) gives +2 armor and +5%
+  dodge at two pieces, +4 attack and +8% crit at three; the Hollow Court
+  Vestments (blade, mantle, seal; chapter 4, sold at the Ossuary Trade
+  and the Last Lantern, the seal a signature drop of the Inquisitor) give
+  +5 armor and 4 thorns at two, +8 attack and 10% lifesteal at three. Four
+  uniques: the Bloodthorn Blade (heals 20% of its damage), the Thornmail
+  Hauberk (6 damage back to whatever connects), the Phoenix Sigil (once
+  per fight a lethal blow leaves you at 1 HP) and the Siphon Wand (+1 mana
+  per damaging hit). Set and unique effects apply in the fight screen and
+  the simulator alike (flat attack/armor, crit and dodge bonuses through a
+  new `critChanceBonus` on `resolvePlayerFace`, lifesteal and mana on
+  hit per landed hit, thorns and second wind on the enemy's turn, all
+  logged); the inventory shows "Set: Name (n/3)" with every tier and its
+  check mark, and "Unique: …" with the effect, on tiles and in the
+  detail dialog. Ten pixel icons.
+- **Companions aim their own strikes.** A new combat setting (on by
+  default) has companions focus fire on the player's target in a pack
+  fight, or on the weakest enemy when the player has none, following a
+  retarget as it happens; their cards leave the target picker. Off, every
+  party member is aimed by hand as before.
+- **New Game+.** A genuine story ending now offers the next cycle: a
+  quarter of the gold, every die owned and every spell known are banked as
+  a legacy that survives the reset at character creation and is handed to
+  the new character; level, gear, companions, camp, quests and flags start
+  over, and every enemy is +15% health and damage per cycle (the fight
+  setup screen and a character-screen card say so). The same 40 seeds on
+  cycle 1 win 73.8% of fights with 19.8 losses per run and all 40 still
+  reaching an ending; +30% per cycle was tried and left eight runs stuck
+  on the late bosses. An Edit-Mode reset wipes the legacy back to a first
+  run.
+- **Alignment epilogues.** Each of the four endings closes with an
+  italic paragraph for the alignment the character actually reached it
+  with (Good, Neutral or Evil; ten paragraphs, English and French), read
+  from a new `alignment_epilogues` field on the node.
+- **Two alignment-locked companions.** Brother Tobin, a dwarf cleric who
+  deserted the Court's choir and keeps the drowned cloister's candles
+  (chapter 4, Good only: Holy Light, Celestial Ward, Stoneskin, Mend), and
+  Malrik Sarn, an orc rogue selling what the tear leaves behind in the
+  Reliquary Quarter (chapter 5, Evil only: Poison Blade, Ruthless Edge,
+  Savage Cleave, Bloodlust). Each has a recruit scene on the chapter hub
+  (locked text when the alignment doesn't fit), a recruit quest, a
+  signature die and battle banter in both languages.
+
+### Tests
+- New `boss_phases_test.dart` (phase parsing, ordering, index, move
+  merging, heals, and a data check that every phase names real skills,
+  is bilingual and stays under the enrage cap, and that every zone boss
+  and unique has one), `gear_effects_test.dart` (set tiers, uniques,
+  stacking, and a data check on item_sets.json); the difficulty test
+  covers the floor, the boss exemption and New Game+; the session test
+  covers banking, keeping and spending a legacy; the simulator test
+  covers phases, gear numbers and a harder New Game+ fight; the
+  story-node test covers epilogue parsing and round-trip; the engine
+  test covers the crit-chance bonus and its cap.
+
 ## [1.115.0+143]
 
 The in-app playthrough simulator now plays its fights out and reports

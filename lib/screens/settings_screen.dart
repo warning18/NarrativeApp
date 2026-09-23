@@ -67,6 +67,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final trembleEnabled = ref.watch(trembleEnabledProvider);
     final chestAutoOpen = ref.watch(chestAutoOpenProvider);
     final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
+    final companionAutoTarget = ref.watch(companionAutoTargetProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final tutorial = ref.watch(tutorialProvider);
@@ -334,6 +335,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: alignmentHunters,
               onChanged: (value) => ref
                   .read(alignmentHuntersEnabledProvider.notifier)
+                  .setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'companion_auto_target_setting_title')),
+              subtitle: Text(tr(ref, 'companion_auto_target_setting_desc')),
+              value: companionAutoTarget,
+              onChanged: (value) => ref
+                  .read(companionAutoTargetProvider.notifier)
                   .setEnabled(value),
             ),
             const SizedBox(height: 24),

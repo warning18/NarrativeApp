@@ -7,6 +7,7 @@ import '../combat/battlefield_condition.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
+import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -120,6 +121,7 @@ enum _LogKind {
   defeat,
   banter,
   mana,
+  phase,
 }
 
 class _LogEntry {
@@ -149,6 +151,8 @@ Color _logColor(BuildContext context, _LogKind kind) {
       return Colors.indigo;
     case _LogKind.mana:
       return manaColor;
+    case _LogKind.phase:
+      return Colors.deepPurple;
   }
 }
 
@@ -172,6 +176,8 @@ IconData _logIcon(_LogKind kind) {
       return Icons.chat_bubble_outline;
     case _LogKind.mana:
       return manaIcon;
+    case _LogKind.phase:
+      return Icons.change_circle_outlined;
   }
 }
 
@@ -279,11 +285,20 @@ class _PartyMember {
     this.wisdom = 0,
     this.luck = 0,
     this.perception = 0,
+    this.gear = GearEffects.none,
   });
 
   final String id;
   final String displayName;
   final bool isPlayer;
+
+  /// What this member's worn sets and unique items add up to (see
+  /// gear_effects.dart) -- resolved once at party build.
+  final GearEffects gear;
+
+  /// A [UniqueEffect.secondWind] charge, spent the first time a blow would
+  /// have dropped this member this fight.
+  late bool secondWindAvailable = gear.secondWind;
   final int maxHealth;
   final int baseDamage;
   final int armor;
@@ -399,12 +414,13 @@ class _EnemyMember {
   /// numeric fields (`maxHealth`/`damage`/`goldReward`/`xpReward`/
   /// `lootTable`/`guile`) are read straight from here since Elite only
   /// changes the display name, never these.
-  final Map<String, dynamic> data;
+  Map<String, dynamic> data;
 
   final int maxHealth;
 
-  /// Player-level-scaled (and Elite-multiplied for a solo Elite) damage.
-  final int damage;
+  /// Player-level-scaled (and Elite-multiplied for a solo Elite) damage --
+  /// climbs when a boss phase enrages it.
+  int damage;
 
   /// This enemy's own Guile (see db_schema.dart's enemiesSchema) — read
   /// once at fight start, never changes mid-fight.
@@ -433,6 +449,19 @@ class _EnemyMember {
   /// [hasReactiveMoves] enemy (never pre-rolled) or before the first
   /// pre-roll has run.
   _PendingEnemyMove? pendingMove;
+
+  /// This enemy's boss phases (see [parseBossPhases]), highest threshold
+  /// first; empty for an ordinary enemy.
+  List<BossPhase> phases = const [];
+
+  /// How many of [phases] have been entered so far -- only ever climbs, so
+  /// a phase's heal lifting the enemy back above its threshold never
+  /// replays it.
+  int phaseIndex = 0;
+
+  BossPhase? get currentPhase => phaseIndex > 0 && phaseIndex <= phases.length
+      ? phases[phaseIndex - 1]
+      : null;
 
   bool get isAlive => currentHealth > 0;
 }
@@ -542,6 +571,18 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// spells.json, parsed -- set in [build].
   Map<String, SpellSpec> _spells = const {};
 
+  /// item_sets.json, parsed -- set in [build].
+  Map<String, ItemSet> _itemSets = const {};
+
+  /// The session's New Game+ cycle, read once at fight start -- every
+  /// enemy is scaled by [newGamePlusMultiplier] of it.
+  int _newGamePlusCycle = 0;
+
+  /// See [companionAutoTargetProvider]: when set, companions aim their
+  /// own strikes (focus fire on the player's target, else the weakest
+  /// enemy) and their cards aren't selectable in the target picker.
+  bool _companionsAutoAim = true;
+
   String? _selectedDiceId;
   bool _rolling = false;
 
@@ -610,6 +651,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     super.initState();
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
+    _newGamePlusCycle = session.newGamePlusCycle;
     _maxMana = session.maxMana;
     _mana = session.mana.clamp(0, _maxMana);
     _ensureEnemiesBuilt();
@@ -737,14 +779,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
         scaledMaxHealth((raw['maxHealth'] as num?)?.toInt() ?? 1, _playerLevel);
     var damage =
         scaledDamage((raw['damage'] as num?)?.toInt() ?? 0, _playerLevel);
-    // The chapter curve (and a zone's tier) scale every enemy before the
-    // Elite/pack multipliers, so those keep their tuned ratios.
-    final healthCurve = chapterDifficultyMultiplier(_chapter) *
-        widget.modifiers.difficultyMultiplier;
-    if (healthCurve != 1.0) {
-      maxHealth = max(1, (maxHealth * healthCurve).round());
-      damage = (damage * damageShareOf(healthCurve)).round();
-    }
+    // The difficulty curve (the flat floor, the chapter, a zone's tier and
+    // the New Game+ cycle) scales every enemy before the Elite/pack
+    // multipliers, so those keep their tuned ratios.
+    final curve = difficultyCurveFor(
+      chapter: _chapter,
+      zoneMultiplier: widget.modifiers.difficultyMultiplier,
+      newGamePlusCycle: _newGamePlusCycle,
+      isBoss: isBossEnemy(id, raw),
+    );
+    maxHealth = max(1, (maxHealth * curve.health).round());
+    damage = (damage * curve.damage).round();
     if (_isElite) {
       maxHealth = (maxHealth * _eliteStatMultiplier).round();
       damage = (damage * _eliteStatMultiplier).round();
@@ -774,7 +819,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           moves.any((m) => m['condition']?.toString() == 'OnHitByElement'),
       currentHealth: maxHealth,
       affixes: affixes,
-    );
+    )..phases = parseBossPhases(raw);
   }
 
   /// Builds [_party] (the player plus every currently-active ally) once
@@ -788,6 +833,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
     Map<String, dynamic> races,
     Map<String, dynamic> professions,
     Map<String, dynamic> gameConfig,
+    Map<String, dynamic> items,
+    Map<String, ItemSet> itemSets,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -821,6 +868,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       wisdom: session.wisdom,
       luck: session.luck,
       perception: session.perception,
+      gear: gearEffectsFor(session.equippedItemIds, items, itemSets),
     );
 
     final activeAllies = <_PartyMember>[];
@@ -862,6 +910,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         wisdom: base.wisdom,
         luck: base.luck,
         perception: base.perception,
+        gear: gearEffectsFor(allyState.equippedItemIds, items, itemSets),
       ));
     }
 
@@ -1161,6 +1210,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
         _selectedTargets.remove(actor.id);
         continue;
       }
+      if (_companionsAutoAim && !actor.isPlayer) {
+        final focus = _focusTargetFor();
+        if (focus != null) _selectedTargets[actor.id] = focus.key;
+        continue;
+      }
       final current = _selectedTargets[actor.id];
       final picked = current == null ? null : _enemyByKey(current);
       if (picked != null && picked.isAlive) continue;
@@ -1168,10 +1222,32 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (fallback != null) _selectedTargets[actor.id] = fallback.key;
     }
     final selected = _selectedActorId;
-    if (selected == null || !_selectedTargets.containsKey(selected)) {
-      _selectedActorId =
-          _selectedTargets.isEmpty ? null : _selectedTargets.keys.first;
+    if (selected == null ||
+        !_selectedTargets.containsKey(selected) ||
+        (_companionsAutoAim && selected != 'player')) {
+      _selectedActorId = _selectedTargets.containsKey('player')
+          ? 'player'
+          : _companionsAutoAim || _selectedTargets.isEmpty
+              ? null
+              : _selectedTargets.keys.first;
     }
+  }
+
+  /// Where an auto-aiming companion strikes (see
+  /// [companionAutoTargetProvider]): the enemy the player is aiming at, so
+  /// the party focuses fire, else the living enemy closest to going down.
+  _EnemyMember? _focusTargetFor() {
+    final playerPick = _selectedTargets['player'];
+    final picked = playerPick == null ? null : _enemyByKey(playerPick);
+    if (picked != null && picked.isAlive) return picked;
+    _EnemyMember? weakest;
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive) continue;
+      if (weakest == null || enemy.currentHealth < weakest.currentHealth) {
+        weakest = enemy;
+      }
+    }
+    return weakest;
   }
 
   /// True once every acting member currently showing an Attack/Skill face
@@ -1248,6 +1324,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
           scalingBonus.damageBonus +
           alignedBonus.damageBonus +
+          actor.gear.attackDamage +
           elementalBonus;
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
       // Momentum: the built-up hits cash in as a guaranteed critical on
@@ -1266,6 +1343,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         random: _random,
         forceCritical: surge,
         alignmentLabel: _alignmentLabel,
+        critChanceBonus: actor.gear.critChance,
       );
       var healing = result.healingDone;
       if (_condition == BattlefieldCondition.shrine && healing > 0) {
@@ -1352,6 +1430,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = damage;
           hitsLanded++;
+          // Lifesteal (a Bloodthorn Blade, the full Hollow Court set) and
+          // mana on hit (a Siphon Wand) pay out per landed hit.
+          final drained = actor.gear.lifestealFor(damage);
+          if (drained > 0 && actor.currentHealth < actor.maxHealth) {
+            actor.currentHealth =
+                min(actor.maxHealth, actor.currentHealth + drained);
+            newEntries.add(_LogEntry(
+              '${actor.displayName} ${trFor(lang, 'lifesteal_suffix')} '
+              '$drained ${trFor(lang, 'hp_label')}.',
+              _LogKind.playerHeal,
+            ));
+          }
+          if (actor.gear.manaOnHit > 0) manaGained += actor.gear.manaOnHit;
         }
         if (wasAlive && !target.isAlive) {
           _lastKillWasCritical = result.isCritical;
@@ -1372,6 +1463,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
       }
     }
+
+    _advanceBossPhases(newEntries, lang, skills);
 
     if (hitsLanded > 0) {
       final before = _momentum;
@@ -1576,6 +1669,55 @@ class _FightScreenState extends ConsumerState<FightScreen>
     enemy.pendingMove = _rollMoveAndTargetFor(enemy, skills);
   }
 
+  /// Plays every boss phase a living enemy has crossed since the last
+  /// check (see [bossPhaseIndexFor]): the transition's heal, cleanse and
+  /// enrage apply at once, its new moves join the enemy's list, and the
+  /// enemy's telegraphed move is re-rolled so the new stance shows on its
+  /// very next turn. Appends each announcement to [entries].
+  void _advanceBossPhases(
+      List<_LogEntry> entries, AppLanguage lang, Map<String, dynamic> skills) {
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive || enemy.phases.isEmpty) continue;
+      final target =
+          bossPhaseIndexFor(enemy.phases, enemy.currentHealth, enemy.maxHealth);
+      var entered = false;
+      while (enemy.phaseIndex < target) {
+        final phase = enemy.phases[enemy.phaseIndex];
+        enemy.phaseIndex++;
+        entered = true;
+        final healed =
+            healthAfterPhaseHeal(phase, enemy.currentHealth, enemy.maxHealth) -
+                enemy.currentHealth;
+        enemy.currentHealth += healed;
+        if (phase.cleanse) enemy.statusEffects = [];
+        enemy.damage = (enemy.damage * phase.damageMultiplier).round();
+        enemy.data = enemyDataInPhase(enemy.data, phase);
+        final details = <String>[
+          if (healed > 0)
+            '${trFor(lang, 'phase_heals_prefix')} $healed ${trFor(lang, 'hp_label')}',
+          if (phase.cleanse) trFor(lang, 'phase_cleansed_label'),
+          if (phase.damageMultiplier > 1.0) trFor(lang, 'phase_enraged_label'),
+        ];
+        entries.add(_LogEntry(
+          '${enemy.displayName} — ${phase.nameFor(lang)}: '
+          '${phase.messageFor(lang)}'
+          '${details.isEmpty ? '' : ' (${details.join(', ')})'}',
+          _LogKind.phase,
+        ));
+      }
+      if (entered) _preRollMoveFor(enemy, skills);
+    }
+  }
+
+  /// [_advanceBossPhases] straight into the log, for the enemy-turn
+  /// paths that write the log as they go.
+  void _advancePhasesNow(AppLanguage lang, Map<String, dynamic> skills) {
+    final entries = <_LogEntry>[];
+    _advanceBossPhases(entries, lang, skills);
+    if (entries.isEmpty) return;
+    setState(() => _log.addAll(entries));
+  }
+
   /// Rolls [enemy]'s move+target — shared by [_preRollMoveFor] (ahead of
   /// time) and [_takeEnemyTurn] (live, for a [_EnemyMember.hasReactiveMoves]
   /// enemy that's never pre-rolled). Reads [_EnemyMember.elementsHitThisRound]
@@ -1648,6 +1790,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           ));
         });
         if (!enemy.isAlive) continue;
+        _advancePhasesNow(lang, skills);
       }
 
       if (isStunned(enemy.statusEffects)) {
@@ -1706,13 +1849,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
           equipmentBonusFor(target.equippedItemIds, items, 'armor') +
           targetScalingBonus.armorBonus +
           targetAlignedBonus.armorBonus +
+          target.gear.armor +
           (target.isPlayer && _ironSkinArmed ? _ironSkinArmorBonus : 0);
       final elementalResist =
           _elementalResist(move.element, target.equippedItemIds, items);
       // A dodge evades the hit outright -- no damage, no status effect --
       // rather than just softening it further on top of block/armor/resist.
-      final wasDodged =
-          _random.nextDouble() * 100 < dodgeChanceFor(target.dexterity);
+      final wasDodged = _random.nextDouble() * 100 <
+          dodgeChanceFor(target.dexterity) + target.gear.dodgeChance;
       var damageTaken = wasDodged
           ? 0
           : max(0, moveDamage - target.block - totalArmor - elementalResist);
@@ -1723,6 +1867,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
         damageTaken = 0;
         warded = true;
       }
+      // A Phoenix Sigil (see UniqueEffect.secondWind) turns one lethal
+      // blow per fight into a 1 HP survival.
+      var secondWind = false;
+      if (damageTaken >= target.currentHealth &&
+          target.currentHealth > 0 &&
+          target.secondWindAvailable) {
+        target.secondWindAvailable = false;
+        damageTaken = target.currentHealth - 1;
+        secondWind = true;
+      }
+      // Thorns (a Thornmail Hauberk, the Hollow Court set) cut whatever
+      // actually connected.
+      final thorns = damageTaken > 0 ? target.gear.thorns : 0;
       final wasKnockedOutAlready = target.isKnockedOut;
       final inflicted = move.inflictedStatus ??
           (enemy.hasAffix(EnemyAffix.venomous) ? _venomousPoison : null);
@@ -1786,6 +1943,27 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
       });
+      if (secondWind) {
+        setState(() {
+          _log.add(_LogEntry(
+            '${target.displayName} ${trFor(lang, 'second_wind_message')}',
+            _LogKind.playerHeal,
+          ));
+        });
+      }
+      if (thorns > 0 && enemy.isAlive) {
+        setState(() {
+          enemy.currentHealth = max(0, enemy.currentHealth - thorns);
+          _lastDamagedEnemyKey = enemy.key;
+          _lastEnemyDamageTaken = thorns;
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'thorns_suffix')} $thorns '
+            '${trFor(lang, 'damage_word')}.',
+            _LogKind.playerDamage,
+          ));
+        });
+        _advancePhasesNow(lang, skills);
+      }
       if (damageTaken > 0 && target.isPlayer) _triggerShake();
 
       if (target.isPlayer && target.currentHealth <= 0) {
@@ -2063,7 +2241,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
     final spellsAsync = ref.watch(gameDbProvider(spellsSchema));
+    final itemSetsAsync = ref.watch(gameDbProvider(itemSetsSchema));
     final session = ref.watch(playerSessionProvider);
+    _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
     final dice = diceAsync.value;
     final skills = skillsAsync.value;
@@ -2073,6 +2253,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final professions = professionsAsync.value;
     final gameConfig = gameConfigAsync.value;
     final spellsDb = spellsAsync.value;
+    final itemSetsDb = itemSetsAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -2081,7 +2262,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         races == null ||
         professions == null ||
         gameConfig == null ||
-        spellsDb == null) {
+        spellsDb == null ||
+        itemSetsDb == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -2089,7 +2271,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
           racesAsync.error ??
           professionsAsync.error ??
           gameConfigAsync.error ??
-          spellsAsync.error;
+          spellsAsync.error ??
+          itemSetsAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -2102,7 +2285,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
       );
     }
 
-    _ensurePartyBuilt(session, companions, races, professions, gameConfig);
+    _itemSets = parseItemSets(itemSetsDb);
+    _ensurePartyBuilt(
+        session, companions, races, professions, gameConfig, items, _itemSets);
     _spells = parseSpells(spellsDb);
 
     return Scaffold(
@@ -2165,6 +2350,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
           if (condition != null) ...[
             _buildConditionBanner(condition),
             const SizedBox(height: 12),
+          ],
+          if (_newGamePlusCycle > 0) ...[
+            Text(
+              '${tr(ref, 'new_game_plus_label')} · '
+              '${tr(ref, 'new_game_plus_cycle_label')} $_newGamePlusCycle · '
+              '+${(newGamePlusStep * _newGamePlusCycle * 100).round()}% '
+              '${tr(ref, 'new_game_plus_enemies_suffix')}',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
           ],
           if (widget.modifiers.isHunt ||
               widget.modifiers.isHunterAmbush ||
@@ -2892,8 +3090,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final face = _currentFaces[member.id];
     final isStrike =
         face != null && (face.type == 'Attack' || face.type == 'Skill');
-    final canSelect =
-        _enemies.length > 1 && isStrike && _awaitingDecision && !_rolling;
+    final canSelect = _enemies.length > 1 &&
+        isStrike &&
+        _awaitingDecision &&
+        !_rolling &&
+        (member.isPlayer || !_companionsAutoAim);
     final isSelected = canSelect && _selectedActorId == member.id;
     final targeted = !member.isKnockedOut && _isTelegraphedTarget(member);
     final scalingBonus = equipmentScalingBonusFor(
@@ -3167,8 +3368,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
       onTap: !enemy.isAlive
           ? null
           : canRetarget
-              ? () =>
-                  setState(() => _selectedTargets[selectedActor.id] = enemy.key)
+              ? () => setState(() {
+                    _selectedTargets[selectedActor.id] = enemy.key;
+                    // Auto-aiming companions follow the player's new pick.
+                    _autoAssignTargets();
+                  })
               : () => _showEnemySheet(enemy),
       onLongPress: () => _showEnemySheet(enemy),
       child: Opacity(
@@ -3247,6 +3451,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 const SizedBox(height: 3),
                 _buildAffixChips(enemy),
               ],
+              if (enemy.currentPhase != null) _buildPhaseChip(enemy),
               if (enemy.isAlive) ...[
                 const SizedBox(height: 5),
                 _buildIntentBox(enemy),
@@ -3260,6 +3465,44 @@ class _FightScreenState extends ConsumerState<FightScreen>
       card,
       show: _lastDamagedEnemyKey == enemy.key && _lastEnemyDamageTaken > 0,
       amount: _lastEnemyDamageTaken,
+    );
+  }
+
+  /// The boss phase [enemy] is currently in, as a small purple chip under
+  /// its affixes; its message on hover.
+  Widget _buildPhaseChip(_EnemyMember enemy) {
+    final phase = enemy.currentPhase;
+    if (phase == null) return const SizedBox.shrink();
+    final lang = ref.watch(appLanguageProvider);
+    return Padding(
+      padding: const EdgeInsets.only(top: 3),
+      child: Tooltip(
+        message: phase.messageFor(lang),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+          decoration: BoxDecoration(
+            color: Colors.deepPurple.withValues(alpha: 0.16),
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(color: Colors.deepPurple.withValues(alpha: 0.6)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.change_circle_outlined,
+                  size: 11, color: Colors.deepPurple),
+              const SizedBox(width: 3),
+              Text(
+                '${tr(ref, 'phase_chip_prefix')} ${enemy.phaseIndex}: '
+                '${phase.nameFor(lang)}',
+                style: const TextStyle(
+                    fontSize: 10,
+                    color: Colors.deepPurple,
+                    fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -3451,6 +3694,20 @@ class _FightScreenState extends ConsumerState<FightScreen>
                       for (final effect in enemy.statusEffects)
                         _StatusEffectChip(effect: effect),
                     ],
+                  ),
+                ],
+                if (enemy.phases.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    enemy.currentPhase == null
+                        ? '${trFor(lang, 'phases_label')}: ${enemy.phases.length} '
+                            '· ${trFor(lang, 'phases_hint')}'
+                        : '${trFor(lang, 'phase_chip_prefix')} '
+                            '${enemy.phaseIndex}/${enemy.phases.length} — '
+                            '${enemy.currentPhase!.nameFor(lang)}: '
+                            '${enemy.currentPhase!.messageFor(lang)}',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: Colors.deepPurple),
                   ),
                 ],
                 const SizedBox(height: 10),
@@ -3860,6 +4117,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         equipmentBonusFor(player.equippedItemIds, items, 'attackDamage') +
         scalingBonus.damageBonus +
         alignedBonus.damageBonus +
+        player.gear.attackDamage +
         _elementalDamageBonus(spell.element, player.equippedItemIds, items);
     return spellAmountFor(
       spell,
@@ -4091,6 +4349,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           break;
       }
     }
+    _advanceBossPhases(entries, lang, skills);
     if (hitsLanded > 0) {
       final before = _momentum;
       _momentum = min(_momentumThreshold, _momentum + hitsLanded);

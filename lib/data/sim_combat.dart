@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../combat/combat_engine.dart';
+import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
@@ -161,9 +162,16 @@ class SimCharacter {
 
   bool get isKnockedOut => currentHealth <= 0;
 
+  /// What the worn sets and unique items add up to (see gear_effects.dart).
+  GearEffects gearEffects(
+          Map<String, dynamic> items, Map<String, ItemSet> itemSets) =>
+      gearEffectsFor(equippedItemIds, items, itemSets);
+
   /// The total a face or spell of [element] hits with -- the same sum the
-  /// fight screen and the character screen use.
-  int casterDamage(Map<String, dynamic> items, String element) {
+  /// fight screen and the character screen use ([itemSets] adds a worn
+  /// set's flat attack).
+  int casterDamage(Map<String, dynamic> items, String element,
+      {Map<String, ItemSet> itemSets = const {}}) {
     final scaling = equipmentScalingBonusFor(
       equippedItemIds,
       items,
@@ -179,10 +187,12 @@ class SimCharacter {
     return baseDamage +
         equipmentBonusFor(equippedItemIds, items, 'attackDamage') +
         scaling.damageBonus +
+        gearEffects(items, itemSets).attackDamage +
         elemental;
   }
 
-  int armor(Map<String, dynamic> items) {
+  int armor(Map<String, dynamic> items,
+      {Map<String, ItemSet> itemSets = const {}}) {
     final scaling = equipmentScalingBonusFor(
       equippedItemIds,
       items,
@@ -193,7 +203,8 @@ class SimCharacter {
     );
     return baseArmor +
         equipmentBonusFor(equippedItemIds, items, 'armor') +
-        scaling.armorBonus;
+        scaling.armorBonus +
+        gearEffects(items, itemSets).armor;
   }
 
   int elementalResist(Map<String, dynamic> items, String element) {
@@ -370,10 +381,14 @@ class SimFightOutcome {
     required this.spellsCast,
     required this.manaGained,
     required this.potionsUsed,
+    this.phasesEntered = 0,
   });
 
   final bool won;
   final int rounds;
+
+  /// Boss phases the enemies crossed this fight.
+  final int phasesEntered;
 
   /// spell id -> casts, this fight only.
   final Map<String, int> spellsCast;
@@ -395,17 +410,40 @@ class _SimEnemy {
     required this.data,
     required this.maxHealth,
     required this.damage,
-  }) : health = maxHealth;
+  })  : health = maxHealth,
+        phases = parseBossPhases(data);
 
   final String id;
-  final Map<String, dynamic> data;
+  Map<String, dynamic> data;
   final int maxHealth;
-  final int damage;
+  int damage;
   int health;
   List<StatusEffect> statusEffects = [];
   Set<String> elementsHit = {};
 
+  /// Boss phases, highest threshold first (see [parseBossPhases]) and how
+  /// many have been entered -- the fight screen's own bookkeeping.
+  final List<BossPhase> phases;
+  int phaseIndex = 0;
+
   bool get isAlive => health > 0;
+
+  /// Plays every phase crossed since the last check; returns how many.
+  int advancePhases() {
+    if (phases.isEmpty || !isAlive) return 0;
+    final target = bossPhaseIndexFor(phases, health, maxHealth);
+    var entered = 0;
+    while (phaseIndex < target) {
+      final phase = phases[phaseIndex];
+      phaseIndex++;
+      entered++;
+      health = healthAfterPhaseHeal(phase, health, maxHealth);
+      if (phase.cleanse) statusEffects = [];
+      damage = (damage * phase.damageMultiplier).round();
+      data = enemyDataInPhase(data, phase);
+    }
+    return entered;
+  }
 }
 
 /// Plays one fight of [character] against [enemies] (id -> record; a pack
@@ -420,12 +458,21 @@ SimFightOutcome simulateSimFight({
   required Map<String, dynamic> skills,
   required Map<String, dynamic> items,
   required Random random,
+  Map<String, ItemSet> itemSets = const {},
+  int newGamePlusCycle = 0,
   int maxRounds = 80,
 }) {
   final c = character;
-  final healthCurve = chapterDifficultyMultiplier(chapter);
-  final damageCurve = damageShareOf(healthCurve);
+  final gear = c.gearEffects(items, itemSets);
+  var secondWindAvailable = gear.secondWind;
+  var phasesEntered = 0;
   final packMultiplier = _packStatMultipliers[enemies.length] ?? 1.0;
+  DifficultyCurve curveFor(MapEntry<String, Map<String, dynamic>> entry) =>
+      difficultyCurveFor(
+        chapter: chapter,
+        newGamePlusCycle: newGamePlusCycle,
+        isBoss: isBossEnemy(entry.key, entry.value),
+      );
   final ens = <_SimEnemy>[
     for (final entry in enemies)
       _SimEnemy(
@@ -435,12 +482,12 @@ SimFightOutcome simulateSimFight({
             1,
             (scaledMaxHealth((entry.value['maxHealth'] as num?)?.toInt() ?? 1,
                         c.level) *
-                    healthCurve *
+                    curveFor(entry).health *
                     packMultiplier)
                 .round()),
         damage: (scaledDamage(
                     (entry.value['damage'] as num?)?.toInt() ?? 0, c.level) *
-                damageCurve *
+                curveFor(entry).damage *
                 packMultiplier)
             .round(),
       ),
@@ -457,6 +504,12 @@ SimFightOutcome simulateSimFight({
   var potionsUsed = 0;
   var rounds = 0;
   bool allDead() => ens.every((e) => !e.isAlive);
+  void advancePhases() {
+    for (final e in ens) {
+      phasesEntered += e.advancePhases();
+    }
+  }
+
   _SimEnemy? firstLiving() {
     for (final e in ens) {
       if (e.isAlive) return e;
@@ -484,6 +537,7 @@ SimFightOutcome simulateSimFight({
       spellsCast: casts,
       manaGained: manaGained,
       potionsUsed: potionsUsed,
+      phasesEntered: phasesEntered,
     );
   }
 
@@ -502,7 +556,9 @@ SimFightOutcome simulateSimFight({
       c.currentHealth = min(c.maxHealth, c.currentHealth + _potionHeal);
     }
 
-    var block = _castSpellIfWorth(c, ens, items, random, casts);
+    var block =
+        _castSpellIfWorth(c, ens, items, random, casts, itemSets: itemSets);
+    advancePhases();
     if (allDead()) return finish(true);
 
     if (!stunned && c.diceFaces.isNotEmpty) {
@@ -528,16 +584,26 @@ SimFightOutcome simulateSimFight({
       final result = resolvePlayerFace(
         face,
         availableSkills,
-        c.casterDamage(items, element),
+        c.casterDamage(items, element, itemSets: itemSets),
         activeEffects: c.statusEffects,
         wisdomHealBonus: c.wisdom ~/ 2,
         luck: c.luck,
         random: random,
+        critChanceBonus: gear.critChance,
       );
       final target = firstLiving();
       if (target != null && result.damageDealt > 0) {
         target.health = max(0, target.health - result.damageDealt);
         if (element != 'None') target.elementsHit.add(element);
+        final drained = gear.lifestealFor(result.damageDealt);
+        if (drained > 0) {
+          c.currentHealth = min(c.maxHealth, c.currentHealth + drained);
+        }
+        if (gear.manaOnHit > 0) {
+          final before = c.mana;
+          c.mana = min(c.maxMana, c.mana + gear.manaOnHit);
+          manaGained += c.mana - before;
+        }
       }
       final inflicted = result.inflictedStatus;
       if (target != null && inflicted != null && target.isAlive) {
@@ -553,6 +619,7 @@ SimFightOutcome simulateSimFight({
       }
       c.statusEffects = tickStatusEffects(c.statusEffects);
     }
+    advancePhases();
     if (allDead()) return finish(true);
 
     // --- enemy turn ---
@@ -562,6 +629,7 @@ SimFightOutcome simulateSimFight({
       if (ePoison > 0) {
         e.health = max(0, e.health - ePoison);
         if (!e.isAlive) continue;
+        phasesEntered += e.advancePhases();
       }
       if (isStunned(e.statusEffects)) {
         e.statusEffects = tickStatusEffects(e.statusEffects);
@@ -576,16 +644,27 @@ SimFightOutcome simulateSimFight({
         elementsHitThisRound: e.elementsHit,
       );
       final moveDamage = applyWeaken(move.damage, e.statusEffects);
-      final dodged = random.nextDouble() * 100 < dodgeChanceFor(c.dexterity);
-      final taken = dodged
+      final dodged = random.nextDouble() * 100 <
+          dodgeChanceFor(c.dexterity) + gear.dodgeChance;
+      var taken = dodged
           ? 0
           : max(
               0,
               moveDamage -
                   block -
-                  c.armor(items) -
+                  c.armor(items, itemSets: itemSets) -
                   c.elementalResist(items, move.element));
+      if (taken >= c.currentHealth &&
+          c.currentHealth > 0 &&
+          secondWindAvailable) {
+        secondWindAvailable = false;
+        taken = c.currentHealth - 1;
+      }
       c.currentHealth = max(0, c.currentHealth - taken);
+      if (taken > 0 && gear.thorns > 0) {
+        e.health = max(0, e.health - gear.thorns);
+        phasesEntered += e.advancePhases();
+      }
       block = 0;
       final inflicted = move.inflictedStatus;
       if (!dodged && inflicted != null && !c.isKnockedOut) {
@@ -613,8 +692,9 @@ int _castSpellIfWorth(
   List<_SimEnemy> ens,
   Map<String, dynamic> items,
   Random random,
-  Map<String, int> casts,
-) {
+  Map<String, int> casts, {
+  Map<String, ItemSet> itemSets = const {},
+}) {
   final living = ens.where((e) => e.isAlive).toList();
   if (c.knownSpells.isEmpty || living.isEmpty || c.mana <= 0) return 0;
 
@@ -623,7 +703,7 @@ int _castSpellIfWorth(
         intelligence: c.intelligence,
         wisdom: c.wisdom,
         level: c.level,
-        casterDamage: c.casterDamage(items, spell.element),
+        casterDamage: c.casterDamage(items, spell.element, itemSets: itemSets),
       );
   void cast(SpellSpec spell) {
     c.mana -= spell.manaCost;
@@ -716,7 +796,7 @@ int _castSpellIfWorth(
     if (status == null) continue;
     final candidates = living
         .where((e) =>
-            e.health > 2 * c.casterDamage(items, 'None') &&
+            e.health > 2 * c.casterDamage(items, 'None', itemSets: itemSets) &&
             !e.statusEffects.any((x) => x.type == status.type))
         .toList();
     if (candidates.isEmpty) continue;

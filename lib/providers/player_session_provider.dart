@@ -98,6 +98,10 @@ class PlayerSession {
     this.recentLootIds = const [],
     this.mana = 0,
     this.knownSpellIds = const [],
+    this.newGamePlusCycle = 0,
+    this.legacyGold = 0,
+    this.legacyDiceIds = const [],
+    this.legacySpellIds = const [],
   });
 
   final int level;
@@ -313,6 +317,24 @@ class PlayerSession {
   /// starting spells on permadeath, like [unlockedSkillIds].
   final List<String> knownSpellIds;
 
+  /// How many times this save has finished the story and gone round again
+  /// -- 0 on a first run. Every enemy is scaled by `newGamePlusMultiplier`
+  /// of it (see combat_engine.dart), and the ending screen offers the
+  /// next cycle.
+  final int newGamePlusCycle;
+
+  /// What the previous cycle hands the next character: a share of its
+  /// gold, every die it owned and every spell it knew. Banked by
+  /// `PlayerSessionNotifier.beginNewGamePlus`, kept through the reset at
+  /// character creation, and spent (added onto the new character, then
+  /// cleared) by `startNewGame`.
+  final int legacyGold;
+  final List<String> legacyDiceIds;
+  final List<String> legacySpellIds;
+
+  bool get hasLegacy =>
+      legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
+
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
   int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
 
@@ -410,6 +432,10 @@ class PlayerSession {
     List<String>? recentLootIds,
     int? mana,
     List<String>? knownSpellIds,
+    int? newGamePlusCycle,
+    int? legacyGold,
+    List<String>? legacyDiceIds,
+    List<String>? legacySpellIds,
   }) {
     return PlayerSession(
       level: level ?? this.level,
@@ -476,6 +502,10 @@ class PlayerSession {
       recentLootIds: recentLootIds ?? this.recentLootIds,
       mana: mana ?? this.mana,
       knownSpellIds: knownSpellIds ?? this.knownSpellIds,
+      newGamePlusCycle: newGamePlusCycle ?? this.newGamePlusCycle,
+      legacyGold: legacyGold ?? this.legacyGold,
+      legacyDiceIds: legacyDiceIds ?? this.legacyDiceIds,
+      legacySpellIds: legacySpellIds ?? this.legacySpellIds,
     );
   }
 
@@ -541,6 +571,10 @@ class PlayerSession {
         'recentLootIds': recentLootIds,
         'mana': mana,
         'knownSpellIds': knownSpellIds,
+        'newGamePlusCycle': newGamePlusCycle,
+        'legacyGold': legacyGold,
+        'legacyDiceIds': legacyDiceIds,
+        'legacySpellIds': legacySpellIds,
       };
 
   factory PlayerSession.fromJson(Map<String, dynamic> json) {
@@ -712,6 +746,15 @@ class PlayerSession {
       knownSpellIds:
           (json['knownSpellIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      newGamePlusCycle: (json['newGamePlusCycle'] as num?)?.toInt() ?? 0,
+      legacyGold: (json['legacyGold'] as num?)?.toInt() ?? 0,
+      legacyDiceIds:
+          (json['legacyDiceIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      legacySpellIds: (json['legacySpellIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 }
@@ -768,7 +811,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _resetToDefaults(prefs);
   }
 
-  Future<void> _resetToDefaults(SharedPreferences prefs) async {
+  /// [keepLegacy] carries the New Game+ cycle and its banked legacy (see
+  /// [PlayerSession.legacyGold]) through the reset -- the reset that
+  /// precedes character creation must not lose what the previous cycle
+  /// handed down; an Edit-Mode "start from nothing" reset passes false.
+  Future<void> _resetToDefaults(SharedPreferences prefs,
+      {bool keepLegacy = true}) async {
+    final previous = state;
     Map<String, dynamic> defaults;
     final savedConfig = prefs.getString(_newGameDefaultsPrefsKey);
     if (savedConfig != null) {
@@ -818,6 +867,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         intelligence: (defaults['intelligence'] as num?)?.toInt() ?? 0,
         wisdom: (defaults['wisdom'] as num?)?.toInt() ?? 0,
       ),
+      newGamePlusCycle: keepLegacy ? previous.newGamePlusCycle : 0,
+      legacyGold: keepLegacy ? previous.legacyGold : 0,
+      legacyDiceIds: keepLegacy ? previous.legacyDiceIds : const [],
+      legacySpellIds: keepLegacy ? previous.legacySpellIds : const [],
     );
     await _persist();
   }
@@ -901,11 +954,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     ];
     final startingDiceId = _startingDiceIdFor(profession);
     final startingSpellIds = _startingSpellIdsFor(profession);
+    // A New Game+ character inherits the previous cycle's legacy (see
+    // [beginNewGamePlus]): its gold share, every die it owned and every
+    // spell it knew.
+    final legacy = state;
+    final legacyDice = [
+      for (final id in legacy.legacyDiceIds)
+        if (id != _starterDiceId && id != startingDiceId) id,
+    ];
+    final legacySpells = [
+      for (final id in legacy.legacySpellIds)
+        if (!startingSpellIds.contains(id)) id,
+    ];
 
     state = PlayerSession(
       level: (defaults['playerLevel'] as num?)?.toInt() ?? 1,
       currentXP: 0,
-      gold: gold,
+      gold: gold + legacy.legacyGold,
       alignmentScore: 0,
       maxHealth: maxHealth,
       currentHealth: maxHealth,
@@ -939,11 +1004,34 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ownedDiceIds: [
         _starterDiceId,
         if (startingDiceId != _starterDiceId) startingDiceId,
+        ...legacyDice,
       ],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
-      knownSpellIds: startingSpellIds,
+      knownSpellIds: [...startingSpellIds, ...legacySpells],
+      newGamePlusCycle: legacy.newGamePlusCycle,
+    );
+    await _persist();
+  }
+
+  /// The share of a finished run's gold the next cycle starts with.
+  static const double newGamePlusGoldShare = 0.25;
+
+  /// Banks the finished run as the legacy of the next cycle and counts the
+  /// cycle up: a quarter of the gold, every owned die and every known
+  /// spell wait in [PlayerSession.legacyGold] and friends for the reset at
+  /// character creation (which keeps them, see [_resetToDefaults]) and the
+  /// [startNewGame] that follows (which spends them). Everything else --
+  /// level, gear, companions, camp, quests, flags -- starts over, and every
+  /// enemy of the new cycle is `newGamePlusMultiplier` tougher.
+  Future<void> beginNewGamePlus() async {
+    state = state.copyWith(
+      newGamePlusCycle: state.newGamePlusCycle + 1,
+      legacyGold: (state.gold * newGamePlusGoldShare).round(),
+      legacyDiceIds: {...state.legacyDiceIds, ...state.ownedDiceIds}.toList(),
+      legacySpellIds:
+          {...state.legacySpellIds, ...state.knownSpellIds}.toList(),
     );
     await _persist();
   }
@@ -994,9 +1082,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
   }
 
-  Future<void> resetSession() async {
+  /// See [_resetToDefaults]: a plain reset keeps a pending New Game+
+  /// legacy; [keepLegacy] false wipes the save back to a first run.
+  Future<void> resetSession({bool keepLegacy = true}) async {
     final prefs = await SharedPreferences.getInstance();
-    await _resetToDefaults(prefs);
+    await _resetToDefaults(prefs, keepLegacy: keepLegacy);
   }
 
   /// Directly replaces the live session with [session] — used to restore a

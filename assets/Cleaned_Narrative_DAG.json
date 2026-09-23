@@ -3273,6 +3273,16 @@
         ]
       },
       {
+        "text": "Speak with the choir deserter tending the refugees' candles",
+        "text_fr": "Parler au déserteur du chœur qui veille sur les chandelles des réfugiés",
+        "next_id": "5010_tobin",
+        "hideIfFlags": [
+          "hub_5010_tobin"
+        ],
+        "lockedText": "He looks past me at the water. Whatever he is looking for in a face, mine has not got it.",
+        "lockedText_fr": "Il regarde l'eau derrière moi. Quoi qu'il cherche dans un visage, le mien ne l'a pas."
+      },
+      {
         "text": "Take the Drowned Stair down to the Court",
         "text_fr": "Descendre l'Escalier Noyé jusqu'à la Cour",
         "next_id": "5003",
@@ -3525,6 +3535,16 @@
         "hideIfFlags": [
           "hub_6010_frost"
         ]
+      },
+      {
+        "text": "Deal with the cutthroat selling what the tear leaves behind",
+        "text_fr": "Traiter avec le coupe-jarret qui vend ce que la déchirure laisse derrière elle",
+        "next_id": "6010_malrik",
+        "hideIfFlags": [
+          "hub_6010_malrik"
+        ],
+        "lockedText": "He weighs me up, decides I am somebody's conscience, and goes back to his stall.",
+        "lockedText_fr": "Il me jauge, décide que je suis la conscience de quelqu'un, et retourne à son étal."
       },
       {
         "text": "Cross the dead heart",
@@ -3834,7 +3854,21 @@
     ],
     "reqFlags": [
       "void_banner_bearer"
-    ]
+    ],
+    "alignment_epilogues": {
+      "Good": {
+        "en": "Word of what I had done for the Tide-Kin, for the refugees under the Spire, for every stranger I had stopped to help when stopping cost me, reached the camp before I did. They did not build me a throne. They built me a table, and put a chair at the head of it, and expected me to sit in it and listen. I have been listening ever since. A city built on that, I have come to think, is the only kind worth the stone.",
+        "fr": "La nouvelle de ce que j'avais fait pour les Tide-Kin, pour les réfugiés sous la Flèche, pour chaque inconnu que j'avais aidé quand m'arrêter me coûtait, atteignit le camp avant moi. Ils ne m'ont pas bâti de trône. Ils m'ont bâti une table, y ont mis une chaise en bout, et ont attendu que je m'y assoie et que j'écoute. J'écoute depuis. Une ville bâtie là-dessus, en suis-je venu à penser, est la seule qui vaille la pierre."
+      },
+      "Neutral": {
+        "en": "I had made a habit of choosing the next step over the grand gesture, and the camp had noticed; they trusted me the way you trust a good ferryman, for the crossing and not for the sermon. It was enough. Streets went up where tents had been. Nobody named any of them after me, which I took, on balance, as the compliment it was.",
+        "fr": "J'avais pris l'habitude de choisir le pas suivant plutôt que le grand geste, et le camp l'avait remarqué ; ils me faisaient confiance comme on fait confiance à un bon passeur, pour la traversée et non pour le sermon. C'était assez. Des rues montèrent là où il y avait des tentes. Personne n'en baptisa une de mon nom, ce que je pris, tout compte fait, pour le compliment que c'était."
+      },
+      "Evil": {
+        "en": "The camp knew what I was by then, and built anyway, because I had brought the Banner home and a great many of the people who might have objected had not come home at all. The walls went up fast. So did the gallows, which I told myself was a matter of order. The city is safe now, they say in the markets, and they say it quietly, and they look at the Spire when they say it.",
+        "fr": "Le camp savait ce que j'étais, à ce moment-là, et bâtit quand même, parce que j'avais ramené la Bannière et qu'un grand nombre de ceux qui auraient pu objecter n'étaient pas rentrés du tout. Les murs montèrent vite. Le gibet aussi, ce que je me dis relever de l'ordre. La ville est sûre maintenant, dit-on sur les marchés, et on le dit tout bas, en regardant la Flèche."
+      }
+    }
   },
   "7005_seeker": {
     "id": "7005_seeker",
@@ -3851,7 +3885,21 @@
     ],
     "reqFlags": [
       "void_banner_seeker"
-    ]
+    ],
+    "alignment_epilogues": {
+      "Good": {
+        "en": "I went on seeking, and I went on stopping for people on the way, which is a poor method for finding anything quickly and the only method I have ever trusted. The Banner is out there. So are the ones I helped, and they send word sometimes — a tear closed here, a family found there — and I have begun to suspect that this, and not the cloth, was what I was chasing.",
+        "fr": "J'ai continué à chercher, et j'ai continué à m'arrêter pour les gens en chemin, ce qui est une piètre méthode pour trouver vite quoi que ce soit et la seule en laquelle j'aie jamais eu confiance. La Bannière est quelque part. Ceux que j'ai aidés aussi, et ils donnent parfois des nouvelles — une déchirure refermée ici, une famille retrouvée là — et j'ai commencé à soupçonner que c'était cela, et non l'étoffe, que je poursuivais."
+      },
+      "Neutral": {
+        "en": "Seeking suits me. It asks no oath and keeps no ledger, and the tears, I have found, are patient enough to wait for a man who takes the long road. I keep the Eel in good repair and my opinions to myself, and somewhere ahead of me the Banner is doing whatever banners do when nobody carries them.",
+        "fr": "Chercher me convient. Cela n'exige aucun serment et ne tient aucun registre, et les déchirures, ai-je découvert, sont assez patientes pour attendre un homme qui prend la longue route. Je garde l'Eel en bon état et mes opinions pour moi, et quelque part devant moi la Bannière fait ce que font les bannières quand personne ne les porte."
+      },
+      "Evil": {
+        "en": "I went on seeking, and I stopped pretending it was the Banner I wanted. What waits behind the tears is power of a kind the Sovereign only borrowed, and I have a boat, a crew that has learned not to ask, and a name that opens doors in the wrong quarters of every port. The camp writes. I do not answer.",
+        "fr": "J'ai continué à chercher, et j'ai cessé de faire semblant que c'était la Bannière que je voulais. Ce qui attend derrière les déchirures est un pouvoir que le Souverain n'avait fait qu'emprunter, et j'ai un bateau, un équipage qui a appris à ne pas poser de questions, et un nom qui ouvre des portes dans les mauvais quartiers de chaque port. Le camp écrit. Je ne réponds pas."
+      }
+    }
   },
   "7005_dawn": {
     "id": "7005_dawn",
@@ -3869,7 +3917,17 @@
     "reqFlags": [
       "void_banner_bearer"
     ],
-    "reqAlignmentScore": 15
+    "reqAlignmentScore": 15,
+    "alignment_epilogues": {
+      "Good": {
+        "en": "Some of the crew asked, later, whether I regretted giving up the one thing that could have made me anything I wanted. I told them the truth: that I had wanted, since a tavern burned, to be a person my dead would recognize, and that a needle had turned out to be the whole of the price. They did not understand. The ones who had lost someone did.",
+        "fr": "Certains de l'équipage demandèrent, plus tard, si je regrettais d'avoir renoncé à la seule chose qui aurait pu faire de moi ce que je voulais. Je leur dis la vérité : que je voulais, depuis qu'une taverne avait brûlé, être quelqu'un que mes morts reconnaîtraient, et qu'une aiguille s'était révélée être tout le prix. Ils ne comprirent pas. Ceux qui avaient perdu quelqu'un, si."
+      },
+      "Neutral": {
+        "en": "I sewed it shut because it was the sensible thing, and because I had grown tired of carrying something that hummed. If there was grace in it, I was not the one to say so. The camp said so instead, at length, and I let them, and went back to mending nets, which also hum, in their way, and never once asked to be worshipped.",
+        "fr": "Je l'ai recousue parce que c'était la chose raisonnable, et parce que j'étais las de porter quelque chose qui bourdonnait. S'il y avait de la grâce là-dedans, ce n'était pas à moi de le dire. Le camp le dit à ma place, longuement, et je les laissai faire, et retournai réparer des filets, qui bourdonnent aussi, à leur façon, et n'ont jamais demandé à être adorés."
+      }
+    }
   },
   "7005_crown": {
     "id": "7005_crown",
@@ -3884,6 +3942,60 @@
         "next_id": "EXIT"
       }
     ],
-    "reqAlignmentMax": -15
+    "reqAlignmentMax": -15,
+    "alignment_epilogues": {
+      "Evil": {
+        "en": "The crown fits. That is the thing nobody warns you about: it fits, and every morning it fits a little better, and the faces on the sand kneel a little faster, and one day you catch yourself wondering what the Sovereign wanted before it wanted this, and you cannot remember, and it does not seem to matter. The tear is a gate. I hold the key. That is the whole of what I am now.",
+        "fr": "La couronne me va. C'est la chose dont personne ne vous prévient : elle va, et chaque matin elle va un peu mieux, et les visages sur le sable s'agenouillent un peu plus vite, et un jour on se surprend à se demander ce que voulait le Souverain avant de vouloir ceci, et on ne s'en souvient pas, et cela ne semble pas avoir d'importance. La déchirure est une porte. J'en tiens la clef. C'est tout ce que je suis désormais."
+      },
+      "Neutral": {
+        "en": "I told myself I had taken the crown to keep it out of worse hands, and for a while that was even true. The camp believed me longer than I did. I wear it seldom now, and only when the tear grows restless, and I have started leaving instructions, sealed, for whoever finds me when I stop being able to take it off.",
+        "fr": "Je me suis dit que j'avais pris la couronne pour la garder loin de pires mains, et pendant un temps ce fut même vrai. Le camp m'a cru plus longtemps que moi. Je la porte rarement à présent, et seulement quand la déchirure s'agite, et j'ai commencé à laisser des instructions, scellées, pour qui me trouvera quand je ne pourrai plus l'ôter."
+      }
+    }
+  },
+  "5010_tobin": {
+    "id": "5010_tobin",
+    "description": "He was a dwarf in what had once been a choir robe, kneeling on a ledge above the black water and trimming candle wicks with a knife too good for the job, and the refugees around him watched the way people watch the one thing in a room that has not yet failed them. He looked up when I came in, took my measure in the time it takes to decide whether to stand, and stood. \"You're the one who stops,\" he said. \"On the road. For people. They talk about it down here like weather.\"",
+    "description_fr": "C'était un nain dans ce qui avait été une robe de chœur, agenouillé sur une corniche au-dessus de l'eau noire, taillant des mèches de chandelle avec un couteau bien trop bon pour la tâche, et les réfugiés autour de lui le regardaient comme on regarde la seule chose d'une pièce qui ne vous ait pas encore fait défaut. Il leva les yeux quand j'entrai, me jaugea le temps qu'il faut pour décider de se lever, et se leva. « Vous êtes celui qui s'arrête, dit-il. Sur la route. Pour les gens. Ici, on en parle comme de la météo. »",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "reqAlignmentScore": 20,
+    "choices": [
+      {
+        "text": "Back to the cloister",
+        "text_fr": "Retour au cloître",
+        "next_id": "5010",
+        "unlockQuestId": "q_ch4_tobins_vigil",
+        "flagsToAdd": [
+          "hub_5010_tobin"
+        ]
+      }
+    ]
+  },
+  "6010_malrik": {
+    "id": "6010_malrik",
+    "description": "His stall was two planks over a reliquary chest, and everything on it had been holy once and was for sale now: saints' fingers, chapel glass, a psalter with the pages the tear had touched cut out and sold separately. He was an orc with a Court deserter's boots and a merchant's patience, and he did not bother to hide either. \"You've a name in this quarter,\" he said, without looking up from the psalter. \"Not a kind one. Good. Kind doesn't pay.\"",
+    "description_fr": "Son étal, c'était deux planches posées sur un coffre-reliquaire, et tout ce qui s'y trouvait avait été sacré un jour et était à vendre aujourd'hui : doigts de saints, verre de chapelle, un psautier dont on avait découpé les pages touchées par la déchirure pour les vendre à part. C'était un orc avec des bottes de déserteur de la Cour et une patience de marchand, et il ne prenait la peine de cacher ni l'un ni l'autre. « Vous avez un nom dans ce quartier, dit-il sans lever les yeux du psautier. Pas un nom aimable. Tant mieux. L'aimable ne paie pas. »",
+    "context_taxonomy": {
+      "ui_theme": "market",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "reqAlignmentMax": -20,
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "unlockQuestId": "q_ch5_malriks_cut",
+        "flagsToAdd": [
+          "hub_6010_malrik"
+        ]
+      }
+    ]
   }
 }

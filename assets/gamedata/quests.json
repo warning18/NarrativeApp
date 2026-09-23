@@ -1164,5 +1164,85 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_ch4_tobins_vigil": {
+    "questID": "q_ch4_tobins_vigil",
+    "questName": "Brother Tobin's Vigil",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "6",
+    "requiredAlignment": "Good",
+    "objectives": [
+      {
+        "description": "Clear a catacomb ghoul from the drowned cloister's candles with Brother Tobin",
+        "type": "Kill",
+        "targetEnemyID": "catacomb_ghoul",
+        "targetItemID": "",
+        "targetNPCName": "Tobin",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 90,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I sang in the Court's choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter.\" He does not stop trimming the wick while he says it. \"These people have nothing but the candles and me. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take the hammer's side",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_tobins_vigil_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "tobin"
+  },
+  "q_ch5_malriks_cut": {
+    "questID": "q_ch5_malriks_cut",
+    "questName": "Malrik's Cut",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "7",
+    "requiredAlignment": "Evil",
+    "objectives": [
+      {
+        "description": "Put down a void hound with Malrik and prove the partnership pays",
+        "type": "Kill",
+        "targetEnemyID": "void_hound",
+        "targetItemID": "",
+        "targetNPCName": "Malrik",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 80,
+    "rewardXP": 110,
+    "rewardItemID": "",
+    "alignmentChange": -5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I know what you are. The quarter knows. That's why I'm talking to you and not to the saints.\" He turns a reliquary over in his hands the way other men turn coins. \"The hounds circle the chapel where the good stuff is. Kill one with me and I'll believe you can keep your half of a bargain, which is rarer in this city than the relics.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Shake on the cut",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_malriks_cut_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "malrik"
   }
 }

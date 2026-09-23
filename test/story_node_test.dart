@@ -120,4 +120,32 @@ void main() {
           isFalse);
     });
   });
+
+  group('StoryNode.alignmentEpilogues', () {
+    test('parses, picks by alignment and language, and round-trips', () {
+      final node = StoryNode.fromJson('7005', {
+        'description': 'The end.',
+        'choices': const [],
+        'alignment_epilogues': {
+          'Good': {
+            'en': 'You stopped for people.',
+            'fr': 'Vous vous arrêtiez.'
+          },
+          'Evil': {'en': 'The gallows went up fast.'},
+          'Broken': {'fr': 'no english'},
+        },
+      });
+      expect(node.alignmentEpilogues.keys, ['Good', 'Evil']);
+      expect(node.epilogueFor('Good', false), 'You stopped for people.');
+      expect(node.epilogueFor('Good', true), 'Vous vous arrêtiez.');
+      expect(node.epilogueFor('Evil', true), 'The gallows went up fast.');
+      expect(node.epilogueFor('Neutral', false), isNull);
+      final json = node.toJson();
+      final epilogues = json['alignment_epilogues'] as Map;
+      expect((epilogues['Good'] as Map)['fr'], 'Vous vous arrêtiez.');
+      expect((epilogues['Evil'] as Map).containsKey('fr'), isFalse);
+      expect(StoryNode.fromJson('x', {'description': 'y'}).toJson(),
+          isNot(contains('alignment_epilogues')));
+    });
+  });
 }

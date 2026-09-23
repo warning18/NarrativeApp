@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/spells.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -47,6 +48,7 @@ class CharacterScreen extends ConsumerWidget {
         children: [
           const PlayerStatsBar(),
           const SizedBox(height: 16),
+          if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
           const _ManaSpellsCard(),
           if (session.bannerPiecesCollected.isNotEmpty)
             Card(
@@ -138,6 +140,32 @@ class CharacterScreen extends ConsumerWidget {
 /// numbers the battle screen's action bar will show. Tapping opens the
 /// Skills screen, whose Spells section has each spell's details and where
 /// the unlearned ones are sold.
+/// The New Game+ cycle this save is on and what it means: tougher enemies
+/// (see `newGamePlusMultiplier`) and the legacy the previous run left.
+class _NewGamePlusCard extends ConsumerWidget {
+  const _NewGamePlusCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final cycle = session.newGamePlusCycle;
+    final bonus = (newGamePlusStep * cycle * 100).round();
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.replay_circle_filled_outlined,
+            color: Colors.deepPurple, size: 28),
+        title: Text(
+            '${tr(ref, 'new_game_plus_label')} · ${tr(ref, 'new_game_plus_cycle_label')} $cycle'),
+        subtitle: Text(
+          '${tr(ref, 'new_game_plus_enemies_prefix')} +$bonus% '
+          '${tr(ref, 'new_game_plus_enemies_suffix')}. '
+          '${tr(ref, 'new_game_plus_card_desc')}',
+        ),
+      ),
+    );
+  }
+}
+
 class _ManaSpellsCard extends ConsumerWidget {
   const _ManaSpellsCard();
 

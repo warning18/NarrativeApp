@@ -3158,6 +3158,127 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Export as CSV (.csv)',
     AppLanguage.fr: 'Exporter en CSV (.csv)',
   },
+  // --- Boss phases ---
+  'phase_chip_prefix': {AppLanguage.en: 'Phase', AppLanguage.fr: 'Phase'},
+  'phases_label': {AppLanguage.en: 'Phases', AppLanguage.fr: 'Phases'},
+  'phases_hint': {
+    AppLanguage.en: 'this one changes as it weakens',
+    AppLanguage.fr: "celui-ci change à mesure qu'il faiblit",
+  },
+  'phase_heals_prefix': {
+    AppLanguage.en: 'recovers',
+    AppLanguage.fr: 'récupère'
+  },
+  'phase_cleansed_label': {
+    AppLanguage.en: 'shrugs off every affliction',
+    AppLanguage.fr: 'se débarrasse de toutes ses afflictions',
+  },
+  'phase_enraged_label': {
+    AppLanguage.en: 'hits harder from now on',
+    AppLanguage.fr: 'frappe plus fort désormais',
+  },
+  // --- Gear effects: sets and uniques ---
+  'set_label': {AppLanguage.en: 'Set', AppLanguage.fr: 'Panoplie'},
+  'set_pieces_label': {AppLanguage.en: 'pieces', AppLanguage.fr: 'pièces'},
+  'unique_label': {AppLanguage.en: 'Unique', AppLanguage.fr: 'Unique'},
+  'unique_lifesteal_desc': {
+    AppLanguage.en: 'heals {v}% of the damage it deals',
+    AppLanguage.fr: "soigne {v} % des dégâts infligés",
+  },
+  'unique_thorns_desc': {
+    AppLanguage.en: 'whatever hits you takes {v} damage back',
+    AppLanguage.fr: 'ce qui vous frappe encaisse {v} dégâts en retour',
+  },
+  'unique_second_wind_desc': {
+    AppLanguage.en: 'once per fight, a lethal blow leaves you at 1 HP',
+    AppLanguage.fr: 'une fois par combat, un coup mortel vous laisse à 1 PV',
+  },
+  'unique_mana_on_hit_desc': {
+    AppLanguage.en: '+{v} mana on every damaging hit',
+    AppLanguage.fr: '+{v} mana à chaque coup qui blesse',
+  },
+  'unique_crit_desc': {
+    AppLanguage.en: '+{v}% critical chance',
+    AppLanguage.fr: '+{v} % de chance de critique',
+  },
+  'unique_dodge_desc': {
+    AppLanguage.en: '+{v}% dodge',
+    AppLanguage.fr: "+{v} % d'esquive",
+  },
+  'lifesteal_suffix': {
+    AppLanguage.en: 'drinks back',
+    AppLanguage.fr: 'récupère par le sang'
+  },
+  'thorns_suffix': {
+    AppLanguage.en: 'is cut by the thorns for',
+    AppLanguage.fr: 'est entaillé par les épines :',
+  },
+  'second_wind_message': {
+    AppLanguage.en: 'refuses to fall — the Phoenix Sigil burns out!',
+    AppLanguage.fr: "refuse de tomber — le Sceau du Phénix se consume !",
+  },
+  // --- Companion targeting ---
+  'companion_auto_target_setting_title': {
+    AppLanguage.en: 'Companions pick their own targets',
+    AppLanguage.fr: 'Les compagnons choisissent leurs cibles',
+  },
+  'companion_auto_target_setting_desc': {
+    AppLanguage.en:
+        'In a pack fight, companions focus fire on your target (or the weakest enemy). Turn off to aim every party member by hand.',
+    AppLanguage.fr:
+        'Dans un combat de groupe, les compagnons concentrent leurs coups sur votre cible (ou le plus faible ennemi). Désactivez pour viser chaque membre à la main.',
+  },
+  // --- New Game+ ---
+  'new_game_plus_label': {
+    AppLanguage.en: 'New Game+',
+    AppLanguage.fr: 'Nouvelle partie+'
+  },
+  'new_game_plus_button': {
+    AppLanguage.en: 'New Game+',
+    AppLanguage.fr: 'Nouvelle partie+'
+  },
+  'new_game_plus_cycle_label': {
+    AppLanguage.en: 'Cycle',
+    AppLanguage.fr: 'Cycle'
+  },
+  'new_game_plus_hint': {
+    AppLanguage.en:
+        'Go round again with your dice, your spells and a quarter of your gold. Everything else starts over, and every enemy is tougher.',
+    AppLanguage.fr:
+        "Repartez avec vos dés, vos sorts et un quart de votre or. Tout le reste recommence, et chaque ennemi est plus coriace.",
+  },
+  'new_game_plus_desc': {
+    AppLanguage.en:
+        'The next cycle starts the story from the top with a new character who inherits every die you own, every spell you know and a quarter of your gold. Level, gear, companions, camp and quests start over.',
+    AppLanguage.fr:
+        "Le cycle suivant reprend l'histoire depuis le début avec un nouveau personnage qui hérite de tous vos dés, de tous vos sorts et d'un quart de votre or. Niveau, équipement, compagnons, camp et quêtes recommencent.",
+  },
+  'new_game_plus_enemies_prefix': {
+    AppLanguage.en: 'Enemies',
+    AppLanguage.fr: 'Ennemis'
+  },
+  'new_game_plus_enemies_suffix': {
+    AppLanguage.en: 'health and damage',
+    AppLanguage.fr: 'de santé et de dégâts',
+  },
+  'new_game_plus_confirm': {
+    AppLanguage.en: 'Begin the next cycle',
+    AppLanguage.fr: 'Commencer le cycle suivant',
+  },
+  'new_game_plus_started_message': {
+    AppLanguage.en:
+        'The road begins again. Your legacy waits at character creation.',
+    AppLanguage.fr:
+        'La route recommence. Votre héritage vous attend à la création du personnage.',
+  },
+  'new_game_plus_card_desc': {
+    AppLanguage.en:
+        'Your dice, spells and a share of your gold came through from the last cycle.',
+    AppLanguage.fr:
+        "Vos dés, vos sorts et une part de votre or viennent du cycle précédent.",
+  },
+  // --- Endings ---
+  'epilogue_heading': {AppLanguage.en: 'Epilogue', AppLanguage.fr: 'Épilogue'},
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

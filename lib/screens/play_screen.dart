@@ -188,7 +188,7 @@ class PlayScreen extends ConsumerWidget {
                     onPressed: () async {
                       await ref
                           .read(playerSessionProvider.notifier)
-                          .resetSession();
+                          .resetSession(keepLegacy: false);
                       ref
                           .read(storyPlayProvider.notifier)
                           .restart(StoryRepository.startNodeId);

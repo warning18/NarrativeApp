@@ -320,6 +320,39 @@ void main() {
     });
 
     group('critical hits', () {
+      test('a flat critChanceBonus raises the crit rate, capped at 50%', () {
+        int critsWith(double bonus) {
+          var crits = 0;
+          final random = Random(7);
+          for (var i = 0; i < 600; i++) {
+            final result = resolvePlayerFace(
+              const DiceFaceResult(
+                faceIndex: 0,
+                faceName: 'Strike',
+                type: 'Attack',
+                value: 5,
+                linkedSkillID: '',
+                element: 'None',
+              ),
+              const {},
+              10,
+              luck: 0,
+              random: random,
+              critChanceBonus: bonus,
+            );
+            if (result.isCritical) crits++;
+          }
+          return crits;
+        }
+
+        final base = critsWith(0);
+        final boosted = critsWith(40);
+        final capped = critsWith(400);
+        expect(boosted, greaterThan(base + 100));
+        // 5 + 400 is capped at 50%: well under an always-crit 600.
+        expect(capped, inInclusiveRange(240, 360));
+      });
+
       test('criticalChanceFor scales with luck and caps at 35', () {
         expect(criticalChanceFor(0), 5.0);
         expect(criticalChanceFor(10), 20.0);

@@ -77,3 +77,30 @@ class AlignmentHuntersNotifier extends StateNotifier<bool> {
 final alignmentHuntersEnabledProvider =
     StateNotifierProvider<AlignmentHuntersNotifier, bool>(
         (ref) => AlignmentHuntersNotifier());
+
+const String _companionAutoTargetPrefsKey = 'combat_companion_auto_target';
+
+class CompanionAutoTargetNotifier extends StateNotifier<bool> {
+  CompanionAutoTargetNotifier() : super(true) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = prefs.getBool(_companionAutoTargetPrefsKey) ?? true;
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    state = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_companionAutoTargetPrefsKey, enabled);
+  }
+}
+
+/// Whether companions aim their own strikes in a pack fight (focus fire on
+/// the player's target, else the weakest enemy) or the player picks every
+/// party member's target by hand. Defaults to on; persisted via
+/// [SharedPreferences].
+final companionAutoTargetProvider =
+    StateNotifierProvider<CompanionAutoTargetNotifier, bool>(
+        (ref) => CompanionAutoTargetNotifier());

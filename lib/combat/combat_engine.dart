@@ -140,9 +140,13 @@ double dodgeChanceFor(int dexterity) => min(30, 5 + dexterity * 1.5);
 /// thing everywhere it can happen.
 const double _criticalDamageMultiplier = 1.5;
 
-int _withCritical(int damage, int luck, Random? random) {
+int _withCritical(int damage, int luck, Random? random,
+    [double critChanceBonus = 0]) {
   if (damage <= 0 || random == null) return damage;
-  if (random.nextDouble() * 100 >= criticalChanceFor(luck)) return damage;
+  // A flat gear bonus (a set's or a unique's, see gear_effects.dart) sits
+  // on top of the Luck curve and shares its cap plus a little headroom.
+  final chance = min(50.0, criticalChanceFor(luck) + critChanceBonus);
+  if (random.nextDouble() * 100 >= chance) return damage;
   return criticalDamage(damage);
 }
 
@@ -185,11 +189,12 @@ PlayerActionResult resolvePlayerFace(
   Random? random,
   bool forceCritical = false,
   String alignmentLabel = 'Neutral',
+  double critChanceBonus = 0,
 }) {
   String t(String key) => trFor(language, key);
   int withCrit(int rawDamage) => forceCritical
       ? criticalDamage(rawDamage)
-      : _withCritical(rawDamage, luck, random);
+      : _withCritical(rawDamage, luck, random, critChanceBonus);
   switch (face.type) {
     case 'Attack':
       final rawDamage = applyWeaken(baseDamage + face.value, activeEffects);
@@ -511,16 +516,76 @@ int scaledReward(int base, int playerLevel) {
 /// [chapterDifficultyMultiplier]).
 const double chapterDifficultyStep = 0.12;
 
+/// Flat multipliers on a regular enemy's max health and damage, before
+/// the chapter curve -- the "medium-hard" floor for everything that isn't
+/// a boss. With every build fighting armed (the v1.115 equip-gate fix), a
+/// 40-run simulation on the old numbers won 99.6% of its fights; the flat
+/// bump makes the ordinary fights chip at the party again. A boss (any
+/// enemy with `phases`, see [BossPhase]) skips the floor: its difficulty
+/// comes from its phases, and the same simulation showed a steeper global
+/// curve turning the chapter 5-6 bosses into walls while chapters 1-4
+/// stayed at 100%.
+const double enemyHealthBaseMultiplier = 1.15;
+const double enemyDamageBaseMultiplier = 1.10;
+
+/// How much harder each New Game+ cycle makes every enemy (health AND
+/// damage, on top of the whole curve): cycle 1 is +15%, cycle 2 +30%. A
+/// 40-run simulation at +30% per cycle left a fifth of the runs stuck on
+/// the chapter 5-6 bosses; +15% keeps the second cycle hard but passable.
+const double newGamePlusStep = 0.15;
+
+double newGamePlusMultiplier(int cycle) => 1 + newGamePlusStep * max(0, cycle);
+
+/// The health and damage multipliers a fight applies to every enemy,
+/// resolved once from its chapter, its zone's tier (or any other
+/// per-encounter difficulty multiplier) and the New Game+ cycle:
+/// the flat floor, the chapter curve (damage climbing half as fast, see
+/// [damageShareOf]) and the cycle's own multiplier. The one place the
+/// fight screen, the in-app simulator and the autoplay engine all read
+/// the curve from.
+class DifficultyCurve {
+  const DifficultyCurve({required this.health, required this.damage});
+
+  final double health;
+  final double damage;
+}
+
+DifficultyCurve difficultyCurveFor({
+  required int chapter,
+  double zoneMultiplier = 1.0,
+  int newGamePlusCycle = 0,
+  bool isBoss = false,
+}) {
+  final chapterHealth = chapterDifficultyMultiplier(chapter) * zoneMultiplier;
+  final cycle = newGamePlusMultiplier(newGamePlusCycle);
+  final baseHealth = isBoss ? 1.0 : enemyHealthBaseMultiplier;
+  final baseDamage = isBoss ? 1.0 : enemyDamageBaseMultiplier;
+  return DifficultyCurve(
+    health: baseHealth * chapterHealth * cycle,
+    damage: baseDamage * damageShareOf(chapterHealth) * cycle,
+  );
+}
+
+/// Whether [enemy] is a boss for the difficulty floor's purposes: it has
+/// phases, or it is one of the individually tuned solo-only uniques.
+bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
+  if (soloOnlyEnemyIds.contains(enemyId)) return true;
+  final phases = enemy['phases'];
+  return phases is List && phases.isNotEmpty;
+}
+
 /// Enemy max-health multiplier by story chapter, applied on top of the
 /// player-level scaling above and before the Elite/pack multipliers.
 /// Level scaling alone let a chapter-5 boss meet a level-10 party as a
 /// slightly larger chapter-1 thug; the curve keeps each chapter's enemies
 /// a step ahead of the gear and levels the previous one handed out
-/// (chapter 1 ×1.0, chapter 3 ×1.24, chapter 6 ×1.6). Damage climbs half
-/// as fast (see [damageShareOf]): more health makes a fight longer, more
-/// damage makes it lethal, and a 40-run simulation showed a full-rate
-/// damage curve turning tuned chapter-2 fights from sure wins into
-/// coin flips.
+/// (chapter 1 ×1.0, chapter 3 ×1.24, chapter 6 ×1.6, before the flat
+/// [enemyHealthBaseMultiplier] a regular enemy also gets). Damage climbs
+/// half as fast (see [damageShareOf]): more health makes a fight longer,
+/// more damage makes it lethal, and a 40-run simulation showed a full-rate
+/// damage curve turning tuned chapter-2 fights from sure wins into coin
+/// flips -- and a steeper step alone turning the chapter 5-6 zone bosses
+/// into walls while chapters 1-4 stayed at 100%.
 double chapterDifficultyMultiplier(int chapter) =>
     1 + chapterDifficultyStep * (max(1, chapter) - 1);
 
@@ -555,4 +620,136 @@ int professionLootAffinityBonus(
   if (preferredScalingStat.isEmpty) return 0;
   final itemScalingStat = item?['scalingStat']?.toString() ?? '';
   return itemScalingStat == preferredScalingStat ? 20 : 0;
+}
+
+/// One stage of a boss fight (see `phases` on an enemies.json record): once
+/// the enemy's health falls to [healthThresholdPercent] or below it enters
+/// the phase -- a one-time transition that can heal it, shed its
+/// afflictions, raise its damage for the rest of the fight and open up
+/// new moves (added to, or replacing, its usual list). Ordinary enemies
+/// have no phases; a boss lists its phases from the highest threshold down
+/// and crosses each at most once, in order.
+class BossPhase {
+  const BossPhase({
+    required this.healthThresholdPercent,
+    required this.name,
+    this.nameFr,
+    this.message = '',
+    this.messageFr,
+    this.damageMultiplier = 1.0,
+    this.healPercent = 0,
+    this.cleanse = false,
+    this.addMoves = const [],
+    this.replaceMoves = false,
+  });
+
+  /// Enters the phase once `currentHealth / maxHealth * 100` is at or
+  /// below this.
+  final int healthThresholdPercent;
+
+  /// A short title for the phase chip ("Unmaking").
+  final String name;
+  final String? nameFr;
+
+  /// The battle-log line announcing the transition.
+  final String message;
+  final String? messageFr;
+
+  /// Multiplies the enemy's damage from this phase on (stacks with an
+  /// earlier phase's).
+  final double damageMultiplier;
+
+  /// Restores this percentage of max health on entry.
+  final int healPercent;
+
+  /// Clears the enemy's own Poison/Stun/Weaken on entry.
+  final bool cleanse;
+
+  /// Skill moves (same shape as `skillMoves`) available from this phase
+  /// on -- appended to the enemy's list, or the whole list when
+  /// [replaceMoves] is set.
+  final List<Map<String, dynamic>> addMoves;
+  final bool replaceMoves;
+
+  String nameFor(AppLanguage language) =>
+      language == AppLanguage.fr && (nameFr?.isNotEmpty ?? false)
+          ? nameFr!
+          : name;
+
+  String messageFor(AppLanguage language) =>
+      language == AppLanguage.fr && (messageFr?.isNotEmpty ?? false)
+          ? messageFr!
+          : message;
+
+  factory BossPhase.fromJson(Map<String, dynamic> json) => BossPhase(
+        healthThresholdPercent:
+            (json['healthThreshold'] as num?)?.toInt() ?? 50,
+        name: json['name']?.toString() ?? '',
+        nameFr: json['nameFr']?.toString(),
+        message: json['message']?.toString() ?? '',
+        messageFr: json['messageFr']?.toString(),
+        damageMultiplier: (json['damageMultiplier'] as num?)?.toDouble() ?? 1.0,
+        healPercent: (json['healPercent'] as num?)?.toInt() ?? 0,
+        cleanse: json['cleanse'] == true,
+        addMoves: (json['addMoves'] as List?)
+                ?.whereType<Map>()
+                .map((m) => m.cast<String, dynamic>())
+                .toList() ??
+            const [],
+        replaceMoves: json['replaceMoves'] == true,
+      );
+}
+
+/// [enemy]'s phases, highest threshold first (the order they are crossed
+/// in as its health falls). Empty for an enemy without any.
+List<BossPhase> parseBossPhases(Map<String, dynamic> enemy) {
+  final list = enemy['phases'];
+  if (list is! List) return const [];
+  final raw = list
+      .whereType<Map>()
+      .map((m) => BossPhase.fromJson(m.cast<String, dynamic>()))
+      .toList();
+  return [...raw]..sort(
+      (a, b) => b.healthThresholdPercent.compareTo(a.healthThresholdPercent));
+}
+
+/// How many of [phases] an enemy at [currentHealth] of [maxHealth] has
+/// crossed -- the phase index it should be in. A fight compares this
+/// against the index it last applied and plays every phase in between
+/// (a single big hit can cross two thresholds at once).
+int bossPhaseIndexFor(
+    List<BossPhase> phases, int currentHealth, int maxHealth) {
+  if (phases.isEmpty || maxHealth <= 0) return 0;
+  if (currentHealth <= 0) return 0;
+  final percent = currentHealth / maxHealth * 100;
+  var crossed = 0;
+  for (final phase in phases) {
+    if (percent <= phase.healthThresholdPercent) crossed++;
+  }
+  return crossed;
+}
+
+/// The enemy record as it stands once [phase] is entered: its `skillMoves`
+/// list extended (or replaced) by the phase's own. Pure -- returns a copy,
+/// never mutates the shared gamedata record.
+Map<String, dynamic> enemyDataInPhase(
+    Map<String, dynamic> enemy, BossPhase phase) {
+  if (phase.addMoves.isEmpty) return enemy;
+  final current =
+      (enemy['skillMoves'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+  return {
+    ...enemy,
+    'skillMoves': [
+      if (!phase.replaceMoves) ...current,
+      ...phase.addMoves,
+    ],
+  };
+}
+
+/// The health an enemy has after a phase's heal -- [healPercent] of max,
+/// never above max.
+int healthAfterPhaseHeal(BossPhase phase, int currentHealth, int maxHealth) {
+  if (phase.healPercent <= 0) return currentHealth;
+  return min(
+      maxHealth, currentHealth + (maxHealth * phase.healPercent / 100).round());
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../combat/gear_effects.dart';
 import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -107,6 +108,9 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               data: (items) => diceAsync.when(
                 data: (dice) => _InventoryBody(
                   items: items,
+                  itemSets: parseItemSets(
+                      ref.watch(gameDbProvider(itemSetsSchema)).value ??
+                          const {}),
                   dice: dice,
                   allyId: widget.allyId,
                   companion: companion,
@@ -230,10 +234,15 @@ class _InventoryBody extends ConsumerWidget {
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
+    this.itemSets = const {},
   });
 
   final Map<String, dynamic> items;
   final Map<String, dynamic> dice;
+
+  /// item_sets.json, parsed -- for the "Set: Name (n/3)" line on a set
+  /// piece and the worn-pieces count.
+  final Map<String, ItemSet> itemSets;
   final String? allyId;
   final Map<String, dynamic>? companion;
   final bool compareMode;
@@ -418,10 +427,13 @@ class _InventoryBody extends ConsumerWidget {
             final comparisonItem = comparisonId != null
                 ? items[comparisonId] as Map<String, dynamic>?
                 : null;
+            final set = setForItem(id, item, itemSets);
             return _ItemTile(
               itemId: id,
               item: item,
               count: counts[id],
+              itemSet: set,
+              setPiecesWorn: set?.piecesWornIn(equippedIds) ?? 0,
               isEquipped: isEquipped,
               language: ref.watch(appLanguageProvider),
               comparisonItemId: comparisonId,
@@ -534,6 +546,8 @@ class _ItemTile extends StatelessWidget {
     this.onEquip,
     this.onUnequip,
     this.requirementUnmet = false,
+    this.itemSet,
+    this.setPiecesWorn = 0,
   });
 
   final String itemId;
@@ -541,6 +555,11 @@ class _ItemTile extends StatelessWidget {
   final int? count;
   final bool isEquipped;
   final AppLanguage language;
+
+  /// The set this item belongs to, if any, and how many of its pieces the
+  /// equipping character currently wears -- shown as "Set: Name (2/3)".
+  final ItemSet? itemSet;
+  final int setPiecesWorn;
 
   /// The item currently equipped in this item's slot, if any and if
   /// different from this item — used to show a +/- stat delta.
@@ -590,6 +609,16 @@ class _ItemTile extends StatelessWidget {
       if (alignedAttack > 0) '${t('atk_abbrev')} +$alignedAttack',
       if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
     ];
+    final unique = uniqueEffectOf(item);
+    final uniqueText = unique == null
+        ? null
+        : t(uniqueEffectDescriptionKey(unique))
+            .replaceAll('{v}', '${uniqueValueOf(item)}');
+    final set = itemSet;
+    final setText = set == null
+        ? null
+        : '${t('set_label')}: ${set.nameFor(language)} '
+            '($setPiecesWorn/${set.itemIds.length})';
 
     final statsParts = <String>[
       if (itemType != null) itemType,
@@ -608,6 +637,8 @@ class _ItemTile extends StatelessWidget {
           requirementText != null &&
           requirementText.isEmpty)
         t('alignment_rejects_label'),
+      if (uniqueText != null) '${t('unique_label')}: $uniqueText',
+      if (setText != null) setText,
       if (count != null && count! > 1) 'x$count',
       if (comparisonItem != null)
         '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',
@@ -656,6 +687,20 @@ class _ItemTile extends StatelessWidget {
                       MapEntry(t('scales_with_label'), scalingAbbrev),
                     if (requirementText != null && requirementText.isNotEmpty)
                       MapEntry(t('stat_requirement_label'), requirementText),
+                    if (uniqueText != null)
+                      MapEntry(t('unique_label'), uniqueText),
+                    if (set != null) ...[
+                      MapEntry(
+                          t('set_label'),
+                          '${set.nameFor(language)} '
+                          '($setPiecesWorn/${set.itemIds.length})'),
+                      for (final tier in set.tiers)
+                        MapEntry(
+                          '${tier.pieces} ${t('set_pieces_label')}'
+                          '${tier.pieces <= setPiecesWorn ? ' ✓' : ''}',
+                          tier.descriptionFor(language),
+                        ),
+                    ],
                     for (final entry in {
                       'fireDmgBonus': t('fire_dmg_label'),
                       'windDmgBonus': t('wind_dmg_label'),

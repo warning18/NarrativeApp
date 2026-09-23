@@ -36,6 +36,52 @@ void main() {
     });
   });
 
+  group('difficultyCurveFor', () {
+    test('a regular enemy gets the flat floor on top of the chapter curve', () {
+      final curve = difficultyCurveFor(chapter: 1);
+      expect(curve.health, closeTo(enemyHealthBaseMultiplier, 1e-9));
+      expect(curve.damage, closeTo(enemyDamageBaseMultiplier, 1e-9));
+      final later = difficultyCurveFor(chapter: 3, zoneMultiplier: 1.2);
+      expect(
+          later.health, closeTo(enemyHealthBaseMultiplier * 1.24 * 1.2, 1e-9));
+      expect(later.damage,
+          closeTo(enemyDamageBaseMultiplier * damageShareOf(1.24 * 1.2), 1e-9));
+    });
+
+    test('a boss skips the floor: its difficulty comes from its phases', () {
+      final boss = difficultyCurveFor(chapter: 1, isBoss: true);
+      expect(boss.health, 1.0);
+      expect(boss.damage, 1.0);
+      expect(difficultyCurveFor(chapter: 4, isBoss: true).health,
+          closeTo(chapterDifficultyMultiplier(4), 1e-9));
+    });
+
+    test('every New Game+ cycle scales health and damage alike', () {
+      expect(newGamePlusMultiplier(0), 1.0);
+      expect(newGamePlusMultiplier(1), closeTo(1 + newGamePlusStep, 1e-9));
+      expect(newGamePlusMultiplier(-2), 1.0);
+      final plus = difficultyCurveFor(chapter: 1, newGamePlusCycle: 2);
+      final base = difficultyCurveFor(chapter: 1);
+      expect(
+          plus.health / base.health, closeTo(newGamePlusMultiplier(2), 1e-9));
+      expect(
+          plus.damage / base.damage, closeTo(newGamePlusMultiplier(2), 1e-9));
+    });
+
+    test('isBossEnemy reads phases and the solo-only list', () {
+      expect(isBossEnemy('harbor_rat', {'maxHealth': 10}), isFalse);
+      expect(isBossEnemy('void_sovereign', {}), isTrue);
+      expect(
+          isBossEnemy('bone_warden', {
+            'phases': [
+              {'healthThreshold': 50}
+            ]
+          }),
+          isTrue);
+      expect(isBossEnemy('bone_warden', {'phases': []}), isFalse);
+    });
+  });
+
   group('zoneTierMultiplier', () {
     test('tier 1 is neutral, each tier past it adds a tenth', () {
       expect(zoneTierMultiplier(1), 1.0);

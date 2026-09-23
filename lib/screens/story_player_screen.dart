@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
@@ -122,6 +123,7 @@ class _StoryView extends ConsumerWidget {
             hasActiveAlly: session.activeAllyIds.isNotEmpty,
             french: french,
           );
+    final epilogue = node?.epilogueFor(session.alignmentLabel, french);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
     final companionCollapsed = ref.watch(_companionCollapsedProvider);
@@ -400,12 +402,17 @@ class _StoryView extends ConsumerWidget {
                                     child: _StoryText(
                                       text: displayDescription,
                                       uiTheme: node.uiTheme,
+                                      epilogue: epilogue,
+                                      epilogueHeading:
+                                          tr(ref, 'epilogue_heading'),
                                     ),
                                   ),
                                 )
                               : _StoryText(
                                   text: displayDescription,
                                   uiTheme: node.uiTheme,
+                                  epilogue: epilogue,
+                                  epilogueHeading: tr(ref, 'epilogue_heading'),
                                 ),
                         ),
                       ),
@@ -463,6 +470,9 @@ class _StoryView extends ConsumerWidget {
                         onRestart: () =>
                             notifier.restart(StoryRepository.startNodeId),
                         session: session,
+                        onNewGamePlus: session.raceId.isEmpty
+                            ? null
+                            : () => _startNewGamePlus(context, ref),
                       )
                     else ...[
                       for (var i = 0; i < mainChoices.length; i++)
@@ -1239,9 +1249,21 @@ List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
 /// and styled as a centered heading with a divider, and the body gets
 /// generous spacing, justified alignment, and a soft parchment-like card.
 class _StoryText extends StatelessWidget {
-  const _StoryText({required this.text, this.uiTheme});
+  const _StoryText({
+    required this.text,
+    this.uiTheme,
+    this.epilogue,
+    this.epilogueHeading = '',
+  });
 
   final String text;
+
+  /// An alignment-specific closing paragraph (see
+  /// [StoryNode.alignmentEpilogues]) set under a small heading after the
+  /// body, in italics -- how this road looked from where the character
+  /// walked it.
+  final String? epilogue;
+  final String epilogueHeading;
 
   /// The current node's `context_taxonomy.ui_theme` (docks, cathedral,
   /// slums, ...) — looked up against [uiThemePalettes] to give a few
@@ -1300,6 +1322,31 @@ class _StoryText extends StatelessWidget {
             TextSpan(children: _highlightedSpans(body, baseStyle)),
             textAlign: TextAlign.justify,
           ),
+          if (epilogue != null && epilogue!.isNotEmpty) ...[
+            const SizedBox(height: 18),
+            Center(
+              child: Container(
+                width: 40,
+                height: 1,
+                color: accent.text.withValues(alpha: 0.4),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              epilogueHeading.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    letterSpacing: 1.5,
+                    color: accent.text.withValues(alpha: 0.8),
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              epilogue!,
+              textAlign: TextAlign.justify,
+              style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+            ),
+          ],
         ],
       ),
     );
@@ -1313,12 +1360,17 @@ class _EndingView extends ConsumerWidget {
     required this.restartLabel,
     required this.onRestart,
     this.session,
+    this.onNewGamePlus,
   });
 
   final String title;
   final String message;
   final String restartLabel;
   final VoidCallback onRestart;
+
+  /// Offered on a genuine story ending: bank this run's legacy and start
+  /// the next, harder cycle (see `PlayerSessionNotifier.beginNewGamePlus`).
+  final VoidCallback? onNewGamePlus;
 
   /// When set, a recap card (level/gold/alignment/quests) is shown below
   /// the message — only passed for a genuine story ending, not the "trail
@@ -1373,11 +1425,70 @@ class _EndingView extends ConsumerWidget {
               onPressed: onRestart,
               child: Text(restartLabel),
             ),
+            if (onNewGamePlus != null && recapSession != null) ...[
+              const SizedBox(height: 8),
+              FilledButton.tonalIcon(
+                onPressed: onNewGamePlus,
+                icon: const Icon(Icons.replay_circle_filled_outlined),
+                label: Text(
+                  '${tr(ref, 'new_game_plus_button')} · '
+                  '${tr(ref, 'new_game_plus_cycle_label')} '
+                  '${recapSession.newGamePlusCycle + 1}',
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                tr(ref, 'new_game_plus_hint'),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
           ],
         ),
       ),
     );
   }
+}
+
+/// Confirms, then banks the finished run as the next cycle's legacy and
+/// restarts the story from the top -- character creation picks the legacy
+/// up (see `PlayerSessionNotifier.startNewGame`).
+Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
+  final lang = ref.read(appLanguageProvider);
+  final session = ref.read(playerSessionProvider);
+  final nextCycle = session.newGamePlusCycle + 1;
+  final bonus = (newGamePlusStep * nextCycle * 100).round();
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(
+          '${trFor(lang, 'new_game_plus_button')} · ${trFor(lang, 'new_game_plus_cycle_label')} $nextCycle'),
+      content: Text(
+        '${trFor(lang, 'new_game_plus_desc')}\n\n'
+        '${trFor(lang, 'new_game_plus_enemies_prefix')} +$bonus% '
+        '${trFor(lang, 'new_game_plus_enemies_suffix')}',
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(false),
+          child: Text(trFor(lang, 'cancel')),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(dialogContext).pop(true),
+          child: Text(trFor(lang, 'new_game_plus_confirm')),
+        ),
+      ],
+    ),
+  );
+  if (confirmed != true || !context.mounted) return;
+  await ref.read(playerSessionProvider.notifier).beginNewGamePlus();
+  if (!context.mounted) return;
+  ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+  showImmersiveNotice(
+    context,
+    icon: Icons.replay_circle_filled_outlined,
+    message: trFor(lang, 'new_game_plus_started_message'),
+  );
 }
 
 /// Shown once, right after a choice unlocks a shop and/or quest, on the

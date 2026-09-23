@@ -29,7 +29,8 @@
       "void_banner",
       "armor_leather",
       "sword_001",
-      "spellbook_venom_hex"
+      "spellbook_venom_hex",
+      "harborwatch_lantern"
     ],
     "merchantSpecialties": [
       "Artifact",
@@ -44,7 +45,8 @@
       "void_banner": 1,
       "armor_leather": 1,
       "sword_001": 1,
-      "spellbook_venom_hex": 1
+      "spellbook_venom_hex": 1,
+      "harborwatch_lantern": 1
     }
   },
   "weaponsmith_forge": {
@@ -64,7 +66,8 @@
       "dagger_t2",
       "dagger_t3",
       "spellbook_war_shout",
-      "spellbook_hunters_mark"
+      "spellbook_hunters_mark",
+      "harborwatch_cutlass"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -85,7 +88,8 @@
       "dagger_t2": 1,
       "dagger_t3": 1,
       "spellbook_war_shout": 1,
-      "spellbook_hunters_mark": 1
+      "spellbook_hunters_mark": 1,
+      "harborwatch_cutlass": 1
     }
   },
   "shieldwrights_hall": {
@@ -99,7 +103,8 @@
       "shield_t2",
       "shield_t3",
       "shield_t4",
-      "shield_t5"
+      "shield_t5",
+      "harborwatch_coat"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -112,7 +117,8 @@
       "shield_t2": 1,
       "shield_t3": 1,
       "shield_t4": 1,
-      "shield_t5": 1
+      "shield_t5": 1,
+      "harborwatch_coat": 1
     }
   },
   "arcane_bazaar": {
@@ -129,7 +135,8 @@
       "staff_t5",
       "scroll_fireball",
       "artifact_moon_shard",
-      "spellbook_frost_bind"
+      "spellbook_frost_bind",
+      "siphon_wand"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -150,7 +157,8 @@
       "staff_t5": 1,
       "scroll_fireball": 4,
       "artifact_moon_shard": 1,
-      "spellbook_frost_bind": 1
+      "spellbook_frost_bind": 1,
+      "siphon_wand": 1
     }
   },
   "apothecary_row": {
@@ -198,7 +206,8 @@
       "shield_t7",
       "staff_t6",
       "staff_t7",
-      "void_banner"
+      "void_banner",
+      "bloodthorn_blade"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -219,7 +228,8 @@
       "shield_t7": 1,
       "staff_t6": 1,
       "staff_t7": 1,
-      "void_banner": 1
+      "void_banner": 1,
+      "bloodthorn_blade": 1
     }
   },
   "hammersmith_forge": {
@@ -243,7 +253,8 @@
       "shield_t7",
       "shield_t8",
       "shield_t9",
-      "shield_t10"
+      "shield_t10",
+      "thornmail_hauberk"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -264,7 +275,8 @@
       "shield_t7": 1,
       "shield_t8": 1,
       "shield_t9": 1,
-      "shield_t10": 1
+      "shield_t10": 1,
+      "thornmail_hauberk": 1
     }
   },
   "arcane_academy": {
@@ -334,7 +346,8 @@
       "charm_warding",
       "tome_of_insight",
       "sword_t8",
-      "shield_t8"
+      "shield_t8",
+      "hollow_court_blade"
     ],
     "merchantSpecialties": [
       "Potion",
@@ -349,7 +362,8 @@
       "charm_warding": 2,
       "tome_of_insight": 1,
       "sword_t8": 1,
-      "shield_t8": 1
+      "shield_t8": 1,
+      "hollow_court_blade": 1
     }
   },
   "last_lantern": {
@@ -365,7 +379,9 @@
       "tome_of_mastery",
       "staff_t9",
       "dagger_t9",
-      "spellbook_smite_the_wicked"
+      "spellbook_smite_the_wicked",
+      "hollow_court_mantle",
+      "phoenix_sigil"
     ],
     "merchantSpecialties": [
       "Potion",
@@ -380,7 +396,9 @@
       "tome_of_mastery": 1,
       "staff_t9": 1,
       "dagger_t9": 1,
-      "spellbook_smite_the_wicked": 1
+      "spellbook_smite_the_wicked": 1,
+      "hollow_court_mantle": 1,
+      "phoenix_sigil": 1
     }
   }
 }

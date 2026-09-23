@@ -169,6 +169,17 @@ const List<String> statusEffectOptions = ['None', 'Poison', 'Stun', 'Weaken'];
 /// Rarity band the spoils chest draws gear from (see loot_box.dart).
 const List<String> rarityOptions = ['Common', 'Uncommon', 'Rare'];
 
+/// See `UniqueEffect` in lib/combat/gear_effects.dart.
+const List<String> uniqueEffectOptions = [
+  '',
+  'lifesteal',
+  'thorns',
+  'secondWind',
+  'manaOnHit',
+  'critChance',
+  'dodgeChance',
+];
+
 /// An item's or skill's alignment affinity -- empty for none. Matching
 /// gear/skills are stronger for that alignment; opposed gear can't be
 /// worn and opposed skills are weaker (see ally_state.dart's
@@ -330,6 +341,25 @@ final DbSchema itemsSchema = DbSchema(
       type: FieldType.enumeration,
       enumOptions: rarityOptions,
       defaultValue: 'Common',
+    ),
+    FieldSchema(
+      key: 'setId',
+      label:
+          'Item Set (id in item_sets.json; pieces worn together add bonuses)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'uniqueEffect',
+      label: 'Unique Effect',
+      type: FieldType.enumeration,
+      enumOptions: uniqueEffectOptions,
+    ),
+    FieldSchema(
+      key: 'uniqueValue',
+      label:
+          'Unique Effect Value (% for lifesteal/crit/dodge, points for thorns/mana)',
+      type: FieldType.integer,
+      defaultValue: 0,
     ),
     FieldSchema(
       key: 'lootChapter',
@@ -717,6 +747,12 @@ final DbSchema enemiesSchema = DbSchema(
       key: 'skillMoves',
       label:
           'Skill Moves [{skillID, condition: $skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'phases',
+      label:
+          'Boss Phases [{healthThreshold (%), name, nameFr, message, messageFr, damageMultiplier, healPercent, cleanse, addMoves: [skill moves], replaceMoves}]',
       type: FieldType.json,
     ),
     visualAssetFieldSchema('enemies'),
@@ -1601,8 +1637,31 @@ final DbSchema spellsSchema = DbSchema(
   ],
 );
 
+final DbSchema itemSetsSchema = DbSchema(
+  id: 'item_sets',
+  label: 'Item Sets',
+  assetPath: 'assets/gamedata/item_sets.json',
+  primaryKeyField: 'setName',
+  fields: [
+    FieldSchema(key: 'setName', label: 'Set Name', type: FieldType.text),
+    FieldSchema(key: 'setNameFr', label: 'Set Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'itemIds',
+      label: 'Item IDs (the pieces of this set)',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'bonuses',
+      label:
+          'Bonuses [{pieces, attackDamage, armor, critChance, dodgeChance, thorns, lifestealPercent, manaOnHit, description, descriptionFr}]',
+      type: FieldType.json,
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
+  itemSetsSchema,
   skillsSchema,
   skillMergesSchema,
   diceSchema,

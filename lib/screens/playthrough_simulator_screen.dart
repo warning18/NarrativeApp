@@ -11,6 +11,7 @@ import 'package:path_provider/path_provider.dart';
 
 import '../combat/combat_engine.dart'
     show chapterRewardMultiplier, scaledReward;
+import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/chapter_spine.dart';
@@ -186,6 +187,7 @@ class _SimContext {
     required this.professions,
     required this.spells,
     required this.gameConfig,
+    this.itemSets = const {},
   });
 
   final Map<String, dynamic> dice;
@@ -196,6 +198,7 @@ class _SimContext {
   final Map<String, dynamic> professions;
   final Map<String, SpellSpec> spells;
   final Map<String, dynamic> gameConfig;
+  final Map<String, ItemSet> itemSets;
 }
 
 /// A lost fight is retried this many times, as a player would, before the
@@ -330,6 +333,7 @@ _SimResult _simulate(
         chapter: chapter,
         skills: sim.skills,
         items: sim.items,
+        itemSets: sim.itemSets,
         random: random,
       );
       for (final entry in outcome.spellsCast.entries) {
@@ -854,6 +858,7 @@ class _PlaythroughSimulatorScreenState
       professions: await load(professionsSchema),
       spells: parseSpells(await load(spellsSchema)),
       gameConfig: await ref.read(gameConfigProvider.future),
+      itemSets: parseItemSets(await load(itemSetsSchema)),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();

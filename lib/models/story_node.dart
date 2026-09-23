@@ -263,6 +263,7 @@ class StoryNode {
     this.speaker,
     this.scriptTrigger,
     this.authoringComment,
+    this.alignmentEpilogues = const {},
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -290,7 +291,22 @@ class StoryNode {
       speaker: taxonomy?['speaker'] as String?,
       scriptTrigger: automations?['script_trigger'] as String?,
       authoringComment: json['authoring_comment'] as String?,
+      alignmentEpilogues: _parseEpilogues(json['alignment_epilogues']),
     );
+  }
+
+  static Map<String, AlignmentEpilogue> _parseEpilogues(Object? raw) {
+    if (raw is! Map) return const {};
+    final out = <String, AlignmentEpilogue>{};
+    for (final entry in raw.entries) {
+      final value = entry.value;
+      if (value is! Map) continue;
+      final en = value['en']?.toString() ?? '';
+      if (en.isEmpty) continue;
+      out[entry.key.toString()] =
+          AlignmentEpilogue(en: en, fr: value['fr']?.toString());
+    }
+    return out;
   }
 
   final String id;
@@ -341,6 +357,21 @@ class StoryNode {
   /// on memory.
   final String? authoringComment;
 
+  /// An extra closing paragraph shown under the node's text to a character
+  /// of the matching alignment ('Good' / 'Neutral' / 'Evil') -- how the
+  /// road looked from where they walked it. Authored on the endings; an
+  /// unmatched or missing entry shows nothing.
+  final Map<String, AlignmentEpilogue> alignmentEpilogues;
+
+  /// The epilogue for [alignmentLabel], if this node has one.
+  String? epilogueFor(String alignmentLabel, bool french) {
+    final epilogue = alignmentEpilogues[alignmentLabel];
+    if (epilogue == null) return null;
+    return french && (epilogue.fr?.isNotEmpty ?? false)
+        ? epilogue.fr
+        : epilogue.en;
+  }
+
   String descriptionFor(bool french) =>
       french && (descriptionFr?.isNotEmpty ?? false)
           ? descriptionFr!
@@ -375,6 +406,24 @@ class StoryNode {
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,
         if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
         if (reqCharisma != 0) 'reqCharisma': reqCharisma,
+        if (alignmentEpilogues.isNotEmpty)
+          'alignment_epilogues': {
+            for (final entry in alignmentEpilogues.entries)
+              entry.key: {
+                'en': entry.value.en,
+                if (entry.value.fr != null && entry.value.fr!.isNotEmpty)
+                  'fr': entry.value.fr,
+              },
+          },
         'choices': choices.map((c) => c.toJson()).toList(),
       };
+}
+
+/// One alignment's closing paragraph on an ending node (see
+/// [StoryNode.alignmentEpilogues]).
+class AlignmentEpilogue {
+  const AlignmentEpilogue({required this.en, this.fr});
+
+  final String en;
+  final String? fr;
 }

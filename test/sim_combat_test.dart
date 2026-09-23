@@ -9,6 +9,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/combat/gear_effects.dart';
 import 'package:narrative_data_app/combat/spells.dart';
 import 'package:narrative_data_app/data/sim_combat.dart';
 
@@ -204,6 +205,80 @@ void main() {
           spells, 2000);
       expect(c.diceFaces, (dice['sage_die'] as Map<String, dynamic>)['faces']);
       expect(c.diceSkillAssignments, isEmpty);
+    });
+  });
+
+  group('boss phases and gear in a simulated fight', () {
+    test('the Void Sovereign crosses its phases against a strong character',
+        () {
+      var phases = 0;
+      for (var seed = 0; seed < 12; seed++) {
+        final c = warrior();
+        c.level = 20;
+        c.maxHealth = 700;
+        c.currentHealth = 700;
+        c.baseDamage = 80;
+        c.baseArmor = 20;
+        final outcome = simulateSimFight(
+          character: c,
+          enemies: [
+            MapEntry('void_sovereign',
+                enemies['void_sovereign'] as Map<String, dynamic>)
+          ],
+          chapter: 6,
+          skills: skills,
+          items: items,
+          random: Random(seed),
+        );
+        phases += outcome.phasesEntered;
+      }
+      expect(phases, greaterThan(0));
+    });
+
+    test('worn gear feeds the character\'s numbers', () {
+      final c = warrior();
+      final sets = parseItemSets(_loadGamedata('item_sets.json'));
+      c.equippedBySlot['Weapon'] = 'hollow_court_blade';
+      c.equippedBySlot['Top'] = 'hollow_court_mantle';
+      final bare = c.casterDamage(items, 'None');
+      final withSets = c.casterDamage(items, 'None', itemSets: sets);
+      expect(withSets, bare);
+      c.equippedBySlot['Head'] = 'hollow_court_seal';
+      expect(c.casterDamage(items, 'None', itemSets: sets),
+          c.casterDamage(items, 'None') + 8);
+      expect(c.armor(items, itemSets: sets), c.armor(items) + 5);
+      expect(c.gearEffects(items, sets).lifestealPercent, 10);
+    });
+
+    test('New Game+ makes the same fight harder', () {
+      var baseWins = 0;
+      var plusWins = 0;
+      for (var seed = 0; seed < 30; seed++) {
+        for (final cycle in [0, 3]) {
+          final c = warrior();
+          c.level = 3;
+          final outcome = simulateSimFight(
+            character: c,
+            enemies: [
+              MapEntry(
+                  'slum_thug', enemies['slum_thug'] as Map<String, dynamic>)
+            ],
+            chapter: 1,
+            skills: skills,
+            items: items,
+            random: Random(seed),
+            newGamePlusCycle: cycle,
+          );
+          if (outcome.won) {
+            if (cycle == 0) {
+              baseWins++;
+            } else {
+              plusWins++;
+            }
+          }
+        }
+      }
+      expect(baseWins, greaterThanOrEqualTo(plusWins));
     });
   });
 }

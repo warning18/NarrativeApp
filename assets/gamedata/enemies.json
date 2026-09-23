@@ -82,7 +82,33 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "Brood Call",
+        "nameFr": "Appel de la couvée",
+        "message": "The Matriarch screams, and the walls answer with a thousand small feet.",
+        "messageFr": "La Matriarche hurle, et les murs répondent par mille petites pattes.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "matriarch_brood_call",
+            "condition": "Chance",
+            "requiredElement": "Earth",
+            "chance": 45,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -260,7 +286,33 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Dirty Tricks",
+        "nameFr": "Coups bas",
+        "message": "The Captain drops the swordsman's manners and fights like a smuggler.",
+        "messageFr": "Le Capitaine oublie ses manières de bretteur et se bat comme un contrebandier.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "shadow_step",
+            "condition": "Chance",
+            "requiredElement": "Wind",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -295,7 +347,33 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "Rabid",
+        "nameFr": "Enragé",
+        "message": "Foam flecks its jaws; the sickness in it takes the reins.",
+        "messageFr": "L'écume perle à ses crocs ; la maladie en lui prend les rênes.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "plague_bite",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 60,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
@@ -334,7 +412,33 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "Meltdown",
+        "nameFr": "Fusion",
+        "message": "Something inside the golem gives way, and its seams glow white.",
+        "messageFr": "Quelque chose cède à l'intérieur du golem, et ses jointures luisent à blanc.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "golem_meltdown",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
@@ -351,6 +455,10 @@
       {
         "itemID": "artifact_moon_shard",
         "dropRate": 8
+      },
+      {
+        "itemID": "bloodthorn_blade",
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -391,7 +499,45 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Smoke",
+        "nameFr": "Fumée",
+        "message": "The stalker stops pretending to have a shape.",
+        "messageFr": "Le rôdeur cesse de faire semblant d'avoir une forme.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "stalker_ambush",
+            "condition": "Chance",
+            "requiredElement": "Wind",
+            "chance": 45,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 25,
+        "name": "Cornered",
+        "nameFr": "Acculé",
+        "message": "Cornered, it drinks the dark around it and comes back harder.",
+        "messageFr": "Acculé, il boit l'obscurité alentour et revient plus fort.",
+        "damageMultiplier": 1.1,
+        "healPercent": 15,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -437,7 +583,33 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Sanctified Fury",
+        "nameFr": "Fureur sanctifiée",
+        "message": "The High Warden speaks a word that was never meant for a street, and the air catches fire.",
+        "messageFr": "Le Haut Gardien prononce un mot qui n'était pas fait pour une rue, et l'air prend feu.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "cleric_smite",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
@@ -476,7 +648,33 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 45,
+        "name": "Branded Fury",
+        "nameFr": "Fureur du marqué",
+        "message": "Kroll tears the brand open, and the light comes out of the wound.",
+        "messageFr": "Kroll rouvre la marque, et la lumière jaillit de la plaie.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -511,7 +709,33 @@
     "minChapter": 4,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 35,
+        "name": "Martyrdom",
+        "nameFr": "Martyre",
+        "message": "The zealot smiles, and sets himself alight.",
+        "messageFr": "Le zélote sourit, et s'embrase.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "zealot_martyrdom",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -568,7 +792,33 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Many Faces",
+        "nameFr": "Mille visages",
+        "message": "Every face it wears turns toward you at once.",
+        "messageFr": "Chaque visage qu'elle porte se tourne vers vous en même temps.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "manifestation_many_faces",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 45,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
@@ -607,7 +857,33 @@
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Lockdown",
+        "nameFr": "Verrouillage",
+        "message": "The Overseer bars the gate behind you. Nobody leaves the docks tonight.",
+        "messageFr": "Le Contremaître barre la porte derrière vous. Personne ne quitte les quais ce soir.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "guard_break",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
@@ -741,7 +1017,21 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "Evil",
-    "hunterTier": 2
+    "hunterTier": 2,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Wrath",
+        "nameFr": "Courroux",
+        "message": "The Judicator's patience ends, and the dawn comes early.",
+        "messageFr": "La patience du Justicier prend fin, et l'aube arrive en avance.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   },
   "demon_imp": {
     "enemyName": "Pit Imp",
@@ -848,7 +1138,21 @@
     "minChapter": 3,
     "packEligible": false,
     "hunterAlignment": "Good",
-    "hunterTier": 2
+    "hunterTier": 2,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Torment",
+        "nameFr": "Tourment",
+        "message": "The Tormentor laughs, and starts enjoying itself.",
+        "messageFr": "Le Tourmenteur rit, et commence à s'amuser.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   },
   "catacomb_ghoul": {
     "enemyName": "Catacomb Ghoul",
@@ -921,7 +1225,33 @@
     "minChapter": 4,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Bone Storm",
+        "nameFr": "Tempête d'os",
+        "message": "The Warden comes apart on purpose.",
+        "messageFr": "Le Gardien se disloque, à dessein.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "warden_bone_storm",
+            "condition": "Chance",
+            "requiredElement": "Earth",
+            "chance": 45,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
@@ -934,6 +1264,10 @@
       {
         "itemID": "sword_t8",
         "dropRate": 25
+      },
+      {
+        "itemID": "hollow_court_seal",
+        "dropRate": 30
       }
     ],
     "skillMoves": [
@@ -974,7 +1308,45 @@
     "minChapter": 4,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Inquisitor kneels on the frost and the wounds close with a sound like a hymn.",
+        "messageFr": "L'Inquisiteur s'agenouille sur le givre et ses plaies se referment dans un bruit d'hymne.",
+        "damageMultiplier": 1.1,
+        "healPercent": 20,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Judgment",
+        "nameFr": "Jugement",
+        "message": "No more prayers. The Inquisitor opens the tear behind him and lets it speak.",
+        "messageFr": "Plus de prières. L'Inquisiteur ouvre la déchirure derrière lui et la laisse parler.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "void_hound": {
     "enemyName": "Void Hound",
@@ -1047,7 +1419,21 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Regrowth",
+        "nameFr": "Repousse",
+        "message": "The spawn knits itself back together out of the chapel's glass.",
+        "messageFr": "La progéniture se recompose à partir du verre de la chapelle.",
+        "damageMultiplier": 1.05,
+        "healPercent": 25,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   },
   "inquisition_penitent": {
     "enemyName": "Inquisition Penitent",
@@ -1089,7 +1475,33 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "Absolution",
+        "nameFr": "Absolution",
+        "message": "He stops defending himself and starts answering for it.",
+        "messageFr": "Il cesse de se défendre et commence à répondre de ses actes.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "cleric_smite",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 50,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -1146,7 +1558,45 @@
     "minChapter": 5,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 55,
+        "name": "Eclipse",
+        "nameFr": "Éclipse",
+        "message": "The Archon swallows the light. Somewhere, a clock skips.",
+        "messageFr": "L'Archonte avale la lumière. Quelque part, une horloge saute un battement.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "archon_eclipse",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 25,
+        "name": "Unlight",
+        "nameFr": "Antilumière",
+        "message": "What is left of it stops pretending to be wounded.",
+        "messageFr": "Ce qu'il en reste cesse de faire semblant d'être blessé.",
+        "damageMultiplier": 1.05,
+        "healPercent": 6,
+        "cleanse": false,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   },
   "hollow_reflection": {
     "enemyName": "Hollow Reflection",
@@ -1256,6 +1706,56 @@
     "minChapter": 6,
     "packEligible": false,
     "hunterAlignment": "",
-    "hunterTier": 0
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 65,
+        "name": "The Crown Wakes",
+        "nameFr": "La couronne s'éveille",
+        "message": "The crown notices you. The throne room forgets which way is down.",
+        "messageFr": "La couronne vous remarque. La salle du trône oublie où est le bas.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "sovereign_unmaking",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 35,
+        "name": "Unmaking",
+        "nameFr": "Défaire",
+        "message": "The Sovereign stops holding the tear shut.",
+        "messageFr": "Le Souverain cesse de maintenir la déchirure close.",
+        "damageMultiplier": 1.05,
+        "healPercent": 8,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "sovereign_unmaking",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 45,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 5
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
   }
 }

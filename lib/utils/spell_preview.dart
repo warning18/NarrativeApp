@@ -1,4 +1,5 @@
 import '../combat/combat_engine.dart' show elementFieldPrefixes;
+import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../models/ally_state.dart';
@@ -21,8 +22,9 @@ class SpellPreview {
 int sessionCasterDamage(
   PlayerSession session,
   Map<String, dynamic> items,
-  String element,
-) {
+  String element, {
+  Map<String, ItemSet> itemSets = const {},
+}) {
   final scaling = equipmentScalingBonusFor(
     session.equippedItemIds,
     items,
@@ -41,6 +43,7 @@ int sessionCasterDamage(
       equipmentBonusFor(session.equippedItemIds, items, 'attackDamage') +
       scaling.damageBonus +
       aligned.damageBonus +
+      gearEffectsFor(session.equippedItemIds, items, itemSets).attackDamage +
       elemental;
 }
 

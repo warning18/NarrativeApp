@@ -1019,4 +1019,74 @@ void main() {
       expect(notifier.state.mana, 6);
     });
   });
+
+  group('New Game+', () {
+    test('beginNewGamePlus banks a quarter of the gold, the dice and spells',
+        () async {
+      final notifier = await notifierWith(baseSession(
+        gold: 401,
+        ownedDiceIds: const ['starter_die', 'iron_die'],
+      ).copyWith(knownSpellIds: const ['spell_frost_bind']));
+      await notifier.beginNewGamePlus();
+      final s = notifier.state;
+      expect(s.newGamePlusCycle, 1);
+      expect(s.legacyGold, 100);
+      expect(s.legacyDiceIds, containsAll(['starter_die', 'iron_die']));
+      expect(s.legacySpellIds, ['spell_frost_bind']);
+      expect(s.hasLegacy, isTrue);
+    });
+
+    test('a plain reset keeps the legacy, a full reset wipes it', () async {
+      final notifier = await notifierWith(baseSession(gold: 200));
+      await notifier.beginNewGamePlus();
+      await notifier.resetSession();
+      expect(notifier.state.newGamePlusCycle, 1);
+      expect(notifier.state.legacyGold, 50);
+      expect(notifier.state.gold, isNot(50));
+      await notifier.resetSession(keepLegacy: false);
+      expect(notifier.state.newGamePlusCycle, 0);
+      expect(notifier.state.hasLegacy, isFalse);
+    });
+
+    test('startNewGame spends the legacy on the new character', () async {
+      final notifier = await notifierWith(baseSession(
+        gold: 400,
+        ownedDiceIds: const ['starter_die', 'iron_die'],
+      ).copyWith(knownSpellIds: const ['spell_frost_bind']));
+      await notifier.beginNewGamePlus();
+      await notifier.resetSession();
+      final defaultGold = notifier.state.gold;
+      await notifier.startNewGame(
+        raceId: 'human',
+        race: const {'bonusMaxHealth': 0},
+        professionId: 'mage',
+        profession: const {
+          'startingDiceId': 'apprentice_die',
+          'startingSpellIds': ['spell_arcane_bolt', 'spell_mana_ward'],
+        },
+      );
+      final s = notifier.state;
+      expect(s.gold, defaultGold + 100);
+      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die', 'iron_die']);
+      expect(s.knownSpellIds,
+          ['spell_arcane_bolt', 'spell_mana_ward', 'spell_frost_bind']);
+      expect(s.newGamePlusCycle, 1);
+      expect(s.hasLegacy, isFalse);
+    });
+
+    test('the cycle and legacy round-trip through JSON', () {
+      final s = baseSession().copyWith(
+        newGamePlusCycle: 2,
+        legacyGold: 30,
+        legacyDiceIds: const ['iron_die'],
+        legacySpellIds: const ['spell_purge'],
+      );
+      final back = PlayerSession.fromJson(s.toJson());
+      expect(back.newGamePlusCycle, 2);
+      expect(back.legacyGold, 30);
+      expect(back.legacyDiceIds, ['iron_die']);
+      expect(back.legacySpellIds, ['spell_purge']);
+      expect(PlayerSession.fromJson(const {}).newGamePlusCycle, 0);
+    });
+  });
 }

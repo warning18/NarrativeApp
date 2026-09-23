@@ -96,6 +96,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       authoringComment: _authoringCommentController.text.trim().isEmpty
           ? null
           : _authoringCommentController.text.trim(),
+      alignmentEpilogues: widget.node.alignmentEpilogues,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
