@@ -435,6 +435,11 @@ const Set<String> soloOnlyEnemyIds = {
   'masked_penitent',
 };
 
+/// Enemies met only where the story puts them -- never a random draw and
+/// never in a random pack -- without being bosses: the hovel's three White
+/// Soldiers (400), tuned as a pack a first character can lose to.
+const Set<String> storyOnlyEnemyIds = {'white_soldier'};
+
 /// How much detail the party can currently see into an enemy's telegraphed
 /// next move -- a hard threshold on `effectivePerception`, not a percentage
 /// chance like [criticalChanceFor]/[dodgeChanceFor]: whether a telegraph is

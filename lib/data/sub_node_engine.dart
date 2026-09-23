@@ -262,6 +262,7 @@ class SubNodeEngine {
     return enemyPool
         .where((id) =>
             !soloOnlyEnemyIds.contains(id) &&
+            !storyOnlyEnemyIds.contains(id) &&
             ((enemies[id] as Map<String, dynamic>?)?['packEligible'] as bool? ??
                 false))
         .toList();
@@ -323,6 +324,8 @@ class SubNodeEngine {
         // the story or the zone puts it, never as a random draw -- the Void
         // Sovereign does not wander into an expedition's third event.
         .where((e) => !soloOnlyEnemyIds.contains(e.key))
+        // A story-only enemy (storyOnlyEnemyIds) likewise.
+        .where((e) => !storyOnlyEnemyIds.contains(e.key))
         .where((e) {
           final minChapter =
               ((e.value as Map<String, dynamic>)['minChapter'] as num?)

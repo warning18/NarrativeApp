@@ -723,7 +723,15 @@ Future<void> _selectChoice({
       );
       ref.read(combatActiveProvider.notifier).state = false;
       _noteFightAftermath(ref, french);
-      if (won != true) return;
+      if (won != true) {
+        // A lost fight with a defeat branch is a scene, not a retry: the
+        // story goes there and the choice's own effects and unlocks stay
+        // the winner's. A permadeath loss never returns here (won is null).
+        if (won == false && choice.hasLossBranch && !isExcursion) {
+          ref.read(storyPlayProvider.notifier).choose(choice.loseNextId!);
+        }
+        return;
+      }
     }
   }
 

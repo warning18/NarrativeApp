@@ -32,6 +32,7 @@ class EnemyIcons {
     'malrik_turned',
     'maren_turned',
     'masked_penitent',
+    'white_soldier',
     'plague_hound',
     'rat_matriarch',
     'sable_turned',

@@ -20,6 +20,7 @@ class EncounterModifiers {
     this.isHunt = false,
     this.isHunterAmbush = false,
     this.isZoneBoss = false,
+    this.lossContinues = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -61,6 +62,10 @@ class EncounterModifiers {
   /// ExpeditionScreen and zones.json's `bossEnemyId`).
   final bool isZoneBoss;
 
+  /// A story fight with a defeat branch (see [StoryChoice.loseNextId]):
+  /// losing is a scene, not a retreat, and the end button says so.
+  final bool lossContinues;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -71,7 +76,8 @@ class EncounterModifiers {
       chapter == null &&
       !isHunt &&
       !isHunterAmbush &&
-      !isZoneBoss;
+      !isZoneBoss &&
+      !lossContinues;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw).
@@ -87,6 +93,7 @@ class EncounterModifiers {
         isHunt: isHunt,
         isHunterAmbush: isHunterAmbush,
         isZoneBoss: isZoneBoss,
+        lossContinues: lossContinues,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -126,6 +133,9 @@ class EncounterModifiers {
         healthMultiplier: 1.2,
         isHunt: true,
       );
+    }
+    if (choice.hasLossBranch) {
+      return const EncounterModifiers(lossContinues: true);
     }
     return none;
   }

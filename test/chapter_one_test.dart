@@ -73,13 +73,14 @@ void main() {
       if (node.hubProgress != null) node.hubProgress!.prefix,
   ];
 
-  test('chapter 1 has no padding: 35 scenes, all reachable', () {
-    expect(chapterOne.length, 35);
+  test('chapter 1 has no padding: 36 scenes, all reachable', () {
+    expect(chapterOne.length, 36);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {
         targets.add(choice.nextId);
         if (choice.failNextId != null) targets.add(choice.failNextId!);
+        if (choice.loseNextId != null) targets.add(choice.loseNextId!);
       }
     }
     for (final id in chapterOne.keys) {
@@ -189,6 +190,38 @@ void main() {
       }
     }
     expect(flagsRead, contains('keeper_dead'));
+  });
+
+  test('unfurling the Bundle is a fight that can be lost into capture', () {
+    final hovel = nodes['400']!;
+    final unfurl = hovel.choices
+        .singleWhere((c) => c.flagsToAdd.contains('lysa_survived'));
+    expect(unfurl.triggersCombat, isTrue);
+    expect(unfurl.allTriggerEnemyIds, hasLength(3));
+    expect(unfurl.loseNextId, '400_lost');
+    expect(unfurl.alignmentMod, greaterThan(0));
+    // Losing costs Lysa and leaves a scar, but keeps the character's honor.
+    final lost = nodes['400_lost']!;
+    expect(lost.description, startsWith('I lost.'));
+    expect(lost.descriptionFr, startsWith("J'ai perdu."));
+    final taken = lost.choices.single;
+    expect(taken.nextId, '800');
+    expect(taken.alignmentMod, greaterThan(0));
+    expect(taken.flagsToAdd, containsAll(['lysa_lost', 'hold_scarred']));
+    expect(taken.triggersCombat, isFalse);
+    // Surrendering is interrogated too, and costs the character's name.
+    for (final choice in hovel.choices.where((c) => c != unfurl)) {
+      expect(choice.nextId, '800', reason: choice.text);
+      expect(choice.alignmentMod, lessThan(0), reason: choice.text);
+      expect(choice.flagsToAdd, containsAll(['lysa_lost', 'surrendered']),
+          reason: choice.text);
+    }
+    // Each outcome is stated plainly where the story lands.
+    expect(nodes['800']!.description, startsWith('Captured, then.'));
+    expect(nodes['800']!.flagCallbacks.map((c) => c.flag),
+        containsAll(['unfurl_lost', 'surrendered']));
+    expect(nodes['450']!.description, startsWith('I won'));
+    expect(nodes['281_scarred']!.description, startsWith('The tear won.'));
   });
 
   test('the Kroll scenes read the same on both origins', () {

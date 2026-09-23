@@ -326,7 +326,9 @@ _SimResult _simulate(
     ];
     if (entries.isEmpty) return (won: null, attempts: 0, casts: const {});
     final casts = <String, int>{};
-    for (var attempt = 1; attempt <= _maxFightAttempts; attempt++) {
+    // A fight with a defeat branch is played once: its loss is a scene.
+    final maxAttempts = choice.hasLossBranch ? 1 : _maxFightAttempts;
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
       final outcome = simulateSimFight(
         character: c,
         enemies: entries,
@@ -414,6 +416,25 @@ _SimResult _simulate(
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
     final effectiveGoldMod = choice.goldMod + combatGoldReward(choice);
     final fightResult = fight(choice, lastKnownChapter ?? 1);
+    if (fightResult.won == false && choice.hasLossBranch) {
+      // Lost, and the story goes on: the defeat branch, with none of the
+      // choice's own effects (they are the winner's).
+      steps.add(_SimStep(
+        nodeId: currentId,
+        chapter: lastKnownChapter,
+        mood: node.mood,
+        uiTheme: node.uiTheme,
+        description: node.descriptionFor(french),
+        choiceText: choice.textFor(french),
+        enemyId: choice.allTriggerEnemyIds.first,
+        fightWon: false,
+        fightAttempts: fightResult.attempts,
+        spellsCast: fightResult.casts,
+      ));
+      combatCount++;
+      currentId = choice.loseNextId!;
+      continue;
+    }
 
     steps.add(_SimStep(
       nodeId: currentId,

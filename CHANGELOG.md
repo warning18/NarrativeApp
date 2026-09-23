@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.124.0+152]
+
+A fight the story can lose, and outcomes said plainly.
+
+### Added
+- **Defeat branches.** `StoryChoice.loseNextId`: a story fight with one is
+  played once, and losing it is a scene rather than a retreat (the
+  choice's own effects and unlocks stay the winner's). The fight's end
+  button reads "Face what comes" instead of "Retreat", the editor has a
+  Defeat Destination field next to the check-failure one, the graph
+  check walks the branch, and the in-app and Python simulators take it.
+- **The hovel is a real fight.** Unfurling the Bundle at 400 now means
+  three White Soldiers (a new chapter-1 enemy, weak alone and hard as a
+  pack for a first character) before the Shroud's shockwave finishes
+  them. Win and the Guardian path is yours as before. Lose and you are
+  taken to the Black Hold with Lysa lost, a scar from rib to hip that the
+  docks read back, and +2 alignment for having fought. Surrendering is
+  interrogated all the same and now costs the character's name: -2 to
+  beg for her, -4 to tell them what they want to hear (was 0 and -2).
+- **Outcomes stated where the story lands.** The defeat scene opens with
+  "I lost.", the Black Hold with "Captured, then." and a line for how you
+  got there (fought and lost, or surrendered), the Guardian scene with
+  "I won, barely", the tear's failed check with "The tear won."
+
 ## [1.123.0+151]
 
 The chapter-1 rules applied to chapters 2 through 6: a choice is a short

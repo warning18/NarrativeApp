@@ -18,6 +18,7 @@ class StoryChoice {
     this.checkAbility,
     this.checkDC,
     this.failNextId,
+    this.loseNextId,
     this.challengeSuccessesNeeded,
     this.challengeMaxFailures,
     this.huntName,
@@ -58,6 +59,7 @@ class StoryChoice {
       checkAbility: json['checkAbility'] as String?,
       checkDC: (json['checkDC'] as num?)?.toInt(),
       failNextId: json['failNextId'] as String?,
+      loseNextId: json['loseNextId'] as String?,
       challengeSuccessesNeeded:
           (json['challengeSuccessesNeeded'] as num?)?.toInt(),
       challengeMaxFailures: (json['challengeMaxFailures'] as num?)?.toInt(),
@@ -123,6 +125,13 @@ class StoryChoice {
   /// extra" outcome. Set it when failure should tell a genuinely different
   /// beat instead.
   final String? failNextId;
+
+  /// Where the story goes when this choice's fight is LOST: a defeat
+  /// branch instead of a retry (the choice's own effects and unlocks are
+  /// the winner's). Null keeps today's behavior, the fight can be retried.
+  final String? loseNextId;
+
+  bool get hasLossBranch => loseNextId != null && loseNextId!.isNotEmpty;
 
   /// Set alongside [checkAbility]/[checkDC] to turn a single roll into a
   /// "skill challenge": a sequence of rolls against the same ability and
@@ -229,6 +238,8 @@ class StoryChoice {
         if (checkDC != null) 'checkDC': checkDC,
         if (failNextId != null && failNextId!.isNotEmpty)
           'failNextId': failNextId,
+        if (loseNextId != null && loseNextId!.isNotEmpty)
+          'loseNextId': loseNextId,
         if (challengeSuccessesNeeded != null)
           'challengeSuccessesNeeded': challengeSuccessesNeeded,
         if (challengeMaxFailures != null)

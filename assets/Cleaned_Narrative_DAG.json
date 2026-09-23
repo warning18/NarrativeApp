@@ -389,32 +389,64 @@
         "flagsToAdd": [
           "lysa_survived",
           "keeper_dead"
-        ]
+        ],
+        "triggerEnemyIds": [
+          "white_soldier",
+          "white_soldier",
+          "white_soldier"
+        ],
+        "loseNextId": "400_lost"
       },
       {
         "text": "Surrender and beg them to spare her",
         "text_fr": "Se rendre et les supplier de l'épargner",
         "next_id": "800",
         "flagsToAdd": [
-          "lysa_lost"
-        ]
+          "lysa_lost",
+          "surrendered"
+        ],
+        "alignmentMod": -2
       },
       {
         "text": "Surrender and tell them what they want to hear",
         "text_fr": "Se rendre et leur dire ce qu'ils veulent entendre",
         "next_id": "800",
-        "alignmentMod": -2,
+        "alignmentMod": -4,
         "flagsToAdd": [
           "lysa_lost",
+          "surrendered",
           "told_them"
+        ]
+      }
+    ]
+  },
+  "400_lost": {
+    "id": "400_lost",
+    "description": "I lost. The first of them I put down; the second opened my side from rib to hip before the Bundle in my other hand did anything at all; the third took Lysa by the hair while I was on the floor, learning what the word outnumbered means. The last thing I saw in my parents' hovel was the grey wool being wrapped in a soldier's cloak by hands that knew exactly what it was, and Lysa's face turned toward me, saying my name. I was taken. They did not trouble to be gentle about it.",
+    "description_fr": "J'ai perdu. Le premier, je l'abattis ; le second m'ouvrit le flanc de la côte à la hanche avant que le Balluchon, dans mon autre main, ne fît quoi que ce soit ; le troisième prit Lysa par les cheveux pendant que j'apprenais, au sol, ce que veut dire le mot dépassé. La dernière chose que je vis dans la masure de mes parents fut la laine grise enveloppée dans le manteau d'un soldat par des mains qui savaient exactement ce que c'était, et le visage de Lysa tourné vers moi, disant mon nom. On m'emmena. Ils ne prirent pas la peine d'être doux.",
+    "context_taxonomy": {
+      "ui_theme": "origin_ending",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Wake in the Black Hold",
+        "text_fr": "Se réveiller dans la Geôle Noire",
+        "next_id": "800",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "lysa_lost",
+          "unfurl_lost",
+          "hold_scarred"
         ]
       }
     ]
   },
   "450": {
     "id": "450",
-    "description": "Instinct took over where thought, wisely, declined to participate. I unfurled the grey wool and discovered, in the worst possible way to discover anything, that it was not a flag at all, but a hole in the world wearing a flag's shape as a kind of professional courtesy. A shockwave of pure absence blasted the soldiers clean through the wall — I did not see them land, and have not troubled myself to imagine it. The house collapsed behind us with the tired sigh of a building finally permitted to stop standing. We found ourselves in the street, coughing, filthy, and — against what I would have considered reasonable odds an hour prior — still alive. It also took the Beggar's keeper, who had hidden us in his cellar and had come up the stairs, at the wrong moment, to see what the noise was. I have carried that with the Shroud ever since. They weigh about the same.",
-    "description_fr": "L'instinct prit le relais là où la pensée, sagement, refusa de participer. Je déployai la laine grise et découvris, de la pire façon possible de découvrir quoi que ce soit, qu'il ne s'agissait nullement d'un étendard, mais d'un trou dans le monde ayant emprunté la forme d'un étendard par pure courtoisie professionnelle. Une onde de choc de pure absence projeta les soldats à travers le mur — je ne les vis pas atterrir, et ne me suis pas donné la peine de l'imaginer. La maison s'effondra derrière nous dans le soupir las d'un bâtiment enfin autorisé à cesser de tenir debout. Nous nous retrouvâmes dans la rue, toussant, crasseux, et — contre ce que j'aurais jugé un pari raisonnable une heure plus tôt — toujours vivants. Il prit aussi le tenancier du Mendiant, qui nous avait cachés dans sa cave et montait l'escalier, au mauvais moment, pour voir d'où venait le bruit. Je porte cela avec le Linceul depuis. Ils pèsent à peu près le même poids.",
+    "description": "I won, barely, and the three of them were already getting up again when instinct took over where thought, wisely, declined to participate. I unfurled the grey wool and discovered, in the worst possible way to discover anything, that it was not a flag at all, but a hole in the world wearing a flag's shape as a kind of professional courtesy. A shockwave of pure absence blasted the soldiers clean through the wall — I did not see them land, and have not troubled myself to imagine it. The house collapsed behind us with the tired sigh of a building finally permitted to stop standing. We found ourselves in the street, coughing, filthy, and — against what I would have considered reasonable odds an hour prior — still alive. It also took the Beggar's keeper, who had hidden us in his cellar and had come up the stairs, at the wrong moment, to see what the noise was. I have carried that with the Shroud ever since. They weigh about the same.",
+    "description_fr": "J'ai gagné, de justesse, et tous trois se relevaient déjà quand l'instinct prit le relais là où la pensée, sagement, refusa de participer. Je déployai la laine grise et découvris, de la pire façon possible de découvrir quoi que ce soit, qu'il ne s'agissait nullement d'un étendard, mais d'un trou dans le monde ayant emprunté la forme d'un étendard par pure courtoisie professionnelle. Une onde de choc de pure absence projeta les soldats à travers le mur — je ne les vis pas atterrir, et ne me suis pas donné la peine de l'imaginer. La maison s'effondra derrière nous dans le soupir las d'un bâtiment enfin autorisé à cesser de tenir debout. Nous nous retrouvâmes dans la rue, toussant, crasseux, et — contre ce que j'aurais jugé un pari raisonnable une heure plus tôt — toujours vivants. Il prit aussi le tenancier du Mendiant, qui nous avait cachés dans sa cave et montait l'escalier, au mauvais moment, pour voir d'où venait le bruit. Je porte cela avec le Linceul depuis. Ils pèsent à peu près le même poids.",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "action",
@@ -468,8 +500,8 @@
   },
   "800": {
     "id": "800",
-    "description": "I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement. The wall vanished in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and free, and a man can build quite a lot on that particular foundation.",
-    "description_fr": "Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration. Le mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n'avais, sur l'instant, aucun besoin de connaître. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, et libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
+    "description": "Captured, then. I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement. The wall vanished in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and free, and a man can build quite a lot on that particular foundation.",
+    "description_fr": "Capturé, donc. Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration. Le mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n'avais, sur l'instant, aucun besoin de connaître. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, et libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -509,6 +541,16 @@
       }
     ],
     "flag_callbacks": [
+      {
+        "flag": "unfurl_lost",
+        "en": "I had fought. It had not been enough, and I would carry the proof of it in a scar from rib to hip for the rest of my life, but I had fought, and the men in the masks knew it.",
+        "fr": "Je m'étais battu. Cela n'avait pas suffi, et j'en porterais la preuve, une cicatrice de la côte à la hanche, jusqu'à la fin de mes jours, mais je m'étais battu, et les hommes aux masques le savaient."
+      },
+      {
+        "flag": "surrendered",
+        "en": "I had surrendered. On my knees, in my parents' house, and it had bought exactly nothing.",
+        "fr": "Je m'étais rendu. À genoux, dans la maison de mes parents, et cela n'avait rien acheté du tout."
+      },
       {
         "flag": "told_them",
         "en": "What I had told them in the hovel bought me nothing. They took her anyway, and then they took their time with me.",
@@ -854,6 +896,11 @@
         "flag": "keeper_covered",
         "en": "My hands still smelled of the cellar and of the sheet I had pulled over the keeper. It had cost a minute I did not have. I would have spent it again.",
         "fr": "Mes mains sentaient encore la cave et le drap que j'avais tiré sur le tenancier. Cela m'avait coûté une minute que je n'avais pas. Je l'aurais dépensée encore."
+      },
+      {
+        "flag": "hold_scarred",
+        "en": "The scar from the hovel ran from rib to hip under my shirt and pulled every time I lifted my arm. I had decided to let it show.",
+        "fr": "La cicatrice de la masure courait de la côte à la hanche sous ma chemise et tirait chaque fois que je levais le bras. J'avais décidé de la laisser voir."
       },
       {
         "flag": "keeper_left",
@@ -3281,8 +3328,8 @@
   },
   "281_scarred": {
     "id": "281_scarred",
-    "description": "The tear didn't so much open as flinch, and something in that flinch caught on me — a thin, cold thread that stayed after the light had gone, humming faintly under my skin like a struck bell that hadn't decided whether to stop. I told myself it would fade. I did not entirely believe myself.",
-    "description_fr": "La déchirure ne s'ouvrit pas tant qu'elle ne tressaillit, et quelque chose dans ce tressaillement s'accrocha à moi — un fil mince et froid qui resta après que la lumière eut disparu, vibrant faiblement sous ma peau comme une cloche frappée qui n'aurait pas décidé de s'arrêter. Je me dis que cela s'estomperait. Je ne me croyais pas entièrement.",
+    "description": "The tear won. The tear didn't so much open as flinch, and something in that flinch caught on me — a thin, cold thread that stayed after the light had gone, humming faintly under my skin like a struck bell that hadn't decided whether to stop. I told myself it would fade. I did not entirely believe myself.",
+    "description_fr": "La déchirure l'emporta. La déchirure ne s'ouvrit pas tant qu'elle ne tressaillit, et quelque chose dans ce tressaillement s'accrocha à moi — un fil mince et froid qui resta après que la lumière eut disparu, vibrant faiblement sous ma peau comme une cloche frappée qui n'aurait pas décidé de s'arrêter. Je me dis que cela s'estomperait. Je ne me croyais pas entièrement.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "creepy",

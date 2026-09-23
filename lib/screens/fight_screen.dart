@@ -4308,8 +4308,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
         Navigator.of(context).pop(_won);
       },
-      child: Text(
-          _won ? tr(ref, 'victory_return_button') : tr(ref, 'retreat_button')),
+      child: Text(_won
+          ? tr(ref, 'victory_return_button')
+          : widget.modifiers.lossContinues
+              ? tr(ref, 'defeat_continue_button')
+              : tr(ref, 'retreat_button')),
     );
   }
 

@@ -88,6 +88,76 @@ void main() {
     });
   });
 
+  group('loseNextId traversal (synthetic graph)', () {
+    test('a node reachable only via a lost fight is not flagged orphaned', () {
+      final nodes = {
+        '0': const StoryNode(
+          id: '0',
+          description: 'start',
+          choices: [
+            StoryChoice(
+              text: 'Fight',
+              nextId: 'won',
+              triggerEnemyId: 'harbor_rat',
+              loseNextId: 'lost',
+            ),
+          ],
+        ),
+        'won': const StoryNode(
+          id: 'won',
+          description: 'they fall',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+        'lost': const StoryNode(
+          id: 'lost',
+          description: 'you are taken',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+      };
+      final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
+      expect(report.unreachableNodeIds, isEmpty);
+      expect(report.brokenReferences, isEmpty);
+    });
+
+    test('a loseNextId pointing nowhere is reported as a broken reference', () {
+      final nodes = {
+        '0': const StoryNode(
+          id: '0',
+          description: 'start',
+          choices: [
+            StoryChoice(
+              text: 'Fight',
+              nextId: 'won',
+              triggerEnemyId: 'harbor_rat',
+              loseNextId: 'does_not_exist',
+            ),
+          ],
+        ),
+        'won': const StoryNode(
+          id: 'won',
+          description: 'they fall',
+          choices: [StoryChoice(text: 'End', nextId: 'EXIT')],
+        ),
+      };
+      final report = checkStoryGraphIntegrity(nodes, startNodeId: '0');
+      expect(report.brokenReferences.map((b) => b.targetId),
+          contains('does_not_exist'));
+      expect(report.brokenReferences.single.choiceText, contains('loseNextId'));
+    });
+
+    test('loseNextId round-trips through JSON and stays out of it when empty',
+        () {
+      const choice = StoryChoice(
+          text: 'Fight', nextId: '1', triggerEnemyId: 'x', loseNextId: 'lost');
+      expect(choice.hasLossBranch, isTrue);
+      final restored = StoryChoice.fromJson(choice.toJson());
+      expect(restored.loseNextId, 'lost');
+      const plain = StoryChoice(text: 'Go', nextId: '1');
+      expect(plain.hasLossBranch, isFalse);
+      expect(plain.toJson().containsKey('loseNextId'), isFalse);
+    });
+  });
+
   group('failNextId traversal (synthetic graph)', () {
     test('a node reachable only via a check failure is not flagged orphaned',
         () {

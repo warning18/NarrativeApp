@@ -233,6 +233,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Difficulty Class (DC)',
     AppLanguage.fr: 'Classe de Difficulté (DD)',
   },
+  'lose_destination_node': {
+    AppLanguage.en:
+        'Defeat Destination Node (a lost fight goes here instead of retrying)',
+    AppLanguage.fr:
+        'Nœud de destination en cas de défaite (un combat perdu y mène au lieu d\'être rejoué)',
+  },
   'fail_destination_node': {
     AppLanguage.en: 'Fail Destination Node (empty = same node, no reward)',
     AppLanguage.fr:
@@ -1671,6 +1677,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'retreat_button': {
     AppLanguage.en: 'Retreat',
     AppLanguage.fr: 'Battre en retraite'
+  },
+  'defeat_continue_button': {
+    AppLanguage.en: 'Face what comes',
+    AppLanguage.fr: 'Affronter la suite'
   },
   'roll_dice_button': {
     AppLanguage.en: 'Roll Dice',

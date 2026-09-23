@@ -123,6 +123,22 @@ StoryGraphReport checkStoryGraphIntegrity(
           }
         }
       }
+      // A lost fight can route the player to loseNextId the same way (see
+      // StoryChoice.loseNextId).
+      final loseNextId = choice.loseNextId;
+      if (loseNextId != null && loseNextId.isNotEmpty) {
+        if (loseNextId != 'EXIT' && loseNextId != 'END') {
+          if (nodes.containsKey(loseNextId)) {
+            if (!visited.contains(loseNextId)) queue.add(loseNextId);
+          } else {
+            brokenReferences.add(BrokenReference(
+              fromNodeId: id,
+              choiceText: '${choice.text} (loseNextId)',
+              targetId: loseNextId,
+            ));
+          }
+        }
+      }
     }
 
     if (hasEnding) reachableEndingCount++;

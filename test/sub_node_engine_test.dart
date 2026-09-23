@@ -57,6 +57,25 @@ void main() {
       expect(pool, contains('no_min_chapter_set'));
     });
 
+    test('a story-only enemy is never a random draw nor a pack member', () {
+      final withSoldier = {
+        ...enemies,
+        'white_soldier': {'minChapter': 1, 'packEligible': true},
+      };
+      final pool = SubNodeEngine.filterEnemyPool(
+        enemies: withSoldier,
+        unlockedEnemyIds: const [],
+        chapter: 6,
+      );
+      expect(pool, isNot(contains('white_soldier')));
+      expect(storyOnlyEnemyIds, contains('white_soldier'));
+      final pack = SubNodeEngine.filterPackPool(
+        enemies: withSoldier,
+        enemyPool: const ['white_soldier', 'tutorial_rat'],
+      );
+      expect(pack, isNot(contains('white_soldier')));
+    });
+
     test('already-unlocked enemies are excluded regardless of chapter', () {
       final pool = SubNodeEngine.filterEnemyPool(
         enemies: enemies,

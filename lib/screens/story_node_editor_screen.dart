@@ -304,6 +304,7 @@ class _ChoiceEditState {
         checkDCController =
             TextEditingController(text: choice.checkDC?.toString() ?? ''),
         failNextId = choice.failNextId,
+        loseNextId = choice.loseNextId,
         challengeSuccessesNeededController = TextEditingController(
             text: choice.challengeSuccessesNeeded?.toString() ?? ''),
         challengeMaxFailuresController = TextEditingController(
@@ -346,6 +347,7 @@ class _ChoiceEditState {
   String? checkAbility;
   final TextEditingController checkDCController;
   String? failNextId;
+  String? loseNextId;
   final TextEditingController challengeSuccessesNeededController;
   final TextEditingController challengeMaxFailuresController;
 
@@ -427,6 +429,7 @@ class _ChoiceEditState {
         checkAbility: (checkAbility?.isEmpty ?? true) ? null : checkAbility,
         checkDC: int.tryParse(checkDCController.text.trim()),
         failNextId: (failNextId?.isEmpty ?? true) ? null : failNextId,
+        loseNextId: (loseNextId?.isEmpty ?? true) ? null : loseNextId,
         challengeSuccessesNeeded:
             int.tryParse(challengeSuccessesNeededController.text.trim()),
         challengeMaxFailures:
@@ -694,6 +697,25 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   ],
                   onChanged: (value) =>
                       setState(() => state.failNextId = value),
+                ),
+                const SizedBox(height: 8),
+                DropdownButtonFormField<String>(
+                  // ignore: deprecated_member_use
+                  value: options.contains(state.loseNextId)
+                      ? state.loseNextId
+                      : null,
+                  decoration: InputDecoration(
+                    labelText: t('lose_destination_node'),
+                    border: const OutlineInputBorder(),
+                  ),
+                  items: [
+                    DropdownMenuItem(
+                        value: null, child: Text(t('none_option'))),
+                    ...options.map(
+                        (id) => DropdownMenuItem(value: id, child: Text(id))),
+                  ],
+                  onChanged: (value) =>
+                      setState(() => state.loseNextId = value),
                 ),
                 const SizedBox(height: 8),
                 Row(

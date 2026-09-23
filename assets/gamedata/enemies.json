@@ -2375,5 +2375,24 @@
         "replaceMoves": false
       }
     ]
+  },
+  "white_soldier": {
+    "enemyName": "White Soldier",
+    "maxHealth": 100,
+    "damage": 30,
+    "guile": 1,
+    "xpReward": 14,
+    "goldReward": 9,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [],
+    "minChapter": 1,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   }
 }
