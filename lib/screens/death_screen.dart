@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_aftermath.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 
 /// Shown after a permadeath loss, once the player's session has already
@@ -14,7 +16,13 @@ class DeathScreen extends ConsumerWidget {
     required this.xpEarned,
     required this.nodesVisited,
     required this.skillsLost,
+    this.killerName = '',
+    this.narrationSeed = 0,
   });
+
+  /// Who landed the last blow, for the written death above the tally.
+  final String killerName;
+  final int narrationSeed;
 
   final List<String> lostItemIds;
   final int xpEarned;
@@ -47,6 +55,21 @@ class DeathScreen extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(height: 16),
+                  Text(
+                    deathNarrationFor(
+                      killerName,
+                      french: ref.watch(appLanguageProvider) == AppLanguage.fr,
+                      seed: narrationSeed,
+                    ),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'serif',
+                      fontStyle: FontStyle.italic,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   Text(
                     tr(ref, 'you_died_message'),
                     textAlign: TextAlign.center,

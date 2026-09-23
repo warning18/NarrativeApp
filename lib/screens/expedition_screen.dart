@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../data/alignment_events.dart';
@@ -13,6 +14,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -59,6 +61,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// this run, so the zone completes instead of re-offering it.
   bool _bossDone = false;
 
+  /// The zone's halfway beat has been shown this expedition.
+  bool _midpointShown = false;
+
+  /// The last fight's aftermath, opening the next event's text.
+  String? _aftermath;
+
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
 
@@ -75,6 +83,30 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   bool _isBossNode(StoryNode? node) =>
       node != null && node.id == 'zone_boss_${widget.zoneId}';
+
+  bool _isMidpointNode(StoryNode? node) =>
+      node != null && node.id == 'zone_mid_${widget.zoneId}';
+
+  /// The zone's halfway beat: a paragraph of the zone's own narration
+  /// (`midpointFlavorText`) between two events, shown once per expedition
+  /// and never counted as an event. Null for a zone without one.
+  StoryNode? _buildMidpointNode() {
+    final text = widget.zone['midpointFlavorText']?.toString() ?? '';
+    if (text.isEmpty) return null;
+    final textFr = widget.zone['midpointFlavorTextFr']?.toString() ?? '';
+    return StoryNode(
+      id: 'zone_mid_${widget.zoneId}',
+      description: text,
+      descriptionFr: textFr.isEmpty ? null : textFr,
+      choices: [
+        StoryChoice(
+          text: trFor(AppLanguage.en, 'expedition_press_on'),
+          textFr: trFor(AppLanguage.fr, 'expedition_press_on'),
+          nextId: '',
+        ),
+      ],
+    );
+  }
 
   /// The zone-boss event: the zone's `bossFlavorText` and a single fight
   /// choice against `bossEnemyId`, shown once the zone's own events are
@@ -167,6 +199,23 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       await _completeZone();
       return;
     }
+    // Halfway through a zone of three or more events, its own narration
+    // gets a word in before the next draw.
+    if (countsTowardZone &&
+        !_midpointShown &&
+        _expeditionCount >= 3 &&
+        nextIndex == _expeditionCount ~/ 2) {
+      final beat = _buildMidpointNode();
+      if (beat != null) {
+        _midpointShown = true;
+        setState(() {
+          _index = nextIndex;
+          _current = beat;
+          _busy = false;
+        });
+        return;
+      }
+    }
     setState(() {
       _index = nextIndex;
       _current = _rollEvent(shops: shops, enemies: enemies);
@@ -179,7 +228,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     required Map<String, dynamic> shops,
     required Map<String, dynamic> enemies,
   }) async {
-    setState(() => _busy = true);
+    setState(() {
+      _busy = true;
+      _aftermath = null;
+    });
     final notifier = ref.read(playerSessionProvider.notifier);
     // A bonus event (a hunt's trail or quarry, or an alignment ambush that
     // replaced a draw) is extra: resolving it never advances the zone's
@@ -220,6 +272,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       if (won != true) {
         await _endAsRetreat(defeated: true);
         return;
+      }
+      final outcome = ref.read(lastFightOutcomeProvider);
+      if (outcome != null) {
+        _aftermath = aftermathLineFor(
+          outcome,
+          french: ref.read(appLanguageProvider) == AppLanguage.fr,
+          seed: _random.nextInt(1 << 20),
+        );
       }
       for (final eid in enemyIds.toSet()) {
         await notifier.unlockContent(enemyId: eid);
@@ -293,7 +353,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// anything not drawn from the zone's own pools.
   bool _isBonusNode(StoryNode? node) {
     if (node == null) return false;
-    if (node.id.startsWith('hunter_') || node.id.startsWith('temptation_')) {
+    if (node.id.startsWith('hunter_') ||
+        node.id.startsWith('temptation_') ||
+        _isMidpointNode(node)) {
       return true;
     }
     final choice = node.choices.isEmpty ? null : node.choices.first;
@@ -469,16 +531,35 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         Text(
           _isBossNode(node)
               ? trFor(lang, 'expedition_boss_label')
-              : '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
+              : _isMidpointNode(node)
+                  ? trFor(lang, 'expedition_midpoint_label')
+                  : '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(height: 24),
         Expanded(
           child: SingleChildScrollView(
-            child: Text(
-              node.descriptionFor(lang == AppLanguage.fr),
-              style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (_aftermath != null && _aftermath!.isNotEmpty) ...[
+                  Text(
+                    _aftermath!,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          fontStyle: FontStyle.italic,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                Text(
+                  node.descriptionFor(lang == AppLanguage.fr),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(height: 1.5),
+                ),
+              ],
             ),
           ),
         ),

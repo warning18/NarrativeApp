@@ -133,6 +133,11 @@ class SubNodeEngine {
         'and hurt things go home.',
     'A dropped scrap of cloth, then another. Whoever fled this fight was '
         'not being careful, and was not alone where it was going.',
+    'A scream, cut short, from the direction the survivor fled. Whatever it ran home to has not been kind about the delay.',
+    'The one that ran left a boot in the mud, and the mud beyond it has been crossed by something heavier, going the same way.',
+    'Torn cloth on a nail, then a smear on a doorframe, then a door left open on a dark that breathes.',
+    'The trail is not hidden. It was never meant to be. Something at the end of it wants company.',
+    'A dropped weapon, then a dropped pack, then nothing dropped at all: the runner has stopped being careless and started being afraid.',
   ];
   static const List<String> _trailFr = [
     "L'un d'eux s'est échappé. La traînée de sang est fraîche, et elle mène "
@@ -141,6 +146,11 @@ class SubNodeEngine {
         'est blessé, et les bêtes blessées rentrent chez elles.',
     "Un lambeau d'étoffe tombé, puis un autre. Celui qui a fui ce combat "
         "ne prenait aucune précaution, et n'était pas seul là où il allait.",
+    "Un cri, coupé net, du côté où le survivant a fui. Ce qu'il est allé retrouver n'a pas été tendre pour le retard.",
+    'Celui qui a fui a laissé une botte dans la boue, et la boue au-delà a été traversée par quelque chose de plus lourd, dans la même direction.',
+    'Une étoffe déchirée sur un clou, puis une traînée sur un chambranle, puis une porte laissée ouverte sur une obscurité qui respire.',
+    "La piste n'est pas cachée. Elle n'a jamais été censée l'être. Quelque chose au bout veut de la compagnie.",
+    "Une arme abandonnée, puis un sac abandonné, puis plus rien d'abandonné : le fuyard a cessé d'être négligent et commencé à avoir peur.",
   ];
   static const List<String> _quarryEn = [
     'It is waiting at the end of the trail, bigger than the ones you killed '
@@ -148,6 +158,12 @@ class SubNodeEngine {
         'were bold.',
     'The lair is a hollow of stolen things and old bones, and the thing '
         'that owns it rises to meet you with no intention of running.',
+    'It has been eating what the others brought back for a long time, and it has grown into the space they left it, and it does not look up when you enter because it has never once had to.',
+    "The lair's floor is a ring of picked bones, and at the center of the ring the thing that picked them uncoils, unhurried, to see who has walked in on its own feet.",
+    'It wears what the pack stole, all of it, in layers, and turns to show you the one piece it is proudest of, which is a face.',
+    'The runner is here, dead, at its feet. It has been waiting for whoever would follow, and it has been waiting for a while, and it is not patient.',
+    'It is old, and scarred in the shape of every hunter who came before you, and it stands the way a wall stands: as if the question of moving had been settled long ago.',
+    'The others were its children, or its tools, or its food; it does not seem to have troubled to decide. It has decided about you.',
   ];
   static const List<String> _quarryFr = [
     "Il attend au bout de la piste, plus gros que ceux que vous avez tués "
@@ -156,7 +172,22 @@ class SubNodeEngine {
     "Le repaire est un creux de choses volées et de vieux os, et la chose "
         "qui le possède se dresse pour vous affronter, sans la moindre "
         'intention de fuir.',
+    "Il mange depuis longtemps ce que les autres rapportaient, il a grandi dans l'espace qu'ils lui ont laissé, et il ne lève pas la tête quand vous entrez parce qu'il n'en a jamais eu besoin.",
+    "Le sol du repaire est un cercle d'os rongés, et au centre du cercle la chose qui les a rongés se déroule, sans hâte, pour voir qui est entré sur ses propres pieds.",
+    'Il porte ce que la meute a volé, tout, en couches, et se tourne pour vous montrer la pièce dont il est le plus fier, qui est un visage.',
+    "Le fuyard est là, mort, à ses pieds. Il attendait qui suivrait, il attend depuis un moment, et il n'est pas patient.",
+    'Il est vieux, et marqué de la forme de chaque chasseur venu avant vous, et il se tient comme se tient un mur : comme si la question de bouger avait été réglée depuis longtemps.',
+    "Les autres étaient ses enfants, ou ses outils, ou sa nourriture ; il ne semble pas s'être donné la peine de trancher. Pour vous, il a tranché.",
   ];
+
+  /// The hunt pools' sizes, for the parity test.
+  static ({int trail, int trailFr, int quarry, int quarryFr})
+      get huntPoolSizes => (
+            trail: _trailEn.length,
+            trailFr: _trailFr.length,
+            quarry: _quarryEn.length,
+            quarryFr: _quarryFr.length,
+          );
 
   /// The two hunt nodes: the trail, then the quarry's fight. [quarryId]
   /// is a member of the pack just beaten; its one-off name, two affixes

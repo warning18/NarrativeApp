@@ -1401,6 +1401,16 @@ final DbSchema zonesSchema = DbSchema(
       type: FieldType.multilineText,
     ),
     FieldSchema(
+      key: 'midpointFlavorText',
+      label: 'Midpoint Flavor Text (a beat shown halfway through the zone)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
+      key: 'midpointFlavorTextFr',
+      label: 'Midpoint Flavor Text (FR)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
       key: 'requiredFlags',
       label:
           'Required Flags (all must be set to begin; another zone\'s rewardFlag gates on that zone)',

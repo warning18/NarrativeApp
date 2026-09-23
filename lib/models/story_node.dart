@@ -25,6 +25,7 @@ class StoryChoice {
     this.chestFloor,
     this.isHunterAmbush = false,
     this.hideIfFlags = const [],
+    this.showIfFlags = const [],
     this.launchZoneId,
   });
 
@@ -67,6 +68,9 @@ class StoryChoice {
       launchZoneId: json['launchZoneId'] as String?,
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      showIfFlags:
+          (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
     );
   }
@@ -150,6 +154,13 @@ class StoryChoice {
   /// locked choice (see [lockedText]), which stays visible as a reminder.
   final List<String> hideIfFlags;
 
+  /// The choice is not shown until the player holds ALL of these flags --
+  /// the mirror of [hideIfFlags], for a scene's second beat: "the deserter,
+  /// later" appears on the hub only once the first visit's marker is set,
+  /// and its own marker in [hideIfFlags] retires it in turn. Unlike a
+  /// locked choice it leaves no trace until it is available.
+  final List<String> showIfFlags;
+
   /// A zones.json id to run as an expedition BEFORE this choice resolves --
   /// a chapter's main zone launched from its story beat (the Drowned
   /// Stair, the Shroud's Vigil, Beyond the Tear). Clearing the zone
@@ -160,7 +171,8 @@ class StoryChoice {
   bool get launchesZone => launchZoneId != null && launchZoneId!.isNotEmpty;
 
   bool isHiddenFor(Iterable<String> flags) =>
-      hideIfFlags.any((flag) => flags.contains(flag));
+      hideIfFlags.any((flag) => flags.contains(flag)) ||
+      showIfFlags.any((flag) => !flags.contains(flag));
 
   bool get hasAbilityCheck => checkAbility != null && checkAbility!.isNotEmpty;
 
@@ -213,6 +225,7 @@ class StoryChoice {
           'chestFloor': chestFloor,
         if (isHunterAmbush) 'isHunterAmbush': isHunterAmbush,
         if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
+        if (showIfFlags.isNotEmpty) 'showIfFlags': showIfFlags,
         if (launchesZone) 'launchZoneId': launchZoneId,
       };
 
@@ -264,6 +277,9 @@ class StoryNode {
     this.scriptTrigger,
     this.authoringComment,
     this.alignmentEpilogues = const {},
+    this.flagCallbacks = const [],
+    this.personaVariants = const {},
+    this.hubProgress,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -292,7 +308,44 @@ class StoryNode {
       scriptTrigger: automations?['script_trigger'] as String?,
       authoringComment: json['authoring_comment'] as String?,
       alignmentEpilogues: _parseEpilogues(json['alignment_epilogues']),
+      flagCallbacks: _parseCallbacks(json['flag_callbacks']),
+      personaVariants: _parseLines(json['persona_variants']),
+      hubProgress: HubProgress.fromJson(json['hub_progress']),
     );
+  }
+
+  static List<FlagCallback> _parseCallbacks(Object? raw) {
+    if (raw is! List) return const [];
+    final out = <FlagCallback>[];
+    for (final entry in raw) {
+      if (entry is! Map) continue;
+      final flag = entry['flag']?.toString() ?? '';
+      final en = entry['en']?.toString() ?? '';
+      if (flag.isEmpty || en.isEmpty) continue;
+      out.add(FlagCallback(
+        flag: flag,
+        line: NarrationLine(en: en, fr: entry['fr']?.toString()),
+        unlessFlags: (entry['unlessFlags'] as List?)
+                ?.map((e) => e.toString())
+                .toList() ??
+            const [],
+      ));
+    }
+    return out;
+  }
+
+  static Map<String, NarrationLine> _parseLines(Object? raw) {
+    if (raw is! Map) return const {};
+    final out = <String, NarrationLine>{};
+    for (final entry in raw.entries) {
+      final value = entry.value;
+      if (value is! Map) continue;
+      final en = value['en']?.toString() ?? '';
+      if (en.isEmpty) continue;
+      out[entry.key.toString()] =
+          NarrationLine(en: en, fr: value['fr']?.toString());
+    }
+    return out;
   }
 
   static Map<String, AlignmentEpilogue> _parseEpilogues(Object? raw) {
@@ -372,6 +425,47 @@ class StoryNode {
         : epilogue.en;
   }
 
+  /// Paragraphs that only appear to a player who earned a given flag
+  /// earlier -- how a scene remembers what the player did (sparing Tern
+  /// Row, saving the Reckoning Wall, founding the camp). Shown under the
+  /// body, in authored order.
+  final List<FlagCallback> flagCallbacks;
+
+  /// Sentences keyed `race:<raceId>` or `profession:<professionId>`, shown
+  /// under the body to a character of that race or profession -- a stall
+  /// keeper who reacts to an orc, a guard who has a word for mages.
+  final Map<String, NarrationLine> personaVariants;
+
+  /// For a hub node: a line that notes how the place has changed as its
+  /// activities get done (see [HubProgress]).
+  final HubProgress? hubProgress;
+
+  /// The callback paragraphs the player's [flags] have earned, in order.
+  List<String> callbacksFor(Iterable<String> flags, bool french) {
+    final held = flags.toSet();
+    return [
+      for (final callback in flagCallbacks)
+        if (held.contains(callback.flag) &&
+            !callback.unlessFlags.any(held.contains))
+          callback.line.textFor(french),
+    ];
+  }
+
+  /// The persona sentences for this character, race first.
+  List<String> personaLinesFor(
+      {required String raceId,
+      required String professionId,
+      required bool french}) {
+    return [
+      for (final key in ['race:$raceId', 'profession:$professionId'])
+        if (personaVariants[key] != null) personaVariants[key]!.textFor(french),
+    ];
+  }
+
+  /// The hub's what-has-changed line for the player's [flags], if any.
+  String? hubProgressLineFor(Iterable<String> flags, bool french) =>
+      hubProgress?.lineFor(flags, french);
+
   String descriptionFor(bool french) =>
       french && (descriptionFr?.isNotEmpty ?? false)
           ? descriptionFr!
@@ -415,8 +509,110 @@ class StoryNode {
                   'fr': entry.value.fr,
               },
           },
+        if (flagCallbacks.isNotEmpty)
+          'flag_callbacks': [
+            for (final callback in flagCallbacks)
+              {
+                'flag': callback.flag,
+                ...callback.line.toJson(),
+                if (callback.unlessFlags.isNotEmpty)
+                  'unlessFlags': callback.unlessFlags,
+              },
+          ],
+        if (personaVariants.isNotEmpty)
+          'persona_variants': {
+            for (final entry in personaVariants.entries)
+              entry.key: entry.value.toJson(),
+          },
+        if (hubProgress != null) 'hub_progress': hubProgress!.toJson(),
         'choices': choices.map((c) => c.toJson()).toList(),
       };
+}
+
+/// One bilingual sentence or paragraph of narration.
+class NarrationLine {
+  const NarrationLine({required this.en, this.fr});
+
+  final String en;
+  final String? fr;
+
+  String textFor(bool french) => french && (fr?.isNotEmpty ?? false) ? fr! : en;
+
+  Map<String, dynamic> toJson() => {
+        'en': en,
+        if (fr != null && fr!.isNotEmpty) 'fr': fr,
+      };
+}
+
+/// A paragraph a node shows only to a player holding [flag] (and none of
+/// [unlessFlags]) -- see [StoryNode.flagCallbacks].
+class FlagCallback {
+  const FlagCallback({
+    required this.flag,
+    required this.line,
+    this.unlessFlags = const [],
+  });
+
+  final String flag;
+  final NarrationLine line;
+  final List<String> unlessFlags;
+}
+
+/// A hub's what-has-changed line: counts the player's flags starting with
+/// [prefix] (the hub's own `hub_<id>_` activity markers) and shows the
+/// line with the highest `after` threshold that count has reached.
+class HubProgress {
+  const HubProgress({required this.prefix, required this.lines});
+
+  final String prefix;
+
+  /// Ascending by [HubProgressLine.after].
+  final List<HubProgressLine> lines;
+
+  static HubProgress? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final prefix = raw['prefix']?.toString() ?? '';
+    final lines = <HubProgressLine>[];
+    for (final entry in (raw['lines'] as List?) ?? const []) {
+      if (entry is! Map) continue;
+      final en = entry['en']?.toString() ?? '';
+      if (en.isEmpty) continue;
+      lines.add(HubProgressLine(
+        after: (entry['after'] as num?)?.toInt() ?? 1,
+        line: NarrationLine(en: en, fr: entry['fr']?.toString()),
+      ));
+    }
+    if (prefix.isEmpty || lines.isEmpty) return null;
+    lines.sort((a, b) => a.after.compareTo(b.after));
+    return HubProgress(prefix: prefix, lines: lines);
+  }
+
+  int doneCount(Iterable<String> flags) =>
+      flags.where((f) => f.startsWith(prefix)).length;
+
+  String? lineFor(Iterable<String> flags, bool french) {
+    final done = doneCount(flags);
+    HubProgressLine? best;
+    for (final line in lines) {
+      if (line.after <= done) best = line;
+    }
+    return best?.line.textFor(french);
+  }
+
+  Map<String, dynamic> toJson() => {
+        'prefix': prefix,
+        'lines': [
+          for (final line in lines)
+            {'after': line.after, ...line.line.toJson()},
+        ],
+      };
+}
+
+class HubProgressLine {
+  const HubProgressLine({required this.after, required this.line});
+
+  final int after;
+  final NarrationLine line;
 }
 
 /// One alignment's closing paragraph on an ending node (see

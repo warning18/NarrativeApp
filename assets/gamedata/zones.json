@@ -101,7 +101,9 @@
     "isMainZone": true,
     "bossFlavorText": "The forges were cold, but something in the yard was not. It had been following me between the scaffolds for an hour, folding itself into shadows the lanterns should have burned away, and it finally stepped out where the ironworkers had stacked their last unpaid plate.",
     "bossFlavorTextFr": "Les forges étaient froides, mais quelque chose dans le chantier ne l'était pas. Cela me suivait entre les échafaudages depuis une heure, se pliant dans des ombres que les lanternes auraient dû brûler, et cela sortit enfin là où les ferronniers avaient empilé leurs dernières plaques impayées.",
-    "recommendedLevel": 8
+    "recommendedLevel": 8,
+    "midpointFlavorText": "Halfway up the yards the scaffolding gave way to the real thing: the frame of a cathedral the cultists had never finished, ribs of charred timber against the ash-sky, and on every beam a hymn scratched in the same hand. Above, something was still singing it.",
+    "midpointFlavorTextFr": "À mi-hauteur des chantiers, l'échafaudage cédait la place à la chose elle-même : la charpente d'une cathédrale que les cultistes n'avaient jamais achevée, des côtes de bois calciné contre le ciel de cendre, et sur chaque poutre un hymne gravé de la même main. Au-dessus, quelque chose le chantait encore."
   },
   "z_ossuary_galleries": {
     "zoneID": "z_ossuary_galleries",
@@ -143,7 +145,9 @@
       "ossuary_galleries_cleared"
     ],
     "isMainZone": true,
-    "recommendedLevel": 9
+    "recommendedLevel": 9,
+    "midpointFlavorText": "The Stair turned back on itself under the waterline and the names began: cut into the risers, one to a step, the first night's taken in the order they were taken. I stopped counting when I recognized one. The water below was very still, and something in it was reading along with me.",
+    "midpointFlavorTextFr": "L'Escalier tournait sur lui-même sous la ligne d'eau et les noms commençaient : gravés dans les contremarches, un par marche, les disparus de la première nuit dans l'ordre où on les avait pris. Je cessai de compter quand j'en reconnus un. L'eau en contrebas était très calme, et quelque chose dedans lisait avec moi."
   },
   "z_dead_heart_approach": {
     "zoneID": "z_dead_heart_approach",
@@ -163,7 +167,9 @@
     "bossFlavorTextFr": "Quelque chose avait fait son nid dans la dernière chapelle avant la place — un nœud de matière de déchirure portant les vitraux de la chapelle comme une peau, patient à la manière d'une chose qui attend que le monde vienne à elle. Elle n'eut pas à attendre beaucoup plus longtemps.",
     "requiredFlags": [],
     "isMainZone": false,
-    "recommendedLevel": 10
+    "recommendedLevel": 10,
+    "midpointFlavorText": "The ash gave out at the edge of the dead heart, and where it ended the ground was glass: the city's stone gone smooth and dark in one breath, long ago. My boots rang on it. Whatever had done this had not been trying.",
+    "midpointFlavorTextFr": "La cendre s'arrêtait à la lisière du cœur mort, et là où elle finissait le sol était de verre : la pierre de la ville devenue lisse et sombre en un souffle, il y a longtemps. Mes bottes y résonnaient. Ce qui avait fait cela n'avait pas fait d'effort."
   },
   "z_shroud_vigil": {
     "zoneID": "z_shroud_vigil",
@@ -185,7 +191,9 @@
       "dead_heart_cleared"
     ],
     "isMainZone": true,
-    "recommendedLevel": 11
+    "recommendedLevel": 11,
+    "midpointFlavorText": "At the vigil's center the candles were still lit, hundreds of them, in a ring around nothing at all, an absence the eye slid off, and the wax had not run in a year. The order had kept this. Whatever it was, they had thought it worth kneeling to.",
+    "midpointFlavorTextFr": "Au centre de la veillée, les chandelles brûlaient encore, des centaines, en cercle autour de rien du tout, une absence sur laquelle le regard glissait, et la cire n'avait pas coulé depuis un an. L'ordre avait entretenu cela. Quoi que ce fût, ils avaient jugé que cela valait qu'on s'agenouille."
   },
   "z_beyond_the_tear": {
     "zoneID": "z_beyond_the_tear",
@@ -205,6 +213,8 @@
     "bossFlavorTextFr": "Au bout de tout, il y avait un trône, parce qu'il y a toujours un trône, et dessus la chose qui connaissait le nom de ma famille depuis plus longtemps que moi — immense, couronnée d'éclats de la déchirure elle-même, ne portant aucun visage parce qu'elle n'en avait jamais eu besoin. Elle ne se leva pas. Elle n'en avait jamais eu besoin.",
     "requiredFlags": [],
     "isMainZone": true,
-    "recommendedLevel": 12
+    "recommendedLevel": 12,
+    "midpointFlavorText": "Past the tear the sea stopped pretending. The Eel ran on something that was not water, under a sky that was not one, toward a shore made of every place I had ever fought, the docks, the Spire, the drowned cloister, stitched edge to edge like a map made by someone who had only heard about maps. The reflections stood on it, waiting.",
+    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où je m'étais battu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient."
   }
 }

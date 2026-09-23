@@ -3279,6 +3279,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   // --- Endings ---
   'epilogue_heading': {AppLanguage.en: 'Epilogue', AppLanguage.fr: 'Épilogue'},
+  'aftermath_heading': {
+    AppLanguage.en: 'After the fight',
+    AppLanguage.fr: 'Après le combat',
+  },
+  'expedition_midpoint_label': {
+    AppLanguage.en: 'Halfway',
+    AppLanguage.fr: 'À mi-chemin',
+  },
+  'expedition_press_on': {
+    AppLanguage.en: 'Press on',
+    AppLanguage.fr: 'Continuer',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

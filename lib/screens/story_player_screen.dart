@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
@@ -10,6 +11,7 @@ import '../data/alignment_events.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/map_themes.dart';
+import '../data/narration_tokens.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
 import '../data/ui_theme_palettes.dart';
@@ -17,6 +19,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
@@ -115,15 +118,11 @@ class _StoryView extends ConsumerWidget {
         playState.activeExcursionNode ?? story.nodeFor(playState.currentNodeId);
     final language = ref.watch(appLanguageProvider);
     final french = language == AppLanguage.fr;
-    final displayDescription = node == null
-        ? ''
-        : withAllyAcknowledgment(
-            node.id,
-            node.descriptionFor(french),
-            hasActiveAlly: session.activeAllyIds.isNotEmpty,
-            french: french,
-          );
+    final displayDescription =
+        node == null ? '' : composeNarration(node, session, french: french);
     final epilogue = node?.epilogueFor(session.alignmentLabel, french);
+    final pendingAftermath = ref.watch(pendingAftermathProvider);
+    final speakerLabel = speakerLabelFor(node?.speaker, french: french);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final statusBarCollapsed = ref.watch(_statusBarCollapsedProvider);
     final companionCollapsed = ref.watch(_companionCollapsedProvider);
@@ -403,6 +402,10 @@ class _StoryView extends ConsumerWidget {
                                       text: displayDescription,
                                       uiTheme: node.uiTheme,
                                       epilogue: epilogue,
+                                      speakerLabel: speakerLabel,
+                                      aftermath: pendingAftermath,
+                                      aftermathHeading:
+                                          tr(ref, 'aftermath_heading'),
                                       epilogueHeading:
                                           tr(ref, 'epilogue_heading'),
                                     ),
@@ -412,6 +415,10 @@ class _StoryView extends ConsumerWidget {
                                   text: displayDescription,
                                   uiTheme: node.uiTheme,
                                   epilogue: epilogue,
+                                  speakerLabel: speakerLabel,
+                                  aftermath: pendingAftermath,
+                                  aftermathHeading:
+                                      tr(ref, 'aftermath_heading'),
                                   epilogueHeading: tr(ref, 'epilogue_heading'),
                                 ),
                         ),
@@ -595,6 +602,8 @@ Future<void> _selectChoice({
   required bool isExcursion,
   required bool french,
 }) async {
+  // The last fight's aftermath opened this scene; moving on retires it.
+  ref.read(pendingAftermathProvider.notifier).state = null;
   var skipRewardEffects = false;
   if (choice.hasAbilityCheck) {
     bool success;
@@ -711,6 +720,7 @@ Future<void> _selectChoice({
         ),
       );
       ref.read(combatActiveProvider.notifier).state = false;
+      _noteFightAftermath(ref, french);
       if (won != true) return;
     }
   }
@@ -817,6 +827,61 @@ Future<void> _selectChoice({
     }
   }
   playNotifier.choose(choice.nextId);
+}
+
+/// Writes the fight that just ended into the next scene's opening line
+/// (or, after a retreat, into this scene's -- the player is still here).
+/// Nothing after a permadeath: the fight screen retires its outcome before
+/// the death screen, so the new character's first scene opens clean.
+void _noteFightAftermath(WidgetRef ref, bool french) {
+  final outcome = ref.read(lastFightOutcomeProvider);
+  if (outcome == null) return;
+  ref.read(pendingAftermathProvider.notifier).state = aftermathLineFor(
+    outcome,
+    french: french,
+    seed: Random().nextInt(1 << 20),
+  );
+}
+
+/// A node's text as this player reads it: the companion's line in their
+/// own voice, then the hub's what-has-changed note, the callbacks the
+/// player's flags earned and the sentence for their race or profession,
+/// with every `{name}`/`{race}`/`{profession}` token filled in. Exposed
+/// so the narration tests can read a scene the way the screen does.
+String composeNarration(StoryNode node, PlayerSession session,
+    {required bool french}) {
+  final buffer = StringBuffer(withAllyAcknowledgment(
+    node.id,
+    node.descriptionFor(french),
+    activeAllyIds: session.activeAllyIds,
+    french: french,
+  ));
+  final progress = node.hubProgressLineFor(session.flags, french);
+  final extras = [
+    if (progress != null) progress,
+    ...node.callbacksFor(session.flags, french),
+    ...node.personaLinesFor(
+      raceId: session.raceId,
+      professionId: session.professionId,
+      french: french,
+    ),
+  ];
+  for (final extra in extras) {
+    buffer.write('\n\n');
+    buffer.write(extra);
+  }
+  final firstAlly =
+      session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
+  return personalizeNarration(
+    buffer.toString(),
+    name: session.characterName,
+    raceId: session.raceId,
+    professionId: session.professionId,
+    companionName: firstAlly == null || firstAlly.isEmpty
+        ? null
+        : '${firstAlly[0].toUpperCase()}${firstAlly.substring(1)}',
+    french: french,
+  );
 }
 
 /// Presents a hub node's non-main choices — shops, fights/skill checks, and
@@ -1254,9 +1319,21 @@ class _StoryText extends StatelessWidget {
     this.uiTheme,
     this.epilogue,
     this.epilogueHeading = '',
+    this.speakerLabel,
+    this.aftermath,
+    this.aftermathHeading = '',
   });
 
   final String text;
+
+  /// Who is speaking, for a scene voiced by someone other than the
+  /// Narrator -- shown as an eyebrow above the body.
+  final String? speakerLabel;
+
+  /// The last fight's aftermath, opening the scene in italics under its
+  /// own small heading (see combat_aftermath.dart).
+  final String? aftermath;
+  final String aftermathHeading;
 
   /// An alignment-specific closing paragraph (see
   /// [StoryNode.alignmentEpilogues]) set under a small heading after the
@@ -1317,6 +1394,42 @@ class _StoryText extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
+          ],
+          if (aftermath != null && aftermath!.isNotEmpty) ...[
+            Text(
+              aftermathHeading.toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    letterSpacing: 1.5,
+                    color: accent.text.withValues(alpha: 0.8),
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              aftermath!,
+              textAlign: TextAlign.justify,
+              style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 14),
+            Center(
+              child: Container(
+                width: 40,
+                height: 1,
+                color: accent.text.withValues(alpha: 0.4),
+              ),
+            ),
+            const SizedBox(height: 14),
+          ],
+          if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
+            Text(
+              '— $speakerLabel',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    letterSpacing: 1.2,
+                    fontStyle: FontStyle.italic,
+                    color: accent.text.withValues(alpha: 0.85),
+                  ),
+            ),
+            const SizedBox(height: 8),
           ],
           Text.rich(
             TextSpan(children: _highlightedSpans(body, baseStyle)),

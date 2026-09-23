@@ -8,6 +8,88 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.117.0+145]
+
+Narration that remembers, reacts and varies: scenes that call back the
+player's earlier choices, hubs that note how they have changed, companions
+in their own voices, fights that leave a mark on the next scene, a written
+death, second beats and a spoken finale, and far more variety on the road.
+
+### Added
+- **Flag callbacks** (`flag_callbacks` on a story node): paragraphs shown
+  only to a player holding an earned flag, with an optional `unlessFlags`
+  veto. 34 callbacks across chapters 1-6 and the four endings wire up the
+  eleven flags the story set but never read (`took_bundle`,
+  `forge_cache_found`, `tern_row_spared`, `ashen_ledger_decoded`,
+  `reckoning_wall_saved`, `camp_founded`, the optional zones' reward flags,
+  `banner_second_piece_lead`) plus `lysa_survived`, `void_marked` and the
+  penitent's confession.
+- **Hub progress lines** (`hub_progress`): each of the four late hubs
+  (2015, 3005, 5010, 6010) adds a what-has-changed sentence once 3-4 and
+  again once 6-9 of its activities are done, counting its own
+  `hub_<id>_` flags.
+- **Persona variants** (`persona_variants`, keyed `race:<id>` /
+  `profession:<id>`): 26 sentences on ten scenes that react to an orc on
+  the wharf, a voidkin in the drowned cloister, a mage at the bazaar, a
+  cleric in the Hollow Court, and the like.
+- **Name tokens**: `{name}`, `{race}`, `{profession}` and `{companion}` in
+  story text are filled from the session at render time
+  (`lib/data/narration_tokens.dart`, with French nouns for every race and
+  profession). Tobin, Malrik and Vane now say the character's name.
+- **Companion voices**: `ally_acknowledgments.dart` is now keyed by node
+  *and* companion -- seventeen scenes carry a party-wide default and two
+  to nine companion-specific lines each (Kelda at the Warden's fall,
+  Sable on the Eel's rail, Vess hearing the Void, ...), in English and
+  French; the first active ally with a line speaks.
+- **Fight aftermath** (`lib/combat/combat_aftermath.dart`): FightScreen
+  publishes a `FightOutcome` (won, enemy names, Elite/hunt/boss, phases
+  crossed, companion knocked out, flawless, rounds) and the next story
+  node or expedition event opens with a paragraph drawn from seven
+  bilingual pools -- a retreat, a boss that changed stance, an Elite, a
+  hunt's quarry, a companion down, a clean fight, a plain win.
+- **A written death**: the permadeath screen now opens with one of four
+  bilingual death narrations naming the killer, above the tally.
+- **Second beats** on the late hubs, via the new `StoryChoice.showIfFlags`
+  (hidden until every flag is held -- the mirror of `hideIfFlags`): the
+  deserter's warning, the archivist's second ledger, an hour with Tobin,
+  the sapper's thanks (5010); the chart-keeper's sister, the penitent's
+  answer (three alignment-weighted replies), a walk with Lysa, the Last
+  Lantern's keeper (6010). Eight nodes, each appearing only after its
+  first visit and retiring itself.
+- **Finale**: "Sail into the tear" now leads to `7002_confront`, where the
+  Sovereign speaks through the tear and the player answers (the names of
+  the taken +2, the ballista, or the crown -2) before the crossing; and
+  `7002_crew`, a last word to the companions with a line for every one of
+  them.
+- **Speaker labels**: a node whose `speaker` is not the Narrator shows an
+  italic eyebrow above its text (The Archivist, The Sovereign, The
+  Chart-keeper, The Penitent, The Lantern-keeper, The Deserter, Vane,
+  Lysa), translated.
+- **Zone midpoint beats** (`midpointFlavorText`/`midpointFlavorTextFr` on
+  zones.json): halfway through a zone of three or more events, its own
+  paragraph of narration between two draws (Scaffold Yards, Drowned
+  Stair, Dead Heart Approach, Shroud's Vigil, Beyond the Tear).
+- **Variety on the road**: every excursion flavor pool grows from 7 to 12
+  lines per kind per theme (120 new lines, English and French); the
+  hunt's trail lines go from 3 to 8 and its quarry lines from 2 to 8; the
+  60 generic "Back to the market / into the quarter / to the Cloister /
+  to the Quarter" return choices are rewritten from a pool of eight per
+  hub, assigned round-robin.
+- l10n: `aftermath_heading`, `expedition_midpoint_label`,
+  `expedition_press_on`.
+- Tests: `test/narration_test.dart` (show-if flags, callbacks, persona
+  lines, hub progress, tokens, speaker labels, companion voices, aftermath
+  pools and routing, pool sizes and EN/FR parity, and the authored data:
+  every callback and show-if flag is settable, every persona key is a real
+  race or profession, tokens match across languages, return lines vary,
+  second beats retire themselves, the finale confronts before crossing).
+
+### Changed
+- `withAllyAcknowledgment` takes the party's `activeAllyIds` instead of a
+  boolean, so the line can be the speaking companion's own.
+- The Python simulator's `hidden()` honors `showIfFlags`; a 40-run batch on
+  the new graph still reaches an ending 40/40 (94.4% fight win rate).
+
 ## [1.116.0+144]
 
 A medium-hard difficulty curve, boss phases, item sets and unique gear,

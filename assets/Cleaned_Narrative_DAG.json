@@ -769,7 +769,29 @@
         "lockedText": "There was nothing left to whistle for. I had made this particular passage of my life entirely alone, a fact the docks seemed to find no more remarkable than I did.",
         "lockedText_fr": "Il n'y avait plus rien à siffler. J'avais traversé ce chapitre de ma vie entièrement seul, un fait que les docks semblaient trouver aussi peu remarquable que moi."
       }
-    ]
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "took_bundle",
+        "en": "The Bundle rode warm against my back the whole way down to the water, warmer each time I managed to stop thinking about it, which was not often.",
+        "fr": "Le Ballot resta chaud contre mon dos tout le long de la descente vers l'eau, plus chaud chaque fois que je parvenais à ne plus y penser, ce qui n'arrivait pas souvent."
+      },
+      {
+        "flag": "forge_cache_found",
+        "en": "The forge cache's weight in my pack was the one thing on this pier I had not stolen, and I was, absurdly, a little proud of it.",
+        "fr": "Le poids de la cache de la forge dans mon sac était la seule chose sur ce quai que je n'avais pas volée, et j'en tirais, absurdement, une petite fierté."
+      }
+    ],
+    "persona_variants": {
+      "race:elf": {
+        "en": "The Smuggler priced an elf's passage higher on principle, and I priced his principles at exactly what they were worth.",
+        "fr": "Le Contrebandier fit payer le passage d'un elfe plus cher par principe, et j'estimai ses principes exactement à leur valeur."
+      },
+      "race:orc": {
+        "en": "The Smuggler looked at an orc's shoulders and revised, silently, how much of the loading he expected to do himself.",
+        "fr": "Le Contrebandier regarda les épaules d'un orc et révisa, en silence, la part du chargement qu'il comptait porter lui-même."
+      }
+    }
   },
   "892": {
     "id": "892",
@@ -1358,7 +1380,60 @@
         "lockedText": "She had at least four clean shots at me by the time I noticed her, and nothing I could think to say from the ground struck me as worth the risk of finding out whether she'd take one. I decided, on reflection, that some conversations are better held with a professional intermediary — namely, distance.",
         "lockedText_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, et rien de ce que je pouvais imaginer dire depuis le sol ne me semblait valoir le risque de découvrir si elle en saisirait un. Je décidai, à la réflexion, que certaines conversations se tiennent mieux par l'entremise d'un intermédiaire professionnel — à savoir, la distance."
       }
-    ]
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "void_marked",
+        "en": "The stallholders served me quickly and did not meet my eyes, and I understood that the thread the tear had left in me showed, to anyone who knew what they were looking at.",
+        "fr": "Les marchands me servaient vite et sans croiser mon regard, et je compris que le fil que la déchirure avait laissé en moi se voyait, pour qui savait regarder."
+      },
+      {
+        "flag": "tern_row_spared",
+        "en": "Down the side alley, Tern Row's paper lanterns were lit again, and for once nobody was collecting for the privilege.",
+        "fr": "Au fond de la ruelle, les lanternes de papier de Tern Row étaient rallumées, et pour une fois personne ne faisait payer le privilège."
+      }
+    ],
+    "hub_progress": {
+      "prefix": "hub_2015_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The wharf had started to know my face: two stallholders nodded as I passed, and a third moved his purse to the other hip.",
+          "fr": "Le quai commençait à connaître mon visage : deux marchands me saluèrent d'un signe de tête, et un troisième changea sa bourse de hanche."
+        },
+        {
+          "after": 7,
+          "en": "By now the harbor market had rearranged itself around me the way water does around a pier. The trouble I had settled stayed settled, and the trouble that was left kept its distance.",
+          "fr": "Le marché du port s'était désormais réorganisé autour de moi comme l'eau autour d'un ponton. Les ennuis que j'avais réglés restaient réglés, et ceux qui restaient gardaient leurs distances."
+        }
+      ]
+    },
+    "persona_variants": {
+      "race:orc": {
+        "en": "The Inquisition's patrols looked twice at an orc on the wharf and a third time at the coin in my hand, and coin, as ever, won.",
+        "fr": "Les patrouilles de l'Inquisition regardèrent deux fois un orc sur le quai et une troisième la pièce dans ma main, et la pièce, comme toujours, l'emporta."
+      },
+      "race:voidkin": {
+        "en": "More than one merchant made a sign against the eye when they saw what I was, and then took my money anyway, which is the whole of what I have ever asked of religion.",
+        "fr": "Plus d'un marchand fit un signe contre le mauvais œil en voyant ce que j'étais, puis prit mon argent quand même, ce qui est tout ce que j'ai jamais demandé à la religion."
+      },
+      "race:elf": {
+        "en": "An elf on the wharf drew the kind of attention a rare coin draws: everyone wanted to know what I was worth, and to whom.",
+        "fr": "Un elfe sur le quai attirait l'attention qu'attire une pièce rare : tout le monde voulait savoir ce que je valais, et pour qui."
+      },
+      "race:dwarf": {
+        "en": "The dockside smiths straightened when a dwarf walked past their work, and one of them, unasked, showed me a blade he was ashamed of.",
+        "fr": "Les forgerons du quai se redressèrent quand un nain passa devant leur ouvrage, et l'un d'eux, sans qu'on le lui demande, me montra une lame dont il avait honte."
+      },
+      "profession:mage": {
+        "en": "The Arcane Bazaar's touts smelled a {profession} at forty paces and priced accordingly.",
+        "fr": "Les rabatteurs du Bazar Arcanique flairaient un {profession} à quarante pas et fixaient leurs prix en conséquence."
+      },
+      "profession:rogue": {
+        "en": "A pickpocket tried me near the bazaar, found nothing, and got a professional nod for the attempt.",
+        "fr": "Un pickpocket s'essaya sur moi près du bazar, ne trouva rien, et reçut un signe de tête professionnel pour la tentative."
+      }
+    }
   },
   "2015_bazaar": {
     "id": "2015_bazaar",
@@ -1371,8 +1446,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Return to the stalls",
+        "text_fr": "Revenir aux étals",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_bazaar"
@@ -1411,8 +1486,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Make your way back through the fish-stink and the shouting",
+        "text_fr": "Retraverser la puanteur de poisson et les cris",
         "next_id": "2015",
         "triggerEnemyId": "harbor_rat",
         "flagsToAdd": [
@@ -1432,8 +1507,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Make your way back through the fish-stink and the shouting",
+        "text_fr": "Retraverser la puanteur de poisson et les cris",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_smuggler"
@@ -1452,8 +1527,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Turn back toward the wharf",
+        "text_fr": "Rebrousser chemin vers le quai",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_hound"
@@ -1472,8 +1547,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Let the market crowd swallow you again",
+        "text_fr": "Se laisser à nouveau avaler par la foule du marché",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_rats"
@@ -1492,8 +1567,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Back among the merchants",
+        "text_fr": "De retour parmi les marchands",
         "next_id": "2015",
         "triggerEnemyId": "street_bandit",
         "flagsToAdd": [
@@ -1513,8 +1588,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Return to the stalls",
+        "text_fr": "Revenir aux étals",
         "next_id": "2015",
         "triggerEnemyId": "inquisition_soldier",
         "flagsToAdd": [
@@ -1535,8 +1610,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
@@ -1593,8 +1668,8 @@
   },
   "2030": {
     "id": "2030",
-    "description": "Vane had already heard enough about my evening — news travels along a wharf faster than any of its actual cargo — and looked me over the way a man looks over an asset he's still pricing. Whatever I'd done to earn his attention, it seemed to have worked. \"That's worth something,\" he said finally. He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
-    "description_fr": "Vane avait déjà entendu parler de ma soirée — les nouvelles voyagent le long d'un quai plus vite qu'aucune de ses cargaisons — et me jaugea comme on jauge un bien dont on n'a pas encore fixé le prix. Quoi que j'eusse fait pour mériter son attention, cela semblait avoir porté. « Voilà qui a de la valeur », dit-il enfin. Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
+    "description": "Vane had already heard enough about my evening — news travels along a wharf faster than any of its actual cargo — and looked me over the way a man looks over an asset he's still pricing. Whatever I'd done to earn his attention, it seemed to have worked. \"That's worth something, {name},\" he said finally. He tossed a rusty iron key onto the barrel between us with the offhand precision of someone who has never once, in his life, dropped anything by accident. \"Use the maintenance tunnel. It avoids the checkpoint. Don't make me regret the key.\"",
+    "description_fr": "Vane avait déjà entendu parler de ma soirée — les nouvelles voyagent le long d'un quai plus vite qu'aucune de ses cargaisons — et me jaugea comme on jauge un bien dont on n'a pas encore fixé le prix. Quoi que j'eusse fait pour mériter son attention, cela semblait avoir porté. « Voilà qui a de la valeur, {name} », dit-il enfin. Il lança une clé de fer rouillée sur le tonneau entre nous avec cette précision désinvolte de qui n'a, de toute sa vie, jamais rien laissé tomber par accident. « Emprunte le tunnel de maintenance. Il évite le poste de contrôle. Ne me fais pas regretter cette clé. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1609,7 +1684,17 @@
         "text_fr": "Emprunter le tunnel de maintenance",
         "next_id": "2900"
       }
-    ]
+    ],
+    "persona_variants": {
+      "profession:rogue": {
+        "en": "\"One of mine,\" Vane said, \"or near enough to know the tunnel's worth more than the key.\"",
+        "fr": "« Un des miens, dit Vane, ou d'assez près pour savoir que le tunnel vaut plus que la clé. »"
+      },
+      "race:voidkin": {
+        "en": "Vane's eyes went, once, to the thread the tear had left in me. He did not ask. Men like Vane price what they do not understand higher, not lower.",
+        "fr": "Les yeux de Vane se posèrent, une fois, sur le fil que la déchirure avait laissé en moi. Il ne demanda rien. Les hommes comme Vane estiment ce qu'ils ne comprennent pas plus cher, jamais moins."
+      }
+    }
   },
   "2040": {
     "id": "2040",
@@ -1699,6 +1784,23 @@
         "text": "Approach the Upper Gate",
         "text_fr": "S'approcher de la Porte Supérieure",
         "next_id": "2900_boat_unfixed"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "tern_row_spared",
+        "en": "Word of Tern Row had gone up the wharf ahead of me: a Tide-Kin boy ran alongside for the length of a street and pressed a paper lantern into my hand before peeling off, and I carried it, absurdly, all the way to the Gate.",
+        "fr": "La nouvelle de Tern Row avait remonté le quai avant moi : un gamin des Enfants-de-Marée courut à mes côtés le temps d'une rue et me fourra une lanterne de papier dans la main avant de disparaître, et je la portai, absurdement, jusqu'à la Porte."
+      },
+      {
+        "flag": "void_marked",
+        "en": "The Gate's bronze was cold under my palm, and colder, for one breath, where the thread in me answered it.",
+        "fr": "Le bronze de la Porte était froid sous ma paume, et plus froid encore, le temps d'un souffle, là où le fil en moi lui répondit."
+      },
+      {
+        "flag": "banner_second_piece_lead",
+        "en": "The lead I had bought at the Lantern Docks sat folded against the Bundle, and the two of them, I could have sworn, were warmer together.",
+        "fr": "La piste achetée aux Quais des Lanternes reposait pliée contre le Ballot, et tous deux, j'en aurais juré, étaient plus chauds ensemble."
       }
     ]
   },
@@ -1963,7 +2065,63 @@
         "text_fr": "S'enfoncer plus profondément dans la Flèche",
         "next_id": "3002"
       }
-    ]
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "camp_founded",
+        "en": "Behind me on the shingle the camp's fires sent up their thin, stubborn smoke, the first smoke in this district in a month that meant food rather than the end of something.",
+        "fr": "Derrière moi, sur les galets, les feux du camp montaient en une fumée mince et obstinée, la première dans ce district depuis un mois qui annonçât un repas plutôt que la fin de quelque chose."
+      },
+      {
+        "flag": "scaffold_yards_cleared",
+        "en": "The Scaffold Yards stood quiet now at the district's edge; the cultists who had used them for a pulpit had run out of congregation.",
+        "fr": "Les Chantiers d'échafaudages se taisaient désormais à la lisière du district ; les cultistes qui s'en servaient de chaire n'avaient plus de fidèles."
+      },
+      {
+        "flag": "cinder_row_cleared",
+        "en": "Cinder Row was passable again, and the runners had started using it, which in this quarter is what passes for a monument.",
+        "fr": "L'Allée des Cendres était de nouveau praticable, et les coureurs avaient recommencé à l'emprunter, ce qui, dans ce quartier, tient lieu de monument."
+      },
+      {
+        "flag": "reckoning_wall_saved",
+        "en": "The Reckoning Wall still stood, its names untouched, and people had begun leaving candles under it again.",
+        "fr": "Le Mur du Jugement tenait encore, ses noms intacts, et les gens avaient recommencé à déposer des chandelles à son pied."
+      },
+      {
+        "flag": "ashen_ledger_decoded",
+        "en": "The names I had pieced together from the ledger kept surfacing on doorposts and in chalk-marks as I walked, as if the quarter had been waiting for someone to read them aloud.",
+        "fr": "Les noms que j'avais reconstitués à partir du registre resurgissaient sur les montants de porte et dans les marques à la craie, comme si le quartier avait attendu que quelqu'un les lise à voix haute."
+      }
+    ],
+    "hub_progress": {
+      "prefix": "hub_3005_",
+      "lines": [
+        {
+          "after": 4,
+          "en": "The quarter was a little less ash and a little more road each time I crossed it; someone had swept a path where I usually walked.",
+          "fr": "Le quartier était un peu moins cendre et un peu plus route à chacune de mes traversées ; quelqu'un avait balayé un passage là où je marchais d'habitude."
+        },
+        {
+          "after": 9,
+          "en": "Runners called my name across the ash now without lowering their voices. The district had decided, on balance, that I was one of the things worth keeping.",
+          "fr": "Les coureurs criaient mon nom à travers la cendre sans baisser la voix, désormais. Le district avait décidé, tout compte fait, que j'étais l'une des choses qui valaient d'être gardées."
+        }
+      ]
+    },
+    "persona_variants": {
+      "race:dwarf": {
+        "en": "The stonework under the ash was old dwarven bond, and I found I was angrier about the ash on it than about most of what had happened to me.",
+        "fr": "La maçonnerie sous la cendre était de vieil appareil nain, et je m'aperçus que la cendre dessus me mettait plus en colère que la plupart de ce qui m'était arrivé."
+      },
+      "profession:cleric": {
+        "en": "The cultists' chanting sat wrong in a {profession}'s ear: not the words, which were old ones, but the tune.",
+        "fr": "Le chant des cultistes sonnait faux à l'oreille d'un {profession} : pas les mots, qui étaient anciens, mais l'air."
+      },
+      "race:voidkin": {
+        "en": "The ash did not settle on me the way it settled on everyone else. I had stopped pretending not to notice.",
+        "fr": "La cendre ne se posait pas sur moi comme elle se posait sur les autres. J'avais cessé de faire semblant de ne pas le remarquer."
+      }
+    }
   },
   "3005_oath": {
     "id": "3005_oath",
@@ -1976,8 +2134,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Return to the district's streets",
+        "text_fr": "Revenir dans les rues du district",
         "next_id": "3005",
         "triggerEnemyId": "cultist_acolyte",
         "flagsToAdd": [
@@ -2017,8 +2175,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Head back toward the Spire's shadow",
+        "text_fr": "Revenir vers l'ombre de la Flèche",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_vault"
@@ -2037,8 +2195,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Walk back through the cinders",
+        "text_fr": "Retraverser les cendres",
         "next_id": "3005",
         "triggerEnemyId": "void_wisp",
         "flagsToAdd": [
@@ -2078,8 +2236,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Walk back through the cinders",
+        "text_fr": "Retraverser les cendres",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_auxiliaries"
@@ -2098,8 +2256,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Pick your way back into the quarter",
+        "text_fr": "Se frayer un chemin jusqu'au quartier",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_stalker"
@@ -2118,8 +2276,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Pick your way back into the quarter",
+        "text_fr": "Se frayer un chemin jusqu'au quartier",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_golem"
@@ -2138,8 +2296,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Back out into the ash",
+        "text_fr": "Ressortir dans la cendre",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_maren"
@@ -2278,6 +2436,18 @@
         "text_fr": "Descendre dans la Cour Creuse",
         "next_id": "5001"
       }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "reckoning_wall_saved",
+        "en": "The High Warden's own name was on the Reckoning Wall. I had made sure it stayed there. The Wall would outlast him now, which was more than his Crusade would.",
+        "fr": "Le nom du Haut Gardien lui-même figurait sur le Mur du Jugement. J'avais veillé à ce qu'il y reste. Le Mur lui survivrait, ce qui était plus qu'on ne pouvait dire de sa Croisade."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa would hear of it by nightfall, through the runners. I found that I wanted her to.",
+        "fr": "Lysa l'apprendrait avant la nuit, par les coureurs. Je m'aperçus que je le souhaitais."
+      }
     ]
   },
   "5001": {
@@ -2297,6 +2467,18 @@
         "text": "Follow the whispers",
         "text_fr": "Suivre les rumeurs",
         "next_id": "5002"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "camp_founded",
+        "en": "The camp below the Spire would hold without me for a while. I had told them a week. I hoped I had not lied.",
+        "fr": "Le camp sous la Flèche tiendrait sans moi quelque temps. Je leur avais dit une semaine. J'espérais ne pas avoir menti."
+      },
+      {
+        "flag": "banner_second_piece_lead",
+        "en": "The lead from the Lantern Docks pointed the same way the whispers did: down.",
+        "fr": "La piste des Quais des Lanternes indiquait la même direction que les murmures : en bas."
       }
     ]
   },
@@ -2419,6 +2601,18 @@
     ],
     "reqFlags": [
       "void_banner_bearer"
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "ashen_ledger_decoded",
+        "en": "I had read half of this book already, by firelight in the Ashen Quarter, and the half I knew made the half I did not considerably worse.",
+        "fr": "J'avais déjà lu la moitié de ce livre, à la lueur du feu dans le Quartier de Cendre, et la moitié que je connaissais rendait l'autre nettement pire."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "I thought of Lysa reading it, and of what she would have said, which was probably \"stop reading and do something,\" and I read a little longer out of spite.",
+        "fr": "Je pensai à Lysa le lisant, et à ce qu'elle aurait dit, sans doute « arrête de lire et fais quelque chose », et je lus encore un peu, par esprit de contradiction."
+      }
     ]
   },
   "6002": {
@@ -2478,6 +2672,13 @@
         "text": "Accept what the Void shows me",
         "text_fr": "Accepter ce que le Vide me montre",
         "next_id": "7001"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "void_marked",
+        "en": "The thread it had left in me at the tear hummed in answer, and I understood that it had never needed to find me. It had known where I was since the first night.",
+        "fr": "Le fil qu'il avait laissé en moi à la déchirure vibra en réponse, et je compris qu'il n'avait jamais eu besoin de me chercher. Il savait où j'étais depuis la première nuit."
       }
     ]
   },
@@ -2638,8 +2839,8 @@
     "description_fr": "La porte était scellée depuis l'invasion, sa serrure du genre ténace et démodé qui récompense la patience plutôt que la force. Je m'agenouillai quand même, à moitié convaincu de perdre mon temps. À l'intérieur, l'archive sentait la poussière et la négligence en parts à peu près égales — des classeurs, pour la plupart pourris, quelques-uns encore assez intacts pour valoir la peine d'être fouillés.",
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Back out into the ash",
+        "text_fr": "Ressortir dans la cendre",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_archive"
@@ -2721,8 +2922,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Drift back along the wharf",
+        "text_fr": "Redescendre le long du quai",
         "next_id": "2015",
         "unlockQuestId": "q_ch2_informants_tip",
         "triggerEnemyIds": [
@@ -2795,8 +2996,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Turn back toward the wharf",
+        "text_fr": "Rebrousser chemin vers le quai",
         "next_id": "2015",
         "triggerEnemyId": "dock_overseer",
         "unlockQuestId": "q_ch2_terns_toll",
@@ -2817,8 +3018,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Back among the merchants",
+        "text_fr": "De retour parmi les marchands",
         "next_id": "2015",
         "goldMod": 20,
         "alignmentMod": 5,
@@ -2840,8 +3041,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Back to the ruined streets",
+        "text_fr": "Retour aux rues en ruine",
         "next_id": "3005",
         "goldMod": 30,
         "flagsToAdd": [
@@ -2925,8 +3126,8 @@
     "reqGold": 80,
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Head back toward the Spire's shadow",
+        "text_fr": "Revenir vers l'ombre de la Flèche",
         "next_id": "3005",
         "unlockQuestId": "q_ch3_groshs_price",
         "flagsToAdd": [
@@ -2972,8 +3173,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Return to the outer district",
+        "text_fr": "Revenir au district extérieur",
         "next_id": "3005",
         "triggerEnemyId": "inquisition_auxiliary",
         "unlockQuestId": "q_ch3_reckoning_wall",
@@ -2994,8 +3195,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Back to the ruined streets",
+        "text_fr": "Retour aux rues en ruine",
         "next_id": "3005",
         "goldMod": 25,
         "alignmentMod": 5,
@@ -3039,8 +3240,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
         "next_id": "2015",
         "goldMod": 35,
         "flagsToAdd": [
@@ -3060,8 +3261,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Let the market crowd swallow you again",
+        "text_fr": "Se laisser à nouveau avaler par la foule du marché",
         "next_id": "2015",
         "goldMod": -15,
         "flagsToAdd": [
@@ -3084,8 +3285,8 @@
     },
     "choices": [
       {
-        "text": "Back to the market",
-        "text_fr": "Retour au marché",
+        "text": "Drift back along the wharf",
+        "text_fr": "Redescendre le long du quai",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_bandits"
@@ -3133,8 +3334,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Return to the district's streets",
+        "text_fr": "Revenir dans les rues du district",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_archive"
@@ -3156,8 +3357,8 @@
     },
     "choices": [
       {
-        "text": "Back into the quarter",
-        "text_fr": "Retour dans le quartier",
+        "text": "Return to the outer district",
+        "text_fr": "Revenir au district extérieur",
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_ledger"
@@ -3205,6 +3406,17 @@
         ]
       },
       {
+        "text": "Bring the archivist what you have pieced together",
+        "text_fr": "Apporter à l'archiviste ce que vous avez reconstitué",
+        "next_id": "5010_archivist_words",
+        "showIfFlags": [
+          "hub_5010_archivist"
+        ],
+        "hideIfFlags": [
+          "hub_5010_archivist_words"
+        ]
+      },
+      {
         "text": "Take the sapper's bounty and clear the ghouls from the flooded aisle",
         "text_fr": "Accepter la prime du sapeur et nettoyer l'allée inondée de ses goules",
         "next_id": "5010_ghouls",
@@ -3216,6 +3428,18 @@
         "hideIfFlags": [
           "hub_5010_ghouls"
         ]
+      },
+      {
+        "text": "Collect the sapper's thanks",
+        "text_fr": "Recevoir les remerciements du sapeur",
+        "next_id": "5010_sapper_thanks",
+        "showIfFlags": [
+          "hub_5010_ghouls"
+        ],
+        "hideIfFlags": [
+          "hub_5010_sapper_thanks"
+        ],
+        "goldMod": 30
       },
       {
         "text": "Face the Bone Warden guarding the sealed stair",
@@ -3273,6 +3497,17 @@
         ]
       },
       {
+        "text": "Hear what the deserter has been turning over",
+        "text_fr": "Écouter ce que le déserteur remâche",
+        "next_id": "5010_deserter_later",
+        "showIfFlags": [
+          "hub_5010_deserter"
+        ],
+        "hideIfFlags": [
+          "hub_5010_deserter_later"
+        ]
+      },
+      {
         "text": "Speak with the choir deserter tending the refugees' candles",
         "text_fr": "Parler au déserteur du chœur qui veille sur les chandelles des réfugiés",
         "next_id": "5010_tobin",
@@ -3281,6 +3516,18 @@
         ],
         "lockedText": "He looks past me at the water. Whatever he is looking for in a face, mine has not got it.",
         "lockedText_fr": "Il regarde l'eau derrière moi. Quoi qu'il cherche dans un visage, le mien ne l'a pas."
+      },
+      {
+        "text": "Sit with Tobin while he trims the wicks",
+        "text_fr": "Rester assis près de Tobin pendant qu'il taille les mèches",
+        "next_id": "5010_tobin_hymn",
+        "showIfFlags": [
+          "hub_5010_tobin"
+        ],
+        "hideIfFlags": [
+          "hub_5010_tobin_hymn"
+        ],
+        "healAmount": 15
       },
       {
         "text": "Take the Drowned Stair down to the Court",
@@ -3294,7 +3541,53 @@
         "next_id": "5003_seeker",
         "launchZoneId": "z_drowned_stair"
       }
-    ]
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "ashen_ledger_decoded",
+        "en": "The archivist's ink and the ledger's scorched margins were, I was beginning to suspect, two halves of the same book.",
+        "fr": "L'encre de l'archiviste et les marges roussies du registre étaient, commençais-je à soupçonner, les deux moitiés d'un même livre."
+      },
+      {
+        "flag": "ossuary_galleries_cleared",
+        "en": "The Ossuary Galleries were quiet behind me; whatever had been walking them had stopped, and the refugees had started using the dry vaults to sleep in.",
+        "fr": "Les Galeries de l'Ossuaire se taisaient derrière moi ; ce qui les arpentait avait cessé, et les réfugiés avaient commencé à dormir dans les caveaux secs."
+      },
+      {
+        "flag": "banner_second_piece_lead",
+        "en": "Somewhere below the waterline, if the Lantern Docks' lead was worth what I had paid for it, the Banner's second piece was waiting for the water to go down.",
+        "fr": "Quelque part sous la ligne d'eau, si la piste des Quais des Lanternes valait ce que je l'avais payée, la seconde pièce de la Bannière attendait la décrue."
+      }
+    ],
+    "hub_progress": {
+      "prefix": "hub_5010_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The candles on the ledges were steadier than when I had come in, or I had simply stopped noticing them gutter. The deserters had started saving me a dry place to stand.",
+          "fr": "Les chandelles sur les corniches étaient plus stables qu'à mon arrivée, ou j'avais simplement cessé de les voir vaciller. Les déserteurs s'étaient mis à me garder un endroit sec où me tenir."
+        },
+        {
+          "after": 6,
+          "en": "The cloister had stopped being wary of me. That was not the same as glad, but in a place like this it was what passed for it.",
+          "fr": "Le cloître avait cessé de se méfier de moi. Ce n'était pas la même chose que s'en réjouir, mais dans un endroit pareil, c'était ce qui en tenait lieu."
+        }
+      ]
+    },
+    "persona_variants": {
+      "race:voidkin": {
+        "en": "The black water stilled when I stepped near it, and every refugee in the cloister saw it do so.",
+        "fr": "L'eau noire s'immobilisa quand je m'en approchai, et chaque réfugié du cloître le vit."
+      },
+      "profession:cleric": {
+        "en": "Someone had drowned a chapel here. A {profession} does not walk through that quickly.",
+        "fr": "Quelqu'un avait noyé une chapelle ici. Un {profession} ne traverse pas cela d'un pas rapide."
+      },
+      "race:dwarf": {
+        "en": "The vaulting was dwarf-cut, and had held the water a hundred years, and would hold it a hundred more, which was more than could be said for anything else down here.",
+        "fr": "La voûte était taillée par des nains, elle avait retenu l'eau cent ans et la retiendrait cent de plus, ce qui était plus qu'on ne pouvait dire de quoi que ce soit d'autre ici-bas."
+      }
+    }
   },
   "5010_archivist": {
     "id": "5010_archivist",
@@ -3321,8 +3614,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Back through the black water",
+        "text_fr": "Retraverser l'eau noire",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_ghouls"
@@ -3338,8 +3631,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Head back to the refugees' candles",
+        "text_fr": "Revenir vers les chandelles des réfugiés",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_warden"
@@ -3355,8 +3648,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Back along the tide line",
+        "text_fr": "Retour le long de la ligne de marée",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_trade"
@@ -3372,8 +3665,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Climb back to the cloister",
+        "text_fr": "Remonter au cloître",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_span"
@@ -3406,8 +3699,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Return to the drowned cloister",
+        "text_fr": "Revenir au cloître noyé",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_deserter"
@@ -3423,8 +3716,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Back along the tide line",
+        "text_fr": "Retour le long de la ligne de marée",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_deserter"
@@ -3440,8 +3733,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Cloister",
-        "text_fr": "Retour au Cloître",
+        "text": "Back through the black water",
+        "text_fr": "Retraverser l'eau noire",
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_wisps"
@@ -3466,6 +3759,17 @@
         ]
       },
       {
+        "text": "Ask the chart-keeper what the last page cost her",
+        "text_fr": "Demander à la gardienne des cartes ce que la dernière page lui a coûté",
+        "next_id": "6010_chartkeeper_words",
+        "showIfFlags": [
+          "hub_6010_chartkeeper"
+        ],
+        "hideIfFlags": [
+          "hub_6010_chartkeeper_words"
+        ]
+      },
+      {
         "text": "Find Lysa among the refugees",
         "text_fr": "Retrouver Lysa parmi les réfugiés",
         "next_id": "6010_lysa",
@@ -3474,6 +3778,18 @@
         "hideIfFlags": [
           "hub_6010_lysa"
         ]
+      },
+      {
+        "text": "Walk the frost with Lysa",
+        "text_fr": "Marcher sur le givre avec Lysa",
+        "next_id": "6010_lysa_later",
+        "showIfFlags": [
+          "hub_6010_lysa"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lysa_later"
+        ],
+        "healAmount": 15
       },
       {
         "text": "Drive off the void hounds circling the reliquary",
@@ -3497,6 +3813,17 @@
         ]
       },
       {
+        "text": "Give the penitent your answer",
+        "text_fr": "Donner votre réponse au pénitent",
+        "next_id": "6010_confession_later",
+        "showIfFlags": [
+          "hub_6010_confession"
+        ],
+        "hideIfFlags": [
+          "hub_6010_confession_later"
+        ]
+      },
+      {
         "text": "Answer the penitent's challenge",
         "text_fr": "Répondre au défi du pénitent",
         "next_id": "6010_penitent",
@@ -3512,6 +3839,17 @@
         "unlockShopId": "last_lantern",
         "hideIfFlags": [
           "hub_6010_lantern"
+        ]
+      },
+      {
+        "text": "Hear what the Last Lantern's keeper has seen",
+        "text_fr": "Écouter ce que la gardienne de la Dernière Lanterne a vu",
+        "next_id": "6010_lantern_keeper",
+        "showIfFlags": [
+          "hub_6010_lantern"
+        ],
+        "hideIfFlags": [
+          "hub_6010_lantern_keeper"
         ]
       },
       {
@@ -3552,7 +3890,53 @@
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil"
       }
-    ]
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "void_marked",
+        "en": "The frost did not form on me. The tear's weather knew its own.",
+        "fr": "Le givre ne se formait pas sur moi. Le temps de la déchirure reconnaissait les siens."
+      },
+      {
+        "flag": "dead_heart_cleared",
+        "en": "The Dead Heart's approach was clear behind me; the quarter's runners had noticed, and had begun, cautiously, to use it.",
+        "fr": "L'approche du Cœur Mort était dégagée derrière moi ; les coureurs du quartier l'avaient remarqué et commençaient, prudemment, à l'emprunter."
+      },
+      {
+        "flag": "reckoning_wall_saved",
+        "en": "A penitent here had chalked the Reckoning Wall's names on a chapel door, copied faithfully from the Ashen Quarter. The Wall had grown legs.",
+        "fr": "Un pénitent d'ici avait tracé à la craie, sur une porte de chapelle, les noms du Mur du Jugement, fidèlement copiés depuis le Quartier de Cendre. Le Mur s'était trouvé des jambes."
+      }
+    ],
+    "hub_progress": {
+      "prefix": "hub_6010_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The frost still lay in the wrong direction, but the streets I had walked lay a little warmer for it, and the penitents no longer crossed themselves when I passed.",
+          "fr": "Le givre tombait toujours dans le mauvais sens, mais les rues que j'avais parcourues en étaient un peu plus tièdes, et les pénitents ne se signaient plus sur mon passage."
+        },
+        {
+          "after": 6,
+          "en": "What was left of the quarter had begun, without anyone deciding it, to look to me for the next thing. I found that I had one.",
+          "fr": "Ce qui restait du quartier s'était mis, sans que personne l'ait décidé, à attendre de moi la suite. Je m'aperçus que j'en avais une."
+        }
+      ]
+    },
+    "persona_variants": {
+      "race:orc": {
+        "en": "The penitents watched an orc walk among their reliquaries and could not, I think, decide which of us was the intruder.",
+        "fr": "Les pénitents regardaient un orc marcher parmi leurs reliquaires et ne parvenaient pas, je crois, à décider lequel de nous deux était l'intrus."
+      },
+      "profession:mage": {
+        "en": "The frost sang, faintly, in the range a {profession} learns to hear first and regret hearing at all.",
+        "fr": "Le givre chantait, faiblement, dans le registre qu'un {profession} apprend à entendre en premier et regrette d'entendre du tout."
+      },
+      "race:elf": {
+        "en": "The chapel glass had been elf-made, once. What the tear had done to it was a kind of insult I took personally.",
+        "fr": "Le verre des chapelles avait été soufflé par des elfes, jadis. Ce que la déchirure en avait fait était une insulte que je pris personnellement."
+      }
+    }
   },
   "6010_chartkeeper": {
     "id": "6010_chartkeeper",
@@ -3599,8 +3983,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Return to the Reliquary Quarter",
+        "text_fr": "Revenir au Quartier des Reliquaires",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_hounds"
@@ -3616,8 +4000,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Return to the reliquaries",
+        "text_fr": "Revenir aux reliquaires",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_confession"
@@ -3633,8 +4017,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Walk back among the chapels",
+        "text_fr": "Retourner parmi les chapelles",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_penitent"
@@ -3650,8 +4034,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Head back past the penitents",
+        "text_fr": "Repasser devant les pénitents",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_lantern"
@@ -3667,8 +4051,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Back through the frozen streets",
+        "text_fr": "Retraverser les rues gelées",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_spawn"
@@ -3684,8 +4068,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Walk back among the chapels",
+        "text_fr": "Retourner parmi les chapelles",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_frost"
@@ -3701,8 +4085,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Back through the frozen streets",
+        "text_fr": "Retraverser les rues gelées",
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_frost"
@@ -3722,6 +4106,23 @@
         "text_fr": "Parer l'Eel",
         "next_id": "7002",
         "unlockQuestId": "q_ch6_beyond_the_tear"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "hub_6010_confession",
+        "en": "The penitent's name was on my list. I had decided, somewhere in the dark, what I meant to do about it, and the deciding had weighed less than I expected.",
+        "fr": "Le nom du pénitent était sur ma liste. J'avais décidé, quelque part dans le noir, ce que je comptais en faire, et la décision avait pesé moins lourd que prévu."
+      },
+      {
+        "flag": "camp_founded",
+        "en": "Somewhere south of here the camp was lighting its fires without me. I found the thought steadied my hands.",
+        "fr": "Quelque part au sud, le camp allumait ses feux sans moi. Je m'aperçus que cette pensée me raffermissait les mains."
+      },
+      {
+        "flag": "dead_heart_cleared",
+        "en": "I knew the Dead Heart now, its glass and its silence; the tear had drawn this shore out of it the way a splinter is drawn, and I knew the wound it had left.",
+        "fr": "Je connaissais le Cœur Mort désormais, son verre et son silence ; la déchirure en avait tiré ce rivage comme on tire une écharde, et je connaissais la plaie laissée."
       }
     ]
   },
@@ -3755,10 +4156,29 @@
         ]
       },
       {
+        "text": "Gather the crew before the crossing",
+        "text_fr": "Rassembler l'équipage avant la traversée",
+        "next_id": "7002_crew",
+        "hideIfFlags": [
+          "hub_7002_crew"
+        ]
+      },
+      {
         "text": "Sail into the tear",
         "text_fr": "Faire voile dans la déchirure",
-        "next_id": "7003",
-        "launchZoneId": "z_beyond_the_tear"
+        "next_id": "7002_confront"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "void_marked",
+        "en": "The reflections looked at me longest. They knew the thread in me; it was, in a sense, the only thing out here that was theirs.",
+        "fr": "Les reflets me regardèrent le plus longtemps. Ils connaissaient le fil en moi ; c'était, en un sens, la seule chose ici qui leur appartînt."
+      },
+      {
+        "flag": "tern_row_spared",
+        "en": "Nadira's lantern was still in the Eel's locker. I hung it from the ballista, for no reason I could have defended, and the reflections kept their distance from its light.",
+        "fr": "La lanterne de Nadira était toujours dans le coffre de l'Eel. Je la suspendis à la baliste, sans aucune raison que j'aurais pu défendre, et les reflets se tinrent à l'écart de sa lumière."
       }
     ]
   },
@@ -3808,7 +4228,17 @@
         "text_fr": "Repasser de l'autre côté",
         "next_id": "7004"
       }
-    ]
+    ],
+    "persona_variants": {
+      "race:voidkin": {
+        "en": "The tear knew what I was. It had, I think, expected me to kneel.",
+        "fr": "La déchirure savait ce que j'étais. Elle s'était, je crois, attendue à me voir m'agenouiller."
+      },
+      "profession:cleric": {
+        "en": "I said the words a {profession} says over a thing that has stopped. They did not fit it. I said them anyway.",
+        "fr": "Je dis les mots qu'un {profession} prononce sur une chose qui s'est arrêtée. Ils ne lui convenaient pas. Je les dis quand même."
+      }
+    }
   },
   "7004": {
     "id": "7004",
@@ -3836,6 +4266,23 @@
         "text": "Take the Sovereign's crown for myself",
         "text_fr": "Prendre la couronne du Souverain pour moi-même",
         "next_id": "7005_crown"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "camp_founded",
+        "en": "The camp was expecting an answer. I had founded it; the least I owed it was that.",
+        "fr": "Le camp attendait une réponse. Je l'avais fondé ; c'était le moins que je lui devais."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa would be on the shingle when the Eel came in. I had a great deal to tell her, and one thing to ask.",
+        "fr": "Lysa serait sur les galets quand l'Eel accosterait. J'avais beaucoup à lui dire, et une chose à lui demander."
+      },
+      {
+        "flag": "reckoning_wall_saved",
+        "en": "Whatever I chose, the Wall would keep its names. That, at least, was already done.",
+        "fr": "Quoi que je choisisse, le Mur garderait ses noms. Cela, au moins, était déjà fait."
       }
     ]
   },
@@ -3868,7 +4315,19 @@
         "en": "The camp knew what I was by then, and built anyway, because I had brought the Banner home and a great many of the people who might have objected had not come home at all. The walls went up fast. So did the gallows, which I told myself was a matter of order. The city is safe now, they say in the markets, and they say it quietly, and they look at the Spire when they say it.",
         "fr": "Le camp savait ce que j'étais, à ce moment-là, et bâtit quand même, parce que j'avais ramené la Bannière et qu'un grand nombre de ceux qui auraient pu objecter n'étaient pas rentrés du tout. Les murs montèrent vite. Le gibet aussi, ce que je me dis relever de l'ordre. La ville est sûre maintenant, dit-on sur les marchés, et on le dit tout bas, en regardant la Flèche."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "reckoning_wall_saved",
+        "en": "The Wall got its candles back, and the names on it got a city.",
+        "fr": "Le Mur retrouva ses chandelles, et les noms qu'il portait obtinrent une ville."
+      },
+      {
+        "flag": "tern_row_spared",
+        "en": "Tern Row's lanterns were the first lights I saw from the water. Nadira had hung one on every pier.",
+        "fr": "Les lanternes de Tern Row furent les premières lumières que je vis depuis l'eau. Nadira en avait suspendu une à chaque ponton."
+      }
+    ]
   },
   "7005_seeker": {
     "id": "7005_seeker",
@@ -3899,7 +4358,14 @@
         "en": "I went on seeking, and I stopped pretending it was the Banner I wanted. What waits behind the tears is power of a kind the Sovereign only borrowed, and I have a boat, a crew that has learned not to ask, and a name that opens doors in the wrong quarters of every port. The camp writes. I do not answer.",
         "fr": "J'ai continué à chercher, et j'ai cessé de faire semblant que c'était la Bannière que je voulais. Ce qui attend derrière les déchirures est un pouvoir que le Souverain n'avait fait qu'emprunter, et j'ai un bateau, un équipage qui a appris à ne pas poser de questions, et un nom qui ouvre des portes dans les mauvais quartiers de chaque port. Le camp écrit. Je ne réponds pas."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "camp_founded",
+        "en": "The camp I had raised would get on without me. Camps do. I left it the Eel, and Nadira's lantern, and no forwarding address.",
+        "fr": "Le camp que j'avais fondé se passerait de moi. C'est ce que font les camps. Je lui laissai l'Eel, la lanterne de Nadira, et aucune adresse."
+      }
+    ]
   },
   "7005_dawn": {
     "id": "7005_dawn",
@@ -3927,7 +4393,14 @@
         "en": "I sewed it shut because it was the sensible thing, and because I had grown tired of carrying something that hummed. If there was grace in it, I was not the one to say so. The camp said so instead, at length, and I let them, and went back to mending nets, which also hum, in their way, and never once asked to be worshipped.",
         "fr": "Je l'ai recousue parce que c'était la chose raisonnable, et parce que j'étais las de porter quelque chose qui bourdonnait. S'il y avait de la grâce là-dedans, ce n'était pas à moi de le dire. Le camp le dit à ma place, longuement, et je les laissai faire, et retournai réparer des filets, qui bourdonnent aussi, à leur façon, et n'ont jamais demandé à être adorés."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa was on the shingle. She did not ask about the Banner. She had never needed it.",
+        "fr": "Lysa était sur les galets. Elle ne demanda rien de la Bannière. Elle n'en avait jamais eu besoin."
+      }
+    ]
   },
   "7005_crown": {
     "id": "7005_crown",
@@ -3952,12 +4425,19 @@
         "en": "I told myself I had taken the crown to keep it out of worse hands, and for a while that was even true. The camp believed me longer than I did. I wear it seldom now, and only when the tear grows restless, and I have started leaving instructions, sealed, for whoever finds me when I stop being able to take it off.",
         "fr": "Je me suis dit que j'avais pris la couronne pour la garder loin de pires mains, et pendant un temps ce fut même vrai. Le camp m'a cru plus longtemps que moi. Je la porte rarement à présent, et seulement quand la déchirure s'agite, et j'ai commencé à laisser des instructions, scellées, pour qui me trouvera quand je ne pourrai plus l'ôter."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "hub_6010_confession",
+        "en": "The penitent knelt with the rest, on the frost, blade hilt-first. I let him. A crown needs someone to have knelt first.",
+        "fr": "Le pénitent s'agenouilla avec les autres, sur le givre, la lame tournée vers moi. Je le laissai faire. Une couronne a besoin que quelqu'un se soit agenouillé en premier."
+      }
+    ]
   },
   "5010_tobin": {
     "id": "5010_tobin",
-    "description": "He was a dwarf in what had once been a choir robe, kneeling on a ledge above the black water and trimming candle wicks with a knife too good for the job, and the refugees around him watched the way people watch the one thing in a room that has not yet failed them. He looked up when I came in, took my measure in the time it takes to decide whether to stand, and stood. \"You're the one who stops,\" he said. \"On the road. For people. They talk about it down here like weather.\"",
-    "description_fr": "C'était un nain dans ce qui avait été une robe de chœur, agenouillé sur une corniche au-dessus de l'eau noire, taillant des mèches de chandelle avec un couteau bien trop bon pour la tâche, et les réfugiés autour de lui le regardaient comme on regarde la seule chose d'une pièce qui ne vous ait pas encore fait défaut. Il leva les yeux quand j'entrai, me jaugea le temps qu'il faut pour décider de se lever, et se leva. « Vous êtes celui qui s'arrête, dit-il. Sur la route. Pour les gens. Ici, on en parle comme de la météo. »",
+    "description": "He was a dwarf in what had once been a choir robe, kneeling on a ledge above the black water and trimming candle wicks with a knife too good for the job, and the refugees around him watched the way people watch the one thing in a room that has not yet failed them. He looked up when I came in, took my measure in the time it takes to decide whether to stand, and stood. \"{name},\" he said. \"The one who stops. On the road. For people. They talk about it down here like weather.\"",
+    "description_fr": "C'était un nain dans ce qui avait été une robe de chœur, agenouillé sur une corniche au-dessus de l'eau noire, taillant des mèches de chandelle avec un couteau bien trop bon pour la tâche, et les réfugiés autour de lui le regardaient comme on regarde la seule chose d'une pièce qui ne vous ait pas encore fait défaut. Il leva les yeux quand j'entrai, me jaugea le temps qu'il faut pour décider de se lever, et se leva. « {name}, dit-il. Celui qui s'arrête. Sur la route. Pour les gens. Ici, on en parle comme de la météo. »",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "tense",
@@ -3966,20 +4446,30 @@
     "reqAlignmentScore": 20,
     "choices": [
       {
-        "text": "Back to the cloister",
-        "text_fr": "Retour au cloître",
+        "text": "Wade back to the candle-lit ledges",
+        "text_fr": "Retourner en pataugeant vers les corniches aux chandelles",
         "next_id": "5010",
         "unlockQuestId": "q_ch4_tobins_vigil",
         "flagsToAdd": [
           "hub_5010_tobin"
         ]
       }
-    ]
+    ],
+    "persona_variants": {
+      "race:dwarf": {
+        "en": "\"Kin,\" he added, looking me over. \"Then you'll know what a choir is for, and what it costs to leave one.\"",
+        "fr": "« Un des nôtres, ajouta-t-il en me détaillant. Alors vous savez à quoi sert un chœur, et ce qu'il en coûte d'en partir. »"
+      },
+      "profession:cleric": {
+        "en": "He looked at my hands. \"You've prayed over the dying. So have I. It doesn't get easier. It gets quieter.\"",
+        "fr": "Il regarda mes mains. « Vous avez prié sur des mourants. Moi aussi. Ça ne devient pas plus facile. Ça devient plus silencieux. »"
+      }
+    }
   },
   "6010_malrik": {
     "id": "6010_malrik",
-    "description": "His stall was two planks over a reliquary chest, and everything on it had been holy once and was for sale now: saints' fingers, chapel glass, a psalter with the pages the tear had touched cut out and sold separately. He was an orc with a Court deserter's boots and a merchant's patience, and he did not bother to hide either. \"You've a name in this quarter,\" he said, without looking up from the psalter. \"Not a kind one. Good. Kind doesn't pay.\"",
-    "description_fr": "Son étal, c'était deux planches posées sur un coffre-reliquaire, et tout ce qui s'y trouvait avait été sacré un jour et était à vendre aujourd'hui : doigts de saints, verre de chapelle, un psautier dont on avait découpé les pages touchées par la déchirure pour les vendre à part. C'était un orc avec des bottes de déserteur de la Cour et une patience de marchand, et il ne prenait la peine de cacher ni l'un ni l'autre. « Vous avez un nom dans ce quartier, dit-il sans lever les yeux du psautier. Pas un nom aimable. Tant mieux. L'aimable ne paie pas. »",
+    "description": "His stall was two planks over a reliquary chest, and everything on it had been holy once and was for sale now: saints' fingers, chapel glass, a psalter with the pages the tear had touched cut out and sold separately. He was an orc with a Court deserter's boots and a merchant's patience, and he did not bother to hide either. \"{name},\" he said, without looking up from the psalter. \"You've a name in this quarter. Not a kind one. Good. Kind doesn't pay.\"",
+    "description_fr": "Son étal, c'était deux planches posées sur un coffre-reliquaire, et tout ce qui s'y trouvait avait été sacré un jour et était à vendre aujourd'hui : doigts de saints, verre de chapelle, un psautier dont on avait découpé les pages touchées par la déchirure pour les vendre à part. C'était un orc avec des bottes de déserteur de la Cour et une patience de marchand, et il ne prenait la peine de cacher ni l'un ni l'autre. « {name}, dit-il sans lever les yeux du psautier. Vous avez un nom dans ce quartier. Pas un nom aimable. Tant mieux. L'aimable ne paie pas. »",
     "context_taxonomy": {
       "ui_theme": "market",
       "mood": "grim",
@@ -3988,13 +4478,225 @@
     "reqAlignmentMax": -20,
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Return to the reliquaries",
+        "text_fr": "Revenir aux reliquaires",
         "next_id": "6010",
         "unlockQuestId": "q_ch5_malriks_cut",
         "flagsToAdd": [
           "hub_6010_malrik"
         ]
+      }
+    ],
+    "persona_variants": {
+      "race:orc": {
+        "en": "\"Kin,\" he said, not warmly, and named me a price a hair lower than the one he had been going to name.",
+        "fr": "« Un des nôtres », dit-il, sans chaleur, et il m'annonça un prix d'un cheveu plus bas que celui qu'il allait annoncer."
+      },
+      "profession:rogue": {
+        "en": "He clocked the way I stood and moved the good psalter out of my reach without appearing to.",
+        "fr": "Il repéra ma façon de me tenir et déplaça le bon psautier hors de ma portée sans en avoir l'air."
+      }
+    }
+  },
+  "5010_deserter_later": {
+    "id": "5010_deserter_later",
+    "description": "He found me before I found him, which for a deserter is a kind of courage. \"I've been thinking about what you asked,\" he said. \"The Court doesn't hold the Stair because it wants the Stair. It holds it because something below it told them to. I heard it once, through the stone. It knew my name.\" He looked at the black water for a while. \"If you go down, go down loud. Quiet is what it likes.\"",
+    "description_fr": "Il me trouva avant que je le trouve, ce qui, pour un déserteur, est une forme de courage. « J'ai réfléchi à ce que vous m'avez demandé, dit-il. La Cour ne tient pas l'Escalier parce qu'elle veut l'Escalier. Elle le tient parce que quelque chose en dessous le lui a ordonné. Je l'ai entendu une fois, à travers la pierre. Il connaissait mon nom. » Il regarda l'eau noire un long moment. « Si vous descendez, descendez en faisant du bruit. Le silence, c'est ce qu'il aime. »",
+    "context_taxonomy": {
+      "speaker": "Deserter"
+    },
+    "choices": [
+      {
+        "text": "Head back to the refugees' candles",
+        "text_fr": "Revenir vers les chandelles des réfugiés",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_deserter_later"
+        ]
+      }
+    ]
+  },
+  "5010_archivist_words": {
+    "id": "5010_archivist_words",
+    "description": "She had the second ledger's shape worked out on a scrap of vellum by the time I came back: not a book, she said, but a wall. Names cut into the stair itself, one to a step, down where the water had not yet reached. \"Read them going down,\" she said, and blotted the vellum with the side of her hand. \"You will not want to read them coming up.\"",
+    "description_fr": "Elle avait dessiné la forme du second registre sur un bout de vélin le temps que je revienne : pas un livre, dit-elle, mais un mur. Des noms gravés dans l'escalier lui-même, un par marche, là où l'eau n'était pas encore montée. « Lisez-les en descendant, dit-elle en séchant le vélin du tranchant de la main. Vous n'aurez pas envie de les lire en remontant. »",
+    "context_taxonomy": {
+      "speaker": "Archivist"
+    },
+    "choices": [
+      {
+        "text": "Wade back to the candle-lit ledges",
+        "text_fr": "Retourner en pataugeant vers les corniches aux chandelles",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_archivist_words"
+        ]
+      }
+    ]
+  },
+  "5010_tobin_hymn": {
+    "id": "5010_tobin_hymn",
+    "description": "I sat on the ledge while Tobin trimmed the wicks and did not sing, and somewhere in the not-singing the cloister got quieter, and the water got lower, or seemed to, and I slept for the first time since the Spire. When I woke there was a candle beside me that had not been there, and it had been burning a while.",
+    "description_fr": "Je restai assis sur la corniche pendant que Tobin taillait les mèches sans chanter, et quelque part dans ce non-chant le cloître devint plus calme, l'eau plus basse, ou sembla l'être, et je dormis pour la première fois depuis la Flèche. À mon réveil, une chandelle qui n'était pas là brûlait à côté de moi, et depuis un moment.",
+    "context_taxonomy": {},
+    "choices": [
+      {
+        "text": "Return to the drowned cloister",
+        "text_fr": "Revenir au cloître noyé",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_tobin_hymn"
+        ]
+      }
+    ]
+  },
+  "5010_sapper_thanks": {
+    "id": "5010_sapper_thanks",
+    "description": "The sapper had nothing to pay me with but a purse of grave-coin the ghouls had been sitting on, and he pressed it on me with the specific dignity of a man who has decided a debt will not outlive him. \"They were my crew,\" he said, of the ghouls, and did not say anything else, and did not need to.",
+    "description_fr": "Le sapeur n'avait rien pour me payer qu'une bourse de monnaie funéraire sur laquelle les goules avaient couvé, et il me la fourra dans la main avec la dignité particulière d'un homme qui a décidé qu'une dette ne lui survivrait pas. « C'était mon équipe », dit-il des goules, et il ne dit rien d'autre, et n'en eut pas besoin.",
+    "context_taxonomy": {},
+    "choices": [
+      {
+        "text": "Return to the arches",
+        "text_fr": "Revenir sous les arches",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_sapper_thanks"
+        ]
+      }
+    ]
+  },
+  "6010_chartkeeper_words": {
+    "id": "6010_chartkeeper_words",
+    "description": "\"You want to know what the last page cost,\" she said, before I had asked. \"My sister's name. She was on it, taken the first night. I copied it out in a fair hand so the next reader would not have to squint.\" She turned the chart so I could see the tear's edge, inked and re-inked a dozen times. \"It grows toward the names. It always has. Bring it the rest of them, and see what it does.\"",
+    "description_fr": "« Vous voulez savoir ce que la dernière page a coûté », dit-elle avant que j'aie demandé. « Le nom de ma sœur. Elle y figurait, prise la première nuit. Je l'ai recopié d'une belle main pour que le prochain lecteur n'ait pas à plisser les yeux. » Elle tourna la carte pour me montrer le bord de la déchirure, encré et ré-encré une douzaine de fois. « Elle grandit vers les noms. Elle l'a toujours fait. Apportez-lui les autres, et voyez ce qu'elle fait. »",
+    "context_taxonomy": {
+      "speaker": "Chart-keeper"
+    },
+    "choices": [
+      {
+        "text": "Back over the frost",
+        "text_fr": "Retraverser le givre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_chartkeeper_words"
+        ]
+      }
+    ]
+  },
+  "6010_confession_later": {
+    "id": "6010_confession_later",
+    "description": "He was where I had left him, on the frost, and he did not look up. \"You've thought about it,\" he said. It was not a question. The blade still lay hilt-first between us, and the frost had begun to take it.",
+    "description_fr": "Il était là où je l'avais laissé, sur le givre, et il ne leva pas les yeux. « Vous y avez réfléchi », dit-il. Ce n'était pas une question. La lame gisait toujours entre nous, poignée vers moi, et le givre commençait à la prendre.",
+    "context_taxonomy": {
+      "speaker": "Penitent"
+    },
+    "choices": [
+      {
+        "text": "His name stays on the list, and he carries it from here",
+        "text_fr": "Son nom reste sur la liste, et c'est lui qui la porte désormais",
+        "next_id": "6010",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_6010_confession_later"
+        ]
+      },
+      {
+        "text": "Tell him nothing. Some answers are not mine to give",
+        "text_fr": "Ne rien lui dire. Certaines réponses ne sont pas les miennes à donner",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_confession_later"
+        ]
+      },
+      {
+        "text": "Tell him the tear can have him",
+        "text_fr": "Lui dire que la déchirure peut l'avoir",
+        "next_id": "6010",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_6010_confession_later"
+        ]
+      }
+    ]
+  },
+  "6010_lysa_later": {
+    "id": "6010_lysa_later",
+    "description": "Lysa walked the frost with me, not talking, which was what we had always been best at. At the edge of the quarter she stopped and put her hand flat against the cold on a chapel wall, the way you check a sleeping child for fever. \"It's getting warmer,\" she said. \"Whatever you've been doing. Keep doing it.\"",
+    "description_fr": "Lysa marcha sur le givre avec moi, sans parler, ce que nous avions toujours fait de mieux. À la lisière du quartier elle s'arrêta et posa la main à plat sur le froid d'un mur de chapelle, comme on vérifie la fièvre d'un enfant qui dort. « Ça se réchauffe, dit-elle. Quoi que vous fassiez. Continuez. »",
+    "context_taxonomy": {},
+    "choices": [
+      {
+        "text": "Back over the frost",
+        "text_fr": "Retraverser le givre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lysa_later"
+        ]
+      }
+    ]
+  },
+  "6010_lantern_keeper": {
+    "id": "6010_lantern_keeper",
+    "description": "The Last Lantern's keeper had seen the tear open, and said so the way people say they have seen the sea. \"It was a man first,\" she said. \"Or wore one. He walked out of the reliquary with the Warden's seal on his hand and the frost following him like a dog, and he said a name to the sky, and the sky opened.\" She lit a fresh wick from the old one. \"Not your name. But it knew yours. It said so.\"",
+    "description_fr": "La gardienne de la Dernière Lanterne avait vu la déchirure s'ouvrir, et le disait comme on dit avoir vu la mer. « C'était un homme d'abord, dit-elle. Ou il en portait un. Il est sorti du reliquaire avec le sceau du Gardien sur la main et le givre derrière lui comme un chien, et il a dit un nom au ciel, et le ciel s'est ouvert. » Elle alluma une mèche neuve à l'ancienne. « Pas votre nom. Mais elle connaissait le vôtre. Elle l'a dit. »",
+    "context_taxonomy": {
+      "speaker": "Lantern-keeper"
+    },
+    "choices": [
+      {
+        "text": "Back to the last of the order",
+        "text_fr": "Retour auprès des derniers de l'ordre",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lantern_keeper"
+        ]
+      }
+    ]
+  },
+  "7002_crew": {
+    "id": "7002_crew",
+    "description": "I called them together on the sand, the ones who had come this far, and found I had nothing to say that they did not already know. So I said the other thing, the one I had been carrying since the docks: that I had not expected any of them, and could not now imagine the road without them, and that whatever waited beyond the tear would have to come through all of us to reach me. Nobody cheered. Someone laughed. It was enough.",
+    "description_fr": "Je les rassemblai sur le sable, ceux qui étaient venus jusque-là, et m'aperçus que je n'avais rien à dire qu'ils ne sachent déjà. Alors je dis l'autre chose, celle que je portais depuis les quais : que je n'avais attendu aucun d'eux, que je ne pouvais plus imaginer la route sans eux, et que ce qui attendait au-delà de la déchirure devrait passer par nous tous pour m'atteindre. Personne n'applaudit. Quelqu'un rit. C'était assez.",
+    "context_taxonomy": {},
+    "choices": [
+      {
+        "text": "Back to the Eel",
+        "text_fr": "Retour à l'Eel",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "hub_7002_crew"
+        ]
+      }
+    ]
+  },
+  "7002_confront": {
+    "id": "7002_confront",
+    "description": "It spoke before I had set foot on the water: through the tear, through the reflections on the sand, through the thread it had left in me at the very beginning, and its voice was a certainty rather than a sound. It knew my family's name. It had known it before there was a family. It asked, with something that was not quite curiosity, what I had come across the water to say to it.",
+    "description_fr": "Elle parla avant que j'aie posé le pied sur l'eau : par la déchirure, par les reflets sur le sable, par le fil qu'elle avait laissé en moi dès le tout début, et sa voix était une certitude plutôt qu'un son. Elle connaissait le nom de ma famille. Elle l'avait connu avant qu'il y ait une famille. Elle demanda, avec quelque chose qui n'était pas tout à fait de la curiosité, ce que j'étais venu lui dire de l'autre côté de l'eau.",
+    "context_taxonomy": {
+      "speaker": "The Sovereign"
+    },
+    "choices": [
+      {
+        "text": "Tell it the names of the taken, every one of them",
+        "text_fr": "Lui dire les noms des disparus, chacun d'eux",
+        "next_id": "7003",
+        "launchZoneId": "z_beyond_the_tear",
+        "alignmentMod": 2
+      },
+      {
+        "text": "Tell it nothing. Let the ballista answer",
+        "text_fr": "Ne rien lui dire. Laisser la baliste répondre",
+        "next_id": "7003",
+        "launchZoneId": "z_beyond_the_tear"
+      },
+      {
+        "text": "Tell it I have come for its crown",
+        "text_fr": "Lui dire que je suis venu pour sa couronne",
+        "next_id": "7003",
+        "launchZoneId": "z_beyond_the_tear",
+        "alignmentMod": -2
       }
     ]
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
+import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
@@ -17,6 +18,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -606,6 +608,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// knocked out.
   bool _potionUsed = false;
   bool _anyKnockedOut = false;
+
+  /// The last companion knocked out this fight, for the story's aftermath
+  /// line (see combat_aftermath.dart).
+  String? _lastKnockedOutAllyName;
+
+  /// Boss phases crossed this fight, across every enemy.
+  int _phasesCrossed = 0;
 
   /// The party read at least one enemy at the full telegraph tier this
   /// fight -- the chest's Perception extra slot.
@@ -1573,6 +1582,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
             playerDied = true;
           } else {
             _anyKnockedOut = true;
+            _lastKnockedOutAllyName = member.displayName;
             newEntries.add(_LogEntry(
               '${member.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
               _LogKind.defeat,
@@ -1685,6 +1695,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         final phase = enemy.phases[enemy.phaseIndex];
         enemy.phaseIndex++;
         entered = true;
+        _phasesCrossed++;
         final healed =
             healthAfterPhaseHeal(phase, enemy.currentHealth, enemy.maxHealth) -
                 enemy.currentHealth;
@@ -1920,6 +1931,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
               !wasKnockedOutAlready &&
               target.isKnockedOut) {
             _anyKnockedOut = true;
+            _lastKnockedOutAllyName = target.displayName;
             _log.add(
               _LogEntry(
                 '${target.displayName} ${trFor(lang, 'is_knocked_out_suffix')}',
@@ -2031,6 +2043,21 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _over = true;
       _won = won;
     });
+
+    // What this fight left behind, for the next scene's opening line.
+    ref.read(lastFightOutcomeProvider.notifier).state = FightOutcome(
+      won: won,
+      enemyNames: [for (final e in _enemies) e.displayName],
+      isElite: _isElite,
+      isHunt: widget.modifiers.isHunt,
+      isBoss: widget.modifiers.isZoneBoss ||
+          _enemies.any((e) => e.phases.isNotEmpty),
+      phasesCrossed: _phasesCrossed,
+      knockedOutAllyName: _lastKnockedOutAllyName,
+      flawless: !_potionUsed && !_anyKnockedOut,
+      rounds: max(1, _roundsStarted),
+      chapter: _chapter,
+    );
 
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _party.firstWhere((m) => m.isPlayer);
@@ -4210,6 +4237,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
               .read(storyPlayProvider.notifier)
               .restart(StoryRepository.startNodeId);
           ref.read(homeTabIndexProvider.notifier).state = 0;
+          // The dead character's last fight is the death screen's to tell,
+          // not the next scene's.
+          ref.read(lastFightOutcomeProvider.notifier).state = null;
           if (!mounted) return;
           await Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
@@ -4218,6 +4248,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 xpEarned: result.xpEarnedThisRun,
                 skillsLost: result.skillsLost,
                 nodesVisited: nodesVisited,
+                killerName: _enemies.isEmpty ? '' : _enemies.first.displayName,
+                narrationSeed: _random.nextInt(1 << 20),
               ),
             ),
             (route) => route.isFirst,
