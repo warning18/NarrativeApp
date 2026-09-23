@@ -20,6 +20,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
+import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/gemini_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -36,6 +37,7 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/tutorial_overlay.dart';
 import '../widgets/walking_companion_strip.dart';
+import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
@@ -649,6 +651,30 @@ Future<void> _selectChoice({
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) showTutorialOverlay(context, ref);
       });
+    }
+  }
+
+  if (choice.launchesZone && !isExcursion) {
+    // A main zone launched from its story beat: the expedition (and its
+    // boss) must be cleared before the story moves on. A retreat or a
+    // defeat simply leaves the player on this node.
+    final zones = ref.read(gameDbProvider(zonesSchema)).value;
+    final zone = zones?[choice.launchZoneId] as Map<String, dynamic>?;
+    final alreadyCleared = ref
+        .read(playerSessionProvider)
+        .completedZoneIds
+        .contains(choice.launchZoneId);
+    if (zone != null && !alreadyCleared) {
+      ref.read(expeditionActiveProvider.notifier).state = true;
+      if (!context.mounted) return;
+      final cleared = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) =>
+              ExpeditionScreen(zoneId: choice.launchZoneId!, zone: zone),
+        ),
+      );
+      ref.read(expeditionActiveProvider.notifier).state = false;
+      if (cleared != true) return;
     }
   }
 

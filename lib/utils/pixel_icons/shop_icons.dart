@@ -11,6 +11,8 @@ class ShopIcons {
     'black_market_docks',
     'blind_beggar_stall',
     'hammersmith_forge',
+    'last_lantern',
+    'ossuary_relics',
     'sharpweave_den',
     'shieldwrights_hall',
     'smugglers_vault',

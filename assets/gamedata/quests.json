@@ -924,5 +924,245 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": ""
+  },
+  "q_ch4_the_second_ledger": {
+    "questID": "q_ch4_the_second_ledger",
+    "questName": "The Second Ledger",
+    "chapter": 4,
+    "category": "Main",
+    "difficulty": "11",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Hollow Court Inquisitor who keeps the second ledger",
+        "type": "Kill",
+        "targetEnemyID": "hollow_court_inquisitor",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 200,
+    "rewardXP": 260,
+    "rewardItemID": "shield_t8",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch5_the_dead_heart",
+    "npcDialogueText": "\"There were two ledgers. The one you carry is the list of the taken. The other is the list of who did the taking — and the Inquisitor who keeps it is waiting at the bottom of the Drowned Stair.\" The archivist wipes ink from her fingers with the air of a woman who has already decided what she is willing to lose.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_the_second_ledger_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch4_ossuary_bounty": {
+    "questID": "q_ch4_ossuary_bounty",
+    "questName": "The Ossuary Bounty",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Clear three catacomb ghouls from the flooded galleries",
+        "type": "Kill",
+        "targetEnemyID": "catacomb_ghoul",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 3
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 120,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts three coins onto the ledge. \"Three ghouls, three of these. I'm not made of coin, and neither are they.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_ossuary_bounty_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch5_the_dead_heart": {
+    "questID": "q_ch5_the_dead_heart",
+    "questName": "The Dead Heart",
+    "chapter": 5,
+    "category": "Main",
+    "difficulty": "13",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Void Archon keeping the Shroud's vigil",
+        "type": "Kill",
+        "targetEnemyID": "void_archon",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 260,
+    "rewardXP": 320,
+    "rewardItemID": "archon_mantle",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch6_beyond_the_tear",
+    "npcDialogueText": "\"The ledger ends at the tear, and something has been standing between it and the rest of the city since the night it opened.\" The chart-keeper taps the last page. \"It was one of ours, once. It will not be pleased to see the book.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_the_dead_heart_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch5_penitents_confession": {
+    "questID": "q_ch5_penitents_confession",
+    "questName": "The Penitent's Confession",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "10",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Answer the penitent Inquisitor's challenge",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_penitent",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 120,
+    "rewardXP": 160,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I burned the Ashen Quarter on an order I never read. If you carry the list of the taken, then you carry my name too — and I would rather answer for it to you than to what waits at the tear.\" The penitent sets his blade between you, hilt first.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_penitents_confession_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch6_beyond_the_tear": {
+    "questID": "q_ch6_beyond_the_tear",
+    "questName": "Beyond the Tear",
+    "chapter": 6,
+    "category": "Main",
+    "difficulty": "15",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Void Sovereign beyond the tear",
+        "type": "Kill",
+        "targetEnemyID": "void_sovereign",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 400,
+    "rewardXP": 500,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "The Eel's timbers creak against the sand. Across the water the tear stands open, and whatever knew your family's name is waiting on the other side for you to be polite enough to knock.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_beyond_the_tear_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch6_faces_of_the_fallen": {
+    "questID": "q_ch6_faces_of_the_fallen",
+    "questName": "Faces of the Fallen",
+    "chapter": 6,
+    "category": "Side",
+    "difficulty": "12",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down the hollow reflections that wear the faces of the fallen",
+        "type": "Kill",
+        "targetEnemyID": "hollow_reflection",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 2
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 200,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "They walk the Hollow Shore wearing faces you put down on a bridge, in a locked chamber, on the docks. None of them are glad to see you. All of them remember how it ended.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_faces_of_the_fallen_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }

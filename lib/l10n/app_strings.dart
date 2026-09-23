@@ -2783,6 +2783,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '+25% for a matching alignment, -25% for the opposite',
     AppLanguage.fr: "+25 % pour un alignement assorti, -25 % pour l'opposé",
   },
+  'launch_zone_id': {
+    AppLanguage.en: 'Launch zone (expedition cleared before continuing)',
+    AppLanguage.fr: 'Zone lancée (expédition à terminer avant de continuer)',
+  },
   'hide_if_flags': {
     AppLanguage.en: 'Hide once any of these flags is held (comma-separated)',
     AppLanguage.fr:

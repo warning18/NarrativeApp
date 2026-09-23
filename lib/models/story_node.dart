@@ -25,6 +25,7 @@ class StoryChoice {
     this.chestFloor,
     this.isHunterAmbush = false,
     this.hideIfFlags = const [],
+    this.launchZoneId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -63,6 +64,7 @@ class StoryChoice {
               const [],
       chestFloor: json['chestFloor'] as String?,
       isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
+      launchZoneId: json['launchZoneId'] as String?,
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -148,6 +150,15 @@ class StoryChoice {
   /// locked choice (see [lockedText]), which stays visible as a reminder.
   final List<String> hideIfFlags;
 
+  /// A zones.json id to run as an expedition BEFORE this choice resolves --
+  /// a chapter's main zone launched from its story beat (the Drowned
+  /// Stair, the Shroud's Vigil, Beyond the Tear). Clearing the zone
+  /// continues to [nextId]; retreating or losing leaves the player on the
+  /// node to try again. An already-cleared zone is skipped.
+  final String? launchZoneId;
+
+  bool get launchesZone => launchZoneId != null && launchZoneId!.isNotEmpty;
+
   bool isHiddenFor(Iterable<String> flags) =>
       hideIfFlags.any((flag) => flags.contains(flag));
 
@@ -202,6 +213,7 @@ class StoryChoice {
           'chestFloor': chestFloor,
         if (isHunterAmbush) 'isHunterAmbush': isHunterAmbush,
         if (hideIfFlags.isNotEmpty) 'hideIfFlags': hideIfFlags,
+        if (launchesZone) 'launchZoneId': launchZoneId,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]

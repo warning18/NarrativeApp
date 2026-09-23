@@ -144,6 +144,25 @@ void main() {
       }
     });
 
+    test('every story-launched zone exists and is a main zone', () {
+      final dag = _loadGamedata('../Cleaned_Narrative_DAG.json');
+      var launches = 0;
+      for (final entry in dag.entries) {
+        final node = entry.value as Map<String, dynamic>;
+        for (final choice in (node['choices'] as List? ?? const [])) {
+          final zoneId =
+              (choice as Map<String, dynamic>)['launchZoneId']?.toString();
+          if (zoneId == null || zoneId.isEmpty) continue;
+          launches++;
+          expect(zones, contains(zoneId),
+              reason: 'node ${entry.key} launches unknown zone $zoneId');
+          expect(zoneIsMain(zones[zoneId] as Map<String, dynamic>), isTrue,
+              reason: 'node ${entry.key} launches a non-main zone');
+        }
+      }
+      expect(launches, greaterThanOrEqualTo(3));
+    });
+
     test('each chapter has exactly one ungated entry zone per chapter 3+', () {
       final byChapter = <int, List<String>>{};
       for (final entry in zones.entries) {

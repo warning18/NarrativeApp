@@ -849,5 +849,413 @@
     "packEligible": false,
     "hunterAlignment": "Good",
     "hunterTier": 2
+  },
+  "catacomb_ghoul": {
+    "enemyName": "Catacomb Ghoul",
+    "maxHealth": 145,
+    "damage": 18,
+    "guile": 3,
+    "xpReward": 60,
+    "goldReward": 42,
+    "lootTable": [
+      {
+        "itemID": "potion_minor",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "plague_bite",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "bone_warden": {
+    "enemyName": "Bone Warden",
+    "maxHealth": 320,
+    "damage": 30,
+    "guile": 6,
+    "xpReward": 120,
+    "goldReward": 90,
+    "lootTable": [
+      {
+        "itemID": "shield_t8",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "heavy_attack",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "hollow_court_inquisitor": {
+    "enemyName": "Hollow Court Inquisitor",
+    "maxHealth": 400,
+    "damage": 33,
+    "guile": 9,
+    "xpReward": 150,
+    "goldReward": 110,
+    "lootTable": [
+      {
+        "itemID": "sword_t8",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "void_hound": {
+    "enemyName": "Void Hound",
+    "maxHealth": 170,
+    "damage": 20,
+    "guile": 4,
+    "xpReward": 70,
+    "goldReward": 50,
+    "lootTable": [
+      {
+        "itemID": "antidote",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "venomous_ambush",
+        "condition": "Chance",
+        "requiredElement": "Earth",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "tear_spawn": {
+    "enemyName": "Tear-Spawn",
+    "maxHealth": 300,
+    "damage": 28,
+    "guile": 6,
+    "xpReward": 105,
+    "goldReward": 80,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_drain",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "inquisition_penitent": {
+    "enemyName": "Inquisition Penitent",
+    "maxHealth": 260,
+    "damage": 26,
+    "guile": 8,
+    "xpReward": 140,
+    "goldReward": 100,
+    "lootTable": [
+      {
+        "itemID": "staff_t9",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "void_archon": {
+    "enemyName": "Void Archon",
+    "maxHealth": 380,
+    "damage": 32,
+    "guile": 10,
+    "xpReward": 190,
+    "goldReward": 140,
+    "lootTable": [
+      {
+        "itemID": "archon_mantle",
+        "dropRate": 30
+      },
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "Ice",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "shadow_step",
+        "condition": "OnLowHealth",
+        "requiredElement": "Wind",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "hollow_reflection": {
+    "enemyName": "Hollow Reflection",
+    "maxHealth": 180,
+    "damage": 22,
+    "guile": 7,
+    "xpReward": 95,
+    "goldReward": 70,
+    "lootTable": [
+      {
+        "itemID": "tear_glass_blade",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "rogue_backstab",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "mage_arcane_missile",
+        "condition": "Chance",
+        "requiredElement": "Electricity",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0
+  },
+  "void_sovereign": {
+    "enemyName": "The Void Sovereign",
+    "maxHealth": 390,
+    "damage": 31,
+    "guile": 12,
+    "xpReward": 300,
+    "goldReward": 220,
+    "lootTable": [
+      {
+        "itemID": "sovereign_crown",
+        "dropRate": 100
+      },
+      {
+        "itemID": "staff_t10",
+        "dropRate": 20
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 45,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 60,
+        "healthThreshold": 50,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "shadow_step",
+        "condition": "OnLowHealth",
+        "requiredElement": "Wind",
+        "chance": 40,
+        "healthThreshold": 25,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0
   }
 }

@@ -275,6 +275,8 @@ class _ChoiceEditState {
             TextEditingController(text: choice.flagsToAdd.join(', ')),
         hideIfFlagsController =
             TextEditingController(text: choice.hideIfFlags.join(', ')),
+        launchZoneIdController =
+            TextEditingController(text: choice.launchZoneId ?? ''),
         questIDToProgressController =
             TextEditingController(text: choice.questIDToProgress ?? ''),
         lockedTextController =
@@ -312,6 +314,10 @@ class _ChoiceEditState {
   /// Comma-separated flags that hide this choice once held (see
   /// [StoryChoice.hideIfFlags]) -- a hub activity's "already done" marker.
   final TextEditingController hideIfFlagsController;
+
+  /// zones.json id run as an expedition before the choice resolves (see
+  /// [StoryChoice.launchZoneId]).
+  final TextEditingController launchZoneIdController;
   final TextEditingController questIDToProgressController;
   final TextEditingController lockedTextController;
   final TextEditingController lockedTextFrController;
@@ -341,6 +347,7 @@ class _ChoiceEditState {
     healAmountController.dispose();
     flagsToAddController.dispose();
     hideIfFlagsController.dispose();
+    launchZoneIdController.dispose();
     questIDToProgressController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
@@ -372,6 +379,9 @@ class _ChoiceEditState {
             .map((s) => s.trim())
             .where((s) => s.isNotEmpty)
             .toList(),
+        launchZoneId: launchZoneIdController.text.trim().isEmpty
+            ? null
+            : launchZoneIdController.text.trim(),
         questIDToProgress: questIDToProgressController.text.trim().isEmpty
             ? null
             : questIDToProgressController.text.trim(),
@@ -531,6 +541,14 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.hideIfFlagsController,
                   decoration: InputDecoration(
                     labelText: t('hide_if_flags'),
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.launchZoneIdController,
+                  decoration: InputDecoration(
+                    labelText: t('launch_zone_id'),
                     border: const OutlineInputBorder(),
                   ),
                 ),

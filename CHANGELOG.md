@@ -8,6 +8,71 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.112.0+140]
+
+The late-game batch, fourth step of the chapter-flow roadmap: chapter 4
+becomes the second big zone, chapter 5 the last big zone, and a new
+chapter 6 the final zone with four endings -- nine new enemies, five
+zones, three ports, two hubs, two shops, six quests and three pieces of
+gear, all with pixel icons and French text.
+
+### Added
+- **Chapter 4, the Hollow Court.** A new hub, the Sunken Cloister
+  (node 5010), between the descent and the Court: an archivist who hands
+  out the Main quest The Second Ledger, the sapper's Ossuary Bounty (a
+  two-ghoul pack), the Bone Warden at the sealed stair, the deserters'
+  ossuary stall (a new shop, The Ossuary Trade), a collapsed span
+  (Dexterity check), void wisps among the candles and a deserter to
+  question (Charisma check). Two zones at the new port The Drowned Stair:
+  the Ossuary Galleries (tier 1, boss Bone Warden) and the Drowned Stair
+  itself (tier 2, main zone, boss Hollow Court Inquisitor), which the
+  hub's exit launches as an expedition before the story descends.
+- **Chapter 5, the Reliquary Quarter** (node 6010): the chart-keeper who
+  reads the ledger's last page (Main quest The Dead Heart), Lysa if she
+  survived the Spire, void hounds, a penitent Inquisitor's confession
+  and challenge, The Last Lantern (a new shop), a tear-spawn in the
+  chapel and the frost's pattern (Wisdom check). Two zones at the port
+  The Black Reliquary: the Dead Heart Approach (tier 2, boss Tear-Spawn)
+  and the Shroud's Vigil (tier 3, main zone, boss Void Archon), launched
+  by the hub's exit.
+- **Chapter 6, Beyond the Tear.** The Void returns the party to the
+  Hollow Shore with the Rusty Eel beached beside them; hollow reflections
+  wearing the faces of the fallen walk the sand (side quest Faces of the
+  Fallen), a last fire, then the Eel sails into the tear: the final zone
+  Beyond the Tear (tier 3, port The Hollow Shore, boss The Void Sovereign,
+  Main quest Beyond the Tear). After the throne room, four endings: carry
+  the Banner home (bearers), keep seeking it (seekers), sew the tear shut
+  with it (bearers of good standing) or take the Sovereign's crown (the
+  wicked). The old chapter-5 endings live on as the first two.
+- **Enemies**: Catacomb Ghoul, Bone Warden, Hollow Court Inquisitor
+  (chapter 4); Void Hound, Tear-Spawn, Inquisition Penitent, Void Archon
+  (chapter 5); Hollow Reflection and The Void Sovereign (chapter 6), each
+  with skill moves, guile, loot and a pixel icon. The three new bosses
+  join the solo-only set.
+- **Gear**: the Tear-Glass Blade, the Archon's Mantle and The Sovereign's
+  Crown (a guaranteed drop from the final boss).
+- **Story-launched zones.** A story choice can carry `launchZoneId`: the
+  expedition (and its boss) runs before the choice resolves; a retreat or
+  defeat leaves the player on the node, an already-cleared zone is
+  skipped. The editor exposes the field.
+
+### Changed
+- Story and zone bosses (the solo-only set) are no longer drawn as random
+  expedition or excursion events.
+- Chapter spine: chapter 4 and 5 gain their hub beats, chapter 6 is new;
+  the map's chapter grid follows.
+
+### Simulation
+40 seeded runs: 40/40 reach chapter 6 and end (bearer 6, seeker 20, dawn
+10, crown 4), party level by chapter 2.3 / 5.4 / 8.9 / 12.8 / 16.3 / 18.6,
+three voyages per run with 142 raider battles all won once the harpoon
+rack and iron plating are aboard. First-attempt win rates against the new
+bosses: Bone Warden 90%, Hollow Court Inquisitor 88%, Tear-Spawn 92%,
+Void Archon 72%, The Void Sovereign 72%; late packs 95% or better. Two
+earlier passes were dropped: one where the simulator sailed to later
+chapters' ports ahead of the story (levels 14 by chapter 3) and one where
+the Sovereign could be drawn as a random expedition event.
+
 ## [1.111.0+139]
 
 The boat batch, third step of the chapter-flow roadmap: chapter 3 opens

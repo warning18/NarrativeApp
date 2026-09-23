@@ -253,6 +253,10 @@ class SubNodeEngine {
         // An alignment hunter only ever arrives through
         // alignment_events.dart, never as an ordinary random draw.
         .where((e) => !isHunterEnemy(e.value as Map<String, dynamic>?))
+        // A story boss or a zone's own boss (soloOnlyEnemyIds) is met where
+        // the story or the zone puts it, never as a random draw -- the Void
+        // Sovereign does not wander into an expedition's third event.
+        .where((e) => !soloOnlyEnemyIds.contains(e.key))
         .where((e) {
           final minChapter =
               ((e.value as Map<String, dynamic>)['minChapter'] as num?)

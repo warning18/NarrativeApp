@@ -32,6 +32,7 @@ const Map<int, Set<String>> _chapterRoots = {
   3: {'3001'},
   4: {'5001'},
   5: {'6001', '6001_seeker'},
+  6: {'7001'},
 };
 
 /// A node's position on its chapter's own grid: [column] is how many hops

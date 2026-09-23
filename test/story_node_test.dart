@@ -100,4 +100,24 @@ void main() {
       expect(plain.toJson().containsKey('hideIfFlags'), isFalse);
     });
   });
+
+  group('launchZoneId', () {
+    test('round-trips through JSON and is omitted when unset', () {
+      const choice = StoryChoice(
+        text: 'Take the Drowned Stair down to the Court',
+        nextId: '5003',
+        launchZoneId: 'z_drowned_stair',
+      );
+      final restored = StoryChoice.fromJson(choice.toJson());
+      expect(restored.launchZoneId, 'z_drowned_stair');
+      expect(restored.launchesZone, isTrue);
+      const plain = StoryChoice(text: 'Go', nextId: '1');
+      expect(plain.launchesZone, isFalse);
+      expect(plain.toJson().containsKey('launchZoneId'), isFalse);
+      expect(
+          const StoryChoice(text: 'Go', nextId: '1', launchZoneId: '')
+              .launchesZone,
+          isFalse);
+    });
+  });
 }

@@ -399,6 +399,9 @@ const Set<String> soloOnlyEnemyIds = {
   'void_manifestation',
   'kroll_the_branded',
   'void_stalker',
+  'hollow_court_inquisitor',
+  'void_archon',
+  'void_sovereign',
 };
 
 /// How much detail the party can currently see into an enemy's telegraphed

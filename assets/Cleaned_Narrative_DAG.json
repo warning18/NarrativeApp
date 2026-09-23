@@ -2316,16 +2316,7 @@
       {
         "text": "Press onward",
         "text_fr": "Continuer",
-        "next_id": "5003",
-        "lockedText": "Whatever this way forward wanted from me, it wasn't the echo of a Shroud I'd never carried.",
-        "lockedText_fr": "Quoi que cette voie attendît de moi, ce n'était pas l'écho d'un Linceul que je n'avais jamais porté."
-      },
-      {
-        "text": "Press onward",
-        "text_fr": "Continuer",
-        "next_id": "5003_seeker",
-        "lockedText": "The Shroud at my back already answered that particular pull; I had no need to go looking for its cousin.",
-        "lockedText_fr": "Le Linceul contre mon dos avait déjà répondu à cet appel précis ; je n'avais nul besoin d'aller chercher sa cousine."
+        "next_id": "5010"
       }
     ]
   },
@@ -2445,8 +2436,8 @@
     "choices": [
       {
         "text": "Seek the source of the Void",
-        "text_fr": "Chercher la source du Néant",
-        "next_id": "6003"
+        "text_fr": "Chercher la source du Vide",
+        "next_id": "6010"
       }
     ]
   },
@@ -2485,41 +2476,9 @@
     "choices": [
       {
         "text": "Accept what the Void shows me",
-        "text_fr": "Accepter ce que le Néant me montre",
-        "next_id": "6005",
-        "lockedText": "Whatever finality waited for me here, it wasn't the quiet of a Banner I'd never carried.",
-        "lockedText_fr": "Quelle que fût la finalité qui m'attendait ici, ce n'était pas le silence d'une Bannière que je n'avais jamais portée."
-      },
-      {
-        "text": "Accept what the Void shows me",
-        "text_fr": "Accepter ce que le Néant me montre",
-        "next_id": "6005_seeker",
-        "lockedText": "The Banner at my back had already told me how this part ended.",
-        "lockedText_fr": "La Bannière contre mon dos m'avait déjà annoncé comment cette partie se terminait."
+        "text_fr": "Accepter ce que le Vide me montre",
+        "next_id": "7001"
       }
-    ]
-  },
-  "6005": {
-    "id": "6005",
-    "description": "[JOURNEY'S END] I stepped back into my own world with the Void Banner quiet against my back for the first time since a tavern door swung, broken, on its last hinge and started all of this. The invasion, at least, was over. What came after it was not, and would not be for some considerable time — but for the first time since that particular night, I found I knew exactly what I intended to do about it. A man can build quite a lot on that.",
-    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde, la Bannière du Néant enfin silencieuse contre mon dos pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment — mais pour la première fois depuis cette nuit précise, je découvris savoir exactement ce que je comptais en faire. Un homme peut bâtir bien des choses sur cela.",
-    "context_taxonomy": {
-      "ui_theme": "epilogue",
-      "mood": "triumphant",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_6005"
-    },
-    "choices": [
-      {
-        "text": "Begin again, changed",
-        "text_fr": "Recommencer, transformé",
-        "next_id": "EXIT"
-      }
-    ],
-    "reqFlags": [
-      "void_banner_bearer"
     ]
   },
   "5004b": {
@@ -2670,29 +2629,6 @@
         "text": "Read the ledger in the light",
         "text_fr": "Lire le registre à la lumière du jour",
         "next_id": "6002"
-      }
-    ]
-  },
-  "6005_seeker": {
-    "id": "6005_seeker",
-    "description": "[JOURNEY'S END] I stepped back into my own world without the Banner I had spent this entire business chasing, still chasing it in every sense that mattered — but for the first time since a tavern door swung, broken, on its last hinge and started all of this, I found I knew exactly what I intended to do about that, too. The invasion, at least, was over. What came after it was not, and would not be for some considerable time. A man can build quite a lot on knowing where he's headed, even carrying rather less than he set out to.",
-    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde sans la Bannière que j'avais poursuivie tout au long de cette affaire, la poursuivant encore, dans tous les sens qui comptaient — mais pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela, je découvris savoir exactement ce que je comptais faire à ce sujet aussi. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment. Un homme peut bâtir bien des choses en sachant où il va, même en portant nettement moins qu'il n'était parti chercher.",
-    "context_taxonomy": {
-      "ui_theme": "epilogue",
-      "mood": "triumphant",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_6005_seeker"
-    },
-    "reqFlags": [
-      "void_banner_seeker"
-    ],
-    "choices": [
-      {
-        "text": "Begin again, changed",
-        "text_fr": "Recommencer, transformé",
-        "next_id": "EXIT"
       }
     ]
   },
@@ -3251,5 +3187,703 @@
         ]
       }
     ]
+  },
+  "5010": {
+    "id": "5010",
+    "description": "Halfway down, the catacombs opened into a cloister that had drowned rather than fallen — vaulted arches knee-deep in black water, candles guttering on every ledge above the tide line, and people. Not many, and none of them glad to see me, but people: deserters from the Court's own ranks, an archivist with ink still on her fingers, a ghoul-bitten sapper who had stopped expecting to see daylight. The Court lay deeper still, down a stair the water had already claimed. Everything the Cloister had to offer, I would need before I took it.",
+    "description_fr": "À mi-descente, les catacombes s'ouvraient sur un cloître qui s'était noyé plutôt qu'effondré — des arches voûtées baignant dans une eau noire jusqu'aux genoux, des chandelles vacillant sur chaque corniche au-dessus de la ligne d'eau, et des gens. Pas beaucoup, et aucun heureux de me voir, mais des gens : des déserteurs des propres rangs de la Cour, une archiviste aux doigts encore tachés d'encre, un sapeur mordu par une goule qui avait cessé d'espérer revoir le jour. La Cour gisait plus bas encore, au bas d'un escalier que l'eau avait déjà pris. Tout ce que le Cloître avait à offrir, j'en aurais besoin avant de m'y engager.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Hear the archivist out about a second ledger",
+        "text_fr": "Écouter l'archiviste au sujet d'un second registre",
+        "next_id": "5010_archivist",
+        "unlockQuestId": "q_ch4_the_second_ledger",
+        "hideIfFlags": [
+          "hub_5010_archivist"
+        ]
+      },
+      {
+        "text": "Take the sapper's bounty and clear the ghouls from the flooded aisle",
+        "text_fr": "Accepter la prime du sapeur et nettoyer l'allée inondée de ses goules",
+        "next_id": "5010_ghouls",
+        "triggerEnemyIds": [
+          "catacomb_ghoul",
+          "catacomb_ghoul"
+        ],
+        "unlockQuestId": "q_ch4_ossuary_bounty",
+        "hideIfFlags": [
+          "hub_5010_ghouls"
+        ]
+      },
+      {
+        "text": "Face the Bone Warden guarding the sealed stair",
+        "text_fr": "Affronter le Gardien d'Os qui garde l'escalier scellé",
+        "next_id": "5010_warden",
+        "triggerEnemyId": "bone_warden",
+        "goldMod": 60,
+        "hideIfFlags": [
+          "hub_5010_warden"
+        ]
+      },
+      {
+        "text": "Trade at the deserters' ossuary stall",
+        "text_fr": "Commercer à l'étal-ossuaire des déserteurs",
+        "next_id": "5010_trade",
+        "unlockShopId": "ossuary_relics",
+        "hideIfFlags": [
+          "hub_5010_trade"
+        ]
+      },
+      {
+        "text": "Cross the collapsed span above the black water",
+        "text_fr": "Traverser la travée effondrée au-dessus de l'eau noire",
+        "next_id": "5010_span",
+        "checkAbility": "dexterity",
+        "checkDC": 14,
+        "goldMod": 80,
+        "failNextId": "5010_span_failed",
+        "hideIfFlags": [
+          "hub_5010_span"
+        ]
+      },
+      {
+        "text": "Put out the void wisps circling the candles",
+        "text_fr": "Éteindre les feux follets du Vide qui tournent autour des chandelles",
+        "next_id": "5010_wisps",
+        "triggerEnemyIds": [
+          "void_wisp",
+          "void_wisp"
+        ],
+        "hideIfFlags": [
+          "hub_5010_wisps"
+        ]
+      },
+      {
+        "text": "Question a deserter of the Court",
+        "text_fr": "Interroger un déserteur de la Cour",
+        "next_id": "5010_deserter",
+        "checkAbility": "charisma",
+        "checkDC": 13,
+        "goldMod": 40,
+        "failNextId": "5010_deserter_failed",
+        "hideIfFlags": [
+          "hub_5010_deserter"
+        ]
+      },
+      {
+        "text": "Take the Drowned Stair down to the Court",
+        "text_fr": "Descendre l'Escalier Noyé jusqu'à la Cour",
+        "next_id": "5003",
+        "launchZoneId": "z_drowned_stair"
+      },
+      {
+        "text": "Take the Drowned Stair down to the Court",
+        "text_fr": "Descendre l'Escalier Noyé jusqu'à la Cour",
+        "next_id": "5003_seeker",
+        "launchZoneId": "z_drowned_stair"
+      }
+    ]
+  },
+  "5010_archivist": {
+    "id": "5010_archivist",
+    "description": "She had been the Court's own archivist until the night she found her sister's name in what she was copying. \"There were two ledgers,\" she said, wiping ink from her fingers with the air of a woman who had already decided what she was willing to lose. \"The one you'll find below is the list of the taken. The other is the list of who did the taking, and the Inquisitor who keeps it is waiting at the bottom of the Drowned Stair. He knows you're coming. He has known for years.\"",
+    "description_fr": "Elle avait été l'archiviste de la Cour jusqu'à la nuit où elle avait trouvé le nom de sa sœur dans ce qu'elle copiait. « Il y avait deux registres, dit-elle en essuyant l'encre de ses doigts avec l'air d'une femme qui a déjà décidé ce qu'elle est prête à perdre. Celui que vous trouverez en bas est la liste des enlevés. L'autre est la liste de ceux qui ont enlevé, et l'Inquisiteur qui le tient vous attend au bas de l'Escalier Noyé. Il sait que vous venez. Il le sait depuis des années. »",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_archivist"
+        ]
+      }
+    ]
+  },
+  "5010_ghouls": {
+    "id": "5010_ghouls",
+    "description": "They came up with the water, as the sapper had promised, and went down again in pieces, which he had not promised but seemed to appreciate. He counted the coin onto the ledge one piece at a time, as a man does who does not expect to earn any more of it. \"Three,\" he said, \"was the number I could afford. There are more than three.\"",
+    "description_fr": "Elles montèrent avec l'eau, comme le sapeur l'avait promis, et redescendirent en morceaux, ce qu'il n'avait pas promis mais sembla apprécier. Il compta les pièces sur la corniche une à une, comme un homme qui ne s'attend pas à en gagner davantage. « Trois, dit-il, c'était le nombre que je pouvais payer. Il y en a plus de trois. »",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_ghouls"
+        ]
+      }
+    ]
+  },
+  "5010_warden": {
+    "id": "5010_warden",
+    "description": "The Warden had been built from the Court's own dead and set to hold a stair that no longer led anywhere, which it had done, faithfully, for longer than anyone in the Cloister had been alive. When it finally came apart, the joints gave up a purse of old coin somebody had once tried to bribe it with. It had not, apparently, been the sort of thing that took bribes.",
+    "description_fr": "Le Gardien avait été bâti des propres morts de la Cour et posté pour tenir un escalier qui ne menait plus nulle part, ce qu'il avait fait, fidèlement, depuis plus longtemps que quiconque au Cloître n'était en vie. Lorsqu'il se disloqua enfin, ses jointures livrèrent une bourse de vieilles pièces avec laquelle quelqu'un avait un jour tenté de l'acheter. Ce n'était apparemment pas le genre de chose qui acceptait les pots-de-vin.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_warden"
+        ]
+      }
+    ]
+  },
+  "5010_trade": {
+    "id": "5010_trade",
+    "description": "The stall was a shelf of skulls with the goods laid out between the jaws, kept by a deserter who no longer asked where anything came from and did not expect to be asked in return. Salves, second-hand steel, a charm or two that had outlived their owners. Everything down here had.",
+    "description_fr": "L'étal était une étagère de crânes, la marchandise disposée entre les mâchoires, tenue par un déserteur qui ne demandait plus d'où venait quoi que ce soit et n'attendait pas qu'on le lui demande en retour. Des baumes, de l'acier d'occasion, un ou deux talismans qui avaient survécu à leurs propriétaires. Tout, ici-bas, l'avait fait.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_trade"
+        ]
+      }
+    ]
+  },
+  "5010_span": {
+    "id": "5010_span",
+    "description": "The span had collapsed at the far end, leaving a stone lip a hand wide over water that did not care to show what it was hiding. I crossed it the way one crosses anything of the kind — quickly, and without looking down — and found, on the ledge beyond, the reliquary box someone had died trying to reach. It had not been worth their life. It was, however, worth a fair amount of coin.",
+    "description_fr": "La travée s'était effondrée à l'autre bout, ne laissant qu'un rebord de pierre large comme une main au-dessus d'une eau qui ne tenait pas à montrer ce qu'elle cachait. Je la traversai comme on traverse ce genre de chose — vite, et sans regarder en bas — et trouvai, sur la corniche au-delà, le coffret-reliquaire que quelqu'un était mort en tentant d'atteindre. Il n'avait pas valu sa vie. Il valait, en revanche, une jolie somme.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_span"
+        ]
+      }
+    ]
+  },
+  "5010_span_failed": {
+    "id": "5010_span_failed",
+    "description": "The lip gave under my second step and the water took me to the chest before I found the wall. I climbed out with nothing to show for it but a lungful of the Court's history and the certainty that whatever lived under that surface had, for reasons of its own, decided not to bother.",
+    "description_fr": "Le rebord céda sous mon second pas et l'eau me prit jusqu'à la poitrine avant que je ne trouve le mur. J'en ressortis sans rien d'autre qu'une gorgée de l'histoire de la Cour et la certitude que ce qui vivait sous cette surface avait, pour des raisons qui lui appartenaient, décidé de ne pas se donner la peine.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_span"
+        ]
+      }
+    ]
+  },
+  "5010_deserter": {
+    "id": "5010_deserter",
+    "description": "He had held a rank in the Court until the night the ledger's second page was read aloud, and he talked, once he was sure I was not there to collect him, the way men do who have been waiting a long time for someone to ask. Where the stair had been dry. Which landing the Inquisitor slept on. And, almost as an afterthought, where the Court's pay chest had gone into the water — and how far out.",
+    "description_fr": "Il avait tenu un rang dans la Cour jusqu'à la nuit où la seconde page du registre avait été lue à voix haute, et il parla, une fois certain que je n'étais pas là pour l'emmener, comme parlent les hommes qui attendent depuis longtemps qu'on les interroge. Où l'escalier avait été au sec. Sur quel palier l'Inquisiteur dormait. Et, presque comme une arrière-pensée, où le coffre de solde de la Cour était tombé à l'eau — et à quelle distance.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_deserter"
+        ]
+      }
+    ]
+  },
+  "5010_deserter_failed": {
+    "id": "5010_deserter_failed",
+    "description": "He looked at me the way the Court had taught him to look at everyone, decided I was either a collector or a fool, and went back to his candle. Some doors down here did not open for charm. Most of them, on reflection, had never opened for anything.",
+    "description_fr": "Il me regarda comme la Cour lui avait appris à regarder tout le monde, décida que j'étais soit un collecteur soit un imbécile, et retourna à sa chandelle. Certaines portes, ici-bas, ne s'ouvraient pas au charme. La plupart, à la réflexion, ne s'étaient jamais ouvertes à rien.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_deserter"
+        ]
+      }
+    ]
+  },
+  "5010_wisps": {
+    "id": "5010_wisps",
+    "description": "The wisps had come for the candles, as wisps do, and stayed for whatever candles are to a thing made of the space between them. Putting them out was quick, and the Cloister was darker for it, and somehow easier to breathe in.",
+    "description_fr": "Les feux follets étaient venus pour les chandelles, comme font les feux follets, et étaient restés pour ce que les chandelles représentent aux yeux d'une chose faite de l'espace entre elles. Les éteindre fut rapide, et le Cloître en devint plus sombre, et pourtant plus facile à respirer.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Cloister",
+        "text_fr": "Retour au Cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_wisps"
+        ]
+      }
+    ]
+  },
+  "6010": {
+    "id": "6010",
+    "description": "The ledger's road to the city's heart ran through the Reliquary Quarter, where the Inquisition had kept its holiest things and, lately, its most frightened people. Whole streets had been given up to the tear's slow weather — frost on the cobbles in summer, shadows that lay in the wrong direction — and what was left of the order had made its last stand here among the reliquaries, some of them still praying, some of them past it. If I meant to walk into the dead heart, this was the last place that would sell me anything, tell me anything, or try to stop me.",
+    "description_fr": "La route du registre vers le cœur de la ville traversait le Quartier du Reliquaire, où l'Inquisition avait gardé ses objets les plus saints et, dernièrement, ses gens les plus effrayés. Des rues entières avaient été abandonnées au lent climat de la déchirure — du givre sur les pavés en plein été, des ombres couchées dans le mauvais sens — et ce qui restait de l'ordre avait livré ici son dernier combat parmi les reliquaires, certains priant encore, d'autres bien au-delà. Si je comptais entrer dans le cœur mort, c'était le dernier endroit qui me vendrait quelque chose, me dirait quelque chose, ou tenterait de m'arrêter.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Read the ledger's last page with the quarter's chart-keeper",
+        "text_fr": "Lire la dernière page du registre avec la gardienne des cartes du quartier",
+        "next_id": "6010_chartkeeper",
+        "unlockQuestId": "q_ch5_the_dead_heart",
+        "hideIfFlags": [
+          "hub_6010_chartkeeper"
+        ]
+      },
+      {
+        "text": "Find Lysa among the refugees",
+        "text_fr": "Retrouver Lysa parmi les réfugiés",
+        "next_id": "6010_lysa",
+        "alignmentMod": 5,
+        "healAmount": 40,
+        "hideIfFlags": [
+          "hub_6010_lysa"
+        ]
+      },
+      {
+        "text": "Drive off the void hounds circling the reliquary",
+        "text_fr": "Chasser les molosses du Vide qui rôdent autour du reliquaire",
+        "next_id": "6010_hounds",
+        "triggerEnemyIds": [
+          "void_hound",
+          "void_hound"
+        ],
+        "hideIfFlags": [
+          "hub_6010_hounds"
+        ]
+      },
+      {
+        "text": "Hear a penitent Inquisitor's confession",
+        "text_fr": "Entendre la confession d'un Inquisiteur pénitent",
+        "next_id": "6010_confession",
+        "unlockQuestId": "q_ch5_penitents_confession",
+        "hideIfFlags": [
+          "hub_6010_confession"
+        ]
+      },
+      {
+        "text": "Answer the penitent's challenge",
+        "text_fr": "Répondre au défi du pénitent",
+        "next_id": "6010_penitent",
+        "triggerEnemyId": "inquisition_penitent",
+        "hideIfFlags": [
+          "hub_6010_penitent"
+        ]
+      },
+      {
+        "text": "Trade at the Last Lantern",
+        "text_fr": "Commercer à la Dernière Lanterne",
+        "next_id": "6010_lantern",
+        "unlockShopId": "last_lantern",
+        "hideIfFlags": [
+          "hub_6010_lantern"
+        ]
+      },
+      {
+        "text": "Hunt the tear-spawn nesting in the chapel",
+        "text_fr": "Traquer l'engeance de la déchirure nichée dans la chapelle",
+        "next_id": "6010_spawn",
+        "triggerEnemyId": "tear_spawn",
+        "goldMod": 70,
+        "hideIfFlags": [
+          "hub_6010_spawn"
+        ]
+      },
+      {
+        "text": "Read the frost for the tear's pattern",
+        "text_fr": "Lire dans le givre le motif de la déchirure",
+        "next_id": "6010_frost",
+        "checkAbility": "wisdom",
+        "checkDC": 14,
+        "goldMod": 60,
+        "failNextId": "6010_frost_failed",
+        "hideIfFlags": [
+          "hub_6010_frost"
+        ]
+      },
+      {
+        "text": "Cross the dead heart",
+        "text_fr": "Traverser le cœur mort",
+        "next_id": "6003",
+        "launchZoneId": "z_shroud_vigil"
+      }
+    ]
+  },
+  "6010_chartkeeper": {
+    "id": "6010_chartkeeper",
+    "description": "She kept the quarter's charts in a chapel whose saints had been chipped off the walls by people who no longer wished to be watched. The ledger's last page gave a location, and she laid a finger on her map without needing to look. \"The square at the dead heart. Something has stood between the tear and the rest of us since the night it opened. It was one of ours, once. It will not be pleased to see the book.\"",
+    "description_fr": "Elle gardait les cartes du quartier dans une chapelle dont on avait buriné les saints des murs, œuvre de gens qui ne souhaitaient plus être regardés. La dernière page du registre donnait un lieu, et elle posa un doigt sur sa carte sans avoir besoin de chercher. « La place au cœur mort. Quelque chose se tient entre la déchirure et nous depuis la nuit où elle s'est ouverte. C'était l'un des nôtres, autrefois. Il ne sera pas heureux de voir le livre. »",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_chartkeeper"
+        ]
+      }
+    ]
+  },
+  "6010_lysa": {
+    "id": "6010_lysa",
+    "description": "Lysa had come up from the Lower City with the last of the refugees and found, in the quarter's ruin, the one thing she was good for: keeping people alive who had stopped expecting it. She looked at the ledger under my arm, then at me, and did not ask. She cleaned the worst of the Spire out of my wounds instead, and told me, in the tone of someone giving directions, that I was to come back.",
+    "description_fr": "Lysa était montée de la Ville Basse avec les derniers réfugiés et avait trouvé, dans les ruines du quartier, la seule chose à laquelle elle était bonne : maintenir en vie des gens qui avaient cessé d'y croire. Elle regarda le registre sous mon bras, puis moi, et ne demanda rien. Elle nettoya plutôt le pire de la Flèche de mes plaies, et me dit, du ton de quelqu'un qui indique un chemin, que je devais revenir.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lysa"
+        ]
+      }
+    ],
+    "reqFlags": [
+      "lysa_survived"
+    ]
+  },
+  "6010_hounds": {
+    "id": "6010_hounds",
+    "description": "They had the shape of dogs the way the tear had the shape of a door: close enough to fool the eye, and wrong enough to make it regret being fooled. They hunted in pairs and died the same way, and the reliquary's last few candles burned a little straighter for it.",
+    "description_fr": "Ils avaient la forme de chiens comme la déchirure avait la forme d'une porte : assez proche pour tromper l'œil, et assez fausse pour le faire regretter d'avoir été trompé. Ils chassaient par deux et mouraient de même, et les dernières chandelles du reliquaire brûlèrent un peu plus droit après cela.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_hounds"
+        ]
+      }
+    ]
+  },
+  "6010_confession": {
+    "id": "6010_confession",
+    "description": "He had burned the Ashen Quarter on an order he had never read, and he said so plainly, kneeling on the frost with his blade laid hilt-first between us. If I carried the list of the taken, then I carried his name too. He would rather answer for it to me than to whatever waited at the tear. I told him I would think about it. He said that was more than the order had ever offered.",
+    "description_fr": "Il avait brûlé le Quartier Cendreux sur un ordre qu'il n'avait jamais lu, et il le dit sans détour, agenouillé sur le givre, sa lame posée entre nous, la garde en avant. Si je portais la liste des enlevés, alors je portais son nom aussi. Il préférait en répondre devant moi que devant ce qui attendait à la déchirure. Je lui dis que j'y réfléchirais. Il répondit que c'était déjà plus que l'ordre n'avait jamais offert.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_confession"
+        ]
+      }
+    ]
+  },
+  "6010_penitent": {
+    "id": "6010_penitent",
+    "description": "He fought the way a man fights who has already decided how it ends and wants only for it to be done properly, and when it was done I found I had no satisfaction in it, and a name fewer on a list I had not asked to keep.",
+    "description_fr": "Il se battit comme se bat un homme qui a déjà décidé de la fin et ne veut que la voir accomplie proprement, et quand ce fut fait, je n'y trouvai aucune satisfaction, et un nom de moins sur une liste que je n'avais pas demandé à tenir.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_penitent"
+        ]
+      }
+    ]
+  },
+  "6010_lantern": {
+    "id": "6010_lantern",
+    "description": "The Last Lantern was exactly that: the last stall still lit in the quarter, run by a woman who had decided that if the world was ending she would at least be paid in advance. Salves, charms, a tome or two. Whatever might keep a body alive one street closer to the tear.",
+    "description_fr": "La Dernière Lanterne était exactement cela : le dernier étal encore éclairé du quartier, tenu par une femme qui avait décidé que si le monde finissait, elle serait au moins payée d'avance. Des baumes, des talismans, un ou deux grimoires. Tout ce qui pouvait garder un corps en vie une rue plus près de la déchirure.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_lantern"
+        ]
+      }
+    ]
+  },
+  "6010_spawn": {
+    "id": "6010_spawn",
+    "description": "It had made a nest of the chapel's stained glass and wore the saints like a hide. It came apart the way the tear's things do, all at once and without much conviction, and left behind the offerings a frightened parish had brought it, which it had never had any use for.",
+    "description_fr": "Elle avait fait son nid des vitraux de la chapelle et portait les saints comme une peau. Elle se défit comme se défont les choses de la déchirure, d'un coup et sans grande conviction, et laissa derrière elle les offrandes qu'une paroisse effrayée lui avait apportées et dont elle n'avait jamais eu l'usage.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_spawn"
+        ]
+      }
+    ]
+  },
+  "6010_frost": {
+    "id": "6010_frost",
+    "description": "The frost on the cobbles lay in lines, and the lines had a pattern, and the pattern — once I had stood still long enough to see it — pointed like a compass needle toward the square. It also pointed, on its way, at a cellar door nobody had opened since the night the tear came, and cellars in this quarter had been where the order kept its coin.",
+    "description_fr": "Le givre sur les pavés dessinait des lignes, et les lignes avaient un motif, et le motif — une fois que je fus resté immobile assez longtemps pour le voir — pointait comme l'aiguille d'une boussole vers la place. Il pointait aussi, en chemin, vers une porte de cave que personne n'avait ouverte depuis la nuit de la déchirure, et les caves de ce quartier étaient là où l'ordre gardait sa monnaie.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_frost"
+        ]
+      }
+    ]
+  },
+  "6010_frost_failed": {
+    "id": "6010_frost_failed",
+    "description": "I stared at the frost until my eyes ached and saw, in the end, only frost. Some patterns are not meant for the living. The quarter kept its coin, and I kept my dignity, or most of it.",
+    "description_fr": "Je fixai le givre jusqu'à en avoir mal aux yeux et n'y vis, au bout du compte, que du givre. Certains motifs ne sont pas faits pour les vivants. Le quartier garda sa monnaie, et moi ma dignité, ou presque.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_frost"
+        ]
+      }
+    ]
+  },
+  "7001": {
+    "id": "7001",
+    "description": "[CHAPTER 6: BEYOND THE TEAR] The Void let me go the way a tide lets go of a drowned man — not out of mercy, but because it had learned what it wanted and no longer needed to hold on. I came back to myself on the Hollow Shore, a strip of grey sand the tear had drawn out of the dead heart like a splinter, with the Rusty Eel beached beside me and no memory of having sailed her there. Across the water, the tear stood open. Not a wound now — a door, and whatever had known my family's name was standing on the other side of it, waiting for me to be polite enough to knock.",
+    "description_fr": "[CHAPITRE 6 : AU-DELÀ DE LA DÉCHIRURE] Le Vide me relâcha comme une marée relâche un noyé — non par pitié, mais parce qu'il avait appris ce qu'il voulait et n'avait plus besoin de retenir. Je revins à moi sur la Rive Creuse, une bande de sable gris que la déchirure avait tirée du cœur mort comme une écharde, le Rusty Eel échoué à côté de moi et sans le moindre souvenir de l'y avoir menée. De l'autre côté de l'eau, la déchirure était ouverte. Plus une blessure, désormais — une porte, et ce qui connaissait le nom de ma famille se tenait de l'autre côté, attendant que j'aie la politesse de frapper.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Ready the Eel",
+        "text_fr": "Parer l'Eel",
+        "next_id": "7002",
+        "unlockQuestId": "q_ch6_beyond_the_tear"
+      }
+    ]
+  },
+  "7002": {
+    "id": "7002",
+    "description": "The Eel would not go willingly, and I did not blame her. I checked her seams, counted the bolts for the ballista, and watched the sand between the water and the tear, where things walked that I had put down on a bridge, in a locked chamber, on the docks — each of them wearing a face I remembered, none of them glad to see me. Whatever waited beyond the tear, it had left its reflections out here to say hello. There was nothing else to do on the Hollow Shore but get ready, and then stop being ready and go.",
+    "description_fr": "L'Eel ne voulait pas y aller, et je ne l'en blâmais pas. Je vérifiai ses jointures, comptai les carreaux de la baliste, et observai le sable entre l'eau et la déchirure, où marchaient des choses que j'avais abattues sur un pont, dans une salle close, sur les docks — chacune portant un visage dont je me souvenais, aucune heureuse de me voir. Ce qui attendait au-delà de la déchirure avait laissé ses reflets ici pour dire bonjour. Il n'y avait rien d'autre à faire sur la Rive Creuse que se préparer, puis cesser de se préparer et y aller.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Put down the reflections walking the sand",
+        "text_fr": "Abattre les reflets qui arpentent le sable",
+        "next_id": "7002_reflections",
+        "triggerEnemyIds": [
+          "hollow_reflection",
+          "hollow_reflection"
+        ],
+        "unlockQuestId": "q_ch6_faces_of_the_fallen",
+        "hideIfFlags": [
+          "hub_7002_reflections"
+        ]
+      },
+      {
+        "text": "Rest by the Eel's fire one last time",
+        "text_fr": "Se reposer une dernière fois au feu de l'Eel",
+        "next_id": "7002_rest",
+        "healAmount": 500,
+        "hideIfFlags": [
+          "hub_7002_rest"
+        ]
+      },
+      {
+        "text": "Sail into the tear",
+        "text_fr": "Faire voile dans la déchirure",
+        "next_id": "7003",
+        "launchZoneId": "z_beyond_the_tear"
+      }
+    ]
+  },
+  "7002_reflections": {
+    "id": "7002_reflections",
+    "description": "They wore the faces well, right up until the end, when whatever wore them lost interest and let them fall. I did not look at what was underneath. Some things you put down twice and do not care to meet a third time.",
+    "description_fr": "Ils portaient bien les visages, jusqu'à la fin, lorsque ce qui les portait se désintéressa et les laissa tomber. Je ne regardai pas ce qu'il y avait dessous. Il est des choses que l'on abat deux fois sans souhaiter les rencontrer une troisième.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the shore",
+        "text_fr": "Retour à la rive",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "hub_7002_reflections"
+        ]
+      }
+    ]
+  },
+  "7002_rest": {
+    "id": "7002_rest",
+    "description": "The fire took a long time to catch on the grey sand and burned, when it did, a color I had no name for. I slept anyway. Whatever waited beyond the tear could wait one more night; it had, by its own account, been waiting a very long time already.",
+    "description_fr": "Le feu mit longtemps à prendre sur le sable gris et brûla, lorsqu'il prit, d'une couleur pour laquelle je n'avais pas de nom. Je dormis quand même. Ce qui attendait au-delà de la déchirure pouvait attendre une nuit de plus ; de son propre aveu, cela attendait déjà depuis très longtemps.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Back to the shore",
+        "text_fr": "Retour à la rive",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "hub_7002_rest"
+        ]
+      }
+    ]
+  },
+  "7003": {
+    "id": "7003",
+    "description": "The Sovereign fell — if fell is the word for something that had never properly stood — and the tear behind its throne shivered like a held breath finally let go. The faces on the sand went still. The ledger's clock, the one I had felt running in my bones since the Hollow Court, stopped. I stood in the wreck of a throne room that was already forgetting it had ever been one, with the Eel's ballista empty and my hands not quite steady, and understood that the invasion was over, and that I had, at last, to decide what came after it.",
+    "description_fr": "Le Souverain tomba — si tomber est le mot pour une chose qui ne s'était jamais vraiment tenue debout — et la déchirure derrière son trône frémit comme un souffle enfin relâché. Les visages sur le sable s'immobilisèrent. L'horloge du registre, celle que je sentais courir dans mes os depuis la Cour Creuse, s'arrêta. Je me tenais dans les débris d'une salle du trône qui oubliait déjà en avoir été une, la baliste de l'Eel vide et les mains pas tout à fait sûres, et je compris que l'invasion était finie, et qu'il me fallait enfin décider de ce qui viendrait après.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Step back through",
+        "text_fr": "Repasser de l'autre côté",
+        "next_id": "7004"
+      }
+    ]
+  },
+  "7004": {
+    "id": "7004",
+    "description": "On the Hollow Shore the Eel waited where I had left her, and so did the question the Void had asked me and I had never answered: what I meant to do with what it had shown me. The tear hung open at my back, quieter now, but open. The camp below the Spire was a day's sail away, and the people in it were expecting me to come back with an answer. I found, somewhat to my surprise, that I had one.",
+    "description_fr": "Sur la Rive Creuse, l'Eel attendait là où je l'avais laissée, et avec elle la question que le Vide m'avait posée et à laquelle je n'avais jamais répondu : ce que je comptais faire de ce qu'il m'avait montré. La déchirure béait dans mon dos, plus calme désormais, mais ouverte. Le campement sous la Flèche était à un jour de mer, et ceux qui s'y trouvaient attendaient que je revienne avec une réponse. Je découvris, non sans surprise, que j'en avais une.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Carry the Banner home and raise the camp into a city",
+        "text_fr": "Ramener la Bannière et faire du campement une ville",
+        "next_id": "7005"
+      },
+      {
+        "text": "Go on seeking the Banner, and whatever else the tears hide",
+        "text_fr": "Continuer à chercher la Bannière, et tout ce que cachent les déchirures",
+        "next_id": "7005_seeker"
+      },
+      {
+        "text": "Sew the tear shut with the Banner and walk away from all of it",
+        "text_fr": "Recoudre la déchirure avec la Bannière et tourner le dos à tout cela",
+        "next_id": "7005_dawn"
+      },
+      {
+        "text": "Take the Sovereign's crown for myself",
+        "text_fr": "Prendre la couronne du Souverain pour moi-même",
+        "next_id": "7005_crown"
+      }
+    ]
+  },
+  "7005": {
+    "id": "7005",
+    "description": "[JOURNEY'S END] I stepped back into my own world with the Void Banner quiet against my back for the first time since a tavern door swung, broken, on its last hinge and started all of this. The invasion, at least, was over. What came after it was not, and would not be for some considerable time — but for the first time since that particular night, I found I knew exactly what I intended to do about it. A man can build quite a lot on that.",
+    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde, la Bannière du Néant enfin silencieuse contre mon dos pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment — mais pour la première fois depuis cette nuit précise, je découvris savoir exactement ce que je comptais en faire. Un homme peut bâtir bien des choses sur cela.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transformé",
+        "next_id": "EXIT"
+      }
+    ],
+    "reqFlags": [
+      "void_banner_bearer"
+    ]
+  },
+  "7005_seeker": {
+    "id": "7005_seeker",
+    "description": "[JOURNEY'S END] I stepped back into my own world without the Banner I had spent this entire business chasing, still chasing it in every sense that mattered — but for the first time since a tavern door swung, broken, on its last hinge and started all of this, I found I knew exactly what I intended to do about that, too. The invasion, at least, was over. What came after it was not, and would not be for some considerable time. A man can build quite a lot on knowing where he's headed, even carrying rather less than he set out to.",
+    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde sans la Bannière que j'avais poursuivie tout au long de cette affaire, la poursuivant encore, dans tous les sens qui comptaient — mais pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela, je découvris savoir exactement ce que je comptais faire à ce sujet aussi. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment. Un homme peut bâtir bien des choses en sachant où il va, même en portant nettement moins qu'il n'était parti chercher.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transformé",
+        "next_id": "EXIT"
+      }
+    ],
+    "reqFlags": [
+      "void_banner_seeker"
+    ]
+  },
+  "7005_dawn": {
+    "id": "7005_dawn",
+    "description": "[JOURNEY'S END] I sewed it shut. The Banner had been made for exactly this, generations back, by a man who had looked into a tear and understood that the only honest answer to it was a needle — and when the last stitch went in, the grey sand went gold with a dawn the Hollow Shore had never seen, and the faces on it were gone, and so, at last, was the thing that had known my family's name. I sailed home with an empty back and a full crew, and let the camp make of me whatever it needed. A man can build quite a lot on having nothing left to carry.",
+    "description_fr": "[FIN DU VOYAGE] Je la recousis. La Bannière avait été faite exactement pour cela, des générations plus tôt, par un homme qui avait regardé dans une déchirure et compris que la seule réponse honnête était une aiguille — et lorsque le dernier point fut posé, le sable gris devint d'or sous une aube que la Rive Creuse n'avait jamais vue, les visages avaient disparu, et avec eux, enfin, la chose qui connaissait le nom de ma famille. Je rentrai avec le dos vide et l'équipage au complet, et laissai le campement faire de moi ce dont il avait besoin. Un homme peut bâtir bien des choses sur le fait de n'avoir plus rien à porter.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transformé",
+        "next_id": "EXIT"
+      }
+    ],
+    "reqFlags": [
+      "void_banner_bearer"
+    ],
+    "reqAlignmentScore": 15
+  },
+  "7005_crown": {
+    "id": "7005_crown",
+    "description": "[JOURNEY'S END] I took the crown. It was lighter than it looked and heavier than it felt, and the moment it settled the tear at my back stopped being a door and became, with the quiet obedience of a thing that has recognized its owner, a gate I held the key to. The faces on the sand knelt. The Eel's crew did not, but they sailed me home, and the camp below the Spire learned by nightfall that the invasion was over and that something else had begun. I had not gone looking for a throne. I had, it turned out, simply been the last one standing near it.",
+    "description_fr": "[FIN DU VOYAGE] Je pris la couronne. Elle était plus légère qu'elle n'en avait l'air et plus lourde qu'elle ne le paraissait, et à l'instant où elle se posa, la déchirure dans mon dos cessa d'être une porte pour devenir, avec la tranquille obéissance d'une chose qui a reconnu son maître, une grille dont je tenais la clef. Les visages sur le sable s'agenouillèrent. L'équipage de l'Eel, non, mais il me ramena, et le campement sous la Flèche apprit à la tombée de la nuit que l'invasion était finie et qu'autre chose avait commencé. Je n'avais pas cherché de trône. Il se trouve simplement que j'avais été le dernier à me tenir debout près de lui.",
+    "context_taxonomy": {},
+    "automations": {},
+    "choices": [
+      {
+        "text": "Begin again, changed",
+        "text_fr": "Recommencer, transformé",
+        "next_id": "EXIT"
+      }
+    ],
+    "reqAlignmentMax": -15
   }
 }

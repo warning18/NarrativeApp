@@ -301,5 +301,61 @@
       "dagger_t9": 1,
       "dagger_t10": 1
     }
+  },
+  "ossuary_relics": {
+    "shopID": "ossuary_relics",
+    "shopName": "The Ossuary Trade",
+    "shopDescription": "Relics, salves and second-hand steel laid out on a shelf of skulls by a deserter who no longer asks where anything came from.",
+    "unlockLevel": 8,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "antidote",
+      "charm_warding",
+      "tome_of_insight",
+      "sword_t8",
+      "shield_t8"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Artifact"
+    ],
+    "diceStock": [],
+    "stockQuantities": {
+      "potion_major": 4,
+      "antidote": 3,
+      "charm_warding": 2,
+      "tome_of_insight": 1,
+      "sword_t8": 1,
+      "shield_t8": 1
+    }
+  },
+  "last_lantern": {
+    "shopID": "last_lantern",
+    "shopName": "The Last Lantern",
+    "shopDescription": "The last stall still lit in the Reliquary Quarter, selling whatever might keep a body alive one street closer to the tear.",
+    "unlockLevel": 10,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "charm_lucky_coin",
+      "charm_fourth_roll",
+      "tome_of_mastery",
+      "staff_t9",
+      "dagger_t9"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Artifact"
+    ],
+    "diceStock": [],
+    "stockQuantities": {
+      "potion_major": 6,
+      "charm_lucky_coin": 2,
+      "charm_fourth_roll": 2,
+      "tome_of_mastery": 1,
+      "staff_t9": 1,
+      "dagger_t9": 1
+    }
   }
 }

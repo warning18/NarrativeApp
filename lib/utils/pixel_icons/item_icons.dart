@@ -6,6 +6,7 @@ class ItemIcons {
 
   static const List<String> allIds = [
     'antidote',
+    'archon_mantle',
     'armor_leather',
     'artifact_moon_shard',
     'blackened_fang',
@@ -47,6 +48,7 @@ class ItemIcons {
     'shield_t7',
     'shield_t8',
     'shield_t9',
+    'sovereign_crown',
     'spear_t1',
     'spear_t10',
     'spear_t2',
@@ -78,6 +80,7 @@ class ItemIcons {
     'sword_t7',
     'sword_t8',
     'sword_t9',
+    'tear_glass_blade',
     'thug_knuckle_wrap',
     'tome_of_insight',
     'tome_of_mastery',
