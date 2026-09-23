@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.123.0+151]
+
+The chapter-1 rules applied to chapters 2 through 6: a choice is a short
+line, a lock is one line, a lock the story already decided is hidden, no
+node whose only choice is "continue", and every choice costs, gains or
+leaves a mark a later scene reads back. `story_rules_test.dart` now holds
+those rules for the whole story.
+
+### Changed
+- **Eighteen padding beats given a real choice or a cost.** The wharf
+  arrival (walk the stalls, or lift from an unwatched crate), the bilge
+  swim (-10 health), the inspector's corpse (+20 gold), Vane's tunnel
+  key and his broken cordon (-10 health), the stained-glass drop (-10
+  health), the Warden's standard, the catacomb descent (down in the dark
+  for -10 health, or a lantern for 25 gold), the way to the drowned
+  cloister (the candles, or the rats' dry passage on a Perception
+  check for a dead runner's purse), the altar (reached by the circle
+  fleeing or by breaking it), the climb out (before the roof comes down,
+  or searching the loyalists' dead for +40 gold and -1), the ledger in
+  daylight (read at once, or rest an hour first for +20 health), the
+  road to the Quarter (go now, or pay a runner to warn the camp), the
+  tear (the crew at your back, or sent home first), the Void's showing
+  (accepted, or torn loose from for -25 health), Lysa's mask (kept, or
+  left on her), the turned companion's body (carried aboard, or left to
+  the legate's rowers), and the Sovereign's throne (leave at once, or cut
+  the taken's names from it for -10 health). Each leaves a mark the next
+  scene reads.
+- **Thirty-five choice lines cut to at most 55 characters** (the longest
+  was 112, an acolyte "still chanting among the ashes as though
+  conviction alone might stop a blade"), ten paragraph locks cut to one
+  line (the three harbor recruits, the orc mercenary, the choir deserter,
+  the white sail, the chapel), the cleric Maren's scene hidden for a
+  player who lost Lysa instead of explained, and "(Combat Encounter)"
+  gone from Vane's fight.
+- **Two silent marks now read:** the storm's lost stores on landfall, the
+  Warden's mercy in the Hollow Court; the Sovereign's "Tell it nothing"
+  now leaves one too.
+
+### Tests
+- `story_rules_test.dart`: the five rules over every node, with the final
+  crossing's explained lock as the one named exception.
+
 ## [1.122.0+150]
 
 Chapter 1 consistency pass, on the owner's rules: a choice is a short

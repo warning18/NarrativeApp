@@ -1298,9 +1298,22 @@
     },
     "choices": [
       {
-        "text": "Take stock of the harbor market before dealing with Vane",
-        "text_fr": "Faire le tour du marché du port avant de traiter avec Vane",
-        "next_id": "2015"
+        "text": "Walk the stalls before dealing with Vane",
+        "text_fr": "Faire les étals avant de traiter avec Vane",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "wharf_scouted"
+        ]
+      },
+      {
+        "text": "Lift what you can from an unwatched crate",
+        "text_fr": "Prendre ce qui traîne dans une caisse sans gardien",
+        "next_id": "2015",
+        "goldMod": 15,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "wharf_pilfered"
+        ]
       }
     ]
   },
@@ -1386,8 +1399,8 @@
         "unlockQuestId": "q_ch2_harbor_reckoning"
       },
       {
-        "text": "Wade into a pair of harbor rats squabbling over spoiled cargo",
-        "text_fr": "Affronter une paire de rats des quais se disputant une cargaison avariée",
+        "text": "Break up two harbor rats over spoiled cargo",
+        "text_fr": "Séparer deux rats du port sur une cargaison avariée",
         "next_id": "2015_rats",
         "triggerEnemyIds": [
           "harbor_rat",
@@ -1412,22 +1425,22 @@
       },
       {
         "text": "Hear out a dwarf holding the gate alone",
-        "text_fr": "Écouter une naine tenant seule la porte",
+        "text_fr": "Écouter une naine qui tient la porte seule",
         "next_id": "2015_kelda",
         "unlockQuestId": "q_ch2_keldas_stand",
-        "lockedText": "She looked me over once, the particular assessment of someone deciding whether a stranger was worth trusting at her back, and apparently didn't like what she found. I couldn't fault her judgment — a man with my recent conduct wasn't exactly advertising himself as gate-holding material.",
-        "lockedText_fr": "Elle m'évalua d'un regard, avec l'attention particulière de quelqu'un qui décide si un inconnu mérite sa confiance à ses côtés, et n'apprécia visiblement pas ce qu'elle y trouva. Je ne pouvais lui donner tort — un homme à ma conduite récente ne se présentait guère comme une garde de porte fiable.",
+        "lockedText": "She wanted a better man at her back than I had been lately.",
+        "lockedText_fr": "Elle voulait derrière elle un homme meilleur que je ne l'avais été ces derniers temps.",
         "hideIfFlags": [
           "hub_2015_kelda"
         ]
       },
       {
-        "text": "Listen to a rogue's complaint about a card game gone wrong",
-        "text_fr": "Écouter la plainte d'une voleuse au sujet d'une partie de cartes ratée",
+        "text": "Hear a rogue out about a card game gone wrong",
+        "text_fr": "Écouter une voleuse à propos d'une partie qui a mal tourné",
         "next_id": "2015_sable",
         "unlockQuestId": "q_ch2_sables_wager",
-        "lockedText": "She sized me up the way a card player sizes up a mark, decided I wasn't worth the risk of a shared secret, and went back to nursing her grudge alone. Whatever reputation I'd been building, it apparently wasn't the kind that opened doors like hers.",
-        "lockedText_fr": "Elle me jaugea comme une joueuse de cartes jauge sa prochaine dupe, décida que je ne valais pas le risque d'un secret partagé, et retourna nourrir seule sa rancune. Quelle que fût la réputation que je m'étais forgée, ce n'était visiblement pas le genre qui ouvrait des portes comme les siennes.",
+        "lockedText": "She sized me up like a mark and decided I was not worth the risk.",
+        "lockedText_fr": "Elle me jaugea comme une proie et décida que je ne valais pas le risque.",
         "hideIfFlags": [
           "hub_2015_sable"
         ]
@@ -1483,11 +1496,11 @@
         "failNextId": "2011"
       },
       {
-        "text": "Notice an archer watching the docks from a collapsed rooftop",
-        "text_fr": "Remarquer une archère observant les docks depuis un toit effondré",
+        "text": "Hail the archer on the collapsed rooftop",
+        "text_fr": "Héler l'archère sur le toit effondré",
         "next_id": "2010_liora",
-        "lockedText": "She had at least four clean shots at me by the time I noticed her, and nothing I could think to say from the ground struck me as worth the risk of finding out whether she'd take one. I decided, on reflection, that some conversations are better held with a professional intermediary — namely, distance.",
-        "lockedText_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, et rien de ce que je pouvais imaginer dire depuis le sol ne me semblait valoir le risque de découvrir si elle en saisirait un. Je décidai, à la réflexion, que certaines conversations se tiennent mieux par l'entremise d'un intermédiaire professionnel — à savoir, la distance."
+        "lockedText": "She had four clean shots at me. I kept my distance.",
+        "lockedText_fr": "Elle avait quatre tirs dégagés sur moi. Je gardai mes distances."
       }
     ],
     "flag_callbacks": [
@@ -1505,6 +1518,26 @@
         "flag": "lysa_survived",
         "en": "Lysa had found the wharf's sick before I had found its market, and by the time I came back she had a corner of a fish-shed, three patients and a Tide-Kin girl fetching water for her without having been asked.",
         "fr": "Lysa avait trouvé les malades du quai avant que je trouve son marché, et à mon retour elle avait un coin de hangar à poisson, trois patients et une fillette des Enfants-de-Marée qui lui apportait de l'eau sans qu'on le lui demande."
+      },
+      {
+        "flag": "wharf_scouted",
+        "en": "I had walked the stalls once already, and the porters had stopped pretending not to watch me.",
+        "fr": "J'avais déjà fait les étals une fois, et les porteurs avaient cessé de faire semblant de ne pas me regarder."
+      },
+      {
+        "flag": "wharf_pilfered",
+        "en": "The crate's contents rode in my coat, and its owner, somewhere on the wharf, had not yet counted.",
+        "fr": "Le contenu de la caisse voyageait dans mon manteau, et son propriétaire, quelque part sur le quai, n'avait pas encore compté."
+      },
+      {
+        "flag": "inspector_dead",
+        "en": "The inspector's seal was in my pocket and the inspector was in the bilge. The porters had noticed neither, yet.",
+        "fr": "Le sceau de l'inspecteur était dans ma poche et l'inspecteur dans la cale. Les porteurs n'avaient remarqué ni l'un ni l'autre, pas encore."
+      },
+      {
+        "flag": "bilge_swum",
+        "en": "I came up the ladder soaked to the skin and smelling of the bilge. Nobody on the wharf looked twice, which told me something about the wharf.",
+        "fr": "Je remontai l'échelle trempé jusqu'aux os et sentant la cale. Personne sur le quai ne me regarda deux fois, ce qui en disait long sur le quai."
       }
     ],
     "hub_progress": {
@@ -1600,8 +1633,8 @@
     },
     "choices": [
       {
-        "text": "Make your way back through the fish-stink and the shouting",
-        "text_fr": "Retraverser la puanteur de poisson et les cris",
+        "text": "Back through the fish-stink and the shouting",
+        "text_fr": "Retour à travers la puanteur de poisson et les cris",
         "next_id": "2015",
         "triggerEnemyId": "harbor_rat",
         "flagsToAdd": [
@@ -1621,8 +1654,8 @@
     },
     "choices": [
       {
-        "text": "Make your way back through the fish-stink and the shouting",
-        "text_fr": "Retraverser la puanteur de poisson et les cris",
+        "text": "Back through the fish-stink and the shouting",
+        "text_fr": "Retour à travers la puanteur de poisson et les cris",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_smuggler"
@@ -1776,7 +1809,11 @@
       {
         "text": "Slip down into the market crowd",
         "text_fr": "Se glisser dans la foule du marché",
-        "next_id": "2015"
+        "next_id": "2015",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "inspector_dead"
+        ]
       }
     ]
   },
@@ -1795,8 +1832,11 @@
     "choices": [
       {
         "text": "Take the maintenance tunnel",
-        "text_fr": "Emprunter le tunnel de maintenance",
-        "next_id": "2900"
+        "text_fr": "Prendre le tunnel d'entretien",
+        "next_id": "2900",
+        "flagsToAdd": [
+          "vane_key"
+        ]
       }
     ],
     "persona_variants": {
@@ -1824,8 +1864,8 @@
     },
     "choices": [
       {
-        "text": "Fight back (Combat Encounter)",
-        "text_fr": "Riposter (Rencontre de combat)",
+        "text": "Fight back",
+        "text_fr": "Riposter",
         "next_id": "2070",
         "triggerEnemyIds": [
           "street_bandit",
@@ -1850,7 +1890,11 @@
       {
         "text": "Climb up into the harbor market",
         "text_fr": "Grimper jusqu'au marché du port",
-        "next_id": "2015"
+        "next_id": "2015",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "bilge_swum"
+        ]
       }
     ]
   },
@@ -1868,9 +1912,13 @@
     },
     "choices": [
       {
-        "text": "Overpower them and break through the cordon to the berths",
-        "text_fr": "Les maîtriser et forcer le cordon jusqu'aux mouillages",
-        "next_id": "2900"
+        "text": "Break through the cordon to the berths",
+        "text_fr": "Forcer le cordon jusqu'aux mouillages",
+        "next_id": "2900",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "vane_crossed"
+        ]
       }
     ]
   },
@@ -1963,6 +2011,16 @@
         "andFlags": [
           "sail_mended"
         ]
+      },
+      {
+        "flag": "vane_key",
+        "en": "Vane's key had opened the tunnel and would, I suspected, open nothing else in his life for free.",
+        "fr": "La clé de Vane avait ouvert le tunnel et n'ouvrirait, je le soupçonnais, plus rien d'autre gratuitement de toute sa vie."
+      },
+      {
+        "flag": "vane_crossed",
+        "en": "Vane's cordon lay behind me in the state I had left it, and Vane would remember my face longer than I remembered his.",
+        "fr": "Le cordon de Vane gisait derrière moi dans l'état où je l'avais laissé, et Vane se souviendrait de mon visage plus longtemps que moi du sien."
       }
     ]
   },
@@ -1977,8 +2035,8 @@
     },
     "choices": [
       {
-        "text": "Take as many as she'll float, and throw the stores over to make room",
-        "text_fr": "Embarquer autant qu'il en flottera, et jeter les vivres pour faire de la place",
+        "text": "Take everyone, and throw the stores over",
+        "text_fr": "Prendre tout le monde, et jeter les réserves",
         "next_id": "2999",
         "goldMod": -120,
         "alignmentMod": 2,
@@ -1987,8 +2045,8 @@
         ]
       },
       {
-        "text": "Take the twenty who can row and fight; leave the rest to the Crusade's mercy",
-        "text_fr": "Prendre les vingt qui savent ramer et se battre ; laisser les autres à la merci de la Croisade",
+        "text": "Take the twenty who can fight, leave the rest",
+        "text_fr": "Prendre les vingt qui savent se battre, laisser les autres",
         "next_id": "2999",
         "alignmentMod": -2,
         "flagsToAdd": [
@@ -2096,7 +2154,14 @@
         "en": "There was dwarf-cut stone in the Spire's foundations, old {sigil} work under the Inquisition's white, and it made me angrier than the burned town did.",
         "fr": "Il y avait de la pierre taillée par des nains dans les fondations de la Flèche, du vieux travail de {sigil} sous le blanc de l'Inquisition, et cela me mit plus en colère que la ville brûlée."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "storm_cargo_lost",
+        "en": "We had landed with nothing in the hold but the crew. The sea had the stores, and I had the arithmetic of a winter without them.",
+        "fr": "Nous avions accosté sans rien dans la cale que l'équipage. La mer avait les réserves, et moi l'arithmétique d'un hiver sans elles."
+      }
+    ]
   },
   "3002": {
     "id": "3002",
@@ -2146,8 +2211,8 @@
         ]
       },
       {
-        "text": "Face down a single cultist acolyte, still chanting among the ashes as though conviction alone might stop a blade",
-        "text_fr": "Affronter un unique acolyte cultiste, psalmodiant encore parmi les cendres comme si la seule conviction pouvait arrêter une lame",
+        "text": "Cut down the chanting acolyte",
+        "text_fr": "Abattre l'acolyte qui psalmodie",
         "next_id": "3005_acolyte",
         "triggerEnemyId": "cultist_acolyte",
         "hideIfFlags": [
@@ -2164,8 +2229,8 @@
         ]
       },
       {
-        "text": "Take up the contract for the Void Relic, a shard rumored to hum with the same wrongness as the Shroud",
-        "text_fr": "Accepter le contrat pour la Relique du Néant, un éclat que l'on dit vibrer de la même perversité que le Linceul",
+        "text": "Take the contract for the Void Relic",
+        "text_fr": "Prendre le contrat de la Relique du Néant",
         "next_id": "3005_relic",
         "unlockQuestId": "q_ch3_void_relic",
         "hideIfFlags": [
@@ -2173,8 +2238,8 @@
         ]
       },
       {
-        "text": "Face a void wisp drifting low over the ashes, small enough to seem harmless and wrong enough to know better",
-        "text_fr": "Affronter un esprit du néant voletant bas au-dessus des cendres, assez petit pour sembler inoffensif et assez inquiétant pour ne pas s'y fier",
+        "text": "Put out the void wisp over the ashes",
+        "text_fr": "Éteindre le feu follet du Néant sur les cendres",
         "next_id": "3005_wisp",
         "triggerEnemyId": "void_wisp",
         "hideIfFlags": [
@@ -2182,8 +2247,8 @@
         ]
       },
       {
-        "text": "Face a void stalker lurking in the ruins, the kind of thing the cultists themselves gave a wide berth",
-        "text_fr": "Affronter un rôdeur du néant tapi dans les ruines, le genre de créature que les cultistes eux-mêmes évitaient soigneusement",
+        "text": "Hunt the void stalker in the ruins",
+        "text_fr": "Traquer le rôdeur du Néant dans les ruines",
         "next_id": "3005_stalker",
         "triggerEnemyId": "void_stalker",
         "hideIfFlags": [
@@ -2191,8 +2256,8 @@
         ]
       },
       {
-        "text": "Face an iron golem guarding a vault, its bulk suggesting the contents were worth rather more trouble than most",
-        "text_fr": "Affronter un golem de fer gardant un coffre, sa carrure suggérant que le contenu valait bien plus d'ennuis que la moyenne",
+        "text": "Break the iron golem guarding the vault",
+        "text_fr": "Briser le golem de fer qui garde la chambre forte",
         "next_id": "3005_golem",
         "triggerEnemyId": "iron_golem",
         "hideIfFlags": [
@@ -2200,8 +2265,8 @@
         ]
       },
       {
-        "text": "Face down two Inquisition auxiliaries sifting the ash for anything worth reporting",
-        "text_fr": "Affronter deux auxiliaires de l'Inquisition fouillant les cendres pour tout ce qui vaut d'être signalé",
+        "text": "Drive off two auxiliaries sifting the ash",
+        "text_fr": "Chasser deux auxiliaires qui tamisent la cendre",
         "next_id": "3005_auxiliaries",
         "triggerEnemyIds": [
           "inquisition_auxiliary",
@@ -2212,19 +2277,20 @@
         ]
       },
       {
-        "text": "Speak with a cleric who has stopped believing in the Inquisition's name for what she does",
-        "text_fr": "Parler à une prêtresse qui ne croit plus au nom de l'Inquisition pour ce qu'elle accomplit",
+        "text": "Hear the cleric's confession",
+        "text_fr": "Entendre la confession de la clerc",
         "next_id": "3005_maren",
         "unlockQuestId": "q_ch3_marens_penance",
-        "lockedText": "She had the look of someone deciding whether a stranger deserved a confession, and whatever she saw in me didn't pass the test. I told myself it was nothing personal, though given who I'd left behind to get this far, I suspected it rather was.",
-        "lockedText_fr": "Elle avait l'air de quelqu'un qui se demande si un inconnu mérite une confession, et ce qu'elle vit en moi ne passa pas l'épreuve. Je me dis que ce n'était rien de personnel, bien que, vu qui j'avais laissé derrière moi pour arriver jusque-là, je soupçonnasse le contraire.",
         "hideIfFlags": [
           "hub_3005_maren"
+        ],
+        "showIfFlags": [
+          "lysa_survived"
         ]
       },
       {
-        "text": "Pick the lock on a sealed archive door, untouched since the invasion",
-        "text_fr": "Crocheter la serrure d'une porte d'archives scellée, intacte depuis l'invasion",
+        "text": "Pick the sealed archive door's lock",
+        "text_fr": "Crocheter la porte scellée des archives",
         "next_id": "3005_archive",
         "checkAbility": "dexterity",
         "checkDC": 13,
@@ -2235,8 +2301,8 @@
         ]
       },
       {
-        "text": "Decipher the scorched ledger fragments scattered outside the archive",
-        "text_fr": "Déchiffrer les fragments de registre calcinés éparpillés devant les archives",
+        "text": "Decipher the scorched ledger fragments",
+        "text_fr": "Déchiffrer les fragments calcinés du registre",
         "next_id": "3005_ledger",
         "checkAbility": "intelligence",
         "checkDC": 13,
@@ -2247,11 +2313,11 @@
         "unlockQuestId": "q_ch3_inquisition_ledger"
       },
       {
-        "text": "Haggle with a scarred orc mercenary sizing up the ruins",
-        "text_fr": "Négocier avec un mercenaire orc balafré évaluant les ruines",
+        "text": "Haggle with the scarred orc mercenary",
+        "text_fr": "Marchander avec le mercenaire orc balafré",
         "next_id": "3005_grosh",
-        "lockedText": "He looked me over with the particular disinterest of a man who has already been offered enough unpaid work to last several lifetimes, did the arithmetic on my boots and my purse, and returned to his own business before I had finished deciding how to open the conversation.",
-        "lockedText_fr": "Il me jaugea avec ce désintérêt particulier d'un homme à qui l'on a déjà proposé assez de travail non payé pour plusieurs vies, fit le calcul sur mes bottes et ma bourse, et retourna à ses affaires avant même que j'aie fini de décider comment engager la conversation.",
+        "lockedText": "He priced my purse at a glance and went back to his business.",
+        "lockedText_fr": "Il évalua ma bourse d'un coup d'œil et retourna à ses affaires.",
         "hideIfFlags": [
           "hub_3005_grosh"
         ]
@@ -2266,14 +2332,12 @@
       },
       {
         "text": "Send word to Lysa through the refugee runners",
-        "text_fr": "Faire passer un message à Lysa par les coursiers des réfugiés",
+        "text_fr": "Envoyer un mot à Lysa par les coureurs réfugiés",
         "next_id": "3005_lysa",
         "unlockQuestId": "q_ch3_alsters_dawn",
         "hideIfFlags": [
           "hub_3005_lysa"
         ],
-        "lockedText": "There was no one left to send word to. The runners went past me with other people's letters, and I let them.",
-        "lockedText_fr": "Il ne restait personne à qui envoyer un message. Les coursiers passèrent devant moi avec les lettres d'autres gens, et je les laissai faire.",
         "showIfFlags": [
           "lysa_survived"
         ]
@@ -2541,8 +2605,12 @@
     "choices": [
       {
         "text": "Drop through the stained-glass dome",
-        "text_fr": "Plonger à travers le dôme de vitraux",
-        "next_id": "3030"
+        "text_fr": "Plonger à travers la coupole de vitrail",
+        "next_id": "3030",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "dome_dropped"
+        ]
       }
     ]
   },
@@ -2607,8 +2675,8 @@
     },
     "choices": [
       {
-        "text": "Use the signet to bluff past the inner guard, then fight through to the sanctum",
-        "text_fr": "Utiliser la chevalière pour bluffer la garde intérieure, puis se battre jusqu'au sanctuaire",
+        "text": "Bluff past the guard with the signet, then fight",
+        "text_fr": "Bluffer le garde avec le sceau, puis se battre",
         "next_id": "4999",
         "triggerEnemyId": "inquisition_high_warden"
       }
@@ -2629,8 +2697,8 @@
     },
     "choices": [
       {
-        "text": "Move deeper into the cathedral, and fight past the vanguard guarding the sanctum",
-        "text_fr": "S'enfoncer plus profondément dans la cathédrale et combattre l'avant-garde qui garde le sanctuaire",
+        "text": "Fight past the vanguard to the sanctum",
+        "text_fr": "Se frayer un chemin à travers l'avant-garde jusqu'au sanctuaire",
         "next_id": "4999",
         "triggerEnemyId": "inquisition_high_warden"
       }
@@ -2652,7 +2720,10 @@
       {
         "text": "Take the standard",
         "text_fr": "Prendre l'étendard",
-        "next_id": "4999_standard"
+        "next_id": "4999_standard",
+        "flagsToAdd": [
+          "warden_fallen"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -2665,6 +2736,11 @@
         "flag": "lysa_survived",
         "en": "Lysa would hear of it by nightfall, through the runners. I found that I wanted her to.",
         "fr": "Lysa l'apprendrait avant la nuit, par les coureurs. Je m'aperçus que je le souhaitais."
+      },
+      {
+        "flag": "dome_dropped",
+        "en": "I had come in through the dome, and the glass of it was still in my coat.",
+        "fr": "J'étais entré par la coupole, et son verre était encore dans mon manteau."
       }
     ]
   },
@@ -2682,9 +2758,22 @@
     },
     "choices": [
       {
-        "text": "Follow the whispers",
-        "text_fr": "Suivre les rumeurs",
-        "next_id": "5002"
+        "text": "Follow the whispers down",
+        "text_fr": "Suivre les murmures vers le bas",
+        "next_id": "5002",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "went_down_dark"
+        ]
+      },
+      {
+        "text": "Buy a lantern from the rubble-pickers first",
+        "text_fr": "Acheter d'abord une lanterne aux fouilleurs de gravats",
+        "next_id": "5002",
+        "goldMod": -25,
+        "flagsToAdd": [
+          "lantern_bought"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -2707,6 +2796,11 @@
         "flag": "standard_waited",
         "en": "I had waited for him to die with the Cathedral coming down around us, and the smoke was still in me; every breath on the stair cost more than it returned.",
         "fr": "J'avais attendu qu'il meure pendant que la Cathédrale s'effondrait autour de nous, et la fumée était encore en moi ; chaque souffle sur l'escalier coûtait plus qu'il ne rendait."
+      },
+      {
+        "flag": "standard_mercy",
+        "en": "I had given the Warden the blade before the standard, and the standard had come away clean. Nothing else about it had.",
+        "fr": "J'avais donné la lame au Gardien avant l'étendard, et l'étendard s'était détaché propre. Rien d'autre dans l'affaire ne l'était."
       }
     ]
   },
@@ -2724,9 +2818,36 @@
     },
     "choices": [
       {
-        "text": "Press onward",
-        "text_fr": "Continuer",
-        "next_id": "5010"
+        "text": "Follow the candlelight to the cloister",
+        "text_fr": "Suivre la lueur des cierges jusqu'au cloître",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "went_to_candles"
+        ]
+      },
+      {
+        "text": "Take the rats' dry passage",
+        "text_fr": "Prendre le passage sec des rats",
+        "next_id": "5010",
+        "checkAbility": "perception",
+        "checkDC": 12,
+        "failNextId": "5010",
+        "goldMod": 35,
+        "flagsToAdd": [
+          "rat_passage"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "went_down_dark",
+        "en": "In the dark I had put my hand on something that bit, and the catacombs had taken a piece of me before I had taken a step in them.",
+        "fr": "Dans le noir, j'avais posé la main sur quelque chose qui mordait, et les catacombes m'avaient pris un morceau avant que j'y fasse un pas."
+      },
+      {
+        "flag": "lantern_bought",
+        "en": "The lantern showed me what the dark had been hiding: names scratched into the drain's brick at the height of a child's hand.",
+        "fr": "La lanterne me montra ce que le noir cachait : des noms gravés dans la brique de l'égout à hauteur d'une main d'enfant."
       }
     ]
   },
@@ -2772,7 +2893,10 @@
       {
         "text": "Go to the altar",
         "text_fr": "Aller à l'autel",
-        "next_id": "5004_altar"
+        "next_id": "5004_altar",
+        "flagsToAdd": [
+          "court_fled"
+        ]
       }
     ]
   },
@@ -2790,9 +2914,23 @@
     },
     "choices": [
       {
-        "text": "Climb back to the surface",
-        "text_fr": "Remonter à la surface",
-        "next_id": "6001"
+        "text": "Climb out before the roof comes down",
+        "text_fr": "Sortir avant que le toit ne s'effondre",
+        "next_id": "6001",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "climbed_out_fast"
+        ]
+      },
+      {
+        "text": "Search the loyalists' dead on the way up",
+        "text_fr": "Fouiller les loyalistes morts en remontant",
+        "next_id": "6001",
+        "goldMod": 40,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "looted_loyalists"
+        ]
       }
     ]
   },
@@ -2810,9 +2948,21 @@
     },
     "choices": [
       {
-        "text": "Read the ledger in the light",
-        "text_fr": "Lire le registre à la lumière du jour",
-        "next_id": "6002"
+        "text": "Read the ledger now, on the steps",
+        "text_fr": "Lire le registre maintenant, sur les marches",
+        "next_id": "6002",
+        "flagsToAdd": [
+          "read_on_steps"
+        ]
+      },
+      {
+        "text": "Rest an hour first; the Banner can wait",
+        "text_fr": "Se reposer une heure d'abord ; la Bannière attendra",
+        "next_id": "6002",
+        "healAmount": 20,
+        "flagsToAdd": [
+          "rested_first"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -2835,6 +2985,16 @@
         "flag": "court_woken",
         "en": "Twelve of the ledger's names had woken under my hands the night before, and known me, and died knowing. I read their page and did not turn it for some time.",
         "fr": "Douze des noms du registre s'étaient réveillés sous mes mains la nuit d'avant, m'avaient reconnu, et étaient morts en le sachant. Je lus leur page et ne la tournai pas avant longtemps."
+      },
+      {
+        "flag": "climbed_out_fast",
+        "en": "The roof had come down behind me at the top of the stair, and the dust of it was still in my hair in the daylight.",
+        "fr": "Le toit s'était effondré derrière moi en haut de l'escalier, et sa poussière était encore dans mes cheveux à la lumière du jour."
+      },
+      {
+        "flag": "looted_loyalists",
+        "en": "The loyalists' purses were in my coat. They had not needed them where the roof had put them.",
+        "fr": "Les bourses des loyalistes étaient dans mon manteau. Ils n'en avaient pas eu besoin là où le toit les avait mis."
       }
     ]
   },
@@ -2852,9 +3012,33 @@
     },
     "choices": [
       {
-        "text": "Seek the source of the Void",
-        "text_fr": "Chercher la source du Vide",
-        "next_id": "6010_gate"
+        "text": "Go now, before the frost spreads",
+        "text_fr": "Partir maintenant, avant que le givre ne gagne",
+        "next_id": "6010_gate",
+        "flagsToAdd": [
+          "went_at_once"
+        ]
+      },
+      {
+        "text": "Pay a runner to warn the camp first",
+        "text_fr": "Payer d'abord un coureur pour prévenir le camp",
+        "next_id": "6010_gate",
+        "goldMod": -20,
+        "flagsToAdd": [
+          "camp_warned"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "read_on_steps",
+        "en": "I read it on the catacomb steps with the dust still on me, because I could not have slept with it unread.",
+        "fr": "Je le lus sur les marches des catacombes, la poussière encore sur moi, parce que je n'aurais pas pu dormir sans l'avoir lu."
+      },
+      {
+        "flag": "rested_first",
+        "en": "I had slept an hour first, with the Banner under my head, and dreamed of nothing at all. I did not trust the nothing.",
+        "fr": "J'avais d'abord dormi une heure, la Bannière sous la tête, et rêvé de rien du tout. Je ne faisais pas confiance à ce rien."
       }
     ]
   },
@@ -2874,7 +3058,19 @@
       {
         "text": "Step through the tear",
         "text_fr": "Franchir la déchirure",
-        "next_id": "6003b"
+        "next_id": "6003b",
+        "flagsToAdd": [
+          "crew_followed"
+        ]
+      },
+      {
+        "text": "Send the crew back to the Eel first",
+        "text_fr": "Renvoyer d'abord l'équipage à l'Anguille",
+        "next_id": "6003b",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "crew_sent_back"
+        ]
       }
     ]
   },
@@ -2893,8 +3089,21 @@
     "choices": [
       {
         "text": "Accept what the Void shows me",
-        "text_fr": "Accepter ce que le Vide me montre",
-        "next_id": "7001"
+        "text_fr": "Accepter ce que le Néant me montre",
+        "next_id": "7001",
+        "flagsToAdd": [
+          "void_accepted"
+        ]
+      },
+      {
+        "text": "Tear yourself loose before it finishes",
+        "text_fr": "S'arracher avant qu'il n'ait fini",
+        "next_id": "7001",
+        "healAmount": -25,
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "void_refused"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -2902,6 +3111,16 @@
         "flag": "void_marked",
         "en": "The thread it had left in me at the tear hummed in answer, and I understood that it had never needed to find me. It had known where I was since the first night.",
         "fr": "Le fil qu'il avait laissé en moi à la déchirure vibra en réponse, et je compris qu'il n'avait jamais eu besoin de me chercher. Il savait où j'étais depuis la première nuit."
+      },
+      {
+        "flag": "crew_followed",
+        "en": "The crew had followed me to the edge of the tear and stopped there, which I could not fault.",
+        "fr": "L'équipage m'avait suivi jusqu'au bord de la déchirure et s'y était arrêté, ce que je ne pouvais lui reprocher."
+      },
+      {
+        "flag": "crew_sent_back",
+        "en": "The crew had gone back to the Eel on my word. Whatever the Void showed me, it showed me alone.",
+        "fr": "L'équipage était retourné à l'Anguille sur ma parole. Quoi que le Néant me montrât, il me le montra seul."
       }
     ]
   },
@@ -2921,7 +3140,10 @@
       {
         "text": "Go to the altar",
         "text_fr": "Aller à l'autel",
-        "next_id": "5004_altar"
+        "next_id": "5004_altar",
+        "flagsToAdd": [
+          "court_broken"
+        ]
       }
     ]
   },
@@ -3673,8 +3895,8 @@
         ]
       },
       {
-        "text": "Take the sapper's bounty and clear the ghouls from the flooded aisle",
-        "text_fr": "Accepter la prime du sapeur et nettoyer l'allée inondée de ses goules",
+        "text": "Clear the ghouls from the flooded aisle",
+        "text_fr": "Nettoyer les goules de l'allée inondée",
         "next_id": "5010_ghouls",
         "triggerEnemyIds": [
           "catacomb_ghoul",
@@ -3764,14 +3986,14 @@
         ]
       },
       {
-        "text": "Speak with the choir deserter tending the refugees' candles",
-        "text_fr": "Parler au déserteur du chœur qui veille sur les chandelles des réfugiés",
+        "text": "Speak with the choir deserter at the candles",
+        "text_fr": "Parler au déserteur du chœur près des cierges",
         "next_id": "5010_tobin",
         "hideIfFlags": [
           "hub_5010_tobin"
         ],
-        "lockedText": "He looks past me at the water. Whatever he is looking for in a face, mine has not got it.",
-        "lockedText_fr": "Il regarde l'eau derrière moi. Quoi qu'il cherche dans un visage, le mien ne l'a pas."
+        "lockedText": "He looks past me at the water. Mine is not the face he wants.",
+        "lockedText_fr": "Il regarde l'eau derrière moi. Le mien n'est pas le visage qu'il attend."
       },
       {
         "text": "Sit with Tobin while he trims the wicks",
@@ -3807,6 +4029,21 @@
         "flag": "banner_second_piece_lead",
         "en": "Somewhere below the waterline, if the Lantern Docks' lead was worth what I had paid for it, the Banner's second piece was waiting for the water to go down.",
         "fr": "Quelque part sous la ligne d'eau, si la piste des Quais des Lanternes valait ce que je l'avais payée, la seconde pièce de la Bannière attendait la décrue."
+      },
+      {
+        "flag": "warden_fallen",
+        "en": "The deserters had heard the High Warden was dead before I had finished climbing down to tell them. The news had travelled the water faster than I had.",
+        "fr": "Les déserteurs avaient appris la mort du Grand Gardien avant que j'aie fini de descendre le leur dire. La nouvelle avait voyagé sur l'eau plus vite que moi."
+      },
+      {
+        "flag": "went_to_candles",
+        "en": "I had come in by the candles' light, and the deserters had watched me come the whole way.",
+        "fr": "J'étais entré à la lueur des cierges, et les déserteurs m'avaient regardé venir tout du long."
+      },
+      {
+        "flag": "rat_passage",
+        "en": "The rats' passage had cost me nothing but dignity, and paid me a dead runner's purse.",
+        "fr": "Le passage des rats ne m'avait coûté que ma dignité, et m'avait payé la bourse d'un coureur mort."
       }
     ],
     "hub_progress": {
@@ -4011,6 +4248,16 @@
         "flag": "lysa_survived",
         "en": "Lysa walked in at my shoulder and did not look at the masks. She had been meant for one, once, in a tavern cellar, and she knew it.",
         "fr": "Lysa entra à mon côté sans regarder les masques. On lui en avait destiné un, autrefois, dans la cave d'une taverne, et elle le savait."
+      },
+      {
+        "flag": "went_at_once",
+        "en": "Nobody at the camp knew where I had gone. It seemed, at the time, the kinder arrangement.",
+        "fr": "Personne au camp ne savait où j'étais allé. Cela me sembla, sur le moment, l'arrangement le plus doux."
+      },
+      {
+        "flag": "camp_warned",
+        "en": "The runner I had paid would reach the cove by morning. The camp would know where I had gone, if not why.",
+        "fr": "Le coureur que j'avais payé atteindrait la crique au matin. Le camp saurait où j'étais allé, sinon pourquoi."
       }
     ],
     "choices": [
@@ -4023,8 +4270,8 @@
         ]
       },
       {
-        "text": "Follow the chalk to a chapel where a name is scratched twelve times",
-        "text_fr": "Suivre la craie jusqu'à une chapelle où un nom est gravé douze fois",
+        "text": "Follow the chalk to the chapel with the name",
+        "text_fr": "Suivre la craie jusqu'à la chapelle au nom gravé",
         "next_id": "6010_lysa_dead",
         "showIfFlags": [
           "lysa_lost"
@@ -4033,8 +4280,8 @@
           "hub_6010_lysa_dead",
           "hub_6010_masked"
         ],
-        "lockedText": "The chapel was barred, and the frost on its door had a shape I did not want to read.",
-        "lockedText_fr": "La chapelle était barrée, et le givre sur sa porte avait une forme que je ne voulais pas lire."
+        "lockedText": "The chapel was barred, its frost a shape I did not want to read.",
+        "lockedText_fr": "La chapelle était barrée, son givre une forme que je ne voulais pas lire."
       },
       {
         "text": "Face the masked penitent who will not stop staring",
@@ -4060,8 +4307,8 @@
     "automations": {},
     "choices": [
       {
-        "text": "Read the ledger's last page with the quarter's chart-keeper",
-        "text_fr": "Lire la dernière page du registre avec la gardienne des cartes du quartier",
+        "text": "Read the last page with the chart-keeper",
+        "text_fr": "Lire la dernière page avec la gardienne des cartes",
         "next_id": "6010_chartkeeper",
         "unlockQuestId": "q_ch5_the_dead_heart",
         "hideIfFlags": [
@@ -4080,8 +4327,8 @@
         ]
       },
       {
-        "text": "Follow the chalk to a chapel where a name is scratched twelve times",
-        "text_fr": "Suivre la craie jusqu'à une chapelle où un nom est gravé douze fois",
+        "text": "Follow the chalk to the chapel with the name",
+        "text_fr": "Suivre la craie jusqu'à la chapelle au nom gravé",
         "next_id": "6010_lysa_dead",
         "showIfFlags": [
           "lysa_lost"
@@ -4090,8 +4337,8 @@
           "hub_6010_lysa_dead",
           "hub_6010_masked"
         ],
-        "lockedText": "The chapel was barred, and the frost on its door had a shape I did not want to read.",
-        "lockedText_fr": "La chapelle était barrée, et le givre sur sa porte avait une forme que je ne voulais pas lire."
+        "lockedText": "The chapel was barred, its frost a shape I did not want to read.",
+        "lockedText_fr": "La chapelle était barrée, son givre une forme que je ne voulais pas lire."
       },
       {
         "text": "Face the masked penitent who will not stop staring",
@@ -4216,8 +4463,8 @@
         ]
       },
       {
-        "text": "Deal with the cutthroat selling what the tear leaves behind",
-        "text_fr": "Traiter avec le coupe-jarret qui vend ce que la déchirure laisse derrière elle",
+        "text": "Deal with the cutthroat at the tear's stall",
+        "text_fr": "Traiter avec le coupe-jarret à l'étal de la déchirure",
         "next_id": "6010_malrik",
         "hideIfFlags": [
           "hub_6010_malrik"
@@ -4488,6 +4735,16 @@
         "flag": "lysa_found_dead",
         "en": "Lysa's name was on the chapel wall in the Reliquary Quarter, twelve times, in my hand's worst spelling: mine, scratched by hers. I carried that across the water with the Shroud, and it did not weigh less.",
         "fr": "Le nom de Lysa était sur le mur de la chapelle du Quartier des Reliquaires, douze fois, dans la pire orthographe de ma main : le mien, gravé par la sienne. Je portai cela sur l'eau avec le Linceul, et cela ne pesait pas moins."
+      },
+      {
+        "flag": "void_accepted",
+        "en": "I had taken what the Void offered me to know, and it sat in me now like a swallowed stone.",
+        "fr": "J'avais pris ce que le Néant m'offrait de savoir, et cela pesait en moi comme une pierre avalée."
+      },
+      {
+        "flag": "void_refused",
+        "en": "I had torn myself out of the Void's certainty before it finished, and what I did not know had cost me blood to keep not knowing.",
+        "fr": "Je m'étais arraché à la certitude du Néant avant qu'il n'ait fini, et ce que je ne savais pas m'avait coûté du sang à ne pas savoir."
       }
     ]
   },
@@ -4528,8 +4785,8 @@
           "inquisition_pact",
           "pact_refused"
         ],
-        "lockedText": "The white sail on the horizon turned away before it reached the shore. Whatever the Inquisition wanted, it had decided it was not me.",
-        "lockedText_fr": "La voile blanche à l'horizon vira avant d'atteindre le rivage. Quoi que voulût l'Inquisition, elle avait décidé que ce n'était pas moi."
+        "lockedText": "The white sail turned away before it reached the shore.",
+        "lockedText_fr": "La voile blanche vira avant d'atteindre le rivage."
       },
       {
         "text": "Gather the crew before the crossing",
@@ -4602,9 +4859,22 @@
     "automations": {},
     "choices": [
       {
-        "text": "Step back through",
-        "text_fr": "Repasser de l'autre côté",
-        "next_id": "7004"
+        "text": "Step back through the tear",
+        "text_fr": "Repasser la déchirure",
+        "next_id": "7004",
+        "flagsToAdd": [
+          "left_at_once"
+        ]
+      },
+      {
+        "text": "Cut the taken's names from the throne first",
+        "text_fr": "Arracher d'abord les noms des enlevés au trône",
+        "next_id": "7004",
+        "healAmount": -10,
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "names_recovered"
+        ]
       }
     ],
     "persona_variants": {
@@ -4650,6 +4920,21 @@
         "flag": "inquisition_pact",
         "en": "The white sail was still on the not-water behind the Eel, keeping its distance, keeping its bargain.",
         "fr": "La voile blanche était encore sur la non-eau derrière l'Eel, gardant ses distances, tenant son marché."
+      },
+      {
+        "flag": "sovereign_defied",
+        "en": "I had given it nothing to answer, and the ballista had answered for me. It fell as something that had, at the last, not been told a single name.",
+        "fr": "Je ne lui avais rien donné à quoi répondre, et la baliste avait répondu pour moi. Il tomba comme une chose à qui, à la fin, on n'avait pas livré un seul nom."
+      },
+      {
+        "flag": "turned_carried",
+        "en": "{lost} had crossed under the Eel's deck, wrapped in a sail, because I had not been able to leave them on the sand.",
+        "fr": "{lost} avait fait la traversée sous le pont de l'Anguille, dans une voile, parce que je n'avais pas pu le laisser sur le sable."
+      },
+      {
+        "flag": "turned_left",
+        "en": "I had left {lost} on the sand for the legate's rowers, and had not watched what they did.",
+        "fr": "J'avais laissé {lost} sur le sable aux rameurs du légat, et n'avais pas regardé ce qu'ils en faisaient."
       }
     ]
   },
@@ -4671,8 +4956,8 @@
         "next_id": "7005_seeker"
       },
       {
-        "text": "Sew the tear shut with the Banner and walk away from all of it",
-        "text_fr": "Recoudre la déchirure avec la Bannière et tourner le dos à tout cela",
+        "text": "Sew the tear shut and walk away from all of it",
+        "text_fr": "Recoudre la déchirure et tourner le dos à tout cela",
         "next_id": "7005_dawn"
       },
       {
@@ -4734,6 +5019,26 @@
         "flag": "lysa_found_dead",
         "en": "Whatever I chose, I would be choosing it for a girl who had scratched my name into a wall twelve times, and who would not be on the shingle to see it.",
         "fr": "Quoi que je choisisse, je le choisirais pour une fille qui avait gravé mon nom douze fois dans un mur, et qui ne serait pas sur les galets pour le voir."
+      },
+      {
+        "flag": "lysa_mask_kept",
+        "en": "Lysa's mask was in my coat. I had not decided what to do with it, and had begun to suspect I never would.",
+        "fr": "Le masque de Lysa était dans mon manteau. Je n'avais pas décidé quoi en faire, et commençais à soupçonner que je ne le déciderais jamais."
+      },
+      {
+        "flag": "lysa_left_masked",
+        "en": "I had left Lysa's mask on her face among the penitents. It had seemed, at the time, like the last thing I could still give her.",
+        "fr": "J'avais laissé le masque de Lysa sur son visage parmi les pénitents. Cela m'avait semblé, sur le moment, la dernière chose que je pouvais encore lui donner."
+      },
+      {
+        "flag": "left_at_once",
+        "en": "I had not looked back at the throne. Some things are better left unexamined by anyone with a memory.",
+        "fr": "Je ne m'étais pas retourné vers le trône. Certaines choses valent mieux non examinées par quiconque a de la mémoire."
+      },
+      {
+        "flag": "names_recovered",
+        "en": "The names I had cut from the throne's foot were in my pocket, in the ledger's own hand. Somebody would want them read.",
+        "fr": "Les noms que j'avais arrachés au pied du trône étaient dans ma poche, de la main même du registre. Quelqu'un voudrait qu'on les lise."
       }
     ]
   },
@@ -5189,7 +5494,10 @@
       {
         "text": "Tell it nothing. Let the ballista answer",
         "text_fr": "Ne rien lui dire. Laisser la baliste répondre",
-        "next_id": "7002_price"
+        "next_id": "7002_price",
+        "flagsToAdd": [
+          "sovereign_defied"
+        ]
       },
       {
         "text": "Tell it I have come for its crown",
@@ -5223,8 +5531,8 @@
         "grantsBannerPieceId": "warden_standard"
       },
       {
-        "text": "Wait for him to die, however long it takes, while the Cathedral burns",
-        "text_fr": "Attendre qu'il meure, aussi longtemps qu'il faudra, pendant que la Cathédrale brûle",
+        "text": "Wait for him to die while the Cathedral burns",
+        "text_fr": "Attendre qu'il meure pendant que la Cathédrale brûle",
         "next_id": "5001",
         "healAmount": -25,
         "goldMod": -40,
@@ -5256,8 +5564,8 @@
     },
     "choices": [
       {
-        "text": "Wake them first. They will not survive it, but they will die as themselves",
-        "text_fr": "Les réveiller d'abord. Ils n'y survivront pas, mais ils mourront en étant eux-mêmes",
+        "text": "Wake them first, so they die as themselves",
+        "text_fr": "Les réveiller d'abord, pour qu'ils meurent en étant eux-mêmes",
         "next_id": "5005",
         "alignmentMod": 2,
         "healAmount": -20,
@@ -5276,6 +5584,18 @@
         ],
         "grantsBannerPieceId": "moon_shard_shroud"
       }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "court_fled",
+        "en": "The circle had run, and the altar was mine without a blade drawn.",
+        "fr": "Le cercle avait fui, et l'autel était à moi sans qu'une lame fût tirée."
+      },
+      {
+        "flag": "court_broken",
+        "en": "The circle lay where it had stood, and the altar was mine at the price of them.",
+        "fr": "Le cercle gisait là où il s'était tenu, et l'autel était à moi au prix de leurs vies."
+      }
     ]
   },
   "6010_thread": {
@@ -5287,8 +5607,8 @@
     },
     "choices": [
       {
-        "text": "Open the reliquary yourself, and give the bones to the frost",
-        "text_fr": "Ouvrir le reliquaire vous-même, et donner les os au givre",
+        "text": "Open the reliquary yourself",
+        "text_fr": "Ouvrir le reliquaire soi-même",
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
         "alignmentMod": -2,
@@ -5299,8 +5619,8 @@
         "grantsBannerPieceId": "reliquary_thread"
       },
       {
-        "text": "Let the chart-keeper cut it out, and buy the chapel for her with what you have",
-        "text_fr": "Laisser la gardienne des cartes le découper, et lui acheter la chapelle avec ce que vous avez",
+        "text": "Pay the chart-keeper to cut it out (150 gold)",
+        "text_fr": "Payer la gardienne pour qu'elle le découpe (150 pièces)",
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
         "goldMod": -150,
@@ -5312,8 +5632,8 @@
         "grantsBannerPieceId": "reliquary_thread"
       },
       {
-        "text": "Give the penitent the seal to break, and his penance its end",
-        "text_fr": "Laisser le pénitent briser le sceau, et donner à sa pénitence sa fin",
+        "text": "Give the penitent the seal to break",
+        "text_fr": "Donner au pénitent le sceau à briser",
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
         "healAmount": -10,
@@ -5335,8 +5655,8 @@
     },
     "choices": [
       {
-        "text": "Give it one of the crew. Someone steps forward before you can choose",
-        "text_fr": "Lui donner un membre de l'équipage. Quelqu'un s'avance avant que vous ayez choisi",
+        "text": "Give it one of the crew",
+        "text_fr": "Lui donner l'un des nôtres",
         "next_id": "7003",
         "launchZoneId": "z_beyond_the_tear",
         "loseAllyId": "*",
@@ -5346,8 +5666,8 @@
         ]
       },
       {
-        "text": "Give it the legate. The Inquisition can pay its own tolls",
-        "text_fr": "Lui donner le légat. L'Inquisition peut payer ses propres péages",
+        "text": "Give it the legate",
+        "text_fr": "Lui donner le légat",
         "next_id": "7003",
         "launchZoneId": "z_beyond_the_tear",
         "showIfFlags": [
@@ -5392,8 +5712,8 @@
     },
     "choices": [
       {
-        "text": "Take the pact: the Shroud's bearer for the Inquisition's crown",
-        "text_fr": "Accepter le pacte : le porteur du Linceul pour la couronne de l'Inquisition",
+        "text": "Take the pact, and its crown",
+        "text_fr": "Accepter le pacte, et sa couronne",
         "next_id": "7002_betrayal",
         "triggerEnemyId": "@first_ally",
         "flagsToAdd": [
@@ -5434,9 +5754,22 @@
     ],
     "choices": [
       {
-        "text": "Back to the Eel",
-        "text_fr": "Retour à l'Eel",
-        "next_id": "7002"
+        "text": "Carry the body back to the Eel",
+        "text_fr": "Ramener le corps à l'Anguille",
+        "next_id": "7002",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "turned_carried"
+        ]
+      },
+      {
+        "text": "Leave the body to the legate's rowers",
+        "text_fr": "Laisser le corps aux rameurs du légat",
+        "next_id": "7002",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "turned_left"
+        ]
       }
     ]
   },
@@ -5491,9 +5824,20 @@
     },
     "choices": [
       {
-        "text": "Walk back among the chapels",
-        "text_fr": "Retourner parmi les chapelles",
-        "next_id": "6010"
+        "text": "Take her mask with you",
+        "text_fr": "Emporter son masque",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "lysa_mask_kept"
+        ]
+      },
+      {
+        "text": "Leave her among the penitents",
+        "text_fr": "La laisser parmi les pénitents",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "lysa_left_masked"
+        ]
       }
     ]
   }

@@ -372,7 +372,9 @@ void main() {
       // between, and a character who lost Lysa cannot pass it without
       // taking one of the two fate scenes (each open to one side of the
       // alignment line, so exactly one is ever available).
-      expect(nodes['6002']!.choices.single.nextId, '6010_gate');
+      for (final choice in nodes['6002']!.choices) {
+        expect(choice.nextId, '6010_gate', reason: choice.text);
+      }
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');
       expect(through.hideIfFlags, contains('lysa_lost'));
@@ -387,7 +389,9 @@ void main() {
       }
       // Both fate scenes come back to the hub proper.
       expect(nodes['6010_lysa_dead']!.choices.single.nextId, '6010');
-      expect(nodes['6010_masked_after']!.choices.single.nextId, '6010');
+      for (final choice in nodes['6010_masked_after']!.choices) {
+        expect(choice.nextId, '6010', reason: choice.text);
+      }
       // The gate reads both origins back, in both languages.
       for (final flag in ['lysa_lost', 'lysa_survived']) {
         final callback = gate.flagCallbacks.singleWhere((c) => c.flag == flag);
