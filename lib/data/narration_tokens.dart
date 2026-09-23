@@ -59,8 +59,9 @@ String powerMediumFor(String raceId, {required bool french}) {
 
 bool hasNarrationTokens(String text) => text.contains('{');
 
-/// [text] with every `{name}`, `{race}`, `{profession}`, `{companion}` and
-/// `{sigil}` (the race's power medium) filled in. An unnamed character reads as "stranger"; a party with no
+/// [text] with every `{name}`, `{race}`, `{profession}`, `{companion}`,
+/// `{sigil}` (the race's power medium) and `{lost}` (the companion the
+/// story took last) filled in. An unnamed character reads as "stranger"; a party with no
 /// companion reads `{companion}` as "no one" -- authored lines that name a
 /// companion should sit behind a companion acknowledgment instead (see
 /// ally_acknowledgments.dart), this is only the safety net.
@@ -70,6 +71,7 @@ String personalizeNarration(
   required String raceId,
   required String professionId,
   String? companionName,
+  String? lostCompanionName,
   required bool french,
 }) {
   if (!hasNarrationTokens(text)) return text;
@@ -78,7 +80,11 @@ String personalizeNarration(
   final companion = (companionName?.trim().isNotEmpty ?? false)
       ? companionName!.trim()
       : (french ? 'personne' : 'no one');
+  final lost = (lostCompanionName?.trim().isNotEmpty ?? false)
+      ? lostCompanionName!.trim()
+      : (french ? "l'un de nous" : 'one of us');
   return text
+      .replaceAll('{lost}', lost)
       .replaceAll('{name}', displayName)
       .replaceAll('{race}', raceNounFor(raceId, french: french))
       .replaceAll(
@@ -102,6 +108,7 @@ const Map<String, ({String en, String fr})> _speakerLabels = {
     en: 'The Lantern-keeper',
     fr: 'La Gardienne de la Lanterne'
   ),
+  'Legate': (en: 'The Legate', fr: 'Le Légat'),
 };
 
 /// Null for the Narrator (or no speaker at all): the plain card needs no

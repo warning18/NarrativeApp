@@ -421,6 +421,18 @@ const Set<String> soloOnlyEnemyIds = {
   'hollow_court_inquisitor',
   'void_archon',
   'void_sovereign',
+  // The story's own duels: a turned companion, the legate's champion, the
+  // masked penitent -- never a random draw, never a pack, never Elite.
+  'kelda_turned',
+  'sable_turned',
+  'maren_turned',
+  'liora_turned',
+  'vess_turned',
+  'grosh_turned',
+  'tobin_turned',
+  'malrik_turned',
+  'inquisition_legate',
+  'masked_penitent',
 };
 
 /// How much detail the party can currently see into an enemy's telegraphed

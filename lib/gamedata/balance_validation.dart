@@ -225,7 +225,8 @@ List<String> _validateDanglingReferences(
   for (final node in story.nodes.values) {
     for (final choice in node.choices) {
       for (final enemyId in choice.allTriggerEnemyIds) {
-        if (!enemies.containsKey(enemyId)) {
+        // `@first_ally` resolves at play time (story_player_screen.dart).
+        if (!enemyId.startsWith('@') && !enemies.containsKey(enemyId)) {
           issues.add('Node ${node.id} triggers unknown enemy "$enemyId".');
         }
       }

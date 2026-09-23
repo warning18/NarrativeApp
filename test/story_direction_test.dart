@@ -11,6 +11,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/combat/combat_engine.dart'
+    show soloOnlyEnemyIds;
 import 'package:narrative_data_app/data/narration_tokens.dart';
 import 'package:narrative_data_app/data/zone_gating.dart';
 import 'package:narrative_data_app/models/story_node.dart';
@@ -49,6 +51,9 @@ void main() {
     for (final node in nodes.values)
       for (final choice in node.choices) (node: node, choice: choice),
   ];
+  StoryChoice choiceIn(String nodeId, String target) =>
+      nodes[nodeId]!.choices.singleWhere((c) => c.nextId == target,
+          orElse: () => fail('$nodeId does not lead to $target'));
 
   group('the Shroud', () {
     test('every origin epilogue hands over the heirloom piece', () {
@@ -283,6 +288,153 @@ void main() {
       final unread = sadFlags.difference(readBack);
       expect(unread.length, lessThanOrEqualTo(4),
           reason: 'too many costs go unremembered: $unread');
+    });
+  });
+
+  group('the Inquisition\'s pact', () {
+    test('an Evil character can sell the crew out on the Hollow Shore', () {
+      final pact = nodes['7002_pact']!;
+      expect(pact.reqAlignmentMax, -15);
+      expect(pact.speaker, 'Legate');
+      final offer = nodes['7002']!.choices.singleWhere(
+          (c) => c.nextId == '7002_pact',
+          orElse: () => fail('7002 no longer offers the pact'));
+      expect(offer.lockedText, isNotEmpty);
+      expect(offer.hideIfFlags.toSet(), {'inquisition_pact', 'pact_refused'});
+      final take = pact.choices.singleWhere((c) => c.nextId == '7002_betrayal');
+      expect(take.triggerEnemyId, '@first_ally');
+      expect(take.flagsToAdd, contains('inquisition_pact'));
+      expect(take.alignmentMod, lessThan(0));
+      final refuse = pact.choices.singleWhere((c) => c.nextId == '7002');
+      expect(refuse.flagsToAdd, contains('pact_refused'));
+      expect(nodes['7002_betrayal']!.flagCallbacks.map((c) => c.flag).toSet(),
+          {'companion_turned', 'legate_fought'});
+      final legate = nodes['7002_price']!
+          .choices
+          .singleWhere((c) => c.flagsToAdd.contains('legate_given'));
+      expect(legate.showIfFlags, ['inquisition_pact']);
+      expect(legate.launchZoneId, 'z_beyond_the_tear');
+    });
+
+    test(
+        'every companion has a turned self, and the story\'s duels are '
+        'never random draws', () {
+      final enemies = _loadJson('assets/gamedata/enemies.json');
+      final companions = _loadJson('assets/gamedata/companions.json');
+      for (final id in companions.keys) {
+        final turned = enemies['${id}_turned'] as Map<String, dynamic>?;
+        expect(turned, isNotNull, reason: id);
+        expect(turned!['minChapter'], 6);
+        expect(turned['packEligible'], isFalse);
+        expect((turned['phases'] as List), isNotEmpty);
+        expect(soloOnlyEnemyIds, contains('${id}_turned'));
+      }
+      expect(enemies.containsKey('inquisition_legate'), isTrue);
+      expect(enemies.containsKey('masked_penitent'), isTrue);
+      expect(soloOnlyEnemyIds, contains('inquisition_legate'));
+      expect(soloOnlyEnemyIds, contains('masked_penitent'));
+    });
+  });
+
+  group('Lysa\'s fate', () {
+    test('a survivor is remembered; an abandoned Lysa is found by alignment',
+        () {
+      expect(choiceIn('3005', '3005_lysa').showIfFlags, ['lysa_survived']);
+      expect(choiceIn('6010', '6010_lysa').showIfFlags, ['lysa_survived']);
+      final dead = choiceIn('6010', '6010_lysa_dead');
+      final masked = choiceIn('6010', '6010_masked');
+      expect(dead.showIfFlags, ['lysa_lost']);
+      expect(masked.showIfFlags, ['lysa_lost']);
+      expect(nodes['6010_lysa_dead']!.reqAlignmentScore, 5);
+      expect(nodes['6010_masked']!.reqAlignmentMax, 4);
+      // One retires the other: Lysa is found once.
+      expect(dead.hideIfFlags.toSet(), masked.hideIfFlags.toSet());
+      final fight = nodes['6010_masked']!.choices.single;
+      expect(fight.triggerEnemyId, 'masked_penitent');
+      expect(fight.flagsToAdd, contains('lysa_fallen'));
+      expect(fight.alignmentMod, lessThan(0));
+      expect(nodes['6010_masked_after']!.description, contains('Lysa'),
+          reason: 'the mask comes off after the fight, not before');
+      expect(nodes['6010_masked']!.description, isNot(contains('Lysa')));
+      expect(nodes['6010_lysa_dead']!.choices.single.flagsToAdd,
+          contains('lysa_found_dead'));
+      for (final flag in ['lysa_fallen', 'lysa_found_dead']) {
+        final readBack = nodes.values
+            .expand((n) => n.flagCallbacks)
+            .where((c) => c.flag == flag)
+            .length;
+        expect(readBack, greaterThanOrEqualTo(3), reason: flag);
+      }
+    });
+  });
+
+  group('the 1.118 regressions stay fixed', () {
+    test(
+        'Vane\'s tunnel leads to the berths and the harbor\'s end knows '
+        'its own state', () {
+      expect(nodes['2030']!.description, contains('old berths'));
+      expect(nodes['2030']!.description, isNot(contains('checkpoint')));
+      final hub = nodes['2900']!;
+      expect(hub.description, isNot(contains('would need a hull')));
+      final needs =
+          hub.flagCallbacks.where((c) => c.flag == 'void_banner_bearer').single;
+      expect(needs.unlessFlags.toSet(), {'hull_patched', 'sail_mended'});
+      final both = hub.flagCallbacks
+          .where((c) => c.flag == 'hull_patched' && c.andFlags.isNotEmpty)
+          .single;
+      expect(both.andFlags, ['sail_mended']);
+      expect(
+          hub.callbacksFor(const ['void_banner_bearer'], false), hasLength(1));
+      expect(
+          hub.callbacksFor(
+              const ['void_banner_bearer', 'hull_patched', 'sail_mended'],
+              false),
+          hasLength(1));
+      expect(
+          hub.callbacksFor(
+              const ['void_banner_bearer', 'hull_patched'], false).single,
+          contains('sail was still'));
+      for (final cb in hub.flagCallbacks) {
+        expect(cb.line.en, isNot(contains('Gate')), reason: cb.flag);
+      }
+      expect(nodes['3002']!.description,
+          isNot(contains('a second set of doors sealed')));
+      expect(nodes['3002']!.description, contains("Spire's outer gate"));
+    });
+
+    test(
+        'the wanderer sails on with the whole Shroud and the camp callback '
+        'yields to the price', () {
+      for (final epilogue in nodes['7005_seeker']!.alignmentEpilogues.values) {
+        expect(epilogue.en, isNot(contains('The Banner is out there')));
+        expect(epilogue.en.toLowerCase(), contains('shroud'));
+      }
+      expect(nodes['7004']!.description, isNot(contains('expecting me')));
+      final camp = nodes['7004']!
+          .flagCallbacks
+          .firstWhere((c) => c.flag == 'camp_founded');
+      expect(camp.unlessFlags, ['camp_given']);
+      expect(
+          nodes['7004']!.callbacksFor(const ['camp_founded', 'camp_given'],
+              false).any((line) => line.contains('expecting me')),
+          isFalse);
+    });
+
+    test('Lysa sails with you and is never left on the wharf', () {
+      for (final id in ['2001', '2015', '2900_boat_fixed', '3001_camp']) {
+        expect(nodes[id]!.flagCallbacks.any((c) => c.flag == 'lysa_survived'),
+            isTrue,
+            reason: id);
+      }
+      final camp = nodes['3001_camp']!;
+      final alone = camp.callbacksFor(const ['sailed_alone'], false);
+      expect(alone.single, contains('brought no one,'));
+      final aloneWithLysa =
+          camp.callbacksFor(const ['sailed_alone', 'lysa_survived'], false);
+      expect(aloneWithLysa.any((l) => l.contains('no one but Lysa')), isTrue);
+      expect(aloneWithLysa.any((l) => l.contains('brought no one,')), isFalse);
+      expect(
+          nodes['6010_lysa']!.description, isNot(contains('over the water')));
     });
   });
 

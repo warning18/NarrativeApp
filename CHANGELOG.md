@@ -8,6 +8,71 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.119.0+147]
+
+The 1.118 seams closed, the Shroud given its meaning, the companions
+given their say at every dilemma, Lysa's arc carried through to a fate,
+an Inquisition pact that turns a companion against you, and a painted
+sail that lets the Rusty Eel fly.
+
+### Fixed (1.118 regressions)
+- Vane's maintenance tunnel now runs under the Inquisition's cordon to
+  the old berths (2030, 2070) instead of an Upper Gate that no longer
+  exists; the harbor's-end companion lines and callbacks no longer
+  mention a tunnel or a Gate.
+- `7005_seeker`'s three epilogues carry the whole Shroud.
+- `7004` no longer says the camp is waiting when it was given to the
+  Sovereign, and `2900` no longer says the Eel needs a hull and a sail
+  when both are done: `FlagCallback.andFlags` (all must be held) joins
+  `unlessFlags`, and both nodes read their state from callbacks.
+- Lysa sails with you (callbacks at 2001, 2015, the wharf and the camp;
+  the sailed-alone lines yield to her), her hub scenes hide instead of
+  locking for a player who lost her, and 6010_lysa no longer has her
+  arrive over water on the only hull.
+- 3002's "second set of doors", and a death narration that named the camp
+  before it existed.
+
+### Added
+- **The Shroud's meaning**: the Void wanted it whole (6004), the Court's
+  kneeling inquisitors were its hands, the crossing thanks the bearer for
+  carrying it (7002_confront), 4999 plants the question and 7005_dawn
+  answers it: whole is also the only way the door closes.
+- **Companion voices at the dilemmas**: `ally_acknowledgments.dart` gains
+  the wharf, the storm, the Warden, the altar, the reliquary, the
+  Sovereign's price (every companion steps forward) and the legate's
+  offer, in both languages; the `{lost}` token names the companion the
+  story took last (7003, 7004, 7005_dawn, the betrayal).
+- **The Inquisition's pact** (`7002_pact`, Evil only, alignment ≤ -15): the
+  last legate lands on the Hollow Shore; taking the pact turns the first
+  active companion against you (`@first_ally` resolves to a new
+  `<companion>_turned` enemy with that companion's own skills and a
+  phase, or to the legate's champion with no one left to turn), removes
+  them for good, and pays in gold and a fourth toll at the crossing (give
+  the Sovereign the legate). Eight turned companions, the champion and
+  their icons; callbacks through 7003, 7004, 7005 and 7005_crown.
+- **Lysa's fate** for a character who surrendered her: on the Reliquary
+  Quarter hub, a Good character (alignment ≥ 5) finds her dead in the
+  Inquisition's penitent-chair with the player's name scratched twelve
+  times beside it; anyone else fights a masked penitent who will not
+  stop staring and learns whose face was under the porcelain only when
+  the mask comes away. New `masked_penitent` enemy whose phase says your
+  name; `lysa_found_dead` / `lysa_fallen` read back through chapter 6 and
+  the endings.
+- **Painted sails** (`lib/data/sail_powers.dart`, a `Sail` slot on the
+  Eel, five ship parts): the Gull's Wing (elven paint: flight, storms and
+  raiders pass beneath the keel), the Kraken's Eye (orcish ink: tomorrow's
+  weather shown, the first volley seen coming), the Hearth-Mark (dwarven
+  stone-mark: every day at sea heals the crew and mends the hull), the
+  Wind-Knot (human banner: a shorter crossing, richer wrecks) and the Void
+  Mark (a void volley in battle, storms that do not bite). One sigil at a
+  time; repainting replaces it; painted the character's own people's way
+  a sigil holds twice as strong. Wired into the voyage and ship battle,
+  the shipwright card, the schema and l10n.
+- Tests: `sail_powers_test.dart`; story-direction groups for the pact,
+  Lysa's fate and the regressions; session and narration suites extended.
+  The Python simulator turns the first companion on `@first_ally`; 40/40
+  runs reach an ending.
+
 ## [1.118.0+146]
 
 The story reviewed against the owner's direction: one Shroud, in pieces,

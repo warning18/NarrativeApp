@@ -36,14 +36,150 @@ const Map<String, Map<String, String>> _acksEn = {
         'would have chosen, and one she would have avoided.',
   },
   '2900': {
-    '*': ' The tunnel took us single file, and I found I had stopped '
-        'checking, every ten paces, whether the footsteps behind me were '
-        'still there.',
-    'kelda': " \"If it floods,\" Kelda said, into the dark, \"I go last. I "
+    '*': ' Whoever had come down to the berths with me looked at the Eel '
+        'the way I looked at her, and did not say what we were both '
+        'thinking, which was that she was a great deal of boat to trust '
+        'with a great deal of sea.',
+    'kelda': " \"She floats,\" Kelda said, kicking the hull. \"Mostly. I "
         "float worse.\" It was the closest thing to a joke I had heard from "
         "her, and she meant every word.",
-    'sable': ' Sable went ahead without being asked, which I understood '
-        'later was her way of saying she trusted me at her back.',
+    'sable': ' Sable had already been aboard, without being asked, and came '
+        'back up the gangway with a list of everything the Eel was missing '
+        'and a smaller list of where to steal it.',
+    'liora': ' Liora looked at the sail, and the torn place in it, and '
+        'said nothing, and started coiling rope as though the coiling were '
+        'an argument she intended to win.',
+    'vess': ' Vess put her palm flat on the hull below the waterline, where '
+        'the pike had gone through, and held it there, and when she took it '
+        'away the wood was dry. "Not for long," she said. "But long enough '
+        'to get to the pitch."',
+  },
+  '2900_boat_fixed': {
+    '*': ' The crew stood along the rail and looked at the wharf and did '
+        'not look at me, which was their way of leaving the deciding where '
+        'it belonged.',
+    'kelda': ' Kelda counted the wharf the way she counted a wall: heads, '
+        'then hands, then the ones who could hold a line. "Twenty," she '
+        'said. "Twenty-five if they sit still. They will not sit still."',
+    'sable': ' "Stores go over," Sable said, before I had asked anyone '
+        'anything, "or people stay. I have done the sum. I did not like it '
+        'either."',
+    'liora': ' Liora had gone up the mast and was looking past the wharf to '
+        'the Upper Tier, where the drums were, and counting something I did '
+        'not want to know the total of.',
+    'vess': ' Vess stood at the gangway with her hood back so the wharf '
+        'could see what she was, and the ones who stepped back from her '
+        'were, she told me later, the ones she would have left.',
+  },
+  '2999': {
+    '*': ' The crew looked at me across the tilted deck the way a crew '
+        'looks at the one who has to say it, and I understood that whatever '
+        'I said next would be repeated, later, in a dry place, by whoever '
+        'was left to repeat it.',
+    'kelda': ' Kelda was at the tiller already, both arms around it, and '
+        'shouted over the sea that whatever I decided I should decide it '
+        'before the next wave, because the next wave was not going to wait '
+        'for a discussion.',
+    'sable': ' Sable was cutting lashings free without waiting for the '
+        'order, which she would later describe as anticipating it.',
+    'liora': ' Liora had one arm through the shrouds and the other around '
+        'a child from the wharf, and was not, whatever I decided, going to '
+        'let go of either.',
+    'vess': ' The thread in Vess had gone white in the storm-light, and she '
+        'was talking to the sea, quietly, in a language it seemed to be '
+        'listening to.',
+  },
+  '4999_standard': {
+    '*': ' The ones who had come into the sanctum with me stood back from '
+        'the Warden and the grey showing through his white, and gave me the '
+        'room, and the silence, that the next hour needed.',
+    'kelda': ' "He held the wrong thing," Kelda said, looking down at him, '
+        '"but he held it. Do not make him wait for the sake of it."',
+    'maren': ' Maren knelt at his head, where he could see her, and told '
+        'him what a cleric tells a dying man, and did not tell me what to '
+        'do, which from her was a mercy I had not expected.',
+    'grosh': ' Grosh turned his back on the Warden and watched the '
+        'sanctum door. "Cathedral is burning," he said. "Whatever you do, '
+        'do it before the roof does."',
+    'vess': ' Vess could not take her eyes off the grey in the standard. '
+        '"It is the same cloth," she said. "It knows what you are going to '
+        'do. It is waiting to see how."',
+  },
+  '5004_altar': {
+    '*': ' Nobody who had come down with me said anything at the altar. '
+        'There was nothing to say that the twelve sleepers in the grey were '
+        'not already saying.',
+    'maren': ' Maren went from sleeper to sleeper with her hand on each '
+        'forehead, and when she had touched the last she looked at me and '
+        'shook her head, very slightly, at a question I had not asked aloud.',
+    'tobin': ' Tobin began the hymn for the dying and stopped after two '
+        'bars. "They are not," he said. "Yet. That is the whole of the '
+        'problem, is it not."',
+    'sable': ' "Quick," Sable said, "whichever way. Quick is the only kind '
+        'thing left in this room." She did not look at the sleepers when '
+        'she said it.',
+    'liora': ' Liora had her bow half-drawn at the sleepers before she '
+        'understood what they were, and lowered it slowly, and did not '
+        'raise it again.',
+  },
+  '6010_thread': {
+    '*': ' The chapel was too small for the company I kept, and they '
+        'waited at the door, and every one of them found somewhere else to '
+        'look.',
+    'malrik': ' Malrik priced the reliquary from the door out of habit, and '
+        'caught himself, and for the first time since I had known him did '
+        'not name the figure.',
+    'maren': ' Maren asked the chart-keeper her sister\'s name, and said '
+        'it back to her, and that was the only prayer said in that chapel.',
+    'tobin': ' Tobin put his hammer down outside the door before he came '
+        'in, which I understood to be the nearest thing to taking off his '
+        'boots that a dwarf has.',
+    'vess': ' Vess stood as far from the reliquary as the chapel allowed. '
+        '"It knows me," she said. "The thread in it. Do not let it out near '
+        'me."',
+  },
+  '7002_price': {
+    '*': ' The crew heard the price with me, and I watched each of them do '
+        'the sum, and I watched more than one of them come to the same '
+        'answer and step forward before I could speak.',
+    'kelda': ' Kelda stepped forward before I had finished hearing the '
+        'price, shield still on her arm. "I go first," she said. "I always '
+        'go first. This is not different."',
+    'sable': ' Sable stepped forward before I had finished hearing the '
+        'price. "Somebody has to," she said, "and I am the only one here '
+        'who has robbed a door before."',
+    'maren': ' Maren stepped forward before I had finished hearing the '
+        'price, and did not argue it, and did not let me argue it either.',
+    'liora': ' Liora stepped forward before I had finished hearing the '
+        'price, unstrung her bow, and handed it to me. "Nine arrows," she '
+        'said. "Use them."',
+    'vess': ' Vess stepped forward before I had finished hearing the price. '
+        '"It knows my name," she said. "Let it have the rest of me. It will '
+        'choke on it."',
+    'grosh': ' Grosh stepped forward before I had finished hearing the '
+        'price, and said nothing, because he had never in his life needed '
+        'to.',
+    'tobin': ' Tobin stepped forward before I had finished hearing the '
+        'price, humming, and did not stop humming, and the reflections on '
+        'the sand turned to listen.',
+    'malrik': ' Malrik stepped forward before I had finished hearing the '
+        'price. "First pick," he said. "I did say." He was not smiling. It '
+        'was the first time.',
+  },
+  '7002_pact': {
+    '*': ' The crew had gone very quiet behind me, and I did not need to '
+        'turn around to know who was standing closest to the legate\'s '
+        'boat, or why.',
+    'kelda': ' Kelda had moved, without a word, to stand between me and the '
+        'legate\'s boat, and she had her shield up, and it was not raised '
+        'against him.',
+    'maren': ' Maren said my name once, quietly, the way you say a name to '
+        'someone who is walking toward a drop.',
+    'vess': ' "He is not offering you a crown," Vess said. "He is offering '
+        'the tear a bearer. Ask him who taught him the words."',
+    'malrik': ' Malrik looked at the legate\'s purse, and at the legate, '
+        'and at me, and said, "Whatever he is paying, it is not enough, and '
+        'I say that as a professional."',
   },
   '3001_camp': {
     '*': ' The ones who had come this far with me set to work before I had '
@@ -228,15 +364,150 @@ const Map<String, Map<String, String>> _acksFr = {
         "aurait choisis, et un qu'elle aurait évité.",
   },
   '2900': {
-    '*': " Le tunnel nous prit en file indienne, et je m'aperçus que j'avais "
-        "cessé de vérifier, tous les dix pas, si les pas derrière moi étaient "
-        "toujours là.",
-    'kelda': " « S'il inonde, dit Kelda dans le noir, je passe en dernier. Je "
-        "flotte moins bien. » C'était ce qui ressemblait le plus à une "
+    '*': " Qui était descendu aux mouillages avec moi regardait l'Eel comme "
+        "je le regardais, et ne disait pas ce que nous pensions tous deux, à "
+        "savoir que c'était beaucoup de bateau à confier à beaucoup de mer.",
+    'kelda': " « Il flotte, dit Kelda en frappant la coque du pied. Presque. "
+        "Je flotte moins bien. » C'était ce qui ressemblait le plus à une "
         "plaisanterie de sa part, et elle en pensait chaque mot.",
-    'sable': " Sable prit les devants sans qu'on le lui demande, ce que je "
-        "compris plus tard comme sa façon de dire qu'elle me faisait "
-        "confiance dans son dos.",
+    'sable': " Sable était déjà montée à bord sans qu'on le lui demande, et "
+        "redescendit la passerelle avec la liste de tout ce qui manquait à "
+        "l'Eel et une liste plus courte des endroits où le voler.",
+    'liora': " Liora regarda la voile, et la déchirure dedans, ne dit rien, "
+        "et se mit à lover du cordage comme si le lovage était une dispute "
+        "qu'elle comptait gagner.",
+    'vess': " Vess posa la paume à plat sur la coque sous la ligne de "
+        "flottaison, là où la pique était passée, et l'y laissa, et quand "
+        "elle la retira le bois était sec. « Pas pour longtemps, dit-elle. "
+        "Mais assez pour aller jusqu'à la poix. »",
+  },
+  '2900_boat_fixed': {
+    '*': " L'équipage se tenait le long du bastingage et regardait le quai "
+        "sans me regarder, ce qui était sa façon de laisser la décision là "
+        "où elle devait être.",
+    'kelda': " Kelda compta le quai comme elle comptait un mur : les têtes, "
+        "puis les mains, puis ceux qui savaient tenir un cordage. « Vingt, "
+        "dit-elle. Vingt-cinq s'ils ne bougent pas. Ils bougeront. »",
+    'sable': " « Les vivres par-dessus bord, dit Sable avant que j'aie rien "
+        "demandé à personne, ou les gens restent. J'ai fait le compte. Il ne "
+        "m'a pas plu non plus. »",
+    'liora': " Liora était montée au mât et regardait par-delà le quai vers "
+        "l'Étage Supérieur, où étaient les tambours, et comptait quelque "
+        "chose dont je ne voulais pas connaître le total.",
+    'vess': " Vess se tenait à la passerelle, capuche rabattue pour que le "
+        "quai voie ce qu'elle était, et ceux qui reculèrent devant elle "
+        "étaient, me dit-elle plus tard, ceux qu'elle aurait laissés.",
+  },
+  '2999': {
+    '*': " L'équipage me regardait à travers le pont incliné comme un "
+        "équipage regarde celui qui doit le dire, et je compris que ce que je "
+        "dirais ensuite serait répété, plus tard, dans un endroit sec, par "
+        "qui resterait pour le répéter.",
+    'kelda': " Kelda était déjà à la barre, les deux bras autour, et cria "
+        "par-dessus la mer que quoi que je décide, je devais le décider avant "
+        "la prochaine vague, parce que la prochaine vague n'attendrait pas "
+        "une discussion.",
+    'sable': " Sable tranchait les saisines sans attendre l'ordre, ce qu'elle "
+        "décrirait plus tard comme l'avoir anticipé.",
+    'liora': " Liora avait un bras dans les haubans et l'autre autour d'un "
+        "enfant du quai, et n'allait, quoi que je décide, lâcher ni l'un ni "
+        "l'autre.",
+    'vess': " Le fil en Vess était devenu blanc dans la lumière de la "
+        "tempête, et elle parlait à la mer, tout bas, dans une langue que "
+        "celle-ci semblait écouter.",
+  },
+  '4999_standard': {
+    '*': " Ceux qui étaient entrés dans le sanctuaire avec moi reculèrent "
+        "devant le Gardien et le gris perçant sous son blanc, et me "
+        "laissèrent la place, et le silence, dont l'heure suivante avait "
+        "besoin.",
+    'kelda': " « Il a tenu la mauvaise chose, dit Kelda en le regardant, mais "
+        "il l'a tenue. Ne le fais pas attendre pour le principe. »",
+    'maren': " Maren s'agenouilla à sa tête, là où il pouvait la voir, et lui "
+        "dit ce qu'une clerc dit à un mourant, et ne me dit pas quoi faire, "
+        "ce qui de sa part était une miséricorde à laquelle je ne "
+        "m'attendais pas.",
+    'grosh': " Grosh tourna le dos au Gardien et surveilla la porte du "
+        "sanctuaire. « La cathédrale brûle, dit-il. Quoi que tu fasses, "
+        "fais-le avant le toit. »",
+    'vess': " Vess ne pouvait détacher les yeux du gris dans l'étendard. "
+        "« C'est la même étoffe, dit-elle. Elle sait ce que tu vas faire. "
+        "Elle attend de voir comment. »",
+  },
+  '5004_altar': {
+    '*': " Personne de ceux qui étaient descendus avec moi ne dit rien à "
+        "l'autel. Il n'y avait rien à dire que les douze dormeurs dans le "
+        "gris ne disent déjà.",
+    'maren': " Maren alla de dormeur en dormeur, la main sur chaque front, "
+        "et quand elle eut touché le dernier elle me regarda et secoua la "
+        "tête, très légèrement, à une question que je n'avais pas posée à "
+        "voix haute.",
+    'tobin': " Tobin entama l'hymne des mourants et s'arrêta après deux "
+        "mesures. « Ils ne le sont pas, dit-il. Pas encore. C'est tout le "
+        "problème, n'est-ce pas. »",
+    'sable': " « Vite, dit Sable, quelle que soit la façon. Vite est la "
+        "seule bonté qui reste dans cette pièce. » Elle ne regardait pas les "
+        "dormeurs en le disant.",
+    'liora': " Liora avait à demi bandé son arc sur les dormeurs avant de "
+        "comprendre ce qu'ils étaient, et l'abaissa lentement, et ne le "
+        "releva plus.",
+  },
+  '6010_thread': {
+    '*': " La chapelle était trop petite pour la compagnie que je gardais, "
+        "et ils attendirent à la porte, et chacun d'eux trouva autre chose "
+        "à regarder.",
+    'malrik': " Malrik estima le reliquaire depuis la porte par habitude, se "
+        "reprit, et pour la première fois depuis que je le connaissais ne "
+        "nomma pas le chiffre.",
+    'maren': " Maren demanda à la gardienne des cartes le nom de sa sœur, et "
+        "le lui redit, et ce fut la seule prière dite dans cette chapelle.",
+    'tobin': " Tobin posa son marteau dehors avant d'entrer, ce que je "
+        "compris comme ce qui ressemble le plus, chez un nain, à retirer ses "
+        "bottes.",
+    'vess': " Vess se tenait aussi loin du reliquaire que la chapelle le "
+        "permettait. « Il me connaît, dit-elle. Le fil qu'il contient. Ne le "
+        "laisse pas sortir près de moi. »",
+  },
+  '7002_price': {
+    '*': " L'équipage entendit le prix avec moi, et je regardai chacun "
+        "d'eux faire le compte, et j'en vis plus d'un arriver à la même "
+        "réponse et s'avancer avant que j'aie pu parler.",
+    'kelda': " Kelda s'avança avant que j'aie fini d'entendre le prix, le "
+        "bouclier encore au bras. « Je passe en premier, dit-elle. Je passe "
+        "toujours en premier. Ce n'est pas différent. »",
+    'sable': " Sable s'avança avant que j'aie fini d'entendre le prix. "
+        "« Il faut bien quelqu'un, dit-elle, et je suis la seule ici à avoir "
+        "déjà cambriolé une porte. »",
+    'maren': " Maren s'avança avant que j'aie fini d'entendre le prix, et ne "
+        "discuta pas, et ne me laissa pas discuter non plus.",
+    'liora': " Liora s'avança avant que j'aie fini d'entendre le prix, "
+        "débanda son arc et me le tendit. « Neuf flèches, dit-elle. "
+        "Sers-t'en. »",
+    'vess': " Vess s'avança avant que j'aie fini d'entendre le prix. « Il "
+        "connaît mon nom, dit-elle. Qu'il ait le reste. Il s'étouffera "
+        "avec. »",
+    'grosh': " Grosh s'avança avant que j'aie fini d'entendre le prix, et ne "
+        "dit rien, parce qu'il n'en avait jamais eu besoin de sa vie.",
+    'tobin': " Tobin s'avança avant que j'aie fini d'entendre le prix, en "
+        "fredonnant, et ne cessa pas de fredonner, et les reflets sur le "
+        "sable se tournèrent pour écouter.",
+    'malrik': " Malrik s'avança avant que j'aie fini d'entendre le prix. "
+        "« La priorité, dit-il. J'avais prévenu. » Il ne souriait pas. "
+        "C'était la première fois.",
+  },
+  '7002_pact': {
+    '*': " L'équipage s'était fait très silencieux derrière moi, et je "
+        "n'avais pas besoin de me retourner pour savoir qui se tenait le "
+        "plus près de la barque du légat, ni pourquoi.",
+    'kelda': " Kelda s'était placée, sans un mot, entre moi et la barque du "
+        "légat, le bouclier levé, et il n'était pas levé contre lui.",
+    'maren': " Maren dit mon nom une fois, tout bas, comme on dit un nom à "
+        "quelqu'un qui marche vers un précipice.",
+    'vess': " « Il ne t'offre pas une couronne, dit Vess. Il offre un "
+        "porteur à la déchirure. Demande-lui qui lui a appris les mots. »",
+    'malrik': " Malrik regarda la bourse du légat, puis le légat, puis moi, "
+        "et dit : « Quoi qu'il paie, ce n'est pas assez, et je dis cela en "
+        "professionnel. »",
   },
   '3001_camp': {
     '*': " Ceux qui étaient venus jusque-là avec moi se mirent au travail "

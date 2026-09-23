@@ -3079,6 +3079,96 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'slot_weapon_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
   'slot_shield_label': {AppLanguage.en: 'Bulwark', AppLanguage.fr: 'Pavois'},
   'slot_utility_label': {AppLanguage.en: 'Rigging', AppLanguage.fr: 'Gréement'},
+  'slot_sail_label': {
+    AppLanguage.en: 'Painted sail',
+    AppLanguage.fr: 'Voile peinte',
+  },
+  'sail_repaint_note': {
+    AppLanguage.en: 'Painting the sail replaces the sigil already on it.',
+    AppLanguage.fr: 'Peindre la voile remplace le sigil qui s\'y trouve déjà.',
+  },
+  'sail_medium_match_label': {
+    AppLanguage.en:
+        'Painted your people\'s way: the sigil holds twice as strong',
+    AppLanguage.fr:
+        'Peint à la manière de votre peuple : le sigil tient deux fois plus fort',
+  },
+  'sail_power_flight': {
+    AppLanguage.en: 'Flight: storms and raiders pass beneath the keel',
+    AppLanguage.fr: 'Vol : tempêtes et pillards passent sous la quille',
+  },
+  'sail_power_foresight': {
+    AppLanguage.en:
+        'Foresight: tomorrow\'s weather shown, the first volley seen coming',
+    AppLanguage.fr:
+        'Prescience : le temps de demain annoncé, la première bordée vue venir',
+  },
+  'sail_power_hearth': {
+    AppLanguage.en:
+        'Hearth: every day at sea heals the crew and mends the hull',
+    AppLanguage.fr:
+        'Foyer : chaque jour en mer soigne l\'équipage et répare la coque',
+  },
+  'sail_power_windknot': {
+    AppLanguage.en: 'Wind-knot: a shorter crossing, and richer wrecks',
+    AppLanguage.fr:
+        'Nœud de vent : une traversée plus courte, et des épaves plus riches',
+  },
+  'sail_power_voidmark': {
+    AppLanguage.en:
+        'Void mark: a void volley in battle, and storms that do not bite',
+    AppLanguage.fr:
+        'Marque du Néant : une bordée de Néant au combat, et des tempêtes qui ne mordent plus',
+  },
+  'ship_log_lift': {
+    AppLanguage.en:
+        'The painted sail lifts the Eel clear of the weather: {n} bad days pass beneath her keel.',
+    AppLanguage.fr:
+        'La voile peinte soulève l\'Eel au-dessus du temps : {n} mauvais jours passent sous sa quille.',
+  },
+  'ship_log_foresight_prefix': {
+    AppLanguage.en: 'The Kraken\'s Eye sees ahead',
+    AppLanguage.fr: 'L\'Œil du Kraken voit devant',
+  },
+  'ship_log_first_volley_seen': {
+    AppLanguage.en:
+        'The sail saw the first volley coming; the Eel slips most of it.',
+    AppLanguage.fr:
+        'La voile a vu venir la première bordée ; l\'Eel en esquive l\'essentiel.',
+  },
+  'ship_log_hearth': {
+    AppLanguage.en:
+        'The hearth-mark warms the crew: +{n} health, and the hull knits.',
+    AppLanguage.fr:
+        'La marque du foyer réchauffe l\'équipage : +{n} de santé, et la coque se ressoude.',
+  },
+  'ship_log_windknot': {
+    AppLanguage.en:
+        'The wind-knot finds the faster passage: {n} fewer days at sea.',
+    AppLanguage.fr:
+        'Le nœud de vent trouve le passage le plus rapide : {n} jours de mer en moins.',
+  },
+  'ship_log_void_calm': {
+    AppLanguage.en: 'The void mark takes the storm\'s teeth.',
+    AppLanguage.fr: 'La marque du Néant ôte ses dents à la tempête.',
+  },
+  'sea_event_raider': {
+    AppLanguage.en: 'a raider',
+    AppLanguage.fr: 'un pillard'
+  },
+  'sea_event_storm': {AppLanguage.en: 'a storm', AppLanguage.fr: 'une tempête'},
+  'sea_event_derelict': {
+    AppLanguage.en: 'a derelict',
+    AppLanguage.fr: 'une épave'
+  },
+  'sea_event_calm': {
+    AppLanguage.en: 'calm water',
+    AppLanguage.fr: 'une mer calme'
+  },
+  'sea_event_sighting': {
+    AppLanguage.en: 'a sighting',
+    AppLanguage.fr: 'une apparition'
+  },
   'ports_section': {AppLanguage.en: 'Chart', AppLanguage.fr: 'Carte marine'},
   'sail_button': {AppLanguage.en: 'Set sail', AppLanguage.fr: "Lever l'ancre"},
   'moored_here_label': {

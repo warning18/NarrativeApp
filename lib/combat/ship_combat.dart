@@ -196,6 +196,9 @@ int slotCapacity(Map<String, dynamic> ship, String slotType) {
       return (ship['shieldSlots'] as num?)?.toInt() ?? 0;
     case 'Utility':
       return (ship['utilitySlots'] as num?)?.toInt() ?? 0;
+    case 'Sail':
+      // The painted sail (see sail_powers.dart): one sigil at a time.
+      return (ship['sailSlots'] as num?)?.toInt() ?? 0;
   }
   return 0;
 }

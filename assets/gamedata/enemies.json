@@ -1757,5 +1757,623 @@
         "replaceMoves": false
       }
     ]
+  },
+  "kelda_turned": {
+    "enemyName": "Kelda, Turned",
+    "maxHealth": 320,
+    "damage": 32,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "heavy_attack",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "warrior_shield_bash",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Shield Wall",
+        "nameFr": "Shield Wall",
+        "message": "She sets her feet the way she set them at the gate. It was never for you.",
+        "messageFr": "Elle campe ses pieds comme elle les campait à la porte. Ce n'était jamais pour vous.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "heavy_attack",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "sable_turned": {
+    "enemyName": "Sable, Turned",
+    "maxHealth": 260,
+    "damage": 36,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "rogue_backstab",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "heavy_attack",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Last Trick",
+        "nameFr": "Last Trick",
+        "message": "She laughs, once, and stops pulling her cuts.",
+        "messageFr": "Elle rit, une fois, et cesse de retenir ses coups.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "rogue_backstab",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "maren_turned": {
+    "enemyName": "Maren, Turned",
+    "maxHealth": 280,
+    "damage": 30,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "cleric_revive_prayer",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Broken Vow",
+        "nameFr": "Broken Vow",
+        "message": "She stops praying and starts judging.",
+        "messageFr": "Elle cesse de prier et commence à juger.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "cleric_smite",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "liora_turned": {
+    "enemyName": "Liora, Turned",
+    "maxHealth": 250,
+    "damage": 38,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "ranger_aimed_shot",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "heavy_attack",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Nine Arrows",
+        "nameFr": "Nine Arrows",
+        "message": "She counts her arrows aloud. She has nine.",
+        "messageFr": "Elle compte ses flèches à voix haute. Elle en a neuf.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "ranger_aimed_shot",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "vess_turned": {
+    "enemyName": "Vess, Turned",
+    "maxHealth": 240,
+    "damage": 40,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "voidkin_entropy_touch",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "mage_arcane_missile",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "It Knows Her Name",
+        "nameFr": "It Knows Her Name",
+        "message": "The thread in her answers the tear, and she lets it.",
+        "messageFr": "Le fil en elle répond à la déchirure, et elle le laisse faire.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "voidkin_entropy_touch",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "grosh_turned": {
+    "enemyName": "Grosh, Turned",
+    "maxHealth": 360,
+    "damage": 34,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "orc_berserk_rage",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "warrior_shield_bash",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Unfinished Job",
+        "nameFr": "Unfinished Job",
+        "message": "He puts his shield down. He never needed it against you.",
+        "messageFr": "Il pose son bouclier. Il n'en a jamais eu besoin contre vous.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "orc_berserk_rage",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "tobin_turned": {
+    "enemyName": "Tobin, Turned",
+    "maxHealth": 300,
+    "damage": 28,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "cleric_holy_light",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "dwarf_stoneskin",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "The Hymn",
+        "nameFr": "The Hymn",
+        "message": "He sings, at last, and the sand goes still to listen.",
+        "messageFr": "Il chante, enfin, et le sable s'immobilise pour écouter.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "cleric_holy_light",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "malrik_turned": {
+    "enemyName": "Malrik, Turned",
+    "maxHealth": 290,
+    "damage": 36,
+    "guile": 9,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "rogue_poison_blade",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 40,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "orc_savage_cleave",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "First Pick",
+        "nameFr": "First Pick",
+        "message": "\"I did say I get first pick,\" he says, and means the crown, and means you.",
+        "messageFr": "« J'avais dit que j'avais la priorité », dit-il, et il parle de la couronne, et il parle de vous.",
+        "damageMultiplier": 1.1,
+        "healPercent": 5,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "rogue_poison_blade",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "inquisition_legate": {
+    "enemyName": "The Legate's Champion",
+    "maxHealth": 340,
+    "damage": 31,
+    "guile": 10,
+    "xpReward": 320,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "Sanction",
+        "nameFr": "Sanction",
+        "message": "The legate reads the terms aloud, and the champion stops holding back.",
+        "messageFr": "Le légat lit les termes à voix haute, et le champion cesse de se retenir.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "cleric_smite",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 55,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      }
+    ]
+  },
+  "masked_penitent": {
+    "enemyName": "Masked Penitent",
+    "maxHealth": 250,
+    "damage": 25,
+    "guile": 8,
+    "xpReward": 160,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 40,
+        "name": "The Mask Slips",
+        "nameFr": "Le masque glisse",
+        "message": "She says your name through the porcelain. You do not hear it.",
+        "messageFr": "Elle dit votre nom à travers la porcelaine. Vous ne l'entendez pas.",
+        "damageMultiplier": 1.0,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ]
   }
 }

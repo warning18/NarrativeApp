@@ -349,6 +349,9 @@ class StoryNode {
                 ?.map((e) => e.toString())
                 .toList() ??
             const [],
+        andFlags:
+            (entry['andFlags'] as List?)?.map((e) => e.toString()).toList() ??
+                const [],
       ));
     }
     return out;
@@ -466,7 +469,8 @@ class StoryNode {
     return [
       for (final callback in flagCallbacks)
         if (held.contains(callback.flag) &&
-            !callback.unlessFlags.any(held.contains))
+            !callback.unlessFlags.any(held.contains) &&
+            callback.andFlags.every(held.contains))
           callback.line.textFor(french),
     ];
   }
@@ -537,6 +541,7 @@ class StoryNode {
                 ...callback.line.toJson(),
                 if (callback.unlessFlags.isNotEmpty)
                   'unlessFlags': callback.unlessFlags,
+                if (callback.andFlags.isNotEmpty) 'andFlags': callback.andFlags,
               },
           ],
         if (personaVariants.isNotEmpty)
@@ -564,18 +569,24 @@ class NarrationLine {
       };
 }
 
-/// A paragraph a node shows only to a player holding [flag] (and none of
-/// [unlessFlags]) -- see [StoryNode.flagCallbacks].
+/// A paragraph a node shows only to a player holding [flag] and every
+/// [andFlags], and none of [unlessFlags] -- see [StoryNode.flagCallbacks].
 class FlagCallback {
   const FlagCallback({
     required this.flag,
     required this.line,
     this.unlessFlags = const [],
+    this.andFlags = const [],
   });
 
   final String flag;
   final NarrationLine line;
+
+  /// Any of these held vetoes the paragraph.
   final List<String> unlessFlags;
+
+  /// All of these must be held as well as [flag].
+  final List<String> andFlags;
 }
 
 /// A hub's what-has-changed line: counts the player's flags starting with

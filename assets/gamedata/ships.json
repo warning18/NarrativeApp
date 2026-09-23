@@ -7,6 +7,7 @@
     "shieldRegenPerTurn": 5,
     "weaponSlots": 2,
     "shieldSlots": 1,
-    "utilitySlots": 1
+    "utilitySlots": 1,
+    "sailSlots": 1
   }
 }

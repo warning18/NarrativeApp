@@ -122,7 +122,7 @@ const List<String> spellTargetOptions = [
 /// to it) -- empty for a flat spell.
 const List<String> spellScalingOptions = ['', 'intelligence', 'wisdom'];
 
-const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility'];
+const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];
 
 const List<String> questCategoryOptions = ['Main', 'Side', 'Daily', 'Event'];
 
@@ -863,6 +863,12 @@ final DbSchema shipsSchema = DbSchema(
         label: 'Utility Slots',
         type: FieldType.integer,
         defaultValue: 0),
+    FieldSchema(
+      key: 'sailSlots',
+      label: 'Sail Slots (painted sigils aboard at once)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
     visualAssetFieldSchema('ships'),
   ],
 );
@@ -925,6 +931,27 @@ final DbSchema shipPartsSchema = DbSchema(
       defaultValue: 0,
     ),
     visualAssetFieldSchema('ship_parts'),
+    FieldSchema(
+      key: 'sailPower',
+      label:
+          'Sail Power (painted sail only: flight, foresight, hearth, windknot, voidmark)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'sailMedium',
+      label:
+          'Sail Medium (the race whose way it is painted in; matching the character doubles it)',
+      type: FieldType.reference,
+      referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
   ],
 );
 

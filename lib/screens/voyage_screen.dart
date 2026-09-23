@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sea_events.dart';
+import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -39,6 +40,13 @@ class VoyageScreen extends ConsumerStatefulWidget {
 class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   final _random = Random();
   List<SeaEvent>? _events;
+
+  /// The painted sail aboard, if any, and how strongly its sigil holds
+  /// (see sail_powers.dart); the first volley of a raider fight is the one
+  /// foresight can see coming.
+  ({String partId, SailPower power, String medium})? _sail;
+  int _sailStrength = 1;
+  bool _firstVolleyPending = false;
   int _index = 0;
   _VoyagePhase _phase = _VoyagePhase.event;
   ShipCombatant? _player;
@@ -62,12 +70,29 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       fromPort == null ? 1 : portChapter(fromPort),
       portChapter(widget.toPort),
     );
+    _sail = installedSail(parts, session.shipPartIds);
+    _sailStrength =
+        _sail == null ? 1 : sailStrength(_sail!.medium, session.raceId);
+    var length = portVoyageLength(widget.toPort);
+    if (_sail?.power == SailPower.windknot) {
+      final shorter = windknotLength(length, _sailStrength);
+      if (shorter < length) {
+        _log.add(_t('ship_log_windknot', n: length - shorter));
+      }
+      length = shorter;
+    }
     _events = buildVoyage(
       random: _random,
-      length: portVoyageLength(widget.toPort),
+      length: length,
       enemyShips: enemyShips,
       chapter: chapter,
     );
+    if (_sail?.power == SailPower.flight) {
+      final lifted = applyFlight(_events!);
+      final skipped = _events!.length - lifted.length;
+      if (skipped > 0) _log.add(_t('ship_log_lift', n: skipped));
+      _events = lifted;
+    }
     final shipId = ships.containsKey('rusty_eel')
         ? 'rusty_eel'
         : (ships.keys.isEmpty ? '' : ships.keys.first);
@@ -105,7 +130,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final player = _player!;
     switch (event.kind) {
       case SeaEventKind.storm:
-        final hull = max(1, player.hull + event.hullDelta);
+        var loss = -event.hullDelta;
+        if (_sail?.power == SailPower.voidmark) {
+          loss = voidmarkStormLoss(loss, _sailStrength);
+          _log.add(_t('ship_log_void_calm'));
+        }
+        final hull = max(1, player.hull - loss);
         _player = player.copyWith(hull: hull);
         _log.add(_t('ship_log_storm', n: player.hull - hull));
         await notifier.setShipHull(hull);
@@ -117,8 +147,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         await notifier.setShipHull(hull);
         await _advance();
       case SeaEventKind.derelict:
-        await notifier.applyChoiceEffects(goldMod: event.gold);
-        _log.add(_t('ship_log_salvage', n: event.gold));
+        final gold = _sail?.power == SailPower.windknot
+            ? windknotSalvage(event.gold, _sailStrength)
+            : event.gold;
+        await notifier.applyChoiceEffects(goldMod: gold);
+        _log.add(_t('ship_log_salvage', n: gold));
         await _advance();
       case SeaEventKind.sighting:
         await _advance();
@@ -132,6 +165,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _enemy = buildEnemyShip(data);
         _cooldowns.clear();
         _log.clear();
+        _firstVolleyPending = _sail?.power == SailPower.foresight;
         if (!mounted) return;
         setState(() {
           _phase = _VoyagePhase.fight;
@@ -142,6 +176,20 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 
   Future<void> _advance() async {
     if (!mounted) return;
+    if (_sail?.power == SailPower.hearth) {
+      // Every day at sea under the hearth-mark heals the crew and mends
+      // the hull a little.
+      final notifier = ref.read(playerSessionProvider.notifier);
+      final session = ref.read(playerSessionProvider);
+      final heal =
+          max(1, session.maxHealth * hearthHealPercent(_sailStrength) ~/ 100);
+      await notifier.applyChoiceEffects(healAmount: heal);
+      final hull = min(
+          _player!.maxHull, _player!.hull + hearthHullRepair(_sailStrength));
+      _player = _player!.copyWith(hull: hull);
+      await notifier.setShipHull(hull);
+      _log.add(_t('ship_log_hearth', n: heal));
+    }
     if (_index + 1 >= _events!.length) {
       final notifier = ref.read(playerSessionProvider.notifier);
       await notifier.setShipHull(_player!.hull);
@@ -197,10 +245,17 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         return;
       }
     }
+    var weaponDamage = (_enemyData?['weaponDamage'] as num?)?.toInt() ?? 0;
+    if (_firstVolleyPending) {
+      // Foresight: the sail saw the first volley coming.
+      weaponDamage = (weaponDamage * firstVolleyFactor(_sailStrength)).round();
+      _firstVolleyPending = false;
+      _log.add(_t('ship_log_first_volley_seen'));
+    }
     final result = resolveEnemyShipTurn(
       player: _player!,
       enemy: _enemy!,
-      weaponDamage: (_enemyData?['weaponDamage'] as num?)?.toInt() ?? 0,
+      weaponDamage: weaponDamage,
       playerShieldRegen: _shipRegen,
     );
     if (result.damageDealt > 0) {
@@ -317,6 +372,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     );
   }
 
+  /// Foresight: the kinds of the next day or two, in words.
+  String _foresightPreview(AppLanguage lang) {
+    final ahead = <String>[];
+    for (var i = 1; i <= foresightDays(_sailStrength); i++) {
+      if (_index + i >= _events!.length) break;
+      ahead.add(trFor(lang, 'sea_event_${_events![_index + i].kind.name}'));
+    }
+    return ahead.isEmpty
+        ? trFor(lang, 'voyage_arrived_title')
+        : ahead.join(', ');
+  }
+
   Widget _buildEvent(
     BuildContext context, {
     required bool fr,
@@ -340,10 +407,28 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         const SizedBox(height: 16),
         Expanded(
           child: SingleChildScrollView(
-            child: Text(
-              event.descriptionFor(fr),
-              style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  event.descriptionFor(fr),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge
+                      ?.copyWith(height: 1.5),
+                ),
+                if (_sail?.power == SailPower.foresight) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    '${trFor(lang, 'ship_log_foresight_prefix')}: '
+                    '${_foresightPreview(lang)}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ],
             ),
           ),
         ),
@@ -358,6 +443,26 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     );
   }
 
+  /// The void volley hits harder when the mark was set by a void-marked
+  /// hand (see sail_powers.dart).
+  ShipAction _withSailBonus(ShipAction action) {
+    final sail = _sail;
+    if (sail == null ||
+        sail.power != SailPower.voidmark ||
+        action.partId != sail.partId) {
+      return action;
+    }
+    return ShipAction(
+      partId: action.partId,
+      label: action.label,
+      labelFr: action.labelFr,
+      damage: action.damage + voidVolleyBonus(_sailStrength),
+      shieldRestore: action.shieldRestore,
+      hullRepair: action.hullRepair,
+      cooldownTurns: action.cooldownTurns,
+    );
+  }
+
   Widget _buildFight(
     BuildContext context, {
     required bool fr,
@@ -368,7 +473,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final actions = [
       for (final id in session.shipPartIds)
         if (parts[id] is Map<String, dynamic>)
-          ShipAction.fromPart(id, parts[id] as Map<String, dynamic>),
+          _withSailBonus(
+              ShipAction.fromPart(id, parts[id] as Map<String, dynamic>)),
     ].where((a) => a.isUsable).toList();
     final anyReady = actions.any((a) => (_cooldowns[a.partId] ?? 0) == 0);
     return Column(

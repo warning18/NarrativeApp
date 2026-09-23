@@ -1540,11 +1540,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Buys and fits a ship part; false (and nothing spent) if it is already
   /// aboard or unaffordable. Slot room is the caller's check (see
   /// ship_combat.dart's canInstallPart).
-  Future<bool> installShipPart(String partId, int cost) async {
+  Future<bool> installShipPart(String partId, int cost,
+      {List<String> replacing = const []}) async {
     if (state.shipPartIds.contains(partId) || state.gold < cost) return false;
     state = state.copyWith(
       gold: state.gold - cost,
-      shipPartIds: [...state.shipPartIds, partId],
+      // Repainting the sail takes the old sigil off (see sail_powers.dart).
+      shipPartIds: [
+        ...state.shipPartIds.where((id) => !replacing.contains(id)),
+        partId,
+      ],
     );
     await _persist();
     return true;

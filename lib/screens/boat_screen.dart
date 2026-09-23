@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/ship_combat.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
+import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -212,6 +213,8 @@ class BoatScreen extends ConsumerWidget {
         return tr(ref, 'slot_weapon_label');
       case 'Shield':
         return tr(ref, 'slot_shield_label');
+      case 'Sail':
+        return tr(ref, 'slot_sail_label');
       default:
         return tr(ref, 'slot_utility_label');
     }
@@ -244,7 +247,9 @@ class BoatScreen extends ConsumerWidget {
     final maxShield = (part['maxShieldBonus'] as num?)?.toInt() ?? 0;
     final repair = (part['hullRepairAmount'] as num?)?.toInt() ?? 0;
     final cooldown = (part['cooldownTurns'] as num?)?.toInt() ?? 0;
+    final power = sailPowerOf(part);
     return [
+      if (power != null) tr(ref, 'sail_power_${power.name}'),
       if (damage > 0) '${tr(ref, 'damage_label')} $damage',
       if (restore > 0) '${tr(ref, 'bulwark_label')} +$restore',
       if (maxShield > 0) '${tr(ref, 'bulwark_label')} max +$maxShield',
@@ -266,16 +271,41 @@ class BoatScreen extends ConsumerWidget {
   }) {
     final cost = (part['cost'] as num?)?.toInt() ?? 0;
     final isInstalled = installed.contains(partId);
-    final fits = canInstallPart(
-        ship: ship, parts: parts, installedPartIds: installed, partId: partId);
     final slot = part['slotType']?.toString() ?? '';
+    // A painted sail is repainted rather than added: the sigil already on
+    // the canvas comes off when a new one goes on.
+    final currentSail = slot == 'Sail' ? installedSail(parts, installed) : null;
+    final replacing = currentSail != null && currentSail.partId != partId
+        ? [currentSail.partId]
+        : const <String>[];
+    final fits = canInstallPart(
+            ship: ship,
+            parts: parts,
+            installedPartIds: installed,
+            partId: partId) ||
+        replacing.isNotEmpty;
+    final matchesMedium = slot == 'Sail' &&
+        sailMediumOf(part) == ref.read(playerSessionProvider).raceId;
+    final subtitle = [
+      '${_slotLabel(ref, slot)} · ${_partSummary(ref, part)}',
+      if (slot == 'Sail')
+        fr
+            ? (part['description_fr']?.toString() ?? '')
+            : (part['description']?.toString() ?? ''),
+      if (matchesMedium) tr(ref, 'sail_medium_match_label'),
+      if (replacing.isNotEmpty) tr(ref, 'sail_repaint_note'),
+    ].where((line) => line.isNotEmpty).join('\n');
     return Card(
       child: ListTile(
         leading: Icon(
-            isInstalled ? Icons.check_circle : Icons.handyman_outlined,
+            isInstalled
+                ? Icons.check_circle
+                : (slot == 'Sail'
+                    ? Icons.brush_outlined
+                    : Icons.handyman_outlined),
             color: isInstalled ? Colors.green : null),
         title: Text(_partName(part, fr)),
-        subtitle: Text('${_slotLabel(ref, slot)} · ${_partSummary(ref, part)}'),
+        subtitle: Text(subtitle),
         isThreeLine: true,
         trailing: isInstalled
             ? Text(tr(ref, 'installed_label'))
@@ -287,7 +317,8 @@ class BoatScreen extends ConsumerWidget {
                         : () async {
                             final ok = await ref
                                 .read(playerSessionProvider.notifier)
-                                .installShipPart(partId, cost);
+                                .installShipPart(partId, cost,
+                                    replacing: replacing);
                             if (!ok || !context.mounted) return;
                             showImmersiveNotice(
                               context,

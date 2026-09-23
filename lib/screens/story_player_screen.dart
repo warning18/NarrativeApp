@@ -697,9 +697,11 @@ Future<void> _selectChoice({
     }
   }
 
+  var resolvedEnemyIds = choice.allTriggerEnemyIds;
   if (choice.triggersCombat) {
     final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
-    final ids = choice.allTriggerEnemyIds;
+    final ids = await _resolveEnemyIds(ref, choice.allTriggerEnemyIds);
+    resolvedEnemyIds = ids;
     final resolvedEnemies = {
       for (final eid in ids) eid: enemies?[eid] as Map<String, dynamic>?,
     };
@@ -738,7 +740,7 @@ Future<void> _selectChoice({
         );
   }
   if (choice.hasUnlocks) {
-    final enemyIds = choice.allTriggerEnemyIds.toSet();
+    final enemyIds = resolvedEnemyIds.toSet();
     await ref.read(playerSessionProvider.notifier).unlockContent(
           shopId: choice.unlockShopId,
           questId: choice.unlockQuestId,
@@ -831,6 +833,32 @@ Future<void> _selectChoice({
   playNotifier.choose(choice.nextId);
 }
 
+/// `@first_ally` among a choice's enemies is the first active companion,
+/// turned: they leave the party for good before the fight and stand across
+/// the sand as `<id>_turned`; with no one left to turn, the Inquisition's
+/// own champion takes the field. The flags `companion_turned` /
+/// `legate_fought` let the scene say which it was.
+Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
+  if (!ids.contains('@first_ally')) return ids;
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final session = ref.read(playerSessionProvider);
+  final allyId =
+      session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
+  if (allyId != null) {
+    notifier.loseAlly(allyId);
+    await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
+  } else {
+    await notifier.applyChoiceEffects(flagsToAdd: const ['legate_fought']);
+  }
+  return [
+    for (final id in ids)
+      if (id == '@first_ally')
+        allyId == null ? 'inquisition_legate' : '${allyId}_turned'
+      else
+        id,
+  ];
+}
+
 /// Writes the fight that just ended into the next scene's opening line
 /// (or, after a retreat, into this scene's -- the player is still here).
 /// Nothing after a permadeath: the fight screen retires its outcome before
@@ -874,14 +902,18 @@ String composeNarration(StoryNode node, PlayerSession session,
   }
   final firstAlly =
       session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
+  final lastLost =
+      session.lostAllyIds.isEmpty ? null : session.lostAllyIds.last;
+  String? capitalized(String? id) => id == null || id.isEmpty
+      ? null
+      : '${id[0].toUpperCase()}${id.substring(1)}';
   return personalizeNarration(
     buffer.toString(),
     name: session.characterName,
     raceId: session.raceId,
     professionId: session.professionId,
-    companionName: firstAlly == null || firstAlly.isEmpty
-        ? null
-        : '${firstAlly[0].toUpperCase()}${firstAlly.substring(1)}',
+    companionName: capitalized(firstAlly),
+    lostCompanionName: capitalized(lastLost),
     french: french,
   );
 }

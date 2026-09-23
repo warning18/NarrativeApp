@@ -91,12 +91,19 @@ void main() {
             reason: '${entry.key} has slot ${part['slotType']}');
         expect((part['cost'] as num).toInt(), greaterThanOrEqualTo(0));
         expect(part['partName_fr']?.toString() ?? '', isNotEmpty);
-        expect(part['battleActionLabel_fr']?.toString() ?? '', isNotEmpty);
+        // A painted sail works on the voyage itself (see sail_powers.dart)
+        // and needs no battle action unless it fires one.
+        final painted = (part['sailPower']?.toString() ?? '').isNotEmpty;
         final effect = ((part['damageAmount'] as num?)?.toInt() ?? 0) +
             ((part['shieldRestoreAmount'] as num?)?.toInt() ?? 0) +
             ((part['maxShieldBonus'] as num?)?.toInt() ?? 0) +
             ((part['hullRepairAmount'] as num?)?.toInt() ?? 0);
-        expect(effect, greaterThan(0), reason: '${entry.key} does nothing');
+        if (!painted || effect > 0) {
+          expect(part['battleActionLabel_fr']?.toString() ?? '', isNotEmpty,
+              reason: entry.key);
+        }
+        expect(effect > 0 || painted, isTrue,
+            reason: '${entry.key} does nothing');
       }
     });
 

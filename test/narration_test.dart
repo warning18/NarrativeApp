@@ -361,6 +361,10 @@ void main() {
               .map((f) => f.toString()),
       for (final zone in zones.values)
         if ((zone as Map)['rewardFlag'] != null) zone['rewardFlag'].toString(),
+      // Set by the story player itself when `@first_ally` resolves (see
+      // story_player_screen.dart's _resolveEnemyIds).
+      'companion_turned',
+      'legate_fought',
     };
     final nodes = {
       for (final entry in dag.entries)
@@ -464,8 +468,11 @@ void main() {
 
     test('second beats wait on their first visit and retire themselves', () {
       for (final hub in ['5010', '6010']) {
-        final beats =
-            nodes[hub]!.choices.where((c) => c.showIfFlags.isNotEmpty).toList();
+        final beats = nodes[hub]!
+            .choices // A second beat waits on the hub's own first-visit flag; a choice
+            // waiting on a story flag (Lysa's fate) is a scene of its own.
+            .where((c) => c.showIfFlags.any((f) => f.startsWith('hub_')))
+            .toList();
         expect(beats.length, greaterThanOrEqualTo(4), reason: 'hub $hub');
         for (final beat in beats) {
           expect(beat.hideIfFlags, isNotEmpty, reason: beat.text);
