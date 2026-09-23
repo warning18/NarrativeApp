@@ -8,6 +8,38 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.114.0+142]
+
+Mana and spells on the character screen and the skills tab, so the pool
+and the spellbook are readable outside a fight.
+
+### Added
+- **Stats bar**: a mana chip (current / pool) next to health, pulsing
+  when it changes like the health and gold chips.
+- **Character screen**: a Mana & Spells card under the stats bar with the
+  pool as pips and the names of every known spell; tapping it opens the
+  Skills screen.
+- **Skills tab** (the player's own, never a companion's): a Spells
+  section heads the list with the pool, how it refills and where spells
+  are cast from, then one card per spell the profession can ever cast --
+  known ones with the numbers they would land right now (the same sum the
+  battle screen uses: base damage, gear, stat scaling, alignment gear and
+  the spell's element bonus, then the spell's own scaling), the unlearned
+  ones greyed out with the shop that sells their spellbook. Each card
+  opens a detail dialog: cost, effect, live amount, target, element,
+  status, whether it is known and where to learn it.
+- `lib/utils/spell_preview.dart`: the session-side spell preview and the
+  spellbook-shop lookup; `lib/widgets/mana_meter.dart`: the shared pip
+  meter; the mana and spell icons and labels move to `game_icons.dart`
+  so the battle, character and skills screens draw them the same way.
+
+### Tests
+`spell_preview_test.dart`: caster damage from a session with a weapon,
+its stat scaling and element bonus; the preview matching the engine's
+own spell scaling; a hex's level-scaled poison; the spellbook-shop
+lookup against the real data, including that every non-starting spell
+is sold somewhere; the profession spell list's ordering and filtering.
+
 ## [1.113.0+141]
 
 Mana and spells, and a combat screen rebuilt around them. Spells are cast

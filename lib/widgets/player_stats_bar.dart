@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/game_icons.dart';
 
 class PlayerStatsBar extends ConsumerWidget {
   const PlayerStatsBar({super.key});
@@ -30,6 +31,14 @@ class PlayerStatsBar extends ConsumerWidget {
             child: chip(
               Icons.favorite,
               '${session.currentHealth}/${session.maxHealth} ${tr(ref, 'hp_label')}',
+            ),
+          ),
+          const SizedBox(width: 6),
+          _PulseOnChange(
+            value: session.mana,
+            child: chip(
+              manaIcon,
+              '${session.mana}/${session.maxMana} ${tr(ref, 'mana_label')}',
             ),
           ),
           const SizedBox(width: 6),

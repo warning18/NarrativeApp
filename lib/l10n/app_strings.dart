@@ -1760,6 +1760,58 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'yourself',
     AppLanguage.fr: 'vous-même'
   },
+  'mana_and_spells_title': {
+    AppLanguage.en: 'Mana & Spells',
+    AppLanguage.fr: 'Mana et sorts',
+  },
+  'cast_in_battle_hint': {
+    AppLanguage.en:
+        'Cast from the action bar during your turn in battle, like a potion.',
+    AppLanguage.fr:
+        "Lancés depuis la barre d'action pendant votre tour au combat, comme une potion.",
+  },
+  'known_label': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connu'},
+  'not_learned_label': {
+    AppLanguage.en: 'Not learned yet',
+    AppLanguage.fr: 'Pas encore appris',
+  },
+  'spellbook_sold_at_prefix': {
+    AppLanguage.en: 'Spellbook sold at',
+    AppLanguage.fr: 'Grimoire vendu à',
+  },
+  'spellbook_not_sold': {
+    AppLanguage.en: 'No shop sells this spellbook yet',
+    AppLanguage.fr: 'Aucune boutique ne vend encore ce grimoire',
+  },
+  'effect_label': {AppLanguage.en: 'Effect', AppLanguage.fr: 'Effet'},
+  'target_label': {AppLanguage.en: 'Target', AppLanguage.fr: 'Cible'},
+  'right_now_label': {
+    AppLanguage.en: 'Right now',
+    AppLanguage.fr: 'Actuellement'
+  },
+  'where_to_learn_label': {
+    AppLanguage.en: 'Where to learn',
+    AppLanguage.fr: 'Où l\'apprendre'
+  },
+  'mana_pool_label': {
+    AppLanguage.en: 'Mana pool',
+    AppLanguage.fr: 'Réserve de mana'
+  },
+  'mana_pool_desc': {
+    AppLanguage.en:
+        '4 plus half of your Intelligence or Wisdom, whichever is higher.',
+    AppLanguage.fr:
+        '4 plus la moitié de votre Intelligence ou de votre Sagesse, la plus haute des deux.',
+  },
+  'status_poison_label': {AppLanguage.en: 'Poison', AppLanguage.fr: 'Poison'},
+  'status_stun_label': {
+    AppLanguage.en: 'Stun',
+    AppLanguage.fr: 'Étourdissement'
+  },
+  'status_weaken_label': {
+    AppLanguage.en: 'Weaken',
+    AppLanguage.fr: 'Affaiblissement'
+  },
   'mana_faces_note': {
     AppLanguage.en:
         'Mana faces on your dice refill the pool mid-fight; resting refills it fully.',

@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/spells.dart';
 import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/game_icons.dart';
+import '../widgets/mana_meter.dart';
 import '../widgets/player_stats_bar.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
@@ -43,6 +47,7 @@ class CharacterScreen extends ConsumerWidget {
         children: [
           const PlayerStatsBar(),
           const SizedBox(height: 16),
+          const _ManaSpellsCard(),
           if (session.bannerPiecesCollected.isNotEmpty)
             Card(
               child: ListTile(
@@ -124,6 +129,50 @@ class CharacterScreen extends ConsumerWidget {
             const _DebugStatsEditor(),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// The mana pool and the spells the player knows, at a glance -- the
+/// numbers the battle screen's action bar will show. Tapping opens the
+/// Skills screen, whose Spells section has each spell's details and where
+/// the unlearned ones are sold.
+class _ManaSpellsCard extends ConsumerWidget {
+  const _ManaSpellsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final spells =
+        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
+    final known = <SpellSpec>[
+      for (final id in session.knownSpellIds)
+        if (spells[id] != null) spells[id]!,
+    ];
+    return Card(
+      child: ListTile(
+        leading: const Icon(manaIcon, color: manaColor, size: 28),
+        title: Row(
+          children: [
+            Text('${tr(ref, 'mana_label')} ${session.mana}/${session.maxMana}'),
+            const SizedBox(width: 8),
+            ManaMeter(mana: session.mana, maxMana: session.maxMana),
+          ],
+        ),
+        subtitle: Text(
+          known.isEmpty
+              ? tr(ref, 'no_spells_hint')
+              : '${tr(ref, 'spells_label')}: '
+                  '${known.map((s) => s.nameFor(lang)).join(' · ')}',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const SkillsScreen()),
+          );
+        },
       ),
     );
   }

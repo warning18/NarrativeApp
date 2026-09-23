@@ -148,7 +148,7 @@ Color _logColor(BuildContext context, _LogKind kind) {
     case _LogKind.banter:
       return Colors.indigo;
     case _LogKind.mana:
-      return _manaColor;
+      return manaColor;
   }
 }
 
@@ -171,7 +171,7 @@ IconData _logIcon(_LogKind kind) {
     case _LogKind.banter:
       return Icons.chat_bubble_outline;
     case _LogKind.mana:
-      return _manaIcon;
+      return manaIcon;
   }
 }
 
@@ -188,7 +188,7 @@ IconData _faceTypeIcon(String type) {
     case 'Skill':
       return Icons.auto_awesome;
     case 'Mana':
-      return _manaIcon;
+      return manaIcon;
     default:
       return Icons.remove_circle_outline;
   }
@@ -2233,7 +2233,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           const SizedBox(height: 4),
           Row(
             children: [
-              const Icon(_manaIcon, size: 14, color: _manaColor),
+              const Icon(manaIcon, size: 14, color: manaColor),
               const SizedBox(width: 4),
               Expanded(
                 child: Text(
@@ -3759,12 +3759,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(_manaIcon, size: 16, color: _manaColor),
+          const Icon(manaIcon, size: 16, color: manaColor),
           const SizedBox(width: 2),
           Text(
             '$_mana/$_maxMana',
             style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 12, color: _manaColor),
+                fontWeight: FontWeight.bold, fontSize: 12, color: manaColor),
           ),
           if (showPips) ...[
             const SizedBox(width: 4),
@@ -3775,9 +3775,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 margin: const EdgeInsets.only(right: 2),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: i < _mana
-                      ? _manaColor
-                      : _manaColor.withValues(alpha: 0.2),
+                  color:
+                      i < _mana ? manaColor : manaColor.withValues(alpha: 0.2),
                 ),
               ),
           ],
@@ -3793,7 +3792,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   ) {
     final lang = ref.watch(appLanguageProvider);
     final enabled = _mana >= spell.manaCost && !_rolling && !_over;
-    final color = _spellColor(spell.effect);
+    final color = spellEffectColor(spell.effect);
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: Tooltip(
@@ -3815,7 +3814,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(_spellIcon(spell.effect), size: 15, color: color),
+                  Icon(spellEffectIcon(spell.effect), size: 15, color: color),
                   const SizedBox(width: 4),
                   Text(
                     spell.nameFor(lang),
@@ -3831,7 +3830,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                       height: 5,
                       margin: const EdgeInsets.only(left: 1.5),
                       decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: _manaColor),
+                          shape: BoxShape.circle, color: manaColor),
                     ),
                 ],
               ),
@@ -3876,7 +3875,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final lang = ref.read(appLanguageProvider);
     final amount = _spellAmountNow(spell, items);
     final status = spellStatusFor(spell, level: _playerLevel);
-    final color = _spellColor(spell.effect);
+    final color = spellEffectColor(spell.effect);
     return showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -3891,17 +3890,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
               children: [
                 Row(
                   children: [
-                    Icon(_spellIcon(spell.effect), color: color, size: 28),
+                    Icon(spellEffectIcon(spell.effect), color: color, size: 28),
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(spell.nameFor(lang),
                           style: theme.textTheme.titleMedium),
                     ),
-                    const Icon(_manaIcon, size: 16, color: _manaColor),
+                    const Icon(manaIcon, size: 16, color: manaColor),
                     const SizedBox(width: 2),
                     Text('${spell.manaCost}',
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold, color: _manaColor)),
+                            fontWeight: FontWeight.bold, color: manaColor)),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -3909,9 +3908,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
                     style: theme.textTheme.bodyMedium),
                 const SizedBox(height: 6),
                 Text(
-                  '${trFor(lang, _spellEffectLabelKey(spell.effect))}'
+                  '${trFor(lang, spellEffectLabelKey(spell.effect))}'
                   '${amount > 0 ? ' $amount' : ''}'
-                  ' · ${trFor(lang, _spellTargetLabelKey(spell.target))}'
+                  ' · ${trFor(lang, spellTargetLabelKey(spell.target))}'
                   '${spell.element != 'None' ? ' · ${spell.element}' : ''}',
                   style: theme.textTheme.bodySmall,
                 ),
@@ -4200,9 +4199,6 @@ class _FightScreenState extends ConsumerState<FightScreen>
   }
 }
 
-const IconData _manaIcon = Icons.bubble_chart;
-const Color _manaColor = Colors.blue;
-
 Color _faceTypeColor(String type) {
   switch (type) {
     case 'Attack':
@@ -4212,59 +4208,13 @@ Color _faceTypeColor(String type) {
     case 'Heal':
       return Colors.green;
     case 'Mana':
-      return _manaColor;
+      return manaColor;
     case 'Skill':
       return Colors.deepPurple;
     default:
       return Colors.grey;
   }
 }
-
-IconData _spellIcon(SpellEffectKind effect) {
-  switch (effect) {
-    case SpellEffectKind.damage:
-      return Icons.flare;
-    case SpellEffectKind.heal:
-      return Icons.favorite;
-    case SpellEffectKind.block:
-      return Icons.shield;
-    case SpellEffectKind.status:
-      return Icons.sick;
-    case SpellEffectKind.cleanse:
-      return Icons.water_drop;
-  }
-}
-
-Color _spellColor(SpellEffectKind effect) {
-  switch (effect) {
-    case SpellEffectKind.damage:
-      return Colors.deepOrange;
-    case SpellEffectKind.heal:
-      return Colors.green;
-    case SpellEffectKind.block:
-      return Colors.blueGrey;
-    case SpellEffectKind.status:
-      return Colors.purple;
-    case SpellEffectKind.cleanse:
-      return Colors.teal;
-  }
-}
-
-String _spellEffectLabelKey(SpellEffectKind effect) => switch (effect) {
-      SpellEffectKind.damage => 'spell_effect_damage',
-      SpellEffectKind.heal => 'spell_effect_heal',
-      SpellEffectKind.block => 'spell_effect_block',
-      SpellEffectKind.status => 'spell_effect_status',
-      SpellEffectKind.cleanse => 'spell_effect_cleanse',
-    };
-
-String _spellTargetLabelKey(SpellTarget target) => switch (target) {
-      SpellTarget.enemy => 'spell_target_enemy',
-      SpellTarget.allEnemies => 'spell_target_all_enemies',
-      SpellTarget.ally => 'spell_target_ally',
-      SpellTarget.party => 'spell_target_party',
-      SpellTarget.self => 'spell_target_self',
-    };
 
 /// A small pill showing one active status effect's icon and how many
 /// rounds it has left — the visual half of the status-effect system,

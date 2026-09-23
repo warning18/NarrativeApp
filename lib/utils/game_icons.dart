@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../combat/spells.dart';
+
 IconData itemTypeIcon(String? itemType) {
   switch (itemType) {
     case 'Weapon':
@@ -153,3 +155,61 @@ const IconData enemyIcon = Icons.pest_control;
 const IconData shopIcon = Icons.storefront;
 const IconData raceIcon = Icons.diversity_3;
 const IconData professionIcon = Icons.work;
+
+/// The color that stands for mana everywhere: the meter, the pips on a
+/// spell button, the Mana die face, the mana chip on the stats bar.
+const Color manaColor = Colors.blue;
+
+/// The mana glyph -- see [manaColor].
+const IconData manaIcon = Icons.bubble_chart;
+
+/// A spell's icon by what it does -- shared by the battle screen's spell
+/// buttons and the character/skills screens' spell lists.
+IconData spellEffectIcon(SpellEffectKind effect) {
+  switch (effect) {
+    case SpellEffectKind.damage:
+      return Icons.flare;
+    case SpellEffectKind.heal:
+      return Icons.favorite;
+    case SpellEffectKind.block:
+      return Icons.shield;
+    case SpellEffectKind.status:
+      return Icons.sick;
+    case SpellEffectKind.cleanse:
+      return Icons.water_drop;
+  }
+}
+
+/// A spell's accent color by what it does -- see [spellEffectIcon].
+Color spellEffectColor(SpellEffectKind effect) {
+  switch (effect) {
+    case SpellEffectKind.damage:
+      return Colors.deepOrange;
+    case SpellEffectKind.heal:
+      return Colors.green;
+    case SpellEffectKind.block:
+      return Colors.blueGrey;
+    case SpellEffectKind.status:
+      return Colors.purple;
+    case SpellEffectKind.cleanse:
+      return Colors.teal;
+  }
+}
+
+/// The l10n key naming a spell's effect ("Damage", "Heals", ...).
+String spellEffectLabelKey(SpellEffectKind effect) => switch (effect) {
+      SpellEffectKind.damage => 'spell_effect_damage',
+      SpellEffectKind.heal => 'spell_effect_heal',
+      SpellEffectKind.block => 'spell_effect_block',
+      SpellEffectKind.status => 'spell_effect_status',
+      SpellEffectKind.cleanse => 'spell_effect_cleanse',
+    };
+
+/// The l10n key naming a spell's target ("one enemy", "the whole party").
+String spellTargetLabelKey(SpellTarget target) => switch (target) {
+      SpellTarget.enemy => 'spell_target_enemy',
+      SpellTarget.allEnemies => 'spell_target_all_enemies',
+      SpellTarget.ally => 'spell_target_ally',
+      SpellTarget.party => 'spell_target_party',
+      SpellTarget.self => 'spell_target_self',
+    };
