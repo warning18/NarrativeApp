@@ -278,11 +278,18 @@ bool meetsItemStatRequirement(
   required int intelligence,
 }) {
   if (item == null) return true;
-  int req(String key) => (item[key] as num?)?.toInt() ?? 0;
-  return strength >= req('reqStrength') &&
-      dexterity >= req('reqDexterity') &&
-      constitution >= req('reqConstitution') &&
-      intelligence >= req('reqIntelligence');
+  // A requirement of 0 (or none) is no gate at all -- a Mage's Strength
+  // starts below 0, and "0 >= 0" would have locked every weapon in the
+  // game away from them.
+  bool meets(String key, int score) {
+    final required = (item[key] as num?)?.toInt() ?? 0;
+    return required <= 0 || score >= required;
+  }
+
+  return meets('reqStrength', strength) &&
+      meets('reqDexterity', dexterity) &&
+      meets('reqConstitution', constitution) &&
+      meets('reqIntelligence', intelligence);
 }
 
 /// Whether [item] can be worn by a character whose alignment label is

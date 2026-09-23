@@ -8,6 +8,68 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.115.0+143]
+
+The in-app playthrough simulator now plays its fights out and reports
+spells cast per run, and a gear-requirement bug that left every Mage
+unarmed is fixed.
+
+### Added
+- **Simulator fight model** (`lib/data/sim_combat.dart`). Each simulated
+  run now rolls a character of a random race and profession, created the
+  way a new game creates one (defaults plus bonuses, the profession's
+  starting die with the Technique faces wired on, its starting spells, a
+  full mana pool), and plays every combat choice out with the engine a
+  live fight uses: `rollDie`, `resolvePlayerFace`, `resolveEnemyMove`,
+  statuses, the chapter curve and pack multipliers, Mana faces feeding
+  the pool, and the same caster policy the Python simulator uses (heal
+  below half, cleanse, the strongest affordable damage spell keeping a
+  heal in reserve, block against a heavy swing, a hex on a long-lived
+  enemy). A lost fight is retried up to three times, then the walk moves
+  on and counts it lost; a loss refills health and mana as the app does;
+  a new chapter counts as a rest; XP levels the character through the
+  app's own thresholds. A shop is visited once when the story unlocks it:
+  the profession's spellbook first, two potion charges per potion entry,
+  the best affordable piece per slot, the sage die for a caster. No
+  companions, affixes or battlefield conditions; a solo player's read,
+  stated on the card.
+- **Spells cast per run, on the simulator screen.** The batch recap gains
+  fights won / lost and spells cast per run (with mana gained from dice),
+  a Spells cast section with one chip per spell (total casts, runs that
+  cast it on hover), a By profession list (runs, fights won / lost,
+  casts) and the model's assumptions in one line. Each run's row shows
+  its profession, level and casts; the run detail shows the character,
+  its fight record and every spell with its count, and each step's fight
+  as won or lost (with attempts) plus the spells cast in it. The chapter
+  breakdown counts fights lost and spells per chapter. The transcript,
+  batch summary (also what the Gemini analysis reads), CSV and JSON
+  exports carry the same fields.
+
+### Fixed
+- **Half the builds could never equip gear.** The equip gate compared
+  each of a character's four scores against an item's requirement, and
+  treated a missing requirement as 0. Any character with a score below
+  zero (a Mage's Strength −1, every Orc's Intelligence −1, every
+  Voidkin's Constitution −2) therefore failed "score >= 0" on every item
+  in the game and could equip nothing at all -- in the inventory screen
+  as much as in the simulators. A requirement of 0 is now no gate, as
+  the gate's own doc comment always said. The Python simulator had the
+  same comparison: 19 of the 40 seeded builds had fought unarmed in every
+  batch to date, which is why the same 40 seeds re-run after the fix win
+  99.6% of their fights (from 82.3%), with 9 losses against 460 and the
+  chapter-4 to chapter-6 bosses beaten on the first attempt 37 to 40
+  times out of 40. Earlier batches' balance numbers stand corrected by
+  this one; the enemy curve was tuned against a half-armed party and now
+  reads as easy for a player who shops.
+
+### Tests
+`sim_combat_test.dart`: character creation for a Mage and a Warrior,
+level-ups, a won fight with Arcane Bolt casts recorded, a loss refilling
+health and mana, Mana faces feeding the pool over many fights, a
+spell-less Warrior, and shop visits (spellbook, potions, gear, the sage
+die, another profession's book left on the shelf). A regression test for
+the requirement gate with a negative score.
+
 ## [1.114.0+142]
 
 Mana and spells on the character screen and the skills tab, so the pool

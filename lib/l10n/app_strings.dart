@@ -2404,6 +2404,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Play to Chapter',
     AppLanguage.fr: 'Jouer jusqu\'au chapitre',
   },
+  'sim_character_label': {
+    AppLanguage.en: 'Character',
+    AppLanguage.fr: 'Personnage'
+  },
+  'sim_fights_label': {
+    AppLanguage.en: 'Fights won / lost',
+    AppLanguage.fr: 'Combats gagnés / perdus'
+  },
+  'sim_spells_cast_label': {
+    AppLanguage.en: 'Spells cast',
+    AppLanguage.fr: 'Sorts lancés'
+  },
+  'sim_mana_from_dice_label': {
+    AppLanguage.en: 'Mana from dice',
+    AppLanguage.fr: 'Mana gagné aux dés'
+  },
+  'sim_by_profession_label': {
+    AppLanguage.en: 'By profession',
+    AppLanguage.fr: 'Par classe'
+  },
+  'sim_no_spells_cast': {
+    AppLanguage.en: 'No spells cast',
+    AppLanguage.fr: 'Aucun sort lancé'
+  },
+  'sim_fight_won_label': {AppLanguage.en: 'won', AppLanguage.fr: 'gagné'},
+  'sim_fight_lost_label': {AppLanguage.en: 'lost', AppLanguage.fr: 'perdu'},
+  'sim_attempts_label': {
+    AppLanguage.en: 'attempts',
+    AppLanguage.fr: 'tentatives'
+  },
+  'sim_runs_casting_label': {
+    AppLanguage.en: 'runs casting',
+    AppLanguage.fr: 'parties l\'ayant lancé'
+  },
+  'sim_combat_model_note': {
+    AppLanguage.en:
+        'Fights: a solo character of a random race and profession, the real dice, enemy moves, statuses, chapter curve and spells; no companions, affixes or conditions. Shops are visited once when unlocked; a new chapter counts as a rest.',
+    AppLanguage.fr:
+        "Combats : un personnage seul de race et classe aléatoires, les vrais dés, coups ennemis, statuts, courbe de chapitre et sorts ; sans compagnons, affixes ni conditions. Chaque boutique est visitée une fois au déblocage ; un nouveau chapitre vaut un repos.",
+  },
   'sim_strategy_random': {
     AppLanguage.en: 'Random',
     AppLanguage.fr: 'Aléatoire'

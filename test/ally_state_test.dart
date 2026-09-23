@@ -155,4 +155,32 @@ void main() {
       );
     });
   });
+
+  group('meetsItemStatRequirement with negative scores', () {
+    test('a requirement of 0 never gates, even a score below 0', () {
+      // A starting Mage has Strength -1 (game_config 0, profession -1):
+      // every weapon tier carries reqStrength 0, none of which should
+      // lock.
+      expect(
+        meetsItemStatRequirement(
+          const {'reqStrength': 0, 'reqIntelligence': 0},
+          strength: -1,
+          dexterity: 0,
+          constitution: 0,
+          intelligence: 4,
+        ),
+        isTrue,
+      );
+      expect(
+        meetsItemStatRequirement(
+          const {'reqStrength': 1},
+          strength: -1,
+          dexterity: 0,
+          constitution: 0,
+          intelligence: 4,
+        ),
+        isFalse,
+      );
+    });
+  });
 }

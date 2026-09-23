@@ -9,18 +9,24 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../combat/combat_engine.dart'
+    show chapterRewardMultiplier, scaledReward;
+import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
 import '../data/chapter_spine.dart';
+import '../data/sim_combat.dart';
 import '../data/story_graph_integrity.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
+import '../utils/game_icons.dart';
 
 AutoplayStrategy _toAutoplayStrategy(SimStrategy strategy) {
   switch (strategy) {
@@ -67,6 +73,9 @@ class _SimStep {
     this.enemyId,
     this.goldMod = 0,
     this.alignmentMod = 0,
+    this.fightWon,
+    this.fightAttempts = 0,
+    this.spellsCast = const {},
   });
 
   final String nodeId;
@@ -89,6 +98,15 @@ class _SimStep {
   final String? enemyId;
   final int goldMod;
   final int alignmentMod;
+
+  /// How this step's fight went when the walk played it out (see
+  /// `sim_combat.dart`): true = won, false = lost every attempt, null = no
+  /// fight or no fight model.
+  final bool? fightWon;
+  final int fightAttempts;
+
+  /// spell id -> casts across this step's fight attempts.
+  final Map<String, int> spellsCast;
 }
 
 class _SimResult {
@@ -103,6 +121,15 @@ class _SimResult {
     required this.endingText,
     required this.reachedStepCap,
     required this.furthestChapter,
+    this.raceId = '',
+    this.professionId = '',
+    this.finalLevel = 0,
+    this.fightsWon = 0,
+    this.fightsLost = 0,
+    this.spellsCast = const {},
+    this.manaGained = 0,
+    this.potionsUsed = 0,
+    this.spellbooksBought = const [],
   });
 
   final List<_SimStep> steps;
@@ -115,6 +142,23 @@ class _SimResult {
   final String endingText;
   final bool reachedStepCap;
   final int? furthestChapter;
+
+  /// The simulated character's build and combat record (see
+  /// [SimCharacter]); empty/zero when the walk ran without a fight model.
+  final String raceId;
+  final String professionId;
+  final int finalLevel;
+  final int fightsWon;
+  final int fightsLost;
+
+  /// spell id -> casts over the whole run.
+  final Map<String, int> spellsCast;
+  final int manaGained;
+  final int potionsUsed;
+  final List<String> spellbooksBought;
+
+  bool get hasCharacter => professionId.isNotEmpty;
+  int get totalCasts => spellsCast.values.fold(0, (a, b) => a + b);
 
   List<String> get path => steps.map((s) => s.nodeId).toList();
   int get uniqueNodesVisited => steps.map((s) => s.nodeId).toSet().length;
@@ -129,11 +173,42 @@ class _SimResult {
   }
 }
 
+/// Everything the fight model needs (see `sim_combat.dart`) -- the walk
+/// runs without one when this is null, counting encounters as it always
+/// did instead of playing them out.
+class _SimContext {
+  const _SimContext({
+    required this.dice,
+    required this.skills,
+    required this.items,
+    required this.shops,
+    required this.races,
+    required this.professions,
+    required this.spells,
+    required this.gameConfig,
+  });
+
+  final Map<String, dynamic> dice;
+  final Map<String, dynamic> skills;
+  final Map<String, dynamic> items;
+  final Map<String, dynamic> shops;
+  final Map<String, dynamic> races;
+  final Map<String, dynamic> professions;
+  final Map<String, SpellSpec> spells;
+  final Map<String, dynamic> gameConfig;
+}
+
+/// A lost fight is retried this many times, as a player would, before the
+/// walk moves on (counting it lost) so the story can still be traced.
+const int _maxFightAttempts = 3;
+
 /// Auto-plays the story graph making choices (picked per [strategy]) until
 /// an ending is reached, for QA / previewing a full run without clicking
 /// through it by hand. This is a read-only simulation over a local
 /// gold/alignment/flags model — it never touches the real player's saved
-/// session.
+/// session. With a [sim] context it also plays every combat choice out
+/// for a simulated character (random race and profession) with the real
+/// engine, mana and spells, recording each fight's outcome and casts.
 _SimResult _simulate(
   StoryData story,
   Random random, {
@@ -141,6 +216,7 @@ _SimResult _simulate(
   SimStrategy strategy = SimStrategy.random,
   int maxSteps = 200,
   bool french = false,
+  _SimContext? sim,
 }) {
   int combatGoldReward(StoryChoice c) {
     if (!c.triggersCombat) return 0;
@@ -152,8 +228,25 @@ _SimResult _simulate(
     return total;
   }
 
+  SimCharacter? character;
+  if (sim != null && sim.races.isNotEmpty && sim.professions.isNotEmpty) {
+    final raceIds = sim.races.keys.toList()..sort();
+    final professionIds = sim.professions.keys.toList()..sort();
+    final raceId = raceIds[random.nextInt(raceIds.length)];
+    final professionId = professionIds[random.nextInt(professionIds.length)];
+    character = SimCharacter.create(
+      raceId: raceId,
+      race: sim.races[raceId] as Map<String, dynamic>,
+      professionId: professionId,
+      profession: sim.professions[professionId] as Map<String, dynamic>,
+      gameConfig: sim.gameConfig,
+      dice: sim.dice,
+      spells: sim.spells,
+    );
+  }
+
   var currentId = StoryRepository.startNodeId;
-  var gold = 0;
+  var gold = character?.startingGold ?? 0;
   var alignment = 0;
   final flags = <String>{};
   final shops = <String>{};
@@ -161,7 +254,34 @@ _SimResult _simulate(
   var combatCount = 0;
   int? furthestChapter = chapterForNode(currentId);
   int? lastKnownChapter = furthestChapter;
+  int? restedChapter = lastKnownChapter;
   final steps = <_SimStep>[];
+
+  _SimResult finish(
+      {required String endingText, required bool reachedStepCap}) {
+    return _SimResult(
+      steps: steps,
+      finalGold: gold,
+      finalAlignment: alignment,
+      flags: flags,
+      shopsDiscovered: shops,
+      questsDiscovered: quests,
+      combatEncounters: combatCount,
+      endingText: endingText,
+      reachedStepCap: reachedStepCap,
+      furthestChapter: furthestChapter,
+      raceId: character?.raceId ?? '',
+      professionId: character?.professionId ?? '',
+      finalLevel: character?.level ?? 0,
+      fightsWon: character?.fightsWon ?? 0,
+      fightsLost: character?.fightsLost ?? 0,
+      spellsCast: Map.unmodifiable(character?.spellsCast ?? const {}),
+      manaGained: character?.manaGained ?? 0,
+      potionsUsed: character?.potionsUsed ?? 0,
+      spellbooksBought:
+          List.unmodifiable(character?.spellbooksBought ?? const []),
+    );
+  }
 
   StoryChoice pickChoice(List<StoryChoice> pool) {
     if (strategy == SimStrategy.random || pool.length == 1) {
@@ -185,6 +305,49 @@ _SimResult _simulate(
     return tied[random.nextInt(tied.length)];
   }
 
+  /// Plays out [choice]'s fight (a pack when it names several enemies) for
+  /// the simulated character, retrying a loss up to [_maxFightAttempts]
+  /// times; a win grants the enemies' XP through the app's own level
+  /// thresholds. Returns the outcome, the attempts it took and every spell
+  /// cast across them -- or a null outcome when there is nothing to play.
+  ({bool? won, int attempts, Map<String, int> casts}) fight(
+      StoryChoice choice, int chapter) {
+    final c = character;
+    if (c == null || sim == null || !choice.triggersCombat) {
+      return (won: null, attempts: 0, casts: const {});
+    }
+    final entries = <MapEntry<String, Map<String, dynamic>>>[
+      for (final id in choice.allTriggerEnemyIds)
+        if (enemies[id] is Map<String, dynamic>)
+          MapEntry(id, enemies[id] as Map<String, dynamic>),
+    ];
+    if (entries.isEmpty) return (won: null, attempts: 0, casts: const {});
+    final casts = <String, int>{};
+    for (var attempt = 1; attempt <= _maxFightAttempts; attempt++) {
+      final outcome = simulateSimFight(
+        character: c,
+        enemies: entries,
+        chapter: chapter,
+        skills: sim.skills,
+        items: sim.items,
+        random: random,
+      );
+      for (final entry in outcome.spellsCast.entries) {
+        casts[entry.key] = (casts[entry.key] ?? 0) + entry.value;
+      }
+      if (outcome.won) {
+        var xp = 0;
+        for (final entry in entries) {
+          xp += scaledReward(
+              (entry.value['xpReward'] as num?)?.toInt() ?? 0, c.level);
+        }
+        c.gainXp((xp * chapterRewardMultiplier(chapter)).round());
+        return (won: true, attempts: attempt, casts: casts);
+      }
+    }
+    return (won: false, attempts: _maxFightAttempts, casts: casts);
+  }
+
   for (var step = 0; step < maxSteps; step++) {
     final node = story.nodeFor(currentId);
     if (node == null) {
@@ -195,17 +358,9 @@ _SimResult _simulate(
         uiTheme: null,
         description: 'Broken link: node $currentId does not exist.',
       ));
-      return _SimResult(
-        steps: steps,
-        finalGold: gold,
-        finalAlignment: alignment,
-        flags: flags,
-        shopsDiscovered: shops,
-        questsDiscovered: quests,
-        combatEncounters: combatCount,
+      return finish(
         endingText: 'Broken link: node $currentId does not exist.',
         reachedStepCap: false,
-        furthestChapter: furthestChapter,
       );
     }
 
@@ -213,6 +368,11 @@ _SimResult _simulate(
     if (mainChapter != null) lastKnownChapter = mainChapter;
     furthestChapter = max(furthestChapter ?? 0, mainChapter ?? 0);
     if (furthestChapter == 0) furthestChapter = null;
+    // A new chapter's hub is where a player rests: full health and mana.
+    if (character != null && lastKnownChapter != restedChapter) {
+      character.rest();
+      restedChapter = lastKnownChapter;
+    }
 
     if (node.choices.isEmpty) {
       steps.add(_SimStep(
@@ -222,18 +382,7 @@ _SimResult _simulate(
         uiTheme: node.uiTheme,
         description: node.descriptionFor(french),
       ));
-      return _SimResult(
-        steps: steps,
-        finalGold: gold,
-        finalAlignment: alignment,
-        flags: flags,
-        shopsDiscovered: shops,
-        questsDiscovered: quests,
-        combatEncounters: combatCount,
-        endingText: node.description,
-        reachedStepCap: false,
-        furthestChapter: furthestChapter,
-      );
+      return finish(endingText: node.description, reachedStepCap: false);
     }
 
     bool meetsTarget(StoryChoice c) {
@@ -260,6 +409,7 @@ _SimResult _simulate(
     // (see FightScreen._finishFight) — folded into this step's goldMod so the
     // chapter breakdown and CSV/JSON exports stay consistent with finalGold.
     final effectiveGoldMod = choice.goldMod + combatGoldReward(choice);
+    final fightResult = fight(choice, lastKnownChapter ?? 1);
 
     steps.add(_SimStep(
       nodeId: currentId,
@@ -273,46 +423,100 @@ _SimResult _simulate(
           : choice.allTriggerEnemyIds.first,
       goldMod: effectiveGoldMod,
       alignmentMod: choice.alignmentMod,
+      fightWon: fightResult.won,
+      fightAttempts: fightResult.attempts,
+      spellsCast: fightResult.casts,
     ));
 
     gold = (gold + effectiveGoldMod).clamp(0, 1 << 30).toInt();
     alignment += choice.alignmentMod;
     flags.addAll(choice.flagsToAdd);
-    if ((choice.unlockShopId ?? '').isNotEmpty) shops.add(choice.unlockShopId!);
+    if ((choice.unlockShopId ?? '').isNotEmpty) {
+      final shopId = choice.unlockShopId!;
+      final firstVisit = shops.add(shopId);
+      final shop = sim?.shops[shopId];
+      if (firstVisit && character != null && sim != null && shop is Map) {
+        gold = character.visitShop(
+          shop.cast<String, dynamic>(),
+          sim.items,
+          sim.dice,
+          sim.spells,
+          gold,
+        );
+      }
+    }
     if ((choice.unlockQuestId ?? '').isNotEmpty) {
       quests.add(choice.unlockQuestId!);
     }
     if (choice.triggersCombat) combatCount++;
 
     if (choice.isEnding) {
-      return _SimResult(
-        steps: steps,
-        finalGold: gold,
-        finalAlignment: alignment,
-        flags: flags,
-        shopsDiscovered: shops,
-        questsDiscovered: quests,
-        combatEncounters: combatCount,
-        endingText: choice.text,
-        reachedStepCap: false,
-        furthestChapter: furthestChapter,
-      );
+      return finish(endingText: choice.text, reachedStepCap: false);
     }
     currentId = choice.nextId;
   }
 
-  return _SimResult(
-    steps: steps,
-    finalGold: gold,
-    finalAlignment: alignment,
-    flags: flags,
-    shopsDiscovered: shops,
-    questsDiscovered: quests,
-    combatEncounters: combatCount,
-    endingText: '',
-    reachedStepCap: true,
-    furthestChapter: furthestChapter,
-  );
+  return finish(endingText: '', reachedStepCap: true);
+}
+
+/// Total casts per spell id across [results], most cast first.
+Map<String, int> _spellCastTotals(List<_SimResult> results) {
+  final totals = <String, int>{};
+  for (final r in results) {
+    for (final entry in r.spellsCast.entries) {
+      totals[entry.key] = (totals[entry.key] ?? 0) + entry.value;
+    }
+  }
+  final entries = totals.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+  return Map.fromEntries(entries);
+}
+
+/// How many of [results] cast each spell at least once.
+Map<String, int> _runsCastingCounts(List<_SimResult> results) {
+  final counts = <String, int>{};
+  for (final r in results) {
+    for (final id in r.spellsCast.keys) {
+      counts[id] = (counts[id] ?? 0) + 1;
+    }
+  }
+  return counts;
+}
+
+/// Runs, fights won, fights lost and casts per profession id.
+Map<String, ({int runs, int won, int lost, int casts})> _professionTotals(
+    List<_SimResult> results) {
+  final map = <String, ({int runs, int won, int lost, int casts})>{};
+  for (final r in results) {
+    if (!r.hasCharacter) continue;
+    final current = map[r.professionId] ?? (runs: 0, won: 0, lost: 0, casts: 0);
+    map[r.professionId] = (
+      runs: current.runs + 1,
+      won: current.won + r.fightsWon,
+      lost: current.lost + r.fightsLost,
+      casts: current.casts + r.totalCasts,
+    );
+  }
+  return map;
+}
+
+String _spellDisplayName(
+        String id, Map<String, SpellSpec> spells, AppLanguage lang) =>
+    spells[id]?.nameFor(lang) ?? id;
+
+String _professionDisplayName(String id, Map<String, dynamic> professions) =>
+    (professions[id] as Map<String, dynamic>?)?['professionName']?.toString() ??
+    id;
+
+/// "Arcane Bolt ×12, Mana Ward ×3" for one run's casts, or null.
+String? _castsSummary(
+    Map<String, int> casts, Map<String, SpellSpec> spells, AppLanguage lang) {
+  if (casts.isEmpty) return null;
+  final entries = casts.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+  return entries
+      .map((e) => '${_spellDisplayName(e.key, spells, lang)} ×${e.value}')
+      .join(', ');
 }
 
 double _avg(Iterable<num> values) {
@@ -410,6 +614,8 @@ class _GroupStat {
   int goldDelta = 0;
   int alignmentDelta = 0;
   int runsReaching = 0;
+  int fightsLost = 0;
+  int spellCasts = 0;
 }
 
 String _chapterLabel(int? chapter) =>
@@ -428,6 +634,8 @@ List<_GroupStat> _chapterBreakdown(List<_SimResult> results) {
       final stat = map.putIfAbsent(key, () => _GroupStat(key));
       stat.nodeCount++;
       if (s.enemyId != null) stat.combatCount++;
+      if (s.fightWon == false) stat.fightsLost++;
+      stat.spellCasts += s.spellsCast.values.fold(0, (a, b) => a + b);
       stat.goldDelta += s.goldMod;
       stat.alignmentDelta += s.alignmentMod;
       seenThisRun.add(key);
@@ -635,12 +843,24 @@ class _PlaythroughSimulatorScreenState
     final story = await ref.read(storyDataProvider.future);
     final enemies =
         await ref.read(gameDbRepositoryProvider(enemiesSchema)).loadRecords();
+    Future<Map<String, dynamic>> load(DbSchema schema) =>
+        ref.read(gameDbRepositoryProvider(schema)).loadRecords();
+    final sim = _SimContext(
+      dice: await load(diceSchema),
+      skills: await load(skillsSchema),
+      items: await load(itemsSchema),
+      shops: await load(shopsSchema),
+      races: await load(racesSchema),
+      professions: await load(professionsSchema),
+      spells: parseSpells(await load(spellsSchema)),
+      gameConfig: await ref.read(gameConfigProvider.future),
+    );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final random = Random();
     final results = [
       for (var i = 0; i < _runCount; i++)
         _simulate(story, random,
-            enemies: enemies, strategy: _strategy, french: french),
+            enemies: enemies, strategy: _strategy, french: french, sim: sim),
     ];
     if (!mounted) return;
     ref.read(_simulatorBatchesProvider.notifier).addBatch(_strategy, results);
@@ -866,6 +1086,10 @@ class _PlaythroughSimulatorScreenState
   Widget build(BuildContext context) {
     final shops = ref.watch(gameDbProvider(shopsSchema)).value ?? const {};
     final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+    final professions =
+        ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+    final spells =
+        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
     final companions =
         ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
     final batches = ref.watch(_simulatorBatchesProvider);
@@ -912,6 +1136,8 @@ class _PlaythroughSimulatorScreenState
                             shops: shops,
                             quests: quests,
                             companions: companions,
+                            professions: professions,
+                            spells: spells,
                             initiallyExpanded: i == 0,
                           ),
                       ],
@@ -958,7 +1184,13 @@ Future<void> _copyToClipboard(
 /// every node visited with its narrative text and the choice taken from
 /// it — the "node and text" export the QA workflow needs.
 String _runTranscript(_SimResult result, String strategyLabel,
-    {int? runNumber}) {
+    {int? runNumber, Map<String, SpellSpec> spells = const {}}) {
+  String spellName(String id) => spells[id]?.name ?? id;
+  String casts(Map<String, int> m) => m.isEmpty
+      ? 'none'
+      : (m.entries.toList()..sort((a, b) => b.value.compareTo(a.value)))
+          .map((e) => '${spellName(e.key)} x${e.value}')
+          .join(', ');
   final b = StringBuffer();
   b.writeln(
       '=== Playthrough Transcript${runNumber != null ? ' — Run #$runNumber' : ''} ===');
@@ -974,6 +1206,15 @@ String _runTranscript(_SimResult result, String strategyLabel,
       'Quests discovered: ${result.questsDiscovered.isEmpty ? 'none' : result.questsDiscovered.join(', ')}');
   b.writeln(
       'Flags collected: ${result.flags.isEmpty ? 'none' : result.flags.join(', ')}');
+  if (result.hasCharacter) {
+    b.writeln(
+        'Character: ${result.raceId} ${result.professionId}, level ${result.finalLevel} | '
+        'Fights won/lost: ${result.fightsWon}/${result.fightsLost} | '
+        'Potions used: ${result.potionsUsed}');
+    b.writeln(
+        'Spells cast: ${casts(result.spellsCast)} | Mana from dice: ${result.manaGained}'
+        '${result.spellbooksBought.isEmpty ? '' : ' | Spellbooks bought: ${result.spellbooksBought.map(spellName).join(', ')}'}');
+  }
   b.writeln();
   b.writeln('--- Steps ---');
   for (final s in result.steps) {
@@ -986,14 +1227,22 @@ String _runTranscript(_SimResult result, String strategyLabel,
     b.writeln('[Node ${s.nodeId}] ($tags)');
     b.writeln(s.description);
     if (s.choiceText != null) {
+      final fight = s.fightWon == null
+          ? ''
+          : ' — ${s.fightWon! ? 'won' : 'lost'}'
+              '${s.fightAttempts > 1 ? ' (${s.fightAttempts} attempts)' : ''}';
       b.writeln(
-          '→ Chose: "${s.choiceText}"${s.enemyId != null ? ' [combat: ${s.enemyId}]' : ''}');
+          '→ Chose: "${s.choiceText}"${s.enemyId != null ? ' [combat: ${s.enemyId}$fight]' : ''}');
+      if (s.spellsCast.isNotEmpty) {
+        b.writeln('  Spells cast: ${casts(s.spellsCast)}');
+      }
     }
   }
   return b.toString();
 }
 
-String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
+String _batchSummaryText(String strategyLabel, List<_SimResult> results,
+    {Map<String, SpellSpec> spells = const {}}) {
   final b = StringBuffer();
   b.writeln('=== Batch Summary ===');
   b.writeln('Strategy: $strategyLabel');
@@ -1006,6 +1255,23 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
       'Average final alignment: ${_avg(results.map((r) => r.finalAlignment)).toStringAsFixed(1)}');
   b.writeln(
       'Average combat encounters: ${_avg(results.map((r) => r.combatEncounters)).toStringAsFixed(1)}');
+  if (results.any((r) => r.hasCharacter)) {
+    b.writeln(
+        'Average fights won / lost: ${_avg(results.map((r) => r.fightsWon)).toStringAsFixed(1)} / '
+        '${_avg(results.map((r) => r.fightsLost)).toStringAsFixed(1)}');
+    b.writeln(
+        'Average spells cast: ${_avg(results.map((r) => r.totalCasts)).toStringAsFixed(1)} '
+        '(mana from dice ${_avg(results.map((r) => r.manaGained)).toStringAsFixed(1)})');
+    final totals = _spellCastTotals(results);
+    if (totals.isNotEmpty) {
+      b.writeln(
+          'Casts by spell: ${totals.entries.map((e) => '${spells[e.key]?.name ?? e.key} x${e.value}').join(', ')}');
+    }
+    for (final entry in _professionTotals(results).entries) {
+      b.writeln(
+          '- ${entry.key}: ${entry.value.runs} runs, fights won/lost ${entry.value.won}/${entry.value.lost}, ${entry.value.casts} casts');
+    }
+  }
   final stepCap = results.where((r) => r.reachedStepCap).length;
   if (stepCap > 0) {
     b.writeln(
@@ -1022,7 +1288,7 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
     b.writeln(
       '- ${g.label}: ${g.runsReaching}/${results.length} runs reached it, '
       '${(g.nodeCount / g.runsReaching).toStringAsFixed(1)} nodes avg, '
-      '${g.combatCount} combats, gold Δ${g.goldDelta}, alignment Δ${g.alignmentDelta}',
+      '${g.combatCount} combats (${g.fightsLost} lost, ${g.spellCasts} spells), gold Δ${g.goldDelta}, alignment Δ${g.alignmentDelta}',
     );
   }
   b.writeln();
@@ -1041,12 +1307,15 @@ String _batchSummaryText(String strategyLabel, List<_SimResult> results) {
 /// The batch summary followed by every run's full transcript, in one
 /// document — shared by both the "Copy" and "Export as text" actions so
 /// they always produce identical content.
-String _fullBatchTranscript(String strategyLabel, List<_SimResult> results) {
-  final b = StringBuffer()..writeln(_batchSummaryText(strategyLabel, results));
+String _fullBatchTranscript(String strategyLabel, List<_SimResult> results,
+    {Map<String, SpellSpec> spells = const {}}) {
+  final b = StringBuffer()
+    ..writeln(_batchSummaryText(strategyLabel, results, spells: spells));
   for (var i = 0; i < results.length; i++) {
     b
       ..writeln()
-      ..writeln(_runTranscript(results[i], strategyLabel, runNumber: i + 1));
+      ..writeln(_runTranscript(results[i], strategyLabel,
+          runNumber: i + 1, spells: spells));
   }
   return b.toString();
 }
@@ -1076,6 +1345,13 @@ String _batchResultsCsv(List<_SimResult> results) {
     'Shops Discovered',
     'Quests Discovered',
     'Flags',
+    'Profession',
+    'Level',
+    'Fights Won',
+    'Fights Lost',
+    'Spells Cast',
+    'Casts By Spell',
+    'Mana From Dice',
   ].map(_csvField).join(','));
   for (var i = 0; i < results.length; i++) {
     final r = results[i];
@@ -1091,6 +1367,13 @@ String _batchResultsCsv(List<_SimResult> results) {
       r.shopsDiscovered.join('; '),
       r.questsDiscovered.join('; '),
       r.flags.join('; '),
+      r.professionId,
+      '${r.finalLevel}',
+      '${r.fightsWon}',
+      '${r.fightsLost}',
+      '${r.totalCasts}',
+      r.spellsCast.entries.map((e) => '${e.key} x${e.value}').join('; '),
+      '${r.manaGained}',
     ].map(_csvField).join(','));
   }
   return b.toString();
@@ -1116,6 +1399,15 @@ String _batchResultsJson(String strategyLabel, List<_SimResult> results) {
           'shopsDiscovered': results[i].shopsDiscovered.toList(),
           'questsDiscovered': results[i].questsDiscovered.toList(),
           'flags': results[i].flags.toList(),
+          'raceId': results[i].raceId,
+          'professionId': results[i].professionId,
+          'finalLevel': results[i].finalLevel,
+          'fightsWon': results[i].fightsWon,
+          'fightsLost': results[i].fightsLost,
+          'spellsCast': results[i].spellsCast,
+          'manaGained': results[i].manaGained,
+          'potionsUsed': results[i].potionsUsed,
+          'spellbooksBought': results[i].spellbooksBought,
           'path': results[i].path,
         },
     ],
@@ -1130,6 +1422,8 @@ class _BatchCard extends ConsumerStatefulWidget {
     required this.shops,
     required this.quests,
     required this.companions,
+    required this.professions,
+    required this.spells,
     this.initiallyExpanded = true,
   });
 
@@ -1137,6 +1431,8 @@ class _BatchCard extends ConsumerStatefulWidget {
   final Map<String, dynamic> shops;
   final Map<String, dynamic> quests;
   final Map<String, dynamic> companions;
+  final Map<String, dynamic> professions;
+  final Map<String, SpellSpec> spells;
 
   /// Older batches start collapsed to their header line so a page of past
   /// runs doesn't bury the newest one — only the most recent batch (index
@@ -1192,7 +1488,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
         'the story graph choosing among valid choices per a fixed strategy.',
       )
       ..writeln()
-      ..writeln(_batchSummaryText(strategyLabel, results));
+      ..writeln(
+          _batchSummaryText(strategyLabel, results, spells: widget.spells));
     final single = results.length == 1 ? results.single : null;
     if (single != null) {
       b
@@ -1255,6 +1552,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
             result: result,
             shops: widget.shops,
             quests: widget.quests,
+            professions: widget.professions,
+            spells: widget.spells,
             strategyLabel: tr(ref, _strategyLabelKey(widget.batch.strategy)),
             runNumber: index + 1,
             scrollController: scrollController,
@@ -1318,6 +1617,7 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                               _fullBatchTranscript(
                                 tr(ref, _strategyLabelKey(batch.strategy)),
                                 results,
+                                spells: widget.spells,
                               ),
                             ),
                   ),
@@ -1333,7 +1633,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                           _exportToFile(
                             context,
                             ref,
-                            _fullBatchTranscript(strategyLabel, results),
+                            _fullBatchTranscript(strategyLabel, results,
+                                spells: widget.spells),
                             'playthrough_batch_${batch.id}.txt',
                           );
                           break;
@@ -1474,6 +1775,22 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                         text:
                             '${tr(ref, 'combat_encounters_label')}: ${_oneDecimal(_avg(results.map((r) => r.combatEncounters)))}',
                       ),
+                      if (results.any((r) => r.hasCharacter)) ...[
+                        _StatLine(
+                          icon: Icons.emoji_events_outlined,
+                          color: Colors.green.shade700,
+                          text:
+                              '${tr(ref, 'sim_fights_label')}: ${_oneDecimal(_avg(results.map((r) => r.fightsWon)))} / '
+                              '${_oneDecimal(_avg(results.map((r) => r.fightsLost)))}',
+                        ),
+                        _StatLine(
+                          icon: manaIcon,
+                          color: manaColor,
+                          text:
+                              '${tr(ref, 'sim_spells_cast_label')}: ${_oneDecimal(_avg(results.map((r) => r.totalCasts)))} '
+                              '(${tr(ref, 'sim_mana_from_dice_label').toLowerCase()} ${_oneDecimal(_avg(results.map((r) => r.manaGained)))})',
+                        ),
+                      ],
                     ],
                   );
                 }),
@@ -1524,6 +1841,68 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     ],
                   );
                 }),
+                if (results.any((r) => r.hasCharacter)) ...[
+                  const SizedBox(height: 12),
+                  Text(tr(ref, 'sim_spells_cast_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 4),
+                  Builder(builder: (context) {
+                    final totals = _spellCastTotals(results);
+                    if (totals.isEmpty) {
+                      return Text(
+                        tr(ref, 'sim_no_spells_cast'),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      );
+                    }
+                    final runsCasting = _runsCastingCounts(results);
+                    final lang = ref.watch(appLanguageProvider);
+                    return Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final entry in totals.entries)
+                          Tooltip(
+                            message:
+                                '${runsCasting[entry.key] ?? 0}/${results.length} ${tr(ref, 'sim_runs_casting_label')}',
+                            child: Chip(
+                              avatar: Icon(
+                                widget.spells[entry.key] == null
+                                    ? manaIcon
+                                    : spellEffectIcon(
+                                        widget.spells[entry.key]!.effect),
+                                size: 16,
+                                color: widget.spells[entry.key] == null
+                                    ? manaColor
+                                    : spellEffectColor(
+                                        widget.spells[entry.key]!.effect),
+                              ),
+                              label: Text(
+                                '${_spellDisplayName(entry.key, widget.spells, lang)} '
+                                '· ${entry.value}',
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  }),
+                  const SizedBox(height: 12),
+                  Text(tr(ref, 'sim_by_profession_label'),
+                      style: Theme.of(context).textTheme.titleSmall),
+                  const SizedBox(height: 4),
+                  for (final entry in _professionTotals(results).entries)
+                    Text(
+                      '${_professionDisplayName(entry.key, widget.professions)}: '
+                      '${entry.value.runs} ${entry.value.runs == 1 ? 'run' : 'runs'} · '
+                      '${tr(ref, 'sim_fights_label').toLowerCase()} ${entry.value.won} / ${entry.value.lost} · '
+                      '${tr(ref, 'sim_spells_cast_label').toLowerCase()} ${entry.value.casts}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  const SizedBox(height: 4),
+                  Text(
+                    tr(ref, 'sim_combat_model_note'),
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                ],
                 const Divider(height: 24),
                 ExpansionTile(
                   tilePadding: EdgeInsets.zero,
@@ -1549,6 +1928,10 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                                     '${tr(ref, 'nodes_visited_label').toLowerCase()}',
                                 if (g.combatCount > 0)
                                   '${g.combatCount} ${tr(ref, 'combat_encounters_label').toLowerCase()}',
+                                if (g.fightsLost > 0)
+                                  '${g.fightsLost} ${tr(ref, 'sim_fight_lost_label')}',
+                                if (g.spellCasts > 0)
+                                  '${g.spellCasts} ${tr(ref, 'sim_spells_cast_label').toLowerCase()}',
                                 if (g.goldDelta != 0) 'gold Δ${g.goldDelta}',
                                 if (g.alignmentDelta != 0)
                                   'align Δ${g.alignmentDelta}',
@@ -1676,6 +2059,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                     result: single,
                     shops: widget.shops,
                     quests: widget.quests,
+                    professions: widget.professions,
+                    spells: widget.spells,
                     strategyLabel: tr(ref, _strategyLabelKey(batch.strategy)),
                   ),
                 ] else ...[
@@ -1700,7 +2085,8 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
                               child: Text(
                                 '#${batch.results.indexOf(results[i]) + 1}: ${results[i].finalGold}g, '
                                 '${tr(ref, 'final_alignment_label')} ${results[i].finalAlignment}, '
-                                '${results[i].steps.length} ${tr(ref, 'nodes_visited_label')}',
+                                '${results[i].steps.length} ${tr(ref, 'nodes_visited_label')}'
+                                '${results[i].hasCharacter ? ' · ${_professionDisplayName(results[i].professionId, widget.professions)} L${results[i].finalLevel} · ${results[i].totalCasts} ${tr(ref, 'sim_spells_cast_label').toLowerCase()}' : ''}',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
@@ -1729,11 +2115,26 @@ class _BatchCardState extends ConsumerState<_BatchCard> {
   }
 }
 
+/// " — won (2 attempts)" / " — lost" for a step's fight, or '' when the
+/// walk didn't play it out.
+String _fightTag(_SimStep step, WidgetRef ref) {
+  final won = step.fightWon;
+  if (won == null) return '';
+  final outcome =
+      won ? tr(ref, 'sim_fight_won_label') : tr(ref, 'sim_fight_lost_label');
+  final attempts = step.fightAttempts > 1
+      ? ' (${step.fightAttempts} ${tr(ref, 'sim_attempts_label')})'
+      : '';
+  return ' — $outcome$attempts';
+}
+
 class _SingleRunDetail extends ConsumerStatefulWidget {
   const _SingleRunDetail({
     required this.result,
     required this.shops,
     required this.quests,
+    required this.professions,
+    required this.spells,
     required this.strategyLabel,
     this.runNumber,
     this.scrollController,
@@ -1742,6 +2143,8 @@ class _SingleRunDetail extends ConsumerStatefulWidget {
   final _SimResult result;
   final Map<String, dynamic> shops;
   final Map<String, dynamic> quests;
+  final Map<String, dynamic> professions;
+  final Map<String, SpellSpec> spells;
   final String strategyLabel;
   final int? runNumber;
   final ScrollController? scrollController;
@@ -1793,7 +2196,7 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
               context,
               ref,
               _runTranscript(result, widget.strategyLabel,
-                  runNumber: widget.runNumber),
+                  runNumber: widget.runNumber, spells: widget.spells),
             ),
           ),
           IconButton(
@@ -1803,7 +2206,7 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
               context,
               ref,
               _runTranscript(result, widget.strategyLabel,
-                  runNumber: widget.runNumber),
+                  runNumber: widget.runNumber, spells: widget.spells),
               'playthrough_run_${widget.runNumber ?? 1}.txt',
             ),
           ),
@@ -1825,6 +2228,32 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
       Text(
         '${tr(ref, 'flags_collected_label')}: ${result.flags.isEmpty ? '—' : result.flags.join(', ')}',
       ),
+      if (result.hasCharacter) ...[
+        const SizedBox(height: 8),
+        Text(
+          '${tr(ref, 'sim_character_label')}: '
+          '${_professionDisplayName(result.professionId, widget.professions)} '
+          '(${result.raceId}) · ${tr(ref, 'level_abbrev')} ${result.finalLevel}',
+        ),
+        Text(
+            '${tr(ref, 'sim_fights_label')}: ${result.fightsWon} / ${result.fightsLost}'),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 2, right: 4),
+              child: Icon(manaIcon, size: 16, color: manaColor),
+            ),
+            Expanded(
+              child: Text(
+                '${tr(ref, 'sim_spells_cast_label')}: '
+                '${_castsSummary(result.spellsCast, widget.spells, ref.watch(appLanguageProvider)) ?? tr(ref, 'sim_no_spells_cast')}'
+                ' · ${tr(ref, 'sim_mana_from_dice_label').toLowerCase()} ${result.manaGained}',
+              ),
+            ),
+          ],
+        ),
+      ],
       const SizedBox(height: 12),
       Text(tr(ref, 'path_summary_label'),
           style: Theme.of(context).textTheme.titleSmall),
@@ -1878,9 +2307,19 @@ class _SingleRunDetailState extends ConsumerState<_SingleRunDetail> {
                     const SizedBox(height: 6),
                     Text(
                       '→ "${entry.value.choiceText}"'
-                      '${entry.value.enemyId != null ? '  [combat: ${entry.value.enemyId}]' : ''}',
+                      '${entry.value.enemyId != null ? '  [combat: ${entry.value.enemyId}${_fightTag(entry.value, ref)}]' : ''}',
                       style: const TextStyle(fontStyle: FontStyle.italic),
                     ),
+                    if (entry.value.spellsCast.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '${tr(ref, 'sim_spells_cast_label')}: '
+                          '${_castsSummary(entry.value.spellsCast, widget.spells, ref.watch(appLanguageProvider))}',
+                          style:
+                              const TextStyle(color: manaColor, fontSize: 12),
+                        ),
+                      ),
                   ],
                 ],
               ),
