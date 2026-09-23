@@ -34,9 +34,32 @@
     },
     "choices": [
       {
-        "text": "Enter the Tavern",
-        "text_fr": "Entrer dans la taverne",
-        "next_id": "200"
+        "text": "Go straight to the Beggar",
+        "text_fr": "Aller droit au Mendiant",
+        "next_id": "250",
+        "flagsToAdd": [
+          "slums_hurried"
+        ]
+      },
+      {
+        "text": "Help a neighbor out of the smoke first",
+        "text_fr": "Aider d'abord un voisin à sortir de la fumée",
+        "next_id": "250",
+        "alignmentMod": 1,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "slums_helped"
+        ]
+      },
+      {
+        "text": "Empty the abandoned stalls on the way",
+        "text_fr": "Vider les étals abandonnés en chemin",
+        "next_id": "250",
+        "goldMod": 20,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "slums_looted"
+        ]
       }
     ]
   },
@@ -54,19 +77,14 @@
     },
     "choices": [
       {
-        "text": "Fight off a street bandit",
-        "text_fr": "Repousser un bandit des rues",
+        "text": "Fight the street bandit",
+        "text_fr": "Combattre le bandit des rues",
         "next_id": "300",
         "triggerEnemyId": "street_bandit"
       },
       {
-        "text": "Move on",
-        "text_fr": "Poursuivre son chemin",
-        "next_id": "300"
-      },
-      {
-        "text": "Push through the smoke-choked forge to reach the back room",
-        "text_fr": "Se frayer un chemin dans la forge enfumée jusqu'à l'arrière-boutique",
+        "text": "Push through the smoke to the forge's back room",
+        "text_fr": "Traverser la fumée jusqu'à l'arrière-boutique de la forge",
         "next_id": "151_forge",
         "checkAbility": "constitution",
         "checkDC": 12,
@@ -74,38 +92,19 @@
         "unlockShopId": "blind_beggar_stall"
       },
       {
-        "text": "Approach a cloaked figure trading whispers at the edge of the stalls",
-        "text_fr": "Approcher une silhouette encapuchonnée échangeant des murmures en bordure des étals",
+        "text": "Approach the cloaked figure at the edge of the stalls",
+        "text_fr": "Approcher la silhouette encapuchonnée en bordure des étals",
         "next_id": "151_vess",
-        "lockedText": "A cloaked figure stood at the edge of the stalls with the specific stillness of someone waiting for a very particular kind of person to walk past, and it was clear enough, even from a distance, that I was not that person — not yet, anyway.",
-        "lockedText_fr": "Une silhouette encapuchonnée se tenait en bordure des étals, avec cette immobilité particulière de quelqu'un attendant un genre bien précis de passant, et il était clair, même de loin, que je n'étais pas ce genre de passant — pas encore, du moins."
-      }
-    ]
-  },
-  "200": {
-    "id": "200",
-    "description": "It was a tapestry of meat, and not a subtle one — the Pale Crusade does not deal in subtlety, whatever their priests preach about mercy in the cathedral squares. I stepped over what remained of the barkeep, a man who had watered my ale for a decade and overcharged me for the privilege, and found I could not summon the grief the moment seemed to require; there would be time for that later, assuming later was still a country I had papers for. The cellar, at least, held one mercy. Lysa was there, curled behind the wine rack like a question folded in on itself, shaking hard enough that her teeth kept time with something only she could hear. She was the only thing in that grave still bothering to breathe.",
-    "description_fr": "C'était une tapisserie de chair, et pas des plus subtiles — la Croisade Pâle ne pratique pas la subtilité, quoi qu'en prêchent ses prêtres sur les places, à grand renfort de miséricorde. J'enjambai ce qu'il restait du tavernier, un homme qui coupait ma bière depuis dix ans et me la facturait plein tarif pour ce privilège, et constatai que je ne parvenais pas à convoquer le chagrin que la scène semblait exiger ; il y aurait bien le temps pour cela plus tard, à supposer que ce plus tard fût encore un pays pour lequel j'avais mes papiers en règle. La cave, du moins, recelait une grâce. Lysa était là, recroquevillée derrière le casier à vin comme une question repliée sur elle-même, tremblant assez fort pour que ses dents battent la mesure d'un rythme qu'elle seule entendait. Elle était la seule chose, dans cette tombe, qui prenait encore la peine de respirer.",
-    "context_taxonomy": {
-      "ui_theme": "slums",
-      "mood": "desperate",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_200"
-    },
-    "choices": [
-      {
-        "text": "Get her up.",
-        "text_fr": "La relever.",
-        "next_id": "250"
+        "showIfFlags": [
+          "void_marked"
+        ]
       }
     ]
   },
   "250": {
     "id": "250",
-    "description": "I dragged Lysa out through the tavern's back door, into air thick enough with smoke to chew, and gave serious thought — for the length of exactly one breath — to simply lying down in it and letting the whole burning city sort out its own affairs without me. The thought passed, as such thoughts do when there is an Heirloom sitting in your parents' hovel that certain interested parties would very much like to relieve you of. Two roads offered themselves, neither troubling to pretend it was the good one: the Stone Bridge, faster, and exposed to anyone with eyes and a crossbow; or the Weaver's Alley, slower, darker, and twisting enough to hide either salvation or a knife, depending on the alley's mood.",
-    "description_fr": "Je traînai Lysa hors de la taverne par la porte de derrière, dans un air assez épais de fumée pour se mâcher, et envisageai sérieusement — le temps d'exactement une respiration — de simplement m'allonger dedans et de laisser toute cette ville en flammes régler ses affaires sans moi. L'idée passa, comme passent ce genre d'idées quand un Héritage vous attend dans la masure de vos parents et que certaines parties intéressées seraient ravies de vous en soulager. Deux voies s'offraient, sans qu'aucune ne prît la peine de feindre être la bonne : le Pont de Pierre, plus rapide, exposé à quiconque possède des yeux et une arbalète ; ou la Ruelle du Tisserand, plus lente, plus sombre, et assez sinueuse pour cacher aussi bien le salut qu'un couteau, selon l'humeur de la ruelle.",
+    "description": "It was a tapestry of meat, and not a subtle one; the Pale Crusade does not deal in subtlety, whatever their priests preach about mercy. I stepped over what remained of the barkeep, a man who had watered my ale for a decade and overcharged me for the privilege, and found I could not summon the grief the moment seemed to require. The cellar, at least, held one mercy: Lysa, curled behind the wine rack like a question folded in on itself, shaking hard enough that her teeth kept time with something only she could hear. I got her up and out through the back door, into air thick enough with smoke to chew, and gave serious thought, for the length of exactly one breath, to lying down in it and letting the burning city sort out its own affairs. The thought passed, as such thoughts do when there is an Heirloom sitting in your parents' hovel that certain interested parties would very much like to relieve you of. Two roads offered themselves, neither pretending to be the good one: the Stone Bridge, faster, and exposed to anyone with eyes and a crossbow; or the Weaver's Alley, slower, darker, and twisting enough to hide either salvation or a knife.",
+    "description_fr": "C'était une tapisserie de chair, et pas des plus subtiles ; la Croisade Pâle ne pratique pas la subtilité, quoi qu'en prêchent ses prêtres à propos de miséricorde. J'enjambai ce qu'il restait du tavernier, un homme qui coupait ma bière depuis dix ans et me la facturait plein tarif pour ce privilège, et constatai que je ne parvenais pas à convoquer le chagrin que la scène semblait exiger. La cave, du moins, recelait une grâce : Lysa, recroquevillée derrière le casier à vin comme une question repliée sur elle-même, tremblant assez fort pour que ses dents battent la mesure d'un rythme qu'elle seule entendait. Je la relevai et la fis sortir par la porte de derrière, dans un air assez épais de fumée pour se mâcher, et envisageai sérieusement, le temps d'exactement une respiration, de m'allonger dedans et de laisser la ville en flammes régler ses affaires sans moi. L'idée passa, comme passent ce genre d'idées quand un Héritage vous attend dans la masure de vos parents et que certaines parties intéressées seraient ravies de vous en soulager. Deux voies s'offraient, sans qu'aucune ne feignît d'être la bonne : le Pont de Pierre, plus rapide, exposé à quiconque possède des yeux et une arbalète ; ou la Ruelle du Tisserand, plus lente, plus sombre, et assez sinueuse pour cacher aussi bien le salut qu'un couteau.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "tense",
@@ -116,14 +115,14 @@
     },
     "choices": [
       {
-        "text": "Take the Bridge (Combat/Toll)",
-        "text_fr": "Prendre le pont (Combat/Péage)",
+        "text": "Take the Stone Bridge",
+        "text_fr": "Prendre le Pont de Pierre",
         "next_id": "260",
         "unlockQuestId": "q_retrieve_banner"
       },
       {
-        "text": "Take the Alley (Stealth/Hound)",
-        "text_fr": "Prendre la ruelle (Discrétion/Chien)",
+        "text": "Take the Weaver's Alley",
+        "text_fr": "Prendre la Ruelle du Tisserand",
         "next_id": "270",
         "unlockQuestId": "q_retrieve_banner"
       }
@@ -149,7 +148,24 @@
         "en": "The thread in me, the {sigil} nobody had chosen, pulled toward the back door before I did.",
         "fr": "Le fil en moi, la {sigil} que personne n'avait choisie, tira vers la porte de derrière avant moi."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "slums_hurried",
+        "en": "I had not stopped for anyone on the way. Lysa was alive; I chose to believe the two facts were connected.",
+        "fr": "Je ne m'étais arrêté pour personne en chemin. Lysa était vivante ; je choisis de croire que les deux faits étaient liés."
+      },
+      {
+        "flag": "slums_helped",
+        "en": "The woman I had carried out of the smoke had thanked me with a look I did not deserve yet. I kept it anyway.",
+        "fr": "La femme que j'avais portée hors de la fumée m'avait remercié d'un regard que je ne méritais pas encore. Je l'ai gardé quand même."
+      },
+      {
+        "flag": "slums_looted",
+        "en": "The stall-keepers' coin sat heavy and unearned in my pocket. It would spend the same as any other.",
+        "fr": "La monnaie des marchands pesait, lourde et imméritée, dans ma poche. Elle se dépenserait comme n'importe quelle autre."
+      }
+    ]
   },
   "260": {
     "id": "260",
@@ -165,17 +181,21 @@
     },
     "choices": [
       {
-        "text": "Pay Toll (50g)",
-        "text_fr": "Payer le péage (50 po)",
+        "text": "Pay the toll (50 gold)",
+        "text_fr": "Payer le péage (50 pièces d'or)",
         "next_id": "261",
-        "lockedText": "I dug through my pockets and came up considerably short, a discovery the guards received with the specific lack of sympathy men develop when promises are the only currency offered to them on a regular basis.",
-        "lockedText_fr": "Je fouillai mes poches et n'y trouvai pas de quoi payer, une découverte que les gardes accueillirent avec ce manque de sympathie particulier que développent les hommes à qui l'on ne propose, en guise de monnaie, que des promesses."
+        "lockedText": "Fifty gold. I had nowhere near it.",
+        "lockedText_fr": "Cinquante pièces d'or. J'en étais loin."
       },
       {
-        "text": "Refuse & Fight",
-        "text_fr": "Refuser et combattre",
-        "next_id": "265",
-        "questIDToProgress": "q_first_blood"
+        "text": "Refuse and fight",
+        "text_fr": "Refuser et se battre",
+        "next_id": "280",
+        "triggerEnemyId": "slum_thug",
+        "questIDToProgress": "q_first_blood",
+        "flagsToAdd": [
+          "toll_refused"
+        ]
       }
     ]
   },
@@ -201,27 +221,6 @@
       }
     ]
   },
-  "265": {
-    "id": "265",
-    "description": "Steel rang on steel before I had properly decided to draw, which is generally how the better class of fight begins and the worse class of survival stories get told. The man at the booth wore his authority the way a bad actor wears a borrowed costume — a stolen sash slung over looted mail, rotten teeth bared in an expression aiming for menace and landing somewhere closer to a man who has recently smelled something unpleasant. He was more opportunist than soldier, which in my limited experience makes for the most dangerous kind of both. Lysa pressed herself against the railing, arms thrown over her head, as he came at me regardless of the fact that I had, technically, not yet agreed to this.",
-    "description_fr": "L'acier sonna contre l'acier avant même que j'aie proprement décidé de dégainer, ce qui est en général la façon dont commencent les meilleures bagarres et dont se racontent les pires histoires de survie. L'homme du péage portait son autorité comme un mauvais acteur porte un costume d'emprunt — une écharpe volée jetée sur une cotte de maille pillée, des dents pourries découvertes dans une expression visant la menace et n'atteignant, au mieux, que celle d'un homme ayant récemment respiré quelque chose de désagréable. Il était plus opportuniste que soldat, ce qui, dans ma modeste expérience, produit l'espèce la plus dangereuse des deux. Lysa se plaqua contre la rambarde, les bras jetés sur la tête, tandis qu'il fonçait sur moi sans égard pour le fait que je n'avais pas, techniquement, encore donné mon accord.",
-    "context_taxonomy": {
-      "ui_theme": "bridge",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_265"
-    },
-    "choices": [
-      {
-        "text": "FIGHT!",
-        "text_fr": "COMBATTRE !",
-        "next_id": "280",
-        "triggerEnemyId": "slum_thug"
-      }
-    ]
-  },
   "270": {
     "id": "270",
     "description": "The alley swallowed the daylight whole and, I suspected, had every intention of keeping it. Halfway down, something thrashed in a coil of razor wire strung low across the passage with the particular cruelty of a trap someone had made time for, even mid-invasion — a lean grey warhound, one ear reduced to ribbons, foam gathering at its jaws in a way that argued either rabies or several very bad days. Its handler lay face-down a few feet further on, throat opened with the kind of thoroughness that suggests the killer had opinions about the man beyond simply wanting him dead, one gauntleted hand still closed around a leash gone slack in every sense that mattered. The dog's eyes found mine and held there. It did not whimper. It did not growl. It only watched, with the particular patience of something that has learned starvation teaches better manners than any master ever could.",
@@ -238,7 +237,7 @@
       {
         "text": "Cut it free",
         "text_fr": "Le libérer",
-        "next_id": "271",
+        "next_id": "280",
         "alignmentMod": 2,
         "flagsToAdd": [
           "companion_hound"
@@ -246,35 +245,18 @@
       },
       {
         "text": "Strip the handler's gear and go",
-        "text_fr": "Fouiller le cadavre et partir",
+        "text_fr": "Dépouiller le maître-chien et partir",
         "next_id": "280",
-        "alignmentMod": -3,
-        "goldMod": 15
+        "goldMod": 15,
+        "alignmentMod": -3
       },
       {
         "text": "Leave them both",
-        "text_fr": "Laisser les deux",
-        "next_id": "280"
-      }
-    ]
-  },
-  "271": {
-    "id": "271",
-    "description": "The wire bit into my palms before it finally surrendered its claim on the dog, and I have carried the scars long enough since to consider them a fair price. It didn't bolt. Instead it pressed its skull hard against my knee, once, in a gesture I chose to interpret as gratitude rather than the alternative — that it simply recognized, in me, another animal that had recently survived something it shouldn't have — and then fell into step three paces behind me, precisely where some dead soldier had once trained it to walk. I had no name for it yet. Names, in my experience, are promises, and I was not yet certain I could keep any.",
-    "description_fr": "Le fil me mordit les paumes avant de céder enfin sa prétention sur le chien, et j'en ai gardé depuis assez longtemps les cicatrices pour les considérer comme un prix honnête. Il ne détala pas. Il pressa plutôt son crâne, fort, contre mon genou, une fois, dans un geste que je choisis d'interpréter comme de la gratitude plutôt que l'autre possibilité — qu'il reconnaissait simplement, en moi, un autre animal ayant récemment survécu à quelque chose qui n'aurait pas dû se produire — puis se mit à marcher trois pas derrière moi, exactement là où quelque soldat mort l'avait jadis dressé à se tenir. Je n'avais pas encore de nom pour lui. Les noms, dans mon expérience, sont des promesses, et je n'étais pas encore certain de pouvoir en tenir une seule.",
-    "context_taxonomy": {
-      "ui_theme": "slums",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_271"
-    },
-    "choices": [
-      {
-        "text": "Keep moving",
-        "text_fr": "Continuer",
-        "next_id": "280"
+        "text_fr": "Les laisser tous les deux",
+        "next_id": "280",
+        "flagsToAdd": [
+          "hound_left"
+        ]
       }
     ]
   },
@@ -292,8 +274,8 @@
     },
     "choices": [
       {
-        "text": "Touch the Tear (Luck Check)",
-        "text_fr": "Toucher la Déchirure (Jet de chance)",
+        "text": "Touch the tear",
+        "text_fr": "Toucher la déchirure",
         "next_id": "281",
         "checkAbility": "luck",
         "checkDC": 10,
@@ -305,16 +287,33 @@
         "next_id": "300"
       },
       {
-        "text": "Take a detour through the market stalls",
-        "text_fr": "Faire un détour par les étals du marché",
+        "text": "Cut through the market stalls",
+        "text_fr": "Couper par les étals du marché",
         "next_id": "151"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "toll_refused",
+        "en": "The man at the booth had worn his authority like a borrowed costume, and I had left him on the bridge without it.",
+        "fr": "L'homme du péage portait son autorité comme un costume d'emprunt, et je l'avais laissé sur le pont sans elle."
+      },
+      {
+        "flag": "companion_hound",
+        "en": "The wire had bitten my palms before it gave up the dog. It fell into step three paces behind me, where some dead soldier had trained it to walk. I had no name for it yet.",
+        "fr": "Le fil m'avait mordu les paumes avant de lâcher le chien. Il se mit à marcher trois pas derrière moi, là où quelque soldat mort l'avait dressé à se tenir. Je n'avais pas encore de nom pour lui."
+      },
+      {
+        "flag": "hound_left",
+        "en": "Behind me the wire sang once as the dog tested it again. I did not look back.",
+        "fr": "Derrière moi, le fil chanta une fois, le chien l'éprouvant encore. Je ne me retournai pas."
       }
     ]
   },
   "281": {
     "id": "281",
-    "description": "For the length of one heartbeat — one, I counted it afterward, obsessively, the way you count things that nearly killed you — the tear widened, and I saw, not with my eyes, because eyes are not the organ such things address themselves to, something vast and patient look back at me with what I can only describe as mild professional interest. Then it snapped shut like a breath finally released, and the world resumed being nothing more than a burning street, which I found, in that moment, to be a considerable relief. My knees took rather longer to receive the news that the danger had passed.",
-    "description_fr": "Le temps d'un battement de cœur — un seul, je l'ai compté après coup, obsessionnellement, comme on compte ce qui a failli nous tuer — la déchirure s'élargit, et je vis, non avec mes yeux, car ce ne sont pas les yeux que de telles choses prennent pour interlocuteurs, quelque chose de vaste et de patient me regarder en retour avec ce que je ne peux décrire que comme un intérêt professionnel modéré. Puis elle se referma comme un souffle enfin relâché, et le monde redevint une simple rue en feu, ce qui, sur le moment, me parut un soulagement considérable. Mes genoux, eux, mirent un peu plus longtemps à recevoir la nouvelle que le danger était passé.",
+    "description": "For the length of one heartbeat — one, I counted it afterward, obsessively, the way you count things that nearly killed you — the tear widened, and I saw, not with my eyes, because eyes are not the organ such things address themselves to, something vast and patient look back at me with what I can only describe as mild professional interest. Then it snapped shut like a breath finally released, and the world resumed being nothing more than a burning street, which I found, in that moment, to be a considerable relief. My knees took rather longer to receive the news that the danger had passed. Whatever the looters had dropped in their hurry to be elsewhere lay in a ring around it, untouched, mine for the stooping.",
+    "description_fr": "Le temps d'un battement de cœur — un seul, je l'ai compté après coup, obsessionnellement, comme on compte ce qui a failli nous tuer — la déchirure s'élargit, et je vis, non avec mes yeux, car ce ne sont pas les yeux que de telles choses prennent pour interlocuteurs, quelque chose de vaste et de patient me regarder en retour avec ce que je ne peux décrire que comme un intérêt professionnel modéré. Puis elle se referma comme un souffle enfin relâché, et le monde redevint une simple rue en feu, ce qui, sur le moment, me parut un soulagement considérable. Mes genoux, eux, mirent un peu plus longtemps à recevoir la nouvelle que le danger était passé. Ce que les pillards avaient lâché dans leur hâte d'être ailleurs gisait en cercle autour d'elle, intact, à qui voulait se baisser.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "creepy",
@@ -325,9 +324,13 @@
     },
     "choices": [
       {
-        "text": "Continue",
-        "text_fr": "Continuer",
-        "next_id": "300"
+        "text": "Take what the looters left behind",
+        "text_fr": "Ramasser ce que les pillards ont laissé",
+        "next_id": "300",
+        "goldMod": 30,
+        "flagsToAdd": [
+          "tear_touched"
+        ]
       }
     ]
   },
@@ -345,9 +348,19 @@
     },
     "choices": [
       {
-        "text": "Take the Bundle",
-        "text_fr": "Prendre le balluchon",
+        "text": "Take the Bundle and go",
+        "text_fr": "Prendre le Balluchon et partir",
         "next_id": "400",
+        "flagsToAdd": [
+          "took_bundle"
+        ]
+      },
+      {
+        "text": "Dig through the wreck for anything else first",
+        "text_fr": "Fouiller d'abord les décombres",
+        "next_id": "400",
+        "goldMod": 15,
+        "healAmount": -10,
         "flagsToAdd": [
           "took_bundle"
         ]
@@ -368,31 +381,32 @@
     },
     "choices": [
       {
-        "text": "Unfurl the Bundle (Guardian)",
-        "text_fr": "Déployer le balluchon (Gardien)",
+        "text": "Unfurl the Bundle",
+        "text_fr": "Déployer le Balluchon",
         "next_id": "450",
         "alignmentMod": 1,
+        "healAmount": -15,
         "flagsToAdd": [
           "lysa_survived",
           "keeper_dead"
-        ],
-        "healAmount": -15
+        ]
       },
       {
         "text": "Surrender and beg them to spare her",
-        "text_fr": "Se rendre et supplier qu'on l'épargne",
+        "text_fr": "Se rendre et les supplier de l'épargner",
         "next_id": "800",
         "flagsToAdd": [
           "lysa_lost"
         ]
       },
       {
-        "text": "Surrender and tell them anything they want to hear",
-        "text_fr": "Se rendre et leur dire tout ce qu'ils veulent entendre",
+        "text": "Surrender and tell them what they want to hear",
+        "text_fr": "Se rendre et leur dire ce qu'ils veulent entendre",
         "next_id": "800",
         "alignmentMod": -2,
         "flagsToAdd": [
-          "lysa_lost"
+          "lysa_lost",
+          "told_them"
         ]
       }
     ]
@@ -411,9 +425,22 @@
     },
     "choices": [
       {
-        "text": "Run for the Docks",
+        "text": "Run for the docks",
         "text_fr": "Courir vers les docks",
-        "next_id": "891"
+        "next_id": "891",
+        "flagsToAdd": [
+          "keeper_left"
+        ]
+      },
+      {
+        "text": "Cover the keeper first, then run",
+        "text_fr": "Couvrir d'abord le tenancier, puis courir",
+        "next_id": "891",
+        "alignmentMod": 1,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "keeper_covered"
+        ]
       }
     ],
     "persona_variants": {
@@ -441,8 +468,8 @@
   },
   "800": {
     "id": "800",
-    "description": "I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement.",
-    "description_fr": "Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration.",
+    "description": "I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement. The wall vanished in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and free, and a man can build quite a lot on that particular foundation.",
+    "description_fr": "Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration. Le mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n'avais, sur l'instant, aucun besoin de connaître. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, et libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -453,36 +480,46 @@
     },
     "choices": [
       {
-        "text": "Wake up",
-        "text_fr": "Se réveiller",
-        "next_id": "810"
-      }
-    ]
-  },
-  "810": {
-    "id": "810",
-    "description": "The wall vanished in a cloud of brick-dust and fire with an enthusiasm that suggested whoever had planted the charge had personal grievances of their own to settle. Resistance fighters had breached the perimeter — men and women I did not know and, in the moment, did not particularly care to, so long as they kept doing exactly what they were doing. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and covered in a filth I preferred not to examine too closely. But I was free, and a man can build quite a lot on that particular foundation.",
-    "description_fr": "Le mur disparut dans un nuage de poussière de brique et de feu avec un enthousiasme qui laissait penser que quiconque avait posé la charge nourrissait des griefs bien personnels. Des combattants de la résistance avaient percé le périmètre — des hommes et des femmes que je ne connaissais pas et, sur l'instant, ne tenais pas particulièrement à connaître, tant qu'ils continuaient exactement ce qu'ils faisaient. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. J'étais libéré de mes chaînes, nu, couvert d'une crasse que je préférais ne pas examiner de trop près. Mais j'étais libre, et un homme peut bâtir bien des choses sur ce genre de fondation.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_810"
-    },
-    "choices": [
+        "text": "Leave the assistant to the fire",
+        "text_fr": "Laisser l'assistant au feu",
+        "next_id": "816",
+        "flagsToAdd": [
+          "assistant_left"
+        ]
+      },
       {
-        "text": "Look around",
-        "text_fr": "Regarder autour de moi",
-        "next_id": "816"
+        "text": "Finish the assistant and take his purse",
+        "text_fr": "Achever l'assistant et prendre sa bourse",
+        "next_id": "816",
+        "alignmentMod": -2,
+        "goldMod": 10,
+        "flagsToAdd": [
+          "assistant_finished"
+        ]
+      },
+      {
+        "text": "Drag the assistant clear of the fire",
+        "text_fr": "Tirer l'assistant hors des flammes",
+        "next_id": "816",
+        "alignmentMod": 1,
+        "healAmount": -5,
+        "flagsToAdd": [
+          "assistant_spared"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "told_them",
+        "en": "What I had told them in the hovel bought me nothing. They took her anyway, and then they took their time with me.",
+        "fr": "Ce que je leur avais dit dans la masure ne m'acheta rien. Ils la prirent quand même, puis ils prirent leur temps avec moi."
       }
     ]
   },
   "816": {
     "id": "816",
-    "description": "Freedom, I was quickly discovering, is a relative and somewhat overhyped condition when one possesses it stark naked and entirely unarmed. I could not go out there with nothing, whatever \"out there\" now consisted of. The door was locked, and the chamber I found myself in was, in the sort of irony my life had lately taken to favoring, generously stocked with instruments — sharp ones, purpose-built for a use I had personally sampled and had no wish to repeat. I needed something, anything, to convince that lock it had made a poor life choice.",
-    "description_fr": "La liberté, je le découvrais vite, est une condition relative et quelque peu surestimée lorsqu'on la possède entièrement nu et désarmé. Je ne pouvais sortir les mains vides, quoi que ce « dehors » recouvrît désormais. La porte était verrouillée, et la chambre dans laquelle je me trouvais était, dans le genre d'ironie que ma vie affectionnait décidément ces temps-ci, généreusement pourvue d'instruments — des instruments tranchants, conçus pour un usage que j'avais personnellement expérimenté et n'avais nulle envie de répéter. Il me fallait quelque chose, n'importe quoi, pour convaincre cette serrure qu'elle avait fait un mauvais choix de vie.",
+    "description": "Freedom, I was quickly discovering, is a relative and somewhat overhyped condition when one possesses it stark naked and unarmed. The door was locked, and the chamber was, in the sort of irony my life had lately taken to favoring, generously stocked with instruments: sharp ones, purpose-built for a use I had personally sampled. A thin metal shim near the table, the sort of object I would have crossed the room to avoid an hour earlier, went into the lock with more hope than skill, and was rewarded with a click that felt like the finest sound I had ever heard. I took a rusty dagger from the dead guard, who no longer had a use for it. And on the torturer's table, among the instruments, sat the oilcloth Bundle they had taken off me: unopened, because it had burned the two men who tried, and left there like a coal nobody wanted to pick up. I picked it up. It knew my hand, and it was warm, and for the first time since the tavern I understood that it had never been the Inquisition's to take.",
+    "description_fr": "La liberté, je le découvrais vite, est une condition relative et quelque peu surestimée lorsqu'on la possède entièrement nu et désarmé. La porte était verrouillée, et la chambre était, dans le genre d'ironie que ma vie affectionnait ces temps-ci, généreusement pourvue d'instruments : des instruments tranchants, conçus pour un usage que j'avais personnellement expérimenté. Une fine tige métallique près de la table, le genre d'objet qu'une heure plus tôt j'aurais traversé la pièce pour éviter, entra dans la serrure avec plus d'espoir que de savoir-faire, et fut récompensée d'un déclic qui me parut le plus beau son que j'eusse jamais entendu. Je pris une dague rouillée sur le garde mort, qui n'en avait plus l'usage. Et sur la table du bourreau, parmi les instruments, reposait le Balluchon de toile huilée qu'ils m'avaient pris : jamais ouvert, parce qu'il avait brûlé les deux hommes qui avaient essayé, et laissé là comme une braise que personne ne voulait ramasser. Je le ramassai. Il connaissait ma main, et il était chaud, et pour la première fois depuis la taverne je compris qu'il n'avait jamais été à l'Inquisition de le prendre.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -493,49 +530,39 @@
     },
     "choices": [
       {
-        "text": "Search the room (Start Quest)",
-        "text_fr": "Fouiller la pièce (Commencer la quête)",
-        "next_id": "817"
-      }
-    ]
-  },
-  "817": {
-    "id": "817",
-    "description": "The door remained stubbornly, professionally locked, unmoved by my opinion of the matter. I needed that sharp metal shim I'd noticed near the table — the sort of object that, an hour ago, I would have crossed the room to avoid, and now represented the single most valuable item in my considerably reduced estate.",
-    "description_fr": "La porte demeurait verrouillée avec une obstination toute professionnelle, indifférente à mon opinion sur la question. Il me fallait cette fine tige métallique aperçue près de la table — le genre d'objet qu'une heure plus tôt j'aurais traversé la pièce pour éviter, et qui représentait à présent le bien le plus précieux de mon patrimoine considérablement réduit.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_817"
-    },
-    "choices": [
+        "text": "Take the dagger and the Bundle, kick the door open",
+        "text_fr": "Prendre la dague et le Balluchon, défoncer la porte",
+        "next_id": "820",
+        "flagsToAdd": [
+          "instruments_left"
+        ]
+      },
       {
-        "text": "Keep looking",
-        "text_fr": "Continuer à chercher",
-        "next_id": "818"
+        "text": "Pocket the torturer's instruments too",
+        "text_fr": "Empocher aussi les instruments du bourreau",
+        "next_id": "820",
+        "goldMod": 20,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "torturers_tools"
+        ]
       }
-    ]
-  },
-  "818": {
-    "id": "818",
-    "description": "I jammed the bloodied shim into the lock with more hope than skill, and was rewarded with a click that felt, in that moment, like the single finest sound I had ever heard in my admittedly compromised life. I took a rusty dagger from the dead guard, who by then had no further use for it and, I like to think, would not have minded the transaction. I was armed. It was not much of an arsenal. It would have to do. And on the torturer's table, among the instruments, sat the oilcloth Bundle they had taken off me: unopened, because it had burned the two men who tried, and left sitting there like a coal nobody wanted to be the one to pick up. I picked it up. It knew my hand, and it was warm, and for the first time since the tavern I understood that it had never been the Inquisition's to take.",
-    "description_fr": "Je glissai la tige ensanglantée dans la serrure avec plus d'espoir que de savoir-faire, et fus récompensé d'un déclic qui, sur l'instant, me parut le plus beau son que j'eusse jamais entendu dans ma vie pourtant bien compromise. Je pris une dague rouillée sur le garde mort, qui n'en avait désormais plus l'usage et n'aurait, je veux le croire, rien objecté à la transaction. Me voilà armé. Ce n'était pas grand-chose comme arsenal. Il faudrait s'en contenter. Et sur la table du bourreau, parmi les instruments, reposait le Balluchon de toile huilée qu'ils m'avaient pris : jamais ouvert, parce qu'il avait brûlé les deux hommes qui avaient essayé, et laissé là comme une braise que personne ne voulait être celui qui la ramasse. Je le ramassai. Il connaissait ma main, et il était chaud, et pour la première fois depuis la taverne je compris qu'il n'avait jamais été à l'Inquisition de le prendre.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_818"
-    },
-    "choices": [
+    ],
+    "flag_callbacks": [
       {
-        "text": "Kick open the door",
-        "text_fr": "Défoncer la porte",
-        "next_id": "820"
+        "flag": "assistant_left",
+        "en": "I stepped over the assistant on my way to the table. He said something as I passed. I did not stop to hear what.",
+        "fr": "J'enjambai l'assistant en allant vers la table. Il dit quelque chose à mon passage. Je ne m'arrêtai pas pour l'entendre."
+      },
+      {
+        "flag": "assistant_finished",
+        "en": "The assistant's purse was light. His masonry had done most of my work; I had only finished the sentence.",
+        "fr": "La bourse de l'assistant était légère. La maçonnerie avait fait l'essentiel de mon travail ; je n'avais fait qu'achever la phrase."
+      },
+      {
+        "flag": "assistant_spared",
+        "en": "I had dragged my torturer's assistant out of the fire he had earned, and I could not have told you why. He did not thank me. I had not expected him to.",
+        "fr": "J'avais tiré l'assistant de mon tortionnaire hors du feu qu'il avait mérité, et je n'aurais su dire pourquoi. Il ne me remercia pas. Je ne m'y attendais pas."
       }
     ]
   },
@@ -553,45 +580,36 @@
     },
     "choices": [
       {
-        "text": "Kill them (Start Battle)",
-        "text_fr": "Les tuer (Commencer le combat)",
+        "text": "Kill them",
+        "text_fr": "Les tuer",
         "next_id": "823",
-        "triggerEnemyId": "inquisition_warden"
+        "triggerEnemyId": "inquisition_warden",
+        "flagsToAdd": [
+          "wardens_slain"
+        ]
       },
       {
-        "text": "Try to push past them",
-        "text_fr": "Tenter de les dépasser",
-        "next_id": "822"
+        "text": "Bull through them",
+        "text_fr": "Forcer le passage",
+        "next_id": "823",
+        "checkAbility": "strength",
+        "checkDC": 12,
+        "failNextId": "822",
+        "healAmount": -15,
+        "flagsToAdd": [
+          "pushed_past"
+        ]
       },
       {
         "text": "Whistle for the hound",
         "text_fr": "Siffler le chien",
-        "next_id": "821",
-        "lockedText": "There was no one left to call. Whatever company I'd once kept, I had walked into this particular hallway entirely, unforgivably alone.",
-        "lockedText_fr": "Il n'y avait plus personne à appeler. Quelle que fût la compagnie que j'avais autrefois tenue, j'étais entré dans ce couloir précis entièrement, impardonnablement seul."
-      }
-    ]
-  },
-  "821": {
-    "id": "821",
-    "description": "I did not know whether it still remembered the whistle its old handler had used, whether dogs remember such things or simply choose, for reasons of their own, to answer them anyway. It came regardless — a grey blur taking the nearest Warden by the throat before the man could manage so much as a proper shout, which I considered, on the whole, a mercy I hadn't specifically requested. The second turned just in time to receive my dagger instead of whatever he'd been expecting. The entire affair was over in the time it takes to describe it, rather less time than it takes to feel appropriately grateful. The dog sat, panting, waiting with evident patience for whatever came next — a virtue, I noted, that I myself had never quite mastered.",
-    "description_fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître, ni même si les chiens se souviennent de ces choses ou choisissent simplement, pour des raisons qui leur appartiennent, d'y répondre malgré tout. Il vint quand même — un éclair gris saisissant le Gardien le plus proche à la gorge avant que l'homme ne parvienne à pousser un cri convenable, ce que je considérai, tout bien pesé, comme une miséricorde que je n'avais pas expressément sollicitée. Le second se retourna juste à temps pour recevoir ma dague au lieu de ce qu'il attendait. Toute l'affaire fut réglée dans le temps qu'il faut pour la raconter, moins encore que le temps qu'il faut pour en ressentir la gratitude appropriée. Le chien s'assit, haletant, attendant avec une patience évidente ce qui viendrait ensuite — une vertu, notai-je, que je n'avais moi-même jamais tout à fait maîtrisée.",
-    "context_taxonomy": {
-      "ui_theme": "torture_chamber",
-      "mood": "action",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_821"
-    },
-    "reqFlags": [
-      "companion_hound"
-    ],
-    "choices": [
-      {
-        "text": "Move on",
-        "text_fr": "Continuer",
-        "next_id": "823"
+        "next_id": "823",
+        "showIfFlags": [
+          "companion_hound"
+        ],
+        "flagsToAdd": [
+          "hound_wardens"
+        ]
       }
     ]
   },
@@ -609,17 +627,20 @@
     },
     "choices": [
       {
-        "text": "Back to the fight",
-        "text_fr": "Retour au combat",
+        "text": "Fight",
+        "text_fr": "Combattre",
         "next_id": "823",
-        "triggerEnemyId": "inquisition_warden"
+        "triggerEnemyId": "inquisition_warden",
+        "flagsToAdd": [
+          "wardens_slain"
+        ]
       }
     ]
   },
   "823": {
     "id": "823",
-    "description": "The Wardens lay in a heap that no longer required my attention or my apology, and I stepped over them with the businesslike indifference one develops rapidly, in this line of work, or dies without developing. I needed a way out, and the building, with its usual generosity, offered exactly two: up, to the Battlements, where the air was fresh and the arrows plentiful; or down, through what the guards had cheerfully nicknamed the Corpse Chute, into the sewers proper, where the air would be considerably less fresh and the arrows, at least, considerably less likely.",
-    "description_fr": "Les Gardiens gisaient en tas, n'exigeant plus ni mon attention ni mes excuses, et je les enjambai avec cette indifférence professionnelle qu'on développe vite, dans ce métier, ou qu'on ne développe jamais, faute de survivre assez longtemps. Il me fallait une sortie, et le bâtiment, avec sa générosité coutumière, n'en offrait que deux : en haut, les Remparts, où l'air était pur et les flèches nombreuses ; ou en bas, par ce que les gardes surnommaient gaiement la Goulotte des Cadavres, jusqu'aux égouts proprement dits, où l'air serait nettement moins pur et les flèches, du moins, nettement moins probables.",
+    "description": "Whatever I had left of the Wardens lay behind me, and I stepped on with the businesslike indifference one develops rapidly in this line of work, or dies without developing. I needed a way out, and the building, with its usual generosity, offered exactly two: up, to the battlements, where the air was fresh and the arrows plentiful; or down, through what the guards had cheerfully nicknamed the Corpse Chute, into the sewers, where the air would be considerably less fresh and the arrows considerably less likely.",
+    "description_fr": "Ce que j'avais laissé des Gardiens était derrière moi, et j'avançai avec l'indifférence professionnelle qu'on acquiert vite dans ce métier, ou sans laquelle on meurt. Il me fallait une sortie, et le bâtiment, avec sa générosité coutumière, en offrait exactement deux : en haut, les remparts, où l'air était frais et les flèches abondantes ; ou en bas, par ce que les gardes avaient joyeusement surnommé la Goulotte aux Cadavres, jusqu'aux égouts, où l'air serait nettement moins frais et les flèches nettement moins probables.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -630,34 +651,35 @@
     },
     "choices": [
       {
-        "text": "Go Up (Battlements)",
-        "text_fr": "Monter (Remparts)",
-        "next_id": "830"
+        "text": "Up, to the battlements",
+        "text_fr": "En haut, vers les remparts",
+        "next_id": "891",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "river_jump"
+        ]
       },
       {
-        "text": "Go Down (Sewers)",
-        "text_fr": "Descendre (Égouts)",
+        "text": "Down, into the sewers",
+        "text_fr": "En bas, dans les égouts",
         "next_id": "840"
       }
-    ]
-  },
-  "830": {
-    "id": "830",
-    "description": "The night air found every wound I had collected over the past several extraordinarily bad days and greeted each one like salt greeting an old friend. I scrambled over slate tiles never designed for a man in my condition, or frankly any condition, while below me the city burned with the sort of thoroughness that made the fires in the slums look, by comparison, almost tasteful. A Crusade archer spotted me — I felt, absurdly, a flicker of professional respect for his eyesight — and raised his crossbow with the unbothered calm of someone who has done this before and expects to do it again shortly. There was, in the grand tradition of my evening thus far, nowhere left to go but down.",
-    "description_fr": "L'air nocturne trouva chacune des blessures accumulées au cours de mes dernières journées particulièrement exécrables et salua chacune d'elles comme du sel salue un vieil ami. Je grimpai sur des ardoises jamais conçues pour un homme dans mon état, ni d'ailleurs dans aucun état, tandis qu'en contrebas la ville brûlait avec une minutie qui faisait paraître, par comparaison, les incendies des bas-fonds presque raffinés. Un archer de la Croisade me repéra — j'éprouvai, absurdement, un éclair de respect professionnel pour la qualité de sa vue — et leva son arbalète avec le calme imperturbable de qui a déjà fait cela et compte bien recommencer sous peu. Il n'y avait, dans la grande tradition de ma soirée jusque-là, nulle part où aller sinon vers le bas.",
-    "context_taxonomy": {
-      "ui_theme": "battlements",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_830"
-    },
-    "choices": [
+    ],
+    "flag_callbacks": [
       {
-        "text": "Jump to the river",
-        "text_fr": "Sauter dans la rivière",
-        "next_id": "891"
+        "flag": "wardens_slain",
+        "en": "They lay in a heap that no longer required my attention or my apology.",
+        "fr": "Ils gisaient en tas, sans plus requérir mon attention ni mes excuses."
+      },
+      {
+        "flag": "pushed_past",
+        "en": "I had gone through them rather than over them, and had the bruises to show for the difference. They were still on their feet when I reached the stair, which was their problem now.",
+        "fr": "J'étais passé à travers eux plutôt que par-dessus, et j'en portais les bleus. Ils tenaient encore debout quand j'atteignis l'escalier, ce qui était désormais leur problème."
+      },
+      {
+        "flag": "hound_wardens",
+        "en": "I had not known whether it still remembered its old handler's whistle. It came regardless, a grey blur taking the nearest Warden by the throat before he could shout; the second turned just in time to receive my dagger. The dog sat afterward, panting, waiting for whatever came next.",
+        "fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître. Il vint quand même, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu'il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s'assit ensuite, haletant, attendant ce qui viendrait."
       }
     ]
   },
@@ -675,14 +697,21 @@
     },
     "choices": [
       {
-        "text": "Find the Exit (Start Reach)",
-        "text_fr": "Trouver la sortie (Commencer la traversée)",
+        "text": "Find the main drainage pipe",
+        "text_fr": "Trouver la conduite principale",
         "next_id": "850"
       },
       {
-        "text": "Push through the muck directly",
-        "text_fr": "Avancer directement dans la vase",
-        "next_id": "855"
+        "text": "Wade straight through the rot",
+        "text_fr": "Patauger droit à travers la pourriture",
+        "next_id": "891",
+        "checkAbility": "constitution",
+        "checkDC": 11,
+        "failNextId": "855",
+        "healAmount": -15,
+        "flagsToAdd": [
+          "sewer_waded"
+        ]
       }
     ]
   },
@@ -700,17 +729,20 @@
     },
     "choices": [
       {
-        "text": "Kill the Beast (Start Battle)",
-        "text_fr": "Tuer la bête (Commencer le combat)",
-        "next_id": "860",
-        "triggerEnemyId": "rat_matriarch"
+        "text": "Kill the Matriarch",
+        "text_fr": "Tuer la Matriarche",
+        "next_id": "891",
+        "triggerEnemyId": "rat_matriarch",
+        "flagsToAdd": [
+          "matriarch_slain"
+        ]
       }
     ]
   },
   "855": {
     "id": "855",
-    "description": "The Matriarch remained, with the stubbornness peculiar to landlords and vermin alike, squarely in my path. She would have to die, and I found I had reached the point in the evening where I could contemplate the fact without particular ceremony.",
-    "description_fr": "La Matriarche demeurait, avec cette obstination propre aux propriétaires comme à la vermine, résolument en travers de mon chemin. Elle devrait mourir, et je constatai avoir atteint, dans le cours de cette soirée, le point où je pouvais envisager le fait sans cérémonie particulière.",
+    "description": "The rot was deeper than it looked and slower than I needed, and halfway across, the Matriarch found me in it: a Rat Matriarch of truly ambitious proportions, squarely in my path, with the stubbornness peculiar to landlords and vermin alike. She would have to die, and I had reached the point in the evening where I could contemplate the fact without ceremony.",
+    "description_fr": "La pourriture était plus profonde qu'elle n'en avait l'air et plus lente qu'il ne m'en fallait, et à mi-chemin la Matriarche m'y trouva : une Matriarche des rats aux proportions franchement ambitieuses, en plein sur mon chemin, avec l'obstination propre aux propriétaires et à la vermine. Il faudrait qu'elle meure, et j'avais atteint ce point de la soirée où je pouvais l'envisager sans cérémonie.",
     "context_taxonomy": {
       "ui_theme": "sewers",
       "mood": "creepy",
@@ -723,33 +755,11 @@
       {
         "text": "Fight",
         "text_fr": "Combattre",
-        "next_id": "860",
-        "triggerEnemyId": "rat_matriarch"
-      },
-      {
-        "text": "Back away and look for another way through",
-        "text_fr": "Reculer et chercher un autre passage",
-        "next_id": "850"
-      }
-    ]
-  },
-  "860": {
-    "id": "860",
-    "description": "The beast floated belly-up in the muck, which struck me as an entirely appropriate final posture for a creature that had spent its life demanding tribute from smaller things. The path lay clear. I limped toward the harbor exit with the gait of a man recently and thoroughly acquainted with several new ways his body could hurt.",
-    "description_fr": "La bête flottait, ventre à l'air, dans la vase, ce qui me parut une posture finale tout à fait appropriée pour une créature ayant passé sa vie à exiger tribut de plus petit qu'elle. La voie était libre. Je boitai vers la sortie du port avec la démarche d'un homme récemment et minutieusement initié à plusieurs façons nouvelles dont son corps pouvait avoir mal.",
-    "context_taxonomy": {
-      "ui_theme": "sewers",
-      "mood": "creepy",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_860"
-    },
-    "choices": [
-      {
-        "text": "Climb out",
-        "text_fr": "Sortir en grimpant",
-        "next_id": "891"
+        "next_id": "891",
+        "triggerEnemyId": "rat_matriarch",
+        "flagsToAdd": [
+          "matriarch_slain"
+        ]
       }
     ]
   },
@@ -767,14 +777,14 @@
     },
     "choices": [
       {
-        "text": "Talk to him (Start Talk)",
-        "text_fr": "Lui parler (Commencer la discussion)",
+        "text": "Talk to the smuggler",
+        "text_fr": "Parler au contrebandier",
         "next_id": "895",
         "unlockShopId": "black_market_docks"
       },
       {
-        "text": "Patch yourself up before whatever's coming",
-        "text_fr": "Se soigner avant ce qui s'annonce",
+        "text": "Patch yourself up",
+        "text_fr": "Se rafistoler",
         "next_id": "891",
         "healAmount": 35,
         "hideIfFlags": [
@@ -785,8 +795,8 @@
         ]
       },
       {
-        "text": "Duck into a dockside armory first",
-        "text_fr": "Faire d'abord un détour par un arsenal du port",
+        "text": "Duck into the dockside armory",
+        "text_fr": "Passer par l'armurerie du quai",
         "next_id": "891",
         "unlockShopId": "weaponsmith_forge",
         "hideIfFlags": [
@@ -797,8 +807,8 @@
         ]
       },
       {
-        "text": "Check a shieldwright's stall for anything sturdier",
-        "text_fr": "Examiner l'étal d'un fabricant de boucliers pour trouver plus solide",
+        "text": "Check the shieldwright's stall",
+        "text_fr": "Voir l'étal du fabricant de boucliers",
         "next_id": "891",
         "unlockShopId": "shieldwrights_hall",
         "hideIfFlags": [
@@ -811,21 +821,74 @@
       {
         "text": "Whistle for the hound",
         "text_fr": "Siffler le chien",
-        "next_id": "892",
-        "lockedText": "There was nothing left to whistle for. I had made this particular passage of my life entirely alone, a fact the docks seemed to find no more remarkable than I did.",
-        "lockedText_fr": "Il n'y avait plus rien à siffler. J'avais traversé ce chapitre de ma vie entièrement seul, un fait que les docks semblaient trouver aussi peu remarquable que moi."
+        "next_id": "891",
+        "goldMod": 10,
+        "showIfFlags": [
+          "companion_hound"
+        ],
+        "hideIfFlags": [
+          "hub_891_hound"
+        ],
+        "flagsToAdd": [
+          "hub_891_hound"
+        ]
       }
     ],
     "flag_callbacks": [
+      {
+        "flag": "river_jump",
+        "en": "The battlements had offered a Crusade archer a clear view of me and me a clear view of the river, and I had taken the only one of those that was mine to take. I came up the pier steps dripping, every wound of the last several bad days greeting the salt like an old friend.",
+        "fr": "Les remparts avaient offert à un archer de la Croisade une vue dégagée sur moi, et à moi une vue dégagée sur la rivière, et j'avais pris la seule des deux qui m'appartînt. Je remontai les marches du quai trempé, chaque blessure des derniers mauvais jours saluant le sel comme un vieil ami."
+      },
+      {
+        "flag": "sewer_waded",
+        "en": "I had waded the sewer's worst rather than fight for its cleanest, and I smelled like the decision. The dockhands gave me room.",
+        "fr": "J'avais pataugé dans le pire de l'égout plutôt que de me battre pour le meilleur, et j'en portais l'odeur. Les dockers me firent de la place."
+      },
+      {
+        "flag": "matriarch_slain",
+        "en": "The Matriarch had floated belly-up in the muck, an appropriate final posture for a creature that had spent its life demanding tribute from smaller things, and I had limped out through the harbor drain with several new ways my body could hurt.",
+        "fr": "La Matriarche avait flotté, ventre à l'air, dans la vase, posture finale appropriée pour une créature ayant passé sa vie à exiger tribut de plus petit qu'elle, et j'étais sorti en boitant par l'égout du port avec plusieurs façons nouvelles d'avoir mal."
+      },
+      {
+        "flag": "keeper_covered",
+        "en": "My hands still smelled of the cellar and of the sheet I had pulled over the keeper. It had cost a minute I did not have. I would have spent it again.",
+        "fr": "Mes mains sentaient encore la cave et le drap que j'avais tiré sur le tenancier. Cela m'avait coûté une minute que je n'avais pas. Je l'aurais dépensée encore."
+      },
+      {
+        "flag": "keeper_left",
+        "en": "The Beggar's keeper was under his own house, and I had not stopped to see him decently covered. I told myself there had been no time.",
+        "fr": "Le tenancier du Mendiant était sous sa propre maison, et je ne m'étais pas arrêté pour le couvrir décemment. Je me dis qu'il n'y avait pas eu le temps."
+      },
+      {
+        "flag": "tear_touched",
+        "en": "I had looked into a tear tonight and it had looked back, with what I could only call professional interest. The Bundle against my spine had felt, ever since, like something that knew.",
+        "fr": "J'avais regardé dans une déchirure ce soir et elle m'avait regardé en retour, avec ce que je ne pouvais appeler qu'un intérêt professionnel. Le Balluchon contre ma colonne m'avait semblé, depuis, quelque chose qui savait."
+      },
       {
         "flag": "took_bundle",
         "en": "The Bundle rode warm against my back the whole way down to the water, warmer each time I managed to stop thinking about it, which was not often.",
         "fr": "Le Ballot resta chaud contre mon dos tout le long de la descente vers l'eau, plus chaud chaque fois que je parvenais à ne plus y penser, ce qui n'arrivait pas souvent."
       },
       {
+        "flag": "instruments_left",
+        "en": "I had left the torturer's instruments on his table. Somebody would find a use for them; it would not be me.",
+        "fr": "J'avais laissé les instruments du bourreau sur sa table. Quelqu'un leur trouverait un usage ; ce ne serait pas moi."
+      },
+      {
         "flag": "forge_cache_found",
         "en": "The forge cache's weight in my pack was the one thing on this pier I had not stolen, and I was, absurdly, a little proud of it.",
         "fr": "Le poids de la cache de la forge dans mon sac était la seule chose sur ce quai que je n'avais pas volée, et j'en tirais, absurdement, une petite fierté."
+      },
+      {
+        "flag": "torturers_tools",
+        "en": "The torturer's instruments clinked in my pack like a set of teeth. Somebody on this pier would pay for them, and I would not ask what for.",
+        "fr": "Les instruments du bourreau cliquetaient dans mon sac comme une rangée de dents. Quelqu'un sur ce quai les paierait, et je ne demanderais pas pour quoi faire."
+      },
+      {
+        "flag": "hub_891_hound",
+        "en": "The hound had come out of the dock fog nosing at my hand as though it had never left, trotted ahead to distract a dockhand, and fallen back into step while I relieved a dropped purse of its previous owner's claim.",
+        "fr": "Le chien était sorti du brouillard du port en frottant son museau contre ma main comme s'il ne m'avait jamais quitté, avait trotté devant pour distraire un docker, et s'était recollé à mes talons pendant que je soulageais une bourse tombée de la prétention de son ancien propriétaire."
       }
     ],
     "persona_variants": {
@@ -838,30 +901,6 @@
         "fr": "Le Contrebandier regarda les épaules d'un orc et révisa, en silence, la part du chargement qu'il comptait porter lui-même."
       }
     }
-  },
-  "892": {
-    "id": "892",
-    "description": "A low whine cut through the dock fog, and the hound was suddenly beside me again, nosing at my hand as though it had never left, as though loyalty were a simple thing and not the complicated debt I was beginning to suspect it actually was. It trotted ahead and distracted a dockhand just long enough for me to relieve a dropped coin purse of its previous owner's claim on it, then fell back into step at my heel with the air of a professional who considers the job done and does not require thanks.",
-    "description_fr": "Un gémissement sourd perça le brouillard du port, et le chien fut soudain de nouveau près de moi, frottant son museau contre ma main comme s'il ne m'avait jamais quitté, comme si la loyauté était une chose simple et non la dette compliquée que je commençais à soupçonner qu'elle fût réellement. Il trotta devant et détourna l'attention d'un docker le temps que je soulage une bourse tombée de la prétention de son ancien propriétaire, avant de revenir se coller à mes talons avec l'air d'un professionnel qui considère la tâche accomplie et ne réclame aucun remerciement.",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "suspense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_892"
-    },
-    "reqFlags": [
-      "companion_hound"
-    ],
-    "choices": [
-      {
-        "text": "Keep moving",
-        "text_fr": "Continuer",
-        "next_id": "895",
-        "goldMod": 10
-      }
-    ]
   },
   "895": {
     "id": "895",
@@ -880,22 +919,22 @@
         "text": "Appeal to his conscience",
         "text_fr": "En appeler à sa conscience",
         "next_id": "896",
-        "lockedText": "Kindness was not a currency I had been spending lately, and a man in his profession could smell the difference between a genuine appeal and a desperate performance of one. He would have laughed in my face, and not unfairly.",
-        "lockedText_fr": "La gentillesse n'était pas une monnaie que j'avais dépensée dernièrement, et un homme de sa profession savait flairer la différence entre un appel sincère et une performance désespérée qui en imitait un. Il m'aurait ri au nez, et non sans raison."
+        "lockedText": "Kindness was not a currency I had been spending.",
+        "lockedText_fr": "La bonté n'était pas une monnaie que j'avais dépensée récemment."
       },
       {
         "text": "Strike a fair bargain",
-        "text_fr": "Conclure un accord équitable",
+        "text_fr": "Conclure un marché honnête",
         "next_id": "897",
-        "lockedText": "I was not known enough, in either the honest or dishonest direction, for plain dealing to carry any particular weight with a man who dealt in reputations rather than promises.",
-        "lockedText_fr": "Je n'étais connu ni dans un sens ni dans l'autre pour qu'un marché honnête pesât le moindre poids auprès d'un homme qui commerçait en réputations plutôt qu'en promesses."
+        "lockedText": "I was not known enough for plain dealing to carry weight.",
+        "lockedText_fr": "Je n'étais pas assez connu pour que le franc-jeu pèse."
       },
       {
         "text": "Threaten him",
         "text_fr": "Le menacer",
         "next_id": "898",
-        "lockedText": "I did not yet possess the reputation required to make a threat land the way a threat is supposed to — and a threat that doesn't land is, in my experience, merely an insult with worse timing.",
-        "lockedText_fr": "Je ne possédais pas encore la réputation nécessaire pour qu'une menace porte comme une menace se doit de porter — et une menace qui ne porte pas n'est, dans mon expérience, qu'une insulte mal chronométrée."
+        "lockedText": "I did not yet have the name to make a threat land.",
+        "lockedText_fr": "Je n'avais pas encore le nom qu'il faut pour qu'une menace porte."
       }
     ]
   },
@@ -916,7 +955,11 @@
       {
         "text": "Board the ship",
         "text_fr": "Monter à bord",
-        "next_id": "955"
+        "next_id": "960",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "smuggler_pitied"
+        ]
       }
     ]
   },
@@ -937,8 +980,12 @@
     "choices": [
       {
         "text": "Shake on it",
-        "text_fr": "Conclure le marché",
-        "next_id": "955"
+        "text_fr": "Topez là",
+        "next_id": "960",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "smuggler_debt"
+        ]
       }
     ]
   },
@@ -959,34 +1006,19 @@
       {
         "text": "Board the ship",
         "text_fr": "Monter à bord",
-        "next_id": "955"
-      }
-    ]
-  },
-  "955": {
-    "id": "955",
-    "description": "The Smuggler stepped aside, and for one brief, foolish heartbeat I let myself believe the evening might actually end with me aboard a ship rather than in it, or under it. A shadow fell over me instead — Inquisitor Kroll, my torturer, a man whose face I had memorized in the specific and involuntary way one memorizes anything that has hurt them for three consecutive days. He held a serrated blade with the fond familiarity of a craftsman reunited with his favorite tool. \"Leaving so soon?\" he inquired, in the tone of a host mildly offended by an early departure. \"We haven't finished our session.\"",
-    "description_fr": "Le contrebandier s'écarta, et pendant un bref et sot battement de cœur, je me laissai croire que la soirée pourrait réellement se terminer avec moi à bord d'un navire plutôt que dedans, ou dessous. Une ombre s'abattit sur moi à la place — l'Inquisiteur Kroll, mon tortionnaire, un homme dont j'avais mémorisé le visage de cette façon particulière et involontaire dont on mémorise tout ce qui vous a fait mal trois jours durant. Il tenait une lame dentelée avec la tendre familiarité d'un artisan retrouvant son outil favori. « Tu pars déjà ? » s'enquit-il, du ton d'un hôte légèrement vexé d'un départ précipité. « Nous n'avons pas fini notre séance. »",
-    "context_taxonomy": {
-      "ui_theme": "docks",
-      "mood": "suspense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_955"
-    },
-    "choices": [
-      {
-        "text": "Face him",
-        "text_fr": "L'affronter",
-        "next_id": "960"
+        "next_id": "960",
+        "alignmentMod": -2,
+        "goldMod": 25,
+        "flagsToAdd": [
+          "smuggler_cowed"
+        ]
       }
     ]
   },
   "960": {
     "id": "960",
-    "description": "Kroll laughed behind his mask, a sound like a hinge that has never once been oiled and takes a professional pride in it. \"Scream for me!\" he called, with the unmistakable enthusiasm of someone who genuinely enjoyed his work — the rarest and most dangerous kind of enemy, in my experience, being the one who does.",
-    "description_fr": "Kroll rit derrière son masque, un bruit de gond qu'on n'a jamais huilé et qui en tire une fierté professionnelle. « Hurle pour moi ! » lança-t-il, avec l'enthousiasme non feint de qui aime sincèrement son travail — l'espèce d'ennemi la plus rare et la plus dangereuse, dans mon expérience, étant précisément celle-là.",
+    "description": "The Smuggler stepped aside, and for one brief, foolish heartbeat I let myself believe the evening might end with me aboard a ship rather than in it, or under it. A shadow fell over me instead: an Inquisitor in a porcelain mask, a serrated blade held with the fond familiarity of a craftsman reunited with his favorite tool, and the White Soldiers behind him closing the pier. He laughed, a sound like a hinge that has never once been oiled and takes a professional pride in it. \"Scream for me!\" he called, with the unmistakable enthusiasm of someone who genuinely enjoys his work, the rarest and most dangerous kind of enemy, in my experience, being the one who does.",
+    "description_fr": "Le contrebandier s'écarta, et pendant un bref et sot battement de cœur, je me laissai croire que la soirée pourrait se terminer avec moi à bord d'un navire plutôt que dedans, ou dessous. Une ombre s'abattit sur moi à la place : un Inquisiteur au masque de porcelaine, une lame dentelée tenue avec la tendre familiarité d'un artisan retrouvant son outil favori, et derrière lui les Soldats Blancs qui fermaient le quai. Il rit, un bruit de gond qu'on n'a jamais huilé et qui en tire une fierté professionnelle. « Hurle pour moi ! » lança-t-il, avec l'enthousiasme non feint de qui aime sincèrement son travail, l'espèce d'ennemi la plus rare et la plus dangereuse, dans mon expérience, étant précisément celle-là.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "suspense",
@@ -997,24 +1029,36 @@
     },
     "choices": [
       {
-        "text": "Fight!",
-        "text_fr": "Combattre !",
+        "text": "Fight",
+        "text_fr": "Combattre",
         "next_id": "965",
         "triggerEnemyId": "kroll_the_branded"
       },
       {
-        "text": "End it quickly, no more suffering",
-        "text_fr": "En finir vite, plus de souffrance",
+        "text": "End it quickly, without cruelty",
+        "text_fr": "En finir vite, sans cruauté",
         "next_id": "965_mercy",
         "alignmentMod": 5,
         "triggerEnemyId": "kroll_the_branded"
       },
       {
-        "text": "Make him pay for every session",
-        "text_fr": "Lui faire payer chaque séance",
+        "text": "Make him pay for all of it",
+        "text_fr": "Lui faire payer tout cela",
         "next_id": "965_vengeance",
         "alignmentMod": -5,
         "triggerEnemyId": "kroll_the_branded"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "I knew the face behind the mask the way one knows anything that has hurt them for three consecutive days. Kroll. My torturer. \"Leaving so soon?\" he inquired, in the tone of a host mildly offended by an early departure. \"We haven't finished our session.\"",
+        "fr": "Je connaissais le visage derrière le masque comme on connaît tout ce qui vous a fait mal trois jours durant. Kroll. Mon tortionnaire. « Tu pars déjà ? » s'enquit-il, du ton d'un hôte légèrement vexé d'un départ précipité. « Nous n'avons pas fini notre séance. »"
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "\"The Bundle,\" he said, with the patience of a man who has been given a name and a description and intends to earn his fee. \"Hand it over, and the girl walks.\" Lysa's fingers closed on my sleeve. I had seen what his soldiers had made of the Beggar; I did not need to imagine what they would make of her.",
+        "fr": "« Le Balluchon », dit-il, avec la patience d'un homme à qui l'on a donné un nom et une description et qui entend gagner son salaire. « Donne-le, et la fille s'en va. » Les doigts de Lysa se refermèrent sur ma manche. J'avais vu ce que ses soldats avaient fait du Mendiant ; je n'avais pas besoin d'imaginer ce qu'ils feraient d'elle."
       }
     ]
   },
@@ -1035,15 +1079,34 @@
         "text": "Climb toward Lysa",
         "text_fr": "Grimper vers Lysa",
         "next_id": "1000",
-        "lockedText": "There was no one waiting up there for me anymore, and climbing toward a person who no longer existed struck me, even in extremity, as a poor use of the little strength I had left.",
-        "lockedText_fr": "Il n'y avait plus personne qui m'attendait là-haut, et grimper vers une personne qui n'existait plus me sembla, même dans l'extrémité où je me trouvais, un piètre usage du peu de force qu'il me restait."
+        "showIfFlags": [
+          "lysa_survived"
+        ]
       },
       {
-        "text": "Climb up alone",
-        "text_fr": "Grimper seul",
-        "next_id": "1003",
-        "lockedText": "I had not survived any of this alone, whatever my instincts insisted, and Lysa was waiting above for exactly the kind of company I had apparently decided, out of habit rather than sense, to refuse.",
-        "lockedText_fr": "Je n'avais survécu à rien de tout cela seul, quoi qu'en dît mon instinct, et Lysa m'attendait là-haut pour exactement le genre de compagnie que j'avais apparemment décidé, par habitude plus que par raison, de refuser."
+        "text": "Keep what's left of yourself",
+        "text_fr": "Garder ce qu'il reste de toi",
+        "next_id": "1001",
+        "showIfFlags": [
+          "lysa_lost"
+        ]
+      },
+      {
+        "text": "Let the rage finish what Kroll started",
+        "text_fr": "Laisser la rage achever ce que Kroll a commencé",
+        "next_id": "1002",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "lockedText": "Whatever this place had taken from me, it had not taken all of me.",
+        "lockedText_fr": "Quoi que cet endroit m'eût pris, il ne m'avait pas tout pris."
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "I reached the top rung alone, and no hand pulled me the remaining distance, which I registered, with the odd clarity that follows a long climb, as a fact rather than a tragedy. Whatever I had become, I had decided it down there in the dark, one small, ugly choice at a time.",
+        "fr": "J'atteignis le dernier barreau seul, et aucune main ne m'aida à finir de grimper, ce que j'enregistrai, avec cette curieuse clarté qui suit une longue ascension, comme un fait plutôt qu'une tragédie. Ce que j'étais devenu, je l'avais décidé là-dessous, dans le noir, un choix petit et laid après l'autre."
       }
     ]
   },
@@ -1088,8 +1151,8 @@
     },
     "choices": [
       {
-        "text": "Proceed to Chapter 2 (The Rat Path)",
-        "text_fr": "Passer au chapitre 2 (La voie du Rat)",
+        "text": "Proceed to Chapter 2",
+        "text_fr": "Passer au chapitre 2",
         "next_id": "2001",
         "flagsToAdd": [
           "void_banner_bearer"
@@ -1113,43 +1176,13 @@
     "reqAlignmentMax": -3,
     "choices": [
       {
-        "text": "Proceed to Chapter 2 (The Broken Path)",
-        "text_fr": "Passer au chapitre 2 (La voie du Brisé)",
+        "text": "Proceed to Chapter 2",
+        "text_fr": "Passer au chapitre 2",
         "next_id": "2001",
         "flagsToAdd": [
           "void_banner_bearer"
         ],
         "grantsBannerPieceId": "heirloom_shroud"
-      }
-    ]
-  },
-  "1003": {
-    "id": "1003",
-    "description": "I reached the top rung alone, and no hand pulled me the remaining distance, which I registered, with the odd clarity that follows a long climb, as a fact rather than a tragedy. Whatever I had become, I had decided it down there in the dark, one small, ugly choice at a time, and a man who has made his own choices has forfeited the comfort of blaming the dark for them.",
-    "description_fr": "J'atteignis le dernier barreau seul, et aucune main ne m'aida à finir de grimper, ce que j'enregistrai, avec cette curieuse clarté qui suit une longue ascension, comme un fait plutôt qu'une tragédie. Ce que j'étais devenu, je l'avais décidé là-dessous, dans le noir, un choix petit et laid après l'autre, et un homme qui a fait ses propres choix a perdu le droit d'en blâmer l'obscurité.",
-    "context_taxonomy": {
-      "ui_theme": "origin_ending",
-      "mood": "grim",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_1003"
-    },
-    "reqFlags": [
-      "lysa_lost"
-    ],
-    "choices": [
-      {
-        "text": "Keep what's left of yourself",
-        "text_fr": "Garder ce qu'il reste de toi",
-        "next_id": "1001"
-      },
-      {
-        "text": "Let the rage finish what Kroll started",
-        "text_fr": "Laisser la rage achever ce que Kroll a commencé",
-        "next_id": "1002",
-        "lockedText": "Whatever else this place had taken from me — and the accounting, by now, ran long — it had not taken all of me. Not, at least, in quite that particular fashion.",
-        "lockedText_fr": "Quoi que cet endroit m'eût pris d'autre — et le compte, à ce stade, était long — il ne m'avait pas tout pris. Pas, du moins, de cette façon précise."
       }
     ]
   },
@@ -1203,6 +1236,26 @@
         "flag": "lysa_survived",
         "en": "Lysa stood at the rail beside me and did not say anything about the fire, which was, I was learning, her way of saying a great deal.",
         "fr": "Lysa se tenait au bastingage à côté de moi et ne dit rien du feu, ce qui était, je l'apprenais, sa façon de dire beaucoup."
+      },
+      {
+        "flag": "keeper_dead",
+        "en": "The Beggar's keeper had hidden us in his cellar and come up the stairs at the wrong moment, and the Bundle had taken him with the soldiers. Lysa did not know yet. I had not decided when to tell her.",
+        "fr": "Le tenancier du Mendiant nous avait cachés dans sa cave et était monté au mauvais moment, et le Balluchon l'avait emporté avec les soldats. Lysa ne le savait pas encore. Je n'avais pas décidé quand le lui dire."
+      },
+      {
+        "flag": "smuggler_pitied",
+        "en": "The smuggler did not meet my eyes once during the crossing. He had taken a story for a fare, and men in his trade do not like to be seen doing that twice.",
+        "fr": "Le contrebandier ne croisa pas une fois mon regard pendant la traversée. Il avait accepté une histoire pour prix du passage, et les hommes de son métier n'aiment pas qu'on les voie faire cela deux fois."
+      },
+      {
+        "flag": "smuggler_debt",
+        "en": "I owed the smuggler a crossing's worth of work, and he had begun collecting before the docks were out of sight.",
+        "fr": "Je devais au contrebandier une traversée de travail, et il avait commencé à encaisser avant que les docks ne soient hors de vue."
+      },
+      {
+        "flag": "smuggler_cowed",
+        "en": "The smuggler kept to the far end of his own deck the whole crossing, and his purse, which had come aboard in my pocket, did not come up in conversation.",
+        "fr": "Le contrebandier resta à l'autre bout de son propre pont toute la traversée, et sa bourse, montée à bord dans ma poche, ne fut pas évoquée."
       }
     ]
   },
@@ -2895,8 +2948,8 @@
   },
   "965_mercy": {
     "id": "965_mercy",
-    "description": "Kroll's grip finally failed him, sooner than it might have — I had seen to that myself, unwilling to stretch even a monster's dying out the slow, deliberate way he had once stretched out mine. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like triumph and more like a debt quietly marked paid. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because a man who has just chosen mercy over an available cruelty generally prefers not to stand around admiring the choice.",
-    "description_fr": "La prise de Kroll finit par céder, plus tôt qu'elle n'aurait pu — j'y avais veillé moi-même, refusant d'étirer, même pour un monstre, l'agonie lente et délibérée qu'il avait jadis fait durer pour moi. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à un triomphe qu'à une dette discrètement soldée. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce qu'un homme qui vient de choisir la clémence plutôt qu'une cruauté à portée de main préfère généralement ne pas s'attarder à admirer son choix.",
+    "description": "Kroll's grip finally failed him, sooner than it might have; I had seen to that myself, unwilling to stretch even a monster's dying out the slow, deliberate way his Crusade had stretched out this whole night. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like triumph and more like a debt quietly marked paid. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because a man who has just chosen mercy over an available cruelty generally prefers not to stand around admiring the choice.",
+    "description_fr": "La prise de Kroll finit par céder, plus tôt qu'elle ne l'aurait pu ; j'y avais veillé moi-même, refusant d'étirer même l'agonie d'un monstre de cette façon lente et délibérée dont sa Croisade avait étiré toute cette nuit. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à un triomphe qu'à une dette discrètement soldée. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce qu'un homme qui vient de choisir la clémence plutôt qu'une cruauté à portée de main préfère généralement ne pas s'attarder à admirer son choix.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "grim",
@@ -2910,22 +2963,41 @@
         "text": "Climb toward Lysa",
         "text_fr": "Grimper vers Lysa",
         "next_id": "1000",
-        "lockedText": "There was no one waiting up there for me anymore, and climbing toward a person who no longer existed struck me, even in extremity, as a poor use of the little strength I had left.",
-        "lockedText_fr": "Il n'y avait plus personne qui m'attendait là-haut, et grimper vers une personne qui n'existait plus me sembla, même dans l'extrémité où je me trouvais, un piètre usage du peu de force qu'il me restait."
+        "showIfFlags": [
+          "lysa_survived"
+        ]
       },
       {
-        "text": "Climb up alone",
-        "text_fr": "Grimper seul",
-        "next_id": "1003",
-        "lockedText": "I had not survived any of this alone, whatever my instincts insisted, and Lysa was waiting above for exactly the kind of company I had apparently decided, out of habit rather than sense, to refuse.",
-        "lockedText_fr": "Je n'avais survécu à rien de tout cela seul, quoi qu'en dît mon instinct, et Lysa m'attendait là-haut pour exactement le genre de compagnie que j'avais apparemment décidé, par habitude plus que par raison, de refuser."
+        "text": "Keep what's left of yourself",
+        "text_fr": "Garder ce qu'il reste de toi",
+        "next_id": "1001",
+        "showIfFlags": [
+          "lysa_lost"
+        ]
+      },
+      {
+        "text": "Let the rage finish what Kroll started",
+        "text_fr": "Laisser la rage achever ce que Kroll a commencé",
+        "next_id": "1002",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "lockedText": "Whatever this place had taken from me, it had not taken all of me.",
+        "lockedText_fr": "Quoi que cet endroit m'eût pris, il ne m'avait pas tout pris."
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "I reached the top rung alone, and no hand pulled me the remaining distance, which I registered, with the odd clarity that follows a long climb, as a fact rather than a tragedy. Whatever I had become, I had decided it down there in the dark, one small, ugly choice at a time.",
+        "fr": "J'atteignis le dernier barreau seul, et aucune main ne m'aida à finir de grimper, ce que j'enregistrai, avec cette curieuse clarté qui suit une longue ascension, comme un fait plutôt qu'une tragédie. Ce que j'étais devenu, je l'avais décidé là-dessous, dans le noir, un choix petit et laid après l'autre."
       }
     ]
   },
   "965_vengeance": {
     "id": "965_vengeance",
-    "description": "Kroll's grip finally failed him, and not quickly — I had made certain of that, keeping careful, deliberate count against the three days he had once spent doing the same to me. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like victory and more like the first installment on a debt I suspected I had only just started collecting. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because I found I did not, just yet, want to examine too closely what kind of man kept that particular kind of ledger.",
-    "description_fr": "La prise de Kroll finit par céder, et pas vite — je m'en étais assuré, tenant un compte soigneux et délibéré contre les trois jours qu'il avait jadis passés à me faire subir la même chose. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à une victoire qu'au premier versement d'une dette dont je soupçonnais n'avoir fait que commencer le recouvrement. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que je préférais, pour l'instant, ne pas examiner de trop près quelle sorte d'homme tenait ce genre de registre.",
+    "description": "Kroll's grip finally failed him, and not quickly; I had made certain of that, keeping careful, deliberate count against everything his mask had cost me since the tavern. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like victory and more like the first installment on a debt I suspected I had only just started collecting. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because I found I did not, just yet, want to examine too closely what kind of man kept that particular kind of ledger.",
+    "description_fr": "La prise de Kroll finit par céder, et pas vite ; j'y avais veillé, tenant un compte soigneux et délibéré de tout ce que son masque m'avait coûté depuis la taverne. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à une victoire qu'au premier versement d'une dette dont je soupçonnais n'avoir fait que commencer le recouvrement. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que je préférais, pour l'instant, ne pas examiner de trop près quelle sorte d'homme tenait ce genre de registre.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "action",
@@ -2939,15 +3011,34 @@
         "text": "Climb toward Lysa",
         "text_fr": "Grimper vers Lysa",
         "next_id": "1000",
-        "lockedText": "There was no one waiting up there for me anymore, and climbing toward a person who no longer existed struck me, even in extremity, as a poor use of the little strength I had left.",
-        "lockedText_fr": "Il n'y avait plus personne qui m'attendait là-haut, et grimper vers une personne qui n'existait plus me sembla, même dans l'extrémité où je me trouvais, un piètre usage du peu de force qu'il me restait."
+        "showIfFlags": [
+          "lysa_survived"
+        ]
       },
       {
-        "text": "Climb up alone",
-        "text_fr": "Grimper seul",
-        "next_id": "1003",
-        "lockedText": "I had not survived any of this alone, whatever my instincts insisted, and Lysa was waiting above for exactly the kind of company I had apparently decided, out of habit rather than sense, to refuse.",
-        "lockedText_fr": "Je n'avais survécu à rien de tout cela seul, quoi qu'en dît mon instinct, et Lysa m'attendait là-haut pour exactement le genre de compagnie que j'avais apparemment décidé, par habitude plus que par raison, de refuser."
+        "text": "Keep what's left of yourself",
+        "text_fr": "Garder ce qu'il reste de toi",
+        "next_id": "1001",
+        "showIfFlags": [
+          "lysa_lost"
+        ]
+      },
+      {
+        "text": "Let the rage finish what Kroll started",
+        "text_fr": "Laisser la rage achever ce que Kroll a commencé",
+        "next_id": "1002",
+        "showIfFlags": [
+          "lysa_lost"
+        ],
+        "lockedText": "Whatever this place had taken from me, it had not taken all of me.",
+        "lockedText_fr": "Quoi que cet endroit m'eût pris, il ne m'avait pas tout pris."
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "I reached the top rung alone, and no hand pulled me the remaining distance, which I registered, with the odd clarity that follows a long climb, as a fact rather than a tragedy. Whatever I had become, I had decided it down there in the dark, one small, ugly choice at a time.",
+        "fr": "J'atteignis le dernier barreau seul, et aucune main ne m'aida à finir de grimper, ce que j'enregistrai, avec cette curieuse clarté qui suit une longue ascension, comme un fait plutôt qu'une tragédie. Ce que j'étais devenu, je l'avais décidé là-dessous, dans le noir, un choix petit et laid après l'autre."
       }
     ]
   },
@@ -2980,6 +3071,7 @@
         "text": "Continue",
         "text_fr": "Continuer",
         "next_id": "151",
+        "healAmount": -10,
         "flagsToAdd": [
           "void_marked"
         ]

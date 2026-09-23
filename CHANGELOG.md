@@ -8,6 +8,62 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.122.0+150]
+
+Chapter 1 consistency pass, on the owner's rules: a choice is a short
+line, never a paragraph; a lock the story already decided is hidden, not
+explained; no node whose only choice is "continue"; every choice costs
+something, gains something, or leaves a mark a later scene reads back.
+
+### Changed
+- **Twelve padding nodes removed** (47 → 35 in the chapter): the tavern
+  cellar folds into the escape choice (250), the Black Hold's wake /
+  breach / search / shim / door chain becomes two scenes (800, 816), the
+  toll fight, the freed hound, the hound's Warden kill, the battlements
+  jump, the sewer exit, the dockside hound and Kroll's entrance become
+  effects on the choice that caused them plus a callback line where the
+  story next stops (280, 823, 891, 960).
+- **Fake forks are gone.** Kroll's aftermath no longer offers "Climb
+  toward Lysa" to a player who lost her (or "Climb up alone" to one who
+  kept her) with a paragraph explaining why they cannot: the climb shows
+  only the path the player earned, and the Rat/Broken choice moves up
+  onto it. The cloaked figure at the market, the hound at the hallway
+  and at the docks appear only when the story allows them. "Back away"
+  from the Rat Matriarch, which looped straight back into the same fight,
+  is replaced by a Constitution check to wade past her; "Try to push
+  past" the Wardens, which always ended in the same fight, is a Strength
+  check that costs health on success.
+- **Every remaining lock is one line** (the toll, the smuggler's three
+  approaches, the Broken's rage): the longest is 66 characters, down from
+  239.
+- **Every choice does something.** The slums offer a neighbor to help
+  (+1, -10 health), stalls to empty (+20 gold, -1) or a straight run
+  the cellar remembers; the market detour no longer has a free exit
+  (the bandit, the forge's smoke, or the figure at the edge); the tear's Luck
+  check pays out on success (+30 gold from what the looters dropped) and
+  scars on failure (-10 health, void-marked); the hovel can be searched
+  (+15 gold for -10 health); leaving the hound is remembered; the keeper
+  can be covered before the run (+1, -10 health); the Black Hold's
+  wounded assistant can be finished for his purse (-2, +10 gold) or
+  dragged clear (+1, -5 health); the torturer's instruments can be
+  pocketed (+20 gold, -1); the battlements cost the river jump (-20
+  health); the smuggler's three doors now differ (+1 / a debt and -10
+  health / -2 and +25 gold, each read back on the crossing).
+- **Path-blind lines fixed.** Kroll is "my torturer" only for a player
+  who was in the Black Hold; a player who kept Lysa meets him as the man
+  sent for the Bundle, and the mercy/vengeance aftermaths no longer
+  mention sessions that never happened. The ex-quest meta labels in
+  choice text ("(Start Battle)", "(Luck Check)", "(The Rat Path)") are
+  gone; the UI already shows a check's stat and DC.
+- Twenty new flags, each read back by a callback or a gate; `keeper_dead`,
+  set since 1.118 and never read, now is.
+
+### Tests
+- `chapter_one_test.dart` holds the rules: choice text ≤ 55 characters,
+  lock text ≤ 80, a story-decided lock is hidden, every single-choice
+  node's choice carries an effect, every choice differs from its
+  siblings in effect or destination, and every chapter-1 flag is read.
+
 ## [1.121.0+149]
 
 The four improvements the 1.120 simulation pass proposed and the owner
