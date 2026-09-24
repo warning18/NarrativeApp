@@ -628,6 +628,135 @@ ShipRoom? roomFromName(String name) {
   return null;
 }
 
+/// What a shot would do if it lands: [resolveShot] with the helm taken out
+/// of it, so the Eel's rooms can show the number before the trigger is
+/// pulled. The bulwark's layer still counts.
+ShotOutcome previewShot({
+  required ShipState target,
+  required ShipWeapon weapon,
+  required ShipRoom room,
+}) =>
+    resolveShot(
+        target: target, weapon: weapon, room: room, evasionPercent: 0, roll: 1);
+
+/// True when a ship's rail is open to boarders: no shield layer stands and
+/// the bulwark itself is knocked out.
+bool bulwarkOpen(ShipState ship) =>
+    ship.layers == 0 && ship.room(ShipRoom.bulwark).isDown;
+
+/// The share of max hull boarders wreck when they win the deck.
+const double boardersHullShare = 0.2;
+
+/// The share of max hull a boarding party thrown back costs the Eel: the
+/// grapple lines cut and the deck raked while they scramble home.
+const double repelledHullShare = 0.15;
+
+/// A deck fight is fought at this difficulty: a crew on its own pitching
+/// deck, at the rail, is far more than the same men met on a road.
+const double boardingDifficulty = 2.5;
+
+/// True when the grapples hold: a ship that can still steer slips them
+/// with its helm's evasion ([roll] in [0, 1)).
+bool grapplesHold(ShipState target, double roll) =>
+    roll * 100 >= evasionFor(target);
+
+/// The Eel after her boarding party was thrown back.
+ShipState boardingRepelled(ShipState ship) => ship.copyWith(
+    hull: max(1, ship.hull - (ship.maxHull * repelledHullShare).round()));
+
+/// Boarders who won the deck before they were driven off: the hold is
+/// wrecked (knocked out) and a share of the hull with it, never below one
+/// point, since the ship is theirs to sink only by cannon.
+ShipState boardersWreck(ShipState ship) {
+  final hold = ship.room(ShipRoom.hold);
+  return ship
+      .withRoom(ShipRoom.hold, hold.copyWith(damage: hold.level))
+      .copyWith(
+          hull: max(1, ship.hull - (ship.maxHull * boardersHullShare).round()));
+}
+
+/// What an enemy ship brings to the rail: the crew it boards with (ids in
+/// enemies.json), how likely it is to try each turn the Eel's rail is
+/// open, and what its hold holds for whoever takes it.
+class BoardingProfile {
+  const BoardingProfile({
+    this.crew = const [],
+    this.chance = 0,
+    this.prizePartId,
+    this.prizeGold = 0,
+  });
+
+  final List<String> crew;
+  final double chance;
+  final String? prizePartId;
+  final int prizeGold;
+
+  bool get canBoard => crew.isNotEmpty;
+}
+
+BoardingProfile boardingProfileFor(Map<String, dynamic> enemyShip) {
+  final crew = (enemyShip['boardingCrew'] as List?)
+          ?.map((e) => e.toString())
+          .where((e) => e.isNotEmpty)
+          .toList() ??
+      const <String>[];
+  final prize = enemyShip['prizePartId']?.toString() ?? '';
+  return BoardingProfile(
+    crew: crew,
+    chance: ((enemyShip['boardingChance'] as num?)?.toDouble() ?? 0)
+        .clamp(0.0, 1.0),
+    prizePartId: prize.isEmpty ? null : prize,
+    prizeGold: max(0, (enemyShip['prizeGold'] as num?)?.toInt() ?? 0),
+  );
+}
+
+/// Sensible stations for [crew] aboard [ship], for a player who would
+/// rather not place them by hand (and for the simulator): the nimblest at
+/// the helm, the strongest at the guns, the next at the bulwark, the last
+/// in the hold; with the hull under half, the bulwark hand (or the guns
+/// hand, or a lone helmsman) goes to the hold; a burning room with nobody
+/// in it pulls the hold or bulwark hand.
+Stations autoStations(ShipState ship, List<ShipCrew> crew) {
+  final stations = <ShipRoom, ShipCrew>{};
+  final pool = List.of(crew);
+  ShipCrew take(int Function(ShipCrew) score) {
+    var best = pool.first;
+    for (final c in pool) {
+      if (score(c) > score(best)) best = c;
+    }
+    pool.remove(best);
+    return best;
+  }
+
+  if (pool.isNotEmpty) stations[ShipRoom.helm] = take((c) => c.dexterity);
+  if (pool.isNotEmpty) stations[ShipRoom.guns] = take((c) => c.strength);
+  if (pool.isNotEmpty) stations[ShipRoom.bulwark] = pool.removeAt(0);
+  if (pool.isNotEmpty) stations[ShipRoom.hold] = pool.removeAt(0);
+  if (ship.hull * 2 < ship.maxHull &&
+      !stations.containsKey(ShipRoom.hold) &&
+      !ship.room(ShipRoom.hold).isDown) {
+    for (final room in [ShipRoom.bulwark, ShipRoom.guns, ShipRoom.helm]) {
+      final hand = stations.remove(room);
+      if (hand != null) {
+        stations[ShipRoom.hold] = hand;
+        break;
+      }
+    }
+  }
+  for (final room in ShipRoom.values) {
+    if (!ship.room(room).onFire || stations.containsKey(room)) continue;
+    for (final donor in [ShipRoom.hold, ShipRoom.bulwark, ShipRoom.guns]) {
+      if (donor == room) continue;
+      final hand = stations.remove(donor);
+      if (hand != null) {
+        stations[room] = hand;
+        break;
+      }
+    }
+  }
+  return stations;
+}
+
 /// How many parts of [slotType] ('Weapon' / 'Shield' / 'Utility') the ship
 /// can carry.
 int slotCapacity(Map<String, dynamic> ship, String slotType) {

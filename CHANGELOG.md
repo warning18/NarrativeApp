@@ -8,6 +8,69 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.127.0+156]
+
+Boarding, both ways, and the ship battle's polish: what a shot would do
+shown on every room, an auto-station button, and the boarding crew named
+before the grapples are thrown.
+
+### Added
+- **Boarding.** When the enemy's bulwark is out and her layers are gone,
+  her rail is open: a Board button beside End turn throws the grapples.
+  Her helm may slip them (a roll against her evasion; the turn is spent
+  either way). If they hold, the battle drops onto her deck: the existing
+  dice fight against the ship's boarding crew (two street bandits on the
+  Skiff, two and a harbor rat on the Brig, two auxiliaries and a soldier
+  on the Cutter, two void hounds and a wisp on the Barge), fought at 2.5x
+  difficulty, a crew on its own pitching deck being far more than the same
+  men met on a road. Win and the ship is taken: her gold, and her prize
+  part installed when the Eel has room for it (its worth in gold
+  otherwise): spare canvas from the Brig, iron plating from the Cutter,
+  fire pots from the Barge. Lose and the party is thrown back to the Eel,
+  15% of her hull the poorer, once a battle.
+- **They board you too.** While the Eel's own rail is open, a boarding
+  crew may come over on any enemy turn (30-40% a turn by ship, once a
+  battle). A hand in the Hold meets them at the companionway and the
+  boarders fight at three-quarters health; with nobody in the Hold they
+  come at full strength. Boarders beaten are gone; boarders that win wreck
+  the Hold (knocked out) and a fifth of the hull.
+- **Shot preview.** With a weapon armed, every enemy room shows what the
+  shot would do if it lands: the hull it would cost and the pips it would
+  knock off, "KO" on a room it would put out, a flame when it would set
+  the room burning, and "shield +0" when a layer would stop it (the
+  bulwark pip the blow would still crack is shown). Evasion is the one
+  thing not previewed.
+- **Auto-station.** A button in the crew bar places the crew the way the
+  simulator does: the nimblest hand to the helm, the strongest to the
+  guns, the third to the bulwark, the fourth to the hold; under half hull
+  a hand goes to the hold, and an unmanned fire pulls a hand to it.
+- The hint line names the boarding crew when the rail is open ("board and
+  fight Street Bandit x2, Harbor Rat at the rail"), and a door icon marks
+  a bulwark that is open to boarding.
+- enemy_ships.json gains `boardingCrew`, `boardingChance`, `prizePartId`
+  and `prizeGold` (schema-validated, checked against enemies.json and
+  ship_parts.json by the data test). The Raider Skiff gets a gunwale for
+  a bulwark (one pip), so even she must be shot open before she is
+  boarded.
+
+### Verification
+- `ship_combat.dart` gains `bulwarkOpen`, `grapplesHold`,
+  `boardingRepelled`, `boardersWreck`, `boardingProfileFor`, `previewShot`
+  and `autoStations`, all pure and unit-tested (39 ship-combat tests).
+- The simulator's `sim_v11.py` boards when the rail is open and the crew
+  are fit, and is boarded on the same rule as the game. The deck fight's
+  difficulty was swept over 24 playthroughs: at 2x the party took 77 of
+  the 84 ships it boarded, the Barge among them, and boarding was the
+  opening against everything; at 3x the Barge's deck was never taken and
+  her fights fell to 40% won, the auto-pilot paying 15% hull for every
+  refused boarding. At the shipped 2.5x, over 78 voyages and 97 raider
+  fights: the Skiff won every time in 2.2 rounds, the Brig every time in
+  4.6, the Cutter every time in 3.5, the Barge 68% in 12.8 with 43% hull
+  left; the party boarded 79 times and took 63 ships (the Brig and Skiff
+  every time, the Cutter 26 of 28, the Barge 2 of 16); the enemy boarded
+  25 times and took the deck 5; 6 voyages turned back; every run reached
+  an ending.
+
 ## [1.126.0+155]
 
 Ship battles rebuilt in the manner of FTL: two ships of four rooms each,

@@ -3,13 +3,13 @@
     "shipName": "raider_skiff",
     "displayName": "Raider Skiff",
     "displayName_fr": "Esquif de pillards",
-    "description": "An open boat with a bow chaser and a grapnel, no bulwark to speak of, and oars enough to slip a shot. It cannot take a beating; it means not to be hit.",
-    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, pas de pavois digne de ce nom, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée.",
+    "description": "An open boat with a bow chaser and a grapnel, a gunwale for a bulwark, and oars enough to slip a shot. It cannot take a beating; it means not to be hit.",
+    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée.",
     "maxHull": 60,
     "rooms": {
       "helm": 2,
       "guns": 1,
-      "bulwark": 0,
+      "bulwark": 1,
       "hold": 1
     },
     "weapons": [
@@ -35,7 +35,14 @@
     "xpReward": 30,
     "goldReward": 25,
     "minChapter": 2,
-    "crew": 1
+    "crew": 1,
+    "boardingCrew": [
+      "street_bandit",
+      "street_bandit"
+    ],
+    "boardingChance": 0.3,
+    "prizePartId": "",
+    "prizeGold": 30
   },
   "corsair_brig": {
     "shipName": "corsair_brig",
@@ -73,7 +80,15 @@
     "xpReward": 45,
     "goldReward": 40,
     "minChapter": 3,
-    "crew": 1
+    "crew": 1,
+    "boardingCrew": [
+      "street_bandit",
+      "street_bandit",
+      "harbor_rat"
+    ],
+    "boardingChance": 0.4,
+    "prizePartId": "spare_canvas",
+    "prizeGold": 40
   },
   "inquisition_cutter": {
     "shipName": "inquisition_cutter",
@@ -111,7 +126,15 @@
     "xpReward": 55,
     "goldReward": 45,
     "minChapter": 3,
-    "crew": 2
+    "crew": 2,
+    "boardingCrew": [
+      "inquisition_auxiliary",
+      "inquisition_auxiliary",
+      "inquisition_soldier"
+    ],
+    "boardingChance": 0.35,
+    "prizePartId": "iron_plating",
+    "prizeGold": 50
   },
   "void_barge": {
     "shipName": "void_barge",
@@ -158,6 +181,14 @@
     "xpReward": 90,
     "goldReward": 70,
     "minChapter": 4,
-    "crew": 2
+    "crew": 2,
+    "boardingCrew": [
+      "void_hound",
+      "void_hound",
+      "void_wisp"
+    ],
+    "boardingChance": 0.3,
+    "prizePartId": "fire_pots",
+    "prizeGold": 90
   }
 }

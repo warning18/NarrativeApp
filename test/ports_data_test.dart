@@ -22,6 +22,7 @@ void main() {
   final shops = _loadGamedata('shops.json');
   final ships = _loadGamedata('ships.json');
   final parts = _loadGamedata('ship_parts.json');
+  final enemies = _loadGamedata('enemies.json');
   final enemyShips = _loadGamedata('enemy_ships.json');
 
   group('ports.json', () {
@@ -136,6 +137,16 @@ void main() {
         }
         final weapons = (ship['weapons'] as List).cast<Map<String, dynamic>>();
         expect(weapons, isNotEmpty, reason: entry.key);
+        // A boarding crew is real enemies, its odds a share, its prize a
+        // real part (or none).
+        final boarding = boardingProfileFor(ship);
+        for (final id in boarding.crew) {
+          expect(enemies, contains(id), reason: '${entry.key} boards with $id');
+        }
+        expect(boarding.chance, inInclusiveRange(0.0, 1.0));
+        if (boarding.prizePartId != null) {
+          expect(parts, contains(boarding.prizePartId), reason: entry.key);
+        }
         for (final weapon in weapons) {
           expect((weapon['damage'] as num).toInt(), greaterThan(0));
           expect(

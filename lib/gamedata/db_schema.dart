@@ -818,6 +818,33 @@ final DbSchema enemyShipsSchema = DbSchema(
       defaultValue: 1,
     ),
     FieldSchema(
+      key: 'boardingCrew',
+      label:
+          'Boarding Crew (enemies.json ids: the pack fought when either side boards; empty = never boards)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'enemies',
+    ),
+    FieldSchema(
+      key: 'boardingChance',
+      label:
+          'Boarding Chance (0-1: odds per enemy turn of boarding while the Eel\'s bulwark is down)',
+      type: FieldType.decimal,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'prizePartId',
+      label:
+          'Prize Part (ship_parts.json id taken aboard when this ship is boarded and won)',
+      type: FieldType.reference,
+      referenceSchemaId: 'ship_parts',
+    ),
+    FieldSchema(
+      key: 'prizeGold',
+      label: 'Prize Gold (from the hold when this ship is boarded and won)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
         type: FieldType.integer,

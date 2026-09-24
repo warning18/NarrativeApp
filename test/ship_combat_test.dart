@@ -420,6 +420,127 @@ void main() {
     });
   });
 
+  group('boarding', () {
+    test('the rail is open only with no layer and the bulwark down', () {
+      expect(bulwarkOpen(makeShip(layers: 1)), isFalse);
+      expect(bulwarkOpen(makeShip(layers: 0)), isFalse,
+          reason: 'the bulwark still works: a layer is coming back');
+      final open = makeShip(layers: 0)
+          .withRoom(ShipRoom.bulwark, const RoomState(level: 1, damage: 1));
+      expect(bulwarkOpen(open), isTrue);
+    });
+
+    test('boarders who win the deck wreck the hold and a fifth of the hull',
+        () {
+      final ship =
+          makeShip(hull: 50).withRoom(ShipRoom.hold, const RoomState(level: 2));
+      final wrecked = boardersWreck(ship);
+      expect(wrecked.hull, 38);
+      expect(wrecked.room(ShipRoom.hold).isDown, isTrue);
+      expect(boardersWreck(makeShip(hull: 5)).hull, 1,
+          reason: 'never sunk by boarders');
+    });
+
+    test('grapples hold against a slow ship and slip a nimble one', () {
+      final slow = makeShip()
+          .withRoom(ShipRoom.helm, const RoomState(level: 1, damage: 1));
+      expect(grapplesHold(slow, 0.0), isTrue);
+      final nimble =
+          makeShip().withRoom(ShipRoom.helm, const RoomState(level: 3));
+      expect(evasionFor(nimble), 24);
+      expect(grapplesHold(nimble, 0.1), isFalse);
+      expect(grapplesHold(nimble, 0.3), isTrue);
+    });
+
+    test('a boarding party thrown back costs the Eel hull, never the ship', () {
+      expect(boardingRepelled(makeShip(hull: 60)).hull, 51);
+      expect(boardingRepelled(makeShip(hull: 3)).hull, 1);
+    });
+
+    test('previewShot never dodges and otherwise matches resolveShot', () {
+      final ship = makeShip(layers: 0);
+      final preview =
+          previewShot(target: ship, weapon: harpoon, room: ShipRoom.guns);
+      expect(preview.dodged, isFalse);
+      expect(preview.hullDamage, 22);
+      expect(preview.roomKnockedOut, isTrue);
+      final shielded = previewShot(
+          target: makeShip(layers: 1), weapon: ballista, room: ShipRoom.guns);
+      expect(shielded.absorbed, isTrue);
+    });
+  });
+
+  group('autoStations', () {
+    const nimble = ShipCrew(
+        id: 'n',
+        name: 'Nim',
+        strength: 2,
+        dexterity: 9,
+        constitution: 3,
+        wisdom: 3,
+        health: 20,
+        maxHealth: 20);
+    const strong = ShipCrew(
+        id: 's',
+        name: 'Sto',
+        strength: 9,
+        dexterity: 2,
+        constitution: 3,
+        wisdom: 3,
+        health: 20,
+        maxHealth: 20);
+    const third = ShipCrew(
+        id: 't',
+        name: 'Thi',
+        strength: 3,
+        dexterity: 3,
+        constitution: 3,
+        wisdom: 3,
+        health: 20,
+        maxHealth: 20);
+    const fourth = ShipCrew(
+        id: 'f',
+        name: 'Fou',
+        strength: 1,
+        dexterity: 1,
+        constitution: 1,
+        wisdom: 9,
+        health: 20,
+        maxHealth: 20);
+
+    test('nimblest at the helm, strongest at the guns, then bulwark, then hold',
+        () {
+      final stations =
+          autoStations(makeShip(), [third, strong, nimble, fourth]);
+      expect(stations[ShipRoom.helm]!.id, 'n');
+      expect(stations[ShipRoom.guns]!.id, 's');
+      expect(stations[ShipRoom.bulwark]!.id, 't');
+      expect(stations[ShipRoom.hold]!.id, 'f');
+      final two = autoStations(makeShip(), [third, strong]);
+      expect(two.keys, containsAll([ShipRoom.helm, ShipRoom.guns]));
+      expect(two.containsKey(ShipRoom.hold), isFalse);
+    });
+
+    test('under half hull a hand goes to the hold, and a lone hand too', () {
+      final low = makeShip(hull: 20);
+      final three = autoStations(low, [nimble, strong, third]);
+      expect(three[ShipRoom.hold]!.id, 't');
+      expect(three.containsKey(ShipRoom.bulwark), isFalse);
+      final alone = autoStations(low, [nimble]);
+      expect(alone[ShipRoom.hold]!.id, 'n');
+      expect(alone.containsKey(ShipRoom.helm), isFalse);
+    });
+
+    test('an unmanned fire pulls the hold hand', () {
+      final burning = makeShip()
+          .withRoom(ShipRoom.bulwark, const RoomState(level: 1, onFire: true));
+      final two = autoStations(burning, [nimble, strong]);
+      // Nobody in the hold or the bulwark; the guns hand goes to the fire.
+      expect(two[ShipRoom.bulwark]!.id, 's');
+      expect(two[ShipRoom.helm]!.id, 'n');
+    });
+  });
+
   group('fitting', () {
     test('buildPlayerShip: -1 hull means full, parts add pips and weapons', () {
       final fresh = buildPlayerShip(
@@ -543,6 +664,25 @@ void main() {
       expect(slotsUsed(parts, const ['ballista', 'iron_plating'], 'Weapon'), 1);
       expect(slotCapacity(ship, 'Utility'), 1);
       expect(slotCapacity(ship, 'Sails'), 0);
+    });
+
+    test('boardingProfileFor reads the crew, odds and prize, with defaults',
+        () {
+      final profile = boardingProfileFor(const {
+        'boardingCrew': ['street_bandit', '', 'harbor_rat'],
+        'boardingChance': 1.4,
+        'prizePartId': 'spare_canvas',
+        'prizeGold': 40,
+      });
+      expect(profile.crew, ['street_bandit', 'harbor_rat']);
+      expect(profile.chance, 1.0, reason: 'clamped');
+      expect(profile.prizePartId, 'spare_canvas');
+      expect(profile.prizeGold, 40);
+      expect(profile.canBoard, isTrue);
+      final none = boardingProfileFor(const {'maxHull': 10});
+      expect(none.canBoard, isFalse);
+      expect(none.prizePartId, isNull);
+      expect(none.chance, 0);
     });
 
     test(

@@ -3303,8 +3303,71 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Une couche de bouclier par cran, une qui revient chaque tour (deux avec une main ici). Chaque tir arrêté fêle un cran.',
   },
   'ship_room_hold_hint': {
-    AppLanguage.en: 'A hand here patches the hull every turn.',
-    AppLanguage.fr: 'Une main ici colmate la coque à chaque tour.',
+    AppLanguage.en:
+        'A hand here patches the hull every turn, and meets boarders at the rail (they come in weakened).',
+    AppLanguage.fr:
+        'Une main ici colmate la coque à chaque tour, et reçoit les assaillants au bastingage (ils arrivent affaiblis).',
+  },
+  'ship_room_bulwark_open_hint': {
+    AppLanguage.en: 'The bulwark is down: the rail is open to boarders.',
+    AppLanguage.fr:
+        'Le pavois est à terre : le bastingage est ouvert aux assaillants.',
+  },
+  'ship_board_button': {
+    AppLanguage.en: 'Board them',
+    AppLanguage.fr: 'À l\'abordage'
+  },
+  'ship_board_hint': {
+    AppLanguage.en:
+        'Their bulwark is down: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
+    AppLanguage.fr:
+        'Leur pavois est à terre : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
+  },
+  'ship_auto_station_button': {
+    AppLanguage.en: 'Auto-station',
+    AppLanguage.fr: 'Postes auto'
+  },
+  'ship_log_boarding_start': {
+    AppLanguage.en: 'You board the {ship}',
+    AppLanguage.fr: 'Vous abordez {ship}',
+  },
+  'ship_log_boarding_won': {
+    AppLanguage.en: 'The {ship} is yours: her crew is cut down at the rail',
+    AppLanguage.fr:
+        '{ship} est à vous : son équipage est taillé en pièces au bastingage',
+  },
+  'ship_log_boarding_repelled': {
+    AppLanguage.en: 'Thrown back to the Eel, -{n} hull; the {ship} fights on',
+    AppLanguage.fr:
+        'Repoussés vers l\'Eel, -{n} de coque ; {ship} poursuit le combat',
+  },
+  'ship_log_grapple_slipped': {
+    AppLanguage.en: 'The {ship} slips the grapples; the turn is lost',
+    AppLanguage.fr: '{ship} esquive les grappins ; le tour est perdu',
+  },
+  'ship_log_boarders': {
+    AppLanguage.en:
+        'Boarders from the {ship} come over the rail into the hold!',
+    AppLanguage.fr:
+        'Des assaillants de {ship} franchissent le bastingage jusqu\'à la cale !',
+  },
+  'ship_log_boarders_repelled': {
+    AppLanguage.en: 'The boarders are thrown into the sea',
+    AppLanguage.fr: 'Les assaillants sont jetés à la mer',
+  },
+  'ship_log_boarders_won': {
+    AppLanguage.en:
+        'The boarders wreck the hold before they are driven off, -{n} hull',
+    AppLanguage.fr:
+        'Les assaillants saccagent la cale avant d\'être repoussés, -{n} de coque',
+  },
+  'ship_log_prize_part': {
+    AppLanguage.en: 'Prize: {weapon} taken aboard',
+    AppLanguage.fr: 'Prise : {weapon} embarqué',
+  },
+  'ship_log_prize_gold': {
+    AppLanguage.en: 'Prize: {n} gold from the hold',
+    AppLanguage.fr: 'Prise : {n} pièces d\'or de la cale',
   },
   'ship_layers_label': {AppLanguage.en: 'Layers', AppLanguage.fr: 'Couches'},
   'charge_turns_label': {

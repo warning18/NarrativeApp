@@ -3,9 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/encounter.dart';
 import '../combat/ship_combat.dart';
+import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/combat_active_provider.dart';
+import '../providers/game_db_providers.dart';
+import 'fight_screen.dart';
 
 /// How a ship battle ended: who won, the Eel as she is now (hull, rooms),
 /// and the crew with the hurts the fight cost them.
@@ -15,12 +20,16 @@ class ShipBattleOutcome {
     required this.player,
     required this.crew,
     required this.log,
+    this.boarded = false,
   });
 
   final bool won;
   final ShipState player;
   final List<ShipCrew> crew;
   final List<String> log;
+
+  /// True when the win came by boarding: the prize is the ship's hold.
+  final bool boarded;
 }
 
 /// The room-by-room ship battle (see ship_combat.dart), drawn as two
@@ -31,6 +40,10 @@ class ShipBattleOutcome {
 /// each ready weapon at a room of the enemy's ship (tap the weapon, then
 /// the room) and moves the crew (tap a member, then a room), then ends
 /// the turn; the enemy fires back, fires burn, and bulwarks come back.
+/// When a bulwark is down and no layer stands, the rail is open: the
+/// player can board and fight the enemy's crew on the dice (a win takes
+/// the ship), and the enemy may board the Eel (a hand in the hold meets
+/// them weakened; losing the deck wrecks the hold and a fifth of the hull).
 class ShipBattlePanel extends ConsumerStatefulWidget {
   const ShipBattlePanel({
     super.key,
@@ -42,6 +55,9 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     required this.foresight,
     required this.random,
     required this.onFinished,
+    this.boarding = const BoardingProfile(),
+    this.chapter = 1,
+    this.buildCrew,
   });
 
   final ShipState player;
@@ -54,6 +70,16 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   final bool foresight;
   final Random random;
   final void Function(ShipBattleOutcome outcome) onFinished;
+
+  /// The enemy's boarding crew, odds and prize (see [boardingProfileFor]).
+  final BoardingProfile boarding;
+
+  /// The chapter the boarding fight is scaled to.
+  final int chapter;
+
+  /// Rebuilds the crew from the session after a boarding fight, which
+  /// settles their health on its own; null keeps the panel's own copy.
+  final List<ShipCrew> Function()? buildCrew;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -79,6 +105,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
   bool _busy = false;
   bool _over = false;
   int _turn = 1;
+
+  /// A boarding party thrown back does not try again this battle.
+  bool _boardingSpent = false;
+  bool _enemyBoardingSpent = false;
 
   @override
   void initState() {
@@ -308,6 +338,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
         return;
       }
     }
+    if (!await _maybeRepelBoarders(
+        ref.read(gameDbProvider(enemiesSchema)).value)) {
+      return;
+    }
+    if (!mounted) return;
     final mine = endRound(_player,
         bulwarkCrewed: _stations.containsKey(ShipRoom.bulwark) &&
             !_busyRooms.contains(ShipRoom.bulwark));
@@ -337,7 +372,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     setState(() => _busy = false);
   }
 
-  void _finish({required bool won}) {
+  void _finish({required bool won, bool boarded = false}) {
     if (_over) return;
     _over = true;
     setState(() => _busy = true);
@@ -346,7 +381,147 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
       player: _player,
       crew: _crew,
       log: List.of(_log),
+      boarded: boarded,
     ));
+  }
+
+  // --- Boarding ------------------------------------------------------------
+
+  /// The boarding crew's records, or null when any of them is unknown.
+  Map<String, Map<String, dynamic>>? _boardingCrew(
+      Map<String, dynamic>? enemies) {
+    if (enemies == null || !widget.boarding.canBoard) return null;
+    final records = <String, Map<String, dynamic>>{};
+    for (final id in widget.boarding.crew) {
+      final record = enemies[id] as Map<String, dynamic>?;
+      if (record == null) return null;
+      records[id] = record;
+    }
+    return records;
+  }
+
+  /// Fights the enemy's boarding crew on the dice. True on a win, false
+  /// on a loss, null when the fight ended the run (permadeath).
+  Future<bool?> _deckFight(Map<String, Map<String, dynamic>> records,
+      {double healthMultiplier = 1.0}) async {
+    final ids = widget.boarding.crew;
+    ref.read(combatActiveProvider.notifier).state = true;
+    final won = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => FightScreen(
+          enemyId: ids.first,
+          enemy: records[ids.first]!,
+          additionalEnemyIds: ids.skip(1).toList(),
+          additionalEnemies: {
+            for (final id in ids.skip(1)) id: records[id]!,
+          },
+          modifiers: EncounterModifiers(
+            chapter: widget.chapter,
+            healthMultiplier: healthMultiplier,
+            difficultyMultiplier: boardingDifficulty,
+          ),
+        ),
+      ),
+    );
+    ref.read(combatActiveProvider.notifier).state = false;
+    if (!mounted) return null;
+    // The fight settles the crew's health itself (a loss heals them);
+    // read it back rather than keep the panel's stale copy.
+    final rebuilt = widget.buildCrew?.call();
+    if (rebuilt != null) _crew = rebuilt;
+    return won;
+  }
+
+  /// The boarding crew by name, duplicates counted: "Street Bandit x2, Harbor Rat".
+  String _boardingCrewLabel(Map<String, Map<String, dynamic>> records) {
+    final counts = <String, int>{};
+    for (final id in widget.boarding.crew) {
+      counts[id] = (counts[id] ?? 0) + 1;
+    }
+    return counts.entries.map((e) {
+      final name = records[e.key]!['enemyName']?.toString() ?? e.key;
+      return e.value > 1 ? '$name x${e.value}' : name;
+    }).join(', ');
+  }
+
+  bool _canBoardThem(Map<String, dynamic>? enemies) =>
+      !_busy &&
+      !_over &&
+      !_boardingSpent &&
+      bulwarkOpen(_enemy) &&
+      _boardingCrew(enemies) != null;
+
+  /// Throws the grapples: a ship that still steers may slip them, and
+  /// either way the attempt ends the turn. Hooked, the crew fight theirs
+  /// on the dice; a win takes the ship, a loss costs hull and the chance
+  /// to try again this battle.
+  Future<void> _boardThem(Map<String, dynamic>? enemies) async {
+    final records = _boardingCrew(enemies);
+    if (records == null || !_canBoardThem(enemies)) return;
+    setState(() {
+      _busy = true;
+      _armedWeaponId = null;
+      _selectedCrewId = null;
+    });
+    if (!grapplesHold(_enemy, widget.random.nextDouble())) {
+      setState(() {
+        _log.add(_t('ship_log_grapple_slipped', ship: widget.enemyName));
+        _busy = false;
+      });
+      await _endTurn();
+      return;
+    }
+    setState(() {
+      _log.add(_t('ship_log_boarding_start', ship: widget.enemyName));
+    });
+    final won = await _deckFight(records);
+    if (!mounted || won == null) return;
+    if (won) {
+      _log.add(_t('ship_log_boarding_won', ship: widget.enemyName));
+      _finish(won: true, boarded: true);
+      return;
+    }
+    final before = _player.hull;
+    _player = boardingRepelled(_player);
+    setState(() {
+      _boardingSpent = true;
+      _log.add(_t('ship_log_boarding_repelled',
+          ship: widget.enemyName, n: before - _player.hull));
+      _busy = false;
+    });
+    await _endTurn();
+  }
+
+  /// The enemy's try at the Eel's open rail, after its volley. Returns
+  /// false when the fight ended the run.
+  Future<bool> _maybeRepelBoarders(Map<String, dynamic>? enemies) async {
+    final records = _boardingCrew(enemies);
+    if (records == null ||
+        _enemyBoardingSpent ||
+        !bulwarkOpen(_player) ||
+        widget.random.nextDouble() >= widget.boarding.chance) {
+      return true;
+    }
+    _enemyBoardingSpent = true;
+    final holdManned = _stations.containsKey(ShipRoom.hold) &&
+        !_busyRooms.contains(ShipRoom.hold) &&
+        !_player.room(ShipRoom.hold).isDown;
+    setState(() {
+      _log.add(_t('ship_log_boarders', ship: widget.enemyName));
+    });
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return false;
+    final won = await _deckFight(records,
+        healthMultiplier: holdManned ? holdMannedBoarderHealth : 1.0);
+    if (!mounted || won == null) return false;
+    if (won) {
+      _log.add(_t('ship_log_boarders_repelled'));
+      return true;
+    }
+    final before = _player.hull;
+    _player = boardersWreck(_player);
+    _log.add(_t('ship_log_boarders_won', n: before - _player.hull));
+    return true;
   }
 
   // --- UI ------------------------------------------------------------------
@@ -356,11 +531,20 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
     final theme = Theme.of(context);
+    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value;
+    final canBoard = _canBoardThem(enemies);
     final hintKey = _selectedCrewId != null
         ? 'ship_station_hint'
         : _armedWeaponId != null
             ? 'ship_fire_hint'
-            : 'ship_station_hint';
+            : canBoard
+                ? 'ship_board_hint'
+                : 'ship_station_hint';
+    var hint = trFor(lang, hintKey);
+    if (hintKey == 'ship_board_hint') {
+      hint = hint.replaceAll(
+          '{crew}', _boardingCrewLabel(_boardingCrew(enemies)!));
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -398,17 +582,33 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
         ),
         const SizedBox(height: 6),
         Text(
-          '${trFor(lang, 'round_label')} $_turn · ${trFor(lang, hintKey)}',
+          '${trFor(lang, 'round_label')} $_turn · $hint',
           style: theme.textTheme.labelSmall
               ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           textAlign: TextAlign.center,
           maxLines: 2,
         ),
         const SizedBox(height: 6),
-        FilledButton.icon(
-          onPressed: _busy || _over ? null : _endTurn,
-          icon: const Icon(Icons.hourglass_bottom),
-          label: Text(trFor(lang, 'ship_end_turn_button')),
+        Row(
+          children: [
+            if (canBoard) ...[
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => _boardThem(enemies),
+                  icon: const Icon(Icons.sports_kabaddi),
+                  label: Text(trFor(lang, 'ship_board_button')),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: _busy || _over ? null : _endTurn,
+                icon: const Icon(Icons.hourglass_bottom),
+                label: Text(trFor(lang, 'ship_end_turn_button')),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -503,8 +703,20 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
         for (final w in _enemy.weapons)
           if (readyNextTurn(w, _enemy) && _plan[w.id] == room) w,
     ];
+    ShipWeapon? armed;
+    if (canFireHere) {
+      for (final w in _player.weapons) {
+        if (w.id == _armedWeaponId) armed = w;
+      }
+    }
+    final preview = armed == null
+        ? null
+        : previewShot(target: _enemy, weapon: armed, room: room);
+    final railOpen = room == ShipRoom.bulwark && bulwarkOpen(ship);
     return Tooltip(
-      message: trFor(lang, 'ship_room_${room.name}_hint'),
+      message: railOpen
+          ? trFor(lang, 'ship_room_bulwark_open_hint')
+          : trFor(lang, 'ship_room_${room.name}_hint'),
       child: GestureDetector(
         onTap: () {
           if (canFireHere) {
@@ -580,6 +792,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
                                   color: Colors.amber.shade800,
                                   fontWeight: FontWeight.bold)),
                         ],
+                        if (railOpen) ...[
+                          const SizedBox(width: 2),
+                          const Icon(Icons.door_front_door_outlined,
+                              size: 14, color: Colors.deepOrange),
+                        ],
+                        if (preview != null) ...[
+                          const SizedBox(width: 4),
+                          _buildShotPreview(preview),
+                        ],
                       ],
                     ),
                   ],
@@ -603,6 +824,45 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
           ),
         ),
       ),
+    );
+  }
+
+  /// What the armed weapon would do to this room if it lands: the shield
+  /// that would stop it, or the hull and pips it would cost, KO when the
+  /// room would go down, a flame when it would burn.
+  Widget _buildShotPreview(ShotOutcome preview) {
+    final theme = Theme.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final style = theme.textTheme.labelSmall
+        ?.copyWith(fontWeight: FontWeight.bold, color: _previewColor);
+    if (preview.absorbed) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.shield, size: 13, color: _previewColor),
+          Text('0', style: style),
+        ],
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text('-${preview.hullDamage}', style: style),
+        if (preview.roomDamage > 0) ...[
+          const SizedBox(width: 3),
+          const Icon(Icons.grid_view, size: 11, color: _previewColor),
+          Text('-${preview.roomDamage}', style: style),
+        ],
+        if (preview.roomKnockedOut) ...[
+          const SizedBox(width: 3),
+          Text(trFor(lang, 'preview_lethal_label'), style: style),
+        ],
+        if (preview.fireStarted) ...[
+          const SizedBox(width: 2),
+          const Icon(Icons.local_fire_department,
+              size: 13, color: _previewColor),
+        ],
+      ],
     );
   }
 
@@ -670,6 +930,18 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     );
   }
 
+  void _autoStation() {
+    setState(() {
+      _stations
+        ..clear()
+        ..addAll({
+          for (final entry in autoStations(_player, _crew).entries)
+            entry.key: entry.value.id,
+        });
+      _selectedCrewId = null;
+    });
+  }
+
   Widget _buildCrewBar() {
     final theme = Theme.of(context);
     final lang = ref.watch(appLanguageProvider);
@@ -677,6 +949,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
       spacing: 6,
       runSpacing: 4,
       children: [
+        ActionChip(
+          visualDensity: VisualDensity.compact,
+          avatar: const Icon(Icons.auto_fix_high, size: 14),
+          label: Text(trFor(lang, 'ship_auto_station_button'),
+              style: theme.textTheme.labelSmall),
+          onPressed: _busy || _over || _crew.isEmpty ? null : _autoStation,
+        ),
         for (final c in _crew)
           ChoiceChip(
             visualDensity: VisualDensity.compact,
@@ -734,6 +1013,14 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     );
   }
 }
+
+/// The color of damage that is coming but not dealt yet, the same blue
+/// the dice fight uses for its preview.
+const Color _previewColor = Color(0xFF42A5F5);
+
+/// Boarders met by a hand in the hold come over the rail at this share
+/// of their health.
+const double holdMannedBoarderHealth = 0.75;
 
 Color _roomColor(ShipRoom room) => switch (room) {
       ShipRoom.helm => Colors.blue,

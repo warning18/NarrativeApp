@@ -59,6 +59,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 
   /// Bumped per raider so each battle gets a fresh panel.
   int _battleKey = 0;
+
+  /// The chapter this crossing is scaled to (the higher of its two
+  /// ports'), the Eel's record and the parts catalogue, kept for the
+  /// boarding fight and its prize.
+  int _chapter = 1;
+  Map<String, dynamic> _shipRecord = const {};
+  Map<String, dynamic> _parts = const {};
   final List<String> _log = [];
   bool _busy = false;
 
@@ -75,6 +82,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       fromPort == null ? 1 : portChapter(fromPort),
       portChapter(widget.toPort),
     );
+    _chapter = chapter;
+    _parts = parts;
     _sail = installedSail(parts, session.shipPartIds);
     _sailStrength =
         _sail == null ? 1 : sailStrength(_sail!.medium, session.raceId);
@@ -102,6 +111,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ? 'rusty_eel'
         : (ships.keys.isEmpty ? '' : ships.keys.first);
     final ship = ships[shipId] as Map<String, dynamic>? ?? const {};
+    _shipRecord = ship;
     _player = buildPlayerShip(
       ship: ship,
       parts: parts,
@@ -284,10 +294,41 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       ..addAll(outcome.log.length > 3
           ? outcome.log.sublist(outcome.log.length - 3)
           : outcome.log);
-    final gold =
+    var gold =
         outcome.won ? (_enemyData?['goldReward'] as num?)?.toInt() ?? 0 : 0;
     final xp =
         outcome.won ? (_enemyData?['xpReward'] as num?)?.toInt() ?? 0 : 0;
+    // A ship taken by boarding gives up her hold: gold, and a part when
+    // there is room aboard for it (its worth in gold otherwise).
+    String? prizeLine;
+    if (outcome.boarded) {
+      final prize = boardingProfileFor(_enemyData ?? const {});
+      gold += prize.prizeGold;
+      final partId = prize.prizePartId;
+      final part =
+          partId == null ? null : _parts[partId] as Map<String, dynamic>?;
+      if (part != null) {
+        final session = ref.read(playerSessionProvider);
+        final fits = canInstallPart(
+            ship: _shipRecord,
+            parts: _parts,
+            installedPartIds: session.shipPartIds,
+            partId: partId!);
+        if (fits && await notifier.installShipPart(partId, 0)) {
+          final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
+          final name = fr && (part['partName_fr']?.toString() ?? '').isNotEmpty
+              ? part['partName_fr'].toString()
+              : part['partName']?.toString() ?? partId;
+          prizeLine = _t('ship_log_prize_part').replaceAll('{weapon}', name);
+        } else {
+          final worth = ((part['cost'] as num?)?.toInt() ?? 0) ~/ 2;
+          gold += worth;
+          prizeLine = _t('ship_log_prize_gold', n: prize.prizeGold + worth);
+        }
+      } else if (prize.prizeGold > 0) {
+        prizeLine = _t('ship_log_prize_gold', n: prize.prizeGold);
+      }
+    }
     // The crew's hurts persist, win or lose; a win also pays.
     for (final member in outcome.crew) {
       if (member.isPlayer) {
@@ -299,7 +340,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     }
     if (!mounted) return;
     if (outcome.won) {
-      _log.add(_t('ship_log_sunk', ship: enemyName));
+      if (!outcome.boarded) _log.add(_t('ship_log_sunk', ship: enemyName));
+      if (prizeLine != null) _log.add(prizeLine);
       _log.add('${_t('ship_fight_won_prefix')}: +$gold ${_t('gold_label')}');
       await notifier.setShipHull(_player!.hull);
       await _advance();
@@ -518,6 +560,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       foresight: _sail?.power == SailPower.foresight,
       random: _random,
       onFinished: _onBattleFinished,
+      boarding: boardingProfileFor(_enemyData ?? const {}),
+      chapter: _chapter,
+      buildCrew: () => _buildCrew(
+        session: ref.read(playerSessionProvider),
+        companions: companions,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig,
+      ),
     );
   }
 
