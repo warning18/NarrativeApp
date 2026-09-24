@@ -27,6 +27,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/autoplay_engine.dart';
+import 'package:narrative_data_app/data/chapter_spine.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -106,6 +107,57 @@ void main() {
       expect(sessionAfter.raceId, isNotEmpty);
       expect(sessionAfter.professionId, isNotEmpty);
       expect(sessionAfter.equippedDiceId ?? '', isNotEmpty);
+    });
+  });
+
+  testWidgets(
+      'autoplayToChapter undoes a lost run and forces the last one through',
+      (WidgetTester tester) async {
+    late WidgetRef capturedRef;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            capturedRef = ref;
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.runAsync(() async {
+      Future<Map<String, dynamic>> load(DbSchema schema) =>
+          capturedRef.read(gameDbRepositoryProvider(schema)).loadRecords();
+      final story = await capturedRef.read(storyDataProvider.future);
+      final attempts = <int>[];
+
+      // No combat retries: every fight of a normal attempt is lost, so the
+      // first attempt stops at its first fight and only the forced one
+      // can get through.
+      final result = await autoplayToChapter(
+        capturedRef,
+        story: story,
+        targetChapter: 2,
+        strategy: AutoplayStrategy.random,
+        dice: await load(diceSchema),
+        skills: await load(skillsSchema),
+        items: await load(itemsSchema),
+        enemies: await load(enemiesSchema),
+        races: await load(racesSchema),
+        professions: await load(professionsSchema),
+        maxCombatRetries: 0,
+        maxAttempts: 2,
+        onAttempt: attempts.add,
+      );
+
+      expect(attempts, [1, 2]);
+      expect(result.status, AutoplayStatus.reachedTarget);
+      expect(result.attempts, 2);
+      expect(result.forcedWins, greaterThan(0));
+      final node = capturedRef.read(storyPlayProvider).currentNodeId;
+      expect(chapterForNode(node), greaterThanOrEqualTo(2));
+      expect(capturedRef.read(playerSessionProvider).raceId, isNotEmpty);
     });
   });
 }

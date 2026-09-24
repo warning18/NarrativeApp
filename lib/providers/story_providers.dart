@@ -156,6 +156,19 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
 
   void jumpTo(String nodeId) => choose(nodeId);
 
+  /// Puts the play state back exactly as [snapshot] had it, fog of war
+  /// included -- used to undo a failed autoplay attempt so the next one
+  /// starts from the same place.
+  void restore(StoryPlayState snapshot) {
+    state = StoryPlayState(
+      currentNodeId: snapshot.currentNodeId,
+      history: snapshot.history,
+      visitedNodeIds: snapshot.visitedNodeIds,
+    );
+    _detourOwed = false;
+    _persistAutosave();
+  }
+
   void goBack() {
     if (state.history.isEmpty) return;
     final newHistory = List<String>.from(state.history);

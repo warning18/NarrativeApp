@@ -150,6 +150,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'steps applied',
     AppLanguage.fr: 'étapes appliquées',
   },
+  'autoplay_attempt_label': {
+    AppLanguage.en: 'attempt',
+    AppLanguage.fr: 'tentative',
+  },
+  'autoplay_forced_suffix': {
+    AppLanguage.en: 'fights won by force',
+    AppLanguage.fr: 'combats gagnés d’office',
+  },
   'end_label': {AppLanguage.en: 'End', AppLanguage.fr: 'Fin'},
   'tap_to_filter': {
     AppLanguage.en: 'Tap a legend row to hide/show that node type',
@@ -2670,12 +2678,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Plays real choices forward using the strategy above, '
         'earning true gold/alignment/flags/combat along the way, then '
         'hands control back to you in Story view once the chapter is '
-        'reached.',
+        'reached. A run that is lost on the way is undone and played '
+        'again until one gets there.',
     AppLanguage.fr:
         "Enchaîne de vrais choix selon la stratégie ci-dessus, avec de "
             "l'or, un alignement, des drapeaux et des combats réellement "
             "gagnés, puis vous redonne la main dans la vue Histoire une "
-            'fois le chapitre atteint.',
+            'fois le chapitre atteint. Une partie perdue en chemin est '
+            'annulée et rejouée jusqu’à ce qu’une y parvienne.',
   },
   'play_to_chapter_button': {
     AppLanguage.en: 'Play to Chapter',
