@@ -14,6 +14,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
@@ -62,9 +63,26 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           )
         : const <String, int>{};
 
+    final forges = recipesAt(widget.shopId,
+            ref.watch(gameDbProvider(itemsSchema)).value ?? const {})
+        .isNotEmpty;
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.shop['shopName']?.toString() ?? widget.shopId)),
+        title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
+        actions: [
+          if (forges)
+            IconButton(
+              icon: const Icon(Icons.hardware_outlined),
+              tooltip: tr(ref, 'forge_title'),
+              onPressed: () => showForgeSheet(context, shopId: widget.shopId),
+            ),
+          IconButton(
+            icon: const Icon(Icons.sell_outlined),
+            tooltip: tr(ref, 'sell_title'),
+            onPressed: () => showSellSheet(context, shopId: widget.shopId),
+          ),
+        ],
+      ),
       body: itemsAsync.when(
         data: (items) => diceAsync.when(
           data: (dice) {

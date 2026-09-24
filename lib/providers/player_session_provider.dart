@@ -51,6 +51,40 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
 
+/// What a shop pays for [item]: two fifths of its price, at least 1 gold.
+/// An item's own `sellValue` wins -- the Elite Mark is a trophy, worth
+/// more to a dealer than a shelf price would say.
+int sellPriceFor(Map<String, dynamic>? item) {
+  final own = (item?['sellValue'] as num?)?.toInt();
+  if (own != null) return own;
+  final cost = (item?['cost'] as num?)?.toInt() ?? 0;
+  return max(1, (cost * 2 / 5).round());
+}
+
+/// Whether [item] can be sold at all: quest items stay with the party.
+bool canSellItem(Map<String, dynamic>? item) =>
+    item != null && item['itemType']?.toString() != 'Quest';
+
+/// The materials forging [item] takes (items.json `craftMaterials`, item
+/// id to count); empty for anything not forged.
+Map<String, int> craftMaterialsFor(Map<String, dynamic>? item) {
+  final raw = item?['craftMaterials'];
+  if (raw is! Map) return const {};
+  return {
+    for (final e in raw.entries)
+      if (((e.value as num?)?.toInt() ?? 0) > 0)
+        e.key.toString(): (e.value as num).toInt(),
+  };
+}
+
+/// The items forged at [shopId] (items.json `craftedAt`), sorted by id.
+List<String> recipesAt(String shopId, Map<String, dynamic> items) => [
+      for (final e in items.entries)
+        if ((e.value as Map<String, dynamic>)['craftedAt']?.toString() ==
+            shopId)
+          e.key,
+    ]..sort();
+
 /// The wearer id [PlayerSession.wearersOf] uses for the player (allies go
 /// by their companion id).
 const String playerWearerId = 'player';
@@ -1403,6 +1437,57 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
     );
     await _persist();
+  }
+
+  /// Sells one copy of [itemId] for [price]. Only a copy nobody wears can
+  /// go; one sold where it is stocked goes back on that shop's shelf
+  /// ([shopId]). Returns false when there is no free copy to sell.
+  Future<bool> sellItem(String itemId,
+      {required int price, String? shopId}) async {
+    if (state.freeCopiesOf(itemId, wearerId: '') <= 0) return false;
+    final remaining = [...state.inventoryItemIds]..remove(itemId);
+    final counts = {...state.shopPurchaseCounts};
+    if (shopId != null) {
+      final key = '$shopId::$itemId';
+      final bought = counts[key] ?? 0;
+      if (bought > 0) counts[key] = bought - 1;
+    }
+    state = state.copyWith(
+      inventoryItemIds: remaining,
+      gold: state.gold + max(0, price),
+      shopPurchaseCounts: counts,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Whether the pack holds what forging [item] takes: its `craftGold` and
+  /// every `craftMaterials` count (see [craftMaterialsFor]).
+  bool canCraft(Map<String, dynamic>? item) {
+    if (item == null) return false;
+    final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
+    if (state.gold < gold) return false;
+    return craftMaterialsFor(item).entries.every((m) =>
+        state.inventoryItemIds.where((id) => id == m.key).length >= m.value);
+  }
+
+  /// Forges [itemId] from [item]'s recipe: its gold and materials leave
+  /// the pack and the piece enters it. Returns false if something is
+  /// missing.
+  Future<bool> craftItem(String itemId, Map<String, dynamic>? item) async {
+    if (!canCraft(item)) return false;
+    final remaining = [...state.inventoryItemIds];
+    for (final m in craftMaterialsFor(item).entries) {
+      for (var i = 0; i < m.value; i++) {
+        remaining.remove(m.key);
+      }
+    }
+    state = state.copyWith(
+      gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
+      inventoryItemIds: [...remaining, itemId],
+    );
+    await _persist();
+    return true;
   }
 
   /// How a Potion-type item converts into drinkable charges when it's

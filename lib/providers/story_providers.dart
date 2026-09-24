@@ -126,7 +126,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       history: history,
       visitedNodeIds: visitedNodeIds,
     );
+    restoredFromAutosave = history.isNotEmpty;
   }
+
+  /// Whether this launch picked a story back up from the autosave (with at
+  /// least one scene behind it) -- the story view then offers a
+  /// "Previously..." recap once.
+  bool restoredFromAutosave = false;
 
   Future<void> _persistAutosave() async {
     // Snapshot everything from `state` before the first await -- this runs

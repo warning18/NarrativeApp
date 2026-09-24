@@ -48,6 +48,7 @@ import '../widgets/zone_card.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
+import 'journal_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -86,6 +87,9 @@ final _lastStoryNodeIdProvider = StateProvider<String?>((ref) => null);
 /// is the one on screen and nothing (a fight, a dialog, autoplay) covers
 /// it, so the pop-up never lands over another tab or another dialog.
 final _pendingArrivalProvider = StateProvider<Settlement?>((ref) => null);
+
+/// Whether the "Previously..." recap has been offered this launch.
+final _previouslyOfferedProvider = StateProvider<bool>((ref) => false);
 
 /// Speaks [text] via the device's on-device text-to-speech engine — the
 /// fast default voice, used for auto-read and as read-aloud's fallback
@@ -200,6 +204,26 @@ class _StoryView extends ConsumerWidget {
     // ModalRoute.of makes this rebuild when a covering route goes away.
     final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
         (ModalRoute.of(context)?.isCurrent ?? true);
+    // Picking a saved story back up: a short recap, once per launch.
+    if (storyOnScreen &&
+        !ref.watch(_previouslyOfferedProvider) &&
+        ref.read(storyPlayProvider.notifier).restoredFromAutosave &&
+        playState.history.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted || ref.read(_previouslyOfferedProvider)) return;
+        ref.read(_previouslyOfferedProvider.notifier).state = true;
+        showPreviouslyDialog(
+          context,
+          story: story,
+          history: playState.history,
+          currentNodeId: playState.currentNodeId,
+          session: session,
+          quests: ref.read(gameDbProvider(questsSchema)).value ?? const {},
+          lang: language,
+        );
+      });
+    }
+
     final pendingArrival = ref.watch(_pendingArrivalProvider);
     if (pendingArrival != null && storyOnScreen) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -263,6 +287,13 @@ class _StoryView extends ConsumerWidget {
     final isHubNode = _isHubNode(node);
     final visibleChoices =
         node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // On a hub, a finished activity stays on the list, greyed and ticked,
+    // so the place reads as a checklist rather than shrinking.
+    final doneChoices = isHubNode
+        ? node.choices
+            .where((c) => c.hideIfFlags.any(session.flags.contains))
+            .toList()
+        : const <StoryChoice>[];
 
     return SafeArea(
       child: Padding(
@@ -349,6 +380,14 @@ class _StoryView extends ConsumerWidget {
                       label: Text(tr(ref, 'back')),
                     ),
                   const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.menu_book_outlined, size: 20),
+                    tooltip: tr(ref, 'journal_title'),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const JournalScreen()),
+                    ),
+                  ),
                   _ReadAloudButton(
                       text: displayDescription, language: language),
                   const SizedBox(width: 4),
@@ -542,6 +581,7 @@ class _StoryView extends ConsumerWidget {
                                 child: _HubSections(
                                   node: node,
                                   choices: visibleChoices,
+                                  done: doneChoices,
                                   story: story,
                                   session: session,
                                   currentNodeId: playState.currentNodeId,
@@ -1079,6 +1119,7 @@ class _HubSections extends ConsumerWidget {
   const _HubSections({
     required this.node,
     required this.choices,
+    this.done = const [],
     required this.story,
     required this.session,
     required this.currentNodeId,
@@ -1093,6 +1134,10 @@ class _HubSections extends ConsumerWidget {
 
   final StoryNode node;
   final List<StoryChoice> choices;
+
+  /// The hub's finished activities (their `hideIfFlags` marker is set):
+  /// listed greyed under their section, and counted in the header.
+  final List<StoryChoice> done;
   final StoryData story;
   final PlayerSession session;
   final String currentNodeId;
@@ -1105,8 +1150,13 @@ class _HubSections extends ConsumerWidget {
         choices.where((c) => isLocalChoice(c, node.id, story)).toList();
     final onward =
         choices.where((c) => !isLocalChoice(c, node.id, story)).toList();
+    final doneLocal =
+        done.where((c) => isLocalChoice(c, node.id, story)).toList();
     List<StoryChoice> of(_HubCategory? category) =>
         local.where((c) => _hubCategoryFor(c) == category).toList();
+    List<StoryChoice> doneOf(Set<_HubCategory?> categories) => doneLocal
+        .where((c) => categories.contains(_hubCategoryFor(c)))
+        .toList();
     final shopChoices = of(_HubCategory.shop);
     final challenges = of(_HubCategory.challenge);
     final people = [...of(_HubCategory.people), ...of(null)];
@@ -1149,6 +1199,26 @@ class _HubSections extends ConsumerWidget {
           ),
         );
 
+    Widget doneRow(StoryChoice choice) => Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle,
+                  size: 16, color: Theme.of(context).colorScheme.outline),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  choice.textFor(french),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        );
+
     Widget card(StoryChoice choice) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: _HubChoiceCard(
@@ -1162,9 +1232,12 @@ class _HubSections extends ConsumerWidget {
         );
 
     final services = <Widget>[
-      if (shopChoices.isNotEmpty || portShops.isNotEmpty) ...[
+      if (shopChoices.isNotEmpty ||
+          portShops.isNotEmpty ||
+          doneOf({_HubCategory.shop}).isNotEmpty) ...[
         header(tr(ref, 'hub_shops_section'), Icons.storefront_outlined),
         for (final choice in shopChoices) card(choice),
+        for (final choice in doneOf({_HubCategory.shop})) doneRow(choice),
         for (final shopId in portShops)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -1217,13 +1290,18 @@ class _HubSections extends ConsumerWidget {
             },
           ),
       ],
-      if (people.isNotEmpty) ...[
+      if (people.isNotEmpty ||
+          doneOf({_HubCategory.people, null}).isNotEmpty) ...[
         header(tr(ref, 'hub_people_section'), Icons.chat_bubble_outline),
         for (final choice in people) card(choice),
+        for (final choice in doneOf({_HubCategory.people, null}))
+          doneRow(choice),
       ],
-      if (challenges.isNotEmpty) ...[
+      if (challenges.isNotEmpty ||
+          doneOf({_HubCategory.challenge}).isNotEmpty) ...[
         header(tr(ref, 'hub_challenges_section'), Icons.gpp_maybe_outlined),
         for (final choice in challenges) card(choice),
+        for (final choice in doneOf({_HubCategory.challenge})) doneRow(choice),
       ],
     ];
 
@@ -1301,6 +1379,17 @@ class _HubSections extends ConsumerWidget {
                   ),
                 ] else
                   const Spacer(),
+                if (doneLocal.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Text(
+                      tr(ref, 'hub_done_count')
+                          .replaceAll('{done}', '${doneLocal.length}')
+                          .replaceAll(
+                              '{total}', '${doneLocal.length + local.length}'),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ),
                 OutlinedButton.icon(
                   onPressed: () async {
                     await ref

@@ -343,6 +343,55 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre dernière partie n’a pas pu être lue : une nouvelle a commencé. L’ancienne sauvegarde a été mise de côté, intacte.',
   },
+  'hub_done_count': {
+    AppLanguage.en: '{done}/{total} done',
+    AppLanguage.fr: '{done}/{total} faits',
+  },
+  'journal_title': {
+    AppLanguage.en: 'The story so far',
+    AppLanguage.fr: 'L’histoire jusqu’ici',
+  },
+  'journal_empty': {
+    AppLanguage.en: 'Nothing written yet.',
+    AppLanguage.fr: 'Rien d’écrit pour l’instant.',
+  },
+  'journal_you_are_here': {
+    AppLanguage.en: 'You are here.',
+    AppLanguage.fr: 'Vous êtes ici.',
+  },
+  'previously_title': {
+    AppLanguage.en: 'Previously…',
+    AppLanguage.fr: 'Précédemment…',
+  },
+  'previously_quests_label': {
+    AppLanguage.en: 'Still on your mind',
+    AppLanguage.fr: 'Ce qui vous occupe encore',
+  },
+  'previously_continue_button': {
+    AppLanguage.en: 'Go on',
+    AppLanguage.fr: 'Reprendre',
+  },
+  'sell_title': {AppLanguage.en: 'Sell', AppLanguage.fr: 'Vendre'},
+  'sell_button': {AppLanguage.en: 'Sell', AppLanguage.fr: 'Vendre'},
+  'sell_nothing': {
+    AppLanguage.en: 'Nothing in the pack to sell.',
+    AppLanguage.fr: 'Rien à vendre dans le sac.',
+  },
+  'sell_worn_note': {
+    AppLanguage.en: 'Worn: take it off to sell it',
+    AppLanguage.fr: 'Porté : retirez-le pour le vendre',
+  },
+  'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu :'},
+  'forge_title': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
+  'forge_button': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forger'},
+  'forged_prefix': {AppLanguage.en: 'Forged', AppLanguage.fr: 'Forgé :'},
+  'forge_needs_label': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
+  'forge_hint': {
+    AppLanguage.en:
+        'Iron ore comes off Inquisition soldiers, the dock overseer, wisps, the iron golem and the dead of the catacombs.',
+    AppLanguage.fr:
+        'Le minerai de fer se prend sur les soldats de l’Inquisition, le contremaître des docks, les feux follets, le golem de fer et les morts des catacombes.',
+  },
   'save_slots_save_title': {
     AppLanguage.en: 'Save to a slot',
     AppLanguage.fr: 'Sauvegarder dans un emplacement',

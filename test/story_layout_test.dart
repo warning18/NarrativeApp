@@ -1,6 +1,7 @@
 // The story screen on small phones: a town hub, the late hubs, an ending
 // and a scene with long choices all fit, in English and French -- the
 // choices scroll within their share of the screen instead of overflowing.
+// A hub keeps a finished activity on its list, ticked and greyed.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 
 /// Lets the story and game data load (their assets are decoded off the
@@ -73,5 +75,32 @@ void main() {
         }
       }
     }
+
+    // A hub keeps its finished activities as a ticked checklist.
+    tester.view.physicalSize = const Size(360, 640);
+    await tester.runAsync(() => container
+        .read(appLanguageProvider.notifier)
+        .setLanguage(AppLanguage.en));
+    final story = container.read(storyDataProvider).value!;
+    final hub = story.nodeFor('2015')!;
+    final finished = hub.choices.firstWhere((c) => c.hideIfFlags.isNotEmpty);
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          'flags': [finished.hideIfFlags.first],
+        })));
+    container.read(storyPlayProvider.notifier).jumpTo('2015');
+    await _settle(tester);
+    final dialogButton = find.descendant(
+        of: find.byType(AlertDialog), matching: find.byType(FilledButton));
+    if (dialogButton.evaluate().isNotEmpty) {
+      await tester.tap(dialogButton.first, warnIfMissed: false);
+      await _settle(tester);
+    }
+    _expectNoLayoutError(tester, '2015 with one activity done');
+    expect(find.textContaining(' done'), findsOneWidget);
+    expect(find.text(finished.text), findsOneWidget);
   });
 }

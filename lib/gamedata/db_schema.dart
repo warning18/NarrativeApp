@@ -407,6 +407,23 @@ final DbSchema skillsSchema = DbSchema(
   primaryKeyField: 'id',
   visualAssetField: 'visualAsset',
   fields: [
+    FieldSchema(
+        key: 'sellValue',
+        label: 'Sell value (overrides two fifths of the cost)',
+        type: FieldType.integer),
+    FieldSchema(
+        key: 'craftedAt',
+        label: 'Forged at (shop id)',
+        type: FieldType.reference,
+        referenceSchemaId: 'shops'),
+    FieldSchema(
+        key: 'craftGold',
+        label: 'Forging cost (gold)',
+        type: FieldType.integer),
+    FieldSchema(
+        key: 'craftMaterials',
+        label: 'Forging materials {itemId: count}',
+        type: FieldType.json),
     FieldSchema(key: 'id', label: 'ID (Skill Name)', type: FieldType.text),
     FieldSchema(
       key: 'element',
