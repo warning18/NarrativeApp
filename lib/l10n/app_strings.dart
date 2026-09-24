@@ -27,6 +27,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'back': {AppLanguage.en: 'Back', AppLanguage.fr: 'Retour'},
   'node': {AppLanguage.en: 'Node', AppLanguage.fr: 'Nœud'},
   'detour': {AppLanguage.en: 'Detour', AppLanguage.fr: 'Détour'},
+  'detour_on_the_way': {
+    AppLanguage.en: 'Detour on your way:',
+    AppLanguage.fr: 'Détour en chemin :',
+  },
+  'detour_resumes': {
+    AppLanguage.en:
+        'Something met on the road. The story picks up where you were going once it is dealt with.',
+    AppLanguage.fr:
+        'Une rencontre en chemin. Le récit reprend là où vous alliez une fois ceci réglé.',
+  },
+  'choice_fight_roster': {
+    AppLanguage.en: 'Fight: {roster}',
+    AppLanguage.fr: 'Combat : {roster}',
+  },
   'restart_story': {
     AppLanguage.en: 'Restart Story',
     AppLanguage.fr: "Recommencer l'histoire"
@@ -1539,6 +1553,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'expedition_progress_label': {
     AppLanguage.en: 'Expedition',
     AppLanguage.fr: 'Expédition'
+  },
+  'expedition_goal': {
+    AppLanguage.en:
+        'Clear {n} encounters here, then its guardian, {boss}, to claim the zone.',
+    AppLanguage.fr:
+        'Franchissez {n} rencontres ici, puis son gardien, {boss}, pour conquérir la zone.',
+  },
+  'expedition_goal_no_boss': {
+    AppLanguage.en: 'Clear {n} encounters here to claim the zone.',
+    AppLanguage.fr: 'Franchissez {n} rencontres ici pour conquérir la zone.',
   },
   'expedition_defeated_message': {
     AppLanguage.en:

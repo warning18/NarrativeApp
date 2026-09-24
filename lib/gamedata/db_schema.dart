@@ -697,6 +697,32 @@ final DbSchema enemiesSchema = DbSchema(
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'enemyName', label: 'Enemy Name', type: FieldType.text),
+    // Who the enemy is, shown under its name on the fight's setup card.
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    // How the enemy turns up on a detour or in a zone, and why it attacks:
+    // one line is drawn per encounter (index-matched across languages).
+    FieldSchema(
+        key: 'encounterText',
+        label: 'Encounter Lines',
+        type: FieldType.stringList),
+    FieldSchema(
+        key: 'encounterText_fr',
+        label: 'Encounter Lines (FR)',
+        type: FieldType.stringList),
+    // The line used when this enemy leads a random pack.
+    FieldSchema(
+        key: 'packText', label: 'Pack Line', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'packText_fr',
+        label: 'Pack Line (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
         key: 'maxHealth',
         label: 'Max Health',

@@ -5,6 +5,7 @@ import '../combat/enemy_affix.dart';
 import '../combat/loot_box.dart';
 import '../models/story_node.dart';
 import 'alignment_events.dart';
+import 'encounter_text.dart';
 import 'hunt_names.dart';
 import 'map_themes.dart';
 
@@ -19,6 +20,9 @@ import 'map_themes.dart';
 class SubNodeEngine {
   static int _counter = 0;
 
+  /// Odds a story transition takes a detour ([maybeGenerate]'s default).
+  static const double detourChance = 0.7;
+
   /// Returns null when no excursion is rolled this time.
   static List<StoryNode>? maybeGenerate({
     required Random random,
@@ -31,7 +35,7 @@ class SubNodeEngine {
     required List<String> unlockedQuestIds,
     required List<String> completedQuestIds,
     MapTheme theme = defaultMapTheme,
-    double triggerChance = 0.7,
+    double triggerChance = detourChance,
     int partySize = 3,
     String alignmentLabel = 'Neutral',
   }) {
@@ -90,10 +94,35 @@ class SubNodeEngine {
           packPool: filterPackPool(enemies: enemies, enemyPool: enemyPool),
           maxPackSize: maxPackSizeFor(chapter, partySize: partySize),
           questId: i == 0 ? questSlotId : null,
+          enemies: enemies,
+          shops: shops,
+          quests: quests,
         ),
     ];
     return withHunts(chain, enemies: enemies, random: random, flavor: flavor);
   }
+
+  /// Scene moods (StoryNode.mood, the story file's context_taxonomy) of a
+  /// scene in the middle of something: a raid, a chase, a stand-off, a
+  /// town on fire.
+  static const Set<String> tenseMoods = {
+    'action',
+    'tense',
+    'suspense',
+    'desperate',
+  };
+
+  /// Whether the story may take a detour between a scene of [fromMood] and
+  /// one of [toMood]. Not when both are [tenseMoods]: that transition is
+  /// one crisis running on ("Run for the docks", "Climb out before the
+  /// roof comes down"), and nobody stops at a stall or picks a fight with
+  /// a rat halfway through it. A crisis that starts or ends at the
+  /// transition still leaves a road between the two scenes. What the road
+  /// held is not lost, only put off: a detour rolled mid-crisis is owed
+  /// and taken at the next transition at rest (see
+  /// StoryPlayNotifier.oweDetour).
+  static bool detourAllowedBetween(String? fromMood, String? toMood) =>
+      !(tenseMoods.contains(fromMood) && tenseMoods.contains(toMood));
 
   /// Odds a pack fight in a chain is followed by a hunt: a trail node, then
   /// the pack's named survivor -- a tougher specimen with two affixes and a
@@ -353,20 +382,31 @@ class SubNodeEngine {
     List<String>? packPool,
     int maxPackSize = 3,
     String? questId,
+    Map<String, dynamic> enemies = const {},
+    Map<String, dynamic> shops = const {},
+    Map<String, dynamic> quests = const {},
   }) {
     _counter++;
     final id = 'gen_$_counter';
 
     if (questId != null) {
       final idx = random.nextInt(flavor.quest.length);
+      final quest = quests[questId] as Map<String, dynamic>?;
+      final questName = quest?['questName']?.toString() ?? '';
+      final objective = _firstObjective(quest);
       return StoryNode(
         id: id,
         description: flavor.quest[idx],
         descriptionFr: flavor.questFr[idx],
+        contextNote: objective == null ? null : 'The job: $objective',
+        contextNoteFr: objective == null ? null : 'Le travail : $objective',
         choices: [
           StoryChoice(
-            text: 'Take the job',
-            textFr: 'Accepter le travail',
+            text:
+                questName.isEmpty ? 'Take the job' : 'Take the job: $questName',
+            textFr: questName.isEmpty
+                ? 'Accepter le travail'
+                : 'Accepter le travail : $questName',
             nextId: id,
             unlockQuestId: questId,
           ),
@@ -378,14 +418,18 @@ class SubNodeEngine {
     if (shopPool.isNotEmpty && roll < 0.25) {
       final shopId = shopPool[random.nextInt(shopPool.length)];
       final idx = random.nextInt(flavor.shop.length);
+      final shopName =
+          (shops[shopId] as Map<String, dynamic>?)?['shopName']?.toString() ??
+              '';
       return StoryNode(
         id: id,
         description: flavor.shop[idx],
         descriptionFr: flavor.shopFr[idx],
         choices: [
           StoryChoice(
-            text: 'Take a look',
-            textFr: 'Jeter un œil',
+            text: shopName.isEmpty ? 'Take a look' : 'Take a look: $shopName',
+            textFr:
+                shopName.isEmpty ? 'Jeter un œil' : 'Jeter un œil : $shopName',
             nextId: id,
             unlockShopId: shopId,
           ),
@@ -405,34 +449,10 @@ class SubNodeEngine {
           for (var i = 0; i < size; i++)
             packEligible[random.nextInt(packEligible.length)],
         ];
-        return StoryNode(
-          id: id,
-          description: flavor.enemy[idx],
-          descriptionFr: flavor.enemyFr[idx],
-          choices: [
-            StoryChoice(
-              text: 'Fight',
-              textFr: 'Combattre',
-              nextId: id,
-              triggerEnemyIds: ids,
-            ),
-          ],
-        );
+        return _fightNode(id, ids, idx, flavor, enemies, pack: true);
       }
       final enemyId = enemyPool[random.nextInt(enemyPool.length)];
-      return StoryNode(
-        id: id,
-        description: flavor.enemy[idx],
-        descriptionFr: flavor.enemyFr[idx],
-        choices: [
-          StoryChoice(
-            text: 'Fight',
-            textFr: 'Combattre',
-            nextId: id,
-            triggerEnemyId: enemyId,
-          ),
-        ],
-      );
+      return _fightNode(id, [enemyId], idx, flavor, enemies, pack: false);
     }
     if (roll < 0.65) {
       final goldFound = 5 + random.nextInt(16);
@@ -475,5 +495,50 @@ class SubNodeEngine {
         StoryChoice(text: 'Move on', textFr: 'Continuer', nextId: ''),
       ],
     );
+  }
+
+  /// A random fight's node. The text is the drawn enemy's own encounter
+  /// line (how it shows up and why it attacks; its pack line when it leads
+  /// several), so a rat is never announced as "a figure with a blade";
+  /// the theme's generic line is only the fallback for an enemy with no
+  /// lines. The button names who is fought. [idx] is the theme line
+  /// already drawn, reused to pick the enemy's line so the detour draws
+  /// no extra randomness.
+  static StoryNode _fightNode(
+    String id,
+    List<String> ids,
+    int idx,
+    ExcursionFlavor flavor,
+    Map<String, dynamic> enemies, {
+    required bool pack,
+  }) {
+    final line = encounterLineFor(ids: ids, enemies: enemies, index: idx);
+    final label = enemies.isEmpty
+        ? (en: 'Fight', fr: 'Combattre')
+        : fightLabelFor(ids, enemies);
+    return StoryNode(
+      id: id,
+      description: line?.en ?? flavor.enemy[idx],
+      descriptionFr: line?.fr ?? flavor.enemyFr[idx],
+      choices: [
+        StoryChoice(
+          text: label.en,
+          textFr: label.fr,
+          nextId: id,
+          triggerEnemyId: pack ? null : ids.single,
+          triggerEnemyIds: pack ? ids : const [],
+        ),
+      ],
+    );
+  }
+
+  /// A quest's first objective, as written in quests.json, or null.
+  static String? _firstObjective(Map<String, dynamic>? quest) {
+    final objectives = quest?['objectives'];
+    if (objectives is! List || objectives.isEmpty) return null;
+    final first = objectives.first;
+    if (first is! Map) return null;
+    final text = first['description']?.toString() ?? '';
+    return text.isEmpty ? null : text;
   }
 }

@@ -311,6 +311,8 @@ class StoryNode {
     this.flagCallbacks = const [],
     this.personaVariants = const {},
     this.hubProgress,
+    this.contextNote,
+    this.contextNoteFr,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -473,6 +475,22 @@ class StoryNode {
   /// For a hub node: a line that notes how the place has changed as its
   /// activities get done (see [HubProgress]).
   final HubProgress? hubProgress;
+
+  /// Why a generated scene is happening, shown in the detour's context
+  /// card above its text: a hunter's reason for coming, the job a stranger
+  /// offers. Never authored in the story file (and never written back to
+  /// it): only the excursion and alignment-event builders set it.
+  final String? contextNote;
+  final String? contextNoteFr;
+
+  /// [contextNote] in the reader's language (English when French is
+  /// missing), or null.
+  String? contextNoteFor(bool fr) {
+    final text = fr && (contextNoteFr?.isNotEmpty ?? false)
+        ? contextNoteFr
+        : contextNote;
+    return (text?.isEmpty ?? true) ? null : text;
+  }
 
   /// The callback paragraphs the player's [flags] have earned, in order.
   List<String> callbacksFor(Iterable<String> flags, bool french) {

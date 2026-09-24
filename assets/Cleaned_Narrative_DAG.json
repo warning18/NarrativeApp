@@ -1773,8 +1773,8 @@
   },
   "2015_kelda": {
     "id": "2015_kelda",
-    "description": "She held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. Vane could wait a little longer.",
-    "description_fr": "Elle tenait sa position à la porte avec l'économie obstinée de quelqu'un qui avait déjà décidé de l'issue, quelle que fût ma réponse, et je découvris que je n'avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l'esprit, ce qui est à peu près la promesse la plus engageante que je m'autorise généralement envers des inconnus qui se battent pour vivre. Vane pouvait attendre encore un peu.",
+    "description": "She held her spot at the gate with the stubborn economy of someone who'd already decided how this went regardless of my answer, and I found I didn't especially want to make a liar of her. I told her I'd keep her offer in mind, which is about as close to a promise as I generally allow myself with strangers who fight for a living. Vane could wait a little longer.\n\nShe had not been waiting for my answer, as it turned out. She had been waiting for the boarding party she had been holding the gate against, and it came up the wharf before I had taken three steps back toward the stalls: an Inquisition soldier at its head, sword already out, and no interest at all in which of us had been talking to whom.",
+    "description_fr": "Elle tenait sa position à la porte avec l'économie obstinée de quelqu'un qui avait déjà décidé de l'issue, quelle que fût ma réponse, et je découvris que je n'avais pas particulièrement envie de la démentir. Je lui dis que je garderais son offre à l'esprit, ce qui est à peu près la promesse la plus engageante que je m'autorise généralement envers des inconnus qui se battent pour vivre. Vane pouvait attendre encore un peu.\n\nElle n'attendait pas ma réponse, en fin de compte. Elle attendait l'équipe d'abordage contre laquelle elle tenait la porte, et celle-ci remonta le quai avant que j'aie fait trois pas vers les étals : un soldat de l'Inquisition à sa tête, l'épée déjà tirée, et aucun intérêt pour savoir lequel de nous deux avait parlé à l'autre.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1782,8 +1782,8 @@
     },
     "choices": [
       {
-        "text": "Return to the stalls",
-        "text_fr": "Revenir aux étals",
+        "text": "Hold the gate beside her",
+        "text_fr": "Tenir la porte à ses côtés",
         "next_id": "2015",
         "triggerEnemyId": "inquisition_soldier",
         "flagsToAdd": [

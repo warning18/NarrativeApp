@@ -13,6 +13,7 @@ import '../combat/gear_effects.dart';
 import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
+import '../data/encounter_text.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -2706,6 +2707,21 @@ class _FightScreenState extends ConsumerState<FightScreen>
                       fontWeight: _isElite ? FontWeight.bold : null,
                     ),
               ),
+              // Who this is, before anything is rolled: the fight is
+              // against someone, not a stat block.
+              if (enemyDescriptionFor(enemy.data,
+                      ref.watch(appLanguageProvider) == AppLanguage.fr)
+                  case final description?) ...[
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodySmall
+                      ?.copyWith(fontStyle: FontStyle.italic),
+                ),
+                const SizedBox(height: 2),
+              ],
               Text(
                 '${tr(ref, 'hp_label')} ${enemy.maxHealth} · ${tr(ref, 'damage_label')} ${enemy.damage} '
                 '(${tr(ref, 'scaled_to_level')} $_playerLevel)',

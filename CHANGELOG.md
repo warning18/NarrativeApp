@@ -8,6 +8,80 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.128.0+157]
+
+Every fight and event now says why it happens. A review of how scenes
+follow one another found the story's own scenes mostly set up their
+fights, but the random detours between scenes did not: they rolled on
+seven story transitions in ten, opened with a line that ignored what was
+actually drawn ("A figure steps out, weapon already drawn", then a rat),
+offered a bare "Fight", and could land in the middle of a chase.
+
+### Added
+- **Enemies say who they are and why they attack.** enemies.json gains a
+  `description` (EN/FR) for all 42 enemies, shown under each name on the
+  fight's setup card, and `encounterText` lines (two per enemy, EN/FR)
+  for the 19 enemies a detour or a zone can draw, plus a `packText` line
+  for the 9 that come in groups. A detour fight now opens with the drawn
+  enemy's own line, which gives its motive: the rat is in its supper, the
+  bandit counted your coin, the warden has a warrant, the void hound points
+  at the Shroud. The theme's generic line is only the fallback.
+- **Detour fights name who is fought** ("Fight: Street Bandit ×2"), a
+  detour stall names the shop ("Take a look: …"), a detour job names the
+  quest and says what it asks ("The job: …").
+- **A context card on every detour**: "Detour on your way:" and the choice
+  the player just made, the reason when the builder knows it, and that the
+  story picks up where the player was going once it is dealt with. A
+  hunter's ambush says who sent it and why (the Choir after the wicked,
+  the Pit after the righteous, more often the further you lean); a
+  temptation says both sides court the undecided and the answer moves the
+  alignment.
+- **Story fight buttons carry crossed swords and the enemy names**, so a
+  plain label never hides a fight. The pact's turned companion stays
+  unnamed on purpose.
+- **Expeditions state their goal** under the progress bar: clear N
+  encounters, then the guardian (named), to claim the zone. A hunter or
+  temptation met in a zone shows its reason too.
+- **A raider at sea is named and described** before the battle, from
+  enemy_ships.json's description.
+
+### Changed
+- **No detour interrupts a crisis.** A transition from one tense scene
+  into another (the hovel raid into the unfurling, "Run for the docks",
+  "Climb out before the roof comes down"; 22 transitions, by the scene
+  moods the story file already carries) takes no detour and no alignment
+  event. What the road held is owed, not lost: a detour rolled there is
+  taken at the next transition at rest.
+- **Kelda's gate announces its fight.** "Return to the stalls" launched a
+  soldier fight nobody had mentioned; the scene now brings the boarding
+  party she was holding the gate against up the wharf, and the choice
+  reads "Hold the gate beside her".
+
+### Fixed
+- **A stall found on a detour could never be opened.** It was recorded
+  against the scene the detour left, so the Shops tab showed it as left
+  behind. "Take a look" now opens it on the spot.
+- **A job offered on a detour was accepted blind.** It now shows the same
+  pop-up as a job offered by the story, with the quest and an Accept
+  button.
+
+### Verification
+- New tests cover the encounter helpers (rosters, pack lines, wrapping,
+  fallbacks), the detour builder's lines and labels with and without
+  records, the mid-crisis gate on the story's own transitions, the owed
+  detour, the detour's origin in the play state, the hunter and
+  temptation reasons, Kelda's scene, and that every enemy has a
+  description and every drawable one has its lines in both languages.
+- The simulator's story walk gained the same rule and was run on two sets
+  of 80 seeded playthroughs against the old placement. With the gate and
+  the owed detour, detours per run fall from 50 to 42, and level (20.3
+  against 20.5), gold left, fight win rate (95 to 97%) and the Sovereign's
+  first-try rate stay within the noise between seed sets; every run
+  reaches an ending. A stricter rule, no detour whenever either scene is
+  tense, was tried and rejected: it removed a third of the detours and cut
+  companion recruitment (Liora 33 to 14 runs, Sable 36 to 19) because most
+  of chapter 1 is one long flight.
+
 ## [1.127.0+156]
 
 Boarding, both ways, and the ship battle's polish: what a shot would do

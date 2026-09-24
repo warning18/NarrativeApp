@@ -130,6 +130,33 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return text;
   }
 
+  /// The raider's name and description, under the sighting's text.
+  List<Widget> _raiderIntro(Map<String, dynamic> ship, bool fr) {
+    final name =
+        ship['displayName']?.toString() ?? ship['shipName']?.toString() ?? '';
+    final nameFr = ship['displayName_fr']?.toString() ?? '';
+    final description = ship['description']?.toString() ?? '';
+    final descriptionFr = ship['description_fr']?.toString() ?? '';
+    final shownName = fr && nameFr.isNotEmpty ? nameFr : name;
+    final shownDescription =
+        fr && descriptionFr.isNotEmpty ? descriptionFr : description;
+    if (shownName.isEmpty && shownDescription.isEmpty) return const [];
+    final theme = Theme.of(context);
+    return [
+      const SizedBox(height: 12),
+      if (shownName.isNotEmpty)
+        Text(shownName,
+            style: theme.textTheme.titleSmall
+                ?.copyWith(fontWeight: FontWeight.bold)),
+      if (shownDescription.isNotEmpty)
+        Text(
+          shownDescription,
+          style:
+              theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
+        ),
+    ];
+  }
+
   String _enemyName(bool fr) {
     final data = _enemyData ?? const {};
     final name =
@@ -509,6 +536,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                       .bodyLarge
                       ?.copyWith(height: 1.5),
                 ),
+                // A raider is named and described before the guns come
+                // out: who she is and what she wants from the Eel.
+                if (event.kind == SeaEventKind.raider &&
+                    enemyShips[event.enemyShipId] is Map<String, dynamic>)
+                  ..._raiderIntro(
+                      enemyShips[event.enemyShipId] as Map<String, dynamic>,
+                      fr),
                 if (_sail?.power == SailPower.foresight) ...[
                   const SizedBox(height: 12),
                   Text(

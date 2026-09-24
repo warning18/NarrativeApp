@@ -45,6 +45,8 @@ class StoryPlayState {
     this.activeExcursionNode,
     this.excursionQueue = const [],
     this.resumeNodeId,
+    this.excursionOrigin,
+    this.excursionOriginFr,
   });
 
   final String currentNodeId;
@@ -68,6 +70,20 @@ class StoryPlayState {
 
   /// The real story node to resume once the excursion queue is exhausted.
   final String? resumeNodeId;
+
+  /// The choice the player made that the excursion interrupts ("Take the
+  /// Stone Bridge"): the detour's context card says it happens on the way
+  /// there, and that the story picks up there afterwards.
+  final String? excursionOrigin;
+  final String? excursionOriginFr;
+
+  /// [excursionOrigin] in the reader's language, or null.
+  String? excursionOriginFor(bool fr) {
+    final text = fr && (excursionOriginFr?.isNotEmpty ?? false)
+        ? excursionOriginFr
+        : excursionOrigin;
+    return (text?.isEmpty ?? true) ? null : text;
+  }
 
   bool get isInExcursion => activeExcursionNode != null;
 }
@@ -181,9 +197,35 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     _persistAutosave();
   }
 
+  /// A detour rolled while a crisis ran from one scene into the next, put
+  /// off until the story reaches a transition at rest (see
+  /// SubNodeEngine.detourAllowedBetween). Session-only: a relaunch simply
+  /// forgets it.
+  bool _detourOwed = false;
+
+  bool get detourOwed => _detourOwed;
+
+  /// Marks a detour as owed for the next transition at rest.
+  void oweDetour() => _detourOwed = true;
+
+  /// Whether a detour is owed, clearing it: the caller takes it now.
+  bool takeOwedDetour() {
+    final owed = _detourOwed;
+    _detourOwed = false;
+    return owed;
+  }
+
   /// Inserts a procedurally generated chain of nodes before the player
   /// reaches [resumeNodeId], the real node they were about to move to.
-  void startExcursion(List<StoryNode> chain, String resumeNodeId) {
+  /// [origin]/[originFr] are the label of the choice that set off, shown
+  /// on each of the chain's nodes so the detour reads as something met on
+  /// the way rather than a scene out of nowhere.
+  void startExcursion(
+    List<StoryNode> chain,
+    String resumeNodeId, {
+    String? origin,
+    String? originFr,
+  }) {
     if (chain.isEmpty) return;
     state = StoryPlayState(
       currentNodeId: state.currentNodeId,
@@ -192,6 +234,8 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       activeExcursionNode: chain.first,
       excursionQueue: chain.skip(1).toList(),
       resumeNodeId: resumeNodeId,
+      excursionOrigin: origin,
+      excursionOriginFr: originFr,
     );
   }
 
@@ -210,6 +254,8 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       activeExcursionNode: state.excursionQueue.first,
       excursionQueue: state.excursionQueue.skip(1).toList(),
       resumeNodeId: state.resumeNodeId,
+      excursionOrigin: state.excursionOrigin,
+      excursionOriginFr: state.excursionOriginFr,
     );
   }
 }

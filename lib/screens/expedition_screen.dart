@@ -168,6 +168,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         zoneChapter,
         partySize: 1 + session.activeAllyIds.length,
       ),
+      enemies: enemies,
+      shops: shops,
     );
   }
 
@@ -536,12 +538,30 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   : '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
           style: Theme.of(context).textTheme.labelMedium,
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 4),
+        // Why every event here happens: the party came to clear this
+        // place, and its guardian stands between them and what it holds.
+        Text(
+          _goalLine(lang, enemies),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        const SizedBox(height: 20),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (node.contextNoteFor(lang == AppLanguage.fr)
+                    case final note?) ...[
+                  Text(
+                    note,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 if (_aftermath != null && _aftermath!.isNotEmpty) ...[
                   Text(
                     _aftermath!,
@@ -581,6 +601,20 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         ),
       ],
     );
+  }
+
+  /// "Clear 4 encounters here, then its guardian, Overseer Renn, to claim
+  /// the zone." -- the reason the party is fighting its way through.
+  String _goalLine(AppLanguage lang, Map<String, dynamic> enemies) {
+    final bossName =
+        (enemies[_bossEnemyId] as Map<String, dynamic>?)?['enemyName']
+                ?.toString() ??
+            '';
+    final key =
+        bossName.isEmpty ? 'expedition_goal_no_boss' : 'expedition_goal';
+    return trFor(lang, key)
+        .replaceAll('{n}', '$_expeditionCount')
+        .replaceAll('{boss}', bossName);
   }
 
   Widget _buildSummary(BuildContext context,

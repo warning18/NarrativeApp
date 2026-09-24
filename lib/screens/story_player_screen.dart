@@ -10,6 +10,7 @@ import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
+import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
 import '../data/narration_tokens.dart';
 import '../data/story_repository.dart';
@@ -411,15 +412,28 @@ class _StoryView extends ConsumerWidget {
                                     ),
                                   ),
                                 )
-                              : _StoryText(
-                                  text: displayDescription,
-                                  uiTheme: node.uiTheme,
-                                  epilogue: epilogue,
-                                  speakerLabel: speakerLabel,
-                                  aftermath: pendingAftermath,
-                                  aftermathHeading:
-                                      tr(ref, 'aftermath_heading'),
-                                  epilogueHeading: tr(ref, 'epilogue_heading'),
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (playState.isInExcursion)
+                                      _DetourContextCard(
+                                        origin: playState
+                                            .excursionOriginFor(french),
+                                        note: node.contextNoteFor(french),
+                                      ),
+                                    _StoryText(
+                                      text: displayDescription,
+                                      uiTheme: node.uiTheme,
+                                      epilogue: epilogue,
+                                      speakerLabel: speakerLabel,
+                                      aftermath: pendingAftermath,
+                                      aftermathHeading:
+                                          tr(ref, 'aftermath_heading'),
+                                      epilogueHeading:
+                                          tr(ref, 'epilogue_heading'),
+                                    ),
+                                  ],
                                 ),
                         ),
                       ),
@@ -772,7 +786,20 @@ Future<void> _selectChoice({
     }
     final newShopId = choice.unlockShopId ?? '';
     final newQuestId = choice.unlockQuestId ?? '';
-    if (!isExcursion && (newShopId.isNotEmpty || newQuestId.isNotEmpty)) {
+    if (isExcursion && newShopId.isNotEmpty) {
+      // A stall met on the road is only there while the player stands at
+      // it: "Take a look" opens it now. (Recorded against the scene the
+      // detour left, it could never be reached from the Shops tab.)
+      final shop = (ref.read(gameDbProvider(shopsSchema)).value ??
+          const {})[newShopId] as Map<String, dynamic>?;
+      if (shop != null && context.mounted) {
+        await Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ShopDetailScreen(shopId: newShopId, shop: shop)));
+        if (!context.mounted) return;
+      }
+    } else if (newShopId.isNotEmpty || newQuestId.isNotEmpty) {
+      // A job offered on a detour says what it is and can be accepted on
+      // the spot, the same as one offered by the story.
       ref.read(pendingDiscoveryProvider.notifier).state = PendingDiscovery(
         shopId: newShopId.isNotEmpty ? newShopId : null,
         questId: newQuestId.isNotEmpty ? newQuestId : null,
@@ -794,9 +821,24 @@ Future<void> _selectChoice({
   // hub, say) is a moment inside the same scene, not a step down the road
   // -- no excursion or alignment event rolls for it.
   final chapter = chapterForNode(currentNodeId);
+  final atRest = SubNodeEngine.detourAllowedBetween(
+    story.nodeFor(currentNodeId)?.mood,
+    story.nodeFor(choice.nextId)?.mood,
+  );
   if (chapter != null &&
       !choice.opensCharacterCreation &&
-      choice.nextId != currentNodeId) {
+      choice.nextId != currentNodeId &&
+      !atRest) {
+    // A crisis runs on from this scene into the next: whatever the road
+    // held waits until it is over.
+    if (Random().nextDouble() < SubNodeEngine.detourChance) {
+      playNotifier.oweDetour();
+    }
+  }
+  if (chapter != null &&
+      !choice.opensCharacterCreation &&
+      choice.nextId != currentNodeId &&
+      atRest) {
     final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
     final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
     final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
@@ -817,11 +859,15 @@ Future<void> _selectChoice({
       enabled: ref.read(alignmentHuntersEnabledProvider),
     );
     if (alignmentEvent != null) {
-      playNotifier.startExcursion(alignmentEvent, choice.nextId);
+      playNotifier.startExcursion(alignmentEvent, choice.nextId,
+          origin: choice.text, originFr: choice.textFr);
       return;
     }
     final excursion = SubNodeEngine.maybeGenerate(
       random: Random(),
+      // A detour put off by a crisis is taken at the first road after it.
+      triggerChance:
+          playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
       chapter: chapter,
       shops: shops,
       enemies: enemies,
@@ -835,7 +881,8 @@ Future<void> _selectChoice({
       alignmentLabel: session.alignmentLabel,
     );
     if (excursion != null) {
-      playNotifier.startExcursion(excursion, choice.nextId);
+      playNotifier.startExcursion(excursion, choice.nextId,
+          origin: choice.text, originFr: choice.textFr);
       return;
     }
   }
@@ -1064,9 +1111,15 @@ class _HubChoiceCard extends ConsumerWidget {
       ref.watch(gameDbProvider(enemiesSchema));
     }
 
+    final roster = isExcursion
+        ? null
+        : _fightRosterFor(
+            choice, ref.watch(gameDbProvider(enemiesSchema)).value);
     final subtitle = choice.hasAbilityCheck
         ? '${tr(ref, '${choice.checkAbility}_label')} DC ${choice.checkDC ?? 10}'
-        : null;
+        : roster == null
+            ? null
+            : tr(ref, 'choice_fight_roster').replaceAll('{roster}', roster);
 
     return Card(
       child: ListTile(
@@ -1086,6 +1139,79 @@ class _HubChoiceCard extends ConsumerWidget {
                   isExcursion: isExcursion,
                   french: french,
                 ),
+      ),
+    );
+  }
+}
+
+/// Who a story fight choice sends the party against ("Street Bandit ×3"),
+/// or null for a choice with no fight, a fight whose enemies are not
+/// loaded yet, or the pact's turned companion (`@first_ally`), which the
+/// scene deliberately does not name before it happens.
+String? _fightRosterFor(StoryChoice choice, Map<String, dynamic>? enemies) {
+  if (!choice.triggersCombat || enemies == null) return null;
+  final ids = choice.allTriggerEnemyIds;
+  if (ids.any((id) => id.startsWith('@'))) return null;
+  return enemyRoster(ids, enemies);
+}
+
+/// The strip above a detour's text: that this scene is met on the way to
+/// the choice the player just made, why it is happening when the builder
+/// knows (a hunter's reason, the job on offer), and that the story picks
+/// up where the player was going once it is dealt with.
+class _DetourContextCard extends ConsumerWidget {
+  const _DetourContextCard({required this.origin, required this.note});
+
+  final String? origin;
+  final String? note;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final onColor = scheme.onSecondaryContainer;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: scheme.secondaryContainer.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.alt_route, size: 18, color: onColor),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    origin == null
+                        ? tr(ref, 'detour')
+                        : '${tr(ref, 'detour_on_the_way')} “$origin”',
+                    style: theme.textTheme.labelLarge?.copyWith(color: onColor),
+                  ),
+                  if (note != null) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      note!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          color: onColor, fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                  Text(
+                    tr(ref, 'detour_resumes'),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: onColor.withValues(alpha: 0.8)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1176,11 +1302,15 @@ class _ChoiceButton extends ConsumerWidget {
         ? lockedLabel!
         : choice.textFor(french);
 
-    if (choice.triggersCombat) {
-      // Keep the enemies database warm so it's ready by the time this
-      // button is tapped.
-      ref.watch(gameDbProvider(enemiesSchema));
-    }
+    // A fight is never a surprise behind a plain label ("Return to the
+    // stalls"): the button carries crossed swords and who is fought. A
+    // detour's own fight button already names them.
+    // Watching the enemies database also keeps it warm, so it is ready by
+    // the time a fight button is tapped.
+    final enemies = choice.triggersCombat
+        ? ref.watch(gameDbProvider(enemiesSchema)).value
+        : null;
+    final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
 
     return ElevatedButton(
       onPressed: locked
@@ -1197,22 +1327,44 @@ class _ChoiceButton extends ConsumerWidget {
               ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: choice.hasAbilityCheck
+        child: roster != null && !choice.hasAbilityCheck
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.casino_outlined, size: 16),
+                  const Icon(Icons.sports_martial_arts, size: 16),
                   const SizedBox(width: 6),
                   Flexible(
-                    child: Text(
-                      '$label '
-                      '(${tr(ref, '${choice.checkAbility}_label')} '
-                      'DC ${choice.checkDC ?? 10})',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(label),
+                        Text(
+                          tr(ref, 'choice_fight_roster')
+                              .replaceAll('{roster}', roster),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
                     ),
                   ),
                 ],
               )
-            : Text(label),
+            : choice.hasAbilityCheck
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.casino_outlined, size: 16),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          '$label '
+                          '(${tr(ref, '${choice.checkAbility}_label')} '
+                          'DC ${choice.checkDC ?? 10})',
+                        ),
+                      ),
+                    ],
+                  )
+                : Text(label),
       ),
     );
   }

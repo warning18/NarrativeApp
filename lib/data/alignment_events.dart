@@ -109,6 +109,34 @@ const List<String> _demonAmbushFr = [
       "précisément, qu'elle attendait.",
 ];
 
+/// Why a hunter came, for the detour's context card: the side it serves
+/// and what drew it, and that it comes more often the further the
+/// character's alignment leans.
+const String _angelHuntReasonEn =
+    'Hunted: the Choir sends its angels after those whose deeds lean to '
+    'Evil, or who struck the Pit\'s bargain. The further you lean, the more '
+    'often they come.';
+const String _angelHuntReasonFr =
+    'Traqué : le Chœur envoie ses anges contre ceux dont les actes penchent '
+    'vers le Mal, ou qui ont conclu le marché de la Fosse. Plus vous '
+    'penchez, plus ils viennent souvent.';
+const String _demonHuntReasonEn =
+    'Hunted: the Pit sends its demons after those whose deeds lean to Good, '
+    'or who took the Choir\'s charge. The further you lean, the more often '
+    'they come.';
+const String _demonHuntReasonFr =
+    'Traqué : la Fosse envoie ses démons contre ceux dont les actes penchent '
+    'vers le Bien, ou qui ont accepté la mission du Chœur. Plus vous '
+    'penchez, plus ils viennent souvent.';
+
+/// Why a temptation happens, for the detour's context card.
+const String _temptationReasonEn =
+    'Courted: the Choir and the Pit both want those who have not chosen a '
+    'side. Your answer moves your alignment.';
+const String _temptationReasonFr =
+    "Courtisé : le Chœur et la Fosse veulent tous deux ceux qui n'ont pas "
+    'encore choisi leur camp. Votre réponse déplace votre alignement.';
+
 /// A one-node ambush chain for a hunter of [side] ('Good' hunters are
 /// demons; 'Evil' hunters are angels), or null if [enemies] holds no such
 /// hunter for [chapter].
@@ -129,6 +157,8 @@ StoryNode? buildHunterAmbushNode({
     id: 'hunter_${enemyId}_${random.nextInt(1 << 30)}',
     description: en[idx],
     descriptionFr: fr[idx],
+    contextNote: isAngel ? _angelHuntReasonEn : _demonHuntReasonEn,
+    contextNoteFr: isAngel ? _angelHuntReasonFr : _demonHuntReasonFr,
     choices: [
       StoryChoice(
         text: 'Stand and fight',
@@ -298,6 +328,8 @@ StoryNode? buildTemptationNode({
     id: 'temptation_${random.nextInt(1 << 30)}',
     description: t.en,
     descriptionFr: t.fr,
+    contextNote: _temptationReasonEn,
+    contextNoteFr: _temptationReasonFr,
     choices: [
       StoryChoice(
         text: t.acceptEn,
