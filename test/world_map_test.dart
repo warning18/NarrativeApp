@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/world_map.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/map_look_provider.dart';
 import 'package:narrative_data_app/screens/story_graph_screen.dart';
 import 'package:narrative_data_app/screens/world_map_screen.dart';
 
@@ -126,6 +127,87 @@ void main() {
     });
   });
 
+  group('the player\'s journey', () {
+    test('the journey follows the story, one entry per stay', () {
+      final journey = journeyOf(
+          ['0', '100', '250', '270', '280', 'sub_280_1', '151', '300'], '400');
+      expect([for (final l in journey) l.id],
+          ['beggar', 'alley', 'square', 'market', 'hovel']);
+      expect(journeyOf(const [], 'nowhere'), isEmpty);
+    });
+
+    test('the road is the legs walked, each once', () {
+      final there = landmarkById('wharf')!, back = landmarkById('tern')!;
+      final legs = roadLegs([there, back, there, back], {'wharf', 'tern'});
+      expect(legs.length, 1);
+      // With no journey, the reached places in story order.
+      final road = roadLegs(const [], {'beggar', 'bridge', 'square'});
+      expect([for (final (a, b) in road) '${a.id}-${b.id}'],
+          ['beggar-bridge', 'bridge-square']);
+    });
+
+    test('the walk starts where the map last left off', () {
+      final journey = [
+        for (final id in ['beggar', 'alley', 'square', 'market', 'hovel'])
+          landmarkById(id)!,
+      ];
+      // First look: the last leg.
+      expect(journeyWalkStart(journey), 3);
+      // Seen up to the square: walk on from there.
+      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'square'), 2);
+      // Nothing new since.
+      expect(journeyWalkStart(journey, seenSteps: 5, seenLast: 'hovel'), 4);
+      // Another game's record: the last leg.
+      expect(journeyWalkStart(journey, seenSteps: 3, seenLast: 'docks'), 3);
+      // Never more than the last few legs.
+      final long = [for (var i = 0; i < 20; i++) journey[i % 5]];
+      expect(journeyWalkStart(long, seenSteps: 1, seenLast: 'beggar'),
+          19 - maxWalkLegs);
+      expect(journeyWalkStart([journey.first]), 0);
+    });
+
+    test('the traveller moves along the path by distance', () {
+      const path = [(0.0, 0.0), (10.0, 0.0), (10.0, 10.0)];
+      expect(pointAlong(path, 0), (0.0, 0.0));
+      expect(pointAlong(path, 0.25), (5.0, 0.0));
+      expect(pointAlong(path, 0.75), (10.0, 5.0));
+      expect(pointAlong(path, 1), (10.0, 10.0));
+      final (x, y) = travellerSpot(landmarkById('beggar')!);
+      expect(x, greaterThan(26));
+      expect(y, inInclusiveRange(126, 130));
+    });
+  });
+
+  group('the three looks', () {
+    final colours = {for (final p in worldMapTerrain.pixels) p & 0xFFFFFF};
+
+    test('the night map is the map as it was drawn', () {
+      final night = MapStyle.of(MapLook.night);
+      for (final c in colours) {
+        expect(night.ground(c), c);
+      }
+    });
+
+    test('the parchment redraws every colour of the ground', () {
+      final parchment = MapStyle.of(MapLook.parchment);
+      for (final c in colours) {
+        if (c == 0x6B4A2B) continue; // the piers keep their wood
+        expect(parchment.ground(c), isNot(c), reason: c.toRadixString(16));
+      }
+    });
+
+    test('the Shroud leaves only the Void its colour', () {
+      final shroud = MapStyle.of(MapLook.shroud);
+      for (final c in colours) {
+        final g = shroud.ground(c);
+        expect((g >> 16) & 0xFF, (g >> 8) & 0xFF, reason: 'grey');
+      }
+      expect(shroud.sprite('p'), spritePalette['p']);
+      final gold = shroud.sprite('y').toARGB32();
+      expect((gold >> 16) & 0xFF, (gold >> 8) & 0xFF);
+    });
+  });
+
   testWidgets('play mode opens the world map from the header', (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -207,13 +289,14 @@ void main() {
     final canvas = find.byKey(const Key('world_map_canvas'));
     final box = tester.getRect(canvas);
     final scale = box.width / worldMapWidth;
+    // A single tap waits to be sure it isn't the first of a double tap.
     await tester.tapAt(box.topLeft + Offset(26 * scale, 126 * scale));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
         findsOneWidget);
     // An unreached place can't be picked.
     await tester.tapAt(box.topLeft + Offset(222 * scale, 24 * scale));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
     expect(find.descendant(of: panel, matching: find.text('The Blind Beggar')),
         findsOneWidget);
 
@@ -244,5 +327,91 @@ void main() {
     await _settle(tester);
     expect(find.byType(StoryMapPage), findsOneWidget);
     expect(find.byType(WorldMapPage), findsNothing);
+  });
+
+  testWidgets('the map zooms, changes look, and remembers what it showed',
+      (tester) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    SharedPreferences.setMockInitialValues({
+      'player_session': json.encode({
+        'raceId': 'human',
+        'professionId': 'warrior',
+        'enemyKillCounts': <String, dynamic>{},
+      }),
+      'autosave_story_node': '280',
+      'autosave_story_history': json.encode(['0', '100', '250', '270']),
+      'autosave_story_visited': json.encode(['0', '100', '250', '270', '280']),
+    });
+    tester.view.physicalSize = const Size(420, 1600);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('menu_continue')));
+    await _settle(tester);
+    // A "Previously…" recap opens over a loaded story, once a launch.
+    final dialog = find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byWidgetPredicate((w) => w is ButtonStyleButton));
+    for (var i = 0; i < 4; i++) {
+      await _settle(tester);
+      if (dialog.evaluate().isNotEmpty) {
+        await tester.tap(dialog.last, warnIfMissed: false);
+      }
+    }
+    await _settle(tester);
+    await tester.tap(find.byTooltip('Map'));
+    await _settle(tester);
+
+    // Opening the map records how far the journey had gone.
+    await _settle(tester);
+    final prefs = await tester.runAsync(SharedPreferences.getInstance);
+    expect(json.decode(prefs!.getString(worldMapSeenPrefsKey)!),
+        {'steps': 3, 'last': 'square'});
+
+    double scale() => tester
+        .widget<InteractiveViewer>(find.byType(InteractiveViewer))
+        .transformationController!
+        .value
+        .getMaxScaleOnAxis();
+    expect(scale(), 1);
+    await tester.tap(find.byKey(const Key('world_map_zoom_in')));
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(scale(), closeTo(1.6, 0.01));
+    await tester.tap(find.byKey(const Key('world_map_zoom_out')));
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(scale(), closeTo(1, 0.01));
+    await tester.tap(find.byKey(const Key('world_map_centre')));
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(scale(), closeTo(3, 0.01));
+    // A double tap when zoomed in goes back to the whole map.
+    final visible = tester.getCenter(find.byType(InteractiveViewer));
+    await tester.tapAt(visible);
+    await tester.pump(const Duration(milliseconds: 50));
+    await tester.tapAt(visible);
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    expect(scale(), closeTo(1, 0.01));
+
+    // The parchment look, chosen from the header and remembered.
+    await tester.tap(find.byKey(const Key('world_map_look')));
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    await tester.tap(find.byKey(const Key('world_map_look_parchment')));
+    await tester.pumpAndSettle(const Duration(milliseconds: 50));
+    final container =
+        ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
+    expect(container.read(mapLookProvider), MapLook.parchment);
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(milliseconds: 50)));
+    expect(prefs.getString(mapLookPrefsKey), 'parchment');
+
+    // The journey can be walked again.
+    await tester.tap(find.byKey(const Key('world_map_replay')));
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pageBack();
+    await tester.pump(const Duration(seconds: 1));
   });
 }

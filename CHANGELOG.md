@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.137.0+166]
+
+The world map gets its original lettering, real zoom, the player walking
+their own road, and three looks.
+
+### Added
+- **The player on the map.** A small traveller in a grey cloak stands
+  where the story is. Opening the map, they walk the road from where the
+  map last showed them to where the story is now (up to eight places),
+  and the view follows them when zoomed in. A button walks the whole
+  journey again.
+- **The road the player took.** The road drawn is the player's own:
+  every leg they actually walked, in the order they walked it, so the
+  alley or the bridge shows whichever was taken.
+- **Zoom.** The map stays put above the text, so pinching and panning
+  work; + and − buttons, a double tap (in, or back out when zoomed), and
+  a button that centres on the player.
+- **Three looks.** Night (the map as drawn), Parchment (an old paper
+  chart in ink and sepia) and Shroud (the world in grey, with only the
+  Void keeping its colour). Chosen under the map and remembered.
+
+### Changed
+- **The original's lettering and colours.** Spectral for the text and
+  Pixelify Sans for titles, labels and buttons, with the map page's own
+  colours in light and dark, as the map was first drawn. Spectral (SIL
+  Open Font License) is bundled and listed in the app's licences.
+
 ## [1.136.0+165]
 
 A pixel map of the story's world, in play mode.

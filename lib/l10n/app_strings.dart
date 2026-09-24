@@ -212,9 +212,35 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'world_map_hint': {
     AppLanguage.en:
-        'Places appear as the story reaches them. Tap one to read about it; pinch to zoom.',
+        'Places appear as the story reaches them. Tap one to read about it. Pinch, double-tap or use + and − to zoom.',
     AppLanguage.fr:
-        'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus ; pincez pour zoomer.',
+        'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus. Pincez, touchez deux fois ou utilisez + et − pour zoomer.',
+  },
+  'world_map_look': {
+    AppLanguage.en: 'Map style',
+    AppLanguage.fr: 'Style de carte',
+  },
+  'world_map_look_night': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'world_map_look_parchment': {
+    AppLanguage.en: 'Parchment',
+    AppLanguage.fr: 'Parchemin',
+  },
+  'world_map_look_shroud': {
+    AppLanguage.en: 'Shroud',
+    AppLanguage.fr: 'Linceul',
+  },
+  'world_map_zoom_in': {AppLanguage.en: 'Zoom in', AppLanguage.fr: 'Zoomer'},
+  'world_map_zoom_out': {
+    AppLanguage.en: 'Zoom out',
+    AppLanguage.fr: 'Dézoomer',
+  },
+  'world_map_centre': {
+    AppLanguage.en: 'Centre on me',
+    AppLanguage.fr: 'Centrer sur moi',
+  },
+  'world_map_replay': {
+    AppLanguage.en: 'Replay the journey',
+    AppLanguage.fr: 'Rejouer le voyage',
   },
   'world_map_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'world_map_chapter_short': {AppLanguage.en: 'Ch', AppLanguage.fr: 'Ch.'},

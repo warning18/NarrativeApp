@@ -615,6 +615,9 @@ const Map<String, List<String>> mapSprites = {
   'crown': ['y...y...y', 'yy.yyy.yy', 'yyyyyyyyy', 'yxyyxyyxy', 'yyyyyyyyy'],
   // The "you are here" marker.
   'pin': ['kkkkk', 'kyyyk', 'kyyyk', '.kyk.', '..k..'],
+  // The player, in the grey cloak, standing and mid-stride.
+  'traveller': ['.kkk.', 'kGcGk', '.GGG.', 'GGGGG', '.GGG.', '.k.k.'],
+  'traveller_step': ['.kkk.', 'kGcGk', '.GGG.', 'GGGGG', '.GGG.', 'k...k'],
 };
 
 // ---- Terrain -------------------------------------------------------------
@@ -824,13 +827,238 @@ Uint8List fogMask(Set<String> discovered) {
   return mask;
 }
 
-/// [argb] under the fog: most of the way to the fog's own colour.
-int foggedColor(int argb) {
-  const fog = 0x0B0A0D;
+/// [argb] under the fog: [strength] of the way to the [fog] colour.
+int foggedColor(int argb, {int fog = 0x0B0A0D, double strength = 0.78}) {
   int mix(int shift) {
     final c = (argb >> shift) & 0xFF, f = (fog >> shift) & 0xFF;
-    return (c * 0.22 + f * 0.78).round();
+    return (c * (1 - strength) + f * strength).round();
   }
 
   return 0xFF000000 | (mix(16) << 16) | (mix(8) << 8) | mix(0);
 }
+
+// ---- The player's journey --------------------------------------------------
+
+/// The places the story has passed through, in order: the landmark of
+/// each scene in [history], then of [currentNodeId]; a place is counted
+/// once for as long as the story stays there. Scenes on no landmark (an
+/// excursion's generated steps) are skipped.
+List<Landmark> journeyOf(List<String> history, String currentNodeId) {
+  final journey = <Landmark>[];
+  for (final nodeId in [...history, currentNodeId]) {
+    final landmark = landmarkOfScene(nodeId);
+    if (landmark == null) continue;
+    if (journey.isEmpty || journey.last.id != landmark.id) {
+      journey.add(landmark);
+    }
+  }
+  return journey;
+}
+
+/// The stretches of road to draw: each leg of the [journey] once, or,
+/// with no journey to go by (a story moved by jumps), the road through
+/// the [discovered] places in story order.
+List<(Landmark, Landmark)> roadLegs(
+    List<Landmark> journey, Set<String> discovered) {
+  final legs = <(Landmark, Landmark)>[];
+  final seen = <String>{};
+  void add(Landmark a, Landmark b) {
+    final key =
+        a.id.compareTo(b.id) < 0 ? '${a.id}|${b.id}' : '${b.id}|${a.id}';
+    if (seen.add(key)) legs.add((a, b));
+  }
+
+  if (journey.length >= 2) {
+    for (var i = 0; i < journey.length - 1; i++) {
+      add(journey[i], journey[i + 1]);
+    }
+    return legs;
+  }
+  Landmark? previous;
+  for (final landmark in worldMapLandmarks) {
+    if (!discovered.contains(landmark.id)) continue;
+    if (previous != null) add(previous, landmark);
+    previous = landmark;
+  }
+  return legs;
+}
+
+/// Where the traveller stands at [landmark]: beside its picture, feet
+/// level with its base.
+(double, double) travellerSpot(Landmark landmark) {
+  final rows = mapSprites[landmark.sprite]!;
+  final scale = landmark.big ? 2 : 1;
+  final w = rows.first.length * scale, h = rows.length * scale;
+  return (landmark.x + w / 2 + 3, landmark.y + h / 2);
+}
+
+/// The most legs the traveller walks when the map opens.
+const int maxWalkLegs = 8;
+
+/// Where the traveller starts walking when the map opens: the place the
+/// map last showed ([seenSteps] places into the journey, the last being
+/// [seenLast]), so the walk covers what the story has done since. A first
+/// look, or a journey the record doesn't match (another game), walks the
+/// last leg. Returns the journey index to start from; the last index
+/// means there is nothing to walk.
+int journeyWalkStart(List<Landmark> journey,
+    {int? seenSteps, String? seenLast}) {
+  if (journey.length < 2) return journey.length - 1;
+  var start = journey.length - 2;
+  if (seenSteps != null &&
+      seenLast != null &&
+      seenSteps >= 1 &&
+      seenSteps <= journey.length &&
+      journey[seenSteps - 1].id == seenLast) {
+    start = seenSteps - 1;
+  }
+  final earliest = journey.length - 1 - maxWalkLegs;
+  return start < earliest ? earliest : start;
+}
+
+/// A point [t] (0 to 1) of the way along the path through [points],
+/// by distance.
+(double, double) pointAlong(List<(double, double)> points, double t) {
+  if (points.length == 1) return points.first;
+  final lengths = <double>[];
+  var total = 0.0;
+  for (var i = 0; i < points.length - 1; i++) {
+    final (ax, ay) = points[i];
+    final (bx, by) = points[i + 1];
+    final d = math.sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
+    lengths.add(d);
+    total += d;
+  }
+  if (total == 0) return points.last;
+  var remaining = t.clamp(0.0, 1.0) * total;
+  for (var i = 0; i < lengths.length; i++) {
+    if (remaining <= lengths[i] || i == lengths.length - 1) {
+      final f =
+          lengths[i] == 0 ? 1.0 : (remaining / lengths[i]).clamp(0.0, 1.0);
+      final (ax, ay) = points[i];
+      final (bx, by) = points[i + 1];
+      return (ax + (bx - ax) * f, ay + (by - ay) * f);
+    }
+    remaining -= lengths[i];
+  }
+  return points.last;
+}
+
+// ---- Looks -----------------------------------------------------------------
+
+/// The map's three looks: the night it was drawn in, an old parchment
+/// chart, and the grey of the Shroud, where only the Void keeps its
+/// colour.
+enum MapLook { night, parchment, shroud }
+
+/// How one look paints the map: its ground, sprites, fog and marks.
+class MapStyle {
+  const MapStyle({
+    required this.look,
+    required this.ground,
+    required this.sprite,
+    required this.fog,
+    required this.fogStrength,
+    required this.glint,
+    required this.embers,
+    required this.road,
+    required this.mark,
+    required this.frame,
+  });
+
+  final MapLook look;
+
+  /// The terrain's colour (0xRRGGBB) in this look.
+  final int Function(int rgb) ground;
+
+  /// A sprite letter's colour in this look.
+  final Color Function(String letter) sprite;
+
+  /// What the unexplored world fades to, and how far.
+  final int fog;
+  final double fogStrength;
+  final Color glint;
+  final List<Color> embers;
+  final Color road;
+
+  /// The chosen place's corners.
+  final Color mark;
+
+  /// Behind the map, before it is drawn.
+  final Color frame;
+
+  static MapStyle of(MapLook look) => switch (look) {
+        MapLook.night => _night,
+        MapLook.parchment => _parchment,
+        MapLook.shroud => _shroud,
+      };
+}
+
+int _grey(int rgb, {double gain = 1, int lift = 0, int tint = 0}) {
+  final r = (rgb >> 16) & 0xFF, g = (rgb >> 8) & 0xFF, b = rgb & 0xFF;
+  final l = (0.299 * r + 0.587 * g + 0.114 * b) * gain + lift;
+  int c(int v) => v.clamp(0, 255);
+  final v = l.round();
+  return (c(v) << 16) | (c(v) << 8) | c(v + tint);
+}
+
+final MapStyle _night = MapStyle(
+  look: MapLook.night,
+  ground: (rgb) => rgb,
+  sprite: (letter) => spritePalette[letter]!,
+  fog: 0x0B0A0D,
+  fogStrength: 0.78,
+  glint: const Color(0xFF4A8A93),
+  embers: const [Color(0xFFE0762B), Color(0xFFF2C14E), Color(0xFF9B2A2A)],
+  road: const Color(0xFFEEEAE2),
+  mark: const Color(0xFFF2C14E),
+  frame: const Color(0xFF0D2129),
+);
+
+/// The night map's ground colours on paper: pale sea, sepia coasts and
+/// walls, sand and stone in ink washes.
+const Map<int, int> _parchmentGround = {
+  0x122F38: 0xC8D3C4, 0x163A44: 0xBCC9B9, 0x0E2730: 0xD2DBCD, // sea
+  0x2F6B73: 0x6E5A3E, // coastline, in ink
+  0x1D4C57: 0x8FA9A0, // river
+  0x3B3326: 0xE6D5B0, 0x4A4032: 0xDCC8A0, 0x2F291F: 0xEEE0C0, // Alster
+  0x6A6459: 0xCBB38A, 0x7A7468: 0xBFA67C, 0xA39D90: 0x6E5A3E, // the city
+  0x5E5C58: 0xD8C7A3, 0x7B7A75: 0xCDBB95, 0x4A4946: 0xE3D3B2, // the coast
+  0x9FB3BF: 0xEEF1EC, 0x7F939F: 0xE0E6E0, // frost
+  0x9A968C: 0xD6C29C, 0xB3AFA4: 0xCBB690, // the shore
+  0x6B4A2B: 0x6B4A2B, // piers
+};
+
+final MapStyle _parchment = MapStyle(
+  look: MapLook.parchment,
+  ground: (rgb) => _parchmentGround[rgb] ?? rgb,
+  sprite: (letter) => spritePalette[letter]!,
+  fog: 0xF3EBD8,
+  fogStrength: 0.82,
+  glint: const Color(0xFF8EA496),
+  embers: const [Color(0xFFB5531A), Color(0xFF8C3B2E), Color(0xFFC98A3B)],
+  road: const Color(0xFF8C3B2E),
+  mark: const Color(0xFF9B2A2A),
+  frame: const Color(0xFFB9A57A),
+);
+
+/// The Void's colours, the only ones the Shroud leaves.
+const Set<String> _voidLetters = {'p', 'P', 'v', 'm'};
+
+final MapStyle _shroud = MapStyle(
+  look: MapLook.shroud,
+  ground: (rgb) => _grey(rgb, gain: 1.1, lift: 6, tint: 4),
+  sprite: (letter) {
+    final color = spritePalette[letter]!;
+    if (_voidLetters.contains(letter)) return color;
+    final argb = color.toARGB32();
+    return Color(0xFF000000 | _grey(argb & 0xFFFFFF, gain: 1.05, lift: 8));
+  },
+  fog: 0x9C9CA3,
+  fogStrength: 0.72,
+  glint: const Color(0xFF6E6E76),
+  embers: const [Color(0xFFB98CF0), Color(0xFF8A4FD1), Color(0xFFD7B8FF)],
+  road: const Color(0xFFE9E6DF),
+  mark: const Color(0xFFD7B8FF),
+  frame: const Color(0xFF16161A),
+);

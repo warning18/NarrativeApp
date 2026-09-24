@@ -9,12 +9,16 @@ import 'providers/theme_mode_provider.dart';
 import 'screens/main_menu_screen.dart';
 
 void main() {
-  // The world map's pixel font is under the SIL Open Font License, which
-  // asks that its licence travel with it: it shows in the app's licences.
+  // The world map's fonts are under the SIL Open Font License, which asks
+  // that their licence travel with them: it shows in the app's licences.
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks(
       const ['Pixelify Sans'],
       await rootBundle.loadString('assets/fonts/PixelifySans-OFL.txt'),
+    );
+    yield LicenseEntryWithLineBreaks(
+      const ['Spectral'],
+      await rootBundle.loadString('assets/fonts/Spectral-OFL.txt'),
     );
   });
   runApp(const ProviderScope(child: MyApp()));
