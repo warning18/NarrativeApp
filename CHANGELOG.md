@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.125.0+153]
+
+The number before the confirm: every rolled die now says what it will do
+to the enemy it is aimed at.
+
+### Added
+- **Damage preview on the dice.** Under each landed die's name, the damage
+  its target would take if confirmed now (or the healing, block or mana
+  it gives), computed with the confirm's own formula: base, gear, stat
+  scaling, alignment gear, element bonus, Weaken, the target's Armored
+  affix, bracing and the battlefield's multipliers. A strike that would
+  drop its target reads "KO"; a strike that cashes in the momentum meter
+  shows its guaranteed-critical number with a star. A lucky critical is
+  the one thing not shown, since it is rolled at the confirm.
+- **The enemy's bar shows the slice about to go.** The health bar of an
+  enemy with dice aimed at it darkens the part those dice would take off,
+  reads "now → after / max", and carries a "-N" chip (or "-N KO"). In a
+  pack fight, re-aiming a die moves the slice and the number with it, so
+  the player can pick a target from what each choice actually does.
+- **The face sheet says the same.** A long-press on a die now adds
+  "Against <enemy>: N damage, M HP left" under the face's own line, from
+  the same preview.
+
+### Fixed
+- The face sheet's numbers left out alignment gear and unique/set gear
+  damage, so they could read lower than what the confirm dealt. The
+  confirm, the preview and the sheet now share one damage formula
+  (`_totalDamageFor`) and one affix rule (`strikeDamageAfterAffixes`).
+
 ## [1.124.0+152]
 
 A fight the story can lose, and outcomes said plainly.

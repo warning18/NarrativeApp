@@ -1001,6 +1001,24 @@ void main() {
       expect(result.damageDealt, criticalDamage(16));
     });
 
+    test('with no RNG a face resolves to its plain number, never a crit', () {
+      // The fight screen's roll preview relies on this: the number shown
+      // under a die before the confirm is the non-critical damage, whatever
+      // the attacker's Luck or gear crit bonus.
+      for (var i = 0; i < 50; i++) {
+        final attack = resolvePlayerFace(
+            face(type: 'Attack', value: 6), skills, 10,
+            luck: 40, critChanceBonus: 30);
+        expect(attack.isCritical, isFalse);
+        expect(attack.damageDealt, 16);
+        final skill = resolvePlayerFace(
+            face(type: 'Skill', skill: 'smite'), skills, 10,
+            luck: 40, critChanceBonus: 30, alignmentLabel: 'Good');
+        expect(skill.isCritical, isFalse);
+        expect(skill.damageDealt, 18);
+      }
+    });
+
     test('a matching alignment strengthens a tagged skill by a quarter', () {
       final good = resolvePlayerFace(
           face(type: 'Skill', skill: 'smite'), skills, 10,

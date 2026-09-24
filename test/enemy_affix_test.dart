@@ -98,6 +98,33 @@ void main() {
     expect(affixFromName('nope'), isNull);
   });
 
+  group('strikeDamageAfterAffixes', () {
+    test('an Armored enemy shrugs off the flat reduction from an Attack face',
+        () {
+      expect(strikeDamageAfterAffixes(12, 'Attack', armored: true),
+          12 - armoredFlatReduction);
+      expect(
+          strikeDamageAfterAffixes(armoredFlatReduction, 'Attack',
+              armored: true),
+          1);
+      expect(strikeDamageAfterAffixes(2, 'Attack', armored: true), 1);
+    });
+
+    test('a Skill face goes through Armored whole', () {
+      expect(strikeDamageAfterAffixes(12, 'Skill', armored: true), 12);
+    });
+
+    test('an unarmored enemy takes the face as rolled', () {
+      expect(strikeDamageAfterAffixes(12, 'Attack', armored: false), 12);
+      expect(strikeDamageAfterAffixes(1, 'Attack', armored: false), 1);
+    });
+
+    test('nothing dealt stays nothing', () {
+      expect(strikeDamageAfterAffixes(0, 'Attack', armored: true), 0);
+      expect(strikeDamageAfterAffixes(0, 'Defend', armored: false), 0);
+    });
+  });
+
   group('battlefield conditions', () {
     test('Cramped only rolls against three or more enemies', () {
       for (var seed = 0; seed < 300; seed++) {

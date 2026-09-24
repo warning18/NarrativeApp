@@ -134,6 +134,49 @@ class _LogEntry {
   final _LogKind kind;
 }
 
+/// What confirming one member's rolled face would do, worked out with the
+/// same numbers as [_FightScreenState._confirmRoll] but without the dice's
+/// luck: no random critical (a momentum surge, which is a guaranteed one,
+/// is counted), the target's Armored affix applied, the battlefield's
+/// heal/block multipliers applied, and the same target the confirm would
+/// pick. Shown on the die tile, on the enemy card's health bar and in the
+/// face sheet, so the player sees the number before committing to it.
+class _FacePreview {
+  const _FacePreview({
+    required this.result,
+    required this.target,
+    required this.damage,
+    required this.healing,
+    required this.block,
+    required this.surge,
+  });
+
+  /// The face resolved with no random critical.
+  final PlayerActionResult result;
+
+  /// The enemy this face would hit: null for a face that does not strike,
+  /// or when nothing is left standing.
+  final _EnemyMember? target;
+
+  /// Damage [target] would take after its affixes; the face's own damage
+  /// when there is no target.
+  final int damage;
+
+  /// Healing the member would get, after the battlefield's multiplier.
+  final int healing;
+
+  /// Block the member would hold, after bracing and the battlefield's
+  /// multiplier.
+  final int block;
+
+  /// True when this strike cashes in the momentum meter as a guaranteed
+  /// critical (only the round's first strike does).
+  final bool surge;
+
+  /// True when [damage] would drop [target].
+  bool get lethal => target != null && damage >= target!.currentHealth;
+}
+
 Color _logColor(BuildContext context, _LogKind kind) {
   switch (kind) {
     case _LogKind.info:
@@ -1010,6 +1053,108 @@ class _FightScreenState extends ConsumerState<FightScreen>
     return null;
   }
 
+  /// A member's attack damage behind [face]: base, equipment, stat
+  /// scaling, alignment gear, unique/set gear and the face's element
+  /// bonus. The one formula [_confirmRoll], [_previewRoll] and the face
+  /// sheet all use, so a number shown is a number dealt.
+  int _totalDamageFor(
+    _PartyMember actor,
+    DiceFaceResult face,
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+  ) {
+    final availableSkills = _availableSkillsFor(actor, skills);
+    final element = _elementFor(face, availableSkills);
+    final elementalBonus =
+        _elementalDamageBonus(element, actor.equippedItemIds, items);
+    final scalingBonus = equipmentScalingBonusFor(
+      actor.equippedItemIds,
+      items,
+      strength: actor.strength,
+      dexterity: actor.dexterity,
+      constitution: actor.constitution,
+      intelligence: actor.intelligence,
+    );
+    final alignedBonus =
+        alignmentGearBonusFor(actor.equippedItemIds, items, _alignmentLabel);
+    return actor.baseDamage +
+        equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
+        scalingBonus.damageBonus +
+        alignedBonus.damageBonus +
+        actor.gear.attackDamage +
+        elementalBonus;
+  }
+
+  /// The enemy a strike by [actor] lands on if confirmed now: the only
+  /// enemy in a solo fight, the aimed one in a pack, or the first still
+  /// standing when the aimed one has gone down (the same redirect
+  /// [_confirmRoll] makes). Null when nothing is left to hit.
+  _EnemyMember? _strikeTargetFor(_PartyMember actor) {
+    if (_enemies.length == 1) {
+      return _enemies.first.isAlive ? _enemies.first : null;
+    }
+    final key = _selectedTargets[actor.id];
+    final picked = key == null ? null : _enemyByKey(key);
+    if (picked != null && picked.isAlive) return picked;
+    return _firstLivingEnemy();
+  }
+
+  /// Every acting member's [_FacePreview] for the faces on the table,
+  /// keyed by member id: empty while the dice are still spinning. Walks
+  /// the party in the confirm's own order so the momentum surge lands on
+  /// the same strike it will land on.
+  Map<String, _FacePreview> _previewRoll(
+    Map<String, dynamic> skills,
+    Map<String, dynamic> items,
+    AppLanguage lang,
+  ) {
+    final previews = <String, _FacePreview>{};
+    if (_rolling) return previews;
+    var surgeArmed = _momentum >= _momentumThreshold;
+    for (final actor in _actingParty) {
+      final face = _currentFaces[actor.id];
+      if (face == null) continue;
+      final isStrike = face.type == 'Attack' || face.type == 'Skill';
+      final surge = isStrike && surgeArmed;
+      if (surge) surgeArmed = false;
+      final result = resolvePlayerFace(
+        face,
+        _availableSkillsFor(actor, skills),
+        _totalDamageFor(actor, face, skills, items),
+        language: lang,
+        activeEffects: actor.statusEffects,
+        wisdomHealBonus: actor.wisdom ~/ 2,
+        forceCritical: surge,
+        alignmentLabel: _alignmentLabel,
+      );
+      final target = isStrike ? _strikeTargetFor(actor) : null;
+      final damage = target == null
+          ? result.damageDealt
+          : strikeDamageAfterAffixes(result.damageDealt, face.type,
+              armored: target.hasAffix(EnemyAffix.armored));
+      var healing = result.healingDone;
+      if (_condition == BattlefieldCondition.shrine && healing > 0) {
+        healing = (healing * shrineHealMultiplier).round();
+      }
+      var block = result.blockAmount;
+      if (block > 0 && _isTelegraphedTarget(actor)) {
+        block *= _telegraphBraceMultiplier;
+      }
+      if (_condition == BattlefieldCondition.highGround && block > 0) {
+        block = (block * highGroundBlockMultiplier).round();
+      }
+      previews[actor.id] = _FacePreview(
+        result: result,
+        target: target,
+        damage: damage,
+        healing: healing,
+        block: block,
+        surge: surge,
+      );
+    }
+    return previews;
+  }
+
   _EnemyMember? _enemyByKey(String key) {
     for (final enemy in _enemies) {
       if (enemy.key == key) return enemy;
@@ -1334,24 +1479,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
       final availableSkills = _availableSkillsFor(actor, skills);
       final element = _elementFor(face, availableSkills);
-      final elementalBonus =
-          _elementalDamageBonus(element, actor.equippedItemIds, items);
-      final scalingBonus = equipmentScalingBonusFor(
-        actor.equippedItemIds,
-        items,
-        strength: actor.strength,
-        dexterity: actor.dexterity,
-        constitution: actor.constitution,
-        intelligence: actor.intelligence,
-      );
-      final alignedBonus =
-          alignmentGearBonusFor(actor.equippedItemIds, items, _alignmentLabel);
-      final totalDamage = actor.baseDamage +
-          equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-          scalingBonus.damageBonus +
-          alignedBonus.damageBonus +
-          actor.gear.attackDamage +
-          elementalBonus;
+      final totalDamage = _totalDamageFor(actor, face, skills, items);
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
       // Momentum: the built-up hits cash in as a guaranteed critical on
       // this strike, and the counter starts over from it.
@@ -1415,21 +1543,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _EnemyMember? target;
       var redirected = false;
       if (isStrike) {
-        if (_enemies.length == 1) {
-          target = _enemies.first.isAlive ? _enemies.first : null;
-        } else {
-          final key = _selectedTargets[actor.id];
-          final picked = key == null ? null : _enemyByKey(key);
-          if (picked != null && picked.isAlive) {
-            target = picked;
-          } else {
-            // The picked enemy went down to an earlier hit this same
-            // round -- the blow carries on to the next one standing rather
-            // than vanishing into a corpse while the log claims a hit.
-            target = _firstLivingEnemy();
-            redirected = target != null;
-          }
-        }
+        target = _strikeTargetFor(actor);
+        // The picked enemy went down to an earlier hit this same round --
+        // the blow carries on to the next one standing rather than
+        // vanishing into a corpse while the log claims a hit.
+        final key = _selectedTargets[actor.id];
+        final picked = key == null ? null : _enemyByKey(key);
+        redirected = _enemies.length > 1 &&
+            target != null &&
+            (picked == null || !picked.isAlive);
       }
 
       if (redirected && target != null) {
@@ -1440,11 +1562,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
 
       if (target != null) {
-        var damage = result.damageDealt;
-        if (damage > 0 &&
-            face.type == 'Attack' &&
-            target.hasAffix(EnemyAffix.armored)) {
-          damage = max(1, damage - armoredFlatReduction);
+        final armored = target.hasAffix(EnemyAffix.armored);
+        final damage = strikeDamageAfterAffixes(result.damageDealt, face.type,
+            armored: armored);
+        if (result.damageDealt > 0 && face.type == 'Attack' && armored) {
           newEntries.add(_LogEntry(
             '${target.displayName} ${trFor(lang, 'armored_absorbs_suffix')}',
             _LogKind.info,
@@ -2698,6 +2819,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
                 ?.isNotEmpty ==
             true);
+    final previews =
+        _previewRoll(skills, items, ref.watch(appLanguageProvider));
 
     return AnimatedBuilder(
       animation: _shakeController,
@@ -2715,7 +2838,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
             child: _buildTopStrip(),
           ),
           const SizedBox(height: 6),
-          _buildDiceTray(acting, dice, skills, items),
+          _buildDiceTray(acting, dice, skills, items, previews),
           const SizedBox(height: 6),
           Expanded(
             child: Padding(
@@ -2725,7 +2848,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 children: [
                   Expanded(flex: 5, child: _buildPartyColumn(items)),
                   const SizedBox(width: 8),
-                  Expanded(flex: 6, child: _buildEnemyColumn()),
+                  Expanded(flex: 6, child: _buildEnemyColumn(previews)),
                 ],
               ),
             ),
@@ -2757,14 +2880,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
   // --- Dice tray -----------------------------------------------------------
 
   /// The party's rolled dice, one tile per acting member, in the member's
-  /// own accent color. A tap on a landed die keeps it through the next
-  /// reroll (tap again to release it); a long-press opens the face's
-  /// details and the whole die.
+  /// own accent color, with what the landed face is worth this round under
+  /// its name (see [_buildPreviewLine]). A tap on a landed die keeps it
+  /// through the next reroll (tap again to release it); a long-press opens
+  /// the face's details and the whole die.
   Widget _buildDiceTray(
     List<_PartyMember> acting,
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
+    Map<String, _FacePreview> previews,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
     final canLock =
@@ -2791,7 +2916,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
               for (final actor in acting)
                 Expanded(
                   child: Center(
-                    child: _buildDieTile(actor, dice, skills, items, canLock),
+                    child: _buildDieTile(actor, dice, skills, items, canLock,
+                        previews[actor.id]),
                   ),
                 ),
             ],
@@ -2818,6 +2944,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
     bool canLock,
+    _FacePreview? preview,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
     final accent = _accentFor(actor);
@@ -2925,8 +3052,62 @@ class _FightScreenState extends ConsumerState<FightScreen>
               style: const TextStyle(fontSize: 9),
             ),
           ),
+          SizedBox(
+            width: 72,
+            height: 13,
+            child: face == null || spinning || preview == null
+                ? null
+                : _buildPreviewLine(preview),
+          ),
         ],
       ),
+    );
+  }
+
+  /// The one number a landed die is worth this round, under its name on
+  /// the tile: the damage its target would take (marked when it would drop
+  /// the target, starred when momentum makes it a guaranteed critical),
+  /// or the healing, block or mana it gives.
+  Widget _buildPreviewLine(_FacePreview preview) {
+    final result = preview.result;
+    final IconData icon;
+    final String text;
+    final Color color;
+    if (result.damageDealt > 0) {
+      icon = preview.surge ? Icons.auto_awesome : Icons.bolt;
+      text = preview.lethal
+          ? '${preview.damage} ${tr(ref, 'preview_lethal_label')}'
+          : '${preview.damage}';
+      color = preview.lethal ? Colors.red : Colors.deepOrange;
+    } else if (preview.healing > 0) {
+      icon = Icons.favorite;
+      text = '+${preview.healing}';
+      color = Colors.green;
+    } else if (preview.block > 0) {
+      icon = Icons.shield;
+      text = '${preview.block}';
+      color = Colors.blue;
+    } else if (result.manaGained > 0) {
+      icon = manaIcon;
+      text = '+${result.manaGained}';
+      color = manaColor;
+    } else {
+      return const SizedBox.shrink();
+    }
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 11, color: color),
+        const SizedBox(width: 2),
+        Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+              fontSize: 10, fontWeight: FontWeight.bold, color: color),
+        ),
+      ],
     );
   }
 
@@ -2969,28 +3150,35 @@ class _FightScreenState extends ConsumerState<FightScreen>
   ) {
     final lang = ref.read(appLanguageProvider);
     final availableSkills = _availableSkillsFor(actor, skills);
-    final elementalBonus = _elementalDamageBonus(
-        _elementFor(face, availableSkills), actor.equippedItemIds, items);
-    final scalingBonus = equipmentScalingBonusFor(
-      actor.equippedItemIds,
-      items,
-      strength: actor.strength,
-      dexterity: actor.dexterity,
-      constitution: actor.constitution,
-      intelligence: actor.intelligence,
-    );
-    final totalDamage = actor.baseDamage +
-        equipmentBonusFor(actor.equippedItemIds, items, 'attackDamage') +
-        scalingBonus.damageBonus +
-        elementalBonus;
-    final preview = resolvePlayerFace(
-      face,
-      availableSkills,
-      totalDamage,
-      language: lang,
-      activeEffects: actor.statusEffects,
-      wisdomHealBonus: actor.wisdom ~/ 2,
-    );
+    // The tile's own preview when this is the face on the table (the usual
+    // case); otherwise the face resolved on its own, with no target.
+    final tablePreview = _previewRoll(skills, items, lang)[actor.id];
+    final preview = tablePreview != null &&
+            tablePreview.result.message.isNotEmpty &&
+            _currentFaces[actor.id] == face
+        ? tablePreview
+        : _FacePreview(
+            result: resolvePlayerFace(
+              face,
+              availableSkills,
+              _totalDamageFor(actor, face, skills, items),
+              language: lang,
+              activeEffects: actor.statusEffects,
+              wisdomHealBonus: actor.wisdom ~/ 2,
+              alignmentLabel: _alignmentLabel,
+            ),
+            target: null,
+            damage: 0,
+            healing: 0,
+            block: 0,
+            surge: false,
+          );
+    final target = preview.target;
+    final targetLine = target == null || preview.damage <= 0
+        ? null
+        : '${trFor(lang, 'preview_against_prefix')} ${target.displayName}: '
+            '${preview.damage} ${trFor(lang, 'damage_word')}, '
+            '${preview.lethal ? trFor(lang, 'preview_lethal_label') : '${max(0, target.currentHealth - preview.damage)} ${trFor(lang, 'hp_label')} ${trFor(lang, 'preview_left_suffix')}'}';
     final element = _elementFor(face, availableSkills);
     final dieId = actor.equippedDiceId;
     final faces = dieId == null
@@ -3042,7 +3230,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(preview.message, style: theme.textTheme.bodyMedium),
+                Text(preview.result.message, style: theme.textTheme.bodyMedium),
+                if (targetLine != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    targetLine,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        color: preview.lethal ? Colors.red : Colors.deepOrange,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
                 if (face.type == 'Skill') ...[
                   const SizedBox(height: 4),
                   Text(
@@ -3316,9 +3513,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
   }
 
   /// A thin health bar with its numbers inside -- shared by both columns.
-  Widget _buildHpBar(int current, int maxValue, {double height = 14}) {
+  /// With [pending] damage on the way (the dice aimed at an enemy, see
+  /// [_previewRoll]) the slice about to go is darkened and the numbers
+  /// read "now → after / max".
+  Widget _buildHpBar(int current, int maxValue,
+      {double height = 14, int pending = 0}) {
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
     final ratio = rawRatio.clamp(0.0, 1.0);
+    final after = max(0, current - pending);
+    final afterRatio = maxValue <= 0 ? 0.0 : (after / maxValue).clamp(0.0, 1.0);
     final barColor = ratio > 0.5
         ? Colors.green
         : (ratio > 0.25 ? Colors.orange : Colors.red);
@@ -3334,23 +3537,45 @@ class _FightScreenState extends ConsumerState<FightScreen>
           alignment: Alignment.center,
           children: [
             LayoutBuilder(
-              builder: (context, constraints) => Align(
-                alignment: Alignment.centerLeft,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                  width: constraints.maxWidth * ratio,
-                  height: height,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [barColor.withValues(alpha: 0.75), barColor],
+              builder: (context, constraints) => Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      width: constraints.maxWidth * ratio,
+                      height: height,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [barColor.withValues(alpha: 0.75), barColor],
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  if (pending > 0 && ratio > afterRatio)
+                    Positioned(
+                      left: constraints.maxWidth * afterRatio,
+                      width: constraints.maxWidth * (ratio - afterRatio),
+                      top: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.45),
+                          border: Border(
+                            left: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.8)),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             Text(
-              '$current / $maxValue',
+              pending > 0
+                  ? '$current → $after / $maxValue'
+                  : '$current / $maxValue',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: height * 0.68,
@@ -3397,24 +3622,32 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   // --- Enemy column --------------------------------------------------------
 
-  Widget _buildEnemyColumn() {
+  Widget _buildEnemyColumn(Map<String, _FacePreview> previews) {
     return ListView(
       padding: EdgeInsets.zero,
       children: [
         for (final enemy in _enemies) ...[
-          _buildEnemyCard(enemy),
+          _buildEnemyCard(enemy, previews),
           const SizedBox(height: 6),
         ],
       ],
     );
   }
 
-  /// One enemy: portrait, name, health bar, affix/status chips, the dots of
-  /// every party die currently aimed at it, and its intent box (see
-  /// [_buildIntentBox]). In a pack fight a tap aims the selected member's
-  /// die here; otherwise (or on a long-press) it opens the enemy's details.
-  Widget _buildEnemyCard(_EnemyMember enemy) {
+  /// One enemy: portrait, name, health bar (with the slice the dice aimed
+  /// at it would take off, see [_buildHpBar]), affix/status chips, the
+  /// dots of every party die currently aimed at it, and its intent box
+  /// (see [_buildIntentBox]). In a pack fight a tap aims the selected
+  /// member's die here; otherwise (or on a long-press) it opens the
+  /// enemy's details.
+  Widget _buildEnemyCard(
+      _EnemyMember enemy, Map<String, _FacePreview> previews) {
     final colorScheme = Theme.of(context).colorScheme;
+    var pending = 0;
+    for (final preview in previews.values) {
+      if (preview.target?.key == enemy.key) pending += preview.damage;
+    }
+    final lethal = enemy.isAlive && pending >= enemy.currentHealth;
     final selectedActor =
         _selectedActorId == null ? null : _memberById(_selectedActorId!);
     final canRetarget = selectedActor != null &&
@@ -3508,7 +3741,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 ],
               ),
               const SizedBox(height: 5),
-              _buildHpBar(enemy.currentHealth, enemy.maxHealth),
+              _buildHpBar(enemy.currentHealth, enemy.maxHealth,
+                  pending: enemy.isAlive ? pending : 0),
               const SizedBox(height: 4),
               Wrap(
                 spacing: 4,
@@ -3516,6 +3750,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   _miniStat(Icons.bolt, '${enemy.damage}', Colors.deepOrange),
+                  if (enemy.isAlive && pending > 0)
+                    _miniStat(
+                      lethal ? Icons.dangerous_outlined : Icons.arrow_downward,
+                      lethal
+                          ? '-$pending ${tr(ref, 'preview_lethal_label')}'
+                          : '-$pending',
+                      Colors.red,
+                    ),
                   if (enemy.fled)
                     Text(tr(ref, 'fled_label'),
                         style: const TextStyle(

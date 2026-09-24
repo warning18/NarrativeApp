@@ -1727,6 +1727,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Dernier lancer : ces faces s\'appliquent à la confirmation.',
   },
+  'preview_against_prefix': {
+    AppLanguage.en: 'Against',
+    AppLanguage.fr: 'Contre'
+  },
+  'preview_left_suffix': {AppLanguage.en: 'left', AppLanguage.fr: 'restants'},
+  'preview_lethal_label': {AppLanguage.en: 'KO', AppLanguage.fr: 'KO'},
   'nobody_can_act_label': {
     AppLanguage.en: 'Nobody can act this round.',
     AppLanguage.fr: 'Personne ne peut agir ce tour-ci.',

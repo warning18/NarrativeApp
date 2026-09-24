@@ -36,6 +36,18 @@ const double affixChancePackMember = 0.15;
 /// (never below 1 damage dealt).
 const int armoredFlatReduction = 4;
 
+/// The damage a strike lands on an enemy once its affixes are in: an
+/// Armored enemy shrugs off [armoredFlatReduction] of a plain Attack face
+/// (never below 1 dealt), while a Skill face goes through whole. The
+/// fight's confirm and its roll preview both go through here, so the
+/// number shown on a die before the confirm is the number the confirm
+/// deals.
+int strikeDamageAfterAffixes(int damage, String faceType,
+    {required bool armored}) {
+  if (damage <= 0 || !armored || faceType != 'Attack') return damage;
+  return max(1, damage - armoredFlatReduction);
+}
+
 /// The health fraction under which an [EnemyAffix.skittish] enemy flees at
 /// the end of a party round.
 const double skittishFleeThreshold = 0.25;
