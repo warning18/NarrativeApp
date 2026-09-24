@@ -42,7 +42,8 @@
     ],
     "boardingChance": 0.3,
     "prizePartId": "",
-    "prizeGold": 30
+    "prizeGold": 30,
+    "shipName_fr": "Esquif de pillards"
   },
   "corsair_brig": {
     "shipName": "corsair_brig",
@@ -88,7 +89,8 @@
     ],
     "boardingChance": 0.4,
     "prizePartId": "spare_canvas",
-    "prizeGold": 40
+    "prizeGold": 40,
+    "shipName_fr": "Brick corsaire"
   },
   "inquisition_cutter": {
     "shipName": "inquisition_cutter",
@@ -134,7 +136,8 @@
     ],
     "boardingChance": 0.35,
     "prizePartId": "iron_plating",
-    "prizeGold": 50
+    "prizeGold": 50,
+    "shipName_fr": "Cotre de l’Inquisition"
   },
   "void_barge": {
     "shipName": "void_barge",
@@ -189,6 +192,7 @@
     ],
     "boardingChance": 0.3,
     "prizePartId": "fire_pots",
-    "prizeGold": 90
+    "prizeGold": 90,
+    "shipName_fr": "Barge du Vide"
   }
 }

@@ -58,6 +58,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     this.boarding = const BoardingProfile(),
     this.chapter = 1,
     this.buildCrew,
+    this.isTest = false,
   });
 
   final ShipState player;
@@ -80,6 +81,10 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   /// Rebuilds the crew from the session after a boarding fight, which
   /// settles their health on its own; null keeps the panel's own copy.
   final List<ShipCrew> Function()? buildCrew;
+
+  /// An Edit Mode test battle (see FightLabScreen): its boarding fight is
+  /// a test fight too, with no permadeath on a loss.
+  final bool isTest;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -339,7 +344,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
       }
     }
     if (!await _maybeRepelBoarders(
-        ref.read(gameDbProvider(enemiesSchema)).value)) {
+        ref.read(localizedDbProvider(enemiesSchema)).value)) {
       return;
     }
     if (!mounted) return;
@@ -419,6 +424,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
             chapter: widget.chapter,
             healthMultiplier: healthMultiplier,
             difficultyMultiplier: boardingDifficulty,
+            isTest: widget.isTest,
           ),
         ),
       ),
@@ -531,7 +537,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
     final theme = Theme.of(context);
-    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
     final canBoard = _canBoardThem(enemies);
     final hintKey = _selectedCrewId != null
         ? 'ship_station_hint'

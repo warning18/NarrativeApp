@@ -17,7 +17,9 @@
     "isMainZone": true,
     "bossFlavorText": "The dock overseer had been watching me work the sheds since the second one, and had apparently decided that pitch and timber leaving his wharf without a tithe was a personal insult. He came down the gangway with two boys carrying his ledger and a cudgel that had clearly settled arguments before.",
     "bossFlavorTextFr": "Le contremaître des docks m'observait fouiller les hangars depuis le deuxième, et avait manifestement décidé que de la poix et du bois quittant son quai sans dîme constituaient une insulte personnelle. Il descendit la passerelle avec deux gamins portant son registre et un gourdin qui avait de toute évidence déjà tranché des querelles.",
-    "recommendedLevel": 3
+    "recommendedLevel": 3,
+    "zoneName_fr": "L’Allée des Pêcheurs",
+    "flavorText_fr": "Un alignement tortueux de hangars à filets et de tables à vider le poisson, entre le mur du port et la ligne de marée. Aucun de ceux qui y travaillent ne regarde à deux fois un étranger qui pose des questions — non qu’ils vous fassent confiance, mais parce qu’ils ont appris à ne pas demander pourquoi, ce qui convenait parfaitement à quelqu’un venu glaner en silence de la poix et du bois de rechange pour une coque qui prenait l’eau."
   },
   "z_tanners_court": {
     "zoneID": "z_tanners_court",
@@ -37,7 +39,9 @@
     "isMainZone": true,
     "bossFlavorText": "Something had been living under the lime pits, and the tanners had been feeding it what they couldn't sell. It came out of the drain yellow-eyed and patient, with the particular calm of an animal that has never once gone hungry.",
     "bossFlavorTextFr": "Quelque chose vivait sous les fosses à chaux, et les tanneurs le nourrissaient de ce qu'ils ne pouvaient vendre. Il sortit du caniveau, les yeux jaunes et patient, avec le calme particulier d'une bête qui n'a jamais eu faim.",
-    "recommendedLevel": 4
+    "recommendedLevel": 4,
+    "zoneName_fr": "La Cour des Tanneurs",
+    "flavorText_fr": "L’odeur vous atteint avant la cour — chaux, sel, et quelque chose en dessous qu’il vaut mieux ne pas examiner de trop près. Tout ce qui mérite d’être trouvé ici, quelqu’un a d’abord tanné une peau par-dessus — y compris, si l’on s’adresse au bon tanneur, un cuir assez solide pour rapiécer une voile déchirée."
   },
   "z_lantern_docks": {
     "zoneID": "z_lantern_docks",
@@ -59,7 +63,9 @@
     "isMainZone": false,
     "bossFlavorText": "The chart-seller's lantern went out mid-sentence, and the man who had paid her to keep it lit stepped out of the boathouse with a cutlass and four decades of not being caught behind him. He knew exactly which piece of the Shroud I was asking about.",
     "bossFlavorTextFr": "La lanterne de la vendeuse de cartes s'éteignit au milieu d'une phrase, et l'homme qui l'avait payée pour la garder allumée sortit du hangar à bateaux avec un sabre et quatre décennies d'impunité derrière lui. Il savait exactement de quel fragment du Linceul je parlais.",
-    "recommendedLevel": 5
+    "recommendedLevel": 5,
+    "zoneName_fr": "Les Quais aux Lanternes",
+    "flavorText_fr": "Là où les affaires officielles du port cèdent la place à ses affaires officieuses. Une femme qui fait commerce de vieilles cartes garde une lanterne allumée après le couvre-feu pour quiconque est prêt à payer ce qu’elle sait — et ce qu’elle sait, cette semaine, c’est où est passé le deuxième fragment du Linceul."
   },
   "z_cinder_row": {
     "zoneID": "z_cinder_row",
@@ -79,7 +85,9 @@
     "isMainZone": false,
     "bossFlavorText": "What the purge had left standing at the end of the row was not a stall. It was one of the Inquisition's iron sentinels, cold and half-buried in ash, and it woke the moment my boot touched the sigil under the cinders.",
     "bossFlavorTextFr": "Ce que la purge avait laissé debout au bout de la rangée n'était pas un étal. C'était une des sentinelles de fer de l'Inquisition, froide et à moitié ensevelie sous la cendre, et elle s'éveilla à l'instant où ma botte toucha le sigil sous les braises.",
-    "recommendedLevel": 6
+    "recommendedLevel": 6,
+    "zoneName_fr": "La Rue des Braises",
+    "flavorText_fr": "Ce que la purge a laissé des étals du Quartier des Cendres, fouillés deux fois par les mêmes foules : une fois pour tout ce qui valait encore d’être vendu, une fois pour tout ce qui valait encore d’être brûlé. Il existe un genre particulier de personne qui revient une troisième fois."
   },
   "z_scaffold_yards": {
     "zoneID": "z_scaffold_yards",
@@ -103,7 +111,9 @@
     "bossFlavorTextFr": "Les forges étaient froides, mais quelque chose dans le chantier ne l'était pas. Cela me suivait entre les échafaudages depuis une heure, se pliant dans des ombres que les lanternes auraient dû brûler, et cela sortit enfin là où les ferronniers avaient empilé leurs dernières plaques impayées.",
     "recommendedLevel": 8,
     "midpointFlavorText": "Halfway up the yards the scaffolding gave way to the real thing: the frame of a cathedral the cultists had never finished, ribs of charred timber against the ash-sky, and on every beam a hymn scratched in the same hand. Above, something was still singing it.",
-    "midpointFlavorTextFr": "À mi-hauteur des chantiers, l'échafaudage cédait la place à la chose elle-même : la charpente d'une cathédrale que les cultistes n'avaient jamais achevée, des côtes de bois calciné contre le ciel de cendre, et sur chaque poutre un hymne gravé de la même main. Au-dessus, quelque chose le chantait encore."
+    "midpointFlavorTextFr": "À mi-hauteur des chantiers, l'échafaudage cédait la place à la chose elle-même : la charpente d'une cathédrale que les cultistes n'avaient jamais achevée, des côtes de bois calciné contre le ciel de cendre, et sur chaque poutre un hymne gravé de la même main. Au-dessus, quelque chose le chantait encore.",
+    "zoneName_fr": "Les Chantiers aux Échafaudages",
+    "flavorText_fr": "Les ferronniers qui forgeaient les armures de l’Inquisition ont abandonné leur chantier quand les golems ont commencé à survivre à leurs maîtres. Les forges se sont refroidies, mais le fer froid garde mieux sa forme que la plupart des promesses faites dans ce quartier."
   },
   "z_ossuary_galleries": {
     "zoneID": "z_ossuary_galleries",
@@ -123,7 +133,9 @@
     "bossFlavorTextFr": "L'escalier s'achevait sur une porte de côtes, et ce qu'on avait posté pour la garder se dressa hors de l'eau, articulation après articulation — un gardien bâti des propres morts de la Cour, tenant une hallebarde qu'il tenait manifestement depuis très longtemps.",
     "requiredFlags": [],
     "isMainZone": false,
-    "recommendedLevel": 8
+    "recommendedLevel": 8,
+    "zoneName_fr": "Les Galeries de l’Ossuaire",
+    "flavorText_fr": "Des galeries d’ossements empilés sous le Cloître Englouti, inondées jusqu’à la deuxième étagère. La Cour y rangeait ses morts par milliers et ses secrets par poignées, et l’eau réarrange tranquillement les uns comme les autres."
   },
   "z_drowned_stair": {
     "zoneID": "z_drowned_stair",
@@ -147,7 +159,9 @@
     "isMainZone": true,
     "recommendedLevel": 9,
     "midpointFlavorText": "The Stair turned back on itself under the waterline and the names began: cut into the risers, one to a step, the first night's taken in the order they were taken. I stopped counting when I recognized one. The water below was very still, and something in it was reading along with me.",
-    "midpointFlavorTextFr": "L'Escalier tournait sur lui-même sous la ligne d'eau et les noms commençaient : gravés dans les contremarches, un par marche, les disparus de la première nuit dans l'ordre où on les avait pris. Je cessai de compter quand j'en reconnus un. L'eau en contrebas était très calme, et quelque chose dedans lisait avec moi."
+    "midpointFlavorTextFr": "L'Escalier tournait sur lui-même sous la ligne d'eau et les noms commençaient : gravés dans les contremarches, un par marche, les disparus de la première nuit dans l'ordre où on les avait pris. Je cessai de compter quand j'en reconnus un. L'eau en contrebas était très calme, et quelque chose dedans lisait avec moi.",
+    "zoneName_fr": "L’Escalier Noyé",
+    "flavorText_fr": "La route de la Cour vers les profondeurs : un escalier en colimaçon que l’eau noire a pris une spire après l’autre, ses paliers encore éclairés par les chandelles de ceux qui ne sont jamais remontés. Le second registre attend en bas, et l’homme qui le tient aussi."
   },
   "z_dead_heart_approach": {
     "zoneID": "z_dead_heart_approach",
@@ -169,7 +183,9 @@
     "isMainZone": false,
     "recommendedLevel": 10,
     "midpointFlavorText": "The ash gave out at the edge of the dead heart, and where it ended the ground was glass: the city's stone gone smooth and dark in one breath, long ago. My boots rang on it. Whatever had done this had not been trying.",
-    "midpointFlavorTextFr": "La cendre s'arrêtait à la lisière du cœur mort, et là où elle finissait le sol était de verre : la pierre de la ville devenue lisse et sombre en un souffle, il y a longtemps. Mes bottes y résonnaient. Ce qui avait fait cela n'avait pas fait d'effort."
+    "midpointFlavorTextFr": "La cendre s'arrêtait à la lisière du cœur mort, et là où elle finissait le sol était de verre : la pierre de la ville devenue lisse et sombre en un souffle, il y a longtemps. Mes bottes y résonnaient. Ce qui avait fait cela n'avait pas fait d'effort.",
+    "zoneName_fr": "Les Abords du Cœur Mort",
+    "flavorText_fr": "Les rues entre le Quartier du Reliquaire et la déchirure, où le temps s’est détraqué : du givre en été, des ombres couchées dans le mauvais sens, et des choses passées quand la déchirure s’est ouverte, qui n’ont jamais trouvé de raison de repartir."
   },
   "z_shroud_vigil": {
     "zoneID": "z_shroud_vigil",
@@ -193,7 +209,9 @@
     "isMainZone": true,
     "recommendedLevel": 11,
     "midpointFlavorText": "At the vigil's center the candles were still lit, hundreds of them, in a ring around nothing at all, an absence the eye slid off, and the wax had not run in a year. The order had kept this. Whatever it was, they had thought it worth kneeling to.",
-    "midpointFlavorTextFr": "Au centre de la veillée, les chandelles brûlaient encore, des centaines, en cercle autour de rien du tout, une absence sur laquelle le regard glissait, et la cire n'avait pas coulé depuis un an. L'ordre avait entretenu cela. Quoi que ce fût, ils avaient jugé que cela valait qu'on s'agenouille."
+    "midpointFlavorTextFr": "Au centre de la veillée, les chandelles brûlaient encore, des centaines, en cercle autour de rien du tout, une absence sur laquelle le regard glissait, et la cire n'avait pas coulé depuis un an. L'ordre avait entretenu cela. Quoi que ce fût, ils avaient jugé que cela valait qu'on s'agenouille.",
+    "zoneName_fr": "La Veillée du Linceul",
+    "flavorText_fr": "La place au cœur mort de la ville, où la déchirure flotte à l’air libre et où une chose qui fut jadis un Inquisiteur monte la garde depuis la nuit où elle s’est ouverte. Le dernier tronçon de la route du registre, et le pire."
   },
   "z_beyond_the_tear": {
     "zoneID": "z_beyond_the_tear",
@@ -215,6 +233,8 @@
     "isMainZone": true,
     "recommendedLevel": 12,
     "midpointFlavorText": "Past the tear the sea stopped pretending. The Eel ran on something that was not water, under a sky that was not one, toward a shore made of every place I had ever fought, the docks, the Spire, the drowned cloister, stitched edge to edge like a map made by someone who had only heard about maps. The reflections stood on it, waiting.",
-    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où je m'étais battu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient."
+    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où je m'étais battu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
+    "zoneName_fr": "Au-delà de la Déchirure",
+    "flavorText_fr": "L’autre côté de la déchirure : pas de ciel, pas de sol qui reste là où on le laisse, et les visages de tous ceux que l’invasion a pris, qui marchent. Le Rusty Eel est la seule chose ici qui se souvienne de ce à quoi un monde est censé ressembler."
   }
 }

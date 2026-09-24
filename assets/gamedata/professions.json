@@ -19,7 +19,9 @@
     "standardSkillID": "warrior_shield_bash",
     "preferredScalingStat": "strength",
     "startingDiceId": "",
-    "startingSpellIds": []
+    "startingSpellIds": [],
+    "professionName_fr": "Guerrier",
+    "description_fr": "Des combattants de première ligne qui troquent la finesse contre une robustesse brute."
   },
   "mage": {
     "professionID": "mage",
@@ -44,7 +46,9 @@
     "startingSpellIds": [
       "spell_arcane_bolt",
       "spell_mana_ward"
-    ]
+    ],
+    "professionName_fr": "Mage",
+    "description_fr": "Ils canalisent les forces élémentaires, au prix d’un corps fragile."
   },
   "rogue": {
     "professionID": "rogue",
@@ -66,7 +70,9 @@
     "standardSkillID": "rogue_backstab",
     "preferredScalingStat": "dexterity",
     "startingDiceId": "",
-    "startingSpellIds": []
+    "startingSpellIds": [],
+    "professionName_fr": "Voleur",
+    "description_fr": "Rapides, opportunistes, et toujours les premiers à flairer une bonne affaire."
   },
   "cleric": {
     "professionID": "cleric",
@@ -91,7 +97,9 @@
     "startingSpellIds": [
       "spell_mending_light",
       "spell_purge"
-    ]
+    ],
+    "professionName_fr": "Clerc",
+    "description_fr": "Des guérisseurs du champ de bataille qui tempèrent leurs coups par la retenue."
   },
   "ranger": {
     "professionID": "ranger",
@@ -113,6 +121,8 @@
     "standardSkillID": "ranger_aimed_shot",
     "preferredScalingStat": "dexterity",
     "startingDiceId": "",
-    "startingSpellIds": []
+    "startingSpellIds": [],
+    "professionName_fr": "Rôdeur",
+    "description_fr": "Des éclaireurs qui ont beaucoup voyagé, aussi à l’aise avec la lame qu’avec l’arc."
   }
 }

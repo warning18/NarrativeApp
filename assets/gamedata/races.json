@@ -17,7 +17,9 @@
     "startingGoldBonus": 20,
     "standardSkillID": "human_resolve",
     "powerMedium": "banner",
-    "powerMediumFr": "bannière"
+    "powerMediumFr": "bannière",
+    "raceName_fr": "Humain",
+    "description_fr": "Adaptables et ingénieux, les humains préfèrent l’argent et les relations à la force brute. Leur pouvoir est cousu : la force d’un humain réside dans la bannière ou l’étendard qu’il porte, et un humain qui n’en a pas n’est qu’une paire de mains vides."
   },
   "elf": {
     "raceID": "elf",
@@ -37,7 +39,9 @@
     "startingGoldBonus": 0,
     "standardSkillID": "elf_arcane_focus",
     "powerMedium": "painted sigil",
-    "powerMediumFr": "sigil peint"
+    "powerMediumFr": "sigil peint",
+    "raceName_fr": "Elfe",
+    "description_fr": "Vifs et accordés aux courants du monde, au prix d’une charpente plus frêle. Le peuple peint : le pouvoir d’un elfe est un sigil peint sur la peau ou l’écorce, renouvelé à la main, et il ne vaut que ce que vaut sa dernière couche."
   },
   "dwarf": {
     "raceID": "dwarf",
@@ -57,7 +61,9 @@
     "startingGoldBonus": 0,
     "standardSkillID": "dwarf_stoneskin",
     "powerMedium": "stone-mark",
-    "powerMediumFr": "marque de pierre"
+    "powerMediumFr": "marque de pierre",
+    "raceName_fr": "Nain",
+    "description_fr": "Trapus et têtus, bâtis pour encaisser des coups qui en abattraient d’autres. Les marqués de pierre : le pouvoir d’un nain est une marque taillée dans l’acier, la pierre ou une boucle, et elle ne s’efface pas."
   },
   "orc": {
     "raceID": "orc",
@@ -77,7 +83,9 @@
     "startingGoldBonus": 0,
     "standardSkillID": "orc_berserk_rage",
     "powerMedium": "ink",
-    "powerMediumFr": "encre"
+    "powerMediumFr": "encre",
+    "raceName_fr": "Orc",
+    "description_fr": "Leur force brutale gagne vite les combats, mais laisse peu de place à la finesse. Les encrés : le pouvoir d’un orc repose sous les cicatrices, dans l’encre de cendre, là où personne ne peut le confisquer."
   },
   "voidkin": {
     "raceID": "voidkin",
@@ -97,6 +105,8 @@
     "startingGoldBonus": 0,
     "standardSkillID": "voidkin_umbral_veil",
     "powerMedium": "void-mark",
-    "powerMediumFr": "marque du Néant"
+    "powerMediumFr": "marque du Néant",
+    "raceName_fr": "Enfant du Néant",
+    "description_fr": "Touchés par le Linceul, ils frappent avec une force dévastatrice mais se brisent aisément. Les marqués de la déchirure : le pouvoir d’un enfant du Néant n’a jamais été cousu, peint, taillé ni encré ; la déchirure l’a laissé, et aucune porte au monde n’est heureuse de le voir."
   }
 }

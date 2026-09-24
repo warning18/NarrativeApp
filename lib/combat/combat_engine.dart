@@ -521,6 +521,27 @@ const Set<String> soloOnlyEnemyIds = {
 /// Soldiers (400), tuned as a pack a first character can lose to.
 const Set<String> storyOnlyEnemyIds = {'white_soldier'};
 
+/// Each zone's own boss (zones.json `bossEnemyId`), met at the end of its
+/// expedition: never a random draw, never in a random pack and never
+/// promoted to Elite. Unlike [soloOnlyEnemyIds] they keep the regular
+/// enemies' difficulty curve, which their numbers are tuned for.
+const Set<String> zoneBossEnemyIds = {
+  'dock_overseer',
+  'plague_hound',
+  'smuggler_captain',
+  'iron_golem',
+  'bone_warden',
+  'tear_spawn',
+};
+
+/// Whether [enemyId] may be drawn at random (a detour, an expedition's
+/// events, a pack) or promoted to Elite: not a boss, a story duel, a
+/// story-only enemy or a zone's boss.
+bool isRandomDrawEnemy(String enemyId) =>
+    !soloOnlyEnemyIds.contains(enemyId) &&
+    !storyOnlyEnemyIds.contains(enemyId) &&
+    !zoneBossEnemyIds.contains(enemyId);
+
 /// How much detail the party can currently see into an enemy's telegraphed
 /// next move -- a hard threshold on `effectivePerception`, not a percentage
 /// chance like [criticalChanceFor]/[dodgeChanceFor]: whether a telegraph is

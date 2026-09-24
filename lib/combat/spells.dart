@@ -41,6 +41,31 @@ const int baseMana = 4;
 int maxManaFor({required int intelligence, required int wisdom}) =>
     baseMana + max(intelligence, wisdom) ~/ 2;
 
+/// The Scroll of Fireball's item id: read in a fight, it burns once for
+/// free (see [fireballScroll]).
+const String fireballScrollId = 'scroll_fireball';
+
+/// What reading a Scroll of Fireball does: a fireball at one enemy -- the
+/// Fireball skill's numbers, no mana, the scroll spent.
+const SpellSpec fireballScroll = SpellSpec(
+  id: fireballScrollId,
+  name: 'Scroll of Fireball',
+  nameFr: 'Parchemin de boule de feu',
+  description: 'Read once: a fireball at one enemy.',
+  descriptionFr: 'Se lit une fois : une boule de feu sur un ennemi.',
+  professionId: '',
+  manaCost: 0,
+  effect: SpellEffectKind.damage,
+  target: SpellTarget.enemy,
+  amount: 5,
+  scalingStat: '',
+  damageMultiplier: 1.5,
+  element: 'Fire',
+  battleMessage: 'The scroll flares and a fireball leaves it.',
+  battleMessageFr: 'Le parchemin s’embrase et une boule de feu en jaillit.',
+  vfx: 'fireball',
+);
+
 /// One spell record from spells.json, parsed once so combat and the shop
 /// never read raw map fields.
 class SpellSpec {
@@ -175,12 +200,14 @@ int spellAmountFor(
   SpellSpec spell, {
   required int intelligence,
   required int wisdom,
+  int strength = 0,
   int level = 1,
   int casterDamage = 0,
 }) {
   final score = switch (spell.scalingStat) {
     'intelligence' => intelligence,
     'wisdom' => wisdom,
+    'strength' => strength,
     _ => 0,
   };
   final base = spell.amount + score ~/ 2;

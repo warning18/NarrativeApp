@@ -15,7 +15,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "fireball"
+    "vfx": "fireball",
+    "name_fr": "Boule de feu",
+    "description_fr": "Projetez un trait de feu sur l’ennemi.",
+    "battleMessage_fr": "Les flammes jaillissent !"
   },
   "second_wind": {
     "id": "second_wind",
@@ -33,7 +36,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Second souffle",
+    "description_fr": "Récupérez d’un coup une partie de votre santé.",
+    "battleMessage_fr": "Vous reprenez votre souffle."
   },
   "void_blast": {
     "id": "void_blast",
@@ -51,7 +57,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "Evil",
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "name_fr": "Déflagration du Néant",
+    "description_fr": "Déployez le Linceul et libérez une vague de néant absolu.",
+    "battleMessage_fr": "Une déchirure dans la réalité balaie le champ de bataille !"
   },
   "shadow_step": {
     "id": "shadow_step",
@@ -69,7 +78,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "name_fr": "Pas de l’ombre",
+    "description_fr": "Filez à travers les ombres pour esquiver les attaques.",
+    "battleMessage_fr": "Vous disparaissez dans la fumée trouble."
   },
   "human_resolve": {
     "id": "human_resolve",
@@ -87,7 +99,10 @@
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Détermination",
+    "description_fr": "Puisez dans la ténacité humaine pour ignorer la douleur.",
+    "battleMessage_fr": "Vous serrez les dents et continuez."
   },
   "human_quick_study": {
     "id": "human_quick_study",
@@ -105,7 +120,10 @@
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "pierce"
+    "vfx": "pierce",
+    "name_fr": "Apprentissage éclair",
+    "description_fr": "Adaptez-vous en plein combat : frappez plus malin, pas plus fort.",
+    "battleMessage_fr": "Vous repérez aussitôt l’ouverture."
   },
   "human_diplomacy": {
     "id": "human_diplomacy",
@@ -123,7 +141,10 @@
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shout"
+    "vfx": "shout",
+    "name_fr": "Diplomatie",
+    "description_fr": "Même au combat, un mot bien placé peut renverser la situation.",
+    "battleMessage_fr": "Vos mots tranchent plus profond que l’acier."
   },
   "elf_arcane_focus": {
     "id": "elf_arcane_focus",
@@ -141,7 +162,10 @@
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "wind"
+    "vfx": "wind",
+    "name_fr": "Focalisation arcanique",
+    "description_fr": "Canalisez les courants pour affûter votre prochain coup.",
+    "battleMessage_fr": "L’air se courbe autour de votre lame."
   },
   "elf_moonlight_step": {
     "id": "elf_moonlight_step",
@@ -159,7 +183,10 @@
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "name_fr": "Pas au clair de lune",
+    "description_fr": "Glissez au-delà de la garde de l’ennemi en un éclair.",
+    "battleMessage_fr": "Vous vous faufilez comme un rayon de lune."
   },
   "elf_keen_eye": {
     "id": "elf_keen_eye",
@@ -177,7 +204,10 @@
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "arrow"
+    "vfx": "arrow",
+    "name_fr": "Œil perçant",
+    "description_fr": "Repérez l’unique faille de toute défense.",
+    "battleMessage_fr": "Votre visée est infaillible."
   },
   "dwarf_stoneskin": {
     "id": "dwarf_stoneskin",
@@ -195,7 +225,10 @@
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "stone_shield"
+    "vfx": "stone_shield",
+    "name_fr": "Peau de pierre",
+    "description_fr": "Durcissez votre peau comme la pierre de carrière.",
+    "battleMessage_fr": "Votre peau se change en granit un instant."
   },
   "dwarf_hammer_blow": {
     "id": "dwarf_hammer_blow",
@@ -213,7 +246,10 @@
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "quake"
+    "vfx": "quake",
+    "name_fr": "Coup de marteau",
+    "description_fr": "Abattez tout le poids de la forge de votre peuple.",
+    "battleMessage_fr": "Le sol tremble sous le coup."
   },
   "dwarf_forgeheart": {
     "id": "dwarf_forgeheart",
@@ -231,7 +267,10 @@
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "name_fr": "Cœur-de-forge",
+    "description_fr": "Attisez le feu de forge dans votre poitrine.",
+    "battleMessage_fr": "Le vieux feu de forge s’embrase dans vos veines."
   },
   "orc_berserk_rage": {
     "id": "orc_berserk_rage",
@@ -249,7 +288,10 @@
     "restrictedRaceID": "orc",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Rage berserk",
+    "description_fr": "Laissez la rage porter votre arme plus loin que ne le pourrait l’habileté.",
+    "battleMessage_fr": "Un voile rouge s’empare de vous."
   },
   "orc_savage_cleave": {
     "id": "orc_savage_cleave",
@@ -270,7 +312,10 @@
     "statusDuration": 2,
     "statusMagnitude": 15,
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Taille sauvage",
+    "description_fr": "Frappez avec assez de force pour ébranler n’importe quoi.",
+    "battleMessage_fr": "Le coup s’abat comme un éboulement."
   },
   "orc_bloodlust": {
     "id": "orc_bloodlust",
@@ -288,7 +333,10 @@
     "restrictedRaceID": "orc",
     "restrictedProfessionID": "",
     "alignment": "Evil",
-    "vfx": "drain"
+    "vfx": "drain",
+    "name_fr": "Soif de sang",
+    "description_fr": "Nourrissez-vous du combat pour continuer à frapper.",
+    "battleMessage_fr": "Le combat nourrit votre force."
   },
   "voidkin_umbral_veil": {
     "id": "voidkin_umbral_veil",
@@ -306,7 +354,10 @@
     "restrictedRaceID": "voidkin",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shield"
+    "vfx": "shield",
+    "name_fr": "Voile ombral",
+    "description_fr": "Enveloppez-vous des ténèbres mêmes du Linceul.",
+    "battleMessage_fr": "Le Linceul se replie autour de vous."
   },
   "voidkin_entropy_touch": {
     "id": "voidkin_entropy_touch",
@@ -327,7 +378,10 @@
     "statusDuration": 3,
     "statusMagnitude": 7,
     "alignment": "Evil",
-    "vfx": "drain"
+    "vfx": "drain",
+    "name_fr": "Toucher entropique",
+    "description_fr": "Défaites la chair de l’ennemi d’un simple contact.",
+    "battleMessage_fr": "La réalité s’effiloche là où vous touchez."
   },
   "voidkin_starless_gaze": {
     "id": "voidkin_starless_gaze",
@@ -345,7 +399,10 @@
     "restrictedRaceID": "voidkin",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "name_fr": "Regard sans étoiles",
+    "description_fr": "Fixez-les d’un regard qui engloutit la lumière.",
+    "battleMessage_fr": "Quelque chose d’ancien regarde à travers vos yeux."
   },
   "warrior_shield_bash": {
     "id": "warrior_shield_bash",
@@ -366,7 +423,10 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "",
-    "vfx": "impact"
+    "vfx": "impact",
+    "name_fr": "Coup de bouclier",
+    "description_fr": "Écrasez votre bouclier contre la garde ennemie.",
+    "battleMessage_fr": "Votre bouclier résonne contre l’ennemi."
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -384,7 +444,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
     "alignment": "",
-    "vfx": "whirl"
+    "vfx": "whirl",
+    "name_fr": "Tourbillon",
+    "description_fr": "Tournoyez à travers tous les ennemis à portée.",
+    "battleMessage_fr": "L’acier étincelle en un cercle complet."
   },
   "warrior_iron_stance": {
     "id": "warrior_iron_stance",
@@ -402,7 +465,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
     "alignment": "",
-    "vfx": "stone_shield"
+    "vfx": "stone_shield",
+    "name_fr": "Posture de fer",
+    "description_fr": "Tenez bon comme un mur de fer.",
+    "battleMessage_fr": "Vous plantez vos pieds et tenez."
   },
   "warrior_execute": {
     "id": "warrior_execute",
@@ -420,7 +486,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Exécution",
+    "description_fr": "Achevez un ennemi affaibli avec une précision brutale.",
+    "battleMessage_fr": "Le coup fatal porte juste."
   },
   "warrior_rally_cry": {
     "id": "warrior_rally_cry",
@@ -438,7 +507,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
     "alignment": "",
-    "vfx": "shout"
+    "vfx": "shout",
+    "name_fr": "Cri de ralliement",
+    "description_fr": "Poussez un cri de guerre qui trempe votre résolution.",
+    "battleMessage_fr": "Votre cri se répercute contre les murs."
   },
   "mage_arcane_missile": {
     "id": "mage_arcane_missile",
@@ -456,7 +528,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
     "alignment": "",
-    "vfx": "bolt"
+    "vfx": "bolt",
+    "name_fr": "Projectile arcanique",
+    "description_fr": "Décochez un trait de pure force arcanique.",
+    "battleMessage_fr": "Un trait crépitant fend l’air."
   },
   "mage_frost_nova": {
     "id": "mage_frost_nova",
@@ -477,7 +552,10 @@
     "statusDuration": 2,
     "statusMagnitude": 15,
     "alignment": "",
-    "vfx": "frost"
+    "vfx": "frost",
+    "name_fr": "Nova de givre",
+    "description_fr": "Libérez une déflagration d’énergie glaciale.",
+    "battleMessage_fr": "Le givre éclate en anneau."
   },
   "mage_mana_shield": {
     "id": "mage_mana_shield",
@@ -495,7 +573,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
     "alignment": "",
-    "vfx": "shield"
+    "vfx": "shield",
+    "name_fr": "Bouclier de mana",
+    "description_fr": "Enveloppez-vous d’une coque de mana brut.",
+    "battleMessage_fr": "Un bouclier scintillant se forme autour de vous."
   },
   "mage_meteor": {
     "id": "mage_meteor",
@@ -513,7 +594,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
     "alignment": "",
-    "vfx": "meteor"
+    "vfx": "meteor",
+    "name_fr": "Météore",
+    "description_fr": "Faites tomber un fragment de ciel en feu.",
+    "battleMessage_fr": "Un météore s’abat du ciel dans un hurlement."
   },
   "mage_teleport_strike": {
     "id": "mage_teleport_strike",
@@ -531,7 +615,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
     "alignment": "",
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "name_fr": "Frappe téléportée",
+    "description_fr": "Surgissez derrière l’ennemi en un clin d’œil et frappez.",
+    "battleMessage_fr": "Vous disparaissez et réapparaissez en plein élan."
   },
   "rogue_backstab": {
     "id": "rogue_backstab",
@@ -552,7 +639,10 @@
     "statusDuration": 2,
     "statusMagnitude": 20,
     "alignment": "",
-    "vfx": "pierce"
+    "vfx": "pierce",
+    "name_fr": "Coup dans le dos",
+    "description_fr": "Trouvez la faille que seule une lame invisible peut atteindre.",
+    "battleMessage_fr": "La lame touche sa cible sans être vue."
   },
   "rogue_smoke_bomb": {
     "id": "rogue_smoke_bomb",
@@ -570,7 +660,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
     "alignment": "",
-    "vfx": "smoke"
+    "vfx": "smoke",
+    "name_fr": "Bombe fumigène",
+    "description_fr": "Disparaissez dans un nuage de fumée suffocante.",
+    "battleMessage_fr": "La fumée engloutit le combat."
   },
   "rogue_poison_blade": {
     "id": "rogue_poison_blade",
@@ -591,7 +684,10 @@
     "statusDuration": 2,
     "statusMagnitude": 4,
     "alignment": "Evil",
-    "vfx": "poison"
+    "vfx": "poison",
+    "name_fr": "Lame empoisonnée",
+    "description_fr": "Enduisez votre lame d’un venin lent et insidieux.",
+    "battleMessage_fr": "La plaie suinte de vert."
   },
   "rogue_shadow_clone": {
     "id": "rogue_shadow_clone",
@@ -609,7 +705,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
     "alignment": "",
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "name_fr": "Double d’ombre",
+    "description_fr": "Divisez l’attention de l’ennemi avec un leurre d’ombre.",
+    "battleMessage_fr": "Une seconde silhouette bondit hors du noir."
   },
   "rogue_quick_pockets": {
     "id": "rogue_quick_pockets",
@@ -627,7 +726,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Mains lestes",
+    "description_fr": "Subtilisez quelque chose d’utile en plein combat.",
+    "battleMessage_fr": "Votre main est plus rapide que leur œil."
   },
   "cleric_holy_light": {
     "id": "cleric_holy_light",
@@ -645,7 +747,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
     "alignment": "Good",
-    "vfx": "radiance"
+    "vfx": "radiance",
+    "name_fr": "Lumière sacrée",
+    "description_fr": "Faites descendre un rayon de lumière purificatrice.",
+    "battleMessage_fr": "La lumière s’abat d’en haut comme une lance."
   },
   "cleric_smite": {
     "id": "cleric_smite",
@@ -663,7 +768,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
     "alignment": "Good",
-    "vfx": "holy_fire"
+    "vfx": "holy_fire",
+    "name_fr": "Châtiment",
+    "description_fr": "Terrassez les impies d’une force vertueuse.",
+    "battleMessage_fr": "Le jugement tombe dans les flammes."
   },
   "cleric_sanctuary": {
     "id": "cleric_sanctuary",
@@ -681,7 +789,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
     "alignment": "Good",
-    "vfx": "radiance"
+    "vfx": "radiance",
+    "name_fr": "Sanctuaire",
+    "description_fr": "Protégez-vous contre le prochain coup.",
+    "battleMessage_fr": "Une douce lueur vous entoure."
   },
   "cleric_revive_prayer": {
     "id": "cleric_revive_prayer",
@@ -699,7 +810,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Prière de relèvement",
+    "description_fr": "Priez pour une force qui dépasse la vôtre.",
+    "battleMessage_fr": "Votre voix s’affermit, et vous avec."
   },
   "cleric_purify": {
     "id": "cleric_purify",
@@ -717,7 +831,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
     "alignment": "Good",
-    "vfx": "splash"
+    "vfx": "splash",
+    "name_fr": "Purification",
+    "description_fr": "Consumez la fatigue du combat.",
+    "battleMessage_fr": "Une chaleur lave les plaies."
   },
   "ranger_aimed_shot": {
     "id": "ranger_aimed_shot",
@@ -735,7 +852,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
     "alignment": "",
-    "vfx": "arrow"
+    "vfx": "arrow",
+    "name_fr": "Tir visé",
+    "description_fr": "Prenez le temps d’aligner le tir parfait.",
+    "battleMessage_fr": "Le tir touche exactement là où vous visiez."
   },
   "ranger_beast_bond": {
     "id": "ranger_beast_bond",
@@ -753,7 +873,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Lien bestial",
+    "description_fr": "Faites appel aux instincts aiguisés dans la nature sauvage.",
+    "battleMessage_fr": "Quelque chose de sauvage répond à votre appel."
   },
   "ranger_camouflage": {
     "id": "ranger_camouflage",
@@ -771,7 +894,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
     "alignment": "",
-    "vfx": "pierce"
+    "vfx": "pierce",
+    "name_fr": "Camouflage",
+    "description_fr": "Fondez-vous dans le décor pour frapper net.",
+    "battleMessage_fr": "Vous frappez d’où personne ne regardait."
   },
   "ranger_multi_shot": {
     "id": "ranger_multi_shot",
@@ -789,7 +915,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
     "alignment": "",
-    "vfx": "volley"
+    "vfx": "volley",
+    "name_fr": "Tir multiple",
+    "description_fr": "Décochez plusieurs flèches d’un seul souffle.",
+    "battleMessage_fr": "Les flèches se déploient en un éventail mortel."
   },
   "ranger_trap_set": {
     "id": "ranger_trap_set",
@@ -810,7 +939,10 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "",
-    "vfx": "claw"
+    "vfx": "claw",
+    "name_fr": "Piège tendu",
+    "description_fr": "Déclenchez un piège posé quelques instants plus tôt.",
+    "battleMessage_fr": "Le piège se referme au bon moment."
   },
   "power_strike": {
     "id": "power_strike",
@@ -828,7 +960,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Frappe puissante",
+    "description_fr": "Un coup franc et appuyé.",
+    "battleMessage_fr": "Vous y mettez tout votre poids."
   },
   "guard_break": {
     "id": "guard_break",
@@ -846,7 +981,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "impact"
+    "vfx": "impact",
+    "name_fr": "Brise-garde",
+    "description_fr": "Enfoncez les défenses de l’ennemi.",
+    "battleMessage_fr": "Sa garde vole en éclats."
   },
   "adrenaline_surge": {
     "id": "adrenaline_surge",
@@ -864,7 +1002,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "lightning"
+    "vfx": "lightning",
+    "name_fr": "Montée d’adrénaline",
+    "description_fr": "Une décharge d’adrénaline aiguise chaque coup.",
+    "battleMessage_fr": "Votre pouls s’emballe et votre lame suit."
   },
   "iron_will": {
     "id": "iron_will",
@@ -882,7 +1023,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shield"
+    "vfx": "shield",
+    "name_fr": "Volonté de fer",
+    "description_fr": "Refusez de tomber sans combattre.",
+    "battleMessage_fr": "Vous serrez les dents malgré la douleur."
   },
   "quick_heal": {
     "id": "quick_heal",
@@ -900,7 +1044,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Soin rapide",
+    "description_fr": "Un rafistolage rapide sur le terrain, rien de raffiné.",
+    "battleMessage_fr": "Vous pansez le plus grave."
   },
   "focus_mind": {
     "id": "focus_mind",
@@ -918,7 +1065,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "pierce"
+    "vfx": "pierce",
+    "name_fr": "Esprit concentré",
+    "description_fr": "Calmez votre souffle et concentrez votre prochain coup.",
+    "battleMessage_fr": "Le monde se réduit à un seul point."
   },
   "rallying_shout": {
     "id": "rallying_shout",
@@ -936,7 +1086,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shout"
+    "vfx": "shout",
+    "name_fr": "Clameur de ralliement",
+    "description_fr": "Criez assez fort pour raffermir vos propres nerfs.",
+    "battleMessage_fr": "Le cri apaise votre cœur affolé."
   },
   "lucky_strike": {
     "id": "lucky_strike",
@@ -954,7 +1107,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "slash"
+    "vfx": "slash",
+    "name_fr": "Coup de chance",
+    "description_fr": "Parfois, mieux vaut être chanceux que doué.",
+    "battleMessage_fr": "Ça n’aurait pas dû marcher, et pourtant."
   },
   "bulwark_stance": {
     "id": "bulwark_stance",
@@ -972,7 +1128,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "stone_shield"
+    "vfx": "stone_shield",
+    "name_fr": "Posture du rempart",
+    "description_fr": "Campez-vous et encaissez le prochain coup.",
+    "battleMessage_fr": "Vous tenez bon comme un vieux mur."
   },
   "cauterize_wound": {
     "id": "cauterize_wound",
@@ -990,7 +1149,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "name_fr": "Cautérisation",
+    "description_fr": "Refermez une plaie d’une touche de flamme.",
+    "battleMessage_fr": "La plaie se referme en grésillant."
   },
   "battle_trance": {
     "id": "battle_trance",
@@ -1008,7 +1170,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "whirl"
+    "vfx": "whirl",
+    "name_fr": "Transe de combat",
+    "description_fr": "Laissez-vous porter par le rythme du combat.",
+    "battleMessage_fr": "Tout le reste s’efface."
   },
   "steady_aim": {
     "id": "steady_aim",
@@ -1026,7 +1191,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "arrow"
+    "vfx": "arrow",
+    "name_fr": "Visée assurée",
+    "description_fr": "Prenez une seconde de plus pour que le coup compte.",
+    "battleMessage_fr": "Le coup porte exactement comme il faut."
   },
   "improvised_strike": {
     "id": "improvised_strike",
@@ -1044,7 +1212,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "impact"
+    "vfx": "impact",
+    "name_fr": "Coup improvisé",
+    "description_fr": "Servez-vous de ce qui vous tombe sous la main pour porter un coup.",
+    "battleMessage_fr": "Pas élégant, mais ça touche."
   },
   "second_chance": {
     "id": "second_chance",
@@ -1062,7 +1233,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Seconde chance",
+    "description_fr": "Revenez du bord du gouffre.",
+    "battleMessage_fr": "Vous refusez de tomber ici."
   },
   "warcry": {
     "id": "warcry",
@@ -1080,7 +1254,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shout"
+    "vfx": "shout",
+    "name_fr": "Hurlement guerrier",
+    "description_fr": "Un cri qui ébranle même les ennemis aguerris.",
+    "battleMessage_fr": "Votre voix porte une vraie menace."
   },
   "mending_touch": {
     "id": "mending_touch",
@@ -1098,7 +1275,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heal"
+    "vfx": "heal",
+    "name_fr": "Toucher guérisseur",
+    "description_fr": "Un bref geste de premiers secours, bien rodé.",
+    "battleMessage_fr": "Le saignement ralentit."
   },
   "precision_thrust": {
     "id": "precision_thrust",
@@ -1116,7 +1296,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "pierce"
+    "vfx": "pierce",
+    "name_fr": "Estocade précise",
+    "description_fr": "Un coup unique et exact, droit dans la faille.",
+    "battleMessage_fr": "Le coup trouve l’unique point faible."
   },
   "inner_fire": {
     "id": "inner_fire",
@@ -1134,7 +1317,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "name_fr": "Feu intérieur",
+    "description_fr": "Puisez dans des réserves que vous ignoriez avoir.",
+    "battleMessage_fr": "Quelque chose en vous s’embrase."
   },
   "stone_resolve": {
     "id": "stone_resolve",
@@ -1152,7 +1338,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "stone_shield"
+    "vfx": "stone_shield",
+    "name_fr": "Fermeté de pierre",
+    "description_fr": "Enracinez-vous et refusez de bouger.",
+    "battleMessage_fr": "Vous ne céderez pas ce terrain."
   },
   "final_stand": {
     "id": "final_stand",
@@ -1170,7 +1359,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Baroud d’honneur",
+    "description_fr": "Tout ce qu’il vous reste, en un dernier effort.",
+    "battleMessage_fr": "Plus rien n’est retenu désormais."
   },
   "heavy_attack": {
     "id": "heavy_attack",
@@ -1188,7 +1380,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "heavy_slash"
+    "vfx": "heavy_slash",
+    "name_fr": "Attaque lourde",
+    "description_fr": "Un coup lourd et prévisible, porté de toutes vos forces.",
+    "battleMessage_fr": "Vous prenez votre élan et frappez de toutes vos forces."
   },
   "zealous_conviction": {
     "id": "zealous_conviction",
@@ -1207,7 +1402,10 @@
     "restrictedProfessionID": "",
     "requiredAlignmentMin": 3,
     "alignment": "Good",
-    "vfx": "holy_fire"
+    "vfx": "holy_fire",
+    "name_fr": "Conviction zélée",
+    "description_fr": "Frappez avec la force nette et sans hésitation de quelqu’un qui n’a plus à se mentir sur le camp qu’il a choisi.",
+    "battleMessage_fr": "La conviction brûle, pure."
   },
   "ruthless_edge": {
     "id": "ruthless_edge",
@@ -1226,7 +1424,10 @@
     "restrictedProfessionID": "",
     "requiredAlignmentMax": -3,
     "alignment": "Evil",
-    "vfx": "slash"
+    "vfx": "slash",
+    "name_fr": "Tranchant impitoyable",
+    "description_fr": "Frappez sans l’hésitation dont une personne plus scrupuleuse se serait encombrée.",
+    "battleMessage_fr": "Ni pitié, ni geste perdu."
   },
   "blazing_shadow": {
     "id": "blazing_shadow",
@@ -1245,7 +1446,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "fireball"
+    "vfx": "fireball",
+    "name_fr": "Ombre ardente",
+    "description_fr": "Boule de feu et pas de l’ombre, fusionnés — vous disparaissez dans la fumée et surgissez en flammes.",
+    "battleMessage_fr": "Vous vous fondez dans l’ombre et jaillissez en feu."
   },
   "unbreakable_will": {
     "id": "unbreakable_will",
@@ -1264,7 +1468,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "shield"
+    "vfx": "shield",
+    "name_fr": "Volonté inflexible",
+    "description_fr": "Second souffle et détermination humaine, fusionnés — il n’existe aucune version de vous qui reste à terre.",
+    "battleMessage_fr": "Vous refusez, tout simplement."
   },
   "bastion_of_stone": {
     "id": "bastion_of_stone",
@@ -1283,7 +1490,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "stone_shield"
+    "vfx": "stone_shield",
+    "name_fr": "Bastion de pierre",
+    "description_fr": "La peau de pierre naine et la posture de fer du guerrier, fusionnées en un rempart inébranlable.",
+    "battleMessage_fr": "Vous devenez un mur qui a toujours été destiné à se dresser ici."
   },
   "arcane_convergence": {
     "id": "arcane_convergence",
@@ -1302,7 +1512,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "lightning"
+    "vfx": "lightning",
+    "name_fr": "Convergence arcanique",
+    "description_fr": "La focalisation elfique des vents et le projectile arcanique du mage, fusionnés en un seul trait convergent.",
+    "battleMessage_fr": "Deux courants de force se rencontrent et détonent comme un seul."
   },
   "venomous_ambush": {
     "id": "venomous_ambush",
@@ -1324,7 +1537,10 @@
     "statusDuration": 3,
     "statusMagnitude": 6,
     "alignment": "Evil",
-    "vfx": "poison"
+    "vfx": "poison",
+    "name_fr": "Embuscade venimeuse",
+    "description_fr": "Le coup dans le dos et la lame empoisonnée, fusionnés — la blessure qui frappe sans être vue est celle qui ne s’arrête pas.",
+    "battleMessage_fr": "La lame trouve sa cible, et la plaie ne guérit pas."
   },
   "wrath_of_dawn": {
     "id": "wrath_of_dawn",
@@ -1343,7 +1559,10 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "Good",
-    "vfx": "radiance"
+    "vfx": "radiance",
+    "name_fr": "Courroux de l’aube",
+    "description_fr": "Lumière sacrée et châtiment vertueux, fusionnés en un seul jugement qui brûle et guérit d’un même souffle.",
+    "battleMessage_fr": "L’aube se lève d’un coup, sans demander qui est prêt."
   },
   "plague_bite": {
     "id": "plague_bite",
@@ -1364,7 +1583,11 @@
     "statusDuration": 3,
     "statusMagnitude": 5,
     "alignment": "",
-    "vfx": "claw"
+    "vfx": "claw",
+    "enemyOnly": true,
+    "name_fr": "Morsure pestilentielle",
+    "description_fr": "Une morsure purulente qui laisse la plaie s’infecter davantage.",
+    "battleMessage_fr": "Les mâchoires du chien se referment, et le mal s’insinue !"
   },
   "void_drain": {
     "id": "void_drain",
@@ -1385,7 +1608,11 @@
     "statusDuration": 2,
     "statusMagnitude": 30,
     "alignment": "Evil",
-    "vfx": "drain"
+    "vfx": "drain",
+    "enemyOnly": true,
+    "name_fr": "Ponction du Néant",
+    "description_fr": "Un filament de la déchirure aspire la force d’un coup avant qu’il ne porte.",
+    "battleMessage_fr": "Quelque chose d’invisible boit la force de votre bras !"
   },
   "disorienting_pulse": {
     "id": "disorienting_pulse",
@@ -1406,7 +1633,11 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "",
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "enemyOnly": true,
+    "name_fr": "Pulsation désorientante",
+    "description_fr": "Une pulsation d’irréalité brute qui laisse l’esprit incapable de suivre son propre corps.",
+    "battleMessage_fr": "La réalité bégaie, et un instant vous vous y perdez !"
   },
   "molten_backlash": {
     "id": "molten_backlash",
@@ -1427,7 +1658,11 @@
     "statusDuration": 2,
     "statusMagnitude": 10,
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "enemyOnly": true,
+    "name_fr": "Contrecoup en fusion",
+    "description_fr": "Le fer ne brûle pas — il s’enrage, voilà tout. Et il renvoie le feu à qui l’a allumé.",
+    "battleMessage_fr": "Le golem ignore la flamme et vous renvoie des scories en fusion !"
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1448,7 +1683,10 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "",
-    "vfx": "frost"
+    "vfx": "frost",
+    "name_fr": "Étreinte glaciale",
+    "description_fr": "L’eau du port au cœur de l’hiver, lancée par une main qui ne sent plus le froid.",
+    "battleMessage_fr": "Une eau de port glaciale vous submerge, et vos mains s’engourdissent !"
   },
   "radiant_judgment": {
     "id": "radiant_judgment",
@@ -1469,7 +1707,10 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "Good",
-    "vfx": "radiance"
+    "vfx": "radiance",
+    "name_fr": "Jugement radieux",
+    "description_fr": "La lumière même de l’Inquisition, tournée contre quiconque elle juge indigne.",
+    "battleMessage_fr": "Kroll fait tomber une colonne de lumière blanche et brûlante !"
   },
   "celestial_ward": {
     "id": "celestial_ward",
@@ -1488,7 +1729,10 @@
     "restrictedProfessionID": "",
     "requiredAlignmentMin": 20,
     "alignment": "Good",
-    "vfx": "shield"
+    "vfx": "shield",
+    "name_fr": "Garde céleste",
+    "description_fr": "Un anneau de feu pâle se referme autour de vous : il brûle tout ce qu’il touche et soigne tout ce qu’il entoure. Seuls les vrais justes peuvent le maintenir.",
+    "battleMessage_fr": "Un anneau de feu pâle se referme autour de vous."
   },
   "infernal_pact": {
     "id": "infernal_pact",
@@ -1507,7 +1751,10 @@
     "restrictedProfessionID": "",
     "requiredAlignmentMax": -20,
     "alignment": "Evil",
-    "vfx": "flame"
+    "vfx": "flame",
+    "name_fr": "Pacte infernal",
+    "description_fr": "Vous dépensez une parcelle de quelque chose que vous ne récupérerez pas, et les flammes répondent de toute leur puissance. Seuls les vrais damnés peuvent en payer le prix.",
+    "battleMessage_fr": "Vous dépensez une parcelle de votre âme, et les flammes répondent."
   },
   "matriarch_brood_call": {
     "id": "matriarch_brood_call",
@@ -1528,7 +1775,11 @@
     "inflictsStatus": "Poison",
     "statusDuration": 2,
     "statusMagnitude": 4,
-    "vfx": "poison"
+    "vfx": "poison",
+    "enemyOnly": true,
+    "name_fr": "Appel de la couvée",
+    "description_fr": "La couvée submerge quiconque la Matriarche désigne de ses cris.",
+    "battleMessage_fr": "La Matriarche glapit, et la couvée déferle sur vous !"
   },
   "golem_meltdown": {
     "id": "golem_meltdown",
@@ -1549,7 +1800,11 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 15,
-    "vfx": "meteor"
+    "vfx": "meteor",
+    "enemyOnly": true,
+    "name_fr": "Fusion du golem",
+    "description_fr": "Une fusion qui crache des scories brûlantes et sape la force de vos bras.",
+    "battleMessage_fr": "Le cœur du golem chauffe à blanc et crache des scories à travers le chantier !"
   },
   "warden_bone_storm": {
     "id": "warden_bone_storm",
@@ -1570,7 +1825,11 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 25,
-    "vfx": "quake"
+    "vfx": "quake",
+    "enemyOnly": true,
+    "name_fr": "Tempête d’os",
+    "description_fr": "Une tempête d’os qui martèle et engourdit.",
+    "battleMessage_fr": "Les os du Gardien volent en éclats et se ressoudent autour de vous à grands coups !"
   },
   "archon_eclipse": {
     "id": "archon_eclipse",
@@ -1591,7 +1850,11 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "enemyOnly": true,
+    "name_fr": "Éclipse de l’Archonte",
+    "description_fr": "Une éclipse de néant qui vous laisse chancelant.",
+    "battleMessage_fr": "L’Archonte engloutit la lumière, et un instant il n’y a plus rien d’autre !"
   },
   "sovereign_unmaking": {
     "id": "sovereign_unmaking",
@@ -1612,7 +1875,11 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 25,
-    "vfx": "quake"
+    "vfx": "quake",
+    "enemyOnly": true,
+    "name_fr": "Anéantissement du Souverain",
+    "description_fr": "L’anéantissement du Souverain, qui vous laisse affaibli un moment.",
+    "battleMessage_fr": "Le Souverain défait le sol sous vos pieds !"
   },
   "zealot_martyrdom": {
     "id": "zealot_martyrdom",
@@ -1630,7 +1897,11 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "enemyOnly": true,
+    "name_fr": "Martyre du zélote",
+    "description_fr": "La charge d’un martyr, en flammes.",
+    "battleMessage_fr": "Le zélote embrase sa propre chair et avance en brûlant !"
   },
   "manifestation_many_faces": {
     "id": "manifestation_many_faces",
@@ -1651,7 +1922,11 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "enemyOnly": true,
+    "name_fr": "Mille visages",
+    "description_fr": "Chaque visage volé parle à la fois, et vous vous y perdez.",
+    "battleMessage_fr": "Chaque visage qu’elle porte prononce votre nom en même temps !"
   },
   "stalker_ambush": {
     "id": "stalker_ambush",
@@ -1672,6 +1947,10 @@
     "inflictsStatus": "Poison",
     "statusDuration": 3,
     "statusMagnitude": 5,
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "enemyOnly": true,
+    "name_fr": "Embuscade du rôdeur",
+    "description_fr": "Un coup surgi de la fumée qui laisse une plaie empoisonnée.",
+    "battleMessage_fr": "Le rôdeur se fond dans la fumée et frappe par-derrière !"
   }
 }

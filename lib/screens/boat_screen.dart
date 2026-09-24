@@ -16,6 +16,7 @@ import '../providers/story_providers.dart';
 import '../widgets/immersive_notice.dart';
 import 'port_screen.dart';
 import 'voyage_screen.dart';
+import '../widgets/player_stats_bar.dart';
 
 /// The Rusty Eel: her hull and bulwark, the shipwright's parts to fit into
 /// her slots, and the chart of ports she can sail to. The camp stays where
@@ -31,16 +32,19 @@ class BoatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
     final session = ref.watch(playerSessionProvider);
-    final ships = ref.watch(gameDbProvider(shipsSchema)).value;
-    final parts = ref.watch(gameDbProvider(shipPartsSchema)).value;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
+    final ships = ref.watch(localizedDbProvider(shipsSchema)).value;
+    final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value;
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
 
     if (ships == null || parts == null || ports == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'boat_title'))),
+        appBar: AppBar(
+          title: Text(tr(ref, 'boat_title')),
+          actions: const [GoldBadge()],
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -52,7 +56,10 @@ class BoatScreen extends ConsumerWidget {
         : ships[resolvedShipId] as Map<String, dynamic>?;
     if (ship == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'boat_title'))),
+        appBar: AppBar(
+          title: Text(tr(ref, 'boat_title')),
+          actions: const [GoldBadge()],
+        ),
         body: Center(child: Text(tr(ref, 'no_zones_available'))),
       );
     }
@@ -94,7 +101,10 @@ class BoatScreen extends ConsumerWidget {
 
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'boat_title'))),
+      appBar: AppBar(
+        title: Text(tr(ref, 'boat_title')),
+        actions: const [GoldBadge()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -198,7 +208,7 @@ class BoatScreen extends ConsumerWidget {
               ref,
               portId: portId,
               port: ports[portId] as Map<String, dynamic>,
-              zones: ref.watch(gameDbProvider(zonesSchema)).value ??
+              zones: ref.watch(localizedDbProvider(zonesSchema)).value ??
                   const <String, dynamic>{},
               isCurrent: portId == currentPortId,
               fromPortId: currentPortId ?? portId,

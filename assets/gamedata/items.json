@@ -28,7 +28,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Épée de fer"
   },
   "potion_minor": {
     "id": "potion_minor",
@@ -54,35 +55,37 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Petite potion de soin"
   },
   "void_banner": {
     "id": "void_banner",
     "itemName": "Void Banner (Grey Shroud)",
     "itemType": "Artifact",
     "damage": 25,
-    "cost": 500,
+    "cost": 250,
     "isEquippable": true,
     "equipSlot": "Top",
-    "attackDamage": 20,
-    "armor": 10,
-    "fireDmgBonus": 10,
-    "windDmgBonus": 10,
-    "earthDmgBonus": 10,
-    "waterDmgBonus": 10,
-    "elecDmgBonus": 10,
-    "fireResist": 5,
-    "windResist": 5,
-    "earthResist": 5,
-    "waterResist": 5,
-    "elecResist": 5,
-    "voidDmgBonus": 10,
-    "voidResist": 5,
+    "attackDamage": 8,
+    "armor": 6,
+    "fireDmgBonus": 5,
+    "windDmgBonus": 5,
+    "earthDmgBonus": 5,
+    "waterDmgBonus": 5,
+    "elecDmgBonus": 5,
+    "fireResist": 3,
+    "windResist": 3,
+    "earthResist": 3,
+    "waterResist": 3,
+    "elecResist": 3,
+    "voidDmgBonus": 5,
+    "voidResist": 3,
     "rarity": "Common",
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bannière du Néant (Linceul Gris)"
   },
   "armor_leather": {
     "id": "armor_leather",
@@ -93,7 +96,7 @@
     "isEquippable": true,
     "equipSlot": "Top",
     "attackDamage": 0,
-    "armor": 15,
+    "armor": 6,
     "fireDmgBonus": 0,
     "windDmgBonus": 0,
     "earthDmgBonus": 0,
@@ -108,7 +111,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Pourpoint de cuir bouilli"
   },
   "sword_t1": {
     "id": "sword_t1",
@@ -139,7 +143,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Épée courte rouillée"
   },
   "spear_t1": {
     "id": "spear_t1",
@@ -170,7 +175,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance éclatée"
   },
   "dagger_t1": {
     "id": "dagger_t1",
@@ -201,7 +207,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Dague ébréchée"
   },
   "shield_t1": {
     "id": "shield_t1",
@@ -232,7 +239,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Rondache fêlée"
   },
   "staff_t1": {
     "id": "staff_t1",
@@ -263,7 +271,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Branche noueuse"
   },
   "sword_t2": {
     "id": "sword_t2",
@@ -294,7 +303,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Coutelas de bronze"
   },
   "spear_t2": {
     "id": "spear_t2",
@@ -325,7 +335,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance à pointe de bronze"
   },
   "dagger_t2": {
     "id": "dagger_t2",
@@ -356,7 +367,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Surin d’os"
   },
   "shield_t2": {
     "id": "shield_t2",
@@ -387,7 +399,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bouclier rond en bois"
   },
   "staff_t2": {
     "id": "staff_t2",
@@ -418,7 +431,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bâton d’apprenti"
   },
   "sword_t3": {
     "id": "sword_t3",
@@ -449,7 +463,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Épée large d’acier"
   },
   "spear_t3": {
     "id": "spear_t3",
@@ -480,7 +495,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance de guerre en fer"
   },
   "dagger_t3": {
     "id": "dagger_t3",
@@ -511,7 +527,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Stylet de fer"
   },
   "shield_t3": {
     "id": "shield_t3",
@@ -542,7 +559,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Écu de fer en amande"
   },
   "staff_t3": {
     "id": "staff_t3",
@@ -573,7 +591,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bâton de chêne"
   },
   "sword_t4": {
     "id": "sword_t4",
@@ -604,7 +623,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Épée longue argentée"
   },
   "spear_t4": {
     "id": "spear_t4",
@@ -635,7 +655,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Pique barbelée"
   },
   "dagger_t4": {
     "id": "dagger_t4",
@@ -666,7 +687,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Kriss argenté"
   },
   "shield_t4": {
     "id": "shield_t4",
@@ -697,7 +719,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Pavois argenté"
   },
   "staff_t4": {
     "id": "staff_t4",
@@ -728,7 +751,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bâton argenté"
   },
   "sword_t5": {
     "id": "sword_t5",
@@ -759,7 +783,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Sabre de chevalier"
   },
   "spear_t5": {
     "id": "spear_t5",
@@ -790,7 +815,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Hallebarde argentée"
   },
   "dagger_t5": {
     "id": "dagger_t5",
@@ -821,7 +847,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Croc de l’assassin"
   },
   "shield_t5": {
     "id": "shield_t5",
@@ -852,7 +879,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Rempart du chevalier"
   },
   "staff_t5": {
     "id": "staff_t5",
@@ -883,7 +911,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Baguette mystique"
   },
   "sword_t6": {
     "id": "sword_t6",
@@ -914,7 +943,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Claymore de guerre"
   },
   "spear_t6": {
     "id": "spear_t6",
@@ -945,7 +975,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Trident de la horde"
   },
   "dagger_t6": {
     "id": "dagger_t6",
@@ -976,7 +1007,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Poignard d’ombre"
   },
   "shield_t6": {
     "id": "shield_t6",
@@ -1007,7 +1039,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Égide de guerre"
   },
   "staff_t6": {
     "id": "staff_t6",
@@ -1038,7 +1071,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bâton runique"
   },
   "sword_t7": {
     "id": "sword_t7",
@@ -1069,7 +1103,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Grande épée runique"
   },
   "spear_t7": {
     "id": "spear_t7",
@@ -1100,7 +1135,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Vouge runique"
   },
   "dagger_t7": {
     "id": "dagger_t7",
@@ -1131,7 +1167,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Aiguille runique"
   },
   "shield_t7": {
     "id": "shield_t7",
@@ -1162,7 +1199,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Barrière runique"
   },
   "staff_t7": {
     "id": "staff_t7",
@@ -1193,7 +1231,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Conduit élémentaire"
   },
   "sword_t8": {
     "id": "sword_t8",
@@ -1224,7 +1263,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lame touchée par le Néant"
   },
   "spear_t8": {
     "id": "spear_t8",
@@ -1255,7 +1295,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Perce-Néant"
   },
   "dagger_t8": {
     "id": "dagger_t8",
@@ -1286,7 +1327,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Dard du Néant"
   },
   "shield_t8": {
     "id": "shield_t8",
@@ -1317,7 +1359,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Garde du Néant"
   },
   "staff_t8": {
     "id": "staff_t8",
@@ -1348,7 +1391,8 @@
     "lootChapter": 4,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Sceptre du Néant"
   },
   "sword_t9": {
     "id": "sword_t9",
@@ -1379,7 +1423,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lame de guerre ancestrale"
   },
   "spear_t9": {
     "id": "spear_t9",
@@ -1410,7 +1455,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance ancestrale"
   },
   "dagger_t9": {
     "id": "dagger_t9",
@@ -1441,7 +1487,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Croc ancestral"
   },
   "shield_t9": {
     "id": "shield_t9",
@@ -1472,7 +1519,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bastion ancestral"
   },
   "staff_t9": {
     "id": "staff_t9",
@@ -1503,7 +1551,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bâton ancestral"
   },
   "sword_t10": {
     "id": "sword_t10",
@@ -1534,7 +1583,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Espadon déicide"
   },
   "spear_t10": {
     "id": "spear_t10",
@@ -1565,7 +1615,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance Brise-Ciel"
   },
   "dagger_t10": {
     "id": "dagger_t10",
@@ -1596,7 +1647,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lame-murmure du Néant"
   },
   "shield_t10": {
     "id": "shield_t10",
@@ -1627,7 +1679,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Égide des Dieux"
   },
   "staff_t10": {
     "id": "staff_t10",
@@ -1658,7 +1711,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Ascension de l’archimage"
   },
   "potion_major": {
     "id": "potion_major",
@@ -1684,7 +1738,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Grande potion de soin"
   },
   "antidote": {
     "id": "antidote",
@@ -1710,7 +1765,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Antidote"
   },
   "scroll_fireball": {
     "id": "scroll_fireball",
@@ -1736,7 +1792,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Parchemin de boule de feu"
   },
   "material_iron_ore": {
     "id": "material_iron_ore",
@@ -1762,7 +1819,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Minerai de fer"
   },
   "quest_sealed_letter": {
     "id": "quest_sealed_letter",
@@ -1788,7 +1846,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lettre scellée de l’Inquisition"
   },
   "artifact_moon_shard": {
     "id": "artifact_moon_shard",
@@ -1814,7 +1873,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Éclat de lune"
   },
   "plate_emberproof": {
     "id": "plate_emberproof",
@@ -1846,7 +1906,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Harnois ignifuge"
   },
   "cloak_frostward": {
     "id": "cloak_frostward",
@@ -1878,7 +1939,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Cape pare-givre"
   },
   "circlet_radiance": {
     "id": "circlet_radiance",
@@ -1910,7 +1972,8 @@
     "lootChapter": 2,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Diadème radieux"
   },
   "elite_trophy": {
     "id": "elite_trophy",
@@ -1942,7 +2005,9 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Marque d’élite",
+    "sellValue": 60
   },
   "charm_fourth_roll": {
     "id": "charm_fourth_roll",
@@ -1978,7 +2043,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Osselet du joueur"
   },
   "charm_lucky_coin": {
     "id": "charm_lucky_coin",
@@ -2014,7 +2080,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Pièce porte-bonheur"
   },
   "charm_iron_skin": {
     "id": "charm_iron_skin",
@@ -2050,7 +2117,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Baume peau-de-fer"
   },
   "charm_warding": {
     "id": "charm_warding",
@@ -2086,7 +2154,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Nœud de garde"
   },
   "tome_of_insight": {
     "id": "tome_of_insight",
@@ -2122,7 +2191,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Tome de clairvoyance"
   },
   "tome_of_mastery": {
     "id": "tome_of_mastery",
@@ -2158,7 +2228,8 @@
     "lootChapter": 0,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Tome de maîtrise"
   },
   "rat_king_tooth": {
     "id": "rat_king_tooth",
@@ -2195,7 +2266,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Dent du Roi des rats"
   },
   "thug_knuckle_wrap": {
     "id": "thug_knuckle_wrap",
@@ -2232,7 +2304,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Bandes de poing du voyou"
   },
   "warden_signet": {
     "id": "warden_signet",
@@ -2268,7 +2341,8 @@
     "lootChapter": 1,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Chevalière du Gardien"
   },
   "wisp_ember": {
     "id": "wisp_ember",
@@ -2304,7 +2378,8 @@
     "lootChapter": 3,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Braise de feu follet"
   },
   "cultist_hood": {
     "id": "cultist_hood",
@@ -2340,7 +2415,8 @@
     "lootChapter": 3,
     "alignment": "Evil",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 3
+    "alignedArmorBonus": 3,
+    "itemName_fr": "Capuche de cultiste"
   },
   "blackened_fang": {
     "id": "blackened_fang",
@@ -2377,7 +2453,8 @@
     "lootChapter": 2,
     "alignment": "Evil",
     "alignedAttackBonus": 4,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Croc noirci"
   },
   "saint_reliquary": {
     "id": "saint_reliquary",
@@ -2413,7 +2490,8 @@
     "lootChapter": 2,
     "alignment": "Good",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 3
+    "alignedArmorBonus": 3,
+    "itemName_fr": "Reliquaire du saint"
   },
   "dawnward_shield": {
     "id": "dawnward_shield",
@@ -2450,7 +2528,8 @@
     "lootChapter": 3,
     "alignment": "Good",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 4
+    "alignedArmorBonus": 4,
+    "itemName_fr": "Bouclier Garde-Aube"
   },
   "halo_lance": {
     "id": "halo_lance",
@@ -2487,7 +2566,8 @@
     "lootChapter": 3,
     "alignment": "Good",
     "alignedAttackBonus": 4,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Lance auréolée"
   },
   "tear_glass_blade": {
     "id": "tear_glass_blade",
@@ -2497,7 +2577,7 @@
     "cost": 420,
     "isEquippable": true,
     "equipSlot": "Weapon",
-    "attackDamage": 19,
+    "attackDamage": 36,
     "armor": 0,
     "fireDmgBonus": 0,
     "windDmgBonus": 0,
@@ -2521,7 +2601,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "scalingStat": "dexterity",
-    "reqDexterity": 6
+    "reqDexterity": 6,
+    "itemName_fr": "Lame de verre de la déchirure"
   },
   "archon_mantle": {
     "id": "archon_mantle",
@@ -2553,7 +2634,8 @@
     "lootChapter": 5,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "Manteau de l’Archonte"
   },
   "sovereign_crown": {
     "id": "sovereign_crown",
@@ -2585,7 +2667,8 @@
     "lootChapter": 6,
     "alignment": "",
     "alignedAttackBonus": 0,
-    "alignedArmorBonus": 0
+    "alignedArmorBonus": 0,
+    "itemName_fr": "La Couronne du Souverain"
   },
   "spellbook_frost_bind": {
     "id": "spellbook_frost_bind",
@@ -2612,7 +2695,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_frost_bind"
+    "teachesSpellId": "spell_frost_bind",
+    "itemName_fr": "Grimoire : Entrave de givre"
   },
   "spellbook_ember_wave": {
     "id": "spellbook_ember_wave",
@@ -2639,7 +2723,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_ember_wave"
+    "teachesSpellId": "spell_ember_wave",
+    "itemName_fr": "Grimoire : Vague de braises"
   },
   "spellbook_sanctified_ground": {
     "id": "spellbook_sanctified_ground",
@@ -2666,7 +2751,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_sanctified_ground"
+    "teachesSpellId": "spell_sanctified_ground",
+    "itemName_fr": "Grimoire : Sol consacré"
   },
   "spellbook_smite_the_wicked": {
     "id": "spellbook_smite_the_wicked",
@@ -2693,7 +2779,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_smite_the_wicked"
+    "teachesSpellId": "spell_smite_the_wicked",
+    "itemName_fr": "Grimoire : Châtiment des impies"
   },
   "spellbook_venom_hex": {
     "id": "spellbook_venom_hex",
@@ -2720,7 +2807,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_venom_hex"
+    "teachesSpellId": "spell_venom_hex",
+    "itemName_fr": "Grimoire : Malédiction venimeuse"
   },
   "spellbook_hunters_mark": {
     "id": "spellbook_hunters_mark",
@@ -2747,7 +2835,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_hunters_mark"
+    "teachesSpellId": "spell_hunters_mark",
+    "itemName_fr": "Grimoire : Marque du chasseur"
   },
   "spellbook_war_shout": {
     "id": "spellbook_war_shout",
@@ -2774,7 +2863,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "teachesSpellId": "spell_war_shout"
+    "teachesSpellId": "spell_war_shout",
+    "itemName_fr": "Grimoire : Cri de guerre"
   },
   "harborwatch_cutlass": {
     "id": "harborwatch_cutlass",
@@ -2808,7 +2898,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "scalingStat": "dexterity",
-    "setId": "harborwatch"
+    "setId": "harborwatch",
+    "itemName_fr": "Coutelas de la Garde du port"
   },
   "harborwatch_coat": {
     "id": "harborwatch_coat",
@@ -2841,7 +2932,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "setId": "harborwatch"
+    "setId": "harborwatch",
+    "itemName_fr": "Manteau de la Garde du port"
   },
   "harborwatch_lantern": {
     "id": "harborwatch_lantern",
@@ -2874,7 +2966,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "setId": "harborwatch"
+    "setId": "harborwatch",
+    "itemName_fr": "Lanterne de la Garde du port"
   },
   "hollow_court_blade": {
     "id": "hollow_court_blade",
@@ -2909,7 +3002,8 @@
     "alignedArmorBonus": 0,
     "scalingStat": "strength",
     "reqStrength": 4,
-    "setId": "hollow_court"
+    "setId": "hollow_court",
+    "itemName_fr": "Lame de la Cour Creuse"
   },
   "hollow_court_mantle": {
     "id": "hollow_court_mantle",
@@ -2942,7 +3036,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "setId": "hollow_court"
+    "setId": "hollow_court",
+    "itemName_fr": "Chape de la Cour Creuse"
   },
   "hollow_court_seal": {
     "id": "hollow_court_seal",
@@ -2975,7 +3070,8 @@
     "alignment": "",
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
-    "setId": "hollow_court"
+    "setId": "hollow_court",
+    "itemName_fr": "Sceau de la Cour Creuse"
   },
   "bloodthorn_blade": {
     "id": "bloodthorn_blade",
@@ -3010,7 +3106,8 @@
     "alignedArmorBonus": 0,
     "scalingStat": "strength",
     "uniqueEffect": "lifesteal",
-    "uniqueValue": 20
+    "uniqueValue": 20,
+    "itemName_fr": "Lame Épine-de-sang"
   },
   "thornmail_hauberk": {
     "id": "thornmail_hauberk",
@@ -3044,7 +3141,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "uniqueEffect": "thorns",
-    "uniqueValue": 6
+    "uniqueValue": 6,
+    "itemName_fr": "Haubert d’épines"
   },
   "phoenix_sigil": {
     "id": "phoenix_sigil",
@@ -3078,7 +3176,8 @@
     "alignedAttackBonus": 0,
     "alignedArmorBonus": 0,
     "uniqueEffect": "secondWind",
-    "uniqueValue": 1
+    "uniqueValue": 1,
+    "itemName_fr": "Sceau du Phénix"
   },
   "siphon_wand": {
     "id": "siphon_wand",
@@ -3113,6 +3212,881 @@
     "alignedArmorBonus": 0,
     "scalingStat": "intelligence",
     "uniqueEffect": "manaOnHit",
-    "uniqueValue": 1
+    "uniqueValue": 1,
+    "itemName_fr": "Baguette siphon"
+  },
+  "boots_worn_leather": {
+    "id": "boots_worn_leather",
+    "itemName": "Worn Leather Boots",
+    "itemName_fr": "Bottes de cuir usées",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 40,
+    "isEquippable": true,
+    "equipSlot": "Foot",
+    "attackDamage": 0,
+    "armor": 2,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 1,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "boots_tidewalker": {
+    "id": "boots_tidewalker",
+    "itemName": "Tidewalker Boots",
+    "itemName_fr": "Bottes d’arpenteur des grèves",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 80,
+    "isEquippable": true,
+    "equipSlot": "Foot",
+    "attackDamage": 0,
+    "armor": 3,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 3,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 2,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "boots_iron_shod": {
+    "id": "boots_iron_shod",
+    "itemName": "Iron-Shod Boots",
+    "itemName_fr": "Bottes ferrées",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 140,
+    "isEquippable": true,
+    "equipSlot": "Foot",
+    "attackDamage": 0,
+    "armor": 5,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 3,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "craftedAt": "hammersmith_forge",
+    "craftGold": 60,
+    "craftMaterials": {
+      "material_iron_ore": 3
+    }
+  },
+  "boots_bone_laced": {
+    "id": "boots_bone_laced",
+    "itemName": "Bone-Laced Boots",
+    "itemName_fr": "Bottes lacées d’os",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 190,
+    "isEquippable": true,
+    "equipSlot": "Foot",
+    "attackDamage": 0,
+    "armor": 6,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 3,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 4,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "boots_tearwalker": {
+    "id": "boots_tearwalker",
+    "itemName": "Tearwalker Boots",
+    "itemName_fr": "Bottes d’arpenteur de la Déchirure",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 270,
+    "isEquippable": true,
+    "equipSlot": "Foot",
+    "attackDamage": 0,
+    "armor": 7,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 6,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Rare",
+    "lootChapter": 5,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "uniqueEffect": "dodgeChance",
+    "uniqueValue": 4
+  },
+  "greaves_hide": {
+    "id": "greaves_hide",
+    "itemName": "Hide Greaves",
+    "itemName_fr": "Jambières de cuir brut",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 50,
+    "isEquippable": true,
+    "equipSlot": "Bottom",
+    "attackDamage": 0,
+    "armor": 3,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 1,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "greaves_studded": {
+    "id": "greaves_studded",
+    "itemName": "Studded Greaves",
+    "itemName_fr": "Jambières cloutées",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 95,
+    "isEquippable": true,
+    "equipSlot": "Bottom",
+    "attackDamage": 0,
+    "armor": 5,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 2,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "greaves_iron": {
+    "id": "greaves_iron",
+    "itemName": "Iron Greaves",
+    "itemName_fr": "Jambières de fer",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 150,
+    "isEquippable": true,
+    "equipSlot": "Bottom",
+    "attackDamage": 0,
+    "armor": 7,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 2,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 3,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "craftedAt": "hammersmith_forge",
+    "craftGold": 75,
+    "craftMaterials": {
+      "material_iron_ore": 4
+    }
+  },
+  "greaves_bone_plated": {
+    "id": "greaves_bone_plated",
+    "itemName": "Bone-Plated Greaves",
+    "itemName_fr": "Jambières plaquées d’os",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 200,
+    "isEquippable": true,
+    "equipSlot": "Bottom",
+    "attackDamage": 0,
+    "armor": 9,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 3,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 3,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 4,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "greaves_voidsteel": {
+    "id": "greaves_voidsteel",
+    "itemName": "Voidsteel Greaves",
+    "itemName_fr": "Jambières d’acier du Néant",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 290,
+    "isEquippable": true,
+    "equipSlot": "Bottom",
+    "attackDamage": 0,
+    "armor": 11,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 6,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 3,
+    "reqDexterity": 0,
+    "reqConstitution": 4,
+    "reqIntelligence": 0,
+    "rarity": "Rare",
+    "lootChapter": 5,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "helm_iron_cap": {
+    "id": "helm_iron_cap",
+    "itemName": "Iron Cap",
+    "itemName_fr": "Calotte de fer",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 110,
+    "isEquippable": true,
+    "equipSlot": "Head",
+    "attackDamage": 0,
+    "armor": 2,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 3,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 3,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "craftedAt": "hammersmith_forge",
+    "craftGold": 45,
+    "craftMaterials": {
+      "material_iron_ore": 2
+    }
+  },
+  "hood_gravecloth": {
+    "id": "hood_gravecloth",
+    "itemName": "Gravecloth Hood",
+    "itemName_fr": "Capuche de toile funèbre",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 140,
+    "isEquippable": true,
+    "equipSlot": "Head",
+    "attackDamage": 0,
+    "armor": 3,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 2,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "dexterity",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 4,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "helm_drowned_sallet": {
+    "id": "helm_drowned_sallet",
+    "itemName": "Drowned Sallet",
+    "itemName_fr": "Salade noyée",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 230,
+    "isEquippable": true,
+    "equipSlot": "Head",
+    "attackDamage": 0,
+    "armor": 4,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 5,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 5,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "helm_last_watch": {
+    "id": "helm_last_watch",
+    "itemName": "Last Watch Helm",
+    "itemName_fr": "Heaume de la dernière veille",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 250,
+    "isEquippable": true,
+    "equipSlot": "Head",
+    "attackDamage": 0,
+    "armor": 5,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 3,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 3,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 6,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "coat_brigandine": {
+    "id": "coat_brigandine",
+    "itemName": "Smuggler's Brigandine",
+    "itemName_fr": "Brigandine de contrebandier",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 160,
+    "isEquippable": true,
+    "equipSlot": "Top",
+    "attackDamage": 0,
+    "armor": 9,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 0,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 3,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "coat_iron_scale": {
+    "id": "coat_iron_scale",
+    "itemName": "Iron Scale Coat",
+    "itemName_fr": "Cotte d’écailles de fer",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 210,
+    "isEquippable": true,
+    "equipSlot": "Top",
+    "attackDamage": 0,
+    "armor": 11,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 3,
+    "reqDexterity": 0,
+    "reqConstitution": 2,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 4,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "craftedAt": "hammersmith_forge",
+    "craftGold": 110,
+    "craftMaterials": {
+      "material_iron_ore": 5
+    }
+  },
+  "hauberk_saltcrust": {
+    "id": "hauberk_saltcrust",
+    "itemName": "Salt-Crusted Hauberk",
+    "itemName_fr": "Haubert croûté de sel",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 250,
+    "isEquippable": true,
+    "equipSlot": "Top",
+    "attackDamage": 0,
+    "armor": 12,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 4,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 0,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 3,
+    "reqIntelligence": 0,
+    "rarity": "Common",
+    "lootChapter": 5,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "coat_last_watch": {
+    "id": "coat_last_watch",
+    "itemName": "Last Watch Coat",
+    "itemName_fr": "Manteau de la dernière veille",
+    "itemType": "Armor",
+    "damage": 0,
+    "cost": 300,
+    "isEquippable": true,
+    "equipSlot": "Top",
+    "attackDamage": 0,
+    "armor": 13,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "voidDmgBonus": 0,
+    "voidResist": 5,
+    "iceDmgBonus": 0,
+    "iceResist": 0,
+    "lightDmgBonus": 0,
+    "lightResist": 0,
+    "scalingStat": "constitution",
+    "reqStrength": 0,
+    "reqDexterity": 0,
+    "reqConstitution": 4,
+    "reqIntelligence": 0,
+    "rarity": "Uncommon",
+    "lootChapter": 6,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0
+  },
+  "spellbook_rally_the_line": {
+    "id": "spellbook_rally_the_line",
+    "itemName": "Spellbook: Rally the Line",
+    "itemName_fr": "Grimoire : Serrez les rangs",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 120,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_rally_the_line"
+  },
+  "spellbook_sundering_roar": {
+    "id": "spellbook_sundering_roar",
+    "itemName": "Spellbook: Sundering Roar",
+    "itemName_fr": "Grimoire : Rugissement fracassant",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 160,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_sundering_roar"
+  },
+  "spellbook_smoke_veil": {
+    "id": "spellbook_smoke_veil",
+    "itemName": "Spellbook: Smoke Veil",
+    "itemName_fr": "Grimoire : Voile de fumée",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 110,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_smoke_veil"
+  },
+  "spellbook_bleeding_cut": {
+    "id": "spellbook_bleeding_cut",
+    "itemName": "Spellbook: Bleeding Cut",
+    "itemName_fr": "Grimoire : Entaille sanglante",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 120,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_bleeding_cut"
+  },
+  "spellbook_arrow_volley": {
+    "id": "spellbook_arrow_volley",
+    "itemName": "Spellbook: Arrow Volley",
+    "itemName_fr": "Grimoire : Volée de flèches",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 170,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_arrow_volley"
+  },
+  "spellbook_snare_shot": {
+    "id": "spellbook_snare_shot",
+    "itemName": "Spellbook: Snare Shot",
+    "itemName_fr": "Grimoire : Tir entravant",
+    "itemType": "Spellbook",
+    "damage": 0,
+    "cost": 120,
+    "isEquippable": false,
+    "equipSlot": "",
+    "attackDamage": 0,
+    "armor": 0,
+    "fireDmgBonus": 0,
+    "windDmgBonus": 0,
+    "earthDmgBonus": 0,
+    "waterDmgBonus": 0,
+    "elecDmgBonus": 0,
+    "fireResist": 0,
+    "windResist": 0,
+    "earthResist": 0,
+    "waterResist": 0,
+    "elecResist": 0,
+    "rarity": "Common",
+    "lootChapter": 0,
+    "alignment": "",
+    "alignedAttackBonus": 0,
+    "alignedArmorBonus": 0,
+    "teachesSpellId": "spell_snare_shot"
   }
 }

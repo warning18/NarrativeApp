@@ -1,5 +1,7 @@
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../l10n/dice_names_fr.dart';
+import '../l10n/skill_names_fr.dart';
 import 'combat_engine.dart';
 
 /// How strongly a skill works when it is set on a basic face (Attack,
@@ -27,8 +29,19 @@ const List<String> _skillIdPrefixes = [
   'ranger_',
 ];
 
-/// A skill's name for the player, built from its id.
-String skillDisplayName(String skillId) {
+/// Whether [skill] is one of the enemies' own moves (skills.json
+/// `enemyOnly`): never listed, unlocked or set on a die by the party.
+bool isEnemyOnlySkill(Map<String, dynamic>? skill) =>
+    skill?['enemyOnly'] as bool? ?? false;
+
+/// A skill's name for the player: its French name in French (see
+/// [skillNamesFr]), otherwise built from its id.
+String skillDisplayName(String skillId,
+    {AppLanguage language = AppLanguage.en}) {
+  if (language == AppLanguage.fr) {
+    final french = skillNamesFr[skillId];
+    if (french != null) return french;
+  }
   var id = skillId;
   for (final prefix in _skillIdPrefixes) {
     if (id.startsWith(prefix) && id.length > prefix.length) {
@@ -90,7 +103,7 @@ String faceDisplayName(
   required AppLanguage language,
 }) {
   final skillId = faceSkillId(face, assignedSkillId);
-  if (skillId != null) return skillDisplayName(skillId);
+  if (skillId != null) return skillDisplayName(skillId, language: language);
   return trFor(language, basicFaceLabelKey(face['type']?.toString() ?? ''));
 }
 
@@ -98,7 +111,8 @@ String faceDisplayName(
 String rolledFaceName(DiceFaceResult face, AppLanguage language) {
   if (face.type == 'Skill') {
     return skillDisplayName(
-        face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID);
+        face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID,
+        language: language);
   }
   return trFor(language, basicFaceLabelKey(face.type));
 }
@@ -138,12 +152,19 @@ List<String> dieSignatureSkillIds(Map<String, dynamic>? die) {
   ];
 }
 
-/// A die's name for the player: "iron_die" reads "Iron Die".
-String dieDisplayName(String diceId) => diceId
-    .split('_')
-    .where((w) => w.isNotEmpty)
-    .map((w) => '${w[0].toUpperCase()}${w.substring(1)}')
-    .join(' ');
+/// A die's name for the player: "iron_die" reads "Iron Die"; in French,
+/// its name from [diceNamesFr].
+String dieDisplayName(String diceId, {AppLanguage language = AppLanguage.en}) {
+  if (language == AppLanguage.fr) {
+    final french = diceNamesFr[diceId];
+    if (french != null) return french;
+  }
+  return diceId
+      .split('_')
+      .where((w) => w.isNotEmpty)
+      .map((w) => '${w[0].toUpperCase()}${w.substring(1)}')
+      .join(' ');
+}
 
 /// Every face of [die] by name, with its number where it has one:
 /// "Attack 6 · Guard 5 · Heavy Attack · ...".

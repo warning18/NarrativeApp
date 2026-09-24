@@ -11,7 +11,8 @@ class AchievementsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
+    final achievementsAsync =
+        ref.watch(localizedDbProvider(achievementsSchema));
     final session = ref.watch(playerSessionProvider);
 
     return Scaffold(

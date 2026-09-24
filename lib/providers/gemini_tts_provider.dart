@@ -38,11 +38,13 @@ enum GeminiTtsPlaybackState { idle, loading, playing }
 /// Speaks story text aloud using one of Gemini's prebuilt voices instead of
 /// the device's on-device TTS engine. Wraps a single shared [AudioPlayer].
 class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
-  GeminiTtsNotifier() : super(GeminiTtsPlaybackState.idle) {
-    _player.onPlayerComplete.listen((_) => state = GeminiTtsPlaybackState.idle);
-  }
+  GeminiTtsNotifier() : super(GeminiTtsPlaybackState.idle);
 
-  final AudioPlayer _player = AudioPlayer();
+  /// Created on first use: a reader who never turns the Gemini voice on
+  /// never opens a native audio player (every scene change calls [stop]).
+  AudioPlayer? _audio;
+  AudioPlayer get _player => _audio ??= AudioPlayer()
+    ..onPlayerComplete.listen((_) => state = GeminiTtsPlaybackState.idle);
 
   /// Clip cache, keyed by voice+language+text — insertion-ordered so the
   /// oldest entry is evicted first once [_maxCacheEntries] is exceeded.
@@ -129,7 +131,7 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
   }
 
   Future<void> stop() async {
-    await _player.stop();
+    await _audio?.stop();
     state = GeminiTtsPlaybackState.idle;
   }
 
@@ -245,7 +247,7 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
 
   @override
   void dispose() {
-    _player.dispose();
+    _audio?.dispose();
     super.dispose();
   }
 }

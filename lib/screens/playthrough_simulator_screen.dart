@@ -764,6 +764,10 @@ class _PlaythroughSimulatorScreenState
   int? _targetChapter;
   bool _autoplayRunning = false;
 
+  /// The attempt [_playToChapter] is on: a run that falls short is undone
+  /// and played again until it reaches the chapter.
+  int _autoplayAttempt = 0;
+
   /// Whether the strategy/runs/simulate controls are shown in full. They
   /// collapse to a compact bar the moment there's a result to look at, so
   /// results don't start halfway down a small screen — and re-expand
@@ -835,10 +839,16 @@ class _PlaythroughSimulatorScreenState
       enemies: enemies,
       races: races,
       professions: professions,
+      onAttempt: (attempt) {
+        if (mounted) setState(() => _autoplayAttempt = attempt);
+      },
     );
 
     if (!mounted) return;
-    setState(() => _autoplayRunning = false);
+    setState(() {
+      _autoplayRunning = false;
+      _autoplayAttempt = 0;
+    });
 
     final message = switch (result.status) {
       AutoplayStatus.alreadyThere => t('autoplay_already_there'),
@@ -846,7 +856,9 @@ class _PlaythroughSimulatorScreenState
       AutoplayStatus.stuckInCombat => '${t('autoplay_stuck_prefix')} '
           '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
       AutoplayStatus.reachedTarget =>
-        '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+        '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')}'
+            '${result.attempts > 1 ? ', ${t('autoplay_attempt_label')} ${result.attempts}' : ''}'
+            '${result.forcedWins > 0 ? ', ${result.forcedWins} ${t('autoplay_forced_suffix')}' : ''})',
       AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
     };
     ScaffoldMessenger.of(context)
@@ -859,7 +871,7 @@ class _PlaythroughSimulatorScreenState
     // they're popped back to the root.
     if (result.stepsApplied > 0) {
       ref.read(homeTabIndexProvider.notifier).state = 0;
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).popUntil(isGameRoute);
     }
   }
 
@@ -1055,7 +1067,10 @@ class _PlaythroughSimulatorScreenState
                 )
               : const Icon(Icons.fast_forward),
           label: Text(_autoplayRunning
-              ? tr(ref, 'autoplay_running')
+              ? (_autoplayAttempt > 1
+                  ? '${tr(ref, 'autoplay_running')} '
+                      '${tr(ref, 'autoplay_attempt_label')} $_autoplayAttempt'
+                  : tr(ref, 'autoplay_running'))
               : tr(ref, 'play_to_chapter_button')),
         ),
       ],

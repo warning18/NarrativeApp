@@ -60,7 +60,8 @@
     "koLine": "No. Not this one. Not today.",
     "koLineFr": "Non. Pas celui-là. Pas aujourd'hui.",
     "chestLine": "Take only what you need. Then take a little more.",
-    "chestLineFr": "Ne prends que ce dont tu as besoin. Puis un peu plus."
+    "chestLineFr": "Ne prends que ce dont tu as besoin. Puis un peu plus.",
+    "companionName_fr": "Sœur Maren"
   },
   "liora": {
     "companionID": "liora",
@@ -144,7 +145,8 @@
     "koLine": "No. I have buried enough. Get up.",
     "koLineFr": "Non. J'en ai enterré assez. Debout.",
     "chestLine": "Take what you need. Leave a candle's worth for the next one down.",
-    "chestLineFr": "Prends ce dont tu as besoin. Laisse de quoi une chandelle pour le suivant."
+    "chestLineFr": "Prends ce dont tu as besoin. Laisse de quoi une chandelle pour le suivant.",
+    "companionName_fr": "Frère Tobin"
   },
   "malrik": {
     "companionID": "malrik",

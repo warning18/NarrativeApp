@@ -35,10 +35,10 @@ class PortScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
-    final shops = ref.watch(gameDbProvider(shopsSchema)).value;
-    final zones = ref.watch(gameDbProvider(zonesSchema)).value;
-    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value ??
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
+    final shops = ref.watch(localizedDbProvider(shopsSchema)).value;
+    final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     final restBlocked =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);

@@ -1,12 +1,26 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_info.dart';
 import 'providers/palette_provider.dart';
 import 'providers/theme_mode_provider.dart';
-import 'screens/home_shell.dart';
+import 'screens/main_menu_screen.dart';
 
 void main() {
+  // The world map's fonts are under the SIL Open Font License, which asks
+  // that their licence travel with them: it shows in the app's licences.
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(
+      const ['Pixelify Sans'],
+      await rootBundle.loadString('assets/fonts/PixelifySans-OFL.txt'),
+    );
+    yield LicenseEntryWithLineBreaks(
+      const ['Spectral'],
+      await rootBundle.loadString('assets/fonts/Spectral-OFL.txt'),
+    );
+  });
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -40,7 +54,7 @@ class MyApp extends ConsumerWidget {
           child: child ?? const SizedBox.shrink(),
         ),
       ),
-      home: const HomeShell(),
+      home: const MainMenuScreen(),
     );
   }
 }

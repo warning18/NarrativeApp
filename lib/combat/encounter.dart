@@ -21,6 +21,7 @@ class EncounterModifiers {
     this.isHunterAmbush = false,
     this.isZoneBoss = false,
     this.lossContinues = false,
+    this.isTest = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -66,6 +67,10 @@ class EncounterModifiers {
   /// losing is a scene, not a retreat, and the end button says so.
   final bool lossContinues;
 
+  /// An Edit Mode test fight (see FightLabScreen): a loss never runs the
+  /// permadeath flow, whatever the setting.
+  final bool isTest;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -77,7 +82,8 @@ class EncounterModifiers {
       !isHunt &&
       !isHunterAmbush &&
       !isZoneBoss &&
-      !lossContinues;
+      !lossContinues &&
+      !isTest;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw).
@@ -94,6 +100,7 @@ class EncounterModifiers {
         isHunterAmbush: isHunterAmbush,
         isZoneBoss: isZoneBoss,
         lossContinues: lossContinues,
+        isTest: isTest,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the

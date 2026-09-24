@@ -66,10 +66,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
+    final itemsAsync = ref.watch(localizedDbProvider(itemsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
     final companions =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
 
     final companion = widget.allyId != null
         ? companions[widget.allyId] as Map<String, dynamic>?
@@ -110,7 +110,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 data: (dice) => _InventoryBody(
                   items: items,
                   itemSets: parseItemSets(
-                      ref.watch(gameDbProvider(itemSetsSchema)).value ??
+                      ref.watch(localizedDbProvider(itemSetsSchema)).value ??
                           const {}),
                   dice: dice,
                   allyId: widget.allyId,
@@ -301,9 +301,10 @@ class _InventoryBody extends ConsumerWidget {
     int equipperConstitution = session.constitution;
     int equipperIntelligence = session.intelligence;
     if (allyId != null) {
-      final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+      final races =
+          ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
       final professions =
-          ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
       final gameConfig = ref.watch(gameConfigProvider).value ?? const {};
       final race = races[companion?['raceId']?.toString() ?? '']
               as Map<String, dynamic>? ??
@@ -353,6 +354,30 @@ class _InventoryBody extends ConsumerWidget {
     }
     final ownedIds = counts.keys.toList()..sort();
     final equippedIds = ally?.equippedItemIds ?? session.equippedItemIds;
+    // One copy is worn by one character: an item everyone's copies of are
+    // already worn by others isn't offered, and says who wears it.
+    final wearerId = allyId ?? playerWearerId;
+    bool hasFreeCopy(String id) =>
+        equippedIds.contains(id) ||
+        session.freeCopiesOf(id, wearerId: wearerId) > 0;
+    final companionsDb =
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
+    String? wornByOthers(String id) {
+      if (hasFreeCopy(id)) return null;
+      final names = [
+        for (final wearer in session.wearersOf(id))
+          if (wearer != wearerId)
+            wearer == playerWearerId
+                ? (session.characterName.isNotEmpty
+                    ? session.characterName
+                    : tr(ref, 'you_label'))
+                : ((companionsDb[wearer]
+                            as Map<String, dynamic>?)?['companionName']
+                        ?.toString() ??
+                    wearer),
+      ];
+      return names.isEmpty ? null : names.join(', ');
+    }
 
     final allySignatureDiceId = companion?['signatureDiceId']?.toString();
     final equippedDiceId =
@@ -398,7 +423,8 @@ class _InventoryBody extends ConsumerWidget {
           final candidates = ownedIds.where((id) {
             final item = items[id] as Map<String, dynamic>?;
             return (item?['isEquippable'] as bool? ?? false) &&
-                (item?['equipSlot']?.toString() ?? '') == slot;
+                (item?['equipSlot']?.toString() ?? '') == slot &&
+                hasFreeCopy(id);
           }).toList();
 
           return Card(
@@ -466,11 +492,20 @@ class _InventoryBody extends ConsumerWidget {
               compareMode: compareMode,
               selectedForCompare: firstCompareId == id,
               onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable && !isEquipped && canEquip(id))
+              onEquip: (isEquippable &&
+                      !isEquipped &&
+                      canEquip(id) &&
+                      hasFreeCopy(id))
                   ? () => equipFn(id, slot: equipSlot)
                   : null,
               onUnequip: isEquipped ? () => unequipFn(id) : null,
               requirementUnmet: isEquippable && !isEquipped && !canEquip(id),
+              wornBy: isEquippable && !isEquipped ? wornByOthers(id) : null,
+              onRead: item?['itemType']?.toString() == 'Tome'
+                  ? () => ref
+                      .read(playerSessionProvider.notifier)
+                      .readTome(id, item)
+                  : null,
             );
           }),
       ],
@@ -496,7 +531,8 @@ class _InventoryBody extends ConsumerWidget {
                 : 0;
             return ListTile(
               leading: const Icon(Icons.casino),
-              title: Text(dieDisplayName(id)),
+              title: Text(
+                  dieDisplayName(id, language: ref.watch(appLanguageProvider))),
               subtitle: Text(
                   '$faceCount $facesLabel · ${dieFacesSummary(dice[id] as Map<String, dynamic>?, ref.read(appLanguageProvider))}'),
               trailing:
@@ -571,14 +607,20 @@ class _ItemTile extends StatelessWidget {
     this.onCompareTap,
     this.onEquip,
     this.onUnequip,
+    this.onRead,
     this.requirementUnmet = false,
     this.itemSet,
     this.setPiecesWorn = 0,
+    this.wornBy,
   });
 
   final String itemId;
   final Map<String, dynamic>? item;
   final int? count;
+
+  /// Who else wears every copy of this item, when no copy is free for the
+  /// character this inventory belongs to.
+  final String? wornBy;
   final bool isEquipped;
   final AppLanguage language;
 
@@ -597,6 +639,9 @@ class _ItemTile extends StatelessWidget {
   final VoidCallback? onCompareTap;
   final VoidCallback? onEquip;
   final VoidCallback? onUnequip;
+
+  /// Reads a carried tome (see PlayerSessionNotifier.readTome).
+  final VoidCallback? onRead;
 
   /// True when this item is equippable, not already equipped, but the
   /// equipping character's ability scores don't meet its
@@ -664,6 +709,7 @@ class _ItemTile extends StatelessWidget {
           requirementText.isEmpty)
         t('alignment_rejects_label'),
       if (uniqueText != null) '${t('unique_label')}: $uniqueText',
+      if (wornBy != null) '${t('worn_by_prefix')}: $wornBy',
       if (setText != null) setText,
       if (count != null && count! > 1) 'x$count',
       if (comparisonItem != null)
@@ -680,19 +726,22 @@ class _ItemTile extends StatelessWidget {
         subtitle: Text(statsParts.join(' · ')),
         trailing: compareMode
             ? null
-            : (onEquip != null || onUnequip != null)
-                ? IconButton(
-                    icon: Icon(onUnequip != null
-                        ? Icons.remove_circle_outline
-                        : Icons.add_circle_outline),
-                    tooltip:
-                        onUnequip != null ? t('unequip') : t('equip_button'),
-                    onPressed: onUnequip ?? onEquip,
-                  )
-                : requirementUnmet
-                    ? Icon(Icons.lock_outline,
-                        color: colorScheme.onSurfaceVariant)
-                    : null,
+            : onRead != null
+                ? TextButton(onPressed: onRead, child: Text(t('read_button')))
+                : (onEquip != null || onUnequip != null)
+                    ? IconButton(
+                        icon: Icon(onUnequip != null
+                            ? Icons.remove_circle_outline
+                            : Icons.add_circle_outline),
+                        tooltip: onUnequip != null
+                            ? t('unequip')
+                            : t('equip_button'),
+                        onPressed: onUnequip ?? onEquip,
+                      )
+                    : requirementUnmet
+                        ? Icon(Icons.lock_outline,
+                            color: colorScheme.onSurfaceVariant)
+                        : null,
         onTap: compareMode
             ? onCompareTap
             : () => showDetailDialog(

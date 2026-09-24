@@ -5,7 +5,9 @@
     "description": "A reinforced forge-hall built to Kelda's own specifications. She's fought under enough collapsing roofs for one lifetime and won't stand watch under another until she's satisfied this one holds.",
     "buildCost": 150,
     "partyCapacityBonus": 0,
-    "requiredFlags": []
+    "requiredFlags": [],
+    "houseName_fr": "La Halle de Kelda",
+    "description_fr": "Une halle-forge renforcée, bâtie selon les exigences de Kelda en personne. Elle a combattu sous assez de toits effondrés pour toute une vie, et ne montera plus la garde sous un autre tant qu’elle ne sera pas sûre que celui-ci tient."
   },
   "barracks_annex": {
     "houseID": "barracks_annex",
@@ -13,7 +15,9 @@
     "description": "Extra bunks, a second mess table, room enough for one more pair of hands at your back — no one companion's claim on it, just more camp than you started with.",
     "buildCost": 200,
     "partyCapacityBonus": 1,
-    "requiredFlags": []
+    "requiredFlags": [],
+    "houseName_fr": "L’Annexe de la caserne",
+    "description_fr": "Des couchettes en plus, une seconde table de mess, assez de place pour une paire de mains de plus dans votre dos — aucun compagnon n’y prétend en particulier, c’est simplement un camp plus grand que celui du départ."
   },
   "hammersmith": {
     "houseID": "hammersmith",
@@ -24,7 +28,9 @@
     "unlocksShopId": "hammersmith_forge",
     "requiredFlags": [
       "scaffold_yards_cleared"
-    ]
+    ],
+    "houseName_fr": "Le Maître-forgeron",
+    "description_fr": "Une vraie forge, pas un étal de marché — enclume, soufflet, et un maître-forgeron qui ne travaille que le métal qui en vaut la peine. Ouvre les plus belles pièces de la Forge à quiconque est assez fort et robuste pour les porter."
   },
   "academy": {
     "houseID": "academy",
@@ -35,7 +41,9 @@
     "unlocksShopId": "arcane_academy",
     "requiredFlags": [
       "cinder_row_cleared"
-    ]
+    ],
+    "houseName_fr": "L’Académie",
+    "description_fr": "Un cabinet d’étude bâti dans un seul but : offrir un vrai débouché à ce qu’il reste de votre éducation arcanique. Les bâtons qu’on peut désormais y commander ne sont pas faits pour qu’on flâne devant — ils attendent un esprit qui a déjà fait le travail."
   },
   "sharpweave_den": {
     "houseID": "sharpweave_den",
@@ -46,7 +54,9 @@
     "unlocksShopId": "sharpweave_den",
     "requiredFlags": [
       "banner_second_piece_lead"
-    ]
+    ],
+    "houseName_fr": "L’Antre de la Trame acérée",
+    "description_fr": "Une arrière-salle sans enseigne, tenue discrète à dessein — le genre de contact que seuls les pieds légers et les mains vives parviennent jamais à nouer. Ouvre une porte dont la plupart des gens ignorent l’existence."
   },
   "hearth_hall": {
     "houseID": "hearth_hall",
@@ -57,7 +67,9 @@
     "partyHealthBonus": 3,
     "requiredFlags": [
       "cinder_row_cleared"
-    ]
+    ],
+    "houseName_fr": "La Halle du Foyer",
+    "description_fr": "Une longue halle au feu unique qu’on ne laisse jamais s’éteindre, bâtie à la manière naine, la marque de pierre taillée au-dessus de la porte. Le groupe y dort entre deux traversées et emporte un peu de sa chaleur dans chaque combat."
   },
   "banner_loft": {
     "houseID": "banner_loft",
@@ -68,7 +80,9 @@
     "partyDamageBonus": 3,
     "requiredFlags": [
       "ossuary_galleries_cleared"
-    ]
+    ],
+    "houseName_fr": "Le Grenier aux bannières",
+    "description_fr": "Un grenier où l’on coud et peint les bannières du camp, et où le sigil de chaque compagnon est travaillé dans la toile sous laquelle combat le groupe. Ici, le pouvoir se porte, il ne se tient pas : tout le groupe en frappe plus fort."
   },
   "shroud_shrine": {
     "houseID": "shroud_shrine",
@@ -80,6 +94,8 @@
     "partyDamageBonus": 2,
     "requiredFlags": [
       "dead_heart_cleared"
-    ]
+    ],
+    "houseName_fr": "Le Sanctuaire du Linceul",
+    "description_fr": "Un sanctuaire pour abriter les fragments du Linceul entre la route et la traversée, bâti avec la pierre du Cœur Mort. Quoi que le Linceul ait appris de la déchirure, le groupe en porte un peu."
   }
 }

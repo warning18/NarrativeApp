@@ -28,6 +28,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/expedition_active_provider.dart';
+import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/gemini_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -48,6 +49,7 @@ import '../widgets/zone_card.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
+import 'journal_screen.dart';
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -81,6 +83,14 @@ final _fullscreenReadingProvider = StateProvider<bool>((ref) => false);
 /// town or camp can tell an arrival from a return out of one of its own
 /// scenes.
 final _lastStoryNodeIdProvider = StateProvider<String?>((ref) => null);
+
+/// A town or camp arrival waiting to be announced: shown once the Story tab
+/// is the one on screen and nothing (a fight, a dialog, autoplay) covers
+/// it, so the pop-up never lands over another tab or another dialog.
+final _pendingArrivalProvider = StateProvider<Settlement?>((ref) => null);
+
+/// Whether the "Previously..." recap has been offered this launch.
+final _previouslyOfferedProvider = StateProvider<bool>((ref) => false);
 
 /// Speaks [text] via the device's on-device text-to-speech engine — the
 /// fast default voice, used for auto-read and as read-aloud's fallback
@@ -151,8 +161,8 @@ class _StoryView extends ConsumerWidget {
 
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
     if (pendingDiscovery != null) {
-      final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-      final questsAsync = ref.watch(gameDbProvider(questsSchema));
+      final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+      final questsAsync = ref.watch(localizedDbProvider(questsSchema));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
         ref.read(pendingDiscoveryProvider.notifier).state = null;
@@ -175,6 +185,18 @@ class _StoryView extends ConsumerWidget {
       );
     }
 
+    // A story seen through to its ending is remembered, so the main menu
+    // offers New Game+ from it even after a new game replaces it.
+    if (isStoryEnding(node) && session.raceId.isNotEmpty) {
+      final endingId = node.id;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        ref
+            .read(finishedStoryProvider.notifier)
+            .record(ref.read(playerSessionProvider), endingId);
+      });
+    }
+
     // Arriving in a town or camp from elsewhere in the story says so, and
     // what the place offers, before anything else happens there.
     if (!playState.isInExcursion &&
@@ -188,8 +210,40 @@ class _StoryView extends ConsumerWidget {
         final settlement = arrivedNode.settlement;
         if (settlement != null &&
             isSettlementArrival(arrivedNode.id, previousNodeId)) {
-          _showSettlementArrival(context, ref, settlement, french);
+          ref.read(_pendingArrivalProvider.notifier).state = settlement;
         }
+      });
+    }
+    // ModalRoute.of makes this rebuild when a covering route goes away.
+    final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
+        (ModalRoute.of(context)?.isCurrent ?? true);
+    // Picking a saved story back up: a short recap, once per launch.
+    if (storyOnScreen &&
+        !ref.watch(_previouslyOfferedProvider) &&
+        ref.read(storyPlayProvider.notifier).restoredFromAutosave &&
+        playState.history.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted || ref.read(_previouslyOfferedProvider)) return;
+        ref.read(_previouslyOfferedProvider.notifier).state = true;
+        showPreviouslyDialog(
+          context,
+          story: story,
+          history: playState.history,
+          currentNodeId: playState.currentNodeId,
+          session: session,
+          quests: ref.read(localizedDbProvider(questsSchema)).value ?? const {},
+          lang: language,
+        );
+      });
+    }
+
+    final pendingArrival = ref.watch(_pendingArrivalProvider);
+    if (pendingArrival != null && storyOnScreen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        if (ref.read(_pendingArrivalProvider) != pendingArrival) return;
+        ref.read(_pendingArrivalProvider.notifier).state = null;
+        _showSettlementArrival(context, ref, pendingArrival, french);
       });
     }
 
@@ -246,6 +300,26 @@ class _StoryView extends ConsumerWidget {
     final isHubNode = _isHubNode(node);
     final visibleChoices =
         node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // On a hub, a finished activity stays on the list, greyed and ticked,
+    // so the place reads as a checklist rather than shrinking.
+    final doneChoices = isHubNode
+        ? node.choices
+            .where((c) => c.hideIfFlags.any(session.flags.contains))
+            .toList()
+        : const <StoryChoice>[];
+
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final storyTools = <Widget>[
+      IconButton(
+        icon: const Icon(Icons.menu_book_outlined, size: 20),
+        tooltip: tr(ref, 'journal_title'),
+        visualDensity: VisualDensity.compact,
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const JournalScreen()),
+        ),
+      ),
+      _ReadAloudButton(text: displayDescription, language: language),
+    ];
 
     return SafeArea(
       child: Padding(
@@ -253,96 +327,64 @@ class _StoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // No dedicated expand/collapse icon button — it only ever sat
-            // alone taking up its own row, in the way without adding much.
-            // Tapping the header itself now toggles it, on top of the
-            // existing auto-collapse on scroll-down below.
-            if (fullscreenReading)
-              const SizedBox.shrink()
-            else if (statusBarCollapsed)
-              InkWell(
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => ref
-                    .read(_statusBarCollapsedProvider.notifier)
-                    .state = false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            else
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () => ref
-                        .read(_statusBarCollapsedProvider.notifier)
-                        .state = true,
-                    child: const PlayerStatsBar(),
-                  ),
-                  if (session.activeQuestIds.isNotEmpty ||
-                      session.unlockedShopIds.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
+            // One line above the story: the party's numbers, then the
+            // journal and read-aloud buttons. Quests, shops, alignment and
+            // the rest open from the numbers (see PlayerStatsBar). Scrolling
+            // down into the narration folds the numbers into a handle;
+            // tapping the handle brings them back.
+            if (!fullscreenReading)
+              statusBarCollapsed
+                  ? Row(
                       children: [
-                        if (session.activeQuestIds.isNotEmpty)
-                          ActionChip(
-                            avatar: const Icon(Icons.assignment, size: 16),
-                            label: Text(
-                                '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                            onPressed: () => ref
-                                .read(homeTabIndexProvider.notifier)
-                                .state = 1,
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () => ref
+                                .read(_statusBarCollapsedProvider.notifier)
+                                .state = false,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Center(
+                                child: Container(
+                                  width: 36,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outlineVariant,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        if (session.unlockedShopIds.isNotEmpty)
-                          ActionChip(
-                            avatar: const Icon(Icons.storefront, size: 16),
-                            label: Text(
-                                '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                            onPressed: () => ref
-                                .read(homeTabIndexProvider.notifier)
-                                .state = 1,
-                          ),
+                        ),
+                        ...storyTools,
                       ],
-                    ),
-                  ],
-                ],
-              ),
-            if (!fullscreenReading) ...[
-              const SizedBox(height: 8),
+                    )
+                  : PlayerStatsBar(trailing: storyTools),
+            // Edit Mode keeps its own line: back, the node's id and its
+            // editor. A reader never sees node ids.
+            if (!fullscreenReading && isEditMode)
               Row(
                 children: [
-                  if (playState.history.isNotEmpty &&
-                      ref.watch(appModeProvider) == AppMode.edit)
+                  if (playState.history.isNotEmpty)
                     TextButton.icon(
                       onPressed: notifier.goBack,
                       icon: const Icon(Icons.arrow_back),
                       label: Text(tr(ref, 'back')),
                     ),
                   const Spacer(),
-                  _ReadAloudButton(
-                      text: displayDescription, language: language),
-                  const SizedBox(width: 4),
-                  Text(
-                    playState.isInExcursion
-                        ? tr(ref, 'detour')
-                        : '${tr(ref, 'node')} ${node.id}',
-                    style: Theme.of(context).textTheme.labelMedium,
+                  Flexible(
+                    child: Text(
+                      playState.isInExcursion
+                          ? tr(ref, 'detour')
+                          : '${tr(ref, 'node')} ${node.id}',
+                      style: Theme.of(context).textTheme.labelMedium,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  if (!playState.isInExcursion &&
-                      ref.watch(appModeProvider) == AppMode.edit) ...[
+                  if (!playState.isInExcursion) ...[
                     const SizedBox(width: 4),
                     IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
@@ -359,194 +401,243 @@ class _StoryView extends ConsumerWidget {
                   ],
                 ],
               ),
-              const SizedBox(height: 8),
-            ],
+            if (!fullscreenReading) const SizedBox(height: 8),
+            // Below the header, the narration and the choices share what is
+            // left: the choices never take more than [choiceBudget] of it.
+            // The area under the narration doesn't scroll with it, so a long
+            // list (a hub, long French lines) scrolls within the cap instead
+            // of squeezing the story out or running off a small screen.
             Expanded(
-              // Scrolling down into the narration gives the status bar and
-              // companion collapse toggles above/below no purpose (they'd
-              // just be pushed off-screen anyway), so collapse both
-              // automatically the moment the player starts reading down the
-              // page. The manual chevrons stay available to re-expand.
-              child: LayoutBuilder(
-                // Captured here, above the SingleChildScrollView, because
-                // that view gives its child unbounded height on the scroll
-                // axis -- a LayoutBuilder nested inside it would only ever
-                // see infinite height, not the actual viewport size.
-                builder: (context, viewportConstraints) {
-                  return NotificationListener<ScrollNotification>(
-                    onNotification: (notification) {
-                      if (notification is ScrollUpdateNotification &&
-                          (notification.scrollDelta ?? 0) > 0) {
-                        if (!statusBarCollapsed) {
-                          ref.read(_statusBarCollapsedProvider.notifier).state =
-                              true;
-                        }
-                        if (!companionCollapsed) {
-                          ref.read(_companionCollapsedProvider.notifier).state =
-                              true;
-                        }
-                      }
-                      return false;
-                    },
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onDoubleTap: () => ref
-                          .read(_fullscreenReadingProvider.notifier)
-                          .state = !fullscreenReading,
-                      child: AnimatedSwitcher(
+              child: LayoutBuilder(builder: (context, area) {
+                final choiceBudget = area.maxHeight * 0.6;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      // Scrolling down into the narration gives the status bar and
+                      // companion collapse toggles above/below no purpose (they'd
+                      // just be pushed off-screen anyway), so collapse both
+                      // automatically the moment the player starts reading down the
+                      // page. The manual chevrons stay available to re-expand.
+                      child: LayoutBuilder(
+                        // Captured here, above the SingleChildScrollView, because
+                        // that view gives its child unbounded height on the scroll
+                        // axis -- a LayoutBuilder nested inside it would only ever
+                        // see infinite height, not the actual viewport size.
+                        builder: (context, viewportConstraints) {
+                          return NotificationListener<ScrollNotification>(
+                            onNotification: (notification) {
+                              if (notification is ScrollUpdateNotification &&
+                                  (notification.scrollDelta ?? 0) > 0) {
+                                if (!statusBarCollapsed) {
+                                  ref
+                                      .read(
+                                          _statusBarCollapsedProvider.notifier)
+                                      .state = true;
+                                }
+                                if (!companionCollapsed) {
+                                  ref
+                                      .read(
+                                          _companionCollapsedProvider.notifier)
+                                      .state = true;
+                                }
+                              }
+                              return false;
+                            },
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onDoubleTap: () => ref
+                                  .read(_fullscreenReadingProvider.notifier)
+                                  .state = !fullscreenReading,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 320),
+                                switchInCurve: Curves.easeOut,
+                                switchOutCurve: Curves.easeIn,
+                                transitionBuilder: _nodeTransition,
+                                child: SingleChildScrollView(
+                                  key: ValueKey(
+                                      '${node.id}_${playState.isInExcursion}_text'),
+                                  // Short narration otherwise leaves the freed-up
+                                  // space (status bar, node header, companion strip,
+                                  // choices all hidden) as dead blank area below the
+                                  // text card, which reads as "nothing happened"
+                                  // rather than an actual fullscreen mode. Centering
+                                  // it in the full viewport height makes the
+                                  // toggle's effect obvious.
+                                  child: fullscreenReading
+                                      ? SizedBox(
+                                          // A ConstrainedBox with only minHeight set
+                                          // still leaves maxHeight unbounded here
+                                          // (SingleChildScrollView never bounds its
+                                          // child's height) -- and Center collapses
+                                          // to wrap-content, ignoring minHeight,
+                                          // whenever its incoming max is unbounded.
+                                          // A fixed-height SizedBox forces a tight
+                                          // constraint so Center actually centers.
+                                          height: viewportConstraints.maxHeight,
+                                          child: Center(
+                                            child: _StoryText(
+                                              text: displayDescription,
+                                              uiTheme: node.uiTheme,
+                                              epilogue: epilogue,
+                                              speakerLabel: speakerLabel,
+                                              aftermath: pendingAftermath,
+                                              aftermathHeading:
+                                                  tr(ref, 'aftermath_heading'),
+                                              epilogueHeading:
+                                                  tr(ref, 'epilogue_heading'),
+                                            ),
+                                          ),
+                                        )
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            if (playState.isInExcursion)
+                                              _DetourContextCard(
+                                                origin: playState
+                                                    .excursionOriginFor(french),
+                                                note:
+                                                    node.contextNoteFor(french),
+                                              ),
+                                            _StoryText(
+                                              text: displayDescription,
+                                              uiTheme: node.uiTheme,
+                                              epilogue: epilogue,
+                                              speakerLabel: speakerLabel,
+                                              aftermath: pendingAftermath,
+                                              aftermathHeading:
+                                                  tr(ref, 'aftermath_heading'),
+                                              epilogueHeading:
+                                                  tr(ref, 'epilogue_heading'),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    if (!fullscreenReading) ...[
+                      if (walkCompanionEnabled) ...[
+                        if (!companionCollapsed)
+                          WalkingCompanionStrip(
+                            trigger: '${node.id}_${playState.isInExcursion}',
+                            fightAvailable: node.choices.any(
+                              (c) =>
+                                  c.triggersCombat &&
+                                  !_isChoiceLocked(c, story, session,
+                                      playState.isInExcursion),
+                            ),
+                          ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: IconButton(
+                            icon: Icon(companionCollapsed
+                                ? Icons.expand_more
+                                : Icons.expand_less),
+                            tooltip: tr(
+                                ref,
+                                companionCollapsed
+                                    ? 'show_companion'
+                                    : 'hide_companion'),
+                            visualDensity: VisualDensity.compact,
+                            onPressed: () => ref
+                                .read(_companionCollapsedProvider.notifier)
+                                .state = !companionCollapsed,
+                          ),
+                        ),
+                      ] else
+                        const SizedBox(height: 16),
+                      AnimatedSwitcher(
                         duration: const Duration(milliseconds: 320),
                         switchInCurve: Curves.easeOut,
                         switchOutCurve: Curves.easeIn,
                         transitionBuilder: _nodeTransition,
-                        child: SingleChildScrollView(
-                          key: ValueKey(
-                              '${node.id}_${playState.isInExcursion}_text'),
-                          // Short narration otherwise leaves the freed-up
-                          // space (status bar, node header, companion strip,
-                          // choices all hidden) as dead blank area below the
-                          // text card, which reads as "nothing happened"
-                          // rather than an actual fullscreen mode. Centering
-                          // it in the full viewport height makes the
-                          // toggle's effect obvious.
-                          child: fullscreenReading
-                              ? SizedBox(
-                                  // A ConstrainedBox with only minHeight set
-                                  // still leaves maxHeight unbounded here
-                                  // (SingleChildScrollView never bounds its
-                                  // child's height) -- and Center collapses
-                                  // to wrap-content, ignoring minHeight,
-                                  // whenever its incoming max is unbounded.
-                                  // A fixed-height SizedBox forces a tight
-                                  // constraint so Center actually centers.
-                                  height: viewportConstraints.maxHeight,
-                                  child: Center(
-                                    child: _StoryText(
-                                      text: displayDescription,
-                                      uiTheme: node.uiTheme,
-                                      epilogue: epilogue,
-                                      speakerLabel: speakerLabel,
-                                      aftermath: pendingAftermath,
-                                      aftermathHeading:
-                                          tr(ref, 'aftermath_heading'),
-                                      epilogueHeading:
-                                          tr(ref, 'epilogue_heading'),
-                                    ),
-                                  ),
-                                )
-                              : Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    if (playState.isInExcursion)
-                                      _DetourContextCard(
-                                        origin: playState
-                                            .excursionOriginFor(french),
-                                        note: node.contextNoteFor(french),
-                                      ),
-                                    _StoryText(
-                                      text: displayDescription,
-                                      uiTheme: node.uiTheme,
-                                      epilogue: epilogue,
-                                      speakerLabel: speakerLabel,
-                                      aftermath: pendingAftermath,
-                                      aftermathHeading:
-                                          tr(ref, 'aftermath_heading'),
-                                      epilogueHeading:
-                                          tr(ref, 'epilogue_heading'),
-                                    ),
-                                  ],
+                        child: isHubNode && !isStoryEnding(node)
+                            ? KeyedSubtree(
+                                key: ValueKey(
+                                    '${node.id}_${playState.isInExcursion}_choices'),
+                                child: _HubSections(
+                                  node: node,
+                                  choices: visibleChoices,
+                                  done: doneChoices,
+                                  story: story,
+                                  session: session,
+                                  currentNodeId: playState.currentNodeId,
+                                  isExcursion: playState.isInExcursion,
+                                  french: french,
+                                  maxHeight: choiceBudget,
                                 ),
-                        ),
+                              )
+                            : ConstrainedBox(
+                                key: ValueKey(
+                                    '${node.id}_${playState.isInExcursion}_choices'),
+                                constraints:
+                                    BoxConstraints(maxHeight: choiceBudget),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      if (node.choices.isEmpty ||
+                                          isStoryEnding(node))
+                                        _EndingView(
+                                          title: tr(ref, 'the_end'),
+                                          // A written ending (its only way on is "begin
+                                          // again") closes the story; a node with no choice
+                                          // at all is a branch left unfinished.
+                                          message: tr(
+                                              ref,
+                                              isStoryEnding(node)
+                                                  ? 'story_end_message'
+                                                  : 'branch_end_message'),
+                                          restartLabel: isStoryEnding(node)
+                                              ? node.choices.first
+                                                  .textFor(french)
+                                              : tr(ref, 'restart_story'),
+                                          onRestart: () => notifier.restart(
+                                              StoryRepository.startNodeId),
+                                          session: session,
+                                          onNewGamePlus: session.raceId.isEmpty
+                                              ? null
+                                              : () => _startNewGamePlus(
+                                                  context, ref),
+                                        )
+                                      else
+                                        for (var i = 0;
+                                            i < visibleChoices.length;
+                                            i++)
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8),
+                                            child: _StaggeredReveal(
+                                              delay: Duration(
+                                                  milliseconds: 60 * i),
+                                              child: _ChoiceButton(
+                                                choice: visibleChoices[i],
+                                                story: story,
+                                                session: session,
+                                                currentNodeId:
+                                                    playState.currentNodeId,
+                                                isExcursion:
+                                                    playState.isInExcursion,
+                                                french: french,
+                                              ),
+                                            ),
+                                          ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            if (!fullscreenReading) ...[
-              if (walkCompanionEnabled) ...[
-                if (!companionCollapsed)
-                  WalkingCompanionStrip(
-                    trigger: '${node.id}_${playState.isInExcursion}',
-                    fightAvailable: node.choices.any(
-                      (c) =>
-                          c.triggersCombat &&
-                          !_isChoiceLocked(
-                              c, story, session, playState.isInExcursion),
-                    ),
-                  ),
-                Align(
-                  alignment: Alignment.center,
-                  child: IconButton(
-                    icon: Icon(companionCollapsed
-                        ? Icons.expand_more
-                        : Icons.expand_less),
-                    tooltip: tr(
-                        ref,
-                        companionCollapsed
-                            ? 'show_companion'
-                            : 'hide_companion'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => ref
-                        .read(_companionCollapsedProvider.notifier)
-                        .state = !companionCollapsed,
-                  ),
-                ),
-              ] else
-                const SizedBox(height: 16),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 320),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
-                transitionBuilder: _nodeTransition,
-                child: Column(
-                  key:
-                      ValueKey('${node.id}_${playState.isInExcursion}_choices'),
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    if (node.choices.isEmpty)
-                      _EndingView(
-                        title: tr(ref, 'the_end'),
-                        message: tr(ref, 'branch_end_message'),
-                        restartLabel: tr(ref, 'restart_story'),
-                        onRestart: () =>
-                            notifier.restart(StoryRepository.startNodeId),
-                        session: session,
-                        onNewGamePlus: session.raceId.isEmpty
-                            ? null
-                            : () => _startNewGamePlus(context, ref),
-                      )
-                    else if (isHubNode)
-                      _HubSections(
-                        node: node,
-                        choices: visibleChoices,
-                        story: story,
-                        session: session,
-                        currentNodeId: playState.currentNodeId,
-                        isExcursion: playState.isInExcursion,
-                        french: french,
-                      )
-                    else ...[
-                      for (var i = 0; i < visibleChoices.length; i++)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: _StaggeredReveal(
-                            delay: Duration(milliseconds: 60 * i),
-                            child: _ChoiceButton(
-                              choice: visibleChoices[i],
-                              story: story,
-                              session: session,
-                              currentNodeId: playState.currentNodeId,
-                              isExcursion: playState.isInExcursion,
-                              french: french,
-                            ),
-                          ),
-                        ),
                     ],
                   ],
-                ),
-              ),
-            ],
+                );
+              }),
+            ),
           ],
         ),
       ),
@@ -713,8 +804,8 @@ Future<void> _selectChoice({
     // A main zone launched from its story beat: the expedition (and its
     // boss) must be cleared before the story moves on. A retreat or a
     // defeat simply leaves the player on this node.
-    final zones = ref.read(gameDbProvider(zonesSchema)).value;
-    final zone = zones?[choice.launchZoneId] as Map<String, dynamic>?;
+    final zones = await loadedGameDb(ref, zonesSchema);
+    final zone = zones[choice.launchZoneId] as Map<String, dynamic>?;
     final alreadyCleared = ref
         .read(playerSessionProvider)
         .completedZoneIds
@@ -735,11 +826,11 @@ Future<void> _selectChoice({
 
   var resolvedEnemyIds = choice.allTriggerEnemyIds;
   if (choice.triggersCombat) {
-    final enemies = ref.read(gameDbProvider(enemiesSchema)).value;
+    final enemies = await loadedGameDb(ref, enemiesSchema);
     final ids = await _resolveEnemyIds(ref, choice.allTriggerEnemyIds);
     resolvedEnemyIds = ids;
     final resolvedEnemies = {
-      for (final eid in ids) eid: enemies?[eid] as Map<String, dynamic>?,
+      for (final eid in ids) eid: enemies[eid] as Map<String, dynamic>?,
     };
     if (resolvedEnemies.values.every((e) => e != null)) {
       ref.read(combatActiveProvider.notifier).state = true;
@@ -759,6 +850,13 @@ Future<void> _selectChoice({
       );
       ref.read(combatActiveProvider.notifier).state = false;
       _noteFightAftermath(ref, french);
+      final retreated = ref.read(lastFightRetreatedProvider);
+      ref.read(lastFightRetreatedProvider.notifier).state = false;
+      if (won != true && retreated) {
+        // Got away: a detour is left behind; a story fight waits here.
+        if (isExcursion) ref.read(storyPlayProvider.notifier).leaveExcursion();
+        return;
+      }
       if (won != true) {
         // A lost fight with a defeat branch is a scene, not a retry: the
         // story goes there and the choice's own effects and unlocks stay
@@ -812,8 +910,8 @@ Future<void> _selectChoice({
       // A stall met on the road is only there while the player stands at
       // it: "Take a look" opens it now. (Recorded against the scene the
       // detour left, it could never be reached from the Shops tab.)
-      final shop = (ref.read(gameDbProvider(shopsSchema)).value ??
-          const {})[newShopId] as Map<String, dynamic>?;
+      final shop = (await loadedGameDb(ref, shopsSchema))[newShopId]
+          as Map<String, dynamic>?;
       if (shop != null && context.mounted) {
         await Navigator.of(context).push(MaterialPageRoute(
             builder: (_) => ShopDetailScreen(shopId: newShopId, shop: shop)));
@@ -861,9 +959,10 @@ Future<void> _selectChoice({
       !choice.opensCharacterCreation &&
       choice.nextId != currentNodeId &&
       atRest) {
-    final shops = ref.read(gameDbProvider(shopsSchema)).value ?? const {};
-    final enemies = ref.read(gameDbProvider(enemiesSchema)).value ?? const {};
-    final quests = ref.read(gameDbProvider(questsSchema)).value ?? const {};
+    final shops = await loadedGameDb(ref, shopsSchema);
+    final enemies = await loadedGameDb(ref, enemiesSchema);
+    final quests = await loadedGameDb(ref, questsSchema);
+    if (!context.mounted) return;
     final manualTheme = ref.read(mapThemeProvider);
     final resolvedTheme = manualTheme ??
         mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
@@ -1009,15 +1108,25 @@ class _HubSections extends ConsumerWidget {
   const _HubSections({
     required this.node,
     required this.choices,
+    this.done = const [],
     required this.story,
     required this.session,
     required this.currentNodeId,
     required this.isExcursion,
     required this.french,
+    required this.maxHeight,
   });
+
+  /// The most height the whole hub block may take (see the story view's
+  /// choice budget); its services and its way onward scroll within it.
+  final double maxHeight;
 
   final StoryNode node;
   final List<StoryChoice> choices;
+
+  /// The hub's finished activities (their `hideIfFlags` marker is set):
+  /// listed greyed under their section, and counted in the header.
+  final List<StoryChoice> done;
   final StoryData story;
   final PlayerSession session;
   final String currentNodeId;
@@ -1026,10 +1135,17 @@ class _HubSections extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final local = choices.where((c) => isLocalChoice(c, node.id)).toList();
-    final onward = choices.where((c) => !isLocalChoice(c, node.id)).toList();
+    final local =
+        choices.where((c) => isLocalChoice(c, node.id, story)).toList();
+    final onward =
+        choices.where((c) => !isLocalChoice(c, node.id, story)).toList();
+    final doneLocal =
+        done.where((c) => isLocalChoice(c, node.id, story)).toList();
     List<StoryChoice> of(_HubCategory? category) =>
         local.where((c) => _hubCategoryFor(c) == category).toList();
+    List<StoryChoice> doneOf(Set<_HubCategory?> categories) => doneLocal
+        .where((c) => categories.contains(_hubCategoryFor(c)))
+        .toList();
     final shopChoices = of(_HubCategory.shop);
     final challenges = of(_HubCategory.challenge);
     final people = [...of(_HubCategory.people), ...of(null)];
@@ -1037,10 +1153,10 @@ class _HubSections extends ConsumerWidget {
     // A town's port: its own shops (those the story isn't offering as a
     // scene right now) and its expeditions.
     final settlement = node.settlement;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
-    final shopsDb = ref.watch(gameDbProvider(shopsSchema)).value;
-    final zones = ref.watch(gameDbProvider(zonesSchema)).value;
-    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value ??
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
+    final shopsDb = ref.watch(localizedDbProvider(shopsSchema)).value;
+    final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     final port = settlement?.portId == null
         ? null
@@ -1072,6 +1188,26 @@ class _HubSections extends ConsumerWidget {
           ),
         );
 
+    Widget doneRow(StoryChoice choice) => Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Row(
+            children: [
+              Icon(Icons.check_circle,
+                  size: 16, color: Theme.of(context).colorScheme.outline),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  choice.textFor(french),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                ),
+              ),
+            ],
+          ),
+        );
+
     Widget card(StoryChoice choice) => Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: _HubChoiceCard(
@@ -1085,9 +1221,12 @@ class _HubSections extends ConsumerWidget {
         );
 
     final services = <Widget>[
-      if (shopChoices.isNotEmpty || portShops.isNotEmpty) ...[
+      if (shopChoices.isNotEmpty ||
+          portShops.isNotEmpty ||
+          doneOf({_HubCategory.shop}).isNotEmpty) ...[
         header(tr(ref, 'hub_shops_section'), Icons.storefront_outlined),
         for (final choice in shopChoices) card(choice),
+        for (final choice in doneOf({_HubCategory.shop})) doneRow(choice),
         for (final shopId in portShops)
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -1140,13 +1279,18 @@ class _HubSections extends ConsumerWidget {
             },
           ),
       ],
-      if (people.isNotEmpty) ...[
+      if (people.isNotEmpty ||
+          doneOf({_HubCategory.people, null}).isNotEmpty) ...[
         header(tr(ref, 'hub_people_section'), Icons.chat_bubble_outline),
         for (final choice in people) card(choice),
+        for (final choice in doneOf({_HubCategory.people, null}))
+          doneRow(choice),
       ],
-      if (challenges.isNotEmpty) ...[
+      if (challenges.isNotEmpty ||
+          doneOf({_HubCategory.challenge}).isNotEmpty) ...[
         header(tr(ref, 'hub_challenges_section'), Icons.gpp_maybe_outlined),
         for (final choice in challenges) card(choice),
+        for (final choice in doneOf({_HubCategory.challenge})) doneRow(choice),
       ],
     ];
 
@@ -1164,18 +1308,50 @@ class _HubSections extends ConsumerWidget {
           ),
         ),
     ];
-    final maxServicesHeight = MediaQuery.of(context).size.height * 0.42;
+    final onwardSection = <Widget>[
+      if (settlement != null)
+        Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.zero,
+            childrenPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.logout),
+            title: Text(tr(ref, 'leave_settlement_title')
+                .replaceAll('{place}', settlement.nameFor(french))),
+            subtitle: Text(tr(ref, 'leave_settlement_hint')),
+            children: onwardButtons,
+          ),
+        )
+      else ...[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            children: [
+              const Icon(Icons.arrow_forward, size: 18),
+              const SizedBox(width: 6),
+              Text(tr(ref, 'hub_onward_section'),
+                  style: Theme.of(context).textTheme.titleMedium),
+            ],
+          ),
+        ),
+        ...onwardButtons,
+      ],
+    ];
 
+    // The whole block stays within [maxHeight]: the place's name and Rest
+    // on one line, then its services and its way onward, each scrolling
+    // within its share, so the way onward is always on screen.
     return Padding(
       padding: const EdgeInsets.only(top: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (settlement != null)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Row(
-                children: [
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                if (settlement != null) ...[
                   Icon(
                     settlement.isCamp
                         ? Icons.local_fire_department_outlined
@@ -1183,73 +1359,74 @@ class _HubSections extends ConsumerWidget {
                     size: 18,
                   ),
                   const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      settlement.nameFor(french),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
                 ],
-              ),
+                // The place's name with the done count under it, so the
+                // line keeps its Rest button on a narrow screen.
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (settlement != null)
+                        Text(
+                          settlement.nameFor(french),
+                          style: Theme.of(context).textTheme.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      if (doneLocal.isNotEmpty)
+                        Text(
+                          tr(ref, 'hub_done_count')
+                              .replaceAll('{done}', '${doneLocal.length}')
+                              .replaceAll('{total}',
+                                  '${doneLocal.length + local.length}'),
+                          style: Theme.of(context).textTheme.labelMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: () async {
+                    await ref
+                        .read(playerSessionProvider.notifier)
+                        .healPartyToFull();
+                    if (!context.mounted) return;
+                    showImmersiveNotice(
+                      context,
+                      icon: Icons.local_fire_department,
+                      message: tr(ref, 'party_rested_message'),
+                    );
+                  },
+                  icon: const Icon(Icons.local_fire_department_outlined),
+                  label: Text(tr(ref, 'rest_button')),
+                ),
+              ],
             ),
-          OutlinedButton.icon(
-            onPressed: () async {
-              await ref.read(playerSessionProvider.notifier).healPartyToFull();
-              if (!context.mounted) return;
-              showImmersiveNotice(
-                context,
-                icon: Icons.local_fire_department,
-                message: tr(ref, 'party_rested_message'),
-              );
-            },
-            icon: const Icon(Icons.local_fire_department_outlined),
-            label: Text(tr(ref, 'rest_button')),
-          ),
-          // A hub can carry a dozen things to do, and the choice area under
-          // the narration doesn't scroll on its own -- this block scrolls
-          // within a cap so the way onward below always stays on screen.
-          if (services.isNotEmpty)
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: maxServicesHeight),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: services,
+            if (services.isNotEmpty)
+              Flexible(
+                flex: 3,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: services,
+                  ),
                 ),
               ),
-            ),
-          if (onward.isNotEmpty) ...[
-            const Divider(height: 24),
-            if (settlement != null)
-              Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  childrenPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.logout),
-                  title: Text(tr(ref, 'leave_settlement_title')
-                      .replaceAll('{place}', settlement.nameFor(french))),
-                  subtitle: Text(tr(ref, 'leave_settlement_hint')),
-                  children: onwardButtons,
-                ),
-              )
-            else ...[
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.arrow_forward, size: 18),
-                    const SizedBox(width: 6),
-                    Text(tr(ref, 'hub_onward_section'),
-                        style: Theme.of(context).textTheme.titleMedium),
-                  ],
+            if (onward.isNotEmpty) ...[
+              const Divider(height: 16),
+              Flexible(
+                flex: 2,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: onwardSection,
+                  ),
                 ),
               ),
-              ...onwardButtons,
             ],
           ],
-        ],
+        ),
       ),
     );
   }
@@ -1264,7 +1441,7 @@ void _showSettlementArrival(
   Settlement settlement,
   bool french,
 ) {
-  final ports = ref.read(gameDbProvider(portsSchema)).value;
+  final ports = ref.read(localizedDbProvider(portsSchema)).value;
   final port = settlement.portId == null
       ? null
       : ports?[settlement.portId] as Map<String, dynamic>?;
@@ -1275,6 +1452,9 @@ void _showSettlementArrival(
     builder: (dialogContext) {
       final theme = Theme.of(dialogContext);
       return AlertDialog(
+        // A short screen scrolls the port's description and the guide
+        // rather than overflowing.
+        scrollable: true,
         icon: Icon(
           settlement.isCamp ? Icons.local_fire_department : Icons.location_city,
           size: 36,
@@ -1355,13 +1535,13 @@ class _HubChoiceCard extends ConsumerWidget {
     if (choice.triggersCombat) {
       // Keep the enemies database warm so it's ready by the time this
       // card is tapped.
-      ref.watch(gameDbProvider(enemiesSchema));
+      ref.watch(localizedDbProvider(enemiesSchema));
     }
 
     final roster = isExcursion
         ? null
         : _fightRosterFor(
-            choice, ref.watch(gameDbProvider(enemiesSchema)).value);
+            choice, ref.watch(localizedDbProvider(enemiesSchema)).value);
     final subtitle = choice.hasAbilityCheck
         ? '${tr(ref, '${choice.checkAbility}_label')} DC ${choice.checkDC ?? 10}'
         : roster == null
@@ -1555,7 +1735,7 @@ class _ChoiceButton extends ConsumerWidget {
     // Watching the enemies database also keeps it warm, so it is ready by
     // the time a fight button is tapped.
     final enemies = choice.triggersCombat
-        ? ref.watch(gameDbProvider(enemiesSchema)).value
+        ? ref.watch(localizedDbProvider(enemiesSchema)).value
         : null;
     final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
 

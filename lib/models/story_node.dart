@@ -735,3 +735,10 @@ class AlignmentEpilogue {
   final String en;
   final String? fr;
 }
+
+/// Whether [node] is one of the story's endings: every way on from it ends
+/// the story ("Begin again"), so the reader gets the ending screen -- the
+/// run's recap, a fresh start and New Game+ -- instead of a choice that
+/// quietly restarts.
+bool isStoryEnding(StoryNode node) =>
+    node.choices.isNotEmpty && node.choices.every((c) => c.isEnding);

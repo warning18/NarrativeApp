@@ -34,6 +34,8 @@ class AutoplayResult {
     required this.status,
     required this.stepsApplied,
     this.stuckEnemyName,
+    this.attempts = 1,
+    this.forcedWins = 0,
   });
 
   final AutoplayStatus status;
@@ -46,6 +48,22 @@ class AutoplayResult {
   /// Set only for [AutoplayStatus.stuckInCombat] — the enemy the simulated
   /// player couldn't beat after every retry.
   final String? stuckEnemyName;
+
+  /// How many full attempts [autoplayToChapter] made: a failed attempt is
+  /// undone and the walk starts again from where it began.
+  final int attempts;
+
+  /// Fights the last, forced attempt could not win and pushed through
+  /// anyway (see [autoplayToChapter]).
+  final int forcedWins;
+
+  AutoplayResult _withAttempts(int attempts) => AutoplayResult(
+        status: status,
+        stepsApplied: stepsApplied,
+        stuckEnemyName: stuckEnemyName,
+        attempts: attempts,
+        forcedWins: forcedWins,
+      );
 }
 
 /// The shortest forward path of (nodeId the choice starts from, the choice
@@ -146,12 +164,13 @@ Future<bool> _simulateFight({
   required Map<String, dynamic> skills,
   required Map<String, dynamic> items,
   required Random random,
+  bool forceWin = false,
 }) async {
   final session = ref.read(playerSessionProvider);
   final diceFaces = (dice[session.equippedDiceId]?['faces'] as List?)
           ?.cast<Map<String, dynamic>>() ??
       const [];
-  if (diceFaces.isEmpty) return false;
+  if (diceFaces.isEmpty && !forceWin) return false;
 
   final playerScalingBonus = equipmentScalingBonusFor(
     session.equippedItemIds,
@@ -181,7 +200,7 @@ Future<bool> _simulateFight({
   // A real fight can't run forever either (the player or the enemy always
   // eventually hits 0); this is just a safety valve against a pathological
   // stat combination stalemating the loop.
-  for (var turn = 0; turn < 60; turn++) {
+  for (var turn = 0; turn < 60 && diceFaces.isNotEmpty; turn++) {
     var face = rollDie(diceFaces, random);
     face = applyFaceAssignment(face, diceFaces[face.faceIndex],
         assignments[face.faceIndex.toString()]);
@@ -199,9 +218,13 @@ Future<bool> _simulateFight({
     );
     final damageTaken = max(0, move.damage - result.blockAmount - playerArmor);
     playerHealth = max(0, playerHealth - damageTaken);
-    if (playerHealth <= 0) return false;
+    if (playerHealth <= 0) break;
   }
-  if (enemyHealth > 0) return false;
+  if (playerHealth <= 0 || enemyHealth > 0) {
+    if (!forceWin) return false;
+    // A forced win: the walk goes on, the party battered but standing.
+    playerHealth = max(1, session.maxHealth ~/ 4);
+  }
 
   final goldGain =
       scaledReward((enemy['goldReward'] as num?)?.toInt() ?? 0, session.level);
@@ -356,6 +379,14 @@ Future<AutoplayResult> autoplayToNode(
 /// [autoplayToNode] and for the same reason: this is a fast way to reach a
 /// target with real state, not a faithful replay of everything a human
 /// could see along the way.
+///
+/// Forced: a run that falls short -- a fight lost after every retry, a
+/// dead end, the step cap -- is undone (session and story position back to
+/// where the walk began) and played again with fresh rolls and choices, up
+/// to [maxAttempts] times. The last attempt also pushes through any fight
+/// it cannot win, so the walk always reaches the chapter unless the story
+/// itself offers no way there. [onAttempt] reports each attempt as it
+/// starts.
 Future<AutoplayResult> autoplayToChapter(
   WidgetRef ref, {
   required StoryData story,
@@ -369,6 +400,8 @@ Future<AutoplayResult> autoplayToChapter(
   required Map<String, dynamic> professions,
   int maxSteps = 200,
   int maxCombatRetries = 8,
+  int maxAttempts = 10,
+  void Function(int attempt)? onAttempt,
 }) async {
   final startChapter =
       chapterForNode(ref.read(storyPlayProvider).currentNodeId);
@@ -377,6 +410,57 @@ Future<AutoplayResult> autoplayToChapter(
         status: AutoplayStatus.alreadyThere, stepsApplied: 0);
   }
 
+  final savedSession = ref.read(playerSessionProvider);
+  final savedPlay = ref.read(storyPlayProvider);
+  late AutoplayResult result;
+  var attempts = 0;
+  for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+    attempts = attempt;
+    if (attempt > 1) {
+      await ref.read(playerSessionProvider.notifier).loadSession(savedSession);
+      ref.read(storyPlayProvider.notifier).restore(savedPlay);
+    }
+    onAttempt?.call(attempt);
+    final last = attempt == maxAttempts;
+    result = await _playTowardChapter(
+      ref,
+      story: story,
+      targetChapter: targetChapter,
+      strategy: strategy,
+      dice: dice,
+      skills: skills,
+      items: items,
+      enemies: enemies,
+      races: races,
+      professions: professions,
+      // The forced attempt gets room for long hub loops too.
+      maxSteps: last ? maxSteps * 3 : maxSteps,
+      maxCombatRetries: maxCombatRetries,
+      forceWins: last,
+    );
+    if (result.status == AutoplayStatus.reachedTarget) break;
+  }
+  return result._withAttempts(attempts);
+}
+
+/// One walk of [autoplayToChapter]. With [forceWins], a fight still lost
+/// after [maxCombatRetries] is won anyway.
+Future<AutoplayResult> _playTowardChapter(
+  WidgetRef ref, {
+  required StoryData story,
+  required int targetChapter,
+  required AutoplayStrategy strategy,
+  required Map<String, dynamic> dice,
+  required Map<String, dynamic> skills,
+  required Map<String, dynamic> items,
+  required Map<String, dynamic> enemies,
+  required Map<String, dynamic> races,
+  required Map<String, dynamic> professions,
+  required int maxSteps,
+  required int maxCombatRetries,
+  required bool forceWins,
+}) async {
+  var forcedWins = 0;
   final sessionNotifier = ref.read(playerSessionProvider.notifier);
   final playNotifier = ref.read(storyPlayProvider.notifier);
   final random = Random();
@@ -409,7 +493,9 @@ Future<AutoplayResult> autoplayToChapter(
     final currentChapter = chapterForNode(currentNodeId);
     if (currentChapter != null && currentChapter >= targetChapter) {
       return AutoplayResult(
-          status: AutoplayStatus.reachedTarget, stepsApplied: stepsApplied);
+          status: AutoplayStatus.reachedTarget,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     final node = story.nodeFor(currentNodeId);
@@ -417,7 +503,9 @@ Future<AutoplayResult> autoplayToChapter(
       // A dead end or true ending short of the target chapter -- there's
       // nowhere further forward to walk.
       return AutoplayResult(
-          status: AutoplayStatus.noPathFound, stepsApplied: stepsApplied);
+          status: AutoplayStatus.noPathFound,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     // Never deliberately walk into a true ending while still short of the
@@ -451,7 +539,9 @@ Future<AutoplayResult> autoplayToChapter(
 
     if (choice.isEnding) {
       return AutoplayResult(
-          status: AutoplayStatus.noPathFound, stepsApplied: stepsApplied);
+          status: AutoplayStatus.noPathFound,
+          stepsApplied: stepsApplied,
+          forcedWins: forcedWins);
     }
 
     if (choice.opensCharacterCreation) {
@@ -481,6 +571,19 @@ Future<AutoplayResult> autoplayToChapter(
             items: items,
             random: random,
           );
+        }
+        if (!won && forceWins) {
+          won = await _simulateFight(
+            ref: ref,
+            enemyId: firstEnemyId,
+            enemy: enemy,
+            dice: dice,
+            skills: skills,
+            items: items,
+            random: random,
+            forceWin: true,
+          );
+          forcedWins += 1;
         }
         if (!won) {
           return AutoplayResult(
@@ -519,5 +622,7 @@ Future<AutoplayResult> autoplayToChapter(
   }
 
   return AutoplayResult(
-      status: AutoplayStatus.stepCapReached, stepsApplied: stepsApplied);
+      status: AutoplayStatus.stepCapReached,
+      stepsApplied: stepsApplied,
+      forcedWins: forcedWins);
 }

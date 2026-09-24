@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,15 @@ import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
+
+/// Where a save that could not be read is kept aside, untouched, before
+/// the game falls back to a fresh session (see [PlayerSessionNotifier]).
+const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
+
+/// The save format's version, written into every save. Bump it with a
+/// migration in [PlayerSession.fromJson] whenever a change to the format
+/// needs one; a save without it is version 1.
+const int playerSessionSaveVersion = 2;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -34,6 +45,60 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
       }).fold<int>(0,
           (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 }
+
+/// Companions the "Full House" achievement asks for: six of the eight.
+/// Tobin follows only a Good leader and Malrik only an Evil one, so no
+/// single run can recruit everyone.
+const int fullRosterCompanionCount = 6;
+
+/// The share of the purse a retreat costs (see [retreatCostFor]).
+const double retreatGoldShare = 0.15;
+
+/// The least a retreat costs, when the party has that much.
+const int retreatMinimumGold = 10;
+
+/// What getting away from a fight costs a party carrying [gold]: a
+/// share of it, at least [retreatMinimumGold], never more than it has.
+int retreatCostFor(int gold) =>
+    min(gold, max(retreatMinimumGold, (gold * retreatGoldShare).round()));
+
+/// What a shop pays for [item]: two fifths of its price, at least 1 gold.
+/// An item's own `sellValue` wins -- the Elite Mark is a trophy, worth
+/// more to a dealer than a shelf price would say.
+int sellPriceFor(Map<String, dynamic>? item) {
+  final own = (item?['sellValue'] as num?)?.toInt();
+  if (own != null) return own;
+  final cost = (item?['cost'] as num?)?.toInt() ?? 0;
+  return max(1, (cost * 2 / 5).round());
+}
+
+/// Whether [item] can be sold at all: quest items stay with the party.
+bool canSellItem(Map<String, dynamic>? item) =>
+    item != null && item['itemType']?.toString() != 'Quest';
+
+/// The materials forging [item] takes (items.json `craftMaterials`, item
+/// id to count); empty for anything not forged.
+Map<String, int> craftMaterialsFor(Map<String, dynamic>? item) {
+  final raw = item?['craftMaterials'];
+  if (raw is! Map) return const {};
+  return {
+    for (final e in raw.entries)
+      if (((e.value as num?)?.toInt() ?? 0) > 0)
+        e.key.toString(): (e.value as num).toInt(),
+  };
+}
+
+/// The items forged at [shopId] (items.json `craftedAt`), sorted by id.
+List<String> recipesAt(String shopId, Map<String, dynamic> items) => [
+      for (final e in items.entries)
+        if ((e.value as Map<String, dynamic>)['craftedAt']?.toString() ==
+            shopId)
+          e.key,
+    ]..sort();
+
+/// The wearer id [PlayerSession.wearersOf] uses for the player (allies go
+/// by their companion id).
+const String playerWearerId = 'player';
 
 class PlayerSession {
   const PlayerSession({
@@ -351,6 +416,24 @@ class PlayerSession {
 
   int get xpToNextLevel => level * 100;
 
+  /// Who wears [itemId]: [playerWearerId] for the player and each recruited
+  /// ally's companion id.
+  List<String> wearersOf(String itemId) => [
+        if (equippedItemIds.contains(itemId)) playerWearerId,
+        for (final ally in recruitedAllies)
+          if (ally.equippedItemIds.contains(itemId)) ally.companionId,
+      ];
+
+  /// Copies of [itemId] in the shared pack that [wearerId] could put on:
+  /// the pack's copies less those worn by anyone else. One copy is worn by
+  /// one character at a time.
+  int freeCopiesOf(String itemId, {required String wearerId}) {
+    final copies = inventoryItemIds.where((id) => id == itemId).length;
+    final wornElsewhere =
+        wearersOf(itemId).where((wearer) => wearer != wearerId).length;
+    return copies - wornElsewhere;
+  }
+
   String get alignmentLabel {
     if (alignmentScore >= 20) return 'Good';
     if (alignmentScore <= -20) return 'Evil';
@@ -525,6 +608,7 @@ class PlayerSession {
   }
 
   Map<String, dynamic> toJson() => {
+        'saveVersion': playerSessionSaveVersion,
         'level': level,
         'currentXP': currentXP,
         'gold': gold,
@@ -824,14 +908,32 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     _load();
   }
 
+  /// Completes once the saved session has been read (or found missing or
+  /// unreadable). Nothing is written before then, so a change made in the
+  /// first moments after launch can never write the placeholder session
+  /// over the real save.
+  final Completer<void> _loaded = Completer<void>();
+
+  /// Whether the save on disk could not be read this launch; it was kept
+  /// under [unreadableSessionBackupPrefsKey] and a fresh session started.
+  bool loadFailed = false;
+
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_playerSessionPrefsKey);
     if (saved != null) {
-      state =
-          PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
-      return;
+      try {
+        state =
+            PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
+        _loaded.complete();
+        return;
+      } catch (_) {
+        // Keep the unreadable save aside before anything can replace it.
+        await prefs.setString(unreadableSessionBackupPrefsKey, saved);
+        loadFailed = true;
+      }
     }
+    _loaded.complete();
     await _resetToDefaults(prefs);
   }
 
@@ -1102,6 +1204,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> _persist() async {
+    await _loaded.future;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
   }
@@ -1321,6 +1424,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       await _persist();
       return;
     }
+    // A tome is read on the spot, as a looted one is: its points are the
+    // purchase, and nothing enters the pack.
+    final tome = tomeGrantFor(itemId, item);
+    if (tome != null) {
+      state = state.copyWith(
+        gold: state.gold - cost,
+        statPoints: state.statPoints + tome.statPoints,
+        skillPoints: state.skillPoints + tome.skillPoints,
+        shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
+      );
+      await _persist();
+      return;
+    }
     final charges = consumableChargesFor(itemId, item);
     state = state.copyWith(
       gold: state.gold - cost,
@@ -1332,6 +1448,73 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
     );
     await _persist();
+  }
+
+  /// Sells one copy of [itemId] for [price]. Only a copy nobody wears can
+  /// go; one sold where it is stocked goes back on that shop's shelf
+  /// ([shopId]). Returns false when there is no free copy to sell.
+  Future<bool> sellItem(String itemId,
+      {required int price, String? shopId}) async {
+    if (state.freeCopiesOf(itemId, wearerId: '') <= 0) return false;
+    final remaining = [...state.inventoryItemIds]..remove(itemId);
+    final counts = {...state.shopPurchaseCounts};
+    if (shopId != null) {
+      final key = '$shopId::$itemId';
+      final bought = counts[key] ?? 0;
+      if (bought > 0) counts[key] = bought - 1;
+    }
+    state = state.copyWith(
+      inventoryItemIds: remaining,
+      gold: state.gold + max(0, price),
+      shopPurchaseCounts: counts,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Getting away from a fight: [goldLost] spills and the wounds stay --
+  /// the player's health is saved as it stands (at least 1), with the
+  /// mana left. No loss is recorded and nothing is won.
+  Future<void> applyRetreat({
+    required int hpAfter,
+    required int goldLost,
+    int? manaAfter,
+  }) async {
+    state = state.copyWith(
+      gold: max(0, state.gold - goldLost),
+      currentHealth: max(1, min(state.maxHealth, hpAfter)),
+      mana: manaAfter ?? state.mana,
+    );
+    await _persist();
+  }
+
+  /// Whether the pack holds what forging [item] takes: its `craftGold` and
+  /// every `craftMaterials` count (see [craftMaterialsFor]).
+  bool canCraft(Map<String, dynamic>? item) {
+    if (item == null) return false;
+    final gold = (item['craftGold'] as num?)?.toInt() ?? 0;
+    if (state.gold < gold) return false;
+    return craftMaterialsFor(item).entries.every((m) =>
+        state.inventoryItemIds.where((id) => id == m.key).length >= m.value);
+  }
+
+  /// Forges [itemId] from [item]'s recipe: its gold and materials leave
+  /// the pack and the piece enters it. Returns false if something is
+  /// missing.
+  Future<bool> craftItem(String itemId, Map<String, dynamic>? item) async {
+    if (!canCraft(item)) return false;
+    final remaining = [...state.inventoryItemIds];
+    for (final m in craftMaterialsFor(item).entries) {
+      for (var i = 0; i < m.value; i++) {
+        remaining.remove(m.key);
+      }
+    }
+    state = state.copyWith(
+      gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
+      inventoryItemIds: [...remaining, itemId],
+    );
+    await _persist();
+    return true;
   }
 
   /// How a Potion-type item converts into drinkable charges when it's
@@ -1350,6 +1533,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return (potions: itemId == 'potion_major' ? 2 : 1, antidotes: 0);
   }
 
+  /// Reads one carried copy of the tome [itemId] -- for a tome that reached
+  /// the pack before tomes were read on the spot. No-op for anything that
+  /// isn't a carried tome.
+  Future<void> readTome(String itemId, Map<String, dynamic>? item) async {
+    final tome = tomeGrantFor(itemId, item);
+    if (tome == null || !state.inventoryItemIds.contains(itemId)) return;
+    final remaining = [...state.inventoryItemIds]..remove(itemId);
+    state = state.copyWith(
+      inventoryItemIds: remaining,
+      statPoints: state.statPoints + tome.statPoints,
+      skillPoints: state.skillPoints + tome.skillPoints,
+    );
+    await _persist();
+  }
+
   /// Equips [itemId]. When [slot] is given, any other equipped item sharing
   /// that slot (per [items], a map of itemId -> item record) is unequipped
   /// first, so only one item per slot is ever equipped at once.
@@ -1359,6 +1557,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, dynamic>? items,
   }) async {
     if (state.equippedItemIds.contains(itemId)) return;
+    // No copy left that someone else isn't already wearing.
+    if (state.freeCopiesOf(itemId, wearerId: playerWearerId) <= 0) return;
     var newEquipped = state.equippedItemIds;
     if (slot != null && slot.isNotEmpty && items != null) {
       newEquipped = state.equippedItemIds.where((id) {
@@ -1615,6 +1815,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? slot,
     Map<String, dynamic>? items,
   }) async {
+    if (state.freeCopiesOf(itemId, wearerId: companionId) <= 0) return;
     await _updateAlly(companionId, (ally) {
       if (ally.equippedItemIds.contains(itemId)) return ally;
       var newEquipped = ally.equippedItemIds;
@@ -1738,7 +1939,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
     check('first_companion', state.recruitedAllies.isNotEmpty);
     if (totalCompanionCount > 0) {
-      check('full_roster', state.recruitedAllies.length >= totalCompanionCount);
+      check(
+          'full_roster',
+          state.recruitedAllies.length >=
+              min(totalCompanionCount, fullRosterCompanionCount));
     }
     // "Field a full 3-member active party" means the player plus 2 active
     // allies (the default party capacity) -- activeAllyIds counts allies
@@ -2097,6 +2301,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Uses up one carried copy of [itemId] (a scroll read in a fight).
+  Future<void> consumeItem(String itemId) async {
+    if (!state.inventoryItemIds.contains(itemId)) return;
+    state = state.copyWith(
+        inventoryItemIds: [...state.inventoryItemIds]..remove(itemId));
+    await _persist();
+  }
+
   Future<void> consumeAntidote() async {
     if (state.antidoteCount <= 0) return;
     state = state.copyWith(antidoteCount: state.antidoteCount - 1);
@@ -2359,6 +2571,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
       equippedItemIds: const [],
+      // The party shares one pack: what the companions wore goes with it.
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          ally.copyWith(equippedItemIds: const []),
+      ],
       xpEarnedThisRun: 0,
       unlockedSkillIds: starterUnlockedSkills,
       skillTiers: const {},

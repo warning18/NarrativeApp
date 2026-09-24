@@ -32,7 +32,8 @@
       "« Péage », dit le voyou qui barre le passage, bien que personne n'ait jamais construit de route ici. Il annonce un prix, puis décide qu'il préfère tout prendre."
     ],
     "packText": "Slum thugs work in gangs, and this one has followed you for two streets, waiting for a quiet corner. This is the quiet corner.",
-    "packText_fr": "Les voyous des bas-quartiers chassent en bande, et celle-ci vous suit depuis deux rues, attendant un coin tranquille. Voici le coin tranquille."
+    "packText_fr": "Les voyous des bas-quartiers chassent en bande, et celle-ci vous suit depuis deux rues, attendant un coin tranquille. Voici le coin tranquille.",
+    "enemyName_fr": "Voyou des bas-quartiers"
   },
   "inquisition_warden": {
     "enemyName": "Inquisition Warden",
@@ -48,7 +49,7 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 50
+        "dropRate": 25
       },
       {
         "itemID": "warden_signet",
@@ -81,7 +82,8 @@
     "encounterText_fr": [
       "Un gardien de l'Inquisition compare des visages à une liasse de mandats. Il arrive au vôtre, puis au paquet que vous portez, et sa main trouve son épée avant que sa bouche ne crie.",
       "Un gardien en gris sort de l'ombre d'un poste de contrôle. « Ce que vous portez appartient à l'Église », dit-il, comme si on lui avait annoncé votre venue. « Posez-le, et couchez-vous avec. »"
-    ]
+    ],
+    "enemyName_fr": "Gardien de l’Inquisition"
   },
   "rat_matriarch": {
     "enemyName": "Rat Matriarch",
@@ -93,7 +95,7 @@
     "lootTable": [
       {
         "itemID": "potion_minor",
-        "dropRate": 80
+        "dropRate": 25
       },
       {
         "itemID": "rat_king_tooth",
@@ -140,7 +142,8 @@
     "encounterText_fr": [
       "Les couinements dans les murs cessent d'un coup. Une chose de la taille d'un chien se fraie un passage hors d'un grenier éventré, et vous comprenez que le tas sur lequel vous vous tenez est son nid.",
       "Une charrette de grain gâté gît renversée devant vous, et une rate de la taille d'un veau s'en nourrit. Elle lève la tête à votre pas. Vous êtes entre elle et ses petits, et elle ne partage pas."
-    ]
+    ],
+    "enemyName_fr": "Matriarche des rats"
   },
   "harbor_rat": {
     "enemyName": "Harbor Rat",
@@ -152,7 +155,7 @@
     "lootTable": [
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "rat_king_tooth",
@@ -175,7 +178,8 @@
       "La faim rend les rats des quais hardis. Celui-ci sent la nourriture dans votre sac avant de vous voir, et avance comme si vous n'étiez que l'emballage."
     ],
     "packText": "The rats have claimed a stretch of wall between you and where you are going, and they are hungry enough to hold it.",
-    "packText_fr": "Les rats ont pris un pan de muraille entre vous et votre destination, et ils ont assez faim pour le tenir."
+    "packText_fr": "Les rats ont pris un pan de muraille entre vous et votre destination, et ils ont assez faim pour le tenir.",
+    "enemyName_fr": "Rat des quais"
   },
   "street_bandit": {
     "enemyName": "Street Bandit",
@@ -191,7 +195,7 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 30
+        "dropRate": 25
       },
       {
         "itemID": "blackened_fang",
@@ -214,12 +218,13 @@
       "Quelqu'un vous a vu payer plus tôt et a compté la monnaie. Il vous suit depuis, et ici, loin de tout regard, il cesse de faire semblant."
     ],
     "packText": "Bandits step out ahead and behind: the lane was a snare, and your purse is what it was set for.",
-    "packText_fr": "Des bandits surgissent devant et derrière : la ruelle était un piège, et c'est pour votre bourse qu'il a été tendu."
+    "packText_fr": "Des bandits surgissent devant et derrière : la ruelle était un piège, et c'est pour votre bourse qu'il a été tendu.",
+    "enemyName_fr": "Bandit des rues"
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
-    "maxHealth": 81,
-    "damage": 10,
+    "maxHealth": 100,
+    "damage": 11,
     "guile": 1,
     "xpReward": 37,
     "goldReward": 26,
@@ -261,7 +266,8 @@
       "Des cercles tracés à la cendre sur les pavés, et un acolyte en leur centre. « Il nous a dit que vous l'apporteriez », dit-il, en levant une main qui brûle déjà."
     ],
     "packText": "The void cults gather where the Shroud passes. A knot of acolytes has been waiting at the crossroads, and every one of them turns toward you at once.",
-    "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d'acolytes attendait au carrefour, et tous se tournent vers vous d'un seul mouvement."
+    "packText_fr": "Les cultes du vide se rassemblent là où passe le Linceul. Un groupe d'acolytes attendait au carrefour, et tous se tournent vers vous d'un seul mouvement.",
+    "enemyName_fr": "Acolyte cultiste"
   },
   "inquisition_soldier": {
     "enemyName": "Inquisition Soldier",
@@ -277,7 +283,11 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
       }
     ],
     "skillMoves": [],
@@ -294,7 +304,8 @@
     "encounterText_fr": [
       "Une patrouille de l'Inquisition a arrêté une charrette devant vous. Un soldat vous regarde à deux fois, puis ce que vous portez, et ne prend pas la peine d'appeler les autres.",
       "Votre signalement est lu à chaque rassemblement depuis que vous avez fui avec le Linceul. Le soldat au coin de la rue a manifestement écouté."
-    ]
+    ],
+    "enemyName_fr": "Soldat de l’Inquisition"
   },
   "void_wisp": {
     "enemyName": "Void Wisp",
@@ -341,7 +352,8 @@
       "Les chandelles le long du chemin se sont toutes éteintes, et quelque chose dévore leur lumière. Le feu follet se détourne de la dernière mèche vers vous, parce que vous êtes plus chaud."
     ],
     "packText": "Wisps gather where the tear is thin, and they have felt the Shroud's pull. They circle you in slow, tightening rings.",
-    "packText_fr": "Les feux follets se rassemblent là où la déchirure est mince, et ils ont senti l'attrait du Linceul. Ils vous encerclent en anneaux lents qui se resserrent."
+    "packText_fr": "Les feux follets se rassemblent là où la déchirure est mince, et ils ont senti l'attrait du Linceul. Ils vous encerclent en anneaux lents qui se resserrent.",
+    "enemyName_fr": "Feu follet du Néant"
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
@@ -357,7 +369,7 @@
       },
       {
         "itemID": "potion_major",
-        "dropRate": 30
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -412,7 +424,8 @@
     "encounterText_fr": [
       "Un équipage de contrebandiers décharge là où il ne devrait pas, et son capitaine vous a vu voir la cargaison. Dans ce métier, un témoin est une dette, et ce capitaine règle ses dettes sur-le-champ.",
       "Le bruit court que quelqu'un porte une chose pour laquelle l'Inquisition paierait une fortune. Un capitaine contrebandier a décidé d'encaisser cette fortune en personne."
-    ]
+    ],
+    "enemyName_fr": "Capitaine contrebandier"
   },
   "plague_hound": {
     "enemyName": "Plague Hound",
@@ -424,11 +437,11 @@
     "lootTable": [
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       },
       {
         "itemID": "antidote",
-        "dropRate": 30
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -483,7 +496,8 @@
     "encounterText_fr": [
       "Un chien de peste ronge quelque chose dans le caniveau. Il lève la tête, voit que vous êtes plus gros et plus frais que ce qu'il tient, et change de proie.",
       "Vous entendez le halètement avant de le voir : un chien de peste, affamé jusqu'à l'os, qui suit votre odeur. Il a décidé que vous seriez le dernier repas dont il aura besoin."
-    ]
+    ],
+    "enemyName_fr": "Chien pestiféré"
   },
   "iron_golem": {
     "enemyName": "Iron Golem",
@@ -558,7 +572,8 @@
     "encounterText_fr": [
       "Votre chemin longe une porte de caveau scellée, et la statue de fer à côté tourne la tête. On l'a placée là pour garder cette porte contre quiconque s'approche, et vous vous êtes approché.",
       "Quelque chose s'éveille dans les décombres avec un bruit de fer : un vieux golem de l'Église, aux ordres vieux d'un siècle. Il ne sait pas que l'Église n'est plus. Il sait que vous n'êtes pas prêtre."
-    ]
+    ],
+    "enemyName_fr": "Golem de fer"
   },
   "void_stalker": {
     "enemyName": "Void Stalker",
@@ -659,7 +674,8 @@
       }
     ],
     "description": "A hunter out of the tear that follows the Shroud's trail for days and strikes only when it is sure.",
-    "description_fr": "Un chasseur sorti de la déchirure, qui suit la piste du Linceul des jours durant et ne frappe que lorsqu'il est sûr de lui."
+    "description_fr": "Un chasseur sorti de la déchirure, qui suit la piste du Linceul des jours durant et ne frappe que lorsqu'il est sûr de lui.",
+    "enemyName_fr": "Rôdeur du Néant"
   },
   "inquisition_high_warden": {
     "enemyName": "Inquisition High Warden",
@@ -670,7 +686,7 @@
     "goldReward": 75,
     "lootTable": [
       {
-        "itemID": "sword_t9",
+        "itemID": "sword_t6",
         "dropRate": 20
       },
       {
@@ -733,7 +749,8 @@
       }
     ],
     "description": "The Inquisition's High Warden, commander of the Crusade's vanguard, who wears a piece of the Shroud stitched to his own back.",
-    "description_fr": "Le Haut Gardien de l'Inquisition, commandant de l'avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos."
+    "description_fr": "Le Haut Gardien de l'Inquisition, commandant de l'avant-garde de la Croisade, qui porte un fragment du Linceul cousu à même le dos.",
+    "enemyName_fr": "Haut Gardien de l’Inquisition"
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Kroll",
@@ -744,15 +761,15 @@
     "goldReward": 55,
     "lootTable": [
       {
-        "itemID": "dagger_t3",
+        "itemID": "dagger_t2",
         "dropRate": 25
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       },
       {
-        "itemID": "circlet_radiance",
+        "itemID": "warden_signet",
         "dropRate": 20
       }
     ],
@@ -800,7 +817,8 @@
       }
     ],
     "description": "An inquisitor branded by his own order, who enjoys his work, and whose work is you.",
-    "description_fr": "Un inquisiteur marqué au fer par son propre ordre, qui aime son travail, et dont le travail, c'est vous."
+    "description_fr": "Un inquisiteur marqué au fer par son propre ordre, qui aime son travail, et dont le travail, c'est vous.",
+    "enemyName_fr": "Inquisiteur Kroll"
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -816,7 +834,7 @@
       },
       {
         "itemID": "potion_major",
-        "dropRate": 40
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -863,7 +881,8 @@
       }
     ],
     "description": "A zealot of the Hollow Court, the inquisitors who kneel to no living master and pray to the tear in the Church's own words.",
-    "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s'agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l'Église."
+    "description_fr": "Un fanatique de la Cour creuse, ces inquisiteurs qui ne s'agenouillent devant aucun maître vivant et prient la déchirure avec les mots mêmes de l'Église.",
+    "enemyName_fr": "Zélote de la Cour Creuse"
   },
   "void_manifestation": {
     "enemyName": "Void Manifestation",
@@ -948,7 +967,8 @@
       }
     ],
     "description": "The tear given a borrowed shape: every face it has taken from you along the way, folded into one.",
-    "description_fr": "La déchirure revêtue d'une forme d'emprunt : chaque visage qu'elle vous a pris en chemin, replié en un seul."
+    "description_fr": "La déchirure revêtue d'une forme d'emprunt : chaque visage qu'elle vous a pris en chemin, replié en un seul.",
+    "enemyName_fr": "Manifestation du Néant"
   },
   "dock_overseer": {
     "enemyName": "Overseer Renn",
@@ -964,11 +984,15 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "cloak_frostward",
         "dropRate": 18
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1023,23 +1047,24 @@
     "encounterText_fr": [
       "Le contremaître Renn a inventé un péage pour ce bout de chemin et le perçoit lui-même. Il annonce un prix, puis voit ce que vous portez et en annonce un autre : vous, livré à l'Inquisition.",
       "Renn, l'homme des douanes, surgit avec une gaffe et un registre. Votre nom figure au registre, à la rubrique des primes, et il n'a jamais laissé une prime lui filer sous le nez."
-    ]
+    ],
+    "enemyName_fr": "Contremaître Renn"
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
-    "maxHealth": 105,
-    "damage": 13,
+    "maxHealth": 120,
+    "damage": 14,
     "guile": 1,
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [
       {
-        "itemID": "sword_t2",
+        "itemID": "sword_t5",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "warden_signet",
@@ -1062,7 +1087,8 @@
       "Un homme de la levée en tabard de l'Inquisition abaisse sa lance en travers de la route. Il a peur, et un homme effrayé avec une lance et des ordres est plus dangereux qu'un brave."
     ],
     "packText": "An Inquisition levy is sweeping the ruins in a line, and the line has reached you. They call to one another, and close.",
-    "packText_fr": "Une levée de l'Inquisition ratisse les ruines en ligne, et la ligne vous a atteint. Ils s'appellent les uns les autres, et se referment."
+    "packText_fr": "Une levée de l'Inquisition ratisse les ruines en ligne, et la ligne vous a atteint. Ils s'appellent les uns les autres, et se referment.",
+    "enemyName_fr": "Auxiliaire de l’Inquisition"
   },
   "angel_sentinel": {
     "enemyName": "Sentinel of the Choir",
@@ -1073,12 +1099,12 @@
     "goldReward": 45,
     "lootTable": [
       {
-        "itemID": "saint_reliquary",
+        "itemID": "blackened_fang",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -1110,7 +1136,8 @@
     "hunterAlignment": "Evil",
     "hunterTier": 1,
     "description": "A sentinel of the Choir, sent to weigh the wicked and carry out the sentence itself.",
-    "description_fr": "Une sentinelle du Chœur, envoyée peser les méchants et exécuter elle-même la sentence."
+    "description_fr": "Une sentinelle du Chœur, envoyée peser les méchants et exécuter elle-même la sentence.",
+    "enemyName_fr": "Sentinelle du Chœur"
   },
   "angel_judicator": {
     "enemyName": "Judicator of the Choir",
@@ -1121,16 +1148,16 @@
     "goldReward": 85,
     "lootTable": [
       {
-        "itemID": "halo_lance",
+        "itemID": "cultist_hood",
         "dropRate": 20
       },
       {
-        "itemID": "dawnward_shield",
+        "itemID": "blackened_fang",
         "dropRate": 15
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1187,7 +1214,8 @@
       }
     ],
     "description": "A judicator of the Choir, sent when a sentinel does not come back, with the verdict already written.",
-    "description_fr": "Un juge du Chœur, envoyé quand une sentinelle ne revient pas, le verdict déjà écrit."
+    "description_fr": "Un juge du Chœur, envoyé quand une sentinelle ne revient pas, le verdict déjà écrit.",
+    "enemyName_fr": "Justicier du Chœur"
   },
   "demon_imp": {
     "enemyName": "Pit Imp",
@@ -1198,12 +1226,12 @@
     "goldReward": 40,
     "lootTable": [
       {
-        "itemID": "blackened_fang",
+        "itemID": "saint_reliquary",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -1235,7 +1263,8 @@
     "hunterAlignment": "Good",
     "hunterTier": 1,
     "description": "A small, grinning thing of the Pit, sent to spoil the righteous and bring back something they loved.",
-    "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu'ils aimaient."
+    "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu'ils aimaient.",
+    "enemyName_fr": "Diablotin de la Fosse"
   },
   "demon_tormentor": {
     "enemyName": "Tormentor of the Pit",
@@ -1246,16 +1275,16 @@
     "goldReward": 80,
     "lootTable": [
       {
-        "itemID": "cultist_hood",
+        "itemID": "halo_lance",
         "dropRate": 20
       },
       {
-        "itemID": "blackened_fang",
+        "itemID": "dawnward_shield",
         "dropRate": 15
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1312,7 +1341,8 @@
       }
     ],
     "description": "A tormentor of the Pit, sent after the righteous who have killed its imps, and patient as rot.",
-    "description_fr": "Un tourmenteur de la Fosse, envoyé contre les justes qui ont tué ses diablotins, et patient comme la pourriture."
+    "description_fr": "Un tourmenteur de la Fosse, envoyé contre les justes qui ont tué ses diablotins, et patient comme la pourriture.",
+    "enemyName_fr": "Tourmenteur de la Fosse"
   },
   "catacomb_ghoul": {
     "enemyName": "Catacomb Ghoul",
@@ -1325,6 +1355,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 20
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
       }
     ],
     "skillMoves": [
@@ -1355,7 +1389,8 @@
       "La goule suit votre chaleur à travers l'ossuaire depuis un moment. Ici, le passage se rétrécit, et elle cesse de suivre pour se rapprocher."
     ],
     "packText": "The ghouls of the deep crypts hunt in packs, and they have your scent. Their scraping comes from ahead and behind at once.",
-    "packText_fr": "Les goules des cryptes profondes chassent en meute, et elles ont votre odeur. Leur grattement vient à la fois de devant et de derrière."
+    "packText_fr": "Les goules des cryptes profondes chassent en meute, et elles ont votre odeur. Leur grattement vient à la fois de devant et de derrière.",
+    "enemyName_fr": "Goule des catacombes"
   },
   "bone_warden": {
     "enemyName": "Bone Warden",
@@ -1368,6 +1403,10 @@
       {
         "itemID": "shield_t8",
         "dropRate": 20
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 30
       }
     ],
     "skillMoves": [
@@ -1433,11 +1472,12 @@
     "encounterText_fr": [
       "Une forme d'os liés se dresse en travers du seul passage vers le bas, une épée dans chacune de ses nombreuses mains. On l'a levée pour garder ce passage, et elle ne vous demande rien avant de les lever.",
       "Le mur de l'ossuaire n'est pas un mur. Il se déplie, côte après côte, en un gardien des morts, et le serment qui le lie est plus ancien que toute langue que vous connaissiez."
-    ]
+    ],
+    "enemyName_fr": "Gardien d’Os"
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
-    "maxHealth": 400,
+    "maxHealth": 340,
     "damage": 33,
     "guile": 9,
     "xpReward": 150,
@@ -1530,11 +1570,12 @@
       }
     ],
     "description": "An inquisitor of the Hollow Court, one of those who knelt to the tear for a generation and gathered its taken.",
-    "description_fr": "Un inquisiteur de la Cour creuse, de ceux qui se sont agenouillés devant la déchirure pendant une génération et ont rassemblé ses captifs."
+    "description_fr": "Un inquisiteur de la Cour creuse, de ceux qui se sont agenouillés devant la déchirure pendant une génération et ont rassemblé ses captifs.",
+    "enemyName_fr": "Inquisiteur de la Cour Creuse"
   },
   "void_hound": {
     "enemyName": "Void Hound",
-    "maxHealth": 170,
+    "maxHealth": 155,
     "damage": 20,
     "guile": 4,
     "xpReward": 70,
@@ -1573,7 +1614,8 @@
       "Quelque chose suit la piste du Linceul depuis votre dernière traversée. Il l'a trouvé, et il a apporté ses crocs."
     ],
     "packText": "The void hounds hunt the Shroud in packs, and the pack has caught up. They spread out around you without a sound.",
-    "packText_fr": "Les chiens du vide chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit."
+    "packText_fr": "Les chiens du vide chassent le Linceul en meute, et la meute vous a rattrapé. Ils se déploient autour de vous sans un bruit.",
+    "enemyName_fr": "Molosse du Néant"
   },
   "tear_spawn": {
     "enemyName": "Tear-Spawn",
@@ -1585,7 +1627,7 @@
     "lootTable": [
       {
         "itemID": "potion_major",
-        "dropRate": 25
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1639,7 +1681,8 @@
     "encounterText_fr": [
       "L'air se fend le long d'une couture pas plus large qu'un cheveu, et quelque chose en sort dans le mauvais ordre. Il est attiré par le Linceul comme l'eau par la pente.",
       "Un rejeton de la déchirure se nourrit de ce qui reste d'un sanctuaire. Il a presque appris à quoi sert une bouche, et il se tourne vers vous pour s'exercer."
-    ]
+    ],
+    "enemyName_fr": "Engeance de la déchirure"
   },
   "inquisition_penitent": {
     "enemyName": "Inquisition Penitent",
@@ -1717,7 +1760,8 @@
     "encounterText_fr": [
       "Un pénitent en robe lacérée est agenouillé sur votre chemin, se flagellant en cadence. Quand vous approchez, la cadence change, et le fouet est pour vous.",
       "« Le porteur du Linceul », dit le pénitent en se relevant de sa prière, une masse à la main. « On m'a promis le pardon de mes péchés pour votre tête. J'en ai tant. »"
-    ]
+    ],
+    "enemyName_fr": "Pénitent de l’Inquisition"
   },
   "void_archon": {
     "enemyName": "Void Archon",
@@ -1814,7 +1858,8 @@
       }
     ],
     "description": "A lord of the tear's host, the first to meet whoever carries the whole Shroud toward the door.",
-    "description_fr": "Un seigneur de l'armée de la déchirure, le premier à affronter quiconque porte le Linceul entier vers la porte."
+    "description_fr": "Un seigneur de l'armée de la déchirure, le premier à affronter quiconque porte le Linceul entier vers la porte.",
+    "enemyName_fr": "Archonte du Néant"
   },
   "hollow_reflection": {
     "enemyName": "Hollow Reflection",
@@ -1868,7 +1913,8 @@
       "Le Rivage creux garde ce qu'il voit. Il vous a vu, et il vous renvoie à vous-même, creux, pour vous prendre le Linceul comme vous le feriez."
     ],
     "packText": "Reflections rise out of the wet sand, each wearing your face at a different age. The shore wants the Shroud, and it has sent you to take it.",
-    "packText_fr": "Des reflets se lèvent du sable mouillé, chacun portant votre visage à un âge différent. Le rivage veut le Linceul, et il vous a envoyé le prendre."
+    "packText_fr": "Des reflets se lèvent du sable mouillé, chacun portant votre visage à un âge différent. Le rivage veut le Linceul, et il vous a envoyé le prendre.",
+    "enemyName_fr": "Reflet creux"
   },
   "void_sovereign": {
     "enemyName": "The Void Sovereign",
@@ -1988,7 +2034,8 @@
       }
     ],
     "description": "The thing behind the tear, which has wanted the Shroud whole for longer than there has been a Church to hide it.",
-    "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu'il n'existe d'Église pour le cacher."
+    "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu'il n'existe d'Église pour le cacher.",
+    "enemyName_fr": "Le Souverain du Néant"
   },
   "kelda_turned": {
     "enemyName": "Kelda, Turned",
@@ -2053,7 +2100,8 @@
       }
     ],
     "description": "Kelda once held the wharf gate beside you. The legate's pact has set her against you.",
-    "description_fr": "Kelda a jadis tenu la porte du quai à vos côtés. Le pacte du légat la dresse désormais contre vous."
+    "description_fr": "Kelda a jadis tenu la porte du quai à vos côtés. Le pacte du légat la dresse désormais contre vous.",
+    "enemyName_fr": "Kelda, retournée"
   },
   "sable_turned": {
     "enemyName": "Sable, Turned",
@@ -2118,7 +2166,8 @@
       }
     ],
     "description": "Sable won a place in your crew on a wager. The legate's pact has placed the last bet.",
-    "description_fr": "Sable a gagné sa place dans votre équipage sur un pari. Le pacte du légat a placé la dernière mise."
+    "description_fr": "Sable a gagné sa place dans votre équipage sur un pari. Le pacte du légat a placé la dernière mise.",
+    "enemyName_fr": "Sable, retournée"
   },
   "maren_turned": {
     "enemyName": "Maren, Turned",
@@ -2183,7 +2232,8 @@
       }
     ],
     "description": "Sister Maren prayed over your wounded. The legate's pact has given her a new litany, and you are in it.",
-    "description_fr": "Sœur Maren priait sur vos blessés. Le pacte du légat lui a donné une nouvelle litanie, et vous y figurez."
+    "description_fr": "Sœur Maren priait sur vos blessés. Le pacte du légat lui a donné une nouvelle litanie, et vous y figurez.",
+    "enemyName_fr": "Maren, retournée"
   },
   "liora_turned": {
     "enemyName": "Liora, Turned",
@@ -2248,7 +2298,8 @@
       }
     ],
     "description": "Liora kept watch over your camp from forty feet up. The legate's pact has turned her bow around.",
-    "description_fr": "Liora veillait sur votre camp du haut des arbres. Le pacte du légat a retourné son arc."
+    "description_fr": "Liora veillait sur votre camp du haut des arbres. Le pacte du légat a retourné son arc.",
+    "enemyName_fr": "Liora, retournée"
   },
   "vess_turned": {
     "enemyName": "Vess, Turned",
@@ -2313,7 +2364,8 @@
       }
     ],
     "description": "Vess came out of the dark with you. The legate's pact sends Vess back into it, and wants you to follow.",
-    "description_fr": "Vess a quitté les ténèbres avec vous. Le pacte du légat l'y renvoie, et veut vous y entraîner."
+    "description_fr": "Vess a quitté les ténèbres avec vous. Le pacte du légat l'y renvoie, et veut vous y entraîner.",
+    "enemyName_fr": "Vess, retournée"
   },
   "grosh_turned": {
     "enemyName": "Grosh, Turned",
@@ -2378,7 +2430,8 @@
       }
     ],
     "description": "Grosh smashed first for you and asked questions after. The legate's pact has answered them.",
-    "description_fr": "Grosh frappait d'abord pour vous et posait les questions après. Le pacte du légat y a répondu."
+    "description_fr": "Grosh frappait d'abord pour vous et posait les questions après. Le pacte du légat y a répondu.",
+    "enemyName_fr": "Grosh, retourné"
   },
   "tobin_turned": {
     "enemyName": "Tobin, Turned",
@@ -2443,7 +2496,8 @@
       }
     ],
     "description": "Brother Tobin kept vigil for the cloister's dead. The legate's pact has given him one more to keep.",
-    "description_fr": "Frère Tobin veillait les morts du cloître. Le pacte du légat lui en donne un de plus à veiller."
+    "description_fr": "Frère Tobin veillait les morts du cloître. Le pacte du légat lui en donne un de plus à veiller.",
+    "enemyName_fr": "Tobin, retourné"
   },
   "malrik_turned": {
     "enemyName": "Malrik, Turned",
@@ -2508,7 +2562,8 @@
       }
     ],
     "description": "Malrik Sarn always took half of what was dropped. The legate's pact paid the other half.",
-    "description_fr": "Malrik Sarn prenait toujours la moitié de ce qui tombait. Le pacte du légat a payé l'autre moitié."
+    "description_fr": "Malrik Sarn prenait toujours la moitié de ce qui tombait. Le pacte du légat a payé l'autre moitié.",
+    "enemyName_fr": "Malrik, retourné"
   },
   "inquisition_legate": {
     "enemyName": "The Legate's Champion",
@@ -2573,7 +2628,8 @@
       }
     ],
     "description": "The champion the Inquisition's last legate brought ashore, to fight the fights his pact starts.",
-    "description_fr": "Le champion que le dernier légat de l'Inquisition a amené à terre, pour livrer les combats que son pacte déclenche."
+    "description_fr": "Le champion que le dernier légat de l'Inquisition a amené à terre, pour livrer les combats que son pacte déclenche.",
+    "enemyName_fr": "Le Champion du légat"
   },
   "masked_penitent": {
     "enemyName": "Masked Penitent",
@@ -2626,12 +2682,13 @@
       }
     ],
     "description": "A penitent in a porcelain mask who will not stop staring at you.",
-    "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer."
+    "description_fr": "Un pénitent au masque de porcelaine qui ne cesse de vous fixer.",
+    "enemyName_fr": "Pénitente masquée"
   },
   "white_soldier": {
     "enemyName": "White Soldier",
-    "maxHealth": 100,
-    "damage": 30,
+    "maxHealth": 90,
+    "damage": 24,
     "guile": 1,
     "xpReward": 14,
     "goldReward": 9,
@@ -2647,6 +2704,170 @@
     "hunterAlignment": "",
     "hunterTier": 0,
     "description": "One of the Inquisition's White Soldiers: porcelain-masked, faceless, sent when the Church wants something taken back.",
-    "description_fr": "Un des Soldats blancs de l'Inquisition : masqué de porcelaine, sans visage, envoyé quand l'Église veut reprendre quelque chose."
+    "description_fr": "Un des Soldats blancs de l'Inquisition : masqué de porcelaine, sans visage, envoyé quand l'Église veut reprendre quelque chose.",
+    "enemyName_fr": "Soldat Blanc"
+  },
+  "bone_sexton": {
+    "enemyName": "Bone Sexton",
+    "enemyName_fr": "Sacristain d’os",
+    "maxHealth": 150,
+    "damage": 19,
+    "guile": 3,
+    "xpReward": 64,
+    "goldReward": 45,
+    "lootTable": [
+      {
+        "itemID": "boots_bone_laced",
+        "dropRate": 15
+      },
+      {
+        "itemID": "greaves_bone_plated",
+        "dropRate": 15
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A sexton of the Ossuary who died at his work and never stopped: he keeps the galleries in order, and the living are out of place in them.",
+    "description_fr": "Un sacristain de l’Ossuaire mort à la tâche et qui ne s’est jamais arrêté : il tient les galeries en ordre, et les vivants n’y ont pas leur place.",
+    "encounterText": [
+      "A skeleton in a sexton's rotted cassock is stacking skulls in a niche, one by one, in careful rows. It counts the gap left on the shelf, turns its empty sockets on you, and reaches for its spade.",
+      "Somewhere ahead, bone clicks on bone. The sexton has heard living footsteps in its galleries, and the Ossuary keeps a place for everyone who walks here."
+    ],
+    "encounterText_fr": [
+      "Un squelette vêtu d’une soutane de sacristain pourrie empile des crânes dans une niche, un à un, en rangs soigneux. Il compte le vide laissé sur l’étagère, tourne vers vous ses orbites creuses et saisit sa bêche.",
+      "Quelque part devant, l’os claque contre l’os. Le sacristain a entendu des pas vivants dans ses galeries, et l’Ossuaire garde une place pour tous ceux qui y marchent."
+    ],
+    "packText": "The sextons of the Ossuary work in gangs, and a gang of them has found an empty shelf. They come on together, spades raised, to fill it with you.",
+    "packText_fr": "Les sacristains de l’Ossuaire travaillent en équipe, et l’une d’elles a trouvé une étagère vide. Ils avancent ensemble, bêches levées, pour la remplir avec vous."
+  },
+  "drowned_pilgrim": {
+    "enemyName": "Drowned Pilgrim",
+    "enemyName_fr": "Pèlerin noyé",
+    "maxHealth": 165,
+    "damage": 21,
+    "guile": 5,
+    "xpReward": 80,
+    "goldReward": 58,
+    "lootTable": [
+      {
+        "itemID": "helm_drowned_sallet",
+        "dropRate": 15
+      },
+      {
+        "itemID": "hauberk_saltcrust",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 10
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "Ice",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A pilgrim who walked the Drowned Stair all the way down and came back up full of black water. It still climbs, and it still wants company for the descent.",
+    "description_fr": "Un pèlerin qui a descendu l’Escalier Noyé jusqu’au bout et en est remonté plein d’eau noire. Il grimpe encore, et il veut encore de la compagnie pour la descente.",
+    "encounterText": [
+      "Water sloshes on the steps below, though nothing is raining. A drowned pilgrim climbs into your light, weed in its beard, and holds out a hand to lead you down to where it has been.",
+      "The drowned remember breath. This one has smelled yours on the stair, and it comes up the steps with its mouth open to take it."
+    ],
+    "encounterText_fr": [
+      "L’eau clapote sur les marches en contrebas, bien qu’il ne pleuve pas. Un pèlerin noyé monte dans votre lumière, des algues dans la barbe, et vous tend la main pour vous mener là d’où il revient.",
+      "Les noyés se souviennent du souffle. Celui-ci a senti le vôtre dans l’escalier, et il gravit les marches, la bouche ouverte pour le prendre."
+    ],
+    "packText": "A procession climbs out of the flooded dark, drowned pilgrims in soaked robes, singing without air. They have come up for the living, to walk them down.",
+    "packText_fr": "Une procession sort des ténèbres inondées, des pèlerins noyés dans leurs robes trempées, qui chantent sans air. Ils sont remontés chercher les vivants pour les mener au fond."
+  },
+  "unmade_knight": {
+    "enemyName": "Unmade Knight",
+    "enemyName_fr": "Chevalier défait",
+    "maxHealth": 175,
+    "damage": 23,
+    "guile": 7,
+    "xpReward": 100,
+    "goldReward": 72,
+    "lootTable": [
+      {
+        "itemID": "coat_last_watch",
+        "dropRate": 15
+      },
+      {
+        "itemID": "helm_last_watch",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": true,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "A knight of the Hollow Court who followed the Void Sovereign beyond the Tear and was unmade there: armor that keeps the shape of a man, held together by nothing at all.",
+    "description_fr": "Un chevalier de la Cour Creuse qui a suivi le Souverain du Néant au-delà de la Déchirure et y a été défait : une armure qui garde la forme d’un homme, tenue par rien du tout.",
+    "encounterText": [
+      "A suit of armor stands across the path with nothing inside it, visor open on the dark. When you step closer it draws its sword: it swore to let no one reach the Sovereign, and it has forgotten everything else.",
+      "The unmade knight has smelled the Shroud on you. It remembers being whole, and it believes that wrapped in what you carry, it would be whole again."
+    ],
+    "encounterText_fr": [
+      "Une armure se dresse en travers du chemin, vide, la visière ouverte sur le noir. Quand vous approchez, elle tire l’épée : elle a juré de ne laisser personne atteindre le Souverain, et elle a oublié tout le reste.",
+      "Le chevalier défait a senti le Linceul sur vous. Il se souvient d’avoir été entier, et il croit qu’enveloppé de ce que vous portez, il le redeviendrait."
+    ],
+    "packText": "Empty armor rises from the ash in a broken line, the last guard of a court that no longer exists. They close ranks between you and the Sovereign, as they swore to.",
+    "packText_fr": "Des armures vides se relèvent de la cendre en une ligne brisée, dernière garde d’une cour qui n’existe plus. Elles serrent les rangs entre vous et le Souverain, comme elles l’ont juré."
   }
 }

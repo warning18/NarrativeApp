@@ -251,65 +251,22 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     });
   }
 
-  /// The party as the Eel's crew: the player and every active companion,
-  /// with the stats the stations read and their current health.
+  /// The party as the Eel's crew (see [buildShipCrew]).
   List<ShipCrew> _buildCrew({
     required PlayerSession session,
     required Map<String, dynamic> companions,
     required Map<String, dynamic> races,
     required Map<String, dynamic> professions,
     required Map<String, dynamic> gameConfig,
-  }) {
-    final lang = ref.read(appLanguageProvider);
-    final crew = <ShipCrew>[
-      ShipCrew(
-        id: 'player',
-        name: session.characterName.isNotEmpty
-            ? session.characterName
-            : trFor(lang, 'you_label'),
-        strength: session.strength,
-        dexterity: session.dexterity,
-        constitution: session.constitution,
-        wisdom: session.wisdom,
-        health: session.currentHealth > 0
-            ? session.currentHealth
-            : session.maxHealth,
-        maxHealth: session.maxHealth,
-        isPlayer: true,
-      ),
-    ];
-    for (final companionId in session.activeAllyIds) {
-      final companion = companions[companionId] as Map<String, dynamic>?;
-      if (companion == null) continue;
-      final allyState = session.recruitedAllies.firstWhere(
-        (a) => a.companionId == companionId,
-        orElse: () => AllyState(
-            companionId: companionId,
-            currentHealth: AllyState.fullHealthSentinel),
+  }) =>
+      buildShipCrew(
+        session: session,
+        companions: companions,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig,
+        youLabel: trFor(ref.read(appLanguageProvider), 'you_label'),
       );
-      final race = races[companion['raceId']?.toString() ?? '']
-              as Map<String, dynamic>? ??
-          const {};
-      final profession =
-          professions[companion['professionId']?.toString() ?? '']
-                  as Map<String, dynamic>? ??
-              const {};
-      final base = deriveAllyBaseStats(
-          gameConfig: gameConfig, race: race, profession: profession);
-      final maxHealth = scaledMaxHealth(base.maxHealth, session.level);
-      crew.add(ShipCrew(
-        id: companionId,
-        name: companion['companionName']?.toString() ?? companionId,
-        strength: base.strength,
-        dexterity: base.dexterity,
-        constitution: base.constitution,
-        wisdom: base.wisdom,
-        health: allyState.currentHealth.clamp(1, maxHealth),
-        maxHealth: maxHealth,
-      ));
-    }
-    return crew;
-  }
 
   Future<void> _onBattleFinished(ShipBattleOutcome outcome) async {
     final notifier = ref.read(playerSessionProvider.notifier);
@@ -386,13 +343,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   Widget build(BuildContext context) {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
-    final ships = ref.watch(gameDbProvider(shipsSchema)).value;
-    final parts = ref.watch(gameDbProvider(shipPartsSchema)).value;
-    final enemyShips = ref.watch(gameDbProvider(enemyShipsSchema)).value;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value;
-    final races = ref.watch(gameDbProvider(racesSchema)).value;
-    final professions = ref.watch(gameDbProvider(professionsSchema)).value;
+    final ships = ref.watch(localizedDbProvider(shipsSchema)).value;
+    final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value;
+    final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value;
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value;
+    final races = ref.watch(localizedDbProvider(racesSchema)).value;
+    final professions = ref.watch(localizedDbProvider(professionsSchema)).value;
     final gameConfig = ref.watch(gameConfigProvider).value;
     final title =
         '${trFor(lang, 'voyage_title')}: ${portNameFor(widget.toPort, fr)}';
@@ -640,4 +597,61 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       ],
     );
   }
+}
+
+/// The party as the Eel's crew: the player and every active companion,
+/// with the stats the stations read and their current health. [youLabel]
+/// names the player when the character has no name.
+List<ShipCrew> buildShipCrew({
+  required PlayerSession session,
+  required Map<String, dynamic> companions,
+  required Map<String, dynamic> races,
+  required Map<String, dynamic> professions,
+  required Map<String, dynamic> gameConfig,
+  required String youLabel,
+}) {
+  final crew = <ShipCrew>[
+    ShipCrew(
+      id: 'player',
+      name: session.characterName.isNotEmpty ? session.characterName : youLabel,
+      strength: session.strength,
+      dexterity: session.dexterity,
+      constitution: session.constitution,
+      wisdom: session.wisdom,
+      health:
+          session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+      maxHealth: session.maxHealth,
+      isPlayer: true,
+    ),
+  ];
+  for (final companionId in session.activeAllyIds) {
+    final companion = companions[companionId] as Map<String, dynamic>?;
+    if (companion == null) continue;
+    final allyState = session.recruitedAllies.firstWhere(
+      (a) => a.companionId == companionId,
+      orElse: () => AllyState(
+          companionId: companionId,
+          currentHealth: AllyState.fullHealthSentinel),
+    );
+    final race =
+        races[companion['raceId']?.toString() ?? ''] as Map<String, dynamic>? ??
+            const {};
+    final profession = professions[companion['professionId']?.toString() ?? '']
+            as Map<String, dynamic>? ??
+        const {};
+    final base = deriveAllyBaseStats(
+        gameConfig: gameConfig, race: race, profession: profession);
+    final maxHealth = scaledMaxHealth(base.maxHealth, session.level);
+    crew.add(ShipCrew(
+      id: companionId,
+      name: companion['companionName']?.toString() ?? companionId,
+      strength: base.strength,
+      dexterity: base.dexterity,
+      constitution: base.constitution,
+      wisdom: base.wisdom,
+      health: allyState.currentHealth.clamp(1, maxHealth),
+      maxHealth: maxHealth,
+    ));
+  }
+  return crew;
 }

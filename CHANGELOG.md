@@ -8,6 +8,311 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.137.0+166]
+
+The world map gets its original lettering, real zoom, the player walking
+their own road, and three looks.
+
+### Added
+- **The player on the map.** A small traveller in a grey cloak stands
+  where the story is. Opening the map, they walk the road from where the
+  map last showed them to where the story is now (up to eight places),
+  and the view follows them when zoomed in. A button walks the whole
+  journey again.
+- **The road the player took.** The road drawn is the player's own:
+  every leg they actually walked, in the order they walked it, so the
+  alley or the bridge shows whichever was taken.
+- **Zoom.** The map stays put above the text, so pinching and panning
+  work; + and − buttons, a double tap (in, or back out when zoomed), and
+  a button that centres on the player.
+- **Three looks.** Night (the map as drawn), Parchment (an old paper
+  chart in ink and sepia) and Shroud (the world in grey, with only the
+  Void keeping its colour). Chosen under the map and remembered.
+
+### Changed
+- **The original's lettering and colours.** Spectral for the text and
+  Pixelify Sans for titles, labels and buttons, with the map page's own
+  colours in light and dark, as the map was first drawn. Spectral (SIL
+  Open Font License) is bundled and listed in the app's licences.
+
+## [1.136.0+165]
+
+A pixel map of the story's world, in play mode.
+
+### Added
+- **World map (play mode).** The map button in the header now opens a
+  pixel map of the world: Alster and its river, the sea crossing, the
+  Ashen Coast and the Hollow Shore, with the 23 places where the story's
+  163 scenes happen.
+  - A place appears once one of its scenes has been read; the rest of the
+    world stays under fog, and the road between places reached is drawn
+    in story order.
+  - A gold marker shows where the story stands (for an excursion step,
+    the last place it passed).
+  - Tapping a place shows its chapter, what happens there, how many of
+    its scenes have been read, and the foes fought there (named once
+    beaten). Back and Next walk the road through the places reached.
+  - Chapter chips filter the map to one chapter; pinch to zoom.
+  - English and French; the water, embers and road move unless the
+    device asks for less motion.
+- **Pixel font.** Pixelify Sans (SIL Open Font License) for the map's
+  lettering; its licence shows in the app's licences.
+
+### Changed
+- Edit Mode keeps the story graph behind the same button.
+
+## [1.135.0+164]
+
+The play tabs say what waits on them, New Game+ reaches stories finished
+before the menu existed, and loading a save asks first.
+
+### Added
+- **Tab dots.** In play, a dot marks Character when stat or skill points
+  wait, Camp when the purse covers a house (once the camp is open), and
+  Other when a quest can be turned in. Holding a tab says why. In Other,
+  the Quests section shows how many quests are ready to turn in.
+
+### Changed
+- **New Game+ for earlier finishes.** A story finished before 1.134 now
+  offers New Game+ on the menu: the game in progress, or failing that the
+  most recent save slot, counts when it is already on an ending. A
+  recorded finish is never replaced.
+- **Loading asks first.** Loading a save over a game in progress, from
+  the menu or in play, warns that anything since the last save will be
+  lost.
+
+## [1.134.0+163]
+
+A main menu, play tabs built around the character, the map in the header,
+and a fight lab in Edit Mode.
+
+### Added
+- **Main menu.** The app opens on a menu: **Continue** on top when a
+  story is under way (with the character's name, level and chapter),
+  **New Game**, **New Game+** once a story has been finished, **Load**,
+  **Settings** and **Edit Mode**. A home button in the game's header
+  returns to it. New Game asks before replacing a story in progress;
+  New Game+ starts the next cycle from the last finished run.
+- **Fight lab (Edit Mode).** From the Play tab: pick up to three
+  enemies, the chapter, a difficulty, an affix, the die to fight with,
+  solo or with the party, and full health or as things stand, then
+  fight. A boat fight against any enemy ship, with the boat's own
+  parts or all of them, runs the same way. Afterwards the game is put
+  back as it was (gold, health, items, dice, party) unless "Keep what
+  happens" is on; the die picked for the test never stays equipped.
+  A lab fight never triggers permadeath, even under ironman.
+
+### Changed
+- **Play mode tabs.** Story, Character, Camp and Other. Character is
+  the character sheet; Camp opens at chapter 3 (before that the tab
+  says when); Other holds the quests, bestiary, town and the rest of
+  the old Play tab. Edit Mode keeps Story, Play, Generate and Data.
+- **Map in the header.** The story map is an icon next to the language
+  and settings buttons in both modes, and opens as its own page; jumping
+  to a node from it returns to the story.
+- **Camp houses.** Each house is a card with its description, and the
+  Build button sits under it instead of squeezing the text.
+
+### Removed
+- The "try the game mode" nudge on the Play tab (the menu chooses the
+  mode now).
+
+## [1.133.0+162]
+
+A lighter reading screen, gold in view when trading, expedition cards
+that read on a phone, and a story export in Edit Mode.
+
+### Added
+- **Gold in view.** Shops, the sell and forge sheets, the camp and the
+  boat show the purse at the top, and it pops when it changes.
+- **Story export (Edit Mode).** A share button next to the map's legend
+  button exports every story node: **Light** (id, chapter, text and
+  choices with where they lead, what they fight and where a loss goes,
+  in chapter order and in the app's language) or **Full** (every field
+  of every node in both languages, in the story file's own format,
+  edits included). Either one can be copied or saved to a file.
+
+### Changed
+- **A lighter story screen in play.** The header is one line: level,
+  health, mana, gold and open quests, with the journal and read-aloud
+  buttons at its end. Tapping the numbers opens the rest (experience,
+  alignment, flags, and the way to the quests and shops). The separate
+  Quests and Shops chips are gone, and node ids only show in Edit Mode,
+  so the story gets more of the screen. The same line heads the Play
+  tab and the character sheet.
+- **Expedition cards read on a phone.** Each card shows the zone's name,
+  tier and level chips, its boss and the Begin button; tapping or
+  holding it opens the zone's description, with Begin there too.
+- **Play tab.** Places that are not open yet (camp, boat, town) share
+  one line, "Camp, The Rusty Eel: Reach Chapter 3 to unlock", instead
+  of a locked card each.
+
+### Fixed
+- A town's done count no longer pushes its Rest button off a narrow
+  screen in French; it sits under the place's name.
+
+## [1.132.0+161]
+
+The review's content, balance and feature list: selling and forging,
+a story journal, save slots, retreat, clearer fights, new gear and
+enemies for the late chapters, French game data, and a Play to Chapter
+that always gets there.
+
+### Added
+- **Play to Chapter always arrives.** A run that falls short (a fight
+  lost after every retry, a dead end, the step cap) is undone and played
+  again with fresh rolls and choices, up to ten times; the last attempt
+  pushes through any fight it cannot win. The button shows the attempt,
+  and the result says how many attempts and forced wins it took.
+- **Selling.** Shops buy back what nobody wears for two fifths of its
+  price (an item's own sale value wins, such as the Elite Mark's 60); a
+  piece sold where it is stocked goes back on the shelf. Quest items
+  stay with the party.
+- **The Hammersmith's forge.** Iron ore drops from Inquisition soldiers,
+  void wisps, catacomb ghouls, Bone Sextons, the Dock Overseer, the Iron
+  Golem and the Bone Warden, and the forge turns ore and gold into an
+  Iron Cap, Iron-Shod Boots, Iron Greaves and an Iron Scale Coat.
+- **"The story so far".** A journal from the story header lists every
+  scene's opening line and the choice that left it, newest first by
+  chapter. Picking a saved story back up shows a short "Previously..."
+  recap once: the last scenes and the quests still open.
+- **Hub checklists.** Finished activities stay on the hub's list, ticked
+  and greyed, with a done count next to Rest.
+- **Three save slots** with a summary each (the old save becomes slot 1).
+  **Ironman:** with permadeath on, nothing can be loaded and a death
+  deletes every save.
+- **Retreat.** In any fight without a boss, the party can get away for a
+  share of the purse (15%, at least 10 gold) and keeps its wounds.
+  Nothing is won and no loss is recorded, so there is no defeat branch
+  and no permadeath; a detour is left behind, an expedition ends as a
+  retreat and a story fight waits where it was.
+- **Clearer intents.** A fully read enemy intent shows the damage that
+  would land after the target's armor, resist and block, with the raw
+  blow beside it.
+- **Choose the critical.** With momentum full, you pick which strike
+  gets the guaranteed critical; left alone it goes to an Attack face
+  first.
+- **Scroll of Fireball** is read in a fight: a fireball at one enemy, no
+  mana, the scroll spent.
+- **New gear.** Boots and greaves in five steps each (chapters 1 to 5),
+  common and uncommon head and body armor for chapters 3 to 6 that sits
+  below each chapter's rare piece, and three late dice: the Ossuary die
+  (the Ossuary Trade), and the Vigil and Tear-Glass dice (the Last
+  Lantern).
+- **Spells for every fighter.** Warriors learn Rally the Line (party
+  heal that grows with Strength) and Sundering Roar (every enemy
+  Weakened); rogues learn Smoke Veil (party block) and Bleeding Cut
+  (damage and Poison); rangers learn Arrow Volley (every enemy) and
+  Snare Shot (damage and a stun). Each is a spellbook in a shop.
+- **Three enemies for chapters 4 to 6:** the Bone Sexton, the Drowned
+  Pilgrim and the Unmade Knight, each with its own lines, loot and
+  icon, and able to lead packs.
+- **French game data.** Items, dice, enemies, shops, skills, spells,
+  quests, zones, houses, races, professions, achievements, ships,
+  companions and people now read in French when the app is in French,
+  and the data editor shows the French fields.
+
+### Changed
+- **Boss moves are enemy-only:** never listed, unlocked or set on a die.
+- **Zone bosses stay in their zones.** They never turn up as random
+  fights or in packs, and are never promoted to Elite.
+- **Shops open by chapter.** Detours and expeditions only open shops
+  their chapter allows, never a camp house's own shop.
+- **Outliers brought in line.** The Void Banner is a strong chapter-1
+  artifact, given by the story once and sold nowhere; the Boiled Leather
+  Jerkin, the Tear-Glass Blade, the High Warden's reward and War Shout
+  (which now grows with Strength) were retuned. To keep the opening
+  hovel fight as winnable as before without the old banner, the White
+  Soldiers there hit a little softer (90 health, 24 damage).
+- **Dice:** the berserker die was toned down, the weak shop dice raised,
+  and the void die's signature skills now work.
+- **Loot tables:** hunters drop gear the hunted can wear, out-of-chapter
+  drops were moved, and potions, antidotes, scrolls and ore drop at
+  their own odds (capped) instead of only weighting the chest.
+- **Boss ladder.** The Hollow Court Inquisitor (340), Void Archon (380)
+  and Void Sovereign (390) now rise in raw health too. They already rose
+  in the fight, where the chapter curve and zone tier multiply them.
+- **Full House** asks for six companions; every zone says when it is
+  cleared; chapter 3's regulars were retuned.
+
+### Fixed
+- **Safer loading.** Saves carry a format version; a session that cannot
+  be read is kept aside instead of being overwritten, and nothing is
+  written before the save has been read.
+
+### Internal
+- The fight screen (5,300 lines) is split into eleven part files under
+  `lib/screens/fight/`, with no behavior change.
+- Balance check (40 simulated runs): first-try win rate 97% in chapter 1
+  and 89% in chapter 6; Void Archon 34/40 and Void Sovereign 35/40 on
+  the first try; Lysa survives the opening in 24 of 40 runs (25 before).
+
+## [1.131.0+160]
+
+Fixes from the review of 1.130: endings, death, fights, gear, tomes and
+the town layout.
+
+### Fixed
+- **Endings reach New Game+.** An ending whose only way out is "Begin
+  again, changed" now shows the ending screen, with its New Game+ button
+  and a button carrying the ending's own words, instead of a plain choice
+  list.
+- **Permadeath keeps the character.** After a death with permadeath on,
+  the story restarts at the first scene after character creation instead
+  of the very first scene, whose only choice rolled a new character. You
+  keep level, stats, gold and companions; items are lost (companions'
+  worn gear included) and skills go back to the class basics. The
+  setting and the death screen now say so.
+- **No walking out of a fight.** The back arrow stays disabled until the
+  fight is settled, and the system back gesture during a fight shows "The
+  fight is not over" instead of leaving. Before, back skipped a loss (and
+  permadeath) or left a won fight so it could be fought again for its
+  rewards. Once the fight is over, back does what the return button does.
+- **One copy, one wearer.** A single copy of an item can no longer be
+  worn by you and every companion at once. The pack shows who wears each
+  item, and the equip list only offers copies nobody else is wearing.
+- **Zones opened from the story load their data first.** A story choice
+  that starts an expedition, fight, shop or quest waits for that data to
+  load, so after a relaunch the zone is no longer skipped.
+- **Stuns stop companions too.** A stunned companion sits out the party's
+  round instead of rolling as usual.
+- **Tomes are read.** A tome bought in a shop is read on the spot and
+  grants its stat or skill point. A tome found as loot has a Read button
+  in the pack.
+
+### Changed
+- **What a skill does on a basic face.** 1.130 promised a skill on a basic
+  face would never be weaker than the face, but on a Guard face it lost
+  the block. The skill replaces the face's own action, as before; the
+  text now says so, and that the floor only holds on Attack and Heal
+  faces (never less damage than the attack, never less healing than the
+  heal). Keeping the block as well would have made Guard the best face
+  for every skill.
+- **Onward choices are sorted by where they lead.** A hub choice counts as
+  something to do there only if it comes back to the hub within a few
+  scenes; the rest is listed as the way onward. At node 6010 the way on
+  was listed under People.
+- **Camp arrival.** The pop-up no longer tells you to "Rest here" where no
+  Rest button exists; it points to the Camp page.
+- **Arrival pop-ups wait for the story.** The town or camp pop-up only
+  shows when the story tab is in front and nothing is open over it, such
+  as another tab, a fight or the autoplay spinner.
+- **Hubs fit small phones.** The choices take at most 60% of the space
+  under the header, and a hub's things to do and its way onward each
+  scroll in their own part, so nothing overflows at 360x640. The
+  expedition card puts its button under the text, and long titles on the
+  Play tab and in the edit-mode header are shortened.
+- The Gemini voice player is only created when the Gemini voice is used.
+
+### Tests
+- `story_layout_test.dart` opens six story scenes, hubs included, at
+  390x844 and 360x640 in English and French and fails on any overflow.
+- `fight_back_guard_test.dart` checks that back leaves a fight's setup but
+  not a fight in progress.
+- `review_fixes_test.dart` covers shared gear, tomes, story endings, the
+  scene after character creation, onward choices at 6010 and the wharf,
+  and waiting for zone data.
+
 ## [1.130.0+159]
 
 Shops, loot and dice say what things do before you commit to them, the

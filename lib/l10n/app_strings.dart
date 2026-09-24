@@ -9,11 +9,261 @@ import 'app_locale.dart';
 const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'nav_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
+  'nav_character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
+  'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
+  'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'badge_points_waiting': {
+    AppLanguage.en: 'points to spend',
+    AppLanguage.fr: 'points à dépenser',
+  },
+  'badge_house_affordable': {
+    AppLanguage.en: 'a house you can build',
+    AppLanguage.fr: 'une maison à construire',
+  },
+  'badge_quest_ready': {
+    AppLanguage.en: 'a quest to turn in',
+    AppLanguage.fr: 'une quête à rendre',
+  },
+  'quests_ready_label': {
+    AppLanguage.en: 'to turn in',
+    AppLanguage.fr: 'à rendre'
+  },
+  'load_confirm_title': {
+    AppLanguage.en: 'Load this save?',
+    AppLanguage.fr: 'Charger cette sauvegarde ?',
+  },
+  'load_confirm_body': {
+    AppLanguage.en:
+        'It replaces the game in progress. Anything since your last save will be lost.',
+    AppLanguage.fr:
+        'Elle remplace la partie en cours. Tout ce qui s’est passé depuis votre dernière sauvegarde sera perdu.',
+  },
+  'fight_lab_title': {
+    AppLanguage.en: 'Fight lab',
+    AppLanguage.fr: 'Labo de combat'
+  },
+  'fight_lab_card_desc': {
+    AppLanguage.en: 'Test any fight, pack, die or ship battle',
+    AppLanguage.fr:
+        'Tester n’importe quel combat, meute, dé ou bataille navale',
+  },
+  'fight_lab_intro': {
+    AppLanguage.en:
+        'Test fights never run permadeath. Your game is put back as it was afterwards (health, gold, loot, experience, die and party) unless you keep what happens.',
+    AppLanguage.fr:
+        'Les combats de test ne déclenchent jamais la mort définitive. Votre partie est remise comme avant ensuite (santé, or, butin, expérience, dé et groupe), sauf si vous gardez le résultat.',
+  },
+  'fight_lab_keep': {
+    AppLanguage.en: 'Keep what happens',
+    AppLanguage.fr: 'Garder le résultat',
+  },
+  'fight_lab_keep_desc': {
+    AppLanguage.en:
+        'Rewards, wounds and loot stay; your own die and party come back',
+    AppLanguage.fr:
+        'Récompenses, blessures et butin restent ; votre dé et votre groupe reviennent',
+  },
+  'fight_lab_full_health': {
+    AppLanguage.en: 'Start at full health',
+    AppLanguage.fr: 'Commencer en pleine santé',
+  },
+  'fight_lab_land_section': {
+    AppLanguage.en: 'Land fight',
+    AppLanguage.fr: 'Combat à terre',
+  },
+  'fight_lab_add_enemy': {
+    AppLanguage.en: 'Add an enemy (up to 3)',
+    AppLanguage.fr: 'Ajouter un ennemi (3 max.)',
+  },
+  'fight_lab_search_enemy': {
+    AppLanguage.en: 'Search by name or id',
+    AppLanguage.fr: 'Chercher par nom ou id',
+  },
+  'fight_lab_difficulty': {
+    AppLanguage.en: 'Enemy strength (health and damage)',
+    AppLanguage.fr: 'Force des ennemis (santé et dégâts)',
+  },
+  'fight_lab_affix': {
+    AppLanguage.en: 'Affix on the first enemy',
+    AppLanguage.fr: 'Trait du premier ennemi',
+  },
+  'fight_lab_none': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
+  'fight_lab_die': {
+    AppLanguage.en: 'Your die for the test',
+    AppLanguage.fr: 'Votre dé pour le test',
+  },
+  'fight_lab_equipped_die': {
+    AppLanguage.en: 'Equipped',
+    AppLanguage.fr: 'Équipé',
+  },
+  'fight_lab_solo': {
+    AppLanguage.en: 'Fight alone',
+    AppLanguage.fr: 'Combattre seul',
+  },
+  'fight_lab_party': {
+    AppLanguage.en: 'Companions in the party',
+    AppLanguage.fr: 'Compagnons dans le groupe',
+  },
+  'fight_lab_no_party': {
+    AppLanguage.en: 'No companion in the party',
+    AppLanguage.fr: 'Aucun compagnon dans le groupe',
+  },
+  'fight_lab_start_fight': {
+    AppLanguage.en: 'Start the test fight',
+    AppLanguage.fr: 'Lancer le combat de test',
+  },
+  'fight_lab_ship_section': {
+    AppLanguage.en: 'Ship battle',
+    AppLanguage.fr: 'Bataille navale',
+  },
+  'fight_lab_enemy_ship': {
+    AppLanguage.en: 'Enemy ship',
+    AppLanguage.fr: 'Navire ennemi',
+  },
+  'fight_lab_all_parts': {
+    AppLanguage.en: 'Every ship part installed',
+    AppLanguage.fr: 'Toutes les pièces installées',
+  },
+  'fight_lab_all_parts_desc': {
+    AppLanguage.en: 'Off: your boat as it is now',
+    AppLanguage.fr: 'Désactivé : votre bateau tel qu’il est',
+  },
+  'fight_lab_start_ship': {
+    AppLanguage.en: 'Start the test battle',
+    AppLanguage.fr: 'Lancer la bataille de test',
+  },
+  'fight_lab_fight_won': {
+    AppLanguage.en: 'Test fight won',
+    AppLanguage.fr: 'Combat de test gagné',
+  },
+  'fight_lab_fight_lost': {
+    AppLanguage.en: 'Test fight lost or left',
+    AppLanguage.fr: 'Combat de test perdu ou quitté',
+  },
+  'fight_lab_ship_won': {
+    AppLanguage.en: 'Test battle won',
+    AppLanguage.fr: 'Bataille de test gagnée',
+  },
+  'fight_lab_ship_lost': {
+    AppLanguage.en: 'Test battle lost',
+    AppLanguage.fr: 'Bataille de test perdue',
+  },
+  'fight_lab_restored': {
+    AppLanguage.en: 'game put back as it was',
+    AppLanguage.fr: 'partie remise comme avant',
+  },
+  'fight_lab_kept': {
+    AppLanguage.en: 'results kept',
+    AppLanguage.fr: 'résultat conservé',
+  },
+  'menu_title': {
+    AppLanguage.en: 'The Grey Shroud',
+    AppLanguage.fr: 'Le Linceul gris',
+  },
+  'menu_subtitle': {
+    AppLanguage.en: 'A tale of dice, debts and a banner that should not exist',
+    AppLanguage.fr:
+        'Un récit de dés, de dettes et d’une bannière qui ne devrait pas exister',
+  },
+  'menu_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'menu_new_game': {
+    AppLanguage.en: 'New Game',
+    AppLanguage.fr: 'Nouvelle partie',
+  },
+  'menu_new_game_confirm_body': {
+    AppLanguage.en:
+        'Start a new story from character creation? The story in progress is replaced. Games saved in a slot are kept.',
+    AppLanguage.fr:
+        'Commencer une nouvelle histoire à la création du personnage ? L’histoire en cours est remplacée. Les parties sauvegardées dans un emplacement sont conservées.',
+  },
+  'menu_load': {AppLanguage.en: 'Load', AppLanguage.fr: 'Charger'},
+  'menu_no_saves': {
+    AppLanguage.en: 'No saved game yet',
+    AppLanguage.fr: 'Aucune partie sauvegardée',
+  },
+  'menu_edit_mode': {
+    AppLanguage.en: 'Edit Mode',
+    AppLanguage.fr: 'Mode édition',
+  },
+  'menu_edit_mode_desc': {
+    AppLanguage.en: 'Story editor, map, data and test tools',
+    AppLanguage.fr: 'Éditeur du récit, carte, données et outils de test',
+  },
+  'menu_back_to_menu': {
+    AppLanguage.en: 'Main menu',
+    AppLanguage.fr: 'Menu principal',
+  },
+  'camp_tab_locked_body': {
+    AppLanguage.en:
+        'Your camp is founded in chapter 3. From then on, this is where you rest, gather your companions, build and set sail.',
+    AppLanguage.fr:
+        'Votre campement est fondé au chapitre 3. Dès lors, c’est ici que vous vous reposez, réunissez vos compagnons, bâtissez et prenez la mer.',
+  },
   'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
+  'world_map_title': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
+  'world_map_semantics': {
+    AppLanguage.en: 'Pixel map of the places the story has reached',
+    AppLanguage.fr: 'Carte en pixels des lieux atteints par l’histoire',
+  },
+  'world_map_hint': {
+    AppLanguage.en:
+        'Places appear as the story reaches them. Tap one to read about it. Pinch, double-tap or use + and − to zoom.',
+    AppLanguage.fr:
+        'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus. Pincez, touchez deux fois ou utilisez + et − pour zoomer.',
+  },
+  'world_map_look': {
+    AppLanguage.en: 'Map style',
+    AppLanguage.fr: 'Style de carte',
+  },
+  'world_map_look_night': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'world_map_look_parchment': {
+    AppLanguage.en: 'Parchment',
+    AppLanguage.fr: 'Parchemin',
+  },
+  'world_map_look_shroud': {
+    AppLanguage.en: 'Shroud',
+    AppLanguage.fr: 'Linceul',
+  },
+  'world_map_zoom_in': {AppLanguage.en: 'Zoom in', AppLanguage.fr: 'Zoomer'},
+  'world_map_zoom_out': {
+    AppLanguage.en: 'Zoom out',
+    AppLanguage.fr: 'Dézoomer',
+  },
+  'world_map_centre': {
+    AppLanguage.en: 'Centre on me',
+    AppLanguage.fr: 'Centrer sur moi',
+  },
+  'world_map_replay': {
+    AppLanguage.en: 'Replay the journey',
+    AppLanguage.fr: 'Rejouer le voyage',
+  },
+  'world_map_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
+  'world_map_chapter_short': {AppLanguage.en: 'Ch', AppLanguage.fr: 'Ch.'},
+  'world_map_here': {
+    AppLanguage.en: 'You are here',
+    AppLanguage.fr: 'Vous êtes ici',
+  },
+  'world_map_scenes_read': {
+    AppLanguage.en: 'Scenes read',
+    AppLanguage.fr: 'Scènes lues',
+  },
+  'world_map_fights': {
+    AppLanguage.en: 'Fights here',
+    AppLanguage.fr: 'Combats ici',
+  },
+  'world_map_back': {AppLanguage.en: 'Back', AppLanguage.fr: 'Retour'},
+  'world_map_next': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suite'},
+  'world_map_start': {AppLanguage.en: 'the start', AppLanguage.fr: 'le début'},
+  'world_map_end': {AppLanguage.en: 'the end', AppLanguage.fr: 'la fin'},
+  'world_map_first_ally': {
+    AppLanguage.en: 'Your first ally',
+    AppLanguage.fr: 'Votre premier allié',
+  },
   'title_map': {
     AppLanguage.en: 'Story Map',
     AppLanguage.fr: "Carte de l'histoire"
@@ -149,6 +399,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'autoplay_steps_suffix': {
     AppLanguage.en: 'steps applied',
     AppLanguage.fr: 'étapes appliquées',
+  },
+  'autoplay_attempt_label': {
+    AppLanguage.en: 'attempt',
+    AppLanguage.fr: 'tentative',
+  },
+  'autoplay_forced_suffix': {
+    AppLanguage.en: 'fights won by force',
+    AppLanguage.fr: 'combats gagnés d’office',
   },
   'end_label': {AppLanguage.en: 'End', AppLanguage.fr: 'Fin'},
   'tap_to_filter': {
@@ -328,6 +586,98 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'game_saved_message': {
     AppLanguage.en: 'Game saved.',
     AppLanguage.fr: 'Partie sauvegardée.'
+  },
+  'session_unreadable_notice': {
+    AppLanguage.en:
+        'Your last session could not be read, so a new one started. The old save was kept aside, untouched.',
+    AppLanguage.fr:
+        'Votre dernière partie n’a pas pu être lue : une nouvelle a commencé. L’ancienne sauvegarde a été mise de côté, intacte.',
+  },
+  'hub_done_count': {
+    AppLanguage.en: '{done}/{total} done',
+    AppLanguage.fr: '{done}/{total} faits',
+  },
+  'journal_title': {
+    AppLanguage.en: 'The story so far',
+    AppLanguage.fr: 'L’histoire jusqu’ici',
+  },
+  'journal_empty': {
+    AppLanguage.en: 'Nothing written yet.',
+    AppLanguage.fr: 'Rien d’écrit pour l’instant.',
+  },
+  'journal_you_are_here': {
+    AppLanguage.en: 'You are here.',
+    AppLanguage.fr: 'Vous êtes ici.',
+  },
+  'previously_title': {
+    AppLanguage.en: 'Previously…',
+    AppLanguage.fr: 'Précédemment…',
+  },
+  'previously_quests_label': {
+    AppLanguage.en: 'Still on your mind',
+    AppLanguage.fr: 'Ce qui vous occupe encore',
+  },
+  'previously_continue_button': {
+    AppLanguage.en: 'Go on',
+    AppLanguage.fr: 'Reprendre',
+  },
+  'sell_title': {AppLanguage.en: 'Sell', AppLanguage.fr: 'Vendre'},
+  'sell_button': {AppLanguage.en: 'Sell', AppLanguage.fr: 'Vendre'},
+  'sell_nothing': {
+    AppLanguage.en: 'Nothing in the pack to sell.',
+    AppLanguage.fr: 'Rien à vendre dans le sac.',
+  },
+  'sell_worn_note': {
+    AppLanguage.en: 'Worn: take it off to sell it',
+    AppLanguage.fr: 'Porté : retirez-le pour le vendre',
+  },
+  'sold_prefix': {AppLanguage.en: 'Sold', AppLanguage.fr: 'Vendu :'},
+  'forge_title': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forge'},
+  'forge_button': {AppLanguage.en: 'Forge', AppLanguage.fr: 'Forger'},
+  'forged_prefix': {AppLanguage.en: 'Forged', AppLanguage.fr: 'Forgé :'},
+  'forge_needs_label': {AppLanguage.en: 'Needs', AppLanguage.fr: 'Il faut'},
+  'forge_hint': {
+    AppLanguage.en:
+        'Iron ore comes off Inquisition soldiers, the dock overseer, wisps, the iron golem and the dead of the catacombs.',
+    AppLanguage.fr:
+        'Le minerai de fer se prend sur les soldats de l’Inquisition, le contremaître des docks, les feux follets, le golem de fer et les morts des catacombes.',
+  },
+  'save_slots_save_title': {
+    AppLanguage.en: 'Save to a slot',
+    AppLanguage.fr: 'Sauvegarder dans un emplacement',
+  },
+  'save_slots_load_title': {
+    AppLanguage.en: 'Load a saved game',
+    AppLanguage.fr: 'Charger une sauvegarde',
+  },
+  'save_slot_label': {AppLanguage.en: 'Slot', AppLanguage.fr: 'Emplacement'},
+  'save_slot_empty': {AppLanguage.en: 'Empty', AppLanguage.fr: 'Vide'},
+  'save_slot_overwrite_title': {
+    AppLanguage.en: 'Save over this game?',
+    AppLanguage.fr: 'Écraser cette sauvegarde ?',
+  },
+  'save_slot_overwrite_button': {
+    AppLanguage.en: 'Save over it',
+    AppLanguage.fr: 'Écraser',
+  },
+  'save_slot_delete_tooltip': {
+    AppLanguage.en: 'Delete this save',
+    AppLanguage.fr: 'Supprimer cette sauvegarde',
+  },
+  'save_slot_unreadable': {
+    AppLanguage.en: 'This save could not be read. It was left as it is.',
+    AppLanguage.fr:
+        'Cette sauvegarde est illisible. Elle a été laissée telle quelle.',
+  },
+  'ironman_note': {
+    AppLanguage.en:
+        'Ironman: with permadeath on, a saved game can’t be loaded, and a death deletes every save.',
+    AppLanguage.fr:
+        'Ironman : avec la mort définitive, une sauvegarde ne peut pas être chargée, et une mort les efface toutes.',
+  },
+  'ironman_load_tooltip': {
+    AppLanguage.en: 'Ironman: no loading while permadeath is on',
+    AppLanguage.fr: 'Ironman : pas de chargement avec la mort définitive',
   },
   'game_loaded_message': {
     AppLanguage.en: 'Game loaded.',
@@ -939,12 +1289,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Consumé au début d’un combat :',
   },
   'tome_stat_point_desc': {
-    AppLanguage.en: 'Read to gain one stat point.',
-    AppLanguage.fr: 'Se lit pour gagner un point de caractéristique.',
+    AppLanguage.en: 'Read on the spot: one stat point.',
+    AppLanguage.fr: 'Lu sur-le-champ : un point de caractéristique.',
   },
   'tome_skill_point_desc': {
-    AppLanguage.en: 'Read to gain one skill point.',
-    AppLanguage.fr: 'Se lit pour gagner un point de compétence.',
+    AppLanguage.en: 'Read on the spot: one skill point.',
+    AppLanguage.fr: 'Lu sur-le-champ : un point de compétence.',
   },
   'loot_use_now_title': {
     AppLanguage.en: 'Use your spoils now',
@@ -980,9 +1330,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'face_mana_label': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
   'channeled_face_note': {
     AppLanguage.en:
-        'Set on a {face} face: works at 70% power, never weaker than the face itself.',
+        'Set on a {face} face, a skill replaces the face\'s own action and works at 70% power. On an Attack face it never hits for less than the attack; on a Heal face it never heals less than the heal.',
     AppLanguage.fr:
-        'Posée sur une face {face} : agit à 70 % de sa puissance, jamais moins que la face elle-même.',
+        'Posée sur une face {face}, une compétence remplace l’action de la face et agit à 70 % de sa puissance. Sur une face Attaque, elle ne frappe jamais moins fort que l’attaque ; sur une face Soin, elle ne soigne jamais moins que le soin.',
   },
   'pick_face_skill_title': {
     AppLanguage.en: 'Choose this face\'s skill',
@@ -1041,13 +1391,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'arrival_camp_body': {
     AppLanguage.en:
-        'This is your camp. Rest here, and from now on the Camp page (Play tab) holds your companions, its works, its shops and the expeditions that leave from it.',
+        'This is your camp. From now on the Camp page (Play tab) holds your companions, rest, the camp\'s works, its shops and the expeditions that leave from it.',
     AppLanguage.fr:
-        'Voici votre camp. Reposez-vous ici ; désormais, la page Camp (onglet Jouer) réunit vos compagnons, ses ouvrages, ses boutiques et les expéditions qui en partent.',
+        'Voici votre camp. Désormais, la page Camp (onglet Jouer) réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques et les expéditions qui en partent.',
   },
   'arrival_camp_button': {
     AppLanguage.en: 'Make camp',
     AppLanguage.fr: 'Installer le camp',
+  },
+  'story_end_message': {
+    AppLanguage.en:
+        'Your story ends here. Begin again as someone new, or carry this run into New Game+.',
+    AppLanguage.fr:
+        'Votre histoire s’achève ici. Recommencez sous un autre visage, ou emportez cette partie dans une Nouvelle Partie+.',
+  },
+  'fight_not_over_notice': {
+    AppLanguage.en: 'The fight is not over. Win it or fall.',
+    AppLanguage.fr: 'Le combat n’est pas fini. Gagnez-le ou tombez.',
+  },
+  'worn_by_prefix': {AppLanguage.en: 'Worn by', AppLanguage.fr: 'Porté par'},
+  'read_button': {AppLanguage.en: 'Read', AppLanguage.fr: 'Lire'},
+  'tome_read_prefix': {
+    AppLanguage.en: 'You read',
+    AppLanguage.fr: 'Vous lisez'
   },
   'this_item_header': {
     AppLanguage.en: 'This item',
@@ -1717,6 +2083,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Begin Expedition',
     AppLanguage.fr: "Partir en expédition"
   },
+  'export_nodes_title': {
+    AppLanguage.en: 'Export the story nodes',
+    AppLanguage.fr: 'Exporter les nœuds du récit',
+  },
+  'export_nodes_light': {
+    AppLanguage.en: 'Light',
+    AppLanguage.fr: 'Légère',
+  },
+  'export_nodes_light_desc': {
+    AppLanguage.en:
+        'Id, chapter, text and choices of every node, in chapter order: for reading or review',
+    AppLanguage.fr:
+        'Id, chapitre, texte et choix de chaque nœud, par chapitre : pour lire ou relire',
+  },
+  'export_nodes_full': {
+    AppLanguage.en: 'Full',
+    AppLanguage.fr: 'Complète',
+  },
+  'export_nodes_full_desc': {
+    AppLanguage.en:
+        'Every field of every node in both languages, in the story file format',
+    AppLanguage.fr:
+        'Tous les champs de chaque nœud dans les deux langues, au format du fichier du récit',
+  },
+  'export_nodes_copied': {
+    AppLanguage.en: 'Story nodes copied to the clipboard.',
+    AppLanguage.fr: 'Nœuds du récit copiés dans le presse-papiers.',
+  },
+  'hold_for_details_hint': {
+    AppLanguage.en: 'Tap or hold for details',
+    AppLanguage.fr: 'Touchez ou maintenez pour les détails',
+  },
   'expedition_progress_label': {
     AppLanguage.en: 'Expedition',
     AppLanguage.fr: 'Expédition'
@@ -2358,10 +2756,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'permadeath_setting_desc': {
     AppLanguage.en:
-        'When enabled, losing a fight sends you back to the beginning of the '
-            'story. You keep your level and stats, but lose all items.',
-    AppLanguage.fr: 'Une fois activée, perdre un combat vous renvoie au début de '
-        "l'histoire. Vous conservez votre niveau et vos statistiques, mais perdez tous vos objets.",
+        'When enabled, losing a fight sends the same character back to the '
+            'beginning of the story. You keep your level, stats, gold and '
+            'companions, but lose all items and your skills return to your '
+            'class basics. Ironman: saved games can’t be loaded, and a death '
+            'deletes them.',
+    AppLanguage.fr: 'Une fois activée, perdre un combat renvoie le même personnage au début de '
+        "l'histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
+        'mais perdez tous vos objets et vos compétences reviennent aux bases de votre classe. '
+        'Mode Ironman : les sauvegardes ne peuvent pas être chargées, et une mort les efface.',
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
@@ -2369,11 +2772,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'you_died_message': {
     AppLanguage.en:
-        'The story starts over. You keep everything you\'ve learned — your '
-            'level, stats, and skills — but your pack is empty.',
+        'The story starts over with you. You keep your level, stats, gold '
+            'and companions; your pack is empty and your skills are back to '
+            'your class basics. Your saved games are gone with the rest.',
     AppLanguage.fr:
-        "L'histoire recommence. Vous conservez tout ce que vous avez appris — "
-            'votre niveau, vos statistiques et vos compétences — mais votre sac est vide.',
+        "L'histoire recommence avec vous. Vous conservez votre niveau, vos statistiques, "
+            'votre or et vos compagnons ; votre sac est vide et vos compétences '
+            'reviennent aux bases de votre classe. Vos sauvegardes sont parties avec le reste.',
   },
   'items_lost_label': {
     AppLanguage.en: 'Items lost',
@@ -2648,12 +3053,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Plays real choices forward using the strategy above, '
         'earning true gold/alignment/flags/combat along the way, then '
         'hands control back to you in Story view once the chapter is '
-        'reached.',
+        'reached. A run that is lost on the way is undone and played '
+        'again until one gets there.',
     AppLanguage.fr:
         "Enchaîne de vrais choix selon la stratégie ci-dessus, avec de "
             "l'or, un alignement, des drapeaux et des combats réellement "
             "gagnés, puis vous redonne la main dans la vue Histoire une "
-            'fois le chapitre atteint.',
+            'fois le chapitre atteint. Une partie perdue en chemin est '
+            'annulée et rejouée jusqu’à ce qu’une y parvienne.',
   },
   'play_to_chapter_button': {
     AppLanguage.en: 'Play to Chapter',
@@ -3181,6 +3588,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Momentum builds -- the next strike is a sure critical.',
     AppLanguage.fr: "L'élan monte : le prochain coup sera critique à coup sûr.",
   },
+  'retreat_confirm_title': {
+    AppLanguage.en: 'Get away from this fight?',
+    AppLanguage.fr: 'Fuir ce combat ?',
+  },
+  'retreat_confirm_body': {
+    AppLanguage.en:
+        'You drop {gold} gold getting clear and keep the wounds you have. Nothing is won. A detour is left behind; a fight in the story waits where it was.',
+    AppLanguage.fr:
+        'Vous laissez tomber {gold} or en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné ; un combat de l’histoire vous attend là où il était.',
+  },
+  'read_scroll_prefix': {
+    AppLanguage.en: 'You read the',
+    AppLanguage.fr: 'Vous lisez :',
+  },
+  'surge_pick_label': {
+    AppLanguage.en: 'Crit goes to:',
+    AppLanguage.fr: 'Le critique pour :',
+  },
   'momentum_surge_message': {
     AppLanguage.en: 'Momentum surges into the blow!',
     AppLanguage.fr: "L'élan se déchaîne dans le coup !",
@@ -3279,11 +3704,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'zone_flag_cinder_row_cleared': {
     AppLanguage.en: 'Cinder Row, cleared',
-    AppLanguage.fr: 'Cinder Row, nettoyée',
+    AppLanguage.fr: 'La Rue des Braises, nettoyée',
   },
   'zone_flag_scaffold_yards_cleared': {
     AppLanguage.en: 'The Scaffold Yards, cleared',
-    AppLanguage.fr: 'Les Scaffold Yards, nettoyés',
+    AppLanguage.fr: 'Les Chantiers aux Échafaudages, nettoyés',
+  },
+  'zone_flag_ossuary_galleries_cleared': {
+    AppLanguage.en: 'The Ossuary Galleries, cleared',
+    AppLanguage.fr: 'Les Galeries de l’Ossuaire, nettoyées',
+  },
+  'zone_flag_drowned_stair_cleared': {
+    AppLanguage.en: 'The Drowned Stair, cleared',
+    AppLanguage.fr: 'L’Escalier Noyé, nettoyé',
+  },
+  'zone_flag_dead_heart_cleared': {
+    AppLanguage.en: 'The road to the Dead Heart, open',
+    AppLanguage.fr: 'La route du Cœur Mort, ouverte',
+  },
+  'zone_flag_shroud_vigil_cleared': {
+    AppLanguage.en: 'The Shroud’s vigil, kept',
+    AppLanguage.fr: 'La Veillée du Linceul, tenue',
+  },
+  'zone_flag_void_sovereign_fallen': {
+    AppLanguage.en: 'The Void Sovereign, fallen',
+    AppLanguage.fr: 'Le Souverain, tombé',
   },
   'boat_title': {
     AppLanguage.en: 'The Rusty Eel',

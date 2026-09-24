@@ -14,7 +14,9 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
+import '../widgets/player_stats_bar.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -34,18 +36,18 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final itemsAsync = ref.watch(localizedDbProvider(itemsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     // Spells are only needed to describe and gate spellbooks; a table
     // that hasn't loaded yet just means those tiles say nothing extra.
-    final spells =
-        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
+    final spells = parseSpells(
+        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
     final professions = professionsAsync.value ?? const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
-    final itemSets =
-        parseItemSets(ref.watch(gameDbProvider(itemSetsSchema)).value ?? {});
+    final itemSets = parseItemSets(
+        ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
     final stock = (widget.shop['initialStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -62,9 +64,27 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           )
         : const <String, int>{};
 
+    final forges = recipesAt(widget.shopId,
+            ref.watch(localizedDbProvider(itemsSchema)).value ?? const {})
+        .isNotEmpty;
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.shop['shopName']?.toString() ?? widget.shopId)),
+        title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
+        actions: [
+          const GoldBadge(),
+          if (forges)
+            IconButton(
+              icon: const Icon(Icons.hardware_outlined),
+              tooltip: tr(ref, 'forge_title'),
+              onPressed: () => showForgeSheet(context, shopId: widget.shopId),
+            ),
+          IconButton(
+            icon: const Icon(Icons.sell_outlined),
+            tooltip: tr(ref, 'sell_title'),
+            onPressed: () => showSellSheet(context, shopId: widget.shopId),
+          ),
+        ],
+      ),
       body: itemsAsync.when(
         data: (items) => diceAsync.when(
           data: (dice) {
@@ -318,8 +338,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             message: spell != null
                                 ? '${trFor(lang, 'spell_learned_prefix')} '
                                     '${spell.nameFor(lang)}'
-                                : '${trFor(lang, 'bought_prefix')} $itemName '
-                                    '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                                : itemType == 'Tome'
+                                    ? '${trFor(lang, 'tome_read_prefix')} $itemName. '
+                                        '${consumableNote(itemId, item, lang) ?? ''}'
+                                    : '${trFor(lang, 'bought_prefix')} $itemName '
+                                        '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
                             actionLabel:
                                 canWear ? trFor(lang, 'equip_button') : null,
                             onAction: canWear
@@ -475,7 +498,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           return Card(
                             child: ListTile(
                               leading: const Icon(Icons.casino),
-                              title: Text(dieDisplayName(diceId)),
+                              title:
+                                  Text(dieDisplayName(diceId, language: lang)),
                               subtitle: Text(
                                 '${owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}'}\n'
                                 '${dieFacesSummary(die, lang)}',
@@ -497,7 +521,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                 context,
                                                 icon: Icons.casino,
                                                 message:
-                                                    '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId)} '
+                                                    '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId, language: lang)} '
                                                     '${trFor(lang, 'for_label')} $cost '
                                                     '${trFor(lang, 'gold_label')}',
                                               );

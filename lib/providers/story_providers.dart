@@ -126,7 +126,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       history: history,
       visitedNodeIds: visitedNodeIds,
     );
+    restoredFromAutosave = history.isNotEmpty;
   }
+
+  /// Whether this launch picked a story back up from the autosave (with at
+  /// least one scene behind it) -- the story view then offers a
+  /// "Previously..." recap once.
+  bool restoredFromAutosave = false;
 
   Future<void> _persistAutosave() async {
     // Snapshot everything from `state` before the first await -- this runs
@@ -155,6 +161,19 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   }
 
   void jumpTo(String nodeId) => choose(nodeId);
+
+  /// Puts the play state back exactly as [snapshot] had it, fog of war
+  /// included -- used to undo a failed autoplay attempt so the next one
+  /// starts from the same place.
+  void restore(StoryPlayState snapshot) {
+    state = StoryPlayState(
+      currentNodeId: snapshot.currentNodeId,
+      history: snapshot.history,
+      visitedNodeIds: snapshot.visitedNodeIds,
+    );
+    _detourOwed = false;
+    _persistAutosave();
+  }
 
   void goBack() {
     if (state.history.isEmpty) return;
@@ -241,6 +260,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
 
   /// Advances past the current excursion node, either to the next generated
   /// node in the queue or, once it's empty, back to the real story.
+  /// Leaves the detour at once, back to the scene it set out from -- the
+  /// party slipped away from it.
+  void leaveExcursion() {
+    final resume = state.resumeNodeId;
+    if (resume != null) choose(resume);
+  }
+
   void advanceExcursion() {
     if (state.excursionQueue.isEmpty) {
       final resume = state.resumeNodeId;

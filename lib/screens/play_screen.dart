@@ -12,18 +12,21 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
-import '../providers/mode_nudge_provider.dart';
+import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/tab_badges_provider.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/save_slots_sheet.dart';
 import 'achievements_screen.dart';
 import 'boat_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
+import 'fight_lab_screen.dart';
 import 'fight_screen.dart';
 import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
@@ -37,14 +40,16 @@ class PlayScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final playState = ref.watch(storyPlayProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final hasSeenModeNudge = ref.watch(hasSeenModeNudgeProvider);
-    final hasSavedGame = ref.watch(savedGameExistsProvider);
-    final questsAsync = ref.watch(gameDbProvider(questsSchema));
-    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
-    final npcsAsync = ref.watch(gameDbProvider(npcsSchema));
+    final hasSavedGame =
+        ref.watch(savedGamesProvider).any((slot) => slot != null);
+    // Ironman: with permadeath on, a saved game can't be loaded.
+    final ironman = ref.watch(permadeathEnabledProvider);
+    final questsAsync = ref.watch(localizedDbProvider(questsSchema));
+    final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
+    final npcsAsync = ref.watch(localizedDbProvider(npcsSchema));
     final achievementsCount =
-        ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
+        ref.watch(localizedDbProvider(achievementsSchema)).value?.length ?? 0;
 
     // The town is a place in the story: its page opens only while the
     // story stands in it (the town's own node or one of its scenes).
@@ -54,9 +59,12 @@ class PlayScreen extends ConsumerWidget {
     final town = townNode?.settlement;
     final townPortId = town != null && !town.isCamp ? town.portId : null;
     final townHubUnlocked = townPortId != null;
-    final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
+    final campUnlocked = chapterOfNode(playState.currentNodeId) >= campChapter;
+    // In play this page is the Other tab: the character and the camp (with
+    // the boat) have tabs of their own.
+    final asOtherTab = !isEditMode;
     final boatUnlocked = campUnlocked;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value ??
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value ??
         const <String, dynamic>{};
     final mooredPortId = currentPortIdFor(ports, session.currentPortId);
     final mooredPortName = mooredPortId == null
@@ -77,65 +85,25 @@ class PlayScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Edit Mode is every fresh install's default (the full authoring
-        // app, not just the game) since that's what this project's own
-        // development relies on -- a genuine first-time player wouldn't
-        // otherwise know the player-only mode exists. One-time nudge,
-        // dismissible either by switching or by closing it outright.
-        if (isEditMode && !hasSeenModeNudge)
+        if (isEditMode)
           Card(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.sports_esports_outlined,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          tr(ref, 'mode_nudge_message'),
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondaryContainer,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        visualDensity: VisualDensity.compact,
-                        tooltip: tr(ref, 'close_button'),
-                        onPressed: () => ref
-                            .read(hasSeenModeNudgeProvider.notifier)
-                            .dismiss(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () async {
-                        await ref
-                            .read(appModeProvider.notifier)
-                            .setMode(AppMode.inGame);
-                        await ref
-                            .read(hasSeenModeNudgeProvider.notifier)
-                            .dismiss();
-                      },
-                      child: Text(tr(ref, 'switch_to_in_game_mode_button')),
-                    ),
-                  ),
-                ],
+            child: ListTile(
+              key: const Key('open_fight_lab'),
+              leading: const Icon(Icons.science_outlined),
+              title: Text(tr(ref, 'fight_lab_title')),
+              subtitle: Text(tr(ref, 'fight_lab_card_desc')),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const FightLabScreen()),
               ),
+            ),
+          ),
+        if (ref.read(playerSessionProvider.notifier).loadFailed)
+          Card(
+            color: Theme.of(context).colorScheme.errorContainer,
+            child: ListTile(
+              leading: const Icon(Icons.report_problem_outlined),
+              title: Text(tr(ref, 'session_unreadable_notice')),
             ),
           ),
         const PlayerStatsBar(),
@@ -143,53 +111,27 @@ class PlayScreen extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(tr(ref, 'player_session'),
-                style: Theme.of(context).textTheme.titleMedium),
+            Expanded(
+              child: Text(tr(ref, 'player_session'),
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis),
+            ),
             Wrap(
               spacing: 4,
               children: [
                 IconButton(
                   icon: const Icon(Icons.save_outlined),
                   tooltip: tr(ref, 'save_game_tooltip'),
-                  onPressed: () async {
-                    await ref.read(savedGameExistsProvider.notifier).save(
-                          session: session,
-                          currentNodeId: playState.currentNodeId,
-                          history: playState.history,
-                        );
-                    if (!context.mounted) return;
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.save,
-                      message: tr(ref, 'game_saved_message'),
-                    );
-                  },
+                  onPressed: () => showSaveSlotsSheet(context, saving: true),
                 ),
                 IconButton(
                   icon: const Icon(Icons.folder_open_outlined),
-                  tooltip: tr(ref, 'load_game_tooltip'),
-                  onPressed: !hasSavedGame
+                  tooltip: ironman
+                      ? tr(ref, 'ironman_load_tooltip')
+                      : tr(ref, 'load_game_tooltip'),
+                  onPressed: !hasSavedGame || ironman
                       ? null
-                      : () async {
-                          final saved = await ref
-                              .read(savedGameExistsProvider.notifier)
-                              .load();
-                          if (saved == null) return;
-                          final (savedSession, savedNodeId, savedHistory) =
-                              saved;
-                          await ref
-                              .read(playerSessionProvider.notifier)
-                              .loadSession(savedSession);
-                          ref
-                              .read(storyPlayProvider.notifier)
-                              .loadState(savedNodeId, savedHistory);
-                          if (!context.mounted) return;
-                          showImmersiveNotice(
-                            context,
-                            icon: Icons.folder_open,
-                            message: tr(ref, 'game_loaded_message'),
-                          );
-                        },
+                      : () => showSaveSlotsSheet(context, saving: false),
                 ),
                 if (isEditMode)
                   TextButton.icon(
@@ -209,115 +151,103 @@ class PlayScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 4),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.person),
-            title: Text(tr(ref, 'character')),
-            subtitle: Text(
-              '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
-              '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
-              '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
-            ),
-            // Spending stat/skill points is entirely manual and nothing else
-            // nudges toward it, so an unspent balance is easy to forget —
-            // same badge treatment as the unseen-content sections below.
-            trailing: session.statPoints + session.skillPoints > 0
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${session.statPoints + session.skillPoints}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onError,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+        if (!asOtherTab)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(tr(ref, 'character')),
+              subtitle: Text(
+                '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
+                '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
+                '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
+              ),
+              // Spending stat/skill points is entirely manual and nothing else
+              // nudges toward it, so an unspent balance is easy to forget —
+              // same badge treatment as the unseen-content sections below.
+              trailing: session.statPoints + session.skillPoints > 0
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${session.statPoints + session.skillPoints}',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onError,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const Icon(Icons.chevron_right),
-                    ],
-                  )
-                : const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CharacterScreen()),
-              );
-            },
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(campUnlocked
-                ? Icons.local_fire_department_outlined
-                : Icons.lock_outline),
-            title: Text(tr(ref, 'camp_title')),
-            subtitle: Text(
-              campUnlocked
-                  ? '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
-                      '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}'
-                  : tr(ref, 'camp_locked_subtitle'),
+                        const Icon(Icons.chevron_right),
+                      ],
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CharacterScreen()),
+                );
+              },
             ),
-            trailing: campUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !campUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CampScreen()),
-                    );
-                  },
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(boatUnlocked ? Icons.sailing : Icons.lock_outline),
-            title: Text(tr(ref, 'boat_title')),
-            subtitle: Text(
-              boatUnlocked
-                  ? '${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'
-                  : tr(ref, 'boat_locked_subtitle'),
+        // Places open as the story reaches them; until then they share one
+        // quiet line instead of a locked card each.
+        if (campUnlocked && !asOtherTab)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.local_fire_department_outlined),
+              title: Text(tr(ref, 'camp_title')),
+              subtitle: Text(
+                '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
+                '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CampScreen()),
+              ),
             ),
-            trailing: boatUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !boatUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const BoatScreen()),
-                    );
-                  },
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(
-                townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
-            title: Text(townHubUnlocked
-                ? town!
-                    .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)
-                : tr(ref, 'town_hub_title')),
-            subtitle: Text(
-              townHubUnlocked
-                  ? '${session.completedZoneIds.length} '
-                      '${tr(ref, 'zones_cleared_label').toLowerCase()}'
-                  : tr(ref, 'town_hub_locked_subtitle'),
+        if (boatUnlocked && !asOtherTab)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.sailing),
+              title: Text(tr(ref, 'boat_title')),
+              subtitle:
+                  Text('${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const BoatScreen()),
+              ),
             ),
-            trailing: townHubUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !townHubUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => PortScreen(portId: townPortId)),
-                    );
-                  },
           ),
-        ),
+        if (townHubUnlocked)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.cottage_outlined),
+              title: Text(town!
+                  .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)),
+              subtitle: Text('${session.completedZoneIds.length} '
+                  '${tr(ref, 'zones_cleared_label').toLowerCase()}'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => PortScreen(portId: townPortId)),
+              ),
+            ),
+          ),
+        _LockedPlacesLine(entries: [
+          if (!campUnlocked && !asOtherTab)
+            (tr(ref, 'camp_title'), tr(ref, 'camp_locked_subtitle')),
+          if (!boatUnlocked && !asOtherTab)
+            (tr(ref, 'boat_title'), tr(ref, 'boat_locked_subtitle')),
+          if (!townHubUnlocked)
+            (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),
+        ]),
         Card(
           child: ListTile(
             leading: const Icon(Icons.emoji_events_outlined),
@@ -338,6 +268,9 @@ class PlayScreen extends ConsumerWidget {
         _CollapsibleSection(
           title: tr(ref, 'quests'),
           badgeCount: unseenQuests,
+          readyCount:
+              isEditMode ? 0 : ref.watch(tabBadgesProvider).readyQuestCount,
+          readyLabel: tr(ref, 'quests_ready_label'),
           onExpanded: () => ref
               .read(playerSessionProvider.notifier)
               .markAllSeenInCategory(quests: true),
@@ -401,12 +334,19 @@ class _CollapsibleSection extends StatelessWidget {
     required this.title,
     required this.child,
     this.badgeCount = 0,
+    this.readyCount = 0,
+    this.readyLabel = '',
     this.onExpanded,
   });
 
   final String title;
   final Widget child;
   final int badgeCount;
+
+  /// Entries ready to act on (quests to turn in), shown whether or not
+  /// the section has been opened before.
+  final int readyCount;
+  final String readyLabel;
   final VoidCallback? onExpanded;
 
   @override
@@ -418,6 +358,30 @@ class _CollapsibleSection extends StatelessWidget {
           children: [
             Text(title, style: Theme.of(context).textTheme.titleMedium),
             const Spacer(),
+            if (readyCount > 0)
+              Container(
+                margin: const EdgeInsets.only(left: 8, right: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade700,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check, size: 14, color: Colors.white),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$readyCount $readyLabel',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (badgeCount > 0)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -461,12 +425,12 @@ class _QuestList extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final companions =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
-    final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
     final professions =
-        ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
     final achievements =
-        ref.watch(gameDbProvider(achievementsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(achievementsSchema)).value ?? const {};
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -547,7 +511,7 @@ class _QuestList extends ConsumerWidget {
                           rewardItem: rewardItemId == null
                               ? null
                               : ref
-                                      .read(gameDbProvider(itemsSchema))
+                                      .read(localizedDbProvider(itemsSchema))
                                       .value?[rewardItemId]
                                   as Map<String, dynamic>?,
                         );
@@ -567,11 +531,14 @@ class _QuestList extends ConsumerWidget {
                             race: race,
                             profession: profession,
                             companion: companion,
-                            dice: ref.read(gameDbProvider(diceSchema)).value ??
+                            dice: ref
+                                    .read(localizedDbProvider(diceSchema))
+                                    .value ??
                                 const {},
-                            houses:
-                                ref.read(gameDbProvider(housesSchema)).value ??
-                                    const {},
+                            houses: ref
+                                    .read(localizedDbProvider(housesSchema))
+                                    .value ??
+                                const {},
                             requiredHouseId:
                                 companion?['requiredHouseId']?.toString(),
                           );
@@ -877,6 +844,46 @@ class _NpcList extends ConsumerWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// The places not open yet (camp, boat, town), on one dimmed line grouped
+/// by what opens them: "Camp, The Rusty Eel: Reach Chapter 3 to unlock".
+/// Nothing when every place is open.
+class _LockedPlacesLine extends StatelessWidget {
+  const _LockedPlacesLine({required this.entries});
+
+  /// Each place's name and what opens it.
+  final List<(String, String)> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    if (entries.isEmpty) return const SizedBox.shrink();
+    final byReason = <String, List<String>>{};
+    for (final (name, reason) in entries) {
+      byReason.putIfAbsent(reason, () => []).add(name);
+    }
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.lock_outline, size: 18, color: muted),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              [
+                for (final entry in byReason.entries)
+                  '${entry.value.join(', ')}: ${entry.key}',
+              ].join('\n'),
+              style: theme.textTheme.bodySmall?.copyWith(color: muted),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -12,6 +12,7 @@
     "weaponSlots": 2,
     "shieldSlots": 1,
     "utilitySlots": 1,
-    "sailSlots": 1
+    "sailSlots": 1,
+    "shipName_fr": "Le Rusty Eel"
   }
 }
