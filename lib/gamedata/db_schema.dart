@@ -121,7 +121,12 @@ const List<String> spellTargetOptions = [
 
 /// The ability score a spell's amount grows with (half the score is added
 /// to it) -- empty for a flat spell.
-const List<String> spellScalingOptions = ['', 'intelligence', 'wisdom'];
+const List<String> spellScalingOptions = [
+  '',
+  'intelligence',
+  'wisdom',
+  'strength'
+];
 
 const List<String> slotTypeOptions = ['Weapon', 'Shield', 'Utility', 'Sail'];
 
@@ -427,6 +432,11 @@ final DbSchema skillsSchema = DbSchema(
     FieldSchema(
         key: 'isUnlocked',
         label: 'Unlocked',
+        type: FieldType.boolean,
+        defaultValue: false),
+    FieldSchema(
+        key: 'enemyOnly',
+        label: 'Enemy only (never offered to the party)',
         type: FieldType.boolean,
         defaultValue: false),
     FieldSchema(
@@ -1141,6 +1151,16 @@ final DbSchema shopsSchema = DbSchema(
         key: 'shopDescription',
         label: 'Shop Description',
         type: FieldType.multilineText),
+    FieldSchema(
+        key: 'minChapter',
+        label: 'First chapter it can turn up on a detour or expedition',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(
+        key: 'detourEligible',
+        label: 'Can turn up on a detour or expedition (off for house shops)',
+        type: FieldType.boolean,
+        defaultValue: true),
     FieldSchema(
         key: 'unlockLevel',
         label: 'Unlock Level',

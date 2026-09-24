@@ -43,8 +43,11 @@ class SubNodeEngine {
 
     final flavor = flavorFor(theme);
 
-    final shopPool =
-        shops.keys.where((id) => !unlockedShopIds.contains(id)).toList();
+    final shopPool = filterShopPool(
+      shops: shops,
+      unlockedShopIds: unlockedShopIds,
+      chapter: chapter,
+    );
     final enemyPool = filterEnemyPool(
       enemies: enemies,
       unlockedEnemyIds: unlockedEnemyIds,
@@ -290,8 +293,7 @@ class SubNodeEngine {
   }) {
     return enemyPool
         .where((id) =>
-            !soloOnlyEnemyIds.contains(id) &&
-            !storyOnlyEnemyIds.contains(id) &&
+            isRandomDrawEnemy(id) &&
             ((enemies[id] as Map<String, dynamic>?)?['packEligible'] as bool? ??
                 false))
         .toList();
@@ -330,6 +332,29 @@ class SubNodeEngine {
     return required == alignmentLabel;
   }
 
+  /// Shops a detour or an expedition may lead to at [chapter]: not yet
+  /// found, open by this chapter (shops.json `minChapter`) and not one of
+  /// the camp houses' own shops (`detourEligible` false), which the camp
+  /// opens when the house is built. Unfiltered, a chapter-1 detour could
+  /// open the Hammersmith and its tier-6 gear.
+  static List<String> filterShopPool({
+    required Map<String, dynamic> shops,
+    required List<String> unlockedShopIds,
+    required int chapter,
+  }) {
+    return [
+      for (final entry in shops.entries)
+        if (!unlockedShopIds.contains(entry.key) &&
+            ((entry.value as Map<String, dynamic>)['detourEligible'] as bool? ??
+                true) &&
+            (((entry.value as Map<String, dynamic>)['minChapter'] as num?)
+                        ?.toInt() ??
+                    1) <=
+                chapter)
+          entry.key,
+    ];
+  }
+
   /// Enemies eligible to appear in a randomly-drawn encounter at [chapter]
   /// -- shared by excursions ([maybeGenerate]) and expeditions
   /// (ExpeditionScreen) so both draw from the same chapter-appropriate
@@ -352,9 +377,9 @@ class SubNodeEngine {
         // A story boss or a zone's own boss (soloOnlyEnemyIds) is met where
         // the story or the zone puts it, never as a random draw -- the Void
         // Sovereign does not wander into an expedition's third event.
-        .where((e) => !soloOnlyEnemyIds.contains(e.key))
-        // A story-only enemy (storyOnlyEnemyIds) likewise.
-        .where((e) => !storyOnlyEnemyIds.contains(e.key))
+        // A story-only enemy (storyOnlyEnemyIds) likewise, and each zone's
+        // own boss (zoneBossEnemyIds), met at the end of its expedition.
+        .where((e) => isRandomDrawEnemy(e.key))
         .where((e) {
           final minChapter =
               ((e.value as Map<String, dynamic>)['minChapter'] as num?)
@@ -441,8 +466,8 @@ class SubNodeEngine {
       // A pack fight never draws a solo-only enemy (the tuned bosses and
       // uniques -- see soloOnlyEnemyIds) -- those stay solo encounters
       // exclusively, drawn only through the plain single-enemy path below.
-      final packEligible = packPool ??
-          enemyPool.where((eid) => !soloOnlyEnemyIds.contains(eid)).toList();
+      final packEligible =
+          packPool ?? enemyPool.where(isRandomDrawEnemy).toList();
       if (packEligible.isNotEmpty && random.nextDouble() < 0.3) {
         final size = 2 + random.nextInt(max(1, maxPackSize - 1));
         final ids = [

@@ -1364,7 +1364,8 @@
     "statusDuration": 3,
     "statusMagnitude": 5,
     "alignment": "",
-    "vfx": "claw"
+    "vfx": "claw",
+    "enemyOnly": true
   },
   "void_drain": {
     "id": "void_drain",
@@ -1385,7 +1386,8 @@
     "statusDuration": 2,
     "statusMagnitude": 30,
     "alignment": "Evil",
-    "vfx": "drain"
+    "vfx": "drain",
+    "enemyOnly": true
   },
   "disorienting_pulse": {
     "id": "disorienting_pulse",
@@ -1406,7 +1408,8 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "alignment": "",
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "enemyOnly": true
   },
   "molten_backlash": {
     "id": "molten_backlash",
@@ -1427,7 +1430,8 @@
     "statusDuration": 2,
     "statusMagnitude": 10,
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "enemyOnly": true
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1528,7 +1532,8 @@
     "inflictsStatus": "Poison",
     "statusDuration": 2,
     "statusMagnitude": 4,
-    "vfx": "poison"
+    "vfx": "poison",
+    "enemyOnly": true
   },
   "golem_meltdown": {
     "id": "golem_meltdown",
@@ -1549,7 +1554,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 15,
-    "vfx": "meteor"
+    "vfx": "meteor",
+    "enemyOnly": true
   },
   "warden_bone_storm": {
     "id": "warden_bone_storm",
@@ -1570,7 +1576,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 25,
-    "vfx": "quake"
+    "vfx": "quake",
+    "enemyOnly": true
   },
   "archon_eclipse": {
     "id": "archon_eclipse",
@@ -1591,7 +1598,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "vfx": "void_rift"
+    "vfx": "void_rift",
+    "enemyOnly": true
   },
   "sovereign_unmaking": {
     "id": "sovereign_unmaking",
@@ -1612,7 +1620,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 25,
-    "vfx": "quake"
+    "vfx": "quake",
+    "enemyOnly": true
   },
   "zealot_martyrdom": {
     "id": "zealot_martyrdom",
@@ -1630,7 +1639,8 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "alignment": "",
-    "vfx": "flame"
+    "vfx": "flame",
+    "enemyOnly": true
   },
   "manifestation_many_faces": {
     "id": "manifestation_many_faces",
@@ -1651,7 +1661,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "enemyOnly": true
   },
   "stalker_ambush": {
     "id": "stalker_ambush",
@@ -1672,6 +1683,7 @@
     "inflictsStatus": "Poison",
     "statusDuration": 3,
     "statusMagnitude": 5,
-    "vfx": "shadow"
+    "vfx": "shadow",
+    "enemyOnly": true
   }
 }

@@ -48,7 +48,7 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 50
+        "dropRate": 25
       },
       {
         "itemID": "warden_signet",
@@ -93,7 +93,7 @@
     "lootTable": [
       {
         "itemID": "potion_minor",
-        "dropRate": 80
+        "dropRate": 25
       },
       {
         "itemID": "rat_king_tooth",
@@ -152,7 +152,7 @@
     "lootTable": [
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "rat_king_tooth",
@@ -191,7 +191,7 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 30
+        "dropRate": 25
       },
       {
         "itemID": "blackened_fang",
@@ -218,8 +218,8 @@
   },
   "cultist_acolyte": {
     "enemyName": "Cultist Acolyte",
-    "maxHealth": 81,
-    "damage": 10,
+    "maxHealth": 100,
+    "damage": 11,
     "guile": 1,
     "xpReward": 37,
     "goldReward": 26,
@@ -277,7 +277,11 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
       }
     ],
     "skillMoves": [],
@@ -357,7 +361,7 @@
       },
       {
         "itemID": "potion_major",
-        "dropRate": 30
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -424,11 +428,11 @@
     "lootTable": [
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       },
       {
         "itemID": "antidote",
-        "dropRate": 30
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -670,7 +674,7 @@
     "goldReward": 75,
     "lootTable": [
       {
-        "itemID": "sword_t9",
+        "itemID": "sword_t6",
         "dropRate": 20
       },
       {
@@ -744,15 +748,15 @@
     "goldReward": 55,
     "lootTable": [
       {
-        "itemID": "dagger_t3",
+        "itemID": "dagger_t2",
         "dropRate": 25
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       },
       {
-        "itemID": "circlet_radiance",
+        "itemID": "warden_signet",
         "dropRate": 20
       }
     ],
@@ -816,7 +820,7 @@
       },
       {
         "itemID": "potion_major",
-        "dropRate": 40
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -964,11 +968,15 @@
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "cloak_frostward",
         "dropRate": 18
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1027,19 +1035,19 @@
   },
   "inquisition_auxiliary": {
     "enemyName": "Inquisition Auxiliary",
-    "maxHealth": 105,
-    "damage": 13,
+    "maxHealth": 120,
+    "damage": 14,
     "guile": 1,
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [
       {
-        "itemID": "sword_t2",
+        "itemID": "sword_t5",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       },
       {
         "itemID": "warden_signet",
@@ -1073,12 +1081,12 @@
     "goldReward": 45,
     "lootTable": [
       {
-        "itemID": "saint_reliquary",
+        "itemID": "blackened_fang",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -1121,16 +1129,16 @@
     "goldReward": 85,
     "lootTable": [
       {
-        "itemID": "halo_lance",
+        "itemID": "cultist_hood",
         "dropRate": 20
       },
       {
-        "itemID": "dawnward_shield",
+        "itemID": "blackened_fang",
         "dropRate": 15
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1198,12 +1206,12 @@
     "goldReward": 40,
     "lootTable": [
       {
-        "itemID": "blackened_fang",
+        "itemID": "saint_reliquary",
         "dropRate": 20
       },
       {
         "itemID": "potion_minor",
-        "dropRate": 40
+        "dropRate": 25
       }
     ],
     "skillMoves": [
@@ -1246,16 +1254,16 @@
     "goldReward": 80,
     "lootTable": [
       {
-        "itemID": "cultist_hood",
+        "itemID": "halo_lance",
         "dropRate": 20
       },
       {
-        "itemID": "blackened_fang",
+        "itemID": "dawnward_shield",
         "dropRate": 15
       },
       {
         "itemID": "potion_major",
-        "dropRate": 35
+        "dropRate": 20
       }
     ],
     "skillMoves": [
@@ -1325,6 +1333,10 @@
       {
         "itemID": "potion_minor",
         "dropRate": 20
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 15
       }
     ],
     "skillMoves": [
@@ -1368,6 +1380,10 @@
       {
         "itemID": "shield_t8",
         "dropRate": 20
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 30
       }
     ],
     "skillMoves": [
@@ -1437,7 +1453,7 @@
   },
   "hollow_court_inquisitor": {
     "enemyName": "Hollow Court Inquisitor",
-    "maxHealth": 400,
+    "maxHealth": 340,
     "damage": 33,
     "guile": 9,
     "xpReward": 150,
@@ -1534,7 +1550,7 @@
   },
   "void_hound": {
     "enemyName": "Void Hound",
-    "maxHealth": 170,
+    "maxHealth": 155,
     "damage": 20,
     "guile": 4,
     "xpReward": 70,
@@ -1585,7 +1601,7 @@
     "lootTable": [
       {
         "itemID": "potion_major",
-        "dropRate": 25
+        "dropRate": 20
       }
     ],
     "skillMoves": [

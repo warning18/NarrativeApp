@@ -13,6 +13,7 @@ import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/mode_nudge_provider.dart';
+import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
@@ -20,6 +21,7 @@ import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/save_slots_sheet.dart';
 import 'achievements_screen.dart';
 import 'boat_screen.dart';
 import 'camp_screen.dart';
@@ -38,7 +40,10 @@ class PlayScreen extends ConsumerWidget {
     final playState = ref.watch(storyPlayProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final hasSeenModeNudge = ref.watch(hasSeenModeNudgeProvider);
-    final hasSavedGame = ref.watch(savedGameExistsProvider);
+    final hasSavedGame =
+        ref.watch(savedGamesProvider).any((slot) => slot != null);
+    // Ironman: with permadeath on, a saved game can't be loaded.
+    final ironman = ref.watch(permadeathEnabledProvider);
     final questsAsync = ref.watch(gameDbProvider(questsSchema));
     final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
@@ -138,6 +143,14 @@ class PlayScreen extends ConsumerWidget {
               ),
             ),
           ),
+        if (ref.read(playerSessionProvider.notifier).loadFailed)
+          Card(
+            color: Theme.of(context).colorScheme.errorContainer,
+            child: ListTile(
+              leading: const Icon(Icons.report_problem_outlined),
+              title: Text(tr(ref, 'session_unreadable_notice')),
+            ),
+          ),
         const PlayerStatsBar(),
         const SizedBox(height: 16),
         Row(
@@ -154,45 +167,16 @@ class PlayScreen extends ConsumerWidget {
                 IconButton(
                   icon: const Icon(Icons.save_outlined),
                   tooltip: tr(ref, 'save_game_tooltip'),
-                  onPressed: () async {
-                    await ref.read(savedGameExistsProvider.notifier).save(
-                          session: session,
-                          currentNodeId: playState.currentNodeId,
-                          history: playState.history,
-                        );
-                    if (!context.mounted) return;
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.save,
-                      message: tr(ref, 'game_saved_message'),
-                    );
-                  },
+                  onPressed: () => showSaveSlotsSheet(context, saving: true),
                 ),
                 IconButton(
                   icon: const Icon(Icons.folder_open_outlined),
-                  tooltip: tr(ref, 'load_game_tooltip'),
-                  onPressed: !hasSavedGame
+                  tooltip: ironman
+                      ? tr(ref, 'ironman_load_tooltip')
+                      : tr(ref, 'load_game_tooltip'),
+                  onPressed: !hasSavedGame || ironman
                       ? null
-                      : () async {
-                          final saved = await ref
-                              .read(savedGameExistsProvider.notifier)
-                              .load();
-                          if (saved == null) return;
-                          final (savedSession, savedNodeId, savedHistory) =
-                              saved;
-                          await ref
-                              .read(playerSessionProvider.notifier)
-                              .loadSession(savedSession);
-                          ref
-                              .read(storyPlayProvider.notifier)
-                              .loadState(savedNodeId, savedHistory);
-                          if (!context.mounted) return;
-                          showImmersiveNotice(
-                            context,
-                            icon: Icons.folder_open,
-                            message: tr(ref, 'game_loaded_message'),
-                          );
-                        },
+                      : () => showSaveSlotsSheet(context, saving: false),
                 ),
                 if (isEditMode)
                   TextButton.icon(

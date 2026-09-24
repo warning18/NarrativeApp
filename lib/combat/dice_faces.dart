@@ -27,6 +27,11 @@ const List<String> _skillIdPrefixes = [
   'ranger_',
 ];
 
+/// Whether [skill] is one of the enemies' own moves (skills.json
+/// `enemyOnly`): never listed, unlocked or set on a die by the party.
+bool isEnemyOnlySkill(Map<String, dynamic>? skill) =>
+    skill?['enemyOnly'] as bool? ?? false;
+
 /// A skill's name for the player, built from its id.
 String skillDisplayName(String skillId) {
   var id = skillId;

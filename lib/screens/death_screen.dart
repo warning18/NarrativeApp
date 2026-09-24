@@ -4,12 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_aftermath.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/save_game_provider.dart';
 
 /// Shown after a permadeath loss, once the player's session has already
 /// been reset (inventory cleared, story restarted to node 0). Purely a
 /// confirmation/summary screen — tapping through just closes it, revealing
 /// the already-reset app underneath.
-class DeathScreen extends ConsumerWidget {
+class DeathScreen extends ConsumerStatefulWidget {
   const DeathScreen({
     super.key,
     required this.lostItemIds,
@@ -32,7 +33,27 @@ class DeathScreen extends ConsumerWidget {
   final int skillsLost;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DeathScreen> createState() => _DeathScreenState();
+}
+
+class _DeathScreenState extends ConsumerState<DeathScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Ironman: a permadeath death takes the manual saves with it, so
+    // turning permadeath off afterwards brings no checkpoint back.
+    ref.read(savedGamesProvider.notifier).deleteAll();
+  }
+
+  String get killerName => widget.killerName;
+  int get narrationSeed => widget.narrationSeed;
+  List<String> get lostItemIds => widget.lostItemIds;
+  int get xpEarned => widget.xpEarned;
+  int get nodesVisited => widget.nodesVisited;
+  int get skillsLost => widget.skillsLost;
+
+  @override
+  Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(

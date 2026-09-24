@@ -57,6 +57,7 @@ SpellPreview previewSpellFor(
         spell,
         intelligence: session.intelligence,
         wisdom: session.wisdom,
+        strength: session.strength,
         level: session.level,
         casterDamage: sessionCasterDamage(session, items, spell.element),
       ),

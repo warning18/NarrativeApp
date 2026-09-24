@@ -19,7 +19,9 @@
     "stockQuantities": {
       "potion_minor": 4,
       "sword_001": 1
-    }
+    },
+    "minChapter": 1,
+    "detourEligible": true
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -28,7 +30,6 @@
     "unlockLevel": 2,
     "buildCost": 150,
     "initialStock": [
-      "void_banner",
       "armor_leather",
       "sword_001",
       "spellbook_venom_hex",
@@ -45,12 +46,13 @@
       "frost_die"
     ],
     "stockQuantities": {
-      "void_banner": 1,
       "armor_leather": 1,
       "sword_001": 1,
       "spellbook_venom_hex": 1,
       "harborwatch_lantern": 1
-    }
+    },
+    "minChapter": 1,
+    "detourEligible": true
   },
   "weaponsmith_forge": {
     "shopID": "weaponsmith_forge",
@@ -93,7 +95,9 @@
       "spellbook_war_shout": 1,
       "spellbook_hunters_mark": 1,
       "harborwatch_cutlass": 1
-    }
+    },
+    "minChapter": 1,
+    "detourEligible": true
   },
   "shieldwrights_hall": {
     "shopID": "shieldwrights_hall",
@@ -122,7 +126,9 @@
       "shield_t4": 1,
       "shield_t5": 1,
       "harborwatch_coat": 1
-    }
+    },
+    "minChapter": 1,
+    "detourEligible": true
   },
   "arcane_bazaar": {
     "shopID": "arcane_bazaar",
@@ -162,7 +168,9 @@
       "artifact_moon_shard": 1,
       "spellbook_frost_bind": 1,
       "siphon_wand": 1
-    }
+    },
+    "minChapter": 2,
+    "detourEligible": true
   },
   "apothecary_row": {
     "shopID": "apothecary_row",
@@ -190,7 +198,9 @@
       "potion_major": 4,
       "material_iron_ore": 4,
       "spellbook_sanctified_ground": 1
-    }
+    },
+    "minChapter": 2,
+    "detourEligible": true
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
@@ -209,7 +219,6 @@
       "shield_t7",
       "staff_t6",
       "staff_t7",
-      "void_banner",
       "bloodthorn_blade"
     ],
     "merchantSpecialties": [
@@ -231,9 +240,10 @@
       "shield_t7": 1,
       "staff_t6": 1,
       "staff_t7": 1,
-      "void_banner": 1,
       "bloodthorn_blade": 1
-    }
+    },
+    "minChapter": 3,
+    "detourEligible": true
   },
   "hammersmith_forge": {
     "shopID": "hammersmith_forge",
@@ -282,7 +292,9 @@
       "shield_t9": 1,
       "shield_t10": 1,
       "thornmail_hauberk": 1
-    }
+    },
+    "minChapter": 3,
+    "detourEligible": false
   },
   "arcane_academy": {
     "shopID": "arcane_academy",
@@ -313,7 +325,9 @@
       "staff_t9": 1,
       "staff_t10": 1,
       "spellbook_ember_wave": 1
-    }
+    },
+    "minChapter": 3,
+    "detourEligible": false
   },
   "sharpweave_den": {
     "shopID": "sharpweave_den",
@@ -340,7 +354,9 @@
       "dagger_t8": 1,
       "dagger_t9": 1,
       "dagger_t10": 1
-    }
+    },
+    "minChapter": 3,
+    "detourEligible": false
   },
   "ossuary_relics": {
     "shopID": "ossuary_relics",
@@ -372,7 +388,9 @@
       "sword_t8": 1,
       "shield_t8": 1,
       "hollow_court_blade": 1
-    }
+    },
+    "minChapter": 5,
+    "detourEligible": true
   },
   "last_lantern": {
     "shopID": "last_lantern",
@@ -409,6 +427,8 @@
       "spellbook_smite_the_wicked": 1,
       "hollow_court_mantle": 1,
       "phoenix_sigil": 1
-    }
+    },
+    "minChapter": 6,
+    "detourEligible": true
   }
 }

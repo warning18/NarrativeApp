@@ -175,12 +175,14 @@ int spellAmountFor(
   SpellSpec spell, {
   required int intelligence,
   required int wisdom,
+  int strength = 0,
   int level = 1,
   int casterDamage = 0,
 }) {
   final score = switch (spell.scalingStat) {
     'intelligence' => intelligence,
     'wisdom' => wisdom,
+    'strength' => strength,
     _ => 0,
   };
   final base = spell.amount + score ~/ 2;

@@ -699,6 +699,7 @@ int _castSpellIfWorth(
         spell,
         intelligence: c.intelligence,
         wisdom: c.wisdom,
+        strength: c.strength,
         level: c.level,
         casterDamage: c.casterDamage(items, spell.element, itemSets: itemSets),
       );

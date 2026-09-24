@@ -100,10 +100,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             const <String, String>{};
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
-        if (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
-                false) ||
-            (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
-                .contains(entry.key))
+        if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?) &&
+            (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
+                    false) ||
+                (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
+                    .contains(entry.key)))
           entry.key,
     }.toList()
       ..sort();

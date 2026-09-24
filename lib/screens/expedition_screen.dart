@@ -149,9 +149,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       enabled: ref.read(alignmentHuntersEnabledProvider),
     );
     if (alignmentEvent != null) return alignmentEvent.first;
-    final shopPool = shops.keys
-        .where((id) => !session.unlockedShopIds.contains(id))
-        .toList();
+    final shopPool = SubNodeEngine.filterShopPool(
+      shops: shops,
+      unlockedShopIds: session.unlockedShopIds,
+      chapter: zoneChapter,
+    );
     final enemyPool = SubNodeEngine.filterEnemyPool(
       enemies: enemies,
       unlockedEnemyIds: session.unlockedEnemyIds,

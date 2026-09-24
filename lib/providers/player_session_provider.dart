@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,15 @@ import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
+
+/// Where a save that could not be read is kept aside, untouched, before
+/// the game falls back to a fresh session (see [PlayerSessionNotifier]).
+const String unreadableSessionBackupPrefsKey = 'player_session_unreadable';
+
+/// The save format's version, written into every save. Bump it with a
+/// migration in [PlayerSession.fromJson] whenever a change to the format
+/// needs one; a save without it is version 1.
+const int playerSessionSaveVersion = 2;
 const String _newGameDefaultsAssetPath = 'assets/gamedata/game_config.json';
 const String _newGameDefaultsPrefsKey = 'gamedb_game_config';
 
@@ -34,6 +45,11 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
       }).fold<int>(0,
           (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 }
+
+/// Companions the "Full House" achievement asks for: six of the eight.
+/// Tobin follows only a Good leader and Malrik only an Evil one, so no
+/// single run can recruit everyone.
+const int fullRosterCompanionCount = 6;
 
 /// The wearer id [PlayerSession.wearersOf] uses for the player (allies go
 /// by their companion id).
@@ -547,6 +563,7 @@ class PlayerSession {
   }
 
   Map<String, dynamic> toJson() => {
+        'saveVersion': playerSessionSaveVersion,
         'level': level,
         'currentXP': currentXP,
         'gold': gold,
@@ -846,14 +863,32 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     _load();
   }
 
+  /// Completes once the saved session has been read (or found missing or
+  /// unreadable). Nothing is written before then, so a change made in the
+  /// first moments after launch can never write the placeholder session
+  /// over the real save.
+  final Completer<void> _loaded = Completer<void>();
+
+  /// Whether the save on disk could not be read this launch; it was kept
+  /// under [unreadableSessionBackupPrefsKey] and a fresh session started.
+  bool loadFailed = false;
+
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     final saved = prefs.getString(_playerSessionPrefsKey);
     if (saved != null) {
-      state =
-          PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
-      return;
+      try {
+        state =
+            PlayerSession.fromJson(json.decode(saved) as Map<String, dynamic>);
+        _loaded.complete();
+        return;
+      } catch (_) {
+        // Keep the unreadable save aside before anything can replace it.
+        await prefs.setString(unreadableSessionBackupPrefsKey, saved);
+        loadFailed = true;
+      }
     }
+    _loaded.complete();
     await _resetToDefaults(prefs);
   }
 
@@ -1124,6 +1159,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   Future<void> _persist() async {
+    await _loaded.future;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_playerSessionPrefsKey, json.encode(state.toJson()));
   }
@@ -1791,7 +1827,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
     check('first_companion', state.recruitedAllies.isNotEmpty);
     if (totalCompanionCount > 0) {
-      check('full_roster', state.recruitedAllies.length >= totalCompanionCount);
+      check(
+          'full_roster',
+          state.recruitedAllies.length >=
+              min(totalCompanionCount, fullRosterCompanionCount));
     }
     // "Field a full 3-member active party" means the player plus 2 active
     // allies (the default party capacity) -- activeAllyIds counts allies

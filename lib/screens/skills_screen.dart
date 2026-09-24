@@ -447,7 +447,11 @@ class _SkillList extends ConsumerWidget {
     if (records.isEmpty) {
       return Center(child: Text(tr(ref, 'no_skills_defined')));
     }
-    final keys = records.keys.toList()..sort();
+    // A boss's own moves stay the boss's: never listed for the party.
+    final keys = records.keys
+        .where((id) => !isEnemyOnlySkill(records[id] as Map<String, dynamic>?))
+        .toList()
+      ..sort();
 
     bool isAvailable(String id) {
       final skill = records[id] as Map<String, dynamic>?;

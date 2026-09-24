@@ -337,6 +337,49 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Game saved.',
     AppLanguage.fr: 'Partie sauvegardée.'
   },
+  'session_unreadable_notice': {
+    AppLanguage.en:
+        'Your last session could not be read, so a new one started. The old save was kept aside, untouched.',
+    AppLanguage.fr:
+        'Votre dernière partie n’a pas pu être lue : une nouvelle a commencé. L’ancienne sauvegarde a été mise de côté, intacte.',
+  },
+  'save_slots_save_title': {
+    AppLanguage.en: 'Save to a slot',
+    AppLanguage.fr: 'Sauvegarder dans un emplacement',
+  },
+  'save_slots_load_title': {
+    AppLanguage.en: 'Load a saved game',
+    AppLanguage.fr: 'Charger une sauvegarde',
+  },
+  'save_slot_label': {AppLanguage.en: 'Slot', AppLanguage.fr: 'Emplacement'},
+  'save_slot_empty': {AppLanguage.en: 'Empty', AppLanguage.fr: 'Vide'},
+  'save_slot_overwrite_title': {
+    AppLanguage.en: 'Save over this game?',
+    AppLanguage.fr: 'Écraser cette sauvegarde ?',
+  },
+  'save_slot_overwrite_button': {
+    AppLanguage.en: 'Save over it',
+    AppLanguage.fr: 'Écraser',
+  },
+  'save_slot_delete_tooltip': {
+    AppLanguage.en: 'Delete this save',
+    AppLanguage.fr: 'Supprimer cette sauvegarde',
+  },
+  'save_slot_unreadable': {
+    AppLanguage.en: 'This save could not be read. It was left as it is.',
+    AppLanguage.fr:
+        'Cette sauvegarde est illisible. Elle a été laissée telle quelle.',
+  },
+  'ironman_note': {
+    AppLanguage.en:
+        'Ironman: with permadeath on, a saved game can’t be loaded, and a death deletes every save.',
+    AppLanguage.fr:
+        'Ironman : avec la mort définitive, une sauvegarde ne peut pas être chargée, et une mort les efface toutes.',
+  },
+  'ironman_load_tooltip': {
+    AppLanguage.en: 'Ironman: no loading while permadeath is on',
+    AppLanguage.fr: 'Ironman : pas de chargement avec la mort définitive',
+  },
   'game_loaded_message': {
     AppLanguage.en: 'Game loaded.',
     AppLanguage.fr: 'Partie chargée.'
@@ -2385,11 +2428,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'When enabled, losing a fight sends the same character back to the '
             'beginning of the story. You keep your level, stats, gold and '
             'companions, but lose all items and your skills return to your '
-            'class basics.',
-    AppLanguage.fr:
-        'Une fois activée, perdre un combat renvoie le même personnage au début de '
-            "l'histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
-            'mais perdez tous vos objets et vos compétences reviennent aux bases de votre classe.',
+            'class basics. Ironman: saved games can’t be loaded, and a death '
+            'deletes them.',
+    AppLanguage.fr: 'Une fois activée, perdre un combat renvoie le même personnage au début de '
+        "l'histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
+        'mais perdez tous vos objets et vos compétences reviennent aux bases de votre classe. '
+        'Mode Ironman : les sauvegardes ne peuvent pas être chargées, et une mort les efface.',
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
@@ -2399,11 +2443,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'The story starts over with you. You keep your level, stats, gold '
             'and companions; your pack is empty and your skills are back to '
-            'your class basics.',
+            'your class basics. Your saved games are gone with the rest.',
     AppLanguage.fr:
         "L'histoire recommence avec vous. Vous conservez votre niveau, vos statistiques, "
             'votre or et vos compagnons ; votre sac est vide et vos compétences '
-            'reviennent aux bases de votre classe.',
+            'reviennent aux bases de votre classe. Vos sauvegardes sont parties avec le reste.',
   },
   'items_lost_label': {
     AppLanguage.en: 'Items lost',
@@ -3316,6 +3360,26 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zone_flag_scaffold_yards_cleared': {
     AppLanguage.en: 'The Scaffold Yards, cleared',
     AppLanguage.fr: 'Les Scaffold Yards, nettoyés',
+  },
+  'zone_flag_ossuary_galleries_cleared': {
+    AppLanguage.en: 'The Ossuary Galleries, cleared',
+    AppLanguage.fr: 'Les galeries de l’Ossuaire, nettoyées',
+  },
+  'zone_flag_drowned_stair_cleared': {
+    AppLanguage.en: 'The Drowned Stair, cleared',
+    AppLanguage.fr: 'L’Escalier Noyé, nettoyé',
+  },
+  'zone_flag_dead_heart_cleared': {
+    AppLanguage.en: 'The road to the Dead Heart, open',
+    AppLanguage.fr: 'La route du Cœur Mort, ouverte',
+  },
+  'zone_flag_shroud_vigil_cleared': {
+    AppLanguage.en: 'The Shroud’s vigil, kept',
+    AppLanguage.fr: 'La veillée du Linceul, tenue',
+  },
+  'zone_flag_void_sovereign_fallen': {
+    AppLanguage.en: 'The Void Sovereign, fallen',
+    AppLanguage.fr: 'Le Souverain, tombé',
   },
   'boat_title': {
     AppLanguage.en: 'The Rusty Eel',
