@@ -89,6 +89,12 @@ const int _momentumThreshold = 3;
 /// [criticalChanceFor]).
 const int _luckyCoinLuckBonus = 10;
 
+/// The color of damage that is coming but not dealt yet: the slice of an
+/// enemy's health bar the aimed dice would take off, and its "-N" chip
+/// (see [_FightScreenState._buildHpBar]). Blue on purpose -- nothing else
+/// on the enemy side is blue, so it never reads as damage already taken.
+const Color _previewColor = Color(0xFF42A5F5);
+
 /// Armor added to the player for one fight by a `charm_iron_skin`.
 const int _ironSkinArmorBonus = 5;
 
@@ -3514,8 +3520,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   /// A thin health bar with its numbers inside -- shared by both columns.
   /// With [pending] damage on the way (the dice aimed at an enemy, see
-  /// [_previewRoll]) the slice about to go is darkened and the numbers
-  /// read "now → after / max".
+  /// [_previewRoll]) the slice about to go is painted [_previewColor] and
+  /// the numbers read "now → after / max".
   Widget _buildHpBar(int current, int maxValue,
       {double height = 14, int pending = 0}) {
     final rawRatio = maxValue <= 0 ? 0.0 : current / maxValue;
@@ -3561,10 +3567,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
                       bottom: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.45),
+                          color: _previewColor.withValues(alpha: 0.9),
                           border: Border(
                             left: BorderSide(
-                                color: Colors.white.withValues(alpha: 0.8)),
+                                color: Colors.white.withValues(alpha: 0.9)),
                           ),
                         ),
                       ),
@@ -3756,7 +3762,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                       lethal
                           ? '-$pending ${tr(ref, 'preview_lethal_label')}'
                           : '-$pending',
-                      Colors.red,
+                      _previewColor,
                     ),
                   if (enemy.fled)
                     Text(tr(ref, 'fled_label'),

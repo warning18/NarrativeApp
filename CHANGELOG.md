@@ -8,6 +8,15 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.125.1+154]
+
+### Changed
+- **The coming damage is blue.** The slice of an enemy's health bar that
+  the aimed dice would take off, and its "-N" chip, are now painted blue
+  instead of darkened. Nothing else on the enemy side is blue, so it never
+  reads as damage already taken, and in a pack fight the blue moves to
+  whichever enemy the player aims at.
+
 ## [1.125.0+153]
 
 The number before the confirm: every rolled die now says what it will do
