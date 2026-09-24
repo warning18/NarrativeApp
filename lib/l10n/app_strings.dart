@@ -896,6 +896,175 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Résist. Élec.'
   },
   'unknown_label': {AppLanguage.en: 'Unknown', AppLanguage.fr: 'Inconnu'},
+  'ice_dmg_label': {AppLanguage.en: 'Ice Dmg', AppLanguage.fr: 'Dégâts Glace'},
+  'light_dmg_label': {
+    AppLanguage.en: 'Light Dmg',
+    AppLanguage.fr: 'Dégâts Lumière'
+  },
+  'void_dmg_label': {AppLanguage.en: 'Void Dmg', AppLanguage.fr: 'Dégâts Vide'},
+  'ice_resist_label': {
+    AppLanguage.en: 'Ice Resist',
+    AppLanguage.fr: 'Résist. Glace'
+  },
+  'light_resist_label': {
+    AppLanguage.en: 'Light Resist',
+    AppLanguage.fr: 'Résist. Lumière'
+  },
+  'void_resist_label': {
+    AppLanguage.en: 'Void Resist',
+    AppLanguage.fr: 'Résist. Vide'
+  },
+  'compare_vs_label': {
+    AppLanguage.en: 'Compared with your',
+    AppLanguage.fr: 'Comparé à votre',
+  },
+  'shop_alignment_locked': {
+    AppLanguage.en: 'Your alignment cannot wear this',
+    AppLanguage.fr: 'Votre alignement ne peut pas porter ceci',
+  },
+  'potion_use_desc': {
+    AppLanguage.en: 'Drink to restore {hp} HP.',
+    AppLanguage.fr: 'Se boit pour rendre {hp} PV.',
+  },
+  'potion_major_use_desc': {
+    AppLanguage.en: 'Two draughts, each restoring {hp} HP.',
+    AppLanguage.fr: 'Deux gorgées, chacune rend {hp} PV.',
+  },
+  'antidote_use_desc': {
+    AppLanguage.en: 'Drink to cure poison and other afflictions.',
+    AppLanguage.fr: 'Se boit pour guérir le poison et les afflictions.',
+  },
+  'charm_use_prefix': {
+    AppLanguage.en: 'Burned at the start of a fight:',
+    AppLanguage.fr: 'Consumé au début d’un combat :',
+  },
+  'tome_stat_point_desc': {
+    AppLanguage.en: 'Read to gain one stat point.',
+    AppLanguage.fr: 'Se lit pour gagner un point de caractéristique.',
+  },
+  'tome_skill_point_desc': {
+    AppLanguage.en: 'Read to gain one skill point.',
+    AppLanguage.fr: 'Se lit pour gagner un point de compétence.',
+  },
+  'loot_use_now_title': {
+    AppLanguage.en: 'Use your spoils now',
+    AppLanguage.fr: 'Utiliser votre butin tout de suite',
+  },
+  'drink_now_button': {AppLanguage.en: 'Drink', AppLanguage.fr: 'Boire'},
+  'loot_undo_button': {AppLanguage.en: 'Undo', AppLanguage.fr: 'Annuler'},
+  'loot_auto_read_note': {
+    AppLanguage.en: 'Read on the spot when you take it.',
+    AppLanguage.fr: 'Lu sur-le-champ quand vous le prenez.',
+  },
+  'loot_cannot_wear_note': {
+    AppLanguage.en: 'You cannot wear this yet; it goes to your pack.',
+    AppLanguage.fr:
+        'Vous ne pouvez pas encore le porter ; il va dans votre sac.',
+  },
+  'loot_equipped_message': {
+    AppLanguage.en: 'You put on',
+    AppLanguage.fr: 'Vous équipez',
+  },
+  'loot_drank_message': {
+    AppLanguage.en: 'You drink a potion from the chest: +{hp} HP.',
+    AppLanguage.fr: 'Vous buvez une potion du coffre : +{hp} PV.',
+  },
+  'loot_potion_kept_message': {
+    AppLanguage.en: 'Leveling up healed you; the potion stays in your pack.',
+    AppLanguage.fr:
+        'La montée de niveau vous a soigné ; la potion reste dans votre sac.',
+  },
+  'face_attack_label': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
+  'face_guard_label': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'face_heal_label': {AppLanguage.en: 'Heal', AppLanguage.fr: 'Soin'},
+  'face_mana_label': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'channeled_face_note': {
+    AppLanguage.en:
+        'Set on a {face} face: works at 70% power, never weaker than the face itself.',
+    AppLanguage.fr:
+        'Posée sur une face {face} : agit à 70 % de sa puissance, jamais moins que la face elle-même.',
+  },
+  'pick_face_skill_title': {
+    AppLanguage.en: 'Choose this face\'s skill',
+    AppLanguage.fr: 'Choisir la compétence de cette face',
+  },
+  'reset_face_button': {
+    AppLanguage.en: 'Back to the face\'s own action',
+    AppLanguage.fr: 'Revenir à l’action de la face',
+  },
+  'face_chance_suffix': {
+    AppLanguage.en: 'of rolls',
+    AppLanguage.fr: 'des jets'
+  },
+  'channeled_face_badge': {
+    AppLanguage.en: 'On a {face} face · 70%',
+    AppLanguage.fr: 'Sur une face {face} · 70 %',
+  },
+  'edit_auto_win_tooltip': {
+    AppLanguage.en: 'Win this fight (edit mode)',
+    AppLanguage.fr: 'Gagner ce combat (mode édition)',
+  },
+  'edit_auto_win_log': {
+    AppLanguage.en: 'Edit mode: the fight is won on the spot.',
+    AppLanguage.fr: 'Mode édition : le combat est gagné sur-le-champ.',
+  },
+  'hub_expeditions_section': {
+    AppLanguage.en: 'Expeditions',
+    AppLanguage.fr: 'Expéditions',
+  },
+  'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'leave_settlement_title': {
+    AppLanguage.en: 'Leave {place}',
+    AppLanguage.fr: 'Quitter {place}',
+  },
+  'leave_settlement_hint': {
+    AppLanguage.en: 'Where the story goes next, when you are ready',
+    AppLanguage.fr: 'La suite de l’histoire, quand vous serez prêt',
+  },
+  'arrival_town_title': {
+    AppLanguage.en: 'You arrive in {place}',
+    AppLanguage.fr: 'Vous arrivez à {place}',
+  },
+  'arrival_town_body': {
+    AppLanguage.en:
+        'This is a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you are ready to move on, open "Leave {place}" at the bottom.',
+    AppLanguage.fr:
+        'Vous êtes en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous serez prêt à repartir, ouvrez « Quitter {place} » en bas.',
+  },
+  'arrival_town_button': {
+    AppLanguage.en: 'Enter the town',
+    AppLanguage.fr: 'Entrer en ville',
+  },
+  'arrival_camp_title': {
+    AppLanguage.en: 'You reach {place}',
+    AppLanguage.fr: 'Vous atteignez {place}',
+  },
+  'arrival_camp_body': {
+    AppLanguage.en:
+        'This is your camp. Rest here, and from now on the Camp page (Play tab) holds your companions, its works, its shops and the expeditions that leave from it.',
+    AppLanguage.fr:
+        'Voici votre camp. Reposez-vous ici ; désormais, la page Camp (onglet Jouer) réunit vos compagnons, ses ouvrages, ses boutiques et les expéditions qui en partent.',
+  },
+  'arrival_camp_button': {
+    AppLanguage.en: 'Make camp',
+    AppLanguage.fr: 'Installer le camp',
+  },
+  'this_item_header': {
+    AppLanguage.en: 'This item',
+    AppLanguage.fr: 'Cet objet'
+  },
+  'slot_empty_label': {
+    AppLanguage.en: 'Nothing worn',
+    AppLanguage.fr: 'Rien de porté'
+  },
+  'slot_empty_compare_note': {
+    AppLanguage.en: 'Nothing worn in this slot yet',
+    AppLanguage.fr: "Rien n'est porté à cet emplacement",
+  },
+  'shop_details_hint': {
+    AppLanguage.en: 'Tap or hold an item for its full stats.',
+    AppLanguage.fr: 'Touchez ou maintenez un objet pour voir tous ses effets.',
+  },
   'element_label': {AppLanguage.en: 'Element', AppLanguage.fr: 'Élément'},
   'damage_mod_label': {
     AppLanguage.en: 'Damage Mod',
@@ -1369,14 +1538,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Vous ne possédez encore aucun dé — achetez-en ou trouvez-en un.",
   },
   'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
-  'skill_faces_title': {
-    AppLanguage.en: 'Skill Faces',
-    AppLanguage.fr: 'Faces de compétence'
-  },
+  'skill_faces_title': {AppLanguage.en: 'Faces', AppLanguage.fr: 'Faces'},
   'drag_skill_hint': {
-    AppLanguage.en: 'Drag a skill below onto a face to bind it for combat.',
+    AppLanguage.en:
+        'Each face casts the skill it shows. Tap an open face (pencil) to choose its skill, or drag a skill below onto it. Locked faces are the die\'s own signature.',
     AppLanguage.fr:
-        'Faites glisser une compétence ci-dessous sur une face pour la lier au combat.',
+        'Chaque face lance la compétence affichée. Touchez une face ouverte (crayon) pour choisir sa compétence, ou glissez-y une compétence ci-dessous. Les faces verrouillées sont la signature du dé.',
   },
   'no_skill_faces': {
     AppLanguage.en: 'This die has no Skill faces to customize.',
@@ -1525,8 +1692,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Place du village'
   },
   'town_hub_locked_subtitle': {
-    AppLanguage.en: 'Reach Chapter 2 to unlock',
-    AppLanguage.fr: 'Atteignez le chapitre 2 pour débloquer',
+    AppLanguage.en: 'Open only while the story is in a town',
+    AppLanguage.fr: 'Ouvert seulement quand le récit est en ville',
   },
   'camp_locked_subtitle': {
     AppLanguage.en: 'Reach Chapter 3 to unlock',

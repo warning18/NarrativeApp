@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
+import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -26,7 +27,7 @@ import 'character_screen.dart';
 import 'fight_screen.dart';
 import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
-import 'town_hub_screen.dart';
+import 'port_screen.dart';
 
 class PlayScreen extends ConsumerWidget {
   const PlayScreen({super.key});
@@ -45,7 +46,14 @@ class PlayScreen extends ConsumerWidget {
     final achievementsCount =
         ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
 
-    final townHubUnlocked = chapterOfNode(playState.currentNodeId) >= 2;
+    // The town is a place in the story: its page opens only while the
+    // story stands in it (the town's own node or one of its scenes).
+    final story = ref.watch(storyDataProvider).value;
+    final townNode =
+        story == null ? null : settlementNodeAt(playState.currentNodeId, story);
+    final town = townNode?.settlement;
+    final townPortId = town != null && !town.isCamp ? town.portId : null;
+    final townHubUnlocked = townPortId != null;
     final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
     final boatUnlocked = campUnlocked;
     final ports = ref.watch(gameDbProvider(portsSchema)).value ??
@@ -289,7 +297,10 @@ class PlayScreen extends ConsumerWidget {
           child: ListTile(
             leading: Icon(
                 townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
-            title: Text(tr(ref, 'town_hub_title')),
+            title: Text(townHubUnlocked
+                ? town!
+                    .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)
+                : tr(ref, 'town_hub_title')),
             subtitle: Text(
               townHubUnlocked
                   ? '${session.completedZoneIds.length} '
@@ -301,7 +312,8 @@ class PlayScreen extends ConsumerWidget {
                 ? null
                 : () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const TownHubScreen()),
+                      MaterialPageRoute(
+                          builder: (_) => PortScreen(portId: townPortId)),
                     );
                   },
           ),

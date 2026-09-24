@@ -8,6 +8,61 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.130.0+159]
+
+Shops, loot and dice say what things do before you commit to them, the
+wharf reads as a town, and edit mode can skip a fight.
+
+### Added
+- **Stats on every shop row.** Each item shows its stats as chips, with a
+  green or red difference against what you wear in the same slot, plus
+  what it scales with, its unique effect, its alignment and any
+  requirement you miss. Potions, charms and tomes say what they do.
+- **A full look at any item.** Tap or hold an item in a shop to open a
+  sheet: every stat beside the item you wear in that slot, the
+  difference, its set, requirement and effect, with a Buy button. Dice in
+  shops are listed by name with all their faces.
+- **Use your spoils now.** Once the chest's items are revealed, gear you
+  can wear gets an Equip toggle and a healing potion a Drink toggle; each
+  row compares the drop with what you wear, and tapping it opens the full
+  sheet. Picked gear is put on and potions drunk as soon as the loot is
+  granted. If leveling up already healed you, the potion stays in your
+  pack.
+- **Six new dice.** Gambler's (big swings), Frost (Ice guard and a
+  stunning grip), Twinfang (two quick fangs and poison), Bulwark (heavy
+  guard and a shield bash), Pilgrim's (Light heals and a radiant
+  judgment) and Tempest (Electricity and mana). They are sold at the
+  beggar's stall, the docks black market, the Hammersmith, the
+  Sharpweave Den, the Last Lantern and the Academy.
+- **Arriving in town or camp.** Reaching Smugglers' Wharf, the Ashen
+  Quarter or the camp from elsewhere in the story shows a pop-up that
+  says where you are and how the place works. Story nodes can now carry
+  a `settlement` (town or camp, name, optional port).
+- **Win a fight in edit mode.** A trophy button in the fight's top bar
+  drops every enemy and wins the fight with its rewards and chest.
+
+### Changed
+- **A face is the skill it carries.** Die faces no longer show the die's
+  fixed flavor name above the skill: each face is named after its skill,
+  or its basic action (Attack, Guard, Heal, Mana). The same names appear
+  in the fight tray, the face sheet, the combat log, the skills tab and
+  the dice loadout.
+- **Attack, Guard and Heal faces take skills.** Every basic face is now
+  open: tap it (or drag a skill onto it) to choose its skill. A skill on
+  a basic face works at 70% power and never weaker than the face itself;
+  a skill face casts at full power. A die's own signature faces stay
+  locked, and whoever holds a die can cast its signature skills even
+  without having unlocked them, so a bought die's faces no longer fizzle.
+  The loadout shows each face's chance to come up.
+- **Hubs read as places.** On a hub, the things to do there come first
+  (boutiques, expeditions, people, challenges) and the choices that move
+  the story on come last. In a town the way onward is folded under
+  "Leave <town>". The wharf lists the port's own shops and expeditions
+  beside the story's.
+- **The Town page opens only in town.** The Play tab's Town card opens
+  while the story stands in a town with a port, and says so otherwise;
+  expeditions are offered in towns and at the camp.
+
 ## [1.129.0+158]
 
 Fights draw their effects on screen: every skill and spell plays its own

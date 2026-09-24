@@ -100,6 +100,7 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       flagCallbacks: widget.node.flagCallbacks,
       personaVariants: widget.node.personaVariants,
       hubProgress: widget.node.hubProgress,
+      settlement: widget.node.settlement,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;

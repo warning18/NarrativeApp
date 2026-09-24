@@ -1027,5 +1027,335 @@
       }
     ],
     "cost": 115
+  },
+  "gambler_die": {
+    "diceName": "gambler_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Long Shot",
+        "type": "Attack",
+        "value": 11,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Scrape",
+        "type": "Attack",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Lucky Strike",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "lucky_strike",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Wild Card",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Pocket Flask",
+        "type": "Heal",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "None"
+      },
+      {
+        "faceName": "Second Thought",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ],
+    "cost": 85
+  },
+  "frost_die": {
+    "diceName": "frost_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Rime Cut",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Ice"
+      },
+      {
+        "faceName": "Hoarfrost Guard",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Ice"
+      },
+      {
+        "faceName": "Frigid Grip",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "frigid_grip",
+        "weight": 0.5,
+        "element": "Ice"
+      },
+      {
+        "faceName": "Cold Clarity",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Meltwater",
+        "type": "Heal",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "Water"
+      },
+      {
+        "faceName": "Frozen Technique",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "None"
+      }
+    ],
+    "cost": 115
+  },
+  "twinfang_die": {
+    "diceName": "twinfang_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Left Fang",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Right Fang",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Poison Blade",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "rogue_poison_blade",
+        "weight": 0.5,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Open Guard",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Sidestep",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Precision Thrust",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "precision_thrust",
+        "weight": 0.4,
+        "element": "None"
+      }
+    ],
+    "cost": 105
+  },
+  "bulwark_die": {
+    "diceName": "bulwark_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Tower Shield",
+        "type": "Defend",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Stone Footing",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Bulwark Stance",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "bulwark_stance",
+        "weight": 0.5,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Rim Strike",
+        "type": "Attack",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "None"
+      },
+      {
+        "faceName": "Shield Bash",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "warrior_shield_bash",
+        "weight": 0.4,
+        "element": "None"
+      },
+      {
+        "faceName": "Rest Behind Steel",
+        "type": "Heal",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ],
+    "cost": 100
+  },
+  "pilgrim_die": {
+    "diceName": "pilgrim_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Road Blessing",
+        "type": "Heal",
+        "value": 10,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Light"
+      },
+      {
+        "faceName": "Vigil",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "None"
+      },
+      {
+        "faceName": "Staff of the Road",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Light"
+      },
+      {
+        "faceName": "Radiant Judgment",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "radiant_judgment",
+        "weight": 0.3,
+        "element": "Light"
+      },
+      {
+        "faceName": "Mending Touch",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "mending_touch",
+        "weight": 0.5,
+        "element": "Water"
+      },
+      {
+        "faceName": "Travel Cloak",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 0.8,
+        "element": "None"
+      }
+    ],
+    "cost": 95
+  },
+  "tempest_die": {
+    "diceName": "tempest_die",
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Arc Lash",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Electricity"
+      },
+      {
+        "faceName": "Adrenaline Surge",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "adrenaline_surge",
+        "weight": 0.5,
+        "element": "Electricity"
+      },
+      {
+        "faceName": "Storm Channel",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "Electricity"
+      },
+      {
+        "faceName": "Charged Air",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Gale Step",
+        "type": "Defend",
+        "value": 4,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Wind"
+      },
+      {
+        "faceName": "Steady Aim",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "steady_aim",
+        "weight": 0.4,
+        "element": "Wind"
+      }
+    ],
+    "cost": 125
   }
 }

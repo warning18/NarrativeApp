@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/dice_faces.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
@@ -182,12 +183,8 @@ Future<bool> _simulateFight({
   // stat combination stalemating the loop.
   for (var turn = 0; turn < 60; turn++) {
     var face = rollDie(diceFaces, random);
-    if (face.type == 'Skill') {
-      final assigned = assignments[face.faceIndex.toString()];
-      if (assigned != null && assigned.isNotEmpty) {
-        face = face.withLinkedSkillID(assigned);
-      }
-    }
+    face = applyFaceAssignment(face, diceFaces[face.faceIndex],
+        assignments[face.faceIndex.toString()]);
     final result = resolvePlayerFace(face, skills, playerDamage);
     enemyHealth = max(0, enemyHealth - result.damageDealt);
     playerHealth = min(session.maxHealth, playerHealth + result.healingDone);

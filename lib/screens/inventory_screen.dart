@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../combat/dice_faces.dart';
 import '../combat/gear_effects.dart';
 import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
@@ -166,6 +167,18 @@ List<CompareRow> itemCompareRows(
         valueA: v(a, 'elecDmgBonus'),
         valueB: v(b, 'elecDmgBonus')),
     CompareRow(
+        label: 'Ice Dmg',
+        valueA: v(a, 'iceDmgBonus'),
+        valueB: v(b, 'iceDmgBonus')),
+    CompareRow(
+        label: 'Light Dmg',
+        valueA: v(a, 'lightDmgBonus'),
+        valueB: v(b, 'lightDmgBonus')),
+    CompareRow(
+        label: 'Void Dmg',
+        valueA: v(a, 'voidDmgBonus'),
+        valueB: v(b, 'voidDmgBonus')),
+    CompareRow(
         label: 'Fire Resist',
         valueA: v(a, 'fireResist'),
         valueB: v(b, 'fireResist')),
@@ -185,6 +198,18 @@ List<CompareRow> itemCompareRows(
         label: 'Elec Resist',
         valueA: v(a, 'elecResist'),
         valueB: v(b, 'elecResist')),
+    CompareRow(
+        label: 'Ice Resist',
+        valueA: v(a, 'iceResist'),
+        valueB: v(b, 'iceResist')),
+    CompareRow(
+        label: 'Light Resist',
+        valueA: v(a, 'lightResist'),
+        valueB: v(b, 'lightResist')),
+    CompareRow(
+        label: 'Void Resist',
+        valueA: v(a, 'voidResist'),
+        valueB: v(b, 'voidResist')),
     CompareRow(
       label: 'Cost',
       valueA: v(a, 'cost'),
@@ -471,8 +496,9 @@ class _InventoryBody extends ConsumerWidget {
                 : 0;
             return ListTile(
               leading: const Icon(Icons.casino),
-              title: Text(id),
-              subtitle: Text('$faceCount $facesLabel'),
+              title: Text(dieDisplayName(id)),
+              subtitle: Text(
+                  '$faceCount $facesLabel · ${dieFacesSummary(dice[id] as Map<String, dynamic>?, ref.read(appLanguageProvider))}'),
               trailing:
                   id == currentlyEquippedId ? const Icon(Icons.check) : null,
               onTap: () {

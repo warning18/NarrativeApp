@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../combat/combat_engine.dart';
+import '../combat/dice_faces.dart';
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -568,12 +569,8 @@ SimFightOutcome simulateSimFight({
         rolls++;
         face = rollDie(c.diceFaces, random);
       } while (face.type == 'Empty' && rolls < _maxRolls);
-      if (face.type == 'Skill') {
-        final assigned = c.diceSkillAssignments[face.faceIndex.toString()];
-        if (assigned != null && assigned.isNotEmpty) {
-          face = face.withLinkedSkillID(assigned);
-        }
-      }
+      face = applyFaceAssignment(face, c.diceFaces[face.faceIndex],
+          c.diceSkillAssignments[face.faceIndex.toString()]);
       final skillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
       var element = face.element;

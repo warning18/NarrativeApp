@@ -13,7 +13,9 @@
       "Potion",
       "Weapon"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "gambler_die"
+    ],
     "stockQuantities": {
       "potion_minor": 4,
       "sword_001": 1
@@ -39,7 +41,8 @@
       "Spellbook"
     ],
     "diceStock": [
-      "storm_die"
+      "storm_die",
+      "frost_die"
     ],
     "stockQuantities": {
       "void_banner": 1,
@@ -259,7 +262,9 @@
     "merchantSpecialties": [
       "Weapon"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "bulwark_die"
+    ],
     "stockQuantities": {
       "sword_t6": 1,
       "sword_t7": 1,
@@ -298,7 +303,8 @@
       "Spellbook"
     ],
     "diceStock": [
-      "sage_die"
+      "sage_die",
+      "tempest_die"
     ],
     "stockQuantities": {
       "staff_t6": 1,
@@ -325,7 +331,9 @@
     "merchantSpecialties": [
       "Weapon"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "twinfang_die"
+    ],
     "stockQuantities": {
       "dagger_t6": 1,
       "dagger_t7": 1,
@@ -388,7 +396,9 @@
       "Artifact",
       "Spellbook"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "pilgrim_die"
+    ],
     "stockQuantities": {
       "potion_major": 6,
       "charm_lucky_coin": 2,

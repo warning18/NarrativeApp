@@ -7,6 +7,7 @@ import '../combat/battlefield_condition.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
+import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/gear_effects.dart';
@@ -16,6 +17,7 @@ import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../combat/skill_vfx.dart';
 import '../widgets/combat_vfx.dart';
+import '../widgets/item_stats.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -23,6 +25,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/aftermath_provider.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -36,7 +39,7 @@ import '../widgets/level_up_dialog.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 
-const int _potionHealAmount = 30;
+const int _potionHealAmount = potionHealAmount;
 
 /// A knocked-out ally is revived at this fraction of their (live-derived)
 /// max health after a won fight — see [_FightScreenState._finishFight].
@@ -919,6 +922,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     Map<String, dynamic> items,
     Map<String, ItemSet> itemSets,
     Map<String, dynamic> houses,
+    Map<String, dynamic> dice,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -948,7 +952,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
           ? session.currentHealth
           : session.maxHealth),
       equippedItemIds: session.equippedItemIds,
-      unlockedSkillIds: session.unlockedSkillIds,
+      unlockedSkillIds: [
+        ...session.unlockedSkillIds,
+        ...dieSignatureSkillIds(
+            dice[_selectedDiceId ?? ''] as Map<String, dynamic>?),
+      ],
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
       skillTiers: session.skillTiers,
@@ -995,7 +1003,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
             .scaleCurrentHealth(allyState.currentHealth)
             .clamp(0, liveMaxHealth),
         equippedItemIds: allyState.equippedItemIds,
-        unlockedSkillIds: allyState.unlockedSkillIds,
+        unlockedSkillIds: [
+          ...allyState.unlockedSkillIds,
+          ...dieSignatureSkillIds(
+              dice[companion['signatureDiceId']?.toString() ?? '']
+                  as Map<String, dynamic>?),
+        ],
         diceSkillAssignments: allyState.diceSkillAssignments,
         equippedDiceId: companion['signatureDiceId']?.toString(),
         strength: base.strength,
@@ -1359,14 +1372,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
               const [];
       if (faces.isEmpty) continue;
 
-      var face = rollDie(faces, _random);
-      if (face.type == 'Skill') {
-        final assigned = actor.diceSkillAssignments[face.faceIndex.toString()];
-        if (assigned != null && assigned.isNotEmpty) {
-          face = face.withLinkedSkillID(assigned);
-        }
-      }
-      rolled[actor.id] = face;
+      final rawRoll = rollDie(faces, _random);
+      rolled[actor.id] = applyFaceAssignment(
+        rawRoll,
+        faces[rawRoll.faceIndex],
+        actor.diceSkillAssignments[rawRoll.faceIndex.toString()],
+        language: ref.read(appLanguageProvider),
+      );
     }
     if (rolled.isEmpty) return;
 
@@ -2439,7 +2451,28 @@ class _FightScreenState extends ConsumerState<FightScreen>
     });
   }
 
+  /// Edit mode's shortcut: every enemy drops and the fight is won as if
+  /// played out, with its rewards, chest and aftermath.
+  void _autoWin(Map<String, dynamic> skills, Map<String, dynamic> items) {
+    if (_over) return;
+    if (!_started) _startFight(skills, items);
+    setState(() {
+      for (final enemy in _enemies) {
+        enemy.currentHealth = 0;
+      }
+      _currentFaces.clear();
+      _awaitingDecision = false;
+      _log.add(_LogEntry(
+          trFor(ref.read(appLanguageProvider), 'edit_auto_win_log'),
+          _LogKind.info));
+    });
+    _finishFight(won: true);
+  }
+
   Future<void> _finishFight({required bool won}) async {
+    // A round still settling when the fight already ended (edit mode's
+    // auto-win) must not settle it a second time.
+    if (_over) return;
     setState(() {
       _over = true;
       _won = won;
@@ -2571,17 +2604,36 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final chestBanter =
           chest.isBigChest ? _rollBanter(kind: _BanterKind.chest) : null;
       if (!mounted) return;
-      await showSpoilsChestDialog(
+      final spoils = await showSpoilsChestDialog(
         context,
         result: chest,
         items: items,
         autoOpen: ref.read(chestAutoOpenProvider),
         language: lang,
+        equippedItemIds: session.equippedItemIds,
+        canEquip: (itemId) {
+          final item = items[itemId] as Map<String, dynamic>?;
+          return meetsItemStatRequirement(
+                item,
+                strength: session.strength,
+                dexterity: session.dexterity,
+                constitution: session.constitution,
+                intelligence: session.intelligence,
+              ) &&
+              meetsItemAlignment(item, session.alignmentLabel);
+        },
+        currentHealth: player.currentHealth,
+        maxHealth: player.maxHealth,
       );
       if (!mounted) return;
 
+      // A potion drunk from the chest heals before the health is saved;
+      // its charge is spent below, once the loot has been granted.
+      final drinks = spoils.drinkItemIds.length;
+      final hpAfterSpoils = min(
+          player.maxHealth, player.currentHealth + drinks * potionHealAmount);
       final leveledUp = await notifier.applyCombatResult(
-        hpAfter: player.currentHealth,
+        hpAfter: hpAfterSpoils,
         enemyIds: defeated.map((e) => e.enemyId).toList(),
         goldGain: goldGain,
         xpGain: xpGain,
@@ -2609,6 +2661,28 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final newlyUnlockedAchievement = anyAllyRevived
           ? await notifier.unlockAchievement('ally_revival')
           : false;
+      // What the player chose in the chest: put gear on straight away and
+      // drink potions (a level-up already healed fully, so a potion picked
+      // then is kept instead of wasted).
+      final spoilsLog = <String>[];
+      for (final itemId in spoils.equipItemIds) {
+        final item = items[itemId] as Map<String, dynamic>?;
+        await notifier.equipItem(itemId,
+            slot: item?['equipSlot']?.toString(), items: items);
+        spoilsLog.add('${trFor(lang, 'loot_equipped_message')} '
+            '${item?['itemName']?.toString() ?? itemId}.');
+      }
+      if (drinks > 0) {
+        if (leveledUp) {
+          spoilsLog.add(trFor(lang, 'loot_potion_kept_message'));
+        } else {
+          for (var i = 0; i < drinks; i++) {
+            await notifier.consumePotion();
+          }
+          spoilsLog.add(trFor(lang, 'loot_drank_message')
+              .replaceAll('{hp}', '${hpAfterSpoils - player.currentHealth}'));
+        }
+      }
       if (!mounted) return;
       final lootNames = [
         for (final id in loot)
@@ -2629,6 +2703,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
           _LogKind.victory,
         ));
         if (chestBanter != null) _log.add(chestBanter);
+        for (final line in spoilsLog) {
+          _log.add(_LogEntry(line, _LogKind.victory));
+        }
         if (newlyUnlockedAchievement) {
           _log.add(
             _LogEntry(
@@ -2725,12 +2802,21 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
     _itemSets = parseItemSets(itemSetsDb);
     _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses);
+        items, _itemSets, houses, dice);
     _spells = parseSpells(spellsDb);
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+        actions: [
+          // Edit mode only: skip a fight while testing the story.
+          if (ref.watch(appModeProvider) == AppMode.edit && !_over)
+            IconButton(
+              icon: const Icon(Icons.emoji_events_outlined),
+              tooltip: tr(ref, 'edit_auto_win_tooltip'),
+              onPressed: _rolling ? null : () => _autoWin(skills, items),
+            ),
+        ],
       ),
       body: !_started
           ? _buildSetup(dice, skills, items, session)
@@ -2922,7 +3008,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
             Card(
               child: ListTile(
                 leading: const Icon(Icons.casino),
-                title: Text(_selectedDiceId!),
+                title: Text(dieDisplayName(_selectedDiceId!)),
                 subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
               ),
             ),
@@ -3512,7 +3598,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
                             style: theme.textTheme.titleMedium,
                           ),
                           Text(
-                            '${actor.displayName} · ${dieId ?? ''}',
+                            '${actor.displayName} · ${dieDisplayName(dieId ?? '')}',
                             style: theme.textTheme.bodySmall
                                 ?.copyWith(color: accent),
                           ),
@@ -3535,7 +3621,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
                 if (face.type == 'Skill') ...[
                   const SizedBox(height: 4),
                   Text(
-                    '${trFor(lang, 'skill_label')}: ${_effectiveSkillId(face)}',
+                    face.isChanneled
+                        ? trFor(lang, 'channeled_face_note').replaceAll(
+                            '{face}',
+                            trFor(lang, basicFaceLabelKey(face.channeledFrom)))
+                        : '${trFor(lang, 'skill_label')}: '
+                            '${skillDisplayName(_effectiveSkillId(face))}',
                     style: theme.textTheme.bodySmall
                         ?.copyWith(fontStyle: FontStyle.italic),
                   ),
@@ -3586,20 +3677,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _PartyMember actor,
     BuildContext sheetContext,
   ) {
-    var face = DiceFaceResult(
-      faceIndex: index,
-      faceName: raw['faceName']?.toString() ?? '',
-      type: raw['type']?.toString() ?? 'Empty',
-      value: (raw['value'] as num?)?.toInt() ?? 0,
-      linkedSkillID: raw['linkedSkillID']?.toString() ?? '',
-      element: raw['element']?.toString() ?? 'None',
+    final face = applyFaceAssignment(
+      DiceFaceResult(
+        faceIndex: index,
+        faceName: '',
+        type: raw['type']?.toString() ?? 'Empty',
+        value: (raw['value'] as num?)?.toInt() ?? 0,
+        linkedSkillID: raw['linkedSkillID']?.toString() ?? '',
+        element: raw['element']?.toString() ?? 'None',
+      ),
+      raw,
+      actor.diceSkillAssignments[index.toString()],
+      language: ref.read(appLanguageProvider),
     );
-    if (face.type == 'Skill') {
-      final assigned = actor.diceSkillAssignments[index.toString()];
-      if (assigned != null && assigned.isNotEmpty) {
-        face = face.withLinkedSkillID(assigned);
-      }
-    }
     final colorScheme = Theme.of(sheetContext).colorScheme;
     return SizedBox(
       width: 60,

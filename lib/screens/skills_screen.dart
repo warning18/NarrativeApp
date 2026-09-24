@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../gamedata/db_schema.dart';
@@ -612,7 +613,7 @@ class _SkillList extends ConsumerWidget {
                 : null,
             child: ListTile(
               leading: SkillPixelIcon(id),
-              title: Text(id),
+              title: Text(skillDisplayName(id)),
               subtitle: Text(subtitleParts.join(' · ')),
               isThreeLine: description.isNotEmpty,
               trailing: trailing,

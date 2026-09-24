@@ -313,6 +313,7 @@ class StoryNode {
     this.hubProgress,
     this.contextNote,
     this.contextNoteFr,
+    this.settlement,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -344,6 +345,7 @@ class StoryNode {
       flagCallbacks: _parseCallbacks(json['flag_callbacks']),
       personaVariants: _parseLines(json['persona_variants']),
       hubProgress: HubProgress.fromJson(json['hub_progress']),
+      settlement: Settlement.fromJson(json['settlement']),
     );
   }
 
@@ -476,6 +478,11 @@ class StoryNode {
   /// activities get done (see [HubProgress]).
   final HubProgress? hubProgress;
 
+  /// Set on the story's town and camp nodes: the player arrives there
+  /// (a pop-up says so), its shops and expeditions are listed as the
+  /// place's own services, and the Town page is open only while there.
+  final Settlement? settlement;
+
   /// Why a generated scene is happening, shown in the detour's context
   /// card above its text: a hunter's reason for coming, the job a stranger
   /// offers. Never authored in the story file (and never written back to
@@ -579,6 +586,7 @@ class StoryNode {
               entry.key: entry.value.toJson(),
           },
         if (hubProgress != null) 'hub_progress': hubProgress!.toJson(),
+        if (settlement != null) 'settlement': settlement!.toJson(),
         'choices': choices.map((c) => c.toJson()).toList(),
       };
 }
@@ -621,6 +629,50 @@ class FlagCallback {
 /// A hub's what-has-changed line: counts the player's flags starting with
 /// [prefix] (the hub's own `hub_<id>_` activity markers) and shows the
 /// line with the highest `after` threshold that count has reached.
+/// A town or camp in the story (see [StoryNode.settlement]).
+class Settlement {
+  const Settlement({
+    required this.kind,
+    required this.name,
+    this.nameFr,
+    this.portId,
+  });
+
+  /// 'town' or 'camp'.
+  final String kind;
+  final String name;
+  final String? nameFr;
+
+  /// The ports.json row whose shops and expeditions this place offers, if
+  /// any.
+  final String? portId;
+
+  bool get isCamp => kind == 'camp';
+
+  String nameFor(bool french) =>
+      french && (nameFr?.isNotEmpty ?? false) ? nameFr! : name;
+
+  static Settlement? fromJson(Object? raw) {
+    if (raw is! Map) return null;
+    final name = raw['name']?.toString() ?? '';
+    if (name.isEmpty) return null;
+    final portId = raw['portId']?.toString() ?? '';
+    return Settlement(
+      kind: raw['kind']?.toString() == 'camp' ? 'camp' : 'town',
+      name: name,
+      nameFr: raw['name_fr']?.toString(),
+      portId: portId.isEmpty ? null : portId,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'kind': kind,
+        'name': name,
+        if (nameFr != null && nameFr!.isNotEmpty) 'name_fr': nameFr,
+        if (portId != null) 'portId': portId,
+      };
+}
+
 class HubProgress {
   const HubProgress({required this.prefix, required this.lines});
 

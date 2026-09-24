@@ -1627,6 +1627,12 @@
         "en": "A pickpocket tried me near the bazaar, found nothing, and got a professional nod for the attempt.",
         "fr": "Un pickpocket s'essaya sur moi près du bazar, ne trouva rien, et reçut un signe de tête professionnel pour la tentative."
       }
+    },
+    "settlement": {
+      "kind": "town",
+      "name": "Smugglers' Wharf",
+      "name_fr": "Le Quai des Contrebandiers",
+      "portId": "port_smugglers_wharf"
     }
   },
   "2015_bazaar": {
@@ -2450,6 +2456,11 @@
         "en": "The ash did not settle on me the way it settled on everyone else. I had stopped pretending not to notice.",
         "fr": "La cendre ne se posait pas sur moi comme elle se posait sur les autres. J'avais cessé de faire semblant de ne pas le remarquer."
       }
+    },
+    "settlement": {
+      "kind": "town",
+      "name": "The Ashen Quarter",
+      "name_fr": "Le Quartier des Cendres"
     }
   },
   "3005_oath": {
@@ -3912,7 +3923,12 @@
           "sailed_alone"
         ]
       }
-    ]
+    ],
+    "settlement": {
+      "kind": "camp",
+      "name": "The Camp",
+      "name_fr": "Le Camp"
+    }
   },
   "5010": {
     "id": "5010",

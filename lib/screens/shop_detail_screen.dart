@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/gear_effects.dart';
+import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/item_stats.dart';
+import 'inventory_screen.dart' show requirementSummary;
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -39,6 +44,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     final professions = professionsAsync.value ?? const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
+    final itemSets =
+        parseItemSets(ref.watch(gameDbProvider(itemSetsSchema)).value ?? {});
     final stock = (widget.shop['initialStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -197,6 +204,17 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             ),
                           ),
                         ],
+                        const SizedBox(height: 6),
+                        Text(
+                          tr(ref, 'shop_details_hint'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
+                        ),
                         const Divider(height: 20),
                       ],
                     ),
@@ -257,50 +275,189 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                         final priceLine = soldOut
                             ? tr(ref, 'sold_out_label')
                             : '$cost ${tr(ref, 'gold_label')} · $remaining ${tr(ref, 'left_suffix')}';
-                        return Card(
-                          child: ListTile(
-                            leading: ItemPixelIcon(itemId, itemType),
-                            title: Text(itemName),
-                            subtitle: Text(
-                              spellNote == null
-                                  ? priceLine
-                                  : '$priceLine\n$spellNote',
-                            ),
-                            isThreeLine: spellNote != null,
-                            trailing: ElevatedButton(
-                              onPressed: (!canAfford || soldOut || spellLocked)
+                        // What the player wears in this item's slot, so the
+                        // row can show at a glance whether it is an upgrade.
+                        final wornId = equippedCounterpart(
+                            itemId, item, session.equippedItemIds, items);
+                        final worn = wornId == null
+                            ? null
+                            : items[wornId] as Map<String, dynamic>?;
+                        final wornName =
+                            worn?['itemName']?.toString() ?? wornId;
+                        final meetsStats = meetsItemStatRequirement(
+                          item,
+                          strength: session.strength,
+                          dexterity: session.dexterity,
+                          constitution: session.constitution,
+                          intelligence: session.intelligence,
+                        );
+                        final meetsAlignment =
+                            meetsItemAlignment(item, session.alignmentLabel);
+                        final canWear = isEquippable &&
+                            (equipSlot ?? '').isNotEmpty &&
+                            meetsStats &&
+                            meetsAlignment;
+                        final unmetRequirement =
+                            meetsStats ? null : requirementSummary(item, lang);
+                        final wearing =
+                            session.equippedItemIds.contains(itemId);
+                        final set = setForItem(itemId, item, itemSets);
+                        final canBuy = canAfford && !soldOut && !spellLocked;
+
+                        Future<void> buy() async {
+                          await ref
+                              .read(playerSessionProvider.notifier)
+                              .buyItem(widget.shopId, itemId, cost, stockLimit,
+                                  item: item);
+                          if (!context.mounted) return;
+                          showImmersiveNotice(
+                            context,
+                            icon: spell != null
+                                ? Icons.auto_stories
+                                : Icons.shopping_bag_outlined,
+                            message: spell != null
+                                ? '${trFor(lang, 'spell_learned_prefix')} '
+                                    '${spell.nameFor(lang)}'
+                                : '${trFor(lang, 'bought_prefix')} $itemName '
+                                    '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                            actionLabel:
+                                canWear ? trFor(lang, 'equip_button') : null,
+                            onAction: canWear
+                                ? () => ref
+                                    .read(playerSessionProvider.notifier)
+                                    .equipItem(itemId,
+                                        slot: equipSlot, items: items)
+                                : null,
+                          );
+                        }
+
+                        final description =
+                            item?['description']?.toString() ?? '';
+                        final useNote = consumableNote(itemId, item, lang);
+                        final extraNote = [
+                          if (description.isNotEmpty) description,
+                          if (useNote != null) useNote,
+                          if (spellNote != null) spellNote,
+                          if (!meetsAlignment)
+                            trFor(lang, 'shop_alignment_locked'),
+                        ];
+                        void openDetails() => showItemDetailsSheet(
+                              context,
+                              itemId: itemId,
+                              item: item,
+                              language: lang,
+                              equipped: worn,
+                              equippedName: wornName,
+                              priceLine: priceLine,
+                              unmetRequirement: unmetRequirement,
+                              setLine: set == null
                                   ? null
-                                  : () async {
-                                      await ref
-                                          .read(playerSessionProvider.notifier)
-                                          .buyItem(widget.shopId, itemId, cost,
-                                              stockLimit,
-                                              item: item);
-                                      if (!context.mounted) return;
-                                      showImmersiveNotice(
-                                        context,
-                                        icon: spell != null
-                                            ? Icons.auto_stories
-                                            : Icons.shopping_bag_outlined,
-                                        message: spell != null
-                                            ? '${trFor(lang, 'spell_learned_prefix')} '
-                                                '${spell.nameFor(lang)}'
-                                            : '${trFor(lang, 'bought_prefix')} $itemName '
-                                                '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
-                                        actionLabel: isEquippable
-                                            ? trFor(lang, 'equip_button')
-                                            : null,
-                                        onAction: isEquippable
-                                            ? () => ref
-                                                .read(playerSessionProvider
-                                                    .notifier)
-                                                .equipItem(itemId,
-                                                    slot: equipSlot,
-                                                    items: items)
-                                            : null,
-                                      );
-                                    },
-                              child: Text(tr(ref, 'buy_button')),
+                                  : '${trFor(lang, 'set_label')}: '
+                                      '${set.nameFor(lang)}',
+                              extraNote: extraNote.isEmpty
+                                  ? null
+                                  : extraNote.join('\n'),
+                              actionLabel: trFor(lang, 'buy_button'),
+                              onAction: canBuy ? buy : null,
+                            );
+
+                        final theme = Theme.of(context);
+                        final notes = [
+                          if (useNote != null) useNote,
+                          ...itemTraitNotes(item, lang,
+                              unmetRequirement: unmetRequirement),
+                        ];
+                        return Card(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: openDetails,
+                            onLongPress: openDetails,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: ItemPixelIcon(itemId, itemType),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(itemName,
+                                                  style: theme
+                                                      .textTheme.titleSmall),
+                                            ),
+                                            if (wearing) ...[
+                                              const SizedBox(width: 6),
+                                              Icon(Icons.check_circle,
+                                                  size: 14,
+                                                  color: Colors.green.shade600),
+                                            ],
+                                          ],
+                                        ),
+                                        Text(
+                                          [
+                                            if (itemType != null) itemType,
+                                            if ((equipSlot ?? '').isNotEmpty)
+                                              equipSlot,
+                                            priceLine,
+                                          ].join(' · '),
+                                          style: theme.textTheme.bodySmall,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        ItemStatChips(
+                                          item: item,
+                                          equipped: worn,
+                                          equippedName: wornName,
+                                          language: lang,
+                                        ),
+                                        for (final note in notes)
+                                          Text(
+                                            note,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                              color: note.startsWith(trFor(lang,
+                                                      'stat_requirement_label'))
+                                                  ? theme.colorScheme.error
+                                                  : theme.colorScheme
+                                                      .onSurfaceVariant,
+                                            ),
+                                          ),
+                                        if (!meetsAlignment)
+                                          Text(
+                                            trFor(
+                                                lang, 'shop_alignment_locked'),
+                                            style: theme.textTheme.labelSmall
+                                                ?.copyWith(
+                                                    color: theme
+                                                        .colorScheme.error),
+                                          ),
+                                        if (spellNote != null)
+                                          Text(
+                                            spellNote,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: theme.textTheme.labelSmall,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ElevatedButton(
+                                    onPressed: canBuy ? buy : null,
+                                    child: Text(tr(ref, 'buy_button')),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -318,12 +475,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           return Card(
                             child: ListTile(
                               leading: const Icon(Icons.casino),
-                              title: Text(diceId),
+                              title: Text(dieDisplayName(diceId)),
                               subtitle: Text(
-                                owned
-                                    ? tr(ref, 'owned_label')
-                                    : '$cost ${tr(ref, 'gold_label')}',
+                                '${owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}'}\n'
+                                '${dieFacesSummary(die, lang)}',
                               ),
+                              isThreeLine: true,
                               trailing: owned
                                   ? const Icon(Icons.check_circle,
                                       color: Colors.green)
@@ -340,7 +497,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                 context,
                                                 icon: Icons.casino,
                                                 message:
-                                                    '${trFor(lang, 'bought_prefix')} $diceId '
+                                                    '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId)} '
                                                     '${trFor(lang, 'for_label')} $cost '
                                                     '${trFor(lang, 'gold_label')}',
                                               );

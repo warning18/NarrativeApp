@@ -39,6 +39,10 @@ const Map<String, String> elementFieldPrefixes = {
   'Light': 'light',
 };
 
+/// How strongly a skill works on a basic face (see dice_faces.dart's
+/// channeledSkillPower, which is this value).
+const double channeledPower = 0.7;
+
 class DiceFaceResult {
   const DiceFaceResult({
     required this.faceIndex,
@@ -47,6 +51,7 @@ class DiceFaceResult {
     required this.value,
     required this.linkedSkillID,
     required this.element,
+    this.channeledFrom = '',
   });
 
   final int faceIndex;
@@ -56,6 +61,14 @@ class DiceFaceResult {
   final String linkedSkillID;
   final String element;
 
+  /// The basic action ('Attack', 'Defend', 'Heal') this face was before the
+  /// player set a skill on it, or '' for a face that is a skill face of its
+  /// own. A channeled skill works at reduced power (see dice_faces.dart),
+  /// and [value] keeps the basic face's number as its floor.
+  final String channeledFrom;
+
+  bool get isChanneled => channeledFrom.isNotEmpty;
+
   DiceFaceResult withLinkedSkillID(String linkedSkillID) => DiceFaceResult(
         faceIndex: faceIndex,
         faceName: faceName,
@@ -63,6 +76,28 @@ class DiceFaceResult {
         value: value,
         linkedSkillID: linkedSkillID,
         element: element,
+        channeledFrom: channeledFrom,
+      );
+
+  DiceFaceResult withFaceName(String faceName) => DiceFaceResult(
+        faceIndex: faceIndex,
+        faceName: faceName,
+        type: type,
+        value: value,
+        linkedSkillID: linkedSkillID,
+        element: element,
+        channeledFrom: channeledFrom,
+      );
+
+  /// This basic face turned into [skillId], cast at channeled power.
+  DiceFaceResult channeling(String skillId) => DiceFaceResult(
+        faceIndex: faceIndex,
+        faceName: faceName,
+        type: 'Skill',
+        value: value,
+        linkedSkillID: skillId,
+        element: element,
+        channeledFrom: type,
       );
 }
 
@@ -220,6 +255,30 @@ PlayerActionResult resolvePlayerFace(
       final effectiveSkillId =
           face.linkedSkillID.isEmpty ? 'heavy_attack' : face.linkedSkillID;
       final skill = skills[effectiveSkillId] as Map<String, dynamic>?;
+      if (skill == null && face.isChanneled) {
+        // A skill the actor can no longer use leaves the basic face as it
+        // was rather than fizzling.
+        return resolvePlayerFace(
+          DiceFaceResult(
+            faceIndex: face.faceIndex,
+            faceName: face.faceName,
+            type: face.channeledFrom,
+            value: face.value,
+            linkedSkillID: '',
+            element: face.element,
+          ),
+          skills,
+          baseDamage,
+          language: language,
+          activeEffects: activeEffects,
+          wisdomHealBonus: wisdomHealBonus,
+          luck: luck,
+          random: random,
+          forceCritical: forceCritical,
+          alignmentLabel: alignmentLabel,
+          critChanceBonus: critChanceBonus,
+        );
+      }
       if (skill == null) {
         return PlayerActionResult(
           damageDealt: 0,
@@ -233,13 +292,29 @@ PlayerActionResult resolvePlayerFace(
       final alignmentMultiplier =
           alignmentSkillMultiplier(skill, alignmentLabel);
       final baseHealAmount = (skill['healAmount'] as num?)?.toInt() ?? 0;
-      final healAmount = baseHealAmount > 0
+      var healAmount = baseHealAmount > 0
           ? ((baseHealAmount + wisdomHealBonus) * alignmentMultiplier).round()
           : 0;
-      final rawDamage = applyWeaken(
-        ((baseDamage + damageMod) * multiplier * alignmentMultiplier).round(),
-        activeEffects,
-      );
+      var skillDamage =
+          ((baseDamage + damageMod) * multiplier * alignmentMultiplier).round();
+      // A skill set on a basic face works at channeled power, but never
+      // below what the face did on its own: an Attack face still hits for
+      // its attack, a Heal face still heals its amount.
+      if (face.isChanneled) {
+        if (skillDamage > 0) {
+          skillDamage = (skillDamage * channeledPower).round();
+          if (face.channeledFrom == 'Attack') {
+            skillDamage = max(skillDamage, baseDamage + face.value);
+          }
+        }
+        if (healAmount > 0) {
+          healAmount = (healAmount * channeledPower).round();
+          if (face.channeledFrom == 'Heal') {
+            healAmount = max(healAmount, face.value + wisdomHealBonus);
+          }
+        }
+      }
+      final rawDamage = applyWeaken(skillDamage, activeEffects);
       final damage = withCrit(rawDamage);
       final crit = damage != rawDamage;
       final flavor = skill['battleMessage']?.toString() ?? '${face.faceName}!';
