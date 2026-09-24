@@ -8,6 +8,54 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.129.0+158]
+
+Fights draw their effects on screen: every skill and spell plays its own
+effect on the fighter it touches, with the numbers floating off them.
+
+### Added
+- **An effect for every skill and spell.** skills.json and spells.json
+  gain a `vfx` field naming one of 29 effect styles, set on all 89 skills
+  and 11 spells: a fireball flies from the caster and bursts, a meteor
+  falls and craters, lightning forks down from above, a void rift tears
+  open and drinks the light around it, frost shards scatter, a volley of
+  arrows rains in, a whirlwind circles, a quake throws up rock, smoke
+  swallows the card, a drain pulls motes back to the one who cast it, a
+  radiant column falls on the target. The style gives the shape and
+  motion, the element the colors, so a Fire heal glows warm and a Void
+  heal dark. The data editor offers the styles as a list.
+- **Die faces, enemy moves and statuses play too.** An Attack face is a
+  blade stroke, Defend a shield around the member, Heal rising sparks and
+  crosses, Mana motes spiralling in, an empty face a puff. An enemy's
+  move plays its skill's effect on the member it hits, a plain attack a
+  claw-and-blade strike; a dodge is a puff and "Dodge!", a hit fully
+  absorbed a shield and 0. Poison bubbles on every tick, a stun circles
+  stars over the card, Weaken drops chevrons, a critical hit bursts
+  gold, a boss changing phase sends out a great ring. Spells, potions,
+  the antidote, thorns, lifesteal and the Phoenix Sigil's second wind all
+  have theirs.
+- **Floating numbers.** Damage, healing, block and mana rise off the card
+  they apply to, in their own colors: pale on an enemy hit, red on a
+  party member hurt, green for healing, blue for block, violet for mana,
+  gold and larger for a critical.
+- **Pacing.** Each party member's die plays a beat after the one before,
+  and the enemy answers once the round's effects have landed. A heal skill
+  plays on the one who uses it, while the base damage every Skill face
+  still deals lands on the enemy as a plain blow.
+- **A Combat effects switch** in Settings (on by default). With the
+  system's reduced-motion setting on, only the numbers are drawn, without
+  particles or movement.
+
+### Verification
+- Tests check that every skill and spell names a known style, that every
+  style has an id and colors for every element, the mapping from faces,
+  skills, spells, enemy moves and statuses, the heal-skill rule, that an
+  enemy move reports the skill it used, and that the effect layer plays
+  every style between two cards and then stops asking for frames, with
+  and without reduced motion. Every style was also rendered to an image
+  mid-flight and checked by eye; the light beams were shortened to fall
+  from just above their target rather than the top of the screen.
+
 ## [1.128.0+157]
 
 Every fight and event now says why it happens. A review of how scenes

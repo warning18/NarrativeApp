@@ -14,7 +14,8 @@
     "battleMessage": "Flames erupt!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "fireball"
   },
   "second_wind": {
     "id": "second_wind",
@@ -31,7 +32,8 @@
     "battleMessage": "You catch your breath.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "void_blast": {
     "id": "void_blast",
@@ -48,7 +50,8 @@
     "battleMessage": "A tear in reality rips across the battlefield!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "void_rift"
   },
   "shadow_step": {
     "id": "shadow_step",
@@ -65,7 +68,8 @@
     "battleMessage": "You vanish into the dim smoke.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shadow"
   },
   "human_resolve": {
     "id": "human_resolve",
@@ -82,7 +86,8 @@
     "battleMessage": "You grit your teeth and push on.",
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "human_quick_study": {
     "id": "human_quick_study",
@@ -99,7 +104,8 @@
     "battleMessage": "You spot the opening instantly.",
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "pierce"
   },
   "human_diplomacy": {
     "id": "human_diplomacy",
@@ -116,7 +122,8 @@
     "battleMessage": "Your words cut deeper than steel.",
     "restrictedRaceID": "human",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shout"
   },
   "elf_arcane_focus": {
     "id": "elf_arcane_focus",
@@ -133,7 +140,8 @@
     "battleMessage": "The air bends around your blade.",
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "wind"
   },
   "elf_moonlight_step": {
     "id": "elf_moonlight_step",
@@ -150,7 +158,8 @@
     "battleMessage": "You slip through like moonlight.",
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shadow"
   },
   "elf_keen_eye": {
     "id": "elf_keen_eye",
@@ -167,7 +176,8 @@
     "battleMessage": "Your aim is unerring.",
     "restrictedRaceID": "elf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "arrow"
   },
   "dwarf_stoneskin": {
     "id": "dwarf_stoneskin",
@@ -184,7 +194,8 @@
     "battleMessage": "Your skin turns to granite for a moment.",
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "stone_shield"
   },
   "dwarf_hammer_blow": {
     "id": "dwarf_hammer_blow",
@@ -201,7 +212,8 @@
     "battleMessage": "The ground shudders under the blow.",
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "quake"
   },
   "dwarf_forgeheart": {
     "id": "dwarf_forgeheart",
@@ -218,7 +230,8 @@
     "battleMessage": "Old forge-fire kindles in your veins.",
     "restrictedRaceID": "dwarf",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "flame"
   },
   "orc_berserk_rage": {
     "id": "orc_berserk_rage",
@@ -235,7 +248,8 @@
     "battleMessage": "A red haze takes you.",
     "restrictedRaceID": "orc",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "orc_savage_cleave": {
     "id": "orc_savage_cleave",
@@ -255,7 +269,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 15,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "orc_bloodlust": {
     "id": "orc_bloodlust",
@@ -272,7 +287,8 @@
     "battleMessage": "The fight feeds your strength.",
     "restrictedRaceID": "orc",
     "restrictedProfessionID": "",
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "drain"
   },
   "voidkin_umbral_veil": {
     "id": "voidkin_umbral_veil",
@@ -289,7 +305,8 @@
     "battleMessage": "The Shroud folds around you.",
     "restrictedRaceID": "voidkin",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shield"
   },
   "voidkin_entropy_touch": {
     "id": "voidkin_entropy_touch",
@@ -309,7 +326,8 @@
     "inflictsStatus": "Poison",
     "statusDuration": 3,
     "statusMagnitude": 7,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "drain"
   },
   "voidkin_starless_gaze": {
     "id": "voidkin_starless_gaze",
@@ -326,7 +344,8 @@
     "battleMessage": "Something ancient looks through your eyes.",
     "restrictedRaceID": "voidkin",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "void_rift"
   },
   "warrior_shield_bash": {
     "id": "warrior_shield_bash",
@@ -346,7 +365,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "impact"
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -363,7 +383,8 @@
     "battleMessage": "Steel flashes in a full circle.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "whirl"
   },
   "warrior_iron_stance": {
     "id": "warrior_iron_stance",
@@ -380,7 +401,8 @@
     "battleMessage": "You plant your feet and hold.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "stone_shield"
   },
   "warrior_execute": {
     "id": "warrior_execute",
@@ -397,7 +419,8 @@
     "battleMessage": "The killing blow lands true.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "warrior_rally_cry": {
     "id": "warrior_rally_cry",
@@ -414,7 +437,8 @@
     "battleMessage": "Your cry echoes off the walls.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "warrior",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shout"
   },
   "mage_arcane_missile": {
     "id": "mage_arcane_missile",
@@ -431,7 +455,8 @@
     "battleMessage": "A crackling bolt streaks out.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "bolt"
   },
   "mage_frost_nova": {
     "id": "mage_frost_nova",
@@ -451,7 +476,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 15,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "frost"
   },
   "mage_mana_shield": {
     "id": "mage_mana_shield",
@@ -468,7 +494,8 @@
     "battleMessage": "A shimmering shield forms around you.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shield"
   },
   "mage_meteor": {
     "id": "mage_meteor",
@@ -485,7 +512,8 @@
     "battleMessage": "A meteor screams down from above.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "meteor"
   },
   "mage_teleport_strike": {
     "id": "mage_teleport_strike",
@@ -502,7 +530,8 @@
     "battleMessage": "You vanish and reappear mid-swing.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "mage",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shadow"
   },
   "rogue_backstab": {
     "id": "rogue_backstab",
@@ -522,7 +551,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 20,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "pierce"
   },
   "rogue_smoke_bomb": {
     "id": "rogue_smoke_bomb",
@@ -539,7 +569,8 @@
     "battleMessage": "Smoke swallows the fight.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "smoke"
   },
   "rogue_poison_blade": {
     "id": "rogue_poison_blade",
@@ -559,7 +590,8 @@
     "inflictsStatus": "Poison",
     "statusDuration": 2,
     "statusMagnitude": 4,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "poison"
   },
   "rogue_shadow_clone": {
     "id": "rogue_shadow_clone",
@@ -576,7 +608,8 @@
     "battleMessage": "A second shape lunges from the dark.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shadow"
   },
   "rogue_quick_pockets": {
     "id": "rogue_quick_pockets",
@@ -593,7 +626,8 @@
     "battleMessage": "Your hand is faster than their eye.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "rogue",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "cleric_holy_light": {
     "id": "cleric_holy_light",
@@ -610,7 +644,8 @@
     "battleMessage": "Light lances down from above.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "radiance"
   },
   "cleric_smite": {
     "id": "cleric_smite",
@@ -627,7 +662,8 @@
     "battleMessage": "Judgment falls in fire.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "holy_fire"
   },
   "cleric_sanctuary": {
     "id": "cleric_sanctuary",
@@ -644,7 +680,8 @@
     "battleMessage": "A soft glow surrounds you.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "radiance"
   },
   "cleric_revive_prayer": {
     "id": "cleric_revive_prayer",
@@ -661,7 +698,8 @@
     "battleMessage": "Your voice steadies, and so do you.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "cleric_purify": {
     "id": "cleric_purify",
@@ -678,7 +716,8 @@
     "battleMessage": "Warmth washes the wounds away.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "cleric",
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "splash"
   },
   "ranger_aimed_shot": {
     "id": "ranger_aimed_shot",
@@ -695,7 +734,8 @@
     "battleMessage": "The shot lands exactly where you aimed.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "arrow"
   },
   "ranger_beast_bond": {
     "id": "ranger_beast_bond",
@@ -712,7 +752,8 @@
     "battleMessage": "Something wild answers your call.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "ranger_camouflage": {
     "id": "ranger_camouflage",
@@ -729,7 +770,8 @@
     "battleMessage": "You strike from where no one was looking.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "pierce"
   },
   "ranger_multi_shot": {
     "id": "ranger_multi_shot",
@@ -746,7 +788,8 @@
     "battleMessage": "Arrows fan out in a deadly spread.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "ranger",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "volley"
   },
   "ranger_trap_set": {
     "id": "ranger_trap_set",
@@ -766,7 +809,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "claw"
   },
   "power_strike": {
     "id": "power_strike",
@@ -783,7 +827,8 @@
     "battleMessage": "You put your full weight behind it.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "guard_break": {
     "id": "guard_break",
@@ -800,7 +845,8 @@
     "battleMessage": "Their guard splinters.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "impact"
   },
   "adrenaline_surge": {
     "id": "adrenaline_surge",
@@ -817,7 +863,8 @@
     "battleMessage": "Your pulse spikes and your blade follows.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "lightning"
   },
   "iron_will": {
     "id": "iron_will",
@@ -834,7 +881,8 @@
     "battleMessage": "You grit through the pain.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shield"
   },
   "quick_heal": {
     "id": "quick_heal",
@@ -851,7 +899,8 @@
     "battleMessage": "You bind the worst of it.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "focus_mind": {
     "id": "focus_mind",
@@ -868,7 +917,8 @@
     "battleMessage": "The world narrows to a single point.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "pierce"
   },
   "rallying_shout": {
     "id": "rallying_shout",
@@ -885,7 +935,8 @@
     "battleMessage": "The shout settles your racing heart.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shout"
   },
   "lucky_strike": {
     "id": "lucky_strike",
@@ -902,7 +953,8 @@
     "battleMessage": "It shouldn't have worked, but it did.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "slash"
   },
   "bulwark_stance": {
     "id": "bulwark_stance",
@@ -919,7 +971,8 @@
     "battleMessage": "You brace like an old wall.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "stone_shield"
   },
   "cauterize_wound": {
     "id": "cauterize_wound",
@@ -936,7 +989,8 @@
     "battleMessage": "The wound hisses shut.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "flame"
   },
   "battle_trance": {
     "id": "battle_trance",
@@ -953,7 +1007,8 @@
     "battleMessage": "Everything else falls away.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "whirl"
   },
   "steady_aim": {
     "id": "steady_aim",
@@ -970,7 +1025,8 @@
     "battleMessage": "The strike lands exactly right.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "arrow"
   },
   "improvised_strike": {
     "id": "improvised_strike",
@@ -987,7 +1043,8 @@
     "battleMessage": "Not elegant, but it connects.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "impact"
   },
   "second_chance": {
     "id": "second_chance",
@@ -1004,7 +1061,8 @@
     "battleMessage": "You refuse to fall here.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "warcry": {
     "id": "warcry",
@@ -1021,7 +1079,8 @@
     "battleMessage": "Your voice carries real menace.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shout"
   },
   "mending_touch": {
     "id": "mending_touch",
@@ -1038,7 +1097,8 @@
     "battleMessage": "The bleeding slows.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heal"
   },
   "precision_thrust": {
     "id": "precision_thrust",
@@ -1055,7 +1115,8 @@
     "battleMessage": "It finds the one weak point.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "pierce"
   },
   "inner_fire": {
     "id": "inner_fire",
@@ -1072,7 +1133,8 @@
     "battleMessage": "Something in you catches alight.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "flame"
   },
   "stone_resolve": {
     "id": "stone_resolve",
@@ -1089,7 +1151,8 @@
     "battleMessage": "You will not yield this ground.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "stone_shield"
   },
   "final_stand": {
     "id": "final_stand",
@@ -1106,7 +1169,8 @@
     "battleMessage": "There's nothing held back now.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "heavy_attack": {
     "id": "heavy_attack",
@@ -1123,7 +1187,8 @@
     "battleMessage": "You wind up and strike with everything you have.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "heavy_slash"
   },
   "zealous_conviction": {
     "id": "zealous_conviction",
@@ -1141,7 +1206,8 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "requiredAlignmentMin": 3,
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "holy_fire"
   },
   "ruthless_edge": {
     "id": "ruthless_edge",
@@ -1159,7 +1225,8 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "requiredAlignmentMax": -3,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "slash"
   },
   "blazing_shadow": {
     "id": "blazing_shadow",
@@ -1177,7 +1244,8 @@
     "battleMessage": "You melt into shadow and erupt as fire.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "fireball"
   },
   "unbreakable_will": {
     "id": "unbreakable_will",
@@ -1195,7 +1263,8 @@
     "battleMessage": "You simply refuse.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "shield"
   },
   "bastion_of_stone": {
     "id": "bastion_of_stone",
@@ -1213,7 +1282,8 @@
     "battleMessage": "You become a wall that was always going to be here.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "stone_shield"
   },
   "arcane_convergence": {
     "id": "arcane_convergence",
@@ -1231,7 +1301,8 @@
     "battleMessage": "Two currents of force meet and detonate as one.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "lightning"
   },
   "venomous_ambush": {
     "id": "venomous_ambush",
@@ -1252,7 +1323,8 @@
     "inflictsStatus": "Poison",
     "statusDuration": 3,
     "statusMagnitude": 6,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "poison"
   },
   "wrath_of_dawn": {
     "id": "wrath_of_dawn",
@@ -1270,7 +1342,8 @@
     "battleMessage": "Dawn breaks all at once, and it does not ask who's ready.",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "radiance"
   },
   "plague_bite": {
     "id": "plague_bite",
@@ -1290,7 +1363,8 @@
     "inflictsStatus": "Poison",
     "statusDuration": 3,
     "statusMagnitude": 5,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "claw"
   },
   "void_drain": {
     "id": "void_drain",
@@ -1310,7 +1384,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 30,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "drain"
   },
   "disorienting_pulse": {
     "id": "disorienting_pulse",
@@ -1330,7 +1405,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "void_rift"
   },
   "molten_backlash": {
     "id": "molten_backlash",
@@ -1350,7 +1426,8 @@
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
     "statusMagnitude": 10,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "flame"
   },
   "frigid_grip": {
     "id": "frigid_grip",
@@ -1370,7 +1447,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "alignment": ""
+    "alignment": "",
+    "vfx": "frost"
   },
   "radiant_judgment": {
     "id": "radiant_judgment",
@@ -1390,7 +1468,8 @@
     "inflictsStatus": "Stun",
     "statusDuration": 1,
     "statusMagnitude": 0,
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "radiance"
   },
   "celestial_ward": {
     "id": "celestial_ward",
@@ -1408,7 +1487,8 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "requiredAlignmentMin": 20,
-    "alignment": "Good"
+    "alignment": "Good",
+    "vfx": "shield"
   },
   "infernal_pact": {
     "id": "infernal_pact",
@@ -1426,7 +1506,8 @@
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "requiredAlignmentMax": -20,
-    "alignment": "Evil"
+    "alignment": "Evil",
+    "vfx": "flame"
   },
   "matriarch_brood_call": {
     "id": "matriarch_brood_call",
@@ -1446,7 +1527,8 @@
     "alignment": "",
     "inflictsStatus": "Poison",
     "statusDuration": 2,
-    "statusMagnitude": 4
+    "statusMagnitude": 4,
+    "vfx": "poison"
   },
   "golem_meltdown": {
     "id": "golem_meltdown",
@@ -1466,7 +1548,8 @@
     "alignment": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 15
+    "statusMagnitude": 15,
+    "vfx": "meteor"
   },
   "warden_bone_storm": {
     "id": "warden_bone_storm",
@@ -1486,7 +1569,8 @@
     "alignment": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 25
+    "statusMagnitude": 25,
+    "vfx": "quake"
   },
   "archon_eclipse": {
     "id": "archon_eclipse",
@@ -1506,7 +1590,8 @@
     "alignment": "",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "vfx": "void_rift"
   },
   "sovereign_unmaking": {
     "id": "sovereign_unmaking",
@@ -1526,7 +1611,8 @@
     "alignment": "",
     "inflictsStatus": "Weaken",
     "statusDuration": 2,
-    "statusMagnitude": 25
+    "statusMagnitude": 25,
+    "vfx": "quake"
   },
   "zealot_martyrdom": {
     "id": "zealot_martyrdom",
@@ -1543,7 +1629,8 @@
     "battleMessage": "The zealot sets his own flesh alight and comes on burning!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
-    "alignment": ""
+    "alignment": "",
+    "vfx": "flame"
   },
   "manifestation_many_faces": {
     "id": "manifestation_many_faces",
@@ -1563,7 +1650,8 @@
     "alignment": "",
     "inflictsStatus": "Stun",
     "statusDuration": 1,
-    "statusMagnitude": 0
+    "statusMagnitude": 0,
+    "vfx": "shadow"
   },
   "stalker_ambush": {
     "id": "stalker_ambush",
@@ -1583,6 +1671,7 @@
     "alignment": "",
     "inflictsStatus": "Poison",
     "statusDuration": 3,
-    "statusMagnitude": 5
+    "statusMagnitude": 5,
+    "vfx": "shadow"
   }
 }

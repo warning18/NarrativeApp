@@ -104,3 +104,29 @@ class CompanionAutoTargetNotifier extends StateNotifier<bool> {
 final companionAutoTargetProvider =
     StateNotifierProvider<CompanionAutoTargetNotifier, bool>(
         (ref) => CompanionAutoTargetNotifier());
+
+const String _combatEffectsPrefsKey = 'combat_effects_enabled';
+
+class CombatEffectsNotifier extends StateNotifier<bool> {
+  CombatEffectsNotifier() : super(true) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = prefs.getBool(_combatEffectsPrefsKey) ?? true;
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    state = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_combatEffectsPrefsKey, enabled);
+  }
+}
+
+/// Whether fights draw their effects on screen: each skill's and spell's
+/// own effect, shields, heals, statuses, and the floating numbers.
+/// Defaults to on; persisted via [SharedPreferences].
+final combatEffectsEnabledProvider =
+    StateNotifierProvider<CombatEffectsNotifier, bool>(
+        (ref) => CombatEffectsNotifier());

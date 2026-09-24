@@ -1896,6 +1896,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Antidote',
     AppLanguage.fr: 'Antidote',
   },
+  'vfx_dodge_label': {
+    AppLanguage.en: 'Dodge!',
+    AppLanguage.fr: 'Esquive !',
+  },
+  'combat_effects_setting_title': {
+    AppLanguage.en: 'Combat effects',
+    AppLanguage.fr: 'Effets de combat',
+  },
+  'combat_effects_setting_desc': {
+    AppLanguage.en:
+        'Draws each skill\'s and spell\'s effect on screen in fights, with floating damage and healing numbers.',
+    AppLanguage.fr:
+        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, avec les dégâts et soins flottants.",
+  },
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',
     AppLanguage.fr: "Tremblement d'écran à l'impact",

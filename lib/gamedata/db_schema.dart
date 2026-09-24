@@ -1,3 +1,4 @@
+import '../combat/skill_vfx.dart';
 import 'field_schema.dart';
 
 class DbSchema {
@@ -407,6 +408,13 @@ final DbSchema skillsSchema = DbSchema(
       label: 'Element',
       type: FieldType.enumeration,
       enumOptions: elementOptions,
+    ),
+    // The on-screen effect the skill plays in a fight (skill_vfx.dart).
+    FieldSchema(
+      key: 'vfx',
+      label: 'Combat effect',
+      type: FieldType.enumeration,
+      enumOptions: vfxEnumOptions,
     ),
     FieldSchema(
         key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
@@ -1672,6 +1680,13 @@ final DbSchema spellsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'spellID', label: 'Spell ID', type: FieldType.text),
     FieldSchema(key: 'spellName', label: 'Spell Name', type: FieldType.text),
+    // The on-screen effect the spell plays in a fight (skill_vfx.dart).
+    FieldSchema(
+      key: 'vfx',
+      label: 'Combat effect',
+      type: FieldType.enumeration,
+      enumOptions: vfxEnumOptions,
+    ),
     FieldSchema(
         key: 'spellName_fr', label: 'Spell Name (FR)', type: FieldType.text),
     FieldSchema(

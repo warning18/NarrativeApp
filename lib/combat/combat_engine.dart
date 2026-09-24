@@ -300,10 +300,15 @@ class EnemyMoveResult {
     this.inflictedStatus,
     this.element = 'None',
     this.healAmount = 0,
+    this.skillId = '',
   });
 
   final int damage;
   final String message;
+
+  /// The skills.json id of the move used, or '' for a plain attack -- what
+  /// the fight screen plays on screen for it (see skill_vfx.dart).
+  final String skillId;
 
   /// A status effect this move inflicts on its target, if any — read from
   /// the referenced skill's own `inflictsStatus` fields; a move with no
@@ -394,6 +399,7 @@ EnemyMoveResult resolveEnemyMove({
         inflictedStatus: _inflictedStatusFrom(skill),
         element: skill['element']?.toString() ?? 'None',
         healAmount: (skill['healAmount'] as num?)?.toInt() ?? 0,
+        skillId: skillId,
       );
     }
     break;

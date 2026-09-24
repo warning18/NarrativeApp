@@ -65,6 +65,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final palette = ref.watch(appPaletteProvider);
     final themeMode = ref.watch(themeModeProvider);
     final trembleEnabled = ref.watch(trembleEnabledProvider);
+    final combatEffectsEnabled = ref.watch(combatEffectsEnabledProvider);
     final chestAutoOpen = ref.watch(chestAutoOpenProvider);
     final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
     final companionAutoTarget = ref.watch(companionAutoTargetProvider);
@@ -310,6 +311,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: trembleEnabled,
               onChanged: (value) =>
                   ref.read(trembleEnabledProvider.notifier).setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'combat_effects_setting_title')),
+              subtitle: Text(tr(ref, 'combat_effects_setting_desc')),
+              value: combatEffectsEnabled,
+              onChanged: (value) => ref
+                  .read(combatEffectsEnabledProvider.notifier)
+                  .setEnabled(value),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,

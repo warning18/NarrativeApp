@@ -17,7 +17,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "A bolt of crackling force slams home.",
-    "battleMessage_fr": "Un trait crépitant frappe de plein fouet."
+    "battleMessage_fr": "Un trait crépitant frappe de plein fouet.",
+    "vfx": "bolt"
   },
   "spell_frost_bind": {
     "spellID": "spell_frost_bind",
@@ -37,7 +38,8 @@
     "statusDuration": 1,
     "statusMagnitude": 0,
     "battleMessage": "Frost crawls up its limbs and holds.",
-    "battleMessage_fr": "Le givre remonte le long de ses membres et le fige."
+    "battleMessage_fr": "Le givre remonte le long de ses membres et le fige.",
+    "vfx": "frost"
   },
   "spell_ember_wave": {
     "spellID": "spell_ember_wave",
@@ -57,7 +59,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "A wave of embers rolls across the field.",
-    "battleMessage_fr": "Une vague de braises déferle sur le champ de bataille."
+    "battleMessage_fr": "Une vague de braises déferle sur le champ de bataille.",
+    "vfx": "flame"
   },
   "spell_mana_ward": {
     "spellID": "spell_mana_ward",
@@ -77,7 +80,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "A shimmering ward settles over the party.",
-    "battleMessage_fr": "Une garde scintillante se pose sur le groupe."
+    "battleMessage_fr": "Une garde scintillante se pose sur le groupe.",
+    "vfx": "shield"
   },
   "spell_mending_light": {
     "spellID": "spell_mending_light",
@@ -97,7 +101,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "Warm light closes the wounds.",
-    "battleMessage_fr": "Une lumière chaude referme les plaies."
+    "battleMessage_fr": "Une lumière chaude referme les plaies.",
+    "vfx": "radiance"
   },
   "spell_sanctified_ground": {
     "spellID": "spell_sanctified_ground",
@@ -117,7 +122,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "The ground glows and the party breathes easier.",
-    "battleMessage_fr": "Le sol s'illumine et le groupe respire mieux."
+    "battleMessage_fr": "Le sol s'illumine et le groupe respire mieux.",
+    "vfx": "heal"
   },
   "spell_smite_the_wicked": {
     "spellID": "spell_smite_the_wicked",
@@ -137,7 +143,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "Light falls like a hammer.",
-    "battleMessage_fr": "La lumière s'abat comme un marteau."
+    "battleMessage_fr": "La lumière s'abat comme un marteau.",
+    "vfx": "holy_fire"
   },
   "spell_purge": {
     "spellID": "spell_purge",
@@ -157,7 +164,8 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "Clean water washes the affliction away.",
-    "battleMessage_fr": "Une eau pure emporte l'affliction."
+    "battleMessage_fr": "Une eau pure emporte l'affliction.",
+    "vfx": "splash"
   },
   "spell_venom_hex": {
     "spellID": "spell_venom_hex",
@@ -177,7 +185,8 @@
     "statusDuration": 3,
     "statusMagnitude": 6,
     "battleMessage": "Green veins spread from the mark.",
-    "battleMessage_fr": "Des veines vertes s'étendent depuis la marque."
+    "battleMessage_fr": "Des veines vertes s'étendent depuis la marque.",
+    "vfx": "poison"
   },
   "spell_hunters_mark": {
     "spellID": "spell_hunters_mark",
@@ -197,7 +206,8 @@
     "statusDuration": 2,
     "statusMagnitude": 20,
     "battleMessage": "The mark settles on its shoulders.",
-    "battleMessage_fr": "La marque se pose sur ses épaules."
+    "battleMessage_fr": "La marque se pose sur ses épaules.",
+    "vfx": "arrow"
   },
   "spell_war_shout": {
     "spellID": "spell_war_shout",
@@ -217,6 +227,7 @@
     "statusDuration": 0,
     "statusMagnitude": 0,
     "battleMessage": "The shout rings out and shields come up.",
-    "battleMessage_fr": "Le cri retentit et les boucliers se lèvent."
+    "battleMessage_fr": "Le cri retentit et les boucliers se lèvent.",
+    "vfx": "shout"
   }
 }

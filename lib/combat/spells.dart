@@ -60,6 +60,7 @@ class SpellSpec {
     required this.element,
     required this.battleMessage,
     required this.battleMessageFr,
+    this.vfx = '',
     this.status,
   });
 
@@ -83,6 +84,7 @@ class SpellSpec {
       element: json['element']?.toString() ?? 'None',
       battleMessage: json['battleMessage']?.toString() ?? '',
       battleMessageFr: json['battleMessage_fr']?.toString() ?? '',
+      vfx: json['vfx']?.toString() ?? '',
       status: statusType == null || duration <= 0
           ? null
           : StatusEffect(
@@ -94,6 +96,9 @@ class SpellSpec {
   }
 
   final String id;
+
+  /// The on-screen effect the spell plays (a skill_vfx.dart style id).
+  final String vfx;
   final String name;
   final String nameFr;
   final String description;

@@ -14,6 +14,8 @@ import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
+import '../combat/skill_vfx.dart';
+import '../widgets/combat_vfx.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -710,6 +712,22 @@ class _FightScreenState extends ConsumerState<FightScreen>
   late final AnimationController _shakeController;
   late final AnimationController _rollController;
 
+  /// The on-screen effects (see combat_vfx.dart): each card is anchored by
+  /// a key so an effect lands on the fighter it belongs to.
+  final CombatVfxController _vfx = CombatVfxController();
+  final Map<String, GlobalKey> _cardKeys = {};
+
+  GlobalKey _memberCardKey(String id) =>
+      _cardKeys.putIfAbsent('member:$id', GlobalKey.new);
+  GlobalKey _enemyCardKey(String key) =>
+      _cardKeys.putIfAbsent('enemy:$key', GlobalKey.new);
+
+  /// Milliseconds between one party member's effect and the next, so a
+  /// round of dice reads as a sequence rather than one flash.
+  static const int _fxStagger = 160;
+
+  bool get _effectsOn => ref.read(combatEffectsEnabledProvider);
+
   @override
   void initState() {
     super.initState();
@@ -736,6 +754,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   @override
   void dispose() {
     _shakeController.dispose();
+    _vfx.dispose();
     _rollController.dispose();
     super.dispose();
   }
@@ -1475,6 +1494,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     final newEntries = <_LogEntry>[];
+    var fxIndex = 0;
     String? lastCritActorId;
     String? lastDamagedEnemyKey;
     var lastEnemyDamage = 0;
@@ -1488,6 +1508,9 @@ class _FightScreenState extends ConsumerState<FightScreen>
       final element = _elementFor(face, availableSkills);
       final totalDamage = _totalDamageFor(actor, face, skills, items);
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
+      final fxDelay = fxIndex++ * _fxStagger;
+      var dealt = 0;
+      var drainedFx = 0;
       // Momentum: the built-up hits cash in as a guaranteed critical on
       // this strike, and the counter starts over from it.
       final surge = isStrike && _momentum >= _momentumThreshold;
@@ -1580,6 +1603,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
         final wasAlive = target.isAlive;
         target.currentHealth = max(0, target.currentHealth - damage);
+        dealt = damage;
         if (damage > 0) {
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = damage;
@@ -1588,6 +1612,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
           // mana on hit (a Siphon Wand) pay out per landed hit.
           final drained = actor.gear.lifestealFor(damage);
           if (drained > 0 && actor.currentHealth < actor.maxHealth) {
+            drainedFx = drained;
             actor.currentHealth =
                 min(actor.maxHealth, actor.currentHealth + drained);
             newEntries.add(_LogEntry(
@@ -1616,6 +1641,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
           ));
         }
       }
+      _playFaceEffects(
+        actor: actor,
+        face: face,
+        skills: availableSkills,
+        element: element,
+        result: result,
+        target: target,
+        dealt: dealt,
+        healing: healing,
+        block: block,
+        drained: drainedFx,
+        delayMs: fxDelay,
+      );
     }
 
     _advanceBossPhases(newEntries, lang, skills);
@@ -1664,7 +1702,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       _log.addAll(newEntries);
     });
 
-    await Future.delayed(const Duration(milliseconds: 400));
+    // Give the round's effects time to land before the enemy answers.
+    await Future.delayed(Duration(
+        milliseconds:
+            _effectsOn ? max(400, (fxIndex - 1) * _fxStagger + 450) : 400));
     if (!mounted) return;
 
     if (_enemies.every((e) => !e.isAlive)) {
@@ -1673,6 +1714,108 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
 
     _takeEnemyTurn(skills, items);
+  }
+
+  /// What one party member's die looks like on screen: the face's (or its
+  /// skill's) effect on the enemy it hit with the damage floating off it,
+  /// a critical's starburst, the status it left, a heal, a shield or mana
+  /// on the member, and a lifesteal drawn back to them.
+  void _playFaceEffects({
+    required _PartyMember actor,
+    required DiceFaceResult face,
+    required Map<String, dynamic> skills,
+    required String element,
+    required PlayerActionResult result,
+    required _EnemyMember? target,
+    required int dealt,
+    required int healing,
+    required int block,
+    required int drained,
+    required int delayMs,
+  }) {
+    if (!_effectsOn) return;
+    final actorKey = _memberCardKey(actor.id);
+    final skill = face.type == 'Skill'
+        ? skills[_effectiveSkillId(face)] as Map<String, dynamic>?
+        : null;
+    final style = styleForFace(face.type, skill);
+    final support = isSupportSkill(skill);
+    if (target != null) {
+      final targetKey = _enemyCardKey(target.key);
+      if (dealt > 0) {
+        _vfx.play(
+          style: support ? VfxStyle.slash : style,
+          target: targetKey,
+          source: actorKey,
+          element: element,
+          delayMs: delayMs,
+          text: '-$dealt',
+          textKind: result.isCritical ? VfxTextKind.crit : VfxTextKind.damage,
+          big: result.isCritical,
+        );
+        if (result.isCritical) {
+          _vfx.play(
+              style: VfxStyle.crit, target: targetKey, delayMs: delayMs + 250);
+        }
+      } else {
+        _vfx.play(style: VfxStyle.miss, target: targetKey, delayMs: delayMs);
+      }
+      final inflicted = result.inflictedStatus;
+      if (inflicted != null) {
+        _vfx.play(
+          style: styleForStatus(inflicted.type),
+          target: targetKey,
+          delayMs: delayMs + 350,
+        );
+      }
+      if (drained > 0) {
+        _vfx.play(
+          style: VfxStyle.drain,
+          target: targetKey,
+          source: actorKey,
+          element: 'Void',
+          delayMs: delayMs + 300,
+        );
+        _vfx.play(
+          style: VfxStyle.heal,
+          target: actorKey,
+          delayMs: delayMs + 700,
+          text: '+$drained',
+          textKind: VfxTextKind.heal,
+        );
+      }
+    }
+    if (healing > 0) {
+      _vfx.play(
+        style: support ? style : VfxStyle.heal,
+        target: actorKey,
+        element: support ? element : 'None',
+        delayMs: delayMs + (dealt > 0 && !support ? 250 : 0),
+        text: '+$healing',
+        textKind: VfxTextKind.heal,
+      );
+    }
+    if (block > 0) {
+      _vfx.play(
+        style: VfxStyle.shield,
+        target: actorKey,
+        delayMs: delayMs,
+        text: '+$block',
+        textKind: VfxTextKind.block,
+      );
+    }
+    if (result.manaGained > 0) {
+      _vfx.play(
+        style: VfxStyle.mana,
+        target: actorKey,
+        delayMs: delayMs,
+        text: '+${result.manaGained}',
+        textKind: VfxTextKind.mana,
+      );
+    }
+    if (face.type == 'Empty') {
+      _vfx.play(style: VfxStyle.miss, target: actorKey, delayMs: delayMs);
+    }
   }
 
   /// A Skittish enemy that's been hurt enough runs for it -- out of the
@@ -1713,6 +1856,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
       if (member.isKnockedOut) continue;
       final poison = poisonDamageFor(member.statusEffects);
       if (poison > 0) {
+        _fx(VfxStyle.poison, _memberCardKey(member.id),
+            text: '-$poison', textKind: VfxTextKind.hurt);
         member.currentHealth = max(0, member.currentHealth - poison);
         newEntries.add(_LogEntry(
           member.isPlayer
@@ -1739,6 +1884,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
       }
       if (!member.isKnockedOut && isStunned(member.statusEffects)) {
+        _fx(VfxStyle.stun, _memberCardKey(member.id), delayMs: 200);
         newEntries.add(_LogEntry(
           '${member.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
           _LogKind.info,
@@ -1861,7 +2007,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
           _LogKind.phase,
         ));
       }
-      if (entered) _preRollMoveFor(enemy, skills);
+      if (entered) {
+        _preRollMoveFor(enemy, skills);
+        _fx(VfxStyle.phase, _enemyCardKey(enemy.key), delayMs: 300, big: true);
+      }
     }
   }
 
@@ -1932,11 +2081,15 @@ class _FightScreenState extends ConsumerState<FightScreen>
           rotated.skip(crampedMaxActingEnemies).map((e) => e.key).toSet();
     }
 
+    var enemyFx = 0;
     for (final enemy in _enemies) {
       if (!enemy.isAlive) continue;
+      final fxDelay = enemyFx++ * 220;
 
       final poison = poisonDamageFor(enemy.statusEffects);
       if (poison > 0) {
+        _fx(VfxStyle.poison, _enemyCardKey(enemy.key),
+            delayMs: fxDelay, text: '-$poison', textKind: VfxTextKind.damage);
         setState(() {
           enemy.currentHealth = max(0, enemy.currentHealth - poison);
           _log.add(_LogEntry(
@@ -1950,6 +2103,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
 
       if (isStunned(enemy.statusEffects)) {
+        _fx(VfxStyle.stun, _enemyCardKey(enemy.key), delayMs: fxDelay);
         setState(() {
           _log.add(_LogEntry(
             '${enemy.displayName} ${trFor(lang, 'stunned_skip_turn_suffix')}',
@@ -2100,7 +2254,21 @@ class _FightScreenState extends ConsumerState<FightScreen>
         }
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
       });
+      _playEnemyMoveEffects(
+        enemy: enemy,
+        target: target,
+        skillId: move.skillId,
+        element: move.element,
+        skills: skills,
+        dodged: wasDodged,
+        warded: warded,
+        damage: damageTaken,
+        inflicted: inflicted,
+        delayMs: fxDelay,
+      );
       if (secondWind) {
+        _fx(VfxStyle.heal, _memberCardKey(target.id),
+            delayMs: fxDelay + 450, big: true);
         setState(() {
           _log.add(_LogEntry(
             '${target.displayName} ${trFor(lang, 'second_wind_message')}',
@@ -2109,6 +2277,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
         });
       }
       if (thorns > 0 && enemy.isAlive) {
+        _fx(VfxStyle.impact, _enemyCardKey(enemy.key),
+            source: _memberCardKey(target.id),
+            delayMs: fxDelay + 400,
+            text: '-$thorns',
+            textKind: VfxTextKind.damage);
         setState(() {
           enemy.currentHealth = max(0, enemy.currentHealth - thorns);
           _lastDamagedEnemyKey = enemy.key;
@@ -2141,6 +2314,86 @@ class _FightScreenState extends ConsumerState<FightScreen>
     _startPartyRound(skills, items);
   }
 
+  /// Plays one effect when effects are on.
+  void _fx(
+    VfxStyle style,
+    GlobalKey target, {
+    GlobalKey? source,
+    String element = 'None',
+    int delayMs = 0,
+    String? text,
+    VfxTextKind textKind = VfxTextKind.info,
+    bool big = false,
+  }) {
+    if (!_effectsOn) return;
+    _vfx.play(
+      style: style,
+      target: target,
+      source: source,
+      element: element,
+      delayMs: delayMs,
+      text: text,
+      textKind: textKind,
+      big: big,
+    );
+  }
+
+  /// What an enemy's move looks like on screen: its skill's effect (a
+  /// claw-and-blade strike for a plain attack) on the member it hit, the
+  /// damage floating off them, a shield when their guard or a ward took it
+  /// all, a puff when they dodged, and the status it left.
+  void _playEnemyMoveEffects({
+    required _EnemyMember enemy,
+    required _PartyMember target,
+    required String skillId,
+    required String element,
+    required Map<String, dynamic> skills,
+    required bool dodged,
+    required bool warded,
+    required int damage,
+    required StatusEffect? inflicted,
+    required int delayMs,
+  }) {
+    if (!_effectsOn) return;
+    final targetKey = _memberCardKey(target.id);
+    final lang = ref.read(appLanguageProvider);
+    if (dodged) {
+      _vfx.play(
+        style: VfxStyle.miss,
+        target: targetKey,
+        delayMs: delayMs,
+        text: trFor(lang, 'vfx_dodge_label'),
+      );
+      return;
+    }
+    final style = styleForEnemyMove(skillId, skills);
+    _vfx.play(
+      style: style,
+      target: targetKey,
+      source: _enemyCardKey(enemy.key),
+      element: skillId.isEmpty ? 'Enemy' : element,
+      delayMs: delayMs,
+      text: damage > 0 ? '-$damage' : null,
+      textKind: VfxTextKind.hurt,
+    );
+    if (damage <= 0 || warded) {
+      _vfx.play(
+        style: VfxStyle.shield,
+        target: targetKey,
+        delayMs: delayMs + 250,
+        text: '0',
+        textKind: VfxTextKind.block,
+      );
+    }
+    if (inflicted != null && damage > 0 && !target.isKnockedOut) {
+      _vfx.play(
+        style: styleForStatus(inflicted.type),
+        target: targetKey,
+        delayMs: delayMs + 350,
+      );
+    }
+  }
+
   void _usePotion() {
     final session = ref.read(playerSessionProvider);
     if (session.potionCount <= 0 || _over) return;
@@ -2151,6 +2404,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         ? (_potionHealAmount * shrineHealMultiplier).round()
         : _potionHealAmount;
     _potionUsed = true;
+    _fx(VfxStyle.heal, _memberCardKey(player.id),
+        text: '+$heal', textKind: VfxTextKind.heal);
     setState(() {
       player.currentHealth = min(player.maxHealth, player.currentHealth + heal);
       _log.add(
@@ -2175,6 +2430,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     }
     ref.read(playerSessionProvider.notifier).consumeAntidote();
     final lang = ref.read(appLanguageProvider);
+    _fx(VfxStyle.splash, _memberCardKey(player.id), element: 'Water');
     setState(() {
       player.statusEffects = [];
       _log.add(
@@ -2844,7 +3100,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final previews =
         _previewRoll(skills, items, ref.watch(appLanguageProvider));
 
-    return AnimatedBuilder(
+    final battle = AnimatedBuilder(
       animation: _shakeController,
       builder: (context, child) {
         final t = _shakeController.value;
@@ -2882,6 +3138,20 @@ class _FightScreenState extends ConsumerState<FightScreen>
               acting, anyDieAvailable, dice, skills, items, session),
         ],
       ),
+    );
+    // Effects draw over the whole battle and never take a touch.
+    return Stack(
+      children: [
+        Positioned.fill(child: battle),
+        Positioned.fill(
+          child: IgnorePointer(
+            child: CombatVfxLayer(
+              controller: _vfx,
+              reducedMotion: MediaQuery.of(context).disableAnimations,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -3369,7 +3639,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       padding: EdgeInsets.zero,
       children: [
         for (final member in _party) ...[
-          _buildPartyCard(member, items),
+          KeyedSubtree(
+            key: _memberCardKey(member.id),
+            child: _buildPartyCard(member, items),
+          ),
           const SizedBox(height: 6),
         ],
       ],
@@ -3649,7 +3922,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
       padding: EdgeInsets.zero,
       children: [
         for (final enemy in _enemies) ...[
-          _buildEnemyCard(enemy, previews),
+          KeyedSubtree(
+            key: _enemyCardKey(enemy.key),
+            child: _buildEnemyCard(enemy, previews),
+          ),
           const SizedBox(height: 6),
         ],
       ],
@@ -4633,9 +4909,24 @@ class _FightScreenState extends ConsumerState<FightScreen>
       ),
     ];
     var hitsLanded = 0;
+    final spellStyle = styleForSpell(
+        vfx: spell.vfx, element: spell.element, effect: spell.effect.name);
+    final casterKey = _memberCardKey(player.id);
+    var spellFx = 0;
     for (final enemy in enemyTargets) {
+      final fxDelay = spellFx++ * 120;
+      if (spell.effect != SpellEffectKind.damage) {
+        _fx(spellStyle, _enemyCardKey(enemy.key),
+            source: casterKey, element: spell.element, delayMs: fxDelay);
+      }
       if (spell.effect == SpellEffectKind.damage) {
         final damage = amount;
+        _fx(spellStyle, _enemyCardKey(enemy.key),
+            source: casterKey,
+            element: spell.element,
+            delayMs: fxDelay,
+            text: '-$damage',
+            textKind: VfxTextKind.damage);
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
         if (damage > 0) {
@@ -4654,6 +4945,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         ));
       }
       if (status != null && enemy.isAlive) {
+        _fx(styleForStatus(status.type), _enemyCardKey(enemy.key),
+            delayMs: fxDelay + 350);
         enemy.statusEffects = applyStatusEffect(enemy.statusEffects, status);
         entries.add(_LogEntry(
           _statusInflictedMessage(status, enemy.displayName, lang),
@@ -4662,12 +4955,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
     }
     for (final member in memberTargets) {
+      final fxDelay = spellFx++ * 120;
+      final memberKey = _memberCardKey(member.id);
       switch (spell.effect) {
         case SpellEffectKind.heal:
           var healing = amount;
           if (_condition == BattlefieldCondition.shrine) {
             healing = (healing * shrineHealMultiplier).round();
           }
+          _fx(spellStyle, memberKey,
+              element: spell.element,
+              delayMs: fxDelay,
+              text: '+$healing',
+              textKind: VfxTextKind.heal);
           member.currentHealth =
               min(member.maxHealth, member.currentHealth + healing);
           entries.add(_LogEntry(
@@ -4680,6 +4980,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
           if (_condition == BattlefieldCondition.highGround) {
             block = (block * highGroundBlockMultiplier).round();
           }
+          _fx(spellStyle, memberKey,
+              element: spell.element,
+              delayMs: fxDelay,
+              text: '+$block',
+              textKind: VfxTextKind.block);
           _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + block;
           member.block += block;
           entries.add(_LogEntry(
@@ -4688,6 +4993,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
             _LogKind.playerBlock,
           ));
         case SpellEffectKind.cleanse:
+          _fx(spellStyle, memberKey, element: spell.element, delayMs: fxDelay);
           member.statusEffects = [];
           entries.add(_LogEntry(
             '${member.displayName} ${trFor(lang, 'cleansed_suffix')}',
