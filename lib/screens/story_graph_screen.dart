@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
@@ -16,6 +17,8 @@ import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
+import '../utils/export_utils.dart';
+import '../utils/story_export.dart';
 import 'story_node_editor_screen.dart';
 
 /// A node box's fixed width — capped and ellipsized (see the node
@@ -479,8 +482,17 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                   onClose: () => setState(() => _legendVisible = false),
                   showUndiscovered: !isEditMode,
                 )
-              : _LegendReopenButton(
-                  onTap: () => setState(() => _legendVisible = true),
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _LegendReopenButton(
+                      onTap: () => setState(() => _legendVisible = true),
+                    ),
+                    if (isEditMode) ...[
+                      const SizedBox(width: 12),
+                      const _ExportNodesButton(),
+                    ],
+                  ],
                 ),
         ),
       ],
@@ -671,6 +683,109 @@ class _LegendReopenButton extends ConsumerWidget {
           child: const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(Icons.info_outline),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Edit Mode: exports every story node, light (id, chapter, text and
+/// choices, for reading or review) or full (every field in both
+/// languages, in the story file's format), copied or saved to a file.
+class _ExportNodesButton extends ConsumerWidget {
+  const _ExportNodesButton();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Tooltip(
+      message: tr(ref, 'export_nodes_title'),
+      child: Material(
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 3,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: () => _showExportSheet(context, ref),
+          child: const Padding(
+            padding: EdgeInsets.all(10),
+            child: Icon(Icons.ios_share_outlined),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showExportSheet(BuildContext context, WidgetRef ref) async {
+    final story = await ref.read(storyDataProvider.future);
+    if (!context.mounted) return;
+    final french = ref.read(appLanguageProvider) == AppLanguage.fr;
+
+    Future<String> build(bool full) async => full
+        ? storyFullExport(await ref.read(storyRepositoryProvider).loadRaw())
+        : storyLightExport(story, french: french);
+
+    Future<void> copy(bool full) async {
+      final text = await build(full);
+      await Clipboard.setData(ClipboardData(text: text));
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(tr(ref, 'export_nodes_copied'))),
+      );
+    }
+
+    Future<void> save(bool full) async {
+      final text = await build(full);
+      if (!context.mounted) return;
+      Navigator.of(context).pop();
+      await exportTextToFile(context, ref, text,
+          full ? 'story_nodes_full.json' : 'story_nodes_light.json');
+    }
+
+    Widget option(bool full) => ListTile(
+          leading: Icon(full ? Icons.data_object : Icons.notes),
+          title:
+              Text(tr(ref, full ? 'export_nodes_full' : 'export_nodes_light')),
+          subtitle: Text(tr(ref,
+              full ? 'export_nodes_full_desc' : 'export_nodes_light_desc')),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.copy_outlined),
+                tooltip: tr(ref, 'copy_button'),
+                onPressed: () => copy(full),
+              ),
+              IconButton(
+                icon: const Icon(Icons.save_alt),
+                tooltip: tr(ref, 'export_button'),
+                onPressed: () => save(full),
+              ),
+            ],
+          ),
+        );
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (_) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Text(
+                  '${tr(ref, 'export_nodes_title')} · ${story.nodes.length}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+              option(false),
+              option(true),
+            ],
           ),
         ),
       ),

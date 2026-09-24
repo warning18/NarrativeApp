@@ -295,102 +295,73 @@ class _StoryView extends ConsumerWidget {
             .toList()
         : const <StoryChoice>[];
 
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
+    final storyTools = <Widget>[
+      IconButton(
+        icon: const Icon(Icons.menu_book_outlined, size: 20),
+        tooltip: tr(ref, 'journal_title'),
+        visualDensity: VisualDensity.compact,
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const JournalScreen()),
+        ),
+      ),
+      _ReadAloudButton(text: displayDescription, language: language),
+    ];
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // No dedicated expand/collapse icon button — it only ever sat
-            // alone taking up its own row, in the way without adding much.
-            // Tapping the header itself now toggles it, on top of the
-            // existing auto-collapse on scroll-down below.
-            if (fullscreenReading)
-              const SizedBox.shrink()
-            else if (statusBarCollapsed)
-              InkWell(
-                borderRadius: BorderRadius.circular(8),
-                onTap: () => ref
-                    .read(_statusBarCollapsedProvider.notifier)
-                    .state = false,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Center(
-                    child: Container(
-                      width: 36,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            else
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(8),
-                    onTap: () => ref
-                        .read(_statusBarCollapsedProvider.notifier)
-                        .state = true,
-                    child: const PlayerStatsBar(),
-                  ),
-                  if (session.activeQuestIds.isNotEmpty ||
-                      session.unlockedShopIds.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
+            // One line above the story: the party's numbers, then the
+            // journal and read-aloud buttons. Quests, shops, alignment and
+            // the rest open from the numbers (see PlayerStatsBar). Scrolling
+            // down into the narration folds the numbers into a handle;
+            // tapping the handle brings them back.
+            if (!fullscreenReading)
+              statusBarCollapsed
+                  ? Row(
                       children: [
-                        if (session.activeQuestIds.isNotEmpty)
-                          ActionChip(
-                            avatar: const Icon(Icons.assignment, size: 16),
-                            label: Text(
-                                '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
-                            onPressed: () => ref
-                                .read(homeTabIndexProvider.notifier)
-                                .state = 1,
+                        Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () => ref
+                                .read(_statusBarCollapsedProvider.notifier)
+                                .state = false,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Center(
+                                child: Container(
+                                  width: 36,
+                                  height: 4,
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .outlineVariant,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        if (session.unlockedShopIds.isNotEmpty)
-                          ActionChip(
-                            avatar: const Icon(Icons.storefront, size: 16),
-                            label: Text(
-                                '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
-                            onPressed: () => ref
-                                .read(homeTabIndexProvider.notifier)
-                                .state = 1,
-                          ),
+                        ),
+                        ...storyTools,
                       ],
-                    ),
-                  ],
-                ],
-              ),
-            if (!fullscreenReading) ...[
-              const SizedBox(height: 8),
+                    )
+                  : PlayerStatsBar(trailing: storyTools),
+            // Edit Mode keeps its own line: back, the node's id and its
+            // editor. A reader never sees node ids.
+            if (!fullscreenReading && isEditMode)
               Row(
                 children: [
-                  if (playState.history.isNotEmpty &&
-                      ref.watch(appModeProvider) == AppMode.edit)
+                  if (playState.history.isNotEmpty)
                     TextButton.icon(
                       onPressed: notifier.goBack,
                       icon: const Icon(Icons.arrow_back),
                       label: Text(tr(ref, 'back')),
                     ),
                   const Spacer(),
-                  IconButton(
-                    icon: const Icon(Icons.menu_book_outlined, size: 20),
-                    tooltip: tr(ref, 'journal_title'),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const JournalScreen()),
-                    ),
-                  ),
-                  _ReadAloudButton(
-                      text: displayDescription, language: language),
-                  const SizedBox(width: 4),
                   Flexible(
                     child: Text(
                       playState.isInExcursion
@@ -400,8 +371,7 @@ class _StoryView extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  if (!playState.isInExcursion &&
-                      ref.watch(appModeProvider) == AppMode.edit) ...[
+                  if (!playState.isInExcursion) ...[
                     const SizedBox(width: 4),
                     IconButton(
                       icon: const Icon(Icons.edit_outlined, size: 18),
@@ -418,8 +388,7 @@ class _StoryView extends ConsumerWidget {
                   ],
                 ],
               ),
-              const SizedBox(height: 8),
-            ],
+            if (!fullscreenReading) const SizedBox(height: 8),
             // Below the header, the narration and the choices share what is
             // left: the choices never take more than [choiceBudget] of it.
             // The area under the narration doesn't scroll with it, so a long
@@ -1377,26 +1346,33 @@ class _HubSections extends ConsumerWidget {
                     size: 18,
                   ),
                   const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      settlement.nameFor(french),
-                      style: Theme.of(context).textTheme.titleSmall,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                ],
+                // The place's name with the done count under it, so the
+                // line keeps its Rest button on a narrow screen.
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (settlement != null)
+                        Text(
+                          settlement.nameFor(french),
+                          style: Theme.of(context).textTheme.titleSmall,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      if (doneLocal.isNotEmpty)
+                        Text(
+                          tr(ref, 'hub_done_count')
+                              .replaceAll('{done}', '${doneLocal.length}')
+                              .replaceAll('{total}',
+                                  '${doneLocal.length + local.length}'),
+                          style: Theme.of(context).textTheme.labelMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
                   ),
-                ] else
-                  const Spacer(),
-                if (doneLocal.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Text(
-                      tr(ref, 'hub_done_count')
-                          .replaceAll('{done}', '${doneLocal.length}')
-                          .replaceAll(
-                              '{total}', '${doneLocal.length + local.length}'),
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                  ),
+                ),
+                const SizedBox(width: 8),
                 OutlinedButton.icon(
                   onPressed: () async {
                     await ref

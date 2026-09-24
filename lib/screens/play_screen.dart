@@ -239,72 +239,59 @@ class PlayScreen extends ConsumerWidget {
             },
           ),
         ),
-        Card(
-          child: ListTile(
-            leading: Icon(campUnlocked
-                ? Icons.local_fire_department_outlined
-                : Icons.lock_outline),
-            title: Text(tr(ref, 'camp_title')),
-            subtitle: Text(
-              campUnlocked
-                  ? '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
-                      '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}'
-                  : tr(ref, 'camp_locked_subtitle'),
+        // Places open as the story reaches them; until then they share one
+        // quiet line instead of a locked card each.
+        if (campUnlocked)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.local_fire_department_outlined),
+              title: Text(tr(ref, 'camp_title')),
+              subtitle: Text(
+                '${session.recruitedAllies.length} ${tr(ref, 'roster_section').toLowerCase()} · '
+                '${session.activeAllyIds.length} ${tr(ref, 'active_label').toLowerCase()}',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const CampScreen()),
+              ),
             ),
-            trailing: campUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !campUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const CampScreen()),
-                    );
-                  },
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(boatUnlocked ? Icons.sailing : Icons.lock_outline),
-            title: Text(tr(ref, 'boat_title')),
-            subtitle: Text(
-              boatUnlocked
-                  ? '${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'
-                  : tr(ref, 'boat_locked_subtitle'),
+        if (boatUnlocked)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.sailing),
+              title: Text(tr(ref, 'boat_title')),
+              subtitle:
+                  Text('${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const BoatScreen()),
+              ),
             ),
-            trailing: boatUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !boatUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const BoatScreen()),
-                    );
-                  },
           ),
-        ),
-        Card(
-          child: ListTile(
-            leading: Icon(
-                townHubUnlocked ? Icons.cottage_outlined : Icons.lock_outline),
-            title: Text(townHubUnlocked
-                ? town!
-                    .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)
-                : tr(ref, 'town_hub_title')),
-            subtitle: Text(
-              townHubUnlocked
-                  ? '${session.completedZoneIds.length} '
-                      '${tr(ref, 'zones_cleared_label').toLowerCase()}'
-                  : tr(ref, 'town_hub_locked_subtitle'),
+        if (townHubUnlocked)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.cottage_outlined),
+              title: Text(town!
+                  .nameFor(ref.watch(appLanguageProvider) == AppLanguage.fr)),
+              subtitle: Text('${session.completedZoneIds.length} '
+                  '${tr(ref, 'zones_cleared_label').toLowerCase()}'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (_) => PortScreen(portId: townPortId)),
+              ),
             ),
-            trailing: townHubUnlocked ? const Icon(Icons.chevron_right) : null,
-            onTap: !townHubUnlocked
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (_) => PortScreen(portId: townPortId)),
-                    );
-                  },
           ),
-        ),
+        _LockedPlacesLine(entries: [
+          if (!campUnlocked)
+            (tr(ref, 'camp_title'), tr(ref, 'camp_locked_subtitle')),
+          if (!boatUnlocked)
+            (tr(ref, 'boat_title'), tr(ref, 'boat_locked_subtitle')),
+          if (!townHubUnlocked)
+            (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),
+        ]),
         Card(
           child: ListTile(
             leading: const Icon(Icons.emoji_events_outlined),
@@ -867,6 +854,46 @@ class _NpcList extends ConsumerWidget {
           ),
         );
       }).toList(),
+    );
+  }
+}
+
+/// The places not open yet (camp, boat, town), on one dimmed line grouped
+/// by what opens them: "Camp, The Rusty Eel: Reach Chapter 3 to unlock".
+/// Nothing when every place is open.
+class _LockedPlacesLine extends StatelessWidget {
+  const _LockedPlacesLine({required this.entries});
+
+  /// Each place's name and what opens it.
+  final List<(String, String)> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    if (entries.isEmpty) return const SizedBox.shrink();
+    final byReason = <String, List<String>>{};
+    for (final (name, reason) in entries) {
+      byReason.putIfAbsent(reason, () => []).add(name);
+    }
+    final theme = Theme.of(context);
+    final muted = theme.colorScheme.onSurfaceVariant;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.lock_outline, size: 18, color: muted),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              [
+                for (final entry in byReason.entries)
+                  '${entry.value.join(', ')}: ${entry.key}',
+              ].join('\n'),
+              style: theme.textTheme.bodySmall?.copyWith(color: muted),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

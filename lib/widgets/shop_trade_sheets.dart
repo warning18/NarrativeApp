@@ -9,6 +9,7 @@ import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'immersive_notice.dart';
 import 'item_stats.dart';
+import 'player_stats_bar.dart';
 
 /// Opens the pack at [shopId] to sell what nobody wears.
 Future<void> showSellSheet(BuildContext context, {required String shopId}) {
@@ -71,9 +72,14 @@ class _SellSheet extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          child: Text(
-            '${tr(ref, 'sell_title')} · ${session.gold} ${tr(ref, 'gold_label')}',
-            style: Theme.of(context).textTheme.titleMedium,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(tr(ref, 'sell_title'),
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
+              const GoldBadge(),
+            ],
           ),
         ),
         Expanded(
@@ -164,9 +170,14 @@ class _ForgeSheet extends ConsumerWidget {
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
-          child: Text(
-            '${tr(ref, 'forge_title')} · ${session.gold} ${tr(ref, 'gold_label')}',
-            style: Theme.of(context).textTheme.titleMedium,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(tr(ref, 'forge_title'),
+                    style: Theme.of(context).textTheme.titleMedium),
+              ),
+              const GoldBadge(),
+            ],
           ),
         ),
         Padding(

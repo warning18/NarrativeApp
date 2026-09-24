@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.133.0+162]
+
+A lighter reading screen, gold in view when trading, expedition cards
+that read on a phone, and a story export in Edit Mode.
+
+### Added
+- **Gold in view.** Shops, the sell and forge sheets, the camp and the
+  boat show the purse at the top, and it pops when it changes.
+- **Story export (Edit Mode).** A share button next to the map's legend
+  button exports every story node: **Light** (id, chapter, text and
+  choices with where they lead, what they fight and where a loss goes,
+  in chapter order and in the app's language) or **Full** (every field
+  of every node in both languages, in the story file's own format,
+  edits included). Either one can be copied or saved to a file.
+
+### Changed
+- **A lighter story screen in play.** The header is one line: level,
+  health, mana, gold and open quests, with the journal and read-aloud
+  buttons at its end. Tapping the numbers opens the rest (experience,
+  alignment, flags, and the way to the quests and shops). The separate
+  Quests and Shops chips are gone, and node ids only show in Edit Mode,
+  so the story gets more of the screen. The same line heads the Play
+  tab and the character sheet.
+- **Expedition cards read on a phone.** Each card shows the zone's name,
+  tier and level chips, its boss and the Begin button; tapping or
+  holding it opens the zone's description, with Begin there too.
+- **Play tab.** Places that are not open yet (camp, boat, town) share
+  one line, "Camp, The Rusty Eel: Reach Chapter 3 to unlock", instead
+  of a locked card each.
+
+### Fixed
+- A town's done count no longer pushes its Rest button off a narrow
+  screen in French; it sits under the place's name.
+
 ## [1.132.0+161]
 
 The review's content, balance and feature list: selling and forging,

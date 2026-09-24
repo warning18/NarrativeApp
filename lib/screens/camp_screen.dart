@@ -22,6 +22,7 @@ import 'expedition_screen.dart';
 import 'inventory_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skills_screen.dart';
+import '../widgets/player_stats_bar.dart';
 
 /// Camp's own expedition pool picks up where Town Hub's leaves off — every
 /// zone from this chapter onward, not just one exact chapter, so later
@@ -64,7 +65,10 @@ class CampScreen extends ConsumerWidget {
         zones == null ||
         shops == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
+        appBar: AppBar(
+          title: Text(tr(ref, 'camp_title')),
+          actions: const [GoldBadge()],
+        ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -117,7 +121,10 @@ class CampScreen extends ConsumerWidget {
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'camp_title'))),
+      appBar: AppBar(
+        title: Text(tr(ref, 'camp_title')),
+        actions: const [GoldBadge()],
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

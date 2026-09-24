@@ -2,56 +2,253 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
+import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
 
+/// The party's vital numbers on one line: level, health, mana, gold and
+/// the open quests, sized down rather than scrolled when the screen is
+/// narrow. [trailing] widgets (the story's journal and read-aloud buttons)
+/// sit at the end of the line. Tapping the numbers opens the rest in a
+/// sheet: experience, alignment, flags, and the way to the quests and
+/// shops (see [showPlayerStatusSheet]).
 class PlayerStatsBar extends ConsumerWidget {
-  const PlayerStatsBar({super.key});
+  const PlayerStatsBar({super.key, this.trailing = const []});
+
+  final List<Widget> trailing;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
+    final scheme = Theme.of(context).colorScheme;
+    final lowHealth = session.maxHealth > 0 &&
+        session.currentHealth * 10 <= session.maxHealth * 3;
 
-    Widget chip(IconData icon, String label) => Chip(
-          avatar: Icon(icon, size: 16),
-          label: Text(label),
-          visualDensity: VisualDensity.compact,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        );
+    final stats = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _Stat(
+          icon: Icons.shield,
+          text: '${tr(ref, 'level_abbrev')} ${session.level}',
+          tooltip: tr(ref, 'level_abbrev'),
+        ),
+        _PulseOnChange(
+          value: session.currentHealth,
+          child: _Stat(
+            icon: Icons.favorite,
+            text: '${session.currentHealth}/${session.maxHealth}',
+            tooltip: tr(ref, 'hp_label'),
+            color: lowHealth ? scheme.error : null,
+          ),
+        ),
+        _PulseOnChange(
+          value: session.mana,
+          child: _Stat(
+            icon: manaIcon,
+            text: '${session.mana}/${session.maxMana}',
+            tooltip: tr(ref, 'mana_label'),
+          ),
+        ),
+        _PulseOnChange(
+          value: session.gold,
+          child: _Stat(
+            icon: Icons.paid,
+            text: '${session.gold}',
+            tooltip: tr(ref, 'gold_label'),
+          ),
+        ),
+        if (session.activeQuestIds.isNotEmpty)
+          _Stat(
+            icon: Icons.assignment_outlined,
+            text: '${session.activeQuestIds.length}',
+            tooltip: tr(ref, 'quests'),
+          ),
+      ],
+    );
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      child: Row(
-        children: [
-          chip(Icons.shield, '${tr(ref, 'level_abbrev')} ${session.level}'),
-          const SizedBox(width: 6),
-          _PulseOnChange(
-            value: session.currentHealth,
-            child: chip(
-              Icons.favorite,
-              '${session.currentHealth}/${session.maxHealth} ${tr(ref, 'hp_label')}',
+    return Row(
+      children: [
+        Expanded(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => showPlayerStatusSheet(context),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: stats,
+              ),
             ),
           ),
-          const SizedBox(width: 6),
-          _PulseOnChange(
-            value: session.mana,
-            child: chip(
-              manaIcon,
-              '${session.mana}/${session.maxMana} ${tr(ref, 'mana_label')}',
+        ),
+        ...trailing,
+      ],
+    );
+  }
+}
+
+/// One number on [PlayerStatsBar]: an icon and its value.
+class _Stat extends StatelessWidget {
+  const _Stat({
+    required this.icon,
+    required this.text,
+    required this.tooltip,
+    this.color,
+  });
+
+  final IconData icon;
+  final String text;
+  final String tooltip;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tint = color ?? theme.colorScheme.primary;
+    return Tooltip(
+      message: tooltip,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: tint),
+            const SizedBox(width: 4),
+            Text(
+              text,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: color,
+                fontFeatures: const [FontFeature.tabularFigures()],
+              ),
             ),
-          ),
-          const SizedBox(width: 6),
-          _PulseOnChange(
-              value: session.gold, child: chip(Icons.paid, '${session.gold}g')),
-          const SizedBox(width: 6),
-          chip(Icons.balance, trAlignmentLabel(ref, session.alignmentLabel)),
-          if (session.flags.isNotEmpty) ...[
-            const SizedBox(width: 6),
-            chip(Icons.flag,
-                '${session.flags.length} ${tr(ref, 'flags_count_label')}'),
           ],
-        ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Everything [PlayerStatsBar] leaves out: level and experience, health,
+/// mana, gold, alignment and flags, with the way to the quests and shops
+/// on the Play tab.
+Future<void> showPlayerStatusSheet(BuildContext context) {
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    builder: (_) => const _PlayerStatusSheet(),
+  );
+}
+
+class _PlayerStatusSheet extends ConsumerWidget {
+  const _PlayerStatusSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    Widget row(IconData icon, String label, String value) => ListTile(
+          dense: true,
+          leading: Icon(icon, size: 20),
+          title: Text(label),
+          trailing: Text(value, style: Theme.of(context).textTheme.titleSmall),
+        );
+    void openPlay() {
+      Navigator.of(context).pop();
+      ref.read(homeTabIndexProvider.notifier).state = 1;
+    }
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            row(Icons.shield, tr(ref, 'level_field_label'),
+                '${session.level} · ${session.currentXP}/${session.xpToNextLevel} ${tr(ref, 'xp_label')}'),
+            row(Icons.favorite, tr(ref, 'hp_label'),
+                '${session.currentHealth}/${session.maxHealth}'),
+            row(manaIcon, tr(ref, 'mana_label'),
+                '${session.mana}/${session.maxMana}'),
+            row(Icons.paid, tr(ref, 'gold_field_label'), '${session.gold}'),
+            row(Icons.balance, tr(ref, 'alignment_label'),
+                trAlignmentLabel(ref, session.alignmentLabel)),
+            if (session.flags.isNotEmpty)
+              row(Icons.flag, tr(ref, 'flags_count_label'),
+                  '${session.flags.length}'),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  ActionChip(
+                    avatar: const Icon(Icons.assignment, size: 16),
+                    label: Text(
+                        '${tr(ref, 'quests')} (${session.activeQuestIds.length})'),
+                    onPressed: openPlay,
+                  ),
+                  if (session.unlockedShopIds.isNotEmpty)
+                    ActionChip(
+                      avatar: const Icon(Icons.storefront, size: 16),
+                      label: Text(
+                          '${tr(ref, 'shops')} (${session.unlockedShopIds.length})'),
+                      onPressed: openPlay,
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The purse, for the top of any screen where gold is spent or earned
+/// (shops, the forge, the camp, the boat): a coin and the amount, which
+/// pops when it changes.
+class GoldBadge extends ConsumerWidget {
+  const GoldBadge({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gold = ref.watch(playerSessionProvider.select((s) => s.gold));
+    final theme = Theme.of(context);
+    return Tooltip(
+      message: tr(ref, 'gold_label'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: _PulseOnChange(
+          value: gold,
+          child: Container(
+            key: const ValueKey('gold_badge'),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.paid,
+                    size: 18, color: theme.colorScheme.onSecondaryContainer),
+                const SizedBox(width: 4),
+                Text(
+                  '$gold',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.onSecondaryContainer,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

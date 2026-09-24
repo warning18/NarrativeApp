@@ -10,8 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/app_mode_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
+import 'package:narrative_data_app/widgets/player_stats_bar.dart';
 
 /// Lets the story and game data load (their assets are decoded off the
 /// fake test clock) and the screen settle.
@@ -102,5 +104,27 @@ void main() {
     _expectNoLayoutError(tester, '2015 with one activity done');
     expect(find.textContaining(' done'), findsOneWidget);
     expect(find.text(finished.text), findsOneWidget);
+
+    // In-game, the story's header is one line of numbers with the journal
+    // and read-aloud buttons: no node ids, and it fits small phones in
+    // both languages.
+    await tester.runAsync(
+        () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
+    for (final language in AppLanguage.values) {
+      await tester.runAsync(() =>
+          container.read(appLanguageProvider.notifier).setLanguage(language));
+      for (final nodeId in ['960', '2015']) {
+        container.read(storyPlayProvider.notifier).jumpTo(nodeId);
+        await _settle(tester);
+        if (dialogButton.evaluate().isNotEmpty) {
+          await tester.tap(dialogButton.first, warnIfMissed: false);
+          await _settle(tester);
+        }
+        final where = 'in-game $nodeId (${language.name})';
+        _expectNoLayoutError(tester, where);
+        expect(find.byType(PlayerStatsBar), findsOneWidget, reason: where);
+        expect(find.textContaining(' $nodeId'), findsNothing, reason: where);
+      }
+    }
   });
 }

@@ -1833,6 +1833,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Begin Expedition',
     AppLanguage.fr: "Partir en expédition"
   },
+  'export_nodes_title': {
+    AppLanguage.en: 'Export the story nodes',
+    AppLanguage.fr: 'Exporter les nœuds du récit',
+  },
+  'export_nodes_light': {
+    AppLanguage.en: 'Light',
+    AppLanguage.fr: 'Légère',
+  },
+  'export_nodes_light_desc': {
+    AppLanguage.en:
+        'Id, chapter, text and choices of every node, in chapter order: for reading or review',
+    AppLanguage.fr:
+        'Id, chapitre, texte et choix de chaque nœud, par chapitre : pour lire ou relire',
+  },
+  'export_nodes_full': {
+    AppLanguage.en: 'Full',
+    AppLanguage.fr: 'Complète',
+  },
+  'export_nodes_full_desc': {
+    AppLanguage.en:
+        'Every field of every node in both languages, in the story file format',
+    AppLanguage.fr:
+        'Tous les champs de chaque nœud dans les deux langues, au format du fichier du récit',
+  },
+  'export_nodes_copied': {
+    AppLanguage.en: 'Story nodes copied to the clipboard.',
+    AppLanguage.fr: 'Nœuds du récit copiés dans le presse-papiers.',
+  },
+  'hold_for_details_hint': {
+    AppLanguage.en: 'Tap or hold for details',
+    AppLanguage.fr: 'Touchez ou maintenez pour les détails',
+  },
   'expedition_progress_label': {
     AppLanguage.en: 'Expedition',
     AppLanguage.fr: 'Expédition'

@@ -16,6 +16,7 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
 import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
+import '../widgets/player_stats_bar.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -70,6 +71,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
       appBar: AppBar(
         title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
         actions: [
+          const GoldBadge(),
           if (forges)
             IconButton(
               icon: const Icon(Icons.hardware_outlined),
