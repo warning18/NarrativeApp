@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
@@ -158,7 +159,8 @@ class _PlayerStatusSheet extends ConsumerWidget {
         );
     void openPlay() {
       Navigator.of(context).pop();
-      ref.read(homeTabIndexProvider.notifier).state = 1;
+      ref.read(homeTabIndexProvider.notifier).state =
+          questsTabIndex(ref.read(appModeProvider));
     }
 
     return SafeArea(

@@ -12,7 +12,6 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
-import '../providers/mode_nudge_provider.dart';
 import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
@@ -26,6 +25,7 @@ import 'achievements_screen.dart';
 import 'boat_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
+import 'fight_lab_screen.dart';
 import 'fight_screen.dart';
 import 'npc_detail_screen.dart';
 import 'shop_detail_screen.dart';
@@ -39,7 +39,6 @@ class PlayScreen extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final playState = ref.watch(storyPlayProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final hasSeenModeNudge = ref.watch(hasSeenModeNudgeProvider);
     final hasSavedGame =
         ref.watch(savedGamesProvider).any((slot) => slot != null);
     // Ironman: with permadeath on, a saved game can't be loaded.
@@ -59,7 +58,10 @@ class PlayScreen extends ConsumerWidget {
     final town = townNode?.settlement;
     final townPortId = town != null && !town.isCamp ? town.portId : null;
     final townHubUnlocked = townPortId != null;
-    final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
+    final campUnlocked = chapterOfNode(playState.currentNodeId) >= campChapter;
+    // In play this page is the Other tab: the character and the camp (with
+    // the boat) have tabs of their own.
+    final asOtherTab = !isEditMode;
     final boatUnlocked = campUnlocked;
     final ports = ref.watch(localizedDbProvider(portsSchema)).value ??
         const <String, dynamic>{};
@@ -82,64 +84,16 @@ class PlayScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // Edit Mode is every fresh install's default (the full authoring
-        // app, not just the game) since that's what this project's own
-        // development relies on -- a genuine first-time player wouldn't
-        // otherwise know the player-only mode exists. One-time nudge,
-        // dismissible either by switching or by closing it outright.
-        if (isEditMode && !hasSeenModeNudge)
+        if (isEditMode)
           Card(
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.sports_esports_outlined,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          tr(ref, 'mode_nudge_message'),
-                          style: TextStyle(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSecondaryContainer,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        visualDensity: VisualDensity.compact,
-                        tooltip: tr(ref, 'close_button'),
-                        onPressed: () => ref
-                            .read(hasSeenModeNudgeProvider.notifier)
-                            .dismiss(),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () async {
-                        await ref
-                            .read(appModeProvider.notifier)
-                            .setMode(AppMode.inGame);
-                        await ref
-                            .read(hasSeenModeNudgeProvider.notifier)
-                            .dismiss();
-                      },
-                      child: Text(tr(ref, 'switch_to_in_game_mode_button')),
-                    ),
-                  ),
-                ],
+            child: ListTile(
+              key: const Key('open_fight_lab'),
+              leading: const Icon(Icons.science_outlined),
+              title: Text(tr(ref, 'fight_lab_title')),
+              subtitle: Text(tr(ref, 'fight_lab_card_desc')),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const FightLabScreen()),
               ),
             ),
           ),
@@ -196,52 +150,53 @@ class PlayScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 4),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.person),
-            title: Text(tr(ref, 'character')),
-            subtitle: Text(
-              '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
-              '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
-              '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
-            ),
-            // Spending stat/skill points is entirely manual and nothing else
-            // nudges toward it, so an unspent balance is easy to forget —
-            // same badge treatment as the unseen-content sections below.
-            trailing: session.statPoints + session.skillPoints > 0
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          '${session.statPoints + session.skillPoints}',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onError,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+        if (!asOtherTab)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.person),
+              title: Text(tr(ref, 'character')),
+              subtitle: Text(
+                '${tr(ref, 'level_abbrev')} ${session.level} · ${session.inventoryItemIds.length} '
+                '${tr(ref, 'item_count_label')} · ${session.skillPoints} ${tr(ref, 'skill_pt_label')} · '
+                '${session.statPoints} ${tr(ref, 'stat_pt_label')}',
+              ),
+              // Spending stat/skill points is entirely manual and nothing else
+              // nudges toward it, so an unspent balance is easy to forget —
+              // same badge treatment as the unseen-content sections below.
+              trailing: session.statPoints + session.skillPoints > 0
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.error,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${session.statPoints + session.skillPoints}',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onError,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const Icon(Icons.chevron_right),
-                    ],
-                  )
-                : const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const CharacterScreen()),
-              );
-            },
+                        const Icon(Icons.chevron_right),
+                      ],
+                    )
+                  : const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const CharacterScreen()),
+                );
+              },
+            ),
           ),
-        ),
         // Places open as the story reaches them; until then they share one
         // quiet line instead of a locked card each.
-        if (campUnlocked)
+        if (campUnlocked && !asOtherTab)
           Card(
             child: ListTile(
               leading: const Icon(Icons.local_fire_department_outlined),
@@ -256,7 +211,7 @@ class PlayScreen extends ConsumerWidget {
               ),
             ),
           ),
-        if (boatUnlocked)
+        if (boatUnlocked && !asOtherTab)
           Card(
             child: ListTile(
               leading: const Icon(Icons.sailing),
@@ -285,9 +240,9 @@ class PlayScreen extends ConsumerWidget {
             ),
           ),
         _LockedPlacesLine(entries: [
-          if (!campUnlocked)
+          if (!campUnlocked && !asOtherTab)
             (tr(ref, 'camp_title'), tr(ref, 'camp_locked_subtitle')),
-          if (!boatUnlocked)
+          if (!boatUnlocked && !asOtherTab)
             (tr(ref, 'boat_title'), tr(ref, 'boat_locked_subtitle')),
           if (!townHubUnlocked)
             (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),

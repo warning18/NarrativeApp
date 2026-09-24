@@ -10,9 +10,10 @@ import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import 'immersive_notice.dart';
 
-/// Opens the save slots, to save into one ([saving]) or load one.
-Future<void> showSaveSlotsSheet(BuildContext context, {required bool saving}) {
-  return showModalBottomSheet<void>(
+/// Opens the save slots, to save into one ([saving]) or load one. True
+/// once a slot has been loaded.
+Future<bool?> showSaveSlotsSheet(BuildContext context, {required bool saving}) {
+  return showModalBottomSheet<bool>(
     context: context,
     showDragHandle: true,
     builder: (_) => SaveSlotsSheet(saving: saving),
@@ -121,7 +122,7 @@ class SaveSlotsSheet extends ConsumerWidget {
         .read(storyPlayProvider.notifier)
         .loadState(saved.currentNodeId, saved.history);
     if (!context.mounted) return;
-    Navigator.pop(context);
+    Navigator.pop(context, true);
     showImmersiveNotice(context,
         icon: Icons.folder_open, message: trFor(lang, 'game_loaded_message'));
   }

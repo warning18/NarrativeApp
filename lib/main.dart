@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app_info.dart';
 import 'providers/palette_provider.dart';
 import 'providers/theme_mode_provider.dart';
-import 'screens/home_shell.dart';
+import 'screens/main_menu_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -40,7 +40,7 @@ class MyApp extends ConsumerWidget {
           child: child ?? const SizedBox.shrink(),
         ),
       ),
-      home: const HomeShell(),
+      home: const MainMenuScreen(),
     );
   }
 }

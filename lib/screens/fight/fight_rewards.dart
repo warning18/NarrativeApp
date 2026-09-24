@@ -381,7 +381,9 @@ extension _FightRewards on _FightScreenState {
   Future<void> _leaveFight() async {
     if (!_over || !_settled || _leaving) return;
     _leaving = true;
-    if (!_won && ref.read(permadeathEnabledProvider)) {
+    if (!_won &&
+        ref.read(permadeathEnabledProvider) &&
+        !widget.modifiers.isTest) {
       final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
       final playerSession = ref.read(playerSessionProvider);
       final races =
@@ -419,7 +421,7 @@ extension _FightRewards on _FightScreenState {
             narrationSeed: _random.nextInt(1 << 20),
           ),
         ),
-        (route) => route.isFirst,
+        isGameRoute,
       );
       return;
     }

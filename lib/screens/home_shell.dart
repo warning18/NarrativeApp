@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_grid_layout.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
+import '../providers/story_providers.dart';
 import 'ai_generator_screen.dart';
+import 'camp_screen.dart';
+import 'character_screen.dart';
 import 'game_data_home_screen.dart';
 import 'play_screen.dart';
 import 'settings_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
 
+/// The game under the main menu. In play: Story, Character, Camp and
+/// Other (quests, shops, bestiary, people, saves). In Edit Mode: Story,
+/// Play, Generate and Data. The story map opens from the header in both.
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
@@ -23,42 +30,64 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   static const List<Widget> _editScreens = [
     StoryPlayerScreen(),
     PlayScreen(),
-    StoryGraphScreen(),
     AiGeneratorScreen(),
     GameDataHomeScreen(),
   ];
 
   static const List<Widget> _inGameScreens = [
     StoryPlayerScreen(),
+    CharacterScreen(embedded: true),
+    _CampTab(),
     PlayScreen(),
-    StoryGraphScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     // Reset to the Story tab whenever the mode changes, so a stale index
-    // from the other mode's (longer) tab list never goes out of range.
+    // from the other mode's tab list never points at the wrong page.
     ref.listen<AppMode>(appModeProvider, (previous, next) {
       ref.read(homeTabIndexProvider.notifier).state = 0;
     });
 
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final screens = isEditMode ? _editScreens : _inGameScreens;
-    final allTitles = [
-      tr(ref, 'title_story'),
-      tr(ref, 'title_play'),
-      tr(ref, 'title_map'),
-      tr(ref, 'title_generate'),
-      tr(ref, 'title_data'),
-    ];
-    final titles = isEditMode ? allTitles : allTitles.sublist(0, 3);
+    final titles = isEditMode
+        ? [
+            tr(ref, 'title_story'),
+            tr(ref, 'title_play'),
+            tr(ref, 'title_generate'),
+            tr(ref, 'title_data'),
+          ]
+        : [
+            tr(ref, 'title_story'),
+            tr(ref, 'character'),
+            tr(ref, 'camp_title'),
+            tr(ref, 'title_other'),
+          ];
     final language = ref.watch(appLanguageProvider);
-    final index = ref.watch(homeTabIndexProvider);
+    final index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
+    final canLeave = Navigator.of(context).canPop();
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: canLeave
+            ? IconButton(
+                icon: const Icon(Icons.home_outlined),
+                tooltip: tr(ref, 'menu_back_to_menu'),
+                onPressed: () =>
+                    Navigator.of(context).popUntil((route) => route.isFirst),
+              )
+            : null,
         title: Text(titles[index]),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.account_tree_outlined),
+            tooltip: tr(ref, 'title_map'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const StoryMapPage()),
+            ),
+          ),
           IconButton(
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
             tooltip: tr(ref, 'language'),
@@ -86,24 +115,69 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         selectedIndex: index,
         onDestinationSelected: (i) =>
             ref.read(homeTabIndexProvider.notifier).state = i,
-        destinations: [
-          NavigationDestination(
-              icon: const Icon(Icons.menu_book), label: tr(ref, 'nav_story')),
-          NavigationDestination(
-            icon: const Icon(Icons.videogame_asset),
-            label: tr(ref, 'nav_play'),
-          ),
-          NavigationDestination(
-              icon: const Icon(Icons.account_tree), label: tr(ref, 'nav_map')),
-          if (isEditMode) ...[
-            NavigationDestination(
-              icon: const Icon(Icons.auto_awesome),
-              label: tr(ref, 'nav_generate'),
+        destinations: isEditMode
+            ? [
+                NavigationDestination(
+                    icon: const Icon(Icons.menu_book),
+                    label: tr(ref, 'nav_story')),
+                NavigationDestination(
+                    icon: const Icon(Icons.videogame_asset),
+                    label: tr(ref, 'nav_play')),
+                NavigationDestination(
+                    icon: const Icon(Icons.auto_awesome),
+                    label: tr(ref, 'nav_generate')),
+                NavigationDestination(
+                    icon: const Icon(Icons.storage),
+                    label: tr(ref, 'nav_data')),
+              ]
+            : [
+                NavigationDestination(
+                    icon: const Icon(Icons.menu_book),
+                    label: tr(ref, 'nav_story')),
+                NavigationDestination(
+                    icon: const Icon(Icons.person_outline),
+                    label: tr(ref, 'nav_character')),
+                NavigationDestination(
+                    icon: const Icon(Icons.local_fire_department_outlined),
+                    label: tr(ref, 'nav_camp')),
+                NavigationDestination(
+                    icon: const Icon(Icons.more_horiz),
+                    label: tr(ref, 'nav_other')),
+              ],
+      ),
+    );
+  }
+}
+
+/// The Camp tab: the camp itself once the story reaches chapter 3, and
+/// until then a word on what it will be.
+class _CampTab extends ConsumerWidget {
+  const _CampTab();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
+    if (chapter >= campChapter) return const CampScreen(embedded: true);
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.lock_outline,
+                size: 48, color: theme.colorScheme.onSurfaceVariant),
+            const SizedBox(height: 12),
+            Text(tr(ref, 'camp_title'), style: theme.textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Text(
+              tr(ref, 'camp_tab_locked_body'),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
             ),
-            NavigationDestination(
-                icon: const Icon(Icons.storage), label: tr(ref, 'nav_data')),
           ],
-        ],
+        ),
       ),
     );
   }

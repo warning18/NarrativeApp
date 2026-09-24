@@ -28,6 +28,7 @@ import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
 import '../providers/expedition_active_provider.dart';
+import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/gemini_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
@@ -182,6 +183,18 @@ class _StoryView extends ConsumerWidget {
         restartLabel: tr(ref, 'restart_story'),
         onRestart: () => notifier.restart(StoryRepository.startNodeId),
       );
+    }
+
+    // A story seen through to its ending is remembered, so the main menu
+    // offers New Game+ from it even after a new game replaces it.
+    if (isStoryEnding(node) && session.raceId.isNotEmpty) {
+      final endingId = node.id;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        ref
+            .read(finishedStoryProvider.notifier)
+            .record(ref.read(playerSessionProvider), endingId);
+      });
     }
 
     // Arriving in a town or camp from elsewhere in the story says so, and

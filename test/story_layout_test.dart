@@ -47,6 +47,9 @@ void main() {
 
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester);
+    // The app opens on the main menu; Edit Mode opens the game.
+    await tester.tap(find.byKey(const Key('menu_edit_mode')));
+    await _settle(tester);
     final container =
         ProviderScope.containerOf(tester.element(find.byType(MaterialApp)));
 

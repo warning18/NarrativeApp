@@ -871,7 +871,7 @@ class _PlaythroughSimulatorScreenState
     // they're popped back to the root.
     if (result.stepsApplied > 0) {
       ref.read(homeTabIndexProvider.notifier).state = 0;
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.of(context).popUntil(isGameRoute);
     }
   }
 

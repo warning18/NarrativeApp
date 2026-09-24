@@ -9,6 +9,171 @@ import 'app_locale.dart';
 const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'nav_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
+  'nav_character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
+  'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
+  'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'fight_lab_title': {
+    AppLanguage.en: 'Fight lab',
+    AppLanguage.fr: 'Labo de combat'
+  },
+  'fight_lab_card_desc': {
+    AppLanguage.en: 'Test any fight, pack, die or ship battle',
+    AppLanguage.fr:
+        'Tester n’importe quel combat, meute, dé ou bataille navale',
+  },
+  'fight_lab_intro': {
+    AppLanguage.en:
+        'Test fights never run permadeath. Your game is put back as it was afterwards (health, gold, loot, experience, die and party) unless you keep what happens.',
+    AppLanguage.fr:
+        'Les combats de test ne déclenchent jamais la mort définitive. Votre partie est remise comme avant ensuite (santé, or, butin, expérience, dé et groupe), sauf si vous gardez le résultat.',
+  },
+  'fight_lab_keep': {
+    AppLanguage.en: 'Keep what happens',
+    AppLanguage.fr: 'Garder le résultat',
+  },
+  'fight_lab_keep_desc': {
+    AppLanguage.en:
+        'Rewards, wounds and loot stay; your own die and party come back',
+    AppLanguage.fr:
+        'Récompenses, blessures et butin restent ; votre dé et votre groupe reviennent',
+  },
+  'fight_lab_full_health': {
+    AppLanguage.en: 'Start at full health',
+    AppLanguage.fr: 'Commencer en pleine santé',
+  },
+  'fight_lab_land_section': {
+    AppLanguage.en: 'Land fight',
+    AppLanguage.fr: 'Combat à terre',
+  },
+  'fight_lab_add_enemy': {
+    AppLanguage.en: 'Add an enemy (up to 3)',
+    AppLanguage.fr: 'Ajouter un ennemi (3 max.)',
+  },
+  'fight_lab_search_enemy': {
+    AppLanguage.en: 'Search by name or id',
+    AppLanguage.fr: 'Chercher par nom ou id',
+  },
+  'fight_lab_difficulty': {
+    AppLanguage.en: 'Enemy strength (health and damage)',
+    AppLanguage.fr: 'Force des ennemis (santé et dégâts)',
+  },
+  'fight_lab_affix': {
+    AppLanguage.en: 'Affix on the first enemy',
+    AppLanguage.fr: 'Trait du premier ennemi',
+  },
+  'fight_lab_none': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
+  'fight_lab_die': {
+    AppLanguage.en: 'Your die for the test',
+    AppLanguage.fr: 'Votre dé pour le test',
+  },
+  'fight_lab_equipped_die': {
+    AppLanguage.en: 'Equipped',
+    AppLanguage.fr: 'Équipé',
+  },
+  'fight_lab_solo': {
+    AppLanguage.en: 'Fight alone',
+    AppLanguage.fr: 'Combattre seul',
+  },
+  'fight_lab_party': {
+    AppLanguage.en: 'Companions in the party',
+    AppLanguage.fr: 'Compagnons dans le groupe',
+  },
+  'fight_lab_no_party': {
+    AppLanguage.en: 'No companion in the party',
+    AppLanguage.fr: 'Aucun compagnon dans le groupe',
+  },
+  'fight_lab_start_fight': {
+    AppLanguage.en: 'Start the test fight',
+    AppLanguage.fr: 'Lancer le combat de test',
+  },
+  'fight_lab_ship_section': {
+    AppLanguage.en: 'Ship battle',
+    AppLanguage.fr: 'Bataille navale',
+  },
+  'fight_lab_enemy_ship': {
+    AppLanguage.en: 'Enemy ship',
+    AppLanguage.fr: 'Navire ennemi',
+  },
+  'fight_lab_all_parts': {
+    AppLanguage.en: 'Every ship part installed',
+    AppLanguage.fr: 'Toutes les pièces installées',
+  },
+  'fight_lab_all_parts_desc': {
+    AppLanguage.en: 'Off: your boat as it is now',
+    AppLanguage.fr: 'Désactivé : votre bateau tel qu’il est',
+  },
+  'fight_lab_start_ship': {
+    AppLanguage.en: 'Start the test battle',
+    AppLanguage.fr: 'Lancer la bataille de test',
+  },
+  'fight_lab_fight_won': {
+    AppLanguage.en: 'Test fight won',
+    AppLanguage.fr: 'Combat de test gagné',
+  },
+  'fight_lab_fight_lost': {
+    AppLanguage.en: 'Test fight lost or left',
+    AppLanguage.fr: 'Combat de test perdu ou quitté',
+  },
+  'fight_lab_ship_won': {
+    AppLanguage.en: 'Test battle won',
+    AppLanguage.fr: 'Bataille de test gagnée',
+  },
+  'fight_lab_ship_lost': {
+    AppLanguage.en: 'Test battle lost',
+    AppLanguage.fr: 'Bataille de test perdue',
+  },
+  'fight_lab_restored': {
+    AppLanguage.en: 'game put back as it was',
+    AppLanguage.fr: 'partie remise comme avant',
+  },
+  'fight_lab_kept': {
+    AppLanguage.en: 'results kept',
+    AppLanguage.fr: 'résultat conservé',
+  },
+  'menu_title': {
+    AppLanguage.en: 'The Grey Shroud',
+    AppLanguage.fr: 'Le Linceul gris',
+  },
+  'menu_subtitle': {
+    AppLanguage.en: 'A tale of dice, debts and a banner that should not exist',
+    AppLanguage.fr:
+        'Un récit de dés, de dettes et d’une bannière qui ne devrait pas exister',
+  },
+  'menu_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
+  'menu_new_game': {
+    AppLanguage.en: 'New Game',
+    AppLanguage.fr: 'Nouvelle partie',
+  },
+  'menu_new_game_confirm_body': {
+    AppLanguage.en:
+        'Start a new story from character creation? The story in progress is replaced. Games saved in a slot are kept.',
+    AppLanguage.fr:
+        'Commencer une nouvelle histoire à la création du personnage ? L’histoire en cours est remplacée. Les parties sauvegardées dans un emplacement sont conservées.',
+  },
+  'menu_load': {AppLanguage.en: 'Load', AppLanguage.fr: 'Charger'},
+  'menu_no_saves': {
+    AppLanguage.en: 'No saved game yet',
+    AppLanguage.fr: 'Aucune partie sauvegardée',
+  },
+  'menu_edit_mode': {
+    AppLanguage.en: 'Edit Mode',
+    AppLanguage.fr: 'Mode édition',
+  },
+  'menu_edit_mode_desc': {
+    AppLanguage.en: 'Story editor, map, data and test tools',
+    AppLanguage.fr: 'Éditeur du récit, carte, données et outils de test',
+  },
+  'menu_back_to_menu': {
+    AppLanguage.en: 'Main menu',
+    AppLanguage.fr: 'Menu principal',
+  },
+  'camp_tab_locked_body': {
+    AppLanguage.en:
+        'Your camp is founded in chapter 3. From then on, this is where you rest, gather your companions, build and set sail.',
+    AppLanguage.fr:
+        'Votre campement est fondé au chapitre 3. Dès lors, c’est ici que vous vous reposez, réunissez vos compagnons, bâtissez et prenez la mer.',
+  },
   'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},

@@ -58,6 +58,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     this.boarding = const BoardingProfile(),
     this.chapter = 1,
     this.buildCrew,
+    this.isTest = false,
   });
 
   final ShipState player;
@@ -80,6 +81,10 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   /// Rebuilds the crew from the session after a boarding fight, which
   /// settles their health on its own; null keeps the panel's own copy.
   final List<ShipCrew> Function()? buildCrew;
+
+  /// An Edit Mode test battle (see FightLabScreen): its boarding fight is
+  /// a test fight too, with no permadeath on a loss.
+  final bool isTest;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -419,6 +424,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
             chapter: widget.chapter,
             healthMultiplier: healthMultiplier,
             difficultyMultiplier: boardingDifficulty,
+            isTest: widget.isTest,
           ),
         ),
       ),

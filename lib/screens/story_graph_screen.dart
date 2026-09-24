@@ -443,8 +443,9 @@ class _GraphViewState extends ConsumerState<_GraphView> {
                               ref
                                   .read(storyPlayProvider.notifier)
                                   .jumpTo(storyNode.id);
-                              ref.read(homeTabIndexProvider.notifier).state = 0;
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              final messenger = ScaffoldMessenger.of(context);
+                              _leaveMap(context, ref);
+                              messenger.showSnackBar(
                                 SnackBar(
                                     content: Text(tr(ref, 'node_activated'))),
                               );
@@ -587,6 +588,29 @@ Future<void> _runAutoplay(
     AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
   };
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  if (result.stepsApplied > 0) _leaveMap(context, ref);
+}
+
+/// The story map as its own page, opened from the game's header.
+class StoryMapPage extends ConsumerWidget {
+  const StoryMapPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(title: Text(tr(ref, 'title_map'))),
+      body: const StoryGraphScreen(),
+    );
+  }
+}
+
+/// Back to the story after a jump or an autoplay from the map: the Story
+/// tab, and the map page closed when the map is one.
+void _leaveMap(BuildContext context, WidgetRef ref) {
+  ref.read(homeTabIndexProvider.notifier).state = 0;
+  if (context.findAncestorWidgetOfExactType<StoryMapPage>() != null) {
+    Navigator.of(context).pop();
+  }
 }
 
 /// Detects a tap (and optionally a double-tap) using raw pointer events
@@ -1030,6 +1054,7 @@ Future<void> _showNodeInfo(
                     onPressed: () {
                       ref.read(storyPlayProvider.notifier).jumpTo(node.id);
                       Navigator.of(sheetContext).pop();
+                      _leaveMap(context, ref);
                     },
                     icon: const Icon(Icons.play_arrow),
                     label: Text(t('jump_to_node')),

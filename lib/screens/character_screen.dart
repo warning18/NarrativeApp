@@ -19,7 +19,11 @@ import 'race_profession_screen.dart';
 import 'skills_screen.dart';
 
 class CharacterScreen extends ConsumerWidget {
-  const CharacterScreen({super.key});
+  const CharacterScreen({super.key, this.embedded = false});
+
+  /// True as the in-game Character tab: the page without its own app bar
+  /// (the game's header is above it).
+  final bool embedded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,97 +45,98 @@ class CharacterScreen extends ConsumerWidget {
       subtitle = '$raceName $professionName';
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'character'))),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const PlayerStatsBar(),
-          const SizedBox(height: 16),
-          if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
-          const _ManaSpellsCard(),
-          if (session.bannerPiecesCollected.isNotEmpty)
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.auto_stories_outlined),
-                title: Text(tr(ref, 'banner_pieces_title')),
-                subtitle: Text(
-                  session.bannerPiecesCollected.map((id) {
-                    final key = 'banner_piece_$id';
-                    final label = tr(ref, key);
-                    return label == key ? id : label;
-                  }).join(' · '),
-                ),
+    final body = ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        const PlayerStatsBar(),
+        const SizedBox(height: 16),
+        if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
+        const _ManaSpellsCard(),
+        if (session.bannerPiecesCollected.isNotEmpty)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.auto_stories_outlined),
+              title: Text(tr(ref, 'banner_pieces_title')),
+              subtitle: Text(
+                session.bannerPiecesCollected.map((id) {
+                  final key = 'banner_piece_$id';
+                  final label = tr(ref, key);
+                  return label == key ? id : label;
+                }).join(' · '),
               ),
             ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.badge_outlined),
-              title: Text(tr(ref, 'race_profession_title')),
-              subtitle: Text(subtitle),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (_) => const RaceProfessionScreen()),
-                );
-              },
-            ),
           ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.backpack),
-              title: Text(tr(ref, 'inventory_equipment')),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const InventoryScreen()),
-                );
-              },
-            ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.badge_outlined),
+            title: Text(tr(ref, 'race_profession_title')),
+            subtitle: Text(subtitle),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const RaceProfessionScreen()),
+              );
+            },
           ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.auto_awesome),
-              title: Text(tr(ref, 'skills')),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const SkillsScreen()),
-                );
-              },
-            ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.backpack),
+            title: Text(tr(ref, 'inventory_equipment')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const InventoryScreen()),
+              );
+            },
           ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.trending_up),
-              title: Text(tr(ref, 'level_up')),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const LevelUpScreen()),
-                );
-              },
-            ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.auto_awesome),
+            title: Text(tr(ref, 'skills')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const SkillsScreen()),
+              );
+            },
           ),
-          Card(
-            child: ListTile(
-              leading: const Icon(Icons.casino),
-              title: Text(tr(ref, 'dice_loadout')),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const DiceLoadoutScreen()),
-                );
-              },
-            ),
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.trending_up),
+            title: Text(tr(ref, 'level_up')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const LevelUpScreen()),
+              );
+            },
           ),
-          if (isEditMode) ...[
-            const SizedBox(height: 16),
-            const _DebugStatsEditor(),
-          ],
+        ),
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.casino),
+            title: Text(tr(ref, 'dice_loadout')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const DiceLoadoutScreen()),
+              );
+            },
+          ),
+        ),
+        if (isEditMode) ...[
+          const SizedBox(height: 16),
+          const _DebugStatsEditor(),
         ],
-      ),
+      ],
+    );
+    if (embedded) return body;
+    return Scaffold(
+      appBar: AppBar(title: Text(tr(ref, 'character'))),
+      body: body,
     );
   }
 }

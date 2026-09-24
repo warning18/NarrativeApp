@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.134.0+163]
+
+A main menu, play tabs built around the character, the map in the header,
+and a fight lab in Edit Mode.
+
+### Added
+- **Main menu.** The app opens on a menu: **Continue** on top when a
+  story is under way (with the character's name, level and chapter),
+  **New Game**, **New Game+** once a story has been finished, **Load**,
+  **Settings** and **Edit Mode**. A home button in the game's header
+  returns to it. New Game asks before replacing a story in progress;
+  New Game+ starts the next cycle from the last finished run.
+- **Fight lab (Edit Mode).** From the Play tab: pick up to three
+  enemies, the chapter, a difficulty, an affix, the die to fight with,
+  solo or with the party, and full health or as things stand, then
+  fight. A boat fight against any enemy ship, with the boat's own
+  parts or all of them, runs the same way. Afterwards the game is put
+  back as it was (gold, health, items, dice, party) unless "Keep what
+  happens" is on; the die picked for the test never stays equipped.
+  A lab fight never triggers permadeath, even under ironman.
+
+### Changed
+- **Play mode tabs.** Story, Character, Camp and Other. Character is
+  the character sheet; Camp opens at chapter 3 (before that the tab
+  says when); Other holds the quests, bestiary, town and the rest of
+  the old Play tab. Edit Mode keeps Story, Play, Generate and Data.
+- **Map in the header.** The story map is an icon next to the language
+  and settings buttons in both modes, and opens as its own page; jumping
+  to a node from it returns to the story.
+- **Camp houses.** Each house is a card with its description, and the
+  Build button sits under it instead of squeezing the text.
+
+### Removed
+- The "try the game mode" nudge on the Play tab (the menu chooses the
+  mode now).
+
 ## [1.133.0+162]
 
 A lighter reading screen, gold in view when trading, expedition cards
