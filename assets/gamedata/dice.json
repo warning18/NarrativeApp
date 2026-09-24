@@ -52,7 +52,8 @@
         "weight": 0.6,
         "element": "None"
       }
-    ]
+    ],
+    "diceName_fr": "Dé de départ"
   },
   "void_die": {
     "diceName": "void_die",
@@ -91,7 +92,8 @@
         "element": "Void"
       }
     ],
-    "cost": 120
+    "cost": 120,
+    "diceName_fr": "Dé du Néant"
   },
   "iron_die": {
     "diceName": "iron_die",
@@ -146,7 +148,8 @@
         "element": "None"
       }
     ],
-    "cost": 90
+    "cost": 90,
+    "diceName_fr": "Dé de fer"
   },
   "flame_die": {
     "diceName": "flame_die",
@@ -201,7 +204,8 @@
         "element": "None"
       }
     ],
-    "cost": 110
+    "cost": 110,
+    "diceName_fr": "Dé de flamme"
   },
   "tide_die": {
     "diceName": "tide_die",
@@ -256,7 +260,8 @@
         "element": "None"
       }
     ],
-    "cost": 110
+    "cost": 110,
+    "diceName_fr": "Dé de marée"
   },
   "storm_die": {
     "diceName": "storm_die",
@@ -311,7 +316,8 @@
         "element": "None"
       }
     ],
-    "cost": 100
+    "cost": 100,
+    "diceName_fr": "Dé d’orage"
   },
   "stone_die": {
     "diceName": "stone_die",
@@ -366,7 +372,8 @@
         "element": "None"
       }
     ],
-    "cost": 95
+    "cost": 95,
+    "diceName_fr": "Dé de pierre"
   },
   "shadow_die": {
     "diceName": "shadow_die",
@@ -421,7 +428,8 @@
         "element": "None"
       }
     ],
-    "cost": 115
+    "cost": 115,
+    "diceName_fr": "Dé d’ombre"
   },
   "holy_die": {
     "diceName": "holy_die",
@@ -476,7 +484,8 @@
         "element": "None"
       }
     ],
-    "cost": 105
+    "cost": 105,
+    "diceName_fr": "Dé sacré"
   },
   "berserker_die": {
     "diceName": "berserker_die",
@@ -531,7 +540,8 @@
         "element": "None"
       }
     ],
-    "cost": 100
+    "cost": 100,
+    "diceName_fr": "Dé du berserker"
   },
   "arcane_die": {
     "diceName": "arcane_die",
@@ -586,7 +596,8 @@
         "element": "None"
       }
     ],
-    "cost": 130
+    "cost": 130,
+    "diceName_fr": "Dé arcanique"
   },
   "huntsman_die": {
     "diceName": "huntsman_die",
@@ -641,7 +652,8 @@
         "element": "Earth"
       }
     ],
-    "cost": 105
+    "cost": 105,
+    "diceName_fr": "Dé du chasseur"
   },
   "liora_die": {
     "diceName": "liora_die",
@@ -696,7 +708,8 @@
         "element": "None"
       }
     ],
-    "cost": 100
+    "cost": 100,
+    "diceName_fr": "Dé de Liora"
   },
   "vess_die": {
     "diceName": "vess_die",
@@ -751,7 +764,8 @@
         "element": "Void"
       }
     ],
-    "cost": 120
+    "cost": 120,
+    "diceName_fr": "Dé de Vess"
   },
   "grosh_die": {
     "diceName": "grosh_die",
@@ -806,7 +820,8 @@
         "element": "None"
       }
     ],
-    "cost": 95
+    "cost": 95,
+    "diceName_fr": "Dé de Grosh"
   },
   "apprentice_die": {
     "diceName": "apprentice_die",
@@ -861,7 +876,8 @@
         "weight": 0.6,
         "element": "None"
       }
-    ]
+    ],
+    "diceName_fr": "Dé de l’apprenti"
   },
   "sage_die": {
     "diceName": "sage_die",
@@ -916,7 +932,8 @@
         "weight": 0.6,
         "element": "None"
       }
-    ]
+    ],
+    "diceName_fr": "Dé du sage"
   },
   "tobin_die": {
     "diceName": "tobin_die",
@@ -971,7 +988,8 @@
         "element": "None"
       }
     ],
-    "cost": 110
+    "cost": 110,
+    "diceName_fr": "Dé de Tobin"
   },
   "malrik_die": {
     "diceName": "malrik_die",
@@ -1026,7 +1044,8 @@
         "element": "Fire"
       }
     ],
-    "cost": 115
+    "cost": 115,
+    "diceName_fr": "Dé de Malrik"
   },
   "gambler_die": {
     "diceName": "gambler_die",
@@ -1081,7 +1100,8 @@
         "element": "None"
       }
     ],
-    "cost": 85
+    "cost": 85,
+    "diceName_fr": "Dé du joueur"
   },
   "frost_die": {
     "diceName": "frost_die",
@@ -1136,7 +1156,8 @@
         "element": "None"
       }
     ],
-    "cost": 115
+    "cost": 115,
+    "diceName_fr": "Dé de givre"
   },
   "twinfang_die": {
     "diceName": "twinfang_die",
@@ -1191,7 +1212,8 @@
         "element": "None"
       }
     ],
-    "cost": 105
+    "cost": 105,
+    "diceName_fr": "Dé des Crocs jumeaux"
   },
   "bulwark_die": {
     "diceName": "bulwark_die",
@@ -1246,7 +1268,8 @@
         "element": "None"
       }
     ],
-    "cost": 100
+    "cost": 100,
+    "diceName_fr": "Dé du rempart"
   },
   "pilgrim_die": {
     "diceName": "pilgrim_die",
@@ -1301,7 +1324,8 @@
         "element": "None"
       }
     ],
-    "cost": 95
+    "cost": 95,
+    "diceName_fr": "Dé du pèlerin"
   },
   "tempest_die": {
     "diceName": "tempest_die",
@@ -1356,6 +1380,183 @@
         "element": "Wind"
       }
     ],
-    "cost": 125
+    "cost": 125,
+    "diceName_fr": "Dé de tempête"
+  },
+  "ossuary_die": {
+    "diceName": "ossuary_die",
+    "cost": 220,
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Bone Cleaver",
+        "type": "Attack",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 1.1,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Grave Guard",
+        "type": "Defend",
+        "value": 10,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Marrow Mend",
+        "type": "Heal",
+        "value": 12,
+        "linkedSkillID": "",
+        "weight": 0.7,
+        "element": "None"
+      },
+      {
+        "faceName": "Last Rites",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "final_stand",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Ossuary Calm",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "stone_resolve",
+        "weight": 0.5,
+        "element": "Earth"
+      },
+      {
+        "faceName": "Open Grave",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.7,
+        "element": "None"
+      }
+    ],
+    "diceName_fr": "Dé de l’ossuaire"
+  },
+  "vigil_die": {
+    "diceName": "vigil_die",
+    "cost": 250,
+    "numberOfFaces": 7,
+    "faces": [
+      {
+        "faceName": "Lantern Strike",
+        "type": "Attack",
+        "value": 10,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Light"
+      },
+      {
+        "faceName": "Watchful Guard",
+        "type": "Defend",
+        "value": 13,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "None"
+      },
+      {
+        "faceName": "Vigil Mend",
+        "type": "Heal",
+        "value": 18,
+        "linkedSkillID": "",
+        "weight": 0.9,
+        "element": "Light"
+      },
+      {
+        "faceName": "Second Chance",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "second_chance",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Rallying Shout",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "rallying_shout",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Keep the Flame",
+        "type": "Mana",
+        "value": 2,
+        "linkedSkillID": "",
+        "weight": 0.4,
+        "element": "None"
+      },
+      {
+        "faceName": "Open Watch",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      }
+    ],
+    "diceName_fr": "Dé de la veillée"
+  },
+  "tearglass_die": {
+    "diceName": "tearglass_die",
+    "cost": 290,
+    "numberOfFaces": 6,
+    "faces": [
+      {
+        "faceName": "Glass Edge",
+        "type": "Attack",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 1.2,
+        "element": "Void"
+      },
+      {
+        "faceName": "Shard Veil",
+        "type": "Defend",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Riftcut",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "precision_thrust",
+        "weight": 0.7,
+        "element": "Void"
+      },
+      {
+        "faceName": "Seal the Crack",
+        "type": "Heal",
+        "value": 12,
+        "linkedSkillID": "",
+        "weight": 0.5,
+        "element": "None"
+      },
+      {
+        "faceName": "Blank Facet",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Final Shard",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "final_stand",
+        "weight": 0.35,
+        "element": "Void"
+      }
+    ],
+    "diceName_fr": "Dé de verre-larme"
   }
 }

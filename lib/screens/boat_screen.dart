@@ -31,9 +31,9 @@ class BoatScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
     final session = ref.watch(playerSessionProvider);
-    final ships = ref.watch(gameDbProvider(shipsSchema)).value;
-    final parts = ref.watch(gameDbProvider(shipPartsSchema)).value;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
+    final ships = ref.watch(localizedDbProvider(shipsSchema)).value;
+    final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value;
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
@@ -198,7 +198,7 @@ class BoatScreen extends ConsumerWidget {
               ref,
               portId: portId,
               port: ports[portId] as Map<String, dynamic>,
-              zones: ref.watch(gameDbProvider(zonesSchema)).value ??
+              zones: ref.watch(localizedDbProvider(zonesSchema)).value ??
                   const <String, dynamic>{},
               isCurrent: portId == currentPortId,
               fromPortId: currentPortId ?? portId,

@@ -339,7 +339,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
       }
     }
     if (!await _maybeRepelBoarders(
-        ref.read(gameDbProvider(enemiesSchema)).value)) {
+        ref.read(localizedDbProvider(enemiesSchema)).value)) {
       return;
     }
     if (!mounted) return;
@@ -531,7 +531,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
     final theme = Theme.of(context);
-    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
     final canBoard = _canBoardThem(enemies);
     final hintKey = _selectedCrewId != null
         ? 'ship_station_hint'

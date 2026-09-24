@@ -186,7 +186,8 @@ extension _FightView on _FightScreenState {
             Card(
               child: ListTile(
                 leading: const Icon(Icons.casino),
-                title: Text(dieDisplayName(_selectedDiceId!)),
+                title: Text(dieDisplayName(_selectedDiceId!,
+                    language: ref.watch(appLanguageProvider))),
                 subtitle: Text('$faceCount ${tr(ref, 'faces_label')}'),
               ),
             ),
@@ -815,7 +816,7 @@ extension _FightView on _FightScreenState {
                             style: theme.textTheme.titleMedium,
                           ),
                           Text(
-                            '${actor.displayName} · ${dieDisplayName(dieId ?? '')}',
+                            '${actor.displayName} · ${dieDisplayName(dieId ?? '', language: lang)}',
                             style: theme.textTheme.bodySmall
                                 ?.copyWith(color: accent),
                           ),
@@ -843,7 +844,7 @@ extension _FightView on _FightScreenState {
                             '{face}',
                             trFor(lang, basicFaceLabelKey(face.channeledFrom)))
                         : '${trFor(lang, 'skill_label')}: '
-                            '${skillDisplayName(_effectiveSkillId(face))}',
+                            '${skillDisplayName(_effectiveSkillId(face), language: lang)}',
                     style: theme.textTheme.bodySmall
                         ?.copyWith(fontStyle: FontStyle.italic),
                   ),

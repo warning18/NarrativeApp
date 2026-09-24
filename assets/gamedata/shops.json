@@ -21,7 +21,9 @@
       "sword_001": 1
     },
     "minChapter": 1,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "L’Étal du Mendiant Aveugle",
+    "shopDescription_fr": "Un étal de fortune où l’on vend des marchandises récupérées."
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -33,7 +35,8 @@
       "armor_leather",
       "sword_001",
       "spellbook_venom_hex",
-      "harborwatch_lantern"
+      "harborwatch_lantern",
+      "boots_tidewalker"
     ],
     "merchantSpecialties": [
       "Artifact",
@@ -49,10 +52,13 @@
       "armor_leather": 1,
       "sword_001": 1,
       "spellbook_venom_hex": 1,
-      "harborwatch_lantern": 1
+      "harborwatch_lantern": 1,
+      "boots_tidewalker": 1
     },
     "minChapter": 1,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Cache secrète du contrebandier",
+    "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
   },
   "weaponsmith_forge": {
     "shopID": "weaponsmith_forge",
@@ -72,7 +78,8 @@
       "dagger_t3",
       "spellbook_war_shout",
       "spellbook_hunters_mark",
-      "harborwatch_cutlass"
+      "harborwatch_cutlass",
+      "boots_worn_leather"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -94,10 +101,13 @@
       "dagger_t3": 1,
       "spellbook_war_shout": 1,
       "spellbook_hunters_mark": 1,
-      "harborwatch_cutlass": 1
+      "harborwatch_cutlass": 1,
+      "boots_worn_leather": 1
     },
     "minChapter": 1,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Forge de l’Armurier",
+    "shopDescription_fr": "Des lames et des lances fraîchement forgées s’alignent sur les râteliers, encore tièdes de l’enclume."
   },
   "shieldwrights_hall": {
     "shopID": "shieldwrights_hall",
@@ -111,7 +121,9 @@
       "shield_t3",
       "shield_t4",
       "shield_t5",
-      "harborwatch_coat"
+      "harborwatch_coat",
+      "greaves_hide",
+      "greaves_studded"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -125,10 +137,14 @@
       "shield_t3": 1,
       "shield_t4": 1,
       "shield_t5": 1,
-      "harborwatch_coat": 1
+      "harborwatch_coat": 1,
+      "greaves_hide": 1,
+      "greaves_studded": 1
     },
     "minChapter": 1,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Halle des Boucliers",
+    "shopDescription_fr": "Des rangées de boucliers, des rondaches fêlées aux égides étincelantes."
   },
   "arcane_bazaar": {
     "shopID": "arcane_bazaar",
@@ -170,7 +186,9 @@
       "siphon_wand": 1
     },
     "minChapter": 2,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "Le Bazar Arcanique",
+    "shopDescription_fr": "La fumée d’encens s’enroule autour d’étagères de bâtons, de parchemins et de choses plus étranges."
   },
   "apothecary_row": {
     "shopID": "apothecary_row",
@@ -200,7 +218,9 @@
       "spellbook_sanctified_ground": 1
     },
     "minChapter": 2,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Rue des Apothicaires",
+    "shopDescription_fr": "Des bocaux de teintures et d’onguents promettent de soigner tous vos maux."
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
@@ -219,7 +239,11 @@
       "shield_t7",
       "staff_t6",
       "staff_t7",
-      "bloodthorn_blade"
+      "bloodthorn_blade",
+      "coat_brigandine",
+      "hood_gravecloth",
+      "spellbook_smoke_veil",
+      "spellbook_snare_shot"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -240,10 +264,16 @@
       "shield_t7": 1,
       "staff_t6": 1,
       "staff_t7": 1,
-      "bloodthorn_blade": 1
+      "bloodthorn_blade": 1,
+      "coat_brigandine": 1,
+      "hood_gravecloth": 1,
+      "spellbook_smoke_veil": 1,
+      "spellbook_snare_shot": 1
     },
     "minChapter": 3,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Chambre forte des contrebandiers",
+    "shopDescription_fr": "Une réserve cachée d’acier de contrebande, un cran au-dessus de tout ce que les forges du port oseraient avouer vendre, et une relique que personne n’ose avouer posséder."
   },
   "hammersmith_forge": {
     "shopID": "hammersmith_forge",
@@ -267,7 +297,8 @@
       "shield_t8",
       "shield_t9",
       "shield_t10",
-      "thornmail_hauberk"
+      "thornmail_hauberk",
+      "spellbook_rally_the_line"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -291,10 +322,13 @@
       "shield_t8": 1,
       "shield_t9": 1,
       "shield_t10": 1,
-      "thornmail_hauberk": 1
+      "thornmail_hauberk": 1,
+      "spellbook_rally_the_line": 1
     },
     "minChapter": 3,
-    "detourEligible": false
+    "detourEligible": false,
+    "shopName_fr": "La Forge du Maître-forgeron",
+    "shopDescription_fr": "Là où l’Armurier envoie les lames et les boucliers trop lourds pour être achevés par un autre qu’un vrai maître-forgeron."
   },
   "arcane_academy": {
     "shopID": "arcane_academy",
@@ -327,7 +361,9 @@
       "spellbook_ember_wave": 1
     },
     "minChapter": 3,
-    "detourEligible": false
+    "detourEligible": false,
+    "shopName_fr": "L’Académie arcanique",
+    "shopDescription_fr": "Passé les étals d’encens du Bazar, une véritable académie : des bâtons cerclés de vieilles protections, pour des mains assez exercées pour les tenir."
   },
   "sharpweave_den": {
     "shopID": "sharpweave_den",
@@ -340,7 +376,8 @@
       "dagger_t7",
       "dagger_t8",
       "dagger_t9",
-      "dagger_t10"
+      "dagger_t10",
+      "spellbook_bleeding_cut"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -353,10 +390,13 @@
       "dagger_t7": 1,
       "dagger_t8": 1,
       "dagger_t9": 1,
-      "dagger_t10": 1
+      "dagger_t10": 1,
+      "spellbook_bleeding_cut": 1
     },
     "minChapter": 3,
-    "detourEligible": false
+    "detourEligible": false,
+    "shopName_fr": "L’Antre de la Trame acérée",
+    "shopDescription_fr": "Ni enseigne, ni étal — juste une porte qui s’ouvre si vous savez déjà qu’elle est là, et derrière elle les plus fines lames de la ville."
   },
   "ossuary_relics": {
     "shopID": "ossuary_relics",
@@ -371,14 +411,23 @@
       "tome_of_insight",
       "sword_t8",
       "shield_t8",
-      "hollow_court_blade"
+      "hollow_court_blade",
+      "boots_bone_laced",
+      "greaves_bone_plated",
+      "helm_drowned_sallet",
+      "hauberk_saltcrust",
+      "boots_tearwalker",
+      "greaves_voidsteel",
+      "spellbook_sundering_roar",
+      "spellbook_arrow_volley"
     ],
     "merchantSpecialties": [
       "Potion",
       "Artifact"
     ],
     "diceStock": [
-      "sage_die"
+      "sage_die",
+      "ossuary_die"
     ],
     "stockQuantities": {
       "potion_major": 4,
@@ -387,10 +436,20 @@
       "tome_of_insight": 1,
       "sword_t8": 1,
       "shield_t8": 1,
-      "hollow_court_blade": 1
+      "hollow_court_blade": 1,
+      "boots_bone_laced": 1,
+      "greaves_bone_plated": 1,
+      "helm_drowned_sallet": 1,
+      "hauberk_saltcrust": 1,
+      "boots_tearwalker": 1,
+      "greaves_voidsteel": 1,
+      "spellbook_sundering_roar": 1,
+      "spellbook_arrow_volley": 1
     },
     "minChapter": 5,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "Le Comptoir de l’Ossuaire",
+    "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit."
   },
   "last_lantern": {
     "shopID": "last_lantern",
@@ -407,7 +466,9 @@
       "dagger_t9",
       "spellbook_smite_the_wicked",
       "hollow_court_mantle",
-      "phoenix_sigil"
+      "phoenix_sigil",
+      "helm_last_watch",
+      "coat_last_watch"
     ],
     "merchantSpecialties": [
       "Potion",
@@ -415,7 +476,9 @@
       "Spellbook"
     ],
     "diceStock": [
-      "pilgrim_die"
+      "pilgrim_die",
+      "vigil_die",
+      "tearglass_die"
     ],
     "stockQuantities": {
       "potion_major": 6,
@@ -426,9 +489,13 @@
       "dagger_t9": 1,
       "spellbook_smite_the_wicked": 1,
       "hollow_court_mantle": 1,
-      "phoenix_sigil": 1
+      "phoenix_sigil": 1,
+      "helm_last_watch": 1,
+      "coat_last_watch": 1
     },
     "minChapter": 6,
-    "detourEligible": true
+    "detourEligible": true,
+    "shopName_fr": "La Dernière Lanterne",
+    "shopDescription_fr": "Le dernier étal encore éclairé du Quartier du Reliquaire, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
   }
 }

@@ -261,7 +261,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final styles = _styles(colorScheme);
-    final quests = ref.watch(gameDbProvider(questsSchema)).value ??
+    final quests = ref.watch(localizedDbProvider(questsSchema)).value ??
         const <String, dynamic>{};
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
@@ -497,7 +497,7 @@ class _GraphViewState extends ConsumerState<_GraphView> {
 Future<Map<String, dynamic>> _awaitGameDb(
     WidgetRef ref, DbSchema schema) async {
   for (var i = 0; i < 150; i++) {
-    final value = ref.read(gameDbProvider(schema)).value;
+    final value = ref.read(localizedDbProvider(schema)).value;
     if (value != null) return value;
     await Future<void>.delayed(const Duration(milliseconds: 20));
   }

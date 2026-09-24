@@ -3422,15 +3422,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'zone_flag_cinder_row_cleared': {
     AppLanguage.en: 'Cinder Row, cleared',
-    AppLanguage.fr: 'Cinder Row, nettoyée',
+    AppLanguage.fr: 'La Rue des Braises, nettoyée',
   },
   'zone_flag_scaffold_yards_cleared': {
     AppLanguage.en: 'The Scaffold Yards, cleared',
-    AppLanguage.fr: 'Les Scaffold Yards, nettoyés',
+    AppLanguage.fr: 'Les Chantiers aux Échafaudages, nettoyés',
   },
   'zone_flag_ossuary_galleries_cleared': {
     AppLanguage.en: 'The Ossuary Galleries, cleared',
-    AppLanguage.fr: 'Les galeries de l’Ossuaire, nettoyées',
+    AppLanguage.fr: 'Les Galeries de l’Ossuaire, nettoyées',
   },
   'zone_flag_drowned_stair_cleared': {
     AppLanguage.en: 'The Drowned Stair, cleared',
@@ -3442,7 +3442,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'zone_flag_shroud_vigil_cleared': {
     AppLanguage.en: 'The Shroud’s vigil, kept',
-    AppLanguage.fr: 'La veillée du Linceul, tenue',
+    AppLanguage.fr: 'La Veillée du Linceul, tenue',
   },
   'zone_flag_void_sovereign_fallen': {
     AppLanguage.en: 'The Void Sovereign, fallen',

@@ -506,8 +506,8 @@ extension _FightCards on _FightScreenState {
     final hit = tier == TelegraphTier.full
         ? _expectedHit(
             enemy,
-            ref.read(gameDbProvider(skillsSchema)).value ?? const {},
-            ref.read(gameDbProvider(itemsSchema)).value ?? const {})
+            ref.read(localizedDbProvider(skillsSchema)).value ?? const {},
+            ref.read(localizedDbProvider(itemsSchema)).value ?? const {})
         : null;
     final textStyle = TextStyle(
         fontSize: 10,

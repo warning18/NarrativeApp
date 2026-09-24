@@ -59,9 +59,10 @@ extension _FightRewards on _FightScreenState {
       // Silver floor. Elite is solo-only, so this never double-applies.
       final loot = <String>[if (_isElite) 'elite_trophy'];
       final session = ref.read(playerSessionProvider);
-      final items = ref.read(gameDbProvider(itemsSchema)).value ?? const {};
+      final items =
+          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
       final professions =
-          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+          ref.read(localizedDbProvider(professionsSchema)).value ?? const {};
       final preferredScalingStat = (professions[session.professionId]
                   as Map<String, dynamic>?)?['preferredScalingStat']
               ?.toString() ??
@@ -383,9 +384,10 @@ extension _FightRewards on _FightScreenState {
     if (!_won && ref.read(permadeathEnabledProvider)) {
       final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
       final playerSession = ref.read(playerSessionProvider);
-      final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
+      final races =
+          ref.read(localizedDbProvider(racesSchema)).value ?? const {};
       final professions =
-          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+          ref.read(localizedDbProvider(professionsSchema)).value ?? const {};
       final result =
           await ref.read(playerSessionProvider.notifier).applyPermadeath(
                 race: races[playerSession.raceId] as Map<String, dynamic>? ??

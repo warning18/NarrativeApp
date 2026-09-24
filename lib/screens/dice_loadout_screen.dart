@@ -29,11 +29,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
+    final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
     final companions = widget.allyId != null
-        ? ref.watch(gameDbProvider(companionsSchema)).value ??
+        ? ref.watch(localizedDbProvider(companionsSchema)).value ??
             const <String, dynamic>{}
         : const <String, dynamic>{};
     final companion = widget.allyId != null
@@ -143,7 +143,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                '${tr(ref, 'die_label')}: ${dieDisplayName(_selectedDiceId ?? '')}',
+                '${tr(ref, 'die_label')}: ${dieDisplayName(_selectedDiceId ?? '', language: ref.watch(appLanguageProvider))}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
@@ -245,7 +245,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     final skill = skills[id] as Map<String, dynamic>?;
                     return _SkillChip(
                       skillId: id,
-                      label: skillDisplayName(id),
+                      label: skillDisplayName(id,
+                          language: ref.watch(appLanguageProvider)),
                       element: skill?['element']?.toString(),
                       onTap: () => _showSkillDetail(context, id, skill),
                     );
@@ -328,7 +329,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     leading: Icon(elementIcon(
                         (skills[id] as Map<String, dynamic>?)?['element']
                             ?.toString())),
-                    title: Text(skillDisplayName(id)),
+                    title: Text(skillDisplayName(id, language: lang)),
                     subtitle: Text(_skillSummary(
                         skills[id] as Map<String, dynamic>?, lang)),
                     selected: id == current,
@@ -356,7 +357,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
 
     showDetailDialog(
       context,
-      title: skillDisplayName(skillId),
+      title: skillDisplayName(skillId, language: ref.read(appLanguageProvider)),
       description: skill?['description']?.toString() ?? '',
       icon: elementIcon(element),
       closeLabel: t('close_button'),

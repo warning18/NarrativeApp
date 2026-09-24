@@ -2,36 +2,50 @@
   "first_companion": {
     "achievementID": "first_companion",
     "achievementName": "New Company",
-    "description": "Recruit your first companion."
+    "description": "Recruit your first companion.",
+    "achievementName_fr": "Nouvelle compagnie",
+    "description_fr": "Recrutez votre premier compagnon."
   },
   "full_roster": {
     "achievementID": "full_roster",
     "achievementName": "Full House",
-    "description": "Recruit six companions. Tobin follows only a Good leader and Malrik only an Evil one."
+    "description": "Recruit six companions. Tobin follows only a Good leader and Malrik only an Evil one.",
+    "achievementName_fr": "Maison pleine",
+    "description_fr": "Recrutez six compagnons. Tobin ne suit qu’un chef d’alignement Bon, et Malrik qu’un chef d’alignement Mauvais."
   },
   "full_party": {
     "achievementID": "full_party",
     "achievementName": "At My Back",
-    "description": "Field two active companions at once."
+    "description": "Field two active companions at once.",
+    "achievementName_fr": "Mes arrières assurés",
+    "description_fr": "Faites combattre deux compagnons actifs en même temps."
   },
   "keldas_hall_built": {
     "achievementID": "keldas_hall_built",
     "achievementName": "A Hall of Her Own",
-    "description": "Build Kelda's Hall."
+    "description": "Build Kelda's Hall.",
+    "achievementName_fr": "Une halle bien à elle",
+    "description_fr": "Construisez la Halle de Kelda."
   },
   "ally_revival": {
     "achievementID": "ally_revival",
     "achievementName": "Not Dead Yet",
-    "description": "Win a fight after an ally was knocked out and revived."
+    "description": "Win a fight after an ally was knocked out and revived.",
+    "achievementName_fr": "Pas encore mort",
+    "description_fr": "Gagnez un combat après qu’un allié a été mis hors combat puis ranimé."
   },
   "first_quest": {
     "achievementID": "first_quest",
     "achievementName": "First Steps",
-    "description": "Complete your first quest."
+    "description": "Complete your first quest.",
+    "achievementName_fr": "Premiers pas",
+    "description_fr": "Terminez votre première quête."
   },
   "first_shop": {
     "achievementID": "first_shop",
     "achievementName": "Window Shopping",
-    "description": "Discover your first shop."
+    "description": "Discover your first shop.",
+    "achievementName_fr": "Lèche-vitrines",
+    "description_fr": "Découvrez votre première boutique."
   }
 }

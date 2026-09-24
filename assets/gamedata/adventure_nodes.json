@@ -13,7 +13,9 @@
     "shopID": "",
     "healPercent": 0,
     "guaranteedLoot": [],
-    "goldReward": 0
+    "goldReward": 0,
+    "displayName_fr": "Embuscade",
+    "flavorText_fr": "Des silhouettes bougent dans le noir."
   },
   "rest_camp": {
     "nodeID": "rest_camp",
@@ -27,7 +29,9 @@
     "shopID": "",
     "healPercent": 50,
     "guaranteedLoot": [],
-    "goldReward": 0
+    "goldReward": 0,
+    "displayName_fr": "Halte de repos",
+    "flavorText_fr": "Un endroit calme pour reprendre votre souffle."
   },
   "inquisition_ambush": {
     "nodeID": "inquisition_ambush",
@@ -45,6 +49,8 @@
     "guaranteedLoot": [
       "potion_minor"
     ],
-    "goldReward": 40
+    "goldReward": 40,
+    "displayName_fr": "Patrouille de l’Inquisition",
+    "flavorText_fr": "Des soldats aux masques blancs barrent la rue, lames au clair."
   }
 }

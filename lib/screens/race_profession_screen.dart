@@ -44,9 +44,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final racesAsync = ref.watch(gameDbProvider(racesSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
-    final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
+    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
+    final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
     _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
     _selectedProfessionId ??=

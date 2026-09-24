@@ -14,7 +14,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Vaincre le voyou des bas-quartiers"
       }
     ],
     "rewardGold": 20,
@@ -33,11 +34,14 @@
         "flagToAdd": "q_first_blood_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Premier sang",
+    "npcDialogueText_fr": "Débarrassez la ruelle de ces voyous, et je vous revaudrai ça."
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
@@ -55,7 +59,9 @@
         "targetNPCName": "Lysa",
         "locationID": "hovel",
         "requiredAmount": 1,
-        "targetFlag": "took_bundle"
+        "targetFlag": "took_bundle",
+        "description_fr": "Récupérer le Linceul Gris dans la masure",
+        "targetNPCName_fr": "Lysa"
       }
     ],
     "rewardGold": 100,
@@ -74,12 +80,15 @@
         "flagToAdd": "has_void_banner",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Mettre le Linceul en sûreté"
       }
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
-    "grantsBannerPieceId": ""
+    "grantsBannerPieceId": "",
+    "questName_fr": "L’Héritage d’Alster",
+    "npcDialogueText_fr": "Ils viennent chercher le Balluchon. Mettez-le en sûreté avant que les Gardiens ne forcent l’entrée."
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -96,7 +105,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Chasser les rats qui souillent les réserves du port"
       }
     ],
     "rewardGold": 30,
@@ -115,11 +125,14 @@
         "flagToAdd": "q_ch2_dockside_debts_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Dettes de quai",
+    "npcDialogueText_fr": "Le maître du port veut qu’on règle leur compte à ces rats avant l’arrivée de la cargaison."
   },
   "q_ch2_smugglers_favor": {
     "questID": "q_ch2_smugglers_favor",
@@ -136,7 +149,8 @@
         "targetItemID": "material_iron_ore",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Rapporter du minerai de fer pour la forge du contrebandier"
       }
     ],
     "rewardGold": 40,
@@ -155,11 +169,14 @@
         "flagToAdd": "q_ch2_smugglers_favor_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Une faveur de contrebandier",
+    "npcDialogueText_fr": "Rapportez-moi ce minerai, et je vous ferai un prix honnête sur l’acier."
   },
   "q_ch2_burning_manifest": {
     "questID": "q_ch2_burning_manifest",
@@ -176,7 +193,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Arrêter le bandit qui incendie les manifestes de cargaison"
       }
     ],
     "rewardGold": 50,
@@ -195,11 +213,14 @@
         "flagToAdd": "q_ch2_burning_manifest_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Manifeste en flammes",
+    "npcDialogueText_fr": "Si ces manifestes brûlent, nous perdons toutes les pistes que nous avons."
   },
   "q_ch2_captains_gambit": {
     "questID": "q_ch2_captains_gambit",
@@ -216,7 +237,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Affronter le capitaine contrebandier"
       }
     ],
     "rewardGold": 70,
@@ -235,11 +257,14 @@
         "flagToAdd": "q_ch2_captains_gambit_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Gambit du capitaine",
+    "npcDialogueText_fr": "Le capitaine tient le dernier bac qui quitte ces quais. Convainquez-le, d’une manière ou d’une autre."
   },
   "q_ch2_harbor_reckoning": {
     "questID": "q_ch2_harbor_reckoning",
@@ -256,7 +281,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Abattre le chien pestiféré qui rôde sur le port"
       }
     ],
     "rewardGold": 90,
@@ -275,11 +301,14 @@
         "flagToAdd": "q_ch2_harbor_reckoning_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "storm_die",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Règlement de comptes au port",
+    "npcDialogueText_fr": "Cette bête arrache les malades à leur lit. Mettez-y fin."
   },
   "q_ch3_ashen_oath": {
     "questID": "q_ch3_ashen_oath",
@@ -296,7 +325,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Faire taire l’acolyte cultiste dans les cendres d’Alster"
       }
     ],
     "rewardGold": 60,
@@ -315,11 +345,14 @@
         "flagToAdd": "q_ch3_ashen_oath_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Serment de Cendres",
+    "npcDialogueText_fr": "Leurs psalmodies n’ont pas cessé depuis que la ville a brûlé. Faites-les taire."
   },
   "q_ch3_inquisition_ledger": {
     "questID": "q_ch3_inquisition_ledger",
@@ -336,7 +369,8 @@
         "targetItemID": "quest_sealed_letter",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Récupérer la lettre scellée de l’Inquisition"
       }
     ],
     "rewardGold": 70,
@@ -355,11 +389,14 @@
         "flagToAdd": "q_ch3_inquisition_ledger_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Registre de l’Inquisition",
+    "npcDialogueText_fr": "Quoi qu’ils aient scellé dans cette lettre, l’Inquisition veut que cela reste enterré."
   },
   "q_ch3_void_relic": {
     "questID": "q_ch3_void_relic",
@@ -376,7 +413,8 @@
         "targetItemID": "artifact_moon_shard",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Arracher l’éclat de lune au feu follet du Néant"
       }
     ],
     "rewardGold": 90,
@@ -395,11 +433,14 @@
         "flagToAdd": "q_ch3_void_relic_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "La Relique du Néant",
+    "npcDialogueText_fr": "Cet éclat vibre de la même étrangeté que le Linceul. Apportez-le-moi."
   },
   "q_ch3_the_high_wardens_fall": {
     "questID": "q_ch3_the_high_wardens_fall",
@@ -416,7 +457,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Vaincre le Haut Gardien de l’Inquisition"
       }
     ],
     "rewardGold": 150,
@@ -435,11 +477,14 @@
         "flagToAdd": "q_ch3_the_high_wardens_fall_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "huntsman_die",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "La Chute du Haut Gardien",
+    "npcDialogueText_fr": "Il a mené lui-même la purge des bas-quartiers. Tout s’achève avec lui."
   },
   "q_ch3_alsters_dawn": {
     "questID": "q_ch3_alsters_dawn",
@@ -457,7 +502,9 @@
         "targetNPCName": "Lysa",
         "locationID": "",
         "requiredAmount": 1,
-        "targetNPCID": "lysa"
+        "targetNPCID": "lysa",
+        "description_fr": "Porter à Alster la nouvelle de la chute du Gardien",
+        "targetNPCName_fr": "Lysa"
       }
     ],
     "rewardGold": 100,
@@ -476,12 +523,15 @@
         "flagToAdd": "q_ch3_alsters_dawn_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
-    "grantsBannerPieceId": ""
+    "grantsBannerPieceId": "",
+    "questName_fr": "L’Aube d’Alster",
+    "npcDialogueText_fr": "Allez-y. Dites-leur que c’est fini. Dites-leur que nous pouvons rentrer chez nous."
   },
   "q_ch2_keldas_stand": {
     "questID": "q_ch2_keldas_stand",
@@ -498,7 +548,9 @@
         "targetItemID": "",
         "targetNPCName": "Kelda",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Aider Kelda à tenir la porte du quai contre les hommes d’abordage",
+        "targetNPCName_fr": "Kelda"
       }
     ],
     "rewardGold": 40,
@@ -517,11 +569,14 @@
         "flagToAdd": "q_ch2_keldas_stand_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Combattre à ses côtés"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "kelda"
+    "rewardAllyId": "kelda",
+    "questName_fr": "Kelda tient bon",
+    "npcDialogueText_fr": "« Je m’appelle Kelda. Je tiens cette porte seule depuis que mon unité a cessé d’en être une, et je continuerai à la tenir seule s’il le faut — mais je préférerais ne pas avoir à le faire. » Elle cale son bouclier sans attendre de réponse, ce que je prends, à raison, pour le signe qu’elle a déjà tranché la question de ce partenariat, dans un sens ou dans l’autre."
   },
   "q_ch2_sables_wager": {
     "questID": "q_ch2_sables_wager",
@@ -538,7 +593,9 @@
         "targetItemID": "dagger_t2",
         "targetNPCName": "Sable",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Récupérer la reconnaissance de dette que Sable a perdue face à un tricheur des quais",
+        "targetNPCName_fr": "Sable"
       }
     ],
     "rewardGold": 35,
@@ -557,11 +614,14 @@
         "flagToAdd": "q_ch2_sables_wager_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Relever le pari"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "sable"
+    "rewardAllyId": "sable",
+    "questName_fr": "Le Pari de Sable",
+    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des dés qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
   },
   "q_ch3_marens_penance": {
     "questID": "q_ch3_marens_penance",
@@ -578,7 +638,9 @@
         "targetItemID": "",
         "targetNPCName": "Maren",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Écouter Sœur Maren plaider l’abandon de ses vœux envers l’Inquisition",
+        "targetNPCName_fr": "Maren"
       }
     ],
     "rewardGold": 60,
@@ -597,11 +659,14 @@
         "flagToAdd": "q_ch3_marens_penance_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "La croire sur parole"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "maren"
+    "rewardAllyId": "maren",
+    "questName_fr": "La Pénitence de Sœur Maren",
+    "npcDialogueText_fr": "« J’ai prêté serment de soigner au nom de l’Inquisition, et pendant des années je me suis répété que le nom était la moindre moitié de cette phrase. » Sœur Maren pose un encensoir qui ne sent plus rien de ce en quoi elle croit. « J’ai fini de me chercher des excuses pour ce que j’ai vu cet ordre faire. Laissez-moi soigner selon mes propres termes, ou non, mais je préférerais que ce soit avec vous plutôt que pour eux. »"
   },
   "q_ch2_informants_tip": {
     "questID": "q_ch2_informants_tip",
@@ -618,7 +683,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "S’occuper du gardien désigné par l’indicateur"
       }
     ],
     "rewardGold": 45,
@@ -637,11 +703,14 @@
         "flagToAdd": "q_ch2_informants_tip_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Tuyau de l’indicateur",
+    "npcDialogueText_fr": "Le bruit court sur les quais qu’un gardien détourne des marchandises de contrebande pour son propre compte. Occupez-vous de lui, et il y aura une part pour vous."
   },
   "q_ch2_terns_toll": {
     "questID": "q_ch2_terns_toll",
@@ -658,7 +727,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "S’occuper du contremaître qui rançonne Tern Row"
       }
     ],
     "rewardGold": 40,
@@ -677,11 +747,14 @@
         "flagToAdd": "q_ch2_terns_toll_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Péage de Tern Row",
+    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »"
   },
   "q_ch2_lioras_watch": {
     "questID": "q_ch2_lioras_watch",
@@ -698,7 +771,9 @@
         "targetItemID": "",
         "targetNPCName": "Liora",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Aider Liora à mettre fin aux raids du capitaine contrebandier contre les bateaux de réfugiés",
+        "targetNPCName_fr": "Liora"
       }
     ],
     "rewardGold": 40,
@@ -717,11 +792,14 @@
         "flagToAdd": "q_ch2_lioras_watch_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Tirer ensemble"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "liora"
+    "rewardAllyId": "liora",
+    "questName_fr": "Le Guet de Liora",
+    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »"
   },
   "q_ch1_vess_in_the_dark": {
     "questID": "q_ch1_vess_in_the_dark",
@@ -738,7 +816,9 @@
         "targetItemID": "",
         "targetNPCName": "Vess",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Écouter Vess parler de ce que le Linceul a laissé en elle",
+        "targetNPCName_fr": "Vess"
       }
     ],
     "rewardGold": 25,
@@ -759,11 +839,14 @@
         "flagToAdd": "q_ch1_vess_in_the_dark_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Écouter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "vess"
+    "rewardAllyId": "vess",
+    "questName_fr": "Vess dans les ténèbres",
+    "npcDialogueText_fr": "« Vous portez la marque, vous aussi », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « La mienne a mis plus de temps à s’installer. La vôtre décide encore de ce qu’elle attend de vous. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
   },
   "q_ch3_groshs_price": {
     "questID": "q_ch3_groshs_price",
@@ -780,7 +863,9 @@
         "targetItemID": "",
         "targetNPCName": "Grosh",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Prouver que votre argent est bon en abattant un zélote de la Cour Creuse avec Grosh",
+        "targetNPCName_fr": "Grosh"
       }
     ],
     "rewardGold": 55,
@@ -799,11 +884,14 @@
         "flagToAdd": "q_ch3_groshs_price_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "L’engager sur-le-champ"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "grosh"
+    "rewardAllyId": "grosh",
+    "questName_fr": "Le Prix de Grosh",
+    "npcDialogueText_fr": "« Je ne travaille pas gratis, et je ne travaille pas pour des promesses », dit-il en me jaugeant comme un boucher jauge une bête dont il n’a pas encore décidé si elle vaut le couteau. « Vous avez l’air de pouvoir vraiment payer, ce qui vous place déjà devant les quatre derniers qui ont tenté de m’engager cette semaine. Abattez avec moi un des zélotes de la Cour Creuse, et on considérera l’entretien comme terminé. »"
   },
   "q_ch3_reckoning_wall": {
     "questID": "q_ch3_reckoning_wall",
@@ -820,7 +908,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Arrêter l’auxiliaire de l’Inquisition envoyé détruire le mur des survivants"
       }
     ],
     "rewardGold": 50,
@@ -839,11 +928,14 @@
         "flagToAdd": "q_ch3_reckoning_wall_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Mur des comptes",
+    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »"
   },
   "q_temptation_light": {
     "questID": "q_temptation_light",
@@ -860,7 +952,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Abattre un Diablotin de la Fosse"
       }
     ],
     "rewardGold": 60,
@@ -879,11 +972,14 @@
         "flagToAdd": "q_temptation_light_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter la charge"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Une charge de lumière",
+    "npcDialogueText_fr": "Une créature de la Fosse arpente ces rues sous un visage volé. Traquez-la, et vous serez compté parmi les justes."
   },
   "q_temptation_dark": {
     "questID": "q_temptation_dark",
@@ -900,7 +996,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Abattre une Sentinelle du Chœur"
       }
     ],
     "rewardGold": 90,
@@ -919,11 +1016,14 @@
         "flagToAdd": "q_temptation_dark_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Conclure le marché"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Un marché dans l’ombre",
+    "npcDialogueText_fr": "Leur sentinelle flaire vos talons. Abattez-la pour moi, et je paierai en or et en secrets."
   },
   "q_ch4_the_second_ledger": {
     "questID": "q_ch4_the_second_ledger",
@@ -940,7 +1040,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Vaincre l’Inquisiteur de la Cour Creuse qui tient le second registre"
       }
     ],
     "rewardGold": 200,
@@ -959,11 +1060,14 @@
         "flagToAdd": "q_ch4_the_second_ledger_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Second Registre",
+    "npcDialogueText_fr": "« Il y avait deux registres. Celui que vous portez est la liste des enlevés. L’autre est la liste de ceux qui ont enlevé — et l’Inquisiteur qui le tient attend au bas de l’Escalier Noyé. » L’archiviste essuie l’encre de ses doigts avec l’air d’une femme qui a déjà décidé ce qu’elle est prête à perdre."
   },
   "q_ch4_ossuary_bounty": {
     "questID": "q_ch4_ossuary_bounty",
@@ -980,7 +1084,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 3
+        "requiredAmount": 3,
+        "description_fr": "Débarrasser les galeries inondées de trois goules des catacombes"
       }
     ],
     "rewardGold": 90,
@@ -999,11 +1104,14 @@
         "flagToAdd": "q_ch4_ossuary_bounty_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "La Prime de l’Ossuaire",
+    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »"
   },
   "q_ch5_the_dead_heart": {
     "questID": "q_ch5_the_dead_heart",
@@ -1020,7 +1128,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Vaincre l’Archonte du Néant qui garde la veillée du Linceul"
       }
     ],
     "rewardGold": 260,
@@ -1039,11 +1148,14 @@
         "flagToAdd": "q_ch5_the_dead_heart_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Le Cœur Mort",
+    "npcDialogueText_fr": "« Le registre s’arrête à la déchirure, et quelque chose se tient entre elle et le reste de la ville depuis la nuit où elle s’est ouverte. » La gardienne des cartes tapote la dernière page. « C’était l’un des nôtres, autrefois. Il ne sera pas ravi de voir le livre. »"
   },
   "q_ch5_penitents_confession": {
     "questID": "q_ch5_penitents_confession",
@@ -1060,7 +1172,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Relever le défi de l’Inquisiteur pénitent"
       }
     ],
     "rewardGold": 120,
@@ -1079,11 +1192,14 @@
         "flagToAdd": "q_ch5_penitents_confession_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "La Confession du pénitent",
+    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant."
   },
   "q_ch6_beyond_the_tear": {
     "questID": "q_ch6_beyond_the_tear",
@@ -1100,7 +1216,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Vaincre le Souverain du Néant au-delà de la déchirure"
       }
     ],
     "rewardGold": 400,
@@ -1119,11 +1236,14 @@
         "flagToAdd": "q_ch6_beyond_the_tear_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Au-delà de la Déchirure",
+    "npcDialogueText_fr": "Les membrures de l’Eel grincent contre le sable. De l’autre côté de l’eau, la déchirure est ouverte, et ce qui connaissait le nom de votre famille attend de l’autre côté que vous ayez la politesse de frapper."
   },
   "q_ch6_faces_of_the_fallen": {
     "questID": "q_ch6_faces_of_the_fallen",
@@ -1140,7 +1260,8 @@
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
-        "requiredAmount": 2
+        "requiredAmount": 2,
+        "description_fr": "Abattre les reflets creux qui portent les visages des vaincus"
       }
     ],
     "rewardGold": 150,
@@ -1159,11 +1280,14 @@
         "flagToAdd": "q_ch6_faces_of_the_fallen_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Accepter"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "questName_fr": "Les Visages des vaincus",
+    "npcDialogueText_fr": "Ils arpentent la Rive Creuse sous des visages que vous avez abattus sur un pont, dans une salle close, sur les docks. Aucun n’est heureux de vous voir. Tous se souviennent de la façon dont cela s’est terminé."
   },
   "q_ch4_tobins_vigil": {
     "questID": "q_ch4_tobins_vigil",
@@ -1180,7 +1304,9 @@
         "targetItemID": "",
         "targetNPCName": "Tobin",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Chasser une goule des catacombes loin des chandelles du cloître noyé avec Frère Tobin",
+        "targetNPCName_fr": "Tobin"
       }
     ],
     "rewardGold": 60,
@@ -1199,11 +1325,14 @@
         "flagToAdd": "q_ch4_tobins_vigil_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Se ranger du côté du marteau"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "tobin"
+    "rewardAllyId": "tobin",
+    "questName_fr": "La Veillée de Frère Tobin",
+    "npcDialogueText_fr": "« J’ai chanté onze ans dans le chœur de la Cour, et je suis parti la nuit où l’on a demandé au chœur de chanter sur ce que la Cour avait fait dans le Quartier des Cendres. » Il ne cesse pas de tailler la mèche tandis qu’il parle. « Ces gens n’ont rien d’autre que les chandelles et moi. Les goules remontent de l’inondation pour les chandelles. Abattez-en une à mes côtés et je saurai que vous êtes ce qu’on dit de vous, et je porterai un marteau pour vous tant que vous continuerez à l’être. »"
   },
   "q_ch5_malriks_cut": {
     "questID": "q_ch5_malriks_cut",
@@ -1220,7 +1349,9 @@
         "targetItemID": "",
         "targetNPCName": "Malrik",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "description_fr": "Abattre un molosse du Néant avec Malrik et prouver que l’association paie",
+        "targetNPCName_fr": "Malrik"
       }
     ],
     "rewardGold": 80,
@@ -1239,10 +1370,13 @@
         "flagToAdd": "q_ch5_malriks_cut_accepted",
         "nextEventID": "",
         "actionType": "Accept",
-        "lockedText": ""
+        "lockedText": "",
+        "buttonText_fr": "Toper pour la part"
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": "malrik"
+    "rewardAllyId": "malrik",
+    "questName_fr": "La Part de Malrik",
+    "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
   }
 }

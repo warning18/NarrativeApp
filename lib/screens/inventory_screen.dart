@@ -66,10 +66,10 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
+    final itemsAsync = ref.watch(localizedDbProvider(itemsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
     final companions =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
 
     final companion = widget.allyId != null
         ? companions[widget.allyId] as Map<String, dynamic>?
@@ -110,7 +110,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 data: (dice) => _InventoryBody(
                   items: items,
                   itemSets: parseItemSets(
-                      ref.watch(gameDbProvider(itemSetsSchema)).value ??
+                      ref.watch(localizedDbProvider(itemSetsSchema)).value ??
                           const {}),
                   dice: dice,
                   allyId: widget.allyId,
@@ -301,9 +301,10 @@ class _InventoryBody extends ConsumerWidget {
     int equipperConstitution = session.constitution;
     int equipperIntelligence = session.intelligence;
     if (allyId != null) {
-      final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+      final races =
+          ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
       final professions =
-          ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+          ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
       final gameConfig = ref.watch(gameConfigProvider).value ?? const {};
       final race = races[companion?['raceId']?.toString() ?? '']
               as Map<String, dynamic>? ??
@@ -360,7 +361,7 @@ class _InventoryBody extends ConsumerWidget {
         equippedIds.contains(id) ||
         session.freeCopiesOf(id, wearerId: wearerId) > 0;
     final companionsDb =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
     String? wornByOthers(String id) {
       if (hasFreeCopy(id)) return null;
       final names = [
@@ -530,7 +531,8 @@ class _InventoryBody extends ConsumerWidget {
                 : 0;
             return ListTile(
               leading: const Icon(Icons.casino),
-              title: Text(dieDisplayName(id)),
+              title: Text(
+                  dieDisplayName(id, language: ref.watch(appLanguageProvider))),
               subtitle: Text(
                   '$faceCount $facesLabel · ${dieFacesSummary(dice[id] as Map<String, dynamic>?, ref.read(appLanguageProvider))}'),
               trailing:

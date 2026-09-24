@@ -247,13 +247,13 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
-    final racesAsync = ref.watch(gameDbProvider(racesSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
+    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     final companions =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
     final merges =
-        ref.watch(gameDbProvider(skillMergesSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(skillMergesSchema)).value ?? const {};
     final session = ref.watch(playerSessionProvider);
     final isPlayer = widget.allyId == null;
     // Spells are the player's alone (companions cast nothing), so the
@@ -262,9 +262,9 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
         ? _buildSpellSection(
             session,
             parseSpells(
-                ref.watch(gameDbProvider(spellsSchema)).value ?? const {}),
-            ref.watch(gameDbProvider(itemsSchema)).value ?? const {},
-            ref.watch(gameDbProvider(shopsSchema)).value ?? const {},
+                ref.watch(localizedDbProvider(spellsSchema)).value ?? const {}),
+            ref.watch(localizedDbProvider(itemsSchema)).value ?? const {},
+            ref.watch(localizedDbProvider(shopsSchema)).value ?? const {},
           )
         : const <Widget>[];
 
@@ -587,7 +587,8 @@ class _SkillList extends ConsumerWidget {
                       showImmersiveNotice(
                         context,
                         icon: Icons.auto_awesome,
-                        message: '$unlockedPrefix: $id',
+                        message:
+                            '$unlockedPrefix: ${skillDisplayName(id, language: ref.read(appLanguageProvider))}',
                       );
                     }
                   : null,
@@ -599,7 +600,7 @@ class _SkillList extends ConsumerWidget {
           final subtitleParts = <String>[
             if (description.isNotEmpty) description,
             if (requiredSkillId.isNotEmpty)
-              '${tr(ref, 'requires_label')} $requiredSkillId',
+              '${tr(ref, 'requires_label')} ${skillDisplayName(requiredSkillId, language: ref.watch(appLanguageProvider))}',
             if (restriction.isNotEmpty) restriction,
             if (skillAlignment.isNotEmpty)
               '${tr(ref, 'aligned_gear_label')}: '
@@ -617,7 +618,8 @@ class _SkillList extends ConsumerWidget {
                 : null,
             child: ListTile(
               leading: SkillPixelIcon(id),
-              title: Text(skillDisplayName(id)),
+              title: Text(skillDisplayName(id,
+                  language: ref.watch(appLanguageProvider))),
               subtitle: Text(subtitleParts.join(' · ')),
               isThreeLine: description.isNotEmpty,
               trailing: trailing,

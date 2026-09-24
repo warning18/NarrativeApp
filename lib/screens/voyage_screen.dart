@@ -386,13 +386,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   Widget build(BuildContext context) {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
-    final ships = ref.watch(gameDbProvider(shipsSchema)).value;
-    final parts = ref.watch(gameDbProvider(shipPartsSchema)).value;
-    final enemyShips = ref.watch(gameDbProvider(enemyShipsSchema)).value;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value;
-    final races = ref.watch(gameDbProvider(racesSchema)).value;
-    final professions = ref.watch(gameDbProvider(professionsSchema)).value;
+    final ships = ref.watch(localizedDbProvider(shipsSchema)).value;
+    final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value;
+    final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value;
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value;
+    final races = ref.watch(localizedDbProvider(racesSchema)).value;
+    final professions = ref.watch(localizedDbProvider(professionsSchema)).value;
     final gameConfig = ref.watch(gameConfigProvider).value;
     final title =
         '${trFor(lang, 'voyage_title')}: ${portNameFor(widget.toPort, fr)}';

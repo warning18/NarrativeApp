@@ -24,8 +24,8 @@ class CharacterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    final racesAsync = ref.watch(gameDbProvider(racesSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
     String subtitle = tr(ref, 'char_not_set');
@@ -173,8 +173,8 @@ class _ManaSpellsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
-    final spells =
-        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
+    final spells = parseSpells(
+        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
     final known = <SpellSpec>[
       for (final id in session.knownSpellIds)
         if (spells[id] != null) spells[id]!,

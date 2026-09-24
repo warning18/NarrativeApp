@@ -204,6 +204,8 @@ final DbSchema itemsSchema = DbSchema(
     FieldSchema(key: 'id', label: 'ID', type: FieldType.text),
     FieldSchema(key: 'itemName', label: 'Item Name', type: FieldType.text),
     FieldSchema(
+        key: 'itemName_fr', label: 'Item Name (FR)', type: FieldType.text),
+    FieldSchema(
       key: 'itemType',
       label: 'Item Type',
       type: FieldType.enumeration,
@@ -396,17 +398,6 @@ final DbSchema itemsSchema = DbSchema(
       type: FieldType.reference,
       referenceSchemaId: 'spells',
     ),
-    visualAssetFieldSchema('items'),
-  ],
-);
-
-final DbSchema skillsSchema = DbSchema(
-  id: 'skills',
-  label: 'Skills',
-  assetPath: 'assets/gamedata/skills.json',
-  primaryKeyField: 'id',
-  visualAssetField: 'visualAsset',
-  fields: [
     FieldSchema(
         key: 'sellValue',
         label: 'Sell value (overrides two fifths of the cost)',
@@ -424,7 +415,19 @@ final DbSchema skillsSchema = DbSchema(
         key: 'craftMaterials',
         label: 'Forging materials {itemId: count}',
         type: FieldType.json),
+    visualAssetFieldSchema('items'),
+  ],
+);
+
+final DbSchema skillsSchema = DbSchema(
+  id: 'skills',
+  label: 'Skills',
+  assetPath: 'assets/gamedata/skills.json',
+  primaryKeyField: 'id',
+  visualAssetField: 'visualAsset',
+  fields: [
     FieldSchema(key: 'id', label: 'ID (Skill Name)', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Skill Name (FR)', type: FieldType.text),
     FieldSchema(
       key: 'element',
       label: 'Element',
@@ -461,6 +464,10 @@ final DbSchema skillsSchema = DbSchema(
         label: 'Description',
         type: FieldType.multilineText),
     FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
         key: 'healAmount',
         label: 'Heal Amount',
         type: FieldType.integer,
@@ -489,6 +496,10 @@ final DbSchema skillsSchema = DbSchema(
     ),
     FieldSchema(
         key: 'battleMessage', label: 'Battle Message', type: FieldType.text),
+    FieldSchema(
+        key: 'battleMessage_fr',
+        label: 'Battle Message (FR)',
+        type: FieldType.text),
     FieldSchema(
       key: 'restrictedRaceID',
       label: 'Reserved For Race',
@@ -579,8 +590,14 @@ final DbSchema racesSchema = DbSchema(
     FieldSchema(key: 'raceID', label: 'Race ID', type: FieldType.text),
     FieldSchema(key: 'raceName', label: 'Race Name', type: FieldType.text),
     FieldSchema(
+        key: 'raceName_fr', label: 'Race Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
         type: FieldType.multilineText),
     FieldSchema(
         key: 'powerMedium',
@@ -636,8 +653,16 @@ final DbSchema professionsSchema = DbSchema(
     FieldSchema(
         key: 'professionName', label: 'Profession Name', type: FieldType.text),
     FieldSchema(
+        key: 'professionName_fr',
+        label: 'Profession Name (FR)',
+        type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
         type: FieldType.multilineText),
     FieldSchema(
       key: 'bonusMaxHealth',
@@ -707,6 +732,8 @@ final DbSchema diceSchema = DbSchema(
   fields: [
     FieldSchema(key: 'diceName', label: 'Dice Name', type: FieldType.text),
     FieldSchema(
+        key: 'diceName_fr', label: 'Dice Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
     FieldSchema(
       key: 'numberOfFaces',
@@ -732,6 +759,8 @@ final DbSchema enemiesSchema = DbSchema(
   visualAssetField: 'visualAsset',
   fields: [
     FieldSchema(key: 'enemyName', label: 'Enemy Name', type: FieldType.text),
+    FieldSchema(
+        key: 'enemyName_fr', label: 'Enemy Name (FR)', type: FieldType.text),
     // Who the enemy is, shown under its name on the fight's setup card.
     FieldSchema(
         key: 'description',
@@ -836,6 +865,8 @@ final DbSchema enemyShipsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
     FieldSchema(
+        key: 'shipName_fr', label: 'Ship Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'displayName', label: 'Display Name', type: FieldType.text),
     FieldSchema(
         key: 'displayName_fr',
@@ -929,6 +960,8 @@ final DbSchema shipsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'shipID', label: 'Ship ID', type: FieldType.text),
     FieldSchema(key: 'shipName', label: 'Ship Name', type: FieldType.text),
+    FieldSchema(
+        key: 'shipName_fr', label: 'Ship Name (FR)', type: FieldType.text),
     FieldSchema(
         key: 'baseMaxHull',
         label: 'Base Max Hull',
@@ -1063,6 +1096,8 @@ final DbSchema questsSchema = DbSchema(
     FieldSchema(key: 'questID', label: 'Quest ID', type: FieldType.text),
     FieldSchema(key: 'questName', label: 'Quest Name', type: FieldType.text),
     FieldSchema(
+        key: 'questName_fr', label: 'Quest Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'chapter',
         label: 'Chapter',
         type: FieldType.integer,
@@ -1136,6 +1171,10 @@ final DbSchema questsSchema = DbSchema(
         label: 'NPC Dialogue Text',
         type: FieldType.multilineText),
     FieldSchema(
+        key: 'npcDialogueText_fr',
+        label: 'NPC Dialogue Text (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
         key: 'requiredGold',
         label: 'Required Gold',
         type: FieldType.integer,
@@ -1165,8 +1204,14 @@ final DbSchema shopsSchema = DbSchema(
     FieldSchema(key: 'shopID', label: 'Shop ID', type: FieldType.text),
     FieldSchema(key: 'shopName', label: 'Shop Name', type: FieldType.text),
     FieldSchema(
+        key: 'shopName_fr', label: 'Shop Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'shopDescription',
         label: 'Shop Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'shopDescription_fr',
+        label: 'Shop Description (FR)',
         type: FieldType.multilineText),
     FieldSchema(
         key: 'minChapter',
@@ -1254,7 +1299,15 @@ final DbSchema adventureNodesSchema = DbSchema(
     FieldSchema(
         key: 'displayName', label: 'Display Name', type: FieldType.text),
     FieldSchema(
+        key: 'displayName_fr',
+        label: 'Display Name (FR)',
+        type: FieldType.text),
+    FieldSchema(
         key: 'flavorText', label: 'Flavor Text', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'flavorText_fr',
+        label: 'Flavor Text (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
       key: 'category',
       label: 'Category',
@@ -1324,6 +1377,10 @@ final DbSchema companionsSchema = DbSchema(
         key: 'companionID', label: 'Companion ID', type: FieldType.text),
     FieldSchema(
         key: 'companionName', label: 'Companion Name', type: FieldType.text),
+    FieldSchema(
+        key: 'companionName_fr',
+        label: 'Companion Name (FR)',
+        type: FieldType.text),
     FieldSchema(
       key: 'raceId',
       label: 'Race',
@@ -1430,8 +1487,14 @@ final DbSchema housesSchema = DbSchema(
     FieldSchema(key: 'houseID', label: 'House ID', type: FieldType.text),
     FieldSchema(key: 'houseName', label: 'House Name', type: FieldType.text),
     FieldSchema(
+        key: 'houseName_fr', label: 'House Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
         type: FieldType.multilineText),
     FieldSchema(
         key: 'buildCost',
@@ -1483,6 +1546,8 @@ final DbSchema zonesSchema = DbSchema(
     FieldSchema(key: 'zoneID', label: 'Zone ID', type: FieldType.text),
     FieldSchema(key: 'zoneName', label: 'Zone Name', type: FieldType.text),
     FieldSchema(
+        key: 'zoneName_fr', label: 'Zone Name (FR)', type: FieldType.text),
+    FieldSchema(
         key: 'chapter',
         label: 'Chapter',
         type: FieldType.integer,
@@ -1501,6 +1566,10 @@ final DbSchema zonesSchema = DbSchema(
     ),
     FieldSchema(
         key: 'flavorText', label: 'Flavor Text', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'flavorText_fr',
+        label: 'Flavor Text (FR)',
+        type: FieldType.multilineText),
     FieldSchema(
       key: 'rewardGold',
       label: 'Reward Gold (on zone completion)',
@@ -1600,8 +1669,16 @@ final DbSchema achievementsSchema = DbSchema(
         label: 'Achievement Name',
         type: FieldType.text),
     FieldSchema(
+        key: 'achievementName_fr',
+        label: 'Achievement Name (FR)',
+        type: FieldType.text),
+    FieldSchema(
         key: 'description',
         label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
         type: FieldType.multilineText),
     visualAssetFieldSchema('achievements'),
   ],
@@ -1617,6 +1694,8 @@ final DbSchema npcsSchema = DbSchema(
   fields: [
     FieldSchema(key: 'npcID', label: 'NPC ID', type: FieldType.text),
     FieldSchema(key: 'npcName', label: 'NPC Name', type: FieldType.text),
+    FieldSchema(
+        key: 'npcName_fr', label: 'NPC Name (FR)', type: FieldType.text),
     FieldSchema(
         key: 'chapter',
         label: 'Chapter',

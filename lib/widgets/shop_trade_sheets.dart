@@ -53,7 +53,7 @@ class _SellSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    final items = ref.watch(gameDbProvider(itemsSchema)).value ??
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ??
         const <String, dynamic>{};
     final lang = ref.watch(appLanguageProvider);
     final counts = <String, int>{};
@@ -151,7 +151,7 @@ class _ForgeSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
     final notifier = ref.read(playerSessionProvider.notifier);
-    final items = ref.watch(gameDbProvider(itemsSchema)).value ??
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ??
         const <String, dynamic>{};
     final lang = ref.watch(appLanguageProvider);
     final recipes = recipesAt(shopId, items);

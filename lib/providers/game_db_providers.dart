@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
 import '../gamedata/game_db_repository.dart';
+import '../l10n/app_locale.dart';
 
 final gameDbRepositoryProvider =
     Provider.family<GameDbRepository, DbSchema>((ref, schema) {
@@ -79,5 +80,52 @@ final gameDbProvider = StateNotifierProvider.family<GameDbNotifier,
 );
 
 /// [GameDbNotifier.whenLoaded] for [schema]'s table.
-Future<Map<String, dynamic>> loadedGameDb(WidgetRef ref, DbSchema schema) =>
-    ref.read(gameDbProvider(schema).notifier).whenLoaded();
+Future<Map<String, dynamic>> loadedGameDb(
+    WidgetRef ref, DbSchema schema) async {
+  final records = await ref.read(gameDbProvider(schema).notifier).whenLoaded();
+  return ref.read(appLanguageProvider) == AppLanguage.fr
+      ? frenchOverlay(records)
+      : records;
+}
+
+/// A copy of [records] with every French field laid over its English
+/// one: `name_fr` (or the older `nameFr`) replaces `name` wherever it is
+/// filled in, in nested maps and lists too. The originals are untouched.
+Map<String, dynamic> frenchOverlay(Map<String, dynamic> records) => {
+      for (final entry in records.entries) entry.key: _overlaid(entry.value),
+    };
+
+dynamic _overlaid(dynamic value) {
+  if (value is List) return [for (final element in value) _overlaid(element)];
+  if (value is! Map) return value;
+  final out = <String, dynamic>{
+    for (final entry in value.entries)
+      entry.key.toString(): _overlaid(entry.value),
+  };
+  for (final entry in value.entries) {
+    final key = entry.key.toString();
+    final base = key.endsWith('_fr')
+        ? key.substring(0, key.length - 3)
+        : key.endsWith('Fr')
+            ? key.substring(0, key.length - 2)
+            : null;
+    if (base == null || base.isEmpty) continue;
+    final french = entry.value;
+    final filled = (french is String && french.trim().isNotEmpty) ||
+        (french is List && french.isNotEmpty);
+    if (filled) out[base] = _overlaid(french);
+  }
+  return out;
+}
+
+/// The game data as the reader sees it: [gameDbProvider]'s records, with
+/// their French text laid over the English when the app is in French
+/// (see [frenchOverlay]). For showing data; the data editor keeps reading
+/// and saving [gameDbProvider] itself, so a French reader never writes
+/// French into an English field.
+final localizedDbProvider =
+    Provider.family<AsyncValue<Map<String, dynamic>>, DbSchema>((ref, schema) {
+  final raw = ref.watch(gameDbProvider(schema));
+  if (ref.watch(appLanguageProvider) != AppLanguage.fr) return raw;
+  return raw.whenData(frenchOverlay);
+});

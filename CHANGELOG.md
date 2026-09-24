@@ -8,6 +8,102 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.132.0+161]
+
+The review's content, balance and feature list: selling and forging,
+a story journal, save slots, retreat, clearer fights, new gear and
+enemies for the late chapters, French game data, and a Play to Chapter
+that always gets there.
+
+### Added
+- **Play to Chapter always arrives.** A run that falls short (a fight
+  lost after every retry, a dead end, the step cap) is undone and played
+  again with fresh rolls and choices, up to ten times; the last attempt
+  pushes through any fight it cannot win. The button shows the attempt,
+  and the result says how many attempts and forced wins it took.
+- **Selling.** Shops buy back what nobody wears for two fifths of its
+  price (an item's own sale value wins, such as the Elite Mark's 60); a
+  piece sold where it is stocked goes back on the shelf. Quest items
+  stay with the party.
+- **The Hammersmith's forge.** Iron ore drops from Inquisition soldiers,
+  void wisps, catacomb ghouls, Bone Sextons, the Dock Overseer, the Iron
+  Golem and the Bone Warden, and the forge turns ore and gold into an
+  Iron Cap, Iron-Shod Boots, Iron Greaves and an Iron Scale Coat.
+- **"The story so far".** A journal from the story header lists every
+  scene's opening line and the choice that left it, newest first by
+  chapter. Picking a saved story back up shows a short "Previously..."
+  recap once: the last scenes and the quests still open.
+- **Hub checklists.** Finished activities stay on the hub's list, ticked
+  and greyed, with a done count next to Rest.
+- **Three save slots** with a summary each (the old save becomes slot 1).
+  **Ironman:** with permadeath on, nothing can be loaded and a death
+  deletes every save.
+- **Retreat.** In any fight without a boss, the party can get away for a
+  share of the purse (15%, at least 10 gold) and keeps its wounds.
+  Nothing is won and no loss is recorded, so there is no defeat branch
+  and no permadeath; a detour is left behind, an expedition ends as a
+  retreat and a story fight waits where it was.
+- **Clearer intents.** A fully read enemy intent shows the damage that
+  would land after the target's armor, resist and block, with the raw
+  blow beside it.
+- **Choose the critical.** With momentum full, you pick which strike
+  gets the guaranteed critical; left alone it goes to an Attack face
+  first.
+- **Scroll of Fireball** is read in a fight: a fireball at one enemy, no
+  mana, the scroll spent.
+- **New gear.** Boots and greaves in five steps each (chapters 1 to 5),
+  common and uncommon head and body armor for chapters 3 to 6 that sits
+  below each chapter's rare piece, and three late dice: the Ossuary die
+  (the Ossuary Trade), and the Vigil and Tear-Glass dice (the Last
+  Lantern).
+- **Spells for every fighter.** Warriors learn Rally the Line (party
+  heal that grows with Strength) and Sundering Roar (every enemy
+  Weakened); rogues learn Smoke Veil (party block) and Bleeding Cut
+  (damage and Poison); rangers learn Arrow Volley (every enemy) and
+  Snare Shot (damage and a stun). Each is a spellbook in a shop.
+- **Three enemies for chapters 4 to 6:** the Bone Sexton, the Drowned
+  Pilgrim and the Unmade Knight, each with its own lines, loot and
+  icon, and able to lead packs.
+- **French game data.** Items, dice, enemies, shops, skills, spells,
+  quests, zones, houses, races, professions, achievements, ships,
+  companions and people now read in French when the app is in French,
+  and the data editor shows the French fields.
+
+### Changed
+- **Boss moves are enemy-only:** never listed, unlocked or set on a die.
+- **Zone bosses stay in their zones.** They never turn up as random
+  fights or in packs, and are never promoted to Elite.
+- **Shops open by chapter.** Detours and expeditions only open shops
+  their chapter allows, never a camp house's own shop.
+- **Outliers brought in line.** The Void Banner is a strong chapter-1
+  artifact, given by the story once and sold nowhere; the Boiled Leather
+  Jerkin, the Tear-Glass Blade, the High Warden's reward and War Shout
+  (which now grows with Strength) were retuned. To keep the opening
+  hovel fight as winnable as before without the old banner, the White
+  Soldiers there hit a little softer (90 health, 24 damage).
+- **Dice:** the berserker die was toned down, the weak shop dice raised,
+  and the void die's signature skills now work.
+- **Loot tables:** hunters drop gear the hunted can wear, out-of-chapter
+  drops were moved, and potions, antidotes, scrolls and ore drop at
+  their own odds (capped) instead of only weighting the chest.
+- **Boss ladder.** The Hollow Court Inquisitor (340), Void Archon (380)
+  and Void Sovereign (390) now rise in raw health too. They already rose
+  in the fight, where the chapter curve and zone tier multiply them.
+- **Full House** asks for six companions; every zone says when it is
+  cleared; chapter 3's regulars were retuned.
+
+### Fixed
+- **Safer loading.** Saves carry a format version; a session that cannot
+  be read is kept aside instead of being overwritten, and nothing is
+  written before the save has been read.
+
+### Internal
+- The fight screen (5,300 lines) is split into eleven part files under
+  `lib/screens/fight/`, with no behavior change.
+- Balance check (40 simulated runs): first-try win rate 97% in chapter 1
+  and 89% in chapter 6; Void Archon 34/40 and Void Sovereign 35/40 on
+  the first try; Lysa survives the opening in 24 of 40 runs (25 before).
+
 ## [1.131.0+160]
 
 Fixes from the review of 1.130: endings, death, fights, gear, tomes and

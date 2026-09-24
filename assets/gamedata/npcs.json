@@ -33,7 +33,8 @@
       "« Cinquante ans sur ces quais et j'ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
       "« Tu as la tête de quelqu'un qui s'apprête à faire une bêtise. Ne te laisse pas arrêter par moi. »",
       "« La moitié de la ville pense que l'invasion a tout changé. L'autre moitié a raison — rien n'a changé, c'est juste devenu plus bruyant. »"
-    ]
+    ],
+    "npcName_fr": "Le vieux Harker"
   },
   "sister_ines": {
     "npcID": "sister_ines",
@@ -51,6 +52,7 @@
       "« J'allume une bougie pour tous ceux qui passent par ici, qu'ils le demandent ou non. Moins cher qu'une dispute. »",
       "« Le Voile nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l'air parfois, par habitude. »",
       "« Quoi que ce soit qui t'ait mené au Quartier, j'espère que ça vaut ce que ça t'a coûté jusqu'ici. »"
-    ]
+    ],
+    "npcName_fr": "Sœur Inès"
   }
 }

@@ -44,12 +44,12 @@ class PlayScreen extends ConsumerWidget {
         ref.watch(savedGamesProvider).any((slot) => slot != null);
     // Ironman: with permadeath on, a saved game can't be loaded.
     final ironman = ref.watch(permadeathEnabledProvider);
-    final questsAsync = ref.watch(gameDbProvider(questsSchema));
-    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
-    final npcsAsync = ref.watch(gameDbProvider(npcsSchema));
+    final questsAsync = ref.watch(localizedDbProvider(questsSchema));
+    final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
+    final npcsAsync = ref.watch(localizedDbProvider(npcsSchema));
     final achievementsCount =
-        ref.watch(gameDbProvider(achievementsSchema)).value?.length ?? 0;
+        ref.watch(localizedDbProvider(achievementsSchema)).value?.length ?? 0;
 
     // The town is a place in the story: its page opens only while the
     // story stands in it (the town's own node or one of its scenes).
@@ -61,7 +61,7 @@ class PlayScreen extends ConsumerWidget {
     final townHubUnlocked = townPortId != null;
     final campUnlocked = chapterOfNode(playState.currentNodeId) >= 3;
     final boatUnlocked = campUnlocked;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value ??
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value ??
         const <String, dynamic>{};
     final mooredPortId = currentPortIdFor(ports, session.currentPortId);
     final mooredPortName = mooredPortId == null
@@ -448,12 +448,12 @@ class _QuestList extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final companions =
-        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
-    final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
     final professions =
-        ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
     final achievements =
-        ref.watch(gameDbProvider(achievementsSchema)).value ?? const {};
+        ref.watch(localizedDbProvider(achievementsSchema)).value ?? const {};
     final keys = records.keys.toList()..sort();
 
     return Column(
@@ -534,7 +534,7 @@ class _QuestList extends ConsumerWidget {
                           rewardItem: rewardItemId == null
                               ? null
                               : ref
-                                      .read(gameDbProvider(itemsSchema))
+                                      .read(localizedDbProvider(itemsSchema))
                                       .value?[rewardItemId]
                                   as Map<String, dynamic>?,
                         );
@@ -554,11 +554,14 @@ class _QuestList extends ConsumerWidget {
                             race: race,
                             profession: profession,
                             companion: companion,
-                            dice: ref.read(gameDbProvider(diceSchema)).value ??
+                            dice: ref
+                                    .read(localizedDbProvider(diceSchema))
+                                    .value ??
                                 const {},
-                            houses:
-                                ref.read(gameDbProvider(housesSchema)).value ??
-                                    const {},
+                            houses: ref
+                                    .read(localizedDbProvider(housesSchema))
+                                    .value ??
+                                const {},
                             requiredHouseId:
                                 companion?['requiredHouseId']?.toString(),
                           );

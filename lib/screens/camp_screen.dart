@@ -34,16 +34,17 @@ class CampScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
-    final companionsAsync = ref.watch(gameDbProvider(companionsSchema));
-    final housesAsync = ref.watch(gameDbProvider(housesSchema));
-    final racesAsync = ref.watch(gameDbProvider(racesSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final companionsAsync = ref.watch(localizedDbProvider(companionsSchema));
+    final housesAsync = ref.watch(localizedDbProvider(housesSchema));
+    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
-    final achievementsAsync = ref.watch(gameDbProvider(achievementsSchema));
-    final zonesAsync = ref.watch(gameDbProvider(zonesSchema));
-    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
-    final portsAsync = ref.watch(gameDbProvider(portsSchema));
+    final achievementsAsync =
+        ref.watch(localizedDbProvider(achievementsSchema));
+    final zonesAsync = ref.watch(localizedDbProvider(zonesSchema));
+    final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
+    final portsAsync = ref.watch(localizedDbProvider(portsSchema));
 
     final companions = companionsAsync.value;
     final houses = housesAsync.value;

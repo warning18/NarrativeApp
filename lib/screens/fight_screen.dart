@@ -376,16 +376,16 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   @override
   Widget build(BuildContext context) {
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
-    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
-    final companionsAsync = ref.watch(gameDbProvider(companionsSchema));
-    final racesAsync = ref.watch(gameDbProvider(racesSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
+    final skillsAsync = ref.watch(localizedDbProvider(skillsSchema));
+    final itemsAsync = ref.watch(localizedDbProvider(itemsSchema));
+    final companionsAsync = ref.watch(localizedDbProvider(companionsSchema));
+    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     final gameConfigAsync = ref.watch(gameConfigProvider);
-    final spellsAsync = ref.watch(gameDbProvider(spellsSchema));
-    final itemSetsAsync = ref.watch(gameDbProvider(itemSetsSchema));
-    final housesAsync = ref.watch(gameDbProvider(housesSchema));
+    final spellsAsync = ref.watch(localizedDbProvider(spellsSchema));
+    final itemSetsAsync = ref.watch(localizedDbProvider(itemSetsSchema));
+    final housesAsync = ref.watch(localizedDbProvider(housesSchema));
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 

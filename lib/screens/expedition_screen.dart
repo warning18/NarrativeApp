@@ -380,7 +380,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
     final lang = ref.read(appLanguageProvider);
     final companions =
-        ref.read(gameDbProvider(companionsSchema)).value ?? const {};
+        ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
 
     await notifier.completeZone(
       widget.zoneId,
@@ -395,36 +395,39 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       lines.add('+$rewardGold ${trFor(lang, 'gold_label')}');
     }
     if (rewardItemId.isNotEmpty) {
-      final items = ref.read(gameDbProvider(itemsSchema)).value ?? const {};
+      final items =
+          ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
       final itemName =
           (items[rewardItemId] as Map<String, dynamic>?)?['itemName']
               ?.toString();
       lines.add(itemName ?? rewardItemId);
     }
     if (rewardDiceId.isNotEmpty) {
-      final dice = ref.read(gameDbProvider(diceSchema)).value ?? const {};
+      final dice = ref.read(localizedDbProvider(diceSchema)).value ?? const {};
       final diceName =
           (dice[rewardDiceId] as Map<String, dynamic>?)?['diceName']
               ?.toString();
       lines.add(diceName ?? rewardDiceId);
     }
     if (rewardAllyId.isNotEmpty) {
-      final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
+      final races =
+          ref.read(localizedDbProvider(racesSchema)).value ?? const {};
       final professions =
-          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+          ref.read(localizedDbProvider(professionsSchema)).value ?? const {};
       final companion = companions[rewardAllyId] as Map<String, dynamic>?;
       final race = races[companion?['raceId']?.toString() ?? '']
           as Map<String, dynamic>?;
       final profession =
           professions[companion?['professionId']?.toString() ?? '']
               as Map<String, dynamic>?;
-      final houses = ref.read(gameDbProvider(housesSchema)).value ?? const {};
+      final houses =
+          ref.read(localizedDbProvider(housesSchema)).value ?? const {};
       await notifier.recruitAlly(
         rewardAllyId,
         race: race,
         profession: profession,
         companion: companion,
-        dice: ref.read(gameDbProvider(diceSchema)).value ?? const {},
+        dice: ref.read(localizedDbProvider(diceSchema)).value ?? const {},
         houses: houses,
         requiredHouseId: companion?['requiredHouseId']?.toString(),
       );
@@ -440,7 +443,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         totalCompanionCount: companions.length);
     if (newAchievements.isNotEmpty) {
       final achievements =
-          ref.read(gameDbProvider(achievementsSchema)).value ?? const {};
+          ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
       for (final id in newAchievements) {
         final name =
             (achievements[id] as Map<String, dynamic>?)?['achievementName']
@@ -483,8 +486,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   @override
   Widget build(BuildContext context) {
     final zoneName = widget.zone['zoneName']?.toString() ?? '';
-    final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-    final enemiesAsync = ref.watch(gameDbProvider(enemiesSchema));
+    final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+    final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
     final shops = shopsAsync.value;
     final enemies = enemiesAsync.value;
 

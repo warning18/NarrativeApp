@@ -160,8 +160,8 @@ class _StoryView extends ConsumerWidget {
 
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
     if (pendingDiscovery != null) {
-      final shopsAsync = ref.watch(gameDbProvider(shopsSchema));
-      final questsAsync = ref.watch(gameDbProvider(questsSchema));
+      final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
+      final questsAsync = ref.watch(localizedDbProvider(questsSchema));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
         ref.read(pendingDiscoveryProvider.notifier).state = null;
@@ -218,7 +218,7 @@ class _StoryView extends ConsumerWidget {
           history: playState.history,
           currentNodeId: playState.currentNodeId,
           session: session,
-          quests: ref.read(gameDbProvider(questsSchema)).value ?? const {},
+          quests: ref.read(localizedDbProvider(questsSchema)).value ?? const {},
           lang: language,
         );
       });
@@ -1171,10 +1171,10 @@ class _HubSections extends ConsumerWidget {
     // A town's port: its own shops (those the story isn't offering as a
     // scene right now) and its expeditions.
     final settlement = node.settlement;
-    final ports = ref.watch(gameDbProvider(portsSchema)).value;
-    final shopsDb = ref.watch(gameDbProvider(shopsSchema)).value;
-    final zones = ref.watch(gameDbProvider(zonesSchema)).value;
-    final enemies = ref.watch(gameDbProvider(enemiesSchema)).value ??
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value;
+    final shopsDb = ref.watch(localizedDbProvider(shopsSchema)).value;
+    final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
+    final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     final port = settlement?.portId == null
         ? null
@@ -1452,7 +1452,7 @@ void _showSettlementArrival(
   Settlement settlement,
   bool french,
 ) {
-  final ports = ref.read(gameDbProvider(portsSchema)).value;
+  final ports = ref.read(localizedDbProvider(portsSchema)).value;
   final port = settlement.portId == null
       ? null
       : ports?[settlement.portId] as Map<String, dynamic>?;
@@ -1546,13 +1546,13 @@ class _HubChoiceCard extends ConsumerWidget {
     if (choice.triggersCombat) {
       // Keep the enemies database warm so it's ready by the time this
       // card is tapped.
-      ref.watch(gameDbProvider(enemiesSchema));
+      ref.watch(localizedDbProvider(enemiesSchema));
     }
 
     final roster = isExcursion
         ? null
         : _fightRosterFor(
-            choice, ref.watch(gameDbProvider(enemiesSchema)).value);
+            choice, ref.watch(localizedDbProvider(enemiesSchema)).value);
     final subtitle = choice.hasAbilityCheck
         ? '${tr(ref, '${choice.checkAbility}_label')} DC ${choice.checkDC ?? 10}'
         : roster == null
@@ -1746,7 +1746,7 @@ class _ChoiceButton extends ConsumerWidget {
     // Watching the enemies database also keeps it warm, so it is ready by
     // the time a fight button is tapped.
     final enemies = choice.triggersCombat
-        ? ref.watch(gameDbProvider(enemiesSchema)).value
+        ? ref.watch(localizedDbProvider(enemiesSchema)).value
         : null;
     final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
 

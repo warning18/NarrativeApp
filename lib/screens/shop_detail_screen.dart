@@ -35,18 +35,18 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
-    final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final professionsAsync = ref.watch(gameDbProvider(professionsSchema));
+    final itemsAsync = ref.watch(localizedDbProvider(itemsSchema));
+    final diceAsync = ref.watch(localizedDbProvider(diceSchema));
+    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
     // Spells are only needed to describe and gate spellbooks; a table
     // that hasn't loaded yet just means those tiles say nothing extra.
-    final spells =
-        parseSpells(ref.watch(gameDbProvider(spellsSchema)).value ?? const {});
+    final spells = parseSpells(
+        ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
     final professions = professionsAsync.value ?? const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
-    final itemSets =
-        parseItemSets(ref.watch(gameDbProvider(itemSetsSchema)).value ?? {});
+    final itemSets = parseItemSets(
+        ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
     final stock = (widget.shop['initialStock'] as List?)
             ?.map((e) => e.toString())
             .toList() ??
@@ -64,7 +64,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
         : const <String, int>{};
 
     final forges = recipesAt(widget.shopId,
-            ref.watch(gameDbProvider(itemsSchema)).value ?? const {})
+            ref.watch(localizedDbProvider(itemsSchema)).value ?? const {})
         .isNotEmpty;
     return Scaffold(
       appBar: AppBar(
@@ -496,7 +496,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           return Card(
                             child: ListTile(
                               leading: const Icon(Icons.casino),
-                              title: Text(dieDisplayName(diceId)),
+                              title:
+                                  Text(dieDisplayName(diceId, language: lang)),
                               subtitle: Text(
                                 '${owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}'}\n'
                                 '${dieFacesSummary(die, lang)}',
@@ -518,7 +519,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                 context,
                                                 icon: Icons.casino,
                                                 message:
-                                                    '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId)} '
+                                                    '${trFor(lang, 'bought_prefix')} ${dieDisplayName(diceId, language: lang)} '
                                                     '${trFor(lang, 'for_label')} $cost '
                                                     '${trFor(lang, 'gold_label')}',
                                               );
