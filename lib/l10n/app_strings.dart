@@ -205,6 +205,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_data': {AppLanguage.en: 'Data', AppLanguage.fr: 'Données'},
   'title_story': {AppLanguage.en: 'Story', AppLanguage.fr: 'Histoire'},
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
+  'world_map_title': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
+  'world_map_semantics': {
+    AppLanguage.en: 'Pixel map of the places the story has reached',
+    AppLanguage.fr: 'Carte en pixels des lieux atteints par l’histoire',
+  },
+  'world_map_hint': {
+    AppLanguage.en:
+        'Places appear as the story reaches them. Tap one to read about it; pinch to zoom.',
+    AppLanguage.fr:
+        'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus ; pincez pour zoomer.',
+  },
+  'world_map_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
+  'world_map_chapter_short': {AppLanguage.en: 'Ch', AppLanguage.fr: 'Ch.'},
+  'world_map_here': {
+    AppLanguage.en: 'You are here',
+    AppLanguage.fr: 'Vous êtes ici',
+  },
+  'world_map_scenes_read': {
+    AppLanguage.en: 'Scenes read',
+    AppLanguage.fr: 'Scènes lues',
+  },
+  'world_map_fights': {
+    AppLanguage.en: 'Fights here',
+    AppLanguage.fr: 'Combats ici',
+  },
+  'world_map_back': {AppLanguage.en: 'Back', AppLanguage.fr: 'Retour'},
+  'world_map_next': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suite'},
+  'world_map_start': {AppLanguage.en: 'the start', AppLanguage.fr: 'le début'},
+  'world_map_end': {AppLanguage.en: 'the end', AppLanguage.fr: 'la fin'},
+  'world_map_first_ally': {
+    AppLanguage.en: 'Your first ally',
+    AppLanguage.fr: 'Votre premier allié',
+  },
   'title_map': {
     AppLanguage.en: 'Story Map',
     AppLanguage.fr: "Carte de l'histoire"

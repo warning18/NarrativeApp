@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_info.dart';
@@ -7,6 +9,14 @@ import 'providers/theme_mode_provider.dart';
 import 'screens/main_menu_screen.dart';
 
 void main() {
+  // The world map's pixel font is under the SIL Open Font License, which
+  // asks that its licence travel with it: it shows in the app's licences.
+  LicenseRegistry.addLicense(() async* {
+    yield LicenseEntryWithLineBreaks(
+      const ['Pixelify Sans'],
+      await rootBundle.loadString('assets/fonts/PixelifySans-OFL.txt'),
+    );
+  });
   runApp(const ProviderScope(child: MyApp()));
 }
 

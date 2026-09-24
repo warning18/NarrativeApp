@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.135.0+164
+version: 1.136.0+165
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -27,8 +27,17 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    # The world map's pixel lettering (SIL Open Font License, see
+    # assets/fonts/PixelifySans-OFL.txt).
+    - family: PixelifySans
+      fonts:
+        - asset: assets/fonts/PixelifySans-Regular.ttf
+        - asset: assets/fonts/PixelifySans-SemiBold.ttf
+          weight: 600
   assets:
     - assets/Cleaned_Narrative_DAG.json
+    - assets/fonts/PixelifySans-OFL.txt
     - assets/gamedata/items.json
     - assets/gamedata/item_sets.json
     - assets/gamedata/skills.json

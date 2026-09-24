@@ -16,10 +16,12 @@ import 'play_screen.dart';
 import 'settings_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
+import 'world_map_screen.dart';
 
 /// The game under the main menu. In play: Story, Character, Camp and
 /// Other (quests, shops, bestiary, people, saves). In Edit Mode: Story,
-/// Play, Generate and Data. The story map opens from the header in both.
+/// Play, Generate and Data. The header opens a map in both: the story's
+/// scenes in Edit Mode, the world the story has reached in play.
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
@@ -97,11 +99,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             : null,
         title: Text(titles[index]),
         actions: [
+          // Edit Mode maps the story's scenes and paths; play mode shows
+          // the world the story has reached.
           IconButton(
-            icon: const Icon(Icons.account_tree_outlined),
-            tooltip: tr(ref, 'title_map'),
+            icon: Icon(
+                isEditMode ? Icons.account_tree_outlined : Icons.map_outlined),
+            tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const StoryMapPage()),
+              MaterialPageRoute(
+                builder: (_) =>
+                    isEditMode ? const StoryMapPage() : const WorldMapPage(),
+              ),
             ),
           ),
           IconButton(

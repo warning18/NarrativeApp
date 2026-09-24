@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.136.0+165]
+
+A pixel map of the story's world, in play mode.
+
+### Added
+- **World map (play mode).** The map button in the header now opens a
+  pixel map of the world: Alster and its river, the sea crossing, the
+  Ashen Coast and the Hollow Shore, with the 23 places where the story's
+  163 scenes happen.
+  - A place appears once one of its scenes has been read; the rest of the
+    world stays under fog, and the road between places reached is drawn
+    in story order.
+  - A gold marker shows where the story stands (for an excursion step,
+    the last place it passed).
+  - Tapping a place shows its chapter, what happens there, how many of
+    its scenes have been read, and the foes fought there (named once
+    beaten). Back and Next walk the road through the places reached.
+  - Chapter chips filter the map to one chapter; pinch to zoom.
+  - English and French; the water, embers and road move unless the
+    device asks for less motion.
+- **Pixel font.** Pixelify Sans (SIL Open Font License) for the map's
+  lettering; its licence shows in the app's licences.
+
+### Changed
+- Edit Mode keeps the story graph behind the same button.
+
 ## [1.135.0+164]
 
 The play tabs say what waits on them, New Game+ reaches stories finished
