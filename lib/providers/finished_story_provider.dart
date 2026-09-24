@@ -12,7 +12,12 @@ const String finishedStoryPrefsKey = 'finished_story';
 /// cycle's legacy (see PlayerSessionNotifier.beginNewGamePlus) even after
 /// a new game has replaced it as the current session.
 class FinishedStory {
-  const FinishedStory({this.count = 0, this.lastRun, this.lastKey = ''});
+  const FinishedStory({
+    this.count = 0,
+    this.lastRun,
+    this.lastKey = '',
+    this.loaded = false,
+  });
 
   final int count;
   final PlayerSession? lastRun;
@@ -20,18 +25,27 @@ class FinishedStory {
   /// Which run and ending [lastRun] is (see [FinishedStoryNotifier.record]).
   final String lastKey;
 
+  /// Whether the record on disk has been read yet.
+  final bool loaded;
+
   bool get any => count > 0 && lastRun != null;
 }
 
 class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
   FinishedStoryNotifier() : super(const FinishedStory()) {
-    _load();
+    ready = _load();
   }
+
+  /// Completes once the record on disk has been read (or found missing).
+  late final Future<void> ready;
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(finishedStoryPrefsKey);
-    if (raw == null) return;
+    if (raw == null) {
+      state = const FinishedStory(loaded: true);
+      return;
+    }
     try {
       final data = json.decode(raw) as Map<String, dynamic>;
       final run = data['lastRun'];
@@ -40,16 +54,27 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
         lastRun:
             run is Map<String, dynamic> ? PlayerSession.fromJson(run) : null,
         lastKey: data['lastKey']?.toString() ?? '',
+        loaded: true,
       );
     } catch (_) {
       // An unreadable record only hides New Game+ until the next ending.
+      state = const FinishedStory(loaded: true);
     }
+  }
+
+  /// A story finished before this record was kept (before 1.134): [run],
+  /// standing at [endingNodeId], counts when nothing is recorded yet.
+  Future<void> backfill(PlayerSession run, String endingNodeId) async {
+    await ready;
+    if (state.any) return;
+    await record(run, endingNodeId);
   }
 
   /// Records [run] as finished at [endingNodeId]. The same run standing at
   /// the same ending again (the app reopened there, a heal on the ending
   /// screen) refreshes the snapshot without counting another story.
   Future<void> record(PlayerSession run, String endingNodeId) async {
+    await ready;
     final key = '${run.newGamePlusCycle}|${run.characterName}|'
         '${run.raceId}|${run.professionId}|$endingNodeId';
     final encoded = json.encode(run.toJson());
@@ -62,6 +87,7 @@ class FinishedStoryNotifier extends StateNotifier<FinishedStory> {
       count: key == state.lastKey ? state.count : state.count + 1,
       lastRun: run,
       lastKey: key,
+      loaded: true,
     );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(

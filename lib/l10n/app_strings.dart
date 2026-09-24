@@ -13,6 +13,32 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'badge_points_waiting': {
+    AppLanguage.en: 'points to spend',
+    AppLanguage.fr: 'points à dépenser',
+  },
+  'badge_house_affordable': {
+    AppLanguage.en: 'a house you can build',
+    AppLanguage.fr: 'une maison à construire',
+  },
+  'badge_quest_ready': {
+    AppLanguage.en: 'a quest to turn in',
+    AppLanguage.fr: 'une quête à rendre',
+  },
+  'quests_ready_label': {
+    AppLanguage.en: 'to turn in',
+    AppLanguage.fr: 'à rendre'
+  },
+  'load_confirm_title': {
+    AppLanguage.en: 'Load this save?',
+    AppLanguage.fr: 'Charger cette sauvegarde ?',
+  },
+  'load_confirm_body': {
+    AppLanguage.en:
+        'It replaces the game in progress. Anything since your last save will be lost.',
+    AppLanguage.fr:
+        'Elle remplace la partie en cours. Tout ce qui s’est passé depuis votre dernière sauvegarde sera perdu.',
+  },
   'fight_lab_title': {
     AppLanguage.en: 'Fight lab',
     AppLanguage.fr: 'Labo de combat'

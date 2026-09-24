@@ -3,7 +3,16 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/story_repository.dart';
 import 'player_session_provider.dart';
+import 'story_providers.dart';
+
+/// True when there is a story to continue: a character made, or a step
+/// taken past the first scene.
+bool hasGameInProgress(PlayerSession session, StoryPlayState story) =>
+    session.raceId.isNotEmpty ||
+    story.history.isNotEmpty ||
+    story.currentNodeId != StoryRepository.startNodeId;
 
 /// The manual save slots the Play tab offers.
 const int saveSlotCount = 3;

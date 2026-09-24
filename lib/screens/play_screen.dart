@@ -16,6 +16,7 @@ import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/tab_badges_provider.dart';
 import '../utils/game_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
@@ -267,6 +268,9 @@ class PlayScreen extends ConsumerWidget {
         _CollapsibleSection(
           title: tr(ref, 'quests'),
           badgeCount: unseenQuests,
+          readyCount:
+              isEditMode ? 0 : ref.watch(tabBadgesProvider).readyQuestCount,
+          readyLabel: tr(ref, 'quests_ready_label'),
           onExpanded: () => ref
               .read(playerSessionProvider.notifier)
               .markAllSeenInCategory(quests: true),
@@ -330,12 +334,19 @@ class _CollapsibleSection extends StatelessWidget {
     required this.title,
     required this.child,
     this.badgeCount = 0,
+    this.readyCount = 0,
+    this.readyLabel = '',
     this.onExpanded,
   });
 
   final String title;
   final Widget child;
   final int badgeCount;
+
+  /// Entries ready to act on (quests to turn in), shown whether or not
+  /// the section has been opened before.
+  final int readyCount;
+  final String readyLabel;
   final VoidCallback? onExpanded;
 
   @override
@@ -347,6 +358,30 @@ class _CollapsibleSection extends StatelessWidget {
           children: [
             Text(title, style: Theme.of(context).textTheme.titleMedium),
             const Spacer(),
+            if (readyCount > 0)
+              Container(
+                margin: const EdgeInsets.only(left: 8, right: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade700,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check, size: 14, color: Colors.white),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$readyCount $readyLabel',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             if (badgeCount > 0)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),

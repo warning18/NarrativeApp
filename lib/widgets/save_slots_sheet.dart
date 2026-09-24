@@ -109,6 +109,30 @@ class SaveSlotsSheet extends ConsumerWidget {
 
   Future<void> _load(BuildContext context, WidgetRef ref, int slot) async {
     final lang = ref.read(appLanguageProvider);
+    // Loading replaces the game in progress (its autosave included), so
+    // anything since the player last saved goes with it: ask first.
+    if (hasGameInProgress(
+        ref.read(playerSessionProvider), ref.read(storyPlayProvider))) {
+      final ok = await showDialog<bool>(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: Text(trFor(lang, 'load_confirm_title')),
+          content: Text(trFor(lang, 'load_confirm_body')),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(trFor(lang, 'cancel')),
+            ),
+            FilledButton(
+              key: const Key('load_confirm_button'),
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text(trFor(lang, 'menu_load')),
+            ),
+          ],
+        ),
+      );
+      if (ok != true || !context.mounted) return;
+    }
     final saved = await ref.read(savedGamesProvider.notifier).load(slot);
     if (!context.mounted) return;
     if (saved == null) {

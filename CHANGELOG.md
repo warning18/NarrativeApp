@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.135.0+164]
+
+The play tabs say what waits on them, New Game+ reaches stories finished
+before the menu existed, and loading a save asks first.
+
+### Added
+- **Tab dots.** In play, a dot marks Character when stat or skill points
+  wait, Camp when the purse covers a house (once the camp is open), and
+  Other when a quest can be turned in. Holding a tab says why. In Other,
+  the Quests section shows how many quests are ready to turn in.
+
+### Changed
+- **New Game+ for earlier finishes.** A story finished before 1.134 now
+  offers New Game+ on the menu: the game in progress, or failing that the
+  most recent save slot, counts when it is already on an ending. A
+  recorded finish is never replaced.
+- **Loading asks first.** Loading a save over a game in progress, from
+  the menu or in play, warns that anything since the last save will be
+  lost.
+
 ## [1.134.0+163]
 
 A main menu, play tabs built around the character, the map in the header,

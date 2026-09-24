@@ -5,6 +5,7 @@ import '../app_info.dart';
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../data/chapter_grid_layout.dart';
 import '../data/story_repository.dart';
+import '../models/story_node.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
@@ -32,24 +33,82 @@ Future<void> enterGame(
   );
 }
 
-/// True when there is a story to continue: a character made, or a step
-/// taken past the first scene.
-bool hasGameInProgress(PlayerSession session, StoryPlayState story) =>
-    session.raceId.isNotEmpty ||
-    story.history.isNotEmpty ||
-    story.currentNodeId != StoryRepository.startNodeId;
-
 /// The title screen: Continue (when a story is under way), New Game, New
 /// Game+ (once a story has been finished), Load, Settings and Edit Mode.
-class MainMenuScreen extends ConsumerWidget {
+class MainMenuScreen extends ConsumerStatefulWidget {
   const MainMenuScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MainMenuScreen> createState() => _MainMenuScreenState();
+}
+
+class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
+  /// What the last look for an already finished story saw (see
+  /// [_countStoryAlreadyFinished]), so it runs again only when the game or
+  /// the saves change.
+  String? _lastFinishedCheck;
+
+  /// Stories finished before the menu kept count (before 1.134) still
+  /// offer New Game+: a game standing on an ending counts, the one in
+  /// progress first, else the most recently saved one. Only while nothing
+  /// is recorded, and never over a real record.
+  Future<void> _countStoryAlreadyFinished() async {
+    final finished = ref.read(finishedStoryProvider.notifier);
+    await finished.ready;
+    if (!mounted || ref.read(finishedStoryProvider).any) return;
+    final StoryData story;
+    try {
+      story = await ref.read(storyDataProvider.future);
+    } catch (_) {
+      return;
+    }
+    if (!mounted) return;
+    bool isEnding(String nodeId) {
+      final node = story.nodeFor(nodeId);
+      return node != null && isStoryEnding(node);
+    }
+
+    final session = ref.read(playerSessionProvider);
+    final play = ref.read(storyPlayProvider);
+    if (session.raceId.isNotEmpty && isEnding(play.currentNodeId)) {
+      await finished.backfill(session, play.currentNodeId);
+      return;
+    }
+    final endedSlots = ref
+        .read(savedGamesProvider)
+        .whereType<SaveSlotSummary>()
+        .where((slot) => isEnding(slot.nodeId))
+        .toList()
+      ..sort((a, b) =>
+          (b.savedAt ?? DateTime(0)).compareTo(a.savedAt ?? DateTime(0)));
+    for (final slot in endedSlots) {
+      final saved = await ref.read(savedGamesProvider.notifier).load(slot.slot);
+      if (!mounted) return;
+      if (saved == null || saved.session.raceId.isEmpty) continue;
+      await finished.backfill(saved.session, saved.currentNodeId);
+      return;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
     final story = ref.watch(storyPlayProvider);
     final finished = ref.watch(finishedStoryProvider);
-    final hasSave = ref.watch(savedGamesProvider).any((slot) => slot != null);
+    final slots = ref.watch(savedGamesProvider);
+    final hasSave = slots.any((slot) => slot != null);
+    if (finished.loaded && !finished.any) {
+      final check = [
+        session.raceId,
+        story.currentNodeId,
+        for (final slot in slots) '${slot?.nodeId}@${slot?.savedAt}',
+      ].join('|');
+      if (check != _lastFinishedCheck) {
+        _lastFinishedCheck = check;
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) => _countStoryAlreadyFinished());
+      }
+    }
     final ironman = ref.watch(permadeathEnabledProvider);
     final lang = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);

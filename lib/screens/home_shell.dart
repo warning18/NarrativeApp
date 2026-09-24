@@ -7,6 +7,7 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
+import '../providers/tab_badges_provider.dart';
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
@@ -67,6 +68,21 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final language = ref.watch(appLanguageProvider);
     final index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
     final canLeave = Navigator.of(context).canPop();
+    final badges = ref.watch(tabBadgesProvider);
+
+    // A dot on a tab when something there waits on the player; the
+    // tooltip (and screen readers) say what.
+    NavigationDestination dotted(
+      IconData icon,
+      String label, {
+      required bool show,
+      required String reason,
+    }) =>
+        NavigationDestination(
+          icon: Badge(isLabelVisible: show, child: Icon(icon)),
+          label: label,
+          tooltip: show ? '$label · $reason' : label,
+        );
 
     return Scaffold(
       appBar: AppBar(
@@ -134,15 +150,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 NavigationDestination(
                     icon: const Icon(Icons.menu_book),
                     label: tr(ref, 'nav_story')),
-                NavigationDestination(
-                    icon: const Icon(Icons.person_outline),
-                    label: tr(ref, 'nav_character')),
-                NavigationDestination(
-                    icon: const Icon(Icons.local_fire_department_outlined),
-                    label: tr(ref, 'nav_camp')),
-                NavigationDestination(
-                    icon: const Icon(Icons.more_horiz),
-                    label: tr(ref, 'nav_other')),
+                dotted(Icons.person_outline, tr(ref, 'nav_character'),
+                    show: badges.character,
+                    reason: tr(ref, 'badge_points_waiting')),
+                dotted(
+                    Icons.local_fire_department_outlined, tr(ref, 'nav_camp'),
+                    show: badges.camp,
+                    reason: tr(ref, 'badge_house_affordable')),
+                dotted(Icons.more_horiz, tr(ref, 'nav_other'),
+                    show: badges.other, reason: tr(ref, 'badge_quest_ready')),
               ],
       ),
     );
