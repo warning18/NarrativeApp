@@ -8,6 +8,73 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.126.0+155]
+
+Ship battles rebuilt in the manner of FTL: two ships of four rooms each,
+weapons that charge and fire at a room, shield layers that stop shots and
+crack under them, fires, and the party as crew at their stations.
+
+### Added
+- **Rooms.** Every ship has a Helm, Guns, Bulwark and Hold, each with
+  system pips. The Helm gives 8% evasion a pip; the Bulwark holds one
+  shield layer a pip and raises one back each round; the Guns charge the
+  weapons, extra pips speeding the heaviest; the Hold is where the crew
+  shelters and the hull is patched. A hit knocks pips off the room it
+  lands in; a room at zero is out (a silenced ship charges nothing, a
+  blind one slips nothing, a broken bulwark holds no layer).
+- **Shots.** A weapon fires at a room of the enemy's ship: tap the weapon,
+  then the room. The target's evasion is rolled first; then a shield
+  layer stops a non-piercing shot, though the blow still cracks a pip off
+  the bulwark behind it (so a single gun can wear a bulwark down); a shot
+  that gets through costs hull and pips, and an incendiary one leaves the
+  room burning (a pip and hull a round until someone fights it).
+- **Crew stations.** The player and every active companion sail as crew.
+  Tap a member, then a room: a helmsman adds evasion (more with
+  Dexterity), a gunner a charge step to the heaviest gun, a bulwark hand a
+  second layer a round, a hold hand hull repairs (more with Wisdom).
+  Anyone repairs the room they stand in or fights its fire, and that
+  takes their turn at the station. A shot that lands in a crewed room
+  hurts whoever stands there, and the hurt persists to the shore.
+- **The enemy's crew and aim.** Enemy ships repair a pip or fight a fire
+  each round (their guns first, the bigger crews twice), and aim: fire at
+  the hold, otherwise the bulwark or the guns, then down the list. With
+  the Kraken's Eye aboard the enemy's aim is marked on your rooms and
+  named on its weapons before it fires.
+- **Weapons and parts re-read.** The ballista fires every turn; the
+  harpoon rack pierces the bulwark and tears two pips, three turns to
+  wind; fire pots burn, four turns; the void volley pierces, four turns.
+  Iron plating is one more Bulwark pip (a second layer), the tar-sealed
+  hull one more Hold pip, spare canvas one more Helm pip. ship_parts.json
+  gains `chargeTurns`, `piercesShield`, `setsFire`, `roomDamage` and
+  `roomBonus`; the old bulwark-pool fields are gone.
+- **Four enemy ships with rooms and weapons of their own**, in
+  enemy_ships.json's new `rooms`, `weapons` and `crew`: the Raider Skiff
+  (open boat, bow chaser and grapnel, no bulwark, nimble), the new
+  Corsair Brig (chapter 3: twin ballistae, a 24% helm, a thin bulwark),
+  the Inquisition Cutter (a layer, a ballista, fire arrows for the hold,
+  two hands) and the Void Barge (chapter 4: two layers, a piercing void
+  lance, a harpoon, a chaser, two hands). Each has a description.
+- **ShipBattlePanel** draws it: the enemy's rooms, weapons and charge on
+  top, the log, the Eel's rooms with her crew, her weapons and crew chips
+  below, and one End turn button.
+
+### Changed
+- The Kraken's Eye no longer blunts a first volley; it shows the enemy's
+  aim every turn instead (its description and label say so).
+- The boat screen lists the Eel's room pips instead of a bulwark pool,
+  and a part's summary reads its charge, piercing, fire and room pips.
+
+### Balance
+- The Python simulator carries the same rules (sim_v11.py). Over 24
+  playthroughs with a four-part Eel and a full crew: the Skiff is won
+  every time in 4 rounds with 88% hull left, the Brig 95% of the time
+  (7 rounds, 79% hull), the Cutter 88% (9 rounds, 71% hull), the Barge
+  79% (14 rounds, 43% hull), 8 voyages in 80 turned back, every run
+  reaching an ending. A first pass without busy hands and with the enemy
+  repairing its bulwark first was won 100% everywhere with no hull lost;
+  a second with a harpoon wound in two turns lost to the Barge 93% of the
+  time.
+
 ## [1.125.1+154]
 
 ### Changed

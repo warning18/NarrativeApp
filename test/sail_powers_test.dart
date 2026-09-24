@@ -146,11 +146,27 @@ void main() {
       expect(voidmarkStormLoss(12, 2), 0);
       expect(voidVolleyBonus(1), 0);
       expect(voidVolleyBonus(2), 10);
-      final volley = ShipAction.fromPart(
-          'sail_void_mark', parts['sail_void_mark'] as Map<String, dynamic>);
-      expect(volley.isUsable, isTrue);
-      expect(volley.damage, 30);
-      expect(volley.cooldownTurns, 2);
+      const ship = {
+        'baseMaxHull': 100,
+        'rooms': {'helm': 1, 'guns': 1, 'bulwark': 1, 'hold': 1},
+        'weaponSlots': 2,
+        'shieldSlots': 1,
+        'utilitySlots': 1,
+        'sailSlots': 1,
+      };
+      final eel = buildPlayerShip(
+        ship: ship,
+        parts: parts,
+        installedPartIds: const ['sail_void_mark'],
+        currentHull: -1,
+        voidVolleyPartId: 'sail_void_mark',
+        voidVolleyBonus: voidVolleyBonus(2),
+      );
+      final volley = eel.weapons.single;
+      expect(volley.id, 'sail_void_mark');
+      expect(volley.damage, 40);
+      expect(volley.chargeTurns, 4);
+      expect(volley.piercing, isTrue, reason: 'the void ignores a bulwark');
       // Every other sail does nothing in a fight on its own.
       for (final id in [
         'sail_gulls_wing',
@@ -158,10 +174,13 @@ void main() {
         'sail_hearth_mark',
         'sail_wind_knot',
       ]) {
-        expect(
-            ShipAction.fromPart(id, parts[id] as Map<String, dynamic>).isUsable,
-            isFalse,
-            reason: id);
+        final withSail = buildPlayerShip(
+          ship: ship,
+          parts: parts,
+          installedPartIds: [id],
+          currentHull: -1,
+        );
+        expect(withSail.weapons, isEmpty, reason: id);
       }
     });
   });

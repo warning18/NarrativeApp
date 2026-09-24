@@ -134,7 +134,10 @@ class BoatScreen extends ConsumerWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${tr(ref, 'hull_label')} ${playerShip.hull} / ${playerShip.maxHull} · '
-                    '${tr(ref, 'bulwark_label')} ${playerShip.maxShield}',
+                    '${[
+                      for (final room in ShipRoom.values)
+                        '${tr(ref, 'ship_room_${room.name}_title')} ${playerShip.room(room).level}',
+                    ].join(' · ')}',
                     style: theme.textTheme.bodySmall,
                   ),
                   const SizedBox(height: 8),
@@ -243,18 +246,22 @@ class BoatScreen extends ConsumerWidget {
 
   String _partSummary(WidgetRef ref, Map<String, dynamic> part) {
     final damage = (part['damageAmount'] as num?)?.toInt() ?? 0;
-    final restore = (part['shieldRestoreAmount'] as num?)?.toInt() ?? 0;
-    final maxShield = (part['maxShieldBonus'] as num?)?.toInt() ?? 0;
-    final repair = (part['hullRepairAmount'] as num?)?.toInt() ?? 0;
-    final cooldown = (part['cooldownTurns'] as num?)?.toInt() ?? 0;
+    final charge = (part['chargeTurns'] as num?)?.toInt() ?? 1;
+    final roomDamage = (part['roomDamage'] as num?)?.toInt() ?? 1;
+    final bonus = part['roomBonus'];
     final power = sailPowerOf(part);
     return [
       if (power != null) tr(ref, 'sail_power_${power.name}'),
       if (damage > 0) '${tr(ref, 'damage_label')} $damage',
-      if (restore > 0) '${tr(ref, 'bulwark_label')} +$restore',
-      if (maxShield > 0) '${tr(ref, 'bulwark_label')} max +$maxShield',
-      if (repair > 0) '${tr(ref, 'hull_label')} +$repair',
-      if (cooldown > 0) '${tr(ref, 'ready_in_prefix')} $cooldown',
+      if (damage > 0) '${tr(ref, 'charge_turns_label')} $charge',
+      if (damage > 0 && roomDamage > 1)
+        '${tr(ref, 'room_damage_label')} $roomDamage',
+      if (damage > 0 && part['piercesShield'] == true)
+        tr(ref, 'pierces_shield_label'),
+      if (damage > 0 && part['setsFire'] == true) tr(ref, 'sets_fire_label'),
+      if (bonus is Map)
+        for (final entry in bonus.entries)
+          '${tr(ref, 'ship_room_${entry.key}_title')} +${entry.value}',
     ].join(' · ');
   }
 

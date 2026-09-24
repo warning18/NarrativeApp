@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_engine.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sea_events.dart';
@@ -10,17 +11,21 @@ import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../models/ally_state.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
 
 /// One crossing of the Rusty Eel from port to port: a short chain of sea
 /// events drawn once at cast-off (see [buildVoyage]) -- calm days that
 /// mend the hull, storms that cost it, derelicts worth salvaging, and
-/// raiders that open a turn-by-turn ship battle fought with the parts
-/// aboard. Landfall pops `true` and moors the boat at the new port; a
-/// sunk hull pops `false`, the Eel limping back to the port she left.
+/// raiders that open a room-by-room ship battle (see [ShipBattlePanel])
+/// fought with the parts aboard and the party as crew. Landfall pops
+/// `true` and moors the boat at the new port; a sunk hull pops `false`,
+/// the Eel limping back to the port she left.
 class VoyageScreen extends ConsumerStatefulWidget {
   const VoyageScreen({
     super.key,
@@ -42,18 +47,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   List<SeaEvent>? _events;
 
   /// The painted sail aboard, if any, and how strongly its sigil holds
-  /// (see sail_powers.dart); the first volley of a raider fight is the one
-  /// foresight can see coming.
+  /// (see sail_powers.dart); a foresight sail shows the enemy's aim in a
+  /// raider fight.
   ({String partId, SailPower power, String medium})? _sail;
   int _sailStrength = 1;
-  bool _firstVolleyPending = false;
   int _index = 0;
   _VoyagePhase _phase = _VoyagePhase.event;
-  ShipCombatant? _player;
-  ShipCombatant? _enemy;
+  ShipState? _player;
+  ShipState? _enemy;
   Map<String, dynamic>? _enemyData;
-  int _shipRegen = 0;
-  final Map<String, int> _cooldowns = {};
+
+  /// Bumped per raider so each battle gets a fresh panel.
+  int _battleKey = 0;
   final List<String> _log = [];
   bool _busy = false;
 
@@ -97,12 +102,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ? 'rusty_eel'
         : (ships.keys.isEmpty ? '' : ships.keys.first);
     final ship = ships[shipId] as Map<String, dynamic>? ?? const {};
-    _shipRegen = (ship['shieldRegenPerTurn'] as num?)?.toInt() ?? 0;
     _player = buildPlayerShip(
       ship: ship,
       parts: parts,
       installedPartIds: session.shipPartIds,
       currentHull: session.shipHull,
+      voidVolleyPartId:
+          _sail?.power == SailPower.voidmark ? _sail!.partId : null,
+      voidVolleyBonus: voidVolleyBonus(_sailStrength),
     );
   }
 
@@ -163,9 +170,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         }
         _enemyData = data;
         _enemy = buildEnemyShip(data);
-        _cooldowns.clear();
         _log.clear();
-        _firstVolleyPending = _sail?.power == SailPower.foresight;
+        _battleKey++;
         if (!mounted) return;
         setState(() {
           _phase = _VoyagePhase.fight;
@@ -208,76 +214,103 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     });
   }
 
-  Future<void> _act(ShipAction? action, {required bool fr}) async {
-    setState(() => _busy = true);
+  /// The party as the Eel's crew: the player and every active companion,
+  /// with the stats the stations read and their current health.
+  List<ShipCrew> _buildCrew({
+    required PlayerSession session,
+    required Map<String, dynamic> companions,
+    required Map<String, dynamic> races,
+    required Map<String, dynamic> professions,
+    required Map<String, dynamic> gameConfig,
+  }) {
+    final lang = ref.read(appLanguageProvider);
+    final crew = <ShipCrew>[
+      ShipCrew(
+        id: 'player',
+        name: session.characterName.isNotEmpty
+            ? session.characterName
+            : trFor(lang, 'you_label'),
+        strength: session.strength,
+        dexterity: session.dexterity,
+        constitution: session.constitution,
+        wisdom: session.wisdom,
+        health: session.currentHealth > 0
+            ? session.currentHealth
+            : session.maxHealth,
+        maxHealth: session.maxHealth,
+        isPlayer: true,
+      ),
+    ];
+    for (final companionId in session.activeAllyIds) {
+      final companion = companions[companionId] as Map<String, dynamic>?;
+      if (companion == null) continue;
+      final allyState = session.recruitedAllies.firstWhere(
+        (a) => a.companionId == companionId,
+        orElse: () => AllyState(
+            companionId: companionId,
+            currentHealth: AllyState.fullHealthSentinel),
+      );
+      final race = races[companion['raceId']?.toString() ?? '']
+              as Map<String, dynamic>? ??
+          const {};
+      final profession =
+          professions[companion['professionId']?.toString() ?? '']
+                  as Map<String, dynamic>? ??
+              const {};
+      final base = deriveAllyBaseStats(
+          gameConfig: gameConfig, race: race, profession: profession);
+      final maxHealth = scaledMaxHealth(base.maxHealth, session.level);
+      crew.add(ShipCrew(
+        id: companionId,
+        name: companion['companionName']?.toString() ?? companionId,
+        strength: base.strength,
+        dexterity: base.dexterity,
+        constitution: base.constitution,
+        wisdom: base.wisdom,
+        health: allyState.currentHealth.clamp(1, maxHealth),
+        maxHealth: maxHealth,
+      ));
+    }
+    return crew;
+  }
+
+  Future<void> _onBattleFinished(ShipBattleOutcome outcome) async {
     final notifier = ref.read(playerSessionProvider.notifier);
-    final enemyName = _enemyName(fr);
-    if (action != null) {
-      final result = resolvePlayerShipAction(
-          player: _player!, enemy: _enemy!, action: action);
-      if (result.damageDealt > 0) {
-        _log.add(
-            _t('ship_log_you_strike', ship: enemyName, n: result.damageDealt));
-      }
-      if (result.shieldRestored > 0) {
-        _log.add(_t('ship_log_brace', n: result.shieldRestored));
-      }
-      if (result.hullRepaired > 0) {
-        _log.add(_t('ship_log_repair', n: result.hullRepaired));
-      }
-      _cooldowns[action.partId] =
-          action.cooldownTurns > 0 ? action.cooldownTurns + 1 : 0;
-      _player = result.player;
-      _enemy = result.enemy;
-      if (!_enemy!.isAfloat) {
-        _log.add(_t('ship_log_sunk', ship: enemyName));
-        final gold = (_enemyData?['goldReward'] as num?)?.toInt() ?? 0;
-        final xp = (_enemyData?['xpReward'] as num?)?.toInt() ?? 0;
-        final session = ref.read(playerSessionProvider);
+    final enemyName =
+        _enemyName(ref.read(appLanguageProvider) == AppLanguage.fr);
+    _player = outcome.player;
+    _log
+      ..clear()
+      ..addAll(outcome.log.length > 3
+          ? outcome.log.sublist(outcome.log.length - 3)
+          : outcome.log);
+    final gold =
+        outcome.won ? (_enemyData?['goldReward'] as num?)?.toInt() ?? 0 : 0;
+    final xp =
+        outcome.won ? (_enemyData?['xpReward'] as num?)?.toInt() ?? 0 : 0;
+    // The crew's hurts persist, win or lose; a win also pays.
+    for (final member in outcome.crew) {
+      if (member.isPlayer) {
         await notifier.applyCombatResult(
-          hpAfter: session.currentHealth,
-          goldGain: gold,
-          xpGain: xp,
-        );
-        await notifier.setShipHull(_player!.hull);
-        _log.add('${_t('ship_fight_won_prefix')}: +$gold ${_t('gold_label')}');
-        await _advance();
-        return;
+            hpAfter: member.health, goldGain: gold, xpGain: xp);
+      } else {
+        await notifier.applyAllyCombatResult(member.id, hpAfter: member.health);
       }
-    }
-    var weaponDamage = (_enemyData?['weaponDamage'] as num?)?.toInt() ?? 0;
-    if (_firstVolleyPending) {
-      // Foresight: the sail saw the first volley coming.
-      weaponDamage = (weaponDamage * firstVolleyFactor(_sailStrength)).round();
-      _firstVolleyPending = false;
-      _log.add(_t('ship_log_first_volley_seen'));
-    }
-    final result = resolveEnemyShipTurn(
-      player: _player!,
-      enemy: _enemy!,
-      weaponDamage: weaponDamage,
-      playerShieldRegen: _shipRegen,
-    );
-    if (result.damageDealt > 0) {
-      _log.add(
-          _t('ship_log_enemy_strikes', ship: enemyName, n: result.damageDealt));
-    }
-    _player = result.player;
-    _enemy = result.enemy;
-    for (final id in _cooldowns.keys.toList()) {
-      _cooldowns[id] = max(0, _cooldowns[id]! - 1);
-    }
-    if (!_player!.isAfloat) {
-      await notifier.setShipHull(limpHomeHull(_player!.maxHull));
-      if (!mounted) return;
-      setState(() {
-        _phase = _VoyagePhase.failed;
-        _busy = false;
-      });
-      return;
     }
     if (!mounted) return;
-    setState(() => _busy = false);
+    if (outcome.won) {
+      _log.add(_t('ship_log_sunk', ship: enemyName));
+      _log.add('${_t('ship_fight_won_prefix')}: +$gold ${_t('gold_label')}');
+      await notifier.setShipHull(_player!.hull);
+      await _advance();
+      return;
+    }
+    await notifier.setShipHull(limpHomeHull(_player!.maxHull));
+    if (!mounted) return;
+    setState(() {
+      _phase = _VoyagePhase.failed;
+      _busy = false;
+    });
   }
 
   @override
@@ -288,9 +321,20 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final parts = ref.watch(gameDbProvider(shipPartsSchema)).value;
     final enemyShips = ref.watch(gameDbProvider(enemyShipsSchema)).value;
     final ports = ref.watch(gameDbProvider(portsSchema)).value;
+    final companions = ref.watch(gameDbProvider(companionsSchema)).value;
+    final races = ref.watch(gameDbProvider(racesSchema)).value;
+    final professions = ref.watch(gameDbProvider(professionsSchema)).value;
+    final gameConfig = ref.watch(gameConfigProvider).value;
     final title =
         '${trFor(lang, 'voyage_title')}: ${portNameFor(widget.toPort, fr)}';
-    if (ships == null || parts == null || enemyShips == null || ports == null) {
+    if (ships == null ||
+        parts == null ||
+        enemyShips == null ||
+        ports == null ||
+        companions == null ||
+        races == null ||
+        professions == null ||
+        gameConfig == null) {
       return Scaffold(
         appBar: AppBar(title: Text(title)),
         body: const Center(child: CircularProgressIndicator()),
@@ -309,7 +353,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
             child: switch (_phase) {
               _VoyagePhase.event => _buildEvent(context,
                   fr: fr, enemyShips: enemyShips, parts: parts),
-              _VoyagePhase.fight => _buildFight(context, fr: fr, parts: parts),
+              _VoyagePhase.fight => _buildFight(
+                  fr: fr,
+                  companions: companions,
+                  races: races,
+                  professions: professions,
+                  gameConfig: gameConfig,
+                ),
               _VoyagePhase.arrived => _buildSummary(
                   context,
                   icon: Icons.anchor,
@@ -333,7 +383,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     );
   }
 
-  Widget _buildShipBars(BuildContext context, ShipCombatant ship, String name) {
+  Widget _buildShipBars(BuildContext context, ShipState ship, String name) {
     final theme = Theme.of(context);
     final lang = ref.watch(appLanguageProvider);
     return Column(
@@ -348,7 +398,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         const SizedBox(height: 2),
         Text(
           '${trFor(lang, 'hull_label')} ${ship.hull} / ${ship.maxHull} · '
-          '${trFor(lang, 'bulwark_label')} ${ship.shield} / ${ship.maxShield}',
+          '${trFor(lang, 'ship_layers_label')} ${ship.layers} / ${ship.maxLayers}',
           style: theme.textTheme.bodySmall,
         ),
       ],
@@ -443,72 +493,31 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     );
   }
 
-  /// The void volley hits harder when the mark was set by a void-marked
-  /// hand (see sail_powers.dart).
-  ShipAction _withSailBonus(ShipAction action) {
-    final sail = _sail;
-    if (sail == null ||
-        sail.power != SailPower.voidmark ||
-        action.partId != sail.partId) {
-      return action;
-    }
-    return ShipAction(
-      partId: action.partId,
-      label: action.label,
-      labelFr: action.labelFr,
-      damage: action.damage + voidVolleyBonus(_sailStrength),
-      shieldRestore: action.shieldRestore,
-      hullRepair: action.hullRepair,
-      cooldownTurns: action.cooldownTurns,
-    );
-  }
-
-  Widget _buildFight(
-    BuildContext context, {
+  Widget _buildFight({
     required bool fr,
-    required Map<String, dynamic> parts,
+    required Map<String, dynamic> companions,
+    required Map<String, dynamic> races,
+    required Map<String, dynamic> professions,
+    required Map<String, dynamic> gameConfig,
   }) {
     final lang = ref.watch(appLanguageProvider);
-    final session = ref.watch(playerSessionProvider);
-    final actions = [
-      for (final id in session.shipPartIds)
-        if (parts[id] is Map<String, dynamic>)
-          _withSailBonus(
-              ShipAction.fromPart(id, parts[id] as Map<String, dynamic>)),
-    ].where((a) => a.isUsable).toList();
-    final anyReady = actions.any((a) => (_cooldowns[a.partId] ?? 0) == 0);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(trFor(lang, 'ship_fight_title'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 12),
-        _buildShipBars(context, _player!, trFor(lang, 'boat_title')),
-        const SizedBox(height: 12),
-        _buildShipBars(context, _enemy!, _enemyName(fr)),
-        const SizedBox(height: 12),
-        Expanded(child: SingleChildScrollView(child: _buildLog(context))),
-        const SizedBox(height: 8),
-        for (final action in actions) ...[
-          ElevatedButton(
-            onPressed: _busy || (_cooldowns[action.partId] ?? 0) > 0
-                ? null
-                : () => _act(action, fr: fr),
-            child: Text((_cooldowns[action.partId] ?? 0) > 0
-                ? '${fr && action.labelFr.isNotEmpty ? action.labelFr : action.label} '
-                    '(${trFor(lang, 'ready_in_prefix')} ${_cooldowns[action.partId]! - 1})'
-                : (fr && action.labelFr.isNotEmpty
-                    ? action.labelFr
-                    : action.label)),
-          ),
-          const SizedBox(height: 8),
-        ],
-        if (!anyReady)
-          OutlinedButton(
-            onPressed: _busy ? null : () => _act(null, fr: fr),
-            child: Text(trFor(lang, 'sail_on_button')),
-          ),
-      ],
+    final session = ref.read(playerSessionProvider);
+    return ShipBattlePanel(
+      key: ValueKey('ship_battle_$_battleKey'),
+      player: _player!,
+      enemy: _enemy!,
+      shipName: trFor(lang, 'boat_title'),
+      enemyName: _enemyName(fr),
+      crew: _buildCrew(
+        session: session,
+        companions: companions,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig,
+      ),
+      foresight: _sail?.power == SailPower.foresight,
+      random: _random,
+      onFinished: _onBattleFinished,
     );
   }
 

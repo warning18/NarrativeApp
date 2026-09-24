@@ -787,20 +787,36 @@ final DbSchema enemyShipsSchema = DbSchema(
       defaultValue: 1,
     ),
     FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
         key: 'maxHull',
         label: 'Max Hull',
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
-        key: 'maxShield',
-        label: 'Max Shield',
-        type: FieldType.integer,
-        defaultValue: 0),
+      key: 'rooms',
+      label:
+          'Rooms {helm, guns, bulwark, hold}: system pips per room (helm = 8% evasion each, bulwark = one shield layer each, guns = charge, hold = repairs)',
+      type: FieldType.json,
+    ),
     FieldSchema(
-        key: 'weaponDamage',
-        label: 'Weapon Damage',
-        type: FieldType.integer,
-        defaultValue: 0),
+      key: 'weapons',
+      label:
+          'Weapons [{weaponName, weaponName_fr, damage, chargeTurns, piercesShield, setsFire, roomDamage}]',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'crew',
+      label: 'Crew (repairs made or fires fought per round)',
+      type: FieldType.integer,
+      defaultValue: 1,
+    ),
     FieldSchema(
         key: 'xpReward',
         label: 'XP Reward',
@@ -811,12 +827,6 @@ final DbSchema enemyShipsSchema = DbSchema(
         label: 'Gold Reward',
         type: FieldType.integer,
         defaultValue: 0),
-    FieldSchema(
-      key: 'skillMoves',
-      label:
-          'Skill Moves [{skillID, condition: $skillMoveConditionOptions, requiredElement, chance, healthThreshold, attackCountRequirement, playerPatternThreshold, blockThreshold, priority}]',
-      type: FieldType.json,
-    ),
     visualAssetFieldSchema('enemy_ships'),
   ],
 );
@@ -837,16 +847,10 @@ final DbSchema shipsSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
-      key: 'baseMaxShield',
-      label: 'Base Max Shield',
-      type: FieldType.integer,
-      defaultValue: 0,
-    ),
-    FieldSchema(
-      key: 'shieldRegenPerTurn',
-      label: 'Shield Regen / Turn',
-      type: FieldType.integer,
-      defaultValue: 0,
+      key: 'rooms',
+      label:
+          'Rooms {helm, guns, bulwark, hold}: base system pips per room, before parts',
+      type: FieldType.json,
     ),
     FieldSchema(
         key: 'weaponSlots',
@@ -902,33 +906,38 @@ final DbSchema shipPartsSchema = DbSchema(
         label: 'Battle Action Label (FR)',
         type: FieldType.text),
     FieldSchema(
-      key: 'cooldownTurns',
-      label: 'Cooldown Turns',
-      type: FieldType.integer,
-      defaultValue: 0,
-    ),
-    FieldSchema(
         key: 'damageAmount',
-        label: 'Damage Amount',
+        label: 'Damage Amount (a weapon: hull damage per shot)',
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
-      key: 'shieldRestoreAmount',
-      label: 'Shield Restore Amount',
+      key: 'chargeTurns',
+      label: 'Charge Turns (a weapon: turns to ready between shots)',
       type: FieldType.integer,
-      defaultValue: 0,
+      defaultValue: 1,
     ),
     FieldSchema(
-      key: 'maxShieldBonus',
-      label: 'Max Shield Bonus',
-      type: FieldType.integer,
-      defaultValue: 0,
+      key: 'piercesShield',
+      label: 'Pierces Shield (ignores the bulwark\'s layers)',
+      type: FieldType.boolean,
+      defaultValue: false,
     ),
     FieldSchema(
-      key: 'hullRepairAmount',
-      label: 'Hull Repair Amount',
+      key: 'setsFire',
+      label: 'Sets Fire (the room it lands in burns)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'roomDamage',
+      label: 'Room Damage (system pips knocked off the room it lands in)',
       type: FieldType.integer,
-      defaultValue: 0,
+      defaultValue: 1,
+    ),
+    FieldSchema(
+      key: 'roomBonus',
+      label: 'Room Bonus {helm, guns, bulwark, hold}: pips this part adds',
+      type: FieldType.json,
     ),
     visualAssetFieldSchema('ship_parts'),
     FieldSchema(

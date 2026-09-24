@@ -3132,9 +3132,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'sail_power_foresight': {
     AppLanguage.en:
-        'Foresight: tomorrow\'s weather shown, the first volley seen coming',
+        'Foresight: tomorrow\'s weather shown, and where the enemy\'s guns are aimed',
     AppLanguage.fr:
-        'Prescience : le temps de demain annoncé, la première bordée vue venir',
+        'Prescience : le temps de demain annoncé, et où pointent les canons ennemis',
   },
   'sail_power_hearth': {
     AppLanguage.en:
@@ -3273,6 +3273,122 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_fight_won_prefix': {
     AppLanguage.en: 'Prize taken',
     AppLanguage.fr: 'Prise capturée'
+  },
+  // --- The room-by-room ship battle (see ship_combat.dart) ---
+  'ship_room_helm_title': {AppLanguage.en: 'Helm', AppLanguage.fr: 'Barre'},
+  'ship_room_guns_title': {AppLanguage.en: 'Guns', AppLanguage.fr: 'Canons'},
+  'ship_room_bulwark_title': {
+    AppLanguage.en: 'Bulwark',
+    AppLanguage.fr: 'Pavois'
+  },
+  'ship_room_hold_title': {AppLanguage.en: 'Hold', AppLanguage.fr: 'Cale'},
+  'ship_room_helm': {AppLanguage.en: 'helm', AppLanguage.fr: 'la barre'},
+  'ship_room_guns': {AppLanguage.en: 'guns', AppLanguage.fr: 'les canons'},
+  'ship_room_bulwark': {AppLanguage.en: 'bulwark', AppLanguage.fr: 'le pavois'},
+  'ship_room_hold': {AppLanguage.en: 'hold', AppLanguage.fr: 'la cale'},
+  'ship_room_helm_hint': {
+    AppLanguage.en: 'Evasion: 8% per pip. A helmsman adds their own.',
+    AppLanguage.fr: 'Esquive : 8 % par cran. Un barreur ajoute la sienne.',
+  },
+  'ship_room_guns_hint': {
+    AppLanguage.en:
+        'Weapons charge here. Extra pips and a gunner speed the heaviest gun.',
+    AppLanguage.fr:
+        'Les armes se chargent ici. Les crans en plus et un canonnier hâtent la plus lourde.',
+  },
+  'ship_room_bulwark_hint': {
+    AppLanguage.en:
+        'One shield layer per pip, one back each round (two with a hand here). Each shot it stops cracks a pip.',
+    AppLanguage.fr:
+        'Une couche de bouclier par cran, une qui revient chaque tour (deux avec une main ici). Chaque tir arrêté fêle un cran.',
+  },
+  'ship_room_hold_hint': {
+    AppLanguage.en: 'A hand here patches the hull every turn.',
+    AppLanguage.fr: 'Une main ici colmate la coque à chaque tour.',
+  },
+  'ship_layers_label': {AppLanguage.en: 'Layers', AppLanguage.fr: 'Couches'},
+  'charge_turns_label': {
+    AppLanguage.en: 'charge',
+    AppLanguage.fr: 'chargement'
+  },
+  'room_damage_label': {
+    AppLanguage.en: 'room damage',
+    AppLanguage.fr: 'dégâts de salle'
+  },
+  'pierces_shield_label': {
+    AppLanguage.en: 'pierces the bulwark',
+    AppLanguage.fr: 'perce le pavois'
+  },
+  'sets_fire_label': {AppLanguage.en: 'sets fire', AppLanguage.fr: 'incendie'},
+  'ship_evasion_label': {AppLanguage.en: 'Evasion', AppLanguage.fr: 'Esquive'},
+  'ship_weapons_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
+  'ship_crew_label': {AppLanguage.en: 'Crew', AppLanguage.fr: 'Équipage'},
+  'ship_weapon_ready_label': {AppLanguage.en: 'ready', AppLanguage.fr: 'prête'},
+  'ship_end_turn_button': {
+    AppLanguage.en: 'End turn',
+    AppLanguage.fr: 'Fin du tour'
+  },
+  'ship_fire_hint': {
+    AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
+    AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+  },
+  'ship_station_hint': {
+    AppLanguage.en: 'Tap a crew member, then the room to send them to.',
+    AppLanguage.fr:
+        'Touchez un membre d\'équipage, puis la salle où l\'envoyer.',
+  },
+  'ship_aim_prefix': {AppLanguage.en: 'Aiming at', AppLanguage.fr: 'Vise'},
+  'ship_incoming_label': {
+    AppLanguage.en: 'incoming',
+    AppLanguage.fr: 'en approche'
+  },
+  'ship_log_shot_hits': {
+    AppLanguage.en: '{weapon} hits the {ship}\'s {room} for {n}',
+    AppLanguage.fr: '{weapon} touche {room} de {ship} pour {n}',
+  },
+  'ship_log_shot_absorbed': {
+    AppLanguage.en: '{weapon} breaks on the {ship}\'s bulwark',
+    AppLanguage.fr: '{weapon} se brise sur le pavois de {ship}',
+  },
+  'ship_log_shot_dodged': {
+    AppLanguage.en: 'The {ship} slips {weapon}',
+    AppLanguage.fr: '{ship} esquive {weapon}',
+  },
+  'ship_log_room_down': {
+    AppLanguage.en: 'The {ship}\'s {room} is knocked out',
+    AppLanguage.fr: '{room} de {ship} est hors service',
+  },
+  'ship_log_fire_started': {
+    AppLanguage.en: 'Fire in the {ship}\'s {room}!',
+    AppLanguage.fr: 'Feu dans {room} de {ship} !',
+  },
+  'ship_log_fire_burns': {
+    AppLanguage.en: 'The fire spreads in the {ship}\'s {room}',
+    AppLanguage.fr: 'Le feu gagne dans {room} de {ship}',
+  },
+  'ship_log_fire_out': {
+    AppLanguage.en: '{crew} puts out the fire in the {room}',
+    AppLanguage.fr: '{crew} éteint le feu dans {room}',
+  },
+  'ship_log_room_repaired': {
+    AppLanguage.en: '{crew} repairs the {room}',
+    AppLanguage.fr: '{crew} répare {room}',
+  },
+  'ship_log_hull_patched': {
+    AppLanguage.en: '{crew} patches the hull, +{n}',
+    AppLanguage.fr: '{crew} colmate la coque, +{n}',
+  },
+  'ship_log_crew_hurt': {
+    AppLanguage.en: '{crew} is hurt at the {room}, -{n}',
+    AppLanguage.fr: '{crew} est blessé à {room}, -{n}',
+  },
+  'ship_log_enemy_repairs': {
+    AppLanguage.en: 'The {ship} repairs its {room}',
+    AppLanguage.fr: '{ship} répare {room}',
+  },
+  'ship_log_enemy_fire_out': {
+    AppLanguage.en: 'The {ship} fights the fire in its {room}',
+    AppLanguage.fr: '{ship} combat le feu dans {room}',
   },
   'port_shops_section': {
     AppLanguage.en: 'Harbor trade',

@@ -1,189 +1,631 @@
 import 'dart:math';
 
 /// Pure, RNG-free rules for the Rusty Eel: fitting parts into her slots,
-/// and the turn-by-turn ship battle a voyage's raider event opens (see
-/// VoyageScreen). A ship has a hull (sink at 0) behind a bulwark that
-/// absorbs damage first and regenerates a little each turn.
-class ShipCombatant {
-  const ShipCombatant({
+/// and the room-by-room ship battle a voyage's raider event opens (see
+/// ShipBattlePanel and VoyageScreen).
+///
+/// A ship is a hull behind a bulwark of shield layers, with four rooms
+/// that each run one system: the Helm (evasion), the Guns (weapon
+/// charge), the Bulwark (shield layers and their regen) and the Hold
+/// (repairs, and where the crew shelters). Weapons charge over turns and
+/// fire at a room of the enemy's ship; a hit damages the hull and knocks
+/// pips off that room's system, and an incendiary one sets it burning.
+/// Crew stand in rooms: a helmsman adds evasion, a gunner charge, a
+/// bulwark hand a layer a round, a hold hand hull repairs, and anyone
+/// repairs the room they stand in and fights its fire. The enemy's crew
+/// is abstracted into one repair or one fire fought per round.
+///
+/// Everything here is deterministic given the `roll`s passed in, so the
+/// Python simulator can mirror it exactly and the tests can pin it.
+
+/// The four rooms of any ship, in the order they are drawn.
+enum ShipRoom { helm, guns, bulwark, hold }
+
+/// Shield layers are capped here whatever the bulwark's level.
+const int maxShieldLayers = 3;
+
+/// Evasion percent per working Helm pip.
+const int evasionPerHelmLevel = 8;
+
+/// No ship, however light and however well helmed, slips more than this.
+const int maxEvasionPercent = 45;
+
+/// Hull lost per burning room at the end of every round.
+const int fireHullDamagePerRound = 3;
+
+/// The share of a landed shot's damage its room's crew member takes.
+const double crewInjuryShare = 0.5;
+
+/// One room's system: [level] pips, [damage] of them knocked out, and
+/// whether it is burning. A room at zero working pips is knocked out.
+class RoomState {
+  const RoomState({required this.level, this.damage = 0, this.onFire = false});
+
+  final int level;
+  final int damage;
+  final bool onFire;
+
+  int get working => max(0, level - damage);
+  bool get isDown => working == 0;
+
+  RoomState copyWith({int? level, int? damage, bool? onFire}) {
+    final newLevel = level ?? this.level;
+    return RoomState(
+      level: newLevel,
+      damage: (damage ?? this.damage).clamp(0, newLevel),
+      onFire: onFire ?? this.onFire,
+    );
+  }
+}
+
+/// A weapon aboard a ship: what it does to the room it hits, how many
+/// turns it takes to charge, and how far along that charge it is.
+class ShipWeapon {
+  const ShipWeapon({
+    required this.id,
+    required this.name,
+    required this.nameFr,
+    required this.damage,
+    required this.chargeTurns,
+    this.piercing = false,
+    this.incendiary = false,
+    this.roomDamage = 1,
+    this.charge = 0,
+  });
+
+  /// A player weapon off its ship_parts.json record; [damageBonus] is the
+  /// painted sail's extra on its own volley (see sail_powers.dart).
+  factory ShipWeapon.fromPart(String partId, Map<String, dynamic> part,
+      {int damageBonus = 0}) {
+    final cooldown = (part['cooldownTurns'] as num?)?.toInt() ?? 0;
+    return ShipWeapon(
+      id: partId,
+      name: part['partName']?.toString() ?? partId,
+      nameFr: part['partName_fr']?.toString() ?? '',
+      damage: ((part['damageAmount'] as num?)?.toInt() ?? 0) + damageBonus,
+      chargeTurns:
+          max(1, (part['chargeTurns'] as num?)?.toInt() ?? (cooldown + 1)),
+      piercing: part['piercesShield'] == true,
+      incendiary: part['setsFire'] == true,
+      roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
+    );
+  }
+
+  /// An enemy weapon off one entry of its ship's `weapons` list.
+  factory ShipWeapon.fromRecord(Map<String, dynamic> raw, int index) =>
+      ShipWeapon(
+        id: 'enemy_weapon_$index',
+        name: raw['weaponName']?.toString() ?? 'Guns',
+        nameFr: raw['weaponName_fr']?.toString() ?? '',
+        damage: (raw['damage'] as num?)?.toInt() ?? 0,
+        chargeTurns: max(1, (raw['chargeTurns'] as num?)?.toInt() ?? 1),
+        piercing: raw['piercesShield'] == true,
+        incendiary: raw['setsFire'] == true,
+        roomDamage: max(1, (raw['roomDamage'] as num?)?.toInt() ?? 1),
+      );
+
+  final String id;
+  final String name;
+  final String nameFr;
+  final int damage;
+  final int chargeTurns;
+
+  /// Ignores shield layers entirely.
+  final bool piercing;
+
+  /// Sets the room it lands in burning.
+  final bool incendiary;
+
+  /// System pips knocked off the room it lands in.
+  final int roomDamage;
+
+  /// Charge so far, 0 to [chargeTurns].
+  final int charge;
+
+  bool get isReady => charge >= chargeTurns;
+
+  String nameFor(bool french) => french && nameFr.isNotEmpty ? nameFr : name;
+
+  ShipWeapon withCharge(int value) => ShipWeapon(
+        id: id,
+        name: name,
+        nameFr: nameFr,
+        damage: damage,
+        chargeTurns: chargeTurns,
+        piercing: piercing,
+        incendiary: incendiary,
+        roomDamage: roomDamage,
+        charge: value.clamp(0, chargeTurns),
+      );
+
+  ShipWeapon fired() => withCharge(0);
+}
+
+/// One ship in a battle.
+class ShipState {
+  const ShipState({
     required this.hull,
     required this.maxHull,
-    required this.shield,
-    required this.maxShield,
+    required this.layers,
+    required this.rooms,
+    required this.weapons,
+    this.repairsPerRound = 1,
   });
 
   final int hull;
   final int maxHull;
-  final int shield;
-  final int maxShield;
+
+  /// How many repairs (or fires fought) an enemy ship's crew manages
+  /// between volleys (see [enemyMaintenance]); the Eel's crew are real.
+  final int repairsPerRound;
+
+  /// Shield layers up right now, each stopping one non-piercing shot.
+  final int layers;
+  final Map<ShipRoom, RoomState> rooms;
+  final List<ShipWeapon> weapons;
 
   bool get isAfloat => hull > 0;
 
-  ShipCombatant copyWith({int? hull, int? shield}) => ShipCombatant(
+  RoomState room(ShipRoom which) => rooms[which] ?? const RoomState(level: 0);
+
+  /// Layers the bulwark can hold right now: its working pips.
+  int get maxLayers => min(maxShieldLayers, room(ShipRoom.bulwark).working);
+
+  /// Evasion from the helm alone (see [evasionFor] for the helmsman's).
+  int get baseEvasion =>
+      min(maxEvasionPercent, room(ShipRoom.helm).working * evasionPerHelmLevel);
+
+  ShipState copyWith({
+    int? hull,
+    int? layers,
+    Map<ShipRoom, RoomState>? rooms,
+    List<ShipWeapon>? weapons,
+  }) =>
+      ShipState(
         hull: hull ?? this.hull,
         maxHull: maxHull,
-        shield: shield ?? this.shield,
-        maxShield: maxShield,
+        layers: layers ?? this.layers,
+        rooms: rooms ?? this.rooms,
+        weapons: weapons ?? this.weapons,
+        repairsPerRound: repairsPerRound,
+      );
+
+  ShipState withRoom(ShipRoom which, RoomState state) =>
+      copyWith(rooms: {...rooms, which: state});
+
+  ShipState withWeapon(ShipWeapon weapon) => copyWith(weapons: [
+        for (final w in weapons) w.id == weapon.id ? weapon : w,
+      ]);
+}
+
+/// One crew member aboard the Eel: the player or an active companion,
+/// with the stats the stations read and the health a hit costs.
+class ShipCrew {
+  const ShipCrew({
+    required this.id,
+    required this.name,
+    required this.strength,
+    required this.dexterity,
+    required this.constitution,
+    required this.wisdom,
+    required this.health,
+    required this.maxHealth,
+    this.isPlayer = false,
+  });
+
+  final String id;
+  final String name;
+  final int strength;
+  final int dexterity;
+  final int constitution;
+  final int wisdom;
+  final int health;
+  final int maxHealth;
+  final bool isPlayer;
+
+  ShipCrew withHealth(int value) => ShipCrew(
+        id: id,
+        name: name,
+        strength: strength,
+        dexterity: dexterity,
+        constitution: constitution,
+        wisdom: wisdom,
+        health: value.clamp(1, maxHealth),
+        maxHealth: maxHealth,
+        isPlayer: isPlayer,
       );
 }
 
-/// The bulwark absorbs first; whatever is left reaches the hull, which
-/// never drops below 0.
-ShipCombatant applyShipDamage(ShipCombatant target, int damage) {
-  if (damage <= 0) return target;
-  final absorbed = min(target.shield, damage);
-  final through = damage - absorbed;
-  return target.copyWith(
-    shield: target.shield - absorbed,
-    hull: max(0, target.hull - through),
+/// Where the crew stand: at most one member per room.
+typedef Stations = Map<ShipRoom, ShipCrew>;
+
+/// A helmsman's evasion on top of the helm's own: a nimble one adds more.
+int crewEvasionBonus(ShipCrew crew) =>
+    (5 + max(0, crew.dexterity) ~/ 2).clamp(5, 15);
+
+/// Hull a hold hand patches per turn: more with a working hold and a
+/// steady head; nothing from a knocked-out hold.
+int crewHullRepair(ShipCrew crew, int holdWorking) => holdWorking <= 0
+    ? 0
+    : (2 * holdWorking + max(0, crew.wisdom) ~/ 3).clamp(2, 10);
+
+/// What a shot that lands in a crewed room costs the crew member there.
+int crewInjuryFor(ShipWeapon weapon) =>
+    max(3, (weapon.damage * crewInjuryShare).round());
+
+/// A ship's evasion percent this turn: the helm's pips plus its helmsman,
+/// none of it from a knocked-out helm.
+int evasionFor(ShipState ship, {ShipCrew? helmsman}) {
+  final helm = ship.room(ShipRoom.helm);
+  if (helm.isDown) return 0;
+  var evasion = helm.working * evasionPerHelmLevel;
+  if (helmsman != null) evasion += crewEvasionBonus(helmsman);
+  return min(maxEvasionPercent, evasion);
+}
+
+/// How one shot ended.
+class ShotOutcome {
+  const ShotOutcome({
+    required this.target,
+    required this.room,
+    this.dodged = false,
+    this.absorbed = false,
+    this.hullDamage = 0,
+    this.roomDamage = 0,
+    this.fireStarted = false,
+    this.roomKnockedOut = false,
+  });
+
+  final ShipState target;
+  final ShipRoom room;
+  final bool dodged;
+  final bool absorbed;
+  final int hullDamage;
+  final int roomDamage;
+  final bool fireStarted;
+  final bool roomKnockedOut;
+
+  bool get landed => !dodged && !absorbed;
+}
+
+/// One weapon fired at [room] of [target]. The helm's evasion is rolled
+/// first ([roll] in [0, 1)); then a shield layer stops a non-piercing shot,
+/// though the blow still cracks a pip off the bulwark behind it; a shot
+/// that gets through costs hull and knocks pips off the room it lands in,
+/// and an incendiary one leaves it burning.
+ShotOutcome resolveShot({
+  required ShipState target,
+  required ShipWeapon weapon,
+  required ShipRoom room,
+  required int evasionPercent,
+  required double roll,
+}) {
+  if (roll * 100 < evasionPercent) {
+    return ShotOutcome(target: target, room: room, dodged: true);
+  }
+  if (!weapon.piercing && target.layers > 0) {
+    final bulwark = target.room(ShipRoom.bulwark);
+    final cracked = bulwark.copyWith(damage: bulwark.damage + 1);
+    var next = target
+        .copyWith(layers: target.layers - 1)
+        .withRoom(ShipRoom.bulwark, cracked);
+    next = next.copyWith(layers: min(next.layers, next.maxLayers));
+    return ShotOutcome(
+      target: next,
+      room: room,
+      absorbed: true,
+      roomDamage: cracked.damage - bulwark.damage,
+      roomKnockedOut: !bulwark.isDown && cracked.isDown,
+    );
+  }
+  final before = target.room(room);
+  final after = before.copyWith(
+    damage: before.damage + weapon.roomDamage,
+    onFire: before.onFire || weapon.incendiary,
+  );
+  var next = target
+      .copyWith(hull: max(0, target.hull - weapon.damage))
+      .withRoom(room, after);
+  next = next.copyWith(layers: min(next.layers, next.maxLayers));
+  return ShotOutcome(
+    target: next,
+    room: room,
+    hullDamage: target.hull - next.hull,
+    roomDamage: after.damage - before.damage,
+    fireStarted: weapon.incendiary && !before.onFire,
+    roomKnockedOut: !before.isDown && after.isDown,
   );
 }
 
-/// What one installed part does on the player's turn -- read straight
-/// off its ship_parts.json record.
-class ShipAction {
-  const ShipAction({
-    required this.partId,
-    required this.label,
-    required this.labelFr,
-    this.damage = 0,
-    this.shieldRestore = 0,
-    this.hullRepair = 0,
-    this.cooldownTurns = 0,
-  });
-
-  factory ShipAction.fromPart(String partId, Map<String, dynamic> part) =>
-      ShipAction(
-        partId: partId,
-        label: part['battleActionLabel']?.toString() ??
-            part['partName']?.toString() ??
-            partId,
-        labelFr: part['battleActionLabel_fr']?.toString() ?? '',
-        damage: (part['damageAmount'] as num?)?.toInt() ?? 0,
-        shieldRestore: (part['shieldRestoreAmount'] as num?)?.toInt() ?? 0,
-        hullRepair: (part['hullRepairAmount'] as num?)?.toInt() ?? 0,
-        cooldownTurns: (part['cooldownTurns'] as num?)?.toInt() ?? 0,
-      );
-
-  final String partId;
-  final String label;
-  final String labelFr;
-  final int damage;
-  final int shieldRestore;
-  final int hullRepair;
-  final int cooldownTurns;
-
-  bool get isAttack => damage > 0;
-
-  /// A part with nothing to do in a fight (pure slot bonus) has no action.
-  bool get isUsable => damage > 0 || shieldRestore > 0 || hullRepair > 0;
+/// Charges every weapon one step while the guns work, then hands the
+/// guns' extra pips (and a gunner's) to the heaviest weapon still
+/// charging. Knocked-out guns charge nothing.
+ShipState chargeWeapons(ShipState ship, {bool gunnerAboard = false}) {
+  final guns = ship.room(ShipRoom.guns);
+  if (guns.isDown) return ship;
+  var weapons = [for (final w in ship.weapons) w.withCharge(w.charge + 1)];
+  var extra = (guns.working - 1) + (gunnerAboard ? 1 : 0);
+  while (extra > 0) {
+    ShipWeapon? heaviest;
+    for (final w in weapons) {
+      if (w.isReady) continue;
+      if (heaviest == null ||
+          w.chargeTurns > heaviest.chargeTurns ||
+          (w.chargeTurns == heaviest.chargeTurns &&
+              w.damage > heaviest.damage)) {
+        heaviest = w;
+      }
+    }
+    if (heaviest == null) break;
+    final target = heaviest;
+    weapons = [
+      for (final w in weapons)
+        w.id == target.id ? w.withCharge(w.charge + 1) : w,
+    ];
+    extra--;
+  }
+  return ship.copyWith(weapons: weapons);
 }
 
-class ShipTurnResult {
-  const ShipTurnResult({
-    required this.player,
-    required this.enemy,
-    this.damageDealt = 0,
-    this.shieldRestored = 0,
+/// What a room's crew member did at the start of the turn.
+class CrewWork {
+  const CrewWork({
+    required this.crew,
+    required this.room,
+    this.fireOut = false,
+    this.roomRepaired = false,
     this.hullRepaired = 0,
   });
 
-  final ShipCombatant player;
-  final ShipCombatant enemy;
-  final int damageDealt;
-  final int shieldRestored;
+  final ShipCrew crew;
+  final ShipRoom room;
+  final bool fireOut;
+  final bool roomRepaired;
   final int hullRepaired;
 }
 
-/// The player's turn: an attacking part hits the enemy, a bracing part
-/// restores the bulwark, a repairing part patches the hull -- a part may
-/// do more than one.
-ShipTurnResult resolvePlayerShipAction({
-  required ShipCombatant player,
-  required ShipCombatant enemy,
-  required ShipAction action,
-}) {
-  var p = player;
-  var e = enemy;
-  var dealt = 0;
-  if (action.damage > 0) {
-    final before = e.hull + e.shield;
-    e = applyShipDamage(e, action.damage);
-    dealt = before - (e.hull + e.shield);
+/// The Eel's crew at their stations, at the start of the player's turn:
+/// each puts out the fire in their room or, if it isn't burning, repairs
+/// one pip of it, and either takes the turn, so that hand is [busy] and
+/// not at their station until the next one (no helmsman's evasion, no
+/// gunner's charge, no bulwark hand's layer). A hold hand whose room is
+/// sound patches the hull instead. Returns the ship, what each of them
+/// did, and the rooms whose hands are busy.
+({ShipState ship, List<CrewWork> work, Set<ShipRoom> busy}) crewTurn(
+    ShipState ship, Stations stations) {
+  var next = ship;
+  final work = <CrewWork>[];
+  final busy = <ShipRoom>{};
+  for (final entry in stations.entries) {
+    final room = entry.key;
+    final crew = entry.value;
+    final state = next.room(room);
+    if (state.onFire) {
+      next = next.withRoom(room, state.copyWith(onFire: false));
+      work.add(CrewWork(crew: crew, room: room, fireOut: true));
+      busy.add(room);
+      continue;
+    }
+    if (state.damage > 0) {
+      next = next.withRoom(room, state.copyWith(damage: state.damage - 1));
+      work.add(CrewWork(crew: crew, room: room, roomRepaired: true));
+      busy.add(room);
+      continue;
+    }
+    if (room == ShipRoom.hold) {
+      final hull = min(next.maxHull - next.hull,
+          crewHullRepair(crew, next.room(ShipRoom.hold).working));
+      if (hull > 0) {
+        next = next.copyWith(hull: next.hull + hull);
+        work.add(CrewWork(crew: crew, room: room, hullRepaired: hull));
+      }
+    }
   }
-  var restored = 0;
-  if (action.shieldRestore > 0) {
-    final s = min(p.maxShield, p.shield + action.shieldRestore);
-    restored = s - p.shield;
-    p = p.copyWith(shield: s);
-  }
-  var repaired = 0;
-  if (action.hullRepair > 0) {
-    final h = min(p.maxHull, p.hull + action.hullRepair);
-    repaired = h - p.hull;
-    p = p.copyWith(hull: h);
-  }
-  return ShipTurnResult(
-    player: p,
-    enemy: e,
-    damageDealt: dealt,
-    shieldRestored: restored,
-    hullRepaired: repaired,
-  );
+  return (ship: next, work: work, busy: busy);
 }
 
-/// The enemy's turn: it fires for [weaponDamage] at the player, then both
-/// bulwarks regenerate ([playerShieldRegen] is the ship's own
-/// `shieldRegenPerTurn`; an enemy ship regenerates [enemyShieldRegen]).
-ShipTurnResult resolveEnemyShipTurn({
-  required ShipCombatant player,
-  required ShipCombatant enemy,
-  required int weaponDamage,
-  int playerShieldRegen = 0,
-  int enemyShieldRegen = 0,
-}) {
-  final before = player.hull + player.shield;
-  var p = applyShipDamage(player, weaponDamage);
-  final dealt = before - (p.hull + p.shield);
-  if (p.isAfloat && playerShieldRegen > 0) {
-    p = p.copyWith(shield: min(p.maxShield, p.shield + playerShieldRegen));
-  }
-  var e = enemy;
-  if (enemyShieldRegen > 0) {
-    e = e.copyWith(shield: min(e.maxShield, e.shield + enemyShieldRegen));
-  }
-  return ShipTurnResult(player: p, enemy: e, damageDealt: dealt);
+/// What the enemy's crew did between volleys: fires fought and pips
+/// repaired, [ShipState.repairsPerRound] actions in all, on the rooms
+/// that matter most first.
+class EnemyMaintenance {
+  const EnemyMaintenance({
+    required this.ship,
+    this.firesOut = const [],
+    this.repaired = const [],
+  });
+
+  final ShipState ship;
+  final List<ShipRoom> firesOut;
+  final List<ShipRoom> repaired;
 }
 
-/// The player's ship as it sets out: base hull/bulwark from ships.json
-/// plus every installed part's `maxShieldBonus`; a stored hull of -1 (a
-/// fresh save, or just repaired) means full.
-ShipCombatant buildPlayerShip({
+/// The order the enemy's crew tends its rooms in: its guns before all,
+/// since a silenced ship is a lost one.
+const List<ShipRoom> enemyRepairPriority = [
+  ShipRoom.guns,
+  ShipRoom.bulwark,
+  ShipRoom.helm,
+  ShipRoom.hold,
+];
+
+EnemyMaintenance enemyMaintenance(ShipState ship) {
+  var next = ship;
+  final firesOut = <ShipRoom>[];
+  final repaired = <ShipRoom>[];
+  for (var action = 0; action < max(1, ship.repairsPerRound); action++) {
+    ShipRoom? burning;
+    for (final room in enemyRepairPriority) {
+      if (next.room(room).onFire) {
+        burning = room;
+        break;
+      }
+    }
+    if (burning != null) {
+      next = next.withRoom(burning, next.room(burning).copyWith(onFire: false));
+      firesOut.add(burning);
+      continue;
+    }
+    ShipRoom? damaged;
+    for (final room in enemyRepairPriority) {
+      if (next.room(room).damage > 0) {
+        damaged = room;
+        break;
+      }
+    }
+    if (damaged == null) break;
+    final state = next.room(damaged);
+    next = next.withRoom(damaged, state.copyWith(damage: state.damage - 1));
+    repaired.add(damaged);
+  }
+  return EnemyMaintenance(ship: next, firesOut: firesOut, repaired: repaired);
+}
+
+/// Where the enemy aims a weapon at [player]: fire goes for the hold
+/// where the crew shelters; while the bulwark works the enemy tries to
+/// break it (or, some of the time, the guns); then the guns, the helm,
+/// and last the hold. [roll] in [0, 1) picks between bulwark and guns.
+ShipRoom enemyTargetFor(ShipState player, ShipWeapon weapon, double roll) {
+  if (weapon.incendiary && !player.room(ShipRoom.hold).isDown) {
+    return ShipRoom.hold;
+  }
+  if (!player.room(ShipRoom.bulwark).isDown) {
+    return roll < 0.6 ? ShipRoom.bulwark : ShipRoom.guns;
+  }
+  if (!player.room(ShipRoom.guns).isDown) return ShipRoom.guns;
+  if (!player.room(ShipRoom.helm).isDown) return ShipRoom.helm;
+  return ShipRoom.hold;
+}
+
+/// True when [weapon] will be ready to fire after one more charge step
+/// (what a foresight sail shows coming).
+bool readyNextTurn(ShipWeapon weapon, ShipState ship) {
+  if (ship.room(ShipRoom.guns).isDown) return false;
+  return weapon.charge + 1 >= weapon.chargeTurns;
+}
+
+/// Fires burn and the bulwark comes back, for one ship, at the end of a
+/// round: each burning room loses a pip and costs hull, and a working
+/// bulwark raises one layer (two with a hand at it), never past what its
+/// pips can hold.
+({ShipState ship, List<ShipRoom> burned}) endRound(ShipState ship,
+    {bool bulwarkCrewed = false}) {
+  var next = ship;
+  final burned = <ShipRoom>[];
+  for (final room in ShipRoom.values) {
+    final state = next.room(room);
+    if (!state.onFire) continue;
+    burned.add(room);
+    next = next
+        .withRoom(room, state.copyWith(damage: state.damage + 1))
+        .copyWith(hull: max(0, next.hull - fireHullDamagePerRound));
+  }
+  if (!next.room(ShipRoom.bulwark).isDown) {
+    final regen = 1 + (bulwarkCrewed ? 1 : 0);
+    next = next.copyWith(layers: min(next.maxLayers, next.layers + regen));
+  } else {
+    next = next.copyWith(layers: 0);
+  }
+  return (ship: next, burned: burned);
+}
+
+/// The player's ship as it sets out: hull and rooms from ships.json plus
+/// every installed part's `roomBonus`, its weapons from every part that
+/// fires, layers full; a stored hull of -1 (a fresh save, or just
+/// repaired) means full. [voidVolleyBonus] is the painted sail's extra
+/// on its own volley, if that sail is aboard.
+ShipState buildPlayerShip({
   required Map<String, dynamic> ship,
   required Map<String, dynamic> parts,
   required List<String> installedPartIds,
   required int currentHull,
+  String? voidVolleyPartId,
+  int voidVolleyBonus = 0,
 }) {
   final maxHull = max(1, (ship['baseMaxHull'] as num?)?.toInt() ?? 100);
-  var maxShield = (ship['baseMaxShield'] as num?)?.toInt() ?? 0;
+  final rooms = _roomsFrom(ship['rooms']);
+  final weapons = <ShipWeapon>[];
   for (final id in installedPartIds) {
     final part = parts[id] as Map<String, dynamic>?;
-    maxShield += (part?['maxShieldBonus'] as num?)?.toInt() ?? 0;
+    if (part == null) continue;
+    final bonus = part['roomBonus'];
+    if (bonus is Map) {
+      for (final entry in bonus.entries) {
+        final room = roomFromName(entry.key.toString());
+        if (room == null) continue;
+        final current = rooms[room]!;
+        rooms[room] = current.copyWith(
+            level: current.level + ((entry.value as num?)?.toInt() ?? 0));
+      }
+    }
+    if (((part['damageAmount'] as num?)?.toInt() ?? 0) > 0) {
+      weapons.add(ShipWeapon.fromPart(id, part,
+          damageBonus: id == voidVolleyPartId ? voidVolleyBonus : 0));
+    }
   }
   final hull = currentHull < 0 ? maxHull : min(maxHull, max(0, currentHull));
-  return ShipCombatant(
+  final state = ShipState(
     hull: hull,
     maxHull: maxHull,
-    shield: maxShield,
-    maxShield: maxShield,
+    layers: 0,
+    rooms: rooms,
+    weapons: weapons,
   );
+  return state.copyWith(layers: state.maxLayers);
 }
 
-ShipCombatant buildEnemyShip(Map<String, dynamic> enemyShip) {
+/// An enemy ship off its enemy_ships.json record: hull, rooms and the
+/// weapons in its `weapons` list (one plain gun off `weaponDamage` when
+/// the list is missing, for an old record).
+ShipState buildEnemyShip(Map<String, dynamic> enemyShip) {
   final hull = max(1, (enemyShip['maxHull'] as num?)?.toInt() ?? 1);
-  final shield = max(0, (enemyShip['maxShield'] as num?)?.toInt() ?? 0);
-  return ShipCombatant(
-      hull: hull, maxHull: hull, shield: shield, maxShield: shield);
+  final rooms = _roomsFrom(enemyShip['rooms']);
+  final rawWeapons =
+      (enemyShip['weapons'] as List?)?.cast<Map<String, dynamic>>() ?? const [];
+  final weapons = <ShipWeapon>[
+    for (var i = 0; i < rawWeapons.length; i++)
+      ShipWeapon.fromRecord(rawWeapons[i], i),
+  ];
+  if (weapons.isEmpty) {
+    weapons.add(ShipWeapon(
+      id: 'enemy_weapon_0',
+      name: 'Guns',
+      nameFr: 'Canons',
+      damage: max(1, (enemyShip['weaponDamage'] as num?)?.toInt() ?? 8),
+      chargeTurns: 1,
+    ));
+  }
+  final state = ShipState(
+    hull: hull,
+    maxHull: hull,
+    layers: 0,
+    rooms: rooms,
+    weapons: weapons,
+    repairsPerRound: max(1, (enemyShip['crew'] as num?)?.toInt() ?? 1),
+  );
+  return state.copyWith(layers: state.maxLayers);
+}
+
+/// Every room at level 1 unless the record says otherwise.
+Map<ShipRoom, RoomState> _roomsFrom(Object? raw) {
+  final rooms = <ShipRoom, RoomState>{
+    for (final room in ShipRoom.values) room: const RoomState(level: 1),
+  };
+  if (raw is Map) {
+    for (final entry in raw.entries) {
+      final room = roomFromName(entry.key.toString());
+      if (room == null) continue;
+      rooms[room] =
+          RoomState(level: max(0, (entry.value as num?)?.toInt() ?? 1));
+    }
+  }
+  return rooms;
+}
+
+ShipRoom? roomFromName(String name) {
+  for (final room in ShipRoom.values) {
+    if (room.name == name) return room;
+  }
+  return null;
 }
 
 /// How many parts of [slotType] ('Weapon' / 'Shield' / 'Utility') the ship

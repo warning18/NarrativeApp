@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/combat/ship_combat.dart';
 import 'package:narrative_data_app/data/port_helpers.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 
@@ -91,18 +92,27 @@ void main() {
             reason: '${entry.key} has slot ${part['slotType']}');
         expect((part['cost'] as num).toInt(), greaterThanOrEqualTo(0));
         expect(part['partName_fr']?.toString() ?? '', isNotEmpty);
-        // A painted sail works on the voyage itself (see sail_powers.dart)
-        // and needs no battle action unless it fires one.
+        // A part is a weapon (it fires at a room), a room upgrade (it adds
+        // pips), or a painted sail (see sail_powers.dart); a weapon has
+        // a battle line in both languages and a charge time.
         final painted = (part['sailPower']?.toString() ?? '').isNotEmpty;
-        final effect = ((part['damageAmount'] as num?)?.toInt() ?? 0) +
-            ((part['shieldRestoreAmount'] as num?)?.toInt() ?? 0) +
-            ((part['maxShieldBonus'] as num?)?.toInt() ?? 0) +
-            ((part['hullRepairAmount'] as num?)?.toInt() ?? 0);
-        if (!painted || effect > 0) {
+        final damage = (part['damageAmount'] as num?)?.toInt() ?? 0;
+        final bonus = part['roomBonus'];
+        final upgrades = bonus is Map && bonus.isNotEmpty;
+        if (damage > 0) {
           expect(part['battleActionLabel_fr']?.toString() ?? '', isNotEmpty,
               reason: entry.key);
+          expect((part['chargeTurns'] as num?)?.toInt() ?? 0,
+              greaterThanOrEqualTo(1),
+              reason: entry.key);
         }
-        expect(effect > 0 || painted, isTrue,
+        if (upgrades) {
+          for (final room in bonus.keys) {
+            expect(ShipRoom.values.map((r) => r.name), contains(room),
+                reason: '${entry.key} upgrades unknown room $room');
+          }
+        }
+        expect(damage > 0 || upgrades || painted, isTrue,
             reason: '${entry.key} does nothing');
       }
     });
@@ -118,7 +128,20 @@ void main() {
         expect((ship['minChapter'] as num).toInt(), greaterThanOrEqualTo(2),
             reason: 'no ship should sail before the boat exists');
         expect((ship['maxHull'] as num).toInt(), greaterThan(0));
-        expect((ship['weaponDamage'] as num).toInt(), greaterThan(0));
+        expect(ship['description_fr']?.toString() ?? '', isNotEmpty);
+        final rooms = ship['rooms'] as Map<String, dynamic>;
+        for (final room in ShipRoom.values) {
+          expect(rooms, contains(room.name),
+              reason: '${entry.key} ${room.name}');
+        }
+        final weapons = (ship['weapons'] as List).cast<Map<String, dynamic>>();
+        expect(weapons, isNotEmpty, reason: entry.key);
+        for (final weapon in weapons) {
+          expect((weapon['damage'] as num).toInt(), greaterThan(0));
+          expect(
+              (weapon['chargeTurns'] as num).toInt(), greaterThanOrEqualTo(1));
+          expect(weapon['weaponName_fr']?.toString() ?? '', isNotEmpty);
+        }
       }
     });
   });
