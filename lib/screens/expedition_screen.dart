@@ -274,7 +274,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       );
       if (!mounted) return;
       if (won != true) {
-        await _endAsRetreat(defeated: true);
+        // Getting away from the fight ends the expedition as a retreat.
+        final retreated = ref.read(lastFightRetreatedProvider);
+        ref.read(lastFightRetreatedProvider.notifier).state = false;
+        await _endAsRetreat(defeated: !retreated);
         return;
       }
       final outcome = ref.read(lastFightOutcomeProvider);

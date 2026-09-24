@@ -178,6 +178,7 @@ extension _FightRounds on _FightScreenState {
     var lastEnemyDamage = 0;
     var hitsLanded = 0;
     var manaGained = 0;
+    final surgeTo = _surgeRecipient();
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
@@ -190,9 +191,13 @@ extension _FightRounds on _FightScreenState {
       var dealt = 0;
       var drainedFx = 0;
       // Momentum: the built-up hits cash in as a guaranteed critical on
-      // this strike, and the counter starts over from it.
-      final surge = isStrike && _momentum >= _momentumThreshold;
-      if (surge) _momentum = 0;
+      // the strike the player picked (see _surgeRecipient), and the
+      // counter starts over from it.
+      final surge = isStrike && actor.id == surgeTo;
+      if (surge) {
+        _momentum = 0;
+        _surgeActorId = null;
+      }
       final result = resolvePlayerFace(
         face,
         availableSkills,
@@ -706,14 +711,8 @@ extension _FightRounds on _FightScreenState {
 
       final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
       final move = pending.move;
-      var moveDamage = applyWeaken(move.damage, enemy.statusEffects);
-      if (enemy.hasAffix(EnemyAffix.frenzied) &&
-          enemy.currentHealth < enemy.maxHealth * frenziedHealthThreshold) {
-        moveDamage = (moveDamage * frenziedDamageMultiplier).round();
-      }
-      if (leaderStanding && !enemy.hasAffix(EnemyAffix.packLeader)) {
-        moveDamage = (moveDamage * packLeaderAllyDamageMultiplier).round();
-      }
+      final moveDamage =
+          _incomingDamage(enemy, move, leaderStanding: leaderStanding);
 
       final _PartyMember target;
       final cachedTarget = _memberById(pending.targetId);
@@ -724,31 +723,13 @@ extension _FightRounds on _FightScreenState {
         target = conscious[_random.nextInt(conscious.length)];
       }
 
-      final targetScalingBonus = equipmentScalingBonusFor(
-        target.equippedItemIds,
-        items,
-        strength: target.strength,
-        dexterity: target.dexterity,
-        constitution: target.constitution,
-        intelligence: target.intelligence,
-      );
-      final targetAlignedBonus =
-          alignmentGearBonusFor(target.equippedItemIds, items, _alignmentLabel);
-      final totalArmor = target.armor +
-          equipmentBonusFor(target.equippedItemIds, items, 'armor') +
-          targetScalingBonus.armorBonus +
-          targetAlignedBonus.armorBonus +
-          target.gear.armor +
-          (target.isPlayer && _ironSkinArmed ? _ironSkinArmorBonus : 0);
-      final elementalResist =
-          _elementalResist(move.element, target.equippedItemIds, items);
+      final mitigation = _mitigationFor(target, move.element, items);
       // A dodge evades the hit outright -- no damage, no status effect --
       // rather than just softening it further on top of block/armor/resist.
       final wasDodged = _random.nextDouble() * 100 <
           dodgeChanceFor(target.dexterity) + target.gear.dodgeChance;
-      var damageTaken = wasDodged
-          ? 0
-          : max(0, moveDamage - target.block - totalArmor - elementalResist);
+      var damageTaken =
+          wasDodged ? 0 : max(0, moveDamage - target.block - mitigation);
       // A Warding Knot swallows the first real hit on the player outright.
       var warded = false;
       if (damageTaken > 0 && target.isPlayer && _wardingCharges > 0) {

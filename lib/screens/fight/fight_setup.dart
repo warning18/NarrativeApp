@@ -22,7 +22,7 @@ extension _FightSetup on _FightScreenState {
     final lang = ref.read(appLanguageProvider);
     final modifiers = widget.modifiers;
     _isElite = entries.length == 1 &&
-        !soloOnlyEnemyIds.contains(entries.first.key) &&
+        isRandomDrawEnemy(entries.first.key) &&
         modifiers.forcedAffixes.isEmpty &&
         _random.nextDouble() < _eliteChance;
     _condition =

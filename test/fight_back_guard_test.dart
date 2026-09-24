@@ -1,6 +1,7 @@
 // Back is no way out of a fight: before it starts the party can still
 // turn away, but once it has begun the back gesture leaves the fight
 // running (a loss can't be skipped, a win can't be walked away from).
+// Retreat is the way out of a fight in progress, for a share of the gold.
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/main.dart';
+import 'package:narrative_data_app/providers/aftermath_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/fight_screen.dart';
 
@@ -61,6 +63,7 @@ void main() {
           'professionId': 'warrior',
           'ownedDiceIds': ['starter_die'],
           'equippedDiceId': 'starter_die',
+          'gold': 100,
         })));
     final navigator =
         tester.state<NavigatorState>(find.byType(Navigator).first);
@@ -88,5 +91,16 @@ void main() {
     expect(find.byType(FightScreen), findsOneWidget);
     expect(find.textContaining('not over'), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
+
+    // Retreat is the way out: it costs a share of the purse.
+    await tester.tap(find.byTooltip('Retreat'));
+    await _settle(tester);
+    await tester.tap(find.descendant(
+        of: find.byType(AlertDialog), matching: find.byType(FilledButton)));
+    await _settle(tester);
+    expect(find.byType(FightScreen), findsNothing);
+    expect(
+        container.read(playerSessionProvider).gold, 100 - retreatCostFor(100));
+    expect(container.read(lastFightRetreatedProvider), isTrue);
   });
 }

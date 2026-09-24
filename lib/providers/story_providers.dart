@@ -260,6 +260,13 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
 
   /// Advances past the current excursion node, either to the next generated
   /// node in the queue or, once it's empty, back to the real story.
+  /// Leaves the detour at once, back to the scene it set out from -- the
+  /// party slipped away from it.
+  void leaveExcursion() {
+    final resume = state.resumeNodeId;
+    if (resume != null) choose(resume);
+  }
+
   void advanceExcursion() {
     if (state.excursionQueue.isEmpty) {
       final resume = state.resumeNodeId;

@@ -116,6 +116,101 @@ extension _FightQueries on _FightScreenState {
     return _firstLivingEnemy();
   }
 
+  /// What [move] from [enemy] hits for before the target's defences:
+  /// Weaken on the enemy, Frenzied when it is low, and a standing pack
+  /// leader's boost to the rest of the pack.
+  int _incomingDamage(_EnemyMember enemy, EnemyMoveResult move,
+      {required bool leaderStanding}) {
+    var damage = applyWeaken(move.damage, enemy.statusEffects);
+    if (enemy.hasAffix(EnemyAffix.frenzied) &&
+        enemy.currentHealth < enemy.maxHealth * frenziedHealthThreshold) {
+      damage = (damage * frenziedDamageMultiplier).round();
+    }
+    if (leaderStanding && !enemy.hasAffix(EnemyAffix.packLeader)) {
+      damage = (damage * packLeaderAllyDamageMultiplier).round();
+    }
+    return damage;
+  }
+
+  /// How much of a hit of [element] [target]'s armor soaks: base armor,
+  /// gear (with its stat scaling, alignment bonus and set/unique effects),
+  /// an armed Iron Skin charm and the gear's resist to the element. Block
+  /// comes on top of this.
+  int _mitigationFor(
+      _PartyMember target, String element, Map<String, dynamic> items) {
+    final scaling = equipmentScalingBonusFor(
+      target.equippedItemIds,
+      items,
+      strength: target.strength,
+      dexterity: target.dexterity,
+      constitution: target.constitution,
+      intelligence: target.intelligence,
+    );
+    final aligned =
+        alignmentGearBonusFor(target.equippedItemIds, items, _alignmentLabel);
+    return target.armor +
+        equipmentBonusFor(target.equippedItemIds, items, 'armor') +
+        scaling.armorBonus +
+        aligned.armorBonus +
+        target.gear.armor +
+        (target.isPlayer && _ironSkinArmed ? _ironSkinArmorBonus : 0) +
+        _elementalResist(element, target.equippedItemIds, items);
+  }
+
+  /// The telegraphed hit as it would land: [enemy]'s pending move against
+  /// its target, less the target's armor, resist and block -- the block
+  /// already up, or the one the dice on the table would raise. Null when
+  /// nothing is telegraphed.
+  ({int raw, int net})? _expectedHit(_EnemyMember enemy,
+      Map<String, dynamic> skills, Map<String, dynamic> items) {
+    final pending = enemy.pendingMove;
+    if (pending == null) return null;
+    final target = _memberById(pending.targetId);
+    if (target == null || target.isKnockedOut) return null;
+    final leaderStanding =
+        _enemies.any((e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader));
+    final raw =
+        _incomingDamage(enemy, pending.move, leaderStanding: leaderStanding);
+    var block = target.block;
+    if (_awaitingDecision && !_rolling) {
+      final planned =
+          _previewRoll(skills, items, ref.read(appLanguageProvider))[target.id];
+      if (planned != null) {
+        block = max(block, planned.block + (_spellBlock[target.id] ?? 0));
+      }
+    }
+    final net = max(
+        0, raw - block - _mitigationFor(target, pending.move.element, items));
+    return (raw: raw, net: net);
+  }
+
+  /// Who cashes in a ready momentum surge this round: the member the
+  /// player picked, when their face is a strike; otherwise the first
+  /// acting member on an Attack face, then on a Skill face -- an Attack
+  /// first, so the surge isn't spent on a skill face that only heals.
+  String? _surgeRecipient() {
+    if (_momentum < _momentumThreshold) return null;
+    bool isStrike(String id) {
+      final type = _currentFaces[id]?.type;
+      return type == 'Attack' || type == 'Skill';
+    }
+
+    final acting = _actingParty;
+    final picked = _surgeActorId;
+    if (picked != null &&
+        acting.any((a) => a.id == picked) &&
+        isStrike(picked)) {
+      return picked;
+    }
+    for (final actor in acting) {
+      if (_currentFaces[actor.id]?.type == 'Attack') return actor.id;
+    }
+    for (final actor in acting) {
+      if (isStrike(actor.id)) return actor.id;
+    }
+    return null;
+  }
+
   /// Every acting member's [_FacePreview] for the faces on the table,
   /// keyed by member id: empty while the dice are still spinning. Walks
   /// the party in the confirm's own order so the momentum surge lands on
@@ -127,13 +222,12 @@ extension _FightQueries on _FightScreenState {
   ) {
     final previews = <String, _FacePreview>{};
     if (_rolling) return previews;
-    var surgeArmed = _momentum >= _momentumThreshold;
+    final surgeTo = _surgeRecipient();
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
       if (face == null) continue;
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
-      final surge = isStrike && surgeArmed;
-      if (surge) surgeArmed = false;
+      final surge = actor.id == surgeTo;
       final result = resolvePlayerFace(
         face,
         _availableSkillsFor(actor, skills),

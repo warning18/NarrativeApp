@@ -51,6 +51,17 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
 
+/// The share of the purse a retreat costs (see [retreatCostFor]).
+const double retreatGoldShare = 0.15;
+
+/// The least a retreat costs, when the party has that much.
+const int retreatMinimumGold = 10;
+
+/// What getting away from a fight costs a party carrying [gold]: a
+/// share of it, at least [retreatMinimumGold], never more than it has.
+int retreatCostFor(int gold) =>
+    min(gold, max(retreatMinimumGold, (gold * retreatGoldShare).round()));
+
 /// What a shop pays for [item]: two fifths of its price, at least 1 gold.
 /// An item's own `sellValue` wins -- the Elite Mark is a trophy, worth
 /// more to a dealer than a shelf price would say.
@@ -1461,6 +1472,22 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
+  /// Getting away from a fight: [goldLost] spills and the wounds stay --
+  /// the player's health is saved as it stands (at least 1), with the
+  /// mana left. No loss is recorded and nothing is won.
+  Future<void> applyRetreat({
+    required int hpAfter,
+    required int goldLost,
+    int? manaAfter,
+  }) async {
+    state = state.copyWith(
+      gold: max(0, state.gold - goldLost),
+      currentHealth: max(1, min(state.maxHealth, hpAfter)),
+      mana: manaAfter ?? state.mana,
+    );
+    await _persist();
+  }
+
   /// Whether the pack holds what forging [item] takes: its `craftGold` and
   /// every `craftMaterials` count (see [craftMaterialsFor]).
   bool canCraft(Map<String, dynamic>? item) {
@@ -2271,6 +2298,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> consumePotion() async {
     if (state.potionCount <= 0) return;
     state = state.copyWith(potionCount: state.potionCount - 1);
+    await _persist();
+  }
+
+  /// Uses up one carried copy of [itemId] (a scroll read in a fight).
+  Future<void> consumeItem(String itemId) async {
+    if (!state.inventoryItemIds.contains(itemId)) return;
+    state = state.copyWith(
+        inventoryItemIds: [...state.inventoryItemIds]..remove(itemId));
     await _persist();
   }
 

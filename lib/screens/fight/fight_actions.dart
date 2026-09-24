@@ -74,6 +74,7 @@ extension _FightActions on _FightScreenState {
       spell,
       intelligence: player.intelligence,
       wisdom: player.wisdom,
+      strength: player.strength,
       level: _playerLevel,
       casterDamage: casterDamage,
     );
@@ -86,9 +87,17 @@ extension _FightActions on _FightScreenState {
   Future<void> _castSpell(
     SpellSpec spell,
     Map<String, dynamic> skills,
-    Map<String, dynamic> items,
-  ) async {
+    Map<String, dynamic> items, {
+    String? scrollItemId,
+  }) async {
     if (_over || _rolling || !_started || _mana < spell.manaCost) return;
+    if (scrollItemId != null &&
+        !ref
+            .read(playerSessionProvider)
+            .inventoryItemIds
+            .contains(scrollItemId)) {
+      return;
+    }
     final lang = ref.read(appLanguageProvider);
     final player = _party.firstWhere((m) => m.isPlayer);
     final amount = _spellAmountNow(spell, items);
@@ -123,9 +132,12 @@ extension _FightActions on _FightScreenState {
 
     final entries = <_LogEntry>[
       _LogEntry(
-        '${trFor(lang, 'cast_prefix')} ${spell.nameFor(lang)} '
-        '(-${spell.manaCost} ${trFor(lang, 'mana_label')}). '
-        '${spell.battleMessageFor(lang)}',
+        scrollItemId != null
+            ? '${trFor(lang, 'read_scroll_prefix')} ${spell.nameFor(lang)}. '
+                '${spell.battleMessageFor(lang)}'
+            : '${trFor(lang, 'cast_prefix')} ${spell.nameFor(lang)} '
+                '(-${spell.manaCost} ${trFor(lang, 'mana_label')}). '
+                '${spell.battleMessageFor(lang)}',
         _LogKind.mana,
       ),
     ];
@@ -236,8 +248,12 @@ extension _FightActions on _FightScreenState {
     }
     _noteSkittishFlights(entries, lang);
 
-    _mana -= spell.manaCost;
-    ref.read(playerSessionProvider.notifier).setMana(_mana);
+    if (scrollItemId != null) {
+      ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId);
+    } else {
+      _mana -= spell.manaCost;
+      ref.read(playerSessionProvider.notifier).setMana(_mana);
+    }
     _update(() {
       _log.addAll(entries);
       _autoAssignTargets();

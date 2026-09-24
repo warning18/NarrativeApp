@@ -105,8 +105,13 @@ extension _FightRewards on _FightScreenState {
           if (itemId == null || itemId.isEmpty) continue;
           // A 100% entry is a guaranteed drop (a quest item such as the
           // High Warden's sealed letter), never a mere chest weighting.
-          if (((entry['dropRate'] as num?)?.toDouble() ?? 0) >= 100) {
+          final dropRate = (entry['dropRate'] as num?)?.toDouble() ?? 0;
+          if (dropRate >= 100) {
             loot.add(itemId);
+          } else if (!isGear(items[itemId] as Map<String, dynamic>?)) {
+            // A potion, an antidote, a scroll or iron ore is no chest
+            // weighting either: it drops on its own, at its own odds.
+            if (_random.nextDouble() * 100 < dropRate) loot.add(itemId);
           } else {
             signatureIds.add(itemId);
           }
@@ -293,6 +298,67 @@ extension _FightRewards on _FightScreenState {
         _settled = true;
       });
     }
+  }
+
+  /// Whether the party may still get away: the fight has begun and isn't
+  /// over, and no boss stands in it -- a boss (a story duel, a zone's
+  /// master) has to be faced.
+  bool get _canRetreat =>
+      _started &&
+      !_over &&
+      !_enemies.any((e) =>
+          isBossEnemy(e.enemyId, e.data) ||
+          zoneBossEnemyIds.contains(e.enemyId));
+
+  /// Getting away: after a confirmation that names the cost, a share of
+  /// the purse is lost (see [retreatCostFor]) and the party leaves with
+  /// the wounds it has. Nothing is won and no loss is recorded, so no
+  /// defeat branch and no permadeath -- a detour is left behind, and a
+  /// story fight waits where it was.
+  Future<void> _retreat() async {
+    final lang = ref.read(appLanguageProvider);
+    final cost = retreatCostFor(ref.read(playerSessionProvider).gold);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(trFor(lang, 'retreat_confirm_title')),
+        content: Text(
+            trFor(lang, 'retreat_confirm_body').replaceAll('{gold}', '$cost')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: Text(trFor(lang, 'cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: Text(trFor(lang, 'retreat_button')),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted || !_canRetreat || _leaving) return;
+    _leaving = true;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final player = _party.firstWhere((m) => m.isPlayer);
+    await notifier.applyRetreat(
+      hpAfter: player.currentHealth,
+      goldLost: cost,
+      manaAfter: _mana,
+    );
+    for (final member in _party) {
+      if (member.isPlayer) continue;
+      await notifier.applyAllyCombatResult(member.id,
+          hpAfter: max(1, member.currentHealth));
+    }
+    // No aftermath is written for a fight left unfinished.
+    ref.read(lastFightOutcomeProvider.notifier).state = null;
+    ref.read(lastFightRetreatedProvider.notifier).state = true;
+    if (!mounted) return;
+    _update(() {
+      _over = true;
+      _settled = true;
+    });
+    Navigator.of(context).pop();
   }
 
   /// The end-of-fight button: back to the story on a win, retreat (or the

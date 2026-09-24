@@ -3306,6 +3306,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Momentum builds -- the next strike is a sure critical.',
     AppLanguage.fr: "L'élan monte : le prochain coup sera critique à coup sûr.",
   },
+  'retreat_confirm_title': {
+    AppLanguage.en: 'Get away from this fight?',
+    AppLanguage.fr: 'Fuir ce combat ?',
+  },
+  'retreat_confirm_body': {
+    AppLanguage.en:
+        'You drop {gold} gold getting clear and keep the wounds you have. Nothing is won. A detour is left behind; a fight in the story waits where it was.',
+    AppLanguage.fr:
+        'Vous laissez tomber {gold} or en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné ; un combat de l’histoire vous attend là où il était.',
+  },
+  'read_scroll_prefix': {
+    AppLanguage.en: 'You read the',
+    AppLanguage.fr: 'Vous lisez :',
+  },
+  'surge_pick_label': {
+    AppLanguage.en: 'Crit goes to:',
+    AppLanguage.fr: 'Le critique pour :',
+  },
   'momentum_surge_message': {
     AppLanguage.en: 'Momentum surges into the blow!',
     AppLanguage.fr: "L'élan se déchaîne dans le coup !",

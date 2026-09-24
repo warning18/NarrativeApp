@@ -478,6 +478,8 @@ extension _FightView on _FightScreenState {
                 ),
             ],
           ),
+          if (_momentum >= _momentumThreshold && !_rolling)
+            _buildSurgePicker(acting),
           const SizedBox(height: 4),
           Text(
             tr(ref, hintKey),
@@ -490,6 +492,43 @@ extension _FightView on _FightScreenState {
             overflow: TextOverflow.ellipsis,
           ),
         ],
+      ),
+    );
+  }
+
+  /// With momentum full and more than one strike on the table, the player
+  /// picks which one the guaranteed critical lands on.
+  Widget _buildSurgePicker(List<_PartyMember> acting) {
+    final strikers = [
+      for (final actor in acting)
+        if (_currentFaces[actor.id]?.type == 'Attack' ||
+            _currentFaces[actor.id]?.type == 'Skill')
+          actor,
+    ];
+    if (strikers.length < 2) return const SizedBox.shrink();
+    final recipient = _surgeRecipient();
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            const Icon(Icons.auto_awesome, size: 16),
+            const SizedBox(width: 4),
+            Text(tr(ref, 'surge_pick_label'),
+                style: Theme.of(context).textTheme.labelMedium),
+            for (final actor in strikers)
+              Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: ChoiceChip(
+                  visualDensity: VisualDensity.compact,
+                  label: Text(actor.displayName),
+                  selected: recipient == actor.id,
+                  onSelected: (_) => _update(() => _surgeActorId = actor.id),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

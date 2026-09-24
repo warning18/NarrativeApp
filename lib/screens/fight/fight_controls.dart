@@ -156,6 +156,20 @@ extension _FightControls on _FightScreenState {
                 enabled: session.potionCount > 0 && !_rolling,
                 onTap: _usePotion,
               ),
+              if (session.inventoryItemIds.contains(fireballScrollId)) ...[
+                const SizedBox(width: 6),
+                _buildConsumableButton(
+                  icon: Icons.local_fire_department,
+                  count: session.inventoryItemIds
+                      .where((id) => id == fireballScrollId)
+                      .length,
+                  tooltip:
+                      fireballScroll.nameFor(ref.watch(appLanguageProvider)),
+                  enabled: !_rolling && !_over,
+                  onTap: () => _castSpell(fireballScroll, skills, items,
+                      scrollItemId: fireballScrollId),
+                ),
+              ],
               if (_party.first.statusEffects.isNotEmpty) ...[
                 const SizedBox(width: 6),
                 _buildConsumableButton(

@@ -114,4 +114,24 @@ void main() {
       expect(poor.canCraft(recipe), isFalse);
     });
   });
+
+  group('retreat', () {
+    test('costs a share of the purse, at least ten, never more than it', () {
+      expect(retreatCostFor(200), 30);
+      expect(retreatCostFor(40), 10);
+      expect(retreatCostFor(6), 6);
+      expect(retreatCostFor(0), 0);
+    });
+
+    test('keeps the wounds and spends the gold', () async {
+      final notifier = await _notifierWith(
+          {'gold': 100, 'maxHealth': 80, 'currentHealth': 80});
+      await notifier.applyRetreat(hpAfter: 23, goldLost: 15);
+      expect(notifier.state.gold, 85);
+      expect(notifier.state.currentHealth, 23);
+      await notifier.applyRetreat(hpAfter: 0, goldLost: 500);
+      expect(notifier.state.gold, 0);
+      expect(notifier.state.currentHealth, 1);
+    });
+  });
 }

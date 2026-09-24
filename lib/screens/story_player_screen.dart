@@ -868,6 +868,13 @@ Future<void> _selectChoice({
       );
       ref.read(combatActiveProvider.notifier).state = false;
       _noteFightAftermath(ref, french);
+      final retreated = ref.read(lastFightRetreatedProvider);
+      ref.read(lastFightRetreatedProvider.notifier).state = false;
+      if (won != true && retreated) {
+        // Got away: a detour is left behind; a story fight waits here.
+        if (isExcursion) ref.read(storyPlayProvider.notifier).leaveExcursion();
+        return;
+      }
       if (won != true) {
         // A lost fight with a defeat branch is a scene, not a retry: the
         // story goes there and the choice's own effects and unlocks stay

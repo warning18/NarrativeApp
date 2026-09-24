@@ -268,6 +268,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// critical (which spends it).
   int _momentum = 0;
 
+  /// The member the player chose to cash a ready momentum surge on (see
+  /// [_FightQueries._surgeRecipient]); null lets the game pick.
+  String? _surgeActorId;
+
   /// Flawless-fight tracking for the spoils chest: no potion drunk, nobody
   /// knocked out.
   bool _potionUsed = false;
@@ -456,6 +460,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
           actions: [
+            if (_canRetreat)
+              IconButton(
+                icon: const Icon(Icons.directions_run),
+                tooltip: tr(ref, 'retreat_button'),
+                onPressed: _rolling ? null : _retreat,
+              ),
             // Edit mode only: skip a fight while testing the story.
             if (ref.watch(appModeProvider) == AppMode.edit && !_over)
               IconButton(

@@ -503,6 +503,12 @@ extension _FightCards on _FightScreenState {
     final pending = enemy.pendingMove;
     final tier =
         pending == null ? TelegraphTier.none : _effectiveTierFor(enemy);
+    final hit = tier == TelegraphTier.full
+        ? _expectedHit(
+            enemy,
+            ref.read(gameDbProvider(skillsSchema)).value ?? const {},
+            ref.read(gameDbProvider(itemsSchema)).value ?? const {})
+        : null;
     final textStyle = TextStyle(
         fontSize: 10,
         color: colorScheme.onErrorContainer,
@@ -536,9 +542,23 @@ extension _FightCards on _FightScreenState {
             children: [
               Icon(showCategory ? categoryIcon : Icons.visibility,
                   size: 12, color: colorScheme.onErrorContainer),
-              if (tier == TelegraphTier.full) ...[
+              if (tier == TelegraphTier.full && hit != null) ...[
                 const SizedBox(width: 2),
-                Text('${pending.move.damage}', style: textStyle),
+                // What lands after armor, resist and block, then (dimmed)
+                // what the blow carries before them.
+                Text('${hit.net}', style: textStyle),
+                if (hit.net != hit.raw)
+                  Text('/${hit.raw}',
+                      style: textStyle.copyWith(
+                          fontWeight: FontWeight.w400,
+                          color: colorScheme.onErrorContainer
+                              .withValues(alpha: 0.7))),
+                if (hit.net == 0)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 2),
+                    child: Icon(Icons.shield,
+                        size: 11, color: colorScheme.onErrorContainer),
+                  ),
               ],
               const SizedBox(width: 3),
               Icon(Icons.arrow_forward,
