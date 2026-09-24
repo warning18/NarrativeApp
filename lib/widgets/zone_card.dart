@@ -47,39 +47,54 @@ class ZoneCard extends ConsumerWidget {
       if (lockName != null) '${tr(ref, 'requires_zone_prefix')}: $lockName',
     ].where((s) => s.isNotEmpty).join('\n');
 
+    // The action sits under the description, not beside it: a button in a
+    // list tile's trailing slot takes the whole row on a phone in French.
     return Card(
-      child: ListTile(
-        leading: Icon(
-          completed
-              ? Icons.check_circle
-              : unlocked
-                  ? Icons.explore_outlined
-                  : Icons.lock_outline,
-          color: completed ? Colors.green : null,
-        ),
-        title: Row(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: Text(zone['zoneName']?.toString() ?? zoneId)),
-            _ZoneChip('${tr(ref, 'zone_tier_label')} ${zoneTier(zone)}'),
-            const SizedBox(width: 4),
-            _ZoneChip(
-              '${tr(ref, 'zone_level_chip')} ${zoneRecommendedLevel(zone)}+',
-              emphasized: session.level < zoneRecommendedLevel(zone),
+            ListTile(
+              leading: Icon(
+                completed
+                    ? Icons.check_circle
+                    : unlocked
+                        ? Icons.explore_outlined
+                        : Icons.lock_outline,
+                color: completed ? Colors.green : null,
+              ),
+              title: Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text(zone['zoneName']?.toString() ?? zoneId),
+                  _ZoneChip('${tr(ref, 'zone_tier_label')} ${zoneTier(zone)}'),
+                  _ZoneChip(
+                    '${tr(ref, 'zone_level_chip')} ${zoneRecommendedLevel(zone)}+',
+                    emphasized: session.level < zoneRecommendedLevel(zone),
+                  ),
+                  if (zoneIsMain(zone))
+                    _ZoneChip(tr(ref, 'zone_main_label'), emphasized: true),
+                ],
+              ),
+              subtitle: Text(details),
             ),
-            if (zoneIsMain(zone)) ...[
-              const SizedBox(width: 4),
-              _ZoneChip(tr(ref, 'zone_main_label'), emphasized: true),
-            ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: completed
+                    ? Text(tr(ref, 'zone_cleared_label'))
+                    : ElevatedButton(
+                        onPressed: (!enabled || !unlocked) ? null : onBegin,
+                        child: Text(tr(ref, 'begin_expedition_button')),
+                      ),
+              ),
+            ),
           ],
         ),
-        subtitle: Text(details),
-        isThreeLine: true,
-        trailing: completed
-            ? Text(tr(ref, 'zone_cleared_label'))
-            : ElevatedButton(
-                onPressed: (!enabled || !unlocked) ? null : onBegin,
-                child: Text(tr(ref, 'begin_expedition_button')),
-              ),
       ),
     );
   }

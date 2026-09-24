@@ -35,6 +35,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
@@ -572,6 +573,11 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _started = false;
   bool _over = false;
   bool _won = false;
+
+  /// True once [_finishFight] has applied everything (rewards, chest
+  /// choices, the loss) -- only then can the fight be left.
+  bool _settled = false;
+  bool _leaving = false;
 
   late int _playerLevel;
   int _lastDamageTaken = 0;
@@ -1338,8 +1344,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// currently Stunned (see status_effect.dart; a stunned member is
   /// skipped for the round entirely, announced in [_startPartyRound]).
   List<_PartyMember> get _actingParty => _party
-      .where((m) => !m.isKnockedOut && !isStunned(m.statusEffects))
+      .where((m) =>
+          !m.isKnockedOut &&
+          !isStunned(m.statusEffects) &&
+          !_sittingOut.contains(m.id))
       .toList();
+
+  /// Members stunned when this round began. Their stun counts down at the
+  /// start of the round (a one-turn stun is gone by the time the dice
+  /// roll), so without this they would roll anyway -- they sit the whole
+  /// round out instead, and their effects aren't ticked a second time.
+  Set<String> _sittingOut = {};
 
   /// Rolls a die for every acting party member at once — one face per
   /// member, shown side by side — instead of each combatant taking a
@@ -1904,9 +1919,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
       }
     }
 
-    // Snapshot before ticking — a member stunned this round must still be
-    // excluded from acting this round even though the same tick below may
-    // expire that very stun for the round after.
+    // Taken before ticking: a member stunned this round sits it out even
+    // though the tick below may expire that very stun for the round after.
+    _sittingOut = {
+      for (final member in _party)
+        if (!member.isKnockedOut && isStunned(member.statusEffects)) member.id,
+    };
     final canAct = _actingParty.isNotEmpty;
 
     for (final member in _party) {
@@ -2719,6 +2737,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         final newLevel = ref.read(playerSessionProvider).level;
         showLevelUpDialog(context, ref, newLevel: newLevel);
       }
+      setState(() => _settled = true);
     } else {
       // Ally HP changes from a lost fight are never persisted (mirrors the
       // player's own full-heal-on-loss below — neither side is punished
@@ -2738,6 +2757,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
         _log.add(_LogEntry(
             trFor(ref.read(appLanguageProvider), 'defeat_message'),
             _LogKind.defeat));
+        _settled = true;
       });
     }
   }
@@ -2805,22 +2825,42 @@ class _FightScreenState extends ConsumerState<FightScreen>
         items, _itemSets, houses, dice);
     _spells = parseSpells(spellsDb);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
-        actions: [
-          // Edit mode only: skip a fight while testing the story.
-          if (ref.watch(appModeProvider) == AppMode.edit && !_over)
-            IconButton(
-              icon: const Icon(Icons.emoji_events_outlined),
-              tooltip: tr(ref, 'edit_auto_win_tooltip'),
-              onPressed: _rolling ? null : () => _autoWin(skills, items),
-            ),
-        ],
+    // Once the fight has begun, back is no way out of it: a fight in
+    // progress must be finished, and a finished one is left through
+    // [_leaveFight], so a loss always counts (its story branch and, with
+    // permadeath on, the death) and a win is never walked away from before
+    // the story records it.
+    return PopScope(
+      canPop: !_started,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop) return;
+        if (_over) {
+          _leaveFight();
+          return;
+        }
+        showImmersiveNotice(
+          context,
+          icon: Icons.sports_martial_arts,
+          message: tr(ref, 'fight_not_over_notice'),
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
+          actions: [
+            // Edit mode only: skip a fight while testing the story.
+            if (ref.watch(appModeProvider) == AppMode.edit && !_over)
+              IconButton(
+                icon: const Icon(Icons.emoji_events_outlined),
+                tooltip: tr(ref, 'edit_auto_win_tooltip'),
+                onPressed: _rolling ? null : () => _autoWin(skills, items),
+              ),
+          ],
+        ),
+        body: !_started
+            ? _buildSetup(dice, skills, items, session)
+            : _buildBattle(dice, skills, items, session),
       ),
-      body: !_started
-          ? _buildSetup(dice, skills, items, session)
-          : _buildBattle(dice, skills, items, session),
     );
   }
 
@@ -4897,53 +4937,64 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// permadeath flow) on a loss.
   Widget _buildReturnButton() {
     return ElevatedButton(
-      onPressed: () async {
-        if (!_won && ref.read(permadeathEnabledProvider)) {
-          final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
-          final playerSession = ref.read(playerSessionProvider);
-          final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
-          final professions =
-              ref.read(gameDbProvider(professionsSchema)).value ?? const {};
-          final result =
-              await ref.read(playerSessionProvider.notifier).applyPermadeath(
-                    race:
-                        races[playerSession.raceId] as Map<String, dynamic>? ??
-                            const {},
-                    profession: professions[playerSession.professionId]
-                            as Map<String, dynamic>? ??
-                        const {},
-                  );
-          ref
-              .read(storyPlayProvider.notifier)
-              .restart(StoryRepository.startNodeId);
-          ref.read(homeTabIndexProvider.notifier).state = 0;
-          // The dead character's last fight is the death screen's to tell,
-          // not the next scene's.
-          ref.read(lastFightOutcomeProvider.notifier).state = null;
-          if (!mounted) return;
-          await Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (_) => DeathScreen(
-                lostItemIds: result.lostItemIds,
-                xpEarned: result.xpEarnedThisRun,
-                skillsLost: result.skillsLost,
-                nodesVisited: nodesVisited,
-                killerName: _enemies.isEmpty ? '' : _enemies.first.displayName,
-                narrationSeed: _random.nextInt(1 << 20),
-              ),
-            ),
-            (route) => route.isFirst,
-          );
-          return;
-        }
-        Navigator.of(context).pop(_won);
-      },
+      onPressed: _settled ? _leaveFight : null,
       child: Text(_won
           ? tr(ref, 'victory_return_button')
           : widget.modifiers.lossContinues
               ? tr(ref, 'defeat_continue_button')
               : tr(ref, 'retreat_button')),
     );
+  }
+
+  /// Leaves a finished fight: back to the story with the result, or -- a
+  /// loss with permadeath on -- the death screen. The return button and
+  /// the system back gesture both come here, so neither can skip a loss.
+  Future<void> _leaveFight() async {
+    if (!_over || !_settled || _leaving) return;
+    _leaving = true;
+    if (!_won && ref.read(permadeathEnabledProvider)) {
+      final nodesVisited = ref.read(storyPlayProvider).history.length + 1;
+      final playerSession = ref.read(playerSessionProvider);
+      final races = ref.read(gameDbProvider(racesSchema)).value ?? const {};
+      final professions =
+          ref.read(gameDbProvider(professionsSchema)).value ?? const {};
+      final result =
+          await ref.read(playerSessionProvider.notifier).applyPermadeath(
+                race: races[playerSession.raceId] as Map<String, dynamic>? ??
+                    const {},
+                profession: professions[playerSession.professionId]
+                        as Map<String, dynamic>? ??
+                    const {},
+              );
+      // The same character starts the story over: from the first scene
+      // after character creation, never through it (creating a character
+      // wipes the one who just died, level and all).
+      final story = ref.read(storyDataProvider).value;
+      ref.read(storyPlayProvider.notifier).restart(story == null
+          ? StoryRepository.startNodeId
+          : firstSceneAfterCreation(story));
+      ref.read(homeTabIndexProvider.notifier).state = 0;
+      // The dead character's last fight is the death screen's to tell,
+      // not the next scene's.
+      ref.read(lastFightOutcomeProvider.notifier).state = null;
+      if (!mounted) return;
+      await Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (_) => DeathScreen(
+            lostItemIds: result.lostItemIds,
+            xpEarned: result.xpEarnedThisRun,
+            skillsLost: result.skillsLost,
+            nodesVisited: nodesVisited,
+            killerName: _enemies.isEmpty ? '' : _enemies.first.displayName,
+            narrationSeed: _random.nextInt(1 << 20),
+          ),
+        ),
+        (route) => route.isFirst,
+      );
+      return;
+    }
+    if (!mounted) return;
+    Navigator.of(context).pop(_won);
   }
 
   // --- Spells --------------------------------------------------------------

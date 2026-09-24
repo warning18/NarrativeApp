@@ -939,12 +939,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Consumé au début d’un combat :',
   },
   'tome_stat_point_desc': {
-    AppLanguage.en: 'Read to gain one stat point.',
-    AppLanguage.fr: 'Se lit pour gagner un point de caractéristique.',
+    AppLanguage.en: 'Read on the spot: one stat point.',
+    AppLanguage.fr: 'Lu sur-le-champ : un point de caractéristique.',
   },
   'tome_skill_point_desc': {
-    AppLanguage.en: 'Read to gain one skill point.',
-    AppLanguage.fr: 'Se lit pour gagner un point de compétence.',
+    AppLanguage.en: 'Read on the spot: one skill point.',
+    AppLanguage.fr: 'Lu sur-le-champ : un point de compétence.',
   },
   'loot_use_now_title': {
     AppLanguage.en: 'Use your spoils now',
@@ -980,9 +980,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'face_mana_label': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
   'channeled_face_note': {
     AppLanguage.en:
-        'Set on a {face} face: works at 70% power, never weaker than the face itself.',
+        'Set on a {face} face, a skill replaces the face\'s own action and works at 70% power. On an Attack face it never hits for less than the attack; on a Heal face it never heals less than the heal.',
     AppLanguage.fr:
-        'Posée sur une face {face} : agit à 70 % de sa puissance, jamais moins que la face elle-même.',
+        'Posée sur une face {face}, une compétence remplace l’action de la face et agit à 70 % de sa puissance. Sur une face Attaque, elle ne frappe jamais moins fort que l’attaque ; sur une face Soin, elle ne soigne jamais moins que le soin.',
   },
   'pick_face_skill_title': {
     AppLanguage.en: 'Choose this face\'s skill',
@@ -1041,13 +1041,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'arrival_camp_body': {
     AppLanguage.en:
-        'This is your camp. Rest here, and from now on the Camp page (Play tab) holds your companions, its works, its shops and the expeditions that leave from it.',
+        'This is your camp. From now on the Camp page (Play tab) holds your companions, rest, the camp\'s works, its shops and the expeditions that leave from it.',
     AppLanguage.fr:
-        'Voici votre camp. Reposez-vous ici ; désormais, la page Camp (onglet Jouer) réunit vos compagnons, ses ouvrages, ses boutiques et les expéditions qui en partent.',
+        'Voici votre camp. Désormais, la page Camp (onglet Jouer) réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques et les expéditions qui en partent.',
   },
   'arrival_camp_button': {
     AppLanguage.en: 'Make camp',
     AppLanguage.fr: 'Installer le camp',
+  },
+  'story_end_message': {
+    AppLanguage.en:
+        'Your story ends here. Begin again as someone new, or carry this run into New Game+.',
+    AppLanguage.fr:
+        'Votre histoire s’achève ici. Recommencez sous un autre visage, ou emportez cette partie dans une Nouvelle Partie+.',
+  },
+  'fight_not_over_notice': {
+    AppLanguage.en: 'The fight is not over. Win it or fall.',
+    AppLanguage.fr: 'Le combat n’est pas fini. Gagnez-le ou tombez.',
+  },
+  'worn_by_prefix': {AppLanguage.en: 'Worn by', AppLanguage.fr: 'Porté par'},
+  'read_button': {AppLanguage.en: 'Read', AppLanguage.fr: 'Lire'},
+  'tome_read_prefix': {
+    AppLanguage.en: 'You read',
+    AppLanguage.fr: 'Vous lisez'
   },
   'this_item_header': {
     AppLanguage.en: 'This item',
@@ -2358,10 +2374,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'permadeath_setting_desc': {
     AppLanguage.en:
-        'When enabled, losing a fight sends you back to the beginning of the '
-            'story. You keep your level and stats, but lose all items.',
-    AppLanguage.fr: 'Une fois activée, perdre un combat vous renvoie au début de '
-        "l'histoire. Vous conservez votre niveau et vos statistiques, mais perdez tous vos objets.",
+        'When enabled, losing a fight sends the same character back to the '
+            'beginning of the story. You keep your level, stats, gold and '
+            'companions, but lose all items and your skills return to your '
+            'class basics.',
+    AppLanguage.fr:
+        'Une fois activée, perdre un combat renvoie le même personnage au début de '
+            "l'histoire. Vous conservez votre niveau, vos statistiques, votre or et vos compagnons, "
+            'mais perdez tous vos objets et vos compétences reviennent aux bases de votre classe.',
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
@@ -2369,11 +2389,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'you_died_message': {
     AppLanguage.en:
-        'The story starts over. You keep everything you\'ve learned — your '
-            'level, stats, and skills — but your pack is empty.',
+        'The story starts over with you. You keep your level, stats, gold '
+            'and companions; your pack is empty and your skills are back to '
+            'your class basics.',
     AppLanguage.fr:
-        "L'histoire recommence. Vous conservez tout ce que vous avez appris — "
-            'votre niveau, vos statistiques et vos compétences — mais votre sac est vide.',
+        "L'histoire recommence avec vous. Vous conservez votre niveau, vos statistiques, "
+            'votre or et vos compagnons ; votre sac est vide et vos compétences '
+            'reviennent aux bases de votre classe.',
   },
   'items_lost_label': {
     AppLanguage.en: 'Items lost',

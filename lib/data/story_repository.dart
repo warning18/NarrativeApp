@@ -45,3 +45,17 @@ class StoryRepository {
     await prefs.remove(_prefsKey);
   }
 }
+
+/// The first scene after character creation: where the story picks up when
+/// the same character starts over (permadeath), skipping the creation step
+/// that would replace them. The start node itself when it has no creation
+/// choice.
+String firstSceneAfterCreation(StoryData story) {
+  final start = story.nodeFor(StoryRepository.startNodeId);
+  for (final choice in start?.choices ?? const <StoryChoice>[]) {
+    if (choice.opensCharacterCreation && !choice.isEnding) {
+      return choice.nextId;
+    }
+  }
+  return StoryRepository.startNodeId;
+}

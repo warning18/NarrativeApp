@@ -318,8 +318,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             message: spell != null
                                 ? '${trFor(lang, 'spell_learned_prefix')} '
                                     '${spell.nameFor(lang)}'
-                                : '${trFor(lang, 'bought_prefix')} $itemName '
-                                    '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
+                                : itemType == 'Tome'
+                                    ? '${trFor(lang, 'tome_read_prefix')} $itemName. '
+                                        '${consumableNote(itemId, item, lang) ?? ''}'
+                                    : '${trFor(lang, 'bought_prefix')} $itemName '
+                                        '${trFor(lang, 'for_label')} $cost ${trFor(lang, 'gold_label')}',
                             actionLabel:
                                 canWear ? trFor(lang, 'equip_button') : null,
                             onAction: canWear

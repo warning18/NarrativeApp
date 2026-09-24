@@ -143,8 +143,11 @@ class PlayScreen extends ConsumerWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(tr(ref, 'player_session'),
-                style: Theme.of(context).textTheme.titleMedium),
+            Expanded(
+              child: Text(tr(ref, 'player_session'),
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.ellipsis),
+            ),
             Wrap(
               spacing: 4,
               children: [

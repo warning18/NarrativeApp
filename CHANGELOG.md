@@ -8,6 +8,72 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.131.0+160]
+
+Fixes from the review of 1.130: endings, death, fights, gear, tomes and
+the town layout.
+
+### Fixed
+- **Endings reach New Game+.** An ending whose only way out is "Begin
+  again, changed" now shows the ending screen, with its New Game+ button
+  and a button carrying the ending's own words, instead of a plain choice
+  list.
+- **Permadeath keeps the character.** After a death with permadeath on,
+  the story restarts at the first scene after character creation instead
+  of the very first scene, whose only choice rolled a new character. You
+  keep level, stats, gold and companions; items are lost (companions'
+  worn gear included) and skills go back to the class basics. The
+  setting and the death screen now say so.
+- **No walking out of a fight.** The back arrow stays disabled until the
+  fight is settled, and the system back gesture during a fight shows "The
+  fight is not over" instead of leaving. Before, back skipped a loss (and
+  permadeath) or left a won fight so it could be fought again for its
+  rewards. Once the fight is over, back does what the return button does.
+- **One copy, one wearer.** A single copy of an item can no longer be
+  worn by you and every companion at once. The pack shows who wears each
+  item, and the equip list only offers copies nobody else is wearing.
+- **Zones opened from the story load their data first.** A story choice
+  that starts an expedition, fight, shop or quest waits for that data to
+  load, so after a relaunch the zone is no longer skipped.
+- **Stuns stop companions too.** A stunned companion sits out the party's
+  round instead of rolling as usual.
+- **Tomes are read.** A tome bought in a shop is read on the spot and
+  grants its stat or skill point. A tome found as loot has a Read button
+  in the pack.
+
+### Changed
+- **What a skill does on a basic face.** 1.130 promised a skill on a basic
+  face would never be weaker than the face, but on a Guard face it lost
+  the block. The skill replaces the face's own action, as before; the
+  text now says so, and that the floor only holds on Attack and Heal
+  faces (never less damage than the attack, never less healing than the
+  heal). Keeping the block as well would have made Guard the best face
+  for every skill.
+- **Onward choices are sorted by where they lead.** A hub choice counts as
+  something to do there only if it comes back to the hub within a few
+  scenes; the rest is listed as the way onward. At node 6010 the way on
+  was listed under People.
+- **Camp arrival.** The pop-up no longer tells you to "Rest here" where no
+  Rest button exists; it points to the Camp page.
+- **Arrival pop-ups wait for the story.** The town or camp pop-up only
+  shows when the story tab is in front and nothing is open over it, such
+  as another tab, a fight or the autoplay spinner.
+- **Hubs fit small phones.** The choices take at most 60% of the space
+  under the header, and a hub's things to do and its way onward each
+  scroll in their own part, so nothing overflows at 360x640. The
+  expedition card puts its button under the text, and long titles on the
+  Play tab and in the edit-mode header are shortened.
+- The Gemini voice player is only created when the Gemini voice is used.
+
+### Tests
+- `story_layout_test.dart` opens six story scenes, hubs included, at
+  390x844 and 360x640 in English and French and fails on any overflow.
+- `fight_back_guard_test.dart` checks that back leaves a fight's setup but
+  not a fight in progress.
+- `review_fixes_test.dart` covers shared gear, tomes, story endings, the
+  scene after character creation, onward choices at 6010 and the wharf,
+  and waiting for zone data.
+
 ## [1.130.0+159]
 
 Shops, loot and dice say what things do before you commit to them, the

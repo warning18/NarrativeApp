@@ -35,6 +35,10 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
           (sum, h) => sum + ((h['partyCapacityBonus'] as num?)?.toInt() ?? 0));
 }
 
+/// The wearer id [PlayerSession.wearersOf] uses for the player (allies go
+/// by their companion id).
+const String playerWearerId = 'player';
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -350,6 +354,24 @@ class PlayerSession {
   int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
 
   int get xpToNextLevel => level * 100;
+
+  /// Who wears [itemId]: [playerWearerId] for the player and each recruited
+  /// ally's companion id.
+  List<String> wearersOf(String itemId) => [
+        if (equippedItemIds.contains(itemId)) playerWearerId,
+        for (final ally in recruitedAllies)
+          if (ally.equippedItemIds.contains(itemId)) ally.companionId,
+      ];
+
+  /// Copies of [itemId] in the shared pack that [wearerId] could put on:
+  /// the pack's copies less those worn by anyone else. One copy is worn by
+  /// one character at a time.
+  int freeCopiesOf(String itemId, {required String wearerId}) {
+    final copies = inventoryItemIds.where((id) => id == itemId).length;
+    final wornElsewhere =
+        wearersOf(itemId).where((wearer) => wearer != wearerId).length;
+    return copies - wornElsewhere;
+  }
 
   String get alignmentLabel {
     if (alignmentScore >= 20) return 'Good';
@@ -1321,6 +1343,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       await _persist();
       return;
     }
+    // A tome is read on the spot, as a looted one is: its points are the
+    // purchase, and nothing enters the pack.
+    final tome = tomeGrantFor(itemId, item);
+    if (tome != null) {
+      state = state.copyWith(
+        gold: state.gold - cost,
+        statPoints: state.statPoints + tome.statPoints,
+        skillPoints: state.skillPoints + tome.skillPoints,
+        shopPurchaseCounts: {...state.shopPurchaseCounts, key: purchased + 1},
+      );
+      await _persist();
+      return;
+    }
     final charges = consumableChargesFor(itemId, item);
     state = state.copyWith(
       gold: state.gold - cost,
@@ -1350,6 +1385,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return (potions: itemId == 'potion_major' ? 2 : 1, antidotes: 0);
   }
 
+  /// Reads one carried copy of the tome [itemId] -- for a tome that reached
+  /// the pack before tomes were read on the spot. No-op for anything that
+  /// isn't a carried tome.
+  Future<void> readTome(String itemId, Map<String, dynamic>? item) async {
+    final tome = tomeGrantFor(itemId, item);
+    if (tome == null || !state.inventoryItemIds.contains(itemId)) return;
+    final remaining = [...state.inventoryItemIds]..remove(itemId);
+    state = state.copyWith(
+      inventoryItemIds: remaining,
+      statPoints: state.statPoints + tome.statPoints,
+      skillPoints: state.skillPoints + tome.skillPoints,
+    );
+    await _persist();
+  }
+
   /// Equips [itemId]. When [slot] is given, any other equipped item sharing
   /// that slot (per [items], a map of itemId -> item record) is unequipped
   /// first, so only one item per slot is ever equipped at once.
@@ -1359,6 +1409,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     Map<String, dynamic>? items,
   }) async {
     if (state.equippedItemIds.contains(itemId)) return;
+    // No copy left that someone else isn't already wearing.
+    if (state.freeCopiesOf(itemId, wearerId: playerWearerId) <= 0) return;
     var newEquipped = state.equippedItemIds;
     if (slot != null && slot.isNotEmpty && items != null) {
       newEquipped = state.equippedItemIds.where((id) {
@@ -1615,6 +1667,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? slot,
     Map<String, dynamic>? items,
   }) async {
+    if (state.freeCopiesOf(itemId, wearerId: companionId) <= 0) return;
     await _updateAlly(companionId, (ally) {
       if (ally.equippedItemIds.contains(itemId)) return ally;
       var newEquipped = ally.equippedItemIds;
@@ -2359,6 +2412,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: state.maxHealth,
       inventoryItemIds: const [],
       equippedItemIds: const [],
+      // The party shares one pack: what the companions wore goes with it.
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          ally.copyWith(equippedItemIds: const []),
+      ],
       xpEarnedThisRun: 0,
       unlockedSkillIds: starterUnlockedSkills,
       skillTiers: const {},

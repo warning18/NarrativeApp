@@ -24,7 +24,40 @@ StoryNode? settlementNodeAt(String currentNodeId, StoryData story) {
   return null;
 }
 
-/// Whether a hub's choice keeps the player in the place (its scene leads
-/// back to the hub) instead of moving the story on.
-bool isLocalChoice(StoryChoice choice, String hubNodeId) =>
-    isWithinPlace(choice.nextId, hubNodeId);
+/// Whether a hub's choice keeps the player in the place -- its scene leads
+/// back to the hub -- instead of moving the story on. Read off the story
+/// graph when [story] is given (a scene named after the hub can still be
+/// its way out, like the Reliquary Quarter's thread); by the scene's name
+/// otherwise.
+bool isLocalChoice(StoryChoice choice, String hubNodeId, [StoryData? story]) {
+  if (story == null) return isWithinPlace(choice.nextId, hubNodeId);
+  return leadsBackTo(choice.nextId, hubNodeId, story);
+}
+
+/// Whether the story from [startId] comes back to [hubNodeId] within
+/// [depth] scenes, following every way on (success, failure and defeat
+/// branches alike).
+bool leadsBackTo(String startId, String hubNodeId, StoryData story,
+    {int depth = 6}) {
+  if (startId == hubNodeId) return true;
+  final seen = <String>{startId};
+  var frontier = [startId];
+  for (var step = 0; step < depth && frontier.isNotEmpty; step++) {
+    final next = <String>[];
+    for (final id in frontier) {
+      for (final choice
+          in story.nodeFor(id)?.choices ?? const <StoryChoice>[]) {
+        for (final target in [
+          choice.nextId,
+          if (choice.failNextId != null) choice.failNextId!,
+          if (choice.loseNextId != null) choice.loseNextId!,
+        ]) {
+          if (target == hubNodeId) return true;
+          if (seen.add(target)) next.add(target);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return false;
+}
