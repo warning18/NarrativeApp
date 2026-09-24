@@ -1,0 +1,92 @@
+{
+  "port_ashen_landing": {
+    "portID": "port_ashen_landing",
+    "portName": "Ashen Landing",
+    "portName_fr": "Le Débarcadère des Cendres",
+    "chapter": 3,
+    "description": "The shingle beach below the camp, where the Rusty Eel is hauled up above the tide line. Nothing is for sale here that the camp doesn't already make, but every voyage starts and ends on this stretch of grey stones.",
+    "description_fr": "La plage de galets sous le campement, où le Rusty Eel est hissé au-dessus de la ligne de marée. Rien ne s'y vend que le campement ne fabrique déjà, mais chaque traversée commence et finit sur cette bande de pierres grises.",
+    "zoneIds": [
+      "z_cinder_row",
+      "z_scaffold_yards"
+    ],
+    "shopIds": [],
+    "voyageLength": 2,
+    "isHome": true,
+    "requiredFlags": []
+  },
+  "port_smugglers_wharf": {
+    "portID": "port_smugglers_wharf",
+    "portName": "Smugglers' Wharf",
+    "portName_fr": "Le Quai des Contrebandiers",
+    "chapter": 2,
+    "description": "The Lower City's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
+    "description_fr": "Le marché du port de la Ville Basse, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
+    "zoneIds": [
+      "z_fishermans_row",
+      "z_tanners_court",
+      "z_lantern_docks"
+    ],
+    "shopIds": [
+      "blind_beggar_stall",
+      "weaponsmith_forge",
+      "apothecary_row"
+    ],
+    "voyageLength": 2,
+    "isHome": false,
+    "requiredFlags": []
+  },
+  "port_drowned_stair": {
+    "portID": "port_drowned_stair",
+    "portName": "The Drowned Stair",
+    "portName_fr": "L'Escalier Noyé",
+    "chapter": 4,
+    "description": "A flooded landing below the Spire where the catacombs meet the water. The Sunken Cloister's deserters keep a lantern lit for boats that know the channel, and the Court's own stair goes down from here.",
+    "description_fr": "Un débarcadère inondé sous la Flèche, là où les catacombes rejoignent l'eau. Les déserteurs du Cloître Englouti gardent une lanterne allumée pour les bateaux qui connaissent le chenal, et l'escalier même de la Cour descend d'ici.",
+    "zoneIds": [
+      "z_ossuary_galleries",
+      "z_drowned_stair"
+    ],
+    "shopIds": [
+      "ossuary_relics"
+    ],
+    "voyageLength": 3,
+    "isHome": false,
+    "requiredFlags": []
+  },
+  "port_black_reliquary": {
+    "portID": "port_black_reliquary",
+    "portName": "The Black Reliquary",
+    "portName_fr": "Le Reliquaire Noir",
+    "chapter": 5,
+    "description": "The Reliquary Quarter's river gate, its chains rusted open since the tear. The last lantern in the quarter burns on the quay, and every street beyond it runs toward the city's dead heart.",
+    "description_fr": "La porte fluviale du Quartier du Reliquaire, ses chaînes rouillées en position ouverte depuis la déchirure. La dernière lanterne du quartier brûle sur le quai, et chaque rue au-delà court vers le cœur mort de la ville.",
+    "zoneIds": [
+      "z_dead_heart_approach",
+      "z_shroud_vigil"
+    ],
+    "shopIds": [
+      "last_lantern"
+    ],
+    "voyageLength": 3,
+    "isHome": false,
+    "requiredFlags": []
+  },
+  "port_hollow_shore": {
+    "portID": "port_hollow_shore",
+    "portName": "The Hollow Shore",
+    "portName_fr": "La Rive Creuse",
+    "chapter": 6,
+    "description": "A strip of grey sand the tear drew out of the dead heart like a splinter. Across the water the tear stands open like a door, and the Rusty Eel is the only thing on the shore that remembers what a world is supposed to look like.",
+    "description_fr": "Une bande de sable gris que la déchirure a tirée du cœur mort comme une écharde. De l'autre côté de l'eau, la déchirure est ouverte comme une porte, et le Rusty Eel est la seule chose sur la rive qui se souvienne de ce à quoi un monde est censé ressembler.",
+    "zoneIds": [
+      "z_beyond_the_tear"
+    ],
+    "shopIds": [],
+    "voyageLength": 4,
+    "isHome": false,
+    "requiredFlags": [
+      "shroud_vigil_cleared"
+    ]
+  }
+}

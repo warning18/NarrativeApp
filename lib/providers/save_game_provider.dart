@@ -44,14 +44,16 @@ class SavedGameNotifier extends StateNotifier<bool> {
     final sessionJson = prefs.getString(_savedSessionPrefsKey);
     final storyJson = prefs.getString(_savedStoryPrefsKey);
     if (sessionJson == null || storyJson == null) return null;
-    final session = PlayerSession.fromJson(json.decode(sessionJson) as Map<String, dynamic>);
+    final session = PlayerSession.fromJson(
+        json.decode(sessionJson) as Map<String, dynamic>);
     final storyMap = json.decode(storyJson) as Map<String, dynamic>;
     final currentNodeId = storyMap['currentNodeId'] as String;
     final history =
-        (storyMap['history'] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
+        (storyMap['history'] as List?)?.map((e) => e.toString()).toList() ??
+            const <String>[];
     return (session, currentNodeId, history);
   }
 }
 
-final savedGameExistsProvider =
-    StateNotifierProvider<SavedGameNotifier, bool>((ref) => SavedGameNotifier());
+final savedGameExistsProvider = StateNotifierProvider<SavedGameNotifier, bool>(
+    (ref) => SavedGameNotifier());

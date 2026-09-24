@@ -29,7 +29,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
 
   static FieldSchema? _findEnumField(DbSchema schema) {
     for (final field in schema.fields) {
-      if (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty) return field;
+      if (field.type == FieldType.enumeration && field.enumOptions.isNotEmpty) {
+        return field;
+      }
     }
     return null;
   }
@@ -72,9 +74,11 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             final query = _search.toLowerCase();
             keys = keys.where((key) {
               final record = records[key] as Map<String, dynamic>;
-              final title =
-                  schema.titleField != null ? record[schema.titleField]?.toString() ?? '' : '';
-              return key.toLowerCase().contains(query) || title.toLowerCase().contains(query);
+              final title = schema.titleField != null
+                  ? record[schema.titleField]?.toString() ?? ''
+                  : '';
+              return key.toLowerCase().contains(query) ||
+                  title.toLowerCase().contains(query);
             }).toList();
           }
           final filterField = _filterField;
@@ -85,7 +89,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             }).toList();
           }
 
-          final issues = schema.id == 'quests' ? validateQuestChapters(records) : const <String>[];
+          final issues = schema.id == 'quests'
+              ? validateQuestChapters(records)
+              : const <String>[];
 
           return Column(
             children: [
@@ -111,7 +117,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                         value: _filterValue,
                         hint: Text(filterField.label),
                         items: [
-                          const DropdownMenuItem<String?>(value: null, child: Text('All')),
+                          const DropdownMenuItem<String?>(
+                              value: null, child: Text('All')),
                           ...filterField.enumOptions.map(
                             (option) => DropdownMenuItem<String?>(
                               value: option,
@@ -119,7 +126,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                             ),
                           ),
                         ],
-                        onChanged: (value) => setState(() => _filterValue = value),
+                        onChanged: (value) =>
+                            setState(() => _filterValue = value),
                       ),
                     ],
                   ],
@@ -137,7 +145,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                               margin: const EdgeInsets.all(12),
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.errorContainer,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .errorContainer,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Column(
@@ -145,8 +155,13 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                                 children: [
                                   Text(
                                     'Chapter structure issues',
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                          color: Theme.of(context).colorScheme.onErrorContainer,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onErrorContainer,
                                         ),
                                   ),
                                   const SizedBox(height: 6),
@@ -156,7 +171,9 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                                       child: Text(
                                         '• $issue',
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onErrorContainer,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onErrorContainer,
                                         ),
                                       ),
                                     ),
@@ -172,11 +189,14 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                               : '';
                           return ListTile(
                             title: Text(key),
-                            subtitle: subtitleValue.isNotEmpty ? Text(subtitleValue) : null,
+                            subtitle: subtitleValue.isNotEmpty
+                                ? Text(subtitleValue)
+                                : null,
                             trailing: IconButton(
                               icon: const Icon(Icons.delete_outline),
                               tooltip: 'Delete',
-                              onPressed: () => _confirmDelete(context, ref, key),
+                              onPressed: () =>
+                                  _confirmDelete(context, ref, key),
                             ),
                             onTap: () {
                               Navigator.of(context).push(
@@ -218,7 +238,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
     );
   }
 
-  Future<void> _copyJson(BuildContext context, Map<String, dynamic>? records) async {
+  Future<void> _copyJson(
+      BuildContext context, Map<String, dynamic>? records) async {
     if (records == null) return;
     await Clipboard.setData(
       ClipboardData(text: const JsonEncoder.withIndent('  ').convert(records)),
@@ -229,7 +250,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
     );
   }
 
-  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, String key) async {
+  Future<void> _confirmDelete(
+      BuildContext context, WidgetRef ref, String key) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -304,7 +326,8 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
           TextButton(
             onPressed: () {
               try {
-                final decoded = json.decode(controller.text) as Map<String, dynamic>;
+                final decoded =
+                    json.decode(controller.text) as Map<String, dynamic>;
                 Navigator.pop(dialogContext, decoded);
               } catch (_) {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(

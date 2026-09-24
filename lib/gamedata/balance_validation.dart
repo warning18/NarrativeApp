@@ -51,7 +51,8 @@ List<String> _validateMandatoryCombat(StoryData story) {
     }
   }
 
-  Set<String> bfsForward(Set<String> starts, Set<String> allowed, {StoryChoice? excludeChoice}) {
+  Set<String> bfsForward(Set<String> starts, Set<String> allowed,
+      {StoryChoice? excludeChoice}) {
     final visited = <String>{...starts};
     final queue = [...starts];
     while (queue.isNotEmpty) {
@@ -80,7 +81,8 @@ List<String> _validateMandatoryCombat(StoryData story) {
 
   for (final spine in chapterSpines) {
     final allowed = story.nodes.keys
-        .where((id) => chapterForNode(id) == null || chapterForNode(id) == spine.chapter)
+        .where((id) =>
+            chapterForNode(id) == null || chapterForNode(id) == spine.chapter)
         .toSet();
 
     for (var i = 0; i < spine.beats.length - 1; i++) {
@@ -97,21 +99,26 @@ List<String> _validateMandatoryCombat(StoryData story) {
           if (!choice.triggersCombat) continue;
           if (!allowed.contains(choice.nextId)) continue;
 
-          final withoutThisFight = bfsForward(beatFrom, allowed, excludeChoice: choice);
+          final withoutThisFight =
+              bfsForward(beatFrom, allowed, excludeChoice: choice);
           final stillReachesNextBeat = beatTo.any(withoutThisFight.contains);
-          if (stillReachesNextBeat) continue; // there's another route — avoidable
+          if (stillReachesNextBeat) {
+            continue; // there's another route — avoidable
+          }
 
-          final ancestors = reachable.intersection(bfsBackward({nodeId}, allowed));
+          final ancestors =
+              reachable.intersection(bfsBackward({nodeId}, allowed));
           final hasShopOpportunity = ancestors.any((id) {
             final ancestor = story.nodeFor(id);
             if (ancestor == null) return false;
-            return ancestor.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty);
+            return ancestor.choices
+                .any((c) => (c.unlockShopId ?? '').isNotEmpty);
           });
 
           if (!hasShopOpportunity) {
             issues.add(
               'Chapter ${spine.chapter} (beat ${i + 1} → ${i + 2}): node $nodeId forces '
-              'combat with "${choice.triggerEnemyId}" with no shop visit possible first.',
+              'combat with "${choice.allTriggerEnemyIds.join(", ")}" with no shop visit possible first.',
             );
           }
         }
@@ -170,7 +177,8 @@ List<String> _validateSkillChains(Map<String, dynamic> skills) {
     final reqRace = required['restrictedRaceID']?.toString() ?? '';
     final reqProfession = required['restrictedProfessionID']?.toString() ?? '';
     final leaksRace = reqRace.isNotEmpty && reqRace != ownRace;
-    final leaksProfession = reqProfession.isNotEmpty && reqProfession != ownProfession;
+    final leaksProfession =
+        reqProfession.isNotEmpty && reqProfession != ownProfession;
     if (leaksRace || leaksProfession) {
       issues.add(
         'Skill "${entry.key}" has no restriction of its own, but requires "$requiredId" '
@@ -216,9 +224,11 @@ List<String> _validateDanglingReferences(
   final issues = <String>[];
   for (final node in story.nodes.values) {
     for (final choice in node.choices) {
-      final enemyId = choice.triggerEnemyId;
-      if (enemyId != null && enemyId.isNotEmpty && !enemies.containsKey(enemyId)) {
-        issues.add('Node ${node.id} triggers unknown enemy "$enemyId".');
+      for (final enemyId in choice.allTriggerEnemyIds) {
+        // `@first_ally` resolves at play time (story_player_screen.dart).
+        if (!enemyId.startsWith('@') && !enemies.containsKey(enemyId)) {
+          issues.add('Node ${node.id} triggers unknown enemy "$enemyId".');
+        }
       }
       final shopId = choice.unlockShopId;
       if (shopId != null && shopId.isNotEmpty && !shops.containsKey(shopId)) {

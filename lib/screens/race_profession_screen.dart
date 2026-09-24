@@ -1,13 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/origin_stories.dart';
+import '../data/random_names.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 
 /// Formats a skill id like "human_resolve" into "Human Resolve" — skills
@@ -23,7 +28,8 @@ class RaceProfessionScreen extends ConsumerStatefulWidget {
   const RaceProfessionScreen({super.key});
 
   @override
-  ConsumerState<RaceProfessionScreen> createState() => _RaceProfessionScreenState();
+  ConsumerState<RaceProfessionScreen> createState() =>
+      _RaceProfessionScreenState();
 }
 
 class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
@@ -43,7 +49,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     final skillsAsync = ref.watch(gameDbProvider(skillsSchema));
     final session = ref.watch(playerSessionProvider);
     _selectedRaceId ??= session.raceId.isNotEmpty ? session.raceId : null;
-    _selectedProfessionId ??= session.professionId.isNotEmpty ? session.professionId : null;
+    _selectedProfessionId ??=
+        session.professionId.isNotEmpty ? session.professionId : null;
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'race_profession_title'))),
@@ -51,11 +58,13 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
         data: (races) => professionsAsync.when(
           data: (professions) => skillsAsync.when(
             data: (skills) {
-              if (session.raceId.isNotEmpty && session.professionId.isNotEmpty) {
+              if (session.raceId.isNotEmpty &&
+                  session.professionId.isNotEmpty) {
                 return _CharacterSheet(
                   session: session,
                   race: races[session.raceId] as Map<String, dynamic>?,
-                  profession: professions[session.professionId] as Map<String, dynamic>?,
+                  profession: professions[session.professionId]
+                      as Map<String, dynamic>?,
                   skills: skills,
                   language: ref.watch(appLanguageProvider),
                   onStartGame: _justCreated ? _handleContinue : null,
@@ -64,12 +73,12 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
               return _buildPicker(context, races, professions, skills);
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Center(child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+            error: (error, stack) => Center(
+                child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
           ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) =>
-              Center(child: Text('${tr(ref, 'failed_to_load_professions')}: $error')),
+          error: (error, stack) => Center(
+              child: Text('${tr(ref, 'failed_to_load_professions')}: $error')),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) =>
@@ -103,12 +112,29 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(
-          tr(ref, 'choose_who_desc'),
-          style: Theme.of(context).textTheme.bodySmall,
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                tr(ref, 'choose_who_desc'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+            const SizedBox(width: 8),
+            OutlinedButton.icon(
+              onPressed: () => setState(() {
+                _selectedRaceId = raceIds[Random().nextInt(raceIds.length)];
+                _selectedProfessionId =
+                    professionIds[Random().nextInt(professionIds.length)];
+              }),
+              icon: const Icon(Icons.casino_outlined, size: 18),
+              label: Text(tr(ref, 'randomize_character_button')),
+            ),
+          ],
         ),
         const SizedBox(height: 16),
-        Text(tr(ref, 'race_label'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'race_label'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...raceIds.map((id) {
           final race = races[id] as Map<String, dynamic>;
@@ -123,7 +149,8 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
           );
         }),
         const SizedBox(height: 24),
-        Text(tr(ref, 'profession_label'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'profession_label'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         ...professionIds.map((id) {
           final profession = professions[id] as Map<String, dynamic>;
@@ -153,10 +180,19 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     );
   }
 
-  String _bonusLine(Map<String, dynamic> preset, {required bool showSkillPoints}) {
+  String _bonusLine(Map<String, dynamic> preset,
+      {required bool showSkillPoints}) {
     final health = (preset['bonusMaxHealth'] as num?)?.toInt() ?? 0;
     final damage = (preset['bonusBaseDamage'] as num?)?.toInt() ?? 0;
     final armor = (preset['bonusBaseArmor'] as num?)?.toInt() ?? 0;
+    final luck = (preset['bonusLuck'] as num?)?.toInt() ?? 0;
+    final charisma = (preset['bonusCharisma'] as num?)?.toInt() ?? 0;
+    final strength = (preset['bonusStrength'] as num?)?.toInt() ?? 0;
+    final dexterity = (preset['bonusDexterity'] as num?)?.toInt() ?? 0;
+    final constitution = (preset['bonusConstitution'] as num?)?.toInt() ?? 0;
+    final intelligence = (preset['bonusIntelligence'] as num?)?.toInt() ?? 0;
+    final wisdom = (preset['bonusWisdom'] as num?)?.toInt() ?? 0;
+    final perception = (preset['bonusPerception'] as num?)?.toInt() ?? 0;
     final gold = (preset['startingGoldBonus'] as num?)?.toInt() ?? 0;
     final skillPoints = (preset['startingSkillPoints'] as num?)?.toInt() ?? 0;
     final parts = <String>[
@@ -164,7 +200,23 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
       '${damage >= 0 ? '+' : ''}$damage ${tr(ref, 'damage_label')}',
       '${armor >= 0 ? '+' : ''}$armor ${tr(ref, 'arm_abbrev')}',
       '${gold >= 0 ? '+' : ''}$gold ${tr(ref, 'gold_field_label')}',
-      if (showSkillPoints && skillPoints > 0) '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
+      if (luck != 0) '${luck >= 0 ? '+' : ''}$luck ${tr(ref, 'luck_label')}',
+      if (charisma != 0)
+        '${charisma >= 0 ? '+' : ''}$charisma ${tr(ref, 'charisma_label')}',
+      if (strength != 0)
+        '${strength >= 0 ? '+' : ''}$strength ${tr(ref, 'str_abbrev')}',
+      if (dexterity != 0)
+        '${dexterity >= 0 ? '+' : ''}$dexterity ${tr(ref, 'dex_abbrev')}',
+      if (constitution != 0)
+        '${constitution >= 0 ? '+' : ''}$constitution ${tr(ref, 'con_abbrev')}',
+      if (intelligence != 0)
+        '${intelligence >= 0 ? '+' : ''}$intelligence ${tr(ref, 'int_abbrev')}',
+      if (wisdom != 0)
+        '${wisdom >= 0 ? '+' : ''}$wisdom ${tr(ref, 'wis_abbrev')}',
+      if (perception != 0)
+        '${perception >= 0 ? '+' : ''}$perception ${tr(ref, 'per_abbrev')}',
+      if (showSkillPoints && skillPoints > 0)
+        '+$skillPoints ${tr(ref, 'skill_pt_bonus_label')}',
     ];
     return parts.join(' · ');
   }
@@ -256,10 +308,19 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
                   border: const OutlineInputBorder(),
                   labelText: trFor(lang, 'character_name_field_label'),
                   hintText: trFor(lang, 'character_name_field_hint'),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.casino_outlined),
+                    tooltip: trFor(lang, 'random_name_tooltip'),
+                    onPressed: () => setDialogState(() {
+                      controller.text = randomCharacterName(_selectedRaceId);
+                    }),
+                  ),
                 ),
                 onChanged: (_) => setDialogState(() {}),
                 onSubmitted: (value) {
-                  if (value.trim().isNotEmpty) Navigator.pop(dialogContext, value.trim());
+                  if (value.trim().isNotEmpty) {
+                    Navigator.pop(dialogContext, value.trim());
+                  }
                 },
               ),
             ],
@@ -285,33 +346,45 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   Future<void> _runOriginStories() async {
     for (var index = 0; index < originStoryPrompts.length; index++) {
       if (!mounted) return;
-      final prompt = originStoryPrompts[index];
+      final prompt = originPromptForSlot(index, _selectedProfessionId);
       final choice = await showDialog<OriginChoice>(
         context: context,
         barrierDismissible: false,
         builder: (dialogContext) => AlertDialog(
           title: Text(tr(ref, prompt.titleKey)),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  '${index + 1} / ${originStoryPrompts.length}',
-                  style: Theme.of(dialogContext).textTheme.labelSmall,
-                ),
-                const SizedBox(height: 8),
-                Text(tr(ref, prompt.descriptionKey)),
-                const SizedBox(height: 16),
-                for (final choice in prompt.choices)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(dialogContext, choice),
-                      child: Text(tr(ref, choice.textKey), textAlign: TextAlign.center),
-                    ),
+          content: SizedBox(
+            width: 360,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    '${index + 1} / ${originStoryPrompts.length}',
+                    style: Theme.of(dialogContext).textTheme.labelSmall,
                   ),
-              ],
+                  const SizedBox(height: 10),
+                  Text(
+                    tr(ref, prompt.descriptionKey),
+                    style:
+                        Theme.of(dialogContext).textTheme.bodyLarge?.copyWith(
+                              fontFamily: 'serif',
+                              height: 1.6,
+                              letterSpacing: 0.1,
+                            ),
+                  ),
+                  const SizedBox(height: 20),
+                  for (final choice in prompt.choices)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(dialogContext, choice),
+                        child: Text(tr(ref, choice.textKey),
+                            textAlign: TextAlign.center),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -387,20 +460,26 @@ class _PresetCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       bonusLine,
-                      style:
-                          Theme.of(context).textTheme.bodySmall?.copyWith(color: onContainer),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: onContainer),
                     ),
                     if (skillLine != null) ...[
                       const SizedBox(height: 4),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.auto_awesome, size: 14, color: colorScheme.primary),
+                          Icon(Icons.auto_awesome,
+                              size: 14, color: colorScheme.primary),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               skillLine!,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
                                     fontStyle: FontStyle.italic,
                                     color: colorScheme.primary,
                                   ),
@@ -449,7 +528,8 @@ class _CharacterSheet extends StatelessWidget {
 
   /// A card naming [preset]'s granted skill (if any), shown right under
   /// its race/profession card so the connection is obvious.
-  Widget _skillCard(BuildContext context, String label, Map<String, dynamic>? preset) {
+  Widget _skillCard(
+      BuildContext context, String label, Map<String, dynamic>? preset) {
     final skillId = preset?['standardSkillID']?.toString() ?? '';
     if (skillId.isEmpty) return const SizedBox.shrink();
     final skill = skills[skillId] as Map<String, dynamic>?;
@@ -461,7 +541,7 @@ class _CharacterSheet extends StatelessWidget {
         color: Theme.of(context).colorScheme.surfaceContainerHighest,
         child: ListTile(
           dense: true,
-          leading: const Icon(Icons.auto_awesome),
+          leading: SkillPixelIcon(skillId),
           title: Text('$label: $name'),
           subtitle: desc.isNotEmpty ? Text(desc) : null,
         ),
@@ -472,19 +552,48 @@ class _CharacterSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final raceName = race?['raceName']?.toString() ?? session.raceId;
-    final professionName = profession?['professionName']?.toString() ?? session.professionId;
+    final professionName =
+        profession?['professionName']?.toString() ?? session.professionId;
     String t(String key) => trFor(language, key);
 
-    Widget statRow(String label, String value) => Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    // A row with a [description] is long-press-able: holding it shows what
+    // the stat actually does, reusing the same explanations the level-up
+    // screen already offers so the two never drift apart. Rows without one
+    // (plain counters like gold or inventory size) stay static -- their
+    // value already says everything there is to know.
+    Widget statRow(String label, String value,
+        {IconData? icon, String? description}) {
+      final row = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
             children: [
+              if (icon != null) ...[
+                Icon(icon, size: 18),
+                const SizedBox(width: 8),
+              ],
               Text(label),
-              Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
-        );
+          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        child: description == null
+            ? row
+            : InkWell(
+                onLongPress: () => showDetailDialog(
+                  context,
+                  title: label,
+                  description: description,
+                  icon: icon,
+                  closeLabel: t('close_button'),
+                ),
+                child: row,
+              ),
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -514,7 +623,13 @@ class _CharacterSheet extends StatelessWidget {
         ),
         _skillCard(context, t('granted_skill_label'), profession),
         const SizedBox(height: 16),
-        Text(t('character_sheet_title'), style: Theme.of(context).textTheme.titleMedium),
+        Text(t('character_sheet_title'),
+            style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 2),
+        Text(
+          t('hold_stat_for_details_hint'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
         const SizedBox(height: 8),
         Card(
           child: Padding(
@@ -529,9 +644,33 @@ class _CharacterSheet extends StatelessWidget {
                 statRow(
                   t('health_label'),
                   '${session.currentHealth} / ${session.maxHealth}',
+                  icon: Icons.favorite,
+                  description: t('max_health_desc'),
                 ),
-                statRow(t('base_damage_label'), '${session.baseDamage}'),
-                statRow(t('base_armor_label'), '${session.baseArmor}'),
+                statRow(t('base_damage_label'), '${session.baseDamage}',
+                    icon: Icons.gavel, description: t('base_damage_desc')),
+                statRow(t('base_armor_label'), '${session.baseArmor}',
+                    icon: Icons.shield, description: t('base_armor_desc')),
+                statRow(t('luck_label'), '${session.luck}',
+                    icon: Icons.auto_awesome, description: t('luck_desc')),
+                statRow(t('charisma_label'), '${session.charisma}',
+                    icon: Icons.forum, description: t('charisma_desc')),
+                statRow(t('strength_label'), '${session.strength}',
+                    icon: Icons.fitness_center,
+                    description: t('strength_desc')),
+                statRow(t('dexterity_label'), '${session.dexterity}',
+                    icon: Icons.directions_run,
+                    description: t('dexterity_desc')),
+                statRow(t('constitution_label'), '${session.constitution}',
+                    icon: Icons.health_and_safety,
+                    description: t('constitution_desc')),
+                statRow(t('intelligence_label'), '${session.intelligence}',
+                    icon: Icons.psychology,
+                    description: t('intelligence_desc')),
+                statRow(t('wisdom_label'), '${session.wisdom}',
+                    icon: Icons.visibility, description: t('wisdom_desc')),
+                statRow(t('perception_label'), '${session.perception}',
+                    icon: Icons.radar, description: t('perception_desc')),
                 statRow(t('gold_field_label'), '${session.gold}'),
                 statRow(
                   t('alignment_label'),
@@ -540,9 +679,13 @@ class _CharacterSheet extends StatelessWidget {
                 statRow(t('stat_points_label'), '${session.statPoints}'),
                 statRow(t('skill_points_label'), '${session.skillPoints}'),
                 statRow(t('potions_label'), '${session.potionCount}'),
-                statRow(t('inventory_items_label'), '${session.inventoryItemIds.length}'),
-                statRow(t('equipped_items_label'), '${session.equippedItemIds.length}'),
-                statRow(t('unlocked_skills_label'), '${session.unlockedSkillIds.length}'),
+                statRow(t('antidotes_label'), '${session.antidoteCount}'),
+                statRow(t('inventory_items_label'),
+                    '${session.inventoryItemIds.length}'),
+                statRow(t('equipped_items_label'),
+                    '${session.equippedItemIds.length}'),
+                statRow(t('unlocked_skills_label'),
+                    '${session.unlockedSkillIds.length}'),
               ],
             ),
           ),
@@ -554,7 +697,8 @@ class _CharacterSheet extends StatelessWidget {
         ),
         if (onStartGame != null) ...[
           const SizedBox(height: 20),
-          FilledButton(onPressed: onStartGame, child: Text(t('continue_button'))),
+          FilledButton(
+              onPressed: onStartGame, child: Text(t('continue_button'))),
         ],
       ],
     );

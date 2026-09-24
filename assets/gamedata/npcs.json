@@ -1,0 +1,56 @@
+{
+  "lysa": {
+    "npcID": "lysa",
+    "npcName": "Lysa",
+    "chapter": 3,
+    "description": "The woman you dragged out of a burning tavern back when this whole business started. Chapter Three finds her waiting at the edge of the Ashen Quarter, alive against odds you didn't much like at the time.",
+    "description_fr": "La femme que tu as tirée d'une taverne en flammes quand toute cette histoire a commencé. Au chapitre trois, tu la retrouves à la lisière du Quartier de Cendres, vivante contre des probabilités qui ne te plaisaient guère à l'époque.",
+    "requiredFlag": "lysa_survived",
+    "dialogueLines": [
+      "\"You're still breathing. Good — I wasn't in the mood to burn a second set of clothes.\"",
+      "\"They're saying the Warden fell. Is it true? Tell it to me straight, I've had enough of people softening things for my sake.\"",
+      "\"Go on, then. Alster will want to hear this from someone who was actually there, not from a rumor wearing a rumor's coat.\""
+    ],
+    "dialogueLines_fr": [
+      "« Tu respires encore. Bien — je n'avais pas envie de brûler une deuxième tenue. »",
+      "« On dit que le Gardien est tombé. C'est vrai ? Dis-le-moi franchement, j'en ai assez qu'on m'épargne les détails. »",
+      "« Vas-y, alors. Alster voudra l'entendre de quelqu'un qui y était vraiment, pas d'une rumeur déguisée en rumeur. »"
+    ]
+  },
+  "old_harker": {
+    "npcID": "old_harker",
+    "npcName": "Old Harker",
+    "chapter": 2,
+    "description": "A harbor-front fixture who's outlived three regimes by never once having an opinion out loud. Always good for gossip, at the low price of your patience.",
+    "description_fr": "Une figure familière du front de mer qui a survécu à trois régimes en ne donnant jamais son avis à voix haute. Toujours de bon conseil pour les ragots, au faible prix de ta patience.",
+    "requiredFlag": "",
+    "dialogueLines": [
+      "\"Fifty years on these docks and I've learned exactly one thing: the tide doesn't care who's winning.\"",
+      "\"You've got the look of someone about to do something foolish. Don't let me stop you.\"",
+      "\"Half the city thinks the invasion changed everything. The other half is right — nothing changed, it just got louder.\""
+    ],
+    "dialogueLines_fr": [
+      "« Cinquante ans sur ces quais et j'ai appris exactement une chose : la marée se moque de savoir qui gagne. »",
+      "« Tu as la tête de quelqu'un qui s'apprête à faire une bêtise. Ne te laisse pas arrêter par moi. »",
+      "« La moitié de la ville pense que l'invasion a tout changé. L'autre moitié a raison — rien n'a changé, c'est juste devenu plus bruyant. »"
+    ]
+  },
+  "sister_ines": {
+    "npcID": "sister_ines",
+    "npcName": "Sister Inès",
+    "chapter": 3,
+    "description": "A young acolyte tending the Ashen Quarter's makeshift shrine, quietly convinced everyone around her is one bad day from losing their faith. She isn't always wrong.",
+    "description_fr": "Une jeune acolyte veillant sur le sanctuaire improvisé du Quartier de Cendres, discrètement convaincue que tout le monde autour d'elle est à un mauvais jour de perdre la foi. Elle n'a pas toujours tort.",
+    "requiredFlag": "",
+    "dialogueLines": [
+      "\"I light a candle for everyone who passes through here, whether they ask for it or not. Cheaper than an argument.\"",
+      "\"The Shroud took the sky from us before it took anything else. I still look up sometimes, out of habit.\"",
+      "\"Whatever brought you to the Quarter, I hope it's worth what it's cost you so far.\""
+    ],
+    "dialogueLines_fr": [
+      "« J'allume une bougie pour tous ceux qui passent par ici, qu'ils le demandent ou non. Moins cher qu'une dispute. »",
+      "« Le Voile nous a pris le ciel avant de nous prendre le reste. Je regarde encore en l'air parfois, par habitude. »",
+      "« Quoi que ce soit qui t'ait mené au Quartier, j'espère que ça vaut ce que ça t'a coûté jusqu'ici. »"
+    ]
+  }
+}

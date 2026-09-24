@@ -1,0 +1,52 @@
+/// Icon paths for enemies (generated from enemies.json). The file name
+/// matches the enemy's id exactly.
+class EnemyIcons {
+  EnemyIcons._();
+
+  static String pathFor(String enemyId) => 'assets/icons/enemies/$enemyId.png';
+
+  static const List<String> allIds = [
+    'angel_judicator',
+    'angel_sentinel',
+    'bone_warden',
+    'catacomb_ghoul',
+    'cultist_acolyte',
+    'demon_imp',
+    'demon_tormentor',
+    'dock_overseer',
+    'grosh_turned',
+    'harbor_rat',
+    'hollow_court_inquisitor',
+    'hollow_court_zealot',
+    'hollow_reflection',
+    'inquisition_auxiliary',
+    'inquisition_high_warden',
+    'inquisition_legate',
+    'inquisition_penitent',
+    'inquisition_soldier',
+    'inquisition_warden',
+    'iron_golem',
+    'kelda_turned',
+    'kroll_the_branded',
+    'liora_turned',
+    'malrik_turned',
+    'maren_turned',
+    'masked_penitent',
+    'white_soldier',
+    'plague_hound',
+    'rat_matriarch',
+    'sable_turned',
+    'slum_thug',
+    'smuggler_captain',
+    'street_bandit',
+    'tear_spawn',
+    'tobin_turned',
+    'vess_turned',
+    'void_archon',
+    'void_hound',
+    'void_manifestation',
+    'void_sovereign',
+    'void_stalker',
+    'void_wisp',
+  ];
+}

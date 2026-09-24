@@ -6,13 +6,13 @@
   },
   "full_roster": {
     "achievementID": "full_roster",
-    "achievementName": "Three's Company",
-    "description": "Recruit all three companions."
+    "achievementName": "Full House",
+    "description": "Recruit all six companions."
   },
   "full_party": {
     "achievementID": "full_party",
     "achievementName": "At My Back",
-    "description": "Field a full 3-member active party."
+    "description": "Field two active companions at once."
   },
   "keldas_hall_built": {
     "achievementID": "keldas_hall_built",

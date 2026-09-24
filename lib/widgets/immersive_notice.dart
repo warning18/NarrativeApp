@@ -65,7 +65,8 @@ class _ImmersiveNoticeContent extends StatefulWidget {
   final VoidCallback? onAction;
 
   @override
-  State<_ImmersiveNoticeContent> createState() => _ImmersiveNoticeContentState();
+  State<_ImmersiveNoticeContent> createState() =>
+      _ImmersiveNoticeContentState();
 }
 
 class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
@@ -90,7 +91,9 @@ class _ImmersiveNoticeContentState extends State<_ImmersiveNoticeContent> {
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: colorScheme.primary.withValues(alpha: 0.6), width: 1.5),
+              border: Border.all(
+                  color: colorScheme.primary.withValues(alpha: 0.6),
+                  width: 1.5),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.4),

@@ -6,9 +6,20 @@
     "bonusMaxHealth": 20,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 3,
+    "bonusLuck": 0,
+    "bonusCharisma": 0,
+    "bonusStrength": 4,
+    "bonusDexterity": 0,
+    "bonusConstitution": 2,
+    "bonusIntelligence": 0,
+    "bonusWisdom": 0,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "startingSkillPoints": 0,
-    "standardSkillID": "warrior_shield_bash"
+    "standardSkillID": "warrior_shield_bash",
+    "preferredScalingStat": "strength",
+    "startingDiceId": "",
+    "startingSpellIds": []
   },
   "mage": {
     "professionID": "mage",
@@ -17,9 +28,23 @@
     "bonusMaxHealth": -15,
     "bonusBaseDamage": 6,
     "bonusBaseArmor": -2,
+    "bonusLuck": 0,
+    "bonusCharisma": 0,
+    "bonusStrength": -1,
+    "bonusDexterity": 0,
+    "bonusConstitution": 0,
+    "bonusIntelligence": 4,
+    "bonusWisdom": 1,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "startingSkillPoints": 1,
-    "standardSkillID": "mage_arcane_missile"
+    "standardSkillID": "mage_arcane_missile",
+    "preferredScalingStat": "intelligence",
+    "startingDiceId": "apprentice_die",
+    "startingSpellIds": [
+      "spell_arcane_bolt",
+      "spell_mana_ward"
+    ]
   },
   "rogue": {
     "professionID": "rogue",
@@ -28,9 +53,20 @@
     "bonusMaxHealth": -5,
     "bonusBaseDamage": 4,
     "bonusBaseArmor": 0,
+    "bonusLuck": 4,
+    "bonusCharisma": 1,
+    "bonusStrength": 0,
+    "bonusDexterity": 4,
+    "bonusConstitution": 0,
+    "bonusIntelligence": 0,
+    "bonusWisdom": 0,
+    "bonusPerception": 0,
     "startingGoldBonus": 30,
     "startingSkillPoints": 0,
-    "standardSkillID": "rogue_backstab"
+    "standardSkillID": "rogue_backstab",
+    "preferredScalingStat": "dexterity",
+    "startingDiceId": "",
+    "startingSpellIds": []
   },
   "cleric": {
     "professionID": "cleric",
@@ -39,9 +75,23 @@
     "bonusMaxHealth": 10,
     "bonusBaseDamage": 0,
     "bonusBaseArmor": 2,
+    "bonusLuck": 0,
+    "bonusCharisma": 4,
+    "bonusStrength": 0,
+    "bonusDexterity": 0,
+    "bonusConstitution": 1,
+    "bonusIntelligence": 0,
+    "bonusWisdom": 4,
+    "bonusPerception": 0,
     "startingGoldBonus": 0,
     "startingSkillPoints": 1,
-    "standardSkillID": "cleric_holy_light"
+    "standardSkillID": "cleric_holy_light",
+    "preferredScalingStat": "",
+    "startingDiceId": "apprentice_die",
+    "startingSpellIds": [
+      "spell_mending_light",
+      "spell_purge"
+    ]
   },
   "ranger": {
     "professionID": "ranger",
@@ -50,8 +100,19 @@
     "bonusMaxHealth": 0,
     "bonusBaseDamage": 3,
     "bonusBaseArmor": 1,
+    "bonusLuck": 2,
+    "bonusCharisma": 0,
+    "bonusStrength": 0,
+    "bonusDexterity": 3,
+    "bonusConstitution": 0,
+    "bonusIntelligence": 0,
+    "bonusWisdom": 2,
+    "bonusPerception": 4,
     "startingGoldBonus": 10,
     "startingSkillPoints": 0,
-    "standardSkillID": "ranger_aimed_shot"
+    "standardSkillID": "ranger_aimed_shot",
+    "preferredScalingStat": "dexterity",
+    "startingDiceId": "",
+    "startingSpellIds": []
   }
 }

@@ -1,12 +1,17 @@
 {
-  "starter_freighter": {
-    "shipID": "starter_freighter",
-    "shipName": "Starter Freighter",
+  "rusty_eel": {
+    "shipID": "rusty_eel",
+    "shipName": "The Rusty Eel",
     "baseMaxHull": 100,
-    "baseMaxShield": 40,
-    "shieldRegenPerTurn": 5,
+    "rooms": {
+      "helm": 1,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
     "weaponSlots": 2,
     "shieldSlots": 1,
-    "utilitySlots": 1
+    "utilitySlots": 1,
+    "sailSlots": 1
   }
 }

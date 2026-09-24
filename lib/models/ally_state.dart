@@ -84,13 +84,18 @@ class AllyState {
     return AllyState(
       companionId: json['companionId'] as String? ?? '',
       currentHealth: (json['currentHealth'] as num?)?.toInt() ?? 0,
-      equippedItemIds:
-          (json['equippedItemIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
-      unlockedSkillIds:
-          (json['unlockedSkillIds'] as List?)?.map((e) => e.toString()).toList() ?? const [],
+      equippedItemIds: (json['equippedItemIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      unlockedSkillIds: (json['unlockedSkillIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       diceSkillAssignments: (json['diceSkillAssignments'] as Map?)?.map(
-            (faceIndex, skillId) => MapEntry(faceIndex.toString(), skillId.toString()),
+            (faceIndex, skillId) =>
+                MapEntry(faceIndex.toString(), skillId.toString()),
           ) ??
           const {},
     );
@@ -107,11 +112,54 @@ class AllyBaseStats {
     required this.maxHealth,
     required this.baseDamage,
     required this.baseArmor,
+    required this.strength,
+    required this.dexterity,
+    required this.constitution,
+    required this.intelligence,
+    required this.wisdom,
+    required this.luck,
+    required this.perception,
   });
 
   final int maxHealth;
   final int baseDamage;
   final int baseArmor;
+
+  /// Ability scores, derived the same additive way as the player's own (see
+  /// `PlayerSessionNotifier.startNewGame`) -- feed [equipmentScalingBonusFor]
+  /// and [meetsItemStatRequirement] so an ally's gear scales with, and is
+  /// gated by, their own race/profession-derived scores, exactly like the
+  /// player. Charisma isn't included: it's a pure story-gating stat (see
+  /// [PlayerSession.charisma]'s doc comment) that an ally has no use for.
+  final int strength;
+
+  /// Also backs [dodgeChanceFor] in `combat_engine.dart`: a nimble ally
+  /// (Sable the rogue, chiefly) evades an incoming hit outright more often
+  /// than a slower one does.
+  final int dexterity;
+  final int constitution;
+  final int intelligence;
+
+  /// Backs the same in-combat role as the player's own Wisdom (see
+  /// [PlayerSession.wisdom]): amplifies healing this ally does and shortens
+  /// the duration of status effects landed on them. An ally with a
+  /// Wisdom-heavy background -- Maren the cleric, chiefly -- is meaningfully
+  /// harder to lock down or wear away with poison than one without.
+  final int wisdom;
+
+  /// Backs the same in-combat role as the player's own Luck (see
+  /// [PlayerSession.luck]): feeds [criticalChanceFor] in
+  /// `combat_engine.dart`, on top of its existing loot-roll bonus for the
+  /// player.
+  final int luck;
+
+  /// Backs the same role as the player's own Perception (see
+  /// [PlayerSession.perception]): feeds `telegraphTierFor` in
+  /// `combat_engine.dart`, sharpening the whole party's read on an enemy's
+  /// telegraphed next move — a Perception-built ally (Liora the ranger,
+  /// chiefly) can carry the party's tactical read even if the player's own
+  /// Perception is low.
+  final int perception;
 }
 
 AllyBaseStats deriveAllyBaseStats({
@@ -119,7 +167,8 @@ AllyBaseStats deriveAllyBaseStats({
   required Map<String, dynamic> race,
   required Map<String, dynamic> profession,
 }) {
-  int bonus(Map<String, dynamic> preset, String key) => (preset[key] as num?)?.toInt() ?? 0;
+  int bonus(Map<String, dynamic> preset, String key) =>
+      (preset[key] as num?)?.toInt() ?? 0;
   return AllyBaseStats(
     maxHealth: ((gameConfig['maxHealth'] as num?)?.toInt() ?? 100) +
         bonus(race, 'bonusMaxHealth') +
@@ -130,6 +179,27 @@ AllyBaseStats deriveAllyBaseStats({
     baseArmor: ((gameConfig['baseArmor'] as num?)?.toInt() ?? 0) +
         bonus(race, 'bonusBaseArmor') +
         bonus(profession, 'bonusBaseArmor'),
+    strength: ((gameConfig['strength'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusStrength') +
+        bonus(profession, 'bonusStrength'),
+    dexterity: ((gameConfig['dexterity'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusDexterity') +
+        bonus(profession, 'bonusDexterity'),
+    constitution: ((gameConfig['constitution'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusConstitution') +
+        bonus(profession, 'bonusConstitution'),
+    intelligence: ((gameConfig['intelligence'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusIntelligence') +
+        bonus(profession, 'bonusIntelligence'),
+    wisdom: ((gameConfig['wisdom'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusWisdom') +
+        bonus(profession, 'bonusWisdom'),
+    luck: ((gameConfig['luck'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusLuck') +
+        bonus(profession, 'bonusLuck'),
+    perception: ((gameConfig['perception'] as num?)?.toInt() ?? 0) +
+        bonus(race, 'bonusPerception') +
+        bonus(profession, 'bonusPerception'),
   );
 }
 
@@ -148,4 +218,112 @@ int equipmentBonusFor(
     bonus += (item?[bonusField] as num?)?.toInt() ?? 0;
   }
   return bonus;
+}
+
+/// The extra attackDamage/armor an equipped-item list contributes on top of
+/// its own flat bonuses, from each item's `scalingStat` (e.g. a staff
+/// scaling with Intelligence). Only ever adds — a low or negative stat never
+/// subtracts below an item's flat value, so picking up gear your build
+/// doesn't favor never actively hurts, it just doesn't reach its full
+/// potential. The modifier is the classic D&D-style ability-score halving
+/// (`stat ~/ 2`), matching the doc comment on [PlayerSession]'s ability
+/// scores.
+class EquipmentScalingBonus {
+  const EquipmentScalingBonus({this.damageBonus = 0, this.armorBonus = 0});
+
+  final int damageBonus;
+  final int armorBonus;
+}
+
+EquipmentScalingBonus equipmentScalingBonusFor(
+  List<String> equippedItemIds,
+  Map<String, dynamic> items, {
+  required int strength,
+  required int dexterity,
+  required int constitution,
+  required int intelligence,
+}) {
+  var damageBonus = 0;
+  var armorBonus = 0;
+  for (final id in equippedItemIds) {
+    final item = items[id] as Map<String, dynamic>?;
+    final scalingStat = item?['scalingStat']?.toString() ?? '';
+    if (scalingStat.isEmpty) continue;
+    final statValue = switch (scalingStat) {
+      'strength' => strength,
+      'dexterity' => dexterity,
+      'constitution' => constitution,
+      'intelligence' => intelligence,
+      _ => 0,
+    };
+    final modifier = statValue ~/ 2;
+    if (modifier <= 0) continue;
+    if (((item?['attackDamage'] as num?) ?? 0) > 0) damageBonus += modifier;
+    if (((item?['armor'] as num?) ?? 0) > 0) armorBonus += modifier;
+  }
+  return EquipmentScalingBonus(
+      damageBonus: damageBonus, armorBonus: armorBonus);
+}
+
+/// Whether the equipping character's own ability scores meet [item]'s
+/// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate, if it has
+/// one — e.g. a heavy sword's top tiers require both Strength and
+/// Constitution. An item with no requirement fields set (the common case —
+/// most gear, and every early weapon tier) is always equippable.
+bool meetsItemStatRequirement(
+  Map<String, dynamic>? item, {
+  required int strength,
+  required int dexterity,
+  required int constitution,
+  required int intelligence,
+}) {
+  if (item == null) return true;
+  // A requirement of 0 (or none) is no gate at all -- a Mage's Strength
+  // starts below 0, and "0 >= 0" would have locked every weapon in the
+  // game away from them.
+  bool meets(String key, int score) {
+    final required = (item[key] as num?)?.toInt() ?? 0;
+    return required <= 0 || score >= required;
+  }
+
+  return meets('reqStrength', strength) &&
+      meets('reqDexterity', dexterity) &&
+      meets('reqConstitution', constitution) &&
+      meets('reqIntelligence', intelligence);
+}
+
+/// Whether [item] can be worn by a character whose alignment label is
+/// [alignmentLabel]: gear tagged `alignment: 'Good'` rejects an Evil
+/// wielder and vice versa (a relic simply won't answer to the wrong hands);
+/// a Neutral character, or untagged gear, is never blocked. The player's
+/// alignment stands for the whole party, as it does for skills.
+bool meetsItemAlignment(Map<String, dynamic>? item, String alignmentLabel) {
+  final itemAlignment = item?['alignment']?.toString() ?? '';
+  if (itemAlignment.isEmpty) return true;
+  if (itemAlignment == 'Good' && alignmentLabel == 'Evil') return false;
+  if (itemAlignment == 'Evil' && alignmentLabel == 'Good') return false;
+  return true;
+}
+
+/// The extra attackDamage/armor an equipped-item list contributes from each
+/// aligned item's own `alignedAttackBonus`/`alignedArmorBonus` fields when
+/// the wielder's alignment matches the item's -- the reward half of
+/// [meetsItemAlignment]'s gate: a Good character's relic hits harder for
+/// them than the same relic would for a Neutral one.
+EquipmentScalingBonus alignmentGearBonusFor(
+  List<String> equippedItemIds,
+  Map<String, dynamic> items,
+  String alignmentLabel,
+) {
+  var damageBonus = 0;
+  var armorBonus = 0;
+  for (final id in equippedItemIds) {
+    final item = items[id] as Map<String, dynamic>?;
+    final itemAlignment = item?['alignment']?.toString() ?? '';
+    if (itemAlignment.isEmpty || itemAlignment != alignmentLabel) continue;
+    damageBonus += (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
+    armorBonus += (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
+  }
+  return EquipmentScalingBonus(
+      damageBonus: damageBonus, armorBonus: armorBonus);
 }

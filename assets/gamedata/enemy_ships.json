@@ -1,13 +1,194 @@
 {
   "raider_skiff": {
     "shipName": "raider_skiff",
+    "displayName": "Raider Skiff",
+    "displayName_fr": "Esquif de pillards",
+    "description": "An open boat with a bow chaser and a grapnel, a gunwale for a bulwark, and oars enough to slip a shot. It cannot take a beating; it means not to be hit.",
+    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée.",
     "maxHull": 60,
-    "maxShield": 20,
-    "weaponDamage": 8,
+    "rooms": {
+      "helm": 2,
+      "guns": 1,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weapons": [
+      {
+        "weaponName": "Bow chaser",
+        "weaponName_fr": "Canon de chasse",
+        "damage": 8,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      },
+      {
+        "weaponName": "Grapnel",
+        "weaponName_fr": "Grappin",
+        "damage": 5,
+        "chargeTurns": 2,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 2
+      }
+    ],
     "xpReward": 30,
     "goldReward": 25,
-    "skillMoves": [
-      { "skillID": "", "condition": "Always", "requiredElement": "None", "chance": 100, "healthThreshold": 0, "attackCountRequirement": 0, "playerPatternThreshold": 0, "blockThreshold": 0, "priority": 0 }
-    ]
+    "minChapter": 2,
+    "crew": 1,
+    "boardingCrew": [
+      "street_bandit",
+      "street_bandit"
+    ],
+    "boardingChance": 0.3,
+    "prizePartId": "",
+    "prizeGold": 30
+  },
+  "corsair_brig": {
+    "shipName": "corsair_brig",
+    "displayName": "Corsair Brig",
+    "displayName_fr": "Brick corsaire",
+    "description": "Fast, well helmed and thinly built: twin ballistae that fire every turn, a helm that slips a quarter of what comes at it, and a bulwark that will not hold. Silence the helm and she is a target.",
+    "description_fr": "Rapide, bien barré et construit léger : deux balistes qui tirent à chaque tour, une barre qui esquive un quart de ce qui lui arrive, et un pavois qui ne tiendra pas. Faites taire la barre et il devient une cible.",
+    "maxHull": 80,
+    "rooms": {
+      "helm": 3,
+      "guns": 2,
+      "bulwark": 1,
+      "hold": 1
+    },
+    "weapons": [
+      {
+        "weaponName": "Port ballista",
+        "weaponName_fr": "Baliste de bâbord",
+        "damage": 7,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      },
+      {
+        "weaponName": "Starboard ballista",
+        "weaponName_fr": "Baliste de tribord",
+        "damage": 7,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      }
+    ],
+    "xpReward": 45,
+    "goldReward": 40,
+    "minChapter": 3,
+    "crew": 1,
+    "boardingCrew": [
+      "street_bandit",
+      "street_bandit",
+      "harbor_rat"
+    ],
+    "boardingChance": 0.4,
+    "prizePartId": "spare_canvas",
+    "prizeGold": 40
+  },
+  "inquisition_cutter": {
+    "shipName": "inquisition_cutter",
+    "displayName": "Inquisition Cutter",
+    "displayName_fr": "Cotre de l'Inquisition",
+    "description": "A cutter of the Crusade: a bulwark that holds a layer, a ballista, and fire arrows that go for the hold where the crew shelters. Keep someone near the fire.",
+    "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l'équipage s'abrite. Gardez quelqu'un près du feu.",
+    "maxHull": 95,
+    "rooms": {
+      "helm": 2,
+      "guns": 2,
+      "bulwark": 1,
+      "hold": 2
+    },
+    "weapons": [
+      {
+        "weaponName": "Ballista",
+        "weaponName_fr": "Baliste",
+        "damage": 10,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      },
+      {
+        "weaponName": "Fire arrows",
+        "weaponName_fr": "Flèches enflammées",
+        "damage": 6,
+        "chargeTurns": 3,
+        "piercesShield": false,
+        "setsFire": true,
+        "roomDamage": 1
+      }
+    ],
+    "xpReward": 55,
+    "goldReward": 45,
+    "minChapter": 3,
+    "crew": 2,
+    "boardingCrew": [
+      "inquisition_auxiliary",
+      "inquisition_auxiliary",
+      "inquisition_soldier"
+    ],
+    "boardingChance": 0.35,
+    "prizePartId": "iron_plating",
+    "prizeGold": 50
+  },
+  "void_barge": {
+    "shipName": "void_barge",
+    "displayName": "Void Barge",
+    "displayName_fr": "Barge du Vide",
+    "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race.",
+    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Vide qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course.",
+    "maxHull": 140,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 2,
+      "hold": 2
+    },
+    "weapons": [
+      {
+        "weaponName": "Void lance",
+        "weaponName_fr": "Lance du Vide",
+        "damage": 12,
+        "chargeTurns": 3,
+        "piercesShield": true,
+        "setsFire": false,
+        "roomDamage": 1
+      },
+      {
+        "weaponName": "Harpoon",
+        "weaponName_fr": "Harpon",
+        "damage": 8,
+        "chargeTurns": 2,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 2
+      },
+      {
+        "weaponName": "Bow chaser",
+        "weaponName_fr": "Canon de chasse",
+        "damage": 6,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      }
+    ],
+    "xpReward": 90,
+    "goldReward": 70,
+    "minChapter": 4,
+    "crew": 2,
+    "boardingCrew": [
+      "void_hound",
+      "void_hound",
+      "void_wisp"
+    ],
+    "boardingChance": 0.3,
+    "prizePartId": "fire_pots",
+    "prizeGold": 90
   }
 }

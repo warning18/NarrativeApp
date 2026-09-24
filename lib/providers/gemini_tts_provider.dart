@@ -107,7 +107,11 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
     state = GeminiTtsPlaybackState.loading;
     try {
       final wavBytes = cached ??
-          await _fetchWav(text: text, apiKey: apiKey, voiceName: voiceName, language: language);
+          await _fetchWav(
+              text: text,
+              apiKey: apiKey,
+              voiceName: voiceName,
+              language: language);
       if (cached == null) _cacheClip(key, wavBytes);
       // stop() may have been called while the request was in flight —
       // don't play stale audio for a request nobody wants anymore.
@@ -158,21 +162,25 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
       },
     });
     final response = await http
-        .post(uri, headers: {'Content-Type': 'application/json'}, body: requestBody)
+        .post(uri,
+            headers: {'Content-Type': 'application/json'}, body: requestBody)
         .timeout(const Duration(seconds: 30));
 
     if (response.statusCode != 200) {
-      throw GeminiTtsException(_apiErrorMessage(response.body, response.statusCode));
+      throw GeminiTtsException(
+          _apiErrorMessage(response.body, response.statusCode));
     }
 
     final decoded = jsonDecode(response.body) as Map<String, dynamic>;
     final candidates = decoded['candidates'] as List<dynamic>?;
     final content = candidates?.isNotEmpty ?? false
-        ? (candidates!.first as Map<String, dynamic>)['content'] as Map<String, dynamic>?
+        ? (candidates!.first as Map<String, dynamic>)['content']
+            as Map<String, dynamic>?
         : null;
     final parts = content?['parts'] as List<dynamic>?;
     final inlineData = parts?.isNotEmpty ?? false
-        ? (parts!.first as Map<String, dynamic>)['inlineData'] as Map<String, dynamic>?
+        ? (parts!.first as Map<String, dynamic>)['inlineData']
+            as Map<String, dynamic>?
         : null;
     final base64Audio = inlineData?['data'] as String?;
     if (base64Audio == null || base64Audio.isEmpty) {
@@ -180,7 +188,8 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
     }
 
     final mimeType = inlineData?['mimeType'] as String? ?? '';
-    return _wrapPcmAsWav(base64Decode(base64Audio), sampleRate: _sampleRateFrom(mimeType));
+    return _wrapPcmAsWav(base64Decode(base64Audio),
+        sampleRate: _sampleRateFrom(mimeType));
   }
 
   int _sampleRateFrom(String mimeType) {
@@ -191,7 +200,8 @@ class GeminiTtsNotifier extends StateNotifier<GeminiTtsPlaybackState> {
   String _apiErrorMessage(String body, int statusCode) {
     try {
       final decoded = jsonDecode(body) as Map<String, dynamic>;
-      final message = (decoded['error'] as Map<String, dynamic>?)?['message'] as String?;
+      final message =
+          (decoded['error'] as Map<String, dynamic>?)?['message'] as String?;
       if (message != null && message.isNotEmpty) return message;
     } catch (_) {
       // Body wasn't the expected JSON shape — fall through to the generic

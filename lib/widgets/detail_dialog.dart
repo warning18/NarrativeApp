@@ -7,6 +7,7 @@ Future<void> showDetailDialog(
   required String title,
   String? description,
   IconData? icon,
+  Widget? leading,
   List<MapEntry<String, String>> rows = const [],
   String closeLabel = 'Close',
   String? extraActionLabel,
@@ -17,7 +18,10 @@ Future<void> showDetailDialog(
     builder: (context) => AlertDialog(
       title: Row(
         children: [
-          if (icon != null) ...[
+          if (leading != null) ...[
+            leading,
+            const SizedBox(width: 8),
+          ] else if (icon != null) ...[
             Icon(icon),
             const SizedBox(width: 8),
           ],
@@ -34,7 +38,11 @@ Future<void> showDetailDialog(
               if (description != null && description.isNotEmpty) ...[
                 Text(
                   description,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontFamily: 'serif',
+                        height: 1.55,
+                        letterSpacing: 0.1,
+                      ),
                 ),
                 const SizedBox(height: 16),
               ],
@@ -44,7 +52,8 @@ Future<void> showDetailDialog(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(row.key, style: Theme.of(context).textTheme.bodyMedium),
+                      Text(row.key,
+                          style: Theme.of(context).textTheme.bodyMedium),
                       Text(
                         row.value,
                         style: Theme.of(context)

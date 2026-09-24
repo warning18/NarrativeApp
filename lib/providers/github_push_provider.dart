@@ -39,8 +39,8 @@ class GithubTokenNotifier extends StateNotifier<String?> {
   }
 }
 
-final githubTokenProvider =
-    StateNotifierProvider<GithubTokenNotifier, String?>((ref) => GithubTokenNotifier());
+final githubTokenProvider = StateNotifierProvider<GithubTokenNotifier, String?>(
+    (ref) => GithubTokenNotifier());
 
 /// One repo file to create/update, with its final pretty-printed content.
 class GitFileChange {
@@ -72,20 +72,25 @@ Future<List<GitFileChange>> collectLocalDataEdits() async {
     final raw = prefs.getString('gamedb_${schema.id}');
     if (raw == null) continue;
     final decoded = json.decode(raw);
-    changes.add(GitFileChange(path: schema.assetPath, content: _prettyJson.convert(decoded)));
+    changes.add(GitFileChange(
+        path: schema.assetPath, content: _prettyJson.convert(decoded)));
   }
 
   final configRaw = prefs.getString(gameConfigPrefsKey);
   if (configRaw != null) {
     changes.add(
-      GitFileChange(path: gameConfigAssetPath, content: _prettyJson.convert(json.decode(configRaw))),
+      GitFileChange(
+          path: gameConfigAssetPath,
+          content: _prettyJson.convert(json.decode(configRaw))),
     );
   }
 
   final storyRaw = prefs.getString(_storyOverridePrefsKey);
   if (storyRaw != null) {
     changes.add(
-      GitFileChange(path: _storyAssetPath, content: _prettyJson.convert(json.decode(storyRaw))),
+      GitFileChange(
+          path: _storyAssetPath,
+          content: _prettyJson.convert(json.decode(storyRaw))),
     );
   }
 
@@ -111,7 +116,8 @@ Future<GitPushResult> pushEditsToGitHub({
   }
 
   final baseRefResponse = await http.get(
-    Uri.parse('https://api.github.com/repos/$_owner/$_repo/git/ref/heads/$_baseBranch'),
+    Uri.parse(
+        'https://api.github.com/repos/$_owner/$_repo/git/ref/heads/$_baseBranch'),
     headers: _headers(token),
   );
   if (baseRefResponse.statusCode != 200) {
@@ -120,8 +126,8 @@ Future<GitPushResult> pushEditsToGitHub({
       'Check that your token is valid and has access to this repository.',
     );
   }
-  final baseSha =
-      (json.decode(baseRefResponse.body) as Map<String, dynamic>)['object']['sha'] as String;
+  final baseSha = (json.decode(baseRefResponse.body)
+      as Map<String, dynamic>)['object']['sha'] as String;
 
   final createRefResponse = await http.post(
     Uri.parse('https://api.github.com/repos/$_owner/$_repo/git/refs'),
@@ -129,10 +135,12 @@ Future<GitPushResult> pushEditsToGitHub({
     body: json.encode({'ref': 'refs/heads/$branchName', 'sha': baseSha}),
   );
   if (createRefResponse.statusCode == 422) {
-    throw Exception('A branch named "$branchName" already exists. Choose a different name.');
+    throw Exception(
+        'A branch named "$branchName" already exists. Choose a different name.');
   }
   if (createRefResponse.statusCode != 201) {
-    throw Exception('Could not create branch "$branchName" (status ${createRefResponse.statusCode}).');
+    throw Exception(
+        'Could not create branch "$branchName" (status ${createRefResponse.statusCode}).');
   }
 
   for (final change in changes) {
@@ -144,11 +152,13 @@ Future<GitPushResult> pushEditsToGitHub({
       headers: _headers(token),
     );
     if (existingResponse.statusCode == 200) {
-      existingSha = (json.decode(existingResponse.body) as Map<String, dynamic>)['sha'] as String?;
+      existingSha = (json.decode(existingResponse.body)
+          as Map<String, dynamic>)['sha'] as String?;
     }
 
     final putResponse = await http.put(
-      Uri.parse('https://api.github.com/repos/$_owner/$_repo/contents/${change.path}'),
+      Uri.parse(
+          'https://api.github.com/repos/$_owner/$_repo/contents/${change.path}'),
       headers: _headers(token),
       body: json.encode({
         'message': 'Update ${change.path} from in-app editor',
@@ -167,6 +177,7 @@ Future<GitPushResult> pushEditsToGitHub({
 
   return GitPushResult(
     branchName: branchName,
-    compareUrl: 'https://github.com/$_owner/$_repo/compare/$_baseBranch...$branchName?expand=1',
+    compareUrl:
+        'https://github.com/$_owner/$_repo/compare/$_baseBranch...$branchName?expand=1',
   );
 }

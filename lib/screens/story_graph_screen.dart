@@ -4,20 +4,40 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphview/GraphView.dart';
 
+import '../data/autoplay_engine.dart';
+import '../data/chapter_grid_layout.dart';
 import '../data/chapter_spine.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
+import 'story_node_editor_screen.dart';
 
-enum _NodeKind { characterCreation, combat, shop, quest, companionQuest, generic }
+/// A node box's fixed width — capped and ellipsized (see the node
+/// `builder` below) rather than left to grow with the id's length, so a
+/// long id (e.g. "2015_dockside") can never spill past its column and
+/// overlap the next one. Kept comfortably under [ChapterGridAlgorithm]'s
+/// own `columnWidth` so there's always a visible gap for edges to route
+/// through between columns.
+const double _nodeBoxWidth = 150;
+
+enum _NodeKind {
+  characterCreation,
+  combat,
+  shop,
+  quest,
+  companionQuest,
+  generic
+}
 
 class _NodeStyle {
-  const _NodeStyle({required this.color, required this.icon, required this.radius});
+  const _NodeStyle(
+      {required this.color, required this.icon, required this.radius});
   final Color color;
   final IconData icon;
   final double radius;
@@ -27,18 +47,23 @@ class _NodeStyle {
   /// pastel for most kinds, but the generic kind uses a theme-adaptive
   /// surface color that turns dark in dark mode, where a hardcoded dark
   /// text color would be unreadable.
-  Color get onColor => ThemeData.estimateBrightnessForColor(color) == Brightness.dark
-      ? Colors.white
-      : Colors.black87;
+  Color get onColor =>
+      ThemeData.estimateBrightnessForColor(color) == Brightness.dark
+          ? Colors.white
+          : Colors.black87;
 }
 
 /// [quests] is the loaded `quests.json` table, keyed by quest id — used only
 /// to tell a companion-recruit quest (one with a non-empty `rewardAllyId`)
 /// apart from every other quest, so it gets its own legend entry.
 _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
-  if (node.choices.any((c) => c.opensCharacterCreation)) return _NodeKind.characterCreation;
+  if (node.choices.any((c) => c.opensCharacterCreation)) {
+    return _NodeKind.characterCreation;
+  }
   if (node.choices.any((c) => c.triggersCombat)) return _NodeKind.combat;
-  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty)) return _NodeKind.shop;
+  if (node.choices.any((c) => (c.unlockShopId ?? '').isNotEmpty)) {
+    return _NodeKind.shop;
+  }
   if (node.choices.any((c) {
     final questId = c.unlockQuestId ?? '';
     if (questId.isEmpty) return false;
@@ -47,7 +72,9 @@ _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
   })) {
     return _NodeKind.companionQuest;
   }
-  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) return _NodeKind.quest;
+  if (node.choices.any((c) => (c.unlockQuestId ?? '').isNotEmpty)) {
+    return _NodeKind.quest;
+  }
   return _NodeKind.generic;
 }
 
@@ -100,6 +127,63 @@ Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
         radius: 8,
       ),
     };
+
+/// Places every node on the fixed grid [slots]/[bandLayout] already
+/// computed, instead of letting an automatic layered-graph algorithm
+/// (Sugiyama, force-directed, …) decide positions — this is what actually
+/// enforces "5 nodes per column, chapters as separate bands," a constraint
+/// no general-purpose layout algorithm takes as an input.
+class ChapterGridAlgorithm extends Algorithm {
+  ChapterGridAlgorithm({
+    required this.slots,
+    required this.bandLayout,
+    this.columnWidth = 190,
+    this.rowHeight = 72,
+  });
+
+  final Map<String, GridSlot> slots;
+  final ChapterBandLayout bandLayout;
+  final double columnWidth;
+  final double rowHeight;
+
+  // ArrowEdgeRenderer, not null — some GraphView internals call through
+  // this unconditionally, and SugiyamaAlgorithm (what this replaces)
+  // always had one set. `Algorithm.renderer` is a getter/setter pair, not
+  // a plain field, so this overrides both rather than shadowing it.
+  EdgeRenderer? _renderer = ArrowEdgeRenderer();
+
+  @override
+  EdgeRenderer? get renderer => _renderer;
+
+  @override
+  set renderer(EdgeRenderer? value) => _renderer = value;
+
+  @override
+  void init(Graph? graph) {}
+
+  @override
+  void setDimensions(double width, double height) {}
+
+  @override
+  Size run(Graph? graph, double shiftX, double shiftY) {
+    if (graph == null) return Size.zero;
+    for (final node in graph.nodes) {
+      final id = node.key!.value as String;
+      final slot = slots[id];
+      if (slot == null) continue;
+      node.position = Offset(
+        shiftX + slot.column * columnWidth,
+        shiftY +
+            (bandLayout.bandStartY[slot.chapter] ?? 0) +
+            slot.row * rowHeight,
+      );
+    }
+    return Size(
+      shiftX + (bandLayout.maxColumn + 1) * columnWidth,
+      shiftY + bandLayout.totalHeight,
+    );
+  }
+}
 
 class StoryGraphScreen extends ConsumerWidget {
   const StoryGraphScreen({super.key});
@@ -165,15 +249,21 @@ class _GraphViewState extends ConsumerState<_GraphView> {
       }
     }
 
-    final configuration = SugiyamaConfiguration()
-      ..nodeSeparation = 24
-      ..levelSeparation = 48
-      ..orientation = SugiyamaConfiguration.ORIENTATION_LEFT_RIGHT;
+    // Each chapter lays out as its own small map — a grid capped at 5
+    // nodes per column (column = hops from that chapter's opening beat),
+    // stacked in vertical bands so no chapter's branching crowds another's.
+    final slots = computeChapterGridSlots(story);
+    // rowHeight here must match ChapterGridAlgorithm's own rowHeight below
+    // -- it's what the band start-Y offsets are measured in, and a mismatch
+    // would leave later chapters' bands overlapping the ones before them.
+    final bandLayout = computeChapterBandLayout(slots, rowHeight: 72);
 
     final playState = ref.watch(storyPlayProvider);
     final colorScheme = Theme.of(context).colorScheme;
     final styles = _styles(colorScheme);
-    final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const <String, dynamic>{};
+    final quests = ref.watch(gameDbProvider(questsSchema)).value ??
+        const <String, dynamic>{};
+    final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
 
     return Stack(
       children: [
@@ -184,91 +274,210 @@ class _GraphViewState extends ConsumerState<_GraphView> {
           maxScale: 3,
           child: Padding(
             padding: const EdgeInsets.only(bottom: 200),
-            child: GraphView(
-              graph: graph,
-              algorithm: SugiyamaAlgorithm(configuration),
-              paint: Paint()
-                ..color = colorScheme.outline
-                ..strokeWidth = 1.5
-                ..style = PaintingStyle.stroke,
-              builder: (Node node) {
-                final id = node.key!.value as String;
-                final isCurrent = id == playState.currentNodeId;
-                final storyNode = story.nodeFor(id);
-                final kind = storyNode != null ? _classify(storyNode, quests) : _NodeKind.generic;
-                final style = styles[kind]!;
-                final isMainBeat = isMainBeatNode(id);
-                final hidden = _hiddenKinds.contains(kind);
+            child: Stack(
+              children: [
+                GraphView(
+                  graph: graph,
+                  algorithm: ChapterGridAlgorithm(
+                      slots: slots, bandLayout: bandLayout),
+                  paint: Paint()
+                    ..color = colorScheme.outline
+                    ..strokeWidth = 1.5
+                    ..style = PaintingStyle.stroke,
+                  builder: (Node node) {
+                    final id = node.key!.value as String;
+                    final isCurrent = id == playState.currentNodeId;
+                    final storyNode = story.nodeFor(id);
+                    final kind = storyNode != null
+                        ? _classify(storyNode, quests)
+                        : _NodeKind.generic;
+                    final style = styles[kind]!;
+                    final isMainBeat = isMainBeatNode(id);
+                    final hidden = _hiddenKinds.contains(kind);
 
-                final container = Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: isCurrent ? colorScheme.primary : style.color,
-                    borderRadius: BorderRadius.circular(style.radius),
-                    border: Border.all(
-                      color: isMainBeat ? colorScheme.primary : colorScheme.outline,
-                      width: isMainBeat ? 3 : 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        style.icon,
-                        size: 14,
-                        color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        id,
-                        style: TextStyle(
-                          color: isCurrent ? colorScheme.onPrimary : style.onColor,
-                          fontWeight: FontWeight.bold,
+                    // Fog of war: outside Edit Mode, a node the player
+                    // hasn't actually reached yet is shown as an
+                    // unrevealed shadow -- position and connections stay
+                    // visible (so the map still reads as a map), but its
+                    // kind, id and description stay hidden rather than
+                    // spoiling what's ahead. Edit Mode always sees
+                    // everything, same as every other authoring feature
+                    // gated to it.
+                    final isShadowed = !isEditMode &&
+                        !isCurrent &&
+                        !playState.visitedNodeIds.contains(id);
+                    if (isShadowed) {
+                      return _NodeTapArea(
+                        onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text(tr(ref, 'node_not_yet_discovered')))),
+                        onDoubleTap: null,
+                        child: Container(
+                          width: _nodeBoxWidth,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: colorScheme.outlineVariant, width: 1),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.nights_stay_outlined,
+                                size: 14,
+                                color: colorScheme.onSurfaceVariant
+                                    .withValues(alpha: 0.7),
+                              ),
+                              const SizedBox(width: 4),
+                              Expanded(
+                                child: Text(
+                                  '?????',
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.7),
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    final container = Container(
+                      width: _nodeBoxWidth,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: isCurrent ? colorScheme.primary : style.color,
+                        borderRadius: BorderRadius.circular(style.radius),
+                        border: Border.all(
+                          color: isMainBeat
+                              ? colorScheme.primary
+                              : colorScheme.outline,
+                          width: isMainBeat ? 3 : 1,
                         ),
                       ),
-                    ],
-                  ),
-                );
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            style.icon,
+                            size: 14,
+                            color: isCurrent
+                                ? colorScheme.onPrimary
+                                : style.onColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              id,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: isCurrent
+                                    ? colorScheme.onPrimary
+                                    : style.onColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
 
-                if (hidden) {
-                  return Opacity(opacity: 0.18, child: IgnorePointer(child: container));
-                }
+                    // Positioned inside the node's own bounds (not
+                    // overflowing via a negative offset) so this can't
+                    // interfere with GraphView's own size measurement of
+                    // each node.
+                    final withCommentBadge = (storyNode?.hasComment ?? false)
+                        ? Stack(
+                            children: [
+                              container,
+                              Positioned(
+                                top: 2,
+                                right: 2,
+                                child: Icon(
+                                  Icons.comment,
+                                  size: 12,
+                                  color: isCurrent
+                                      ? colorScheme.onPrimary
+                                      : style.onColor,
+                                ),
+                              ),
+                            ],
+                          )
+                        : container;
 
-                // A plain GestureDetector's tap recognizer competes with
-                // InteractiveViewer's pan/scale recognizer in the gesture
-                // arena, which can eat one-finger drags that start on a
-                // node. Listener never joins the arena, so panning always
-                // wins immediately; tap is detected manually instead.
-                return _NodeTapArea(
-                  onTap: () {
-                    if (storyNode != null) {
-                      _showNodeInfo(context, ref, storyNode, style);
+                    if (hidden) {
+                      return Opacity(
+                          opacity: 0.18,
+                          child: IgnorePointer(child: withCommentBadge));
                     }
+
+                    // A plain GestureDetector's tap recognizer competes with
+                    // InteractiveViewer's pan/scale recognizer in the gesture
+                    // arena, which can eat one-finger drags that start on a
+                    // node. Listener never joins the arena, so panning always
+                    // wins immediately; tap is detected manually instead.
+                    return _NodeTapArea(
+                      onTap: () {
+                        if (storyNode != null) {
+                          _showNodeInfo(context, ref, storyNode, style);
+                        }
+                      },
+                      onDoubleTap: (!isEditMode || storyNode == null)
+                          ? null
+                          : () {
+                              ref
+                                  .read(storyPlayProvider.notifier)
+                                  .jumpTo(storyNode.id);
+                              ref.read(homeTabIndexProvider.notifier).state = 0;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(tr(ref, 'node_activated'))),
+                              );
+                            },
+                      child: withCommentBadge,
+                    );
                   },
-                  onDoubleTap: storyNode == null
-                      ? null
-                      : () {
-                          ref.read(storyPlayProvider.notifier).jumpTo(storyNode.id);
-                          ref.read(homeTabIndexProvider.notifier).state = 0;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(tr(ref, 'node_activated'))),
-                          );
-                        },
-                  child: container,
-                );
-              },
+                ),
+                for (final entry in bandLayout.bandStartY.entries)
+                  Positioned(
+                    left: 4,
+                    top: entry.value + 4,
+                    child: Text(
+                      entry.key == 0
+                          ? tr(ref, 'chapter_band_prologue')
+                          : '${tr(ref, 'chapter_band_prefix')} ${entry.key}',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colorScheme.primary,
+                          ),
+                    ),
+                  ),
+              ],
             ),
           ),
         ),
         Positioned(
           left: 12,
-          top: 12,
+          bottom: 12,
           child: _legendVisible
               ? _Legend(
                   styles: styles,
                   hiddenKinds: _hiddenKinds,
                   onToggle: _toggleKind,
                   onClose: () => setState(() => _legendVisible = false),
+                  showUndiscovered: !isEditMode,
                 )
               : _LegendReopenButton(
                   onTap: () => setState(() => _legendVisible = true),
@@ -279,12 +488,102 @@ class _GraphViewState extends ConsumerState<_GraphView> {
   }
 }
 
+/// `gameDbProvider` is a [StateNotifierProvider] (not a `FutureProvider`),
+/// so it has no `.future` to await like `storyDataProvider` does — its
+/// [GameDbNotifier] loads asynchronously in the background right from its
+/// own construction. Polls the current [AsyncValue] until it settles,
+/// rather than adding a Future-returning method to that shared provider
+/// just for this one caller.
+Future<Map<String, dynamic>> _awaitGameDb(
+    WidgetRef ref, DbSchema schema) async {
+  for (var i = 0; i < 150; i++) {
+    final value = ref.read(gameDbProvider(schema)).value;
+    if (value != null) return value;
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+  }
+  return const {};
+}
+
+/// Runs [autoplayToNode] toward [targetNodeId], showing a busy dialog while
+/// it works and a result summary once it's done.
+Future<void> _runAutoplay(
+  BuildContext context,
+  WidgetRef ref, {
+  required String targetNodeId,
+}) async {
+  final lang = ref.read(appLanguageProvider);
+  String t(String key) => trFor(lang, key);
+
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => Center(
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 16),
+              Text(t('autoplay_running')),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
+  final story = await ref.read(storyDataProvider.future);
+  final dice = await _awaitGameDb(ref, diceSchema);
+  final skills = await _awaitGameDb(ref, skillsSchema);
+  final items = await _awaitGameDb(ref, itemsSchema);
+  final enemies = await _awaitGameDb(ref, enemiesSchema);
+  final races = await _awaitGameDb(ref, racesSchema);
+  final professions = await _awaitGameDb(ref, professionsSchema);
+
+  final result = await autoplayToNode(
+    ref,
+    story: story,
+    targetNodeId: targetNodeId,
+    dice: dice,
+    skills: skills,
+    items: items,
+    enemies: enemies,
+    races: races,
+    professions: professions,
+  );
+
+  if (!context.mounted) return;
+  Navigator.of(context).pop();
+
+  final message = switch (result.status) {
+    AutoplayStatus.alreadyThere => t('autoplay_already_there'),
+    AutoplayStatus.noPathFound => t('autoplay_no_path'),
+    AutoplayStatus.stuckInCombat => '${t('autoplay_stuck_prefix')} '
+        '${result.stuckEnemyName} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    AutoplayStatus.reachedTarget =>
+      '${t('autoplay_reached_prefix')} (${result.stepsApplied} ${t('autoplay_steps_suffix')})',
+    // autoplayToNode (the only engine this function drives) never actually
+    // produces this status -- only autoplayToChapter's open-ended branching
+    // walk can run out of steps -- but the switch must stay exhaustive
+    // against the shared AutoplayStatus enum.
+    AutoplayStatus.stepCapReached => t('autoplay_step_cap_reached'),
+  };
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
 /// Detects a tap (and optionally a double-tap) using raw pointer events
 /// instead of a [GestureDetector], so it never competes with the enclosing
 /// [InteractiveViewer] for the gesture arena — one-finger drag-to-pan
 /// always starts immediately, even when the drag begins on top of a node.
 class _NodeTapArea extends StatefulWidget {
-  const _NodeTapArea({required this.onTap, this.onDoubleTap, required this.child});
+  const _NodeTapArea(
+      {required this.onTap, this.onDoubleTap, required this.child});
 
   final VoidCallback onTap;
   final VoidCallback? onDoubleTap;
@@ -332,7 +631,8 @@ class _NodeTapAreaState extends State<_NodeTapArea> {
         }
 
         final pending = _pendingTapPosition;
-        if (pending != null && (event.position - pending).distance <= _tapSlop) {
+        if (pending != null &&
+            (event.position - pending).distance <= _tapSlop) {
           _singleTapTimer?.cancel();
           _singleTapTimer = null;
           _pendingTapPosition = null;
@@ -384,12 +684,18 @@ class _Legend extends ConsumerWidget {
     required this.hiddenKinds,
     required this.onToggle,
     required this.onClose,
+    required this.showUndiscovered,
   });
 
   final Map<_NodeKind, _NodeStyle> styles;
   final Set<_NodeKind> hiddenKinds;
   final ValueChanged<_NodeKind> onToggle;
   final VoidCallback onClose;
+
+  /// Whether the map is currently shadowing unvisited nodes (i.e. not in
+  /// Edit Mode) -- shows an explanatory legend row for that shadow style
+  /// only when it can actually appear on the map right now.
+  final bool showUndiscovered;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -404,13 +710,15 @@ class _Legend extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(tr(ref, 'legend_title'), style: Theme.of(context).textTheme.labelLarge),
+                Text(tr(ref, 'legend_title'),
+                    style: Theme.of(context).textTheme.labelLarge),
                 const SizedBox(width: 12),
                 InkWell(
                   onTap: onClose,
                   child: Tooltip(
                     message: tr(ref, 'close_legend'),
-                    child: Icon(Icons.close, size: 16, color: colorScheme.outline),
+                    child:
+                        Icon(Icons.close, size: 16, color: colorScheme.outline),
                   ),
                 ),
               ],
@@ -432,14 +740,19 @@ class _Legend extends ConsumerWidget {
                           height: 14,
                           decoration: BoxDecoration(
                             color: entry.value.color,
-                            borderRadius: BorderRadius.circular(entry.value.radius / 2),
+                            borderRadius:
+                                BorderRadius.circular(entry.value.radius / 2),
                           ),
                         ),
                         const SizedBox(width: 6),
                         Text(
                           tr(ref, _nodeKindLabelKey(entry.key)),
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                decoration: hidden ? TextDecoration.lineThrough : null,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall
+                              ?.copyWith(
+                                decoration:
+                                    hidden ? TextDecoration.lineThrough : null,
                               ),
                         ),
                       ],
@@ -461,13 +774,40 @@ class _Legend extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text(tr(ref, 'main_story_beat'), style: Theme.of(context).textTheme.bodySmall),
+                Text(tr(ref, 'main_story_beat'),
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
+            if (showUndiscovered) ...[
+              const SizedBox(height: 4),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 14,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: colorScheme.surfaceContainerHighest
+                          .withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: colorScheme.outlineVariant),
+                    ),
+                    child: Icon(Icons.nights_stay_outlined,
+                        size: 10, color: colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(tr(ref, 'undiscovered_node_legend'),
+                      style: Theme.of(context).textTheme.bodySmall),
+                ],
+              ),
+            ],
             const SizedBox(height: 4),
             Text(
               tr(ref, 'tap_to_filter'),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: colorScheme.outline),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: colorScheme.outline),
             ),
           ],
         ),
@@ -484,6 +824,7 @@ Future<void> _showNodeInfo(
 ) {
   final language = ref.read(appLanguageProvider);
   final french = language == AppLanguage.fr;
+  final isEditMode = ref.read(appModeProvider) == AppMode.edit;
   String t(String key) => trFor(language, key);
 
   return showModalBottomSheet<void>(
@@ -511,7 +852,9 @@ Future<void> _showNodeInfo(
                     ),
                     const SizedBox(width: 8),
                     if (isMainBeatNode(node.id))
-                      Chip(label: Text(t('main_beat_chip')), visualDensity: VisualDensity.compact),
+                      Chip(
+                          label: Text(t('main_beat_chip')),
+                          visualDensity: VisualDensity.compact),
                   ],
                 ),
                 if (node.hasRequirements) ...[
@@ -521,14 +864,38 @@ Future<void> _showNodeInfo(
                     '${node.reqGold > 0 ? "${node.reqGold}g " : ""}'
                     '${node.reqAlignmentScore != null ? "${t('alignment_label')}≥${node.reqAlignmentScore} " : ""}'
                     '${node.reqAlignmentMax != null ? "${t('alignment_label')}≤${node.reqAlignmentMax} " : ""}'
+                    '${node.reqCharisma > 0 ? "${t('charisma_label')}≥${node.reqCharisma} " : ""}'
                     '${node.reqFlags.isNotEmpty ? node.reqFlags.join(", ") : ""}',
                     style: Theme.of(innerContext).textTheme.bodySmall,
                   ),
                 ],
                 const SizedBox(height: 12),
                 Text(node.descriptionFor(french)),
+                if (node.hasComment) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(innerContext)
+                          .colorScheme
+                          .tertiaryContainer
+                          .withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.comment_outlined, size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(node.authoringComment!)),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 16),
-                Text(t('choices_label'), style: Theme.of(innerContext).textTheme.titleMedium),
+                Text(t('choices_label'),
+                    style: Theme.of(innerContext).textTheme.titleMedium),
                 const SizedBox(height: 8),
                 if (node.choices.isEmpty)
                   Text(t('no_choices_ending'))
@@ -542,15 +909,39 @@ Future<void> _showNodeInfo(
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ref.read(storyPlayProvider.notifier).jumpTo(node.id);
-                    Navigator.of(sheetContext).pop();
-                  },
-                  icon: const Icon(Icons.play_arrow),
-                  label: Text(t('jump_to_node')),
-                ),
+                if (isEditMode) ...[
+                  const SizedBox(height: 16),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ref.read(storyPlayProvider.notifier).jumpTo(node.id);
+                      Navigator.of(sheetContext).pop();
+                    },
+                    icon: const Icon(Icons.play_arrow),
+                    label: Text(t('jump_to_node')),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.of(sheetContext).pop();
+                      await _runAutoplay(context, ref, targetNodeId: node.id);
+                    },
+                    icon: const Icon(Icons.fast_forward),
+                    label: Text(t('autoplay_to_node')),
+                  ),
+                  const SizedBox(height: 8),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => StoryNodeEditorScreen(node: node),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.edit_outlined),
+                    label: Text(t('edit_node')),
+                  ),
+                ],
               ],
             ),
           );

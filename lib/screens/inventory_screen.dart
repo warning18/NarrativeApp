@@ -4,10 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../combat/dice_faces.dart';
+import '../combat/gear_effects.dart';
 import '../models/ally_state.dart';
+import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../utils/game_icons.dart';
+import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
 
@@ -37,7 +40,8 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     });
   }
 
-  void _onCompareTap(BuildContext context, Map<String, dynamic> items, String itemId) {
+  void _onCompareTap(
+      BuildContext context, Map<String, dynamic> items, String itemId) {
     if (_firstCompareId == null) {
       setState(() => _firstCompareId = itemId);
       return;
@@ -64,20 +68,24 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
   Widget build(BuildContext context) {
     final itemsAsync = ref.watch(gameDbProvider(itemsSchema));
     final diceAsync = ref.watch(gameDbProvider(diceSchema));
-    final companions = ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
+    final companions =
+        ref.watch(gameDbProvider(companionsSchema)).value ?? const {};
 
     final companion = widget.allyId != null
         ? companions[widget.allyId] as Map<String, dynamic>?
         : null;
-    final titleSuffix =
-        widget.allyId != null ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}' : '';
+    final titleSuffix = widget.allyId != null
+        ? ' — ${companion?['companionName']?.toString() ?? widget.allyId}'
+        : '';
 
     return Scaffold(
       appBar: AppBar(
         title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
         actions: [
           IconButton(
-            icon: Icon(_compareMode ? Icons.compare_arrows : Icons.compare_arrows_outlined),
+            icon: Icon(_compareMode
+                ? Icons.compare_arrows
+                : Icons.compare_arrows_outlined),
             tooltip: tr(ref, 'compare_button'),
             onPressed: _toggleCompareMode,
           ),
@@ -101,20 +109,24 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               data: (items) => diceAsync.when(
                 data: (dice) => _InventoryBody(
                   items: items,
+                  itemSets: parseItemSets(
+                      ref.watch(gameDbProvider(itemSetsSchema)).value ??
+                          const {}),
                   dice: dice,
                   allyId: widget.allyId,
                   companion: companion,
                   compareMode: _compareMode,
                   firstCompareId: _firstCompareId,
-                  onCompareTap: (itemId) => _onCompareTap(context, items, itemId),
+                  onCompareTap: (itemId) =>
+                      _onCompareTap(context, items, itemId),
                 ),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) =>
-                    Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+                error: (error, stack) => Center(
+                    child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) =>
-                  Center(child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+              error: (error, stack) => Center(
+                  child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
             ),
           ),
         ],
@@ -125,21 +137,79 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
 
 /// Stat rows shared by the manual item-vs-item compare dialog and the
 /// automatic item-vs-currently-equipped delta shown in item details.
-List<CompareRow> itemCompareRows(Map<String, dynamic>? a, Map<String, dynamic>? b) {
+List<CompareRow> itemCompareRows(
+    Map<String, dynamic>? a, Map<String, dynamic>? b) {
   num v(Map<String, dynamic>? item, String key) => (item?[key] as num?) ?? 0;
   return [
-    CompareRow(label: 'ATK', valueA: v(a, 'attackDamage'), valueB: v(b, 'attackDamage')),
+    CompareRow(
+        label: 'ATK',
+        valueA: v(a, 'attackDamage'),
+        valueB: v(b, 'attackDamage')),
     CompareRow(label: 'ARM', valueA: v(a, 'armor'), valueB: v(b, 'armor')),
-    CompareRow(label: 'Fire Dmg', valueA: v(a, 'fireDmgBonus'), valueB: v(b, 'fireDmgBonus')),
-    CompareRow(label: 'Wind Dmg', valueA: v(a, 'windDmgBonus'), valueB: v(b, 'windDmgBonus')),
-    CompareRow(label: 'Earth Dmg', valueA: v(a, 'earthDmgBonus'), valueB: v(b, 'earthDmgBonus')),
-    CompareRow(label: 'Water Dmg', valueA: v(a, 'waterDmgBonus'), valueB: v(b, 'waterDmgBonus')),
-    CompareRow(label: 'Elec Dmg', valueA: v(a, 'elecDmgBonus'), valueB: v(b, 'elecDmgBonus')),
-    CompareRow(label: 'Fire Resist', valueA: v(a, 'fireResist'), valueB: v(b, 'fireResist')),
-    CompareRow(label: 'Wind Resist', valueA: v(a, 'windResist'), valueB: v(b, 'windResist')),
-    CompareRow(label: 'Earth Resist', valueA: v(a, 'earthResist'), valueB: v(b, 'earthResist')),
-    CompareRow(label: 'Water Resist', valueA: v(a, 'waterResist'), valueB: v(b, 'waterResist')),
-    CompareRow(label: 'Elec Resist', valueA: v(a, 'elecResist'), valueB: v(b, 'elecResist')),
+    CompareRow(
+        label: 'Fire Dmg',
+        valueA: v(a, 'fireDmgBonus'),
+        valueB: v(b, 'fireDmgBonus')),
+    CompareRow(
+        label: 'Wind Dmg',
+        valueA: v(a, 'windDmgBonus'),
+        valueB: v(b, 'windDmgBonus')),
+    CompareRow(
+        label: 'Earth Dmg',
+        valueA: v(a, 'earthDmgBonus'),
+        valueB: v(b, 'earthDmgBonus')),
+    CompareRow(
+        label: 'Water Dmg',
+        valueA: v(a, 'waterDmgBonus'),
+        valueB: v(b, 'waterDmgBonus')),
+    CompareRow(
+        label: 'Elec Dmg',
+        valueA: v(a, 'elecDmgBonus'),
+        valueB: v(b, 'elecDmgBonus')),
+    CompareRow(
+        label: 'Ice Dmg',
+        valueA: v(a, 'iceDmgBonus'),
+        valueB: v(b, 'iceDmgBonus')),
+    CompareRow(
+        label: 'Light Dmg',
+        valueA: v(a, 'lightDmgBonus'),
+        valueB: v(b, 'lightDmgBonus')),
+    CompareRow(
+        label: 'Void Dmg',
+        valueA: v(a, 'voidDmgBonus'),
+        valueB: v(b, 'voidDmgBonus')),
+    CompareRow(
+        label: 'Fire Resist',
+        valueA: v(a, 'fireResist'),
+        valueB: v(b, 'fireResist')),
+    CompareRow(
+        label: 'Wind Resist',
+        valueA: v(a, 'windResist'),
+        valueB: v(b, 'windResist')),
+    CompareRow(
+        label: 'Earth Resist',
+        valueA: v(a, 'earthResist'),
+        valueB: v(b, 'earthResist')),
+    CompareRow(
+        label: 'Water Resist',
+        valueA: v(a, 'waterResist'),
+        valueB: v(b, 'waterResist')),
+    CompareRow(
+        label: 'Elec Resist',
+        valueA: v(a, 'elecResist'),
+        valueB: v(b, 'elecResist')),
+    CompareRow(
+        label: 'Ice Resist',
+        valueA: v(a, 'iceResist'),
+        valueB: v(b, 'iceResist')),
+    CompareRow(
+        label: 'Light Resist',
+        valueA: v(a, 'lightResist'),
+        valueB: v(b, 'lightResist')),
+    CompareRow(
+        label: 'Void Resist',
+        valueA: v(a, 'voidResist'),
+        valueB: v(b, 'voidResist')),
     CompareRow(
       label: 'Cost',
       valueA: v(a, 'cost'),
@@ -147,6 +217,37 @@ List<CompareRow> itemCompareRows(Map<String, dynamic>? a, Map<String, dynamic>? 
       higherIsBetter: null,
     ),
   ];
+}
+
+/// "10 STR, 4 CON" style summary of an item's reqStrength/reqDexterity/
+/// reqConstitution/reqIntelligence fields (only the nonzero ones) — shown
+/// wherever an unmet requirement needs explaining.
+String requirementSummary(Map<String, dynamic>? item, AppLanguage lang) {
+  int req(String key) => (item?[key] as num?)?.toInt() ?? 0;
+  final parts = <String>[
+    if (req('reqStrength') > 0)
+      '${req('reqStrength')} ${trFor(lang, 'str_abbrev')}',
+    if (req('reqDexterity') > 0)
+      '${req('reqDexterity')} ${trFor(lang, 'dex_abbrev')}',
+    if (req('reqConstitution') > 0)
+      '${req('reqConstitution')} ${trFor(lang, 'con_abbrev')}',
+    if (req('reqIntelligence') > 0)
+      '${req('reqIntelligence')} ${trFor(lang, 'int_abbrev')}',
+  ];
+  return parts.join(', ');
+}
+
+/// The scaling stat's display abbreviation (e.g. "strength" -> "STR"), or
+/// null if [item] doesn't scale with anything.
+String? scalingStatAbbrev(Map<String, dynamic>? item, AppLanguage lang) {
+  final key = switch (item?['scalingStat']?.toString() ?? '') {
+    'strength' => 'str_abbrev',
+    'dexterity' => 'dex_abbrev',
+    'constitution' => 'con_abbrev',
+    'intelligence' => 'int_abbrev',
+    _ => null,
+  };
+  return key == null ? null : trFor(lang, key);
 }
 
 class _InventoryBody extends ConsumerWidget {
@@ -158,10 +259,15 @@ class _InventoryBody extends ConsumerWidget {
     required this.compareMode,
     required this.firstCompareId,
     required this.onCompareTap,
+    this.itemSets = const {},
   });
 
   final Map<String, dynamic> items;
   final Map<String, dynamic> dice;
+
+  /// item_sets.json, parsed -- for the "Set: Name (n/3)" line on a set
+  /// piece and the worn-pieces count.
+  final Map<String, ItemSet> itemSets;
   final String? allyId;
   final Map<String, dynamic>? companion;
   final bool compareMode;
@@ -186,15 +292,60 @@ class _InventoryBody extends ConsumerWidget {
           )
         : null;
 
+    // Whichever character is actually being equipped -- the player, or (when
+    // allyId is set) the ally's own race/profession-derived ability scores
+    // (see deriveAllyBaseStats) -- gates and scales gear identically either
+    // way, via the same pure helpers combat already uses.
+    int equipperStrength = session.strength;
+    int equipperDexterity = session.dexterity;
+    int equipperConstitution = session.constitution;
+    int equipperIntelligence = session.intelligence;
+    if (allyId != null) {
+      final races = ref.watch(gameDbProvider(racesSchema)).value ?? const {};
+      final professions =
+          ref.watch(gameDbProvider(professionsSchema)).value ?? const {};
+      final gameConfig = ref.watch(gameConfigProvider).value ?? const {};
+      final race = races[companion?['raceId']?.toString() ?? '']
+              as Map<String, dynamic>? ??
+          const {};
+      final profession =
+          professions[companion?['professionId']?.toString() ?? '']
+                  as Map<String, dynamic>? ??
+              const {};
+      final allyBase = deriveAllyBaseStats(
+          gameConfig: gameConfig, race: race, profession: profession);
+      equipperStrength = allyBase.strength;
+      equipperDexterity = allyBase.dexterity;
+      equipperConstitution = allyBase.constitution;
+      equipperIntelligence = allyBase.intelligence;
+    }
+
+    // Aligned gear answers to the player's alignment for the whole party
+    // (an ally doesn't track one), exactly as aligned skills do.
+    bool canEquip(String itemId) =>
+        meetsItemStatRequirement(
+          items[itemId] as Map<String, dynamic>?,
+          strength: equipperStrength,
+          dexterity: equipperDexterity,
+          constitution: equipperConstitution,
+          intelligence: equipperIntelligence,
+        ) &&
+        meetsItemAlignment(
+            items[itemId] as Map<String, dynamic>?, session.alignmentLabel);
+
     void Function(String itemId, {String? slot}) equipFn = allyId != null
         ? (itemId, {slot}) => ref
             .read(playerSessionProvider.notifier)
             .equipAllyItem(allyId!, itemId, slot: slot, items: items)
-        : (itemId, {slot}) =>
-            ref.read(playerSessionProvider.notifier).equipItem(itemId, slot: slot, items: items);
+        : (itemId, {slot}) => ref
+            .read(playerSessionProvider.notifier)
+            .equipItem(itemId, slot: slot, items: items);
     void Function(String itemId) unequipFn = allyId != null
-        ? (itemId) => ref.read(playerSessionProvider.notifier).unequipAllyItem(allyId!, itemId)
-        : (itemId) => ref.read(playerSessionProvider.notifier).unequipItem(itemId);
+        ? (itemId) => ref
+            .read(playerSessionProvider.notifier)
+            .unequipAllyItem(allyId!, itemId)
+        : (itemId) =>
+            ref.read(playerSessionProvider.notifier).unequipItem(itemId);
 
     final counts = <String, int>{};
     for (final id in session.inventoryItemIds) {
@@ -204,20 +355,27 @@ class _InventoryBody extends ConsumerWidget {
     final equippedIds = ally?.equippedItemIds ?? session.equippedItemIds;
 
     final allySignatureDiceId = companion?['signatureDiceId']?.toString();
-    final equippedDiceId = allyId != null ? allySignatureDiceId : session.equippedDiceId;
-    final equippedDie = equippedDiceId != null ? dice[equippedDiceId] as Map<String, dynamic>? : null;
-    final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()..sort();
+    final equippedDiceId =
+        allyId != null ? allySignatureDiceId : session.equippedDiceId;
+    final equippedDie = equippedDiceId != null
+        ? dice[equippedDiceId] as Map<String, dynamic>?
+        : null;
+    final ownedDiceIds = session.ownedDiceIds.where(dice.containsKey).toList()
+      ..sort();
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        Text(tr(ref, 'equipment_section'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'equipment_section'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         Card(
           child: ListTile(
             leading: const Icon(Icons.casino),
             title: Text(tr(ref, 'dice_label')),
-            subtitle: Text(equippedDie != null ? equippedDiceId! : tr(ref, 'none_equipped')),
+            subtitle: Text(equippedDie != null
+                ? equippedDiceId!
+                : tr(ref, 'none_equipped')),
             // An ally's signature die is fixed at recruitment and never
             // player-swappable, so no edit affordance for that case.
             trailing: allyId != null
@@ -227,13 +385,16 @@ class _InventoryBody extends ConsumerWidget {
                     tooltip: tr(ref, 'choose_die'),
                     onPressed: ownedDiceIds.isEmpty
                         ? null
-                        : () => _pickDice(context, ref, ownedDiceIds, equippedDiceId),
+                        : () => _pickDice(
+                            context, ref, ownedDiceIds, equippedDiceId),
                   ),
           ),
         ),
         ...equipSlotOptions.map((slot) {
           final equippedId = _equippedInSlot(equippedIds, slot);
-          final equippedItem = equippedId != null ? items[equippedId] as Map<String, dynamic>? : null;
+          final equippedItem = equippedId != null
+              ? items[equippedId] as Map<String, dynamic>?
+              : null;
           final candidates = ownedIds.where((id) {
             final item = items[id] as Map<String, dynamic>?;
             return (item?['isEquippable'] as bool? ?? false) &&
@@ -242,9 +403,11 @@ class _InventoryBody extends ConsumerWidget {
 
           return Card(
             child: ListTile(
-              leading: Icon(itemTypeIcon(equippedItem?['itemType']?.toString())),
+              leading: ItemPixelIcon(
+                  equippedId, equippedItem?['itemType']?.toString()),
               title: Text(slot),
-              subtitle: Text(equippedItem?['itemName']?.toString() ?? tr(ref, 'empty_slot_label')),
+              subtitle: Text(equippedItem?['itemName']?.toString() ??
+                  tr(ref, 'empty_slot_label')),
               trailing: Wrap(
                 spacing: 4,
                 children: [
@@ -259,7 +422,8 @@ class _InventoryBody extends ConsumerWidget {
                     tooltip: tr(ref, 'choose_item'),
                     onPressed: candidates.isEmpty
                         ? null
-                        : () => _pickForSlot(context, ref, slot, candidates, equippedId, equipFn),
+                        : () => _pickForSlot(context, ref, slot, candidates,
+                            equippedId, equipFn, canEquip),
                   ),
                 ],
               ),
@@ -267,7 +431,8 @@ class _InventoryBody extends ConsumerWidget {
           );
         }),
         const Divider(height: 32),
-        Text(tr(ref, 'all_items'), style: Theme.of(context).textTheme.titleMedium),
+        Text(tr(ref, 'all_items'),
+            style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
         if (ownedIds.isEmpty)
           Padding(
@@ -284,12 +449,16 @@ class _InventoryBody extends ConsumerWidget {
             if (isEquippable && !isEquipped && equipSlot.isNotEmpty) {
               comparisonId = _equippedInSlot(equippedIds, equipSlot);
             }
-            final comparisonItem =
-                comparisonId != null ? items[comparisonId] as Map<String, dynamic>? : null;
+            final comparisonItem = comparisonId != null
+                ? items[comparisonId] as Map<String, dynamic>?
+                : null;
+            final set = setForItem(id, item, itemSets);
             return _ItemTile(
               itemId: id,
               item: item,
               count: counts[id],
+              itemSet: set,
+              setPiecesWorn: set?.piecesWornIn(equippedIds) ?? 0,
               isEquipped: isEquipped,
               language: ref.watch(appLanguageProvider),
               comparisonItemId: comparisonId,
@@ -297,8 +466,11 @@ class _InventoryBody extends ConsumerWidget {
               compareMode: compareMode,
               selectedForCompare: firstCompareId == id,
               onCompareTap: compareMode ? () => onCompareTap(id) : null,
-              onEquip: (isEquippable && !isEquipped) ? () => equipFn(id, slot: equipSlot) : null,
+              onEquip: (isEquippable && !isEquipped && canEquip(id))
+                  ? () => equipFn(id, slot: equipSlot)
+                  : null,
               onUnequip: isEquipped ? () => unequipFn(id) : null,
+              requirementUnmet: isEquippable && !isEquipped && !canEquip(id),
             );
           }),
       ],
@@ -318,14 +490,17 @@ class _InventoryBody extends ConsumerWidget {
         child: ListView(
           shrinkWrap: true,
           children: ownedDiceIds.map((id) {
-            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces'] is List
+            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces']
+                    is List
                 ? ((dice[id] as Map<String, dynamic>)['faces'] as List).length
                 : 0;
             return ListTile(
               leading: const Icon(Icons.casino),
-              title: Text(id),
-              subtitle: Text('$faceCount $facesLabel'),
-              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              title: Text(dieDisplayName(id)),
+              subtitle: Text(
+                  '$faceCount $facesLabel · ${dieFacesSummary(dice[id] as Map<String, dynamic>?, ref.read(appLanguageProvider))}'),
+              trailing:
+                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
               onTap: () {
                 ref.read(playerSessionProvider.notifier).equipDice(id);
                 Navigator.of(sheetContext).pop();
@@ -344,7 +519,9 @@ class _InventoryBody extends ConsumerWidget {
     List<String> candidates,
     String? currentlyEquippedId,
     void Function(String itemId, {String? slot}) equipFn,
+    bool Function(String itemId) canEquip,
   ) {
+    final lang = ref.read(appLanguageProvider);
     return showModalBottomSheet<void>(
       context: context,
       builder: (sheetContext) => SafeArea(
@@ -353,14 +530,25 @@ class _InventoryBody extends ConsumerWidget {
           children: candidates.map((id) {
             final item = items[id] as Map<String, dynamic>?;
             final itemName = item?['itemName']?.toString() ?? id;
+            final equippable = canEquip(id);
             return ListTile(
-              leading: Icon(itemTypeIcon(item?['itemType']?.toString())),
+              leading: ItemPixelIcon(id, item?['itemType']?.toString()),
               title: Text(itemName),
-              trailing: id == currentlyEquippedId ? const Icon(Icons.check) : null,
-              onTap: () {
-                equipFn(id, slot: slot);
-                Navigator.of(sheetContext).pop();
-              },
+              subtitle: equippable
+                  ? null
+                  : Text(
+                      '${trFor(lang, 'stat_requirement_label')}: '
+                      '${requirementSummary(item, lang)}',
+                    ),
+              enabled: equippable,
+              trailing:
+                  id == currentlyEquippedId ? const Icon(Icons.check) : null,
+              onTap: !equippable
+                  ? null
+                  : () {
+                      equipFn(id, slot: slot);
+                      Navigator.of(sheetContext).pop();
+                    },
             );
           }).toList(),
         ),
@@ -383,6 +571,9 @@ class _ItemTile extends StatelessWidget {
     this.onCompareTap,
     this.onEquip,
     this.onUnequip,
+    this.requirementUnmet = false,
+    this.itemSet,
+    this.setPiecesWorn = 0,
   });
 
   final String itemId;
@@ -390,6 +581,11 @@ class _ItemTile extends StatelessWidget {
   final int? count;
   final bool isEquipped;
   final AppLanguage language;
+
+  /// The set this item belongs to, if any, and how many of its pieces the
+  /// equipping character currently wears -- shown as "Set: Name (2/3)".
+  final ItemSet? itemSet;
+  final int setPiecesWorn;
 
   /// The item currently equipped in this item's slot, if any and if
   /// different from this item — used to show a +/- stat delta.
@@ -401,6 +597,12 @@ class _ItemTile extends StatelessWidget {
   final VoidCallback? onCompareTap;
   final VoidCallback? onEquip;
   final VoidCallback? onUnequip;
+
+  /// True when this item is equippable, not already equipped, but the
+  /// equipping character's ability scores don't meet its
+  /// reqStrength/reqDexterity/reqConstitution/reqIntelligence gate — shows
+  /// why the equip action is unavailable instead of just hiding it.
+  final bool requirementUnmet;
 
   /// Formats [value], appending a "(+n)"/"(-n)" delta against
   /// [comparisonItem]'s value for the same stat when one is set.
@@ -423,6 +625,26 @@ class _ItemTile extends StatelessWidget {
     final armor = (item?['armor'] as num?)?.toInt() ?? 0;
     String t(String key) => trFor(language, key);
     final colorScheme = Theme.of(context).colorScheme;
+    final scalingAbbrev = scalingStatAbbrev(item, language);
+    final requirementText =
+        requirementUnmet ? requirementSummary(item, language) : null;
+    final itemAlignment = item?['alignment']?.toString() ?? '';
+    final alignedAttack = (item?['alignedAttackBonus'] as num?)?.toInt() ?? 0;
+    final alignedArmor = (item?['alignedArmorBonus'] as num?)?.toInt() ?? 0;
+    final alignedParts = <String>[
+      if (alignedAttack > 0) '${t('atk_abbrev')} +$alignedAttack',
+      if (alignedArmor > 0) '${t('arm_abbrev')} +$alignedArmor',
+    ];
+    final unique = uniqueEffectOf(item);
+    final uniqueText = unique == null
+        ? null
+        : t(uniqueEffectDescriptionKey(unique))
+            .replaceAll('{v}', '${uniqueValueOf(item)}');
+    final set = itemSet;
+    final setText = set == null
+        ? null
+        : '${t('set_label')}: ${set.nameFor(language)} '
+            '($setPiecesWorn/${set.itemIds.length})';
 
     final statsParts = <String>[
       if (itemType != null) itemType,
@@ -430,6 +652,19 @@ class _ItemTile extends StatelessWidget {
         '${t('equipped_prefix')}: $equipSlot',
       if (attackDamage > 0) '${t('atk_abbrev')} +$attackDamage',
       if (armor > 0) '${t('arm_abbrev')} +$armor',
+      if (scalingAbbrev != null) '${t('scales_with_label')}: $scalingAbbrev',
+      if (requirementText != null && requirementText.isNotEmpty)
+        '${t('stat_requirement_label')}: $requirementText',
+      if (itemAlignment.isNotEmpty)
+        '${t('aligned_gear_label')}: ${itemAlignment == 'Good' ? t('alignment_good') : t('alignment_evil')}'
+            '${alignedParts.isNotEmpty ? ' (${alignedParts.join(', ')} ${t('aligned_bonus_suffix')})' : ''}',
+      if (itemAlignment.isNotEmpty &&
+          requirementUnmet &&
+          requirementText != null &&
+          requirementText.isEmpty)
+        t('alignment_rejects_label'),
+      if (uniqueText != null) '${t('unique_label')}: $uniqueText',
+      if (setText != null) setText,
       if (count != null && count! > 1) 'x$count',
       if (comparisonItem != null)
         '${t('vs_equipped_suffix')}: ${comparisonItem?['itemName'] ?? comparisonItemId}',
@@ -440,49 +675,80 @@ class _ItemTile extends StatelessWidget {
           ? colorScheme.tertiaryContainer
           : (isEquipped ? colorScheme.primaryContainer : null),
       child: ListTile(
-        leading: Icon(itemTypeIcon(itemType)),
+        leading: ItemPixelIcon(itemId, itemType),
         title: Text(itemName),
         subtitle: Text(statsParts.join(' · ')),
         trailing: compareMode
             ? null
             : (onEquip != null || onUnequip != null)
                 ? IconButton(
-                    icon: Icon(onUnequip != null ? Icons.remove_circle_outline : Icons.add_circle_outline),
-                    tooltip: onUnequip != null ? t('unequip') : t('equip_button'),
+                    icon: Icon(onUnequip != null
+                        ? Icons.remove_circle_outline
+                        : Icons.add_circle_outline),
+                    tooltip:
+                        onUnequip != null ? t('unequip') : t('equip_button'),
                     onPressed: onUnequip ?? onEquip,
                   )
-                : null,
+                : requirementUnmet
+                    ? Icon(Icons.lock_outline,
+                        color: colorScheme.onSurfaceVariant)
+                    : null,
         onTap: compareMode
             ? onCompareTap
             : () => showDetailDialog(
                   context,
                   title: itemName,
-                  icon: itemTypeIcon(itemType),
+                  leading: ItemPixelIcon(itemId, itemType, size: 24),
                   closeLabel: t('close_button'),
                   rows: [
-                    MapEntry(t('item_type_label'), itemType ?? t('unknown_label')),
+                    MapEntry(
+                        t('item_type_label'), itemType ?? t('unknown_label')),
                     MapEntry(t('cost_label'), '${item?['cost'] ?? 0}'),
                     if (equipSlot != null && equipSlot.isNotEmpty)
                       MapEntry(t('equip_slot_label'), equipSlot),
-                    MapEntry(t('attack_damage_label'), _statValue('attackDamage')),
+                    MapEntry(
+                        t('attack_damage_label'), _statValue('attackDamage')),
                     MapEntry(t('armor_label'), _statValue('armor')),
+                    if (scalingAbbrev != null)
+                      MapEntry(t('scales_with_label'), scalingAbbrev),
+                    if (requirementText != null && requirementText.isNotEmpty)
+                      MapEntry(t('stat_requirement_label'), requirementText),
+                    if (uniqueText != null)
+                      MapEntry(t('unique_label'), uniqueText),
+                    if (set != null) ...[
+                      MapEntry(
+                          t('set_label'),
+                          '${set.nameFor(language)} '
+                          '($setPiecesWorn/${set.itemIds.length})'),
+                      for (final tier in set.tiers)
+                        MapEntry(
+                          '${tier.pieces} ${t('set_pieces_label')}'
+                          '${tier.pieces <= setPiecesWorn ? ' ✓' : ''}',
+                          tier.descriptionFor(language),
+                        ),
+                    ],
                     for (final entry in {
-                      'fireDmgBonus': t('fire_dmg_label'), 'windDmgBonus': t('wind_dmg_label'),
-                      'earthDmgBonus': t('earth_dmg_label'), 'waterDmgBonus': t('water_dmg_label'),
+                      'fireDmgBonus': t('fire_dmg_label'),
+                      'windDmgBonus': t('wind_dmg_label'),
+                      'earthDmgBonus': t('earth_dmg_label'),
+                      'waterDmgBonus': t('water_dmg_label'),
                       'elecDmgBonus': t('elec_dmg_label'),
                     }.entries)
                       if (((item?[entry.key] as num?) ?? 0) != 0 ||
                           ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
                         MapEntry(entry.value, _statValue(entry.key)),
                     for (final entry in {
-                      'fireResist': t('fire_resist_label'), 'windResist': t('wind_resist_label'),
-                      'earthResist': t('earth_resist_label'), 'waterResist': t('water_resist_label'),
+                      'fireResist': t('fire_resist_label'),
+                      'windResist': t('wind_resist_label'),
+                      'earthResist': t('earth_resist_label'),
+                      'waterResist': t('water_resist_label'),
                       'elecResist': t('elec_resist_label'),
                     }.entries)
                       if (((item?[entry.key] as num?) ?? 0) != 0 ||
                           ((comparisonItem?[entry.key] as num?) ?? 0) != 0)
                         MapEntry(entry.value, _statValue(entry.key)),
-                    if (count != null && count! > 1) MapEntry(t('owned_label'), '$count'),
+                    if (count != null && count! > 1)
+                      MapEntry(t('owned_label'), '$count'),
                   ],
                 ),
       ),

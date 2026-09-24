@@ -49,12 +49,13 @@
     "objectives": [
       {
         "description": "Retrieve the Grey Shroud from the hovel",
-        "type": "Fetch",
+        "type": "Flag",
         "targetEnemyID": "",
-        "targetItemID": "void_banner",
+        "targetItemID": "",
         "targetNPCName": "Lysa",
         "locationID": "hovel",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "targetFlag": "took_bundle"
       }
     ],
     "rewardGold": 100,
@@ -77,7 +78,8 @@
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "grantsBannerPieceId": ""
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -454,7 +456,8 @@
         "targetItemID": "",
         "targetNPCName": "Lysa",
         "locationID": "",
-        "requiredAmount": 1
+        "requiredAmount": 1,
+        "targetNPCID": "lysa"
       }
     ],
     "rewardGold": 100,
@@ -477,7 +480,8 @@
       }
     ],
     "rewardDiceID": "",
-    "rewardAllyId": ""
+    "rewardAllyId": "",
+    "grantsBannerPieceId": ""
   },
   "q_ch2_keldas_stand": {
     "questID": "q_ch2_keldas_stand",
@@ -598,5 +602,647 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "maren"
+  },
+  "q_ch2_informants_tip": {
+    "questID": "q_ch2_informants_tip",
+    "questName": "The Informant's Tip",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Deal with the warden the informant named",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_warden",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 45,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "Word on the docks is a warden's been skimming smuggled goods for himself. Deal with him and there's a cut in it for you.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_informants_tip_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch2_terns_toll": {
+    "questID": "q_ch2_terns_toll",
+    "questName": "Tern's Toll",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Deal with the overseer extorting Tern Row",
+        "type": "Kill",
+        "targetEnemyID": "dock_overseer",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 45,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"He calls it a landing toll,\" Nadira says, each word weighed before she spends it. \"There is no such toll. There is only how much he thinks we are worth threatening. Make him reconsider the arithmetic, and Tern Row will remember it.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_terns_toll_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch2_lioras_watch": {
+    "questID": "q_ch2_lioras_watch",
+    "questName": "Liora's Watch",
+    "chapter": 2,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Help Liora end the smuggler captain's raids on refugee boats",
+        "type": "Kill",
+        "targetEnemyID": "smuggler_captain",
+        "targetItemID": "",
+        "targetNPCName": "Liora",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 40,
+    "rewardXP": 50,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I've watched this stretch of roofline for three days,\" she says, not lowering the bow, \"and you're the first thing to cross it worth aiming at instead of past.\" The captain running boats out of the north pier has been selling refugee passage he has no intention of delivering. \"Help me close that account, and I'll consider the rest of this city marginally less worth watching alone.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take the shot together",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch2_lioras_watch_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "liora"
+  },
+  "q_ch1_vess_in_the_dark": {
+    "questID": "q_ch1_vess_in_the_dark",
+    "questName": "Vess in the Dark",
+    "chapter": 1,
+    "category": "Side",
+    "difficulty": "4",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Hear Vess out about what the Shroud left behind in her",
+        "type": "Talk",
+        "targetEnemyID": "",
+        "targetItemID": "",
+        "targetNPCName": "Vess",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 25,
+    "rewardXP": 40,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"You're marked too,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you've worn the mark long enough yourself. \"Mine took longer to settle in. Yours is still deciding what it wants from you. I don't know that I can help with that, but I know what it costs to face it alone, and I'd rather not watch someone else find out the same way I did.\"",
+    "requiredGold": 0,
+    "requiredFlags": [
+      "void_marked"
+    ],
+    "questChoices": [
+      {
+        "buttonText": "Listen",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch1_vess_in_the_dark_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "vess"
+  },
+  "q_ch3_groshs_price": {
+    "questID": "q_ch3_groshs_price",
+    "questName": "Grosh's Price",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Prove your coin is good by clearing a Hollow Court zealot with Grosh",
+        "type": "Kill",
+        "targetEnemyID": "hollow_court_zealot",
+        "targetItemID": "",
+        "targetNPCName": "Grosh",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 55,
+    "rewardXP": 65,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I don't work for free, and I don't work for promises,\" he says, looking me over the way a butcher looks over livestock he hasn't decided is worth the knife yet. \"You look like you can actually pay, which already puts you ahead of the last four people who tried to hire me this week. Clear one of the Hollow Court's zealots with me, and we'll call the interview finished.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Hire him on the spot",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_groshs_price_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "grosh"
+  },
+  "q_ch3_reckoning_wall": {
+    "questID": "q_ch3_reckoning_wall",
+    "questName": "The Reckoning Wall",
+    "chapter": 3,
+    "category": "Side",
+    "difficulty": "5",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Stop the Inquisition auxiliary sent to destroy the survivors' wall",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_auxiliary",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 50,
+    "rewardXP": 60,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"They call it relocation in the reports,\" Reya says, not looking up from the wall. \"I call it a list. He wants the list gone before anyone official has to explain the difference.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch3_reckoning_wall_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_temptation_light": {
+    "questID": "q_temptation_light",
+    "questName": "A Charge of Light",
+    "chapter": 0,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down a Pit Imp",
+        "type": "Kill",
+        "targetEnemyID": "demon_imp",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 90,
+    "rewardItemID": "saint_reliquary",
+    "alignmentChange": 15,
+    "nextQuestID": "",
+    "npcDialogueText": "A creature of the pit walks these streets wearing a stolen face. Hunt it down, and you will be counted among the just.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take up the charge",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_temptation_light_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_temptation_dark": {
+    "questID": "q_temptation_dark",
+    "questName": "A Bargain in Shadow",
+    "chapter": 0,
+    "category": "Side",
+    "difficulty": "3",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down a Sentinel of the Choir",
+        "type": "Kill",
+        "targetEnemyID": "angel_sentinel",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 90,
+    "rewardItemID": "blackened_fang",
+    "alignmentChange": -15,
+    "nextQuestID": "",
+    "npcDialogueText": "Their sentinel sniffs at your heels. Put it down for me, and I will pay in gold and in secrets.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Strike the bargain",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_temptation_dark_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch4_the_second_ledger": {
+    "questID": "q_ch4_the_second_ledger",
+    "questName": "The Second Ledger",
+    "chapter": 4,
+    "category": "Main",
+    "difficulty": "11",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Hollow Court Inquisitor who keeps the second ledger",
+        "type": "Kill",
+        "targetEnemyID": "hollow_court_inquisitor",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 200,
+    "rewardXP": 260,
+    "rewardItemID": "shield_t8",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch5_the_dead_heart",
+    "npcDialogueText": "\"There were two ledgers. The one you carry is the list of the taken. The other is the list of who did the taking — and the Inquisitor who keeps it is waiting at the bottom of the Drowned Stair.\" The archivist wipes ink from her fingers with the air of a woman who has already decided what she is willing to lose.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_the_second_ledger_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch4_ossuary_bounty": {
+    "questID": "q_ch4_ossuary_bounty",
+    "questName": "The Ossuary Bounty",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "8",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Clear three catacomb ghouls from the flooded galleries",
+        "type": "Kill",
+        "targetEnemyID": "catacomb_ghoul",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 3
+      }
+    ],
+    "rewardGold": 90,
+    "rewardXP": 120,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "\"They come up with the water and they go down with it, and in between they eat whatever the Court left behind.\" The sapper counts three coins onto the ledge. \"Three ghouls, three of these. I'm not made of coin, and neither are they.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_ossuary_bounty_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch5_the_dead_heart": {
+    "questID": "q_ch5_the_dead_heart",
+    "questName": "The Dead Heart",
+    "chapter": 5,
+    "category": "Main",
+    "difficulty": "13",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Void Archon keeping the Shroud's vigil",
+        "type": "Kill",
+        "targetEnemyID": "void_archon",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 260,
+    "rewardXP": 320,
+    "rewardItemID": "archon_mantle",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch6_beyond_the_tear",
+    "npcDialogueText": "\"The ledger ends at the tear, and something has been standing between it and the rest of the city since the night it opened.\" The chart-keeper taps the last page. \"It was one of ours, once. It will not be pleased to see the book.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_the_dead_heart_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch5_penitents_confession": {
+    "questID": "q_ch5_penitents_confession",
+    "questName": "The Penitent's Confession",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "10",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Answer the penitent Inquisitor's challenge",
+        "type": "Kill",
+        "targetEnemyID": "inquisition_penitent",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 120,
+    "rewardXP": 160,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I burned the Ashen Quarter on an order I never read. If you carry the list of the taken, then you carry my name too — and I would rather answer for it to you than to what waits at the tear.\" The penitent sets his blade between you, hilt first.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_penitents_confession_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch6_beyond_the_tear": {
+    "questID": "q_ch6_beyond_the_tear",
+    "questName": "Beyond the Tear",
+    "chapter": 6,
+    "category": "Main",
+    "difficulty": "15",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the Void Sovereign beyond the tear",
+        "type": "Kill",
+        "targetEnemyID": "void_sovereign",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 400,
+    "rewardXP": 500,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "The Eel's timbers creak against the sand. Across the water the tear stands open, and whatever knew your family's name is waiting on the other side for you to be polite enough to knock.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_beyond_the_tear_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch6_faces_of_the_fallen": {
+    "questID": "q_ch6_faces_of_the_fallen",
+    "questName": "Faces of the Fallen",
+    "chapter": 6,
+    "category": "Side",
+    "difficulty": "12",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Put down the hollow reflections that wear the faces of the fallen",
+        "type": "Kill",
+        "targetEnemyID": "hollow_reflection",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 2
+      }
+    ],
+    "rewardGold": 150,
+    "rewardXP": 200,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "",
+    "npcDialogueText": "They walk the Hollow Shore wearing faces you put down on a bridge, in a locked chamber, on the docks. None of them are glad to see you. All of them remember how it ended.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_faces_of_the_fallen_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
+  },
+  "q_ch4_tobins_vigil": {
+    "questID": "q_ch4_tobins_vigil",
+    "questName": "Brother Tobin's Vigil",
+    "chapter": 4,
+    "category": "Side",
+    "difficulty": "6",
+    "requiredAlignment": "Good",
+    "objectives": [
+      {
+        "description": "Clear a catacomb ghoul from the drowned cloister's candles with Brother Tobin",
+        "type": "Kill",
+        "targetEnemyID": "catacomb_ghoul",
+        "targetItemID": "",
+        "targetNPCName": "Tobin",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 60,
+    "rewardXP": 90,
+    "rewardItemID": "",
+    "alignmentChange": 5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I sang in the Court's choir for eleven years, and I left the night the choir was asked to sing over what the Court had done in the Ashen Quarter.\" He does not stop trimming the wick while he says it. \"These people have nothing but the candles and me. The ghouls come up out of the flood for the candles. Put one down beside me and I will know you are what they say you are, and I will carry a hammer for you as long as you keep being it.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Take the hammer's side",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch4_tobins_vigil_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "tobin"
+  },
+  "q_ch5_malriks_cut": {
+    "questID": "q_ch5_malriks_cut",
+    "questName": "Malrik's Cut",
+    "chapter": 5,
+    "category": "Side",
+    "difficulty": "7",
+    "requiredAlignment": "Evil",
+    "objectives": [
+      {
+        "description": "Put down a void hound with Malrik and prove the partnership pays",
+        "type": "Kill",
+        "targetEnemyID": "void_hound",
+        "targetItemID": "",
+        "targetNPCName": "Malrik",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 80,
+    "rewardXP": 110,
+    "rewardItemID": "",
+    "alignmentChange": -5,
+    "nextQuestID": "",
+    "npcDialogueText": "\"I know what you are. The quarter knows. That's why I'm talking to you and not to the saints.\" He turns a reliquary over in his hands the way other men turn coins. \"The hounds circle the chapel where the good stuff is. Kill one with me and I'll believe you can keep your half of a bargain, which is rarer in this city than the relics.\"",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Shake on the cut",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch5_malriks_cut_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": "malrik"
   }
 }

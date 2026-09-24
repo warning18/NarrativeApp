@@ -19,8 +19,9 @@ class AchievementsScreen extends ConsumerWidget {
       body: achievementsAsync.when(
         data: (records) {
           final keys = records.keys.toList()..sort();
-          final unlockedCount =
-              keys.where((id) => session.unlockedAchievementIds.contains(id)).length;
+          final unlockedCount = keys
+              .where((id) => session.unlockedAchievementIds.contains(id))
+              .length;
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -39,8 +40,11 @@ class AchievementsScreen extends ConsumerWidget {
                   color: unlocked ? colorScheme.primaryContainer : null,
                   child: ListTile(
                     leading: Icon(
-                      unlocked ? Icons.emoji_events : Icons.emoji_events_outlined,
-                      color: unlocked ? colorScheme.primary : colorScheme.outline,
+                      unlocked
+                          ? Icons.emoji_events
+                          : Icons.emoji_events_outlined,
+                      color:
+                          unlocked ? colorScheme.primary : colorScheme.outline,
                     ),
                     title: Text(
                       name,
@@ -49,7 +53,9 @@ class AchievementsScreen extends ConsumerWidget {
                           : TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                     subtitle: Text(description),
-                    trailing: unlocked ? const Icon(Icons.check_circle, color: Colors.green) : null,
+                    trailing: unlocked
+                        ? const Icon(Icons.check_circle, color: Colors.green)
+                        : null,
                   ),
                 );
               }),
@@ -57,8 +63,8 @@ class AchievementsScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) =>
-            Center(child: Text('${tr(ref, 'failed_to_load_achievements')}: $error')),
+        error: (error, stack) => Center(
+            child: Text('${tr(ref, 'failed_to_load_achievements')}: $error')),
       ),
     );
   }

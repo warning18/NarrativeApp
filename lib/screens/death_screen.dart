@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/combat_aftermath.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 
 /// Shown after a permadeath loss, once the player's session has already
@@ -13,11 +15,21 @@ class DeathScreen extends ConsumerWidget {
     required this.lostItemIds,
     required this.xpEarned,
     required this.nodesVisited,
+    required this.skillsLost,
+    this.killerName = '',
+    this.narrationSeed = 0,
   });
+
+  /// Who landed the last blow, for the written death above the tally.
+  final String killerName;
+  final int narrationSeed;
 
   final List<String> lostItemIds;
   final int xpEarned;
   final int nodesVisited;
+
+  /// How many unlocked skills the reset wiped back to class basics.
+  final int skillsLost;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,7 +44,8 @@ class DeathScreen extends ConsumerWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.dangerous, color: Colors.redAccent, size: 64),
+                  const Icon(Icons.dangerous,
+                      color: Colors.redAccent, size: 64),
                   const SizedBox(height: 16),
                   Text(
                     tr(ref, 'you_died_title'),
@@ -42,6 +55,21 @@ class DeathScreen extends ConsumerWidget {
                         ),
                   ),
                   const SizedBox(height: 16),
+                  Text(
+                    deathNarrationFor(
+                      killerName,
+                      french: ref.watch(appLanguageProvider) == AppLanguage.fr,
+                      seed: narrationSeed,
+                    ),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'serif',
+                      fontStyle: FontStyle.italic,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   Text(
                     tr(ref, 'you_died_message'),
                     textAlign: TextAlign.center,
@@ -67,6 +95,10 @@ class DeathScreen extends ConsumerWidget {
                           _StatLine(
                             label: tr(ref, 'items_lost_label'),
                             value: '${lostItemIds.length}',
+                          ),
+                          _StatLine(
+                            label: tr(ref, 'skills_reset_label'),
+                            value: '$skillsLost',
                           ),
                         ],
                       ),
@@ -103,7 +135,8 @@ class _StatLine extends StatelessWidget {
           Text(label, style: const TextStyle(color: Colors.white70)),
           Text(
             value,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ],
       ),

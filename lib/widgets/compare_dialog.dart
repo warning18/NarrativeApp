@@ -24,7 +24,8 @@ class CompareRow {
 /// focused on stats that actually apply to either entry.
 /// Formats [n] without float artifacts (e.g. 1.5 - 1.2 == 0.29999999999999993
 /// in double arithmetic) — whole numbers print as ints, others round to 2dp.
-String _formatNum(num n) => n == n.roundToDouble() ? n.toInt().toString() : n.toStringAsFixed(2);
+String _formatNum(num n) =>
+    n == n.roundToDouble() ? n.toInt().toString() : n.toStringAsFixed(2);
 
 Future<void> showCompareDialog(
   BuildContext context, {
@@ -34,7 +35,8 @@ Future<void> showCompareDialog(
   required String closeLabel,
   String? vsLabel,
 }) {
-  final visibleRows = rows.where((r) => r.valueA != 0 || r.valueB != 0).toList();
+  final visibleRows =
+      rows.where((r) => r.valueA != 0 || r.valueB != 0).toList();
   return showDialog<void>(
     context: context,
     builder: (context) {
@@ -86,27 +88,36 @@ Future<void> showCompareDialog(
                   final delta = row.valueB - row.valueA;
                   Color? deltaColor;
                   if (row.higherIsBetter != null && delta != 0) {
-                    final isBetter = row.higherIsBetter! ? delta > 0 : delta < 0;
+                    final isBetter =
+                        row.higherIsBetter! ? delta > 0 : delta < 0;
                     deltaColor = isBetter ? Colors.green : colorScheme.error;
                   }
-                  final deltaText =
-                      delta == 0 ? '=' : (delta > 0 ? '+${_formatNum(delta)}' : _formatNum(delta));
+                  final deltaText = delta == 0
+                      ? '='
+                      : (delta > 0
+                          ? '+${_formatNum(delta)}'
+                          : _formatNum(delta));
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Row(
                       children: [
                         Expanded(flex: 2, child: Text(row.label)),
                         Expanded(
-                          child: Text(_formatNum(row.valueA), textAlign: TextAlign.center),
+                          child: Text(_formatNum(row.valueA),
+                              textAlign: TextAlign.center),
                         ),
                         Expanded(
                           child: Column(
                             children: [
-                              Text(_formatNum(row.valueB), textAlign: TextAlign.center),
+                              Text(_formatNum(row.valueB),
+                                  textAlign: TextAlign.center),
                               Text(
                                 deltaText,
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelSmall
+                                    ?.copyWith(
                                       color: deltaColor,
                                       fontWeight: FontWeight.bold,
                                     ),

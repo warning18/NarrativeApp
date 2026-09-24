@@ -1,0 +1,16 @@
+version: 2
+updates:
+  # pub packages (pubspec.yaml) -- surfaces the "N packages have newer
+  # versions" notice CI already prints on every run as an actual PR
+  # instead of a log line nobody acts on.
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+
+  # The GitHub Actions used by build_apk.yml itself.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

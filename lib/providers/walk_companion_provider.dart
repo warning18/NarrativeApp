@@ -24,4 +24,5 @@ class WalkCompanionNotifier extends StateNotifier<bool> {
 /// screen whenever the story advances to a new node. Off by default
 /// (purely cosmetic); persisted via [SharedPreferences].
 final walkCompanionEnabledProvider =
-    StateNotifierProvider<WalkCompanionNotifier, bool>((ref) => WalkCompanionNotifier());
+    StateNotifierProvider<WalkCompanionNotifier, bool>(
+        (ref) => WalkCompanionNotifier());

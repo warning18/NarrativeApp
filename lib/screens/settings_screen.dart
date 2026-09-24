@@ -44,8 +44,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: ref.read(apiKeyProvider) ?? '');
-    _githubTokenController = TextEditingController(text: ref.read(githubTokenProvider) ?? '');
-    _companionNameController = TextEditingController(text: ref.read(companionNameProvider));
+    _githubTokenController =
+        TextEditingController(text: ref.read(githubTokenProvider) ?? '');
+    _companionNameController =
+        TextEditingController(text: ref.read(companionNameProvider));
   }
 
   @override
@@ -63,6 +65,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final palette = ref.watch(appPaletteProvider);
     final themeMode = ref.watch(themeModeProvider);
     final trembleEnabled = ref.watch(trembleEnabledProvider);
+    final combatEffectsEnabled = ref.watch(combatEffectsEnabledProvider);
+    final chestAutoOpen = ref.watch(chestAutoOpenProvider);
+    final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
+    final companionAutoTarget = ref.watch(companionAutoTargetProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
     final walkCompanionEnabled = ref.watch(walkCompanionEnabledProvider);
     final tutorial = ref.watch(tutorialProvider);
@@ -113,7 +119,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: Text(tr(ref, 'tutorial_setting_title')),
               subtitle: Text(tr(ref, 'tutorial_setting_desc')),
               value: tutorial.enabled,
-              onChanged: (value) => ref.read(tutorialProvider.notifier).setEnabled(value),
+              onChanged: (value) =>
+                  ref.read(tutorialProvider.notifier).setEnabled(value),
             ),
             Align(
               alignment: Alignment.centerLeft,
@@ -140,12 +147,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             const SizedBox(height: 12),
             SegmentedButton<AppLanguage>(
               segments: const [
-                ButtonSegment(value: AppLanguage.en, label: Text('English'), icon: Text('🇬🇧')),
-                ButtonSegment(value: AppLanguage.fr, label: Text('Français'), icon: Text('🇫🇷')),
+                ButtonSegment(
+                    value: AppLanguage.en,
+                    label: Text('English'),
+                    icon: Text('🇬🇧')),
+                ButtonSegment(
+                    value: AppLanguage.fr,
+                    label: Text('Français'),
+                    icon: Text('🇫🇷')),
               ],
               selected: {language},
               onSelectionChanged: (selection) {
-                ref.read(appLanguageProvider.notifier).setLanguage(selection.first);
+                ref
+                    .read(appLanguageProvider.notifier)
+                    .setLanguage(selection.first);
               },
             ),
             const SizedBox(height: 24),
@@ -167,7 +182,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               value: mapTheme,
               decoration: const InputDecoration(border: OutlineInputBorder()),
               items: [
-                DropdownMenuItem(value: null, child: Text(tr(ref, 'map_theme_auto_label'))),
+                DropdownMenuItem(
+                    value: null, child: Text(tr(ref, 'map_theme_auto_label'))),
                 ...MapTheme.values.map(
                   (theme) => DropdownMenuItem(
                     value: theme,
@@ -198,7 +214,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 final label = tr(ref, _paletteLabelKey(p));
                 return InkWell(
                   borderRadius: BorderRadius.circular(12),
-                  onTap: () => ref.read(appPaletteProvider.notifier).setPalette(p),
+                  onTap: () =>
+                      ref.read(appPaletteProvider.notifier).setPalette(p),
                   child: Container(
                     width: 96,
                     padding: const EdgeInsets.all(8),
@@ -220,7 +237,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                                 (color) => Container(
                                   width: 18,
                                   height: 18,
-                                  margin: const EdgeInsets.symmetric(horizontal: 1),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 1),
                                   decoration: BoxDecoration(
                                     color: color,
                                     shape: BoxShape.circle,
@@ -275,7 +293,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
               selected: {themeMode},
               onSelectionChanged: (selection) {
-                ref.read(themeModeProvider.notifier).setThemeMode(selection.first);
+                ref
+                    .read(themeModeProvider.notifier)
+                    .setThemeMode(selection.first);
               },
             ),
             const SizedBox(height: 24),
@@ -289,14 +309,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: Text(tr(ref, 'tremble_setting_title')),
               subtitle: Text(tr(ref, 'tremble_setting_desc')),
               value: trembleEnabled,
-              onChanged: (value) => ref.read(trembleEnabledProvider.notifier).setEnabled(value),
+              onChanged: (value) =>
+                  ref.read(trembleEnabledProvider.notifier).setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'combat_effects_setting_title')),
+              subtitle: Text(tr(ref, 'combat_effects_setting_desc')),
+              value: combatEffectsEnabled,
+              onChanged: (value) => ref
+                  .read(combatEffectsEnabledProvider.notifier)
+                  .setEnabled(value),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(tr(ref, 'permadeath_setting_title')),
               subtitle: Text(tr(ref, 'permadeath_setting_desc')),
               value: permadeathEnabled,
-              onChanged: (value) => ref.read(permadeathEnabledProvider.notifier).setEnabled(value),
+              onChanged: (value) => ref
+                  .read(permadeathEnabledProvider.notifier)
+                  .setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'chest_auto_open_setting_title')),
+              subtitle: Text(tr(ref, 'chest_auto_open_setting_desc')),
+              value: chestAutoOpen,
+              onChanged: (value) =>
+                  ref.read(chestAutoOpenProvider.notifier).setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'alignment_hunters_setting_title')),
+              subtitle: Text(tr(ref, 'alignment_hunters_setting_desc')),
+              value: alignmentHunters,
+              onChanged: (value) => ref
+                  .read(alignmentHuntersEnabledProvider.notifier)
+                  .setEnabled(value),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'companion_auto_target_setting_title')),
+              subtitle: Text(tr(ref, 'companion_auto_target_setting_desc')),
+              value: companionAutoTarget,
+              onChanged: (value) => ref
+                  .read(companionAutoTargetProvider.notifier)
+                  .setEnabled(value),
             ),
             const SizedBox(height: 24),
             Text(
@@ -309,8 +367,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: Text(tr(ref, 'walk_companion_setting_title')),
               subtitle: Text(tr(ref, 'walk_companion_setting_desc')),
               value: walkCompanionEnabled,
-              onChanged: (value) =>
-                  ref.read(walkCompanionEnabledProvider.notifier).setEnabled(value),
+              onChanged: (value) => ref
+                  .read(walkCompanionEnabledProvider.notifier)
+                  .setEnabled(value),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -322,11 +381,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.check),
                   tooltip: tr(ref, 'save'),
-                  onPressed: () =>
-                      ref.read(companionNameProvider.notifier).setName(_companionNameController.text),
+                  onPressed: () => ref
+                      .read(companionNameProvider.notifier)
+                      .setName(_companionNameController.text),
                 ),
               ),
-              onSubmitted: (value) => ref.read(companionNameProvider.notifier).setName(value),
+              onSubmitted: (value) =>
+                  ref.read(companionNameProvider.notifier).setName(value),
             ),
             const SizedBox(height: 24),
             Text(
@@ -344,14 +405,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               title: Text(tr(ref, 'auto_read_aloud_setting_title')),
               subtitle: Text(tr(ref, 'auto_read_aloud_setting_desc')),
               value: autoReadAloud,
-              onChanged: (value) => ref.read(autoReadAloudProvider.notifier).setEnabled(value),
+              onChanged: (value) =>
+                  ref.read(autoReadAloudProvider.notifier).setEnabled(value),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(tr(ref, 'gemini_voice_setting_title')),
               subtitle: Text(tr(ref, 'gemini_voice_setting_desc')),
               value: geminiVoice.enabled,
-              onChanged: (value) => ref.read(geminiVoiceSettingsProvider.notifier).setEnabled(value),
+              onChanged: (value) => ref
+                  .read(geminiVoiceSettingsProvider.notifier)
+                  .setEnabled(value),
             ),
             if (geminiVoice.enabled) ...[
               const SizedBox(height: 8),
@@ -365,11 +429,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   labelText: tr(ref, 'gemini_voice_picker_label'),
                 ),
                 items: geminiVoiceChoices
-                    .map((voice) => DropdownMenuItem(value: voice, child: Text(voice)))
+                    .map((voice) =>
+                        DropdownMenuItem(value: voice, child: Text(voice)))
                     .toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    ref.read(geminiVoiceSettingsProvider.notifier).setVoiceName(value);
+                    ref
+                        .read(geminiVoiceSettingsProvider.notifier)
+                        .setVoiceName(value);
                   }
                 },
               ),
@@ -396,7 +463,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
             const SizedBox(height: 12),
             OutlinedButton.icon(
-              onPressed: (_checkingUpdate || _downloading) ? null : _checkForUpdates,
+              onPressed:
+                  (_checkingUpdate || _downloading) ? null : _checkForUpdates,
               icon: _checkingUpdate
                   ? const SizedBox(
                       width: 16,
@@ -429,9 +497,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   border: const OutlineInputBorder(),
                   labelText: tr(ref, 'api_key_label'),
                   suffixIcon: IconButton(
-                    icon: Icon(_obscure ? Icons.visibility : Icons.visibility_off),
-                    tooltip:
-                        _obscure ? tr(ref, 'show_api_key_tooltip') : tr(ref, 'hide_api_key_tooltip'),
+                    icon: Icon(
+                        _obscure ? Icons.visibility : Icons.visibility_off),
+                    tooltip: _obscure
+                        ? tr(ref, 'show_api_key_tooltip')
+                        : tr(ref, 'hide_api_key_tooltip'),
                     onPressed: () => setState(() => _obscure = !_obscure),
                   ),
                 ),
@@ -485,11 +555,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   border: const OutlineInputBorder(),
                   labelText: tr(ref, 'github_token_label'),
                   suffixIcon: IconButton(
-                    icon: Icon(_obscureGithubToken ? Icons.visibility : Icons.visibility_off),
+                    icon: Icon(_obscureGithubToken
+                        ? Icons.visibility
+                        : Icons.visibility_off),
                     tooltip: _obscureGithubToken
                         ? tr(ref, 'show_token_tooltip')
                         : tr(ref, 'hide_token_tooltip'),
-                    onPressed: () => setState(() => _obscureGithubToken = !_obscureGithubToken),
+                    onPressed: () => setState(
+                        () => _obscureGithubToken = !_obscureGithubToken),
                   ),
                 ),
               ),
@@ -501,10 +574,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       onPressed: () async {
                         final token = _githubTokenController.text.trim();
                         if (token.isEmpty) return;
-                        await ref.read(githubTokenProvider.notifier).setToken(token);
+                        await ref
+                            .read(githubTokenProvider.notifier)
+                            .setToken(token);
                         if (!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(tr(ref, 'github_token_saved'))),
+                          SnackBar(
+                              content: Text(tr(ref, 'github_token_saved'))),
                         );
                       },
                       child: Text(tr(ref, 'save')),
@@ -517,7 +593,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       await ref.read(githubTokenProvider.notifier).clearToken();
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(tr(ref, 'github_token_removed'))),
+                        SnackBar(
+                            content: Text(tr(ref, 'github_token_removed'))),
                       );
                     },
                     child: Text(tr(ref, 'clear_button')),
@@ -533,7 +610,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               OutlinedButton.icon(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const PlaythroughSimulatorScreen()),
+                    MaterialPageRoute(
+                        builder: (_) => const PlaythroughSimulatorScreen()),
                   );
                 },
                 icon: const Icon(Icons.play_circle_outline),
@@ -621,22 +699,24 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ],
       ),
     );
-    final branchName =
-        branchController.text.trim().isEmpty ? defaultBranch : branchController.text.trim();
+    final branchName = branchController.text.trim().isEmpty
+        ? defaultBranch
+        : branchController.text.trim();
     branchController.dispose();
     if (confirmed != true) return;
 
     setState(() => _pushingEdits = true);
     try {
-      final result =
-          await pushEditsToGitHub(token: token, branchName: branchName, changes: changes);
+      final result = await pushEditsToGitHub(
+          token: token, branchName: branchName, changes: changes);
       if (!mounted) return;
       setState(() => _pushingEdits = false);
       await showDialog<void>(
         context: context,
         builder: (dialogContext) => AlertDialog(
           title: Text(trFor(lang, 'push_success_title')),
-          content: SelectableText('${trFor(lang, 'push_success_message')}\n\n${result.compareUrl}'),
+          content: SelectableText(
+              '${trFor(lang, 'push_success_message')}\n\n${result.compareUrl}'),
           actions: [
             TextButton(
               onPressed: () async {

@@ -13,7 +13,9 @@
       "Potion",
       "Weapon"
     ],
-    "diceStock": [],
+    "diceStock": [
+      "gambler_die"
+    ],
     "stockQuantities": {
       "potion_minor": 4,
       "sword_001": 1
@@ -28,20 +30,26 @@
     "initialStock": [
       "void_banner",
       "armor_leather",
-      "sword_001"
+      "sword_001",
+      "spellbook_venom_hex",
+      "harborwatch_lantern"
     ],
     "merchantSpecialties": [
       "Artifact",
       "Armor",
-      "Weapon"
+      "Weapon",
+      "Spellbook"
     ],
     "diceStock": [
-      "storm_die"
+      "storm_die",
+      "frost_die"
     ],
     "stockQuantities": {
       "void_banner": 1,
       "armor_leather": 1,
-      "sword_001": 1
+      "sword_001": 1,
+      "spellbook_venom_hex": 1,
+      "harborwatch_lantern": 1
     }
   },
   "weaponsmith_forge": {
@@ -59,10 +67,14 @@
       "spear_t3",
       "dagger_t1",
       "dagger_t2",
-      "dagger_t3"
+      "dagger_t3",
+      "spellbook_war_shout",
+      "spellbook_hunters_mark",
+      "harborwatch_cutlass"
     ],
     "merchantSpecialties": [
-      "Weapon"
+      "Weapon",
+      "Spellbook"
     ],
     "diceStock": [
       "iron_die",
@@ -77,7 +89,10 @@
       "spear_t3": 1,
       "dagger_t1": 1,
       "dagger_t2": 1,
-      "dagger_t3": 1
+      "dagger_t3": 1,
+      "spellbook_war_shout": 1,
+      "spellbook_hunters_mark": 1,
+      "harborwatch_cutlass": 1
     }
   },
   "shieldwrights_hall": {
@@ -91,7 +106,8 @@
       "shield_t2",
       "shield_t3",
       "shield_t4",
-      "shield_t5"
+      "shield_t5",
+      "harborwatch_coat"
     ],
     "merchantSpecialties": [
       "Weapon"
@@ -104,7 +120,8 @@
       "shield_t2": 1,
       "shield_t3": 1,
       "shield_t4": 1,
-      "shield_t5": 1
+      "shield_t5": 1,
+      "harborwatch_coat": 1
     }
   },
   "arcane_bazaar": {
@@ -120,16 +137,20 @@
       "staff_t4",
       "staff_t5",
       "scroll_fireball",
-      "artifact_moon_shard"
+      "artifact_moon_shard",
+      "spellbook_frost_bind",
+      "siphon_wand"
     ],
     "merchantSpecialties": [
       "Weapon",
       "Scroll",
-      "Artifact"
+      "Artifact",
+      "Spellbook"
     ],
     "diceStock": [
       "arcane_die",
-      "flame_die"
+      "flame_die",
+      "apprentice_die"
     ],
     "stockQuantities": {
       "staff_t1": 1,
@@ -138,7 +159,9 @@
       "staff_t4": 1,
       "staff_t5": 1,
       "scroll_fireball": 4,
-      "artifact_moon_shard": 1
+      "artifact_moon_shard": 1,
+      "spellbook_frost_bind": 1,
+      "siphon_wand": 1
     }
   },
   "apothecary_row": {
@@ -150,11 +173,13 @@
     "initialStock": [
       "potion_minor",
       "potion_major",
-      "material_iron_ore"
+      "material_iron_ore",
+      "spellbook_sanctified_ground"
     ],
     "merchantSpecialties": [
       "Potion",
-      "Material"
+      "Material",
+      "Spellbook"
     ],
     "diceStock": [
       "tide_die",
@@ -163,32 +188,29 @@
     "stockQuantities": {
       "potion_minor": 4,
       "potion_major": 4,
-      "material_iron_ore": 4
+      "material_iron_ore": 4,
+      "spellbook_sanctified_ground": 1
     }
   },
   "smugglers_vault": {
     "shopID": "smugglers_vault",
     "shopName": "The Smugglers' Vault",
-    "shopDescription": "A hidden cache of the finest contraband steel and relics money can buy.",
+    "shopDescription": "A hidden cache of contraband steel a cut above anything the harbor forges will admit to selling, and one relic nobody will admit to owning.",
     "unlockLevel": 5,
     "buildCost": 400,
     "initialStock": [
-      "sword_t8",
-      "sword_t9",
-      "sword_t10",
-      "spear_t8",
-      "spear_t9",
-      "spear_t10",
-      "dagger_t8",
-      "dagger_t9",
-      "dagger_t10",
-      "shield_t8",
-      "shield_t9",
-      "shield_t10",
-      "staff_t8",
-      "staff_t9",
-      "staff_t10",
-      "void_banner"
+      "sword_t6",
+      "sword_t7",
+      "spear_t6",
+      "spear_t7",
+      "dagger_t6",
+      "dagger_t7",
+      "shield_t6",
+      "shield_t7",
+      "staff_t6",
+      "staff_t7",
+      "void_banner",
+      "bloodthorn_blade"
     ],
     "merchantSpecialties": [
       "Weapon",
@@ -199,22 +221,194 @@
       "void_die"
     ],
     "stockQuantities": {
+      "sword_t6": 1,
+      "sword_t7": 1,
+      "spear_t6": 1,
+      "spear_t7": 1,
+      "dagger_t6": 1,
+      "dagger_t7": 1,
+      "shield_t6": 1,
+      "shield_t7": 1,
+      "staff_t6": 1,
+      "staff_t7": 1,
+      "void_banner": 1,
+      "bloodthorn_blade": 1
+    }
+  },
+  "hammersmith_forge": {
+    "shopID": "hammersmith_forge",
+    "shopName": "The Hammersmith's Forge",
+    "shopDescription": "Where the Weaponsmith sends the blades and shields too heavy for anyone but a real hammersmith to finish.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "sword_t6",
+      "sword_t7",
+      "sword_t8",
+      "sword_t9",
+      "sword_t10",
+      "spear_t6",
+      "spear_t7",
+      "spear_t8",
+      "spear_t9",
+      "spear_t10",
+      "shield_t6",
+      "shield_t7",
+      "shield_t8",
+      "shield_t9",
+      "shield_t10",
+      "thornmail_hauberk"
+    ],
+    "merchantSpecialties": [
+      "Weapon"
+    ],
+    "diceStock": [
+      "bulwark_die"
+    ],
+    "stockQuantities": {
+      "sword_t6": 1,
+      "sword_t7": 1,
       "sword_t8": 1,
       "sword_t9": 1,
       "sword_t10": 1,
+      "spear_t6": 1,
+      "spear_t7": 1,
       "spear_t8": 1,
       "spear_t9": 1,
       "spear_t10": 1,
-      "dagger_t8": 1,
-      "dagger_t9": 1,
-      "dagger_t10": 1,
+      "shield_t6": 1,
+      "shield_t7": 1,
       "shield_t8": 1,
       "shield_t9": 1,
       "shield_t10": 1,
+      "thornmail_hauberk": 1
+    }
+  },
+  "arcane_academy": {
+    "shopID": "arcane_academy",
+    "shopName": "The Arcane Academy",
+    "shopDescription": "Past the Bazaar's incense stalls, a real academy: staves bound with old wardings, for hands trained enough to hold them.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "staff_t6",
+      "staff_t7",
+      "staff_t8",
+      "staff_t9",
+      "staff_t10",
+      "spellbook_ember_wave"
+    ],
+    "merchantSpecialties": [
+      "Weapon",
+      "Spellbook"
+    ],
+    "diceStock": [
+      "sage_die",
+      "tempest_die"
+    ],
+    "stockQuantities": {
+      "staff_t6": 1,
+      "staff_t7": 1,
       "staff_t8": 1,
       "staff_t9": 1,
       "staff_t10": 1,
-      "void_banner": 1
+      "spellbook_ember_wave": 1
+    }
+  },
+  "sharpweave_den": {
+    "shopID": "sharpweave_den",
+    "shopName": "Sharpweave Den",
+    "shopDescription": "No sign, no stall -- just a door that opens if you already know it's there, and the finest edges in the city behind it.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "dagger_t6",
+      "dagger_t7",
+      "dagger_t8",
+      "dagger_t9",
+      "dagger_t10"
+    ],
+    "merchantSpecialties": [
+      "Weapon"
+    ],
+    "diceStock": [
+      "twinfang_die"
+    ],
+    "stockQuantities": {
+      "dagger_t6": 1,
+      "dagger_t7": 1,
+      "dagger_t8": 1,
+      "dagger_t9": 1,
+      "dagger_t10": 1
+    }
+  },
+  "ossuary_relics": {
+    "shopID": "ossuary_relics",
+    "shopName": "The Ossuary Trade",
+    "shopDescription": "Relics, salves and second-hand steel laid out on a shelf of skulls by a deserter who no longer asks where anything came from.",
+    "unlockLevel": 8,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "antidote",
+      "charm_warding",
+      "tome_of_insight",
+      "sword_t8",
+      "shield_t8",
+      "hollow_court_blade"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Artifact"
+    ],
+    "diceStock": [
+      "sage_die"
+    ],
+    "stockQuantities": {
+      "potion_major": 4,
+      "antidote": 3,
+      "charm_warding": 2,
+      "tome_of_insight": 1,
+      "sword_t8": 1,
+      "shield_t8": 1,
+      "hollow_court_blade": 1
+    }
+  },
+  "last_lantern": {
+    "shopID": "last_lantern",
+    "shopName": "The Last Lantern",
+    "shopDescription": "The last stall still lit in the Reliquary Quarter, selling whatever might keep a body alive one street closer to the tear.",
+    "unlockLevel": 10,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "charm_lucky_coin",
+      "charm_fourth_roll",
+      "tome_of_mastery",
+      "staff_t9",
+      "dagger_t9",
+      "spellbook_smite_the_wicked",
+      "hollow_court_mantle",
+      "phoenix_sigil"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Artifact",
+      "Spellbook"
+    ],
+    "diceStock": [
+      "pilgrim_die"
+    ],
+    "stockQuantities": {
+      "potion_major": 6,
+      "charm_lucky_coin": 2,
+      "charm_fourth_roll": 2,
+      "tome_of_mastery": 1,
+      "staff_t9": 1,
+      "dagger_t9": 1,
+      "spellbook_smite_the_wicked": 1,
+      "hollow_court_mantle": 1,
+      "phoenix_sigil": 1
     }
   }
 }

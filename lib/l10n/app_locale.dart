@@ -24,4 +24,5 @@ class AppLanguageNotifier extends StateNotifier<AppLanguage> {
 }
 
 final appLanguageProvider =
-    StateNotifierProvider<AppLanguageNotifier, AppLanguage>((ref) => AppLanguageNotifier());
+    StateNotifierProvider<AppLanguageNotifier, AppLanguage>(
+        (ref) => AppLanguageNotifier());
