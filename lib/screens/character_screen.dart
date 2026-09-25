@@ -162,7 +162,6 @@ class _CharacterHeader extends ConsumerWidget {
     final xpFraction = session.xpToNextLevel <= 0
         ? 0.0
         : (session.currentXP / session.xpToNextLevel).clamp(0.0, 1.0);
-    final points = session.statPoints + session.skillPoints;
 
     Widget vital(String label, String value, Color color) => Expanded(
           child: Container(
@@ -268,24 +267,41 @@ class _CharacterHeader extends ConsumerWidget {
         ),
         const SizedBox(height: 14),
         _AlignmentBar(score: session.alignmentScore),
-        if (points > 0) ...[
-          const SizedBox(height: 14),
-          FilledButton(
-            key: const Key('character_level_up'),
-            style:
-                FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const LevelUpScreen()),
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                    child: Text('$points ${tr(ref, 'badge_points_waiting')}')),
-                Text(tr(ref, 'level_up')),
-              ],
-            ),
+        // Stat points are spent on Level Up, skill points on Skills: a
+        // button for each kind waiting.
+        for (final (count, labelKey, key, screen) in [
+          (
+            session.statPoints,
+            'level_up',
+            'character_level_up',
+            const LevelUpScreen() as Widget
           ),
-        ],
+          (
+            session.skillPoints,
+            'skills',
+            'character_skills',
+            const SkillsScreen() as Widget
+          ),
+        ])
+          if (count > 0) ...[
+            const SizedBox(height: 10),
+            FilledButton(
+              key: Key(key),
+              style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48)),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => screen),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Text(
+                          '$count ${tr(ref, key == 'character_skills' ? 'skill_points_label' : 'stat_points_label')}')),
+                  Text(tr(ref, labelKey)),
+                ],
+              ),
+            ),
+          ],
         const SizedBox(height: 14),
         GridView.count(
           crossAxisCount: 4,

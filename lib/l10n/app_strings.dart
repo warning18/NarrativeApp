@@ -207,14 +207,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
   'world_map_title': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'world_map_semantics': {
-    AppLanguage.en: 'Pixel map of the places the story has reached',
-    AppLanguage.fr: 'Carte en pixels des lieux atteints par l’histoire',
+    AppLanguage.en: 'Chart of the places the story has reached',
+    AppLanguage.fr: 'Carte des lieux atteints par l’histoire',
   },
   'world_map_hint': {
     AppLanguage.en:
         'Places appear as the story reaches them. Tap one to read about it. Pinch, double-tap or use + and − to zoom.',
     AppLanguage.fr:
         'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus. Pincez, touchez deux fois ou utilisez + et − pour zoomer.',
+  },
+  'world_map_shape': {
+    AppLanguage.en: 'Map geography',
+    AppLanguage.fr: 'Géographie de la carte',
   },
   'world_map_look': {
     AppLanguage.en: 'Map style',

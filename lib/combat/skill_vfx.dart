@@ -184,7 +184,7 @@ VfxPalette paletteFor(VfxStyle style, String element) {
     case VfxStyle.poison:
       return const VfxPalette(0xFF66BB6A, 0xFFC5E1A5);
     case VfxStyle.mana:
-      return const VfxPalette(0xFF42A5F5, 0xFFB388FF);
+      return const VfxPalette(0xFF3FA3A8, 0xFFB388FF);
     case VfxStyle.stun:
     case VfxStyle.crit:
       return const VfxPalette(0xFFFFD54F, 0xFFFFFFFF);

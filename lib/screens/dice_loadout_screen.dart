@@ -430,7 +430,10 @@ class _SkillChip extends StatelessWidget {
         avatar: Icon(elementIcon(element),
             size: 18,
             color: elementColor(element,
-                plain: Theme.of(context).colorScheme.tertiary)),
+                plain: Theme.of(context).colorScheme.tertiary,
+                ink: Theme.of(context).brightness == Brightness.light
+                    ? Theme.of(context).colorScheme.onSurface
+                    : null)),
         label: Text(label),
       ),
     );

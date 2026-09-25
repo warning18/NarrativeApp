@@ -92,7 +92,7 @@ class Landmark {
   /// companion who turns on you at the end).
   final List<String> fights;
 
-  /// Out on the water: no land is raised under it.
+  /// Out on the water: the chart puts it at sea and draws no house for it.
   final bool atSea;
 
   /// Drawn at twice the size.

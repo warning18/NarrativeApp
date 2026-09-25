@@ -92,6 +92,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
         requiredFlags: requiredFlagsOf(house));
+    if (!mounted) return;
     // Nothing to tell if it did not go up (the purse or the flags changed
     // under the button).
     if (!ref.read(playerSessionProvider).builtHouseIds.contains(houseId)) {
@@ -169,7 +170,7 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     final additionCount = session.townPieces.where(isTownAddition).length;
 
     final screenHeight = MediaQuery.sizeOf(context).height;
-    final townHeight = (screenHeight * 0.5).clamp(280.0, 480.0);
+    final townHeight = (screenHeight * 0.42).clamp(260.0, 420.0);
 
     Widget card({
       required String id,

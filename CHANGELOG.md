@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.142.0+171]
+
+### Fixed
+- **Full review pass on the Stitched Ink branch.** The traveller on the
+  chart no longer has a place name drawn over it. Houses are drawn only
+  for places already reached, and switching the map's geography mid-walk
+  stops the walk instead of letting it jump. The chapter title in the
+  Story header shrinks to fit at large text sizes. A locked choice's
+  cost tags fade along with the card. The map's style and geography
+  toggles are announced by name to screen readers. Stale "pixel map"
+  wording is gone from the map's description and comments.
+
 ## [1.141.0+170]
 
 ### Fixed

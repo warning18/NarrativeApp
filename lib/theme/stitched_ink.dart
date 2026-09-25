@@ -260,7 +260,7 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     textTheme: textTheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: [colors],
-    dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
+    dividerTheme: DividerThemeData(color: scheme.outlineVariant),
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
       foregroundColor: scheme.onSurface,
@@ -347,11 +347,9 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     chipTheme: ChipThemeData(
       shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
       side: seamSide,
-      labelStyle: TextStyle(
-        fontFamily: InkFonts.system,
-        fontSize: 12,
-        color: scheme.onSurface,
-      ),
+      // Font and size only: the chip keeps its own colours for selected
+      // and disabled.
+      labelStyle: const TextStyle(fontFamily: InkFonts.system, fontSize: 12),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: scheme.surfaceContainer,
@@ -467,37 +465,6 @@ class StitchedEdgePainter extends CustomPainter {
   @override
   bool shouldRepaint(StitchedEdgePainter oldDelegate) =>
       oldDelegate.color != color || oldDelegate.width != width;
-}
-
-/// A dashed horizontal rule: the seam between two parts of a page.
-class StitchRule extends StatelessWidget {
-  const StitchRule({super.key, this.color});
-
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = color ?? Theme.of(context).colorScheme.outlineVariant;
-    return SizedBox(
-      height: 1,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final count = (constraints.maxWidth / 8).floor();
-          return Row(
-            children: List.generate(
-              count,
-              (_) => Container(
-                width: 4,
-                height: 1,
-                margin: const EdgeInsets.only(right: 4),
-                color: c,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 }
 
 /// A small tag in the system face: a choice's cost ("+20 G"), a rarity,

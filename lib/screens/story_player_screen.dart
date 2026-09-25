@@ -1801,7 +1801,7 @@ class _ChoiceButton extends ConsumerWidget {
                       ),
                     ],
                   )
-                : _ChoiceLabel(label: label, choice: choice),
+                : _ChoiceLabel(label: label, choice: choice, locked: locked),
       ),
     );
   }
@@ -1810,10 +1810,17 @@ class _ChoiceButton extends ConsumerWidget {
 /// A plain choice's text, with what it costs or brings underneath as
 /// small tags ("+20 gold", "−10 HP", "Alignment −1").
 class _ChoiceLabel extends ConsumerWidget {
-  const _ChoiceLabel({required this.label, required this.choice});
+  const _ChoiceLabel({
+    required this.label,
+    required this.choice,
+    this.locked = false,
+  });
 
   final String label;
   final StoryChoice choice;
+
+  /// A choice the player can't take yet: its tags fade with the card.
+  final bool locked;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1843,7 +1850,10 @@ class _ChoiceLabel extends ConsumerWidget {
       children: [
         Text(label),
         const SizedBox(height: 6),
-        Wrap(spacing: 6, runSpacing: 4, children: tags),
+        Opacity(
+          opacity: locked ? 0.45 : 1,
+          child: Wrap(spacing: 6, runSpacing: 4, children: tags),
+        ),
       ],
     );
   }

@@ -623,6 +623,13 @@ class _SkillList extends ConsumerWidget {
             color: firstCompareId == id
                 ? Theme.of(context).colorScheme.tertiaryContainer
                 : null,
+            shape: firstCompareId == id
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4),
+                    side: BorderSide(
+                        color: Theme.of(context).colorScheme.tertiary),
+                  )
+                : null,
             child: ListTile(
               leading: SkillPixelIcon(id),
               title: Text(skillDisplayName(id,

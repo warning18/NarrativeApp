@@ -111,6 +111,12 @@ class ChartMapPainter extends CustomPainter {
     final taken = <Rect>[
       for (final l in reached)
         Rect.fromCircle(center: geography.of(l), radius: l.big ? 4.5 : 3.5),
+      // The traveller and the pin over them, where the story stands.
+      if (standing != null && !walking)
+        () {
+          final (x, y) = spotOn(geography, standing);
+          return Rect.fromLTRB(x - 2.5, y - 12.5, x + 2.5, y + 0.5);
+        }(),
     ];
     bool fits(Rect r) =>
         bounds.contains(r.topLeft) &&
@@ -275,7 +281,8 @@ class ChartMapPainter extends CustomPainter {
     // Roofs about the places on land.
     final roofs = Paint()..color = palette.roofs;
     for (final l in worldMapLandmarks) {
-      if (l.atSea) continue;
+      // Only about places reached: the fog must not give the rest away.
+      if (l.atSea || !discovered.contains(l.id)) continue;
       final p = geography.of(l);
       final seed = l.id.codeUnits.fold(0, (a, b) => a * 31 + b);
       for (var i = 0; i < 3; i++) {

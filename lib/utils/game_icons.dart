@@ -67,10 +67,13 @@ IconData elementIcon(String? element) {
 }
 
 /// The colour of [element], as its skills' effects are drawn (see
-/// skill_vfx.dart); a skill with no element takes [plain].
-Color elementColor(String? element, {required Color plain}) {
+/// skill_vfx.dart); a skill with no element takes [plain]. On a light
+/// page, pass its text colour as [ink]: the pale elements (Light, Ice,
+/// Wind) are darkened toward it so they still show.
+Color elementColor(String? element, {required Color plain, Color? ink}) {
   if (element == null || element == 'None') return plain;
-  return Color(paletteForElement(element).primary);
+  final color = Color(paletteForElement(element).primary);
+  return ink == null ? color : Color.lerp(ink, color, 0.6)!;
 }
 
 IconData questCategoryIcon(String? category) {

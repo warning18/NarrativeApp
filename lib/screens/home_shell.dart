@@ -212,7 +212,8 @@ class _CampTab extends ConsumerWidget {
 
 /// The Story tab's header in play: the chapter the story is in, its
 /// number over its name, in the chapter's colour. The prologue shows
-/// [fallback].
+/// [fallback], and so does a chapter title with no name after its colon.
+/// Large text sizes shrink it to fit the app bar rather than overflow.
 class _ChapterTitle extends ConsumerWidget {
   const _ChapterTitle({required this.fallback});
 
@@ -228,24 +229,28 @@ class _ChapterTitle extends ConsumerWidget {
     final label = split < 0 ? title : title.substring(0, split).trim();
     final name = split < 0 ? fallback : title.substring(split + 1).trim();
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          label.toUpperCase(),
-          style: theme.textTheme.labelSmall?.copyWith(
-            letterSpacing: 1.5,
-            color: theme.brightness == Brightness.dark
-                ? chapter.dark
-                : chapter.light,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label.toUpperCase(),
+            style: theme.textTheme.labelSmall?.copyWith(
+              letterSpacing: 1.5,
+              color: theme.brightness == Brightness.dark
+                  ? chapter.dark
+                  : chapter.light,
+            ),
           ),
-        ),
-        Text(name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: theme.appBarTheme.titleTextStyle?.copyWith(fontSize: 19)),
-      ],
+          Text(name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.appBarTheme.titleTextStyle?.copyWith(fontSize: 19)),
+        ],
+      ),
     );
   }
 }

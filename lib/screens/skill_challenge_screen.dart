@@ -91,8 +91,7 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                '${tr(ref, 'skill_challenge_title')} · $abilityLabel'
-                    .toUpperCase(),
+                abilityLabel.toUpperCase(),
                 style: theme.textTheme.labelMedium
                     ?.copyWith(color: ink.ember, letterSpacing: 1.5),
               ),
@@ -123,10 +122,13 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
               _D20(
                 roll: latest?.check.roll,
                 success: latest?.success,
+                // Smaller on a short screen, so the rounds keep room.
+                size: (MediaQuery.sizeOf(context).height * 0.18)
+                    .clamp(84.0, 150.0),
               ),
               const SizedBox(height: 10),
               Text(
@@ -210,10 +212,11 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
 /// The d20: a hexagon face with the latest roll on it, gold for a
 /// success, the error colour for a failure, plain before the first roll.
 class _D20 extends StatelessWidget {
-  const _D20({this.roll, this.success});
+  const _D20({this.roll, this.success, this.size = 150});
 
   final int? roll;
   final bool? success;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -226,8 +229,8 @@ class _D20 extends StatelessWidget {
             : theme.colorScheme.error;
     return Center(
       child: SizedBox(
-        width: 150,
-        height: 150,
+        width: size,
+        height: size,
         child: CustomPaint(
           painter: _D20Painter(
               edge: edge,
@@ -235,10 +238,11 @@ class _D20 extends StatelessWidget {
               facet: ink.seam),
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 14),
+              padding: EdgeInsets.only(top: size * 0.09),
               child: Text(
                 roll?.toString() ?? '20',
                 style: theme.textTheme.displaySmall?.copyWith(
+                  fontSize: size * 0.24,
                   fontFamily: InkFonts.system,
                   fontWeight: FontWeight.w600,
                   color: roll == null ? ink.ash : edge,

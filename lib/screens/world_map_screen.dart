@@ -62,7 +62,7 @@ class _Tokens {
 String _lookName(WidgetRef ref, MapLook look) =>
     tr(ref, 'world_map_look_${look.name}');
 
-/// The story's world as a pixel map, for play mode: the places the story
+/// The story's world as a drawn chart, for play mode: the places the story
 /// has reached, the road the player walked between them, the player
 /// walking what they have done since the map last showed, and fog over
 /// the rest. Tapping a place tells what happens there.
@@ -143,7 +143,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // The water glints, the embers flicker and the road's dashes move,
+    // The traveller walks and the road's dashes move,
     // unless the device asks for less motion.
     _reduceMotion = MediaQuery.of(context).disableAnimations;
     if (_reduceMotion) {
@@ -287,7 +287,13 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final look = ref.watch(mapLookProvider);
     final palette = ChartPalette.of(look);
     final shape = ref.watch(mapShapeProvider);
-    _geo = chartOf(shape);
+    final geo = chartOf(shape);
+    // A walk on the old geography would leave the road: it stops.
+    if (!identical(geo, _geo) && _walking) {
+      _walk.stop();
+      _walking = false;
+    }
+    _geo = geo;
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     final visited = {...play.visitedNodeIds, play.currentNodeId};
@@ -329,6 +335,13 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final tokens = dark ? _Tokens.dark : _Tokens.light;
     Color chapterColor(int n) =>
         dark ? mapChapter(n).dark : mapChapter(n).light;
+    // On the chart the colour follows the chart's own ground: the night
+    // look is dark, the parchment light, and the Shroud has no colour.
+    Color chartChapterColor(int n) => switch (look) {
+          MapLook.night => mapChapter(n).dark,
+          MapLook.parchment => mapChapter(n).light,
+          MapLook.shroud => const Color(0xFFA3A3AA),
+        };
 
     Widget mapBox(double width) {
       final inner = width - 8;
@@ -372,7 +385,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                       walkPath: _walkPath,
                       chapterFilter: _chapterFilter,
                       reduceMotion: _reduceMotion,
-                      chapterColor: chapterColor,
+                      chapterColor: chartChapterColor,
                     ),
                   ),
                 ),
@@ -403,82 +416,91 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
         // The three looks side by side, the one shown picked out.
         FittedBox(
           fit: BoxFit.scaleDown,
-          child: Container(
-            key: const Key('world_map_look'),
-            height: 36,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: tokens.line),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final option in MapLook.values)
-                  Semantics(
-                    button: true,
-                    selected: option == look,
-                    child: InkWell(
-                      key: Key('world_map_look_${option.name}'),
-                      onTap: () =>
-                          ref.read(mapLookProvider.notifier).choose(option),
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color:
-                            option == look ? tokens.line : Colors.transparent,
-                        child: Text(_lookName(ref, option),
-                            style: TextStyle(
-                                fontFamily: _pixelFont,
-                                fontSize: 14,
-                                color: option == look
-                                    ? tokens.ink
-                                    : tokens.muted)),
+          child: Semantics(
+            container: true,
+            label: tr(ref, 'world_map_look'),
+            child: Container(
+              key: const Key('world_map_look'),
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: tokens.line),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final option in MapLook.values)
+                    Semantics(
+                      button: true,
+                      selected: option == look,
+                      child: InkWell(
+                        key: Key('world_map_look_${option.name}'),
+                        onTap: () =>
+                            ref.read(mapLookProvider.notifier).choose(option),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color:
+                              option == look ? tokens.line : Colors.transparent,
+                          child: Text(_lookName(ref, option),
+                              style: TextStyle(
+                                  fontFamily: _pixelFont,
+                                  fontSize: 14,
+                                  color: option == look
+                                      ? tokens.ink
+                                      : tokens.muted)),
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
         // The three geographies the chart can be drawn on.
         FittedBox(
           fit: BoxFit.scaleDown,
-          child: Container(
-            key: const Key('world_map_shape'),
-            height: 36,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(color: tokens.line),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final option in MapShape.values)
-                  Semantics(
-                    button: true,
-                    selected: option == shape,
-                    child: InkWell(
-                      key: Key('world_map_shape_${option.name}'),
-                      onTap: () =>
-                          ref.read(mapShapeProvider.notifier).choose(option),
-                      child: Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color:
-                            option == shape ? tokens.line : Colors.transparent,
-                        child: Text(tr(ref, 'world_map_shape_${option.name}'),
-                            style: TextStyle(
-                                fontFamily: _pixelFont,
-                                fontSize: 14,
-                                color: option == shape
-                                    ? tokens.ink
-                                    : tokens.muted)),
+          child: Semantics(
+            container: true,
+            label: tr(ref, 'world_map_shape'),
+            child: Container(
+              key: const Key('world_map_shape'),
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: tokens.line),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final option in MapShape.values)
+                    Semantics(
+                      button: true,
+                      selected: option == shape,
+                      child: InkWell(
+                        key: Key('world_map_shape_${option.name}'),
+                        onTap: () =>
+                            ref.read(mapShapeProvider.notifier).choose(option),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color: option == shape
+                              ? tokens.line
+                              : Colors.transparent,
+                          child: Text(tr(ref, 'world_map_shape_${option.name}'),
+                              style: TextStyle(
+                                  fontFamily: _pixelFont,
+                                  fontSize: 14,
+                                  color: option == shape
+                                      ? tokens.ink
+                                      : tokens.muted)),
+                        ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
