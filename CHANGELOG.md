@@ -8,6 +8,32 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.140.0+169]
+
+The world map is redrawn as a chart in the Stitched Ink design, on the
+geography of your choice.
+
+### Added
+- **Three geographies.** Under the map: *Continent* (one land round an
+  inland sea, Alster on its west arm, the Ashen Coast on the east, the
+  Hollow Cape to the north), *Archipelago* (Alster an island, the later
+  chapters on isles across open water) and *Delta* (Alster upstream on a
+  great river whose mouths fan into the Grey Bay, the later chapters on
+  the far bank). Chosen under the map and remembered.
+
+### Changed
+- **The map is a chart.** Sea and land with smooth coasts, rivers, small
+  roofs about each place, the road walked in moving gold dashes, a dotted
+  way on to the next place, the places reached in their chapter's
+  colour, the tear's places in violet, and fog over what the story has
+  not reached. Regions are named once reached and marked uncharted
+  before.
+- **Names find their own place.** Each place's name goes right, left,
+  above or below its mark, wherever it stays inside the chart and clear
+  of the others; region names only show where they fit.
+- The three looks (Night, Parchment, Shroud) colour the chart; the
+  traveller and the pin still walk the road.
+
 ## [1.139.0+168]
 
 The camp becomes a town on the cliff, and the story, character, skill

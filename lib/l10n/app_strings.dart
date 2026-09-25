@@ -221,6 +221,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Style de carte',
   },
   'world_map_look_night': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'world_map_shape_continental': {
+    AppLanguage.en: 'Continent',
+    AppLanguage.fr: 'Continent'
+  },
+  'world_map_shape_archipelago': {
+    AppLanguage.en: 'Archipelago',
+    AppLanguage.fr: 'Archipel'
+  },
+  'world_map_shape_delta': {AppLanguage.en: 'Delta', AppLanguage.fr: 'Delta'},
   'world_map_look_parchment': {
     AppLanguage.en: 'Parchment',
     AppLanguage.fr: 'Parchemin',
