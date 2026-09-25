@@ -118,6 +118,42 @@ void main() {
     });
   });
 
+  group('costs', () {
+    final branches =
+        skillBranchesFor(trees, raceId: 'human', professionId: 'warrior');
+
+    test('the deeper on a branch, the dearer', () {
+      expect(branchSkillPointCosts, [1, 1, 2, 3]);
+      expect(skillPointCostOf('power_strike', branches), 1);
+      expect(skillPointCostOf('guard_break', branches), 1);
+      expect(skillPointCostOf('warrior_whirlwind', branches), 2);
+      expect(skillPointCostOf('warrior_execute', branches), 3);
+      // A reputation skill, off the tree, is one point.
+      expect(skillPointCostOf('zealous_conviction', branches), 1);
+    });
+
+    test('learning spends the cost, and waits when the points are short',
+        () async {
+      final notifier = await notifierWith(baseSession(skillPoints: 2));
+      await notifier.unlockSkill('warrior_execute', cost: 3);
+      expect(
+          notifier.state.unlockedSkillIds, isNot(contains('warrior_execute')));
+      expect(notifier.state.skillPoints, 2);
+      await notifier.unlockSkill('warrior_whirlwind', cost: 2);
+      expect(notifier.state.unlockedSkillIds, contains('warrior_whirlwind'));
+      expect(notifier.state.skillPoints, 0);
+    });
+
+    test('a whole tree costs more than a run earns', () {
+      // Two full class branches, the heritage and a mastery fit in about
+      // twenty points; the third branch is a choice.
+      final classBranch = branchSkillPointCosts.fold<int>(0, (a, b) => a + b);
+      final heritage =
+          branchSkillPointCosts.take(3).fold<int>(0, (a, b) => a + b);
+      expect(3 * classBranch + heritage + branchMasteryCost, greaterThan(24));
+    });
+  });
+
   group('mastery', () {
     final branches =
         skillBranchesFor(trees, raceId: 'human', professionId: 'warrior');

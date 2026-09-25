@@ -2235,12 +2235,16 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> unlockSkill(String skillId) async {
-    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId)) {
+  /// Learns [skillId] for [cost] skill points (its place on its branch,
+  /// see skill_tree.dart's skillPointCostOf); no-op when short or known.
+  Future<void> unlockSkill(String skillId, {int cost = 1}) async {
+    if (cost < 1 ||
+        state.skillPoints < cost ||
+        state.unlockedSkillIds.contains(skillId)) {
       return;
     }
     state = state.copyWith(
-      skillPoints: state.skillPoints - 1,
+      skillPoints: state.skillPoints - cost,
       unlockedSkillIds: [...state.unlockedSkillIds, skillId],
     );
     await _persist();

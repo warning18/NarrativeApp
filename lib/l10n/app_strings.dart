@@ -1305,9 +1305,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'skill_list_view': {AppLanguage.en: 'List', AppLanguage.fr: 'Liste'},
   'skill_tree_intro': {
     AppLanguage.en:
-        'Each branch is learned from the top down, one point a skill. Learn a whole branch of your class to master it: its skills then fight a tier higher. Only one branch can be mastered, so choose your path.',
+        'Each branch is learned from the top down, and the deeper the dearer: 1, 1, 2, then 3 points. Learn a whole branch of your class to master it: its skills then fight a tier higher. There are points for about two branches and one mastery, so choose your path.',
     AppLanguage.fr:
-        'Chaque branche s’apprend de haut en bas, un point par compétence. Apprenez toute une branche de votre classe pour la maîtriser : ses compétences combattent alors un rang au-dessus. Une seule branche peut être maîtrisée : choisissez votre voie.',
+        'Chaque branche s’apprend de haut en bas, et plus on descend, plus c’est cher : 1, 1, 2, puis 3 points. Apprenez toute une branche de votre classe pour la maîtriser : ses compétences combattent alors un rang au-dessus. Les points suffisent pour environ deux branches et une maîtrise : choisissez votre voie.',
   },
   'skill_tree_mastered': {
     AppLanguage.en:
@@ -1322,6 +1322,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'learn_for_point': {
     AppLanguage.en: 'Learn (1 point)',
     AppLanguage.fr: 'Apprendre (1 point)',
+  },
+  'learn_for_points': {
+    AppLanguage.en: 'Learn ({n} points)',
+    AppLanguage.fr: 'Apprendre ({n} points)',
+  },
+  'skill_points_needed': {
+    AppLanguage.en: 'Needs {n} skill points',
+    AppLanguage.fr: 'Il faut {n} points de compétence',
+  },
+  'skill_point_cost_one': {
+    AppLanguage.en: '1 skill point',
+    AppLanguage.fr: '1 point de compétence',
+  },
+  'skill_point_cost_many': {
+    AppLanguage.en: '{n} skill points',
+    AppLanguage.fr: '{n} points de compétence',
   },
   'no_skill_points': {
     AppLanguage.en: 'No skill point to spend',

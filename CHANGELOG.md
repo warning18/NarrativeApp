@@ -8,6 +8,54 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.146.0+175]
+
+Skills cost what they are worth, and the fights are tuned to the new economy.
+
+### Changed
+- **Skill tiers cost 1,000, 2,000 and 3,000 essence** (they cost 3, 6 and
+  9, so essence, which comes in with XP, raised every skill to tier 3 by
+  mid-run). A first tier now comes around level 5, a first skill at tier 3
+  around level 11, and about three skills reach tier 3 by the end.
+- **The deeper a tree skill, the more points it costs:** 1, 1, 2, then 3
+  points down a branch (`branchSkillPointCosts`), 7 for a whole branch.
+  Mastery stays at 2 points, and the two reputation skills and the
+  companions' skills at 1. The points cover about two branches and one
+  mastery, where the whole tree was learned by level 15.
+- The tree marks a skill that costs more than a point, its sheet's button
+  says what it costs ("Learn (3 points)", or "Needs 3 skill points"), and
+  the list shows the cost of each skill not yet known.
+- **Difficulty retuned for the new economy.** A regular enemy's floor now
+  ramps over the first chapters: health ×1.15, ×1.25, then ×1.35 from
+  chapter 3; damage ×1.10, ×1.15, then ×1.20. It was ×1.15 and ×1.10
+  throughout. The chapter step goes from 0.12 to 0.15 a chapter, and
+  bosses get a floor of their own (×1.10 health, ×1.05 damage; they had
+  none).
+- **The Void Barge's boarders** are a void hound and two void wisps (two
+  hounds and a wisp), and board at 25% (30%). Half of the simulated
+  parties lost that fight.
+
+### Balance (Python simulation, 200 runs)
+- Before the retune, the new economy lost 0.12 fights a run. After it:
+  - 1.46 fights lost a run (median 1, 92 of 200 runs without a loss).
+  - Every run finishes.
+  - Chapter 1 is won 97.9% of the time.
+  - The Void Sovereign and the Archon are beaten at the first try by 89.5%
+    and 87.5% of the parties.
+- The Void Barge boarders are beaten 84% of the time (45%).
+- With the costs, a run learns about 11 skills (13) and ends with about 1
+  point left (6), 2.8 skills at tier 3 (5.3), and all three camp works
+  built in 85% of the runs (24%).
+
+### Tests
+- `test/skill_tree_test.dart` covers the depth costs, a skill waiting for
+  its points, and a tree that costs more than a run's points.
+- `test/difficulty_curve_test.dart` covers the ramped floor and the boss
+  floor. The Void Sovereign phase test in `test/sim_combat_test.dart` uses
+  a stronger test character (900 health, 100 damage) to reach its first
+  phase against the harder curve.
+- Tier costs in `combat_engine_test` and `player_session_provider_test`.
+
 ## [1.145.0+174]
 
 The camp is reachable from every town, and a skill can't fill a die.

@@ -187,10 +187,10 @@
     "crew": 2,
     "boardingCrew": [
       "void_hound",
-      "void_hound",
+      "void_wisp",
       "void_wisp"
     ],
-    "boardingChance": 0.3,
+    "boardingChance": 0.25,
     "prizePartId": "fire_pots",
     "prizeGold": 90,
     "shipName_fr": "Barge du Vide"

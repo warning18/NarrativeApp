@@ -1,8 +1,10 @@
 // The skill tree: each class has three branches to grow along, and each
-// race a heritage branch. A branch's skills are learned in order, one skill
-// point each; completing a class branch lets the character master it, and
-// only one branch is ever mastered -- the specialisation. A mastered
-// branch's skills fight one tier above their own.
+// race a heritage branch. A branch's skills are learned in order, the
+// deeper the dearer (see [branchSkillPointCosts]); completing a class
+// branch lets the character master it, and only one branch is ever
+// mastered -- the specialisation. A mastered branch's skills fight one tier
+// above their own. A run earns about as many points as two branches, the
+// heritage and a mastery take, so the third branch is a choice.
 //
 // Companions stay simpler: they learn their own class's skills, in any
 // order, and nothing else (see [allySkillIds]).
@@ -14,6 +16,21 @@ const int branchMasteryCost = 2;
 
 /// Tiers a mastered branch adds to each of its skills in a fight.
 const int branchMasteryTierBonus = 1;
+
+/// Skill points a branch's skills cost, from its top: the first two one
+/// point each, the third two, the fourth three.
+const List<int> branchSkillPointCosts = [1, 1, 2, 3];
+
+/// Skill points the skill at [index] on a branch costs.
+int branchSkillPointCost(int index) =>
+    branchSkillPointCosts[index.clamp(0, branchSkillPointCosts.length - 1)];
+
+/// Skill points it costs to learn [skillId] with points: its place on its
+/// branch, or one for a skill off the tree (a reputation skill).
+int skillPointCostOf(String skillId, List<SkillBranch> branches) {
+  final place = branchPlaceOf(skillId, branches);
+  return place == null ? 1 : branchSkillPointCost(place.index);
+}
 
 class SkillBranch {
   const SkillBranch({

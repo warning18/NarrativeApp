@@ -61,18 +61,27 @@ raiders open a ship battle fought with the parts aboard.
 
 ## Difficulty model
 
-Enemy stats are scaled three ways, multiplied together, before the Elite
+Enemy stats are scaled four ways, multiplied together, before the Elite
 and pack multipliers:
 
 1. **Player level** (unchanged): health ×(1 + 0.12·(L−1)), damage
    ×(1 + 0.08·(L−1)), rewards ×(1 + 0.10·(L−1)).
-2. **Chapter curve** (`chapterDifficultyMultiplier`): health
-   ×(1 + 0.12·(chapter−1)), damage half of that excess
+2. **Floor** (`enemyHealthBaseMultiplier` / `enemyDamageBaseMultiplier`):
+   a regular enemy's health ×1.15, ×1.25, then ×1.35 from chapter 3, and
+   damage ×1.10, ×1.15, then ×1.20. Bosses (phases or `soloOnlyEnemyIds`)
+   take a lighter ×1.10 health, ×1.05 damage.
+3. **Chapter curve** (`chapterDifficultyMultiplier`): health
+   ×(1 + 0.15·(chapter−1)), damage half of that excess
    (`damageShareOf`), rewards ×(1 + 0.10·(chapter−1)). A first pass with
    +15%/chapter on both stats turned tuned chapter-2 fights into coin
-   flips and was dropped.
-3. **Zone tier** (`zoneTierMultiplier`): health ×(1 + 0.10·(tier−1)),
+   flips and was dropped; with damage at half the rate, 0.15 holds.
+4. **Zone tier** (`zoneTierMultiplier`): health ×(1 + 0.10·(tier−1)),
    damage half of that.
+
+v1.146 retuned the floor and the step on a 200-run simulation of the
+skill economy (depth costs, tier costs): the old flat floor lost 0.12
+fights a run, the ramp about 1.5, with every run finishing and nine
+parties in ten beating the Void Sovereign at the first try.
 
 A fight's chapter is its story node's, or the zone's for an expedition
 (`EncounterModifiers.chapter`). Story and zone bosses (`soloOnlyEnemyIds`)

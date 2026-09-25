@@ -611,9 +611,11 @@ MoveCategory categoryFor(EnemyMoveResult move) {
 const int maxSkillTier = 3;
 
 /// Cost, in skill essence, to go from [currentTier] to `currentTier + 1`.
-/// Rising cost per tier (3/6/9) makes maxing out one skill a real
-/// commitment rather than something every skill gets by mid-run.
-int skillTierUpgradeCost(int currentTier) => (currentTier + 1) * 3;
+/// Essence comes in with XP (a level takes the level × 100), so the rising
+/// cost (1,000 / 2,000 / 3,000) puts a first tier around level 5, a first
+/// skill at tier 3 around level 11, and about three by the end of a run:
+/// the die's best faces, not every skill.
+int skillTierUpgradeCost(int currentTier) => (currentTier + 1) * 1000;
 
 /// Returns a copy of [skill] with its combat numbers boosted for [tier] —
 /// +25% damageMod/healAmount and +0.1 damageMultiplier per tier. Never
@@ -647,19 +649,37 @@ int scaledReward(int base, int playerLevel) {
 
 /// Per-chapter step of the chapter difficulty curve (see
 /// [chapterDifficultyMultiplier]).
-const double chapterDifficultyStep = 0.12;
+const double chapterDifficultyStep = 0.15;
 
-/// Flat multipliers on a regular enemy's max health and damage, before
-/// the chapter curve -- the "medium-hard" floor for everything that isn't
-/// a boss. With every build fighting armed (the v1.115 equip-gate fix), a
-/// 40-run simulation on the old numbers won 99.6% of its fights; the flat
-/// bump makes the ordinary fights chip at the party again. A boss (any
-/// enemy with `phases`, see [BossPhase]) skips the floor: its difficulty
-/// comes from its phases, and the same simulation showed a steeper global
-/// curve turning the chapter 5-6 bosses into walls while chapters 1-4
-/// stayed at 100%.
-const double enemyHealthBaseMultiplier = 1.15;
-const double enemyDamageBaseMultiplier = 1.10;
+/// The multipliers on a regular enemy's max health and damage, before the
+/// chapter curve -- the "medium-hard" floor for everything that isn't a
+/// boss. It ramps over the first chapters (health ×1.15, ×1.25, then ×1.35
+/// from chapter 3; damage ×1.10, ×1.15, then ×1.20), so the opening fights
+/// stay a lesson while the later ones meet a party with a skill tree, tier
+/// upgrades and a full camp. A 200-run simulation of v1.146 at the old flat
+/// floor (×1.15/×1.10, step 0.12) lost 0.12 fights a run; the ramp, with
+/// step 0.15 and the boss floor below, loses about 1.5 a run with every
+/// run finishing and chapter 1 still won 98% of the time.
+const List<double> enemyHealthFloorByChapter = [1.15, 1.25, 1.35];
+const List<double> enemyDamageFloorByChapter = [1.10, 1.15, 1.20];
+
+/// A regular enemy's health floor in [chapter] (the last entry holds for
+/// every later chapter; a chapter below 1 reads as chapter 1).
+double enemyHealthBaseMultiplier(int chapter) => enemyHealthFloorByChapter[
+    (max(1, chapter) - 1).clamp(0, enemyHealthFloorByChapter.length - 1)];
+
+/// A regular enemy's damage floor in [chapter], as
+/// [enemyHealthBaseMultiplier].
+double enemyDamageBaseMultiplier(int chapter) => enemyDamageFloorByChapter[
+    (max(1, chapter) - 1).clamp(0, enemyDamageFloorByChapter.length - 1)];
+
+/// A boss's own, lighter floor (any enemy with `phases`, see [BossPhase],
+/// or a solo-only unique): most of its difficulty comes from its phases,
+/// and a steeper global curve once turned the chapter 5-6 bosses into
+/// walls. The same simulation had nine parties in ten beat the Void
+/// Sovereign at the first try on this floor.
+const double bossHealthBaseMultiplier = 1.10;
+const double bossDamageBaseMultiplier = 1.05;
 
 /// How much harder each New Game+ cycle makes every enemy (health AND
 /// damage, on top of the whole curve): cycle 1 is +10%, cycle 2 +20%. A
@@ -674,7 +694,7 @@ double newGamePlusMultiplier(int cycle) => 1 + newGamePlusStep * max(0, cycle);
 /// The health and damage multipliers a fight applies to every enemy,
 /// resolved once from its chapter, its zone's tier (or any other
 /// per-encounter difficulty multiplier) and the New Game+ cycle:
-/// the flat floor, the chapter curve (damage climbing half as fast, see
+/// the floor (a regular enemy's or a boss's), the chapter curve (damage climbing half as fast, see
 /// [damageShareOf]) and the cycle's own multiplier. The one place the
 /// fight screen, the in-app simulator and the autoplay engine all read
 /// the curve from.
@@ -693,8 +713,10 @@ DifficultyCurve difficultyCurveFor({
 }) {
   final chapterHealth = chapterDifficultyMultiplier(chapter) * zoneMultiplier;
   final cycle = newGamePlusMultiplier(newGamePlusCycle);
-  final baseHealth = isBoss ? 1.0 : enemyHealthBaseMultiplier;
-  final baseDamage = isBoss ? 1.0 : enemyDamageBaseMultiplier;
+  final baseHealth =
+      isBoss ? bossHealthBaseMultiplier : enemyHealthBaseMultiplier(chapter);
+  final baseDamage =
+      isBoss ? bossDamageBaseMultiplier : enemyDamageBaseMultiplier(chapter);
   return DifficultyCurve(
     health: baseHealth * chapterHealth * cycle,
     damage: baseDamage * damageShareOf(chapterHealth) * cycle,
@@ -714,8 +736,8 @@ bool isBossEnemy(String enemyId, Map<String, dynamic> enemy) {
 /// Level scaling alone let a chapter-5 boss meet a level-10 party as a
 /// slightly larger chapter-1 thug; the curve keeps each chapter's enemies
 /// a step ahead of the gear and levels the previous one handed out
-/// (chapter 1 ×1.0, chapter 3 ×1.24, chapter 6 ×1.6, before the flat
-/// [enemyHealthBaseMultiplier] a regular enemy also gets). Damage climbs
+/// (chapter 1 ×1.0, chapter 3 ×1.3, chapter 6 ×1.75, before the floor,
+/// see [enemyHealthBaseMultiplier]). Damage climbs
 /// half as fast (see [damageShareOf]): more health makes a fight longer,
 /// more damage makes it lethal, and a 40-run simulation showed a full-rate
 /// damage curve turning tuned chapter-2 fights from sure wins into coin
@@ -725,7 +747,7 @@ double chapterDifficultyMultiplier(int chapter) =>
     1 + chapterDifficultyStep * (max(1, chapter) - 1);
 
 /// The damage multiplier that goes with a health multiplier from the
-/// chapter curve or a zone's tier: half the excess (×1.24 health → ×1.12
+/// chapter curve or a zone's tier: half the excess (×1.3 health → ×1.15
 /// damage).
 double damageShareOf(double healthMultiplier) => 1 + (healthMultiplier - 1) / 2;
 

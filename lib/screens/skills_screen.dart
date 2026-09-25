@@ -315,11 +315,21 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
           if ((entry.value as Map<String, dynamic>)['isUnlocked'] == true)
             entry.key,
       };
+      // The player's skills cost their place on their branch (the deeper
+      // the dearer); a companion's, one point each.
+      int pointCost(String id) => ally != null
+          ? 1
+          : skillPointCostOf(
+              id,
+              skillBranchesFor(treesAsync.value ?? const {},
+                  raceId: raceId, professionId: professionId));
       void unlock(String id) => ally != null
           ? ref
               .read(playerSessionProvider.notifier)
               .unlockAllySkill(widget.allyId!, id)
-          : ref.read(playerSessionProvider.notifier).unlockSkill(id);
+          : ref
+              .read(playerSessionProvider.notifier)
+              .unlockSkill(id, cost: pointCost(id));
 
       if (ally != null) {
         // A companion keeps it simple: their own class's skills, in any
@@ -390,6 +400,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
           skillTiers: session.skillTiers,
           skillEssence: session.skillEssence,
           canLearn: canLearn,
+          pointCost: pointCost,
           onUnlock: unlock,
           trailingChildren: spellSection,
         );
@@ -448,6 +459,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
         unlockedSkillIds: unlockedSkillIds,
         canLearn: canLearn,
         lockNote: lockNote,
+        pointCost: pointCost,
         onUnlock: unlock,
         skillEssence: session.skillEssence,
         skillTiers: effectiveSkillTiers(session.skillTiers,
@@ -630,6 +642,7 @@ class _SkillList extends ConsumerWidget {
     required this.canLearn,
     required this.lockNote,
     required this.onUnlock,
+    this.pointCost,
     this.skillEssence,
     this.skillTiers,
     this.onUpgradeTier,
@@ -672,6 +685,10 @@ class _SkillList extends ConsumerWidget {
   final String? Function(String id) lockNote;
   final ValueChanged<String> onUnlock;
 
+  /// Skill points a skill costs to learn (its place on its branch); one
+  /// when null (a companion's).
+  final int Function(String id)? pointCost;
+
   /// Non-null only for the player's own list (never a companion's) — see
   /// [PlayerSession.skillEssence]/[PlayerSession.skillTiers]. Null suppresses
   /// the tier/upgrade UI entirely.
@@ -706,7 +723,7 @@ class _SkillList extends ConsumerWidget {
           final skill = records[id] as Map<String, dynamic>;
           final element = skill['element']?.toString();
           final description = skill['description']?.toString() ?? '';
-          final cost = (skill['cost'] as num?)?.toInt() ?? 0;
+          final points = pointCost?.call(id) ?? 1;
           final available = known.contains(id);
           final learnable = canLearn(id);
           final note = lockNote(id);
@@ -765,7 +782,7 @@ class _SkillList extends ConsumerWidget {
           } else {
             trailing = ElevatedButton(
               key: Key('learn_$id'),
-              onPressed: skillPoints > 0
+              onPressed: skillPoints >= points
                   ? () => _learnWithNotice(context, ref, id, onUnlock)
                   : null,
               child: Text(tr(ref, 'unlock_button')),
@@ -783,8 +800,8 @@ class _SkillList extends ConsumerWidget {
                   ' (${tr(ref, 'aligned_skill_note')})',
             if (mergeOnly && !available)
               tr(ref, 'merge_only_hint')
-            else
-              '${tr(ref, 'cost_label')}: $cost',
+            else if (!available)
+              skillPointCostLabel(ref, points),
           ];
 
           final kind = skillKind(skill);
@@ -822,7 +839,13 @@ class _SkillList extends ConsumerWidget {
                         rows: [
                           MapEntry(tr(ref, 'element_label'),
                               element ?? tr(ref, 'none_label')),
-                          MapEntry(tr(ref, 'cost_label'), '$cost'),
+                          MapEntry(
+                              tr(ref, 'skill_rarity_label'),
+                              tr(ref, 'skill_max_faces')
+                                  .replaceAll('{rarity}',
+                                      tr(ref, skillRarity(skill).labelKey))
+                                  .replaceAll(
+                                      '{max}', '${maxFacesForSkill(skill)}')),
                           MapEntry(tr(ref, 'damage_mod_label'),
                               '${skill['damageMod'] ?? 0}'),
                           MapEntry(
@@ -882,12 +905,16 @@ class _SkillTreeView extends ConsumerWidget {
     required this.skillTiers,
     required this.skillEssence,
     required this.canLearn,
+    required this.pointCost,
     required this.onUnlock,
     this.trailingChildren = const [],
   });
 
   final Map<String, dynamic> records;
   final List<SkillBranch> branches;
+
+  /// Skill points a skill costs to learn: its place on its branch.
+  final int Function(String id) pointCost;
   final Set<String> known;
   final int skillPoints;
   final String masteredBranchId;
@@ -1005,7 +1032,8 @@ class _SkillTreeView extends ConsumerWidget {
     final theme = Theme.of(context);
     final lang = ref.watch(appLanguageProvider);
     final isKnown = state == SkillNodeState.known;
-    final ready = state == SkillNodeState.learnable && skillPoints > 0;
+    final points = pointCost(id);
+    final ready = state == SkillNodeState.learnable && skillPoints >= points;
     return InkWell(
       key: Key('tree_node_$id'),
       borderRadius: BorderRadius.circular(12),
@@ -1037,6 +1065,25 @@ class _SkillTreeView extends ConsumerWidget {
                     ),
                     child: SkillPixelIcon(id, size: 28),
                   ),
+                  // What a skill not yet known costs, when more than one.
+                  if (!isKnown && points > 1)
+                    Positioned(
+                      left: -4,
+                      top: -4,
+                      child: Container(
+                        key: Key('tree_cost_$id'),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 1),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.secondaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text('$points',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                                color: theme.colorScheme.onSecondaryContainer,
+                                fontWeight: FontWeight.bold)),
+                      ),
+                    ),
                   if (isKnown)
                     const Positioned(
                       right: -2,
@@ -1143,7 +1190,8 @@ class _SkillTreeView extends ConsumerWidget {
       showDragHandle: true,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
-        final learnable = canLearn(id) && skillPoints > 0;
+        final points = pointCost(id);
+        final learnable = canLearn(id) && skillPoints >= points;
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
@@ -1209,9 +1257,15 @@ class _SkillTreeView extends ConsumerWidget {
                           }
                         : null,
                     icon: const Icon(Icons.auto_awesome),
-                    label: Text(skillPoints > 0
-                        ? tr(ref, 'learn_for_point')
-                        : tr(ref, 'no_skill_points')),
+                    label: Text(skillPoints >= points
+                        ? (points == 1
+                            ? tr(ref, 'learn_for_point')
+                            : tr(ref, 'learn_for_points')
+                                .replaceAll('{n}', '$points'))
+                        : skillPoints == 0
+                            ? tr(ref, 'no_skill_points')
+                            : tr(ref, 'skill_points_needed')
+                                .replaceAll('{n}', '$points')),
                   ),
               ],
             ),
@@ -1304,3 +1358,8 @@ class _SkillTreeView extends ConsumerWidget {
     );
   }
 }
+
+/// "1 skill point" / "3 skill points": what learning a skill costs.
+String skillPointCostLabel(WidgetRef ref, int points) => points == 1
+    ? tr(ref, 'skill_point_cost_one')
+    : tr(ref, 'skill_point_cost_many').replaceAll('{n}', '$points');

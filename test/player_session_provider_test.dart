@@ -606,22 +606,22 @@ void main() {
     test('spends essence and raises the tier by one', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 10,
+        skillEssence: 1200,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], 1);
-      expect(notifier.state.skillEssence, 7); // cost of tier 0->1 is 3
+      expect(notifier.state.skillEssence, 200); // tier 0->1 costs 1,000
     });
 
     test('cost rises each subsequent tier', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 100,
+        skillEssence: 3500,
       ));
-      await notifier.upgradeSkillTier('fireball'); // 0->1, costs 3
-      await notifier.upgradeSkillTier('fireball'); // 1->2, costs 6
+      await notifier.upgradeSkillTier('fireball'); // 0->1, costs 1,000
+      await notifier.upgradeSkillTier('fireball'); // 1->2, costs 2,000
       expect(notifier.state.skillTiers['fireball'], 2);
-      expect(notifier.state.skillEssence, 91);
+      expect(notifier.state.skillEssence, 500);
     });
 
     test('is a no-op if the skill is not unlocked', () async {
@@ -634,18 +634,18 @@ void main() {
     test('is a no-op if essence is short', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 2,
+        skillEssence: 999,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], isNull);
-      expect(notifier.state.skillEssence, 2);
+      expect(notifier.state.skillEssence, 999);
     });
 
     test('is a no-op once the skill is already at max tier', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
         skillTiers: {'fireball': maxSkillTier},
-        skillEssence: 1000,
+        skillEssence: 10000,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], maxSkillTier);
