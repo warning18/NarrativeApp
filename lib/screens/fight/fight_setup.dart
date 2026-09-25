@@ -158,6 +158,7 @@ extension _FightSetup on _FightScreenState {
     Map<String, ItemSet> itemSets,
     Map<String, dynamic> houses,
     Map<String, dynamic> dice,
+    Map<String, dynamic> skillTrees,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -194,7 +195,9 @@ extension _FightSetup on _FightScreenState {
       ],
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
-      skillTiers: session.skillTiers,
+      // A mastered branch's skills fight a tier above their own.
+      skillTiers: effectiveSkillTiers(
+          session.skillTiers, skillTrees, session.masteredBranchId),
       strength: session.strength,
       dexterity: session.dexterity,
       constitution: session.constitution,

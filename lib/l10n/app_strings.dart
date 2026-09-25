@@ -1257,6 +1257,83 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Votre inventaire est vide. Achetez ou pillez de l'équipement !",
   },
   'faces_label': {AppLanguage.en: 'faces', AppLanguage.fr: 'faces'},
+  'skill_tree_view': {AppLanguage.en: 'Tree', AppLanguage.fr: 'Arbre'},
+  'skill_list_view': {AppLanguage.en: 'List', AppLanguage.fr: 'Liste'},
+  'skill_tree_intro': {
+    AppLanguage.en:
+        'Each branch is learned from the top down, one point a skill. Learn a whole branch of your class to master it: its skills then fight a tier higher. Only one branch can be mastered, so choose your path.',
+    AppLanguage.fr:
+        'Chaque branche s’apprend de haut en bas, un point par compétence. Apprenez toute une branche de votre classe pour la maîtriser : ses compétences combattent alors un rang au-dessus. Une seule branche peut être maîtrisée : choisissez votre voie.',
+  },
+  'skill_tree_mastered': {
+    AppLanguage.en:
+        'Mastered: {branch}. Its skills fight a tier higher. Each other branch can still be learned, but not mastered.',
+    AppLanguage.fr:
+        'Maîtrisée : {branch}. Ses compétences combattent un rang au-dessus. Les autres branches s’apprennent encore, mais ne se maîtrisent plus.',
+  },
+  'skill_after_label': {
+    AppLanguage.en: 'After {skill}',
+    AppLanguage.fr: 'Après {skill}',
+  },
+  'learn_for_point': {
+    AppLanguage.en: 'Learn (1 point)',
+    AppLanguage.fr: 'Apprendre (1 point)',
+  },
+  'no_skill_points': {
+    AppLanguage.en: 'No skill point to spend',
+    AppLanguage.fr: 'Aucun point de compétence à dépenser',
+  },
+  'mastery_label': {AppLanguage.en: 'Mastery', AppLanguage.fr: 'Maîtrise'},
+  'mastery_title': {
+    AppLanguage.en: 'Mastery of the {branch}',
+    AppLanguage.fr: 'Maîtrise : {branch}',
+  },
+  'mastery_body': {
+    AppLanguage.en:
+        'Every skill of this branch fights one tier higher. It costs {cost} skill points once the whole branch is learned, and only one branch can ever be mastered.',
+    AppLanguage.fr:
+        'Chaque compétence de cette branche combat un rang au-dessus. Elle coûte {cost} points de compétence une fois toute la branche apprise, et une seule branche peut être maîtrisée.',
+  },
+  'mastery_done': {
+    AppLanguage.en: 'Mastered.',
+    AppLanguage.fr: 'Maîtrisée.',
+  },
+  'mastery_closed': {
+    AppLanguage.en: 'Another branch is already mastered.',
+    AppLanguage.fr: 'Une autre branche est déjà maîtrisée.',
+  },
+  'mastery_needs_branch': {
+    AppLanguage.en: 'Learn every skill of this branch first.',
+    AppLanguage.fr: 'Apprenez d’abord toutes les compétences de cette branche.',
+  },
+  'mastery_button': {
+    AppLanguage.en: 'Master this branch ({cost} points)',
+    AppLanguage.fr: 'Maîtriser cette branche ({cost} points)',
+  },
+  'mastery_gained': {
+    AppLanguage.en: 'Mastered: {branch}',
+    AppLanguage.fr: 'Maîtrisée : {branch}',
+  },
+  'skill_filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Toutes'},
+  'filter_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
+  'filter_heal': {AppLanguage.en: 'Healing', AppLanguage.fr: 'Soin'},
+  'filter_mana': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'filter_status': {AppLanguage.en: 'Status', AppLanguage.fr: 'Altération'},
+  'filter_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connues'},
+  'filter_learnable': {
+    AppLanguage.en: 'Can learn',
+    AppLanguage.fr: 'À apprendre',
+  },
+  'filter_nothing': {
+    AppLanguage.en: 'No skill matches these filters.',
+    AppLanguage.fr: 'Aucune compétence ne correspond à ces filtres.',
+  },
+  'ally_skills_note': {
+    AppLanguage.en:
+        'A companion keeps to their own trade: {class} skills only, one point each, in any order. What their die already carries is theirs from the start.',
+    AppLanguage.fr:
+        'Un compagnon s’en tient à son métier : compétences de {class} uniquement, un point chacune, dans l’ordre voulu. Ce que porte déjà son dé lui appartient dès le départ.',
+  },
   'skill_points_label': {
     AppLanguage.en: 'Skill Points',
     AppLanguage.fr: 'Points de compétence',

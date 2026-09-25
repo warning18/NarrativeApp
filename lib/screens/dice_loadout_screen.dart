@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart';
+import '../data/skill_tree.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -99,13 +100,24 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         ? ally.diceSkillAssignments
         : session.diceSkillAssignments[_selectedDiceId] ??
             const <String, String>{};
+    // A companion's faces take their own class's skills and their die's
+    // kit only (see allySkillIds); the player's, anything they know.
+    final allyOwn = ally == null
+        ? null
+        : allySkillIds(skills,
+                professionId: companion?['professionId']?.toString() ?? '',
+                known: ally.unlockedSkillIds)
+            .toSet();
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
         if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?) &&
             (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
                     false) ||
                 (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
-                    .contains(entry.key)))
+                    .contains(entry.key)) &&
+            (allyOwn == null ||
+                allyOwn.contains(entry.key) ||
+                (entry.value as Map<String, dynamic>)['isUnlocked'] == true))
           entry.key,
     }.toList()
       ..sort();

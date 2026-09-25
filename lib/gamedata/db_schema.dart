@@ -585,6 +585,52 @@ final DbSchema skillMergesSchema = DbSchema(
   ],
 );
 
+final DbSchema skillTreesSchema = DbSchema(
+  id: 'skillTrees',
+  label: 'Skill Trees',
+  assetPath: 'assets/gamedata/skill_trees.json',
+  primaryKeyField: 'branchID',
+  titleField: 'branchName',
+  fields: [
+    FieldSchema(key: 'branchID', label: 'Branch ID', type: FieldType.text),
+    FieldSchema(
+      key: 'professionId',
+      label: 'Profession (a class branch; empty for a heritage branch)',
+      type: FieldType.reference,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+      key: 'raceId',
+      label: 'Race (a heritage branch; empty for a class branch)',
+      type: FieldType.reference,
+      referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+        key: 'order',
+        label: 'Order on the tree',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(key: 'branchName', label: 'Branch Name', type: FieldType.text),
+    FieldSchema(
+        key: 'branchName_fr', label: 'Branch Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'skillIds',
+      label:
+          'Skills, in the order they are learned (each after the one before it)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'skills',
+    ),
+  ],
+);
+
 final DbSchema racesSchema = DbSchema(
   id: 'races',
   label: 'Races',
@@ -1944,6 +1990,7 @@ final List<DbSchema> gameDbSchemas = [
   itemSetsSchema,
   skillsSchema,
   skillMergesSchema,
+  skillTreesSchema,
   diceSchema,
   enemiesSchema,
   enemyShipsSchema,

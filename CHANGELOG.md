@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.144.0+173]
+
+Skills grow on a tree, and the player has to pick a path; companions keep
+to their own trade.
+
+### Added
+- **A skill tree for each class.** Three branches of four skills, learned
+  from the top down, one skill point each: Bulwark, Vanguard and Warlord
+  for the Warrior; Evocation, Tempest and Aegis for the Mage; Shadow, Venom
+  and Trickster for the Rogue; Judgment, Devotion and Vigil for the Cleric;
+  Marksman, Trapper and Wilds for the Ranger. Every class skill sits on its
+  class's tree, and a new character's own skills open a branch.
+- **A heritage branch for each race**: its three skills, in order.
+- **Mastery: the specialisation.** A class branch learned in full can be
+  mastered for 2 skill points, and its skills then fight one tier above
+  their own (on top of what skill essence has bought). Only one branch is
+  ever mastered, so the others stay a side road.
+- The Skills screen opens on the tree (tap a skill to see what it does
+  and learn it, tap a mastery star to master its branch), with a **List**
+  view that filters by what a skill does (attack, healing, mana, status)
+  and by known or learnable now. Spells sit under the skills in both.
+- Skill trees are game data (`skill_trees.json`), editable in Edit Mode.
+
+### Changed
+- **Skill points buy the tree only**: the next skill on a branch, or a
+  skill the character's reputation opens (Zealous Conviction, Ruthless
+  Edge). Skills already known stay known; a die's own skills still work
+  for whoever holds it, and crafted skills still come from recipes.
+- **Companions keep it simple**: they learn their own class's skills only,
+  in any order, one point each, and their dice take only those skills and
+  what their die already carries. A rogue companion learns rogue skills.
+- Permadeath resets the mastery with the rest of the skill build.
+
 ## [1.143.0+172]
 
 The camp is somewhere the party goes back to, not a tab it carries around.

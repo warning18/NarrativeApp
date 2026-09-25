@@ -148,6 +148,7 @@ class PlayerSession {
     this.shopPurchaseCounts = const {},
     this.characterName = '',
     this.trackedQuestId = '',
+    this.masteredBranchId = '',
     this.shopUnlockNodeIds = const {},
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
@@ -270,6 +271,11 @@ class PlayerSession {
   /// quest_tracking.dart). Set when a quest is accepted with nothing
   /// followed, cleared when it is turned in.
   final String trackedQuestId;
+
+  /// The one skill-tree branch the character has mastered (see
+  /// skill_tree.dart): its skills fight one tier above their own. Empty
+  /// until a branch is mastered; only one ever is.
+  final String masteredBranchId;
 
   /// shopId -> the story node whose choice unlocked it. A shop is only
   /// browsable in the Play tab while the player is currently on that node;
@@ -521,6 +527,7 @@ class PlayerSession {
     Map<String, int>? shopPurchaseCounts,
     String? characterName,
     String? trackedQuestId,
+    String? masteredBranchId,
     Map<String, String>? shopUnlockNodeIds,
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
@@ -591,6 +598,7 @@ class PlayerSession {
       shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
       characterName: characterName ?? this.characterName,
       trackedQuestId: trackedQuestId ?? this.trackedQuestId,
+      masteredBranchId: masteredBranchId ?? this.masteredBranchId,
       shopUnlockNodeIds: shopUnlockNodeIds ?? this.shopUnlockNodeIds,
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
@@ -667,6 +675,7 @@ class PlayerSession {
         'shopPurchaseCounts': shopPurchaseCounts,
         'characterName': characterName,
         'trackedQuestId': trackedQuestId,
+        'masteredBranchId': masteredBranchId,
         'shopUnlockNodeIds': shopUnlockNodeIds,
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
@@ -792,6 +801,7 @@ class PlayerSession {
           const {},
       characterName: json['characterName'] as String? ?? '',
       trackedQuestId: json['trackedQuestId'] as String? ?? '',
+      masteredBranchId: json['masteredBranchId'] as String? ?? '',
       shopUnlockNodeIds: (json['shopUnlockNodeIds'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), value.toString()),
           ) ??
@@ -2188,6 +2198,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Masters [branchId] for [cost] skill points: the one skill-tree branch
+  /// whose skills fight a tier higher (see skill_tree.dart). No-op when a
+  /// branch is already mastered or the points are short; the caller checks
+  /// the branch is complete.
+  Future<void> masterBranch(String branchId, {required int cost}) async {
+    if (state.masteredBranchId.isNotEmpty || state.skillPoints < cost) return;
+    state = state.copyWith(
+      masteredBranchId: branchId,
+      skillPoints: state.skillPoints - cost,
+    );
+    await _persist();
+  }
+
   Future<void> unlockSkill(String skillId) async {
     if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId)) {
       return;
@@ -2642,6 +2665,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       xpEarnedThisRun: 0,
       unlockedSkillIds: starterUnlockedSkills,
       skillTiers: const {},
+      masteredBranchId: '',
       skillEssence: 0,
       skillPoints: starterSkillPoints,
       diceSkillAssignments: _starterAssignmentsByDie(
