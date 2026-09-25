@@ -1,7 +1,7 @@
 name: narrative_data_app
 description: "An interactive narrative reader with a story map and AI-assisted generation."
 publish_to: 'none'
-version: 1.137.0+166
+version: 1.139.0+168
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -28,14 +28,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-    # The world map's lettering (SIL Open Font License, see
+    # Numbers, labels, buttons and dice (SIL Open Font License, see
     # assets/fonts/PixelifySans-OFL.txt).
     - family: PixelifySans
       fonts:
         - asset: assets/fonts/PixelifySans-Regular.ttf
         - asset: assets/fonts/PixelifySans-SemiBold.ttf
           weight: 600
-    # The world map's text (SIL Open Font License, see
+    # Story and body text (SIL Open Font License, see
     # assets/fonts/Spectral-OFL.txt).
     - family: Spectral
       fonts:
@@ -44,10 +44,16 @@ flutter:
           weight: 500
         - asset: assets/fonts/Spectral-Italic.ttf
           style: italic
+    # Titles, chapters and places (SIL Open Font License, see
+    # assets/fonts/IMFellEnglishSC-OFL.txt).
+    - family: IMFellEnglishSC
+      fonts:
+        - asset: assets/fonts/IMFellEnglishSC-Regular.ttf
   assets:
     - assets/Cleaned_Narrative_DAG.json
     - assets/fonts/PixelifySans-OFL.txt
     - assets/fonts/Spectral-OFL.txt
+    - assets/fonts/IMFellEnglishSC-OFL.txt
     - assets/gamedata/items.json
     - assets/gamedata/item_sets.json
     - assets/gamedata/skills.json

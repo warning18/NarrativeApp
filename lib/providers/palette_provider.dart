@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// A curated set of seed-color palettes the player can pick from in
-/// Settings. Each is rendered via [ColorScheme.fromSeed] so the whole
-/// app's light theme derives consistently from a single accent color.
+import '../theme/stitched_ink.dart';
+
+/// A curated set of palettes the player can pick from in Settings.
+/// [stitchedInk], the default, is the palette the app's look was drawn in
+/// (see `theme/stitched_ink.dart`); the others are rendered via
+/// [ColorScheme.fromSeed] so the whole app derives consistently from a
+/// single accent color. All of them share the same type and shapes.
 enum AppPalette {
+  stitchedInk,
   deepPurple,
   weatheredEarth,
   autumnMeadow,
@@ -14,8 +19,15 @@ enum AppPalette {
   roseNoir,
   mistSlate;
 
+  /// This palette's colour scheme in [brightness].
+  ColorScheme schemeFor(Brightness brightness) => this == stitchedInk
+      ? stitchedInkScheme(brightness)
+      : ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
+
   Color get seedColor {
     switch (this) {
+      case AppPalette.stitchedInk:
+        return const Color(0xFFF2C14E);
       case AppPalette.deepPurple:
         return Colors.deepPurple;
       case AppPalette.weatheredEarth:
@@ -36,6 +48,8 @@ enum AppPalette {
   /// A short swatch of colors used to preview the palette in Settings.
   List<Color> get swatch {
     switch (this) {
+      case AppPalette.stitchedInk:
+        return const [Color(0xFF141217), Color(0xFFF2C14E), Color(0xFFA987EA)];
       case AppPalette.deepPurple:
         return const [Color(0xFF6750A4), Color(0xFF9A82DB), Color(0xFFEADDFF)];
       case AppPalette.weatheredEarth:
@@ -57,7 +71,7 @@ enum AppPalette {
 const String _palettePrefsKey = 'app_palette';
 
 class AppPaletteNotifier extends StateNotifier<AppPalette> {
-  AppPaletteNotifier() : super(AppPalette.deepPurple) {
+  AppPaletteNotifier() : super(AppPalette.stitchedInk) {
     _load();
   }
 

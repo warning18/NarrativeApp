@@ -6,6 +6,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../theme/stitched_ink.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/world_map.dart';
@@ -410,7 +412,11 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
     // Under the map, never over it: zoom, back to where the story stands,
     // the journey walked again, and the map's look.
-    final controls = Row(
+    final controls = Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      alignment: WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         _MapControls(
           tokens: tokens,
@@ -421,43 +427,40 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
               ? null
               : () => _replay(journey),
         ),
-        const Spacer(),
-        PopupMenuButton<MapLook>(
+        // The three looks side by side, the one shown picked out.
+        Container(
           key: const Key('world_map_look'),
-          tooltip: tr(ref, 'world_map_look'),
-          initialValue: look,
-          onSelected: (choice) =>
-              ref.read(mapLookProvider.notifier).choose(choice),
-          itemBuilder: (context) => [
-            for (final option in MapLook.values)
-              CheckedPopupMenuItem<MapLook>(
-                key: Key('world_map_look_${option.name}'),
-                value: option,
-                checked: option == look,
-                child: Text(_lookName(ref, option),
-                    style: const TextStyle(fontFamily: _pixelFont)),
-              ),
-          ],
-          child: Container(
-            height: 34,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              color: tokens.panel,
-              border: Border.all(color: tokens.line, width: 2),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.layers_outlined, size: 18, color: tokens.ink),
-                const SizedBox(width: 6),
-                Text(_lookName(ref, look),
-                    style: TextStyle(
-                        fontFamily: _pixelFont,
-                        fontSize: 15,
-                        color: tokens.ink)),
-                Icon(Icons.arrow_drop_down, size: 20, color: tokens.ink),
-              ],
-            ),
+          height: 36,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            border: Border.all(color: tokens.line),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final option in MapLook.values)
+                Semantics(
+                  button: true,
+                  selected: option == look,
+                  child: InkWell(
+                    key: Key('world_map_look_${option.name}'),
+                    onTap: () =>
+                        ref.read(mapLookProvider.notifier).choose(option),
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      color: option == look ? tokens.line : Colors.transparent,
+                      child: Text(_lookName(ref, option),
+                          style: TextStyle(
+                              fontFamily: _pixelFont,
+                              fontSize: 14,
+                              color:
+                                  option == look ? tokens.ink : tokens.muted)),
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ],
@@ -533,10 +536,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
         title: Text(
           tr(ref, 'world_map_title'),
           style: TextStyle(
-              fontFamily: _pixelFont,
-              fontWeight: FontWeight.w600,
-              fontSize: 26,
-              color: tokens.ink),
+              fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
         ),
       ),
       body: LayoutBuilder(
@@ -731,13 +731,21 @@ class _PixelChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: selected ? tokens.panel : Colors.transparent,
-            border: Border.all(color: selected ? color : tokens.line, width: 2),
+            color: selected ? color : Colors.transparent,
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: selected ? color : tokens.line),
           ),
           child: Text(
             label,
             style: TextStyle(
-                fontFamily: _pixelFont, fontSize: 15, color: tokens.ink),
+                fontFamily: _pixelFont,
+                fontSize: 15,
+                color: selected
+                    ? (ThemeData.estimateBrightnessForColor(color) ==
+                            Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF1A1408))
+                    : tokens.ink),
           ),
         ),
       ),
@@ -831,7 +839,11 @@ class _LandmarkPanel extends ConsumerWidget {
               style: pixel(15, color: chapterColor)),
           const SizedBox(height: 4),
           Text(landmark.name(language),
-              style: pixel(27, weight: FontWeight.w600)),
+              style: TextStyle(
+                  fontFamily: InkFonts.display,
+                  fontSize: 28,
+                  height: 1.1,
+                  color: tokens.ink)),
           if (isHere)
             Padding(
               padding: const EdgeInsets.only(top: 6),

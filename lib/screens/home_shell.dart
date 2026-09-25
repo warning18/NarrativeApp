@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
+import '../data/world_map.dart' show mapChapters;
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
@@ -97,7 +98,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     Navigator.of(context).popUntil((route) => route.isFirst),
               )
             : null,
-        title: Text(titles[index]),
+        title: !isEditMode && index == 0
+            ? _ChapterTitle(fallback: titles[0])
+            : Text(titles[index]),
         actions: [
           // Edit Mode maps the story's scenes and paths; play mode shows
           // the world the story has reached.
@@ -203,6 +206,46 @@ class _CampTab extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The Story tab's header in play: the chapter the story is in, its
+/// number over its name, in the chapter's colour. The prologue shows
+/// [fallback].
+class _ChapterTitle extends ConsumerWidget {
+  const _ChapterTitle({required this.fallback});
+
+  final String fallback;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final number = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
+    final chapter = mapChapters.where((c) => c.number == number).firstOrNull;
+    if (chapter == null) return Text(fallback);
+    final title = chapter.title(ref.watch(appLanguageProvider));
+    final split = title.indexOf(':');
+    final label = split < 0 ? title : title.substring(0, split).trim();
+    final name = split < 0 ? fallback : title.substring(split + 1).trim();
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: theme.textTheme.labelSmall?.copyWith(
+            letterSpacing: 1.5,
+            color: theme.brightness == Brightness.dark
+                ? chapter.dark
+                : chapter.light,
+          ),
+        ),
+        Text(name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.appBarTheme.titleTextStyle?.copyWith(fontSize: 19)),
+      ],
     );
   }
 }

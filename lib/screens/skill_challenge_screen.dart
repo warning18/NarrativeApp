@@ -5,6 +5,7 @@ import '../data/ability_check.dart';
 import '../data/skill_challenge.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/stitched_ink.dart';
 
 /// A multi-round "push your luck" contest: reach [successesNeeded]
 /// successful ability checks before [maxFailures] failed ones. Distinct
@@ -72,51 +73,72 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final ink = InkColors.of(context);
     final abilityLabel = tr(ref, '${widget.ability}_label');
     final revealedRounds = _result.rounds.take(_revealed).toList();
     final successesSoFar = revealedRounds.where((r) => r.success).length;
     final failuresSoFar = revealedRounds.length - successesSoFar;
+    final latest = revealedRounds.isEmpty ? null : revealedRounds.last;
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'skill_challenge_title'))),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(
-                widget.promptText,
-                style: const TextStyle(
-                    fontFamily: 'serif', fontSize: 16, height: 1.4),
+                '${tr(ref, 'skill_challenge_title')} · $abilityLabel'
+                    .toUpperCase(),
+                style: theme.textTheme.labelMedium
+                    ?.copyWith(color: ink.ember, letterSpacing: 1.5),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
-                '$abilityLabel ${tr(ref, 'check_label')} '
-                '${tr(ref, 'vs_dc_label')} ${widget.dc}',
-                style: Theme.of(context).textTheme.bodySmall,
+                widget.promptText,
+                style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _PipRow(
-                    label: tr(ref, 'skill_challenge_successes_label'),
-                    filled: successesSoFar,
-                    total: widget.successesNeeded,
-                    color: Colors.green,
+                  Expanded(
+                    child: _PipRow(
+                      label: tr(ref, 'skill_challenge_successes_label'),
+                      filled: successesSoFar,
+                      total: widget.successesNeeded,
+                      color: ink.gold,
+                    ),
                   ),
-                  const SizedBox(width: 32),
-                  _PipRow(
-                    label: tr(ref, 'skill_challenge_failures_label'),
-                    filled: failuresSoFar,
-                    total: widget.maxFailures,
-                    color: colorScheme.error,
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _PipRow(
+                      label: tr(ref, 'skill_challenge_failures_label'),
+                      filled: failuresSoFar,
+                      total: widget.maxFailures,
+                      color: ink.blood,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
+              _D20(
+                roll: latest?.check.roll,
+                success: latest?.success,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                latest == null
+                    ? '$abilityLabel ${tr(ref, 'check_label')} '
+                        '${tr(ref, 'vs_dc_label')} ${widget.dc}'
+                    : '${latest.check.roll} + $abilityLabel ${latest.check.modifier}'
+                        ' = ${latest.check.total}  ·  ${tr(ref, 'vs_dc_label')} ${widget.dc}',
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium,
+              ),
+              const SizedBox(height: 12),
               Expanded(
                 child: ListView.builder(
                   itemCount: _revealed,
@@ -134,28 +156,45 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
               if (!_started)
                 FilledButton(
                   onPressed: _begin,
+                  style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(52)),
                   child: Text(tr(ref, 'skill_challenge_begin')),
                 )
               else if (_finished)
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      _result.success
-                          ? tr(ref, 'skill_challenge_success_banner')
-                          : tr(ref, 'skill_challenge_fail_banner'),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'serif',
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color:
-                            _result.success ? Colors.green : colorScheme.error,
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          border: Border.all(
+                              color: _result.success
+                                  ? ink.gold
+                                  : colorScheme.error),
+                        ),
+                        child: Text(
+                          (_result.success
+                                  ? tr(ref, 'skill_challenge_success_banner')
+                                  : tr(ref, 'skill_challenge_fail_banner'))
+                              .toUpperCase(),
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            letterSpacing: 2,
+                            color:
+                                _result.success ? ink.gold : colorScheme.error,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
                     FilledButton(
                       onPressed: () =>
                           Navigator.of(context).pop(_result.success),
+                      style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(52)),
                       child: Text(tr(ref, 'skill_challenge_continue')),
                     ),
                   ],
@@ -166,6 +205,108 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
       ),
     );
   }
+}
+
+/// The d20: a hexagon face with the latest roll on it, gold for a
+/// success, the error colour for a failure, plain before the first roll.
+class _D20 extends StatelessWidget {
+  const _D20({this.roll, this.success});
+
+  final int? roll;
+  final bool? success;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final edge = success == null
+        ? ink.seam
+        : success!
+            ? ink.gold
+            : theme.colorScheme.error;
+    return Center(
+      child: SizedBox(
+        width: 150,
+        height: 150,
+        child: CustomPaint(
+          painter: _D20Painter(
+              edge: edge,
+              face: theme.colorScheme.surfaceContainer,
+              facet: ink.seam),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: Text(
+                roll?.toString() ?? '20',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  fontFamily: InkFonts.system,
+                  fontWeight: FontWeight.w600,
+                  color: roll == null ? ink.ash : edge,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _D20Painter extends CustomPainter {
+  const _D20Painter(
+      {required this.edge, required this.face, required this.facet});
+
+  final Color edge;
+  final Color face;
+  final Color facet;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width, h = size.height;
+    Offset p(double x, double y) => Offset(x * w / 170, y * h / 170);
+    final hex = Path()
+      ..moveTo(p(85, 6).dx, p(85, 6).dy)
+      ..lineTo(p(158, 48).dx, p(158, 48).dy)
+      ..lineTo(p(158, 122).dx, p(158, 122).dy)
+      ..lineTo(p(85, 164).dx, p(85, 164).dy)
+      ..lineTo(p(12, 122).dx, p(12, 122).dy)
+      ..lineTo(p(12, 48).dx, p(12, 48).dy)
+      ..close();
+    canvas.drawPath(hex, Paint()..color = face);
+    final facetPaint = Paint()
+      ..color = facet
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke;
+    final tri = Path()
+      ..moveTo(p(85, 34).dx, p(85, 34).dy)
+      ..lineTo(p(134, 112).dx, p(134, 112).dy)
+      ..lineTo(p(36, 112).dx, p(36, 112).dy)
+      ..close();
+    canvas.drawPath(tri, facetPaint);
+    for (final (a, b) in [
+      ((85.0, 6.0), (85.0, 34.0)),
+      ((158.0, 48.0), (134.0, 112.0)),
+      ((12.0, 48.0), (36.0, 112.0)),
+      ((85.0, 164.0), (36.0, 112.0)),
+      ((85.0, 164.0), (134.0, 112.0)),
+      ((158.0, 122.0), (134.0, 112.0)),
+      ((12.0, 122.0), (36.0, 112.0)),
+      ((12.0, 48.0), (85.0, 34.0)),
+      ((158.0, 48.0), (85.0, 34.0)),
+    ]) {
+      canvas.drawLine(p(a.$1, a.$2), p(b.$1, b.$2), facetPaint);
+    }
+    canvas.drawPath(
+        hex,
+        Paint()
+          ..color = edge
+          ..strokeWidth = 3
+          ..style = PaintingStyle.stroke);
+  }
+
+  @override
+  bool shouldRepaint(_D20Painter old) =>
+      old.edge != edge || old.face != face || old.facet != facet;
 }
 
 class _PipRow extends StatelessWidget {
@@ -183,25 +324,41 @@ class _PipRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(label, style: Theme.of(context).textTheme.labelSmall),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var i = 0; i < total; i++)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2),
-                child: Icon(
-                  i < filled ? Icons.circle : Icons.circle_outlined,
-                  size: 14,
-                  color: i < filled ? color : color.withValues(alpha: 0.35),
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: theme.colorScheme.outlineVariant),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${label.toUpperCase()} · $filled / $total',
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              for (var i = 0; i < total; i++)
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: BoxDecoration(
+                    color: i < filled ? color : null,
+                    borderRadius: BorderRadius.circular(3),
+                    border: Border.all(
+                        color:
+                            i < filled ? color : color.withValues(alpha: 0.5),
+                        width: 1.5),
+                  ),
                 ),
-              ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -221,17 +378,18 @@ class _RoundTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final color = success ? ink.gold : theme.colorScheme.error;
     return ListTile(
       dense: true,
-      leading: Icon(
-        success ? Icons.check_circle : Icons.cancel,
-        color: success ? Colors.green : colorScheme.error,
-      ),
-      title: Text('$roundLabel $roundNumber'),
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(success ? Icons.check : Icons.close, color: color),
+      title:
+          Text('$roundLabel $roundNumber', style: theme.textTheme.labelLarge),
       trailing: Text(
         '${result.roll} + ${result.modifier} = ${result.total}',
-        style: Theme.of(context).textTheme.bodySmall,
+        style: theme.textTheme.labelLarge?.copyWith(color: color),
       ),
     );
   }

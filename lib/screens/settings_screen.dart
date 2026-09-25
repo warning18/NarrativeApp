@@ -746,6 +746,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   String _paletteLabelKey(AppPalette palette) {
     switch (palette) {
+      case AppPalette.stitchedInk:
+        return 'palette_stitched_ink';
       case AppPalette.deepPurple:
         return 'palette_deep_purple';
       case AppPalette.weatheredEarth:
