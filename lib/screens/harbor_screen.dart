@@ -110,6 +110,9 @@ class _PartCard extends ConsumerWidget {
       if (bonus is Map)
         for (final entry in bonus.entries)
           '${tr(ref, 'ship_room_${entry.key}_title')} +${entry.value}',
+      if (((part['turnSecondsBonus'] as num?)?.toInt() ?? 0) > 0)
+        tr(ref, 'turn_seconds_bonus_label')
+            .replaceAll('{n}', '${part['turnSecondsBonus']}'),
     ].join(' · ');
   }
 

@@ -13,6 +13,7 @@
     "shieldSlots": 1,
     "utilitySlots": 1,
     "sailSlots": 1,
-    "shipName_fr": "Le Rusty Eel"
+    "shipName_fr": "Le Rusty Eel",
+    "turnSeconds": 20
   }
 }

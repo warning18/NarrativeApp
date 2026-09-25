@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -44,6 +45,8 @@ class ShipBattleOutcome {
 /// player can board and fight the enemy's crew on the dice (a win takes
 /// the ship), and the enemy may board the Eel (a hand in the hold meets
 /// them weakened; losing the deck wrecks the hold and a fifth of the hull).
+/// With [turnSeconds] set, each turn runs against the clock: when it runs
+/// out the turn ends as it stands, and a weapon not fired keeps its charge.
 class ShipBattlePanel extends ConsumerStatefulWidget {
   const ShipBattlePanel({
     super.key,
@@ -59,6 +62,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     this.chapter = 1,
     this.buildCrew,
     this.isTest = false,
+    this.turnSeconds,
   });
 
   final ShipState player;
@@ -85,6 +89,10 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   /// An Edit Mode test battle (see FightLabScreen): its boarding fight is
   /// a test fight too, with no permadeath on a loss.
   final bool isTest;
+
+  /// Seconds the player has for each turn (see shipTurnSeconds); null
+  /// leaves the turn to End turn alone.
+  final int? turnSeconds;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -115,6 +123,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
   bool _boardingSpent = false;
   bool _enemyBoardingSpent = false;
 
+  /// The turn's clock (see [ShipBattlePanel.turnSeconds]): it stands still
+  /// while the enemy fires or a deck is fought over.
+  Timer? _clock;
+  int _secondsLeft = 0;
+
   @override
   void initState() {
     super.initState();
@@ -134,6 +147,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     }
     _planEnemy();
     _beginPlayerTurn();
+    _startClock();
+  }
+
+  @override
+  void dispose() {
+    _clock?.cancel();
+    super.dispose();
   }
 
   // --- Helpers -------------------------------------------------------------
@@ -222,6 +242,32 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     _armedWeaponId = _firstReadyWeaponId();
   }
 
+  /// Starts the turn's clock afresh, when the battle is timed.
+  void _startClock() {
+    _clock?.cancel();
+    final seconds = widget.turnSeconds;
+    if (seconds == null || seconds <= 0 || _over) return;
+    _secondsLeft = seconds;
+    _clock = Timer.periodic(const Duration(seconds: 1), (_) => _tick());
+  }
+
+  void _tick() {
+    if (!mounted || _over) {
+      _clock?.cancel();
+      return;
+    }
+    if (_busy) return;
+    setState(() => _secondsLeft = max(0, _secondsLeft - 1));
+    if (_secondsLeft > 0) return;
+    _clock?.cancel();
+    // Time's up: the turn ends as it stands. A ready weapon not fired
+    // keeps its charge for the next one.
+    final held = _player.weapons.any((w) => w.isReady);
+    _log.add(_t(held ? 'ship_log_time_up_held' : 'ship_log_time_up',
+        ship: widget.shipName));
+    _endTurn();
+  }
+
   /// The helmsman at the helm this turn, if not busy repairing it.
   ShipCrew? get _helmsman =>
       _busyRooms.contains(ShipRoom.helm) ? null : _stationsMap[ShipRoom.helm];
@@ -293,6 +339,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
 
   Future<void> _endTurn() async {
     if (_busy || _over) return;
+    _clock?.cancel();
     setState(() {
       _busy = true;
       _armedWeaponId = null;
@@ -375,11 +422,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
     _beginPlayerTurn();
     if (!mounted) return;
     setState(() => _busy = false);
+    _startClock();
   }
 
   void _finish({required bool won, bool boarded = false}) {
     if (_over) return;
     _over = true;
+    _clock?.cancel();
     setState(() => _busy = true);
     widget.onFinished(ShipBattleOutcome(
       won: won,
@@ -586,6 +635,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
             ],
           ),
         ),
+        if (widget.turnSeconds != null && !_over) ...[
+          const SizedBox(height: 6),
+          _buildClock(lang),
+        ],
         const SizedBox(height: 6),
         Text(
           '${trFor(lang, 'round_label')} $_turn · $hint',
@@ -615,6 +668,39 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel> {
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  /// The turn's clock: a bar that empties and the seconds left, red for
+  /// the last five; still while the enemy fires.
+  Widget _buildClock(AppLanguage lang) {
+    final theme = Theme.of(context);
+    final total = max(1, widget.turnSeconds ?? 1);
+    final urgent = !_busy && _secondsLeft <= 5;
+    final color = urgent ? theme.colorScheme.error : theme.colorScheme.primary;
+    return Row(
+      key: const Key('ship_turn_clock'),
+      children: [
+        Icon(Icons.timer_outlined, size: 16, color: color),
+        const SizedBox(width: 6),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: (_secondsLeft / total).clamp(0.0, 1.0),
+              minHeight: 6,
+              color: color,
+              backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          trFor(lang, 'ship_turn_seconds').replaceAll('{n}', '$_secondsLeft'),
+          style: theme.textTheme.labelMedium?.copyWith(
+              color: color, fontFeatures: const [FontFeature.tabularFigures()]),
         ),
       ],
     );

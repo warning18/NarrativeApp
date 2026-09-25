@@ -13,6 +13,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/combat_active_provider.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -205,6 +206,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 chapter: chapter,
                 buildCrew: crew,
                 isTest: true,
+                turnSeconds: ref.read(shipTurnTimerProvider)
+                    ? shipTurnSeconds(
+                        ship: ship, parts: parts, installedPartIds: installed)
+                    : null,
                 onFinished: (outcome) =>
                     Navigator.of(pageContext).pop(outcome.won),
               ),

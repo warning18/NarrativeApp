@@ -4626,6 +4626,31 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_weapons_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
   'ship_crew_label': {AppLanguage.en: 'Crew', AppLanguage.fr: 'Équipage'},
   'ship_weapon_ready_label': {AppLanguage.en: 'ready', AppLanguage.fr: 'prête'},
+  'ship_turn_seconds': {AppLanguage.en: '{n} s', AppLanguage.fr: '{n} s'},
+  'ship_log_time_up': {
+    AppLanguage.en: 'Time runs out: the turn ends.',
+    AppLanguage.fr: 'Le temps est écoulé : le tour se termine.',
+  },
+  'ship_log_time_up_held': {
+    AppLanguage.en:
+        'Time runs out: {ship} holds her fire; her guns keep their charge.',
+    AppLanguage.fr:
+        'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
+  },
+  'turn_seconds_bonus_label': {
+    AppLanguage.en: '+{n} s per battle turn',
+    AppLanguage.fr: '+{n} s par tour de bataille',
+  },
+  'ship_turn_timer_setting_title': {
+    AppLanguage.en: 'Timed ship battles',
+    AppLanguage.fr: 'Batailles navales chronométrées',
+  },
+  'ship_turn_timer_setting_desc': {
+    AppLanguage.en:
+        'Each turn of a ship battle has a time limit (20 s, more with a Speaking Tube). When it runs out, the turn ends as it stands.',
+    AppLanguage.fr:
+        'Chaque tour de bataille navale a une limite de temps (20 s, davantage avec un Porte-voix). Quand elle est écoulée, le tour se termine en l’état.',
+  },
   'ship_end_turn_button': {
     AppLanguage.en: 'End turn',
     AppLanguage.fr: 'Fin du tour'

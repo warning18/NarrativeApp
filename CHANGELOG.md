@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.152.0+181]
+
+Ship battles run against the clock.
+
+### Added
+- **A clock on every ship-battle turn.** The Rusty Eel has 20 seconds a
+  turn to fire and move her crew. A bar and the seconds left show above
+  End turn, red for the last five. The clock stands still while the
+  enemy fires and while a deck is fought over.
+- **When time runs out, the turn ends as it stands.** A ready weapon not
+  fired keeps its charge ("holds her fire"), and the enemy fires back as
+  usual.
+- **The Speaking Tube**, a new Utility part at the Harbor (140 gold):
+  orders reach every station faster, and a turn lasts 8 seconds longer.
+  It shares the Utility slot with the Tar-Sealed Hull and the Spare
+  Canvas. Ships and parts carry the figures (`turnSeconds`,
+  `turnSecondsBonus`), so later refits can add more time (60 s at most).
+- **A setting to turn the clock off** (Settings, Combat: "Timed ship
+  battles"). Off, a turn waits for End turn as before.
+
 ## [1.151.0+180]
 
 Everything in one place: the design branch's last three updates (the

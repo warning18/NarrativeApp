@@ -130,3 +130,29 @@ class CombatEffectsNotifier extends StateNotifier<bool> {
 final combatEffectsEnabledProvider =
     StateNotifierProvider<CombatEffectsNotifier, bool>(
         (ref) => CombatEffectsNotifier());
+
+const String _shipTurnTimerPrefsKey = 'ship_turn_timer_enabled';
+
+class ShipTurnTimerNotifier extends StateNotifier<bool> {
+  ShipTurnTimerNotifier() : super(true) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    final prefs = await SharedPreferences.getInstance();
+    state = prefs.getBool(_shipTurnTimerPrefsKey) ?? true;
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    state = enabled;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_shipTurnTimerPrefsKey, enabled);
+  }
+}
+
+/// Whether a ship battle's turns are timed (see shipTurnSeconds): on by
+/// default; off, a turn waits for End turn. Persisted via
+/// [SharedPreferences].
+final shipTurnTimerProvider =
+    StateNotifierProvider<ShipTurnTimerNotifier, bool>(
+        (ref) => ShipTurnTimerNotifier());

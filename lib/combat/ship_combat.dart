@@ -573,6 +573,29 @@ ShipState buildPlayerShip({
   return state.copyWith(layers: state.maxLayers);
 }
 
+/// Seconds the player has for a turn when the ship's record names none.
+const int defaultTurnSeconds = 20;
+
+/// However well the Eel is fitted out, a turn never lasts longer.
+const int maxTurnSeconds = 60;
+
+/// Seconds the player has to give the turn's orders (fire, move the crew)
+/// before the turn ends on its own: the ship's `turnSeconds` plus every
+/// installed part's `turnSecondsBonus` (the Speaking Tube carries orders
+/// faster), capped at [maxTurnSeconds].
+int shipTurnSeconds({
+  required Map<String, dynamic> ship,
+  required Map<String, dynamic> parts,
+  required List<String> installedPartIds,
+}) {
+  var seconds = (ship['turnSeconds'] as num?)?.toInt() ?? defaultTurnSeconds;
+  for (final id in installedPartIds.toSet()) {
+    final part = parts[id] as Map<String, dynamic>?;
+    seconds += (part?['turnSecondsBonus'] as num?)?.toInt() ?? 0;
+  }
+  return seconds.clamp(1, maxTurnSeconds);
+}
+
 /// An enemy ship off its enemy_ships.json record: hull, rooms and the
 /// weapons in its `weapons` list (one plain gun off `weaponDamage` when
 /// the list is missing, for an old record).

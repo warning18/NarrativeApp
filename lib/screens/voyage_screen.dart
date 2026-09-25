@@ -12,6 +12,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -567,6 +568,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         professions: professions,
         gameConfig: gameConfig,
       ),
+      turnSeconds: ref.read(shipTurnTimerProvider)
+          ? shipTurnSeconds(
+              ship: _shipRecord,
+              parts: _parts,
+              installedPartIds: session.shipPartIds)
+          : null,
     );
   }
 

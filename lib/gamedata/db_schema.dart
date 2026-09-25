@@ -1085,6 +1085,13 @@ final DbSchema shipsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 1,
     ),
+    FieldSchema(
+      key: 'turnSeconds',
+      label:
+          'Turn Seconds (time to give a battle turn\'s orders, before parts)',
+      type: FieldType.integer,
+      defaultValue: 20,
+    ),
     visualAssetFieldSchema('ships'),
   ],
 );
@@ -1150,6 +1157,12 @@ final DbSchema shipPartsSchema = DbSchema(
       key: 'roomBonus',
       label: 'Room Bonus {helm, guns, bulwark, hold}: pips this part adds',
       type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'turnSecondsBonus',
+      label: 'Turn Seconds Bonus (seconds this part adds to a battle turn)',
+      type: FieldType.integer,
+      defaultValue: 0,
     ),
     visualAssetFieldSchema('ship_parts'),
     FieldSchema(
