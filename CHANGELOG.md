@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.143.0+172]
+
+### Added
+- **The companion dog is now your guide.** The first time you reach a
+  feature, the dog walks onto the screen by itself (no dark card behind
+  it) and talks you through it in a speech bubble. The part it describes
+  is lit up and the rest of the screen dims. Tap anywhere or Next to go
+  on; Skip ends the tour at any time. A speaker button in the bubble reads
+  the lines aloud.
+- Tours for the Story, Character, Camp and Other tabs, the world map,
+  skills, dice, inventory, level up, dice combat, skill challenges, the
+  boat, voyages, expeditions, towns, shops, the journal and achievements,
+  in English and French.
+- **Tutorials** in the Other tab lists every tour, marks the ones not seen
+  yet as New, and plays any of them again: on its own tab or page when it
+  has one, so the dog points at the real thing.
+
+### Changed
+- The walking companion is on by default. On a short screen it is drawn
+  smaller, and the choices leave room for it and for the story.
+- Settings' tutorial switch now covers every tour, and "Show all
+  tutorials again" plays each one again the next time you reach it.
+
 ## [1.142.0+171]
 
 ### Fixed

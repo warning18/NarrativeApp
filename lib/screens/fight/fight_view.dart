@@ -378,10 +378,13 @@ extension _FightView on _FightScreenState {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
-            child: _buildTopStrip(),
+            child: TutorialTarget(id: 'fight.top', child: _buildTopStrip()),
           ),
           const SizedBox(height: 6),
-          _buildDiceTray(acting, dice, skills, items, previews),
+          TutorialTarget(
+            id: 'fight.dice',
+            child: _buildDiceTray(acting, dice, skills, items, previews),
+          ),
           const SizedBox(height: 6),
           Expanded(
             child: Padding(
@@ -389,9 +392,18 @@ extension _FightView on _FightScreenState {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(flex: 5, child: _buildPartyColumn(items)),
+                  Expanded(
+                    flex: 5,
+                    child: TutorialTarget(
+                        id: 'fight.party', child: _buildPartyColumn(items)),
+                  ),
                   const SizedBox(width: 8),
-                  Expanded(flex: 6, child: _buildEnemyColumn(previews)),
+                  Expanded(
+                    flex: 6,
+                    child: TutorialTarget(
+                        id: 'fight.enemies',
+                        child: _buildEnemyColumn(previews)),
+                  ),
                 ],
               ),
             ),
@@ -399,24 +411,31 @@ extension _FightView on _FightScreenState {
           const SizedBox(height: 6),
           _buildLogTicker(),
           const SizedBox(height: 4),
-          _buildBottomBar(
-              acting, anyDieAvailable, dice, skills, items, session),
+          TutorialTarget(
+            id: 'fight.actions',
+            child: _buildBottomBar(
+                acting, anyDieAvailable, dice, skills, items, session),
+          ),
         ],
       ),
     );
-    // Effects draw over the whole battle and never take a touch.
-    return Stack(
-      children: [
-        Positioned.fill(child: battle),
-        Positioned.fill(
-          child: IgnorePointer(
-            child: CombatVfxLayer(
-              controller: _vfx,
-              reducedMotion: MediaQuery.of(context).disableAnimations,
+    // Effects draw over the whole battle and never take a touch. The
+    // fight's tour plays the first time a battle is on screen.
+    return TutorialTrigger(
+      topic: TutorialTopic.fight,
+      child: Stack(
+        children: [
+          Positioned.fill(child: battle),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: CombatVfxLayer(
+                controller: _vfx,
+                reducedMotion: MediaQuery.of(context).disableAnimations,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

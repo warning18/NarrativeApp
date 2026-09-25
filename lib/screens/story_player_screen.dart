@@ -37,14 +37,14 @@ import '../providers/player_session_provider.dart';
 import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
-import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
-import '../widgets/tutorial_overlay.dart';
 import '../widgets/walking_companion_strip.dart';
 import '../widgets/zone_card.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
@@ -322,332 +322,377 @@ class _StoryView extends ConsumerWidget {
       _ReadAloudButton(text: displayDescription, language: language),
     ];
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // One line above the story: the party's numbers, then the
-            // journal and read-aloud buttons. Quests, shops, alignment and
-            // the rest open from the numbers (see PlayerStatsBar). Scrolling
-            // down into the narration folds the numbers into a handle;
-            // tapping the handle brings them back.
-            if (!fullscreenReading)
-              statusBarCollapsed
-                  ? Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(8),
-                            onTap: () => ref
-                                .read(_statusBarCollapsedProvider.notifier)
-                                .state = false,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              child: Center(
-                                child: Container(
-                                  width: 36,
-                                  height: 4,
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .outlineVariant,
-                                    borderRadius: BorderRadius.circular(2),
+    return TutorialTrigger(
+      topic: TutorialTopic.story,
+      ready: !isEditMode && session.raceId.isNotEmpty,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // One line above the story: the party's numbers, then the
+              // journal and read-aloud buttons. Quests, shops, alignment and
+              // the rest open from the numbers (see PlayerStatsBar). Scrolling
+              // down into the narration folds the numbers into a handle;
+              // tapping the handle brings them back.
+              if (!fullscreenReading)
+                TutorialTarget(
+                  id: 'story.stats',
+                  child: statusBarCollapsed
+                      ? Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () => ref
+                                    .read(_statusBarCollapsedProvider.notifier)
+                                    .state = false,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  child: Center(
+                                    child: Container(
+                                      width: 36,
+                                      height: 4,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outlineVariant,
+                                        borderRadius: BorderRadius.circular(2),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        ...storyTools,
-                      ],
-                    )
-                  : PlayerStatsBar(trailing: storyTools),
-            // Edit Mode keeps its own line: back, the node's id and its
-            // editor. A reader never sees node ids.
-            if (!fullscreenReading && isEditMode)
-              Row(
-                children: [
-                  if (playState.history.isNotEmpty)
-                    TextButton.icon(
-                      onPressed: notifier.goBack,
-                      icon: const Icon(Icons.arrow_back),
-                      label: Text(tr(ref, 'back')),
-                    ),
-                  const Spacer(),
-                  Flexible(
-                    child: Text(
-                      playState.isInExcursion
-                          ? tr(ref, 'detour')
-                          : '${tr(ref, 'node')} ${node.id}',
-                      style: Theme.of(context).textTheme.labelMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (!playState.isInExcursion) ...[
-                    const SizedBox(width: 4),
-                    IconButton(
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      tooltip: tr(ref, 'edit_node'),
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => StoryNodeEditorScreen(node: node),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ],
-              ),
-            if (!fullscreenReading) const SizedBox(height: 8),
-            // Below the header, the narration and the choices share what is
-            // left: the choices never take more than [choiceBudget] of it.
-            // The area under the narration doesn't scroll with it, so a long
-            // list (a hub, long French lines) scrolls within the cap instead
-            // of squeezing the story out or running off a small screen.
-            Expanded(
-              child: LayoutBuilder(builder: (context, area) {
-                final choiceBudget = area.maxHeight * 0.6;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                            ...storyTools,
+                          ],
+                        )
+                      : PlayerStatsBar(trailing: storyTools),
+                ),
+              // Edit Mode keeps its own line: back, the node's id and its
+              // editor. A reader never sees node ids.
+              if (!fullscreenReading && isEditMode)
+                Row(
                   children: [
-                    Expanded(
-                      // Scrolling down into the narration gives the status bar and
-                      // companion collapse toggles above/below no purpose (they'd
-                      // just be pushed off-screen anyway), so collapse both
-                      // automatically the moment the player starts reading down the
-                      // page. The manual chevrons stay available to re-expand.
-                      child: LayoutBuilder(
-                        // Captured here, above the SingleChildScrollView, because
-                        // that view gives its child unbounded height on the scroll
-                        // axis -- a LayoutBuilder nested inside it would only ever
-                        // see infinite height, not the actual viewport size.
-                        builder: (context, viewportConstraints) {
-                          return NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification is ScrollUpdateNotification &&
-                                  (notification.scrollDelta ?? 0) > 0) {
-                                if (!statusBarCollapsed) {
-                                  ref
-                                      .read(
-                                          _statusBarCollapsedProvider.notifier)
-                                      .state = true;
-                                }
-                                if (!companionCollapsed) {
-                                  ref
-                                      .read(
-                                          _companionCollapsedProvider.notifier)
-                                      .state = true;
-                                }
-                              }
-                              return false;
-                            },
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onDoubleTap: () => ref
-                                  .read(_fullscreenReadingProvider.notifier)
-                                  .state = !fullscreenReading,
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 320),
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeIn,
-                                transitionBuilder: _nodeTransition,
-                                child: SingleChildScrollView(
-                                  key: ValueKey(
-                                      '${node.id}_${playState.isInExcursion}_text'),
-                                  // Short narration otherwise leaves the freed-up
-                                  // space (status bar, node header, companion strip,
-                                  // choices all hidden) as dead blank area below the
-                                  // text card, which reads as "nothing happened"
-                                  // rather than an actual fullscreen mode. Centering
-                                  // it in the full viewport height makes the
-                                  // toggle's effect obvious.
-                                  child: fullscreenReading
-                                      ? SizedBox(
-                                          // A ConstrainedBox with only minHeight set
-                                          // still leaves maxHeight unbounded here
-                                          // (SingleChildScrollView never bounds its
-                                          // child's height) -- and Center collapses
-                                          // to wrap-content, ignoring minHeight,
-                                          // whenever its incoming max is unbounded.
-                                          // A fixed-height SizedBox forces a tight
-                                          // constraint so Center actually centers.
-                                          height: viewportConstraints.maxHeight,
-                                          child: Center(
-                                            child: _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              placeLabel: _placeLabel(
-                                                  ref, node.uiTheme),
-                                              moodLabel:
-                                                  _moodLabel(ref, node.mood),
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
-                                            ),
-                                          ),
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            if (playState.isInExcursion)
-                                              _DetourContextCard(
-                                                origin: playState
-                                                    .excursionOriginFor(french),
-                                                note:
-                                                    node.contextNoteFor(french),
-                                              ),
-                                            _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              placeLabel: _placeLabel(
-                                                  ref, node.uiTheme),
-                                              moodLabel:
-                                                  _moodLabel(ref, node.mood),
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                              ),
+                    if (playState.history.isNotEmpty)
+                      TextButton.icon(
+                        onPressed: notifier.goBack,
+                        icon: const Icon(Icons.arrow_back),
+                        label: Text(tr(ref, 'back')),
+                      ),
+                    const Spacer(),
+                    Flexible(
+                      child: Text(
+                        playState.isInExcursion
+                            ? tr(ref, 'detour')
+                            : '${tr(ref, 'node')} ${node.id}',
+                        style: Theme.of(context).textTheme.labelMedium,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (!playState.isInExcursion) ...[
+                      const SizedBox(width: 4),
+                      IconButton(
+                        icon: const Icon(Icons.edit_outlined, size: 18),
+                        tooltip: tr(ref, 'edit_node'),
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => StoryNodeEditorScreen(node: node),
                             ),
                           );
                         },
                       ),
-                    ),
-                    if (!fullscreenReading) ...[
-                      if (walkCompanionEnabled) ...[
-                        if (!companionCollapsed)
-                          WalkingCompanionStrip(
-                            trigger: '${node.id}_${playState.isInExcursion}',
-                            fightAvailable: node.choices.any(
-                              (c) =>
-                                  c.triggersCombat &&
-                                  !_isChoiceLocked(c, story, session,
-                                      playState.isInExcursion),
-                            ),
-                          ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: IconButton(
-                            icon: Icon(companionCollapsed
-                                ? Icons.expand_more
-                                : Icons.expand_less),
-                            tooltip: tr(
-                                ref,
-                                companionCollapsed
-                                    ? 'show_companion'
-                                    : 'hide_companion'),
-                            visualDensity: VisualDensity.compact,
-                            onPressed: () => ref
-                                .read(_companionCollapsedProvider.notifier)
-                                .state = !companionCollapsed,
-                          ),
-                        ),
-                      ] else
-                        const SizedBox(height: 16),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 320),
-                        switchInCurve: Curves.easeOut,
-                        switchOutCurve: Curves.easeIn,
-                        transitionBuilder: _nodeTransition,
-                        child: isHubNode && !isStoryEnding(node)
-                            ? KeyedSubtree(
-                                key: ValueKey(
-                                    '${node.id}_${playState.isInExcursion}_choices'),
-                                child: _HubSections(
-                                  node: node,
-                                  choices: visibleChoices,
-                                  done: doneChoices,
-                                  story: story,
-                                  session: session,
-                                  currentNodeId: playState.currentNodeId,
-                                  isExcursion: playState.isInExcursion,
-                                  french: french,
-                                  maxHeight: choiceBudget,
-                                ),
-                              )
-                            : ConstrainedBox(
-                                key: ValueKey(
-                                    '${node.id}_${playState.isInExcursion}_choices'),
-                                constraints:
-                                    BoxConstraints(maxHeight: choiceBudget),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      if (node.choices.isEmpty ||
-                                          isStoryEnding(node))
-                                        _EndingView(
-                                          title: tr(ref, 'the_end'),
-                                          // A written ending (its only way on is "begin
-                                          // again") closes the story; a node with no choice
-                                          // at all is a branch left unfinished.
-                                          message: tr(
-                                              ref,
-                                              isStoryEnding(node)
-                                                  ? 'story_end_message'
-                                                  : 'branch_end_message'),
-                                          restartLabel: isStoryEnding(node)
-                                              ? node.choices.first
-                                                  .textFor(french)
-                                              : tr(ref, 'restart_story'),
-                                          onRestart: () => notifier.restart(
-                                              StoryRepository.startNodeId),
-                                          session: session,
-                                          onNewGamePlus: session.raceId.isEmpty
-                                              ? null
-                                              : () => _startNewGamePlus(
-                                                  context, ref),
-                                        )
-                                      else
-                                        for (var i = 0;
-                                            i < visibleChoices.length;
-                                            i++)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 8),
-                                            child: _StaggeredReveal(
-                                              delay: Duration(
-                                                  milliseconds: 60 * i),
-                                              child: _ChoiceButton(
-                                                choice: visibleChoices[i],
-                                                story: story,
-                                                session: session,
-                                                currentNodeId:
-                                                    playState.currentNodeId,
-                                                isExcursion:
-                                                    playState.isInExcursion,
-                                                french: french,
+                    ],
+                  ],
+                ),
+              if (!fullscreenReading) const SizedBox(height: 8),
+              // Below the header, the narration and the choices share what is
+              // left: the choices never take more than [choiceBudget] of it.
+              // The area under the narration doesn't scroll with it, so a long
+              // list (a hub, long French lines) scrolls within the cap instead
+              // of squeezing the story out or running off a small screen.
+              Expanded(
+                child: LayoutBuilder(builder: (context, area) {
+                  // The companion shrinks on a short screen, and the choices
+                  // leave room for it and for a few lines of the story.
+                  final companionShown =
+                      !fullscreenReading && walkCompanionEnabled;
+                  final stripHeight = companionShown && !companionCollapsed
+                      ? (area.maxHeight * 0.18).clamp(56.0, 125.0)
+                      : 0.0;
+                  final choiceBudget = max(
+                      0.0,
+                      min(
+                          area.maxHeight * 0.6,
+                          area.maxHeight -
+                              stripHeight -
+                              (companionShown ? 40 : 0) -
+                              72));
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        // Scrolling down into the narration gives the status bar and
+                        // companion collapse toggles above/below no purpose (they'd
+                        // just be pushed off-screen anyway), so collapse both
+                        // automatically the moment the player starts reading down the
+                        // page. The manual chevrons stay available to re-expand.
+                        child: LayoutBuilder(
+                          // Captured here, above the SingleChildScrollView, because
+                          // that view gives its child unbounded height on the scroll
+                          // axis -- a LayoutBuilder nested inside it would only ever
+                          // see infinite height, not the actual viewport size.
+                          builder: (context, viewportConstraints) {
+                            return NotificationListener<ScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification is ScrollUpdateNotification &&
+                                    (notification.scrollDelta ?? 0) > 0) {
+                                  if (!statusBarCollapsed) {
+                                    ref
+                                        .read(_statusBarCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
+                                  if (!companionCollapsed) {
+                                    ref
+                                        .read(_companionCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
+                                }
+                                return false;
+                              },
+                              child: TutorialTarget(
+                                id: 'story.text',
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onDoubleTap: () => ref
+                                      .read(_fullscreenReadingProvider.notifier)
+                                      .state = !fullscreenReading,
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 320),
+                                    switchInCurve: Curves.easeOut,
+                                    switchOutCurve: Curves.easeIn,
+                                    transitionBuilder: _nodeTransition,
+                                    child: SingleChildScrollView(
+                                      key: ValueKey(
+                                          '${node.id}_${playState.isInExcursion}_text'),
+                                      // Short narration otherwise leaves the freed-up
+                                      // space (status bar, node header, companion strip,
+                                      // choices all hidden) as dead blank area below the
+                                      // text card, which reads as "nothing happened"
+                                      // rather than an actual fullscreen mode. Centering
+                                      // it in the full viewport height makes the
+                                      // toggle's effect obvious.
+                                      child: fullscreenReading
+                                          ? SizedBox(
+                                              // A ConstrainedBox with only minHeight set
+                                              // still leaves maxHeight unbounded here
+                                              // (SingleChildScrollView never bounds its
+                                              // child's height) -- and Center collapses
+                                              // to wrap-content, ignoring minHeight,
+                                              // whenever its incoming max is unbounded.
+                                              // A fixed-height SizedBox forces a tight
+                                              // constraint so Center actually centers.
+                                              height:
+                                                  viewportConstraints.maxHeight,
+                                              child: Center(
+                                                child: _StoryText(
+                                                  text: displayDescription,
+                                                  uiTheme: node.uiTheme,
+                                                  placeLabel: _placeLabel(
+                                                      ref, node.uiTheme),
+                                                  moodLabel: _moodLabel(
+                                                      ref, node.mood),
+                                                  epilogue: epilogue,
+                                                  speakerLabel: speakerLabel,
+                                                  aftermath: pendingAftermath,
+                                                  aftermathHeading: tr(
+                                                      ref, 'aftermath_heading'),
+                                                  epilogueHeading: tr(
+                                                      ref, 'epilogue_heading'),
+                                                ),
                                               ),
+                                            )
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              children: [
+                                                if (playState.isInExcursion)
+                                                  _DetourContextCard(
+                                                    origin: playState
+                                                        .excursionOriginFor(
+                                                            french),
+                                                    note: node
+                                                        .contextNoteFor(french),
+                                                  ),
+                                                _StoryText(
+                                                  text: displayDescription,
+                                                  uiTheme: node.uiTheme,
+                                                  placeLabel: _placeLabel(
+                                                      ref, node.uiTheme),
+                                                  moodLabel: _moodLabel(
+                                                      ref, node.mood),
+                                                  epilogue: epilogue,
+                                                  speakerLabel: speakerLabel,
+                                                  aftermath: pendingAftermath,
+                                                  aftermathHeading: tr(
+                                                      ref, 'aftermath_heading'),
+                                                  epilogueHeading: tr(
+                                                      ref, 'epilogue_heading'),
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
+                            );
+                          },
+                        ),
                       ),
+                      if (!fullscreenReading) ...[
+                        if (walkCompanionEnabled) ...[
+                          if (!companionCollapsed)
+                            TutorialTarget(
+                              id: 'story.companion',
+                              child: WalkingCompanionStrip(
+                                height: stripHeight,
+                                trigger:
+                                    '${node.id}_${playState.isInExcursion}',
+                                fightAvailable: node.choices.any(
+                                  (c) =>
+                                      c.triggersCombat &&
+                                      !_isChoiceLocked(c, story, session,
+                                          playState.isInExcursion),
+                                ),
+                              ),
+                            ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              icon: Icon(companionCollapsed
+                                  ? Icons.expand_more
+                                  : Icons.expand_less),
+                              tooltip: tr(
+                                  ref,
+                                  companionCollapsed
+                                      ? 'show_companion'
+                                      : 'hide_companion'),
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () => ref
+                                  .read(_companionCollapsedProvider.notifier)
+                                  .state = !companionCollapsed,
+                            ),
+                          ),
+                        ] else
+                          const SizedBox(height: 16),
+                        TutorialTarget(
+                          id: 'story.choices',
+                          // Capped here too: the scene fading out keeps the
+                          // room it had, which a smaller screen no longer has.
+                          child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(maxHeight: choiceBudget),
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 320),
+                              switchInCurve: Curves.easeOut,
+                              switchOutCurve: Curves.easeIn,
+                              transitionBuilder: _nodeTransition,
+                              child: isHubNode && !isStoryEnding(node)
+                                  ? KeyedSubtree(
+                                      key: ValueKey(
+                                          '${node.id}_${playState.isInExcursion}_choices'),
+                                      child: _HubSections(
+                                        node: node,
+                                        choices: visibleChoices,
+                                        done: doneChoices,
+                                        story: story,
+                                        session: session,
+                                        currentNodeId: playState.currentNodeId,
+                                        isExcursion: playState.isInExcursion,
+                                        french: french,
+                                        maxHeight: choiceBudget,
+                                      ),
+                                    )
+                                  : ConstrainedBox(
+                                      key: ValueKey(
+                                          '${node.id}_${playState.isInExcursion}_choices'),
+                                      constraints: BoxConstraints(
+                                          maxHeight: choiceBudget),
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.stretch,
+                                          children: [
+                                            if (node.choices.isEmpty ||
+                                                isStoryEnding(node))
+                                              _EndingView(
+                                                title: tr(ref, 'the_end'),
+                                                // A written ending (its only way on is "begin
+                                                // again") closes the story; a node with no choice
+                                                // at all is a branch left unfinished.
+                                                message: tr(
+                                                    ref,
+                                                    isStoryEnding(node)
+                                                        ? 'story_end_message'
+                                                        : 'branch_end_message'),
+                                                restartLabel: isStoryEnding(
+                                                        node)
+                                                    ? node.choices.first
+                                                        .textFor(french)
+                                                    : tr(ref, 'restart_story'),
+                                                onRestart: () => notifier
+                                                    .restart(StoryRepository
+                                                        .startNodeId),
+                                                session: session,
+                                                onNewGamePlus: session
+                                                        .raceId.isEmpty
+                                                    ? null
+                                                    : () => _startNewGamePlus(
+                                                        context, ref),
+                                              )
+                                            else
+                                              for (var i = 0;
+                                                  i < visibleChoices.length;
+                                                  i++)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 8),
+                                                  child: _StaggeredReveal(
+                                                    delay: Duration(
+                                                        milliseconds: 60 * i),
+                                                    child: _ChoiceButton(
+                                                      choice: visibleChoices[i],
+                                                      story: story,
+                                                      session: session,
+                                                      currentNodeId: playState
+                                                          .currentNodeId,
+                                                      isExcursion: playState
+                                                          .isInExcursion,
+                                                      french: french,
+                                                    ),
+                                                  ),
+                                                ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                );
-              }),
-            ),
-          ],
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -797,16 +842,9 @@ Future<void> _selectChoice({
     if (!context.mounted) return;
     final started = await Navigator.of(context).push<bool>(
         MaterialPageRoute(builder: (_) => const RaceProfessionScreen()));
+    // Back on the story with a new character, the Story tab's tour plays
+    // (see TutorialTrigger in StoryPlayerScreen).
     if (started != true) return;
-    // Show the guided tour once the player is back on the story
-    // view with a freshly created character, rather than on any
-    // generic "entered the app" trigger.
-    final tutorial = ref.read(tutorialProvider);
-    if (tutorial.enabled && !tutorial.seen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) showTutorialOverlay(context, ref);
-      });
-    }
   }
 
   if (choice.launchesZone && !isExcursion) {

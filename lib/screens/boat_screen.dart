@@ -13,6 +13,8 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/immersive_notice.dart';
 import 'port_screen.dart';
 import 'voyage_screen.dart';
@@ -100,122 +102,125 @@ class BoatScreen extends ConsumerWidget {
       });
 
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(ref, 'boat_title')),
-        actions: const [GoldBadge()],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(Icons.sailing, size: 32),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(ship['shipName']?.toString() ?? shipId,
-                                style: theme.textTheme.titleMedium),
-                            if (currentPort != null)
-                              Text(
-                                '${tr(ref, 'boat_at_port_prefix')}: ${portNameFor(currentPort, fr)}',
-                                style: theme.textTheme.bodySmall,
-                              ),
-                          ],
+    return TutorialTrigger(
+      topic: TutorialTopic.boat,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(tr(ref, 'boat_title')),
+          actions: const [GoldBadge()],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(Icons.sailing, size: 32),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(ship['shipName']?.toString() ?? shipId,
+                                  style: theme.textTheme.titleMedium),
+                              if (currentPort != null)
+                                Text(
+                                  '${tr(ref, 'boat_at_port_prefix')}: ${portNameFor(currentPort, fr)}',
+                                  style: theme.textTheme.bodySmall,
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  LinearProgressIndicator(
-                    value: playerShip.maxHull == 0
-                        ? 0
-                        : playerShip.hull / playerShip.maxHull,
-                    minHeight: 8,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${tr(ref, 'hull_label')} ${playerShip.hull} / ${playerShip.maxHull} · '
-                    '${[
-                      for (final room in ShipRoom.values)
-                        '${tr(ref, 'ship_room_${room.name}_title')} ${playerShip.room(room).level}',
-                    ].join(' · ')}',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: 8),
-                  for (final slot in slotTypeOptions)
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    LinearProgressIndicator(
+                      value: playerShip.maxHull == 0
+                          ? 0
+                          : playerShip.hull / playerShip.maxHull,
+                      minHeight: 8,
+                    ),
+                    const SizedBox(height: 4),
                     Text(
-                      '${_slotLabel(ref, slot)} '
-                      '${slotsUsed(parts, installed, slot)} / ${slotCapacity(ship, slot)}: '
-                      '${_installedNames(parts, installed, slot, fr)}',
+                      '${tr(ref, 'hull_label')} ${playerShip.hull} / ${playerShip.maxHull} · '
+                      '${[
+                        for (final room in ShipRoom.values)
+                          '${tr(ref, 'ship_room_${room.name}_title')} ${playerShip.room(room).level}',
+                      ].join(' · ')}',
                       style: theme.textTheme.bodySmall,
                     ),
-                  const SizedBox(height: 12),
-                  FilledButton.tonalIcon(
-                    onPressed:
-                        (repairCost == 0 || session.gold < repairCost || busy)
-                            ? null
-                            : () async {
-                                final ok = await ref
-                                    .read(playerSessionProvider.notifier)
-                                    .repairShip(repairCost);
-                                if (!ok || !context.mounted) return;
-                                showImmersiveNotice(
-                                  context,
-                                  icon: Icons.build_outlined,
-                                  message: tr(ref, 'ship_sound_label'),
-                                );
-                              },
-                    icon: const Icon(Icons.build_outlined),
-                    label: Text(repairCost == 0
-                        ? tr(ref, 'ship_sound_label')
-                        : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})'),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    for (final slot in slotTypeOptions)
+                      Text(
+                        '${_slotLabel(ref, slot)} '
+                        '${slotsUsed(parts, installed, slot)} / ${slotCapacity(ship, slot)}: '
+                        '${_installedNames(parts, installed, slot, fr)}',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                    const SizedBox(height: 12),
+                    FilledButton.tonalIcon(
+                      onPressed:
+                          (repairCost == 0 || session.gold < repairCost || busy)
+                              ? null
+                              : () async {
+                                  final ok = await ref
+                                      .read(playerSessionProvider.notifier)
+                                      .repairShip(repairCost);
+                                  if (!ok || !context.mounted) return;
+                                  showImmersiveNotice(
+                                    context,
+                                    icon: Icons.build_outlined,
+                                    message: tr(ref, 'ship_sound_label'),
+                                  );
+                                },
+                      icon: const Icon(Icons.build_outlined),
+                      label: Text(repairCost == 0
+                          ? tr(ref, 'ship_sound_label')
+                          : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})'),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          const Divider(height: 32),
-          Text(tr(ref, 'shipwright_section'),
-              style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          for (final partId in partIds)
-            _buildPartCard(
-              context,
-              ref,
-              partId: partId,
-              part: parts[partId] as Map<String, dynamic>,
-              ship: ship,
-              parts: parts,
-              installed: installed,
-              gold: session.gold,
-              fr: fr,
-            ),
-          const Divider(height: 32),
-          Text(tr(ref, 'ports_section'), style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          for (final portId in portIds)
-            _buildPortCard(
-              context,
-              ref,
-              portId: portId,
-              port: ports[portId] as Map<String, dynamic>,
-              zones: ref.watch(localizedDbProvider(zonesSchema)).value ??
-                  const <String, dynamic>{},
-              isCurrent: portId == currentPortId,
-              fromPortId: currentPortId ?? portId,
-              busy: busy,
-              fr: fr,
-            ),
-        ],
+            const Divider(height: 32),
+            Text(tr(ref, 'shipwright_section'),
+                style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            for (final partId in partIds)
+              _buildPartCard(
+                context,
+                ref,
+                partId: partId,
+                part: parts[partId] as Map<String, dynamic>,
+                ship: ship,
+                parts: parts,
+                installed: installed,
+                gold: session.gold,
+                fr: fr,
+              ),
+            const Divider(height: 32),
+            Text(tr(ref, 'ports_section'), style: theme.textTheme.titleMedium),
+            const SizedBox(height: 8),
+            for (final portId in portIds)
+              _buildPortCard(
+                context,
+                ref,
+                portId: portId,
+                port: ports[portId] as Map<String, dynamic>,
+                zones: ref.watch(localizedDbProvider(zonesSchema)).value ??
+                    const <String, dynamic>{},
+                isCurrent: portId == currentPortId,
+                fromPortId: currentPortId ?? portId,
+                busy: busy,
+                fr: fr,
+              ),
+          ],
+        ),
       ),
     );
   }

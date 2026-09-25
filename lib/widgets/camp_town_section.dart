@@ -7,6 +7,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
 import 'cliff_town_view.dart';
 import 'immersive_notice.dart';
 
@@ -346,18 +347,21 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
           ],
         ),
         const SizedBox(height: 8),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: SizedBox(
-            height: townHeight,
-            child: CliffTownView(
-              key: const Key('cliff_town'),
-              town: town,
-              preview: selectedAvailable ? previewFootprint : null,
-              previewLabel: _nameOf(selected),
-              highlightIndex: _lastBuilt,
-              harborAction: widget.harborAction,
-              scrollController: _scroll,
+        TutorialTarget(
+          id: 'camp.town',
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: SizedBox(
+              height: townHeight,
+              child: CliffTownView(
+                key: const Key('cliff_town'),
+                town: town,
+                preview: selectedAvailable ? previewFootprint : null,
+                previewLabel: _nameOf(selected),
+                highlightIndex: _lastBuilt,
+                harborAction: widget.harborAction,
+                scrollController: _scroll,
+              ),
             ),
           ),
         ),
@@ -374,37 +378,45 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 ?.copyWith(fontStyle: FontStyle.italic, color: ink.ash),
           ),
         ),
-        Row(
-          children: [
-            ChoiceChip(
-              key: const Key('town_tab_houses'),
-              label: Text(tr(ref, 'houses_section')),
-              selected: !_showAdditions,
-              onSelected: (_) => setState(() {
-                _showAdditions = false;
-                _selected = null;
-              }),
-            ),
-            const SizedBox(width: 8),
-            ChoiceChip(
-              key: const Key('town_tab_additions'),
-              label: Text(tr(ref, 'town_additions_tab')),
-              selected: _showAdditions,
-              onSelected: (_) => setState(() {
-                _showAdditions = true;
-                _selected = null;
-              }),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        SizedBox(
-          height: 172,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: cards.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 10),
-            itemBuilder: (_, i) => cards[i],
+        TutorialTarget(
+          id: 'camp.tray',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  ChoiceChip(
+                    key: const Key('town_tab_houses'),
+                    label: Text(tr(ref, 'houses_section')),
+                    selected: !_showAdditions,
+                    onSelected: (_) => setState(() {
+                      _showAdditions = false;
+                      _selected = null;
+                    }),
+                  ),
+                  const SizedBox(width: 8),
+                  ChoiceChip(
+                    key: const Key('town_tab_additions'),
+                    label: Text(tr(ref, 'town_additions_tab')),
+                    selected: _showAdditions,
+                    onSelected: (_) => setState(() {
+                      _showAdditions = true;
+                      _selected = null;
+                    }),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                height: 172,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: cards.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  itemBuilder: (_, i) => cards[i],
+                ),
+              ),
+            ],
           ),
         ),
       ],

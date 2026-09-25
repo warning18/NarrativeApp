@@ -12,6 +12,8 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/camp_town_section.dart';
@@ -140,38 +142,44 @@ class CampScreen extends ConsumerWidget {
           shops: shops,
           zones: zones,
           achievements: achievements,
-          harborAction: OutlinedButton.icon(
-            key: const Key('town_set_sail'),
-            onPressed: restBlocked
-                ? null
-                : () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const BoatScreen()),
-                    ),
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size(0, 36),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              backgroundColor: const Color(0xE614262A),
-              foregroundColor: const Color(0xFFECE7DC),
-              side: const BorderSide(color: Color(0xFF4FB0B0)),
-              textStyle:
-                  const TextStyle(fontFamily: 'PixelifySans', fontSize: 12),
+          harborAction: TutorialTarget(
+            id: 'camp.boat',
+            child: OutlinedButton.icon(
+              key: const Key('town_set_sail'),
+              onPressed: restBlocked
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const BoatScreen()),
+                      ),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size(0, 36),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                backgroundColor: const Color(0xE614262A),
+                foregroundColor: const Color(0xFFECE7DC),
+                side: const BorderSide(color: Color(0xFF4FB0B0)),
+                textStyle:
+                    const TextStyle(fontFamily: 'PixelifySans', fontSize: 12),
+              ),
+              icon: const Icon(Icons.sailing, size: 16),
+              label: Text(tr(ref, 'boat_title')),
             ),
-            icon: const Icon(Icons.sailing, size: 16),
-            label: Text(tr(ref, 'boat_title')),
           ),
         ),
         const Divider(height: 32),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(tr(ref, 'roster_section'),
-                style: Theme.of(context).textTheme.titleMedium),
-            Text(
-              '${tr(ref, 'active_party_label')}: '
-              '${session.activeAllyIds.length} / $partyCapacity',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
+        TutorialTarget(
+          id: 'camp.roster',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(tr(ref, 'roster_section'),
+                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                '${tr(ref, 'active_party_label')}: '
+                '${session.activeAllyIds.length} / $partyCapacity',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 8),
         Tooltip(
@@ -413,13 +421,14 @@ class CampScreen extends ConsumerWidget {
         ),
       ],
     );
-    if (embedded) return body;
+    final triggered = TutorialTrigger(topic: TutorialTopic.camp, child: body);
+    if (embedded) return triggered;
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(ref, 'camp_title')),
         actions: const [GoldBadge()],
       ),
-      body: body,
+      body: triggered,
     );
   }
 }

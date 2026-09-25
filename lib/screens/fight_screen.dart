@@ -16,6 +16,8 @@ import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
 import '../combat/skill_vfx.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
 import '../data/chapter_spine.dart';

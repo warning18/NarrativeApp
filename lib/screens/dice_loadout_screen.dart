@@ -8,6 +8,8 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../widgets/detail_dialog.dart';
 
@@ -52,17 +54,20 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text('${tr(ref, 'dice_loadout')}$titleSuffix')),
-      body: diceAsync.when(
-        data: (dice) => skillsAsync.when(
-          data: (skills) =>
-              _buildBody(context, dice, skills, session, companion, ally),
+      body: TutorialTrigger(
+        topic: TutorialTopic.dice,
+        child: diceAsync.when(
+          data: (dice) => skillsAsync.when(
+            data: (skills) =>
+                _buildBody(context, dice, skills, session, companion, ally),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(
+                child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+          ),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(
-              child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+          error: (error, stack) =>
+              Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
         ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) =>
-            Center(child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
       ),
     );
   }
@@ -115,26 +120,29 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     return Column(
       children: [
         if (ally == null)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: DropdownButtonFormField<String>(
-              // `value` (not `initialValue`) is needed here: this field must
-              // stay reactive to _selectedDiceId, not just seed from it once.
-              // ignore: deprecated_member_use
-              value: _selectedDiceId,
-              decoration: InputDecoration(
-                labelText: tr(ref, 'die_label'),
-                border: const OutlineInputBorder(),
+          TutorialTarget(
+            id: 'dice.choice',
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: DropdownButtonFormField<String>(
+                // `value` (not `initialValue`) is needed here: this field must
+                // stay reactive to _selectedDiceId, not just seed from it once.
+                // ignore: deprecated_member_use
+                value: _selectedDiceId,
+                decoration: InputDecoration(
+                  labelText: tr(ref, 'die_label'),
+                  border: const OutlineInputBorder(),
+                ),
+                items: diceIds
+                    .map((id) => DropdownMenuItem(
+                        value: id,
+                        child: Text(
+                            (dice[id] as Map<String, dynamic>?)?['diceName']
+                                    ?.toString() ??
+                                id)))
+                    .toList(),
+                onChanged: (value) => setState(() => _selectedDiceId = value),
               ),
-              items: diceIds
-                  .map((id) => DropdownMenuItem(
-                      value: id,
-                      child: Text(
-                          (dice[id] as Map<String, dynamic>?)?['diceName']
-                                  ?.toString() ??
-                              id)))
-                  .toList(),
-              onChanged: (value) => setState(() => _selectedDiceId = value),
             ),
           )
         else
@@ -160,73 +168,77 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 12),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  for (var index = 0; index < faces.length; index++)
-                    Builder(builder: (context) {
-                      final face = faces[index];
-                      final open = isAssignableFace(face);
-                      final assignedSkillId =
-                          open ? assignments[index.toString()] : null;
-                      final faceElement = face['element']?.toString() ?? 'None';
-                      // A skill face with an element takes only skills of
-                      // that element; a basic face takes any skill.
-                      final restriction = open &&
-                              face['type'] == 'Skill' &&
-                              faceElement != 'None'
-                          ? faceElement
-                          : null;
-                      void assign(String skillId) => ally != null
-                          ? ref
-                              .read(playerSessionProvider.notifier)
-                              .assignSkillToAllyDiceFace(
-                                  ally.companionId, index, skillId)
-                          : ref
-                              .read(playerSessionProvider.notifier)
-                              .assignSkillToDiceFace(
-                                  _selectedDiceId!, index, skillId);
-                      void clear() => ally != null
-                          ? ref
-                              .read(playerSessionProvider.notifier)
-                              .clearAllyDiceFaceSkill(ally.companionId, index)
-                          : ref
-                              .read(playerSessionProvider.notifier)
-                              .clearDiceFaceSkill(_selectedDiceId!, index);
-                      final skillId = faceSkillId(face, assignedSkillId);
-                      return _FaceSlot(
-                        face: face,
-                        chance: totalWeight <= 0
-                            ? 0
-                            : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
-                                totalWeight,
-                        assignedSkillId: assignedSkillId,
-                        language: language,
-                        locked: !open,
-                        restrictionElement: restriction,
-                        skills: skills,
-                        onAccept: assign,
-                        onClear: assignedSkillId == null ? null : clear,
-                        onTap: open
-                            ? () => _pickSkill(
-                                  context,
-                                  face: face,
-                                  skills: skills,
-                                  unlockedSkillIds: unlockedSkillIds,
-                                  restriction: restriction,
-                                  current: assignedSkillId,
-                                  onPick: assign,
-                                  onClear:
-                                      assignedSkillId == null ? null : clear,
-                                )
-                            : skillId == null
-                                ? null
-                                : () => _showSkillDetail(context, skillId,
-                                    skills[skillId] as Map<String, dynamic>?),
-                      );
-                    }),
-                ],
+              TutorialTarget(
+                id: 'dice.faces',
+                child: Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    for (var index = 0; index < faces.length; index++)
+                      Builder(builder: (context) {
+                        final face = faces[index];
+                        final open = isAssignableFace(face);
+                        final assignedSkillId =
+                            open ? assignments[index.toString()] : null;
+                        final faceElement =
+                            face['element']?.toString() ?? 'None';
+                        // A skill face with an element takes only skills of
+                        // that element; a basic face takes any skill.
+                        final restriction = open &&
+                                face['type'] == 'Skill' &&
+                                faceElement != 'None'
+                            ? faceElement
+                            : null;
+                        void assign(String skillId) => ally != null
+                            ? ref
+                                .read(playerSessionProvider.notifier)
+                                .assignSkillToAllyDiceFace(
+                                    ally.companionId, index, skillId)
+                            : ref
+                                .read(playerSessionProvider.notifier)
+                                .assignSkillToDiceFace(
+                                    _selectedDiceId!, index, skillId);
+                        void clear() => ally != null
+                            ? ref
+                                .read(playerSessionProvider.notifier)
+                                .clearAllyDiceFaceSkill(ally.companionId, index)
+                            : ref
+                                .read(playerSessionProvider.notifier)
+                                .clearDiceFaceSkill(_selectedDiceId!, index);
+                        final skillId = faceSkillId(face, assignedSkillId);
+                        return _FaceSlot(
+                          face: face,
+                          chance: totalWeight <= 0
+                              ? 0
+                              : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
+                                  totalWeight,
+                          assignedSkillId: assignedSkillId,
+                          language: language,
+                          locked: !open,
+                          restrictionElement: restriction,
+                          skills: skills,
+                          onAccept: assign,
+                          onClear: assignedSkillId == null ? null : clear,
+                          onTap: open
+                              ? () => _pickSkill(
+                                    context,
+                                    face: face,
+                                    skills: skills,
+                                    unlockedSkillIds: unlockedSkillIds,
+                                    restriction: restriction,
+                                    current: assignedSkillId,
+                                    onPick: assign,
+                                    onClear:
+                                        assignedSkillId == null ? null : clear,
+                                  )
+                              : skillId == null
+                                  ? null
+                                  : () => _showSkillDetail(context, skillId,
+                                      skills[skillId] as Map<String, dynamic>?),
+                        );
+                      }),
+                  ],
+                ),
               ),
               const Divider(height: 40),
               Text(tr(ref, 'your_unlocked_skills'),
@@ -238,19 +250,22 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                   child: Text(tr(ref, 'no_skills_unlocked_hint')),
                 )
               else
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: unlockedSkillIds.map((id) {
-                    final skill = skills[id] as Map<String, dynamic>?;
-                    return _SkillChip(
-                      skillId: id,
-                      label: skillDisplayName(id,
-                          language: ref.watch(appLanguageProvider)),
-                      element: skill?['element']?.toString(),
-                      onTap: () => _showSkillDetail(context, id, skill),
-                    );
-                  }).toList(),
+                TutorialTarget(
+                  id: 'dice.skills',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: unlockedSkillIds.map((id) {
+                      final skill = skills[id] as Map<String, dynamic>?;
+                      return _SkillChip(
+                        skillId: id,
+                        label: skillDisplayName(id,
+                            language: ref.watch(appLanguageProvider)),
+                        element: skill?['element']?.toString(),
+                        onTap: () => _showSkillDetail(context, id, skill),
+                      );
+                    }).toList(),
+                  ),
                 ),
               const SizedBox(height: 24),
             ],

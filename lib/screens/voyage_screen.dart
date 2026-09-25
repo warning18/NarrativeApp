@@ -15,6 +15,8 @@ import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -361,9 +363,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         races == null ||
         professions == null ||
         gameConfig == null) {
-      return Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: const Center(child: CircularProgressIndicator()),
+      return TutorialTrigger(
+        topic: TutorialTopic.voyage,
+        child: Scaffold(
+          appBar: AppBar(title: Text(title)),
+          body: const Center(child: CircularProgressIndicator()),
+        ),
       );
     }
     _ensureStarted(

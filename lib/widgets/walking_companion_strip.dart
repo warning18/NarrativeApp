@@ -138,11 +138,16 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
       'Evil' => _demonIdleSprite,
       _ => _neutralIdleSprite,
     };
-    final walkSize = switch (alignment) {
-      'Good' => _angelWalkDisplaySize,
-      'Evil' => _demonWalkDisplaySize,
-      _ => _walkDisplaySize,
-    };
+    // A shorter strip (a small screen) draws the dog smaller to fit.
+    final scale = widget.height / _maxWalkDisplaySize;
+    final maxWalk = _maxWalkDisplaySize * scale;
+    final restSize = _restDisplaySize * scale;
+    final walkSize = scale *
+        switch (alignment) {
+          'Good' => _angelWalkDisplaySize,
+          'Evil' => _demonWalkDisplaySize,
+          _ => _walkDisplaySize,
+        };
 
     return SizedBox(
       height: widget.height,
@@ -166,24 +171,24 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
                     (_poseController.value * _fightFrames.length).floor() %
                         _fightFrames.length;
                 framePath = _fightFrames[frame];
-                size = _restDisplaySize;
+                size = restSize;
               } else if (walkingOut) {
                 final t = Curves.linear.transform(_walkOutController.value);
-                x = (constraints.maxWidth + _maxWalkDisplaySize) * t;
+                x = (constraints.maxWidth + maxWalk) * t;
                 final frame =
                     (t * walkFrames.length * 4).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;
               } else if (walkingIn) {
                 final t = Curves.linear.transform(_walkInController.value);
-                x = -_maxWalkDisplaySize + _maxWalkDisplaySize * t;
+                x = -maxWalk + maxWalk * t;
                 final frame =
                     (t * walkFrames.length).floor() % walkFrames.length;
                 framePath = walkFrames[frame];
                 size = walkSize;
               } else {
                 framePath = idleSprite;
-                size = _restDisplaySize;
+                size = restSize;
               }
 
               return Stack(
@@ -192,8 +197,8 @@ class _WalkingCompanionStripState extends ConsumerState<WalkingCompanionStrip>
                   if (stationary && name.isNotEmpty)
                     Positioned(
                       left: 0,
-                      bottom: _restDisplaySize + 2,
-                      width: _restDisplaySize,
+                      bottom: restSize + 2,
+                      width: restSize,
                       child: Text(
                         name,
                         textAlign: TextAlign.center,

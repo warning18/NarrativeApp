@@ -10,6 +10,8 @@ import '../models/ally_state.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/compare_dialog.dart';
 import '../widgets/detail_dialog.dart';
@@ -82,54 +84,69 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       appBar: AppBar(
         title: Text('${tr(ref, 'inventory_equipment')}$titleSuffix'),
         actions: [
-          IconButton(
-            icon: Icon(_compareMode
-                ? Icons.compare_arrows
-                : Icons.compare_arrows_outlined),
-            tooltip: tr(ref, 'compare_button'),
-            onPressed: _toggleCompareMode,
+          TutorialTarget(
+            id: 'inventory.compare',
+            child: IconButton(
+              icon: Icon(_compareMode
+                  ? Icons.compare_arrows
+                  : Icons.compare_arrows_outlined),
+              tooltip: tr(ref, 'compare_button'),
+              onPressed: _toggleCompareMode,
+            ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          if (_compareMode)
-            Container(
-              width: double.infinity,
-              color: Theme.of(context).colorScheme.primaryContainer,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                _firstCompareId == null
-                    ? tr(ref, 'compare_hint_items')
-                    : tr(ref, 'compare_first_selected'),
-              ),
-            ),
-          Expanded(
-            child: itemsAsync.when(
-              data: (items) => diceAsync.when(
-                data: (dice) => _InventoryBody(
-                  items: items,
-                  itemSets: parseItemSets(
-                      ref.watch(localizedDbProvider(itemSetsSchema)).value ??
-                          const {}),
-                  dice: dice,
-                  allyId: widget.allyId,
-                  companion: companion,
-                  compareMode: _compareMode,
-                  firstCompareId: _firstCompareId,
-                  onCompareTap: (itemId) =>
-                      _onCompareTap(context, items, itemId),
+      body: TutorialTrigger(
+        topic: TutorialTopic.inventory,
+        child: Column(
+          children: [
+            if (_compareMode)
+              Container(
+                width: double.infinity,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  _firstCompareId == null
+                      ? tr(ref, 'compare_hint_items')
+                      : tr(ref, 'compare_first_selected'),
                 ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, stack) => Center(
-                    child: Text('${tr(ref, 'failed_to_load_dice')}: $error')),
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                  child: Text('${tr(ref, 'failed_to_load_items')}: $error')),
+            Expanded(
+              child: TutorialTarget(
+                id: 'inventory.body',
+                child: itemsAsync.when(
+                  data: (items) => diceAsync.when(
+                    data: (dice) => _InventoryBody(
+                      items: items,
+                      itemSets: parseItemSets(ref
+                              .watch(localizedDbProvider(itemSetsSchema))
+                              .value ??
+                          const {}),
+                      dice: dice,
+                      allyId: widget.allyId,
+                      companion: companion,
+                      compareMode: _compareMode,
+                      firstCompareId: _firstCompareId,
+                      onCompareTap: (itemId) =>
+                          _onCompareTap(context, items, itemId),
+                    ),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (error, stack) => Center(
+                        child:
+                            Text('${tr(ref, 'failed_to_load_dice')}: $error')),
+                  ),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                      child:
+                          Text('${tr(ref, 'failed_to_load_items')}: $error')),
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

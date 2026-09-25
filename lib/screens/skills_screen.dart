@@ -11,6 +11,8 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/spell_preview.dart';
@@ -296,92 +298,110 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
         title: Text('${tr(ref, 'skills')}$titleSuffix'),
         actions: [
           if (isPlayer)
-            IconButton(
-              icon: const Icon(Icons.auto_fix_high),
-              tooltip: tr(ref, 'craft_skill_button'),
-              onPressed: () => showMergeSkillsDialog(
-                context,
-                ref,
-                skills: skillsAsync.value ?? const {},
-                merges: merges,
-                unlockedSkillIds: session.unlockedSkillIds,
+            TutorialTarget(
+              id: 'skills.craft',
+              child: IconButton(
+                icon: const Icon(Icons.auto_fix_high),
+                tooltip: tr(ref, 'craft_skill_button'),
+                onPressed: () => showMergeSkillsDialog(
+                  context,
+                  ref,
+                  skills: skillsAsync.value ?? const {},
+                  merges: merges,
+                  unlockedSkillIds: session.unlockedSkillIds,
+                ),
               ),
             ),
-          IconButton(
-            icon: Icon(_compareMode
-                ? Icons.compare_arrows
-                : Icons.compare_arrows_outlined),
-            tooltip: tr(ref, 'compare_button'),
-            onPressed: _toggleCompareMode,
+          TutorialTarget(
+            id: 'skills.compare',
+            child: IconButton(
+              icon: Icon(_compareMode
+                  ? Icons.compare_arrows
+                  : Icons.compare_arrows_outlined),
+              tooltip: tr(ref, 'compare_button'),
+              onPressed: _toggleCompareMode,
+            ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '${tr(ref, 'skill_points_label')}: $skillPoints',
-                  style: Theme.of(context).textTheme.titleMedium,
+      body: TutorialTrigger(
+        topic: TutorialTopic.skills,
+        child: Column(
+          children: [
+            TutorialTarget(
+              id: 'skills.points',
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '${tr(ref, 'skill_points_label')}: $skillPoints',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    if (isPlayer)
+                      Text(
+                        '${tr(ref, 'skill_essence_label')}: ${session.skillEssence}',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                  ],
                 ),
-                if (isPlayer)
-                  Text(
-                    '${tr(ref, 'skill_essence_label')}: ${session.skillEssence}',
-                    style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
+            if (_compareMode)
+              Container(
+                width: double.infinity,
+                color: Theme.of(context).colorScheme.primaryContainer,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  _firstCompareId == null
+                      ? tr(ref, 'compare_hint_skills')
+                      : tr(ref, 'compare_first_selected'),
+                ),
+              ),
+            Expanded(
+              child: TutorialTarget(
+                id: 'skills.list',
+                child: skillsAsync.when(
+                  data: (records) => _SkillList(
+                    records: records,
+                    races: racesAsync.value ?? const {},
+                    professions: professionsAsync.value ?? const {},
+                    raceId: raceId,
+                    professionId: professionId,
+                    alignmentScore: session.alignmentScore,
+                    skillPoints: skillPoints,
+                    unlockedSkillIds: unlockedSkillIds,
+                    onUnlock: widget.allyId != null
+                        ? (id) => ref
+                            .read(playerSessionProvider.notifier)
+                            .unlockAllySkill(widget.allyId!, id)
+                        : (id) => ref
+                            .read(playerSessionProvider.notifier)
+                            .unlockSkill(id),
+                    skillEssence: isPlayer ? session.skillEssence : null,
+                    skillTiers: isPlayer ? session.skillTiers : null,
+                    onUpgradeTier: isPlayer
+                        ? (id) => ref
+                            .read(playerSessionProvider.notifier)
+                            .upgradeSkillTier(id)
+                        : null,
+                    compareMode: _compareMode,
+                    firstCompareId: _firstCompareId,
+                    onCompareTap: (id) => _onCompareTap(context, records, id),
+                    leadingChildren: spellSection,
                   ),
-              ],
-            ),
-          ),
-          if (_compareMode)
-            Container(
-              width: double.infinity,
-              color: Theme.of(context).colorScheme.primaryContainer,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                _firstCompareId == null
-                    ? tr(ref, 'compare_hint_skills')
-                    : tr(ref, 'compare_first_selected'),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                      child:
+                          Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+                ),
               ),
             ),
-          Expanded(
-            child: skillsAsync.when(
-              data: (records) => _SkillList(
-                records: records,
-                races: racesAsync.value ?? const {},
-                professions: professionsAsync.value ?? const {},
-                raceId: raceId,
-                professionId: professionId,
-                alignmentScore: session.alignmentScore,
-                skillPoints: skillPoints,
-                unlockedSkillIds: unlockedSkillIds,
-                onUnlock: widget.allyId != null
-                    ? (id) => ref
-                        .read(playerSessionProvider.notifier)
-                        .unlockAllySkill(widget.allyId!, id)
-                    : (id) => ref
-                        .read(playerSessionProvider.notifier)
-                        .unlockSkill(id),
-                skillEssence: isPlayer ? session.skillEssence : null,
-                skillTiers: isPlayer ? session.skillTiers : null,
-                onUpgradeTier: isPlayer
-                    ? (id) => ref
-                        .read(playerSessionProvider.notifier)
-                        .upgradeSkillTier(id)
-                    : null,
-                compareMode: _compareMode,
-                firstCompareId: _firstCompareId,
-                onCompareTap: (id) => _onCompareTap(context, records, id),
-                leadingChildren: spellSection,
-              ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                  child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

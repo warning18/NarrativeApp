@@ -11,6 +11,8 @@ import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../widgets/mana_meter.dart';
 import 'dice_loadout_screen.dart';
@@ -80,52 +82,62 @@ class CharacterScreen extends ConsumerWidget {
             },
           ),
         ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.backpack),
-            title: Text(tr(ref, 'inventory_equipment')),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const InventoryScreen()),
-              );
-            },
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.auto_awesome),
-            title: Text(tr(ref, 'skills')),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const SkillsScreen()),
-              );
-            },
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.trending_up),
-            title: Text(tr(ref, 'level_up')),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const LevelUpScreen()),
-              );
-            },
-          ),
-        ),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.casino),
-            title: Text(tr(ref, 'dice_loadout')),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const DiceLoadoutScreen()),
-              );
-            },
+        TutorialTarget(
+          id: 'character.pages',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.backpack),
+                  title: Text(tr(ref, 'inventory_equipment')),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (_) => const InventoryScreen()),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.auto_awesome),
+                  title: Text(tr(ref, 'skills')),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SkillsScreen()),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.trending_up),
+                  title: Text(tr(ref, 'level_up')),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const LevelUpScreen()),
+                    );
+                  },
+                ),
+              ),
+              Card(
+                child: ListTile(
+                  leading: const Icon(Icons.casino),
+                  title: Text(tr(ref, 'dice_loadout')),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (_) => const DiceLoadoutScreen()),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
         if (isEditMode) ...[
@@ -134,10 +146,14 @@ class CharacterScreen extends ConsumerWidget {
         ],
       ],
     );
-    if (embedded) return body;
+    final triggered = TutorialTrigger(
+        topic: TutorialTopic.character,
+        ready: session.raceId.isNotEmpty,
+        child: body);
+    if (embedded) return triggered;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'character'))),
-      body: body,
+      body: triggered,
     );
   }
 }
@@ -198,75 +214,88 @@ class _CharacterHeader extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Container(
-              width: 64,
-              height: 64,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: ink.gold, width: 2),
-              ),
-              child: Text(
-                name.characters.first.toUpperCase(),
-                style:
-                    theme.textTheme.headlineMedium?.copyWith(color: ink.gold),
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        TutorialTarget(
+          id: 'character.header',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
                 children: [
-                  Text(name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.headlineSmall),
-                  Text(subtitle,
-                      style:
-                          theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
-                  const SizedBox(height: 6),
-                  Row(
-                    children: [
-                      Text('${tr(ref, 'level_abbrev')} ${session.level}',
-                          style: theme.textTheme.labelMedium
-                              ?.copyWith(color: ink.gold)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: LinearProgressIndicator(
-                          value: xpFraction,
-                          minHeight: 5,
-                          color: ink.gold,
+                  Container(
+                    width: 64,
+                    height: 64,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: ink.gold, width: 2),
+                    ),
+                    child: Text(
+                      name.characters.first.toUpperCase(),
+                      style: theme.textTheme.headlineMedium
+                          ?.copyWith(color: ink.gold),
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.headlineSmall),
+                        Text(subtitle,
+                            style: theme.textTheme.bodyMedium
+                                ?.copyWith(color: ink.ash)),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text('${tr(ref, 'level_abbrev')} ${session.level}',
+                                style: theme.textTheme.labelMedium
+                                    ?.copyWith(color: ink.gold)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: LinearProgressIndicator(
+                                value: xpFraction,
+                                minHeight: 5,
+                                color: ink.gold,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                                '${tr(ref, 'xp_label')} ${session.currentXP}/${session.xpToNextLevel}',
+                                style: theme.textTheme.labelSmall
+                                    ?.copyWith(color: ink.ash)),
+                          ],
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                          '${tr(ref, 'xp_label')} ${session.currentXP}/${session.xpToNextLevel}',
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ink.ash)),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
+              const SizedBox(height: 14),
+              Row(
+                children: [
+                  vital(
+                      tr(ref, 'hp_label'),
+                      '${session.currentHealth}/${session.maxHealth}',
+                      ink.blood),
+                  const SizedBox(width: 8),
+                  vital(tr(ref, 'mana_label'),
+                      '${session.mana}/${session.maxMana}', manaColor),
+                  const SizedBox(width: 8),
+                  vital(tr(ref, 'gold_label'), '${session.gold}', ink.gold),
+                ],
+              ),
+            ],
+          ),
         ),
         const SizedBox(height: 14),
-        Row(
-          children: [
-            vital(tr(ref, 'hp_label'),
-                '${session.currentHealth}/${session.maxHealth}', ink.blood),
-            const SizedBox(width: 8),
-            vital(tr(ref, 'mana_label'), '${session.mana}/${session.maxMana}',
-                manaColor),
-            const SizedBox(width: 8),
-            vital(tr(ref, 'gold_label'), '${session.gold}', ink.gold),
-          ],
+        TutorialTarget(
+          id: 'character.alignment',
+          child: _AlignmentBar(score: session.alignmentScore),
         ),
-        const SizedBox(height: 14),
-        _AlignmentBar(score: session.alignmentScore),
         // Stat points are spent on Level Up, skill points on Skills: a
         // button for each kind waiting.
         for (final (count, labelKey, key, screen) in [
@@ -303,38 +332,41 @@ class _CharacterHeader extends ConsumerWidget {
             ),
           ],
         const SizedBox(height: 14),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.35,
-          children: [
-            for (final (key, value) in abilities)
-              Tooltip(
-                message: tr(ref, key),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(color: ink.seam),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        tr(ref, key.replaceFirst('_label', '_abbr')),
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: ink.ash),
-                      ),
-                      Text('$value',
-                          style: theme.textTheme.titleLarge
-                              ?.copyWith(fontFamily: InkFonts.system)),
-                    ],
+        TutorialTarget(
+          id: 'character.abilities',
+          child: GridView.count(
+            crossAxisCount: 4,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1.35,
+            children: [
+              for (final (key, value) in abilities)
+                Tooltip(
+                  message: tr(ref, key),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(color: ink.seam),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          tr(ref, key.replaceFirst('_label', '_abbr')),
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.ash),
+                        ),
+                        Text('$value',
+                            style: theme.textTheme.titleLarge
+                                ?.copyWith(fontFamily: InkFonts.system)),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ],
     );

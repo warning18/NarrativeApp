@@ -18,6 +18,8 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -501,25 +503,28 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     _current ??= _rollEvent(shops: shops, enemies: enemies);
     final lang = ref.watch(appLanguageProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text(zoneName)),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: switch (_phase) {
-            _ExpeditionPhase.event =>
-              _buildEvent(context, shops: shops, enemies: enemies, lang: lang),
-            _ExpeditionPhase.completed => _buildSummary(
-                context,
-                icon: Icons.flag_circle,
-                title: trFor(lang, 'zone_cleared_prefix'),
-              ),
-            _ExpeditionPhase.retreated => _buildSummary(
-                context,
-                icon: Icons.directions_walk,
-                title: trFor(lang, 'expedition_ended_title'),
-              ),
-          },
+    return TutorialTrigger(
+      topic: TutorialTopic.expedition,
+      child: Scaffold(
+        appBar: AppBar(title: Text(zoneName)),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: switch (_phase) {
+              _ExpeditionPhase.event => _buildEvent(context,
+                  shops: shops, enemies: enemies, lang: lang),
+              _ExpeditionPhase.completed => _buildSummary(
+                  context,
+                  icon: Icons.flag_circle,
+                  title: trFor(lang, 'zone_cleared_prefix'),
+                ),
+              _ExpeditionPhase.retreated => _buildSummary(
+                  context,
+                  icon: Icons.directions_walk,
+                  title: trFor(lang, 'expedition_ended_title'),
+                ),
+            },
+          ),
         ),
       ),
     );
