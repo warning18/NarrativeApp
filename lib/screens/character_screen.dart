@@ -307,11 +307,7 @@ class _CharacterHeader extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        tr(ref, key)
-                            .characters
-                            .take(3)
-                            .toString()
-                            .toUpperCase(),
+                        tr(ref, key.replaceFirst('_label', '_abbr')),
                         style: theme.textTheme.labelSmall
                             ?.copyWith(color: ink.ash),
                       ),

@@ -92,6 +92,11 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
     await notifier.buildHouse(houseId, cost,
         unlocksShopId: house['unlocksShopId']?.toString() ?? '',
         requiredFlags: requiredFlagsOf(house));
+    // Nothing to tell if it did not go up (the purse or the flags changed
+    // under the button).
+    if (!ref.read(playerSessionProvider).builtHouseIds.contains(houseId)) {
+      return;
+    }
     final newAchievements = await notifier.checkAchievements();
     if (!mounted) return;
     _afterBuild(houseId, town);
@@ -109,10 +114,12 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
   }
 
   Future<void> _buildAddition(TownAddition addition, CliffTown town) async {
+    final before = ref.read(playerSessionProvider).townPieces.length;
     await ref
         .read(playerSessionProvider.notifier)
         .buildTownAddition(addition.id, addition.cost);
     if (!mounted) return;
+    if (ref.read(playerSessionProvider).townPieces.length <= before) return;
     _afterBuild(addition.id, town);
   }
 
@@ -274,8 +281,10 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
                 final isBuilt = built.contains(houseId);
                 final lock = isBuilt || meetsRequiredFlags(house, session.flags)
                     ? null
-                    : '${tr(ref, 'requires_zone_prefix')}: '
-                        '${lockRequirementName(house, session.flags, widget.zones)}';
+                    : [
+                        tr(ref, 'requires_zone_prefix'),
+                        lockRequirementName(house, session.flags, widget.zones),
+                      ].whereType<String>().join(': ');
                 final capacity =
                     (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
                 final health =

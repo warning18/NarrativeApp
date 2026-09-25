@@ -49,6 +49,12 @@ ship battles keep their layout.
 - Saves keep the order the town went up in (`townOrder`); older saves
   build their town from their houses in the order they were built.
 
+### Fixed
+- The character sheet's ability boxes use each language's own short
+  names (French *Charisme* and *Chance* no longer both read CHA).
+- Build in the camp's tray only reports a house or an addition going up
+  when it actually did, and a locked house never reads "Requires: null".
+
 ## [1.138.0+167]
 
 The whole app takes on the "Stitched Ink" look from the design proposal:
