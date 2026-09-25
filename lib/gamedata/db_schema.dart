@@ -1556,6 +1556,12 @@ final DbSchema housesSchema = DbSchema(
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
       type: FieldType.stringList,
     ),
+    FieldSchema(
+      key: 'requiredAllyId',
+      label: 'Required Ally (the house is shown once they have joined)',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
     visualAssetFieldSchema('houses'),
   ],
 );

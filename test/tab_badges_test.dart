@@ -1,6 +1,6 @@
 // The in-game tabs mark what waits on them: points to spend on
-// Character, a house the purse covers on Camp (once the camp is open), a
-// quest ready to turn in on Other.
+// Character, a house the purse covers on Camp (while the party is at the
+// camp), a quest ready to turn in on Other.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +47,21 @@ void main() {
       'shrine': {'buildCost': 4000},
     };
     expect(affordableHouseIds(_session({'gold': 100}), houses), isEmpty);
+    // An ally's own hall is on offer only once they have joined.
+    const withHall = <String, dynamic>{
+      'kelda_hall': {'buildCost': 150, 'requiredAllyId': 'kelda'},
+    };
+    expect(affordableHouseIds(_session({'gold': 400}), withHall), isEmpty);
+    expect(
+        affordableHouseIds(
+            _session({
+              'gold': 400,
+              'recruitedAllies': [
+                {'companionId': 'kelda', 'currentHealth': 30},
+              ],
+            }),
+            withHall),
+        ['kelda_hall']);
     expect(affordableHouseIds(_session({'gold': 400}), houses), ['hall']);
     expect(
         affordableHouseIds(
@@ -131,8 +146,15 @@ void main() {
     await _settle(tester);
     expect(find.text('1 to turn in'), findsOneWidget);
 
-    // In chapter 3 the camp is open and 400 gold builds its first house.
+    // Away from the camp in chapter 3, the tab is the ship: no house to
+    // build from there, however full the purse.
     container.read(storyPlayProvider.notifier).jumpTo('3005');
+    await _settle(tester);
+    expect(find.byTooltip('Ship'), findsOneWidget);
+    expect(find.textContaining('a house you can build'), findsNothing);
+
+    // At the camp, 400 gold builds its first house.
+    container.read(storyPlayProvider.notifier).jumpTo('3001_camp');
     await _settle(tester);
     expect(find.byTooltip('Camp · a house you can build'), findsOneWidget);
 
@@ -142,8 +164,8 @@ void main() {
               'gold': 400,
               'completedQuestIds': ['q_first_blood'],
               'builtHouseIds': [
-                'keldas_hall',
                 'barracks_annex',
+                'harbor',
                 'smugglers_cellar',
               ],
               'enemyKillCounts': {'slum_thug': 1},

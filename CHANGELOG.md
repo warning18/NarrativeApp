@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.143.0+172]
+
+The camp is somewhere the party goes back to, not a tab it carries around.
+While the story stands at the camp, the camp takes the Story tab's place;
+away from it, that tab is the ship.
+
+### Changed
+- **The camp opens only at the camp.** When the story comes back to the
+  cove (the founding, the return after the Spire, the stop before the
+  Reliquary Quarter), the Story tab closes and the Camp tab opens with the
+  scene the story tells there (its first lines, the rest a tap away), the
+  followed quest, and the camp itself. Building, choosing who comes along,
+  gear, skills and dice of companions, the camp's shops and its shore's
+  expeditions are all there, and only there.
+- **Leaving the camp** is a small "Leave camp" button at the top of the
+  page. It opens a last look at who comes along (companions can be added
+  or benched there) and the story's own ways out of the scene; picking one
+  closes the camp and brings the Story tab back.
+- **The camp keeps the party until its shore is safe**: the expeditions on
+  the camp's own shore (Cinder Row, then the Scaffold Yards) must be
+  cleared before the story can move on. The camp says so, and "Leave camp"
+  lists what is left.
+- **Setting sail from the camp**: other ports' expeditions are a voyage
+  away. Once the Rusty Eel makes landfall, the Camp tab becomes the ship:
+  the port she is moored at (its rest, shops and expeditions), the chart,
+  and "Sail back to camp" first. The camp comes back when she does.
+- **Away from the camp** (the story has moved on), the Camp tab is the
+  Ship tab: her hull, what she carries, and the chart to the other ports.
+  The way home is the story's.
+- Coming back to the camp through the story brings the Eel home with it.
+- A companion's own house (Kelda's Hall) is offered only once that
+  companion has joined. The Camp tab's dot for a house to build shows only
+  at the camp.
+- The camp's arrival pop-up is gone (the camp page says it all); towns keep
+  theirs, with its text updated for the ship.
+
+### Added
+- **The Harbor**, a camp house (250 gold): once built, a Harbor button
+  sits at the top of the camp and opens the slipway, where the Eel's hull
+  is repaired and the shipwright's parts are fitted. It is now the only
+  place she is refitted. The story mentions it on coming home.
+
 ## [1.142.0+171]
 
 The play-mode lists only show what the player has discovered, and a

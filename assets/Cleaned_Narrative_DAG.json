@@ -5837,6 +5837,11 @@
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall's fire was going when I came in, the one the camp never lets go out, and someone had kept a place near it.",
         "fr": "Le feu de la Halle du Foyer brûlait quand j'entrai, celui que le camp ne laisse jamais s'éteindre, et quelqu'un m'avait gardé une place près de lui."
+      },
+      {
+        "flag": "house_harbor",
+        "en": "The harbor had its quay out past the wall now, and the shipwright was under the Eel before I had my boots off, knocking on her planks and not liking what they answered.",
+        "fr": "Le port avait désormais son quai lancé au-delà du mur, et le charpentier de marine était sous l’Eel avant que j’aie ôté mes bottes, à frapper ses bordages sans aimer ce qu’ils répondaient."
       }
     ],
     "settlement": {

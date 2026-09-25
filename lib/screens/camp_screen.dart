@@ -2,68 +2,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../data/camp_state.dart';
+import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../models/story_node.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/story_providers.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/player_stats_bar.dart';
+import '../widgets/quest_tracker.dart';
+import '../widgets/ship_widgets.dart';
 import '../widgets/zone_card.dart';
-import 'boat_screen.dart';
 import 'dice_loadout_screen.dart';
-import 'expedition_screen.dart';
+import 'harbor_screen.dart';
 import 'inventory_screen.dart';
+import 'port_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skills_screen.dart';
-import '../widgets/player_stats_bar.dart';
+import 'story_player_screen.dart'
+    show composeNarration, isStoryChoiceLocked, storyBodyFor, takeStoryChoice;
 
-/// Camp's own expedition pool picks up where Town Hub's leaves off — every
-/// zone from this chapter onward, not just one exact chapter, so later
-/// chapters' zones show up here automatically without further wiring.
-const int _campZonesFromChapter = 3;
-
-/// The chapter the camp opens in: before it the camp and the boat are
-/// locked (see the in-game Camp tab and the Play tab).
-const int campChapter = 3;
-
+/// The party's camp from chapter 3, open only while the story stands at
+/// it: what happened on coming back, who comes along, the expeditions on
+/// its shore and the voyages out, what has been built, its shops, and the
+/// way on (see [leaveCamp]). While the party is here the Story tab gives
+/// way to this page, and comes back once the party leaves.
 class CampScreen extends ConsumerWidget {
   const CampScreen({super.key, this.embedded = false});
 
-  /// True as the in-game Camp tab: the page without its own app bar (the
-  /// game's header is above it; the purse shows at the top of the page).
+  /// True as the in-game Camp tab: the page without its own app bar, with
+  /// the camp's scene and its way on. Opened from Edit Mode, it is the
+  /// camp's works only.
   final bool embedded;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
     final session = ref.watch(playerSessionProvider);
-    final companionsAsync = ref.watch(localizedDbProvider(companionsSchema));
-    final housesAsync = ref.watch(localizedDbProvider(housesSchema));
-    final racesAsync = ref.watch(localizedDbProvider(racesSchema));
-    final professionsAsync = ref.watch(localizedDbProvider(professionsSchema));
-    final gameConfigAsync = ref.watch(gameConfigProvider);
-    final achievementsAsync =
-        ref.watch(localizedDbProvider(achievementsSchema));
-    final zonesAsync = ref.watch(localizedDbProvider(zonesSchema));
-    final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
-    final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
-    final portsAsync = ref.watch(localizedDbProvider(portsSchema));
-
-    final companions = companionsAsync.value;
-    final houses = housesAsync.value;
-    final races = racesAsync.value;
-    final professions = professionsAsync.value;
-    final gameConfig = gameConfigAsync.value;
-    final achievements = achievementsAsync.value ?? const {};
-    final zones = zonesAsync.value;
-    final shops = shopsAsync.value;
-    final enemies = enemiesAsync.value ?? const <String, dynamic>{};
+    final companions = ref.watch(localizedDbProvider(companionsSchema)).value;
+    final houses = ref.watch(localizedDbProvider(housesSchema)).value;
+    final races = ref.watch(localizedDbProvider(racesSchema)).value;
+    final professions = ref.watch(localizedDbProvider(professionsSchema)).value;
+    final gameConfig = ref.watch(gameConfigProvider).value;
+    final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
+    final shops = ref.watch(localizedDbProvider(shopsSchema)).value;
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value ??
+        const <String, dynamic>{};
+    final play = ref.watch(storyPlayProvider);
+    final story = ref.watch(storyDataProvider).value;
+    final node = story?.nodeFor(play.currentNodeId);
+    final campNode =
+        embedded && (node?.settlement?.isCamp ?? false) ? node : null;
 
     if (companions == null ||
         houses == null ||
@@ -83,36 +82,46 @@ class CampScreen extends ConsumerWidget {
       );
     }
 
-    final partyCapacity = partyCapacityFor(session.builtHouseIds, houses);
-
-    // The camp's own shore is the boat's home port (ports.json `isHome`):
-    // its zones are the ones on foot from here; every other port's are a
-    // voyage away (see BoatScreen). Without a home port, fall back to
-    // every zone from this chapter onward.
-    final ports = portsAsync.value ?? const <String, dynamic>{};
+    final theme = Theme.of(context);
+    final harborBuilt = session.builtHouseIds.contains(harborHouseId);
     final homeId = homePortId(ports);
     final homePort =
         homeId == null ? null : ports[homeId] as Map<String, dynamic>?;
-    final campZoneIds = homePort != null
-        ? portZoneIds(homePort)
+    final shoreZoneIds = homePort == null
+        ? const <String>[]
+        : portZoneIds(homePort)
             .where((id) => zones[id] is Map<String, dynamic>)
-            .toList()
-        : (zones.entries
-            .where((e) => e.value is Map<String, dynamic>)
-            .where((e) =>
-                (((e.value as Map<String, dynamic>)['chapter'] as num?)
-                        ?.toInt() ??
-                    1) >=
-                _campZonesFromChapter)
-            .map((e) => e.key)
-            .toList()
-          ..sort());
+            .toList();
+    final blockers = campExitBlockers(
+      ports: ports,
+      zones: zones,
+      chapter: chapterOfNode(play.currentNodeId),
+      completedZoneIds: session.completedZoneIds,
+    );
+    final busy =
+        ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
+
+    Widget section(String title, {String? trailing}) => Padding(
+          padding: const EdgeInsets.only(top: 24, bottom: 8),
+          child: Row(
+            children: [
+              Expanded(child: Text(title, style: theme.textTheme.titleMedium)),
+              if (trailing != null)
+                Text(trailing, style: theme.textTheme.bodyMedium),
+            ],
+          ),
+        );
 
     final recruitedIds =
         session.recruitedAllies.map((a) => a.companionId).toList()..sort();
-
-    // Which houses' shops are actually browsable right now -- built, with
-    // an unlocksShopId that still resolves to a real shop record.
+    final partyCapacity = partyCapacityFor(session.builtHouseIds, houses);
+    final discoveredHouseIds = [
+      for (final id in houses.keys.toList()..sort())
+        if (houses[id] is Map<String, dynamic> &&
+            houseDiscovered(houses[id] as Map<String, dynamic>, recruitedIds))
+          id,
+    ];
+    // Which houses' shops are browsable: built, with a shop still on file.
     final boutiqueShopIds = session.builtHouseIds
         .map((houseId) =>
             (houses[houseId] as Map<String, dynamic>?)?['unlocksShopId']
@@ -122,375 +131,152 @@ class CampScreen extends ConsumerWidget {
         .toList()
       ..sort();
 
-    // Rest is a safe-haven action -- it shouldn't be reachable while a fight
-    // or an expedition is actively in progress. In practice both already
-    // cover the bottom nav with their own full-screen route, so this is
-    // mostly a defensive belt-and-suspenders check rather than the only
-    // thing standing in the way.
-    final restBlocked =
-        ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
-
     final body = ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        if (embedded)
-          const Align(alignment: Alignment.centerRight, child: GoldBadge()),
+        // The camp's name, the purse, and its two ways off the page: the
+        // Harbor once built, and the way on (small, it's not the page's
+        // point).
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(tr(ref, 'roster_section'),
-                style: Theme.of(context).textTheme.titleMedium),
-            Text(
-              '${tr(ref, 'active_party_label')}: '
-              '${session.activeAllyIds.length} / $partyCapacity',
-              style: Theme.of(context).textTheme.bodyMedium,
+            const Icon(Icons.local_fire_department_outlined),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                campNode?.settlement?.nameFor(fr) ?? tr(ref, 'camp_title'),
+                style: theme.textTheme.titleLarge,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
+            const GoldBadge(),
           ],
         ),
         const SizedBox(height: 8),
-        Tooltip(
-          message: restBlocked ? tr(ref, 'rest_blocked_hint') : '',
-          child: OutlinedButton.icon(
-            onPressed: restBlocked
-                ? null
-                : () async {
-                    await ref
-                        .read(playerSessionProvider.notifier)
-                        .healPartyToFull();
-                    if (!context.mounted) return;
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.local_fire_department,
-                      message: tr(ref, 'party_rested_message'),
-                    );
-                  },
-            icon: const Icon(Icons.local_fire_department_outlined),
-            label: Text(tr(ref, 'rest_button')),
-          ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.spaceBetween,
+          children: [
+            _RestButton(blocked: busy),
+            if (harborBuilt)
+              FilledButton.tonalIcon(
+                key: const Key('camp_harbor'),
+                style: _compact,
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const HarborScreen()),
+                ),
+                icon: const Icon(Icons.anchor, size: 18),
+                label: Text(tr(ref, 'harbor_title')),
+              ),
+            if (campNode != null)
+              OutlinedButton.icon(
+                key: const Key('camp_leave'),
+                style: _compact,
+                onPressed: busy ? null : () => leaveCamp(context, ref),
+                icon: const Icon(Icons.logout, size: 18),
+                label: Text(tr(ref, 'camp_leave_button')),
+              ),
+          ],
         ),
-        const SizedBox(height: 12),
+        // The followed quest stays in view while the story waits here.
+        if (campNode != null)
+          const Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: QuestTrackerBar(),
+          ),
+        if (campNode != null) _CampSceneCard(node: campNode),
+
+        section(tr(ref, 'camp_party_section'),
+            trailing: '${tr(ref, 'active_party_label')}: '
+                '${session.activeAllyIds.length} / $partyCapacity'),
         if (recruitedIds.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Text(tr(ref, 'no_companions_recruited')),
           )
         else
-          ...recruitedIds.map((companionId) {
-            final companion = companions[companionId] as Map<String, dynamic>?;
-            final ally = session.recruitedAllies
-                .firstWhere((a) => a.companionId == companionId);
-            final raceId = companion?['raceId']?.toString() ?? '';
-            final professionId = companion?['professionId']?.toString() ?? '';
-            final race = races[raceId] as Map<String, dynamic>? ?? const {};
-            final profession =
-                professions[professionId] as Map<String, dynamic>? ?? const {};
-            final base = deriveAllyBaseStats(
-                gameConfig: gameConfig, race: race, profession: profession);
-            final liveMaxHealth =
-                scaledMaxHealth(base.maxHealth, session.level);
-            final liveHealth = ally.currentHealth.clamp(0, liveMaxHealth);
-            final raceName = race['raceName']?.toString() ?? raceId;
-            final professionName =
-                profession['professionName']?.toString() ?? professionId;
-            final isActive = session.activeAllyIds.contains(companionId);
-            final requiredHouseId =
-                companion?['requiredHouseId']?.toString() ?? '';
-            final requiredHouseBuilt = requiredHouseId.isEmpty ||
-                session.builtHouseIds.contains(requiredHouseId);
-            final requiredHouseName = requiredHouseId.isNotEmpty
-                ? ((houses[requiredHouseId]
-                            as Map<String, dynamic>?)?['houseName']
-                        ?.toString() ??
-                    requiredHouseId)
-                : null;
-            final atCapacity =
-                !isActive && session.activeAllyIds.length >= partyCapacity;
-            final canActivate = !isActive && requiredHouseBuilt && !atCapacity;
-
-            String lockReason = '';
-            if (!isActive) {
-              if (!requiredHouseBuilt) {
-                lockReason =
-                    '${tr(ref, 'requires_house_prefix')}: $requiredHouseName';
-              } else if (atCapacity) {
-                lockReason = tr(ref, 'party_at_capacity');
-              }
-            }
-
-            return Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ListTile(
-                    leading:
-                        Icon(isActive ? Icons.shield : Icons.shield_outlined),
-                    title: Text(
-                        companion?['companionName']?.toString() ?? companionId),
-                    subtitle: Text(
-                      '$raceName $professionName · $liveHealth / $liveMaxHealth '
-                      '${tr(ref, 'hp_label')}'
-                      '${lockReason.isNotEmpty ? '\n$lockReason' : ''}',
-                    ),
-                    isThreeLine: lockReason.isNotEmpty,
-                    trailing: FilterChip(
-                      label: Text(isActive
-                          ? tr(ref, 'active_label')
-                          : tr(ref, 'benched_label')),
-                      selected: isActive,
-                      onSelected: (!isActive && !canActivate)
-                          ? null
-                          : (_) async {
-                              final wasActive = isActive;
-                              await ref
-                                  .read(playerSessionProvider.notifier)
-                                  .setAllyActive(
-                                    companionId,
-                                    !wasActive,
-                                    partyCapacity: partyCapacity,
-                                    requiredHouseId: requiredHouseId,
-                                  );
-                              if (wasActive) return;
-                              final newAchievements = await ref
-                                  .read(playerSessionProvider.notifier)
-                                  .checkAchievements();
-                              if (newAchievements.isEmpty || !context.mounted) {
-                                return;
-                              }
-                              _showAchievementNotice(
-                                  context, ref, achievements, newAchievements);
-                            },
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextButton.icon(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    InventoryScreen(allyId: companionId),
-                              ),
-                            ),
-                            icon: const Icon(Icons.backpack_outlined),
-                            label: Text(tr(ref, 'inventory_equipment')),
-                          ),
-                        ),
-                        Expanded(
-                          child: TextButton.icon(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    SkillsScreen(allyId: companionId),
-                              ),
-                            ),
-                            icon: const Icon(Icons.auto_awesome_outlined),
-                            label: Text(tr(ref, 'skills')),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: TextButton.icon(
-                        onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                DiceLoadoutScreen(allyId: companionId),
-                          ),
-                        ),
-                        icon: const Icon(Icons.casino_outlined),
-                        label: Text(tr(ref, 'dice_loadout')),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }),
-        const Divider(height: 32),
-        Text(tr(ref, 'houses_section'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        ...(houses.keys.toList()..sort()).map((houseId) {
-          final house = houses[houseId] as Map<String, dynamic>;
-          final houseName = house['houseName']?.toString() ?? houseId;
-          final description = house['description']?.toString() ?? '';
-          final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-          final capacityBonus =
-              (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
-          final healthBonus = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
-          final damageBonus = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
-          final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
-          final unlocksShopName = unlocksShopId.isNotEmpty
-              ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
-                      ?.toString() ??
-                  unlocksShopId)
-              : null;
-          final built = session.builtHouseIds.contains(houseId);
-          final affordable = session.gold >= cost;
-          final requiredFlags = requiredFlagsOf(house);
-          final unlocked = meetsRequiredFlags(house, session.flags);
-          final lockName = unlocked
-              ? null
-              : lockRequirementName(house, session.flags, zones);
-
-          final statsParts = <String>[
-            if (capacityBonus > 0)
-              '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
-            if (healthBonus > 0)
-              '+$healthBonus% ${tr(ref, 'party_health_bonus_label')}',
-            if (damageBonus > 0)
-              '+$damageBonus% ${tr(ref, 'party_damage_bonus_label')}',
-            if (unlocksShopName != null)
-              '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
-            if (!built && lockName != null)
-              '${tr(ref, 'requires_zone_prefix')}: $lockName',
-          ];
-
-          // The Build button sits under the description, not beside it:
-          // beside it, a phone squeezes the text into a narrow column.
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ListTile(
-                    leading: Icon(built
-                        ? Icons.home
-                        : unlocked
-                            ? Icons.home_outlined
-                            : Icons.lock_outline),
-                    title: Text(houseName),
-                    subtitle: Text(
-                      [
-                        description,
-                        if (statsParts.isNotEmpty) statsParts.join(' · '),
-                      ].where((s) => s.isNotEmpty).join('\n'),
-                    ),
-                    trailing: built
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : null,
-                  ),
-                  if (!built)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          onPressed: (!affordable || !unlocked)
-                              ? null
-                              : () async {
-                                  await ref
-                                      .read(playerSessionProvider.notifier)
-                                      .buildHouse(houseId, cost,
-                                          unlocksShopId: unlocksShopId,
-                                          requiredFlags: requiredFlags);
-                                  final newAchievements = await ref
-                                      .read(playerSessionProvider.notifier)
-                                      .checkAchievements();
-                                  if (!context.mounted) return;
-                                  final achievementSuffix = newAchievements
-                                          .isEmpty
-                                      ? ''
-                                      : '\n${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: '
-                                          '${newAchievements.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
-                                  showImmersiveNotice(
-                                    context,
-                                    icon: Icons.home,
-                                    message:
-                                        '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: '
-                                        '$houseName$achievementSuffix',
-                                  );
-                                },
-                          child: Text(
-                              '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+          for (final companionId in recruitedIds)
+            _AllyCard(
+              companionId: companionId,
+              companions: companions,
+              houses: houses,
+              races: races,
+              professions: professions,
+              gameConfig: gameConfig,
             ),
-          );
-        }),
-        const Divider(height: 32),
-        Text(tr(ref, 'boutiques_section'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        if (boutiqueShopIds.isEmpty)
+
+        section(tr(ref, 'camp_expeditions_section')),
+        if (blockers.isNotEmpty && campNode != null)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(tr(ref, 'no_boutiques_yet')),
-          )
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              tr(ref, 'camp_exit_needs_note'),
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(color: theme.colorScheme.primary),
+            ),
+          ),
+        if (shoreZoneIds.isEmpty)
+          Text(tr(ref, 'no_zones_available'))
         else
-          ...boutiqueShopIds.map((shopId) {
-            final shop = shops[shopId] as Map<String, dynamic>;
-            return Card(
+          for (final zoneId in shoreZoneIds)
+            ZoneCard(
+              zoneId: zoneId,
+              zone: zones[zoneId] as Map<String, dynamic>,
+              zones: zones,
+              enemies: ref.watch(localizedDbProvider(enemiesSchema)).value ??
+                  const <String, dynamic>{},
+              enabled: !busy,
+              onBegin: () => launchExpedition(
+                  context, ref, zoneId, zones[zoneId] as Map<String, dynamic>),
+            ),
+        Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 4),
+          child: Text(tr(ref, 'camp_sail_section'),
+              style: theme.textTheme.titleSmall),
+        ),
+        Text(
+          tr(ref, 'camp_sail_hint'),
+          style: theme.textTheme.bodySmall
+              ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+        ),
+        const SizedBox(height: 4),
+        const PortChart(homeOnChart: false),
+
+        section(tr(ref, 'houses_section')),
+        for (final houseId in discoveredHouseIds)
+          _HouseCard(
+            houseId: houseId,
+            house: houses[houseId] as Map<String, dynamic>,
+            shops: shops,
+            zones: zones,
+          ),
+
+        section(tr(ref, 'boutiques_section')),
+        if (boutiqueShopIds.isEmpty)
+          Text(tr(ref, 'no_boutiques_yet'))
+        else
+          for (final shopId in boutiqueShopIds)
+            Card(
               child: ListTile(
                 leading: ShopPixelIcon(shopId),
-                title: Text(shop['shopName']?.toString() ?? shopId),
-                subtitle: Text(shop['shopDescription']?.toString() ?? ''),
+                title: Text((shops[shopId] as Map<String, dynamic>)['shopName']
+                        ?.toString() ??
+                    shopId),
+                subtitle: Text(
+                    (shops[shopId] as Map<String, dynamic>)['shopDescription']
+                            ?.toString() ??
+                        ''),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) =>
-                        ShopDetailScreen(shopId: shopId, shop: shop),
+                    builder: (_) => ShopDetailScreen(
+                        shopId: shopId,
+                        shop: shops[shopId] as Map<String, dynamic>),
                   ),
                 ),
               ),
-            );
-          }),
-        const Divider(height: 32),
-        Text(tr(ref, 'zones_section'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        if (campZoneIds.isEmpty)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Text(tr(ref, 'no_zones_available')),
-          )
-        else
-          ...campZoneIds.map((zoneId) {
-            final zone = zones[zoneId] as Map<String, dynamic>;
-            return ZoneCard(
-              zoneId: zoneId,
-              zone: zone,
-              zones: zones,
-              enemies: enemies,
-              enabled: !restBlocked,
-              onBegin: () async {
-                ref.read(expeditionActiveProvider.notifier).state = true;
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) =>
-                        ExpeditionScreen(zoneId: zoneId, zone: zone),
-                  ),
-                );
-                ref.read(expeditionActiveProvider.notifier).state = false;
-              },
-            );
-          }),
-        const SizedBox(height: 8),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.sailing),
-            title: Text(tr(ref, 'boat_title')),
-            subtitle: Text(tr(ref, 'port_sail_subtitle')),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: restBlocked
-                ? null
-                : () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const BoatScreen()),
-                    ),
-          ),
-        ),
+            ),
+        const SizedBox(height: 16),
       ],
     );
     if (embedded) return body;
@@ -504,22 +290,595 @@ class CampScreen extends ConsumerWidget {
   }
 }
 
-void _showAchievementNotice(
+final ButtonStyle _compact = ButtonStyle(
+  visualDensity: VisualDensity.compact,
+  padding: WidgetStateProperty.all(
+      const EdgeInsets.symmetric(horizontal: 12, vertical: 4)),
+);
+
+class _RestButton extends ConsumerWidget {
+  const _RestButton({required this.blocked});
+
+  final bool blocked;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Tooltip(
+        message: blocked ? tr(ref, 'rest_blocked_hint') : '',
+        child: OutlinedButton.icon(
+          style: _compact,
+          onPressed: blocked
+              ? null
+              : () async {
+                  await ref
+                      .read(playerSessionProvider.notifier)
+                      .healPartyToFull();
+                  if (!context.mounted) return;
+                  showImmersiveNotice(
+                    context,
+                    icon: Icons.local_fire_department,
+                    message: tr(ref, 'party_rested_message'),
+                  );
+                },
+          icon: const Icon(Icons.local_fire_department_outlined, size: 18),
+          label: Text(tr(ref, 'rest_button')),
+        ),
+      );
+}
+
+/// The camp's scene as the story tells it this visit (what was built, who
+/// is back): its opening lines, and the rest a tap away, so the camp's
+/// own business stays on screen.
+class _CampSceneCard extends ConsumerStatefulWidget {
+  const _CampSceneCard({required this.node});
+
+  final StoryNode node;
+
+  @override
+  ConsumerState<_CampSceneCard> createState() => _CampSceneCardState();
+}
+
+class _CampSceneCardState extends ConsumerState<_CampSceneCard> {
+  bool _open = false;
+
+  @override
+  void didUpdateWidget(_CampSceneCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.node.id != widget.node.id) _open = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final session = ref.watch(playerSessionProvider);
+    final text =
+        storyBodyFor(composeNarration(widget.node, session, french: fr));
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.only(top: 12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        key: const Key('camp_scene'),
+        onTap: () => setState(() => _open = !_open),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.menu_book_outlined, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(tr(ref, 'camp_scene_title'),
+                        style: theme.textTheme.titleSmall),
+                  ),
+                  Icon(_open ? Icons.expand_less : Icons.expand_more),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                text,
+                maxLines: _open ? null : 4,
+                overflow: _open ? TextOverflow.visible : TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(height: 1.45),
+              ),
+              if (!_open)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    tr(ref, 'camp_scene_read_all'),
+                    style: theme.textTheme.labelLarge
+                        ?.copyWith(color: theme.colorScheme.primary),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Puts [companionId] in the party or on the bench, and says which
+/// achievements joining earned.
+Future<void> _setAllyInParty(
   BuildContext context,
-  WidgetRef ref,
-  Map<String, dynamic> achievements,
-  List<String> newlyUnlockedIds,
-) {
-  final names = newlyUnlockedIds
-      .map((id) =>
-          (achievements[id] as Map<String, dynamic>?)?['achievementName']
-              ?.toString() ??
-          id)
-      .join(', ');
+  WidgetRef ref, {
+  required String companionId,
+  required bool active,
+  required int partyCapacity,
+  required String requiredHouseId,
+}) async {
+  final notifier = ref.read(playerSessionProvider.notifier);
+  await notifier.setAllyActive(companionId, active,
+      partyCapacity: partyCapacity, requiredHouseId: requiredHouseId);
+  if (!active) return;
+  final earned = await notifier.checkAchievements();
+  if (earned.isEmpty || !context.mounted) return;
+  final achievements =
+      ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
   showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
     message:
-        '${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: $names',
+        '${tr(ref, 'achievement_unlocked_prefix')}: ${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}',
   );
+}
+
+/// Whether [companionId] can join the party now, and if not, why.
+({bool canJoin, String reason}) _joinState(
+  WidgetRef ref,
+  PlayerSession session, {
+  required String companionId,
+  required Map<String, dynamic>? companion,
+  required Map<String, dynamic> houses,
+}) {
+  if (session.activeAllyIds.contains(companionId)) {
+    return (canJoin: true, reason: '');
+  }
+  final requiredHouseId = companion?['requiredHouseId']?.toString() ?? '';
+  if (requiredHouseId.isNotEmpty &&
+      !session.builtHouseIds.contains(requiredHouseId)) {
+    final houseName =
+        (houses[requiredHouseId] as Map<String, dynamic>?)?['houseName']
+                ?.toString() ??
+            requiredHouseId;
+    return (
+      canJoin: false,
+      reason: '${tr(ref, 'requires_house_prefix')}: $houseName',
+    );
+  }
+  if (session.activeAllyIds.length >=
+      partyCapacityFor(session.builtHouseIds, houses)) {
+    return (canJoin: false, reason: tr(ref, 'party_at_capacity'));
+  }
+  return (canJoin: true, reason: '');
+}
+
+/// One companion at the fire: who they are, their health, whether they
+/// come along, and their gear, skills and dice.
+class _AllyCard extends ConsumerWidget {
+  const _AllyCard({
+    required this.companionId,
+    required this.companions,
+    required this.houses,
+    required this.races,
+    required this.professions,
+    required this.gameConfig,
+  });
+
+  final String companionId;
+  final Map<String, dynamic> companions;
+  final Map<String, dynamic> houses;
+  final Map<String, dynamic> races;
+  final Map<String, dynamic> professions;
+  final Map<String, dynamic> gameConfig;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final companion = companions[companionId] as Map<String, dynamic>?;
+    final ally =
+        session.recruitedAllies.firstWhere((a) => a.companionId == companionId);
+    final raceId = companion?['raceId']?.toString() ?? '';
+    final professionId = companion?['professionId']?.toString() ?? '';
+    final race = races[raceId] as Map<String, dynamic>? ?? const {};
+    final profession =
+        professions[professionId] as Map<String, dynamic>? ?? const {};
+    final base = deriveAllyBaseStats(
+        gameConfig: gameConfig, race: race, profession: profession);
+    final liveMaxHealth = scaledMaxHealth(base.maxHealth, session.level);
+    final liveHealth = ally.currentHealth.clamp(0, liveMaxHealth);
+    final isActive = session.activeAllyIds.contains(companionId);
+    final join = _joinState(ref, session,
+        companionId: companionId, companion: companion, houses: houses);
+
+    void open(Widget screen) =>
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListTile(
+              leading: Icon(isActive ? Icons.shield : Icons.shield_outlined),
+              title:
+                  Text(companion?['companionName']?.toString() ?? companionId),
+              subtitle: Text(
+                '${race['raceName'] ?? raceId} '
+                '${profession['professionName'] ?? professionId} · '
+                '$liveHealth / $liveMaxHealth ${tr(ref, 'hp_label')}'
+                '${join.reason.isNotEmpty ? '\n${join.reason}' : ''}',
+              ),
+              isThreeLine: join.reason.isNotEmpty,
+              trailing: FilterChip(
+                key: Key('party_toggle_$companionId'),
+                label: Text(isActive
+                    ? tr(ref, 'active_label')
+                    : tr(ref, 'benched_label')),
+                selected: isActive,
+                onSelected: !join.canJoin
+                    ? null
+                    : (_) => _setAllyInParty(
+                          context,
+                          ref,
+                          companionId: companionId,
+                          active: !isActive,
+                          partyCapacity:
+                              partyCapacityFor(session.builtHouseIds, houses),
+                          requiredHouseId:
+                              companion?['requiredHouseId']?.toString() ?? '',
+                        ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton.icon(
+                  style: _compact,
+                  onPressed: () => open(InventoryScreen(allyId: companionId)),
+                  icon: const Icon(Icons.backpack_outlined, size: 18),
+                  label: Text(tr(ref, 'ally_gear_button')),
+                ),
+                TextButton.icon(
+                  style: _compact,
+                  onPressed: () => open(SkillsScreen(allyId: companionId)),
+                  icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+                  label: Text(tr(ref, 'skills')),
+                ),
+                TextButton.icon(
+                  style: _compact,
+                  onPressed: () => open(DiceLoadoutScreen(allyId: companionId)),
+                  icon: const Icon(Icons.casino_outlined, size: 18),
+                  label: Text(tr(ref, 'ally_dice_button')),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A camp work: what it is and gives, and Build (or, for the Harbor once
+/// built, the way in).
+class _HouseCard extends ConsumerWidget {
+  const _HouseCard({
+    required this.houseId,
+    required this.house,
+    required this.shops,
+    required this.zones,
+  });
+
+  final String houseId;
+  final Map<String, dynamic> house;
+  final Map<String, dynamic> shops;
+  final Map<String, dynamic> zones;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final houseName = house['houseName']?.toString() ?? houseId;
+    final description = house['description']?.toString() ?? '';
+    final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
+    final capacityBonus = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
+    final healthBonus = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
+    final damageBonus = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
+    final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
+    final unlocksShopName = unlocksShopId.isNotEmpty
+        ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
+                ?.toString() ??
+            unlocksShopId)
+        : null;
+    final built = session.builtHouseIds.contains(houseId);
+    final affordable = session.gold >= cost;
+    final requiredFlags = requiredFlagsOf(house);
+    final unlocked = meetsRequiredFlags(house, session.flags);
+    final lockName =
+        unlocked ? null : lockRequirementName(house, session.flags, zones);
+    final statsParts = <String>[
+      if (capacityBonus > 0)
+        '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
+      if (healthBonus > 0)
+        '+$healthBonus% ${tr(ref, 'party_health_bonus_label')}',
+      if (damageBonus > 0)
+        '+$damageBonus% ${tr(ref, 'party_damage_bonus_label')}',
+      if (unlocksShopName != null)
+        '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
+      if (houseId == harborHouseId) tr(ref, 'harbor_unlocks_note'),
+      if (!built && lockName != null)
+        '${tr(ref, 'requires_zone_prefix')}: $lockName',
+    ];
+
+    // The Build button sits under the description, not beside it: beside
+    // it, a phone squeezes the text into a narrow column.
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ListTile(
+              leading: Icon(built
+                  ? Icons.home
+                  : unlocked
+                      ? Icons.home_outlined
+                      : Icons.lock_outline),
+              title: Text(houseName),
+              subtitle: Text([
+                description,
+                if (statsParts.isNotEmpty) statsParts.join(' · '),
+              ].where((s) => s.isNotEmpty).join('\n')),
+              trailing: built
+                  ? const Icon(Icons.check_circle, color: Colors.green)
+                  : null,
+            ),
+            if (built && houseId == harborHouseId)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: FilledButton.tonalIcon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const HarborScreen()),
+                    ),
+                    icon: const Icon(Icons.anchor),
+                    label: Text(tr(ref, 'harbor_open_button')),
+                  ),
+                ),
+              ),
+            if (!built)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    key: Key('build_$houseId'),
+                    onPressed: (!affordable || !unlocked)
+                        ? null
+                        : () async {
+                            final notifier =
+                                ref.read(playerSessionProvider.notifier);
+                            await notifier.buildHouse(houseId, cost,
+                                unlocksShopId: unlocksShopId,
+                                requiredFlags: requiredFlags);
+                            final earned = await notifier.checkAchievements();
+                            if (!context.mounted) return;
+                            final achievements = ref
+                                    .read(
+                                        localizedDbProvider(achievementsSchema))
+                                    .value ??
+                                const {};
+                            final suffix = earned.isEmpty
+                                ? ''
+                                : '\n${tr(ref, 'achievement_unlocked_prefix')}: '
+                                    '${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}';
+                            showImmersiveNotice(
+                              context,
+                              icon: Icons.home,
+                              message:
+                                  '${tr(ref, 'house_built_prefix')}: $houseName$suffix',
+                            );
+                          },
+                    child: Text(
+                        '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// The way on from the camp: once the expeditions on its shore are
+/// cleared, a last look at who comes along, then the story's own ways out
+/// of the camp's scene. Until then, what is left to clear.
+Future<void> leaveCamp(BuildContext context, WidgetRef ref) async {
+  final zones = ref.read(localizedDbProvider(zonesSchema)).value ?? const {};
+  final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
+  final play = ref.read(storyPlayProvider);
+  final blockers = campExitBlockers(
+    ports: ports,
+    zones: zones,
+    chapter: chapterOfNode(play.currentNodeId),
+    completedZoneIds: ref.read(playerSessionProvider).completedZoneIds,
+  );
+  if (blockers.isNotEmpty) {
+    final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
+    String zoneName(String id) {
+      final zone = zones[id] as Map<String, dynamic>?;
+      final name = zone?['zoneName']?.toString() ?? id;
+      final nameFr = zone?['zoneName_fr']?.toString() ?? '';
+      return fr && nameFr.isNotEmpty ? nameFr : name;
+    }
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        icon: const Icon(Icons.flag_outlined),
+        title: Text(tr(ref, 'camp_exit_blocked_title')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(tr(ref, 'camp_exit_blocked_body')),
+            const SizedBox(height: 8),
+            for (final id in blockers)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  children: [
+                    const Icon(Icons.explore_outlined, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(zoneName(id))),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(tr(ref, 'close_button')),
+          ),
+        ],
+      ),
+    );
+    return;
+  }
+  final choice = await showModalBottomSheet<StoryChoice>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (_) => const _LeaveCampSheet(),
+  );
+  if (choice == null || !context.mounted) return;
+  await takeStoryChoice(context, ref, choice);
+}
+
+/// Who comes along (changeable here), then the camp scene's ways out.
+class _LeaveCampSheet extends ConsumerWidget {
+  const _LeaveCampSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final session = ref.watch(playerSessionProvider);
+    final story = ref.watch(storyDataProvider).value;
+    final node = story?.nodeFor(ref.watch(storyPlayProvider).currentNodeId);
+    final companions =
+        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
+    final houses =
+        ref.watch(localizedDbProvider(housesSchema)).value ?? const {};
+    final theme = Theme.of(context);
+    final choices = node == null || story == null
+        ? const <StoryChoice>[]
+        : node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    final recruitedIds =
+        session.recruitedAllies.map((a) => a.companionId).toList()..sort();
+    final capacity = partyCapacityFor(session.builtHouseIds, houses);
+
+    return SafeArea(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(tr(ref, 'camp_leave_title'),
+                style: theme.textTheme.titleLarge),
+            const SizedBox(height: 12),
+            Text(
+              '${tr(ref, 'camp_party_section')} '
+              '(${session.activeAllyIds.length} / $capacity)',
+              style: theme.textTheme.titleSmall,
+            ),
+            const SizedBox(height: 4),
+            if (recruitedIds.isEmpty)
+              Text(tr(ref, 'camp_leave_alone'),
+                  style: theme.textTheme.bodyMedium)
+            else
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final id in recruitedIds)
+                    Builder(builder: (chipContext) {
+                      final companion = companions[id] as Map<String, dynamic>?;
+                      final active = session.activeAllyIds.contains(id);
+                      final join = _joinState(ref, session,
+                          companionId: id,
+                          companion: companion,
+                          houses: houses);
+                      return Tooltip(
+                        message: join.reason,
+                        child: FilterChip(
+                          key: Key('leave_party_$id'),
+                          label: Text(
+                              companion?['companionName']?.toString() ?? id),
+                          selected: active,
+                          onSelected: !join.canJoin
+                              ? null
+                              : (_) => _setAllyInParty(
+                                    context,
+                                    ref,
+                                    companionId: id,
+                                    active: !active,
+                                    partyCapacity: capacity,
+                                    requiredHouseId:
+                                        companion?['requiredHouseId']
+                                                ?.toString() ??
+                                            '',
+                                  ),
+                        ),
+                      );
+                    }),
+                ],
+              ),
+            // Why a companion can't come, under the chips.
+            for (final id in recruitedIds)
+              if (!_joinState(ref, session,
+                      companionId: id,
+                      companion: companions[id] as Map<String, dynamic>?,
+                      houses: houses)
+                  .canJoin)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    '${(companions[id] as Map<String, dynamic>?)?['companionName'] ?? id}: '
+                    '${_joinState(ref, session, companionId: id, companion: companions[id] as Map<String, dynamic>?, houses: houses).reason}',
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  ),
+                ),
+            const SizedBox(height: 16),
+            Text(tr(ref, 'camp_leave_way_label'),
+                style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            for (final choice in choices)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: FilledButton.tonal(
+                  key: Key('leave_choice_${choice.nextId}'),
+                  style: FilledButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  onPressed: isStoryChoiceLocked(choice, story!, session)
+                      ? null
+                      : () => Navigator.of(context).pop(choice),
+                  child: Text(choice.textFor(fr)),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
 }

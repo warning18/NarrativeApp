@@ -12,6 +12,101 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'nav_ship': {AppLanguage.en: 'Ship', AppLanguage.fr: 'Navire'},
+  'camp_leave_button': {
+    AppLanguage.en: 'Leave camp',
+    AppLanguage.fr: 'Quitter le camp',
+  },
+  'camp_leave_title': {
+    AppLanguage.en: 'Leave the camp',
+    AppLanguage.fr: 'Quitter le camp',
+  },
+  'camp_leave_way_label': {
+    AppLanguage.en: 'Where to',
+    AppLanguage.fr: 'Pour aller où',
+  },
+  'camp_leave_alone': {
+    AppLanguage.en: 'No companion at the fire yet: you set out alone.',
+    AppLanguage.fr:
+        'Aucun compagnon au coin du feu pour l’instant : vous partez sans personne.',
+  },
+  'camp_party_section': {
+    AppLanguage.en: 'Who comes along',
+    AppLanguage.fr: 'Qui vous accompagne',
+  },
+  'camp_scene_title': {
+    AppLanguage.en: 'Back at the fire',
+    AppLanguage.fr: 'De retour au coin du feu',
+  },
+  'camp_scene_read_all': {
+    AppLanguage.en: 'Read it all',
+    AppLanguage.fr: 'Tout lire',
+  },
+  'camp_expeditions_section': {
+    AppLanguage.en: 'Expeditions from the camp',
+    AppLanguage.fr: 'Expéditions depuis le camp',
+  },
+  'camp_exit_needs_note': {
+    AppLanguage.en:
+        'The expeditions on the camp’s shore come first: clear them before the story can move on.',
+    AppLanguage.fr:
+        'Les expéditions sur le rivage du camp passent d’abord : terminez-les avant que le récit puisse reprendre.',
+  },
+  'camp_exit_blocked_title': {
+    AppLanguage.en: 'Not yet',
+    AppLanguage.fr: 'Pas encore',
+  },
+  'camp_exit_blocked_body': {
+    AppLanguage.en:
+        'The camp still needs you on its own shore. Clear these expeditions, then set out:',
+    AppLanguage.fr:
+        'Le camp a encore besoin de vous sur son propre rivage. Terminez ces expéditions, puis repartez :',
+  },
+  'camp_sail_section': {
+    AppLanguage.en: 'Set sail',
+    AppLanguage.fr: 'Prendre la mer',
+  },
+  'camp_sail_hint': {
+    AppLanguage.en:
+        'Other ports’ expeditions are a voyage away. While the Rusty Eel is out, the Camp tab is the ship until you sail back.',
+    AppLanguage.fr:
+        'Les expéditions des autres ports sont à une traversée d’ici. Tant que le Rusty Eel est au large, l’onglet Campement devient le navire jusqu’à votre retour.',
+  },
+  'chart_empty': {
+    AppLanguage.en: 'No other port on the chart yet.',
+    AppLanguage.fr: 'Aucun autre port sur la carte pour l’instant.',
+  },
+  'sail_home_title': {
+    AppLanguage.en: 'Sail back to camp',
+    AppLanguage.fr: 'Rentrer au camp',
+  },
+  'ship_sailed_out_note': {
+    AppLanguage.en:
+        'You have sailed out from the camp. Its expeditions, shops and rest are wherever the Eel is moored; sail back to camp to go on with the story.',
+    AppLanguage.fr:
+        'Vous avez quitté le camp par la mer. Expéditions, boutiques et repos sont là où l’Eel est amarré ; rentrez au camp pour reprendre le récit.',
+  },
+  'ship_away_note': {
+    AppLanguage.en:
+        'The story has taken you away from camp. The Rusty Eel can still sail to the ports on the chart; the camp opens again when the story brings you back.',
+    AppLanguage.fr:
+        'Le récit se poursuit loin du camp. Le Rusty Eel peut encore gagner les ports de la carte ; le camp rouvre quand le récit vous y ramène.',
+  },
+  'ship_ashore_section': {
+    AppLanguage.en: 'Ashore at {port}',
+    AppLanguage.fr: 'À terre : {port}',
+  },
+  'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
+  'harbor_open_button': {
+    AppLanguage.en: 'Go to the harbor',
+    AppLanguage.fr: 'Aller au port',
+  },
+  'harbor_unlocks_note': {
+    AppLanguage.en: 'refits the Rusty Eel: repairs and ship parts',
+    AppLanguage.fr: 'radoube le Rusty Eel : réparations et pièces de navire',
+  },
+  'ally_gear_button': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'ally_dice_button': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'badge_points_waiting': {
     AppLanguage.en: 'points to spend',
@@ -196,9 +291,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'camp_tab_locked_body': {
     AppLanguage.en:
-        'Your camp is founded in chapter 3. From then on, this is where you rest, gather your companions, build and set sail.',
+        'Your camp is founded in chapter 3. Each time the story brings you back to it, this is where you rest, choose who comes along, build and set sail.',
     AppLanguage.fr:
-        'Votre campement est fondé au chapitre 3. Dès lors, c’est ici que vous vous reposez, réunissez vos compagnons, bâtissez et prenez la mer.',
+        'Votre campement est fondé au chapitre 3. Chaque fois que le récit vous y ramène, c’est ici que vous vous reposez, choisissez qui vous accompagne, bâtissez et prenez la mer.',
   },
   'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
@@ -1516,45 +1611,23 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Enter the town',
     AppLanguage.fr: 'Entrer en ville',
   },
-  'arrival_camp_title': {
-    AppLanguage.en: 'Your camp',
-    AppLanguage.fr: 'Votre camp',
-  },
-  'arrival_camp_body': {
-    AppLanguage.en:
-        "This is your camp, and your base from now on. The Camp tab holds your companions, rest, the camp's works, its shops, and the expeditions and voyages that leave from here. The story will take you away; this is where you come back to.",
-    AppLanguage.fr:
-        'Voici votre camp, votre base désormais. L’onglet Campement réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques, et les expéditions et traversées qui en partent. Le récit vous en éloignera ; c’est ici que vous reviendrez.',
-  },
   'arrival_town_away_body': {
     AppLanguage.en:
         'You are away from camp. The shops, people and challenges here are '
-            'listed under the story; the Camp tab is still where you build and '
-            'gather your companions, and "Rest at camp" walks you back there '
-            'for the night. When you want to go on with the story, open "Move '
-            'on" at the bottom.',
+            'listed under the story, and "Rest at camp" walks you back there '
+            'for the night. The camp itself, your companions and what you '
+            'build open again when the story brings you home; meanwhile the '
+            'Ship tab can take the Rusty Eel to other ports. When you want to '
+            'go on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
         "Vous êtes loin du camp. Les boutiques, habitants et défis d’ici sont "
-            "listés sous le récit ; l’onglet Campement reste l’endroit où vous "
-            "bâtissez et réunissez vos compagnons, et « Se reposer au camp » "
-            "vous y ramène pour la nuit. Quand vous voudrez reprendre la route, "
-            "ouvrez « Quitter les lieux » en bas.",
+            "listés sous le récit, et « Se reposer au camp » vous y ramène pour "
+            "la nuit. Le camp lui-même, vos compagnons et vos ouvrages "
+            "rouvrent quand le récit vous ramène chez vous ; d’ici là, l’onglet "
+            "Navire peut mener le Rusty Eel vers d’autres ports. Quand vous "
+            "voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.",
   },
   'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
-  'arrival_camp_return_body': {
-    AppLanguage.en:
-        'Back at camp. See what has been built while you were away, rest, and gather your companions in the Camp tab; the story picks up again when you set out.',
-    AppLanguage.fr:
-        'De retour au camp. Voyez ce qui s’est bâti en votre absence, reposez-vous et réunissez vos compagnons dans l’onglet Campement ; le récit reprend quand vous repartez.',
-  },
-  'arrival_camp_return_button': {
-    AppLanguage.en: 'Sit by the fire',
-    AppLanguage.fr: 'S’asseoir au coin du feu',
-  },
-  'arrival_camp_button': {
-    AppLanguage.en: 'Make camp',
-    AppLanguage.fr: 'Installer le camp',
-  },
   'story_end_message': {
     AppLanguage.en:
         'Your story ends here. Begin again as someone new, or carry this run into New Game+.',

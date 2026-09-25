@@ -24,6 +24,7 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/camp_presence_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
@@ -240,15 +241,21 @@ class _StoryView extends ConsumerWidget {
         if (ref.read(_lastStoryNodeIdProvider) == arrivedNode.id) return;
         ref.read(_lastStoryNodeIdProvider.notifier).state = arrivedNode.id;
         final settlement = arrivedNode.settlement;
+        // The camp says its own welcome: the Camp tab takes over from the
+        // story there (see CampScreen).
         if (settlement != null &&
+            !settlement.isCamp &&
             isSettlementArrival(arrivedNode.id, previousNodeId,
                 history: historyAtArrival)) {
           ref.read(_pendingArrivalProvider.notifier).state = settlement;
         }
       });
     }
-    // ModalRoute.of makes this rebuild when a covering route goes away.
+    // ModalRoute.of makes this rebuild when a covering route goes away. At
+    // the camp the Story tab is closed (the camp stands in its place).
     final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
+        !(ref.watch(storyAtCampProvider) &&
+            ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
     // Picking a saved story back up: a short recap, once per launch.
     if (storyOnScreen &&
@@ -759,6 +766,32 @@ class _StoryView extends ConsumerWidget {
 /// Whether [choice] is currently unreachable because its target node has
 /// requirements the player doesn't meet (shown disabled with its
 /// lockedText instead of being selectable).
+/// Whether [choice]'s road is still shut for [session] (its next scene
+/// asks for gold, alignment, flags or Charisma the character lacks).
+bool isStoryChoiceLocked(
+        StoryChoice choice, StoryData story, PlayerSession session) =>
+    _isChoiceLocked(choice, story, session, false);
+
+/// Takes [choice] from the scene the story is on, exactly as tapping it
+/// under the story would: its checks, fights, effects and the road after.
+/// The camp's way out uses it (see CampScreen).
+Future<void> takeStoryChoice(
+    BuildContext context, WidgetRef ref, StoryChoice choice) async {
+  final story = await ref.read(storyDataProvider.future);
+  if (!context.mounted) return;
+  final play = ref.read(storyPlayProvider);
+  await _selectChoice(
+    context: context,
+    ref: ref,
+    choice: choice,
+    story: story,
+    session: ref.read(playerSessionProvider),
+    currentNodeId: play.currentNodeId,
+    isExcursion: play.isInExcursion,
+    french: ref.read(appLanguageProvider) == AppLanguage.fr,
+  );
+}
+
 bool _isChoiceLocked(
   StoryChoice choice,
   StoryData story,
@@ -1553,9 +1586,10 @@ class _HubSections extends ConsumerWidget {
   }
 }
 
-/// The pop-up on reaching a town or camp from elsewhere in the story: where
-/// the player is, and that the place's shops, expeditions and people are
-/// listed under the story, with the way onward at the bottom.
+/// The pop-up on reaching a town from elsewhere in the story: where the
+/// player is, and that the place's shops, expeditions and people are
+/// listed under the story, with the way onward at the bottom. (The camp
+/// says its own welcome: see CampScreen.)
 void _showSettlementArrival(
   BuildContext context,
   WidgetRef ref,
@@ -1572,9 +1606,7 @@ void _showSettlementArrival(
   // and a town is somewhere away from it.
   final campFounded =
       ref.read(playerSessionProvider).flags.contains(campFoundedFlag);
-  final bodyKey = settlement.isCamp
-      ? (campFounded ? 'arrival_camp_return_body' : 'arrival_camp_body')
-      : (campFounded ? 'arrival_town_away_body' : 'arrival_town_body');
+  final bodyKey = campFounded ? 'arrival_town_away_body' : 'arrival_town_body';
   showDialog<void>(
     context: context,
     builder: (dialogContext) {
@@ -1583,17 +1615,9 @@ void _showSettlementArrival(
         // A short screen scrolls the port's description and the guide
         // rather than overflowing.
         scrollable: true,
-        icon: Icon(
-          settlement.isCamp ? Icons.local_fire_department : Icons.location_city,
-          size: 36,
-        ),
+        icon: const Icon(Icons.location_city, size: 36),
         title: Text(
-          tr(
-                  ref,
-                  settlement.isCamp
-                      ? 'arrival_camp_title'
-                      : 'arrival_town_title')
-              .replaceAll('{place}', name),
+          tr(ref, 'arrival_town_title').replaceAll('{place}', name),
           textAlign: TextAlign.center,
         ),
         content: Column(
@@ -1615,15 +1639,8 @@ void _showSettlementArrival(
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(tr(
-                ref,
-                settlement.isCamp
-                    ? (campFounded
-                        ? 'arrival_camp_return_button'
-                        : 'arrival_camp_button')
-                    : (campFounded
-                        ? 'arrival_away_button'
-                        : 'arrival_town_button'))),
+            child: Text(tr(ref,
+                campFounded ? 'arrival_away_button' : 'arrival_town_button')),
           ),
         ],
       );

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/chapter_grid_layout.dart';
+import '../data/camp_state.dart';
+import '../data/port_helpers.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/camp_presence_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
+import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
 import '../widgets/immersive_notice.dart';
@@ -18,12 +21,15 @@ import 'character_screen.dart';
 import 'game_data_home_screen.dart';
 import 'play_screen.dart';
 import 'settings_screen.dart';
+import 'ship_screen.dart';
 import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
 import 'world_map_screen.dart';
 
 /// The game under the main menu. In play: Story, Character, Camp and
-/// Other (quests, shops, bestiary, people, saves). In Edit Mode: Story,
+/// Other (quests, shops, bestiary, people, saves); while the story stands
+/// at the camp, the camp takes the Story tab's place until the party
+/// leaves, and away from it the Camp tab is the ship. In Edit Mode: Story,
 /// Play, Generate and Data. The header opens a map in both: the story's
 /// scenes in Edit Mode, the world the story has reached in play.
 class HomeShell extends ConsumerStatefulWidget {
@@ -96,9 +102,43 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         _announceReady(ids);
       }
     });
+    // The story coming to the camp brings the party home, the Rusty Eel
+    // with it; the camp then opens in the Story tab's place, and the story
+    // comes back when the party leaves.
+    ref.listen<StoryPlayState>(storyPlayProvider, (previous, next) {
+      if (previous == null || ref.read(appModeProvider) == AppMode.edit) {
+        return;
+      }
+      if (previous.currentNodeId == next.currentNodeId ||
+          next.history.isEmpty ||
+          next.history.last != previous.currentNodeId) {
+        return;
+      }
+      final story = ref.read(storyDataProvider).value;
+      bool isCamp(String id) => story?.nodeFor(id)?.settlement?.isCamp ?? false;
+      if (!isCamp(next.currentNodeId) || isCamp(previous.currentNodeId)) {
+        return;
+      }
+      final ports = ref.read(gameDbProvider(portsSchema)).value;
+      final home = ports == null ? null : homePortId(ports);
+      if (home != null) {
+        ref.read(playerSessionProvider.notifier).arriveAtPort(home);
+      }
+    });
+    ref.listen<bool>(storyAtCampProvider, (previous, next) {
+      if (previous == null ||
+          previous == next ||
+          ref.read(appModeProvider) == AppMode.edit) {
+        return;
+      }
+      ref.read(homeTabIndexProvider.notifier).state = next ? _campTab : 0;
+    });
 
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final screens = isEditMode ? _editScreens : _inGameScreens;
+    final presence = ref.watch(campPresenceProvider);
+    final atCampTab =
+        presence == CampPresence.atCamp || presence == CampPresence.notYet;
     final titles = isEditMode
         ? [
             tr(ref, 'title_story'),
@@ -109,11 +149,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         : [
             tr(ref, 'title_story'),
             tr(ref, 'character'),
-            tr(ref, 'camp_title'),
+            tr(ref, atCampTab ? 'camp_title' : 'boat_title'),
             tr(ref, 'title_other'),
           ];
     final language = ref.watch(appLanguageProvider);
-    final index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
+    // While the story stands at the camp its tab is closed: the tabs are
+    // Camp, Character and Other, and the Story tab's index means the camp.
+    final storyHidden = !isEditMode && ref.watch(storyAtCampProvider);
+    final visibleTabs =
+        storyHidden ? const [_campTab, 1, 3] : const [0, 1, 2, 3];
+    var index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
+    if (!visibleTabs.contains(index)) index = _campTab;
     final canLeave = Navigator.of(context).canPop();
     final badges = ref.watch(tabBadgesProvider);
 
@@ -181,9 +227,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       ),
       body: IndexedStack(index: index, children: screens),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: index,
+        selectedIndex: visibleTabs.indexOf(index),
         onDestinationSelected: (i) =>
-            ref.read(homeTabIndexProvider.notifier).state = i,
+            ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
         destinations: isEditMode
             ? [
                 NavigationDestination(
@@ -200,33 +246,52 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     label: tr(ref, 'nav_data')),
               ]
             : [
-                NavigationDestination(
-                    icon: const Icon(Icons.menu_book),
-                    label: tr(ref, 'nav_story')),
-                dotted(Icons.person_outline, tr(ref, 'nav_character'),
-                    show: badges.character,
-                    reason: tr(ref, 'badge_points_waiting')),
-                dotted(
-                    Icons.local_fire_department_outlined, tr(ref, 'nav_camp'),
-                    show: badges.camp,
-                    reason: tr(ref, 'badge_house_affordable')),
-                dotted(Icons.more_horiz, tr(ref, 'nav_other'),
-                    show: badges.other, reason: tr(ref, 'badge_quest_ready')),
+                for (final tab in visibleTabs)
+                  switch (tab) {
+                    0 => NavigationDestination(
+                        icon: const Icon(Icons.menu_book),
+                        label: tr(ref, 'nav_story')),
+                    1 => dotted(Icons.person_outline, tr(ref, 'nav_character'),
+                        show: badges.character,
+                        reason: tr(ref, 'badge_points_waiting')),
+                    2 => atCampTab
+                        ? dotted(Icons.local_fire_department_outlined,
+                            tr(ref, 'nav_camp'),
+                            show: badges.camp,
+                            reason: tr(ref, 'badge_house_affordable'))
+                        : NavigationDestination(
+                            icon: const Icon(Icons.sailing_outlined),
+                            label: tr(ref, 'nav_ship')),
+                    _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
+                        show: badges.other,
+                        reason: tr(ref, 'badge_quest_ready')),
+                  },
               ],
       ),
     );
   }
 }
 
-/// The Camp tab: the camp itself once the story reaches chapter 3, and
-/// until then a word on what it will be.
+/// The Camp tab's index among the play-mode tabs.
+const int _campTab = 2;
+
+/// The Camp tab: the camp while the story stands at it, the Rusty Eel
+/// when the party has sailed out or the story has taken it away, and
+/// before chapter 3 a word on what it will be.
 class _CampTab extends ConsumerWidget {
   const _CampTab();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
-    if (chapter >= campChapter) return const CampScreen(embedded: true);
+    switch (ref.watch(campPresenceProvider)) {
+      case CampPresence.atCamp:
+        return const CampScreen(embedded: true);
+      case CampPresence.sailedOut:
+      case CampPresence.away:
+        return const ShipScreen(embedded: true);
+      case CampPresence.notYet:
+        break;
+    }
     final theme = Theme.of(context);
     return Center(
       child: Padding(

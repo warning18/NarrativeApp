@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/camp_state.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
@@ -23,7 +24,7 @@ import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
 import 'achievements_screen.dart';
-import 'boat_screen.dart';
+import 'ship_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_lab_screen.dart';
@@ -221,7 +222,7 @@ class PlayScreen extends ConsumerWidget {
                   Text('${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const BoatScreen()),
+                MaterialPageRoute(builder: (_) => const ShipScreen()),
               ),
             ),
           ),
