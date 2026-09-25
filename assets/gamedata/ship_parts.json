@@ -30,8 +30,12 @@
     "setsFire": false,
     "roomDamage": 2,
     "roomBonus": {},
-    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite.",
-    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent."
+    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite, but their lines reach no farther than medium range.",
+    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent, mais leurs filins ne portent pas au-delà de la moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
+    ]
   },
   "fire_pots": {
     "partID": "fire_pots",
@@ -47,8 +51,11 @@
     "setsFire": true,
     "roomDamage": 1,
     "roomBonus": {},
-    "description": "Clay pots of pitch, four turns to ready (three with a gunner). The room they land in burns until someone fights the fire, and the hull with it.",
-    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier). La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec."
+    "description": "Clay pots of pitch, four turns to ready (three with a gunner), hurled by hand: the ships must lie close. The room they land in burns until someone fights the fire, and the hull with it.",
+    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec.",
+    "ranges": [
+      "close"
+    ]
   },
   "iron_plating": {
     "partID": "iron_plating",

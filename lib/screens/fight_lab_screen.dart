@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
+import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/chapter_grid_layout.dart';
 import '../gamedata/db_schema.dart';
@@ -210,6 +211,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                     ? shipTurnSeconds(
                         ship: ship, parts: parts, installedPartIds: installed)
                     : null,
+                habit: habitFromName(data['habit']?.toString()),
                 onFinished: (outcome) =>
                     Navigator.of(pageContext).pop(outcome.won),
               ),

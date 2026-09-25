@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sea_events.dart';
@@ -331,6 +332,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       }
     }
     if (!mounted) return;
+    if (outcome.escaped) {
+      // The raider got away: nothing to take, and the Eel sails on as
+      // she is.
+      _log.add(_t('ship_log_got_away', ship: enemyName));
+      await notifier.setShipHull(_player!.hull);
+      await _advance();
+      return;
+    }
     if (outcome.won) {
       if (!outcome.boarded) _log.add(_t('ship_log_sunk', ship: enemyName));
       if (prizeLine != null) _log.add(prizeLine);
@@ -574,6 +583,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
               parts: _parts,
               installedPartIds: session.shipPartIds)
           : null,
+      habit: habitFromName(_enemyData?['habit']?.toString()),
+      windKnot: _sail?.power == SailPower.windknot,
     );
   }
 
