@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.139.0+168]
+
+A town's scene folds away once it has been read.
+
+### Changed
+- **Towns and camps fold their scene when the player comes back.** Back
+  in a town from one of its shops, people or challenges, the scene the
+  player has already read shrinks to one line, "Read the scene again", and
+  the town's own lists (shops, people, expeditions, the way on) get the
+  rest of the screen. A tap opens the scene again, and "Fold the scene"
+  closes it. The first arrival still shows the scene in full, and so does
+  any return where the scene has something new (a progress line, a
+  callback, a companion's remark). The last fight's aftermath stays
+  visible under the folded line.
+- The French hint under "Leave {place}" no longer assumes the player's
+  gender ("quand vous le souhaitez" instead of "quand vous serez prêt").
+
 ## [1.138.0+167]
 
 Character creation's five memories get their own page, and the French

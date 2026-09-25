@@ -1363,13 +1363,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Expéditions',
   },
   'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'hub_story_unfold': {
+    AppLanguage.en: 'Read the scene again',
+    AppLanguage.fr: 'Relire le récit',
+  },
+  'hub_story_fold': {
+    AppLanguage.en: 'Fold the scene',
+    AppLanguage.fr: 'Replier le récit',
+  },
   'leave_settlement_title': {
     AppLanguage.en: 'Leave {place}',
     AppLanguage.fr: 'Quitter {place}',
   },
   'leave_settlement_hint': {
     AppLanguage.en: 'Where the story goes next, when you are ready',
-    AppLanguage.fr: 'La suite de l’histoire, quand vous serez prêt',
+    AppLanguage.fr: 'La suite de l’histoire, quand vous le souhaitez',
   },
   'arrival_town_title': {
     AppLanguage.en: 'You arrive in {place}',

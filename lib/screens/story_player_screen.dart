@@ -89,6 +89,36 @@ final _lastStoryNodeIdProvider = StateProvider<String?>((ref) => null);
 /// it, so the pop-up never lands over another tab or another dialog.
 final _pendingArrivalProvider = StateProvider<Settlement?>((ref) => null);
 
+/// The text of each town or camp scene as the reader last saw it in full,
+/// by node id, this launch: coming back to the place with the same text
+/// folds it (see [_HubNarrationFold]).
+final _readHubNarrationProvider =
+    StateProvider<Map<String, String>>((ref) => const {});
+
+/// Whether the town or camp scene on screen is folded, decided once per
+/// visit so it doesn't fold itself the moment it has been read.
+final _hubNarrationFoldProvider =
+    StateProvider<_HubNarrationFold?>((ref) => null);
+
+class _HubNarrationFold {
+  const _HubNarrationFold(this.visitKey,
+      {required this.folded, required this.readBefore});
+
+  /// Arriving at the place: folded when this exact text was read before.
+  _HubNarrationFold.onArrival(this.visitKey, {String? lastRead, String? now})
+      : readBefore = lastRead != null,
+        folded = lastRead != null && lastRead == now;
+
+  /// The node and how far into the story the visit is, so each return to
+  /// the place is a new visit.
+  final String visitKey;
+  final bool folded;
+
+  /// Whether the place's scene had been read before this visit (even if
+  /// something in it is new), which is what lets it be folded.
+  final bool readBefore;
+}
+
 /// Whether the "Previously..." recap has been offered this launch.
 final _previouslyOfferedProvider = StateProvider<bool>((ref) => false);
 
@@ -308,6 +338,46 @@ class _StoryView extends ConsumerWidget {
             .toList()
         : const <StoryChoice>[];
 
+    // A town or camp's scene, once read, folds to one line when the player
+    // comes back to the place, so its shops, people and expeditions get the
+    // screen. Text the reader hasn't seen (a new progress line, a
+    // companion's remark) shows it in full again, and the last fight's
+    // aftermath stays under the folded line.
+    final canFoldNarration = isHubNode &&
+        node.settlement != null &&
+        !playState.isInExcursion &&
+        !isStoryEnding(node);
+    final hubVisitKey = '${node.id}_${playState.history.length}';
+    final storedFold = ref.watch(_hubNarrationFoldProvider);
+    final hubFold = !canFoldNarration
+        ? null
+        : storedFold?.visitKey == hubVisitKey
+            ? storedFold!
+            : _HubNarrationFold.onArrival(
+                hubVisitKey,
+                lastRead: ref.read(_readHubNarrationProvider)[node.id],
+                now: displayDescription,
+              );
+    final narrationFolded = (hubFold?.folded ?? false) && !fullscreenReading;
+    if (hubFold != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        if (ref.read(_hubNarrationFoldProvider)?.visitKey != hubVisitKey) {
+          ref.read(_hubNarrationFoldProvider.notifier).state = hubFold;
+        }
+        final read = ref.read(_readHubNarrationProvider);
+        if (!narrationFolded && read[node.id] != displayDescription) {
+          ref.read(_readHubNarrationProvider.notifier).state = {
+            ...read,
+            node.id: displayDescription,
+          };
+        }
+      });
+    }
+    void setNarrationFolded(bool folded) =>
+        ref.read(_hubNarrationFoldProvider.notifier).state =
+            _HubNarrationFold(hubVisitKey, folded: folded, readBefore: true);
+
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final storyTools = <Widget>[
       IconButton(
@@ -409,117 +479,151 @@ class _StoryView extends ConsumerWidget {
             // of squeezing the story out or running off a small screen.
             Expanded(
               child: LayoutBuilder(builder: (context, area) {
-                final choiceBudget = area.maxHeight * 0.6;
+                // A folded town scene leaves the rest of the screen to the
+                // place itself.
+                final choiceBudget =
+                    narrationFolded ? area.maxHeight : area.maxHeight * 0.6;
+                Widget fillBelow(Widget child) => narrationFolded
+                    ? Expanded(
+                        child:
+                            Align(alignment: Alignment.topCenter, child: child))
+                    : child;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      // Scrolling down into the narration gives the status bar and
-                      // companion collapse toggles above/below no purpose (they'd
-                      // just be pushed off-screen anyway), so collapse both
-                      // automatically the moment the player starts reading down the
-                      // page. The manual chevrons stay available to re-expand.
-                      child: LayoutBuilder(
-                        // Captured here, above the SingleChildScrollView, because
-                        // that view gives its child unbounded height on the scroll
-                        // axis -- a LayoutBuilder nested inside it would only ever
-                        // see infinite height, not the actual viewport size.
-                        builder: (context, viewportConstraints) {
-                          return NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification is ScrollUpdateNotification &&
-                                  (notification.scrollDelta ?? 0) > 0) {
-                                if (!statusBarCollapsed) {
-                                  ref
-                                      .read(
-                                          _statusBarCollapsedProvider.notifier)
-                                      .state = true;
+                    if (narrationFolded)
+                      _FoldedNarration(
+                        key: ValueKey('${node.id}_folded'),
+                        label: tr(ref, 'hub_story_unfold'),
+                        onOpen: () => setNarrationFolded(false),
+                        uiTheme: node.uiTheme,
+                        aftermath: pendingAftermath,
+                        aftermathHeading: tr(ref, 'aftermath_heading'),
+                      )
+                    else
+                      Expanded(
+                        // Scrolling down into the narration gives the status bar and
+                        // companion collapse toggles above/below no purpose (they'd
+                        // just be pushed off-screen anyway), so collapse both
+                        // automatically the moment the player starts reading down the
+                        // page. The manual chevrons stay available to re-expand.
+                        child: LayoutBuilder(
+                          // Captured here, above the SingleChildScrollView, because
+                          // that view gives its child unbounded height on the scroll
+                          // axis -- a LayoutBuilder nested inside it would only ever
+                          // see infinite height, not the actual viewport size.
+                          builder: (context, viewportConstraints) {
+                            return NotificationListener<ScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification is ScrollUpdateNotification &&
+                                    (notification.scrollDelta ?? 0) > 0) {
+                                  if (!statusBarCollapsed) {
+                                    ref
+                                        .read(_statusBarCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
+                                  if (!companionCollapsed) {
+                                    ref
+                                        .read(_companionCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
                                 }
-                                if (!companionCollapsed) {
-                                  ref
-                                      .read(
-                                          _companionCollapsedProvider.notifier)
-                                      .state = true;
-                                }
-                              }
-                              return false;
-                            },
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onDoubleTap: () => ref
-                                  .read(_fullscreenReadingProvider.notifier)
-                                  .state = !fullscreenReading,
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 320),
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeIn,
-                                transitionBuilder: _nodeTransition,
-                                child: SingleChildScrollView(
-                                  key: ValueKey(
-                                      '${node.id}_${playState.isInExcursion}_text'),
-                                  // Short narration otherwise leaves the freed-up
-                                  // space (status bar, node header, companion strip,
-                                  // choices all hidden) as dead blank area below the
-                                  // text card, which reads as "nothing happened"
-                                  // rather than an actual fullscreen mode. Centering
-                                  // it in the full viewport height makes the
-                                  // toggle's effect obvious.
-                                  child: fullscreenReading
-                                      ? SizedBox(
-                                          // A ConstrainedBox with only minHeight set
-                                          // still leaves maxHeight unbounded here
-                                          // (SingleChildScrollView never bounds its
-                                          // child's height) -- and Center collapses
-                                          // to wrap-content, ignoring minHeight,
-                                          // whenever its incoming max is unbounded.
-                                          // A fixed-height SizedBox forces a tight
-                                          // constraint so Center actually centers.
-                                          height: viewportConstraints.maxHeight,
-                                          child: Center(
-                                            child: _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
-                                            ),
-                                          ),
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            if (playState.isInExcursion)
-                                              _DetourContextCard(
-                                                origin: playState
-                                                    .excursionOriginFor(french),
-                                                note:
-                                                    node.contextNoteFor(french),
+                                return false;
+                              },
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onDoubleTap: () => ref
+                                    .read(_fullscreenReadingProvider.notifier)
+                                    .state = !fullscreenReading,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 320),
+                                  switchInCurve: Curves.easeOut,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: _nodeTransition,
+                                  child: SingleChildScrollView(
+                                    key: ValueKey(
+                                        '${node.id}_${playState.isInExcursion}_text'),
+                                    // Short narration otherwise leaves the freed-up
+                                    // space (status bar, node header, companion strip,
+                                    // choices all hidden) as dead blank area below the
+                                    // text card, which reads as "nothing happened"
+                                    // rather than an actual fullscreen mode. Centering
+                                    // it in the full viewport height makes the
+                                    // toggle's effect obvious.
+                                    child: fullscreenReading
+                                        ? SizedBox(
+                                            // A ConstrainedBox with only minHeight set
+                                            // still leaves maxHeight unbounded here
+                                            // (SingleChildScrollView never bounds its
+                                            // child's height) -- and Center collapses
+                                            // to wrap-content, ignoring minHeight,
+                                            // whenever its incoming max is unbounded.
+                                            // A fixed-height SizedBox forces a tight
+                                            // constraint so Center actually centers.
+                                            height:
+                                                viewportConstraints.maxHeight,
+                                            child: Center(
+                                              child: _StoryText(
+                                                text: displayDescription,
+                                                uiTheme: node.uiTheme,
+                                                epilogue: epilogue,
+                                                speakerLabel: speakerLabel,
+                                                aftermath: pendingAftermath,
+                                                aftermathHeading: tr(
+                                                    ref, 'aftermath_heading'),
+                                                epilogueHeading:
+                                                    tr(ref, 'epilogue_heading'),
                                               ),
-                                            _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
                                             ),
-                                          ],
-                                        ),
+                                          )
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              if (hubFold?.readBefore ?? false)
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: TextButton.icon(
+                                                    onPressed: () =>
+                                                        setNarrationFolded(
+                                                            true),
+                                                    icon: const Icon(
+                                                        Icons.expand_less),
+                                                    label: Text(tr(
+                                                        ref, 'hub_story_fold')),
+                                                  ),
+                                                ),
+                                              if (playState.isInExcursion)
+                                                _DetourContextCard(
+                                                  origin: playState
+                                                      .excursionOriginFor(
+                                                          french),
+                                                  note: node
+                                                      .contextNoteFor(french),
+                                                ),
+                                              _StoryText(
+                                                text: displayDescription,
+                                                uiTheme: node.uiTheme,
+                                                epilogue: epilogue,
+                                                speakerLabel: speakerLabel,
+                                                aftermath: pendingAftermath,
+                                                aftermathHeading: tr(
+                                                    ref, 'aftermath_heading'),
+                                                epilogueHeading:
+                                                    tr(ref, 'epilogue_heading'),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
                     if (!fullscreenReading) ...[
                       if (walkCompanionEnabled) ...[
                         if (!companionCollapsed)
@@ -551,7 +655,7 @@ class _StoryView extends ConsumerWidget {
                         ),
                       ] else
                         const SizedBox(height: 16),
-                      AnimatedSwitcher(
+                      fillBelow(AnimatedSwitcher(
                         duration: const Duration(milliseconds: 320),
                         switchInCurve: Curves.easeOut,
                         switchOutCurve: Curves.easeIn,
@@ -632,7 +736,7 @@ class _StoryView extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                      ),
+                      )),
                     ],
                   ],
                 );
@@ -1929,6 +2033,92 @@ List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
     ));
   }
   return spans;
+}
+
+/// A town or camp's scene the reader has already read, folded to one line
+/// that opens it again, with the last fight's aftermath under it when
+/// there is one -- so the place's own lists get the screen.
+class _FoldedNarration extends StatelessWidget {
+  const _FoldedNarration({
+    super.key,
+    required this.label,
+    required this.onOpen,
+    this.uiTheme,
+    this.aftermath,
+    this.aftermathHeading = '',
+  });
+
+  final String label;
+  final VoidCallback onOpen;
+  final String? uiTheme;
+  final String? aftermath;
+  final String aftermathHeading;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = uiThemePaletteFor(uiTheme);
+    final accent = resolveUiAccent(theme.colorScheme, palette);
+    return Material(
+      color: accent.cardTint.withValues(alpha: 0.35),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: accent.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onOpen,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 10, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.auto_stories_outlined,
+                      size: 20, color: accent.text),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(color: accent.text),
+                    ),
+                  ),
+                  Icon(Icons.expand_more, color: accent.text),
+                ],
+              ),
+              if (aftermath != null && aftermath!.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  aftermathHeading.toUpperCase(),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 1.5,
+                    color: accent.text.withValues(alpha: 0.8),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 160),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      aftermath!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontFamily: 'serif',
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// Renders a story node's narrative text with a book-like presentation:
