@@ -473,6 +473,12 @@ final DbSchema skillsSchema = DbSchema(
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
+        key: 'manaGain',
+        label: 'Mana Gain (a mana skill: mana added to the pool, plus the '
+            'Wisdom bonus)',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
         key: 'damageMod',
         label: 'Damage Mod',
         type: FieldType.integer,
@@ -714,6 +720,13 @@ final DbSchema professionsSchema = DbSchema(
       referenceSchemaId: 'dice',
     ),
     FieldSchema(
+      key: 'manaSkillID',
+      label: 'Mana Skill (a caster\'s starting mana skill, set on the '
+          'starting die\'s Channeling face; empty = none)',
+      type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
+    FieldSchema(
       key: 'startingSpellIds',
       label: 'Starting Spells (known from character creation)',
       type: FieldType.referenceList,
@@ -740,6 +753,18 @@ final DbSchema diceSchema = DbSchema(
       label: 'Number of Faces (4-12)',
       type: FieldType.integer,
       defaultValue: 6,
+    ),
+    FieldSchema(
+      key: 'professions',
+      label: 'Professions (who may buy and use the die; empty = anyone)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+      key: 'races',
+      label: 'Races (who may buy and use the die; empty = anyone)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'races',
     ),
     FieldSchema(
       key: 'faces',

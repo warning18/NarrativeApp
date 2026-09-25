@@ -571,6 +571,11 @@ extension _FightView on _FightScreenState {
     } else {
       inner = _buildFaceGlyph(face, size: 30);
     }
+    // A landed face tints its tile with what it does (red hits, pink
+    // heals, blue mana...); the border stays the roller's own colour.
+    final faceTint = face == null || spinning
+        ? null
+        : _faceKindOf(face).color.withValues(alpha: 0.16);
 
     final label = face == null || spinning
         ? ''
@@ -601,8 +606,9 @@ extension _FightView on _FightScreenState {
             width: 58,
             height: 58,
             decoration: BoxDecoration(
-              color:
-                  locked ? accent.withValues(alpha: 0.22) : colorScheme.surface,
+              color: locked
+                  ? accent.withValues(alpha: 0.22)
+                  : faceTint ?? colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: accent, width: locked ? 3 : 2),
               boxShadow: [
@@ -674,15 +680,15 @@ extension _FightView on _FightScreenState {
       text = preview.lethal
           ? '${preview.damage} ${tr(ref, 'preview_lethal_label')}'
           : '${preview.damage}';
-      color = preview.lethal ? Colors.red : Colors.deepOrange;
+      color = preview.lethal ? Colors.red.shade900 : FaceKind.attack.color;
     } else if (preview.healing > 0) {
-      icon = Icons.favorite;
+      icon = FaceKind.heal.icon;
       text = '+${preview.healing}';
-      color = Colors.green;
+      color = FaceKind.heal.color;
     } else if (preview.block > 0) {
-      icon = Icons.shield;
+      icon = FaceKind.defend.icon;
       text = '${preview.block}';
-      color = Colors.blue;
+      color = FaceKind.defend.color;
     } else if (result.manaGained > 0) {
       icon = manaIcon;
       text = '+${result.manaGained}';
@@ -707,13 +713,22 @@ extension _FightView on _FightScreenState {
     );
   }
 
+  /// What [face] does, for its colour: the face's own type, or for a
+  /// Skill face the skill it casts (see [skillKind]).
+  FaceKind _faceKindOf(DiceFaceResult face) {
+    if (face.type != 'Skill') return faceKind(face.type);
+    final skills =
+        ref.read(localizedDbProvider(skillsSchema)).value ?? const {};
+    return skillKind(skills[_effectiveSkillId(face)] as Map<String, dynamic>?);
+  }
+
   /// A rolled face as a glyph: its type icon over its value (a Skill face
   /// shows the skill's own pixel icon instead).
   Widget _buildFaceGlyph(DiceFaceResult face, {double size = 28}) {
     if (face.type == 'Skill') {
       return SkillPixelIcon(_effectiveSkillId(face), size: size);
     }
-    final color = _faceTypeColor(face.type);
+    final color = _faceKindOf(face).color;
     final showValue = face.value > 0;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -761,6 +776,7 @@ extension _FightView on _FightScreenState {
               language: lang,
               activeEffects: actor.statusEffects,
               wisdomHealBonus: actor.wisdom ~/ 2,
+              wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
               alignmentLabel: _alignmentLabel,
             ),
             target: null,
@@ -802,6 +818,7 @@ extension _FightView on _FightScreenState {
                       height: 48,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
+                        color: _faceKindOf(face).color.withValues(alpha: 0.16),
                         border: Border.all(color: accent, width: 2),
                       ),
                       child: Center(child: _buildFaceGlyph(face, size: 26)),
@@ -875,6 +892,8 @@ extension _FightView on _FightScreenState {
                     ],
                   ),
                 ],
+                const SizedBox(height: 12),
+                FaceColorLegend(language: lang),
                 const SizedBox(height: 10),
                 Text(trFor(lang, 'lock_hint'),
                     style: theme.textTheme.labelSmall),
@@ -919,7 +938,9 @@ extension _FightView on _FightScreenState {
             height: 40,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: isRolled ? accent.withValues(alpha: 0.2) : null,
+              color: _faceKindOf(face)
+                  .color
+                  .withValues(alpha: isRolled ? 0.28 : 0.14),
               border: Border.all(
                 color: isRolled ? accent : colorScheme.outlineVariant,
                 width: isRolled ? 2 : 1,

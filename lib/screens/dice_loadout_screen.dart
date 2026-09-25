@@ -8,6 +8,7 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../widgets/detail_dialog.dart';
 
@@ -129,10 +130,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
               items: diceIds
                   .map((id) => DropdownMenuItem(
                       value: id,
-                      child: Text(
-                          (dice[id] as Map<String, dynamic>?)?['diceName']
-                                  ?.toString() ??
-                              id)))
+                      child: Text(dieDisplayName(id,
+                          language: ref.watch(appLanguageProvider)))))
                   .toList(),
               onChanged: (value) => setState(() => _selectedDiceId = value),
             ),
@@ -159,6 +158,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 tr(ref, 'drag_skill_hint'),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              const SizedBox(height: 8),
+              FaceColorLegend(language: language),
               const SizedBox(height: 12),
               Wrap(
                 spacing: 12,
@@ -247,6 +248,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                       skillId: id,
                       label: skillDisplayName(id,
                           language: ref.watch(appLanguageProvider)),
+                      kind: skillKind(skill),
                       element: skill?['element']?.toString(),
                       onTap: () => _showSkillDetail(context, id, skill),
                     );
@@ -326,9 +328,10 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                   ),
                 for (final id in choices)
                   ListTile(
-                    leading: Icon(elementIcon(
-                        (skills[id] as Map<String, dynamic>?)?['element']
-                            ?.toString())),
+                    leading: Icon(
+                        skillKind(skills[id] as Map<String, dynamic>?).icon,
+                        color: skillKind(skills[id] as Map<String, dynamic>?)
+                            .color),
                     title: Text(skillDisplayName(id, language: lang)),
                     subtitle: Text(_skillSummary(
                         skills[id] as Map<String, dynamic>?, lang)),
@@ -399,8 +402,11 @@ String _skillSummary(Map<String, dynamic>? skill, AppLanguage lang) {
   final heal = (skill?['healAmount'] as num?)?.toInt() ?? 0;
   final element = skill?['element']?.toString() ?? 'None';
   final status = skill?['inflictsStatus']?.toString() ?? '';
+  final manaGain = (skill?['manaGain'] as num?)?.toInt() ?? 0;
   return [
-    if (damageMod > 0 || multiplier != 1.0)
+    if (manaGain > 0)
+      '${trFor(lang, 'mana_label')} +$manaGain'
+    else if (damageMod > 0 || multiplier != 1.0)
       '${trFor(lang, 'damage_word')} +$damageMod'
           '${multiplier != 1.0 ? ' ×$multiplier' : ''}',
     if (heal > 0) '${trFor(lang, 'face_heal_label')} $heal',
@@ -413,12 +419,16 @@ class _SkillChip extends StatelessWidget {
   const _SkillChip({
     required this.skillId,
     required this.label,
+    required this.kind,
     this.element,
     this.onTap,
   });
 
   final String skillId;
   final String label;
+
+  /// What the skill does, for its colour (see FaceKind).
+  final FaceKind kind;
   final String? element;
   final VoidCallback? onTap;
 
@@ -427,8 +437,10 @@ class _SkillChip extends StatelessWidget {
     final chip = GestureDetector(
       onTap: onTap,
       child: Chip(
-        avatar: Icon(elementIcon(element), size: 18),
+        avatar: Icon(kind.icon, size: 18, color: kind.color),
         label: Text(label),
+        backgroundColor: kind.color.withValues(alpha: 0.12),
+        side: BorderSide(color: kind.color.withValues(alpha: 0.7)),
       ),
     );
     return Draggable<String>(
@@ -483,6 +495,12 @@ class _FaceSlot extends StatelessWidget {
         : _skillSummary(skills[skillId] as Map<String, dynamic>?, language);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    // The face wears the colour of what it does (see FaceKind): red hits,
+    // steel guards, pink heals, blue mana, status colours for poison,
+    // stun and weaken.
+    final kind = skillId == null
+        ? faceKind(face['type']?.toString() ?? '')
+        : skillKind(skills[skillId] as Map<String, dynamic>?);
 
     Widget content(bool isHovering, bool isInvalidHover) {
       return GestureDetector(
@@ -495,20 +513,17 @@ class _FaceSlot extends StatelessWidget {
                 ? colorScheme.errorContainer
                 : (isHovering
                     ? colorScheme.primaryContainer
-                    : locked
-                        ? colorScheme.surfaceContainerHighest
-                            .withValues(alpha: 0.5)
-                        : colorScheme.surfaceContainerHighest),
+                    : kind.color.withValues(alpha: locked ? 0.08 : 0.14)),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isInvalidHover
                   ? colorScheme.error
                   : (isHovering
                       ? colorScheme.primary
-                      : assignedSkillId != null
-                          ? colorScheme.primary
-                          : colorScheme.outlineVariant),
-              width: (isHovering || isInvalidHover) ? 2 : 1,
+                      : kind.color.withValues(alpha: locked ? 0.45 : 0.9)),
+              width: (isHovering || isInvalidHover || assignedSkillId != null)
+                  ? 2
+                  : 1,
             ),
           ),
           child: Column(
@@ -517,6 +532,8 @@ class _FaceSlot extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  Icon(kind.icon, size: 16, color: kind.color),
+                  const SizedBox(width: 4),
                   Expanded(child: Text(name, style: textTheme.titleSmall)),
                   if (locked)
                     Icon(Icons.lock_outline,

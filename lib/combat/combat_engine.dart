@@ -143,8 +143,9 @@ class PlayerActionResult {
   final int blockAmount;
   final String message;
 
-  /// Mana a `Mana` face restores to the party's pool (see
-  /// `maxManaFor` in spells.dart) -- 0 for every other face type.
+  /// Mana a `Mana` face or a mana skill (see a skill's `manaGain`)
+  /// restores to the party's pool (see `maxManaFor` in spells.dart),
+  /// Wisdom bonus included -- 0 for every other face.
   final int manaGained;
 
   /// A status effect this face's skill inflicts on the enemy, if any —
@@ -220,6 +221,7 @@ PlayerActionResult resolvePlayerFace(
   AppLanguage language = AppLanguage.en,
   List<StatusEffect> activeEffects = const [],
   int wisdomHealBonus = 0,
+  int wisdomManaBonus = 0,
   int luck = 0,
   Random? random,
   bool forceCritical = false,
@@ -272,6 +274,7 @@ PlayerActionResult resolvePlayerFace(
           language: language,
           activeEffects: activeEffects,
           wisdomHealBonus: wisdomHealBonus,
+          wisdomManaBonus: wisdomManaBonus,
           luck: luck,
           random: random,
           forceCritical: forceCritical,
@@ -314,6 +317,13 @@ PlayerActionResult resolvePlayerFace(
           }
         }
       }
+      // A mana skill (Channel, Prayer) fills the pool like a Mana face,
+      // Wisdom bonus included; set on a basic face it keeps at least 1.
+      final baseManaGain = (skill['manaGain'] as num?)?.toInt() ?? 0;
+      var manaGain = baseManaGain > 0 ? baseManaGain + wisdomManaBonus : 0;
+      if (face.isChanneled && manaGain > 0) {
+        manaGain = max(1, (manaGain * channeledPower).round());
+      }
       final rawDamage = applyWeaken(skillDamage, activeEffects);
       final damage = withCrit(rawDamage);
       final crit = damage != rawDamage;
@@ -327,6 +337,8 @@ PlayerActionResult resolvePlayerFace(
               '${crit ? ' ${t('critical_hit_suffix')}' : ''}',
         if (healAmount > 0)
           '${t('you_recover_prefix')} $healAmount ${t('hp_label')}',
+        if (manaGain > 0)
+          '${t('you_recover_prefix')} $manaGain ${t('mana_label')}',
       ];
       final message =
           statParts.isEmpty ? flavor : '$flavor ${statParts.join(', ')}.';
@@ -335,6 +347,7 @@ PlayerActionResult resolvePlayerFace(
         healingDone: healAmount,
         blockAmount: 0,
         isCritical: crit,
+        manaGained: manaGain,
         message: message,
         inflictedStatus: _inflictedStatusFrom(skill),
       );
@@ -348,13 +361,14 @@ PlayerActionResult resolvePlayerFace(
             '${face.faceName}: ${t('you_recover_prefix')} $healAmount ${t('hp_label')}.',
       );
     case 'Mana':
+      final manaGain = face.value + wisdomManaBonus;
       return PlayerActionResult(
         damageDealt: 0,
         healingDone: 0,
         blockAmount: 0,
-        manaGained: face.value,
+        manaGained: manaGain,
         message:
-            '${face.faceName}: ${t('you_recover_prefix')} ${face.value} ${t('mana_label')}.',
+            '${face.faceName}: ${t('you_recover_prefix')} $manaGain ${t('mana_label')}.',
       );
     case 'Empty':
     default:

@@ -959,13 +959,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Backs Wisdom checks on story choices — reading people, sensing '
             'what\'s really going on. In a fight, it also strengthens every '
-            'point you heal and shortens how long Poison, Stun, or Weaken '
+            'point you heal, adds 1 mana to every Mana face and mana skill '
+            'per 3 Wisdom, and shortens how long Poison, Stun, or Weaken '
             'holds on to you.',
     AppLanguage.fr:
         'Intervient dans les jets de Sagesse des choix narratifs — lire '
             'les gens, sentir ce qui se trame vraiment. En combat, elle '
-            'renforce aussi chaque soin et raccourcit la durée du Poison, '
-            'de l\'Étourdissement ou de l\'Affaiblissement.',
+            'renforce aussi chaque soin, ajoute 1 point de mana à chaque '
+            'face Mana et compétence de mana tous les 3 points de Sagesse, '
+            'et raccourcit la durée du Poison, de l\'Étourdissement ou de '
+            'l\'Affaiblissement.',
   },
   'perception_desc': {
     AppLanguage.en:
@@ -1022,6 +1025,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Équipement'
   },
   'dice_label': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dé'},
+  'wisdom_mana_bonus_line': {
+    AppLanguage.en: 'Wisdom {wis}: +{n} mana on every Mana face and mana '
+        'skill (1 more per 3 Wisdom).',
+    AppLanguage.fr: 'Sagesse {wis} : +{n} mana sur chaque face Mana et '
+        'compétence de mana (1 de plus tous les 3 points).',
+  },
+  'face_kind_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
+  'face_kind_defend': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'face_kind_heal': {AppLanguage.en: 'Heal', AppLanguage.fr: 'Soin'},
+  'face_kind_mana': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'face_kind_poison': {AppLanguage.en: 'Poison', AppLanguage.fr: 'Poison'},
+  'face_kind_stun': {AppLanguage.en: 'Stun', AppLanguage.fr: 'Étourdit'},
+  'face_kind_weaken': {AppLanguage.en: 'Weaken', AppLanguage.fr: 'Affaiblit'},
+  'face_kind_empty': {AppLanguage.en: 'Blank', AppLanguage.fr: 'Vide'},
+  'die_made_for_prefix': {
+    AppLanguage.en: 'Made for',
+    AppLanguage.fr: 'Conçu pour',
+  },
+  'reward_die_traded': {
+    AppLanguage.en: 'The {die} is made for another class: you took its '
+        'price in gold instead.',
+    AppLanguage.fr: 'Le {die} est fait pour une autre classe : vous en '
+        'avez pris le prix en or.',
+  },
   'none_equipped': {
     AppLanguage.en: '(none equipped)',
     AppLanguage.fr: '(aucun équipé)'

@@ -139,6 +139,47 @@ DiceFaceResult applyFaceAssignment(
   return result.withFaceName(rolledFaceName(result, language));
 }
 
+List<String> _idList(Map<String, dynamic>? record, String key) =>
+    (record?[key] as List?)
+        ?.map((e) => e.toString())
+        .where((e) => e.isNotEmpty)
+        .toList() ??
+    const [];
+
+/// The professions [die] is made for (dice.json `professions`); empty
+/// means anyone.
+List<String> dieProfessionIds(Map<String, dynamic>? die) =>
+    _idList(die, 'professions');
+
+/// The races [die] is made for (dice.json `races`); empty means anyone.
+List<String> dieRaceIds(Map<String, dynamic>? die) => _idList(die, 'races');
+
+/// Whether a character of [professionId] and [raceId] may buy and roll
+/// [die]: a Mage's apprentice die is no use to a Warrior, a dwarf's stone
+/// die no use to an elf.
+bool dieUsableBy(Map<String, dynamic>? die,
+    {required String professionId, required String raceId}) {
+  final professions = dieProfessionIds(die);
+  final races = dieRaceIds(die);
+  return (professions.isEmpty || professions.contains(professionId)) &&
+      (races.isEmpty || races.contains(raceId));
+}
+
+/// "Mage, Cleric": who [die] is made for, named from the localized
+/// professions and races tables; '' for a die anyone can use.
+String dieMadeForLabel(Map<String, dynamic>? die,
+    Map<String, dynamic> professions, Map<String, dynamic> races) {
+  final names = [
+    for (final id in dieProfessionIds(die))
+      (professions[id] as Map<String, dynamic>?)?['professionName']
+              ?.toString() ??
+          id,
+    for (final id in dieRaceIds(die))
+      (races[id] as Map<String, dynamic>?)?['raceName']?.toString() ?? id,
+  ];
+  return names.join(', ');
+}
+
 /// The signature skills [die] carries on its fixed skill faces. Whoever
 /// holds the die can cast them, unlocked or not -- a bought die's Meteor
 /// face works for a warrior too, instead of fizzling.

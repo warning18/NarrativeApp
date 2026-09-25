@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
@@ -486,12 +487,29 @@ class _QuestList extends ConsumerWidget {
             onPressed: !objectivesMet
                 ? null
                 : () async {
-                    final rewardGold =
+                    var rewardGold =
                         (quest['rewardGold'] as num?)?.toInt() ?? 0;
                     final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
                     final rewardItemId = quest['rewardItemID']?.toString();
                     final nextQuestId = quest['nextQuestID']?.toString();
-                    final rewardDiceId = quest['rewardDiceID']?.toString();
+                    var rewardDiceId = quest['rewardDiceID']?.toString();
+                    // A reward die made for another class is paid out in
+                    // gold instead (its shop price).
+                    String? tradedDieName;
+                    if (rewardDiceId != null && rewardDiceId.isNotEmpty) {
+                      final die =
+                          (ref.read(localizedDbProvider(diceSchema)).value ??
+                              const {})[rewardDiceId] as Map<String, dynamic>?;
+                      final player = ref.read(playerSessionProvider);
+                      if (!dieUsableBy(die,
+                          professionId: player.professionId,
+                          raceId: player.raceId)) {
+                        rewardGold += (die?['cost'] as num?)?.toInt() ?? 0;
+                        tradedDieName = dieDisplayName(rewardDiceId,
+                            language: ref.read(appLanguageProvider));
+                        rewardDiceId = null;
+                      }
+                    }
                     final rewardAllyId = quest['rewardAllyId']?.toString();
                     final grantsBannerPieceId =
                         quest['grantsBannerPieceId']?.toString();
@@ -565,8 +583,9 @@ class _QuestList extends ConsumerWidget {
                           '${trFor(lang, 'quest_complete_prefix')}: $questName '
                           '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
                           '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
-                          '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
+                          '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +${dieDisplayName(rewardDiceId, language: lang)}" : ""}'
                           '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
+                          '${tradedDieName != null ? "\n${trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName)}" : ""}'
                           '${grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty ? "\n${trFor(lang, 'banner_piece_found_prefix')}" : ""}'
                           '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
                     );

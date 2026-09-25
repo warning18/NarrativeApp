@@ -44,6 +44,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     final spells = parseSpells(
         ref.watch(localizedDbProvider(spellsSchema)).value ?? const {});
     final professions = professionsAsync.value ?? const <String, dynamic>{};
+    final races = ref.watch(localizedDbProvider(racesSchema)).value ??
+        const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
     final lang = ref.watch(appLanguageProvider);
     final itemSets = parseItemSets(
@@ -491,25 +493,48 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             style: Theme.of(context).textTheme.titleMedium),
                         const SizedBox(height: 8),
                         ...diceStock.map((diceId) {
+                          final theme = Theme.of(context);
                           final die = dice[diceId] as Map<String, dynamic>?;
                           final cost = (die?['cost'] as num?)?.toInt() ?? 0;
                           final owned = session.ownedDiceIds.contains(diceId);
                           final canAfford = session.gold >= cost;
+                          // A die made for another class or race is shown
+                          // but can't be bought.
+                          final usable = dieUsableBy(die,
+                              professionId: session.professionId,
+                              raceId: session.raceId);
+                          final madeFor =
+                              dieMadeForLabel(die, professions, races);
                           return Card(
                             child: ListTile(
                               leading: const Icon(Icons.casino),
                               title:
                                   Text(dieDisplayName(diceId, language: lang)),
-                              subtitle: Text(
-                                '${owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}'}\n'
-                                '${dieFacesSummary(die, lang)}',
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${owned ? tr(ref, 'owned_label') : '$cost ${tr(ref, 'gold_label')}'}\n'
+                                    '${dieFacesSummary(die, lang)}',
+                                  ),
+                                  if (madeFor.isNotEmpty)
+                                    Text(
+                                      '${trFor(lang, 'die_made_for_prefix')} $madeFor',
+                                      style: theme.textTheme.labelSmall
+                                          ?.copyWith(
+                                              color: usable
+                                                  ? theme.colorScheme
+                                                      .onSurfaceVariant
+                                                  : theme.colorScheme.error),
+                                    ),
+                                ],
                               ),
                               isThreeLine: true,
                               trailing: owned
                                   ? const Icon(Icons.check_circle,
                                       color: Colors.green)
                                   : ElevatedButton(
-                                      onPressed: !canAfford
+                                      onPressed: !canAfford || !usable
                                           ? null
                                           : () async {
                                               await ref

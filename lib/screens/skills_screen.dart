@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
+import '../data/skill_access.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../gamedata/db_schema.dart';
@@ -11,6 +12,7 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../utils/spell_preview.dart';
@@ -129,6 +131,14 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
         '${tr(ref, 'mana_pool_desc')} ${tr(ref, 'mana_faces_note')} '
         '${tr(ref, 'cast_in_battle_hint')}',
         style: theme.textTheme.bodySmall,
+      ),
+      const SizedBox(height: 4),
+      Text(
+        tr(ref, 'wisdom_mana_bonus_line')
+            .replaceAll('{n}', '${wisdomManaBonusFor(session.wisdom)}')
+            .replaceAll('{wis}', '${session.wisdom}'),
+        style: theme.textTheme.bodySmall
+            ?.copyWith(color: manaColor, fontWeight: FontWeight.w600),
       ),
       const SizedBox(height: 8),
       if (list.isEmpty)
@@ -352,6 +362,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
                 records: records,
                 races: racesAsync.value ?? const {},
                 professions: professionsAsync.value ?? const {},
+                merges: merges,
                 raceId: raceId,
                 professionId: professionId,
                 alignmentScore: session.alignmentScore,
@@ -390,6 +401,7 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
 class _SkillList extends ConsumerWidget {
   const _SkillList({
     required this.records,
+    required this.merges,
     required this.races,
     required this.professions,
     required this.raceId,
@@ -415,6 +427,10 @@ class _SkillList extends ConsumerWidget {
   final Map<String, dynamic> records;
   final Map<String, dynamic> races;
   final Map<String, dynamic> professions;
+
+  /// skill_merges.json: a merge-only skill is listed only when this
+  /// character could craft it.
+  final Map<String, dynamic> merges;
 
   /// Whose restrictions/unlock state this list reflects — the player's own
   /// by default, or a companion's when [SkillsScreen.allyId] is set.
@@ -447,17 +463,21 @@ class _SkillList extends ConsumerWidget {
     if (records.isEmpty) {
       return Center(child: Text(tr(ref, 'no_skills_defined')));
     }
-    // A boss's own moves stay the boss's: never listed for the party.
-    final keys = records.keys
-        .where((id) => !isEnemyOnlySkill(records[id] as Map<String, dynamic>?))
-        .toList()
-      ..sort();
-
     bool isAvailable(String id) {
       final skill = records[id] as Map<String, dynamic>?;
       final globallyUnlocked = skill?['isUnlocked'] as bool? ?? false;
       return globallyUnlocked || unlockedSkillIds.contains(id);
     }
+
+    // Only what this character can ever hold: their class's and race's
+    // skills and the general ones -- never another class's, and never a
+    // boss's own moves. What they already know comes first.
+    final keys = skillIdsForCharacter(records, merges,
+        raceId: raceId, professionId: professionId)
+      ..sort((a, b) {
+        final known = (isAvailable(a) ? 0 : 1) - (isAvailable(b) ? 0 : 1);
+        return known != 0 ? known : a.compareTo(b);
+      });
 
     bool meetsRestriction(Map<String, dynamic> skill) {
       final restrictedRaceId = skill['restrictedRaceID']?.toString() ?? '';
@@ -497,6 +517,11 @@ class _SkillList extends ConsumerWidget {
           restrictedProfessionId.isEmpty &&
           requiredAlignmentMin == null &&
           requiredAlignmentMax == null) {
+        return '';
+      }
+      // Every skill listed is the character's own class's or race's, so
+      // only a reputation gate still needs saying.
+      if (requiredAlignmentMin == null && requiredAlignmentMax == null) {
         return '';
       }
       final race = races[restrictedRaceId] as Map<String, dynamic>?;
@@ -544,7 +569,11 @@ class _SkillList extends ConsumerWidget {
             trailing = null;
           } else if (available) {
             final upgradeCallback = onUpgradeTier;
-            if (skillTiers != null && upgradeCallback != null) {
+            // Only a skill the character learned can be upgraded (Heavy
+            // Blow, everyone's basic strike, has no tiers).
+            if (skillTiers != null &&
+                upgradeCallback != null &&
+                unlockedSkillIds.contains(id)) {
               final essence = skillEssence ?? 0;
               final maxed = tier >= maxSkillTier;
               final upgradeCost = skillTierUpgradeCost(tier);
@@ -556,10 +585,17 @@ class _SkillList extends ConsumerWidget {
                     '${tr(ref, 'tier_label')} $tier/$maxSkillTier',
                     style: Theme.of(context).textTheme.labelSmall,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 2),
                   maxed
                       ? const Icon(Icons.check_circle, color: Colors.green)
                       : OutlinedButton(
+                          // Compact, so the tier line and the button fit
+                          // the list row's height.
+                          style: OutlinedButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                          ),
                           onPressed: essence >= upgradeCost
                               ? () => upgradeCallback(id)
                               : null,
@@ -612,14 +648,27 @@ class _SkillList extends ConsumerWidget {
               '${tr(ref, 'cost_label')}: $cost',
           ];
 
+          final kind = skillKind(skill);
           return Card(
             color: firstCompareId == id
                 ? Theme.of(context).colorScheme.tertiaryContainer
                 : null,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: kind.color.withValues(alpha: 0.55)),
+            ),
             child: ListTile(
               leading: SkillPixelIcon(id),
-              title: Text(skillDisplayName(id,
-                  language: ref.watch(appLanguageProvider))),
+              title: Row(
+                children: [
+                  Flexible(
+                    child: Text(skillDisplayName(id,
+                        language: ref.watch(appLanguageProvider))),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(kind.icon, size: 14, color: kind.color),
+                ],
+              ),
               subtitle: Text(subtitleParts.join(' · ')),
               isThreeLine: description.isNotEmpty,
               trailing: trailing,

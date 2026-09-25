@@ -29,6 +29,10 @@ const String _starterDiceId = 'starter_die';
 const int _starterDieProfessionFaceIndex = 4;
 const int _starterDieRaceFaceIndex = 5;
 
+/// The apprentice die's Channeling face, where a caster's mana skill sits
+/// from the start (see `manaSkillID` in professions.json).
+const int _startingDieManaFaceIndex = 1;
+
 /// The active party's size before any house bonus -- the player plus one
 /// ally fits by default. Each built house's own `partyCapacityBonus`
 /// (houses.json) adds to this.
@@ -205,7 +209,9 @@ class PlayerSession {
   /// of its flat attackDamage/armor, and some items gate equipping behind a
   /// minimum score (`meetsItemStatRequirement`) — a staff rewards
   /// Intelligence, a sword rewards Strength, matching whichever build
-  /// actually wields it. Wisdom has no combat tie-in of any kind.
+  /// actually wields it. Wisdom adds to healing, to the mana a Mana face
+  /// or mana skill gives (see `wisdomManaBonusFor` in spells.dart) and
+  /// shortens the statuses that land on the party.
   final int strength;
   final int dexterity;
   final int constitution;
@@ -1069,23 +1075,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         bonus(profession, 'startingGoldBonus');
     final skillPoints = bonus(profession, 'startingSkillPoints');
 
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    final starterAssignments = <String, String>{
-      if (professionSkillId.isNotEmpty)
-        _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty)
-        _starterDieRaceFaceIndex.toString(): raceSkillId,
-    };
-    // Race/profession signature skills default to isUnlocked: false in the
-    // skills db (most skills are locked until earned) but are wired
-    // directly into the starter die's Heritage/Profession Technique faces
-    // from the moment a character exists — so they need to be unlocked
-    // here too, or those faces would just fizzle on the very first roll.
-    final starterUnlockedSkills = <String>[
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-    ];
+    // Race/profession signature skills (and a caster's mana skill) default
+    // to isUnlocked: false in the skills db (most skills are locked until
+    // earned) but are wired directly into the starting die's faces from
+    // the moment a character exists -- so they are unlocked here too, or
+    // those faces would just fizzle on the very first roll.
+    final starterAssignments = _starterFaceAssignments(race, profession);
+    final starterUnlockedSkills = _starterSkillsFor(race, profession);
     final startingDiceId = _startingDiceIdFor(profession);
     final startingSpellIds = _startingSpellIdsFor(profession);
     // A New Game+ character inherits the previous cycle's legacy (see
@@ -1096,6 +1092,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       for (final id in legacy.legacyDiceIds)
         if (id != _starterDiceId && id != startingDiceId) id,
     ];
+    // One die to start with: the profession's own (a Mage's or Cleric's
+    // apprentice die replaces the starter die), plus a New Game+ legacy.
     final legacySpells = [
       for (final id in legacy.legacySpellIds)
         if (!startingSpellIds.contains(id)) id,
@@ -1135,11 +1133,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           _starterAssignmentsByDie(starterAssignments, startingDiceId),
       raceId: raceId,
       professionId: professionId,
-      ownedDiceIds: [
-        _starterDiceId,
-        if (startingDiceId != _starterDiceId) startingDiceId,
-        ...legacyDice,
-      ],
+      ownedDiceIds: [startingDiceId, ...legacyDice],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
@@ -1170,12 +1164,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// The die a new character of [profession] starts with equipped -- its
-  /// own `startingDiceId` (a Mage's or Cleric's apprentice die, with its
-  /// Mana faces) or the starter die. Every profession's starting die keeps
-  /// the Profession/Heritage Technique faces at the starter die's own
-  /// indexes ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]),
-  /// so the same face assignments serve both dice.
+  /// The one die a new character of [profession] starts with -- its own
+  /// `startingDiceId` (a Mage's or Cleric's apprentice die, with its Focus
+  /// and Channeling faces) or the starter die. Every profession's starting
+  /// die keeps the Profession/Heritage Technique faces at the same indexes
+  /// ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]).
   static String _startingDiceIdFor(Map<String, dynamic> profession) {
     final id = profession['startingDiceId']?.toString() ?? '';
     return id.isEmpty ? _starterDiceId : id;
@@ -1188,20 +1181,52 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           .toList() ??
       const [];
 
-  /// [starterAssignments] under the starter die AND the profession's own
-  /// starting die (when it has one), so the Technique faces resolve on
-  /// whichever of the two is equipped.
+  /// [starterAssignments] under the profession's starting die, the one
+  /// die a new character owns.
   static Map<String, Map<String, String>> _starterAssignmentsByDie(
     Map<String, String> starterAssignments,
     String startingDiceId,
   ) =>
       {
-        if (starterAssignments.isNotEmpty) ...{
-          _starterDiceId: starterAssignments,
-          if (startingDiceId != _starterDiceId)
-            startingDiceId: starterAssignments,
-        },
+        if (starterAssignments.isNotEmpty) startingDiceId: starterAssignments,
       };
+
+  /// The skills a new character of [race] and [profession] knows: the
+  /// profession's standard skill, a caster's mana skill (`manaSkillID`:
+  /// Channel for a Mage, Prayer for a Cleric) and the race's standard
+  /// skill. Nothing from another class: the generic Heavy Blow every open
+  /// Skill face falls back to is the only skill everyone shares.
+  static List<String> _starterSkillsFor(
+      Map<String, dynamic> race, Map<String, dynamic> profession) {
+    final ids = [
+      profession['standardSkillID']?.toString() ?? '',
+      profession['manaSkillID']?.toString() ?? '',
+      race['standardSkillID']?.toString() ?? '',
+    ];
+    return [
+      for (final id in ids.toSet())
+        if (id.isNotEmpty) id,
+    ];
+  }
+
+  /// Where the starter skills sit on the starting die: the profession's
+  /// technique on the Profession Technique face, the race's on the
+  /// Heritage Technique face, and a caster's mana skill on the apprentice
+  /// die's Channeling face.
+  static Map<String, String> _starterFaceAssignments(
+      Map<String, dynamic> race, Map<String, dynamic> profession) {
+    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
+    final manaSkillId = profession['manaSkillID']?.toString() ?? '';
+    final raceSkillId = race['standardSkillID']?.toString() ?? '';
+    return {
+      if (manaSkillId.isNotEmpty)
+        _startingDieManaFaceIndex.toString(): manaSkillId,
+      if (professionSkillId.isNotEmpty)
+        _starterDieProfessionFaceIndex.toString(): professionSkillId,
+      if (raceSkillId.isNotEmpty)
+        _starterDieRaceFaceIndex.toString(): raceSkillId,
+    };
+  }
 
   /// Sets the character's name — called once from the lock-in dialog right
   /// after character creation (see RaceProfessionScreen), before the
@@ -2564,18 +2589,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillsLost: state.unlockedSkillIds.length,
     );
 
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    final starterUnlockedSkills = <String>[
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-    ];
-    final starterAssignments = <String, String>{
-      if (professionSkillId.isNotEmpty)
-        _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty)
-        _starterDieRaceFaceIndex.toString(): raceSkillId,
-    };
+    final starterUnlockedSkills = _starterSkillsFor(race, profession);
+    final starterAssignments = _starterFaceAssignments(race, profession);
     final starterSkillPoints =
         (profession['startingSkillPoints'] as num?)?.toInt() ?? 0;
 

@@ -41,6 +41,11 @@ const int baseMana = 4;
 int maxManaFor({required int intelligence, required int wisdom}) =>
     baseMana + max(intelligence, wisdom) ~/ 2;
 
+/// Extra mana a Mana face or a mana skill (Channel, Prayer) gives in the
+/// hands of a wise character: one more point per 3 Wisdom -- a starting
+/// human Cleric (6) gets +2, a Mage (1) nothing yet.
+int wisdomManaBonusFor(int wisdom) => wisdom <= 0 ? 0 : wisdom ~/ 3;
+
 /// The Scroll of Fireball's item id: read in a fight, it burns once for
 /// free (see [fireballScroll]).
 const String fireballScrollId = 'scroll_fireball';

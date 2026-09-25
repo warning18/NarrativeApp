@@ -1035,8 +1035,9 @@ void main() {
       expect(notifier.state.mana, 6, reason: 'no manaAfter leaves mana alone');
     });
 
-    test('startNewGame grants the profession\'s die and spells with full mana',
-        () async {
+    test(
+        'a mage starts with the apprentice die alone, its Channel skill and '
+        'spells, at full mana', () async {
       final notifier = await notifierWith(baseSession());
       await notifier.startNewGame(
         raceId: 'human',
@@ -1044,18 +1045,24 @@ void main() {
         professionId: 'mage',
         profession: const {
           'standardSkillID': 'mage_arcane_missile',
+          'manaSkillID': 'mage_channel',
           'bonusIntelligence': 4,
           'startingDiceId': 'apprentice_die',
           'startingSpellIds': ['spell_arcane_bolt', 'spell_mana_ward'],
         },
       );
       final s = notifier.state;
-      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die']);
+      // One die: the apprentice die replaces the starter die.
+      expect(s.ownedDiceIds, ['apprentice_die']);
       expect(s.equippedDiceId, 'apprentice_die');
-      expect(s.diceSkillAssignments['apprentice_die'],
-          s.diceSkillAssignments['starter_die']);
-      expect(s.diceSkillAssignments['apprentice_die']?['4'],
-          'mage_arcane_missile');
+      expect(s.diceSkillAssignments.keys, ['apprentice_die']);
+      expect(s.diceSkillAssignments['apprentice_die'], {
+        '1': 'mage_channel',
+        '4': 'mage_arcane_missile',
+        '5': 'human_resolve',
+      });
+      expect(s.unlockedSkillIds,
+          ['mage_arcane_missile', 'mage_channel', 'human_resolve']);
       expect(s.knownSpellIds, ['spell_arcane_bolt', 'spell_mana_ward']);
       expect(s.mana, s.maxMana);
       expect(s.maxMana, greaterThanOrEqualTo(6));
@@ -1139,7 +1146,7 @@ void main() {
       );
       final s = notifier.state;
       expect(s.gold, defaultGold + 100);
-      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die', 'iron_die']);
+      expect(s.ownedDiceIds, ['apprentice_die', 'iron_die']);
       expect(s.knownSpellIds,
           ['spell_arcane_bolt', 'spell_mana_ward', 'spell_frost_bind']);
       expect(s.newGamePlusCycle, 1);

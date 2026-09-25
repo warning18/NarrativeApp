@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.141.0+170]
+
+Each class starts with its own die and its own skills, dice made for a class
+go to that class, every face shows what it does by its colour, and Wisdom
+now feeds the mana pool.
+
+### Changed
+- **One die to start with.** A new Mage or Cleric owns the apprentice die
+  only (it replaces the starter die); a Warrior, Rogue or Ranger owns the
+  starter die only. A New Game+ legacy still adds the dice of the last
+  cycle.
+- **Starting skills match the class.** A character starts with their
+  class's technique, their race's technique and, for a caster, a mana
+  skill: **Channel** (Mage) and **Prayer** (Cleric), new skills that add 2
+  mana (plus Wisdom) and sit on the apprentice die's Channeling face.
+  Nothing is shared by every class any more except Heavy Blow, the basic
+  strike an open Skill face falls back to: Fireball is a Mage skill, Shadow
+  Step and Second Wind are general skills to learn with a point, and Void
+  Blast no longer needs Fireball first.
+- **The skill list shows only what the character can learn**: their class's
+  and race's skills and the general ones, known skills first. Another
+  class's skills, and merges they could never craft, are no longer listed.
+- **Dice are made for a class** (or a race): the apprentice and sage dice
+  for casters, the flame and arcane dice for mages, the holy and tide dice
+  for clerics, the storm and huntsman dice for rangers, the shadow and
+  twinfang dice for rogues, the iron and bulwark dice for warriors, the
+  stone die for dwarves and the berserker die for orcs. Shops show who a die
+  is made for and only sell it to them; the die picker only equips your
+  own. A quest reward die made for another class is paid in gold (its
+  price) instead.
+- **Wisdom adds mana**: one more point per 3 Wisdom on every Mana face and
+  mana skill (a human Cleric starts with +2). The skills screen shows the
+  bonus, and the Wisdom description says so.
+
+### Added
+- **Colours by effect on every die face**: red for attacks, steel for
+  guards, pink for heals, blue for mana, and a status skill wears its
+  status's colour (poison green, stun amber, weaken purple). The fight's
+  dice tray, the face sheet, the party cards, the dice loadout, the skill
+  chips and the skill list all use them, with a colour key on the loadout
+  and in the face sheet.
+
 ## [1.140.0+169]
 
 From chapter 3 on, the camp is the party's base: the story comes back to it,

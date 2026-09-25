@@ -50,41 +50,9 @@ IconData _logIcon(_LogKind kind) {
   }
 }
 
-/// Icon for a die face's own type — distinct from [_logIcon], which is
-/// about a resolved log line's category.
-IconData _faceTypeIcon(String type) {
-  switch (type) {
-    case 'Attack':
-      return Icons.bolt;
-    case 'Defend':
-      return Icons.shield;
-    case 'Heal':
-      return Icons.favorite;
-    case 'Skill':
-      return Icons.auto_awesome;
-    case 'Mana':
-      return manaIcon;
-    default:
-      return Icons.remove_circle_outline;
-  }
-}
-
-Color _faceTypeColor(String type) {
-  switch (type) {
-    case 'Attack':
-      return Colors.deepOrange;
-    case 'Defend':
-      return Colors.blueGrey;
-    case 'Heal':
-      return Colors.green;
-    case 'Mana':
-      return manaColor;
-    case 'Skill':
-      return Colors.deepPurple;
-    default:
-      return Colors.grey;
-  }
-}
+/// Icon for a die face's own type -- distinct from [_logIcon], which is
+/// about a resolved log line's category. Colours come from [FaceKind].
+IconData _faceTypeIcon(String type) => faceKind(type).icon;
 
 /// A small pill showing one active status effect's icon and how many
 /// rounds it has left — the visual half of the status-effect system,
