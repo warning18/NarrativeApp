@@ -308,6 +308,7 @@ class _ChapterCard extends ConsumerWidget {
     final mainChoices = visible.where((c) => c.mainQuest).toList();
     final otherChoices = visible.where((c) => !c.mainQuest).toList();
     final open = progress?.mainQuestOpen ?? true;
+    final companionLeads = ref.watch(companionLeadsProvider);
     String placeName(String id) =>
         story?.nodeFor(id)?.settlement?.nameFor(fr) ?? id;
 
@@ -341,6 +342,28 @@ class _ChapterCard extends ConsumerWidget {
                       : (progress.done / progress.goal).clamp(0.0, 1.0),
                 ),
               ],
+              // Word of a companion to meet, so a party in a hurry does not
+              // walk past them.
+              for (final placeId in companionLeads.keys)
+                Padding(
+                  key: Key('companion_hint_$placeId'),
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.person_add_alt_1_outlined,
+                          size: 18, color: theme.colorScheme.tertiary),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          tr(ref, 'companion_hint')
+                              .replaceAll('{place}', placeName(placeId)),
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               const SizedBox(height: 12),
               Row(
                 children: [

@@ -8,6 +8,46 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.148.0+177]
+
+A word at the camp about companions, and a longer look round each chapter.
+
+### Added
+- **Companion hint at the camp.** When a place the party knows has
+  someone who could still join, the Chapter card says so ("Word at the
+  fire: someone in the Ashen Quarter might join you."). The place's card
+  is tagged "someone to meet". The hint follows the recruit scenes
+  (`placeCompanionLeads`):
+  - it leaves out a companion the party's alignment or story rules out
+    (Tobin for a party that is not Good, Malrik for one that is not Evil,
+    Maren once Lysa is lost);
+  - it keeps one who only asks for gold (Grosh);
+  - it goes once the companion has joined or their scene is done.
+
+### Changed
+- **Each chapter asks for 8 things done** before its main quest (was 6),
+  so a party makes about one more trip in each chapter.
+
+### Balance (Python simulation, 200 runs a style)
+- **Rushers** (only what the gate asks):
+  - Before this change: 4.24 fights lost a run, 3.3 companions, 5 runs
+    with no companion.
+  - With the goal of 8 alone: 1.69 lost a run, 3.6 companions, 1 run
+    with no companion.
+  - With the hint as well: 1.10 lost a run, 4.1 companions, none alone.
+    Every run finishes.
+- **Thorough players:** 1.30 fights lost a run, 4.0 companions. They
+  already did more than 8.
+
+### Tests
+- `chapter_loop_test`:
+  - the goal of 8;
+  - companions to meet: a town's leads and a village's none;
+  - leads leaving once met or done;
+  - alignment and story gates.
+- `camp_flow_test` checks the hint and the place tag once the Ashen
+  Quarter is found, and opens the main quest at 8 of 8.
+
 ## [1.147.0+176]
 
 The camp is the base from chapter 3 on. Each chapter is explored from it,

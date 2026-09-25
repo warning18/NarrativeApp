@@ -250,6 +250,59 @@ bool mainQuestOpen({
     missingMainQuestPlaces(loop, story, flags, visitedNodeIds: visitedNodeIds)
         .isEmpty;
 
+/// The companions [place] can still bring into the party: an activity not
+/// done yet that starts a companion's quest (quests.json `rewardAllyId`),
+/// or leads into a scene that does. A companion the party's alignment, its
+/// story so far or its Charisma rules out is left out, and so is one
+/// already met ([unavailableAllyIds]: recruited or lost); one that only
+/// asks for gold is not, since gold comes.
+List<String> placeCompanionLeads(
+  StoryNode place,
+  StoryData story,
+  Map<String, dynamic> quests, {
+  required Iterable<String> flags,
+  required int alignmentScore,
+  required int charisma,
+  required Iterable<String> unavailableAllyIds,
+}) {
+  final held = flags.toSet();
+  final gone = unavailableAllyIds.toSet();
+  bool open(StoryNode? target) {
+    if (target == null) return true;
+    final atLeast = target.reqAlignmentScore;
+    final atMost = target.reqAlignmentMax;
+    if (atLeast != null && alignmentScore < atLeast) return false;
+    if (atMost != null && alignmentScore > atMost) return false;
+    if (target.reqCharisma > 0 && charisma < target.reqCharisma) return false;
+    return target.reqFlags.every(held.contains);
+  }
+
+  String allyOf(String? questId) {
+    final quest = questId == null ? null : quests[questId];
+    return quest is Map ? quest['rewardAllyId']?.toString() ?? '' : '';
+  }
+
+  final leads = <String>[];
+  for (final choice in place.choices) {
+    if (choice.isHiddenFor(held)) continue;
+    final target = story.nodeFor(choice.nextId);
+    if (!open(target)) continue;
+    final questIds = [
+      choice.unlockQuestId,
+      if (target != null && target.id != place.id)
+        for (final next in target.choices) next.unlockQuestId,
+    ];
+    for (final questId in questIds) {
+      final ally = allyOf(questId);
+      if (ally.isEmpty || gone.contains(ally) || leads.contains(ally)) {
+        continue;
+      }
+      leads.add(ally);
+    }
+  }
+  return leads;
+}
+
 /// The places a zone reveals (zones.json `discoversPlaceIds`): the first
 /// at the expedition's midpoint, the rest on clearing it.
 List<String> zoneDiscoveries(Map<String, dynamic> zone) =>

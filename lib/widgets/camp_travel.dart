@@ -263,6 +263,8 @@ class PlaceCard extends ConsumerWidget {
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
     final progress = placeProgress(place, session.flags);
+    final companionHere =
+        ref.watch(companionLeadsProvider).containsKey(place.id);
     final route = routeLabelTo(ref, destinationPortIdFor(settlement, ports),
         ports: ports, savedPortId: session.currentPortId);
     final theme = Theme.of(context);
@@ -287,9 +289,21 @@ class PlaceCard extends ConsumerWidget {
               ].join(' · '),
               style: theme.textTheme.labelMedium,
             ),
+            if (companionHere)
+              Row(
+                key: Key('place_companion_${place.id}'),
+                children: [
+                  Icon(Icons.person_add_alt_1_outlined,
+                      size: 14, color: theme.colorScheme.tertiary),
+                  const SizedBox(width: 4),
+                  Text(tr(ref, 'place_companion_label'),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: theme.colorScheme.tertiary)),
+                ],
+              ),
           ],
         ),
-        isThreeLine: blurb != null,
+        isThreeLine: blurb != null || companionHere,
         trailing: FilledButton.tonal(
           key: Key('go_${place.id}'),
           onPressed: busy ? null : () => travelToPlace(context, ref, place),

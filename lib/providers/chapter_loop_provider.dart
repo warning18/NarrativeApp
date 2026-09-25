@@ -99,3 +99,27 @@ final knownPlacesProvider = Provider<List<StoryNode>>((ref) {
     flags: ref.watch(playerSessionProvider.select((s) => s.flags)),
   );
 });
+
+/// The known places with a companion still to meet there (see
+/// [placeCompanionLeads]): place id to the companions' ids. The camp says
+/// so, so a party in a hurry does not walk past them.
+final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
+  final story = ref.watch(storyDataProvider).value;
+  if (story == null) return const {};
+  final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+  final session = ref.watch(playerSessionProvider);
+  final unavailable = [
+    for (final ally in session.recruitedAllies) ally.companionId,
+    ...session.lostAllyIds,
+  ];
+  final leads = <String, List<String>>{};
+  for (final place in ref.watch(knownPlacesProvider)) {
+    final allies = placeCompanionLeads(place, story, quests,
+        flags: session.flags,
+        alignmentScore: session.alignmentScore,
+        charisma: session.charisma,
+        unavailableAllyIds: unavailable);
+    if (allies.isNotEmpty) leads[place.id] = allies;
+  }
+  return leads;
+});

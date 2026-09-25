@@ -1,4 +1,4 @@
-# Chapter flow roadmap — status after v1.147
+# Chapter flow roadmap — status after v1.148
 
 The owner's intended structure (restated for v1.147):
 
@@ -33,14 +33,17 @@ bosses) and its main quest, which waits until enough has been explored.
 | 1.112.0+140 | Late game | Chapters 4 and 5 hubs and zones, chapter 6 and its endings. |
 | 1.140–1.146 | Camp | The camp as the story's base, camp works, travel back from towns, the skill economy and a difficulty retune. |
 | 1.147.0+176 | Open chapters | Chapters 3–6 as loops around the camp, found places, villages, a chapter 6 loop, six banner pieces, the time-rewind epilogue. |
+| 1.148.0+177 | Companion hint | The camp names places with a companion to meet; each chapter asks for 8 things done. |
 
 ## How the chapters flow now
 
 Each open chapter is a row of `assets/gamedata/chapters.json`: the camp
-scene the story stands at, the activity goal (6), the place the main
+scene the story stands at, the activity goal (8), the place the main
 quest needs visited first, and the main quest's title and hint. The
-camp's Chapter card shows "Explored: N of 6", the main quest, and what it
-still needs.
+camp's Chapter card shows "Explored: N of 8", the main quest, what it
+still needs, and word of any companion still to meet in a known place
+(`placeCompanionLeads`: an open scene that starts a companion's quest,
+unless the party's alignment or story rules them out).
 
 - **Activities**: each thing done in one of the chapter's places (a
   `hub_<place>_…` marker) and each of the chapter's expeditions cleared
@@ -106,38 +109,32 @@ so v1.147 adds two rules:
 ## Simulation
 
 `scratchpad` holds a Python re-implementation of the playthrough. v1.147
-adds `sim_v147.py`: the spine above, the camp loop (rest, expeditions of
+added `sim_v147.py`: the spine above, the camp loop (rest, expeditions of
 the chapters reached, places found, trips to them and back), the main-quest
 gate, known waters, boarding crews, and bosses kept out of random pools.
 Two player styles, 200 seeded runs each:
 
 - **Thorough**: visits every place of the chapter once (4 things done per
   trip) and goes for the companions on offer.
-- **Rusher**: the minimum: the goal and the needed place only.
+- **Rusher**: the minimum: the goal and the needed place only. With the
+  camp's hint (v1.148) a rusher also takes a companion on offer in a
+  place it visits.
 
-| Measure | Thorough | Rusher | v1.146 |
-|---|---|---|---|
-| True endings | 200/200 | 199/200 | 200/200 |
-| Fights lost a run | 1.25 (median 1) | 4.24 (median 1) | 1.46 (median 1) |
-| Runs without a loss | 84 | 92 | 92 |
-| Companions recruited | 4.0 | 3.3 (5 runs alone) | 4.2 |
-| Final level | 23.0 | 22.2 | 23.2 |
-| Level at the main quest (ch 3/4/5/6) | 9.1 · 12.4 · 16.6 · 20.7 | 8.9 · 12.3 · 16.2 · 19.8 | — |
-| Voyages / raiders a run | 20.5 / 10.8 | 17.9 / 9.9 | 10.8 / 11.2 |
-| First try: Archon · White Admiral · Sovereign | 98% · 90.5% · 94.5% | 95% · 87% · 89% | 87.5% · — · 89.5% |
-
-A rusher who misses every companion carries the late bosses alone: those
-five runs account for most of the rusher's losses (one lost the Sovereign
-hundreds of times on Resolve, one never cleared Beyond the Tear).
+| Measure | Thorough (v1.148) | Rusher (v1.148) | Rusher, goal 8 without the hint | Rusher (v1.147: goal 6, no hint) | v1.146 |
+|---|---|---|---|---|---|
+| True endings | 200/200 | 200/200 | 200/200 | 199/200 | 200/200 |
+| Fights lost a run | 1.30 (median 1) | 1.10 (median 1) | 1.69 | 4.24 | 1.46 |
+| Companions recruited | 4.0 | 4.1 (none alone) | 3.6 (1 alone) | 3.3 (5 alone) | 4.2 |
+| Final level | 23.0 | 22.4 | 22.6 | 22.2 | 23.2 |
+| Level at the main quest (ch 3/4/5/6) | 9.1 · 12.4 · 16.5 · 20.7 | 9.1 · 12.4 · 16.6 · 20.1 | — | 8.9 · 12.3 · 16.2 · 19.8 | — |
+| Voyages / raiders a run | 20.5 / 10.9 | 18.4 / 10.0 | — | 17.9 / 9.9 | 10.8 / 11.2 |
+| First try: Archon · White Admiral · Sovereign | 98% · 92% · 94.5% | 98% · 93.5% · 96% | — | 95% · 87% · 89% | 87.5% · — · 89.5% |
 
 ## Open points
 
-- **Companions are easy to miss for a rusher.** The recruit scenes sit in
-  the towns (3005, 5010, 6010) among a dozen other things; a camp hint
-  ("someone in the Ashen Quarter is looking for work") would help.
-- **The activity goal is met early.** Expeditions alone give 2 of the 6 in
-  chapter 3; a thorough player reaches 10. A goal of 8 would ask for one
-  more trip.
+- **The activity goal and thorough players.** A thorough player reaches
+  10–12 things done before setting out; the goal of 8 mostly shapes the
+  rusher's pace (two trips a chapter).
 - **Midpoint discoveries are rare in the simulation**, since parties clear
   every expedition. They matter for a player who retreats halfway.
 - **Ship battles are deterministic** (no variance, no enemy specials).

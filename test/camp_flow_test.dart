@@ -186,7 +186,7 @@ void main() {
     expect(_tab('Story'), findsNothing);
     expect(find.text('Back at the fire'), findsOneWidget);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
-    expect(find.text('Explored: 0 of 6'), findsOneWidget);
+    expect(find.text('Explored: 0 of 8'), findsOneWidget);
     expect(find.text('Visit The Ashen Quarter first.'), findsOneWidget);
     expect(find.textContaining('No place found yet'), findsOneWidget);
     FilledButton mainQuest() => tester.widget<FilledButton>(
@@ -230,6 +230,13 @@ void main() {
     await _settle(tester);
     expect(find.byKey(const Key('place_3005')), findsOneWidget);
     expect(find.textContaining('No place found yet'), findsNothing);
+    // Grosh is in the Quarter: the camp says someone there might join.
+    expect(find.byKey(const Key('companion_hint_3005')), findsOneWidget);
+    expect(
+        find.text('Word at the fire: someone in The Ashen Quarter '
+            'might join you.'),
+        findsOneWidget);
+    expect(find.byKey(const Key('place_companion_3005')), findsOneWidget);
 
     // Going there: the road may hold something first; the story plays it,
     // then arrives.
@@ -267,7 +274,7 @@ void main() {
     expect(_tab('Story'), findsNothing);
     expect(find.text('Visit The Ashen Quarter first.'), findsNothing);
 
-    // Explored enough (the shore's two expeditions, four things done in
+    // Explored enough (the shore's two expeditions, six things done in
     // the town), the main quest opens.
     await tester.runAsync(() => notifier.loadSession(container
             .read(playerSessionProvider)
@@ -280,9 +287,11 @@ void main() {
           'hub_3005_wisp',
           'hub_3005_acolyte',
           'hub_3005_relic',
+          'hub_3005_golem',
+          'hub_3005_stalker',
         ])));
     await _settle(tester);
-    expect(find.text('Explored: 6 of 6'), findsOneWidget);
+    expect(find.text('Explored: 8 of 8'), findsOneWidget);
     expect(mainQuest().onPressed, isNotNull);
     await tester.ensureVisible(find.byKey(const Key('main_quest_3002')));
     await tester.tap(find.byKey(const Key('main_quest_3002')));

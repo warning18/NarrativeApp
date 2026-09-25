@@ -77,6 +77,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Nouveau lieu : {place}. Vous pouvez désormais vous y rendre.',
   },
+  'companion_hint': {
+    AppLanguage.en: 'Word at the fire: someone in {place} might join you.',
+    AppLanguage.fr:
+        'Au coin du feu, on parle de quelqu’un qui pourrait vous rejoindre : {place}.',
+  },
+  'place_companion_label': {
+    AppLanguage.en: 'someone to meet',
+    AppLanguage.fr: 'quelqu’un à rencontrer',
+  },
   'chapter_progress': {
     AppLanguage.en: 'Explored: {done} of {goal}',
     AppLanguage.fr: 'Exploré : {done} sur {goal}',

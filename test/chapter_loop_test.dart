@@ -32,6 +32,10 @@ void main() {
       loops.firstWhere((l) => l.chapter == chapter);
 
   test('five loops, in order, each at a camp with a main quest', () {
+    // Eight things done in a chapter before its main quest; the Ending has
+    // no goal.
+    expect(loops.where((l) => l.chapter < 7).map((l) => l.activityGoal),
+        everyElement(8));
     expect(loops.map((l) => l.chapter), [3, 4, 5, 6, 7]);
     for (final l in loops) {
       final camp = story.nodeFor(l.campNodeId);
@@ -152,11 +156,14 @@ void main() {
       placeFoundFlag('3005'),
       'hub_3005_oath',
       'hub_3005_wisp',
+      'hub_3005_acolyte',
+      'hub_3005_relic',
       'hub_3100_kiln',
       'hub_3100_bread',
     ];
     final done = count(flags, const ['z_cinder_row', 'z_scaffold_yards']);
-    expect(done, 6);
+    expect(done, 8);
+    expect(ch3.activityGoal, 8);
     bool open(Iterable<String> visited) => mainQuestOpen(
         loop: ch3,
         story: story,
@@ -171,10 +178,46 @@ void main() {
         mainQuestOpen(
             loop: ch3,
             story: story,
-            activityCount: 5,
+            activityCount: 7,
             flags: flags,
             visitedNodeIds: const ['3005']),
         isFalse);
+  });
+
+  group('companions to meet', () {
+    final quests = _loadJson('assets/gamedata/quests.json');
+    List<String> leads(
+      String placeId, {
+      List<String> flags = const [],
+      int alignment = 0,
+      List<String> met = const [],
+    }) =>
+        placeCompanionLeads(story.nodeFor(placeId)!, story, quests,
+            flags: flags,
+            alignmentScore: alignment,
+            charisma: 0,
+            unavailableAllyIds: met);
+
+    test('a town says who can still join, a village nobody', () {
+      // Grosh asks for gold, which comes: he is on offer. Maren waits for
+      // Lysa to have lived.
+      expect(leads('3005'), ['grosh']);
+      expect(leads('3005', flags: const ['lysa_survived']),
+          containsAll(['maren', 'grosh']));
+      expect(leads('3100'), isEmpty);
+    });
+
+    test('once met, or once the scene is done, no more word', () {
+      expect(leads('3005', met: const ['grosh']), isEmpty);
+      expect(leads('3005', flags: const ['hub_3005_grosh']), isEmpty);
+    });
+
+    test('a companion the party\'s alignment rules out is not hinted', () {
+      expect(leads('5010'), isEmpty);
+      expect(leads('5010', alignment: 25), ['tobin']);
+      expect(leads('6010'), isEmpty);
+      expect(leads('6010', alignment: -25), ['malrik']);
+    });
   });
 
   test('a first trip to the Quarter goes through its gate', () {
