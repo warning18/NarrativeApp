@@ -49,7 +49,7 @@ enum AppPalette {
   List<Color> get swatch {
     switch (this) {
       case AppPalette.stitchedInk:
-        return const [Color(0xFF141217), Color(0xFFF2C14E), Color(0xFFA987EA)];
+        return const [Color(0xFFF2C14E), Color(0xFFA987EA), Color(0xFF4FB0B0)];
       case AppPalette.deepPurple:
         return const [Color(0xFF6750A4), Color(0xFF9A82DB), Color(0xFFEADDFF)];
       case AppPalette.weatheredEarth:

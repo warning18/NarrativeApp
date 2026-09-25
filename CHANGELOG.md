@@ -8,6 +8,84 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.151.0+180]
+
+Everything in one place: the design branch's last three updates (the
+chart map, colour fixes, review fixes) join the open chapters and the
+skill tree.
+
+### Fixed
+- **No pop-up when a stat point is spent.** Level Up no longer shows
+  "Base Armor increased!" after each +1 Point; the row's value goes up.
+- **The points on the character sheet say which kind they are.** Stat
+  points open Level Up and skill points open the skill tree ("2 Skill
+  Points"), instead of one sum that led to Level Up showing 0.
+
+### Changed
+- **The pixel map is gone for good**; the world map is the chart. The
+  open chapters' places (Emberwick, Wrack's End, Rimewell, the White
+  Anchorage, Greyhithe, the White Fleet's grave) have a spot on each of
+  the chart's three geographies; the White Fleet's grave lies at sea.
+- Die faces and skills keep their colour per effect; the skills list's
+  cards take the design's square corners.
+
+### From the design branch 1.142.0+171: review fixes
+
+**Fixed**
+- **Full review pass on the Stitched Ink branch.** The traveller on the
+  chart no longer has a place name drawn over it. Houses are drawn only
+  for places already reached, and switching the map's geography mid-walk
+  stops the walk instead of letting it jump. The chapter title in the
+  Story header shrinks to fit at large text sizes. A locked choice's
+  cost tags fade along with the card. The map's style and geography
+  toggles are announced by name to screen readers. Stale "pixel map"
+  wording is gone from the map's description and comments.
+
+### From the design branch 1.141.0+170: colours, and no more pixel map
+
+**Fixed**
+- **Buttons look like buttons again.** Every raised button (Unlock on
+  the Skills screen, Roll Dice in a fight, +1 Point on Level Up, and the
+  rest) had taken the story choices' card look; only story choices keep
+  it now. Buttons are back to their standard sizes.
+- **Skills list.** An unlocked skill's tier and Upgrade button fit their
+  row again instead of overflowing it.
+- **Skills on the dice.** On the Dice Loadout screen a face set to a skill
+  is marked in the techniques' violet again instead of gold, and each
+  skill's element icon (fire, wind, water, void...) takes its element's
+  own colour.
+
+**Removed**
+- **The pixel map.** Its generated terrain, fog, sprites and ground looks
+  are gone; the chart draws the map. Places keep their story data only;
+  where they sit is each geography's.
+
+### From the design branch 1.140.0+169: the chart map
+
+The world map is redrawn as a chart in the Stitched Ink design, on the
+geography of your choice.
+
+**Added**
+- **Three geographies.** Under the map: *Continent* (one land round an
+  inland sea, Alster on its west arm, the Ashen Coast on the east, the
+  Hollow Cape to the north), *Archipelago* (Alster an island, the later
+  chapters on isles across open water) and *Delta* (Alster upstream on a
+  great river whose mouths fan into the Grey Bay, the later chapters on
+  the far bank). Chosen under the map and remembered.
+
+**Changed**
+- **The map is a chart.** Sea and land with smooth coasts, rivers, small
+  roofs about each place, the road walked in moving gold dashes, a dotted
+  way on to the next place, the places reached in their chapter's
+  colour, the tear's places in violet, and fog over what the story has
+  not reached. Regions are named once reached and marked uncharted
+  before.
+- **Names find their own place.** Each place's name goes right, left,
+  above or below its mark, wherever it stays inside the chart and clear
+  of the others; region names only show where they fit.
+- The three looks (Night, Parchment, Shroud) colour the chart; the
+  traveller and the pin still walk the road.
+
 ## [1.150.0+179]
 
 Brings in main's redesign (PR #98, numbered 1.138.0+167 and 1.139.0+168

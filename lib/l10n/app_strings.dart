@@ -374,8 +374,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'title_play': {AppLanguage.en: 'Play', AppLanguage.fr: 'Jouer'},
   'world_map_title': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'world_map_semantics': {
-    AppLanguage.en: 'Pixel map of the places the story has reached',
-    AppLanguage.fr: 'Carte en pixels des lieux atteints par l’histoire',
+    AppLanguage.en: 'Chart of the places the story has reached',
+    AppLanguage.fr: 'Carte des lieux atteints par l’histoire',
   },
   'world_map_hint': {
     AppLanguage.en:
@@ -383,11 +383,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Les lieux apparaissent à mesure que l’histoire les atteint. Touchez-en un pour en savoir plus. Pincez, touchez deux fois ou utilisez + et − pour zoomer.',
   },
+  'world_map_shape': {
+    AppLanguage.en: 'Map geography',
+    AppLanguage.fr: 'Géographie de la carte',
+  },
   'world_map_look': {
     AppLanguage.en: 'Map style',
     AppLanguage.fr: 'Style de carte',
   },
   'world_map_look_night': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'world_map_shape_continental': {
+    AppLanguage.en: 'Continent',
+    AppLanguage.fr: 'Continent'
+  },
+  'world_map_shape_archipelago': {
+    AppLanguage.en: 'Archipelago',
+    AppLanguage.fr: 'Archipel'
+  },
+  'world_map_shape_delta': {AppLanguage.en: 'Delta', AppLanguage.fr: 'Delta'},
   'world_map_look_parchment': {
     AppLanguage.en: 'Parchment',
     AppLanguage.fr: 'Parchemin',
@@ -2319,10 +2332,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'distribute_later_button': {
     AppLanguage.en: 'Decide later',
     AppLanguage.fr: 'Décider plus tard',
-  },
-  'increased_suffix': {
-    AppLanguage.en: 'increased!',
-    AppLanguage.fr: 'augmenté(e) !'
   },
   'none_label': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
   'restriction_label': {

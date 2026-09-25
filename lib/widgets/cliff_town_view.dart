@@ -60,53 +60,58 @@ class CliffTownView extends StatelessWidget {
           preview!.height * townRowHeight * scale,
         );
       }
-      return SingleChildScrollView(
+      // A visible bar: the town scrolls inside the camp page.
+      return Scrollbar(
         controller: scrollController,
-        reverse: true,
-        child: SizedBox(
-          width: constraints.maxWidth,
-          height: height,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _CliffTownPainter(
-                    town: town,
-                    unitsHigh: unitsHigh,
-                    preview: spot == null
-                        ? null
-                        : TownPiece('', spot.$1, spot.$2, preview!),
-                    highlightIndex: highlightIndex,
+        thumbVisibility: scrollController != null,
+        child: SingleChildScrollView(
+          controller: scrollController,
+          reverse: true,
+          child: SizedBox(
+            width: constraints.maxWidth,
+            height: height,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: _CliffTownPainter(
+                      town: town,
+                      unitsHigh: unitsHigh,
+                      preview: spot == null
+                          ? null
+                          : TownPiece('', spot.$1, spot.$2, preview!),
+                      highlightIndex: highlightIndex,
+                    ),
                   ),
                 ),
-              ),
-              if (previewRect != null)
-                Positioned.fromRect(
-                  rect: previewRect,
-                  child: IgnorePointer(
-                    child: Center(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: Text(
-                            previewLabel.toUpperCase(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: 'PixelifySans',
-                              fontSize: 10,
-                              height: 1.1,
-                              color: Color(0xFFF2C14E),
+                if (previewRect != null)
+                  Positioned.fromRect(
+                    rect: previewRect,
+                    child: IgnorePointer(
+                      child: Center(
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: Text(
+                              previewLabel.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'PixelifySans',
+                                fontSize: 10,
+                                height: 1.1,
+                                color: Color(0xFFF2C14E),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              if (harborAction != null)
-                Positioned(left: 8, bottom: 8, child: harborAction!),
-            ],
+                if (harborAction != null)
+                  Positioned(left: 8, bottom: 8, child: harborAction!),
+              ],
+            ),
           ),
         ),
       );

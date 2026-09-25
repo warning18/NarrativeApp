@@ -756,12 +756,12 @@ class _SkillList extends ConsumerWidget {
                   maxed
                       ? const Icon(Icons.check_circle, color: Colors.green)
                       : OutlinedButton(
-                          // Compact, so the tier line and the button fit
-                          // the list row's height.
+                          // Compact, so tier and button fit the row.
                           style: OutlinedButton.styleFrom(
                             visualDensity: VisualDensity.compact,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            minimumSize: const Size(0, 32),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
                           ),
                           onPressed: essence >= upgradeCost
                               ? () => upgradeCallback(id)
@@ -810,8 +810,11 @@ class _SkillList extends ConsumerWidget {
                 ? Theme.of(context).colorScheme.tertiaryContainer
                 : null,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: kind.color.withValues(alpha: 0.55)),
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(
+                  color: firstCompareId == id
+                      ? Theme.of(context).colorScheme.tertiary
+                      : kind.color.withValues(alpha: 0.55)),
             ),
             child: ListTile(
               leading: SkillPixelIcon(id),

@@ -734,6 +734,16 @@ class _ItemTile extends StatelessWidget {
       color: selectedForCompare
           ? colorScheme.tertiaryContainer
           : (isEquipped ? colorScheme.primaryContainer : null),
+      // A border too: the tint alone is faint on some palettes.
+      shape: selectedForCompare || isEquipped
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+              side: BorderSide(
+                  color: selectedForCompare
+                      ? colorScheme.tertiary
+                      : colorScheme.primary),
+            )
+          : null,
       child: ListTile(
         leading: ItemPixelIcon(itemId, itemType),
         title: Text(itemName),

@@ -245,19 +245,18 @@ class GoldBadge extends ConsumerWidget {
             key: const ValueKey('gold_badge'),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
-              color: theme.colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(16),
+              color: InkColors.of(context).gold.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(4),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.paid,
-                    size: 18, color: theme.colorScheme.onSecondaryContainer),
+                Icon(Icons.paid, size: 18, color: InkColors.of(context).gold),
                 const SizedBox(width: 4),
                 Text(
                   '$gold',
                   style: theme.textTheme.titleSmall?.copyWith(
-                    color: theme.colorScheme.onSecondaryContainer,
+                    color: InkColors.of(context).gold,
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),

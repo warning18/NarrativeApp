@@ -745,7 +745,9 @@ extension _FightCards on _FightScreenState {
   /// The color that stands for [member] everywhere on the battle screen:
   /// their die tile, their card, their target dot on an enemy.
   Color _accentFor(_PartyMember member) {
-    if (member.isPlayer) return Theme.of(context).colorScheme.primary;
+    // The player's own colour, clear of the gold that marks an elite foe
+    // and a victory.
+    if (member.isPlayer) return Theme.of(context).colorScheme.secondary;
     final index = _party.indexWhere((m) => m.id == member.id) - 1;
     return _allyAccents[max(0, index) % _allyAccents.length];
   }

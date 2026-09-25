@@ -657,12 +657,12 @@ class _FaceSlot extends StatelessWidget {
                   t('channeled_face_badge').replaceAll('{face}',
                       t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
                   style: textTheme.labelSmall
-                      ?.copyWith(color: colorScheme.primary),
+                      ?.copyWith(color: colorScheme.tertiary),
                 )
               else if (assignedSkillId != null)
                 Text(t('custom_label'),
                     style: textTheme.labelSmall
-                        ?.copyWith(color: colorScheme.primary)),
+                        ?.copyWith(color: colorScheme.tertiary)),
               if (!locked && restrictionElement != null)
                 Text('$restrictionElement ${t('only_suffix')}',
                     style: textTheme.labelSmall),
