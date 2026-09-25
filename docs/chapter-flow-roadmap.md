@@ -1,4 +1,4 @@
-# Chapter flow roadmap — status after v1.148
+# Chapter flow roadmap — status after v1.149
 
 The owner's intended structure (restated for v1.147):
 
@@ -34,16 +34,22 @@ bosses) and its main quest, which waits until enough has been explored.
 | 1.140–1.146 | Camp | The camp as the story's base, camp works, travel back from towns, the skill economy and a difficulty retune. |
 | 1.147.0+176 | Open chapters | Chapters 3–6 as loops around the camp, found places, villages, a chapter 6 loop, six banner pieces, the time-rewind epilogue. |
 | 1.148.0+177 | Companion hint | The camp names places with a companion to meet; each chapter asks for 8 things done. |
+| 1.149.0+178 | Camp and quests | No camp before it is set up; every place leads back to the camp; the main quest waits for the chapter's quests. |
 
 ## How the chapters flow now
 
 Each open chapter is a row of `assets/gamedata/chapters.json`: the camp
-scene the story stands at, the activity goal (8), the place the main
-quest needs visited first, and the main quest's title and hint. The
-camp's Chapter card shows "Explored: N of 8", the main quest, what it
-still needs, and word of any companion still to meet in a known place
-(`placeCompanionLeads`: an open scene that starts a companion's quest,
-unless the party's alignment or story rules them out).
+scene the story stands at, the activity goal (8), the quest goal, the
+place the main quest needs visited first, and the main quest's title and
+hint. The camp's Chapter card shows "Explored: N of 8", "Quests
+completed: N of 2", the main quest, what it still needs, and word of any
+companion still to meet in a known place (`placeCompanionLeads`: an open
+scene that starts a companion's quest, unless the party's alignment or
+story rules them out).
+
+- **The camp** exists once chapter 3's landing scene sets it up ("Take
+  stock of the shore" sets `camp_founded`). Before that the Camp tab is
+  closed; setting it up opens the camp screen.
 
 - **Activities**: each thing done in one of the chapter's places (a
   `hub_<place>_…` marker) and each of the chapter's expeditions cleared
@@ -51,13 +57,20 @@ unless the party's alignment or story rules them out).
 - **Places** are found by expeditions (zones.json `discoversPlaceIds`):
   the first at the expedition's midpoint, all of them on clearing it. A
   place without `mustDiscover` is known from the start of its chapter.
+- **Quests** (v1.149): the chapter's own quests turned in (quests.json
+  `chapter`), counted by `chapterQuestCount`. The goal is 2 in chapter 3
+  (the Ashen Quarter will not show a stranger the way into the Spire),
+  then 1 in chapters 4, 5 and 6. The quests a party can finish before
+  each main quest are listed in chapter_loop_test.dart.
 - **Travel**: a place on the camp's shore is a walk (the road may hold a
   detour or a raid); a place with a landing of its own is a voyage there
-  and back. From one place the party can travel on to any other it knows,
-  or back to the camp.
+  and back. From any place of an open chapter (town, village or site)
+  the party can travel on to any other it knows, or back to the camp.
 - **The main quest** is a choice on the camp scene (`mainQuest`). Its
   `travelPlaceId` is where the trip goes first; a `launchZoneId` runs the
-  main zone.
+  main zone. It opens once the activity goal, the quest goal and the
+  needed place are all met, on the camp's card and in the story view
+  alike.
 
 | Chapter | Camp scene | Places (found by) | Expeditions (tier · rec. level · boss) | Main quest → banner piece |
 |---|---|---|---|---|
@@ -116,9 +129,15 @@ Two player styles, 200 seeded runs each:
 
 - **Thorough**: visits every place of the chapter once (4 things done per
   trip) and goes for the companions on offer.
-- **Rusher**: the minimum: the goal and the needed place only. With the
+- **Rusher**: the minimum: the goals and the needed place only. With the
   camp's hint (v1.148) a rusher also takes a companion on offer in a
   place it visits.
+
+With the quest goal (v1.149) both styles still open every gate without
+being forced through: they have 5.9 (thorough) and 5.8 (rusher) of chapter
+3's quests done at its gate, and 1.5 to 1.9 in chapters 4 to 6. A control
+run without the goal gives the same numbers, so the goal only stops a
+party that skips every quest.
 
 | Measure | Thorough (v1.148) | Rusher (v1.148) | Rusher, goal 8 without the hint | Rusher (v1.147: goal 6, no hint) | v1.146 |
 |---|---|---|---|---|---|

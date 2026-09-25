@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/camp_state.dart';
+import 'package:narrative_data_app/data/settlements.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -66,13 +67,17 @@ void main() {
     });
 
     test('the camp, the ship sailed out, the story away, or no camp yet', () {
-      CampPresence presence(int chapter, bool atCamp, String port) =>
+      CampPresence presence(int chapter, bool atCamp, String port,
+              {bool founded = true}) =>
           campPresenceFor(
               chapter: chapter,
               atCampScene: atCamp,
+              campFounded: founded,
               ports: ports,
               savedPortId: port);
       expect(presence(2, false, ''), CampPresence.notYet);
+      // Landed on the shore of chapter 3, the camp is not set up yet.
+      expect(presence(3, false, '', founded: false), CampPresence.notYet);
       expect(presence(3, false, ''), CampPresence.away);
       expect(presence(3, true, ''), CampPresence.atCamp);
       expect(presence(3, true, 'port_ashen_landing'), CampPresence.atCamp);
@@ -171,7 +176,6 @@ void main() {
           'enemyKillCounts': <String, dynamic>{},
           // The Eel is out at the wharf when the story comes home.
           'currentPortId': 'port_smugglers_wharf',
-          'flags': ['camp_founded'],
         })));
     play.jumpTo('3001');
     await _settle(tester);
@@ -179,11 +183,36 @@ void main() {
     await _settle(tester);
     expect(_tab('Story'), findsOneWidget);
 
-    // Coming into the camp: the Story tab closes, the camp opens with its
-    // scene and its chapter, and the Eel is back in the cove.
-    play.jumpTo('3001_camp');
+    // Landed on the shore, the camp is not set up yet: its tab says what
+    // it will be, and there is no way "back" to it.
+    await tester.tap(_tab('Camp'));
     await _settle(tester);
+    expect(find.textContaining('Your camp is set up'), findsOneWidget);
+    expect(find.byKey(const Key('camp_return')), findsNothing);
+    expect(find.byKey(const Key('chapter_card')), findsNothing);
+    await tester.tap(_tab('Story'));
+    await _settle(tester);
+    await _waitOutNotices(tester);
+
+    // Setting up camp opens it: the Story tab closes, the camp opens with
+    // its scene and its chapter, and the Eel is back in the cove.
+    final setUp = find.text('Take stock of the shore', skipOffstage: false);
+    await tester.ensureVisible(setUp);
+    await tester.tap(setUp);
+    await _settle(tester);
+    if (container.read(storyPlayProvider).isInExcursion) {
+      play.jumpTo('3001_camp');
+      await _settle(tester);
+    }
+    expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
+    expect(
+        container.read(playerSessionProvider).flags, contains(campFoundedFlag));
     expect(_tab('Story'), findsNothing);
+    // Founding the camp gives the chapter's quest.
+    expect(find.text("The High Warden's Fall"), findsOneWidget);
+    await tester.tap(find.text('Accept'));
+    await _settle(tester);
+    await _waitOutNotices(tester);
     expect(find.text('Back at the fire'), findsOneWidget);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
     expect(find.text('Explored: 0 of 8'), findsOneWidget);
@@ -274,6 +303,38 @@ void main() {
     expect(_tab('Story'), findsNothing);
     expect(find.text('Visit The Ashen Quarter first.'), findsNothing);
 
+    // A village is a place like the town: a walk back to the camp, and on
+    // to the Quarter the party knows.
+    await tester.runAsync(() => notifier
+            .loadSession(container.read(playerSessionProvider).copyWith(flags: [
+          ...container.read(playerSessionProvider).flags,
+          placeFoundFlag('3100'),
+        ])));
+    await _settle(tester);
+    await tester.ensureVisible(find.byKey(const Key('go_3100')));
+    await tester.tap(find.byKey(const Key('go_3100')));
+    await _settle(tester);
+    if (container.read(storyPlayProvider).isInExcursion) {
+      play.jumpTo('3100');
+      await _settle(tester);
+    }
+    expect(container.read(storyPlayProvider).currentNodeId, '3100');
+    await _waitOutNotices(tester);
+    // The village's first visit says what a place is, like the town's.
+    expect(find.text('Go in', skipOffstage: false), findsOneWidget);
+    await tester.tap(find.text('Go in', skipOffstage: false));
+    await _settle(tester);
+    expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
+    expect(find.byKey(const Key('place_travel_on')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('town_back_to_camp')));
+    await _settle(tester);
+    if (container.read(storyPlayProvider).isInExcursion) {
+      play.jumpTo('3001_camp');
+      await _settle(tester);
+    }
+    expect(container.read(storyPlayProvider).currentNodeId, '3001_camp');
+    await _waitOutNotices(tester);
+
     // Explored enough (the shore's two expeditions, six things done in
     // the town), the main quest opens.
     await tester.runAsync(() => notifier.loadSession(container
@@ -292,6 +353,18 @@ void main() {
         ])));
     await _settle(tester);
     expect(find.text('Explored: 8 of 8'), findsOneWidget);
+    // Nobody in the Quarter shows a stranger the way to the Spire: the
+    // party has to see some of the chapter's quests through first.
+    expect(find.text('Quests completed: 0 of 2'), findsOneWidget);
+    expect(mainQuest().onPressed, isNull);
+    await tester.runAsync(() => notifier.loadSession(container
+            .read(playerSessionProvider)
+            .copyWith(completedQuestIds: const [
+          'q_ch3_ashen_oath',
+          'q_ch3_void_relic',
+        ])));
+    await _settle(tester);
+    expect(find.text('Quests completed: 2 of 2'), findsOneWidget);
     expect(mainQuest().onPressed, isNotNull);
     await tester.ensureVisible(find.byKey(const Key('main_quest_3002')));
     await tester.tap(find.byKey(const Key('main_quest_3002')));

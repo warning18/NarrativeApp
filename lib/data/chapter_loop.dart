@@ -23,6 +23,7 @@ class ChapterLoop {
     required this.title,
     required this.campNodeId,
     required this.activityGoal,
+    this.questGoal = 0,
     this.mainQuestNeedsPlaceIds = const [],
     this.mainQuestTitle = '',
     this.mainQuestHint = '',
@@ -42,7 +43,12 @@ class ChapterLoop {
   /// before the main quest opens.
   final int activityGoal;
 
-  /// Places the main quest also needs found first.
+  /// Quests of this chapter (quests.json `chapter`) turned in before the
+  /// main quest opens: the people of the chapter's places have to trust
+  /// the party before anyone shows it the way in.
+  final int questGoal;
+
+  /// Places the main quest also needs visited first.
   final List<String> mainQuestNeedsPlaceIds;
   final String mainQuestTitle;
   final String mainQuestHint;
@@ -58,6 +64,7 @@ class ChapterLoop {
       title: raw['title']?.toString() ?? '',
       campNodeId: camp,
       activityGoal: max(0, (raw['activityGoal'] as num?)?.toInt() ?? 0),
+      questGoal: max(0, (raw['questGoal'] as num?)?.toInt() ?? 0),
       mainQuestNeedsPlaceIds: (raw['mainQuestNeedsPlaceIds'] as List?)
               ?.map((e) => e.toString())
               .where((e) => e.isNotEmpty)
@@ -237,16 +244,34 @@ List<String> missingMainQuestPlaces(
   ];
 }
 
-/// Whether [loop]'s main quest is open: its activity goal met and its
-/// places visited.
+/// How many of [chapter]'s quests (quests.json `chapter`) are turned in.
+int chapterQuestCount({
+  required int chapter,
+  required Map<String, dynamic> quests,
+  required Iterable<String> completedQuestIds,
+}) {
+  var count = 0;
+  for (final id in completedQuestIds.toSet()) {
+    final quest = quests[id];
+    if (quest is Map && (quest['chapter'] as num?)?.toInt() == chapter) {
+      count++;
+    }
+  }
+  return count;
+}
+
+/// Whether [loop]'s main quest is open: its activity goal met, its quest
+/// goal met and its places visited.
 bool mainQuestOpen({
   required ChapterLoop loop,
   required StoryData story,
   required int activityCount,
+  required int questCount,
   required Iterable<String> flags,
   required Iterable<String> visitedNodeIds,
 }) =>
     activityCount >= loop.activityGoal &&
+    questCount >= loop.questGoal &&
     missingMainQuestPlaces(loop, story, flags, visitedNodeIds: visitedNodeIds)
         .isEmpty;
 

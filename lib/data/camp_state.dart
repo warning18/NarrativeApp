@@ -13,7 +13,7 @@ const String harborHouseId = 'harbor';
 /// Where the party stands relative to its camp, which decides what the
 /// in-game Camp tab shows.
 enum CampPresence {
-  /// Before chapter 3: there is no camp yet.
+  /// Before the camp is founded (chapter 3's landfall): no camp yet.
   notYet,
 
   /// The story is at the camp and the Rusty Eel is moored in its cove: the
@@ -72,9 +72,14 @@ CampPresence campPresenceFor({
   required bool atCampScene,
   required Map<String, dynamic> ports,
   required String savedPortId,
+  // The camp stands (campFoundedFlag): landfall in chapter 3 comes a scene
+  // before it does, and until then there is no camp to go back to.
+  required bool campFounded,
 }) {
   if (!atCampScene) {
-    return chapter < campChapter ? CampPresence.notYet : CampPresence.away;
+    return chapter < campChapter || !campFounded
+        ? CampPresence.notYet
+        : CampPresence.away;
   }
   final home = homePortId(ports);
   final moored = currentPortIdFor(ports, savedPortId);

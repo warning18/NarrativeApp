@@ -814,6 +814,14 @@ bool _isChoiceLocked(
       );
 }
 
+/// Whether [choice] is a camp's main quest still shut (see
+/// [chapterProgressProvider]): the camp's own button waits for the
+/// chapter's goals, and so does the same choice anywhere under the story.
+bool _mainQuestShut(WidgetRef ref, StoryChoice choice, bool isExcursion) =>
+    choice.mainQuest &&
+    !isExcursion &&
+    !(ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true);
+
 /// A node with this many choices or fewer keeps the plain flat list it's
 /// always had — most nodes are a handful of genuinely distinct narrative
 /// branches, and boxing those into sections would just add ceremony. Above
@@ -823,7 +831,16 @@ bool _isChoiceLocked(
 /// own main branches.
 const int _hubChoiceThreshold = 5;
 
-bool _isHubNode(StoryNode node) => node.choices.length > _hubChoiceThreshold;
+bool _isHubNode(StoryNode node) =>
+    node.choices.length > _hubChoiceThreshold || _isLoopPlace(node);
+
+/// A place of the open chapters (a town, a village, a site): always laid
+/// out as a place, with its way back to the camp and on to the others,
+/// however few things it has to do.
+bool _isLoopPlace(StoryNode node) {
+  final settlement = node.settlement;
+  return settlement != null && !settlement.isCamp && settlement.chapter != null;
+}
 
 /// Which "village" section a hub node's choice belongs in, derived from
 /// fields the choice already carries — no new JSON authoring needed. A
@@ -1728,8 +1745,14 @@ class _HubChoiceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locked = _isChoiceLocked(choice, story, session, isExcursion);
-    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
+    final locked =
+        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final lockedLabel = mainQuestShut
+        ? tr(ref, 'main_quest_shut_lock')
+        : locked
+            ? choice.lockedTextFor(french)
+            : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);
@@ -1924,9 +1947,15 @@ class _ChoiceButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locked = _isChoiceLocked(choice, story, session, isExcursion);
+    final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
+    final locked =
+        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
 
-    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final lockedLabel = mainQuestShut
+        ? tr(ref, 'main_quest_shut_lock')
+        : locked
+            ? choice.lockedTextFor(french)
+            : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);

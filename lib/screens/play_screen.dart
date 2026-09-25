@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/camp_state.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
@@ -60,7 +59,9 @@ class PlayScreen extends ConsumerWidget {
     final town = townNode?.settlement;
     final townPortId = town != null && !town.isCamp ? town.portId : null;
     final townHubUnlocked = townPortId != null;
-    final campUnlocked = chapterOfNode(playState.currentNodeId) >= campChapter;
+    // The camp (and the boat with it) once it stands: landfall in chapter
+    // 3 comes a scene before it is founded.
+    final campUnlocked = session.flags.contains(campFoundedFlag);
     // In play this page is the Other tab: the character and the camp (with
     // the boat) have tabs of their own.
     final asOtherTab = !isEditMode;

@@ -342,6 +342,23 @@ class _ChapterCard extends ConsumerWidget {
                       : (progress.done / progress.goal).clamp(0.0, 1.0),
                 ),
               ],
+              // The chapter's quests turned in: its people's trust.
+              if (progress.questGoal > 0) ...[
+                const SizedBox(height: 8),
+                Text(
+                  tr(ref, 'chapter_quests_progress')
+                      .replaceAll('{done}',
+                          '${progress.questsDone.clamp(0, progress.questGoal)}')
+                      .replaceAll('{goal}', '${progress.questGoal}'),
+                  key: const Key('chapter_quests_progress'),
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 4),
+                LinearProgressIndicator(
+                  value: (progress.questsDone / progress.questGoal)
+                      .clamp(0.0, 1.0),
+                ),
+              ],
               // Word of a companion to meet, so a party in a hurry does not
               // walk past them.
               for (final placeId in companionLeads.keys)

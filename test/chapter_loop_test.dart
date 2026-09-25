@@ -164,24 +164,80 @@ void main() {
     final done = count(flags, const ['z_cinder_row', 'z_scaffold_yards']);
     expect(done, 8);
     expect(ch3.activityGoal, 8);
-    bool open(Iterable<String> visited) => mainQuestOpen(
+    expect(ch3.questGoal, 2);
+    bool open(Iterable<String> visited, {int quests = 2}) => mainQuestOpen(
         loop: ch3,
         story: story,
         activityCount: done,
+        questCount: quests,
         flags: flags,
         visitedNodeIds: visited);
     expect(open(const []), isFalse);
     expect(missingMainQuestPlaces(ch3, story, flags, visitedNodeIds: const []),
         ['3005']);
     expect(open(const ['3005']), isTrue);
+    // The Quarter will not show a stranger the way to the Spire before the
+    // party has done something for it.
+    expect(open(const ['3005'], quests: 1), isFalse);
     expect(
         mainQuestOpen(
             loop: ch3,
             story: story,
             activityCount: 7,
+            questCount: 2,
             flags: flags,
             visitedNodeIds: const ['3005']),
         isFalse);
+  });
+
+  group('quests before the main quest', () {
+    final quests = _loadJson('assets/gamedata/quests.json');
+
+    test('only the chapter\'s own completed quests count', () {
+      int count(List<String> done) => chapterQuestCount(
+          chapter: 3, quests: quests, completedQuestIds: done);
+      expect(count(const []), 0);
+      expect(count(const ['q_ch3_ashen_oath', 'q_ch3_void_relic']), 2);
+      expect(count(const ['q_ch3_ashen_oath', 'q_ch3_ashen_oath']), 1);
+      expect(count(const ['q_ch2_dockside_debts', 'q_ch4_ossuary_bounty']), 0);
+      expect(count(const ['q_unknown']), 0);
+    });
+
+    test('each chapter offers enough quests before its main quest', () {
+      // The quests a party can finish before the main quest (the rest open
+      // with it, or end at its boss).
+      const before = {
+        3: [
+          'q_ch3_ashen_oath',
+          'q_ch3_void_relic',
+          'q_ch3_inquisition_ledger',
+          'q_ch3_reckoning_wall',
+        ],
+        4: ['q_ch4_ossuary_bounty'],
+        5: ['q_ch5_penitents_confession'],
+        6: ['q_ch6_faces_of_the_fallen'],
+      };
+      expect(loops.map((l) => l.questGoal), [2, 1, 1, 1, 0]);
+      for (final l in loops.where((l) => l.questGoal > 0)) {
+        final ids = before[l.chapter]!;
+        expect(ids.length, greaterThanOrEqualTo(l.questGoal), reason: l.id);
+        for (final id in ids) {
+          expect((quests[id] as Map)['chapter'], l.chapter, reason: id);
+          // Offered by a scene of the chapter, not by its main quest.
+          final offers = [
+            for (final nodeId in dag.keys)
+              for (final c in story.nodeFor(nodeId)!.choices)
+                if (c.unlockQuestId == id) (nodeId, c),
+          ];
+          expect(offers, isNotEmpty, reason: id);
+          for (final (nodeId, c) in offers) {
+            expect(c.mainQuest, isFalse, reason: '$nodeId offers $id');
+            expect(storyChapterOf(nodeId, story), l.chapter,
+                reason: '$nodeId offers $id');
+          }
+        }
+      }
+    });
   });
 
   group('companions to meet', () {

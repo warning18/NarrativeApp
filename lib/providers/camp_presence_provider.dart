@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_state.dart';
+import '../data/settlements.dart';
 import '../gamedata/db_schema.dart';
 import 'chapter_loop_provider.dart';
 import 'game_db_providers.dart';
@@ -27,5 +28,7 @@ final campPresenceProvider = Provider<CampPresence>((ref) {
     atCampScene: ref.watch(partyAtCampProvider),
     ports: ports,
     savedPortId: savedPortId,
+    campFounded: ref.watch(
+        playerSessionProvider.select((s) => s.flags.contains(campFoundedFlag))),
   );
 });

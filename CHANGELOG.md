@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.149.0+178]
+
+The camp opens once it is set up, every place leads back to it, and the
+cathedral waits for the chapter's quests.
+
+### Fixed
+- **No camp before it is set up.** On the chapter 3 shore (3001), the
+  Camp tab used to offer the way "back" to a camp that did not exist yet.
+  It now stays closed until "Take stock of the shore" sets up the camp
+  (`camp_founded`). That choice opens the camp screen, from which the
+  party travels to the towns, villages and expeditions it knows. The
+  "locked" lines say "Opens once the camp is set up in chapter 3".
+- **Villages and the Hollow Shore were dead ends.** Emberwick, Wrack's
+  End, Rimewell, Greyhithe and the Hollow Shore have too few choices to
+  count as hubs, so they had no "Back to the camp" or "Travel on" row.
+  Every place of an open chapter now gets that row, like the towns.
+
+### Changed
+- **The main quest waits for the chapter's quests.** Besides 8 things
+  done and the needed place visited, each chapter now asks for some of
+  its own quests to be turned in (`questGoal` in chapters.json): 2 in
+  chapter 3, then 1 in chapters 4, 5 and 6. So the Spire's gates stay
+  shut until the Ashen Quarter trusts the party. The camp's Chapter card
+  shows "Quests completed: N of 2". The chapter 3 hint and the Quarter's
+  scene (3005) now say the way in has to be earned.
+- **The main quest is shut in the story view too.** A camp scene shown
+  as a story page (Edit Mode) greys out the main quest ("Not yet: the
+  camp shows what this chapter still asks.") until the camp opens it.
+
+### Added
+- **Camp on the editor map.** Camp scenes have their own colour and icon
+  in the map legend.
+
+### Balance (Python simulation, 200 runs a style)
+- Every run reaches the true ending and meets the quest goals without
+  being forced through. At the chapter 3 gate, thorough players and
+  rushers have 5.9 and 5.8 of the chapter's quests done (at least 2).
+  In chapters 4 to 6 they have 1.5 to 1.9 (at least 1).
+- A control run without the quest goal gives the same numbers (1.45
+  fights lost a run for thorough players). The goal asks for what
+  players already do, and stops only a party that skips every quest.
+
 ## [1.148.0+177]
 
 A word at the camp about companions, and a longer look round each chapter.

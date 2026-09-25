@@ -53,6 +53,7 @@ class ChapterProgress {
     required this.loop,
     required this.done,
     required this.missingPlaceIds,
+    this.questsDone = 0,
   });
 
   final ChapterLoop loop;
@@ -61,9 +62,15 @@ class ChapterProgress {
   /// Places the main quest still needs visited.
   final List<String> missingPlaceIds;
 
+  /// The chapter's quests turned in (see [chapterQuestCount]).
+  final int questsDone;
+
   int get goal => loop.activityGoal;
 
-  bool get mainQuestOpen => done >= goal && missingPlaceIds.isEmpty;
+  int get questGoal => loop.questGoal;
+
+  bool get mainQuestOpen =>
+      done >= goal && questsDone >= questGoal && missingPlaceIds.isEmpty;
 }
 
 final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
@@ -75,6 +82,9 @@ final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
   final completedZoneIds =
       ref.watch(playerSessionProvider.select((s) => s.completedZoneIds));
   final zones = ref.watch(gameDbProvider(zonesSchema)).value ?? const {};
+  final quests = ref.watch(gameDbProvider(questsSchema)).value ?? const {};
+  final completedQuestIds =
+      ref.watch(playerSessionProvider.select((s) => s.completedQuestIds));
   return ChapterProgress(
     loop: loop,
     done: chapterActivityCount(
@@ -86,6 +96,11 @@ final chapterProgressProvider = Provider<ChapterProgress?>((ref) {
     ),
     missingPlaceIds:
         missingMainQuestPlaces(loop, story, flags, visitedNodeIds: visited),
+    questsDone: chapterQuestCount(
+      chapter: loop.chapter,
+      quests: quests,
+      completedQuestIds: completedQuestIds,
+    ),
   );
 });
 

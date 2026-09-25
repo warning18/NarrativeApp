@@ -8,13 +8,14 @@
     "title_fr": "La Flèche du Jugement",
     "campNodeId": "3001_camp",
     "activityGoal": 8,
+    "questGoal": 2,
     "mainQuestNeedsPlaceIds": [
       "3005"
     ],
     "mainQuestTitle": "Climb the Spire",
     "mainQuestTitle_fr": "Gravir la Flèche",
-    "mainQuestHint": "The Spire's gate is a day's walk inland, past the Ashen Quarter. Learn the coast first: its expeditions, its town, the people left on it.",
-    "mainQuestHint_fr": "La porte de la Flèche est à un jour de marche dans les terres, au-delà du Quartier des Cendres. Apprenez d'abord la côte : ses expéditions, sa ville, les gens qui y restent."
+    "mainQuestHint": "The Spire's gate is a day's walk inland, past the Ashen Quarter. Learn the coast first: its expeditions, its town, and the people left on it, who will not show a stranger the way in for nothing.",
+    "mainQuestHint_fr": "La porte de la Flèche est à un jour de marche dans les terres, au-delà du Quartier des Cendres. Apprenez d'abord la côte : ses expéditions, sa ville, et les gens qui y restent, qui ne montreront pas le chemin à un inconnu pour rien."
   },
   "ch4": {
     "chapterID": "ch4",
@@ -25,6 +26,7 @@
     "title_fr": "La Cour Creuse",
     "campNodeId": "4999_camp",
     "activityGoal": 8,
+    "questGoal": 1,
     "mainQuestNeedsPlaceIds": [
       "5010"
     ],
@@ -42,6 +44,7 @@
     "title_fr": "La Vérité du Linceul",
     "campNodeId": "6002_camp",
     "activityGoal": 8,
+    "questGoal": 1,
     "mainQuestNeedsPlaceIds": [
       "6010"
     ],
@@ -59,6 +62,7 @@
     "title_fr": "La Rive Creuse",
     "campNodeId": "7001",
     "activityGoal": 8,
+    "questGoal": 1,
     "mainQuestNeedsPlaceIds": [
       "7100"
     ],
@@ -76,6 +80,7 @@
     "title_fr": "Au-delà de la déchirure",
     "campNodeId": "7400",
     "activityGoal": 0,
+    "questGoal": 0,
     "mainQuestNeedsPlaceIds": [],
     "mainQuestTitle": "Into the Tear",
     "mainQuestTitle_fr": "Dans la déchirure",

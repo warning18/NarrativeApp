@@ -86,6 +86,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'someone to meet',
     AppLanguage.fr: 'quelqu’un à rencontrer',
   },
+  'chapter_quests_progress': {
+    AppLanguage.en: 'Quests completed: {done} of {goal}',
+    AppLanguage.fr: 'Quêtes accomplies : {done} sur {goal}',
+  },
+  'main_quest_shut_lock': {
+    AppLanguage.en: 'Not yet: the camp shows what this chapter still asks.',
+    AppLanguage.fr: 'Pas encore : le camp indique ce que ce chapitre demande.',
+  },
   'chapter_progress': {
     AppLanguage.en: 'Explored: {done} of {goal}',
     AppLanguage.fr: 'Exploré : {done} sur {goal}',
@@ -355,9 +363,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'camp_tab_locked_body': {
     AppLanguage.en:
-        'Your camp is founded in chapter 3. Each time the story brings you back to it, this is where you rest, choose who comes along, build and set sail.',
+        'Your camp is set up on the shore in chapter 3. From then on it is your base: you rest there, choose who comes along, build, and set out to the towns and expeditions around it.',
     AppLanguage.fr:
-        'Votre campement est fondé au chapitre 3. Chaque fois que le récit vous y ramène, c’est ici que vous vous reposez, choisissez qui vous accompagne, bâtissez et prenez la mer.',
+        'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
   'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
@@ -474,6 +482,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'language': {AppLanguage.en: 'Language', AppLanguage.fr: 'Langue'},
   'legend_title': {AppLanguage.en: 'Legend', AppLanguage.fr: 'Légende'},
+  'node_kind_camp': {
+    AppLanguage.en: 'Camp',
+    AppLanguage.fr: 'Camp',
+  },
   'node_kind_character_creation': {
     AppLanguage.en: 'Character Creation',
     AppLanguage.fr: 'Création de personnage',
@@ -2517,8 +2529,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Ouvert seulement quand le récit est en ville',
   },
   'camp_locked_subtitle': {
-    AppLanguage.en: 'Reach Chapter 3 to unlock',
-    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+    AppLanguage.en: 'Opens once the camp is set up in chapter 3',
+    AppLanguage.fr: 'S’ouvre une fois le campement installé au chapitre 3',
   },
   'zones_cleared_label': {
     AppLanguage.en: 'Zones Cleared',
@@ -4206,8 +4218,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Rusty Eel'
   },
   'boat_locked_subtitle': {
-    AppLanguage.en: 'Reach Chapter 3 to unlock',
-    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+    AppLanguage.en: 'Opens once the camp is set up in chapter 3',
+    AppLanguage.fr: 'S’ouvre une fois le campement installé au chapitre 3',
   },
   'boat_at_port_prefix': {
     AppLanguage.en: 'Moored at',
