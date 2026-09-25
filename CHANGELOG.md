@@ -8,6 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.138.0+167]
+
+Character creation's five memories get their own page, and the French
+speaks to the player as "vous" throughout.
+
+### Added
+- **The memories have their own page.** "A Life Before This One" opens
+  after naming the character, with one line on what the memories do, a
+  progress bar, the memory's title and scene, and its three answers in a
+  shuffled order (the same order if you come back to it).
+- **A summary before the story.** "Who You Are" lists each memory with
+  the answer given and the starting alignment they add up to. Tapping a
+  memory reopens it to change the answer; "Begin Your Story" starts the
+  story. The closing line hands the telling over to the player, as the
+  story itself is told in the first person.
+
+### Changed
+- **French in "vous".** The name dialog and all memories (including the
+  five profession variants of the beggar memory) now use "vous" instead of
+  "tu", with grammar fixes (missing pronouns, "supplier de", "avant que
+  personne ne s'en aperçoive") and wording that doesn't assume the
+  player's gender ("même si le froid vous mord", "même s'il ne vous reste
+  rien"). "Le tyran de cour" becomes "La brute de la cour".
+- The name dialog's button now reads Continue (the story starts after the
+  memories).
+- The memories' alignment is added once, at the end, instead of after
+  each answer.
+
+### Fixed
+- **Android Back skipped a memory.** Back during the memories closed the
+  question without an answer, so a memory could be skipped with no
+  alignment, and five presses skipped them all. Back now returns to the
+  previous memory; on the first one it returns to the character sheet with
+  nothing applied, and Continue starts again (with the name kept).
+- **Crash after naming the character.** The name field's controller was
+  thrown away while the dialog was still closing, which raised an error
+  after tapping the button. The dialog now owns the controller.
+
 ## [1.137.0+166]
 
 The world map gets its original lettering, real zoom, the player walking

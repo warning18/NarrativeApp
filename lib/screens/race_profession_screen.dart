@@ -14,6 +14,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
+import 'origin_stories_screen.dart';
 
 /// Formats a skill id like "human_resolve" into "Human Resolve" — skills
 /// have no separate display-name field, only an id (matches how
@@ -270,131 +271,34 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
 
   /// Runs the rest of character creation once the player taps Continue on
   /// the character sheet: locks the character in with a name (race and
-  /// profession are already permanent from [_confirmStart] on), then walks
-  /// through the five origin-story prompts before finally handing off to
-  /// the story.
+  /// profession are already permanent from [_confirmStart] on), then opens
+  /// the formative memories on their own page, applies the alignment they
+  /// add up to, and hands off to the story. Backing out of the first memory
+  /// returns here with nothing applied, so Continue simply starts again.
   Future<void> _handleContinue() async {
-    final name = await _showLockInDialog();
-    if (name == null || !mounted) return;
-    await ref.read(playerSessionProvider.notifier).setCharacterName(name);
-    if (!mounted) return;
-    await _runOriginStories();
-    if (!mounted) return;
-    Navigator.of(context).pop(true);
-  }
-
-  /// A required, non-dismissible dialog warning that the character is now
-  /// permanent for this run, and collecting the character's name. Returns
-  /// the trimmed name, or null if the widget was unmounted mid-dialog.
-  Future<String?> _showLockInDialog() async {
-    final lang = ref.read(appLanguageProvider);
-    final controller = TextEditingController();
     final name = await showDialog<String>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: Text(trFor(lang, 'lock_character_dialog_title')),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(trFor(lang, 'lock_character_dialog_desc')),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                autofocus: true,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: trFor(lang, 'character_name_field_label'),
-                  hintText: trFor(lang, 'character_name_field_hint'),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.casino_outlined),
-                    tooltip: trFor(lang, 'random_name_tooltip'),
-                    onPressed: () => setDialogState(() {
-                      controller.text = randomCharacterName(_selectedRaceId);
-                    }),
-                  ),
-                ),
-                onChanged: (_) => setDialogState(() {}),
-                onSubmitted: (value) {
-                  if (value.trim().isNotEmpty) {
-                    Navigator.pop(dialogContext, value.trim());
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            FilledButton(
-              onPressed: controller.text.trim().isEmpty
-                  ? null
-                  : () => Navigator.pop(dialogContext, controller.text.trim()),
-              child: Text(trFor(lang, 'begin_story_button')),
-            ),
-          ],
-        ),
+      builder: (_) => _NameDialog(
+        initialName: ref.read(playerSessionProvider).characterName,
+        raceId: _selectedRaceId,
       ),
     );
-    controller.dispose();
-    return name;
-  }
-
-  /// Walks through the five formative-memory prompts in order, applying
-  /// each choice's alignment effect immediately. Non-dismissible and
-  /// unskippable — a choice must be tapped to advance.
-  Future<void> _runOriginStories() async {
-    for (var index = 0; index < originStoryPrompts.length; index++) {
-      if (!mounted) return;
-      final prompt = originPromptForSlot(index, _selectedProfessionId);
-      final choice = await showDialog<OriginChoice>(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(tr(ref, prompt.titleKey)),
-          content: SizedBox(
-            width: 360,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    '${index + 1} / ${originStoryPrompts.length}',
-                    style: Theme.of(dialogContext).textTheme.labelSmall,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    tr(ref, prompt.descriptionKey),
-                    style:
-                        Theme.of(dialogContext).textTheme.bodyLarge?.copyWith(
-                              fontFamily: 'serif',
-                              height: 1.6,
-                              letterSpacing: 0.1,
-                            ),
-                  ),
-                  const SizedBox(height: 20),
-                  for (final choice in prompt.choices)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(dialogContext, choice),
-                        child: Text(tr(ref, choice.textKey),
-                            textAlign: TextAlign.center),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-      if (choice != null) {
-        await ref
-            .read(playerSessionProvider.notifier)
-            .applyChoiceEffects(alignmentMod: choice.alignmentMod);
-      }
-    }
+    if (name == null || !mounted) return;
+    await ref.read(playerSessionProvider.notifier).setCharacterName(name);
+    if (!mounted) return;
+    final answers = await Navigator.of(context).push<List<OriginChoice>>(
+      MaterialPageRoute(
+        builder: (_) =>
+            OriginStoriesScreen(professionId: _selectedProfessionId),
+      ),
+    );
+    if (answers == null || !mounted) return;
+    await ref
+        .read(playerSessionProvider.notifier)
+        .applyChoiceEffects(alignmentMod: originAlignmentTotal(answers));
+    if (!mounted) return;
+    Navigator.of(context).pop(true);
   }
 }
 
@@ -713,5 +617,78 @@ class _CharacterSheet extends StatelessWidget {
       default:
         return 'alignment_neutral';
     }
+  }
+}
+
+/// A required, non-dismissible dialog warning that the character is now
+/// permanent for this run, and collecting the character's name. Pops with
+/// the trimmed name. It owns its text controller, so the controller lives
+/// until the dialog's closing animation has finished.
+class _NameDialog extends ConsumerStatefulWidget {
+  const _NameDialog({required this.initialName, required this.raceId});
+
+  final String initialName;
+  final String? raceId;
+
+  @override
+  ConsumerState<_NameDialog> createState() => _NameDialogState();
+}
+
+class _NameDialogState extends ConsumerState<_NameDialog> {
+  late final TextEditingController _controller =
+      TextEditingController(text: widget.initialName);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    final name = _controller.text.trim();
+    if (name.isNotEmpty) Navigator.pop(context, name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String t(String key) => tr(ref, key);
+    return AlertDialog(
+      title: Text(t('lock_character_dialog_title')),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(t('lock_character_dialog_desc')),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _controller,
+              autofocus: true,
+              textCapitalization: TextCapitalization.words,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: t('character_name_field_label'),
+                hintText: t('character_name_field_hint'),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.casino_outlined),
+                  tooltip: t('random_name_tooltip'),
+                  onPressed: () => setState(() {
+                    _controller.text = randomCharacterName(widget.raceId);
+                  }),
+                ),
+              ),
+              onChanged: (_) => setState(() {}),
+              onSubmitted: (_) => _submit(),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        FilledButton(
+          onPressed: _controller.text.trim().isEmpty ? null : _submit,
+          child: Text(t('continue_button')),
+        ),
+      ],
+    );
   }
 }
