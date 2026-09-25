@@ -20,6 +20,7 @@ import '../providers/story_providers.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/camp_town_section.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
@@ -192,6 +193,39 @@ class CampScreen extends ConsumerWidget {
             for (final place in places) PlaceCard(place: place),
         ],
 
+        // The camp's town on the cliff: what has been built, and the tray
+        // to build more. A house tied to a companion waits for them.
+        section(tr(ref, 'houses_section')),
+        CampTownSection(
+          houses: {
+            for (final id in discoveredHouseIds) id: houses[id],
+          },
+          shops: shops,
+          zones: zones,
+          achievements:
+              ref.watch(localizedDbProvider(achievementsSchema)).value ??
+                  const <String, dynamic>{},
+          harborAction: harborBuilt
+              ? OutlinedButton.icon(
+                  key: const Key('town_harbor'),
+                  onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const HarborScreen()),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(0, 36),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    backgroundColor: const Color(0xE614262A),
+                    foregroundColor: const Color(0xFFECE7DC),
+                    side: const BorderSide(color: Color(0xFF4FB0B0)),
+                    textStyle: const TextStyle(
+                        fontFamily: 'PixelifySans', fontSize: 12),
+                  ),
+                  icon: const Icon(Icons.anchor, size: 16),
+                  label: Text(tr(ref, 'harbor_title')),
+                )
+              : null,
+        ),
+
         section(tr(ref, 'camp_party_section'),
             trailing: '${tr(ref, 'active_party_label')}: '
                 '${session.activeAllyIds.length} / $partyCapacity'),
@@ -238,15 +272,6 @@ class CampScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 4),
         const PortChart(homeOnChart: false),
-
-        section(tr(ref, 'houses_section')),
-        for (final houseId in discoveredHouseIds)
-          _HouseCard(
-            houseId: houseId,
-            house: houses[houseId] as Map<String, dynamic>,
-            shops: shops,
-            zones: zones,
-          ),
 
         section(tr(ref, 'boutiques_section')),
         if (boutiqueShopIds.isEmpty)
@@ -719,138 +744,6 @@ class _AllyCard extends ConsumerWidget {
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// A camp work: what it is and gives, and Build (or, for the Harbor once
-/// built, the way in).
-class _HouseCard extends ConsumerWidget {
-  const _HouseCard({
-    required this.houseId,
-    required this.house,
-    required this.shops,
-    required this.zones,
-  });
-
-  final String houseId;
-  final Map<String, dynamic> house;
-  final Map<String, dynamic> shops;
-  final Map<String, dynamic> zones;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final houseName = house['houseName']?.toString() ?? houseId;
-    final description = house['description']?.toString() ?? '';
-    final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-    final capacityBonus = (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
-    final healthBonus = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
-    final damageBonus = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
-    final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
-    final unlocksShopName = unlocksShopId.isNotEmpty
-        ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
-                ?.toString() ??
-            unlocksShopId)
-        : null;
-    final built = session.builtHouseIds.contains(houseId);
-    final affordable = session.gold >= cost;
-    final requiredFlags = requiredFlagsOf(house);
-    final unlocked = meetsRequiredFlags(house, session.flags);
-    final lockName =
-        unlocked ? null : lockRequirementName(house, session.flags, zones);
-    final statsParts = <String>[
-      if (capacityBonus > 0)
-        '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
-      if (healthBonus > 0)
-        '+$healthBonus% ${tr(ref, 'party_health_bonus_label')}',
-      if (damageBonus > 0)
-        '+$damageBonus% ${tr(ref, 'party_damage_bonus_label')}',
-      if (unlocksShopName != null)
-        '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
-      if (houseId == harborHouseId) tr(ref, 'harbor_unlocks_note'),
-      if (!built && lockName != null)
-        '${tr(ref, 'requires_zone_prefix')}: $lockName',
-    ];
-
-    // The Build button sits under the description, not beside it: beside
-    // it, a phone squeezes the text into a narrow column.
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ListTile(
-              leading: Icon(built
-                  ? Icons.home
-                  : unlocked
-                      ? Icons.home_outlined
-                      : Icons.lock_outline),
-              title: Text(houseName),
-              subtitle: Text([
-                description,
-                if (statsParts.isNotEmpty) statsParts.join(' · '),
-              ].where((s) => s.isNotEmpty).join('\n')),
-              trailing: built
-                  ? const Icon(Icons.check_circle, color: Colors.green)
-                  : null,
-            ),
-            if (built && houseId == harborHouseId)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: FilledButton.tonalIcon(
-                    onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (_) => const HarborScreen()),
-                    ),
-                    icon: const Icon(Icons.anchor),
-                    label: Text(tr(ref, 'harbor_open_button')),
-                  ),
-                ),
-              ),
-            if (!built)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    key: Key('build_$houseId'),
-                    onPressed: (!affordable || !unlocked)
-                        ? null
-                        : () async {
-                            final notifier =
-                                ref.read(playerSessionProvider.notifier);
-                            await notifier.buildHouse(houseId, cost,
-                                unlocksShopId: unlocksShopId,
-                                requiredFlags: requiredFlags);
-                            final earned = await notifier.checkAchievements();
-                            if (!context.mounted) return;
-                            final achievements = ref
-                                    .read(
-                                        localizedDbProvider(achievementsSchema))
-                                    .value ??
-                                const {};
-                            final suffix = earned.isEmpty
-                                ? ''
-                                : '\n${tr(ref, 'achievement_unlocked_prefix')}: '
-                                    '${earned.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(', ')}';
-                            showImmersiveNotice(
-                              context,
-                              icon: Icons.home,
-                              message:
-                                  '${tr(ref, 'house_built_prefix')}: $houseName$suffix',
-                            );
-                          },
-                    child: Text(
-                        '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
-                  ),
-                ),
-              ),
           ],
         ),
       ),

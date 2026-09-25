@@ -7,10 +7,11 @@ import 'app_info.dart';
 import 'providers/palette_provider.dart';
 import 'providers/theme_mode_provider.dart';
 import 'screens/main_menu_screen.dart';
+import 'theme/stitched_ink.dart';
 
 void main() {
-  // The world map's fonts are under the SIL Open Font License, which asks
-  // that their licence travel with them: it shows in the app's licences.
+  // The app's fonts are under the SIL Open Font License, which asks that
+  // their licence travel with them: it shows in the app's licences.
   LicenseRegistry.addLicense(() async* {
     yield LicenseEntryWithLineBreaks(
       const ['Pixelify Sans'],
@@ -19,6 +20,10 @@ void main() {
     yield LicenseEntryWithLineBreaks(
       const ['Spectral'],
       await rootBundle.loadString('assets/fonts/Spectral-OFL.txt'),
+    );
+    yield LicenseEntryWithLineBreaks(
+      const ['IM FELL English SC'],
+      await rootBundle.loadString('assets/fonts/IMFellEnglishSC-OFL.txt'),
     );
   });
   runApp(const ProviderScope(child: MyApp()));
@@ -34,20 +39,8 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: AppInfo.displayName,
       themeMode: themeMode,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: palette.seedColor,
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: palette.seedColor,
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
+      theme: buildAppTheme(palette.schemeFor(Brightness.light)),
+      darkTheme: buildAppTheme(palette.schemeFor(Brightness.dark)),
       builder: (context, child) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 12),

@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart' show newGamePlusStep;
 import '../combat/spells.dart';
+import '../data/alignment_events.dart' show alignmentThreshold;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../utils/game_icons.dart';
 import '../widgets/mana_meter.dart';
-import '../widgets/player_stats_bar.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'level_up_screen.dart';
@@ -48,7 +49,7 @@ class CharacterScreen extends ConsumerWidget {
     final body = ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        const PlayerStatsBar(),
+        _CharacterHeader(subtitle: subtitle),
         const SizedBox(height: 16),
         if (session.newGamePlusCycle > 0) const _NewGamePlusCard(),
         const _ManaSpellsCard(),
@@ -137,6 +138,289 @@ class CharacterScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'character'))),
       body: body,
+    );
+  }
+}
+
+/// The top of the character sheet: who the character is, their level
+/// and experience, health, mana and gold, where their alignment stands
+/// between Evil and Good, any points waiting, and the eight abilities.
+class _CharacterHeader extends ConsumerWidget {
+  const _CharacterHeader({required this.subtitle});
+
+  /// Race and profession.
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final name = session.characterName.isNotEmpty
+        ? session.characterName
+        : tr(ref, 'character');
+    final xpFraction = session.xpToNextLevel <= 0
+        ? 0.0
+        : (session.currentXP / session.xpToNextLevel).clamp(0.0, 1.0);
+    final points = session.statPoints + session.skillPoints;
+
+    Widget vital(String label, String value, Color color) => Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(4),
+              border: Border.all(color: ink.seam),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label.toUpperCase(),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                Text(value,
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(color: color, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        );
+
+    final abilities = <(String, int)>[
+      ('strength_label', session.strength),
+      ('dexterity_label', session.dexterity),
+      ('constitution_label', session.constitution),
+      ('intelligence_label', session.intelligence),
+      ('wisdom_label', session.wisdom),
+      ('charisma_label', session.charisma),
+      ('luck_label', session.luck),
+      ('perception_label', session.perception),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainer,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: ink.gold, width: 2),
+              ),
+              child: Text(
+                name.characters.first.toUpperCase(),
+                style:
+                    theme.textTheme.headlineMedium?.copyWith(color: ink.gold),
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.headlineSmall),
+                  Text(subtitle,
+                      style:
+                          theme.textTheme.bodyMedium?.copyWith(color: ink.ash)),
+                  const SizedBox(height: 6),
+                  Row(
+                    children: [
+                      Text('${tr(ref, 'level_abbrev')} ${session.level}',
+                          style: theme.textTheme.labelMedium
+                              ?.copyWith(color: ink.gold)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: LinearProgressIndicator(
+                          value: xpFraction,
+                          minHeight: 5,
+                          color: ink.gold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                          '${tr(ref, 'xp_label')} ${session.currentXP}/${session.xpToNextLevel}',
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ink.ash)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        Row(
+          children: [
+            vital(tr(ref, 'hp_label'),
+                '${session.currentHealth}/${session.maxHealth}', ink.blood),
+            const SizedBox(width: 8),
+            vital(tr(ref, 'mana_label'), '${session.mana}/${session.maxMana}',
+                manaColor),
+            const SizedBox(width: 8),
+            vital(tr(ref, 'gold_label'), '${session.gold}', ink.gold),
+          ],
+        ),
+        const SizedBox(height: 14),
+        _AlignmentBar(score: session.alignmentScore),
+        if (points > 0) ...[
+          const SizedBox(height: 14),
+          FilledButton(
+            key: const Key('character_level_up'),
+            style:
+                FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const LevelUpScreen()),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text('$points ${tr(ref, 'badge_points_waiting')}')),
+                Text(tr(ref, 'level_up')),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: 14),
+        GridView.count(
+          crossAxisCount: 4,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.35,
+          children: [
+            for (final (key, value) in abilities)
+              Tooltip(
+                message: tr(ref, key),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(color: ink.seam),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        tr(ref, key.replaceFirst('_label', '_abbr')),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(color: ink.ash),
+                      ),
+                      Text('$value',
+                          style: theme.textTheme.titleLarge
+                              ?.copyWith(fontFamily: InkFonts.system)),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Where the alignment score stands: a bar from Evil to Good with marks
+/// at the thresholds that make the character one or the other.
+class _AlignmentBar extends ConsumerWidget {
+  const _AlignmentBar({required this.score});
+
+  final int score;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    const span = alignmentThreshold * 2;
+    final position = ((score + span) / (span * 2)).clamp(0.0, 1.0);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: ink.seam),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(tr(ref, 'alignment_label').toUpperCase(),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              ),
+              Text(score > 0 ? '+$score' : '$score',
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: ink.voidColor)),
+            ],
+          ),
+          const SizedBox(height: 10),
+          LayoutBuilder(builder: (context, constraints) {
+            final w = constraints.maxWidth;
+            return SizedBox(
+              height: 18,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: 5,
+                    child: Container(
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: ink.voidColor.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 0,
+                    top: 5,
+                    width: w / 4,
+                    child: Container(
+                        height: 8, color: ink.blood.withValues(alpha: 0.45)),
+                  ),
+                  Positioned(
+                    right: 0,
+                    top: 5,
+                    width: w / 4,
+                    child: Container(
+                        height: 8, color: ink.gold.withValues(alpha: 0.45)),
+                  ),
+                  Positioned(
+                    left: w * position - 2,
+                    top: 0,
+                    child: Container(
+                      width: 4,
+                      height: 18,
+                      color: theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              Text('${tr(ref, 'alignment_evil')} ≤ −$alignmentThreshold',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              const Spacer(),
+              Text('0',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              const Spacer(),
+              Text('${tr(ref, 'alignment_good')} ≥ +$alignmentThreshold',
+                  style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

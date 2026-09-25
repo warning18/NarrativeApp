@@ -8,6 +8,89 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.150.0+179]
+
+Brings in main's redesign (PR #98, numbered 1.138.0+167 and 1.139.0+168
+there): the Stitched Ink look and the camp as a town on the cliff, on
+top of this branch's open chapters (1.138 to 1.149 here).
+
+### From main 1.139.0+168: the cliff town
+
+The camp becomes a town on the cliff, and the story, character, skill
+challenge and map screens take on the Stitched Ink designs. Fights and
+ship battles keep their layout.
+
+**Added**
+- **The cliff town.** The Camp tab opens on the town: the harbour and The
+  Rusty Eel at the bottom, every house built stacked up between two
+  cliffs, in pixel art. Houses take one to three plots across and one or
+  two levels up; each new one goes as low and as far right as it fits,
+  resting on what is below it, with timber struts under what overhangs.
+  The town scrolls, starting at the harbour.
+- **Building from the town.** A tray under the town lists the houses;
+  tapping one outlines where it will go and scrolls there, Build raises
+  it. Locked houses say what they wait on, and ones you cannot afford say
+  how much gold is missing. The boat sails from its button in the
+  harbour.
+- **Town additions.** A second tab sells pieces that only add to the
+  town, again and again: a timber room (40 gold), a lantern stair (60),
+  a storehouse (90) and a watchtower (120). They give no bonuses.
+- **Place and mood on the story page.** The scene's place (the docks, the
+  cathedral...) and mood show as tags above the text.
+- **The chapter in the header.** In play, the Story tab's header shows
+  the chapter's number and name, in the chapter's colour.
+
+**Changed**
+- **Character sheet.** It opens on the character's name, race and
+  profession, level and experience, health, mana and gold, an alignment
+  bar from Evil to Good with the thresholds marked, a button when points
+  are waiting, and the eight abilities in a grid.
+- **Skill challenge.** A d20 shows each roll as it lands, with the sum
+  under it; successes and failures fill square counters; the result is
+  stamped at the end.
+- **World map.** Its title and place names use the title face; the three
+  looks are side by side instead of in a menu; chips have square corners.
+
+**Saves**
+- Saves keep the order the town went up in (`townOrder`); older saves
+  build their town from their houses in the order they were built.
+
+**Fixed**
+- The character sheet's ability boxes use each language's own short
+  names (French *Charisme* and *Chance* no longer both read CHA).
+- Build in the camp's tray only reports a house or an addition going up
+  when it actually did, and a locked house never reads "Requires: null".
+
+### From main 1.138.0+167: Stitched Ink
+
+The whole app takes on the "Stitched Ink" look from the design proposal:
+a dark book you read, stitched to a game you play.
+
+**Added**
+- **Stitched Ink palette, now the default.** Shroud-dark pages, Bone
+  ink, Banner gold for the main action, with a parchment variant in light
+  mode. The other palettes stay in Settings.
+- **One set of type for the whole app.** Spectral for story and body
+  text, Pixelify Sans for numbers, labels, buttons and dice, and IM FELL
+  English SC (bundled, SIL OFL) for titles, chapters and places. All
+  three fonts are now used across the app, not only on the world map.
+- **Costs on choices.** A story choice that changes gold, health or
+  alignment shows it underneath as small tags ("+20 gold", "−10 HP",
+  "Alignment −1").
+
+**Changed**
+- **Shapes.** 4 px corners and 1 px seams instead of rounded, shadowed
+  cards, for buttons, cards, dialogs, sheets, chips and the tab bar.
+- **The story page.** The prose sits on the bare page beside a dashed
+  thread in the colour of where the story is (slums, docks, cathedral…),
+  left-aligned at reading size; chapter headings are in the title face.
+- **The main menu.** A tattered banner with the Void's sigil over the
+  title, on a plain page instead of a gradient.
+- **The stats bar.** Each number's icon says what it is: gold for level
+  and gold, red for health, mana's colour for mana.
+- **Dice and the fight log.** Colours by meaning: ember for attacks,
+  steel for guarding, green for healing, purple for techniques.
+
 ## [1.149.0+178]
 
 The camp opens once it is set up, every place leads back to it, and the

@@ -5,23 +5,23 @@ Color _logColor(BuildContext context, _LogKind kind) {
     case _LogKind.info:
       return Theme.of(context).colorScheme.onSurfaceVariant;
     case _LogKind.playerDamage:
-      return Colors.deepOrange;
+      return _attackColor;
     case _LogKind.playerHeal:
-      return Colors.green;
+      return _healColor;
     case _LogKind.playerBlock:
-      return Colors.blueGrey;
+      return _defendColor;
     case _LogKind.enemyDamage:
-      return Colors.red;
+      return InkColors.of(context).blood;
     case _LogKind.victory:
-      return Colors.amber.shade800;
+      return InkColors.of(context).gold;
     case _LogKind.defeat:
-      return Colors.red.shade900;
+      return Theme.of(context).colorScheme.error;
     case _LogKind.banter:
-      return Colors.indigo;
+      return InkColors.of(context).ash;
     case _LogKind.mana:
       return manaColor;
     case _LogKind.phase:
-      return Colors.deepPurple;
+      return _skillColor;
   }
 }
 
@@ -53,6 +53,15 @@ IconData _logIcon(_LogKind kind) {
 /// Icon for a die face's own type -- distinct from [_logIcon], which is
 /// about a resolved log line's category. Colours come from [FaceKind].
 IconData _faceTypeIcon(String type) => faceKind(type).icon;
+
+// The fight log's colours (Stitched Ink): ember for the party's hits,
+// steel for guarding, green for healing and the Void's purple for a
+// boss's new phase. Mid-tones, legible on the dark page and the parchment
+// one. Die faces take their colour from [FaceKind].
+const Color _attackColor = Color(0xFFD9692A);
+const Color _defendColor = Color(0xFF7F92A6);
+const Color _healColor = Color(0xFF5FA64C);
+const Color _skillColor = Color(0xFF9270DA);
 
 /// A small pill showing one active status effect's icon and how many
 /// rounds it has left — the visual half of the status-effect system,

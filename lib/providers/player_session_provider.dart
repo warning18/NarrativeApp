@@ -157,6 +157,7 @@ class PlayerSession {
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
     this.builtHouseIds = const [],
+    this.townOrder = const [],
     this.unlockedAchievementIds = const [],
     this.completedZoneIds = const [],
     this.bannerPiecesCollected = const [],
@@ -311,6 +312,21 @@ class PlayerSession {
   /// `requiredHouseId`) and/or raises party capacity
   /// (`partyCapacityBonus`), per houses.json.
   final List<String> builtHouseIds;
+
+  /// Every piece of the camp's cliff town in the order it went up: house
+  /// ids and town additions (`add_floor`, `add_tower`...), see
+  /// data/cliff_town.dart. Saves from before the town have none; their
+  /// town is their [builtHouseIds] in order (see [townPieces]).
+  final List<String> townOrder;
+
+  /// The town's pieces in build order: [townOrder], with any built house
+  /// it lacks added after it and any house no longer built left out.
+  List<String> get townPieces => [
+        for (final id in townOrder)
+          if (id.startsWith('add_') || builtHouseIds.contains(id)) id,
+        for (final id in builtHouseIds)
+          if (!townOrder.contains(id)) id,
+      ];
 
   /// Achievement ids the player has earned — permanent, append-only, like
   /// [completedQuestIds].
@@ -536,6 +552,7 @@ class PlayerSession {
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
     List<String>? builtHouseIds,
+    List<String>? townOrder,
     List<String>? unlockedAchievementIds,
     List<String>? completedZoneIds,
     List<String>? bannerPiecesCollected,
@@ -607,6 +624,7 @@ class PlayerSession {
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
+      townOrder: townOrder ?? this.townOrder,
       unlockedAchievementIds:
           unlockedAchievementIds ?? this.unlockedAchievementIds,
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
@@ -684,6 +702,7 @@ class PlayerSession {
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
         'builtHouseIds': builtHouseIds,
+        'townOrder': townOrder,
         'unlockedAchievementIds': unlockedAchievementIds,
         'completedZoneIds': completedZoneIds,
         'shipHull': shipHull,
@@ -827,6 +846,9 @@ class PlayerSession {
               const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      townOrder:
+          (json['townOrder'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       unlockedAchievementIds: (json['unlockedAchievementIds'] as List?)
               ?.map((e) => e.toString())
@@ -1777,11 +1799,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],
       flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
+      townOrder: [...state.townPieces, houseId],
     );
     await _persist();
     if (unlocksShopId != null && unlocksShopId.isNotEmpty) {
       await unlockContent(shopId: unlocksShopId);
     }
+  }
+
+  /// Spends [cost] on a town addition ([type], one of
+  /// `cliff_town.dart`'s additions) and raises it on the cliff. Additions
+  /// are the town's own: they add rooms and lights, no bonuses. A no-op
+  /// if unaffordable.
+  Future<void> buildTownAddition(String type, int cost) async {
+    if (state.gold < cost) return;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      townOrder: [...state.townPieces, type],
+    );
+    await _persist();
   }
 
   // --- Expedition zones ----------------------------------------------------
