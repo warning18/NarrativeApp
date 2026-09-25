@@ -146,11 +146,11 @@ void main() {
     await _settle(tester);
     expect(find.text('1 to turn in'), findsOneWidget);
 
-    // Away from the camp in chapter 3, the tab is the ship: no house to
-    // build from there, however full the purse.
+    // Away from the camp in chapter 3, the tab is the way back to it: no
+    // house to build from there, however full the purse.
     container.read(storyPlayProvider.notifier).jumpTo('3005');
     await _settle(tester);
-    expect(find.byTooltip('Ship'), findsOneWidget);
+    expect(find.byTooltip('Camp'), findsOneWidget);
     expect(find.textContaining('a house you can build'), findsNothing);
 
     // At the camp, 400 gold builds its first house.

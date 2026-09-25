@@ -636,6 +636,7 @@ class Settlement {
     required this.name,
     this.nameFr,
     this.portId,
+    this.landingPortId,
   });
 
   /// 'town' or 'camp'.
@@ -647,6 +648,12 @@ class Settlement {
   /// any.
   final String? portId;
 
+  /// The ports.json row where the Rusty Eel puts in for this place, when
+  /// the voyage between it and the camp lands somewhere other than
+  /// [portId] (a town whose expeditions the story launches itself offers
+  /// no port services, but is still a voyage away).
+  final String? landingPortId;
+
   bool get isCamp => kind == 'camp';
 
   String nameFor(bool french) =>
@@ -657,11 +664,13 @@ class Settlement {
     final name = raw['name']?.toString() ?? '';
     if (name.isEmpty) return null;
     final portId = raw['portId']?.toString() ?? '';
+    final landingPortId = raw['landingPortId']?.toString() ?? '';
     return Settlement(
       kind: raw['kind']?.toString() == 'camp' ? 'camp' : 'town',
       name: name,
       nameFr: raw['name_fr']?.toString(),
       portId: portId.isEmpty ? null : portId,
+      landingPortId: landingPortId.isEmpty ? null : landingPortId,
     );
   }
 
@@ -670,6 +679,7 @@ class Settlement {
         'name': name,
         if (nameFr != null && nameFr!.isNotEmpty) 'name_fr': nameFr,
         if (portId != null) 'portId': portId,
+        if (landingPortId != null) 'landingPortId': landingPortId,
       };
 }
 

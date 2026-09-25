@@ -159,6 +159,7 @@ extension _FightSetup on _FightScreenState {
     Map<String, dynamic> houses,
     Map<String, dynamic> dice,
     Map<String, dynamic> skillTrees,
+    Map<String, dynamic> skills,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -171,9 +172,17 @@ extension _FightSetup on _FightScreenState {
       houses: houses,
     );
 
-    final playerDiceAssignments =
+    // A skill takes no more of a die's faces than its rarity allows; a
+    // save from before the limits keeps the first of its faces.
+    List<Map<String, dynamic>> facesOf(String? diceId) =>
+        ((dice[diceId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
+            ?.cast<Map<String, dynamic>>() ??
+        const [];
+    final playerDiceAssignments = limitedFaceAssignments(
+        facesOf(_selectedDiceId),
         session.diceSkillAssignments[_selectedDiceId] ??
-            const <String, String>{};
+            const <String, String>{},
+        skills);
     final playerLabel = session.characterName.isNotEmpty
         ? session.characterName
         : trFor(ref.read(appLanguageProvider), 'you_label');
@@ -247,7 +256,10 @@ extension _FightSetup on _FightScreenState {
               dice[companion['signatureDiceId']?.toString() ?? '']
                   as Map<String, dynamic>?),
         ],
-        diceSkillAssignments: allyState.diceSkillAssignments,
+        diceSkillAssignments: limitedFaceAssignments(
+            facesOf(companion['signatureDiceId']?.toString()),
+            allyState.diceSkillAssignments,
+            skills),
         equippedDiceId: companion['signatureDiceId']?.toString(),
         strength: base.strength,
         dexterity: base.dexterity,

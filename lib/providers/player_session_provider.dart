@@ -163,6 +163,7 @@ class PlayerSession {
     this.shipHull = -1,
     this.shipPartIds = const ['ballista'],
     this.currentPortId = '',
+    this.campVisitFromNodeId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
     this.bossDefeatCounts = const {},
@@ -334,6 +335,11 @@ class PlayerSession {
 
   /// ports.json id the boat is moored at; empty means the home port.
   final String currentPortId;
+
+  /// The town the party went back to the camp from (a story node id): the
+  /// story waits there while the party is at the camp, and goes on once it
+  /// sets out again. Empty when the party is where the story is.
+  final String campVisitFromNodeId;
 
   /// Every port the boat has made landfall at, append-only.
   final List<String> visitedPortIds;
@@ -542,6 +548,7 @@ class PlayerSession {
     int? shipHull,
     List<String>? shipPartIds,
     String? currentPortId,
+    String? campVisitFromNodeId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
     Map<String, int>? bossDefeatCounts,
@@ -613,6 +620,7 @@ class PlayerSession {
       shipHull: shipHull ?? this.shipHull,
       shipPartIds: shipPartIds ?? this.shipPartIds,
       currentPortId: currentPortId ?? this.currentPortId,
+      campVisitFromNodeId: campVisitFromNodeId ?? this.campVisitFromNodeId,
       visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
@@ -689,6 +697,7 @@ class PlayerSession {
         'shipHull': shipHull,
         'shipPartIds': shipPartIds,
         'currentPortId': currentPortId,
+        'campVisitFromNodeId': campVisitFromNodeId,
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
@@ -841,6 +850,7 @@ class PlayerSession {
           (json['shipPartIds'] as List?)?.map((e) => e.toString()).toList() ??
               const ['ballista'],
       currentPortId: json['currentPortId']?.toString() ?? '',
+      campVisitFromNodeId: json['campVisitFromNodeId']?.toString() ?? '',
       visitedPortIds: (json['visitedPortIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -1857,6 +1867,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(gold: state.gold - cost, shipHull: -1);
     await _persist();
     return true;
+  }
+
+  /// The party goes back to the camp from the town at [townNodeId]; the
+  /// story waits there (see [PlayerSession.campVisitFromNodeId]).
+  Future<void> beginCampVisit(String townNodeId) async {
+    state = state.copyWith(campVisitFromNodeId: townNodeId);
+    await _persist();
+  }
+
+  /// The party is back where the story waits.
+  Future<void> endCampVisit() async {
+    if (state.campVisitFromNodeId.isEmpty) return;
+    state = state.copyWith(campVisitFromNodeId: '');
+    await _persist();
   }
 
   /// Landfall: the boat is now moored at [portId].

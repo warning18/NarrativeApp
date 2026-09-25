@@ -20,6 +20,7 @@ import '../providers/story_providers.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
 import '../widgets/zone_card.dart';
@@ -32,11 +33,12 @@ import 'skills_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, storyBodyFor, takeStoryChoice;
 
-/// The party's camp from chapter 3, open only while the story stands at
-/// it: what happened on coming back, who comes along, the expeditions on
-/// its shore and the voyages out, what has been built, its shops, and the
-/// way on (see [leaveCamp]). While the party is here the Story tab gives
-/// way to this page, and comes back once the party leaves.
+/// The party's camp from chapter 3, open while the party is at it: the
+/// story at a camp's scene, or the party gone back to it from a town where
+/// the story waits. What happened on coming back, who comes along, the
+/// expeditions on its shore and the voyages out, what has been built, its
+/// shops, and the way on (see [leaveCamp]). While the party is here the
+/// Story tab gives way to this page, and comes back once the party leaves.
 class CampScreen extends ConsumerWidget {
   const CampScreen({super.key, this.embedded = false});
 
@@ -63,6 +65,13 @@ class CampScreen extends ConsumerWidget {
     final node = story?.nodeFor(play.currentNodeId);
     final campNode =
         embedded && (node?.settlement?.isCamp ?? false) ? node : null;
+    // Gone back to the camp from a town: the story waits there.
+    final waitingTown = embedded &&
+            campNode == null &&
+            node != null &&
+            session.campVisitFromNodeId == node.id
+        ? node
+        : null;
 
     if (companions == null ||
         houses == null ||
@@ -168,23 +177,38 @@ class CampScreen extends ConsumerWidget {
                 icon: const Icon(Icons.anchor, size: 18),
                 label: Text(tr(ref, 'harbor_title')),
               ),
-            if (campNode != null)
+            if (campNode != null || waitingTown != null)
               OutlinedButton.icon(
                 key: const Key('camp_leave'),
                 style: _compact,
                 onPressed: busy ? null : () => leaveCamp(context, ref),
                 icon: const Icon(Icons.logout, size: 18),
-                label: Text(tr(ref, 'camp_leave_button')),
+                label: Text(waitingTown == null
+                    ? tr(ref, 'camp_leave_button')
+                    : tr(ref, 'camp_set_out_button').replaceAll(
+                        '{place}', waitingTown.settlement?.nameFor(fr) ?? '')),
               ),
           ],
         ),
-        // The followed quest stays in view while the story waits here.
-        if (campNode != null)
+        // The followed quest stays in view while the story waits.
+        if (campNode != null || waitingTown != null)
           const Padding(
             padding: EdgeInsets.only(top: 12),
             child: QuestTrackerBar(),
           ),
         if (campNode != null) _CampSceneCard(node: campNode),
+        if (waitingTown?.settlement != null)
+          Card(
+            margin: const EdgeInsets.only(top: 12),
+            child: ListTile(
+              key: const Key('camp_story_waits'),
+              leading: const Icon(Icons.location_city_outlined),
+              title: Text(tr(ref, 'camp_story_waits')
+                  .replaceAll('{place}', waitingTown!.settlement!.nameFor(fr))),
+              subtitle:
+                  Text(campRouteLabel(ref, waitingTown.settlement!, ports)),
+            ),
+          ),
 
         section(tr(ref, 'camp_party_section'),
             trailing: '${tr(ref, 'active_party_label')}: '
@@ -206,7 +230,7 @@ class CampScreen extends ConsumerWidget {
             ),
 
         section(tr(ref, 'camp_expeditions_section')),
-        if (blockers.isNotEmpty && campNode != null)
+        if (blockers.isNotEmpty && (campNode != null || waitingTown != null))
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
@@ -697,7 +721,8 @@ class _HouseCard extends ConsumerWidget {
 
 /// The way on from the camp: once the expeditions on its shore are
 /// cleared, a last look at who comes along, then the story's own ways out
-/// of the camp's scene. Until then, what is left to clear.
+/// of the camp's scene, or (gone back to the camp from a town) the way
+/// back to that town. Until then, what is left to clear.
 Future<void> leaveCamp(BuildContext context, WidgetRef ref) async {
   final zones = ref.read(localizedDbProvider(zonesSchema)).value ?? const {};
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
@@ -751,15 +776,23 @@ Future<void> leaveCamp(BuildContext context, WidgetRef ref) async {
     );
     return;
   }
-  final choice = await showModalBottomSheet<StoryChoice>(
+  final picked = await showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
     builder: (_) => const _LeaveCampSheet(),
   );
-  if (choice == null || !context.mounted) return;
-  await takeStoryChoice(context, ref, choice);
+  if (picked == null || !context.mounted) return;
+  if (picked is StoryChoice) {
+    await takeStoryChoice(context, ref, picked);
+  } else if (picked == _setOut) {
+    await travelToWaitingTown(context, ref);
+  }
 }
+
+/// The leave sheet's answer when the party sets out for the town where the
+/// story waits.
+const Object _setOut = 'set_out';
 
 /// Who comes along (changeable here), then the camp scene's ways out.
 class _LeaveCampSheet extends ConsumerWidget {
@@ -775,8 +808,16 @@ class _LeaveCampSheet extends ConsumerWidget {
         ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
     final houses =
         ref.watch(localizedDbProvider(housesSchema)).value ?? const {};
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value ?? const {};
     final theme = Theme.of(context);
-    final choices = node == null || story == null
+    // Gone back to the camp from a town, the way on is back to that town;
+    // at the camp's own scene, its ways out.
+    final waitingTown = node != null &&
+            !(node.settlement?.isCamp ?? false) &&
+            session.campVisitFromNodeId == node.id
+        ? node.settlement
+        : null;
+    final choices = node == null || story == null || waitingTown != null
         ? const <StoryChoice>[]
         : node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
     final recruitedIds =
@@ -860,6 +901,23 @@ class _LeaveCampSheet extends ConsumerWidget {
             Text(tr(ref, 'camp_leave_way_label'),
                 style: theme.textTheme.titleSmall),
             const SizedBox(height: 4),
+            if (waitingTown != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: FilledButton.tonal(
+                  key: const Key('leave_set_out'),
+                  style: FilledButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  onPressed: () => Navigator.of(context).pop(_setOut),
+                  child: Text(
+                    '${tr(ref, 'camp_set_out_button').replaceAll('{place}', waitingTown.nameFor(fr))}'
+                    ' · ${campRouteLabel(ref, waitingTown, ports)}',
+                  ),
+                ),
+              ),
             for (final choice in choices)
               Padding(
                 padding: const EdgeInsets.only(top: 6),

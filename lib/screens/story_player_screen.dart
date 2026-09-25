@@ -14,6 +14,7 @@ import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
 import '../data/narration_tokens.dart';
 import '../data/port_helpers.dart';
+import '../data/camp_state.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
@@ -42,6 +43,7 @@ import '../providers/tutorial_provider.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_tracker.dart';
@@ -254,7 +256,7 @@ class _StoryView extends ConsumerWidget {
     // ModalRoute.of makes this rebuild when a covering route goes away. At
     // the camp the Story tab is closed (the camp stands in its place).
     final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
-        !(ref.watch(storyAtCampProvider) &&
+        !(ref.watch(partyAtCampProvider) &&
             ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
     // Picking a saved story back up: a short recap, once per launch.
@@ -1557,6 +1559,16 @@ class _HubSections extends ConsumerWidget {
                 ),
               ],
             ),
+            // Once the camp stands, a town is somewhere away from it: the
+            // way back, while the story waits here.
+            if (settlement != null &&
+                !isExcursion &&
+                canReturnToCampFrom(node,
+                    inExcursion: isExcursion, flags: session.flags))
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: CampReturnButton(settlement: settlement),
+              ),
             if (services.isNotEmpty)
               Flexible(
                 flex: 3,

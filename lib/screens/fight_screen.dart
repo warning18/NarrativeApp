@@ -440,7 +440,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
     _itemSets = parseItemSets(itemSetsDb);
     _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice, skillTrees);
+        items, _itemSets, houses, dice, skillTrees, skills);
     _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in

@@ -62,6 +62,50 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Le camp a encore besoin de vous sur son propre rivage. Terminez ces expéditions, puis repartez :',
   },
+  'camp_return_button': {
+    AppLanguage.en: 'Back to the camp',
+    AppLanguage.fr: 'Retour au camp',
+  },
+  'camp_route_walk': {
+    AppLanguage.en: 'a day’s walk',
+    AppLanguage.fr: 'une journée de marche',
+  },
+  'camp_route_sail': {
+    AppLanguage.en: '{n} days at sea',
+    AppLanguage.fr: '{n} jours de mer',
+  },
+  'camp_walked_back': {
+    AppLanguage.en: 'You walk back to the camp.',
+    AppLanguage.fr: 'Vous rentrez au camp à pied.',
+  },
+  'camp_walked_out': {
+    AppLanguage.en: 'You walk back to {place}.',
+    AppLanguage.fr: 'Vous regagnez {place} à pied.',
+  },
+  'camp_away_title': {
+    AppLanguage.en: 'Away from the camp',
+    AppLanguage.fr: 'Loin du camp',
+  },
+  'camp_away_body': {
+    AppLanguage.en:
+        'The story has taken you away from the camp. From a town you can go back to it: its expeditions, its works and Harbor, and your companions’ gear, skills and dice are there.',
+    AppLanguage.fr:
+        'Le récit se poursuit loin du camp. Depuis une ville, vous pouvez y retourner : ses expéditions, ses ouvrages et son port, ainsi que l’équipement, les compétences et les dés de vos compagnons s’y trouvent.',
+  },
+  'camp_away_town_body': {
+    AppLanguage.en:
+        'You are in {place}, {route} from the camp. Its expeditions, its works and Harbor, and your companions’ gear, skills and dice are there. The story waits here until you come back.',
+    AppLanguage.fr:
+        'Vous êtes à {place}, à {route} du camp. Ses expéditions, ses ouvrages et son port, ainsi que l’équipement, les compétences et les dés de vos compagnons s’y trouvent. Le récit vous attend ici jusqu’à votre retour.',
+  },
+  'camp_story_waits': {
+    AppLanguage.en: 'The story waits at {place}',
+    AppLanguage.fr: 'Le récit vous attend à {place}',
+  },
+  'camp_set_out_button': {
+    AppLanguage.en: 'Set out for {place}',
+    AppLanguage.fr: 'Repartir pour {place}',
+  },
   'camp_sail_section': {
     AppLanguage.en: 'Set sail',
     AppLanguage.fr: 'Prendre la mer',
@@ -1691,18 +1735,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'arrival_town_away_body': {
     AppLanguage.en:
         'You are away from camp. The shops, people and challenges here are '
-            'listed under the story, and "Rest at camp" walks you back there '
-            'for the night. The camp itself, your companions and what you '
-            'build open again when the story brings you home; meanwhile the '
-            'Ship tab can take the Rusty Eel to other ports. When you want to '
-            'go on with the story, open "Move on" at the bottom.',
+            'listed under the story, and "Back to the camp" takes you home '
+            'to its expeditions, works and companions while the story waits '
+            'here: a walk, or a voyage on the Rusty Eel. When you want to go '
+            'on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
         "Vous êtes loin du camp. Les boutiques, habitants et défis d’ici sont "
-            "listés sous le récit, et « Se reposer au camp » vous y ramène pour "
-            "la nuit. Le camp lui-même, vos compagnons et vos ouvrages "
-            "rouvrent quand le récit vous ramène chez vous ; d’ici là, l’onglet "
-            "Navire peut mener le Rusty Eel vers d’autres ports. Quand vous "
-            "voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.",
+            "listés sous le récit, et « Retour au camp » vous ramène à ses "
+            "expéditions, ses ouvrages et vos compagnons pendant que le récit "
+            "vous attend ici : à pied, ou par la mer à bord du Rusty Eel. "
+            "Quand vous voudrez reprendre la route, ouvrez « Quitter les "
+            "lieux » en bas.",
   },
   'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
   'story_end_message': {
@@ -2246,6 +2289,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
   'skill_faces_title': {AppLanguage.en: 'Faces', AppLanguage.fr: 'Faces'},
+  'skill_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
+  'skill_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commune'},
+  'skill_rarity_uncommon': {
+    AppLanguage.en: 'Uncommon',
+    AppLanguage.fr: 'Peu commune',
+  },
+  'skill_rarity_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'skill_rarity_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'skill_rarity_legendary': {
+    AppLanguage.en: 'Legendary',
+    AppLanguage.fr: 'Légendaire',
+  },
+  'skill_faces_limit_hint': {
+    AppLanguage.en:
+        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary.',
+    AppLanguage.fr:
+        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire.',
+  },
+  'skill_faces_count': {
+    AppLanguage.en: '{rarity} · on {n}/{max} faces',
+    AppLanguage.fr: '{rarity} · sur {n}/{max} faces',
+  },
+  'skill_faces_full': {
+    AppLanguage.en: '{rarity} · already on {max} faces of this die',
+    AppLanguage.fr: '{rarity} · déjà sur {max} faces de ce dé',
+  },
+  'skill_max_faces': {
+    AppLanguage.en: '{rarity} · {max} faces per die at most',
+    AppLanguage.fr: '{rarity} · {max} faces par dé au plus',
+  },
+  'face_over_limit_label': {
+    AppLanguage.en: 'Over its limit: the face does its own action',
+    AppLanguage.fr: 'Au-delà de sa limite : la face fait son action de base',
+  },
   'drag_skill_hint': {
     AppLanguage.en:
         'Each face casts the skill it shows. Tap an open face (pencil) to choose its skill, or drag a skill below onto it. Locked faces are the die\'s own signature.',

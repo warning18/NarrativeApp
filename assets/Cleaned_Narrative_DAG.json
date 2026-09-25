@@ -4191,7 +4191,8 @@
     "settlement": {
       "kind": "town",
       "name": "The Drowned Cloister",
-      "name_fr": "Le Cloître noyé"
+      "name_fr": "Le Cloître noyé",
+      "landingPortId": "port_drowned_stair"
     }
   },
   "5010_archivist": {
@@ -4650,7 +4651,8 @@
     "settlement": {
       "kind": "town",
       "name": "The Reliquary Quarter",
-      "name_fr": "Le Quartier des Reliquaires"
+      "name_fr": "Le Quartier des Reliquaires",
+      "landingPortId": "port_black_reliquary"
     }
   },
   "6010_chartkeeper": {

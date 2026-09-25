@@ -8,6 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.145.0+174]
+
+The camp is reachable from every town, and a skill can't fill a die.
+
+### Added
+- **Back to the camp, from any town once the camp stands.** The Ashen
+  Quarter, the Drowned Cloister and the Reliquary Quarter each show "Back to
+  the camp" with how far it is. The story waits in the town while the party
+  is at the camp: its expeditions, its works and Harbor, the voyages out,
+  and the companions' gear, skills and dice.
+- **Set out for the town again from the camp.** The camp shows where the
+  story waits. Its small leave button becomes "Set out for {town}", with a
+  last look at who comes along, and the Story tab comes back on the town.
+- **The boat between the camp and a town.** The Ashen Quarter is a day's
+  walk inland; the Drowned Cloister (the Drowned Stair) and the Reliquary
+  Quarter (its river gate) are voyages on the Rusty Eel, sea events and
+  raiders included, both ways. New `landingPortId` on a story settlement
+  names the port a town's voyage lands at.
+- **Skill rarity.** Every skill has a rarity (common, uncommon, rare, epic,
+  legendary; new `rarity` field in skills.json, set from each skill's
+  strength), and a skill fits on at most 3 faces of a die if common, 2 if
+  uncommon or rare, and 1 if epic or legendary. A die's own fixed faces
+  count toward it; its open faces left as Heavy Blow don't.
+- The dice loadout shows each skill's rarity and how many of its faces it
+  already takes; the picker greys out a skill at its limit, and a dragged
+  skill won't drop on one face too many. The skill tree's sheet shows the
+  rarity too.
+
+### Changed
+- Away from the camp, the Camp tab is the way back to it (from a town) and
+  the Rusty Eel's state; it is the Ship tab only while the Eel is out on an
+  expedition from the camp.
+- A voyage back to the camp takes as long as the voyage out to the port it
+  leaves (it took the home cove's 2 days from anywhere).
+- Fights apply the rarity limits to saved dice: a skill set on more faces
+  than it may take keeps its first faces, and the others do their own action
+  (shown as "Over its limit" in the loadout).
+
 ## [1.144.0+173]
 
 Skills grow on a tree, and the player has to pick a path; companions keep

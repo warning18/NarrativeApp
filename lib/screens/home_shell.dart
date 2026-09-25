@@ -14,6 +14,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
+import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
@@ -27,9 +28,10 @@ import 'story_player_screen.dart';
 import 'world_map_screen.dart';
 
 /// The game under the main menu. In play: Story, Character, Camp and
-/// Other (quests, shops, bestiary, people, saves); while the story stands
-/// at the camp, the camp takes the Story tab's place until the party
-/// leaves, and away from it the Camp tab is the ship. In Edit Mode: Story,
+/// Other (quests, shops, bestiary, people, saves); while the party is at
+/// the camp (its scene, or gone back to it from a town), the camp takes
+/// the Story tab's place until the party leaves; away from it the Camp tab
+/// is the way back, and the ship while the Eel is out. In Edit Mode: Story,
 /// Play, Generate and Data. The header opens a map in both: the story's
 /// scenes in Edit Mode, the world the story has reached in play.
 class HomeShell extends ConsumerStatefulWidget {
@@ -125,7 +127,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ref.read(playerSessionProvider.notifier).arriveAtPort(home);
       }
     });
-    ref.listen<bool>(storyAtCampProvider, (previous, next) {
+    ref.listen<bool>(partyAtCampProvider, (previous, next) {
       if (previous == null ||
           previous == next ||
           ref.read(appModeProvider) == AppMode.edit) {
@@ -137,8 +139,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final screens = isEditMode ? _editScreens : _inGameScreens;
     final presence = ref.watch(campPresenceProvider);
-    final atCampTab =
-        presence == CampPresence.atCamp || presence == CampPresence.notYet;
+    // The camp's tab is the ship only while the Eel is out on an
+    // expedition from the camp.
+    final atCampTab = presence != CampPresence.sailedOut;
     final titles = isEditMode
         ? [
             tr(ref, 'title_story'),
@@ -155,7 +158,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final language = ref.watch(appLanguageProvider);
     // While the story stands at the camp its tab is closed: the tabs are
     // Camp, Character and Other, and the Story tab's index means the camp.
-    final storyHidden = !isEditMode && ref.watch(storyAtCampProvider);
+    final storyHidden = !isEditMode && ref.watch(partyAtCampProvider);
     final visibleTabs =
         storyHidden ? const [_campTab, 1, 3] : const [0, 1, 2, 3];
     var index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
@@ -275,9 +278,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 /// The Camp tab's index among the play-mode tabs.
 const int _campTab = 2;
 
-/// The Camp tab: the camp while the story stands at it, the Rusty Eel
-/// when the party has sailed out or the story has taken it away, and
-/// before chapter 3 a word on what it will be.
+/// The Camp tab: the camp while the party is at it, the Rusty Eel while
+/// it has sailed out from it, the way back to it when the story has taken
+/// the party away, and before chapter 3 a word on what it will be.
 class _CampTab extends ConsumerWidget {
   const _CampTab();
 
@@ -287,8 +290,9 @@ class _CampTab extends ConsumerWidget {
       case CampPresence.atCamp:
         return const CampScreen(embedded: true);
       case CampPresence.sailedOut:
-      case CampPresence.away:
         return const ShipScreen(embedded: true);
+      case CampPresence.away:
+        return const CampAwayView();
       case CampPresence.notYet:
         break;
     }

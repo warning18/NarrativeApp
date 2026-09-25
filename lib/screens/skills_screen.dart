@@ -1167,6 +1167,15 @@ class _SkillTreeView extends ConsumerWidget {
                   '${branch.name} · ${index + 1}/${branch.skillIds.length}',
                   style: theme.textTheme.labelMedium,
                 ),
+                // How many faces of a die it may take.
+                Text(
+                  tr(ref, 'skill_max_faces')
+                      .replaceAll(
+                          '{rarity}', tr(ref, skillRarity(skill).labelKey))
+                      .replaceAll('{max}', '${maxFacesForSkill(skill)}'),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: skillRarity(skill).color),
+                ),
                 const SizedBox(height: 8),
                 Text(skill['description']?.toString() ?? '',
                     style: theme.textTheme.bodyMedium),

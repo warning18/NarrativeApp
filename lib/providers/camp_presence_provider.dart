@@ -7,13 +7,16 @@ import 'game_db_providers.dart';
 import 'player_session_provider.dart';
 import 'story_providers.dart';
 
-/// Whether the story stands at the camp (a camp's scene, not a detour
-/// from it). While it does, the Story tab gives way to the camp.
-final storyAtCampProvider = Provider<bool>((ref) {
+/// Whether the party is at the camp: the story at a camp's scene (not a
+/// detour from it), or the party gone back to it from the town where the
+/// story waits. While it is, the Story tab gives way to the camp.
+final partyAtCampProvider = Provider<bool>((ref) {
   final play = ref.watch(storyPlayProvider);
   final story = ref.watch(storyDataProvider).value;
-  return storyAtCamp(story?.nodeFor(play.currentNodeId),
-      inExcursion: play.isInExcursion);
+  return partyAtCamp(story?.nodeFor(play.currentNodeId),
+      inExcursion: play.isInExcursion,
+      campVisitFromNodeId: ref
+          .watch(playerSessionProvider.select((s) => s.campVisitFromNodeId)));
 });
 
 /// Where the party stands relative to its camp (see [CampPresence]).
@@ -25,7 +28,7 @@ final campPresenceProvider = Provider<CampPresence>((ref) {
       ref.watch(playerSessionProvider.select((s) => s.currentPortId));
   return campPresenceFor(
     chapter: chapter,
-    atCampScene: ref.watch(storyAtCampProvider),
+    atCampScene: ref.watch(partyAtCampProvider),
     ports: ports,
     savedPortId: savedPortId,
   );

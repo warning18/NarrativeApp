@@ -16,6 +16,7 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
+import 'package:narrative_data_app/screens/voyage_screen.dart';
 
 Map<String, dynamic> _data(String name) =>
     json.decode(File('assets/gamedata/$name.json').readAsStringSync())
@@ -29,11 +30,21 @@ Future<void> _settle(WidgetTester tester) async {
   }
 }
 
+/// Lets a notice (a few seconds on screen, over everything) go.
+Future<void> _waitOutNotices(WidgetTester tester) async {
+  await tester.pump(const Duration(seconds: 3));
+  await _settle(tester);
+}
+
 Finder _tab(String label) =>
     find.descendant(of: find.byType(NavigationBar), matching: find.text(label));
 
 StoryNode _node(Map<String, dynamic> settlement) => StoryNode.fromJson('n',
     {'id': 'n', 'description': '', 'choices': [], 'settlement': settlement});
+
+Map<String, dynamic> _story() =>
+    json.decode(File('assets/Cleaned_Narrative_DAG.json').readAsStringSync())
+        as Map<String, dynamic>;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -67,6 +78,40 @@ void main() {
       expect(presence(3, true, 'port_ashen_landing'), CampPresence.atCamp);
       expect(presence(3, true, 'port_smugglers_wharf'), CampPresence.sailedOut);
       expect(presence(4, false, 'port_drowned_stair'), CampPresence.away);
+    });
+
+    test('from a town once the camp stands, the party can go back to it', () {
+      const flags = ['camp_founded'];
+      expect(canReturnToCampFrom(_node(town), inExcursion: false, flags: flags),
+          isTrue);
+      expect(
+          canReturnToCampFrom(_node(town), inExcursion: false, flags: const []),
+          isFalse);
+      expect(canReturnToCampFrom(_node(town), inExcursion: true, flags: flags),
+          isFalse);
+      expect(canReturnToCampFrom(_node(camp), inExcursion: false, flags: flags),
+          isFalse);
+      // Gone back from the town, the party is at the camp while the story
+      // waits there.
+      final node = _node(town);
+      expect(partyAtCamp(node, inExcursion: false, campVisitFromNodeId: 'n'),
+          isTrue);
+      expect(partyAtCamp(node, inExcursion: false, campVisitFromNodeId: ''),
+          isFalse);
+      expect(
+          partyAtCamp(node, inExcursion: false, campVisitFromNodeId: 'other'),
+          isFalse);
+    });
+
+    test('a town is a walk from the camp, or a voyage to its landing', () {
+      final story = _story();
+      final nodes = (story['nodes'] ?? story) as Map<String, dynamic>;
+      String? landing(String id) => landingPortIdFor(
+          StoryNode.fromJson(id, nodes[id] as Map<String, dynamic>).settlement,
+          ports);
+      expect(landing('3005'), isNull);
+      expect(landing('5010'), 'port_drowned_stair');
+      expect(landing('6010'), 'port_black_reliquary');
     });
 
     test('leaving asks for the camp shore\'s expeditions of the chapter', () {
@@ -194,12 +239,52 @@ void main() {
     expect(find.text('Leave the camp'), findsOneWidget);
     await tester.tap(find.byKey(const Key('leave_choice_3005')));
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, isNot('3001_camp'));
+    expect(container.read(storyPlayProvider).currentNodeId, '3005');
     expect(_tab('Story'), findsOneWidget);
-    // Away from the camp, its tab is the ship.
-    expect(_tab('Ship'), findsOneWidget);
     expect(
         container.read(playerSessionProvider).flags, contains('camp_founded'));
+
+    // In the Ashen Quarter (its welcome first), the camp is a walk away:
+    // back to it from the town, while the story waits there.
+    await _waitOutNotices(tester);
+    await tester.tap(find.text('Go in', skipOffstage: false));
+    await _settle(tester);
+    expect(_tab('Camp'), findsOneWidget);
+    expect(_tab('Ship'), findsNothing);
+    expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
+    await tester.tap(_tab('Camp'));
+    await _settle(tester);
+    expect(find.byKey(const Key('camp_return')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('camp_return')));
+    await _settle(tester);
+    expect(container.read(playerSessionProvider).campVisitFromNodeId, '3005');
+    await _waitOutNotices(tester);
+    expect(_tab('Story'), findsNothing);
+    expect(find.byKey(const Key('camp_story_waits')), findsOneWidget);
+    expect(find.text('Set out for The Ashen Quarter'), findsOneWidget);
+
+    // Setting out walks back to the town; the story is where it was.
+    await tester.tap(find.byKey(const Key('camp_leave')));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('leave_set_out')));
+    await _settle(tester);
+    expect(container.read(playerSessionProvider).campVisitFromNodeId, '');
+    expect(container.read(storyPlayProvider).currentNodeId, '3005');
+    await _waitOutNotices(tester);
+    expect(_tab('Story'), findsOneWidget);
+
+    // The Drowned Cloister is across the water: the way back is a voyage.
+    container.read(storyPlayProvider.notifier).jumpTo('5010');
+    await _settle(tester);
+    await tester.tap(find.text('Go in', skipOffstage: false));
+    await _settle(tester);
+    await tester.tap(_tab('Camp'));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('camp_return')));
+    await _settle(tester);
+    expect(find.byType(VoyageScreen), findsOneWidget);
+    expect(container.read(playerSessionProvider).currentPortId,
+        'port_drowned_stair');
     await tester.pump(const Duration(seconds: 5));
   });
 }

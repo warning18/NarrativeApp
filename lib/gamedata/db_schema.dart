@@ -78,6 +78,15 @@ const List<String> equipSlotOptions = [
   'Foot',
 ];
 
+/// A skill's rarity: how many faces of one die it may take.
+const List<String> skillRarityOptions = [
+  'common',
+  'uncommon',
+  'rare',
+  'epic',
+  'legendary',
+];
+
 const List<String> elementOptions = [
   'None',
   'Fire',
@@ -443,6 +452,17 @@ final DbSchema skillsSchema = DbSchema(
     ),
     FieldSchema(
         key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
+    // How many faces of one die the skill may take (dice_faces.dart's
+    // skillRarityFaceLimits): common 3, uncommon and rare 2, epic and
+    // legendary 1.
+    FieldSchema(
+      key: 'rarity',
+      label:
+          'Rarity (faces per die: common 3, uncommon/rare 2, epic/legendary 1)',
+      type: FieldType.enumeration,
+      enumOptions: skillRarityOptions,
+      defaultValue: 'uncommon',
+    ),
     FieldSchema(
       key: 'requiredSkillID',
       label: 'Required Skill ID',

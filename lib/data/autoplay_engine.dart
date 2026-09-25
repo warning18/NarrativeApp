@@ -186,8 +186,11 @@ Future<bool> _simulateFight({
   final playerArmor = session.baseArmor +
       equipmentBonusFor(session.equippedItemIds, items, 'armor') +
       playerScalingBonus.armorBonus;
-  final assignments = session.diceSkillAssignments[session.equippedDiceId] ??
-      const <String, String>{};
+  final assignments = limitedFaceAssignments(
+      diceFaces,
+      session.diceSkillAssignments[session.equippedDiceId] ??
+          const <String, String>{},
+      skills);
 
   var enemyHealth = scaledMaxHealth(
       (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);

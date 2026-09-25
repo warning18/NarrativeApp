@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../combat/dice_faces.dart';
 import '../combat/status_effect.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -45,6 +46,20 @@ extension FaceKindStyle on FaceKind {
         FaceKind.weaken => 'face_kind_weaken',
         FaceKind.empty => 'face_kind_empty',
       };
+}
+
+/// A skill's rarity as the player reads it: a name and a colour, grey
+/// through green, blue and purple to orange.
+extension SkillRarityStyle on SkillRarity {
+  Color get color => switch (this) {
+        SkillRarity.common => const Color(0xFF9E9E9E),
+        SkillRarity.uncommon => const Color(0xFF43A047),
+        SkillRarity.rare => const Color(0xFF1E88E5),
+        SkillRarity.epic => const Color(0xFF8E24AA),
+        SkillRarity.legendary => const Color(0xFFFB8C00),
+      };
+
+  String get labelKey => 'skill_rarity_$name';
 }
 
 /// What [skill] does, as a [FaceKind]: the status it lays if any, then
