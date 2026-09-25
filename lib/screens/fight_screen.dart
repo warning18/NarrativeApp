@@ -19,7 +19,7 @@ import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
-import '../data/chapter_spine.dart';
+import '../data/chapter_loop.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';

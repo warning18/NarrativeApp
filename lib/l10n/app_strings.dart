@@ -13,23 +13,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'nav_ship': {AppLanguage.en: 'Ship', AppLanguage.fr: 'Navire'},
-  'camp_leave_button': {
-    AppLanguage.en: 'Leave camp',
-    AppLanguage.fr: 'Quitter le camp',
-  },
-  'camp_leave_title': {
-    AppLanguage.en: 'Leave the camp',
-    AppLanguage.fr: 'Quitter le camp',
-  },
-  'camp_leave_way_label': {
-    AppLanguage.en: 'Where to',
-    AppLanguage.fr: 'Pour aller où',
-  },
-  'camp_leave_alone': {
-    AppLanguage.en: 'No companion at the fire yet: you set out alone.',
-    AppLanguage.fr:
-        'Aucun compagnon au coin du feu pour l’instant : vous partez sans personne.',
-  },
   'camp_party_section': {
     AppLanguage.en: 'Who comes along',
     AppLanguage.fr: 'Qui vous accompagne',
@@ -46,25 +29,65 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Expeditions from the camp',
     AppLanguage.fr: 'Expéditions depuis le camp',
   },
-  'camp_exit_needs_note': {
-    AppLanguage.en:
-        'The expeditions on the camp’s shore come first: clear them before the story can move on.',
-    AppLanguage.fr:
-        'Les expéditions sur le rivage du camp passent d’abord : terminez-les avant que le récit puisse reprendre.',
-  },
-  'camp_exit_blocked_title': {
-    AppLanguage.en: 'Not yet',
-    AppLanguage.fr: 'Pas encore',
-  },
-  'camp_exit_blocked_body': {
-    AppLanguage.en:
-        'The camp still needs you on its own shore. Clear these expeditions, then set out:',
-    AppLanguage.fr:
-        'Le camp a encore besoin de vous sur son propre rivage. Terminez ces expéditions, puis repartez :',
-  },
   'camp_return_button': {
     AppLanguage.en: 'Back to the camp',
     AppLanguage.fr: 'Retour au camp',
+  },
+  'travel_walked_to': {
+    AppLanguage.en: 'You walk to {place}.',
+    AppLanguage.fr: 'Vous gagnez {place} à pied.',
+  },
+  'travel_road_to': {
+    AppLanguage.en: 'The road to {place}',
+    AppLanguage.fr: 'La route de {place}',
+  },
+  'travel_road_to_camp': {
+    AppLanguage.en: 'The road back to the camp',
+    AppLanguage.fr: 'La route du camp',
+  },
+  'travel_on_button': {
+    AppLanguage.en: 'Travel on',
+    AppLanguage.fr: 'Aller ailleurs',
+  },
+  'travel_on_title': {
+    AppLanguage.en: 'Where to next',
+    AppLanguage.fr: 'Et maintenant, où ?',
+  },
+  'places_section': {
+    AppLanguage.en: 'Places you know',
+    AppLanguage.fr: 'Lieux connus',
+  },
+  'places_empty': {
+    AppLanguage.en:
+        'No place found yet. Expeditions find them: a town, a village, a ruin worth the walk.',
+    AppLanguage.fr:
+        'Aucun lieu trouvé pour l’instant. Les expéditions les révèlent : une ville, un village, une ruine qui vaut la marche.',
+  },
+  'place_kind_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
+  'place_kind_village': {AppLanguage.en: 'Village', AppLanguage.fr: 'Village'},
+  'place_kind_site': {AppLanguage.en: 'Site', AppLanguage.fr: 'Site'},
+  'place_kind_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Camp'},
+  'place_progress': {
+    AppLanguage.en: '{done}/{total} done',
+    AppLanguage.fr: '{done}/{total} faits',
+  },
+  'place_go_button': {AppLanguage.en: 'Go', AppLanguage.fr: 'Y aller'},
+  'place_found_line': {
+    AppLanguage.en: 'New place: {place}. You can travel there now.',
+    AppLanguage.fr:
+        'Nouveau lieu : {place}. Vous pouvez désormais vous y rendre.',
+  },
+  'chapter_progress': {
+    AppLanguage.en: 'Explored: {done} of {goal}',
+    AppLanguage.fr: 'Exploré : {done} sur {goal}',
+  },
+  'main_quest_label': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'main_quest_needs_place': {
+    AppLanguage.en: 'Visit {place} first.',
+    AppLanguage.fr: 'Visitez d’abord {place}.',
   },
   'camp_route_walk': {
     AppLanguage.en: 'a day’s walk',
@@ -78,33 +101,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'You walk back to the camp.',
     AppLanguage.fr: 'Vous rentrez au camp à pied.',
   },
-  'camp_walked_out': {
-    AppLanguage.en: 'You walk back to {place}.',
-    AppLanguage.fr: 'Vous regagnez {place} à pied.',
-  },
   'camp_away_title': {
     AppLanguage.en: 'Away from the camp',
     AppLanguage.fr: 'Loin du camp',
   },
   'camp_away_body': {
     AppLanguage.en:
-        'The story has taken you away from the camp. From a town you can go back to it: its expeditions, its works and Harbor, and your companions’ gear, skills and dice are there.',
+        'The story has taken you away from the camp. You will be back at the fire when this road ends.',
     AppLanguage.fr:
-        'Le récit se poursuit loin du camp. Depuis une ville, vous pouvez y retourner : ses expéditions, ses ouvrages et son port, ainsi que l’équipement, les compétences et les dés de vos compagnons s’y trouvent.',
+        'Le récit se poursuit loin du camp. Vous retrouverez le feu au bout de cette route.',
   },
   'camp_away_town_body': {
     AppLanguage.en:
-        'You are in {place}, {route} from the camp. Its expeditions, its works and Harbor, and your companions’ gear, skills and dice are there. The story waits here until you come back.',
+        'You are in {place}, {route} from the camp. The camp is your base: your companions’ gear, skills and dice, the works and the Harbor are there. Go back whenever you like.',
     AppLanguage.fr:
-        'Vous êtes à {place}, à {route} du camp. Ses expéditions, ses ouvrages et son port, ainsi que l’équipement, les compétences et les dés de vos compagnons s’y trouvent. Le récit vous attend ici jusqu’à votre retour.',
-  },
-  'camp_story_waits': {
-    AppLanguage.en: 'The story waits at {place}',
-    AppLanguage.fr: 'Le récit vous attend à {place}',
-  },
-  'camp_set_out_button': {
-    AppLanguage.en: 'Set out for {place}',
-    AppLanguage.fr: 'Repartir pour {place}',
+        'Vous êtes à {place}, à {route} du camp. Le camp est votre base : l’équipement, les compétences et les dés de vos compagnons, les ouvrages et le port s’y trouvent. Revenez-y quand vous voulez.',
   },
   'camp_sail_section': {
     AppLanguage.en: 'Set sail',
@@ -1750,18 +1761,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'arrival_town_away_body': {
     AppLanguage.en:
-        'You are away from camp. The shops, people and challenges here are '
-            'listed under the story, and "Back to the camp" takes you home '
-            'to its expeditions, works and companions while the story waits '
-            'here: a walk, or a voyage on the Rusty Eel. When you want to go '
-            'on with the story, open "Move on" at the bottom.',
+        'You arrive at {place}. Its shops, people and challenges are listed under the story, and everything you do here counts toward the chapter. "Back to the camp" takes you home; "Travel on" takes you to the other places you know.',
     AppLanguage.fr:
-        "Vous êtes loin du camp. Les boutiques, habitants et défis d’ici sont "
-            "listés sous le récit, et « Retour au camp » vous ramène à ses "
-            "expéditions, ses ouvrages et vos compagnons pendant que le récit "
-            "vous attend ici : à pied, ou par la mer à bord du Rusty Eel. "
-            "Quand vous voudrez reprendre la route, ouvrez « Quitter les "
-            "lieux » en bas.",
+        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont listés sous le récit, et tout ce que vous y faites compte pour le chapitre. « Retour au camp » vous ramène à la base ; « Aller ailleurs » vous mène vers les autres lieux connus.',
   },
   'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
   'story_end_message': {
@@ -2632,6 +2634,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'banner_piece_reliquary_thread': {
     AppLanguage.en: 'The reliquary thread',
     AppLanguage.fr: 'Le fil du reliquaire',
+  },
+  'banner_piece_white_fleet_sail': {
+    AppLanguage.en: 'The White Fleet’s sail',
+    AppLanguage.fr: 'La voile de la Flotte Blanche',
+  },
+  'banner_piece_sovereign_mantle': {
+    AppLanguage.en: 'The Sovereign’s mantle',
+    AppLanguage.fr: 'Le manteau du Souverain',
   },
   'grants_banner_piece_id': {
     AppLanguage.en: 'Grants Banner piece (id)',
@@ -4169,6 +4179,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zone_flag_shroud_vigil_cleared': {
     AppLanguage.en: 'The Shroud’s vigil, kept',
     AppLanguage.fr: 'La Veillée du Linceul, tenue',
+  },
+  'zone_flag_glass_strand_cleared': {
+    AppLanguage.en: 'The Glass Strand, crossed',
+    AppLanguage.fr: 'La Grève de Verre, traversée',
+  },
+  'zone_flag_white_fleet_grave_cleared': {
+    AppLanguage.en: 'The White Fleet’s grave, silent',
+    AppLanguage.fr: 'Le Tombeau de la Flotte Blanche, silencieux',
   },
   'zone_flag_void_sovereign_fallen': {
     AppLanguage.en: 'The Void Sovereign, fallen',

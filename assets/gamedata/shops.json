@@ -497,5 +497,42 @@
     "detourEligible": true,
     "shopName_fr": "La Dernière Lanterne",
     "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
+  },
+  "anchorage_chandlery": {
+    "shopID": "anchorage_chandlery",
+    "shopName": "The Wreck-Wrights’ Chandlery",
+    "shopDescription": "What the sea gave back to the White Anchorage and what its wreck-wrights made of it: salves in pilgrim flasks, blades reforged from the fleet’s own.",
+    "unlockLevel": 11,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "antidote",
+      "charm_warding",
+      "tome_of_insight",
+      "spear_t9",
+      "shield_t9",
+      "tear_glass_blade"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Weapon",
+      "Artifact"
+    ],
+    "diceStock": [
+      "tearglass_die"
+    ],
+    "stockQuantities": {
+      "potion_major": 6,
+      "antidote": 3,
+      "charm_warding": 2,
+      "tome_of_insight": 1,
+      "spear_t9": 1,
+      "shield_t9": 1,
+      "tear_glass_blade": 1
+    },
+    "minChapter": 6,
+    "detourEligible": false,
+    "shopName_fr": "La Chandlerie des charpentiers d’épaves",
+    "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte."
   }
 }

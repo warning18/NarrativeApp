@@ -5,6 +5,7 @@ class ShopIcons {
   static String pathFor(String shopId) => 'assets/icons/shops/$shopId.png';
 
   static const List<String> allIds = [
+    'anchorage_chandlery',
     'apothecary_row',
     'arcane_academy',
     'arcane_bazaar',

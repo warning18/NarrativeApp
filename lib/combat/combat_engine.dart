@@ -515,6 +515,7 @@ const Set<String> soloOnlyEnemyIds = {
   'void_stalker',
   'hollow_court_inquisitor',
   'void_archon',
+  'white_admiral',
   'void_sovereign',
   // The story's own duels: a turned companion, the legate's champion, the
   // masked penitent -- never a random draw, never a pack, never Elite.
@@ -546,6 +547,7 @@ const Set<String> zoneBossEnemyIds = {
   'iron_golem',
   'bone_warden',
   'tear_spawn',
+  'strand_colossus',
 };
 
 /// Whether [enemyId] may be drawn at random (a detour, an expedition's

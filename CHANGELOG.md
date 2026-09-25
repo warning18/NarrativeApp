@@ -8,6 +8,81 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.147.0+176]
+
+The camp is the base from chapter 3 on. Each chapter is explored from it,
+and its main quest opens once enough of it has been done.
+
+### Added
+- **Open chapters** (`assets/gamedata/chapters.json`, `chapter_loop.dart`).
+  Chapters 3 to 6 and the Ending each stand at the camp. The camp's
+  Chapter card shows how much is explored ("Explored: 4 of 6") and the
+  chapter's main quest. The main quest stays shut until six things are
+  done and its key place has been visited. A thing done is one of the
+  chapter's expeditions cleared, or an activity in one of its places.
+- **Places are found by expeditions** (zones.json `discoversPlaceIds`):
+  the first at the expedition's midpoint, all of them on clearing it.
+  The camp lists the places found, with how far they are and how much of
+  each is done.
+- **Travel between the camp and the places.** A place on the camp's shore
+  is a walk, and the road may hold a detour or a raid. A place with its
+  own landing is a voyage there and back. From a place the party can go
+  back to the camp or travel on to another place it knows.
+- **Four villages**: Emberwick (chapter 3), Wrack's End (4), Rimewell (5)
+  and Greyhithe (6), each with five scenes, a fight, a check and a second
+  beat.
+- **Chapter 6 is a loop on the Hollow Shore.** It adds a town (the White
+  Anchorage, with its chandlery), the Glass Strand expedition (the Strand
+  Colossus), and the White Fleet's Grave (the White Admiral), where the
+  fifth piece lies. The Ending sets out from the camp into the tear.
+- **Six banner pieces:** the heirloom, the Warden's standard, the Court's
+  twin, the reliquary thread, the White Fleet's sail and the Sovereign's
+  mantle. **The epilogue** ends on the night before the invasion: the
+  whole Banner turns time back, which is where New Game+ starts.
+
+### Changed
+- The camp no longer asks for its shore's expeditions before the story
+  moves on. The main quest's gate replaces that rule, and the Leave the
+  camp sheet is gone.
+- Fights in a place use the place's own chapter, however late the party
+  comes back to it. Fights in the camp's towns used chapter 1 before.
+- **Known waters:** a crossing to a port the Eel has put in at before, or
+  home, has a 15% chance of raiders a day (35% on new waters) and meets
+  one raider at most.
+- **Boarding crews** fight at most one chapter past the chapter their
+  ship first sails in.
+- The Court's road (5001, 5002) became the fourth chapter's camp and main
+  quest. Saves on those scenes pick up at the camp.
+- Edit Mode: Play to Chapter and autoplay clear a chapter's expeditions
+  and find its places before taking its main quest. The in-app simulator
+  tours each place before the main quest.
+
+### Balance (Python simulation, 200 runs a style)
+- **Thorough players** visit every place and go for the companions:
+  - 1.25 fights lost a run (1.146: 1.46), median 1.
+  - Every run finishes, with 4.0 companions.
+  - At first try, the White Admiral is beaten 90.5% of the time, the
+    Void Sovereign 94.5% and the Archon 98%.
+- **Rushers** do only what the gate asks:
+  - 4.24 fights lost a run, median 1.
+  - 5 runs out of 200 recruit no companion and account for most of those
+    losses.
+- About 20 voyages a run (10.8 before), with the same number of raiders
+  as before (about 11) thanks to known waters.
+
+### Tests
+- `test/chapter_loop_test.dart`: loops, camps, chapters, known places,
+  discoveries, activity counts and the main-quest gate.
+- `test/camp_flow_test.dart` plays the loop in the app:
+  - it finds a place and walks to it;
+  - it goes back to the camp;
+  - the main quest opens;
+  - a later place is reached by voyage.
+- Known waters (`sea_events_test`), boarding crews (`ship_combat_test`),
+  retired scenes (`story_providers_test`), autoplay exploring a chapter
+  (`autoplay_engine_test`), and the story tests for six pieces, chapter 6
+  and the epilogue.
+
 ## [1.146.0+175]
 
 Skills cost what they are worth, and the fights are tuned to the new economy.

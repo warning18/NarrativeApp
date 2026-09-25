@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/camp_state.dart';
 import '../data/port_helpers.dart';
+import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/zone_card.dart';
 import 'expedition_screen.dart';
@@ -81,8 +85,15 @@ class PortServices extends ConsumerWidget {
     final shopIds = portShopIds(port)
         .where((id) => shops[id] is Map<String, dynamic>)
         .toList();
+    // A chapter's main zone is its main quest's, never offered here.
     final zoneIds = portZoneIds(port)
         .where((id) => zones[id] is Map<String, dynamic>)
+        .where((id) => !zoneIsMain(zones[id] as Map<String, dynamic>))
+        .toList();
+    // The places the party knows ashore here: a walk from the landing.
+    final placesHere = ref
+        .watch(knownPlacesProvider)
+        .where((p) => landingPortIdFor(p.settlement, ports) == portId)
         .toList();
 
     return Column(
@@ -141,6 +152,13 @@ class PortServices extends ConsumerWidget {
                 ),
               ),
             ),
+        ],
+        if (placesHere.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Text(tr(ref, 'places_section'),
+              style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 8),
+          for (final place in placesHere) PlaceCard(place: place),
         ],
         const Divider(height: 32),
         Text(tr(ref, 'zones_section'),

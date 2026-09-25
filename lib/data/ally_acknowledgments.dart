@@ -198,6 +198,9 @@ const Map<String, Map<String, String>> _acksEn = {
         'parish, which she did not correct.',
     'grosh': ' Grosh lifted things. Large things. He appeared to consider '
         'it payment enough that nobody asked him to do anything else.',
+    'tobin': ' Brother Tobin heard the Court\'s name at the fires and set '
+        'his jaw. "I sang for them," he said. "Once. Whatever they say '
+        'about the Court, believe it."',
   },
   '6002_camp': {
     '*': ' Whoever had come back to the cove with me slept like the dead '
@@ -235,14 +238,6 @@ const Map<String, Map<String, String>> _acksEn = {
     'kelda': ' Kelda leaned on her shield and looked at the fallen Warden '
         'with something close to respect. "He held," she said. "Wrong '
         'thing, but he held."',
-  },
-  '5001': {
-    '*': ' The whispers changed pitch when they saw I was not alone, and '
-        'the survivors who had been about to say nothing said, instead, a '
-        'little more.',
-    'tobin': ' Brother Tobin heard the name before I did and set his jaw. '
-        '"I sang for them," he said. "Once. Whatever they say about the '
-        'Court, believe it."',
   },
   '5010': {
     '*': ' The refugees in the cloister looked past me to whoever stood '
@@ -284,14 +279,14 @@ const Map<String, Map<String, String>> _acksEn = {
         'without knowing why.',
   },
   '7001': {
-    '*': ' The Eel had carried more than me to the Hollow Shore. I was '
-        'glad of it in a way I did not, then, have words for.',
-    'kelda': ' Kelda was already checking the Eel\'s hull when I came to, '
-        'because a wall is a wall whether it floats or not.',
-    'grosh': ' Grosh stood at the water\'s edge and looked at the tear the '
-        'way he looked at everything he intended to break.',
+    '*': ' The ones who had carried me home from the dead heart sat with '
+        'me until I could stand, and did not ask what the Void had said.',
+    'kelda': ' Kelda had the Eel\'s hull half caulked before I was on my '
+        'feet, because a wall is a wall whether it floats or not.',
+    'grosh': ' Grosh stood at the waterline and looked out toward the new '
+        'shore the way he looked at everything he intended to break.',
     'sable': ' Sable sat on the Eel\'s rail sharpening a knife she did not '
-        'need sharpened. "Last one," she said. "Make it worth the trip."',
+        'need sharpened. "Two more," she said. "Make them worth the trip."',
   },
   '7002': {
     '*': ' Nobody spoke much while we readied the Eel. There was nothing '
@@ -536,6 +531,9 @@ const Map<String, Map<String, String>> _acksFr = {
         "qu'elle ne corrigea pas.",
     'grosh': " Grosh soulevait des choses. De grosses choses. Il semblait "
         "tenir pour paiement suffisant que personne ne lui demande autre chose.",
+    'tobin': " Frère Tobin entendit le nom de la Cour près des feux et serra "
+        "la mâchoire. « J'ai chanté pour eux, dit-il. Une fois. Quoi qu'on "
+        "dise de la Cour, croyez-le. »",
   },
   '6002_camp': {
     '*': " Ceux qui étaient revenus à la crique avec moi dormirent comme des "
@@ -575,14 +573,6 @@ const Map<String, Map<String, String>> _acksFr = {
     'kelda': " Kelda s'appuya sur son bouclier et regarda le Gardien tombé "
         "avec quelque chose proche du respect. « Il a tenu, dit-elle. Pour la "
         "mauvaise cause, mais il a tenu. »",
-  },
-  '5001': {
-    '*': " Les murmures changèrent de ton quand ils virent que j'avais de "
-        "la compagnie, et les survivants qui allaient se taire dirent, au lieu de "
-        "cela, un peu plus.",
-    'tobin': " Frère Tobin entendit le nom avant moi et serra la mâchoire. "
-        "« J'ai chanté pour eux, dit-il. Une fois. Quoi qu'on dise de la Cour, "
-        "croyez-le. »",
   },
   '5010': {
     '*': " Les réfugiés du cloître regardaient derrière moi qui s'y tenait, "
@@ -626,15 +616,16 @@ const Map<String, Map<String, String>> _acksFr = {
         "place sans savoir pourquoi.",
   },
   '7001': {
-    '*': " L'Eel avait porté plus que moi jusqu'à la Rive Creuse. J'en fus "
-        "heureux d'une façon pour laquelle je n'avais pas encore de mots.",
-    'kelda': " Kelda inspectait déjà la coque de l'Eel quand je revins à moi, "
-        "parce qu'un mur est un mur, qu'il flotte ou non.",
-    'grosh':
-        " Grosh se tenait au bord de l'eau et regardait la déchirure comme "
-            "il regardait tout ce qu'il comptait briser.",
+    '*': " Ceux qui avaient fait avec moi le chemin du retour depuis le "
+        "cœur mort restèrent près de moi jusqu'à ce que je tienne debout, et "
+        "ne demandèrent pas ce que le Néant avait dit.",
+    'kelda': " Kelda avait déjà à moitié calfaté la coque de l'Eel avant que "
+        "je sois sur pied, parce qu'un mur est un mur, qu'il flotte ou non.",
+    'grosh': " Grosh se tenait au bord de l'eau et regardait vers le nouveau "
+        "rivage comme il regardait tout ce qu'il comptait briser.",
     'sable': " Sable, assise sur le bastingage, aiguisait un couteau qui n'en "
-        "avait pas besoin. « Le dernier, dit-elle. Que ça vaille le voyage. »",
+        "avait pas besoin. « Plus que deux, dit-elle. Que ça vaille le "
+        "voyage. »",
   },
   '7002': {
     '*': " Personne ne parla beaucoup pendant que nous préparions l'Eel. Il "

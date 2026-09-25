@@ -666,6 +666,15 @@ void main() {
       expect(slotCapacity(ship, 'Sails'), 0);
     });
 
+    test('a boarding crew fights at most a chapter past its ship\'s first', () {
+      const barge = {'minChapter': 4};
+      expect(boardingChapterFor(4, barge), 4);
+      expect(boardingChapterFor(5, barge), 5);
+      expect(boardingChapterFor(6, barge), 5);
+      expect(boardingChapterFor(2, const {'minChapter': 2}), 2);
+      expect(boardingChapterFor(6, const {}), 2);
+    });
+
     test('boardingProfileFor reads the crew, odds and prize, with defaults',
         () {
       final profile = boardingProfileFor(const {

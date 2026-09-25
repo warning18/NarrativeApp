@@ -203,7 +203,7 @@ void main() {
           'trackedQuestId': 'q_ch4_ossuary_bounty',
           'enemyKillCounts': {'catacomb_ghoul': 1},
         })));
-    container.read(storyPlayProvider.notifier).jumpTo('5001');
+    container.read(storyPlayProvider.notifier).jumpTo('5003');
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));
     await _settle(tester);

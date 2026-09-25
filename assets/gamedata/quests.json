@@ -1378,5 +1378,49 @@
     "rewardAllyId": "malrik",
     "questName_fr": "La Part de Malrik",
     "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
+  },
+  "q_ch6_the_white_fleet": {
+    "questID": "q_ch6_the_white_fleet",
+    "questName": "The White Fleet’s Grave",
+    "questName_fr": "Le Tombeau de la Flotte Blanche",
+    "chapter": 6,
+    "category": "Main",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the White Admiral on his flagship",
+        "description_fr": "Vaincre l’Amiral Blanc sur son vaisseau amiral",
+        "type": "Kill",
+        "targetEnemyID": "white_admiral",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 300,
+    "rewardXP": 400,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch6_beyond_the_tear",
+    "npcDialogueText": "The fleet that sailed to burn your city lies off the Hollow Shore on a floor of glass, and its flagship still flies the fifth piece of the Shroud as its mainsail.",
+    "npcDialogueText_fr": "La flotte partie brûler votre ville gît au large de la Rive Creuse sur un fond de verre, et son vaisseau amiral porte encore la cinquième pièce du Linceul en guise de grand-voile.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "buttonText_fr": "Accepter",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_the_white_fleet_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }

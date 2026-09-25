@@ -4,7 +4,7 @@ import 'dart:ui' show Color;
 
 import '../l10n/app_locale.dart';
 
-/// The story's world as one pixel map, 256 × 176 map pixels: the 23
+/// The story's world as one pixel map, 256 × 176 map pixels: the
 /// landmarks every scene of the story happens at, the road between them in
 /// story order, and the terrain under them (generated, always the same).
 /// Play mode shows it from the header; a landmark appears once one of its
@@ -53,12 +53,8 @@ const List<MapChapter> mapChapters = [
       'Chapitre 5 : La Vérité du Linceul',
       Color(0xFF9B6FE0),
       Color(0xFF6D3FA0)),
-  MapChapter(
-      6,
-      'Chapter 6: Beyond the Tear',
-      'Chapitre 6 : Au-delà de la Déchirure',
-      Color(0xFFE9E6DF),
-      Color(0xFF3B3743)),
+  MapChapter(6, 'Chapter 6: The Hollow Shore', 'Chapitre 6 : La Rive Creuse',
+      Color(0xFFE9E6DF), Color(0xFF3B3743)),
 ];
 
 MapChapter mapChapter(int number) =>
@@ -344,10 +340,10 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Cove Camp',
     nameFr: 'Le camp de la crique',
     blurbEn:
-        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: the base you keep coming back to, after the Spire and again before the Reliquary Quarter.',
+        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: your base, where every chapter opens, between every trip, until the last night before the tear.',
     blurbFr:
-        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : la base où vous revenez, après la Flèche et encore avant le Quartier des Reliquaires.',
-    scenes: ['3001', '3001_camp', '4999_camp', '6002_camp'],
+        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la dernière nuit avant la déchirure.',
+    scenes: ['3001', '3001_camp', '4999_camp', '6002_camp', '7001', '7400'],
   ),
   const Landmark(
     id: 'quarter',
@@ -374,6 +370,24 @@ final List<Landmark> worldMapLandmarks = [
     ],
   ),
   const Landmark(
+    id: 'emberwick',
+    chapter: 3,
+    x: 194,
+    y: 128,
+    sprite: 'hovel',
+    nameEn: 'Emberwick',
+    nameFr: 'Braiseval',
+    blurbEn:
+        'A hollow of the old slag heaps where the ironworkers’ families went when the golems outlasted their masters: kilns, a well, tithe-takers from the Spire, and a smith’s widow who still hears his hymn.',
+    blurbFr:
+        'Un creux des vieux terrils où les familles des forgerons se sont repliées quand les golems ont survécu à leurs maîtres : des fours, un puits, des collecteurs de dîme de la Flèche, et une veuve de forgeron qui entend encore son cantique.',
+    scenes: [
+      '3100', '3100_tithe', '3100_kiln', '3100_kiln_failed', //
+      '3100_widow', '3100_widow_later', '3100_bread',
+    ],
+    fights: ['inquisition_auxiliary'],
+  ),
+  const Landmark(
     id: 'spire',
     chapter: 3,
     x: 230,
@@ -392,18 +406,22 @@ final List<Landmark> worldMapLandmarks = [
     fights: ['inquisition_high_warden'],
   ),
   const Landmark(
-    id: 'grate',
+    id: 'wrack',
     chapter: 4,
     x: 190,
     y: 114,
-    sprite: 'skull',
-    nameEn: 'The drain grate',
-    nameFr: 'La grille d’égout',
+    sprite: 'boat',
+    nameEn: 'Wrack’s End',
+    nameFr: 'Bout-du-Varech',
     blurbEn:
-        'Survivors whisper about the Hollow Court. A grate no wider than a coffin leads down into the catacombs.',
+        'Wreckers and weed-cutters on the cliff above the Drowned Stair, in houses built from hulls, with false lamps on the point and the drowned climbing toward them.',
     blurbFr:
-        'Les survivants parlent à voix basse de la Cour Creuse. Une grille pas plus large qu’un cercueil descend vers les catacombes.',
-    scenes: ['5001', '5002'],
+        'Des pilleurs d’épaves et des coupeurs de varech sur la falaise au-dessus de l’Escalier Noyé, dans des maisons bâties avec des coques, de fausses lampes sur la pointe et les noyés qui grimpent vers elles.',
+    scenes: [
+      '5100', '5100_drowned', '5100_salvage', '5100_salvage_failed', //
+      '5100_headman', '5100_headman_later', '5100_nets',
+    ],
+    fights: ['drowned_pilgrim'],
   ),
   const Landmark(
     id: 'cloister',
@@ -466,6 +484,24 @@ final List<Landmark> worldMapLandmarks = [
     ],
   ),
   const Landmark(
+    id: 'rimewell',
+    chapter: 5,
+    x: 246,
+    y: 104,
+    sprite: 'lamp',
+    nameEn: 'Rimewell',
+    nameFr: 'Puits-de-Givre',
+    blurbEn:
+        'A pilgrims’ halt on the road into the Black Reliquary, where the tear’s frost came first: a bell that counts the taken, a road-keeper’s lantern, and stale bread shared with whoever is still walking.',
+    blurbFr:
+        'Une halte de pèlerins sur la route du Reliquaire Noir, où le givre de la déchirure est arrivé en premier : une cloche qui compte les disparus, la lanterne d’une gardienne de la route, et un pain rassis partagé avec ceux qui marchent encore.',
+    scenes: [
+      '6100', '6100_bell', '6100_bell_failed', '6100_road', //
+      '6100_keeper', '6100_keeper_later', '6100_bread',
+    ],
+    fights: ['void_hound', 'drowned_pilgrim'],
+  ),
+  const Landmark(
     id: 'heart',
     chapter: 5,
     x: 222,
@@ -482,6 +518,58 @@ final List<Landmark> worldMapLandmarks = [
     fights: ['void_manifestation'],
   ),
   const Landmark(
+    id: 'anchorage',
+    chapter: 6,
+    x: 202,
+    y: 36,
+    sprite: 'ship',
+    nameEn: 'The White Anchorage',
+    nameFr: 'Le Mouillage Blanc',
+    blurbEn:
+        'A town built from the White Fleet’s wrecks by the crusaders who washed up in them: a chaplain who knows where the flagship lies, a chandlery, the grey sickness, and a last company still at war.',
+    blurbFr:
+        'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués : un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
+    scenes: [
+      '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
+      '7100_sick', '7100_sick_failed', '7100_helmsman',
+      '7100_helmsman_later',
+    ],
+    fights: ['inquisition_soldier', 'white_soldier'],
+  ),
+  const Landmark(
+    id: 'greyhithe',
+    chapter: 6,
+    x: 242,
+    y: 32,
+    sprite: 'hovel',
+    nameEn: 'Greyhithe',
+    nameFr: 'Grisegrève',
+    blurbEn:
+        'A fishing village the tear ate somewhere else and coughed up on the Hollow Shore, grey faces and all, where the eldest cannot remember her daughter’s name.',
+    blurbFr:
+        'Un village de pêcheurs que la déchirure a dévoré ailleurs et recraché sur la Rive Creuse, visages gris compris, où l’aînée ne se rappelle pas le nom de sa fille.',
+    scenes: [
+      '7200', '7200_nets', '7200_reflection', '7200_elder', //
+      '7200_elder_later', '7200_tide', '7200_tide_failed',
+    ],
+    fights: ['hollow_reflection'],
+  ),
+  const Landmark(
+    id: 'wreck',
+    chapter: 6,
+    x: 212,
+    y: 12,
+    sprite: 'crates',
+    nameEn: 'The White Fleet’s grave',
+    nameFr: 'Le tombeau de la Flotte Blanche',
+    blurbEn:
+        'Forty hulls on a floor of glass off the point, and the flagship among them, its Admiral on the quarterdeck and the fifth piece of the Shroud as its mainsail.',
+    blurbFr:
+        'Quarante coques sur un fond de verre au large de la pointe, et le vaisseau amiral parmi elles, son Amiral sur la dunette et la cinquième pièce du Linceul en guise de grand-voile.',
+    scenes: ['7300'],
+    fights: ['white_admiral'],
+  ),
+  const Landmark(
     id: 'shore',
     chapter: 6,
     x: 222,
@@ -490,11 +578,11 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Hollow Shore',
     nameFr: 'La Rive Creuse',
     blurbEn:
-        'Grey sand drawn out of the dead heart, and the tear now a door. Reflections on the sand, the legate’s pact, the Sovereign’s price, and four endings: the city, the seeker, the dawn, or the crown.',
+        'Grey sand drawn out of the dead heart, and the tear now a door. Reflections on the sand, the legate’s pact, the Sovereign’s price and its sixth piece, four endings (the city, the seeker, the dawn, or the crown), and the night the whole Banner turns back.',
     blurbFr:
-        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, le prix du Souverain, et quatre fins : la ville, le chercheur, l’aube ou la couronne.',
+        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
     scenes: [
-      '7001', '7002', '7002_reflections', '7002_rest', '7002_pact', //
+      '7002', '7002_reflections', '7002_rest', '7002_pact', //
       '7002_betrayal', '7002_crew', '7002_confront', '7002_price', '7003',
       '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],

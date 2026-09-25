@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/ship_combat.dart';
-import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../providers/story_providers.dart';
 import '../screens/voyage_screen.dart';
 import 'immersive_notice.dart';
 
@@ -212,7 +211,7 @@ class PortChart extends ConsumerWidget {
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final zones = ref.watch(localizedDbProvider(zonesSchema)).value ??
         const <String, dynamic>{};
-    final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
+    final chapter = ref.watch(reachedChapterProvider);
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
     if (ports == null) return const SizedBox.shrink();

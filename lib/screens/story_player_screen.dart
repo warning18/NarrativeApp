@@ -26,6 +26,7 @@ import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
@@ -1105,55 +1106,64 @@ Future<void> _selectChoice({
       !choice.opensCharacterCreation &&
       choice.nextId != currentNodeId &&
       atRest) {
-    final shops = await loadedGameDb(ref, shopsSchema);
-    final enemies = await loadedGameDb(ref, enemiesSchema);
-    final quests = await loadedGameDb(ref, questsSchema);
+    final chain = await rollRoadEncounter(ref,
+        chapter: chapter, fromNodeId: currentNodeId);
     if (!context.mounted) return;
-    final manualTheme = ref.read(mapThemeProvider);
-    final resolvedTheme = manualTheme ??
-        mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
-    // Alignment has consequences on the road before anything else rolls:
-    // a hunter's ambush for a Good/Evil character, a temptation for a
-    // Neutral one (see alignment_events.dart). One fires instead of, not
-    // on top of, an ordinary excursion this transition.
-    final alignmentEvent = maybeAlignmentEvent(
-      alignmentScore: session.alignmentScore,
-      activeQuestIds: session.activeQuestIds,
-      completedQuestIds: session.completedQuestIds,
-      enemies: enemies,
-      chapter: chapter,
-      random: Random(),
-      enabled: ref.read(alignmentHuntersEnabledProvider),
-    );
-    if (alignmentEvent != null) {
-      playNotifier.startExcursion(alignmentEvent, choice.nextId,
-          origin: choice.text, originFr: choice.textFr);
-      return;
-    }
-    final excursion = SubNodeEngine.maybeGenerate(
-      random: Random(),
-      // A detour put off by a crisis is taken at the first road after it.
-      triggerChance:
-          playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
-      chapter: chapter,
-      shops: shops,
-      enemies: enemies,
-      quests: quests,
-      unlockedShopIds: session.unlockedShopIds,
-      unlockedEnemyIds: session.unlockedEnemyIds,
-      unlockedQuestIds: session.unlockedQuestIds,
-      completedQuestIds: session.completedQuestIds,
-      theme: resolvedTheme,
-      partySize: 1 + session.activeAllyIds.length,
-      alignmentLabel: session.alignmentLabel,
-    );
-    if (excursion != null) {
-      playNotifier.startExcursion(excursion, choice.nextId,
+    if (chain != null) {
+      playNotifier.startExcursion(chain, choice.nextId,
           origin: choice.text, originFr: choice.textFr);
       return;
     }
   }
   playNotifier.choose(choice.nextId);
+}
+
+/// What the road holds on the way on from [fromNodeId] in [chapter]: an
+/// alignment event first (a hunter's ambush for a Good or Evil character,
+/// a temptation for a Neutral one, see alignment_events.dart), else,
+/// sometimes, a detour (see SubNodeEngine); null when the road is quiet.
+/// A detour put off by a crisis is taken on the first road after it.
+/// Shared by the story's own roads and the trips between the camp and its
+/// places (see camp_travel.dart).
+Future<List<StoryNode>?> rollRoadEncounter(
+  WidgetRef ref, {
+  required int chapter,
+  required String fromNodeId,
+}) async {
+  final story = await ref.read(storyDataProvider.future);
+  final shops = await loadedGameDb(ref, shopsSchema);
+  final enemies = await loadedGameDb(ref, enemiesSchema);
+  final quests = await loadedGameDb(ref, questsSchema);
+  final session = ref.read(playerSessionProvider);
+  final playNotifier = ref.read(storyPlayProvider.notifier);
+  final resolvedTheme = ref.read(mapThemeProvider) ??
+      mapThemeForUiTheme(story.nodeFor(fromNodeId)?.uiTheme);
+  final alignmentEvent = maybeAlignmentEvent(
+    alignmentScore: session.alignmentScore,
+    activeQuestIds: session.activeQuestIds,
+    completedQuestIds: session.completedQuestIds,
+    enemies: enemies,
+    chapter: chapter,
+    random: Random(),
+    enabled: ref.read(alignmentHuntersEnabledProvider),
+  );
+  if (alignmentEvent != null) return alignmentEvent;
+  return SubNodeEngine.maybeGenerate(
+    random: Random(),
+    triggerChance:
+        playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
+    chapter: chapter,
+    shops: shops,
+    enemies: enemies,
+    quests: quests,
+    unlockedShopIds: session.unlockedShopIds,
+    unlockedEnemyIds: session.unlockedEnemyIds,
+    unlockedQuestIds: session.unlockedQuestIds,
+    completedQuestIds: session.completedQuestIds,
+    theme: resolvedTheme,
+    partySize: 1 + session.activeAllyIds.length,
+    alignmentLabel: session.alignmentLabel,
+  );
 }
 
 /// `@first_ally` among a choice's enemies is the first active companion,
@@ -1304,6 +1314,11 @@ class _HubSections extends ConsumerWidget {
     final restsAtCamp = settlement != null &&
         !settlement.isCamp &&
         session.flags.contains(campFoundedFlag);
+    final travelsFromHere = !isExcursion &&
+        canReturnToCampFrom(node,
+            inExcursion: isExcursion, flags: session.flags);
+    final travelsOn = travelsFromHere &&
+        ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final shopsDb = ref.watch(localizedDbProvider(shopsSchema)).value;
     final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
@@ -1559,15 +1574,46 @@ class _HubSections extends ConsumerWidget {
                 ),
               ],
             ),
-            // Once the camp stands, a town is somewhere away from it: the
-            // way back, while the story waits here.
-            if (settlement != null &&
-                !isExcursion &&
-                canReturnToCampFrom(node,
-                    inExcursion: isExcursion, flags: session.flags))
+            // Once the camp stands, a place is somewhere the party travels
+            // to from it: the way back, and on to the other places it knows.
+            if (travelsFromHere)
               Padding(
                 padding: const EdgeInsets.only(top: 6),
-                child: CampReturnButton(settlement: settlement),
+                child: Row(
+                  children: [
+                    const Expanded(child: CampReturnButton()),
+                    if (travelsOn) const SizedBox(width: 8),
+                    if (travelsOn)
+                      OutlinedButton.icon(
+                        key: const Key('place_travel_on'),
+                        style: OutlinedButton.styleFrom(
+                            visualDensity: VisualDensity.compact),
+                        onPressed: () => showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          showDragHandle: true,
+                          builder: (_) => SafeArea(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(tr(ref, 'travel_on_title'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
+                                  const SizedBox(height: 8),
+                                  TravelOnList(fromNodeId: node.id),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Icons.signpost_outlined, size: 18),
+                        label: Text(tr(ref, 'travel_on_button')),
+                      ),
+                  ],
+                ),
               ),
             if (services.isNotEmpty)
               Flexible(

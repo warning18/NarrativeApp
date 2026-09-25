@@ -120,7 +120,7 @@ void main() {
     test('the ground is always drawn the same', () {
       expect(worldMapTerrain.pixels.length, worldMapWidth * worldMapHeight);
       // The original map's own figures.
-      expect(worldMapTerrain.glints.length, 216);
+      expect(worldMapTerrain.glints.length, 210);
       expect(worldMapTerrain.fires.length, 295);
       expect(landmarkById('bridge')!.x, 51);
       expect(worldMapTerrain.colorAt(0, 0), 0xFF122F38);

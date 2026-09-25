@@ -3,12 +3,13 @@ part of '../fight_screen.dart';
 /// Building the enemies and the party, and starting the fight.
 extension _FightSetup on _FightScreenState {
   /// The story chapter this fight belongs to: the caller's (an expedition
-  /// passes its zone's), else the current story node's, else 1. Drives the
-  /// chapter difficulty curve and the chest's loot window.
+  /// passes its zone's), else the current scene's (a place's own chapter,
+  /// see storyChapterOf). Drives the chapter difficulty curve and the
+  /// chest's loot window.
   int get _chapter =>
       widget.modifiers.chapter ??
-      chapterForNode(ref.read(storyPlayProvider).currentNodeId) ??
-      1;
+      storyChapterOf(ref.read(storyPlayProvider).currentNodeId,
+          ref.read(storyDataProvider).value);
 
   /// Builds [_enemies] — a solo fight rolls Elite (see [_eliteChance]); a
   /// pack (`widget.additionalEnemyIds` non-empty) never does. A pack member

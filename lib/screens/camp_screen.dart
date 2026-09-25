@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
 import '../data/camp_state.dart';
-import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -11,6 +10,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../models/story_node.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
@@ -33,17 +33,17 @@ import 'skills_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, storyBodyFor, takeStoryChoice;
 
-/// The party's camp from chapter 3, open while the party is at it: the
-/// story at a camp's scene, or the party gone back to it from a town where
-/// the story waits. What happened on coming back, who comes along, the
-/// expeditions on its shore and the voyages out, what has been built, its
-/// shops, and the way on (see [leaveCamp]). While the party is here the
-/// Story tab gives way to this page, and comes back once the party leaves.
+/// The party's camp from chapter 3, its base: the story stands here
+/// between trips. What happened on coming back, the open chapter (how much
+/// of it is done, and its main quest once it opens), the places the party
+/// knows and can travel to, who comes along, the expeditions on its shore
+/// and the voyages out, what has been built, and its shops. While the
+/// party is here the Story tab gives way to this page.
 class CampScreen extends ConsumerWidget {
   const CampScreen({super.key, this.embedded = false});
 
   /// True as the in-game Camp tab: the page without its own app bar, with
-  /// the camp's scene and its way on. Opened from Edit Mode, it is the
+  /// the camp's scene and its chapter. Opened from Edit Mode, it is the
   /// camp's works only.
   final bool embedded;
 
@@ -65,13 +65,6 @@ class CampScreen extends ConsumerWidget {
     final node = story?.nodeFor(play.currentNodeId);
     final campNode =
         embedded && (node?.settlement?.isCamp ?? false) ? node : null;
-    // Gone back to the camp from a town: the story waits there.
-    final waitingTown = embedded &&
-            campNode == null &&
-            node != null &&
-            session.campVisitFromNodeId == node.id
-        ? node
-        : null;
 
     if (companions == null ||
         houses == null ||
@@ -96,17 +89,20 @@ class CampScreen extends ConsumerWidget {
     final homeId = homePortId(ports);
     final homePort =
         homeId == null ? null : ports[homeId] as Map<String, dynamic>?;
+    final reached = ref.watch(reachedChapterProvider);
+    // The camp's own shore: its expeditions of the chapters reached so far
+    // (a chapter's main zone is its main quest's, never offered here).
     final shoreZoneIds = homePort == null
         ? const <String>[]
         : portZoneIds(homePort)
             .where((id) => zones[id] is Map<String, dynamic>)
+            .where((id) => !zoneIsMain(zones[id] as Map<String, dynamic>))
+            .where((id) =>
+                (((zones[id] as Map<String, dynamic>)['chapter'] as num?)
+                        ?.toInt() ??
+                    1) <=
+                reached)
             .toList();
-    final blockers = campExitBlockers(
-      ports: ports,
-      zones: zones,
-      chapter: chapterOfNode(play.currentNodeId),
-      completedZoneIds: session.completedZoneIds,
-    );
     final busy =
         ref.watch(combatActiveProvider) || ref.watch(expeditionActiveProvider);
 
@@ -139,13 +135,12 @@ class CampScreen extends ConsumerWidget {
         .where((shopId) => shopId.isNotEmpty && shops[shopId] is Map)
         .toList()
       ..sort();
+    final places = ref.watch(knownPlacesProvider);
 
     final body = ListView(
       padding: const EdgeInsets.all(16),
       children: [
-        // The camp's name, the purse, and its two ways off the page: the
-        // Harbor once built, and the way on (small, it's not the page's
-        // point).
+        // The camp's name, the purse, and the Harbor once built.
         Row(
           children: [
             const Icon(Icons.local_fire_department_outlined),
@@ -164,7 +159,6 @@ class CampScreen extends ConsumerWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          alignment: WrapAlignment.spaceBetween,
           children: [
             _RestButton(blocked: busy),
             if (harborBuilt)
@@ -177,38 +171,26 @@ class CampScreen extends ConsumerWidget {
                 icon: const Icon(Icons.anchor, size: 18),
                 label: Text(tr(ref, 'harbor_title')),
               ),
-            if (campNode != null || waitingTown != null)
-              OutlinedButton.icon(
-                key: const Key('camp_leave'),
-                style: _compact,
-                onPressed: busy ? null : () => leaveCamp(context, ref),
-                icon: const Icon(Icons.logout, size: 18),
-                label: Text(waitingTown == null
-                    ? tr(ref, 'camp_leave_button')
-                    : tr(ref, 'camp_set_out_button').replaceAll(
-                        '{place}', waitingTown.settlement?.nameFor(fr) ?? '')),
-              ),
           ],
         ),
-        // The followed quest stays in view while the story waits.
-        if (campNode != null || waitingTown != null)
+        // The followed quest stays in view.
+        if (campNode != null)
           const Padding(
             padding: EdgeInsets.only(top: 12),
             child: QuestTrackerBar(),
           ),
         if (campNode != null) _CampSceneCard(node: campNode),
-        if (waitingTown?.settlement != null)
-          Card(
-            margin: const EdgeInsets.only(top: 12),
-            child: ListTile(
-              key: const Key('camp_story_waits'),
-              leading: const Icon(Icons.location_city_outlined),
-              title: Text(tr(ref, 'camp_story_waits')
-                  .replaceAll('{place}', waitingTown!.settlement!.nameFor(fr))),
-              subtitle:
-                  Text(campRouteLabel(ref, waitingTown.settlement!, ports)),
-            ),
-          ),
+        if (campNode != null) _ChapterCard(campNode: campNode, busy: busy),
+
+        if (campNode != null) ...[
+          section(tr(ref, 'places_section')),
+          if (places.isEmpty)
+            Text(tr(ref, 'places_empty'),
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
+          else
+            for (final place in places) PlaceCard(place: place),
+        ],
 
         section(tr(ref, 'camp_party_section'),
             trailing: '${tr(ref, 'active_party_label')}: '
@@ -230,15 +212,6 @@ class CampScreen extends ConsumerWidget {
             ),
 
         section(tr(ref, 'camp_expeditions_section')),
-        if (blockers.isNotEmpty && (campNode != null || waitingTown != null))
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              tr(ref, 'camp_exit_needs_note'),
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: theme.colorScheme.primary),
-            ),
-          ),
         if (shoreZoneIds.isEmpty)
           Text(tr(ref, 'no_zones_available'))
         else
@@ -310,6 +283,132 @@ class CampScreen extends ConsumerWidget {
         actions: const [GoldBadge()],
       ),
       body: body,
+    );
+  }
+}
+
+/// The open chapter at its camp: its name, how much of it is done, and its
+/// main quest -- shut, with what it still needs, or open, with the camp's
+/// way into it. Any other way on from the camp's scene follows.
+class _ChapterCard extends ConsumerWidget {
+  const _ChapterCard({required this.campNode, required this.busy});
+
+  final StoryNode campNode;
+  final bool busy;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final progress = ref.watch(chapterProgressProvider);
+    final story = ref.watch(storyDataProvider).value;
+    final session = ref.watch(playerSessionProvider);
+    final theme = Theme.of(context);
+    final visible =
+        campNode.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    final mainChoices = visible.where((c) => c.mainQuest).toList();
+    final otherChoices = visible.where((c) => !c.mainQuest).toList();
+    final open = progress?.mainQuestOpen ?? true;
+    String placeName(String id) =>
+        story?.nodeFor(id)?.settlement?.nameFor(fr) ?? id;
+
+    return Card(
+      key: const Key('chapter_card'),
+      margin: const EdgeInsets.only(top: 12),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (progress != null) ...[
+              Text(progress.loop.label,
+                  style: theme.textTheme.labelLarge
+                      ?.copyWith(color: theme.colorScheme.primary)),
+              Text(progress.loop.title, style: theme.textTheme.titleMedium),
+              if (progress.goal > 0) ...[
+                const SizedBox(height: 8),
+                Text(
+                  tr(ref, 'chapter_progress')
+                      .replaceAll(
+                          '{done}', '${progress.done.clamp(0, progress.goal)}')
+                      .replaceAll('{goal}', '${progress.goal}'),
+                  key: const Key('chapter_progress'),
+                  style: theme.textTheme.bodyMedium,
+                ),
+                const SizedBox(height: 4),
+                LinearProgressIndicator(
+                  value: progress.goal == 0
+                      ? 1
+                      : (progress.done / progress.goal).clamp(0.0, 1.0),
+                ),
+              ],
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Icon(open ? Icons.flag : Icons.flag_outlined, size: 18),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      '${tr(ref, 'main_quest_label')}: '
+                      '${progress.loop.mainQuestTitle}',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                ],
+              ),
+              if (!open) ...[
+                const SizedBox(height: 4),
+                if (progress.loop.mainQuestHint.isNotEmpty)
+                  Text(progress.loop.mainQuestHint,
+                      style: theme.textTheme.bodySmall),
+                for (final id in progress.missingPlaceIds)
+                  Text(
+                    tr(ref, 'main_quest_needs_place')
+                        .replaceAll('{place}', placeName(id)),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: theme.colorScheme.primary),
+                  ),
+              ],
+            ],
+            for (final choice in mainChoices)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: FilledButton(
+                  key: Key('main_quest_${choice.nextId}'),
+                  style: FilledButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  onPressed: busy ||
+                          !open ||
+                          story == null ||
+                          isStoryChoiceLocked(choice, story, session)
+                      ? null
+                      : () => setOutOnMainQuest(context, ref, choice),
+                  child: Text(choice.textFor(fr)),
+                ),
+              ),
+            for (final choice in otherChoices)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: OutlinedButton(
+                  key: Key('camp_choice_${choice.nextId}'),
+                  style: OutlinedButton.styleFrom(
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                  ),
+                  onPressed: busy ||
+                          story == null ||
+                          isStoryChoiceLocked(choice, story, session)
+                      ? null
+                      : () => takeStoryChoice(context, ref, choice),
+                  child: Text(choice.textFor(fr)),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -710,228 +809,6 @@ class _HouseCard extends ConsumerWidget {
                     child: Text(
                         '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
                   ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// The way on from the camp: once the expeditions on its shore are
-/// cleared, a last look at who comes along, then the story's own ways out
-/// of the camp's scene, or (gone back to the camp from a town) the way
-/// back to that town. Until then, what is left to clear.
-Future<void> leaveCamp(BuildContext context, WidgetRef ref) async {
-  final zones = ref.read(localizedDbProvider(zonesSchema)).value ?? const {};
-  final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-  final play = ref.read(storyPlayProvider);
-  final blockers = campExitBlockers(
-    ports: ports,
-    zones: zones,
-    chapter: chapterOfNode(play.currentNodeId),
-    completedZoneIds: ref.read(playerSessionProvider).completedZoneIds,
-  );
-  if (blockers.isNotEmpty) {
-    final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
-    String zoneName(String id) {
-      final zone = zones[id] as Map<String, dynamic>?;
-      final name = zone?['zoneName']?.toString() ?? id;
-      final nameFr = zone?['zoneName_fr']?.toString() ?? '';
-      return fr && nameFr.isNotEmpty ? nameFr : name;
-    }
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        icon: const Icon(Icons.flag_outlined),
-        title: Text(tr(ref, 'camp_exit_blocked_title')),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(tr(ref, 'camp_exit_blocked_body')),
-            const SizedBox(height: 8),
-            for (final id in blockers)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
-                  children: [
-                    const Icon(Icons.explore_outlined, size: 18),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(zoneName(id))),
-                  ],
-                ),
-              ),
-          ],
-        ),
-        actions: [
-          FilledButton(
-            onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(tr(ref, 'close_button')),
-          ),
-        ],
-      ),
-    );
-    return;
-  }
-  final picked = await showModalBottomSheet<Object>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (_) => const _LeaveCampSheet(),
-  );
-  if (picked == null || !context.mounted) return;
-  if (picked is StoryChoice) {
-    await takeStoryChoice(context, ref, picked);
-  } else if (picked == _setOut) {
-    await travelToWaitingTown(context, ref);
-  }
-}
-
-/// The leave sheet's answer when the party sets out for the town where the
-/// story waits.
-const Object _setOut = 'set_out';
-
-/// Who comes along (changeable here), then the camp scene's ways out.
-class _LeaveCampSheet extends ConsumerWidget {
-  const _LeaveCampSheet();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final fr = ref.watch(appLanguageProvider) == AppLanguage.fr;
-    final session = ref.watch(playerSessionProvider);
-    final story = ref.watch(storyDataProvider).value;
-    final node = story?.nodeFor(ref.watch(storyPlayProvider).currentNodeId);
-    final companions =
-        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
-    final houses =
-        ref.watch(localizedDbProvider(housesSchema)).value ?? const {};
-    final ports = ref.watch(localizedDbProvider(portsSchema)).value ?? const {};
-    final theme = Theme.of(context);
-    // Gone back to the camp from a town, the way on is back to that town;
-    // at the camp's own scene, its ways out.
-    final waitingTown = node != null &&
-            !(node.settlement?.isCamp ?? false) &&
-            session.campVisitFromNodeId == node.id
-        ? node.settlement
-        : null;
-    final choices = node == null || story == null || waitingTown != null
-        ? const <StoryChoice>[]
-        : node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
-    final recruitedIds =
-        session.recruitedAllies.map((a) => a.companionId).toList()..sort();
-    final capacity = partyCapacityFor(session.builtHouseIds, houses);
-
-    return SafeArea(
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(tr(ref, 'camp_leave_title'),
-                style: theme.textTheme.titleLarge),
-            const SizedBox(height: 12),
-            Text(
-              '${tr(ref, 'camp_party_section')} '
-              '(${session.activeAllyIds.length} / $capacity)',
-              style: theme.textTheme.titleSmall,
-            ),
-            const SizedBox(height: 4),
-            if (recruitedIds.isEmpty)
-              Text(tr(ref, 'camp_leave_alone'),
-                  style: theme.textTheme.bodyMedium)
-            else
-              Wrap(
-                spacing: 8,
-                runSpacing: 4,
-                children: [
-                  for (final id in recruitedIds)
-                    Builder(builder: (chipContext) {
-                      final companion = companions[id] as Map<String, dynamic>?;
-                      final active = session.activeAllyIds.contains(id);
-                      final join = _joinState(ref, session,
-                          companionId: id,
-                          companion: companion,
-                          houses: houses);
-                      return Tooltip(
-                        message: join.reason,
-                        child: FilterChip(
-                          key: Key('leave_party_$id'),
-                          label: Text(
-                              companion?['companionName']?.toString() ?? id),
-                          selected: active,
-                          onSelected: !join.canJoin
-                              ? null
-                              : (_) => _setAllyInParty(
-                                    context,
-                                    ref,
-                                    companionId: id,
-                                    active: !active,
-                                    partyCapacity: capacity,
-                                    requiredHouseId:
-                                        companion?['requiredHouseId']
-                                                ?.toString() ??
-                                            '',
-                                  ),
-                        ),
-                      );
-                    }),
-                ],
-              ),
-            // Why a companion can't come, under the chips.
-            for (final id in recruitedIds)
-              if (!_joinState(ref, session,
-                      companionId: id,
-                      companion: companions[id] as Map<String, dynamic>?,
-                      houses: houses)
-                  .canJoin)
-                Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(
-                    '${(companions[id] as Map<String, dynamic>?)?['companionName'] ?? id}: '
-                    '${_joinState(ref, session, companionId: id, companion: companions[id] as Map<String, dynamic>?, houses: houses).reason}',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                  ),
-                ),
-            const SizedBox(height: 16),
-            Text(tr(ref, 'camp_leave_way_label'),
-                style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
-            if (waitingTown != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: FilledButton.tonal(
-                  key: const Key('leave_set_out'),
-                  style: FilledButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                  ),
-                  onPressed: () => Navigator.of(context).pop(_setOut),
-                  child: Text(
-                    '${tr(ref, 'camp_set_out_button').replaceAll('{place}', waitingTown.nameFor(fr))}'
-                    ' · ${campRouteLabel(ref, waitingTown, ports)}',
-                  ),
-                ),
-              ),
-            for (final choice in choices)
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: FilledButton.tonal(
-                  key: Key('leave_choice_${choice.nextId}'),
-                  style: FilledButton.styleFrom(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                  ),
-                  onPressed: isStoryChoiceLocked(choice, story!, session)
-                      ? null
-                      : () => Navigator.of(context).pop(choice),
-                  child: Text(choice.textFor(fr)),
                 ),
               ),
           ],

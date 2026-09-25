@@ -104,6 +104,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       length: length,
       enemyShips: enemyShips,
       chapter: chapter,
+      // A port she has put in at before, or the way home, is known water.
+      knownWaters: portIsHome(widget.toPort) ||
+          session.visitedPortIds.contains(widget.toPortId),
     );
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
@@ -556,7 +559,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       random: _random,
       onFinished: _onBattleFinished,
       boarding: boardingProfileFor(_enemyData ?? const {}),
-      chapter: _chapter,
+      chapter: boardingChapterFor(_chapter, _enemyData ?? const {}),
       buildCrew: () => _buildCrew(
         session: ref.read(playerSessionProvider),
         companions: companions,

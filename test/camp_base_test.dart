@@ -30,33 +30,40 @@ void main() {
   final houses = _loadJson('assets/gamedata/houses.json');
   final shops = _loadJson('assets/gamedata/shops.json');
 
-  test('the camp has one name, and the story comes back to it twice', () {
+  test('the camp has one name, and every open chapter stands at it', () {
     final camps =
         story.nodes.values.where((n) => n.settlement?.isCamp ?? false);
     expect(camps.map((n) => n.id).toSet(),
-        {'3001_camp', '4999_camp', '6002_camp'});
+        {'3001_camp', '4999_camp', '6002_camp', '7001', '7400'});
     for (final camp in camps) {
       expect(camp.settlement!.nameFor(false), 'The Cove Camp');
       expect(camp.settlement!.nameFor(true), 'Le camp de la crique');
+      expect(camp.settlement!.chapter, isNotNull, reason: camp.id);
     }
     // After the Spire, every road goes home before the Court.
     for (final choice in story.nodeFor('4999_standard')!.choices) {
       expect(choice.nextId, '4999_camp');
     }
-    for (final choice in story.nodeFor('4999_camp')!.choices) {
-      expect(choice.nextId, '5001');
-    }
-    // Before the Reliquary Quarter, home is one of the ways there.
-    expect(story.nodeFor('6002')!.choices.map((c) => c.nextId),
-        contains('6002_camp'));
-    expect(story.nodeFor('6002_camp')!.choices.single.nextId, '6010_gate');
+    // The Court's stair is the fourth chapter's main quest, from the camp.
+    final court = story.nodeFor('4999_camp')!.choices.single;
+    expect(court.mainQuest, isTrue);
+    expect(court.nextId, '5003');
+    // After the ledger, the party sails home; the Quarter's thread is the
+    // fifth chapter's main quest.
+    expect(story.nodeFor('6002')!.choices.map((c) => c.nextId).toSet(),
+        {'6002_camp'});
+    final thread = story.nodeFor('6002_camp')!.choices.single;
+    expect(thread.mainQuest, isTrue);
+    expect(thread.nextId, '6010_thread');
+    expect(thread.travelPlaceId, '6010');
   });
 
-  test('the late hubs are towns away from the camp', () {
-    for (final id in ['3005', '5010', '6010']) {
+  test('the late hubs are places away from the camp', () {
+    for (final id in ['3005', '5010', '6010', '7100', '7002']) {
       final place = story.nodeFor(id)!.settlement;
       expect(place, isNotNull, reason: id);
       expect(place!.isCamp, isFalse, reason: id);
+      expect(place.chapter, isNotNull, reason: id);
       expect(place.portId, isNull,
           reason: '$id: its zones are launched by the story itself');
     }

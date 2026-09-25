@@ -2869,5 +2869,178 @@
     ],
     "packText": "Empty armor rises from the ash in a broken line, the last guard of a court that no longer exists. They close ranks between you and the Sovereign, as they swore to.",
     "packText_fr": "Des armures vides se relèvent de la cendre en une ligne brisée, dernière garde d’une cour qui n’existe plus. Elles serrent les rangs entre vous et le Souverain, comme elles l’ont juré."
+  },
+  "strand_colossus": {
+    "enemyName": "The Strand Colossus",
+    "enemyName_fr": "Le Colosse de la Grève",
+    "maxHealth": 330,
+    "damage": 29,
+    "guile": 5,
+    "xpReward": 125,
+    "goldReward": 95,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "tear_glass_blade",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Refused",
+        "nameFr": "Refondu",
+        "message": "The colossus drags fresh glass up out of the strand and wears it.",
+        "messageFr": "Le colosse arrache du verre neuf à la grève et s’en revêt.",
+        "damageMultiplier": 1.1,
+        "healPercent": 15,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "Three ships’ keels and a chapel’s worth of glass, fused by the tear’s first breath into something with a shape and a grudge.",
+    "description_fr": "Trois quilles de navires et le verre d’une chapelle entière, fondus par le premier souffle de la déchirure en quelque chose qui a une forme et une rancune.",
+    "encounterText": [
+      "The wreckage on the strand stands up, grinding glass against timber, and turns toward the one thing on the beach that is not grey."
+    ],
+    "encounterText_fr": [
+      "Les débris sur la grève se lèvent, raclant le verre contre le bois, et se tournent vers la seule chose de la plage qui ne soit pas grise."
+    ]
+  },
+  "white_admiral": {
+    "enemyName": "The White Admiral",
+    "enemyName_fr": "L’Amiral Blanc",
+    "maxHealth": 395,
+    "damage": 32,
+    "guile": 11,
+    "xpReward": 200,
+    "goldReward": 150,
+    "lootTable": [
+      {
+        "itemID": "spear_t10",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Colours Struck",
+        "nameFr": "Couleurs amenées",
+        "message": "The white paint peels from the sail. Underneath, the grey drinks the light.",
+        "messageFr": "La peinture blanche se détache de la voile. Dessous, le gris boit la lumière.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "void_blast",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 25,
+        "name": "Last Order",
+        "nameFr": "Dernier ordre",
+        "message": "The Admiral gives the order to close. Forty drowned crews answer it.",
+        "messageFr": "L’Amiral donne l’ordre d’abordage. Quarante équipages noyés y répondent.",
+        "damageMultiplier": 1.1,
+        "healPercent": 10,
+        "cleanse": false,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The White Fleet’s admiral, still on his quarterdeck a year after the tear took his fleet, wearing his white and his orders and nothing else of the man.",
+    "description_fr": "L’amiral de la Flotte Blanche, toujours sur sa dunette un an après que la déchirure a pris sa flotte, portant son blanc et ses ordres et rien d’autre de l’homme.",
+    "encounterText": [
+      "On the flagship’s quarterdeck the Admiral turns, and the drowned fleet turns with him."
+    ],
+    "encounterText_fr": [
+      "Sur la dunette du vaisseau amiral, l’Amiral se retourne, et la flotte noyée se retourne avec lui."
+    ]
   }
 }

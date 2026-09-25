@@ -80,9 +80,13 @@
     "description": "A strip of grey sand the tear drew out of the dead heart like a splinter. Across the water the tear stands open like a door, and the Rusty Eel is the only thing on the shore that remembers what a world is supposed to look like.",
     "description_fr": "Une bande de sable gris que la déchirure a tirée du cœur mort comme une écharde. De l'autre côté de l'eau, la déchirure est ouverte comme une porte, et le Rusty Eel est la seule chose sur la rive qui se souvienne de ce à quoi un monde est censé ressembler.",
     "zoneIds": [
+      "z_glass_strand",
+      "z_white_fleet_grave",
       "z_beyond_the_tear"
     ],
-    "shopIds": [],
+    "shopIds": [
+      "anchorage_chandlery"
+    ],
     "voyageLength": 4,
     "isHome": false,
     "requiredFlags": [

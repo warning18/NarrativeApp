@@ -558,6 +558,7 @@ Future<void> _runAutoplay(
   final enemies = await _awaitGameDb(ref, enemiesSchema);
   final races = await _awaitGameDb(ref, racesSchema);
   final professions = await _awaitGameDb(ref, professionsSchema);
+  final zones = await _awaitGameDb(ref, zonesSchema);
 
   final result = await autoplayToNode(
     ref,
@@ -569,6 +570,7 @@ Future<void> _runAutoplay(
     enemies: enemies,
     races: races,
     professions: professions,
+    zones: zones,
   );
 
   if (!context.mounted) return;

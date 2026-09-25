@@ -1743,9 +1743,16 @@ final DbSchema zonesSchema = DbSchema(
     ),
     FieldSchema(
       key: 'isMainZone',
-      label: 'Main Zone (the chapter\'s headline zone)',
+      label:
+          'Main Zone (the chapter\'s main quest runs it; never offered as an expedition)',
       type: FieldType.boolean,
       defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'discoversPlaceIds',
+      label:
+          'Discovers Places (story node ids: the first at the midpoint, the rest on clearing the zone)',
+      type: FieldType.stringList,
     ),
     visualAssetFieldSchema('zones'),
   ],
@@ -1822,6 +1829,59 @@ final DbSchema npcsSchema = DbSchema(
       type: FieldType.stringList,
     ),
     visualAssetFieldSchema('npcs'),
+  ],
+);
+
+/// From chapter 3 each chapter is an open loop around the camp (see
+/// chapter_loop.dart): its places and expeditions first, then, once
+/// enough of them are done, its main quest and a piece of the banner.
+final DbSchema chaptersSchema = DbSchema(
+  id: 'chapters',
+  label: 'Chapters (open loops)',
+  assetPath: 'assets/gamedata/chapters.json',
+  primaryKeyField: 'chapterID',
+  titleField: 'title',
+  fields: [
+    FieldSchema(key: 'chapterID', label: 'Chapter ID', type: FieldType.text),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter (places and zones with this chapter belong to it)',
+        type: FieldType.integer,
+        defaultValue: 3),
+    FieldSchema(key: 'label', label: 'Label', type: FieldType.text),
+    FieldSchema(key: 'label_fr', label: 'Label (FR)', type: FieldType.text),
+    FieldSchema(key: 'title', label: 'Title', type: FieldType.text),
+    FieldSchema(key: 'title_fr', label: 'Title (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'campNodeId',
+        label: 'Camp scene (the story stands here while the chapter is open)',
+        type: FieldType.text),
+    FieldSchema(
+      key: 'activityGoal',
+      label:
+          'Activity goal (expeditions cleared and things done in the chapter\'s places before the main quest opens)',
+      type: FieldType.integer,
+      defaultValue: 6,
+    ),
+    FieldSchema(
+      key: 'mainQuestNeedsPlaceIds',
+      label: 'Places the main quest also needs found',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+        key: 'mainQuestTitle', label: 'Main quest title', type: FieldType.text),
+    FieldSchema(
+        key: 'mainQuestTitle_fr',
+        label: 'Main quest title (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'mainQuestHint',
+        label: 'Main quest hint (shown while it is shut)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'mainQuestHint_fr',
+        label: 'Main quest hint (FR)',
+        type: FieldType.multilineText),
   ],
 );
 
@@ -2027,6 +2087,7 @@ final List<DbSchema> gameDbSchemas = [
   achievementsSchema,
   zonesSchema,
   portsSchema,
+  chaptersSchema,
   npcsSchema,
   spellsSchema,
 ];

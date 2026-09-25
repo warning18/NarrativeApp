@@ -16,9 +16,8 @@ enum CampPresence {
   /// Before chapter 3: there is no camp yet.
   notYet,
 
-  /// The party is at the camp (its scene in the story, or gone back to it
-  /// from a town) and the Rusty Eel is moored in its cove: the camp itself,
-  /// and the story waits until the party leaves it.
+  /// The story is at the camp and the Rusty Eel is moored in its cove: the
+  /// camp itself, with its expeditions, its places and its main quest.
   atCamp,
 
   /// The party is at the camp, but has sailed out to another port for its
@@ -26,7 +25,7 @@ enum CampPresence {
   sailedOut,
 
   /// The party is where the story has taken it, away from the camp: from a
-  /// town it can go back.
+  /// place it can go back.
   away,
 }
 
@@ -35,22 +34,14 @@ enum CampPresence {
 bool storyAtCamp(StoryNode? node, {required bool inExcursion}) =>
     !inExcursion && (node?.settlement?.isCamp ?? false);
 
-/// Whether the party is at the camp: the story at a camp's scene, or the
-/// party gone back to the camp from the town where the story waits (see
-/// PlayerSession.campVisitFromNodeId).
-bool partyAtCamp(
-  StoryNode? node, {
-  required bool inExcursion,
-  required String campVisitFromNodeId,
-}) =>
-    storyAtCamp(node, inExcursion: inExcursion) ||
-    (!inExcursion &&
-        node != null &&
-        campVisitFromNodeId.isNotEmpty &&
-        campVisitFromNodeId == node.id);
+/// Whether the party is at the camp: the story at a camp's scene. From
+/// chapter 3 the camp is where the story stands between trips; a place is
+/// somewhere the party travels to from it, and comes back from.
+bool partyAtCamp(StoryNode? node, {required bool inExcursion}) =>
+    storyAtCamp(node, inExcursion: inExcursion);
 
-/// Whether the party can go back to the camp from [node]: a town, once the
-/// camp stands. The story waits in the town until the party sets out again.
+/// Whether the party can go back to the camp from [node]: one of the open
+/// chapters' places, once the camp stands.
 bool canReturnToCampFrom(
   StoryNode? node, {
   required bool inExcursion,
@@ -60,6 +51,7 @@ bool canReturnToCampFrom(
   return !inExcursion &&
       settlement != null &&
       !settlement.isCamp &&
+      settlement.chapter != null &&
       flags.contains(campFoundedFlag);
 }
 
@@ -76,7 +68,7 @@ String? landingPortIdFor(Settlement? settlement, Map<String, dynamic> ports) {
 
 CampPresence campPresenceFor({
   required int chapter,
-  // The party at the camp: its scene, or a visit from a town.
+  // The story at a camp's scene.
   required bool atCampScene,
   required Map<String, dynamic> ports,
   required String savedPortId,
@@ -89,31 +81,6 @@ CampPresence campPresenceFor({
   return home == null || moored == null || moored == home
       ? CampPresence.atCamp
       : CampPresence.sailedOut;
-}
-
-/// The camp's own expeditions still to clear before the story can leave
-/// it: every zone on the camp's shore (the home port's) from the chapters
-/// the story has reached. Empty when the party may go.
-List<String> campExitBlockers({
-  required Map<String, dynamic> ports,
-  required Map<String, dynamic> zones,
-  required int chapter,
-  required Iterable<String> completedZoneIds,
-}) {
-  final home = homePortId(ports);
-  final homePort = home == null ? null : ports[home] as Map<String, dynamic>?;
-  if (homePort == null) return const [];
-  final done = completedZoneIds.toSet();
-  return [
-    for (final zoneId in portZoneIds(homePort))
-      if (zones[zoneId] is Map<String, dynamic> &&
-          (((zones[zoneId] as Map<String, dynamic>)['chapter'] as num?)
-                      ?.toInt() ??
-                  1) <=
-              chapter &&
-          !done.contains(zoneId))
-        zoneId,
-  ];
 }
 
 /// Whether a camp house is on offer: a house tied to one ally (their own

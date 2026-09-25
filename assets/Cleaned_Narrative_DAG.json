@@ -2187,7 +2187,10 @@
         "text": "Take stock of the shore",
         "text_fr": "Faire le point sur le rivage",
         "next_id": "3001_camp",
-        "unlockQuestId": "q_ch3_the_high_wardens_fall"
+        "unlockQuestId": "q_ch3_the_high_wardens_fall",
+        "flagsToAdd": [
+          "camp_founded"
+        ]
       }
     ],
     "persona_variants": {
@@ -2385,11 +2388,6 @@
         "showIfFlags": [
           "lysa_survived"
         ]
-      },
-      {
-        "text": "Push deeper into the Spire",
-        "text_fr": "S'enfoncer plus profondément dans la Flèche",
-        "next_id": "3002"
       }
     ],
     "flag_callbacks": [
@@ -2451,7 +2449,11 @@
     "settlement": {
       "kind": "town",
       "name": "The Ashen Quarter",
-      "name_fr": "Le Quartier des Cendres"
+      "name_fr": "Le Quartier des Cendres",
+      "chapter": 3,
+      "mustDiscover": true,
+      "blurb": "What the Inquisition left of a town at the Spire’s foot: ash, refugees, and work for hard hands.",
+      "blurb_fr": "Ce que l’Inquisition a laissé d’une ville au pied de la Flèche : de la cendre, des réfugiés, et du travail pour des mains solides."
     }
   },
   "3005_oath": {
@@ -2773,123 +2775,6 @@
       }
     ]
   },
-  "5001": {
-    "id": "5001",
-    "description": "[CHAPTER 4: THE HOLLOW COURT] The Spire's bells had stopped ringing by the time I walked back inland, but a different, more attentive kind of silence waited for me in the ashes — the specific silence that precedes someone telling you a secret they have been expressly forbidden to share. In the rubble of the outer district, survivors traded the same word in voices lowered out of genuine fear rather than mere discretion: the Hollow Court. Inquisitors, they said, who knelt to no living authority and had, as a professional courtesy to themselves, never officially existed at all. Whatever waited down there, I had the distinct and unwelcome impression that it had known my family's name rather longer than I had known its.",
-    "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Les cloches de la Flèche s'étaient tues quand je revins à l'intérieur des terres, mais un silence différent, plus attentif, m'attendait dans les cendres — ce silence précis qui précède l'aveu d'un secret qu'on vous a formellement interdit de partager. Dans les décombres du quartier extérieur, les survivants échangeaient le même mot d'une voix baissée par une peur véritable plutôt que par simple discrétion : la Cour Creuse. Des inquisiteurs, disait-on, qui ne s'agenouillaient devant aucune autorité vivante et n'avaient, par courtoisie professionnelle envers eux-mêmes, jamais officiellement existé. Quoi qu'il m'attendît là-dessous, j'avais la nette et désagréable impression que cette chose connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
-    "context_taxonomy": {
-      "ui_theme": "catacombs",
-      "mood": "tense",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_5001"
-    },
-    "choices": [
-      {
-        "text": "Follow the whispers down",
-        "text_fr": "Suivre les murmures vers le bas",
-        "next_id": "5002",
-        "healAmount": -10,
-        "flagsToAdd": [
-          "went_down_dark"
-        ]
-      },
-      {
-        "text": "Buy a lantern from the rubble-pickers first",
-        "text_fr": "Acheter d'abord une lanterne aux fouilleurs de gravats",
-        "next_id": "5002",
-        "goldMod": -25,
-        "flagsToAdd": [
-          "lantern_bought"
-        ]
-      }
-    ],
-    "flag_callbacks": [
-      {
-        "flag": "camp_founded",
-        "en": "The camp had fed me, patched me and sent me back inland with a week's bread and no questions I could have answered. I had promised to be back before the bread ran out.",
-        "fr": "Le camp m'avait donné à manger, avait pansé mes plaies et m'avait rendu la route avec une semaine de pain et aucune question à laquelle j'aurais su répondre. J'avais promis d'être de retour avant la fin du pain."
-      },
-      {
-        "flag": "banner_second_piece_lead",
-        "en": "The lead from the Lantern Docks pointed the same way the whispers did: down.",
-        "fr": "La piste des Quais des Lanternes indiquait la même direction que les murmures : en bas."
-      },
-      {
-        "flag": "standard_cut_living",
-        "en": "The Warden's scream had come down the Spire's stair with me, all the way to the coast and back, and I suspected it would come the rest of the way.",
-        "fr": "Le cri du Gardien avait descendu l'escalier de la Flèche avec moi, jusqu'à la côte et retour, et je soupçonnais qu'il ferait le reste du chemin."
-      },
-      {
-        "flag": "standard_waited",
-        "en": "I had waited for him to die with the Cathedral coming down around us, and the smoke was still in me; every breath on the stair cost more than it returned.",
-        "fr": "J'avais attendu qu'il meure pendant que la Cathédrale s'effondrait autour de nous, et la fumée était encore en moi ; chaque souffle sur l'escalier coûtait plus qu'il ne rendait."
-      },
-      {
-        "flag": "standard_mercy",
-        "en": "I had given the Warden the blade before the standard, and the standard had come away clean. Nothing else about it had.",
-        "fr": "J'avais donné la lame au Gardien avant l'étendard, et l'étendard s'était détaché propre. Rien d'autre dans l'affaire ne l'était."
-      },
-      {
-        "flag": "camp_rested",
-        "en": "I had slept a whole night by the fires, the first since the storm, and the Spire's smoke had not followed me into it.",
-        "fr": "J'avais dormi une nuit entière près des feux, la première depuis la tempête, et la fumée de la Flèche n'était pas entrée dans mon sommeil."
-      },
-      {
-        "flag": "camp_left_early",
-        "en": "I had left before dawn with what the camp could spare, and felt the weight of it more than the coin deserved.",
-        "fr": "J'avais quitté la crique avant l'aube avec ce que le camp pouvait donner, et j'en sentais le poids plus que les pièces ne le méritaient."
-      }
-    ]
-  },
-  "5002": {
-    "id": "5002",
-    "description": "The whispers led to a drain grate no wider than a coffin — a comparison I noted and, for my own comfort, chose not to dwell on — and then down, and down again, until the noise of the city above faded to a memory of noise rather than the thing itself. The catacombs swallowed the last of the daylight at the very first turn, with the brisk efficiency of a debt collector closing an account. Old incense clung to the walls in layers, one century laid politely over another, and beneath it — fainter, but entirely unmistakable to a nose that had recently become something of an expert — the copper tang of blood that had never once had the decency to properly dry.",
-    "description_fr": "Les murmures menaient à une grille d'égout à peine plus large qu'un cercueil — une comparaison que je notai et, pour mon propre confort, choisis de ne pas approfondir — puis vers le bas, encore et encore, jusqu'à ce que le bruit de la ville au-dessus ne devînt plus qu'un souvenir de bruit et non la chose elle-même. Les catacombes engloutirent le dernier jour dès le tout premier tournant, avec l'efficacité expéditive d'un créancier soldant un compte. Un encens ancien s'accrochait aux murs en strates, un siècle posé poliment sur l'autre, et sous cette odeur — plus discrète, mais tout à fait indéniable pour un nez devenu depuis peu quelque chose comme un expert — la tenue cuivrée d'un sang n'ayant jamais eu, pas une seule fois, la décence de proprement sécher.",
-    "context_taxonomy": {
-      "ui_theme": "catacombs",
-      "mood": "creepy",
-      "speaker": "Narrator"
-    },
-    "automations": {
-      "script_trigger": "on_load_node_5002"
-    },
-    "choices": [
-      {
-        "text": "Follow the candlelight to the cloister",
-        "text_fr": "Suivre la lueur des cierges jusqu'au cloître",
-        "next_id": "5010",
-        "flagsToAdd": [
-          "went_to_candles"
-        ]
-      },
-      {
-        "text": "Take the rats' dry passage",
-        "text_fr": "Prendre le passage sec des rats",
-        "next_id": "5010",
-        "checkAbility": "perception",
-        "checkDC": 12,
-        "failNextId": "5010",
-        "goldMod": 35,
-        "flagsToAdd": [
-          "rat_passage"
-        ]
-      }
-    ],
-    "flag_callbacks": [
-      {
-        "flag": "went_down_dark",
-        "en": "In the dark I had put my hand on something that bit, and the catacombs had taken a piece of me before I had taken a step in them.",
-        "fr": "Dans le noir, j'avais posé la main sur quelque chose qui mordait, et les catacombes m'avaient pris un morceau avant que j'y fasse un pas."
-      },
-      {
-        "flag": "lantern_bought",
-        "en": "The lantern showed me what the dark had been hiding: names scratched into the drain's brick at the height of a child's hand.",
-        "fr": "La lanterne me montra ce que le noir cachait : des noms gravés dans la brique de l'égout à hauteur d'une main d'enfant."
-      }
-    ]
-  },
   "5003": {
     "id": "5003",
     "description": "The passage opened without warning into a chamber carved smooth by hands that had evidently possessed centuries to spare and no more urgent employment. Robed figures knelt in a loose circle around a black altar, the Court's ash-ink spiralling up their bared arms and glowing faintly as they chanted, power worn the inked way, under the skin, where the Spire could not confiscate it, and at its center hummed something my body recognized well before my mind consented to catch up — the twin of the Grey Shroud, restless in its cradle of stone, apparently no more at peace with its situation than I was with mine. Nobody had looked up yet. Experience, mine specifically, suggested that particular grace would not extend much further.",
@@ -3039,8 +2924,8 @@
   },
   "6002": {
     "id": "6002",
-    "description": "The names ran on for pages before the pattern finally surfaced, and once it had, I found I could not unsee it, however much I might have preferred otherwise: every single entry was dated to a night some tear had opened somewhere in the world, and closed again nearly as quickly. The Banner, it turned out, had never been forged as a weapon at all. It had been sewn, generations back, as a warning — stitched by the first Inquisitor unfortunate enough to look properly into one of those tears, and to find that whatever looked back had opinions of its own about being looked at. It had been cut into four, the page said, by the same hand, so that no one back could carry the whole of it; the Warden's standard had been one piece and the Court's twin another, and the fourth was here, in this city, in a chapel of the Reliquary Quarter, sewn around the bones of someone the tear had taken first.",
-    "description_fr": "Les noms s'étendaient sur des pages entières avant que le motif ne finît par se révéler, et une fois qu'il l'eut fait, je ne pus plus l'ignorer, quand bien même je l'aurais préféré : chaque entrée, sans exception, était datée d'une nuit où quelque déchirure s'était ouverte dans le monde, avant de se refermer presque aussi vite. La Bannière, s'avérait-il, n'avait jamais été forgée comme une arme. Elle avait été cousue, des générations plus tôt, comme un avertissement — par le premier Inquisiteur ayant eu le malheur de regarder correctement dans l'une de ces déchirures, et d'y découvrir que ce qui le regardait en retour avait ses propres opinions sur le fait d'être ainsi observé. Elle avait été coupée en quatre, disait la page, par la même main, afin qu'aucun dos ne pût en porter l'entier ; l'étendard du Gardien en avait été une pièce et le jumeau de la Cour une autre, et la quatrième était ici, dans cette ville, dans une chapelle du Quartier des Reliquaires, cousue autour des os de quelqu'un que la déchirure avait pris en premier.",
+    "description": "The names ran on for pages before the pattern finally surfaced, and once it had, I found I could not unsee it, however much I might have preferred otherwise: every single entry was dated to a night some tear had opened somewhere in the world, and closed again nearly as quickly. The Banner, it turned out, had never been forged as a weapon at all. It had been sewn, generations back, as a warning — stitched by the first Inquisitor unfortunate enough to look properly into one of those tears, and to find that whatever looked back had opinions of its own about being looked at. It had been cut into six, the page said, by the same hand, so that no one back could carry the whole of it. The heirloom had been one piece, the Warden's standard another and the Court's twin a third; the fourth waited three days along the coast, in the Black Reliquary, in a chapel of its Reliquary Quarter, sewn around the bones of someone the tear had taken first. The fifth had gone into the sea with the White Fleet. Of the sixth the page said only that the tear had kept it.",
+    "description_fr": "Les noms s'étendaient sur des pages entières avant que le motif ne finît par se révéler, et une fois qu'il l'eut fait, je ne pus plus l'ignorer, quand bien même je l'aurais préféré : chaque entrée, sans exception, était datée d'une nuit où quelque déchirure s'était ouverte dans le monde, avant de se refermer presque aussi vite. La Bannière, s'avérait-il, n'avait jamais été forgée comme une arme. Elle avait été cousue, des générations plus tôt, comme un avertissement — par le premier Inquisiteur ayant eu le malheur de regarder correctement dans l'une de ces déchirures, et d'y découvrir que ce qui le regardait en retour avait ses propres opinions sur le fait d'être ainsi observé. Elle avait été coupée en six, disait la page, par la même main, afin qu'aucun dos ne pût en porter l'entier. L'héritage en avait été une pièce, l'étendard du Gardien une autre et le jumeau de la Cour une troisième ; la quatrième attendait à trois jours le long de la côte, au Reliquaire Noir, dans une chapelle de son Quartier des Reliquaires, cousue autour des os de quelqu'un que la déchirure avait pris en premier. La cinquième avait sombré avec la Flotte Blanche. De la sixième, la page disait seulement que la déchirure l'avait gardée.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -3051,26 +2936,21 @@
     },
     "choices": [
       {
-        "text": "Go now, before the frost spreads",
-        "text_fr": "Partir maintenant, avant que le givre ne gagne",
-        "next_id": "6010_gate",
+        "text": "Sail home to the camp at once",
+        "text_fr": "Rentrer au camp par la mer, sans attendre",
+        "next_id": "6002_camp",
         "flagsToAdd": [
-          "went_at_once"
+          "sailed_home_at_once"
         ]
       },
       {
-        "text": "Pay a runner to warn the camp first",
-        "text_fr": "Payer d'abord un coureur pour prévenir le camp",
-        "next_id": "6010_gate",
-        "goldMod": -20,
+        "text": "Read the page twice more before sailing",
+        "text_fr": "Relire deux fois la page avant de prendre la mer",
+        "next_id": "6002_camp",
+        "healAmount": -5,
         "flagsToAdd": [
-          "camp_warned"
+          "ledger_read_twice"
         ]
-      },
-      {
-        "text": "Go back to the camp first",
-        "text_fr": "Rentrer d'abord au camp",
-        "next_id": "6002_camp"
       }
     ],
     "flag_callbacks": [
@@ -3088,8 +2968,8 @@
   },
   "6002_camp": {
     "id": "6002_camp",
-    "description": "I walked back to the cove with the ledger under my arm and the Reliquary Quarter's address in my head, because some things should be said at your own fire before they are done. The camp had grown while I was below. There were paths now where there had been shingle, a smell of bread where there had been only smoke, and children who had stopped flinching when the Eel's timbers settled. I told them where I was going. I did not tell them what the ledger said was waiting there. They fed me anyway.",
-    "description_fr": "Je revins à la crique le registre sous le bras et l'adresse du Quartier des Reliquaires en tête, parce que certaines choses se disent à son propre feu avant de se faire. Le camp avait grandi pendant que j'étais sous terre. Il y avait des sentiers là où il n'y avait eu que des galets, une odeur de pain là où il n'y avait eu que de la fumée, et des enfants qui ne sursautaient plus quand le bois de l'Eel travaillait. Je leur dis où j'allais. Je ne leur dis pas ce que le registre disait qui m'y attendait. Ils me nourrirent quand même.",
+    "description": "I sailed back to the cove with the ledger under my arm and the Reliquary Quarter's address in my head, because some things should be said at your own fire before they are done. The camp had grown while I was below. There were paths now where there had been shingle, a smell of bread where there had been only smoke, and children who had stopped flinching when the Eel's timbers settled. I told them where I was going. I did not tell them what the ledger said was waiting there. They fed me anyway. The Black Reliquary was three days along the coast; its frost, the Eel’s crew had heard in every port, had reached the villages on its road before it reached anything else.",
+    "description_fr": "Je rentrai à la crique par la mer le registre sous le bras et l'adresse du Quartier des Reliquaires en tête, parce que certaines choses se disent à son propre feu avant de se faire. Le camp avait grandi pendant que j'étais sous terre. Il y avait des sentiers là où il n'y avait eu que des galets, une odeur de pain là où il n'y avait eu que de la fumée, et des enfants qui ne sursautaient plus quand le bois de l'Eel travaillait. Je leur dis où j'allais. Je ne leur dis pas ce que le registre disait qui m'y attendait. Ils me nourrirent quand même. Le Reliquaire Noir était à trois jours le long de la côte ; son givre, l’équipage de l’Eel l’avait entendu dire dans chaque port, avait gagné les villages de sa route avant tout le reste.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "hopeful",
@@ -3097,13 +2977,11 @@
     },
     "choices": [
       {
-        "text": "Set out for the Reliquary Quarter",
-        "text_fr": "Partir pour le Quartier des Reliquaires",
-        "next_id": "6010_gate",
-        "healAmount": 30,
-        "flagsToAdd": [
-          "went_home_first"
-        ]
+        "text": "Sail for the Black Reliquary and the fourth piece",
+        "text_fr": "Mettre le cap sur le Reliquaire Noir et la quatrième pièce",
+        "next_id": "6010_thread",
+        "mainQuest": true,
+        "travelPlaceId": "6010"
       }
     ],
     "flag_callbacks": [
@@ -3142,12 +3020,23 @@
         "flag": "house_shroud_shrine",
         "en": "The shrine we had built from the Dead Heart's stone was waiting for the fourth piece, which is a thing I had not known a building could do.",
         "fr": "Le sanctuaire que nous avions bâti avec la pierre du Cœur Mort attendait la quatrième pièce, ce dont je n'aurais pas cru un bâtiment capable."
+      },
+      {
+        "flag": "sailed_home_at_once",
+        "en": "I had sailed the ledger home without reading past the address. The rest of it could be read by a fire.",
+        "fr": "J’avais rapporté le registre par la mer sans lire plus loin que l’adresse. Le reste se lirait près d’un feu."
+      },
+      {
+        "flag": "false_lamps_out",
+        "en": "Word had come from Wrack’s End: no false lamp on the point since I left. A ship had come in by the honest ones, and the village had not known what to do with a whole crew alive.",
+        "fr": "Des nouvelles étaient venues de Bout-du-Varech : plus une fausse lampe sur la pointe depuis mon départ. Un navire était entré en suivant les honnêtes, et le village n’avait pas su quoi faire d’un équipage entier vivant."
       }
     ],
     "settlement": {
       "kind": "camp",
       "name": "The Cove Camp",
-      "name_fr": "Le camp de la crique"
+      "name_fr": "Le camp de la crique",
+      "chapter": 5
     }
   },
   "6003": {
@@ -3184,8 +3073,8 @@
   },
   "6004": {
     "id": "6004",
-    "description": "On the other side there was no light, no sound, no ground obliging enough to remain beneath my feet — only the Void itself, speaking at last in the single language it apparently possessed: certainty, delivered directly into the bone without the courtesy of translation. The invasion, whatever anyone had feared, had never been the ending. It had been the opening act of something considerably larger, and somewhere, patient in a way nothing living has any business being, a clock was still running on the delay it had bought us. And it had wanted the Shroud whole. It said so, in the bone. The Court's kneeling inquisitors had been its hands for a generation and had managed three pieces; I had managed the fourth in a season, and carried all four to its door, and it was, in its own bottomless way, grateful.",
-    "description_fr": "De l'autre côté, il n'y avait ni lumière, ni son, ni sol assez complaisant pour demeurer sous mes pieds — seulement le Néant lui-même, parlant enfin dans l'unique langage qu'il possédait apparemment : une certitude, livrée directement dans les os, sans la courtoisie d'une traduction. L'invasion, quoi qu'on en eût redouté, n'avait jamais été la fin. Elle n'était que le premier acte de quelque chose de considérablement plus vaste, et quelque part, patient d'une manière qu'aucun être vivant n'a le droit d'être, une horloge courait encore sur le sursis qu'elle nous avait acheté. Et il avait voulu le Linceul entier. Il le dit, dans l'os. Les inquisiteurs agenouillés de la Cour avaient été ses mains pendant une génération et avaient réuni trois pièces ; j'avais réuni la quatrième en une saison, et porté les quatre jusqu'à sa porte, et il m'en était, à sa façon sans fond, reconnaissant.",
+    "description": "On the other side there was no light, no sound, no ground obliging enough to remain beneath my feet — only the Void itself, speaking at last in the single language it apparently possessed: certainty, delivered directly into the bone without the courtesy of translation. The invasion, whatever anyone had feared, had never been the ending. It had been the opening act of something considerably larger, and somewhere, patient in a way nothing living has any business being, a clock was still running on the delay it had bought us. And it had wanted the Shroud whole. It said so, in the bone. The Court's kneeling inquisitors had been its hands for a generation and had managed three pieces; I had carried four to its door in a season. The fifth lay under the sea with the White Fleet, off a shore the tear had drawn out of the dead heart. The sixth it wore. It wanted them all, and it was, in its own bottomless way, patient.",
+    "description_fr": "De l'autre côté, il n'y avait ni lumière, ni son, ni sol assez complaisant pour demeurer sous mes pieds — seulement le Néant lui-même, parlant enfin dans l'unique langage qu'il possédait apparemment : une certitude, livrée directement dans les os, sans la courtoisie d'une traduction. L'invasion, quoi qu'on en eût redouté, n'avait jamais été la fin. Elle n'était que le premier acte de quelque chose de considérablement plus vaste, et quelque part, patient d'une manière qu'aucun être vivant n'a le droit d'être, une horloge courait encore sur le sursis qu'elle nous avait acheté. Et il avait voulu le Linceul entier. Il le dit, dans l'os. Les inquisiteurs agenouillés de la Cour avaient été ses mains pendant une génération et avaient réuni trois pièces ; j'en avais porté quatre jusqu'à sa porte en une saison. La cinquième gisait sous la mer avec la Flotte Blanche, au large d'un rivage que la déchirure avait tiré du cœur mort. La sixième, il la portait. Il les voulait toutes, et il était, à sa façon sans fond, patient.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -3908,8 +3797,8 @@
   },
   "3001_camp": {
     "id": "3001_camp",
-    "description": "In a cove the flats hid from the Spire, where a freshwater burn came down to the shingle, the ones who had sailed with me stopped walking and started, without anyone quite deciding it, to build. Someone found a kettle. Someone else found a wall that still stood, from whatever the Inquisition had burned here before us. By nightfall there were fires, and a rope line, and the Rusty Eel hauled up above the tide with her storm-scars showing, and I understood, with the mild alarm of someone who has never owned anything they couldn't carry, that this was going to be the place I kept coming back to. A camp, for now. Whatever it became would depend on what I brought back to it, and on who was left to build.",
-    "description_fr": "Dans une crique que les plaines cachaient à la Flèche, là où un ruisseau d'eau douce descendait jusqu'aux galets, ceux qui avaient navigué avec moi cessèrent de marcher et se mirent, sans que personne l'ait vraiment décidé, à bâtir. Quelqu'un trouva une bouilloire. Quelqu'un d'autre trouva un mur encore debout, reste de ce que l'Inquisition avait brûlé ici avant nous. À la nuit tombée il y avait des feux, une corde tendue, et le Rusty Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et je compris, avec une légère alarme — je n'avais jamais rien possédé que je ne pusse porter —, que ce serait l'endroit où je reviendrais sans cesse. Un campement, pour l'instant. Ce qu'il deviendrait dépendrait de ce que j'y rapporterais, et de qui resterait pour bâtir.",
+    "description": "In a cove the flats hid from the Spire, where a freshwater burn came down to the shingle, the ones who had sailed with me stopped walking and started, without anyone quite deciding it, to build. Someone found a kettle. Someone else found a wall that still stood, from whatever the Inquisition had burned here before us. By nightfall there were fires, and a rope line, and the Rusty Eel hauled up above the tide with her storm-scars showing, and I understood, with the mild alarm of someone who has never owned anything they couldn't carry, that this was going to be the place I kept coming back to. A camp, for now. Whatever it became would depend on what I brought back to it, and on who was left to build. The Spire would keep. First I meant to learn this coast, and what was left alive on it.",
+    "description_fr": "Dans une crique que les plaines cachaient à la Flèche, là où un ruisseau d'eau douce descendait jusqu'aux galets, ceux qui avaient navigué avec moi cessèrent de marcher et se mirent, sans que personne l'ait vraiment décidé, à bâtir. Quelqu'un trouva une bouilloire. Quelqu'un d'autre trouva un mur encore debout, reste de ce que l'Inquisition avait brûlé ici avant nous. À la nuit tombée il y avait des feux, une corde tendue, et le Rusty Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et je compris, avec une légère alarme — je n'avais jamais rien possédé que je ne pusse porter —, que ce serait l'endroit où je reviendrais sans cesse. Un campement, pour l'instant. Ce qu'il deviendrait dépendrait de ce que j'y rapporterais, et de qui resterait pour bâtir. La Flèche attendrait. Je voulais d’abord apprendre cette côte, et ce qui y restait de vivant.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "grim",
@@ -3920,12 +3809,11 @@
     },
     "choices": [
       {
-        "text": "Raise the camp, then walk inland to the Ashen Quarter",
-        "text_fr": "Dresser le camp, puis marcher jusqu'au Quartier des Cendres",
-        "next_id": "3005",
-        "flagsToAdd": [
-          "camp_founded"
-        ]
+        "text": "Walk inland and climb the Spire",
+        "text_fr": "Marcher vers l’intérieur et gravir la Flèche",
+        "next_id": "3002",
+        "mainQuest": true,
+        "travelPlaceId": "3005"
       }
     ],
     "flag_callbacks": [
@@ -3977,7 +3865,8 @@
     "settlement": {
       "kind": "camp",
       "name": "The Cove Camp",
-      "name_fr": "Le camp de la crique"
+      "name_fr": "Le camp de la crique",
+      "chapter": 3
     }
   },
   "5010": {
@@ -4119,12 +4008,6 @@
           "hub_5010_tobin_hymn"
         ],
         "healAmount": 15
-      },
-      {
-        "text": "Take the Drowned Stair down to the Court",
-        "text_fr": "Descendre l'Escalier Noyé jusqu'à la Cour",
-        "next_id": "5003",
-        "launchZoneId": "z_drowned_stair"
       }
     ],
     "flag_callbacks": [
@@ -4147,16 +4030,6 @@
         "flag": "warden_fallen",
         "en": "The deserters had heard the High Warden was dead before I had finished climbing down to tell them. The news had travelled the water faster than I had.",
         "fr": "Les déserteurs avaient appris la mort du Haut Gardien avant que j'aie fini de descendre le leur dire. La nouvelle avait voyagé sur l'eau plus vite que moi."
-      },
-      {
-        "flag": "went_to_candles",
-        "en": "I had come in by the candles' light, and the deserters had watched me come the whole way.",
-        "fr": "J'avais suivi la lueur des cierges, et les déserteurs avaient suivi des yeux chacun de mes pas."
-      },
-      {
-        "flag": "rat_passage",
-        "en": "The rats' passage had cost me nothing but dignity, and paid me a dead runner's purse.",
-        "fr": "Le passage des rats ne m'avait coûté que ma dignité, et m'avait payé la bourse d'un coureur mort."
       }
     ],
     "hub_progress": {
@@ -4192,7 +4065,11 @@
       "kind": "town",
       "name": "The Drowned Cloister",
       "name_fr": "Le Cloître noyé",
-      "landingPortId": "port_drowned_stair"
+      "landingPortId": "port_drowned_stair",
+      "chapter": 4,
+      "mustDiscover": true,
+      "blurb": "Deserters and refugees knee-deep in black water, halfway down the Court’s own stair.",
+      "blurb_fr": "Des déserteurs et des réfugiés dans l’eau noire jusqu’aux genoux, à mi-hauteur de l’escalier de la Cour."
     }
   },
   "5010_archivist": {
@@ -4369,19 +4246,9 @@
         "fr": "Lysa entra à mon côté sans regarder les masques. On lui en avait destiné un, autrefois, dans la cave d'une taverne, et elle le savait."
       },
       {
-        "flag": "went_at_once",
-        "en": "Nobody at the camp knew where I had gone. It seemed, at the time, the kinder arrangement.",
-        "fr": "Personne au camp ne savait où j'allais. Cela me sembla, sur le moment, l'arrangement le plus doux."
-      },
-      {
-        "flag": "camp_warned",
-        "en": "The runner I had paid would reach the cove by morning. The camp would know where I had gone, if not why.",
-        "fr": "Le coureur que j'avais payé atteindrait la crique au matin. Le camp saurait où j'allais, sinon pourquoi."
-      },
-      {
-        "flag": "went_home_first",
-        "en": "I had gone home first. The camp knew where I was going, and the frost at the gate had spread a street further in the day I had spent by its fires.",
-        "fr": "J'avais d'abord fait le détour par le camp. Le camp savait où j'allais, et le givre à la porte avait gagné une rue de plus pendant la journée passée près de ses feux."
+        "flag": "ledger_read_twice",
+        "en": "I had read the ledger’s page on the chapel three times over before sailing, and I knew the door before the penitents turned to look at it.",
+        "fr": "J’avais lu trois fois la page du registre sur la chapelle avant de prendre la mer, et je reconnus la porte avant que les pénitents ne se tournent vers elle."
       }
     ],
     "choices": [
@@ -4595,11 +4462,6 @@
         ],
         "lockedText": "He weighs me up, decides I am somebody's conscience, and goes back to his stall.",
         "lockedText_fr": "Il me jauge, décide que je suis la conscience de quelqu'un, et retourne à son étal."
-      },
-      {
-        "text": "Claim the last piece, then cross the dead heart",
-        "text_fr": "Réclamer la dernière pièce, puis traverser le cœur mort",
-        "next_id": "6010_thread"
       }
     ],
     "flag_callbacks": [
@@ -4617,6 +4479,11 @@
         "flag": "reckoning_wall_saved",
         "en": "A penitent here had chalked the Reckoning Wall's names on a chapel door, copied faithfully from the Ashen Quarter. The Wall had grown legs.",
         "fr": "Un pénitent d'ici avait tracé à la craie, sur une porte de chapelle, les noms du Mur du Jugement, fidèlement copiés depuis le Quartier des Cendres. Le Mur s'était trouvé des jambes."
+      },
+      {
+        "flag": "keeper_lantern_carried",
+        "en": "I had carried the road-keeper’s lantern in through the frost. Nobody in the Quarter knew her daughter’s name. I kept asking.",
+        "fr": "J’avais porté la lanterne de la gardienne à travers le givre. Personne au Quartier ne connaissait le nom de sa fille. Je continuais de demander."
       }
     ],
     "hub_progress": {
@@ -4652,7 +4519,12 @@
       "kind": "town",
       "name": "The Reliquary Quarter",
       "name_fr": "Le Quartier des Reliquaires",
-      "landingPortId": "port_black_reliquary"
+      "landingPortId": "port_black_reliquary",
+      "chapter": 5,
+      "mustDiscover": true,
+      "arrivalNodeId": "6010_gate",
+      "blurb": "Frost in summer, penitents at the gate, and the Inquisition’s holiest things kept among its most frightened people.",
+      "blurb_fr": "Du givre en plein été, des pénitents à la porte, et les choses les plus saintes de l’Inquisition gardées parmi ses gens les plus effrayés."
     }
   },
   "6010_chartkeeper": {
@@ -4813,16 +4685,23 @@
   },
   "7001": {
     "id": "7001",
-    "description": "[CHAPTER 6: BEYOND THE TEAR] The Void let me go the way a tide lets go of the drowned — not out of mercy, but because it had learned what it wanted and no longer needed to hold on. I came back to myself on the Hollow Shore, a strip of grey sand the tear had drawn out of the dead heart like a splinter, with the Rusty Eel beached beside me and no memory of having sailed her there. Across the water, the tear stood open. Not a wound now — a door, and whatever had known my family's name was standing on the other side of it, waiting for me to be polite enough to knock. The Shroud lay whole against my back for the first time since the first Inquisitor cut it, heavy the way a debt is heavy, and warm; it knew where we were going.",
-    "description_fr": "[CHAPITRE 6 : AU-DELÀ DE LA DÉCHIRURE] Le Néant me relâcha comme une marée relâche un noyé — non par pitié, mais parce qu'il avait appris ce qu'il voulait et n'avait plus besoin de retenir. Je revins à moi sur la Rive Creuse, une bande de sable gris que la déchirure avait tirée du cœur mort comme une écharde, le Rusty Eel échoué à côté de moi et sans le moindre souvenir de l'y avoir mené. De l'autre côté de l'eau, la déchirure était ouverte. Plus une blessure, désormais — une porte, et ce qui connaissait le nom de ma famille se tenait de l'autre côté, attendant que j'aie la politesse de frapper. Le Linceul reposait entier contre mon dos pour la première fois depuis que le premier Inquisiteur l'avait coupé, lourd comme une dette est lourde, et chaud ; il savait où nous allions.",
-    "context_taxonomy": {},
+    "description": "[CHAPTER 6: THE HOLLOW SHORE] The Void let me go the way a tide lets go of the drowned — not out of mercy, but because it had learned what it wanted and no longer needed to hold on. I came back to myself in the cove, on the shingle below the wall, with the Rusty Eel hauled up beside me and no memory of the crossing home. Out at sea, where the charts had shown nothing for a hundred years, the fishermen said there was a shore now: grey sand the tear had drawn out of the dead heart like a splinter, and on it the wrecks of the White Fleet that had sailed to burn my city and never come home. Four pieces of the Shroud lay warm against my back. The fifth was out there, under the sea. The sixth, I knew in the bone, was waiting for me to bring it the rest.",
+    "description_fr": "[CHAPITRE 6 : LA RIVE CREUSE] Le Néant me relâcha comme une marée relâche un noyé — non par pitié, mais parce qu'il avait appris ce qu'il voulait et n'avait plus besoin de retenir. Je revins à moi dans la crique, sur les galets au pied du mur, le Rusty Eel hissé à côté de moi et sans le moindre souvenir de la traversée du retour. Au large, là où les cartes ne montraient rien depuis cent ans, les pêcheurs disaient qu'il y avait désormais un rivage : un sable gris que la déchirure avait tiré du cœur mort comme une écharde, et dessus les épaves de la Flotte Blanche, partie brûler ma ville et jamais rentrée. Quatre pièces du Linceul reposaient, chaudes, contre mon dos. La cinquième était là-bas, sous la mer. La sixième, je le savais dans mes os, attendait que je lui apporte le reste.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
     "automations": {},
     "choices": [
       {
-        "text": "Ready the Eel",
-        "text_fr": "Parer l'Eel",
-        "next_id": "7002",
-        "unlockQuestId": "q_ch6_beyond_the_tear"
+        "text": "Sail for the White Fleet’s grave",
+        "text_fr": "Mettre le cap sur le tombeau de la Flotte Blanche",
+        "next_id": "7300",
+        "launchZoneId": "z_white_fleet_grave",
+        "mainQuest": true,
+        "travelPlaceId": "7100",
+        "unlockQuestId": "q_ch6_the_white_fleet"
       }
     ],
     "flag_callbacks": [
@@ -4832,14 +4711,9 @@
         "fr": "Le nom du pénitent était sur ma liste. J'avais décidé, quelque part dans le noir, ce que je comptais en faire, et la décision avait pesé moins lourd que prévu."
       },
       {
-        "flag": "camp_founded",
-        "en": "Somewhere south of here the camp was lighting its fires without me. I found the thought steadied my hands.",
-        "fr": "Quelque part au sud, le camp allumait ses feux sans moi. Je m'aperçus que cette pensée me raffermissait les mains."
-      },
-      {
         "flag": "dead_heart_cleared",
-        "en": "I knew the Dead Heart now, its glass and its silence; the tear had drawn this shore out of it the way a splinter is drawn, and I knew the wound it had left.",
-        "fr": "Je connaissais le Cœur Mort désormais, son verre et son silence ; la déchirure en avait tiré ce rivage comme on tire une écharde, et je connaissais la plaie laissée."
+        "en": "I knew the Dead Heart now, its glass and its silence; the tear had drawn the new shore out of it the way a splinter is drawn, and I knew the wound it had left.",
+        "fr": "Je connaissais le Cœur Mort désormais, son verre et son silence ; la déchirure en avait tiré le nouveau rivage comme on tire une écharde, et je connaissais la plaie laissée."
       },
       {
         "flag": "reliquary_opened",
@@ -4858,13 +4732,13 @@
       },
       {
         "flag": "lysa_fallen",
-        "en": "I had killed Lysa in a frost-bound chapel a week before, wearing the Inquisition's mask, saying my name. The Shroud was whole. I was not.",
-        "fr": "J'avais tué Lysa dans une chapelle prise par le givre une semaine plus tôt, sous le masque de l'Inquisition, disant mon nom. Le Linceul était entier. Moi non."
+        "en": "I had killed Lysa in a frost-bound chapel a week before, wearing the Inquisition's mask, saying my name. The Shroud was nearly whole. I was not.",
+        "fr": "J'avais tué Lysa dans une chapelle prise par le givre une semaine plus tôt, sous le masque de l'Inquisition, disant mon nom. Le Linceul était presque entier. Moi non."
       },
       {
         "flag": "lysa_found_dead",
-        "en": "Lysa's name was on the chapel wall in the Reliquary Quarter, twelve times, in my hand's worst spelling: mine, scratched by hers. I carried that across the water with the Shroud, and it did not weigh less.",
-        "fr": "Le nom de Lysa était sur le mur de la chapelle du Quartier des Reliquaires, douze fois, dans la pire orthographe de ma main : le mien, gravé par la sienne. Je portai cela sur l'eau avec le Linceul, et cela ne pesait pas moins."
+        "en": "Lysa's name was on the chapel wall in the Reliquary Quarter, twelve times, in my hand's worst spelling: mine, scratched by hers. I carried that home with the Shroud, and it did not weigh less.",
+        "fr": "Le nom de Lysa était sur le mur de la chapelle du Quartier des Reliquaires, douze fois, dans la pire orthographe de ma main : le mien, gravé par la sienne. Je rapportai cela avec le Linceul, et cela ne pesait pas moins."
       },
       {
         "flag": "void_accepted",
@@ -4878,26 +4752,36 @@
       },
       {
         "flag": "crew_sent_back",
-        "en": "The crew I had sent back to the camp had not stayed there. They had put the Eel in the water the night the tear opened and brought her round the coast to find me.",
-        "fr": "L'équipage que j'avais renvoyé au camp n'y était pas resté. Il avait mis l'Eel à l'eau la nuit où la déchirure s'était ouverte et l'avait mené le long de la côte pour me trouver."
+        "en": "The crew I had sent back to the camp had not stayed there. They had sailed the Eel round to the dead heart the night the tear opened, and brought me home in her.",
+        "fr": "L'équipage que j'avais renvoyé au camp n'y était pas resté. Il avait mené l'Eel jusqu'au cœur mort la nuit où la déchirure s'était ouverte, et l'avait ramené avec moi à son bord."
       },
       {
         "flag": "crew_followed",
-        "en": "The crew had not waited at the tear's edge for long. They had gone back to the cove for the Eel, and found this shore, and me on it.",
-        "fr": "L'équipage n'était pas resté longtemps au bord de la déchirure. Il était retourné chercher l'Eel à la crique, et avait trouvé ce rivage, et moi dessus."
+        "en": "The crew had waited at the tear's edge for as long as they could bear, then carried me down to the Eel and home.",
+        "fr": "L'équipage avait attendu au bord de la déchirure aussi longtemps qu'il avait pu le supporter, puis s'était chargé de moi jusqu'à l'Eel, et de l'Eel jusqu'à la crique."
       },
       {
         "flag": "house_hearth_hall",
         "en": "The Hearth-Hall's warmth was still in my coat, or I told myself it was.",
         "fr": "La chaleur de la Halle du Foyer était encore dans mon manteau, ou je me le disais."
       }
-    ]
+    ],
+    "settlement": {
+      "kind": "camp",
+      "name": "The Cove Camp",
+      "name_fr": "Le camp de la crique",
+      "chapter": 6
+    }
   },
   "7002": {
     "id": "7002",
-    "description": "The Eel would not go willingly, and I did not blame her. I checked her seams, counted the bolts for the ballista, and watched the sand between the water and the tear, where things walked that I had put down on a bridge, in a locked chamber, on the docks — each of them wearing a face I remembered, none of them glad to see me. Whatever waited beyond the tear, it had left its reflections out here to say hello. There was nothing else to do on the Hollow Shore but get ready, and then stop being ready and go.",
-    "description_fr": "L'Eel ne voulait pas y aller, et je ne l'en blâmais pas. Je vérifiai ses jointures, comptai les carreaux de la baliste, et observai le sable entre l'eau et la déchirure, où marchaient des choses que j'avais abattues sur un pont, dans une salle close, sur les docks — chacune portant un visage dont je me souvenais, aucune heureuse de me voir. Ce qui attendait au-delà de la déchirure avait laissé ses reflets ici pour dire bonjour. Il n'y avait rien d'autre à faire sur la Rive Creuse que se préparer, puis cesser de se préparer et y aller.",
-    "context_taxonomy": {},
+    "description": "The Hollow Shore was grey sand and grey water and, across the water, the tear, standing open like a door someone had forgotten to close. Things walked the sand that I had put down on a bridge, in a locked chamber, on the docks — each of them wearing a face I remembered, none of them glad to see me. Whatever waited beyond the tear had left its reflections out here to say hello. Behind the dunes the wrecks of the White Fleet lay where the sea had put them, and in their lee, somehow, people had made a life.",
+    "description_fr": "La Rive Creuse n'était que sable gris et eau grise et, de l'autre côté de l'eau, la déchirure, ouverte comme une porte qu'on aurait oublié de fermer. Sur le sable marchaient des choses que j'avais abattues sur un pont, dans une salle close, sur les docks — chacune portant un visage dont je me souvenais, aucune heureuse de me voir. Ce qui attendait au-delà de la déchirure avait laissé ses reflets ici pour dire bonjour. Derrière les dunes, les épaves de la Flotte Blanche gisaient là où la mer les avait posées, et à leur abri, on ne sait comment, des gens s'étaient fait une vie.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
     "automations": {},
     "choices": [
       {
@@ -4940,13 +4824,6 @@
         "hideIfFlags": [
           "hub_7002_crew"
         ]
-      },
-      {
-        "text": "Sail into the tear",
-        "text_fr": "Faire voile dans la déchirure",
-        "next_id": "7002_confront",
-        "lockedText": "The Shroud was not whole, and the tear would not open for less.",
-        "lockedText_fr": "Le Linceul n'était pas entier, et la déchirure ne s'ouvrirait pas pour moins."
       }
     ],
     "flag_callbacks": [
@@ -4970,7 +4847,16 @@
         "en": "Whatever the Shroud had learned in the shrine we built for it from the Dead Heart's stone, it was humming it now.",
         "fr": "Quoi que le Linceul eût appris dans le sanctuaire que nous lui avions bâti avec la pierre du Cœur Mort, il le fredonnait à présent."
       }
-    ]
+    ],
+    "settlement": {
+      "kind": "site",
+      "name": "The Hollow Shore",
+      "name_fr": "La Rive Creuse",
+      "chapter": 6,
+      "landingPortId": "port_hollow_shore",
+      "blurb": "Grey sand drawn out of the dead heart, the tear across the water, and reflections walking the beach.",
+      "blurb_fr": "Un sable gris tiré du cœur mort, la déchirure de l'autre côté de l'eau, et des reflets qui arpentent la plage."
+    }
   },
   "7002_reflections": {
     "id": "7002_reflections",
@@ -5008,8 +4894,8 @@
   },
   "7003": {
     "id": "7003",
-    "description": "The Sovereign fell — if fell is the word for something that had never properly stood — and the tear behind its throne shivered like a held breath finally let go. The faces on the sand went still. The ledger's clock, the one I had felt running in my bones since the Hollow Court, stopped. I stood in the wreck of a throne room that was already forgetting it had ever been one, with the Eel's ballista empty and my hands not quite steady, and understood that the invasion was over, and that I had, at last, to decide what came after it.",
-    "description_fr": "Le Souverain tomba — si tomber est le mot pour une chose qui ne s'était jamais vraiment tenue debout — et la déchirure derrière son trône frémit comme un souffle enfin relâché. Les visages sur le sable s'immobilisèrent. L'horloge du registre, celle que je sentais courir dans mes os depuis la Cour Creuse, s'arrêta. Je me tenais dans les débris d'une salle du trône qui oubliait déjà en avoir été une, la baliste de l'Eel vide et les mains pas tout à fait sûres, et je compris que l'invasion était finie, et qu'il me fallait enfin décider de ce qui viendrait après.",
+    "description": "The Sovereign fell — if fell is the word for something that had never properly stood — and the tear behind its throne shivered like a held breath finally let go. The faces on the sand went still, and the grey it had worn across its shoulders since the first night came away in my hands: the sixth piece, light as ash and warm as a hand. The Shroud was whole. The ledger's clock, the one I had felt running in my bones since the Hollow Court, stopped. I stood in the wreck of a throne room that was already forgetting it had ever been one, with the Eel's ballista empty and my hands not quite steady, and understood that the invasion was over, and that I had, at last, to decide what came after it.",
+    "description_fr": "Le Souverain tomba — si tomber est le mot pour une chose qui ne s'était jamais vraiment tenue debout — et la déchirure derrière son trône frémit comme un souffle enfin relâché. Les visages sur le sable s'immobilisèrent, et le gris qu'il portait sur les épaules depuis la première nuit me resta dans les mains : la sixième pièce, légère comme la cendre et chaude comme une main. Le Linceul était entier. L'horloge du registre, celle que je sentais courir dans mes os depuis la Cour Creuse, s'arrêta. Je me tenais dans les débris d'une salle du trône qui oubliait déjà en avoir été une, la baliste de l'Eel vide et les mains pas tout à fait sûres, et je compris que l'invasion était finie, et qu'il me fallait enfin décider de ce qui viendrait après.",
     "context_taxonomy": {},
     "automations": {},
     "choices": [
@@ -5018,8 +4904,10 @@
         "text_fr": "Repasser la déchirure",
         "next_id": "7004",
         "flagsToAdd": [
-          "left_at_once"
-        ]
+          "left_at_once",
+          "banner_whole"
+        ],
+        "grantsBannerPieceId": "sovereign_mantle"
       },
       {
         "text": "Cut the taken's names from the throne first",
@@ -5028,8 +4916,10 @@
         "healAmount": -10,
         "alignmentMod": 1,
         "flagsToAdd": [
-          "names_recovered"
-        ]
+          "names_recovered",
+          "banner_whole"
+        ],
+        "grantsBannerPieceId": "sovereign_mantle"
       }
     ],
     "persona_variants": {
@@ -5123,6 +5013,11 @@
     ],
     "flag_callbacks": [
       {
+        "flag": "banner_whole",
+        "en": "The Shroud was whole on my back for the first time since the first Inquisitor cut it, and it was humming, very quietly, a tune I did not know yet.",
+        "fr": "Le Linceul était entier sur mon dos pour la première fois depuis que le premier Inquisiteur l’avait coupé, et il fredonnait, tout bas, un air que je ne connaissais pas encore."
+      },
+      {
         "flag": "camp_founded",
         "unlessFlags": [
           "camp_given"
@@ -5194,8 +5089,8 @@
   },
   "7005": {
     "id": "7005",
-    "description": "[JOURNEY'S END] I stepped back into my own world with the Void Banner quiet against my back for the first time since a tavern door swung, broken, on its last hinge and started all of this. The invasion, at least, was over. What came after it was not, and would not be for some considerable time — but for the first time since that particular night, I found I knew exactly what I intended to do about it. You can build quite a lot on that.",
-    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde, la Bannière du Néant enfin silencieuse contre mon dos pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment — mais pour la première fois depuis cette nuit précise, je découvris savoir exactement ce que je comptais en faire. On peut bâtir bien des choses sur cela.",
+    "description": "[JOURNEY'S END] I stepped back into my own world with the Void Banner quiet against my back for the first time since a tavern door swung, broken, on its last hinge and started all of this. The invasion, at least, was over. What came after it was not, and would not be for some considerable time — but for the first time since that particular night, I found I knew exactly what I intended to do about it. You can build quite a lot on that. I had meant to raise a city on it. The Banner had other plans. [EPILOGUE] It was the Banner that did it, in the end, and not me. Whole for the first time since the first Inquisitor cut it, the Shroud did the thing it had been sewn to do, which was not to open a door or to close one, but to undo the night the door was made. I felt it go through me like a tide going out: the Hollow Shore, the dead heart, the Reliquary’s frost, the drowned stair, the Spire, the harbor, the wharf, the burning, all of it drawn back through the needle’s eye, stitch by stitch, until there was nothing left on the thread but a tavern, the night before the invasion, and a door still whole on its hinges. I woke there. I remembered. Out at sea the first white sail had not yet been seen. I had, it turned out, one more chance to be someone my dead would recognize, and this time I knew the way.",
+    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde, la Bannière du Néant enfin silencieuse contre mon dos pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment — mais pour la première fois depuis cette nuit précise, je découvris savoir exactement ce que je comptais en faire. On peut bâtir bien des choses sur cela. Je comptais bâtir une ville dessus. La Bannière avait d’autres projets. [ÉPILOGUE] Ce fut la Bannière, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie, tout cela ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil qu’une taverne, la veille de l’invasion, et une porte encore entière sur ses gonds. Je m’y éveillai. Je me souvenais. Au large, la première voile blanche n’avait pas encore été aperçue. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin.",
     "context_taxonomy": {},
     "automations": {},
     "choices": [
@@ -5268,8 +5163,8 @@
   },
   "7005_seeker": {
     "id": "7005_seeker",
-    "description": "[JOURNEY'S END] I stepped back into my own world with the Shroud whole against my back and no intention of letting it rest there. The ledger had named other tears, in other cities, on other nights, and a thing that has been sewn shut once can be sewn shut again by someone who knows the stitch. The invasion, at least, was over. What came after it was not, and would not be for some considerable time; but for the first time since a tavern door swung, broken, on its last hinge and started all of this, I knew where I was headed, and you can build quite a lot on that, even at sea.",
-    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde avec le Linceul entier contre mon dos et sans la moindre intention de l'y laisser reposer. Le registre avait nommé d'autres déchirures, dans d'autres villes, d'autres nuits, et ce qui a été recousu une fois peut l'être encore par qui connaît le point. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment ; mais pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela, je savais où j'allais, et on peut bâtir bien des choses là-dessus, même en mer.",
+    "description": "[JOURNEY'S END] I stepped back into my own world with the Shroud whole against my back and no intention of letting it rest there. The ledger had named other tears, in other cities, on other nights, and a thing that has been sewn shut once can be sewn shut again by someone who knows the stitch. The invasion, at least, was over. What came after it was not, and would not be for some considerable time; but for the first time since a tavern door swung, broken, on its last hinge and started all of this, I knew where I was headed, and you can build quite a lot on that, even at sea. I had meant to carry it to every tear the ledger named. It had only ever meant to go back to the first. [EPILOGUE] It was the Banner that did it, in the end, and not me. Whole for the first time since the first Inquisitor cut it, the Shroud did the thing it had been sewn to do, which was not to open a door or to close one, but to undo the night the door was made. I felt it go through me like a tide going out: the Hollow Shore, the dead heart, the Reliquary’s frost, the drowned stair, the Spire, the harbor, the wharf, the burning, all of it drawn back through the needle’s eye, stitch by stitch, until there was nothing left on the thread but a tavern, the night before the invasion, and a door still whole on its hinges. I woke there. I remembered. Out at sea the first white sail had not yet been seen. I had, it turned out, one more chance to be someone my dead would recognize, and this time I knew the way.",
+    "description_fr": "[FIN DU VOYAGE] Je revins dans mon propre monde avec le Linceul entier contre mon dos et sans la moindre intention de l'y laisser reposer. Le registre avait nommé d'autres déchirures, dans d'autres villes, d'autres nuits, et ce qui a été recousu une fois peut l'être encore par qui connaît le point. L'invasion, du moins, était terminée. Ce qui la suivait ne l'était pas, et ne le serait pas avant un bon moment ; mais pour la première fois depuis qu'une porte de taverne avait oscillé, brisée, sur son dernier gond et déclenché tout cela, je savais où j'allais, et on peut bâtir bien des choses là-dessus, même en mer. Je comptais la porter jusqu’à chaque déchirure que nommait le registre. Elle n’avait jamais voulu retourner qu’à la première. [ÉPILOGUE] Ce fut la Bannière, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie, tout cela ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil qu’une taverne, la veille de l’invasion, et une porte encore entière sur ses gonds. Je m’y éveillai. Je me souvenais. Au large, la première voile blanche n’avait pas encore été aperçue. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin.",
     "context_taxonomy": {},
     "automations": {},
     "choices": [
@@ -5316,8 +5211,8 @@
   },
   "7005_dawn": {
     "id": "7005_dawn",
-    "description": "[JOURNEY'S END] I sewed it shut. The Banner had been made for exactly this, generations back, by a man who had looked into a tear and understood that the only honest answer to it was a needle — and when the last stitch went in, the grey sand went gold with a dawn the Hollow Shore had never seen, and the faces on it were gone, and so, at last, was the thing that had known my family's name. I sailed home with an empty back and whoever was left of the crew, and let the coast make of me whatever it needed. You can build quite a lot on having nothing left to carry. It had wanted the Shroud whole so that the door could open. Whole, it turned out, was also the only way the door could close. Nobody had told it that. Nobody had told me, either, until the needle was in my hand.",
-    "description_fr": "[FIN DU VOYAGE] Je la recousis. La Bannière avait été faite exactement pour cela, des générations plus tôt, par un homme qui avait regardé dans une déchirure et compris que la seule réponse honnête était une aiguille — et lorsque le dernier point fut posé, le sable gris devint d'or sous une aube que la Rive Creuse n'avait jamais vue, les visages avaient disparu, et avec eux, enfin, la chose qui connaissait le nom de ma famille. Je rentrai le dos vide, avec ce qui restait de l'équipage, et laissai la côte faire de moi ce dont elle avait besoin. On peut bâtir bien des choses sur le fait de n'avoir plus rien à porter. Il avait voulu le Linceul entier pour que la porte puisse s'ouvrir. Entier, s'avéra-t-il, était aussi la seule façon dont la porte pouvait se fermer. Personne ne le lui avait dit. Personne ne me l'avait dit non plus, jusqu'à ce que l'aiguille soit dans ma main.",
+    "description": "[JOURNEY'S END] I sewed it shut. The Banner had been made for exactly this, generations back, by a man who had looked into a tear and understood that the only honest answer to it was a needle — and when the last stitch went in, the grey sand went gold with a dawn the Hollow Shore had never seen, and the faces on it were gone, and so, at last, was the thing that had known my family's name. I sailed home with an empty back and whoever was left of the crew, and let the coast make of me whatever it needed. You can build quite a lot on having nothing left to carry. It had wanted the Shroud whole so that the door could open. Whole, it turned out, was also the only way the door could close. Nobody had told it that. Nobody had told me, either, until the needle was in my hand. The last stitch was not the last. The needle kept going. [EPILOGUE] It was the Banner that did it, in the end, and not me. Whole for the first time since the first Inquisitor cut it, the Shroud did the thing it had been sewn to do, which was not to open a door or to close one, but to undo the night the door was made. I felt it go through me like a tide going out: the Hollow Shore, the dead heart, the Reliquary’s frost, the drowned stair, the Spire, the harbor, the wharf, the burning, all of it drawn back through the needle’s eye, stitch by stitch, until there was nothing left on the thread but a tavern, the night before the invasion, and a door still whole on its hinges. I woke there. I remembered. Out at sea the first white sail had not yet been seen. I had, it turned out, one more chance to be someone my dead would recognize, and this time I knew the way.",
+    "description_fr": "[FIN DU VOYAGE] Je la recousis. La Bannière avait été faite exactement pour cela, des générations plus tôt, par un homme qui avait regardé dans une déchirure et compris que la seule réponse honnête était une aiguille — et lorsque le dernier point fut posé, le sable gris devint d'or sous une aube que la Rive Creuse n'avait jamais vue, les visages avaient disparu, et avec eux, enfin, la chose qui connaissait le nom de ma famille. Je rentrai le dos vide, avec ce qui restait de l'équipage, et laissai la côte faire de moi ce dont elle avait besoin. On peut bâtir bien des choses sur le fait de n'avoir plus rien à porter. Il avait voulu le Linceul entier pour que la porte puisse s'ouvrir. Entier, s'avéra-t-il, était aussi la seule façon dont la porte pouvait se fermer. Personne ne le lui avait dit. Personne ne me l'avait dit non plus, jusqu'à ce que l'aiguille soit dans ma main. Le dernier point ne fut pas le dernier. L’aiguille continua. [ÉPILOGUE] Ce fut la Bannière, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie, tout cela ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil qu’une taverne, la veille de l’invasion, et une porte encore entière sur ses gonds. Je m’y éveillai. Je me souvenais. Au large, la première voile blanche n’avait pas encore été aperçue. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin.",
     "context_taxonomy": {},
     "automations": {},
     "choices": [
@@ -5381,8 +5276,8 @@
   },
   "7005_crown": {
     "id": "7005_crown",
-    "description": "[JOURNEY'S END] I took the crown. It was lighter than it looked and heavier than it felt, and the moment it settled the tear at my back stopped being a door and became, with the quiet obedience of a thing that has recognized its owner, a gate I held the key to. The faces on the sand knelt. The Eel's crew did not, but they sailed me home, and the camp on the Ashen Coast learned by nightfall that the invasion was over and that something else had begun. I had not gone looking for a throne. I had, it turned out, simply been the last one standing near it.",
-    "description_fr": "[FIN DU VOYAGE] Je pris la couronne. Elle était plus légère qu'elle n'en avait l'air et plus lourde qu'elle ne le paraissait, et à l'instant où elle se posa, la déchirure dans mon dos cessa d'être une porte pour devenir, avec la tranquille obéissance d'une chose qui a reconnu à qui elle appartient, une grille dont je tenais la clef. Les visages sur le sable s'agenouillèrent. L'équipage de l'Eel, non, mais il me ramena, et le campement sur la Côte de Cendre apprit à la tombée de la nuit que l'invasion était finie et qu'autre chose avait commencé. Je n'avais pas cherché de trône. Il se trouve simplement que personne d'autre ne tenait plus debout près de lui.",
+    "description": "[JOURNEY'S END] I took the crown. It was lighter than it looked and heavier than it felt, and the moment it settled the tear at my back stopped being a door and became, with the quiet obedience of a thing that has recognized its owner, a gate I held the key to. The faces on the sand knelt. The Eel's crew did not, but they sailed me home, and the camp on the Ashen Coast learned by nightfall that the invasion was over and that something else had begun. I had not gone looking for a throne. I had, it turned out, simply been the last one standing near it. I had set the Banner aside to take the crown, and thought it finished with. It was not finished with me. [EPILOGUE] It was the Banner that did it, in the end, and not me. Whole for the first time since the first Inquisitor cut it, the Shroud did the thing it had been sewn to do, which was not to open a door or to close one, but to undo the night the door was made. I felt it go through me like a tide going out: the Hollow Shore, the dead heart, the Reliquary’s frost, the drowned stair, the Spire, the harbor, the wharf, the burning, all of it drawn back through the needle’s eye, stitch by stitch, until there was nothing left on the thread but a tavern, the night before the invasion, and a door still whole on its hinges. I woke there. I remembered. Out at sea the first white sail had not yet been seen. I had, it turned out, one more chance to be someone my dead would recognize, and this time I knew the way.",
+    "description_fr": "[FIN DU VOYAGE] Je pris la couronne. Elle était plus légère qu'elle n'en avait l'air et plus lourde qu'elle ne le paraissait, et à l'instant où elle se posa, la déchirure dans mon dos cessa d'être une porte pour devenir, avec la tranquille obéissance d'une chose qui a reconnu à qui elle appartient, une grille dont je tenais la clef. Les visages sur le sable s'agenouillèrent. L'équipage de l'Eel, non, mais il me ramena, et le campement sur la Côte de Cendre apprit à la tombée de la nuit que l'invasion était finie et qu'autre chose avait commencé. Je n'avais pas cherché de trône. Il se trouve simplement que personne d'autre ne tenait plus debout près de lui. J’avais mis la Bannière de côté pour prendre la couronne, et la croyais finie. Elle n’en avait pas fini avec moi. [ÉPILOGUE] Ce fut la Bannière, à la fin, et non moi. Entier pour la première fois depuis que le premier Inquisiteur l’avait coupé, le Linceul fit ce pour quoi il avait été cousu, qui n’était ni d’ouvrir une porte ni de la fermer, mais de défaire la nuit où la porte avait été faite. Je le sentis me traverser comme une marée qui se retire : la Rive Creuse, le cœur mort, le givre du Reliquaire, l’escalier noyé, la Flèche, le port, le quai, l’incendie, tout cela ramené à travers le chas de l’aiguille, point après point, jusqu’à ce qu’il ne reste sur le fil qu’une taverne, la veille de l’invasion, et une porte encore entière sur ses gonds. Je m’y éveillai. Je me souvenais. Au large, la première voile blanche n’avait pas encore été aperçue. J’avais, il fallait croire, une chance de plus d’être quelqu’un que mes morts reconnaîtraient, et cette fois je connaissais le chemin.",
     "context_taxonomy": {},
     "automations": {},
     "choices": [
@@ -5669,8 +5564,8 @@
   },
   "7002_confront": {
     "id": "7002_confront",
-    "description": "It spoke before I had set foot on the water: through the tear, through the reflections on the sand, through the thread it had left in me at the very beginning, and its voice was a certainty rather than a sound. It knew my family's name. It had known it before there was a family. It asked, with something that was not quite curiosity, what I had come across the water to say to it. It thanked me, I think, for carrying it here. I had done in a season what its kneeling men had failed at for a generation, and the door had been waiting for exactly the thing on my back.",
-    "description_fr": "Elle parla avant que j'aie posé le pied sur l'eau : par la déchirure, par les reflets sur le sable, par le fil qu'elle avait laissé en moi dès le tout début, et sa voix était une certitude plutôt qu'un son. Elle connaissait le nom de ma famille. Elle l'avait connu avant qu'il y ait une famille. Elle demanda, avec quelque chose qui n'était pas tout à fait de la curiosité, ce que j'avais à lui dire de l'autre côté de l'eau. Elle me remercia, je crois, de l'avoir portée jusqu'ici. J'avais fait en une saison ce que ses hommes agenouillés n'avaient pas réussi en une génération, et la porte attendait exactement la chose que j'avais sur le dos.",
+    "description": "It spoke before I had set foot on the water: through the tear, through the reflections on the sand, through the thread it had left in me at the very beginning, and its voice was a certainty rather than a sound. It knew my family's name. It had known it before there was a family. It asked, with something that was not quite curiosity, what I had come across the water to say to it. It thanked me, I think, for carrying them here. I had done in a season what its kneeling men had failed at for a generation: five pieces of six, brought to its door, and the sixth on its own shoulders, where it had worn it since the first Inquisitor cut the Shroud.",
+    "description_fr": "Elle parla avant que j'aie posé le pied sur l'eau : par la déchirure, par les reflets sur le sable, par le fil qu'elle avait laissé en moi dès le tout début, et sa voix était une certitude plutôt qu'un son. Elle connaissait le nom de ma famille. Elle l'avait connu avant qu'il y ait une famille. Elle demanda, avec quelque chose qui n'était pas tout à fait de la curiosité, ce que j'avais à lui dire de l'autre côté de l'eau. Elle me remercia, je crois, de les avoir portées jusqu'ici. J'avais fait en une saison ce que ses hommes agenouillés n'avaient pas réussi en une génération : cinq pièces sur six, apportées jusqu'à sa porte, et la sixième sur ses propres épaules, où elle la portait depuis que le premier Inquisiteur avait coupé le Linceul.",
     "context_taxonomy": {
       "speaker": "The Sovereign"
     },
@@ -5697,7 +5592,7 @@
       }
     ],
     "reqFlags": [
-      "banner_whole"
+      "banner_five"
     ]
   },
   "4999_standard": {
@@ -5745,8 +5640,8 @@
   },
   "4999_camp": {
     "id": "4999_camp",
-    "description": "The walk back took the night and most of the morning, and the Spire burned behind me the whole way, a second sunrise nobody on the flats had asked for. The cove was where I had left it: the fire-ring, the rope line, the Eel hauled up above the tide with her storm-scars showing, and the wall that still stood. I had said three days. It had been three days. I found that I cared about that more than I had expected to.",
-    "description_fr": "Le retour prit la nuit et presque toute la matinée, et la Flèche brûla derrière moi tout du long, un second lever de soleil que personne sur les plaines n'avait demandé. La crique était telle que je l'avais laissée : le cercle de pierres du foyer, la corde tendue, l'Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et le mur encore debout. J'avais dit trois jours. Cela faisait trois jours. Je m'aperçus que cela comptait pour moi plus que je ne l'aurais cru.",
+    "description": "[CHAPTER 4: THE HOLLOW COURT] The walk back took the night and most of the morning, and the Spire burned behind me the whole way, a second sunrise nobody on the flats had asked for. The cove was where I had left it: the fire-ring, the rope line, the Eel hauled up above the tide with her storm-scars showing, and the wall that still stood. I had said three days. It had been three days. I found that I cared about that more than I had expected to. By the second night the camp had heard what the Quarter’s survivors whispered and would not say aloud: the Hollow Court. Inquisitors who knelt to no living authority and had, as a courtesy to themselves, never officially existed, and who kept another piece of the Shroud at the bottom of a stair the sea had taken, three days along the coast. Whatever waited down there had known my family’s name rather longer than I had known its.",
+    "description_fr": "[CHAPITRE 4 : LA COUR CREUSE] Le retour prit la nuit et presque toute la matinée, et la Flèche brûla derrière moi tout du long, un second lever de soleil que personne sur les plaines n'avait demandé. La crique était telle que je l'avais laissée : le cercle de pierres du foyer, la corde tendue, l'Eel hissé au-dessus de la marée, ses cicatrices de tempête visibles, et le mur encore debout. J'avais dit trois jours. Cela faisait trois jours. Je m'aperçus que cela comptait pour moi plus que je ne l'aurais cru. Dès la deuxième nuit, le camp avait appris ce que les survivants du Quartier murmuraient sans oser le dire : la Cour Creuse. Des inquisiteurs qui ne s’agenouillaient devant aucune autorité vivante et n’avaient, par courtoisie envers eux-mêmes, jamais officiellement existé, et qui gardaient une autre pièce du Linceul au fond d’un escalier que la mer avait pris, à trois jours le long de la côte. Ce qui attendait là-dessous connaissait le nom de ma famille depuis bien plus longtemps que moi le sien.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "hopeful",
@@ -5754,25 +5649,35 @@
     },
     "choices": [
       {
-        "text": "Sleep a night by the fires before going back",
-        "text_fr": "Dormir une nuit près des feux avant de repartir",
-        "next_id": "5001",
-        "healAmount": 40,
-        "flagsToAdd": [
-          "camp_rested"
-        ]
-      },
-      {
-        "text": "Leave before dawn with what the camp can spare",
-        "text_fr": "Partir avant l'aube avec ce que le camp peut donner",
-        "next_id": "5001",
-        "goldMod": 40,
-        "flagsToAdd": [
-          "camp_left_early"
-        ]
+        "text": "Sail for the Drowned Stair and go down",
+        "text_fr": "Mettre le cap sur l’Escalier Noyé et descendre",
+        "next_id": "5003",
+        "launchZoneId": "z_drowned_stair",
+        "mainQuest": true,
+        "travelPlaceId": "5010"
       }
     ],
     "flag_callbacks": [
+      {
+        "flag": "banner_second_piece_lead",
+        "en": "The lead from the Lantern Docks pointed the same way the whispers did: down.",
+        "fr": "La piste des Quais des Lanternes indiquait la même direction que les murmures : en bas."
+      },
+      {
+        "flag": "standard_cut_living",
+        "en": "The Warden's scream had come down the Spire's stair with me, all the way to the coast and back, and I suspected it would come the rest of the way.",
+        "fr": "Le cri du Gardien avait descendu l'escalier de la Flèche avec moi, jusqu'à la côte et retour, et je soupçonnais qu'il ferait le reste du chemin."
+      },
+      {
+        "flag": "standard_waited",
+        "en": "I had waited for him to die with the Cathedral coming down around us, and the smoke was still in me; every breath on the stair cost more than it returned.",
+        "fr": "J'avais attendu qu'il meure pendant que la Cathédrale s'effondrait autour de nous, et la fumée était encore en moi ; chaque souffle sur l'escalier coûtait plus qu'il ne rendait."
+      },
+      {
+        "flag": "standard_mercy",
+        "en": "I had given the Warden the blade before the standard, and the standard had come away clean. Nothing else about it had.",
+        "fr": "J'avais donné la lame au Gardien avant l'étendard, et l'étendard s'était détaché propre. Rien d'autre dans l'affaire ne l'était."
+      },
       {
         "flag": "camp_founded",
         "en": "The camp saw the smoke long before it saw me, and was on the shingle when I came down into the cove. Nobody asked about the grey cloth on my back. Somebody put bread in my hand instead, somebody else took my boots off, and for the length of an evening the only thing I had to decide was which side of the fire to sleep on.",
@@ -5844,12 +5749,18 @@
         "flag": "house_harbor",
         "en": "The harbor had its quay out past the wall now, and the shipwright was under the Eel before I had my boots off, knocking on her planks and not liking what they answered.",
         "fr": "Le port avait désormais son quai lancé au-delà du mur, et le charpentier de marine était sous l’Eel avant que j’aie ôté mes bottes, à frapper ses bordages sans aimer ce qu’ils répondaient."
+      },
+      {
+        "flag": "widow_told_truth",
+        "en": "The smith’s widow had sent a sack of Emberwick charcoal down to the cove with a boy, and no message, which from her was a long one.",
+        "fr": "La veuve du forgeron avait fait porter un sac de charbon de Braiseval jusqu’à la crique par un garçon, sans message, ce qui, venant d’elle, en était un long."
       }
     ],
     "settlement": {
       "kind": "camp",
       "name": "The Cove Camp",
-      "name_fr": "Le camp de la crique"
+      "name_fr": "Le camp de la crique",
+      "chapter": 4
     }
   },
   "5004_altar": {
@@ -5912,8 +5823,7 @@
         "launchZoneId": "z_shroud_vigil",
         "alignmentMod": -2,
         "flagsToAdd": [
-          "reliquary_opened",
-          "banner_whole"
+          "reliquary_opened"
         ],
         "grantsBannerPieceId": "reliquary_thread"
       },
@@ -5925,8 +5835,7 @@
         "goldMod": -150,
         "alignmentMod": 1,
         "flagsToAdd": [
-          "chartkeeper_paid",
-          "banner_whole"
+          "chartkeeper_paid"
         ],
         "grantsBannerPieceId": "reliquary_thread"
       },
@@ -5938,8 +5847,7 @@
         "healAmount": -10,
         "alignmentMod": -1,
         "flagsToAdd": [
-          "penitent_seal",
-          "banner_whole"
+          "penitent_seal"
         ],
         "grantsBannerPieceId": "reliquary_thread"
       }
@@ -5947,8 +5855,8 @@
   },
   "7002_price": {
     "id": "7002_price",
-    "description": "It heard me out, and then it named its price, in the way of a thing that has never once been refused. The tear would open for the Shroud, it said, but not for free: a door that size is paid for on the threshold, and it would take its payment from what I loved, or from what I was, or from what I had built, and it did not care which. It had, it said, all the time in the world. I did not.",
-    "description_fr": "Elle m'écouta jusqu'au bout, puis nomma son prix, à la façon d'une chose qu'on n'a jamais refusée. La déchirure s'ouvrirait pour le Linceul, dit-elle, mais pas pour rien : une porte de cette taille se paie sur le seuil, et elle prendrait son paiement sur ce que j'aimais, ou sur ce que j'étais, ou sur ce que j'avais bâti, et peu lui importait lequel. Elle avait, dit-elle, tout le temps du monde. Pas moi.",
+    "description": "It heard me out, and then it named its price, in the way of a thing that has never once been refused. The tear would open for five pieces, it said, but not for free: a door that size is paid for on the threshold, and it would take its payment from what I loved, or from what I was, or from what I had built, and it did not care which. It had, it said, all the time in the world. I did not.",
+    "description_fr": "Elle m'écouta jusqu'au bout, puis nomma son prix, à la façon d'une chose qu'on n'a jamais refusée. La déchirure s'ouvrirait pour cinq pièces, dit-elle, mais pas pour rien : une porte de cette taille se paie sur le seuil, et elle prendrait son paiement sur ce que j'aimais, ou sur ce que j'étais, ou sur ce que j'avais bâti, et peu lui importait lequel. Elle avait, dit-elle, tout le temps du monde. Pas moi.",
     "context_taxonomy": {
       "speaker": "The Sovereign"
     },
@@ -6137,6 +6045,1252 @@
         "flagsToAdd": [
           "lysa_left_masked"
         ]
+      }
+    ]
+  },
+  "3100": {
+    "id": "3100",
+    "description": "Emberwick sat in the lee of the old slag heaps, where the ironworkers’ families had gone when the golems outlasted their masters: a dozen kilns smoking in a hollow, a well, a row of houses built from the yards’ own scrap, and people who looked at a stranger’s hands before they looked at the stranger’s face. They burned charcoal for anyone who paid and asked the Spire for nothing, which the Spire had noticed. Nobody here had a use for a banner. Several of them had a use for someone who could fight.",
+    "description_fr": "Braiseval s’abritait sous les vieux terrils de scories, là où les familles des forgerons s’étaient repliées quand les golems avaient survécu à leurs maîtres : une douzaine de fours fumant au creux d’un vallon, un puits, une rangée de maisons bâties avec la ferraille des chantiers, et des gens qui regardaient les mains d’un étranger avant son visage. Ils brûlaient du charbon pour qui payait et ne demandaient rien à la Flèche, ce que la Flèche avait remarqué. Personne ici n’avait l’usage d’une bannière. Plusieurs avaient l’usage de quelqu’un qui sache se battre.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Turn back the tithe-takers at the well",
+        "text_fr": "Repousser les collecteurs de dîme au puits",
+        "next_id": "3100_tithe",
+        "triggerEnemyIds": [
+          "inquisition_auxiliary",
+          "inquisition_auxiliary"
+        ],
+        "hideIfFlags": [
+          "hub_3100_tithe"
+        ]
+      },
+      {
+        "text": "Help bank a kiln that has caught",
+        "text_fr": "Aider à étouffer un four qui s’emballe",
+        "next_id": "3100_kiln",
+        "checkAbility": "constitution",
+        "checkDC": 12,
+        "goldMod": 35,
+        "failNextId": "3100_kiln_failed",
+        "hideIfFlags": [
+          "hub_3100_kiln"
+        ]
+      },
+      {
+        "text": "Hear the smith’s widow on the yards",
+        "text_fr": "Écouter la veuve du forgeron parler des chantiers",
+        "next_id": "3100_widow",
+        "hideIfFlags": [
+          "hub_3100_widow"
+        ]
+      },
+      {
+        "text": "Tell the widow who is still singing",
+        "text_fr": "Dire à la veuve qui chante encore",
+        "next_id": "3100_widow_later",
+        "showIfFlags": [
+          "hub_3100_widow",
+          "scaffold_yards_cleared"
+        ],
+        "hideIfFlags": [
+          "hub_3100_widow_later"
+        ]
+      },
+      {
+        "text": "Share the kilns’ bread and a night’s sleep",
+        "text_fr": "Partager le pain des fours et une nuit de sommeil",
+        "next_id": "3100_bread",
+        "healAmount": 50,
+        "hideIfFlags": [
+          "hub_3100_bread"
+        ]
+      }
+    ],
+    "settlement": {
+      "kind": "village",
+      "name": "Emberwick",
+      "name_fr": "Braiseval",
+      "chapter": 3,
+      "mustDiscover": true,
+      "blurb": "The ironworkers’ families, their kilns and their well, in a hollow of the old slag heaps.",
+      "blurb_fr": "Les familles des forgerons, leurs fours et leur puits, au creux des vieux terrils."
+    },
+    "hub_progress": {
+      "prefix": "hub_3100_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The kiln-children had stopped hiding when I came down into the hollow. One of them had started walking behind me, carrying nothing, as if it were a job.",
+          "fr": "Les enfants des fours ne se cachaient plus quand je descendais dans le vallon. L’un d’eux s’était mis à marcher derrière moi, sans rien porter, comme si c’était un travail."
+        }
+      ]
+    }
+  },
+  "3100_tithe": {
+    "id": "3100_tithe",
+    "description": "They had come for a tenth of the charcoal and a tenth of the winter, the way the Spire always came, with a ledger and two men to make the ledger true. The ledger ended up in the well. The men ended up further away than that. Nobody at the kilns thanked me, exactly; an old woman counted the sacks the auxiliaries had meant to take, and pushed two of them toward me with her foot.",
+    "description_fr": "Ils étaient venus prendre un dixième du charbon et un dixième de l’hiver, comme la Flèche venait toujours, avec un registre et deux hommes pour rendre le registre vrai. Le registre finit dans le puits. Les hommes finirent plus loin que ça. Personne aux fours ne me remercia, à proprement parler ; une vieille femme compta les sacs que les auxiliaires comptaient emporter, et en poussa deux vers moi du bout du pied.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the kilns",
+        "text_fr": "Retour aux fours",
+        "next_id": "3100",
+        "goldMod": 30,
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_3100_tithe"
+        ]
+      }
+    ]
+  },
+  "3100_kiln": {
+    "id": "3100_kiln",
+    "description": "A kiln that catches wrong burns its charcoal to nothing and its burner with it. We smothered it with wet turf and our own backs, and the heat came through my coat like an argument I was losing, and then it was only smoke. The burner paid me in coin he did not have to spare, and would not take it back.",
+    "description_fr": "Un four qui s’emballe réduit son charbon à rien, et son charbonnier avec. Nous l’étouffâmes sous de la tourbe mouillée et nos propres dos, et la chaleur me traversa le manteau comme une dispute que je perdais, puis il n’y eut plus que de la fumée. Le charbonnier me paya avec des pièces qu’il n’avait pas les moyens de donner, et refusa de les reprendre.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the hollow",
+        "text_fr": "Retour au vallon",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_kiln"
+        ]
+      }
+    ]
+  },
+  "3100_kiln_failed": {
+    "id": "3100_kiln_failed",
+    "description": "The heat won. I came out of the smoke with my eyebrows a memory and my hands blistered to the wrist, and the kiln went on burning its charcoal to ash behind me while its burner sat on the ground and watched it go. He did not blame me. That was worse.",
+    "description_fr": "La chaleur l’emporta. Je sortis de la fumée les sourcils réduits à un souvenir et les mains cloquées jusqu’au poignet, et le four continua de réduire son charbon en cendres derrière moi pendant que son charbonnier, assis par terre, le regardait partir. Il ne me reprocha rien. C’était pire.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the hollow",
+        "text_fr": "Retour au vallon",
+        "next_id": "3100",
+        "healAmount": -15,
+        "flagsToAdd": [
+          "hub_3100_kiln"
+        ]
+      }
+    ]
+  },
+  "3100_widow": {
+    "id": "3100_widow",
+    "description": "The smith’s widow kept her husband’s hammer on the lintel and his hymn in her head. He had worked the Scaffold Yards until the last golem was finished, she said, and then gone up the scaffolding to carve the hymn the cultists wanted on every beam, and had not come down. The golems kept the yards now. Sometimes, when the wind came from the Spire, she could hear the hymn from the well. She did not ask me to go up. She told me which beams were rotten, in case.",
+    "description_fr": "La veuve du forgeron gardait le marteau de son mari sur le linteau et son cantique dans la tête. Il avait travaillé aux Chantiers des Échafaudages jusqu’à ce que le dernier golem soit fini, dit-elle, puis il était monté sur les échafaudages graver le cantique que les cultistes voulaient sur chaque poutre, et n’était pas redescendu. Les golems gardaient les chantiers désormais. Parfois, quand le vent venait de la Flèche, elle entendait le cantique depuis le puits. Elle ne me demanda pas d’y monter. Elle me dit quelles poutres étaient pourries, au cas où.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the well",
+        "text_fr": "Retour au puits",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_widow"
+        ]
+      }
+    ]
+  },
+  "3100_widow_later": {
+    "id": "3100_widow_later",
+    "description": "I had been up the yards since, and I had heard what was singing there. The widow listened to me the way people listen to a verdict they have already served most of.",
+    "description_fr": "J’avais gravi les chantiers depuis, et j’avais entendu ce qui y chantait. La veuve m’écouta comme on écoute un verdict dont on a déjà purgé l’essentiel.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Tell her it was his voice, and it has stopped",
+        "text_fr": "Lui dire que c’était sa voix, et qu’elle s’est tue",
+        "next_id": "3100",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_3100_widow_later",
+          "widow_told_truth"
+        ]
+      },
+      {
+        "text": "Tell her the yards were silent all along",
+        "text_fr": "Lui dire que les chantiers avaient toujours été muets",
+        "next_id": "3100",
+        "goldMod": 25,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_3100_widow_later"
+        ]
+      }
+    ]
+  },
+  "3100_bread": {
+    "id": "3100_bread",
+    "description": "The kilns’ bread was black on the outside and grey inside and tasted of smoke, and I have eaten better and been gladder of worse. I slept on sacking between two kilns, where the ground was warm, and nobody woke me until the bread was ready again.",
+    "description_fr": "Le pain des fours était noir dehors et gris dedans et avait le goût de la fumée, et j’en ai mangé de meilleurs et apprécié de pires. Je dormis sur de la toile à sac entre deux fours, là où le sol était chaud, et personne ne me réveilla avant que le pain soit de nouveau prêt.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Up and back to the kilns",
+        "text_fr": "Debout, et retour aux fours",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_bread"
+        ]
+      }
+    ]
+  },
+  "5100": {
+    "id": "5100",
+    "description": "Wrack’s End clung to the cliff above the Drowned Stair the way the weed clung to its rocks: a village of wreckers and weed-cutters who had been taking what the sea gave up for longer than the Court had been taking people, and saw no great difference between the two trades except the Court’s manners. Their houses were built from hulls. Their lamps burned fish oil and never quite went out, and some of them, I noticed, were set where no honest pilot would want a light.",
+    "description_fr": "Bout-du-Varech s’accrochait à la falaise au-dessus de l’Escalier Noyé comme le goémon à ses rochers : un village de pilleurs d’épaves et de coupeurs de varech qui prenaient ce que la mer rendait depuis plus longtemps que la Cour ne prenait des gens, et ne voyaient guère de différence entre les deux métiers, sinon les manières de la Cour. Leurs maisons étaient bâties avec des coques. Leurs lampes brûlaient de l’huile de poisson et ne s’éteignaient jamais tout à fait, et certaines, remarquai-je, étaient placées là où aucun pilote honnête ne voudrait d’une lumière.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Hold the lamp-line against the drowned",
+        "text_fr": "Tenir la ligne des lampes contre les noyés",
+        "next_id": "5100_drowned",
+        "triggerEnemyIds": [
+          "drowned_pilgrim",
+          "drowned_pilgrim"
+        ],
+        "hideIfFlags": [
+          "hub_5100_drowned"
+        ]
+      },
+      {
+        "text": "Dive the wreck under the point",
+        "text_fr": "Plonger sur l’épave sous la pointe",
+        "next_id": "5100_salvage",
+        "checkAbility": "strength",
+        "checkDC": 13,
+        "goldMod": 70,
+        "failNextId": "5100_salvage_failed",
+        "hideIfFlags": [
+          "hub_5100_salvage"
+        ]
+      },
+      {
+        "text": "Share a pipe with the headman",
+        "text_fr": "Partager une pipe avec le chef du village",
+        "next_id": "5100_headman",
+        "hideIfFlags": [
+          "hub_5100_headman"
+        ]
+      },
+      {
+        "text": "Settle the price of the false lamps",
+        "text_fr": "Régler le prix des fausses lampes",
+        "next_id": "5100_headman_later",
+        "showIfFlags": [
+          "hub_5100_headman"
+        ],
+        "hideIfFlags": [
+          "hub_5100_headman_later"
+        ]
+      },
+      {
+        "text": "Mend nets with the weed-cutters",
+        "text_fr": "Raccommoder les filets avec les coupeurs de varech",
+        "next_id": "5100_nets",
+        "healAmount": 40,
+        "hideIfFlags": [
+          "hub_5100_nets"
+        ]
+      }
+    ],
+    "settlement": {
+      "kind": "village",
+      "name": "Wrack’s End",
+      "name_fr": "Bout-du-Varech",
+      "chapter": 4,
+      "mustDiscover": true,
+      "landingPortId": "port_drowned_stair",
+      "blurb": "Wreckers and weed-cutters on the cliff above the Drowned Stair, in houses built from hulls.",
+      "blurb_fr": "Des pilleurs d’épaves et des coupeurs de varech sur la falaise au-dessus de l’Escalier Noyé, dans des maisons bâties avec des coques."
+    },
+    "hub_progress": {
+      "prefix": "hub_5100_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The wreckers had started leaving a lamp lit on the path for me. An honest one, set where I would need it.",
+          "fr": "Les pilleurs avaient pris l’habitude de laisser une lampe allumée pour moi sur le sentier. Une honnête, placée là où j’en aurais besoin."
+        }
+      ]
+    }
+  },
+  "5100_drowned": {
+    "id": "5100_drowned",
+    "description": "The lamps call them, the weed-cutters said: the ones who walked down the Stair and came back up full of black water, climbing toward any light that looks like a door. They came up the cliff path in the dark, slow and polite, and went back down it faster. In the morning the lamp-line was still lit, and the village had counted every one of its children twice.",
+    "description_fr": "Les lampes les appellent, dirent les coupeurs de varech : ceux qui ont descendu l’Escalier et en sont remontés pleins d’eau noire, grimpant vers toute lumière qui ressemble à une porte. Ils montèrent le sentier de la falaise dans le noir, lents et polis, et le redescendirent plus vite. Au matin, la ligne des lampes brûlait encore, et le village avait compté chacun de ses enfants deux fois.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back up to the houses",
+        "text_fr": "Remonter vers les maisons",
+        "next_id": "5100",
+        "goldMod": 40,
+        "flagsToAdd": [
+          "hub_5100_drowned"
+        ]
+      }
+    ]
+  },
+  "5100_salvage": {
+    "id": "5100_salvage",
+    "description": "The wreck under the point had been a pilgrim ship once, and the pilgrims had brought their offerings with them. I came up with a purse of chapel silver and the certainty that something down there had watched me take it and decided, for reasons of its own, to let me.",
+    "description_fr": "L’épave sous la pointe avait été un navire de pèlerins, et les pèlerins avaient emporté leurs offrandes. Je remontai avec une bourse d’argent de chapelle et la certitude que quelque chose, là-dessous, avait suivi mon geste et décidé, pour des raisons à lui, de me laisser faire.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Climb back up the cliff",
+        "text_fr": "Remonter la falaise",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_salvage"
+        ]
+      }
+    ]
+  },
+  "5100_salvage_failed": {
+    "id": "5100_salvage_failed",
+    "description": "The cold took my breath at the second fathom and the current took the rest, and I came up against the rocks with nothing in my hands but weed. The wreckers hauled me out by the collar and did not laugh, which is how I knew how close it had been.",
+    "description_fr": "Le froid me prit le souffle à la deuxième brasse et le courant prit le reste, et je remontai contre les rochers sans rien dans les mains que du varech. Les pilleurs me hissèrent par le col et ne rirent pas, et c’est ainsi que je sus à quel point il s’en était fallu de peu.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Climb back up the cliff",
+        "text_fr": "Remonter la falaise",
+        "next_id": "5100",
+        "healAmount": -15,
+        "flagsToAdd": [
+          "hub_5100_salvage"
+        ]
+      }
+    ]
+  },
+  "5100_headman": {
+    "id": "5100_headman",
+    "description": "The headman smoked weed that was not tobacco and told me, without being asked, how the false lamps worked: set one on the point and one on the rocks, and a ship in a fog reads a harbor mouth where there is none. The Court had paid for the first lamps. The Court took its share of what came ashore in people, not cargo, and the village had never asked what the people were for.",
+    "description_fr": "Le chef du village fumait une herbe qui n’était pas du tabac et m’expliqua, sans que je le demande, comment marchaient les fausses lampes : une sur la pointe, une sur les rochers, et un navire dans le brouillard lit une entrée de port là où il n’y en a pas. La Cour avait payé les premières lampes. La Cour prenait sa part de ce qui s’échouait en gens, pas en cargaison, et le village n’avait jamais demandé à quoi servaient ces gens.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back along the cliff",
+        "text_fr": "Retour le long de la falaise",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_headman"
+        ]
+      }
+    ]
+  },
+  "5100_headman_later": {
+    "id": "5100_headman_later",
+    "description": "I had been in the Court’s ledger since, and I knew now what the people were for. The headman knew it from my face before I said it. He named a price for the lamps, the way men name prices for things they would be glad to be rid of.",
+    "description_fr": "J’avais lu le registre de la Cour depuis, et je savais à présent à quoi servaient ces gens. Le chef le lut sur mon visage avant que je le dise. Il annonça un prix pour les lampes, comme on annonce le prix d’une chose dont on serait content d’être débarrassé.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Pay him to put the false lamps out for good",
+        "text_fr": "Le payer pour éteindre les fausses lampes à jamais",
+        "next_id": "5100",
+        "goldMod": -60,
+        "alignmentMod": 3,
+        "flagsToAdd": [
+          "hub_5100_headman_later",
+          "false_lamps_out"
+        ]
+      },
+      {
+        "text": "Leave the village its trade",
+        "text_fr": "Laisser au village son métier",
+        "next_id": "5100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_5100_headman_later"
+        ]
+      }
+    ]
+  },
+  "5100_nets": {
+    "id": "5100_nets",
+    "description": "Mending nets is work for the hands that leaves the head free, and mine went, for once, nowhere in particular. The weed-cutters sang while they worked, badly and in three keys, and by evening I knew the words and had the grace not to join in.",
+    "description_fr": "Raccommoder des filets est un travail pour les mains qui laisse la tête libre, et la mienne n’alla, pour une fois, nulle part en particulier. Les coupeurs de varech chantaient en travaillant, faux et dans trois tonalités, et le soir venu je connaissais les paroles et j’eus la délicatesse de ne pas m’y joindre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the houses",
+        "text_fr": "Retour aux maisons",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_nets"
+        ]
+      }
+    ]
+  },
+  "6100": {
+    "id": "6100",
+    "description": "Rimewell had been a pilgrims’ halt on the road into the Black Reliquary until the tear’s weather reached it first: frost on the well in summer, bread that staled overnight, a bell in the chapel that rang on its own at the hour the tear had opened. Most had left. The ones who stayed kept the road for the pilgrims still coming, because someone had to, and because the frost, they said, was easier to live beside than to explain to anyone who had not.",
+    "description_fr": "Puits-de-Givre avait été une halte de pèlerins sur la route du Reliquaire Noir, jusqu’à ce que le climat de la déchirure l’atteigne en premier : du givre sur le puits en plein été, un pain qui rassit en une nuit, une cloche dans la chapelle qui sonnait toute seule à l’heure où la déchirure s’était ouverte. La plupart étaient partis. Ceux qui restaient gardaient la route pour les pèlerins qui venaient encore, parce qu’il le fallait bien, et parce que le givre, disaient-ils, était plus facile à vivre qu’à expliquer à qui ne l’avait pas vécu.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Climb to the bell that rings by itself",
+        "text_fr": "Monter à la cloche qui sonne toute seule",
+        "next_id": "6100_bell",
+        "checkAbility": "wisdom",
+        "checkDC": 14,
+        "goldMod": 60,
+        "failNextId": "6100_bell_failed",
+        "hideIfFlags": [
+          "hub_6100_bell"
+        ]
+      },
+      {
+        "text": "Clear the frost-things from the pilgrims’ road",
+        "text_fr": "Chasser les choses du givre de la route des pèlerins",
+        "next_id": "6100_road",
+        "triggerEnemyIds": [
+          "void_hound",
+          "drowned_pilgrim"
+        ],
+        "hideIfFlags": [
+          "hub_6100_road"
+        ]
+      },
+      {
+        "text": "Sit with the road-keeper at the well",
+        "text_fr": "S’asseoir avec la gardienne de la route au puits",
+        "next_id": "6100_keeper",
+        "hideIfFlags": [
+          "hub_6100_keeper"
+        ]
+      },
+      {
+        "text": "Carry the road-keeper’s lantern",
+        "text_fr": "Porter la lanterne de la gardienne",
+        "next_id": "6100_keeper_later",
+        "showIfFlags": [
+          "hub_6100_keeper"
+        ],
+        "hideIfFlags": [
+          "hub_6100_keeper_later"
+        ]
+      },
+      {
+        "text": "Eat the stale bread with the pilgrims",
+        "text_fr": "Manger le pain rassis avec les pèlerins",
+        "next_id": "6100_bread",
+        "healAmount": 40,
+        "alignmentMod": 1,
+        "hideIfFlags": [
+          "hub_6100_bread"
+        ]
+      }
+    ],
+    "settlement": {
+      "kind": "village",
+      "name": "Rimewell",
+      "name_fr": "Puits-de-Givre",
+      "chapter": 5,
+      "mustDiscover": true,
+      "landingPortId": "port_black_reliquary",
+      "blurb": "A pilgrims’ halt on the Reliquary road, where the tear’s frost came first.",
+      "blurb_fr": "Une halte de pèlerins sur la route du Reliquaire, où le givre de la déchirure est arrivé en premier."
+    },
+    "hub_progress": {
+      "prefix": "hub_6100_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "The well had thawed a hand’s width at the rim. Nobody said it was my doing. Nobody said it was not.",
+          "fr": "Le puits avait dégelé d’une main sur le bord. Personne ne dit que c’était mon œuvre. Personne ne dit le contraire."
+        }
+      ]
+    }
+  },
+  "6100_bell": {
+    "id": "6100_bell",
+    "description": "The bell rang at the hour the tear had opened, and I stood under it and listened until I could hear what it was counting: not hours but names, one stroke to each of the taken, in the order they were taken. The pilgrims had been leaving coins on the belfry stair for a year to make it stop. I left the coins where they were and took the ones nobody would miss, the ones the frost had already claimed.",
+    "description_fr": "La cloche sonnait à l’heure où la déchirure s’était ouverte, et je me tins dessous et écoutai jusqu’à entendre ce qu’elle comptait : non pas des heures mais des noms, un coup pour chacun des disparus, dans l’ordre où ils avaient été pris. Les pèlerins laissaient des pièces sur l’escalier du clocher depuis un an pour qu’elle se taise. Je laissai les pièces où elles étaient et pris celles que personne ne regretterait, celles que le givre avait déjà prises.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back down to the well",
+        "text_fr": "Redescendre au puits",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_bell"
+        ]
+      }
+    ]
+  },
+  "6100_bell_failed": {
+    "id": "6100_bell_failed",
+    "description": "I listened until my ears ached and heard only a bell. Some counts are not for the living; the frost on the belfry stair said so plainly enough, and I came down it more carefully than I had gone up.",
+    "description_fr": "J’écoutai jusqu’à en avoir mal aux oreilles et n’entendis qu’une cloche. Certains comptes ne sont pas pour les vivants ; le givre sur l’escalier du clocher le disait assez clairement, et je le redescendis plus prudemment que je ne l’avais monté.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back down to the well",
+        "text_fr": "Redescendre au puits",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_bell"
+        ]
+      }
+    ]
+  },
+  "6100_road": {
+    "id": "6100_road",
+    "description": "Things came down the pilgrims’ road that had not been on it the year before: a hound the frost had made, and a pilgrim who had walked all the way to the Drowned Stair and come back wrong. Neither was in a hurry. Both were, by the end, in the ditch, and the pilgrims still on the road came past them without looking, the way people learn to.",
+    "description_fr": "Sur la route des pèlerins descendaient des choses qui n’y étaient pas l’année d’avant : un molosse fait de givre, et un pèlerin qui avait marché jusqu’à l’Escalier Noyé et en était revenu de travers. Ni l’un ni l’autre n’était pressé. Tous deux, à la fin, étaient dans le fossé, et les pèlerins encore sur la route passèrent devant sans regarder, comme on apprend à le faire.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the halt",
+        "text_fr": "Retour à la halte",
+        "next_id": "6100",
+        "goldMod": 45,
+        "flagsToAdd": [
+          "hub_6100_road"
+        ]
+      }
+    ]
+  },
+  "6100_keeper": {
+    "id": "6100_keeper",
+    "description": "The road-keeper was a woman older than the frost who had decided to outlive it out of spite. She kept a lantern lit on the well-head for the pilgrims, and had kept it lit through a winter that came in summer, and she told me the lantern had been lit in the Reliquary Quarter first, by her daughter, the night before the tear opened. Her daughter had carried it out to her through the frost. Her daughter had gone back in.",
+    "description_fr": "La gardienne de la route était une femme plus vieille que le givre, décidée à lui survivre par pure rancune. Elle gardait une lanterne allumée sur la margelle pour les pèlerins, l’avait gardée allumée pendant un hiver venu en plein été, et elle me dit que la lanterne avait d’abord été allumée au Quartier des Reliquaires, par sa fille, la veille de l’ouverture de la déchirure. Sa fille la lui avait apportée à travers le givre. Sa fille était repartie.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back along the road",
+        "text_fr": "Retour le long de la route",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_keeper"
+        ]
+      }
+    ]
+  },
+  "6100_keeper_later": {
+    "id": "6100_keeper_later",
+    "description": "She held the lantern out to me without getting up. It was the only warm thing on the road, and she meant it for whoever needed it more.",
+    "description_fr": "Elle me tendit la lanterne sans se lever. C’était la seule chose chaude sur la route, et elle la destinait à qui en aurait le plus besoin.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Take it to the Quarter, for her daughter",
+        "text_fr": "La porter au Quartier, pour sa fille",
+        "next_id": "6100",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_6100_keeper_later",
+          "keeper_lantern_carried"
+        ]
+      },
+      {
+        "text": "Leave it burning at the well for the road",
+        "text_fr": "La laisser brûler au puits pour la route",
+        "next_id": "6100",
+        "healAmount": 30,
+        "flagsToAdd": [
+          "hub_6100_keeper_later"
+        ]
+      }
+    ]
+  },
+  "6100_bread": {
+    "id": "6100_bread",
+    "description": "The bread had staled overnight, as it always did here, and the pilgrims dipped it in hot water and called it soup, and I did too. One of them said grace in a language I did not know, over a meal that did not deserve it, and I found I did not mind.",
+    "description_fr": "Le pain avait rassis pendant la nuit, comme toujours ici, et les pèlerins le trempaient dans de l’eau chaude et appelaient ça une soupe, et j’en fis autant. L’un d’eux dit le bénédicité dans une langue que je ne connaissais pas, sur un repas qui ne le méritait pas, et je m’aperçus que cela ne me dérangeait pas.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the well",
+        "text_fr": "Retour au puits",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_bread"
+        ]
+      }
+    ]
+  },
+  "7100": {
+    "id": "7100",
+    "description": "The White Anchorage had been built out of the White Fleet by the men the White Fleet had brought: hulls hauled up the sand and roofed with their own sails, a chapel made from a flagship’s stern, a harbor wall of anchors. The crusaders who had sailed to burn my city had washed up here instead, the ones who lived, and had had a year to think about it. Some had become sailors again. Some had become something closer to monks. All of them knew what the grey cloth on my back was, and none of them would look at it for long.",
+    "description_fr": "Le Mouillage Blanc avait été bâti avec la Flotte Blanche par les hommes que la Flotte Blanche avait amenés : des coques hissées sur le sable et couvertes de leurs propres voiles, une chapelle faite de la poupe d’un vaisseau amiral, un mur de port en ancres. Les croisés partis brûler ma ville s’étaient échoués ici à la place, ceux qui avaient survécu, et avaient eu un an pour y réfléchir. Certains étaient redevenus marins. D’autres étaient devenus quelque chose de plus proche du moine. Tous savaient ce qu’était l’étoffe grise sur mon dos, et aucun ne la regardait longtemps.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Hear the fleet’s chaplain out",
+        "text_fr": "Écouter l’aumônier de la flotte",
+        "next_id": "7100_chaplain",
+        "hideIfFlags": [
+          "hub_7100_chaplain"
+        ]
+      },
+      {
+        "text": "Trade at the wreck-wrights’ chandlery",
+        "text_fr": "Commercer à la chandlerie des charpentiers d’épaves",
+        "next_id": "7100_chandlery",
+        "unlockShopId": "anchorage_chandlery",
+        "hideIfFlags": [
+          "hub_7100_chandlery"
+        ]
+      },
+      {
+        "text": "Face the last company still at war",
+        "text_fr": "Affronter la dernière compagnie encore en guerre",
+        "next_id": "7100_company",
+        "triggerEnemyIds": [
+          "inquisition_soldier",
+          "white_soldier"
+        ],
+        "hideIfFlags": [
+          "hub_7100_company"
+        ]
+      },
+      {
+        "text": "Tend the pilgrims with the grey sickness",
+        "text_fr": "Soigner les pèlerins atteints du mal gris",
+        "next_id": "7100_sick",
+        "checkAbility": "wisdom",
+        "checkDC": 15,
+        "goldMod": 60,
+        "alignmentMod": 2,
+        "failNextId": "7100_sick_failed",
+        "hideIfFlags": [
+          "hub_7100_sick"
+        ]
+      },
+      {
+        "text": "Drink with the flagship’s last helmsman",
+        "text_fr": "Boire avec le dernier timonier du vaisseau amiral",
+        "next_id": "7100_helmsman",
+        "hideIfFlags": [
+          "hub_7100_helmsman"
+        ]
+      },
+      {
+        "text": "Take the helmsman to see his ship",
+        "text_fr": "Emmener le timonier voir son navire",
+        "next_id": "7100_helmsman_later",
+        "showIfFlags": [
+          "hub_7100_helmsman"
+        ],
+        "hideIfFlags": [
+          "hub_7100_helmsman_later"
+        ]
+      }
+    ],
+    "settlement": {
+      "kind": "town",
+      "name": "The White Anchorage",
+      "name_fr": "Le Mouillage Blanc",
+      "chapter": 6,
+      "mustDiscover": true,
+      "landingPortId": "port_hollow_shore",
+      "blurb": "A town built from the White Fleet’s wrecks by the crusaders who washed up in them.",
+      "blurb_fr": "Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués."
+    },
+    "hub_progress": {
+      "prefix": "hub_7100_",
+      "lines": [
+        {
+          "after": 4,
+          "en": "The Anchorage had started calling me by name instead of by what I carried. I was not sure which I preferred.",
+          "fr": "Le Mouillage avait pris l’habitude de m’appeler par mon nom plutôt que par ce que je portais. Je ne savais pas ce que je préférais."
+        }
+      ]
+    }
+  },
+  "7100_chaplain": {
+    "id": "7100_chaplain",
+    "description": "The fleet’s chaplain had been a zealot once and was something quieter now, which he did not have a word for yet. He knew where the flagship lay: off the point, on the glass, with the Admiral still on her quarterdeck, and her colours still flying. “He sailed under the grey,” he said. “We all did. We were told it was white.” He drew me the way on a scrap of sailcloth, and would not take coin for it.",
+    "description_fr": "L’aumônier de la flotte avait été un zélote autrefois et était à présent quelque chose de plus calme, qu’il n’avait pas encore de mot pour nommer. Il savait où gisait le vaisseau amiral : au large de la pointe, sur le verre, l’Amiral toujours sur sa dunette, et ses couleurs toujours au mât. « Il naviguait sous le gris, dit-il. Nous tous. On nous disait que c’était blanc. » Il me traça le chemin sur un bout de toile à voile, et refusa d’être payé.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the Anchorage",
+        "text_fr": "Retour au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_chaplain",
+          "flagship_charted"
+        ]
+      }
+    ]
+  },
+  "7100_chandlery": {
+    "id": "7100_chandlery",
+    "description": "The wreck-wrights sold what the sea had given back and what they had made of it: salves in pilgrim flasks, blades reforged from the fleet’s own, charms against a weather nobody had a name for. The prices were honest, which in a town built by crusaders I found harder to credit than anything else about it.",
+    "description_fr": "Les charpentiers d’épaves vendaient ce que la mer avait rendu et ce qu’ils en avaient fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte, des charmes contre un climat que personne ne savait nommer. Les prix étaient honnêtes, ce qui, dans une ville bâtie par des croisés, me parut plus difficile à croire que tout le reste.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the Anchorage",
+        "text_fr": "Retour au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_chandlery"
+        ]
+      }
+    ]
+  },
+  "7100_company": {
+    "id": "7100_company",
+    "description": "The last company still at war had not heard that the Crusade was over, or had heard and decided it was a lie; they kept the old watch on the harbor wall and challenged anyone who carried grey. They died challenging. The Anchorage buried them with the rest of the fleet, and did not ask me to help dig, which was a kindness I noticed.",
+    "description_fr": "La dernière compagnie encore en guerre n’avait pas appris que la Croisade était finie, ou l’avait appris et décidé que c’était un mensonge ; elle montait encore la vieille garde sur le mur du port et défiait quiconque portait du gris. Ils moururent en défiant. Le Mouillage les enterra avec le reste de la flotte, et ne me demanda pas d’aider à creuser, une délicatesse que je remarquai.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Walk back along the harbor wall",
+        "text_fr": "Revenir le long du mur du port",
+        "next_id": "7100",
+        "goldMod": 50,
+        "flagsToAdd": [
+          "hub_7100_company"
+        ]
+      }
+    ]
+  },
+  "7100_sick": {
+    "id": "7100_sick",
+    "description": "The grey sickness was the tear’s weather in a body: fingers that went cold first, then the voice, then the name. It could not be cured. It could be slowed, with warmth and salt and someone who would sit and say the sick one’s name back to them every hour, and I did that until the pilgrims had learned to do it for each other.",
+    "description_fr": "Le mal gris était le climat de la déchirure dans un corps : les doigts qui refroidissent d’abord, puis la voix, puis le nom. On ne pouvait pas le guérir. On pouvait le ralentir, avec de la chaleur, du sel et quelqu’un qui restait assis à redire au malade son propre nom toutes les heures, et je le fis jusqu’à ce que les pèlerins aient appris à le faire les uns pour les autres.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the Anchorage",
+        "text_fr": "Retour au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_sick"
+        ]
+      }
+    ]
+  },
+  "7100_sick_failed": {
+    "id": "7100_sick_failed",
+    "description": "I sat with them, and said their names, and lost two of them anyway before the night was out. The cold went into my own fingers for a while and did not want to leave. The pilgrims thanked me for trying, in the voices they had left.",
+    "description_fr": "Je restai avec eux, je redis leurs noms, et en perdis deux quand même avant la fin de la nuit. Le froid passa un temps dans mes propres doigts et ne voulut plus en sortir. Les pèlerins me remercièrent d’avoir essayé, avec les voix qui leur restaient.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the Anchorage",
+        "text_fr": "Retour au Mouillage",
+        "next_id": "7100",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "hub_7100_sick"
+        ]
+      }
+    ]
+  },
+  "7100_helmsman": {
+    "id": "7100_helmsman",
+    "description": "The flagship’s last helmsman drank to forget the night she went down and had not yet managed it. The Admiral had kept the helm lashed toward the tear, he said, all the way in, with the fleet behind him and the grey sail drawing as if the wind were coming from the other side of the world. He had cut himself loose and swum. He had been swimming ever since, as far as he could tell.",
+    "description_fr": "Le dernier timonier du vaisseau amiral buvait pour oublier la nuit du naufrage et n’y était pas encore parvenu. L’Amiral avait gardé la barre amarrée vers la déchirure, dit-il, jusqu’au bout, la flotte derrière lui et la voile grise gonflée comme si le vent venait de l’autre bout du monde. Il s’était détaché et avait nagé. Il nageait encore, pour autant qu’il pût en juger.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back into the Anchorage",
+        "text_fr": "Retour au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_helmsman"
+        ]
+      }
+    ]
+  },
+  "7100_helmsman_later": {
+    "id": "7100_helmsman_later",
+    "description": "He wanted to see her once more, with the grey still on the mast, and then he wanted never to see her again. We took the Eel along the point at dusk. He did not say anything for a long time.",
+    "description_fr": "Il voulait la revoir une fois, avec le gris encore au mât, puis ne plus jamais la revoir. Nous longeâmes la pointe avec l’Eel au crépuscule. Il resta longtemps sans rien dire.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Let him say goodbye to his crew",
+        "text_fr": "Le laisser dire adieu à son équipage",
+        "next_id": "7100",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_7100_helmsman_later",
+          "helmsman_farewell"
+        ]
+      },
+      {
+        "text": "Ask him the flagship’s soundings instead",
+        "text_fr": "Lui demander plutôt les sondes du vaisseau amiral",
+        "next_id": "7100",
+        "goldMod": 40,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_7100_helmsman_later"
+        ]
+      }
+    ]
+  },
+  "7200": {
+    "id": "7200",
+    "description": "Greyhithe was a fishing village that had been somewhere else a year ago: on a coast the tear had eaten, which had coughed up its houses and its people here, on the Hollow Shore, with their nets still in their hands and the grey in their faces. They fished. They mended. They did not talk about where they had been, because none of them could agree on it, and the ones who remembered best were the ones who were greyest.",
+    "description_fr": "Grisegrève était un village de pêcheurs qui se trouvait ailleurs un an plus tôt : sur une côte que la déchirure avait dévorée, et qui avait recraché ses maisons et ses gens ici, sur la Rive Creuse, les filets encore à la main et le gris sur le visage. Ils pêchaient. Ils raccommodaient. Ils ne parlaient pas de l’endroit où ils avaient été, parce qu’aucun d’eux n’était d’accord là-dessus, et ceux qui s’en souvenaient le mieux étaient les plus gris.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Haul the nets with the grey fishers",
+        "text_fr": "Haler les filets avec les pêcheurs gris",
+        "next_id": "7200_nets",
+        "healAmount": 40,
+        "hideIfFlags": [
+          "hub_7200_nets"
+        ]
+      },
+      {
+        "text": "Put down the reflection wearing a child’s face",
+        "text_fr": "Abattre le reflet qui porte un visage d’enfant",
+        "next_id": "7200_reflection",
+        "triggerEnemyId": "hollow_reflection",
+        "hideIfFlags": [
+          "hub_7200_reflection"
+        ]
+      },
+      {
+        "text": "Ask the eldest what the tear took",
+        "text_fr": "Demander à l’aînée ce que la déchirure a pris",
+        "next_id": "7200_elder",
+        "hideIfFlags": [
+          "hub_7200_elder"
+        ]
+      },
+      {
+        "text": "Give the eldest a name back",
+        "text_fr": "Rendre un nom à l’aînée",
+        "next_id": "7200_elder_later",
+        "showIfFlags": [
+          "hub_7200_elder"
+        ],
+        "hideIfFlags": [
+          "hub_7200_elder_later"
+        ]
+      },
+      {
+        "text": "Walk the ebb-tide for what it leaves",
+        "text_fr": "Arpenter la marée basse pour ce qu’elle laisse",
+        "next_id": "7200_tide",
+        "checkAbility": "luck",
+        "checkDC": 13,
+        "goldMod": 80,
+        "failNextId": "7200_tide_failed",
+        "hideIfFlags": [
+          "hub_7200_tide"
+        ]
+      }
+    ],
+    "settlement": {
+      "kind": "village",
+      "name": "Greyhithe",
+      "name_fr": "Grisegrève",
+      "chapter": 6,
+      "mustDiscover": true,
+      "landingPortId": "port_hollow_shore",
+      "blurb": "A fishing village the tear ate somewhere else and coughed up here, faces and all.",
+      "blurb_fr": "Un village de pêcheurs que la déchirure a dévoré ailleurs et recraché ici, visages compris."
+    },
+    "hub_progress": {
+      "prefix": "hub_7200_",
+      "lines": [
+        {
+          "after": 3,
+          "en": "A grey child had started saving me the first fish of the tide. Nobody told her to. Nobody told her not to.",
+          "fr": "Une enfant grise avait pris l’habitude de me garder le premier poisson de la marée. Personne ne le lui avait dit. Personne ne le lui avait interdit."
+        }
+      ]
+    }
+  },
+  "7200_nets": {
+    "id": "7200_nets",
+    "description": "The nets came up full of fish that had never swum in any sea I knew, pale and quick and perfectly edible, and the grey fishers sorted them without comment. We ate on the sand. For the length of a meal the tear across the water was only weather.",
+    "description_fr": "Les filets remontèrent pleins de poissons qui n’avaient jamais nagé dans aucune mer que je connaisse, pâles, vifs et parfaitement comestibles, et les pêcheurs gris les triaient sans commentaire. Nous mangeâmes sur le sable. Le temps d’un repas, la déchirure de l’autre côté de l’eau ne fut qu’une question de temps qu’il fait.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back up the beach",
+        "text_fr": "Remonter la plage",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_nets"
+        ]
+      }
+    ]
+  },
+  "7200_reflection": {
+    "id": "7200_reflection",
+    "description": "It wore the face of a child the village had lost, and the village knew it, and had not been able to do what needed doing. I did it. When the face fell away there was nothing underneath but grey, and the mother who had watched from the dunes came down and sat with me afterwards without speaking, which I understood to be the only thanks either of us could stand.",
+    "description_fr": "Il portait le visage d’un enfant que le village avait perdu, et le village le savait, et n’avait pas pu faire ce qu’il fallait. Je le fis. Quand le visage tomba, il n’y avait dessous que du gris, et la mère qui avait regardé depuis les dunes descendit s’asseoir près de moi ensuite sans parler, ce que je compris comme le seul remerciement que nous pouvions supporter, elle et moi.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the houses",
+        "text_fr": "Retour aux maisons",
+        "next_id": "7200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7200_reflection"
+        ]
+      }
+    ]
+  },
+  "7200_elder": {
+    "id": "7200_elder",
+    "description": "The eldest was the greyest of them, and remembered everything. The tear had taken their coast one night in a single breath, she said: the harbor, the church, the dead in the churchyard and the names on their stones. The living it had kept. The names it had not given back. She could not remember her own daughter’s name, and it was the only thing she asked of anyone who came.",
+    "description_fr": "L’aînée était la plus grise d’entre eux, et se souvenait de tout. La déchirure avait pris leur côte une nuit, d’un seul souffle, dit-elle : le port, l’église, les morts du cimetière et les noms sur leurs pierres. Les vivants, elle les avait gardés. Les noms, elle ne les avait pas rendus. Elle ne se rappelait pas le nom de sa propre fille, et c’était la seule chose qu’elle demandait à quiconque venait.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the houses",
+        "text_fr": "Retour aux maisons",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_elder"
+        ]
+      }
+    ]
+  },
+  "7200_elder_later": {
+    "id": "7200_elder_later",
+    "description": "The Court’s ledger had a page for a coast that no longer existed, in the same fair hand as the others, and I had read it. The eldest waited with her hands in her lap for whatever I had brought her.",
+    "description_fr": "Le registre de la Cour avait une page pour une côte qui n’existait plus, de la même belle écriture que les autres, et je l’avais lue. L’aînée attendait, les mains sur les genoux, ce que je lui apportais.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Read her the page, her daughter’s name with it",
+        "text_fr": "Lui lire la page, et le nom de sa fille avec",
+        "next_id": "7200",
+        "alignmentMod": 3,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "hub_7200_elder_later",
+          "greyhithe_names_read"
+        ]
+      },
+      {
+        "text": "Tell her the ledger kept no names from her coast",
+        "text_fr": "Lui dire que le registre ne gardait aucun nom de sa côte",
+        "next_id": "7200",
+        "goldMod": 30,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_7200_elder_later"
+        ]
+      }
+    ]
+  },
+  "7200_tide": {
+    "id": "7200_tide",
+    "description": "The ebb-tide on the Hollow Shore left things it had no business leaving: a chapel bell, a child’s shoe, a purse of coin minted in a city that had not existed for a hundred years and was still, the Anchorage’s chandler assured me, good silver.",
+    "description_fr": "La marée basse de la Rive Creuse laissait des choses qu’elle n’avait aucune raison de laisser : une cloche de chapelle, une chaussure d’enfant, une bourse de pièces frappées dans une ville disparue depuis cent ans et qui restaient, m’assura le chandelier du Mouillage, du bon argent.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back up the beach",
+        "text_fr": "Remonter la plage",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_tide"
+        ]
+      }
+    ]
+  },
+  "7200_tide_failed": {
+    "id": "7200_tide_failed",
+    "description": "The tide turned faster than any tide should, and I came back up the beach at a run with the grey water at my heels and nothing in my hands. The fishers had watched the whole thing and did not laugh. Here, they had learned not to.",
+    "description_fr": "La marée tourna plus vite qu’aucune marée ne le devrait, et je remontai la plage en courant, l’eau grise aux talons et rien dans les mains. Les pêcheurs avaient tout regardé et ne rirent pas. Ici, ils avaient appris à ne pas le faire.",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back up the beach",
+        "text_fr": "Remonter la plage",
+        "next_id": "7200",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "hub_7200_tide"
+        ]
+      }
+    ]
+  },
+  "7300": {
+    "id": "7300",
+    "description": "The Admiral went down the way his fleet had, all at once and still giving orders, and the wreck of the flagship settled a hand’s breadth deeper into the glass as if it had been waiting for permission. His colours still hung from the mainmast: white, the Crusade’s white, painted over with saints. Under the paint the sail was grey. It was the fifth piece. It had carried a fleet across the sea to burn my city, and it would come down from that mast one way or another.",
+    "description_fr": "L’Amiral sombra comme sa flotte, d’un coup et en donnant encore des ordres, et l’épave du vaisseau amiral s’enfonça d’une main dans le verre, comme si elle n’attendait que la permission. Ses couleurs pendaient toujours au grand mât : blanches, du blanc de la Croisade, repeintes de saints. Sous la peinture, la voile était grise. C’était la cinquième pièce. Elle avait mené une flotte à travers la mer pour brûler ma ville, et elle descendrait de ce mât d’une manière ou d’une autre.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Climb the mast and cut it down",
+        "text_fr": "Grimper au mât et la couper",
+        "next_id": "7400",
+        "healAmount": -30,
+        "grantsBannerPieceId": "white_fleet_sail",
+        "flagsToAdd": [
+          "banner_five",
+          "sail_climbed"
+        ]
+      },
+      {
+        "text": "Pay the Anchorage’s riggers to bring it down",
+        "text_fr": "Payer les gréeurs du Mouillage pour la descendre",
+        "next_id": "7400",
+        "goldMod": -150,
+        "alignmentMod": 1,
+        "grantsBannerPieceId": "white_fleet_sail",
+        "flagsToAdd": [
+          "banner_five",
+          "sail_bought"
+        ]
+      },
+      {
+        "text": "Burn the flagship and take it from the ashes",
+        "text_fr": "Brûler le vaisseau amiral et la prendre dans les cendres",
+        "next_id": "7400",
+        "alignmentMod": -2,
+        "goldMod": 60,
+        "grantsBannerPieceId": "white_fleet_sail",
+        "flagsToAdd": [
+          "banner_five",
+          "flagship_burned"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "flagship_charted",
+        "en": "The chaplain’s scrap of sailcloth had brought me straight to her. I had not expected it to be this easy to find the thing that had burned my city.",
+        "fr": "Le bout de toile de l’aumônier m’avait mené droit à elle. Je ne m’attendais pas à ce qu’il soit si simple de trouver la chose qui avait brûlé ma ville."
+      },
+      {
+        "flag": "helmsman_farewell",
+        "en": "Somewhere on the point the helmsman was watching. I had told him I would bring her colours down gently. I did not know yet whether that was a promise I could keep.",
+        "fr": "Quelque part sur la pointe, le timonier regardait. Je lui avais dit que je descendrais ses couleurs doucement. Je ne savais pas encore si c’était une promesse que je pourrais tenir."
+      }
+    ]
+  },
+  "7400": {
+    "id": "7400",
+    "description": "[BEYOND THE TEAR] The Eel came into the cove on the evening tide with five pieces of the Shroud laid out on her deck, and the camp came down to the shingle to look at them the way people look at a storm they have been told about. We laid them out by the fire that night, the heirloom and the Warden’s standard, the Court’s twin, the reliquary thread and the fleet’s grey sail, and they lay together as if they had been waiting to, and warm. The sixth was on the far side of the tear, on the thing that had known my family’s name. Everyone at the fire knew where I was going in the morning. Nobody said it. Somebody passed the bread.",
+    "description_fr": "[AU-DELÀ DE LA DÉCHIRURE] L’Eel entra dans la crique à la marée du soir avec cinq pièces du Linceul étendues sur son pont, et le camp descendit sur les galets les regarder comme on regarde une tempête dont on a entendu parler. Nous les étendîmes près du feu ce soir-là, l’héritage et l’étendard du Gardien, le jumeau de la Cour, le fil du reliquaire et la voile grise de la flotte, et elles reposèrent ensemble comme si elles n’avaient attendu que cela, et chaudes. La sixième était de l’autre côté de la déchirure, sur la chose qui connaissait le nom de ma famille. Tout le monde autour du feu savait où j’irais au matin. Personne ne le dit. Quelqu’un fit passer le pain.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Sail for the Hollow Shore and into the tear",
+        "text_fr": "Mettre le cap sur la Rive Creuse et entrer dans la déchirure",
+        "next_id": "7002_confront",
+        "mainQuest": true,
+        "travelPlaceId": "7002",
+        "showIfFlags": [
+          "banner_five"
+        ],
+        "unlockQuestId": "q_ch6_beyond_the_tear"
+      }
+    ],
+    "settlement": {
+      "kind": "camp",
+      "name": "The Cove Camp",
+      "name_fr": "Le camp de la crique",
+      "chapter": 7
+    },
+    "flag_callbacks": [
+      {
+        "flag": "sail_climbed",
+        "en": "My hands were still raw from the mast. Somebody wrapped them without asking.",
+        "fr": "Mes mains étaient encore à vif à cause du mât. Quelqu’un les banda sans demander."
+      },
+      {
+        "flag": "sail_bought",
+        "en": "The Anchorage’s riggers had brought the sail down like a shroud, folded and quiet, and would not stay for the meal.",
+        "fr": "Les gréeurs du Mouillage avaient descendu la voile comme un linceul, pliée et silencieuse, et n’étaient pas restés pour le repas."
+      },
+      {
+        "flag": "flagship_burned",
+        "en": "The sail still smelled of the flagship’s burning, and of the fleet’s dead who had burned with her. The smell got into the bread.",
+        "fr": "La voile sentait encore l’incendie du vaisseau amiral, et les morts de la flotte qui avaient brûlé avec lui. L’odeur passa dans le pain."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "Lysa sat next to me and counted the pieces twice, the way she counts dressings, and said nothing about the sixth.",
+        "fr": "Lysa s’assit à côté de moi et compta deux fois les pièces, comme elle compte les pansements, et ne dit rien de la sixième.",
+        "unlessFlags": [
+          "sailed_alone"
+        ]
+      },
+      {
+        "flag": "sailed_alone",
+        "en": "There was no camp to speak of, only the fire, the Eel and the five pieces. I told them where I was going. They were the only company I had brought this far.",
+        "fr": "Il n’y avait pas de camp à proprement parler, seulement le feu, l’Eel et les cinq pièces. Je leur dis où j’allais. C’était la seule compagnie que j’avais menée jusque-là."
+      },
+      {
+        "flag": "house_hearth_hall",
+        "en": "We sat in the Hearth-Hall, by the fire the camp never lets go out, and I found that I could not remember a night I had been warmer.",
+        "fr": "Nous étions assis dans la Halle du Foyer, près du feu que le camp ne laisse jamais s’éteindre, et je m’aperçus que je ne me rappelais pas une nuit plus chaude."
+      },
+      {
+        "flag": "greyhithe_names_read",
+        "en": "Greyhithe had sent a basket of its pale fish and, tucked under it, a name written out twelve times in a hand that was learning to write again.",
+        "fr": "Grisegrève avait envoyé un panier de ses poissons pâles et, glissé dessous, un nom écrit douze fois d’une main qui réapprenait à écrire."
       }
     ]
   }
