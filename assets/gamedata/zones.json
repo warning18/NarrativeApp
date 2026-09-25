@@ -121,7 +121,7 @@
     "chapter": 4,
     "expeditionCount": 3,
     "mapTheme": "hollowReaches",
-    "flavorText": "Galleries of stacked bone below the Sunken Cloister, flooded to the second shelf. The Court stored its dead here by the thousand and its secrets by the handful, and the water has been quietly rearranging both.",
+    "flavorText": "Galleries of stacked bone below the Drowned Cloister, flooded to the second shelf. The Court stored its dead here by the thousand and its secrets by the handful, and the water has been quietly rearranging both.",
     "rewardGold": 140,
     "rewardItemId": "",
     "rewardDiceId": "",
@@ -135,7 +135,7 @@
     "isMainZone": false,
     "recommendedLevel": 8,
     "zoneName_fr": "Les Galeries de l’Ossuaire",
-    "flavorText_fr": "Des galeries d’ossements empilés sous le Cloître Englouti, inondées jusqu’à la deuxième étagère. La Cour y rangeait ses morts par milliers et ses secrets par poignées, et l’eau réarrange tranquillement les uns comme les autres."
+    "flavorText_fr": "Des galeries d’ossements empilés sous le Cloître noyé, inondées jusqu’à la deuxième étagère. La Cour y rangeait ses morts par milliers et ses secrets par poignées, et l’eau réarrange tranquillement les uns comme les autres."
   },
   "z_drowned_stair": {
     "zoneID": "z_drowned_stair",
@@ -185,7 +185,7 @@
     "midpointFlavorText": "The ash gave out at the edge of the dead heart, and where it ended the ground was glass: the city's stone gone smooth and dark in one breath, long ago. My boots rang on it. Whatever had done this had not been trying.",
     "midpointFlavorTextFr": "La cendre s'arrêtait à la lisière du cœur mort, et là où elle finissait le sol était de verre : la pierre de la ville devenue lisse et sombre en un souffle, il y a longtemps. Mes bottes y résonnaient. Ce qui avait fait cela n'avait pas fait d'effort.",
     "zoneName_fr": "Les Abords du Cœur Mort",
-    "flavorText_fr": "Les rues entre le Quartier du Reliquaire et la déchirure, où le temps s’est détraqué : du givre en été, des ombres couchées dans le mauvais sens, et des choses passées quand la déchirure s’est ouverte, qui n’ont jamais trouvé de raison de repartir."
+    "flavorText_fr": "Les rues entre le Quartier des Reliquaires et la déchirure, où le temps s’est détraqué : du givre en été, des ombres couchées dans le mauvais sens, et des choses passées quand la déchirure s’est ouverte, qui n’ont jamais trouvé de raison de repartir."
   },
   "z_shroud_vigil": {
     "zoneID": "z_shroud_vigil",
@@ -233,7 +233,7 @@
     "isMainZone": true,
     "recommendedLevel": 12,
     "midpointFlavorText": "Past the tear the sea stopped pretending. The Eel ran on something that was not water, under a sky that was not one, toward a shore made of every place I had ever fought, the docks, the Spire, the drowned cloister, stitched edge to edge like a map made by someone who had only heard about maps. The reflections stood on it, waiting.",
-    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où je m'étais battu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
+    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où j'avais combattu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
     "zoneName_fr": "Au-delà de la Déchirure",
     "flavorText_fr": "L’autre côté de la déchirure : pas de ciel, pas de sol qui reste là où on le laisse, et les visages de tous ceux que l’invasion a pris, qui marchent. Le Rusty Eel est la seule chose ici qui se souvienne de ce à quoi un monde est censé ressembler."
   }

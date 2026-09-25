@@ -233,13 +233,15 @@ class _StoryView extends ConsumerWidget {
         ref.read(_lastStoryNodeIdProvider) != node.id) {
       final previousNodeId = ref.read(_lastStoryNodeIdProvider);
       final arrivedNode = node;
+      final historyAtArrival = playState.history;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
         if (ref.read(_lastStoryNodeIdProvider) == arrivedNode.id) return;
         ref.read(_lastStoryNodeIdProvider.notifier).state = arrivedNode.id;
         final settlement = arrivedNode.settlement;
         if (settlement != null &&
-            isSettlementArrival(arrivedNode.id, previousNodeId)) {
+            isSettlementArrival(arrivedNode.id, previousNodeId,
+                history: historyAtArrival)) {
           ref.read(_pendingArrivalProvider.notifier).state = settlement;
         }
       });
@@ -1257,6 +1259,11 @@ class _HubSections extends ConsumerWidget {
     // A town's port: its own shops (those the story isn't offering as a
     // scene right now) and its expeditions.
     final settlement = node.settlement;
+    // Once the camp stands, it is where the party sleeps: resting in a town
+    // means walking back to it.
+    final restsAtCamp = settlement != null &&
+        !settlement.isCamp &&
+        session.flags.contains(campFoundedFlag);
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final shopsDb = ref.watch(localizedDbProvider(shopsSchema)).value;
     final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
@@ -1499,11 +1506,16 @@ class _HubSections extends ConsumerWidget {
                     showImmersiveNotice(
                       context,
                       icon: Icons.local_fire_department,
-                      message: tr(ref, 'party_rested_message'),
+                      message: tr(
+                          ref,
+                          restsAtCamp
+                              ? 'party_rested_at_camp_message'
+                              : 'party_rested_message'),
                     );
                   },
                   icon: const Icon(Icons.local_fire_department_outlined),
-                  label: Text(tr(ref, 'rest_button')),
+                  label: Text(tr(ref,
+                      restsAtCamp ? 'rest_at_camp_button' : 'rest_button')),
                 ),
               ],
             ),
@@ -1551,6 +1563,13 @@ void _showSettlementArrival(
       : ports?[settlement.portId] as Map<String, dynamic>?;
   final portText = port == null ? '' : portDescriptionFor(port, french);
   final name = settlement.nameFor(french);
+  // After the founding, the camp is home: arriving there is coming back,
+  // and a town is somewhere away from it.
+  final campFounded =
+      ref.read(playerSessionProvider).flags.contains(campFoundedFlag);
+  final bodyKey = settlement.isCamp
+      ? (campFounded ? 'arrival_camp_return_body' : 'arrival_camp_body')
+      : (campFounded ? 'arrival_town_away_body' : 'arrival_town_body');
   showDialog<void>(
     context: context,
     builder: (dialogContext) {
@@ -1583,12 +1602,7 @@ void _showSettlementArrival(
               const SizedBox(height: 12),
             ],
             Text(
-              tr(
-                      ref,
-                      settlement.isCamp
-                          ? 'arrival_camp_body'
-                          : 'arrival_town_body')
-                  .replaceAll('{place}', name),
+              tr(ref, bodyKey).replaceAll('{place}', name),
               style: theme.textTheme.bodyMedium,
             ),
           ],
@@ -1599,8 +1613,12 @@ void _showSettlementArrival(
             child: Text(tr(
                 ref,
                 settlement.isCamp
-                    ? 'arrival_camp_button'
-                    : 'arrival_town_button')),
+                    ? (campFounded
+                        ? 'arrival_camp_return_button'
+                        : 'arrival_camp_button')
+                    : (campFounded
+                        ? 'arrival_away_button'
+                        : 'arrival_town_button'))),
           ),
         ],
       );

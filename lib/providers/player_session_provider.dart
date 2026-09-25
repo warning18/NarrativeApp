@@ -100,6 +100,10 @@ List<String> recipesAt(String shopId, Map<String, dynamic> items) => [
 /// by their companion id).
 const String playerWearerId = 'player';
 
+/// The flag a built camp house leaves for the story to read back
+/// ("house_hearth_hall").
+String houseFlag(String houseId) => 'house_$houseId';
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -710,8 +714,12 @@ class PlayerSession {
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       maxSkillSlots: (json['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: (json['flags'] as List?)?.map((e) => e.toString()).toList() ??
-          const [],
+      // Houses built before the story read them back get their flag here.
+      flags: {
+        ...?(json['flags'] as List?)?.map((e) => e.toString()),
+        ...?(json['builtHouseIds'] as List?)
+            ?.map((e) => houseFlag(e.toString())),
+      }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -1691,9 +1699,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       {String? unlocksShopId, List<String> requiredFlags = const []}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
+    // The story reads the camp's buildings back through a flag per house
+    // (see houseFlag).
+    final flag = houseFlag(houseId);
     state = state.copyWith(
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],
+      flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
     );
     await _persist();
     if (unlocksShopId != null && unlocksShopId.isNotEmpty) {

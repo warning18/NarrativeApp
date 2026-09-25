@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/narration_tokens.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _loadJson(String relative) {
   for (final path in [relative, '../$relative']) {
@@ -352,6 +353,7 @@ void main() {
   group('authored narration data', () {
     final dag = _loadJson('assets/Cleaned_Narrative_DAG.json');
     final zones = _loadJson('assets/gamedata/zones.json');
+    final houses = _loadJson('assets/gamedata/houses.json');
     final races = _loadJson('assets/gamedata/races.json');
     final professions = _loadJson('assets/gamedata/professions.json');
     final settable = <String>{
@@ -361,6 +363,8 @@ void main() {
               .map((f) => f.toString()),
       for (final zone in zones.values)
         if ((zone as Map)['rewardFlag'] != null) zone['rewardFlag'].toString(),
+      // Set when a camp house is built (see buildHouse).
+      for (final houseId in houses.keys) houseFlag(houseId),
       // Set by the story player itself when `@first_ally` resolves (see
       // story_player_screen.dart's _resolveEnemyIds).
       'companion_turned',

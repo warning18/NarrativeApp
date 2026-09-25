@@ -1372,36 +1372,61 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Replier le récit',
   },
   'leave_settlement_title': {
-    AppLanguage.en: 'Leave {place}',
-    AppLanguage.fr: 'Quitter {place}',
+    AppLanguage.en: 'Move on',
+    AppLanguage.fr: 'Quitter les lieux',
   },
   'leave_settlement_hint': {
     AppLanguage.en: 'Where the story goes next, when you are ready',
     AppLanguage.fr: 'La suite de l’histoire, quand vous le souhaitez',
   },
   'arrival_town_title': {
-    AppLanguage.en: 'You arrive in {place}',
-    AppLanguage.fr: 'Vous arrivez à {place}',
+    AppLanguage.en: '{place}',
+    AppLanguage.fr: '{place}',
   },
   'arrival_town_body': {
     AppLanguage.en:
-        'This is a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you are ready to move on, open "Leave {place}" at the bottom.',
+        'You arrive in a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you want to go on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
-        'Vous êtes en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous serez prêt à repartir, ouvrez « Quitter {place} » en bas.',
+        'Vous arrivez en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.',
   },
   'arrival_town_button': {
     AppLanguage.en: 'Enter the town',
     AppLanguage.fr: 'Entrer en ville',
   },
   'arrival_camp_title': {
-    AppLanguage.en: 'You reach {place}',
-    AppLanguage.fr: 'Vous atteignez {place}',
+    AppLanguage.en: 'Your camp',
+    AppLanguage.fr: 'Votre camp',
   },
   'arrival_camp_body': {
     AppLanguage.en:
-        'This is your camp. From now on the Camp page (Play tab) holds your companions, rest, the camp\'s works, its shops and the expeditions that leave from it.',
+        "This is your camp, and your base from now on. The Camp tab holds your companions, rest, the camp's works, its shops, and the expeditions and voyages that leave from here. The story will take you away; this is where you come back to.",
     AppLanguage.fr:
-        'Voici votre camp. Désormais, la page Camp (onglet Jouer) réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques et les expéditions qui en partent.',
+        'Voici votre camp, votre base désormais. L’onglet Campement réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques, et les expéditions et traversées qui en partent. Le récit vous en éloignera ; c’est ici que vous reviendrez.',
+  },
+  'arrival_town_away_body': {
+    AppLanguage.en:
+        'You are away from camp. The shops, people and challenges here are '
+            'listed under the story; the Camp tab is still where you build and '
+            'gather your companions, and "Rest at camp" walks you back there '
+            'for the night. When you want to go on with the story, open "Move '
+            'on" at the bottom.',
+    AppLanguage.fr:
+        "Vous êtes loin du camp. Les boutiques, habitants et défis d’ici sont "
+            "listés sous le récit ; l’onglet Campement reste l’endroit où vous "
+            "bâtissez et réunissez vos compagnons, et « Se reposer au camp » "
+            "vous y ramène pour la nuit. Quand vous voudrez reprendre la route, "
+            "ouvrez « Quitter les lieux » en bas.",
+  },
+  'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
+  'arrival_camp_return_body': {
+    AppLanguage.en:
+        'Back at camp. See what has been built while you were away, rest, and gather your companions in the Camp tab; the story picks up again when you set out.',
+    AppLanguage.fr:
+        'De retour au camp. Voyez ce qui s’est bâti en votre absence, reposez-vous et réunissez vos compagnons dans l’onglet Campement ; le récit reprend quand vous repartez.',
+  },
+  'arrival_camp_return_button': {
+    AppLanguage.en: 'Sit by the fire',
+    AppLanguage.fr: 'S’asseoir au coin du feu',
   },
   'arrival_camp_button': {
     AppLanguage.en: 'Make camp',
@@ -2038,6 +2063,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Vous et vos compagnons vous reposez et récupérez entièrement.',
   },
   'rest_button': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Se reposer'},
+  'rest_at_camp_button': {
+    AppLanguage.en: 'Rest at camp',
+    AppLanguage.fr: 'Se reposer au camp',
+  },
+  'party_rested_at_camp_message': {
+    AppLanguage.en:
+        'You walk back to camp, sleep by its fires and return rested.',
+    AppLanguage.fr:
+        'Vous regagnez le camp, dormez près de ses feux et revenez en pleine forme.',
+  },
   'rest_blocked_hint': {
     AppLanguage.en: 'Not while a fight or expedition is in progress.',
     AppLanguage.fr: "Impossible pendant un combat ou une expédition.",
@@ -2077,7 +2112,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'resolve_label': {AppLanguage.en: 'Resolve', AppLanguage.fr: 'Résolution'},
   'resolve_bonus_suffix': {
     AppLanguage.en: 'health and damage: the Shroud has learned this enemy',
-    AppLanguage.fr: 'de santé et de dégâts : le Suaire a appris cet ennemi'
+    AppLanguage.fr: 'de santé et de dégâts : le Linceul a appris cet ennemi'
   },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
@@ -2811,7 +2846,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
-    AppLanguage.fr: 'Vous êtes mort'
+    AppLanguage.fr: 'Vous avez péri'
   },
   'you_died_message': {
     AppLanguage.en:

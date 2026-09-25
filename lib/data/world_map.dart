@@ -272,7 +272,7 @@ final List<Landmark> worldMapLandmarks = [
     x: 84,
     y: 36,
     sprite: 'crates',
-    nameEn: 'Smuggler’s Wharf',
+    nameEn: 'Smugglers’ Wharf',
     nameFr: 'Le Quai des Contrebandiers',
     blurbEn:
         'Chapter 2’s hub. Vane holds the gangplank to the Lower City; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, and Liora on the rooftop.',
@@ -341,13 +341,13 @@ final List<Landmark> worldMapLandmarks = [
     x: 166,
     y: 150,
     sprite: 'tent',
-    nameEn: 'The coast camp',
-    nameFr: 'Le camp de la côte',
+    nameEn: 'The Cove Camp',
+    nameFr: 'Le camp de la crique',
     blurbEn:
-        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: the base you keep coming back to.',
+        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: the base you keep coming back to, after the Spire and again before the Reliquary Quarter.',
     blurbFr:
-        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : la base où vous reviendrez sans cesse.',
-    scenes: ['3001', '3001_camp'],
+        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : la base où vous revenez, après la Flèche et encore avant le Quartier des Reliquaires.',
+    scenes: ['3001', '3001_camp', '4999_camp', '6002_camp'],
   ),
   const Landmark(
     id: 'quarter',
@@ -356,13 +356,13 @@ final List<Landmark> worldMapLandmarks = [
     y: 100,
     sprite: 'ruins',
     nameEn: 'The Ashen Quarter',
-    nameFr: 'Le Quartier de Cendre',
+    nameFr: 'Le Quartier des Cendres',
     blurbEn:
-        'Chapter 3’s hub, a town the Inquisition burned itself. The Ashen Oath, the Void Relic contract, the relocated Smugglers’ Vault, Maren’s confession, Grosh the mercenary, Reya’s wall of names, and a message to Lysa.',
+        'Chapter 3’s hub, a day’s walk from the camp: a town the Inquisition burned itself. The Ashen Oath, the Void Relic contract, Maren’s confession, Grosh the mercenary, Reya’s wall of names, and a message to Lysa.',
     blurbFr:
-        'Le carrefour du chapitre 3, une ville que l’Inquisition a brûlée elle-même. Le Serment de Cendre, le contrat de la Relique du Vide, le Coffre des Contrebandiers déménagé, la confession de Maren, Grosh le mercenaire, le mur des noms de Reya, et un message pour Lysa.',
+        'Le carrefour du chapitre 3, à une journée de marche du camp : une ville que l’Inquisition a brûlée elle-même. Le Serment de Cendres, le contrat de la Relique du Néant, la confession de Maren, Grosh le mercenaire, le mur des noms de Reya, et un message pour Lysa.',
     scenes: [
-      '3005', '3005_oath', '3005_acolyte', '3005_vault', '3005_relic', //
+      '3005', '3005_oath', '3005_acolyte', '3005_relic', //
       '3005_wisp', '3005_stalker', '3005_golem', '3005_auxiliaries',
       '3005_maren', '3005_archive', '3005_archive_failed', '3005_ledger',
       '3005_ledger_failed', '3005_grosh', '3005_wall', '3005_wall_argued',
@@ -477,7 +477,7 @@ final List<Landmark> worldMapLandmarks = [
     blurbEn:
         'The tear the ledger names. Something wearing the faces of everyone you killed stands in front of it. Beyond, the Void thanks you for bringing the Shroud whole.',
     blurbFr:
-        'La déchirure que nomme le registre. Devant elle se dresse une chose qui porte les visages de tous ceux que vous avez tués. Au-delà, le Vide vous remercie d’avoir apporté le Linceul entier.',
+        'La déchirure que nomme le registre. Devant elle se dresse une chose qui porte les visages de tous ceux que vous avez tués. Au-delà, le Néant vous remercie d’avoir apporté le Linceul entier.',
     scenes: ['6003', '6003b', '6004'],
     fights: ['void_manifestation'],
   ),

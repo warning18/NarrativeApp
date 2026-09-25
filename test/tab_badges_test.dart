@@ -141,7 +141,11 @@ void main() {
         container.read(playerSessionProvider.notifier).loadSession(_session({
               'gold': 400,
               'completedQuestIds': ['q_first_blood'],
-              'builtHouseIds': ['keldas_hall', 'barracks_annex'],
+              'builtHouseIds': [
+                'keldas_hall',
+                'barracks_annex',
+                'smugglers_cellar',
+              ],
               'enemyKillCounts': {'slum_thug': 1},
             })));
     await _settle(tester);

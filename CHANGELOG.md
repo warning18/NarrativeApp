@@ -8,6 +8,61 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.140.0+169]
+
+From chapter 3 on, the camp is the party's base: the story comes back to it,
+towns are places visited away from it, and what is built there is read back.
+
+### Added
+- **Two returns to the camp.** After the Spire the party walks home with the
+  Warden's standard before going down to the Court, as promised ("three
+  days"): sleep a night by the fires (+40 health) or leave before dawn with
+  what the camp can spare (+40 gold). Before the Reliquary Quarter, going
+  back to the camp first is a third way there (+30 health, and the frost at
+  the Quarter's gate has spread a street further). Both scenes open with a
+  "Back at camp" pop-up.
+- **The camp grows in the story.** Building a house now leaves a flag
+  (house_…), including on older saves, and every house is read back: Kelda's
+  Hall, the Barracks Annex, the Hammersmith, the Academy and the Smugglers'
+  Cellar on the first return, the Sharpweave Den, Banner Loft, Hearth-Hall
+  and Shroud Shrine on the second, on the Hollow Shore and in the "home"
+  ending.
+- **The Smugglers' Cellar**, a new camp house (400 gold) that opens the
+  Smugglers' Vault at the camp. The Vault no longer turns up "relocated" in
+  the Ashen Quarter.
+- **The Drowned Cloister and the Reliquary Quarter are towns**, with their
+  name in the header and an arrival pop-up (including when entering the
+  Quarter through its gate).
+- **Endings bring the camp home**: the Eel comes into the cove to the camp's
+  fires; the lanterns hang on the camp's landing; the seeker leaves the camp
+  its stores and keeps the Eel; the dawn ending has a camp to come back to,
+  or its ashes if it was given away.
+
+### Changed
+- **Rest in a town is "Rest at camp"** once the camp is founded: the party
+  walks back for the night.
+- **Arrival pop-ups**: the camp's names the Camp tab (not the old "Play"
+  tab) and says "your base from now on"; coming back reads "Back at camp";
+  towns after the founding say you are away from camp. Titles no longer
+  break on names with an article ("Vous arrivez à Le Quartier…"), and
+  "Leave {place}" is now "Move on" / « Quitter les lieux ».
+- **Story fixes**: the Ashen Quarter's text is written as an arrival, a
+  day's walk from the camp; the camp's smoke is a day behind you, not on the
+  shingle; three days, not a week; the crew is sent back to the camp (where
+  the Eel is), and the Eel's arrival on the Hollow Shore is explained; one
+  camp line in 7004 instead of two contradicting ones; quests and Lysa point
+  to the camp instead of Alster; the 7002 rest is a night on the sand.
+- **One name per place** (French mostly): Quartier des Cendres, Néant (not
+  Vide), Coffre des Contrebandiers, Quartier des Reliquaires, Cloître noyé /
+  Drowned Cloister, Rive Creuse, Linceul (not Suaire or Voile), Mur du
+  Jugement, Haut Gardien, the Rusty Eel as "l'Eel" and masculine, the camp
+  as "The Cove Camp" / « Le camp de la crique ».
+- **The narrator is no longer a man by default**: English lines like "a man
+  who has never owned anything" and "A man can build…", and about 45 French
+  agreements in chapters 3–7 (plus Lysa, Sister Inès and the death screen:
+  « Vous avez péri »), now read for any character. Lysa and Sister Inès say
+  « vous ».
+
 ## [1.139.0+168]
 
 A town's scene folds away once it has been read.

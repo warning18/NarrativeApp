@@ -134,10 +134,14 @@ void main() {
         expect(choice.flagsToAdd, contains('banner_whole'));
       }
       // And the pieces sit on the spine: the Warden's standard right after
-      // the High Warden, the altar between the Court and the ledger, the
-      // reliquary before the dead heart.
+      // the High Warden (carried home to the camp before the Court), the
+      // altar between the Court and the ledger, the reliquary before the
+      // dead heart.
       expect(nodes['4999']!.choices.single.nextId, '4999_standard');
       for (final choice in nodes['4999_standard']!.choices) {
+        expect(choice.nextId, '4999_camp');
+      }
+      for (final choice in nodes['4999_camp']!.choices) {
         expect(choice.nextId, '5001');
       }
       expect(nodes['5004']!.choices.single.nextId, '5004_altar');
@@ -369,11 +373,15 @@ void main() {
 
     test('the Quarter\'s gate settles her fate before the hub opens', () {
       // 6002 no longer walks straight into the hub: the gate stands
-      // between, and a character who lost Lysa cannot pass it without
-      // taking one of the two fate scenes (each open to one side of the
-      // alignment line, so exactly one is ever available).
+      // between (directly, or after a night at the camp), and a character
+      // who lost Lysa cannot pass it without taking one of the two fate
+      // scenes (each open to one side of the alignment line, so exactly
+      // one is ever available).
       for (final choice in nodes['6002']!.choices) {
-        expect(choice.nextId, '6010_gate', reason: choice.text);
+        final next = choice.nextId == '6002_camp'
+            ? nodes['6002_camp']!.choices.single.nextId
+            : choice.nextId;
+        expect(next, '6010_gate', reason: choice.text);
       }
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');

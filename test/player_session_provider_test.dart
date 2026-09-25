@@ -788,6 +788,18 @@ void main() {
       expect(notifier.state.gold, 150);
       expect(notifier.state.builtHouseIds, contains('hammersmith'));
       expect(notifier.state.unlockedShopIds, contains('hammersmith_forge'));
+      // The story reads the building back.
+      expect(notifier.state.flags, contains('house_hammersmith'));
+    });
+
+    test('a save with houses but no house flags gets them on load', () {
+      final session = PlayerSession.fromJson({
+        'flags': ['camp_founded'],
+        'builtHouseIds': ['keldas_hall', 'hearth_hall'],
+      });
+      expect(session.flags,
+          ['camp_founded', 'house_keldas_hall', 'house_hearth_hall']);
+      expect(PlayerSession.fromJson(session.toJson()).flags, session.flags);
     });
 
     test('a house with no unlocksShopId never touches unlockedShopIds',

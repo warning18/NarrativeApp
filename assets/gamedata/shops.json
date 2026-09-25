@@ -271,8 +271,8 @@
       "spellbook_snare_shot": 1
     },
     "minChapter": 3,
-    "detourEligible": true,
-    "shopName_fr": "La Chambre forte des contrebandiers",
+    "detourEligible": false,
+    "shopName_fr": "Le Coffre des Contrebandiers",
     "shopDescription_fr": "Une réserve cachée d’acier de contrebande, un cran au-dessus de tout ce que les forges du port oseraient avouer vendre, et une relique que personne n’ose avouer posséder."
   },
   "hammersmith_forge": {
@@ -496,6 +496,6 @@
     "minChapter": 6,
     "detourEligible": true,
     "shopName_fr": "La Dernière Lanterne",
-    "shopDescription_fr": "Le dernier étal encore éclairé du Quartier du Reliquaire, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
+    "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
   }
 }

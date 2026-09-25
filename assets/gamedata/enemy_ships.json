@@ -144,7 +144,7 @@
     "displayName": "Void Barge",
     "displayName_fr": "Barge du Vide",
     "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race.",
-    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Vide qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course.",
+    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course.",
     "maxHull": 140,
     "rooms": {
       "helm": 1,

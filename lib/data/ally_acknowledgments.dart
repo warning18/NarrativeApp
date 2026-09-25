@@ -188,11 +188,21 @@ const Map<String, Map<String, String>> _acksEn = {
     'kelda': ' Kelda had a wall marked out before the kettle boiled, and '
         'two refugees carrying stone for it before she had finished '
         'explaining why.',
+  },
+  '4999_camp': {
+    '*': ' The ones who had walked back from the Spire with me went '
+        'straight to the fires, and the camp made room for them the way '
+        'it makes room for anyone who comes home.',
     'maren': ' Maren went from fire to fire with her hands and her '
         'censer, and by nightfall people had started calling the camp a '
         'parish, which she did not correct.',
     'grosh': ' Grosh lifted things. Large things. He appeared to consider '
         'it payment enough that nobody asked him to do anything else.',
+  },
+  '6002_camp': {
+    '*': ' Whoever had come back to the cove with me slept like the dead '
+        'and ate like the living, and nobody mentioned the ledger until '
+        'morning.',
   },
   '3005': {
     '*': ' The quarter was easier to walk with someone at my shoulder, if '
@@ -516,11 +526,21 @@ const Map<String, Map<String, String>> _acksFr = {
     'kelda': " Kelda avait tracé un mur avant que la bouilloire ne chante, et "
         "deux réfugiés portaient déjà des pierres avant qu'elle ait fini "
         "d'expliquer pourquoi.",
+  },
+  '4999_camp': {
+    '*': " Ceux qui étaient revenus de la Flèche avec moi allèrent droit aux "
+        "feux, et le camp leur fit de la place comme il en fait à quiconque "
+        "rentre chez soi.",
     'maren': " Maren allait de feu en feu avec ses mains et son encensoir, et "
         "à la nuit tombée les gens appelaient le camp une paroisse, ce "
         "qu'elle ne corrigea pas.",
     'grosh': " Grosh soulevait des choses. De grosses choses. Il semblait "
         "tenir pour paiement suffisant que personne ne lui demande autre chose.",
+  },
+  '6002_camp': {
+    '*': " Ceux qui étaient revenus à la crique avec moi dormirent comme des "
+        "morts et mangèrent comme des vivants, et personne ne parla du "
+        "registre avant le matin.",
   },
   '3005': {
     '*': " Le quartier se traversait plus aisément avec quelqu'un à mon "
@@ -536,7 +556,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "travail laissé inachevé, et la cendre ne discutait pas avec lui.",
   },
   '3002': {
-    '*': " Deux passages, et pour une fois je n'étais pas seul à les "
+    '*': " Deux passages, et pour une fois nous étions plusieurs à les "
         "soupeser. Nous avons choisi ensemble, ce qui n'est pas choisir "
         "bien, mais fait meilleure compagnie pour les conséquences.",
     'vess': " Vess pencha la tête vers le passage de gauche comme on écoute "
@@ -557,8 +577,8 @@ const Map<String, Map<String, String>> _acksFr = {
         "mauvaise cause, mais il a tenu. »",
   },
   '5001': {
-    '*': " Les murmures changèrent de ton quand ils virent que je n'étais "
-        "pas seul, et les survivants qui allaient se taire dirent, au lieu de "
+    '*': " Les murmures changèrent de ton quand ils virent que j'avais de "
+        "la compagnie, et les survivants qui allaient se taire dirent, au lieu de "
         "cela, un peu plus.",
     'tobin': " Frère Tobin entendit le nom avant moi et serra la mâchoire. "
         "« J'ai chanté pour eux, dit-il. Une fois. Quoi qu'on dise de la Cour, "
@@ -585,8 +605,9 @@ const Map<String, Map<String, String>> _acksFr = {
         "aimable qu'on ait faite pour un livre en ma présence.",
   },
   '6004': {
-    '*': " Je n'étais, du moins, pas seul à l'entendre. Quiconque m'avait "
-        "suivi jusque dans cette obscurité l'entendit aussi, et une telle "
+    '*': " Du moins, je ne fus pas la seule personne à l'entendre. "
+        "Quiconque était venu avec moi jusque dans cette obscurité "
+        "l'entendit aussi, et une telle "
         "certitude, s'avéra-t-il, pesait nettement moins lorsqu'elle n'était "
         "pas mienne seule à porter.",
     'vess': " Vess l'entendit aussi, et pour la première fois depuis que je la "
@@ -605,7 +626,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "place sans savoir pourquoi.",
   },
   '7001': {
-    '*': " L'Eel avait porté plus que moi jusqu'au Rivage Creux. J'en fus "
+    '*': " L'Eel avait porté plus que moi jusqu'à la Rive Creuse. J'en fus "
         "heureux d'une façon pour laquelle je n'avais pas encore de mots.",
     'kelda': " Kelda inspectait déjà la coque de l'Eel quand je revins à moi, "
         "parce qu'un mur est un mur, qu'il flotte ou non.",

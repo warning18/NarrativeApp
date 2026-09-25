@@ -58,6 +58,17 @@
     "houseName_fr": "L’Antre de la Trame acérée",
     "description_fr": "Une arrière-salle sans enseigne, tenue discrète à dessein — le genre de contact que seuls les pieds légers et les mains vives parviennent jamais à nouer. Ouvre une porte dont la plupart des gens ignorent l’existence."
   },
+  "smugglers_cellar": {
+    "houseID": "smugglers_cellar",
+    "houseName": "Smugglers' Cellar",
+    "description": "The Smugglers' Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
+    "buildCost": 400,
+    "partyCapacityBonus": 0,
+    "unlocksShopId": "smugglers_vault",
+    "requiredFlags": [],
+    "houseName_fr": "La Cave des contrebandiers",
+    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
+  },
   "hearth_hall": {
     "houseID": "hearth_hall",
     "houseName": "Hearth-Hall",
