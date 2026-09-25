@@ -5,6 +5,7 @@ import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../utils/game_icons.dart';
 
 /// The party's vital numbers on one line: level, health, mana, gold and
@@ -22,6 +23,7 @@ class PlayerStatsBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final session = ref.watch(playerSessionProvider);
     final scheme = Theme.of(context).colorScheme;
+    final ink = InkColors.of(context);
     final lowHealth = session.maxHealth > 0 &&
         session.currentHealth * 10 <= session.maxHealth * 3;
 
@@ -32,6 +34,7 @@ class PlayerStatsBar extends ConsumerWidget {
           icon: Icons.shield,
           text: '${tr(ref, 'level_abbrev')} ${session.level}',
           tooltip: tr(ref, 'level_abbrev'),
+          tint: ink.gold,
         ),
         _PulseOnChange(
           value: session.currentHealth,
@@ -39,6 +42,7 @@ class PlayerStatsBar extends ConsumerWidget {
             icon: Icons.favorite,
             text: '${session.currentHealth}/${session.maxHealth}',
             tooltip: tr(ref, 'hp_label'),
+            tint: ink.blood,
             color: lowHealth ? scheme.error : null,
           ),
         ),
@@ -48,6 +52,7 @@ class PlayerStatsBar extends ConsumerWidget {
             icon: manaIcon,
             text: '${session.mana}/${session.maxMana}',
             tooltip: tr(ref, 'mana_label'),
+            tint: manaColor,
           ),
         ),
         _PulseOnChange(
@@ -56,6 +61,7 @@ class PlayerStatsBar extends ConsumerWidget {
             icon: Icons.paid,
             text: '${session.gold}',
             tooltip: tr(ref, 'gold_label'),
+            tint: ink.gold,
           ),
         ),
         if (session.activeQuestIds.isNotEmpty)
@@ -63,6 +69,7 @@ class PlayerStatsBar extends ConsumerWidget {
             icon: Icons.assignment_outlined,
             text: '${session.activeQuestIds.length}',
             tooltip: tr(ref, 'quests'),
+            tint: ink.ash,
           ),
       ],
     );
@@ -71,13 +78,14 @@ class PlayerStatsBar extends ConsumerWidget {
       children: [
         Expanded(
           child: InkWell(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(4),
             onTap: () => showPlayerStatusSheet(context),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
-                color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
-                borderRadius: BorderRadius.circular(12),
+                color: scheme.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: ink.seam),
               ),
               child: FittedBox(
                 fit: BoxFit.scaleDown,
@@ -99,18 +107,24 @@ class _Stat extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.tooltip,
+    this.tint,
     this.color,
   });
 
   final IconData icon;
   final String text;
   final String tooltip;
+
+  /// The icon's colour: what the number means (HP red, mana blue...).
+  final Color? tint;
+
+  /// Overrides both icon and number, for a warning (low health).
   final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tint = color ?? theme.colorScheme.primary;
+    final tint = color ?? this.tint ?? theme.colorScheme.primary;
     return Tooltip(
       message: tooltip,
       child: Padding(

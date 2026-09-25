@@ -5,23 +5,23 @@ Color _logColor(BuildContext context, _LogKind kind) {
     case _LogKind.info:
       return Theme.of(context).colorScheme.onSurfaceVariant;
     case _LogKind.playerDamage:
-      return Colors.deepOrange;
+      return _attackColor;
     case _LogKind.playerHeal:
-      return Colors.green;
+      return _healColor;
     case _LogKind.playerBlock:
-      return Colors.blueGrey;
+      return _defendColor;
     case _LogKind.enemyDamage:
-      return Colors.red;
+      return InkColors.of(context).blood;
     case _LogKind.victory:
-      return Colors.amber.shade800;
+      return InkColors.of(context).gold;
     case _LogKind.defeat:
-      return Colors.red.shade900;
+      return Theme.of(context).colorScheme.error;
     case _LogKind.banter:
-      return Colors.indigo;
+      return InkColors.of(context).ash;
     case _LogKind.mana:
       return manaColor;
     case _LogKind.phase:
-      return Colors.deepPurple;
+      return _skillColor;
   }
 }
 
@@ -69,18 +69,27 @@ IconData _faceTypeIcon(String type) {
   }
 }
 
+// A die face's colour says what it does, the same everywhere in the app:
+// ember for attacks, steel for guarding, green for healing, tide for
+// mana and the Void's purple for techniques. Mid-tones, legible on both
+// the dark page and the parchment one.
+const Color _attackColor = Color(0xFFD9692A);
+const Color _defendColor = Color(0xFF7F92A6);
+const Color _healColor = Color(0xFF5FA64C);
+const Color _skillColor = Color(0xFF9270DA);
+
 Color _faceTypeColor(String type) {
   switch (type) {
     case 'Attack':
-      return Colors.deepOrange;
+      return _attackColor;
     case 'Defend':
-      return Colors.blueGrey;
+      return _defendColor;
     case 'Heal':
-      return Colors.green;
+      return _healColor;
     case 'Mana':
       return manaColor;
     case 'Skill':
-      return Colors.deepPurple;
+      return _skillColor;
     default:
       return Colors.grey;
   }

@@ -2532,6 +2532,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         "Choisissez une palette d'accentuation pour toute l'application.",
   },
+  'palette_stitched_ink': {
+    AppLanguage.en: 'Stitched Ink',
+    AppLanguage.fr: 'Encre cousue'
+  },
   'palette_deep_purple': {
     AppLanguage.en: 'Deep Purple',
     AppLanguage.fr: 'Violet profond'

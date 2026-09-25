@@ -38,6 +38,7 @@ import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
 import '../providers/tutorial_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
@@ -1791,8 +1792,50 @@ class _ChoiceButton extends ConsumerWidget {
                       ),
                     ],
                   )
-                : Text(label),
+                : _ChoiceLabel(label: label, choice: choice),
       ),
+    );
+  }
+}
+
+/// A plain choice's text, with what it costs or brings underneath as
+/// small tags ("+20 gold", "−10 HP", "Alignment −1").
+class _ChoiceLabel extends ConsumerWidget {
+  const _ChoiceLabel({required this.label, required this.choice});
+
+  final String label;
+  final StoryChoice choice;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ink = InkColors.of(context);
+    String signed(int v) => v > 0 ? '+$v' : '\u2212${v.abs()}';
+    final tags = [
+      if (choice.goldMod != 0)
+        InkTag(
+          label: '${signed(choice.goldMod)} ${tr(ref, 'gold_label')}',
+          color: ink.gold,
+        ),
+      if (choice.healAmount != 0)
+        InkTag(
+          label: '${signed(choice.healAmount)} ${tr(ref, 'hp_label')}',
+          color: choice.healAmount > 0 ? ink.heal : ink.blood,
+        ),
+      if (choice.alignmentMod != 0)
+        InkTag(
+          label: '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
+          color: ink.voidColor,
+        ),
+    ];
+    if (tags.isEmpty) return Text(label);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label),
+        const SizedBox(height: 6),
+        Wrap(spacing: 6, runSpacing: 4, children: tags),
+      ],
     );
   }
 }
@@ -1979,110 +2022,111 @@ class _StoryText extends StatelessWidget {
     final accent = resolveUiAccent(colorScheme, palette);
 
     final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
-              fontFamily: 'serif',
-              height: palette?.lineHeight ?? 1.55,
-              letterSpacing: palette?.letterSpacing ?? 0.2,
+              fontFamily: InkFonts.prose,
+              fontSize: 17,
+              height: palette?.lineHeight ?? 1.6,
+              letterSpacing: palette?.letterSpacing ?? 0.1,
             ) ??
         const TextStyle();
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: accent.cardTint.withValues(alpha: 0.35),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: accent.border),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (header != null && header.isNotEmpty) ...[
-            Text(
-              header.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: palette?.headerWeight ?? FontWeight.bold,
-                    letterSpacing: 1.5,
-                    color: accent.text,
-                  ),
-            ),
-            const SizedBox(height: 10),
-            Center(
-              child: Container(
-                width: 56,
-                height: 2,
-                color: accent.text.withValues(alpha: 0.5),
+    // The page is sewn along a dashed thread in the colour of where the
+    // story is; the prose sits on the bare page beside it.
+    return CustomPaint(
+      painter: StitchedEdgePainter(color: accent.border),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 4, 4, 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (header != null && header.isNotEmpty) ...[
+              Text(
+                header,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontFamily: InkFonts.display,
+                      letterSpacing: 0.5,
+                      height: 1.15,
+                      color: accent.text,
+                    ),
               ),
-            ),
-            const SizedBox(height: 16),
-          ],
-          if (aftermath != null && aftermath!.isNotEmpty) ...[
-            Text(
-              aftermathHeading.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    letterSpacing: 1.5,
-                    color: accent.text.withValues(alpha: 0.8),
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              aftermath!,
-              textAlign: TextAlign.justify,
-              style: baseStyle.copyWith(fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 14),
-            Center(
-              child: Container(
-                width: 40,
-                height: 1,
-                color: accent.text.withValues(alpha: 0.4),
+              const SizedBox(height: 10),
+              Center(
+                child: Container(
+                  width: 56,
+                  height: 2,
+                  color: accent.text.withValues(alpha: 0.5),
+                ),
               ),
-            ),
-            const SizedBox(height: 14),
-          ],
-          if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
-            Text(
-              '— $speakerLabel',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    letterSpacing: 1.2,
-                    fontStyle: FontStyle.italic,
-                    color: accent.text.withValues(alpha: 0.85),
-                  ),
-            ),
-            const SizedBox(height: 8),
-          ],
-          Text.rich(
-            TextSpan(children: _highlightedSpans(body, baseStyle)),
-            textAlign: TextAlign.justify,
-          ),
-          if (epilogue != null && epilogue!.isNotEmpty) ...[
-            const SizedBox(height: 18),
-            Center(
-              child: Container(
-                width: 40,
-                height: 1,
-                color: accent.text.withValues(alpha: 0.4),
+              const SizedBox(height: 16),
+            ],
+            if (aftermath != null && aftermath!.isNotEmpty) ...[
+              Text(
+                aftermathHeading.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      letterSpacing: 1.5,
+                      color: accent.text.withValues(alpha: 0.8),
+                    ),
               ),
+              const SizedBox(height: 8),
+              Text(
+                aftermath!,
+                textAlign: TextAlign.start,
+                style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+              ),
+              const SizedBox(height: 14),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 1,
+                  color: accent.text.withValues(alpha: 0.4),
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
+            if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
+              Text(
+                '— $speakerLabel',
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      letterSpacing: 1.2,
+                      fontStyle: FontStyle.italic,
+                      color: accent.text.withValues(alpha: 0.85),
+                    ),
+              ),
+              const SizedBox(height: 8),
+            ],
+            Text.rich(
+              TextSpan(children: _highlightedSpans(body, baseStyle)),
+              textAlign: TextAlign.start,
             ),
-            const SizedBox(height: 12),
-            Text(
-              epilogueHeading.toUpperCase(),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    letterSpacing: 1.5,
-                    color: accent.text.withValues(alpha: 0.8),
-                  ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              epilogue!,
-              textAlign: TextAlign.justify,
-              style: baseStyle.copyWith(fontStyle: FontStyle.italic),
-            ),
+            if (epilogue != null && epilogue!.isNotEmpty) ...[
+              const SizedBox(height: 18),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 1,
+                  color: accent.text.withValues(alpha: 0.4),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                epilogueHeading.toUpperCase(),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      letterSpacing: 1.5,
+                      color: accent.text.withValues(alpha: 0.8),
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                epilogue!,
+                textAlign: TextAlign.start,
+                style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

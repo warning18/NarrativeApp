@@ -8,6 +8,36 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.138.0+167]
+
+The whole app takes on the "Stitched Ink" look from the design proposal:
+a dark book you read, stitched to a game you play.
+
+### Added
+- **Stitched Ink palette, now the default.** Shroud-dark pages, Bone
+  ink, Banner gold for the main action, with a parchment variant in light
+  mode. The other palettes stay in Settings.
+- **One set of type for the whole app.** Spectral for story and body
+  text, Pixelify Sans for numbers, labels, buttons and dice, and IM FELL
+  English SC (bundled, SIL OFL) for titles, chapters and places. All
+  three fonts are now used across the app, not only on the world map.
+- **Costs on choices.** A story choice that changes gold, health or
+  alignment shows it underneath as small tags ("+20 gold", "−10 HP",
+  "Alignment −1").
+
+### Changed
+- **Shapes.** 4 px corners and 1 px seams instead of rounded, shadowed
+  cards, for buttons, cards, dialogs, sheets, chips and the tab bar.
+- **The story page.** The prose sits on the bare page beside a dashed
+  thread in the colour of where the story is (slums, docks, cathedral…),
+  left-aligned at reading size; chapter headings are in the title face.
+- **The main menu.** A tattered banner with the Void's sigil over the
+  title, on a plain page instead of a gradient.
+- **The stats bar.** Each number's icon says what it is: gold for level
+  and gold, red for health, mana's colour for mana.
+- **Dice and the fight log.** Colours by meaning: ember for attacks,
+  steel for guarding, green for healing, purple for techniques.
+
 ## [1.137.0+166]
 
 The world map gets its original lettering, real zoom, the player walking

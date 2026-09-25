@@ -158,7 +158,7 @@ const IconData professionIcon = Icons.work;
 
 /// The color that stands for mana everywhere: the meter, the pips on a
 /// spell button, the Mana die face, the mana chip on the stats bar.
-const Color manaColor = Colors.blue;
+const Color manaColor = Color(0xFF3FA3A8);
 
 /// The mana glyph -- see [manaColor].
 const IconData manaIcon = Icons.bubble_chart;
