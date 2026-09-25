@@ -4,10 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/chapter_grid_layout.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../gamedata/db_schema.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/combat_active_provider.dart';
+import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
+import '../widgets/immersive_notice.dart';
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
@@ -44,12 +48,53 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     PlayScreen(),
   ];
 
+  /// Goals reached during a fight, announced once it is over.
+  final List<String> _pendingReadyQuestIds = [];
+
+  void _announceReady(List<String> questIds) {
+    final quests =
+        ref.read(localizedDbProvider(questsSchema)).value ?? const {};
+    final lang = ref.read(appLanguageProvider);
+    final names = [
+      for (final id in questIds)
+        (quests[id] as Map<String, dynamic>?)?['questName']?.toString() ?? id,
+    ];
+    if (names.isEmpty || !mounted) return;
+    showImmersiveNotice(
+      context,
+      icon: Icons.flag_circle_outlined,
+      message: trFor(lang, 'quest_ready_notice')
+          .replaceAll('{quest}', names.join(', ')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Reset to the Story tab whenever the mode changes, so a stale index
     // from the other mode's tab list never points at the wrong page.
     ref.listen<AppMode>(appModeProvider, (previous, next) {
       ref.read(homeTabIndexProvider.notifier).state = 0;
+    });
+    // A quest in progress whose goal is reached says so once, in play;
+    // during a fight it waits for the fight to end.
+    ref.listen<QuestReadiness>(questReadinessProvider, (previous, next) {
+      if (previous == null || ref.read(appModeProvider) == AppMode.edit) {
+        return;
+      }
+      final reached = QuestReadiness.newlyReady(previous, next);
+      if (reached.isEmpty) return;
+      if (ref.read(combatActiveProvider)) {
+        _pendingReadyQuestIds.addAll(reached);
+      } else {
+        _announceReady(reached);
+      }
+    });
+    ref.listen<bool>(combatActiveProvider, (previous, next) {
+      if (previous == true && !next && _pendingReadyQuestIds.isNotEmpty) {
+        final ids = [..._pendingReadyQuestIds];
+        _pendingReadyQuestIds.clear();
+        _announceReady(ids);
+      }
     });
 
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;

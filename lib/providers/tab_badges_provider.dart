@@ -74,3 +74,44 @@ final tabBadgesProvider = Provider<TabBadges>((ref) {
     readyQuestCount: questsReadyToTurnIn(session, quests).length,
   );
 });
+
+/// The quests in progress and which of them are ready to turn in: the
+/// shell watches it to announce a goal reached (see HomeShell).
+class QuestReadiness {
+  const QuestReadiness({
+    this.active = const {},
+    this.ready = const {},
+    this.loaded = true,
+  });
+
+  final Set<String> active;
+  final Set<String> ready;
+
+  /// False until the quests table has loaded: readiness is unknown then.
+  final bool loaded;
+
+  /// The quests [next] has ready that were already in progress, but not
+  /// ready, in [previous]: a goal just reached. A quest that only now
+  /// appears (a save just loaded), or readiness only now known (the
+  /// quests table just loaded), says nothing.
+  static List<String> newlyReady(
+          QuestReadiness previous, QuestReadiness next) =>
+      !previous.loaded || !next.loaded
+          ? const []
+          : [
+              for (final id in next.ready)
+                if (previous.active.contains(id) &&
+                    !previous.ready.contains(id))
+                  id,
+            ];
+}
+
+final questReadinessProvider = Provider<QuestReadiness>((ref) {
+  final session = ref.watch(playerSessionProvider);
+  final quests = ref.watch(gameDbProvider(questsSchema)).value;
+  if (quests == null) return const QuestReadiness(loaded: false);
+  return QuestReadiness(
+    active: session.activeQuestIds.toSet(),
+    ready: questsReadyToTurnIn(session, quests).toSet(),
+  );
+});

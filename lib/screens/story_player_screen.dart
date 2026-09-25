@@ -43,6 +43,7 @@ import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/quest_tracker.dart';
 import '../widgets/tutorial_overlay.dart';
 import '../widgets/walking_companion_strip.dart';
 import '../widgets/zone_card.dart';
@@ -435,6 +436,10 @@ class _StoryView extends ConsumerWidget {
                       ],
                     )
                   : PlayerStatsBar(trailing: storyTools),
+            // The followed quest and the goal it waits on, under the
+            // numbers (and folded away with them while reading).
+            if (!fullscreenReading && !statusBarCollapsed)
+              const QuestTrackerBar(),
             // Edit Mode keeps its own line: back, the node's id and its
             // editor. A reader never sees node ids.
             if (!fullscreenReading && isEditMode)

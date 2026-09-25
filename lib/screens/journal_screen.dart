@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/journal.dart';
+import '../data/quest_tracking.dart';
 import '../data/narration_tokens.dart';
 import '../data/story_repository.dart';
 import '../l10n/app_locale.dart';
@@ -123,11 +124,17 @@ Future<void> showPreviouslyDialog(
       storySoFar(story, history, currentNodeId, french: french).toList();
   final recent =
       entries.length <= 3 ? entries : entries.sublist(entries.length - 3);
-  final questNames = [
-    for (final id in session.activeQuestIds)
+  // Each quest in progress with the goal it waits on, the followed one
+  // first.
+  final followed = followedQuestIdOf(session);
+  final questLines = [
+    for (final id in [
+      if (followed != null) followed,
+      ...session.activeQuestIds.where((id) => id != followed),
+    ])
       if (quests[id] is Map<String, dynamic>)
-        (french ? (quests[id]['questName_fr']?.toString() ?? '') : '')
-            .ifEmpty(quests[id]['questName']?.toString() ?? id),
+        _questLine(
+            id, quests[id] as Map<String, dynamic>, session, french, lang),
   ];
   return showDialog<void>(
     context: context,
@@ -156,11 +163,15 @@ Future<void> showPreviouslyDialog(
               else
                 const SizedBox(height: 10),
             ],
-            if (questNames.isNotEmpty) ...[
+            if (questLines.isNotEmpty) ...[
               Text(trFor(lang, 'previously_quests_label'),
                   style: theme.textTheme.titleSmall),
               const SizedBox(height: 4),
-              for (final name in questNames) Text('• $name'),
+              for (final line in questLines)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 4),
+                  child: Text('• $line'),
+                ),
             ],
           ],
         ),
@@ -173,6 +184,17 @@ Future<void> showPreviouslyDialog(
       );
     },
   );
+}
+
+/// "The Dockside Debts: Defeat the smuggler (0/1)", or the quest's name
+/// with "Goal reached: turn it in" once every objective is met.
+String _questLine(String id, Map<String, dynamic> quest, PlayerSession session,
+    bool french, AppLanguage lang) {
+  final name = (french ? (quest['questName_fr']?.toString() ?? '') : '')
+      .ifEmpty(quest['questName']?.toString() ?? id);
+  final goal = questGoalFor(id, quest, session);
+  final text = goal.ready ? trFor(lang, 'quest_goal_ready') : goal.label;
+  return text.isEmpty ? name : '$name: $text';
 }
 
 extension on String {

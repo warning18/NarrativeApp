@@ -1031,6 +1031,102 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Sagesse {wis} : +{n} mana sur chaque face Mana et '
         'compétence de mana (1 de plus tous les 3 points).',
   },
+  'quest_goal_ready': {
+    AppLanguage.en: 'Goal reached: turn it in',
+    AppLanguage.fr: 'Objectif atteint : à rendre',
+  },
+  'quest_goal_prefix': {AppLanguage.en: 'Goal:', AppLanguage.fr: 'Objectif :'},
+  'quest_updated_label': {
+    AppLanguage.en: 'Updated',
+    AppLanguage.fr: 'Mis à jour',
+  },
+  'quest_turn_in_button': {AppLanguage.en: 'Turn in', AppLanguage.fr: 'Rendre'},
+  'quest_main': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale'
+  },
+  'quest_side': {
+    AppLanguage.en: 'Side quest',
+    AppLanguage.fr: 'Quête secondaire'
+  },
+  'quest_following_label': {
+    AppLanguage.en: 'Followed: its goal shows above the story',
+    AppLanguage.fr: 'Suivie : son objectif s’affiche au-dessus du récit',
+  },
+  'quest_objectives_title': {
+    AppLanguage.en: 'Objectives',
+    AppLanguage.fr: 'Objectifs',
+  },
+  'quest_rewards_label': {
+    AppLanguage.en: 'Reward',
+    AppLanguage.fr: 'Récompense'
+  },
+  'quest_follow_button': {AppLanguage.en: 'Follow', AppLanguage.fr: 'Suivre'},
+  'quest_others_title': {
+    AppLanguage.en: 'Other quests in progress',
+    AppLanguage.fr: 'Autres quêtes en cours',
+  },
+  'quest_ally_joins_suffix': {
+    AppLanguage.en: 'joins you',
+    AppLanguage.fr: 'vous rejoint',
+  },
+  'quest_ready_notice': {
+    AppLanguage.en: 'Goal reached: {quest}. Turn it in from the quest above '
+        'the story.',
+    AppLanguage.fr: 'Objectif atteint : {quest}. Rendez-la depuis la quête '
+        'affichée au-dessus du récit.',
+  },
+  'quests_section_following': {
+    AppLanguage.en: 'Followed',
+    AppLanguage.fr: 'Suivie',
+  },
+  'quests_section_active': {
+    AppLanguage.en: 'In progress',
+    AppLanguage.fr: 'En cours',
+  },
+  'quests_section_available': {
+    AppLanguage.en: 'Offered',
+    AppLanguage.fr: 'Proposées',
+  },
+  'quests_section_done': {AppLanguage.en: 'Done', AppLanguage.fr: 'Terminées'},
+  'quests_none_found': {
+    AppLanguage.en: 'No quest yet. People and places in the story will ask '
+        'things of you.',
+    AppLanguage.fr: 'Aucune quête pour l’instant. Les gens et les lieux du '
+        'récit vous demanderont des choses.',
+  },
+  'bestiary_none_met': {
+    AppLanguage.en: 'No creature met yet.',
+    AppLanguage.fr: 'Aucune créature rencontrée pour l’instant.',
+  },
+  'bestiary_unmet_count': {
+    AppLanguage.en: '{n} more to meet on the road.',
+    AppLanguage.fr: 'Encore {n} à croiser en chemin.',
+  },
+  'shops_none_found': {
+    AppLanguage.en: 'No shop found yet.',
+    AppLanguage.fr: 'Aucune boutique trouvée pour l’instant.',
+  },
+  'shop_back_where_found': {
+    AppLanguage.en: 'Go back where you found it to trade.',
+    AppLanguage.fr: 'Retournez là où vous l’avez trouvée pour commercer.',
+  },
+  'shop_at_camp': {
+    AppLanguage.en: 'At the camp: open it from the Camp tab.',
+    AppLanguage.fr: 'Au camp : ouvrez-la depuis l’onglet Campement.',
+  },
+  'npcs_none_met': {
+    AppLanguage.en: 'No one to speak with yet.',
+    AppLanguage.fr: 'Personne à qui parler pour l’instant.',
+  },
+  'achievement_hidden_name': {
+    AppLanguage.en: 'Hidden achievement',
+    AppLanguage.fr: 'Succès caché',
+  },
+  'achievement_hidden_desc': {
+    AppLanguage.en: 'Keep playing to reveal it.',
+    AppLanguage.fr: 'Continuez à jouer pour le révéler.',
+  },
   'face_kind_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
   'face_kind_defend': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
   'face_kind_heal': {AppLanguage.en: 'Heal', AppLanguage.fr: 'Soin'},

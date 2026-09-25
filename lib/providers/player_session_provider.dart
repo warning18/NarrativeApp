@@ -147,6 +147,7 @@ class PlayerSession {
     this.xpEarnedThisRun = 0,
     this.shopPurchaseCounts = const {},
     this.characterName = '',
+    this.trackedQuestId = '',
     this.shopUnlockNodeIds = const {},
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
@@ -262,6 +263,13 @@ class PlayerSession {
   /// (see RaceProfessionScreen's lock-in dialog) and fixed for the rest of
   /// the run.
   final String characterName;
+
+  /// The quest the player follows: its current goal shows above the story
+  /// (see QuestTrackerBar). '' when none was picked; the most recent
+  /// active quest stands in (see `followedQuestIdOf` in
+  /// quest_tracking.dart). Set when a quest is accepted with nothing
+  /// followed, cleared when it is turned in.
+  final String trackedQuestId;
 
   /// shopId -> the story node whose choice unlocked it. A shop is only
   /// browsable in the Play tab while the player is currently on that node;
@@ -512,6 +520,7 @@ class PlayerSession {
     int? xpEarnedThisRun,
     Map<String, int>? shopPurchaseCounts,
     String? characterName,
+    String? trackedQuestId,
     Map<String, String>? shopUnlockNodeIds,
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
@@ -581,6 +590,7 @@ class PlayerSession {
       xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
       shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
       characterName: characterName ?? this.characterName,
+      trackedQuestId: trackedQuestId ?? this.trackedQuestId,
       shopUnlockNodeIds: shopUnlockNodeIds ?? this.shopUnlockNodeIds,
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
@@ -656,6 +666,7 @@ class PlayerSession {
         'xpEarnedThisRun': xpEarnedThisRun,
         'shopPurchaseCounts': shopPurchaseCounts,
         'characterName': characterName,
+        'trackedQuestId': trackedQuestId,
         'shopUnlockNodeIds': shopUnlockNodeIds,
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
@@ -780,6 +791,7 @@ class PlayerSession {
           ) ??
           const {},
       characterName: json['characterName'] as String? ?? '',
+      trackedQuestId: json['trackedQuestId'] as String? ?? '',
       shopUnlockNodeIds: (json['shopUnlockNodeIds'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), value.toString()),
           ) ??
@@ -1278,6 +1290,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !state.completedQuestIds.contains(questIDToProgress)) {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
     }
+    final newTracked = questIDToProgress != null &&
+            newActiveQuests.contains(questIDToProgress) &&
+            !state.activeQuestIds.contains(state.trackedQuestId)
+        ? questIDToProgress
+        : state.trackedQuestId;
     var newBannerPieces = state.bannerPiecesCollected;
     if (bannerPieceId != null &&
         bannerPieceId.isNotEmpty &&
@@ -1294,6 +1311,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
       activeQuestIds: newActiveQuests,
+      trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
     );
     if (loseAllyId != null && loseAllyId.isNotEmpty) {
@@ -1330,7 +1348,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         state.completedQuestIds.contains(questId)) {
       return;
     }
-    state = state.copyWith(activeQuestIds: [...state.activeQuestIds, questId]);
+    state = state.copyWith(
+      activeQuestIds: [...state.activeQuestIds, questId],
+      // With no quest followed yet, the one just taken on is followed.
+      trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
+          ? state.trackedQuestId
+          : questId,
+    );
+    await _persist();
+  }
+
+  /// Follows [questId]: its current goal shows above the story. Only an
+  /// active quest can be followed.
+  Future<void> trackQuest(String questId) async {
+    if (!state.activeQuestIds.contains(questId)) return;
+    state = state.copyWith(trackedQuestId: questId);
     await _persist();
   }
 
@@ -1397,6 +1429,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
+      // A quest turned in is no longer followed; the next active one
+      // stands in until the player picks another.
+      trackedQuestId:
+          state.trackedQuestId == questId ? '' : state.trackedQuestId,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
       potionCount: state.potionCount + potionsGained,

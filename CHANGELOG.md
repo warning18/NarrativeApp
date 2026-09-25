@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.142.0+171]
+
+The play-mode lists only show what the player has discovered, and a
+followed quest keeps its current goal in sight above the story.
+
+### Added
+- **A followed quest.** Its name and current goal ("Goal: Clear three
+  catacomb ghouls (1/3)") show under the numbers above the story, with a
+  Turn in button once every objective is met and a short "Updated"
+  highlight when the goal moves on. Tapping it opens the quest: what was
+  asked, each objective with its progress, the reward, and the other
+  quests in progress to follow instead.
+- A quest taken on is followed when no other quest is; any quest in
+  progress can be followed from the Quests list (pin) or the quest sheet.
+  A quest turned in hands over to the next one in progress.
+- **"Goal reached"**: when a quest in progress has every objective met, a
+  notice says so once (after the fight, if it happened in one).
+- The "Previously" card lists each quest in progress with its current goal.
+
+### Changed
+- **Play mode lists show only what was discovered**:
+  - Quests: offered, in progress or done, the followed one first, then
+    those ready to turn in, in progress, offered and done. Their objectives
+    show before the quest is taken on too.
+  - Bestiary: creatures the party has beaten, with a count of those still
+    to meet.
+  - Shops: the ones found, saying where to trade ("where you found it", or
+    "at the camp" for a camp house's shop).
+  - People: those the story has reached (their chapter and flag) or
+    already spoken to.
+  - Achievements: an achievement not earned yet keeps its name and how to
+    earn it hidden.
+  - Edit Mode still lists everything.
+- Turning a quest in (from the list or above the story) names the item
+  won instead of its id.
+
 ## [1.141.0+170]
 
 Each class starts with its own die and its own skills, dice made for a class
