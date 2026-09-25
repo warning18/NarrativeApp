@@ -44,6 +44,7 @@ void main() {
       'races.json': 'raceName_fr',
       'professions.json': 'professionName_fr',
       'houses.json': 'houseName_fr',
+      'skill_trees.json': 'branchName_fr',
       'achievements.json': 'achievementName_fr',
     };
     for (final file in nameFields.entries) {

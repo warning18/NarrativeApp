@@ -1,0 +1,317 @@
+{
+  "warrior_bulwark": {
+    "branchID": "warrior_bulwark",
+    "professionId": "warrior",
+    "raceId": "",
+    "order": 1,
+    "branchName": "Bulwark",
+    "branchName_fr": "Rempart",
+    "description": "Hold the line: blows that stagger, stances that soak up the worst of it.",
+    "description_fr": "Tenir la ligne : des coups qui font vaciller, des postures qui encaissent le pire.",
+    "skillIds": [
+      "warrior_shield_bash",
+      "bulwark_stance",
+      "warrior_iron_stance",
+      "stone_resolve"
+    ]
+  },
+  "warrior_vanguard": {
+    "branchID": "warrior_vanguard",
+    "professionId": "warrior",
+    "raceId": "",
+    "order": 2,
+    "branchName": "Vanguard",
+    "branchName_fr": "Avant-garde",
+    "description": "First into the breach: heavier blows, wider swings, and an end to it.",
+    "description_fr": "Le premier dans la brèche : des coups plus lourds, plus larges, et une fin à tout cela.",
+    "skillIds": [
+      "power_strike",
+      "guard_break",
+      "warrior_whirlwind",
+      "warrior_execute"
+    ]
+  },
+  "warrior_warlord": {
+    "branchID": "warrior_warlord",
+    "professionId": "warrior",
+    "raceId": "",
+    "order": 3,
+    "branchName": "Warlord",
+    "branchName_fr": "Chef de guerre",
+    "description": "Lead from the front: shouts that steady the line, and one last push.",
+    "description_fr": "Mener de l’avant : des cris qui raffermissent la ligne, et un dernier effort.",
+    "skillIds": [
+      "rallying_shout",
+      "warcry",
+      "warrior_rally_cry",
+      "final_stand"
+    ]
+  },
+  "mage_evocation": {
+    "branchID": "mage_evocation",
+    "professionId": "mage",
+    "raceId": "",
+    "order": 1,
+    "branchName": "Evocation",
+    "branchName_fr": "Évocation",
+    "description": "Fire and raw force, from a first missile to a falling star.",
+    "description_fr": "Le feu et la force brute, du premier projectile à l’étoile qui tombe.",
+    "skillIds": [
+      "mage_arcane_missile",
+      "fireball",
+      "inner_fire",
+      "mage_meteor"
+    ]
+  },
+  "mage_tempest": {
+    "branchID": "mage_tempest",
+    "professionId": "mage",
+    "raceId": "",
+    "order": 2,
+    "branchName": "Tempest",
+    "branchName_fr": "Tempête",
+    "description": "Frost that slows, lightning that quickens, and a step through the air.",
+    "description_fr": "Un givre qui ralentit, une foudre qui accélère, et un pas à travers l’air.",
+    "skillIds": [
+      "focus_mind",
+      "mage_frost_nova",
+      "adrenaline_surge",
+      "mage_teleport_strike"
+    ]
+  },
+  "mage_aegis": {
+    "branchID": "mage_aegis",
+    "professionId": "mage",
+    "raceId": "",
+    "order": 3,
+    "branchName": "Aegis",
+    "branchName_fr": "Égide",
+    "description": "Mana drawn in and turned into shields and mending.",
+    "description_fr": "Le mana puisé et changé en boucliers et en soins.",
+    "skillIds": [
+      "mage_channel",
+      "mage_mana_shield",
+      "mending_touch",
+      "cauterize_wound"
+    ]
+  },
+  "rogue_shadow": {
+    "branchID": "rogue_shadow",
+    "professionId": "rogue",
+    "raceId": "",
+    "order": 1,
+    "branchName": "Shadow",
+    "branchName_fr": "Ombre",
+    "description": "Strike from where they aren't looking, then be somewhere else.",
+    "description_fr": "Frapper d’où l’on ne regarde pas, puis être ailleurs.",
+    "skillIds": [
+      "rogue_backstab",
+      "shadow_step",
+      "precision_thrust",
+      "rogue_shadow_clone"
+    ]
+  },
+  "rogue_venom": {
+    "branchID": "rogue_venom",
+    "professionId": "rogue",
+    "raceId": "",
+    "order": 2,
+    "branchName": "Venom",
+    "branchName_fr": "Venin",
+    "description": "Dirty fighting: whatever is at hand, and something on the blade.",
+    "description_fr": "Le combat sans règles : ce qui tombe sous la main, et quelque chose sur la lame.",
+    "skillIds": [
+      "improvised_strike",
+      "rogue_poison_blade",
+      "battle_trance",
+      "lucky_strike"
+    ]
+  },
+  "rogue_trickster": {
+    "branchID": "rogue_trickster",
+    "professionId": "rogue",
+    "raceId": "",
+    "order": 3,
+    "branchName": "Trickster",
+    "branchName_fr": "Filou",
+    "description": "Pockets, smoke and a second wind: the art of still being there afterwards.",
+    "description_fr": "Des poches, de la fumée et un second souffle : l’art d’être encore là après.",
+    "skillIds": [
+      "rogue_quick_pockets",
+      "rogue_smoke_bomb",
+      "quick_heal",
+      "second_wind"
+    ]
+  },
+  "cleric_judgment": {
+    "branchID": "cleric_judgment",
+    "professionId": "cleric",
+    "raceId": "",
+    "order": 1,
+    "branchName": "Judgment",
+    "branchName_fr": "Jugement",
+    "description": "Light as a weapon, for those who have earned it.",
+    "description_fr": "La lumière comme arme, pour ceux qui l’ont méritée.",
+    "skillIds": [
+      "cleric_holy_light",
+      "cleric_smite",
+      "inner_fire",
+      "final_stand"
+    ]
+  },
+  "cleric_devotion": {
+    "branchID": "cleric_devotion",
+    "professionId": "cleric",
+    "raceId": "",
+    "order": 2,
+    "branchName": "Devotion",
+    "branchName_fr": "Dévotion",
+    "description": "Prayer that fills the well, and the mending it pours out.",
+    "description_fr": "Une prière qui remplit le puits, et les soins qu’elle déverse.",
+    "skillIds": [
+      "cleric_prayer",
+      "cleric_purify",
+      "cleric_sanctuary",
+      "cleric_revive_prayer"
+    ]
+  },
+  "cleric_vigil": {
+    "branchID": "cleric_vigil",
+    "professionId": "cleric",
+    "raceId": "",
+    "order": 3,
+    "branchName": "Vigil",
+    "branchName_fr": "Veille",
+    "description": "Stand guard over the wounded, and refuse to fall yourself.",
+    "description_fr": "Veiller sur les blessés, et refuser de tomber soi-même.",
+    "skillIds": [
+      "quick_heal",
+      "iron_will",
+      "stone_resolve",
+      "second_chance"
+    ]
+  },
+  "ranger_marksman": {
+    "branchID": "ranger_marksman",
+    "professionId": "ranger",
+    "raceId": "",
+    "order": 1,
+    "branchName": "Marksman",
+    "branchName_fr": "Tireur d’élite",
+    "description": "The patient shot, then many.",
+    "description_fr": "Le tir patient, puis une volée.",
+    "skillIds": [
+      "ranger_aimed_shot",
+      "steady_aim",
+      "precision_thrust",
+      "ranger_multi_shot"
+    ]
+  },
+  "ranger_trapper": {
+    "branchID": "ranger_trapper",
+    "professionId": "ranger",
+    "raceId": "",
+    "order": 2,
+    "branchName": "Trapper",
+    "branchName_fr": "Trappeur",
+    "description": "Cover, snares and whatever the ground offers.",
+    "description_fr": "Le couvert, les collets et tout ce que le terrain offre.",
+    "skillIds": [
+      "ranger_camouflage",
+      "ranger_trap_set",
+      "improvised_strike",
+      "lucky_strike"
+    ]
+  },
+  "ranger_wilds": {
+    "branchID": "ranger_wilds",
+    "professionId": "ranger",
+    "raceId": "",
+    "order": 3,
+    "branchName": "Wilds",
+    "branchName_fr": "Terres sauvages",
+    "description": "What the wild teaches about mending, and about not giving up.",
+    "description_fr": "Ce que la nature enseigne des soins, et de ne pas abandonner.",
+    "skillIds": [
+      "ranger_beast_bond",
+      "mending_touch",
+      "rallying_shout",
+      "second_chance"
+    ]
+  },
+  "heritage_human": {
+    "branchID": "heritage_human",
+    "professionId": "",
+    "raceId": "human",
+    "order": 9,
+    "branchName": "Human heritage",
+    "branchName_fr": "Héritage humain",
+    "description": "What your people taught you before any class did.",
+    "description_fr": "Ce que les vôtres vous ont appris, avant toute vocation.",
+    "skillIds": [
+      "human_resolve",
+      "human_diplomacy",
+      "human_quick_study"
+    ]
+  },
+  "heritage_elf": {
+    "branchID": "heritage_elf",
+    "professionId": "",
+    "raceId": "elf",
+    "order": 9,
+    "branchName": "Elven heritage",
+    "branchName_fr": "Héritage elfique",
+    "description": "What your people taught you before any class did.",
+    "description_fr": "Ce que les vôtres vous ont appris, avant toute vocation.",
+    "skillIds": [
+      "elf_arcane_focus",
+      "elf_moonlight_step",
+      "elf_keen_eye"
+    ]
+  },
+  "heritage_dwarf": {
+    "branchID": "heritage_dwarf",
+    "professionId": "",
+    "raceId": "dwarf",
+    "order": 9,
+    "branchName": "Dwarven heritage",
+    "branchName_fr": "Héritage nain",
+    "description": "What your people taught you before any class did.",
+    "description_fr": "Ce que les vôtres vous ont appris, avant toute vocation.",
+    "skillIds": [
+      "dwarf_stoneskin",
+      "dwarf_forgeheart",
+      "dwarf_hammer_blow"
+    ]
+  },
+  "heritage_orc": {
+    "branchID": "heritage_orc",
+    "professionId": "",
+    "raceId": "orc",
+    "order": 9,
+    "branchName": "Orcish heritage",
+    "branchName_fr": "Héritage orque",
+    "description": "What your people taught you before any class did.",
+    "description_fr": "Ce que les vôtres vous ont appris, avant toute vocation.",
+    "skillIds": [
+      "orc_berserk_rage",
+      "orc_savage_cleave",
+      "orc_bloodlust"
+    ]
+  },
+  "heritage_voidkin": {
+    "branchID": "heritage_voidkin",
+    "professionId": "",
+    "raceId": "voidkin",
+    "order": 9,
+    "branchName": "Voidkin heritage",
+    "branchName_fr": "Héritage du Néant",
+    "description": "What your people taught you before any class did.",
+    "description_fr": "Ce que les vôtres vous ont appris, avant toute vocation.",
+    "skillIds": [
+      "voidkin_umbral_veil",
+      "voidkin_starless_gaze",
+      "voidkin_entropy_touch"
+    ]
+  }
+}

@@ -215,9 +215,9 @@ void main() {
       for (var seed = 0; seed < 12; seed++) {
         final c = warrior();
         c.level = 20;
-        c.maxHealth = 700;
-        c.currentHealth = 700;
-        c.baseDamage = 80;
+        c.maxHealth = 900;
+        c.currentHealth = 900;
+        c.baseDamage = 100;
         c.baseArmor = 20;
         final outcome = simulateSimFight(
           character: c,

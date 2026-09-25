@@ -254,13 +254,13 @@ ThemeData buildAppTheme(ColorScheme scheme) {
   );
   const buttonText =
       TextStyle(fontFamily: InkFonts.system, fontSize: 15, height: 1.2);
-  const buttonPadding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
+  const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
 
   return base.copyWith(
     textTheme: textTheme,
     scaffoldBackgroundColor: scheme.surface,
     extensions: [colors],
-    dividerTheme: DividerThemeData(color: scheme.outlineVariant, space: 1),
+    dividerTheme: DividerThemeData(color: scheme.outlineVariant),
     appBarTheme: AppBarTheme(
       backgroundColor: scheme.surface,
       foregroundColor: scheme.onSurface,
@@ -301,35 +301,23 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       style: FilledButton.styleFrom(
         shape: shape,
         padding: buttonPadding,
-        minimumSize: const Size(64, 48),
         textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
-      // Story choices are elevated buttons: a card of Cloth with a seam,
-      // its text in the prose face.
       style: ElevatedButton.styleFrom(
         elevation: 0,
         shape: shape,
-        side: seamSide,
-        backgroundColor: scheme.surfaceContainer,
+        backgroundColor: scheme.surfaceContainerHighest,
         foregroundColor: scheme.onSurface,
-        disabledBackgroundColor: scheme.surfaceContainerLow,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        minimumSize: const Size(64, 52),
-        textStyle: const TextStyle(
-          fontFamily: InkFonts.prose,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          height: 1.35,
-        ),
+        padding: buttonPadding,
+        textStyle: buttonText,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         shape: shape,
         padding: buttonPadding,
-        minimumSize: const Size(64, 44),
         side: BorderSide(color: scheme.outline),
         foregroundColor: scheme.onSurface,
         textStyle: buttonText,
@@ -359,11 +347,9 @@ ThemeData buildAppTheme(ColorScheme scheme) {
     chipTheme: ChipThemeData(
       shape: RoundedRectangleBorder(borderRadius: radius, side: seamSide),
       side: seamSide,
-      labelStyle: TextStyle(
-        fontFamily: InkFonts.system,
-        fontSize: 12,
-        color: scheme.onSurface,
-      ),
+      // Font and size only: the chip keeps its own colours for selected
+      // and disabled.
+      labelStyle: const TextStyle(fontFamily: InkFonts.system, fontSize: 12),
     ),
     dialogTheme: DialogThemeData(
       backgroundColor: scheme.surfaceContainer,
@@ -429,6 +415,31 @@ ThemeData buildAppTheme(ColorScheme scheme) {
   );
 }
 
+/// A story choice: a card of Cloth with a seam, its text in the prose
+/// face. Only the story's choices are drawn this way; every other raised
+/// button keeps the theme's own button look.
+ButtonStyle inkChoiceStyle(BuildContext context) {
+  final scheme = Theme.of(context).colorScheme;
+  return ElevatedButton.styleFrom(
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(4)),
+      side: BorderSide(color: scheme.outlineVariant),
+    ),
+    backgroundColor: scheme.surfaceContainer,
+    foregroundColor: scheme.onSurface,
+    disabledBackgroundColor: scheme.surfaceContainerLow,
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    minimumSize: const Size(64, 52),
+    textStyle: const TextStyle(
+      fontFamily: InkFonts.prose,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      height: 1.35,
+    ),
+  );
+}
+
 /// A dashed line down the left edge of a box: the stitched thread a
 /// story page is sewn along, coloured by where the story is.
 class StitchedEdgePainter extends CustomPainter {
@@ -454,37 +465,6 @@ class StitchedEdgePainter extends CustomPainter {
   @override
   bool shouldRepaint(StitchedEdgePainter oldDelegate) =>
       oldDelegate.color != color || oldDelegate.width != width;
-}
-
-/// A dashed horizontal rule: the seam between two parts of a page.
-class StitchRule extends StatelessWidget {
-  const StitchRule({super.key, this.color});
-
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = color ?? Theme.of(context).colorScheme.outlineVariant;
-    return SizedBox(
-      height: 1,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final count = (constraints.maxWidth / 8).floor();
-          return Row(
-            children: List.generate(
-              count,
-              (_) => Container(
-                width: 4,
-                height: 1,
-                margin: const EdgeInsets.only(right: 4),
-                color: c,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 }
 
 /// A small tag in the system face: a choice's cost ("+20 G"), a rarity,

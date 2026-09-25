@@ -154,13 +154,18 @@ void main() {
           contains(resume));
     });
 
-    test('the Reliquary Quarter\'s thread is its way onward', () {
-      final quarter = story.nodeFor('6010')!;
-      final onward = quarter.choices
-          .where((c) => !isLocalChoice(c, quarter.id, story))
-          .map((c) => c.nextId)
-          .toList();
-      expect(onward, ['6010_thread']);
+    test('a place of the open chapters has no way onward but the roads', () {
+      // The Reliquary Quarter's thread is the fifth chapter's main quest,
+      // taken from the camp; the Quarter itself is left by travelling.
+      for (final id in ['3005', '5010', '6010', '7100']) {
+        final place = story.nodeFor(id)!;
+        expect(
+            place.choices
+                .where((c) => !isLocalChoice(c, place.id, story))
+                .map((c) => c.nextId),
+            isEmpty,
+            reason: id);
+      }
       final wharf = story.nodeFor('2015')!;
       expect(
           wharf.choices

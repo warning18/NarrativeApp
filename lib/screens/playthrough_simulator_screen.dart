@@ -14,6 +14,7 @@ import '../combat/combat_engine.dart'
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../data/autoplay_engine.dart';
+import '../data/chapter_loop.dart';
 import '../data/chapter_spine.dart';
 import '../data/sim_combat.dart';
 import '../data/story_graph_integrity.dart';
@@ -205,6 +206,10 @@ class _SimContext {
 /// walk moves on (counting it lost) so the story can still be traced.
 const int _maxFightAttempts = 3;
 
+/// Things the simulated party does in a place on its one tour of it (see
+/// the camp loop in [_simulate]).
+const int _placeActivitiesPerVisit = 3;
+
 /// Auto-plays the story graph making choices (picked per [strategy]) until
 /// an ending is reached, for QA / previewing a full run without clicking
 /// through it by hand. This is a read-only simulation over a local
@@ -217,7 +222,7 @@ _SimResult _simulate(
   Random random, {
   Map<String, dynamic> enemies = const {},
   SimStrategy strategy = SimStrategy.random,
-  int maxSteps = 200,
+  int maxSteps = 400,
   bool french = false,
   _SimContext? sim,
 }) {
@@ -259,6 +264,14 @@ _SimResult _simulate(
   int? lastKnownChapter = furthestChapter;
   int? restedChapter = lastKnownChapter;
   final steps = <_SimStep>[];
+  // The open chapters' loop: the camp the story stands at, the places
+  // already toured from it, and the place being toured now (with how many
+  // things are left to do there).
+  final visited = <String>{currentId};
+  String? campId;
+  final toured = <String>{};
+  String? tourPlaceId;
+  var tourBudget = 0;
 
   _SimResult finish(
       {required String endingText, required bool reachedStepCap}) {
@@ -407,8 +420,68 @@ _SimResult _simulate(
       return target.reqFlags.every(flags.contains);
     }
 
-    final available = node.choices.where(meetsTarget).toList();
-    final pool = available.isNotEmpty ? available : node.choices;
+    // From chapter 3 the camp is the base. Before its main quest the party
+    // tours each of the chapter's places once -- a few things done in
+    // each, then back to the camp -- as a player opening the chapter
+    // would; with every place toured, the camp's main quest goes on.
+    final here = node.settlement;
+    if (here != null &&
+        here.isCamp &&
+        here.chapter != null &&
+        tourPlaceId == null) {
+      campId = currentId;
+      StoryNode? next;
+      for (final place in loopPlaces(story)) {
+        if (place.settlement!.chapter == here.chapter &&
+            !toured.contains(place.id)) {
+          next = place;
+          break;
+        }
+      }
+      if (next != null) {
+        final name = next.settlement!.nameFor(french);
+        toured.add(next.id);
+        tourPlaceId = next.id;
+        tourBudget = _placeActivitiesPerVisit;
+        steps.add(_SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: node.descriptionFor(french),
+          choiceText: french ? 'Aller à : $name' : 'Go to $name',
+        ));
+        currentId = arrivalNodeFor(next, visited);
+        visited.add(currentId);
+        continue;
+      }
+    }
+    if (tourPlaceId != null && currentId == tourPlaceId) {
+      final open = node.choices.where((c) => !c.isHiddenFor(flags));
+      if (tourBudget <= 0 || open.isEmpty) {
+        steps.add(_SimStep(
+          nodeId: currentId,
+          chapter: lastKnownChapter,
+          mood: node.mood,
+          uiTheme: node.uiTheme,
+          description: node.descriptionFor(french),
+          choiceText: french ? 'Retour au camp' : 'Back to the camp',
+        ));
+        tourPlaceId = null;
+        // A tour only ever starts from a camp.
+        currentId = campId!;
+        visited.add(currentId);
+        continue;
+      }
+      tourBudget--;
+    }
+
+    // A place's activity done once leaves its list (hideIfFlags), and a
+    // second beat waits for the first (showIfFlags).
+    final shown = node.choices.where((c) => !c.isHiddenFor(flags)).toList();
+    final visible = shown.isNotEmpty ? shown : node.choices;
+    final available = visible.where(meetsTarget).toList();
+    final pool = available.isNotEmpty ? available : visible;
     final choice = pickChoice(pool);
 
     // A won fight pays out the enemy's goldReward just like a real playthrough
@@ -433,6 +506,7 @@ _SimResult _simulate(
       ));
       combatCount++;
       currentId = choice.loseNextId!;
+      visited.add(currentId);
       continue;
     }
 
@@ -479,6 +553,7 @@ _SimResult _simulate(
       return finish(endingText: choice.text, reachedStepCap: false);
     }
     currentId = choice.nextId;
+    visited.add(currentId);
   }
 
   return finish(endingText: '', reachedStepCap: true);
@@ -827,6 +902,8 @@ class _PlaythroughSimulatorScreenState
     final professions = await ref
         .read(gameDbRepositoryProvider(professionsSchema))
         .loadRecords();
+    final zones =
+        await ref.read(gameDbRepositoryProvider(zonesSchema)).loadRecords();
 
     final result = await autoplayToChapter(
       ref,
@@ -839,6 +916,7 @@ class _PlaythroughSimulatorScreenState
       enemies: enemies,
       races: races,
       professions: professions,
+      zones: zones,
       onAttempt: (attempt) {
         if (mounted) setState(() => _autoplayAttempt = attempt);
       },

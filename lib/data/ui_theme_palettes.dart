@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 /// and type feel to match where the player currently is (the docks read
 /// differently from the cathedral), layered on top of the player's own
 /// chosen app palette (see `AppPalette`/`palette_provider.dart`) rather than
-/// replacing it: only the story card's border/header color and a faint
-/// background tint change, never the app's chrome, nav bar, or other
-/// screens.
+/// replacing it: only the story page's stitched edge, place tag and
+/// header color change, never the app's chrome, nav bar, or other
+/// screens. (The page no longer paints a card, so [ResolvedUiAccent.cardTint]
+/// and [UiThemePalette.headerWeight] are kept for the tests and other
+/// palettes but unused by the reading screen.)
 ///
 /// Deliberately not every `ui_theme` value gets an entry — the rarer
 /// settings (bridge, market, hovel, gate, prologue, battlements, each under
@@ -82,8 +84,8 @@ const Map<String, UiThemePalette> uiThemePalettes = {
 /// exactly as they already are.
 UiThemePalette? uiThemePaletteFor(String? uiTheme) => uiThemePalettes[uiTheme];
 
-/// The three colors [_StoryText] (`story_player_screen.dart`) actually
-/// paints with, once a [UiThemePalette]'s raw accent has been blended
+/// The colors [_StoryText] (`story_player_screen.dart`) paints with
+/// (text and border; cardTint is no longer painted), once a [UiThemePalette]'s raw accent has been blended
 /// against a real [ColorScheme].
 class ResolvedUiAccent {
   const ResolvedUiAccent({
@@ -126,9 +128,8 @@ ResolvedUiAccent resolveUiAccent(
   return ResolvedUiAccent(
     text: Color.lerp(colorScheme.onSurface, palette.accent, 0.7)!,
     border: Color.lerp(colorScheme.outlineVariant, palette.accent, 0.5)!,
-    // The card itself only paints this at ~35% opacity (see _StoryText), so
-    // a blend much fainter than this would be too subtle to register at
-    // all rather than reading as "restrained".
+    // Once painted at ~35% opacity as the card's tint; the stitched page
+    // no longer paints it.
     cardTint:
         Color.lerp(colorScheme.surfaceContainerHighest, palette.accent, 0.16)!,
   );

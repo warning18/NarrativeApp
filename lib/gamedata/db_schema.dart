@@ -78,6 +78,15 @@ const List<String> equipSlotOptions = [
   'Foot',
 ];
 
+/// A skill's rarity: how many faces of one die it may take.
+const List<String> skillRarityOptions = [
+  'common',
+  'uncommon',
+  'rare',
+  'epic',
+  'legendary',
+];
+
 const List<String> elementOptions = [
   'None',
   'Fire',
@@ -443,6 +452,17 @@ final DbSchema skillsSchema = DbSchema(
     ),
     FieldSchema(
         key: 'cost', label: 'Cost', type: FieldType.integer, defaultValue: 0),
+    // How many faces of one die the skill may take (dice_faces.dart's
+    // skillRarityFaceLimits): common 3, uncommon and rare 2, epic and
+    // legendary 1.
+    FieldSchema(
+      key: 'rarity',
+      label:
+          'Rarity (faces per die: common 3, uncommon/rare 2, epic/legendary 1)',
+      type: FieldType.enumeration,
+      enumOptions: skillRarityOptions,
+      defaultValue: 'uncommon',
+    ),
     FieldSchema(
       key: 'requiredSkillID',
       label: 'Required Skill ID',
@@ -470,6 +490,12 @@ final DbSchema skillsSchema = DbSchema(
     FieldSchema(
         key: 'healAmount',
         label: 'Heal Amount',
+        type: FieldType.integer,
+        defaultValue: 0),
+    FieldSchema(
+        key: 'manaGain',
+        label: 'Mana Gain (a mana skill: mana added to the pool, plus the '
+            'Wisdom bonus)',
         type: FieldType.integer,
         defaultValue: 0),
     FieldSchema(
@@ -574,6 +600,52 @@ final DbSchema skillMergesSchema = DbSchema(
       key: 'resultSkillID',
       label: 'Result Skill',
       type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
+  ],
+);
+
+final DbSchema skillTreesSchema = DbSchema(
+  id: 'skillTrees',
+  label: 'Skill Trees',
+  assetPath: 'assets/gamedata/skill_trees.json',
+  primaryKeyField: 'branchID',
+  titleField: 'branchName',
+  fields: [
+    FieldSchema(key: 'branchID', label: 'Branch ID', type: FieldType.text),
+    FieldSchema(
+      key: 'professionId',
+      label: 'Profession (a class branch; empty for a heritage branch)',
+      type: FieldType.reference,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+      key: 'raceId',
+      label: 'Race (a heritage branch; empty for a class branch)',
+      type: FieldType.reference,
+      referenceSchemaId: 'races',
+    ),
+    FieldSchema(
+        key: 'order',
+        label: 'Order on the tree',
+        type: FieldType.integer,
+        defaultValue: 1),
+    FieldSchema(key: 'branchName', label: 'Branch Name', type: FieldType.text),
+    FieldSchema(
+        key: 'branchName_fr', label: 'Branch Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'description',
+        label: 'Description',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'description_fr',
+        label: 'Description (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'skillIds',
+      label:
+          'Skills, in the order they are learned (each after the one before it)',
+      type: FieldType.referenceList,
       referenceSchemaId: 'skills',
     ),
   ],
@@ -714,6 +786,13 @@ final DbSchema professionsSchema = DbSchema(
       referenceSchemaId: 'dice',
     ),
     FieldSchema(
+      key: 'manaSkillID',
+      label: 'Mana Skill (a caster\'s starting mana skill, set on the '
+          'starting die\'s Channeling face; empty = none)',
+      type: FieldType.reference,
+      referenceSchemaId: 'skills',
+    ),
+    FieldSchema(
       key: 'startingSpellIds',
       label: 'Starting Spells (known from character creation)',
       type: FieldType.referenceList,
@@ -740,6 +819,18 @@ final DbSchema diceSchema = DbSchema(
       label: 'Number of Faces (4-12)',
       type: FieldType.integer,
       defaultValue: 6,
+    ),
+    FieldSchema(
+      key: 'professions',
+      label: 'Professions (who may buy and use the die; empty = anyone)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'professions',
+    ),
+    FieldSchema(
+      key: 'races',
+      label: 'Races (who may buy and use the die; empty = anyone)',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'races',
     ),
     FieldSchema(
       key: 'faces',
@@ -1531,6 +1622,12 @@ final DbSchema housesSchema = DbSchema(
           'Required Flags (all must be set to build; a zone\'s rewardFlag gates on clearing that zone)',
       type: FieldType.stringList,
     ),
+    FieldSchema(
+      key: 'requiredAllyId',
+      label: 'Required Ally (the house is shown once they have joined)',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
     visualAssetFieldSchema('houses'),
   ],
 );
@@ -1646,9 +1743,16 @@ final DbSchema zonesSchema = DbSchema(
     ),
     FieldSchema(
       key: 'isMainZone',
-      label: 'Main Zone (the chapter\'s headline zone)',
+      label:
+          'Main Zone (the chapter\'s main quest runs it; never offered as an expedition)',
       type: FieldType.boolean,
       defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'discoversPlaceIds',
+      label:
+          'Discovers Places (story node ids: the first at the midpoint, the rest on clearing the zone)',
+      type: FieldType.stringList,
     ),
     visualAssetFieldSchema('zones'),
   ],
@@ -1725,6 +1829,59 @@ final DbSchema npcsSchema = DbSchema(
       type: FieldType.stringList,
     ),
     visualAssetFieldSchema('npcs'),
+  ],
+);
+
+/// From chapter 3 each chapter is an open loop around the camp (see
+/// chapter_loop.dart): its places and expeditions first, then, once
+/// enough of them are done, its main quest and a piece of the banner.
+final DbSchema chaptersSchema = DbSchema(
+  id: 'chapters',
+  label: 'Chapters (open loops)',
+  assetPath: 'assets/gamedata/chapters.json',
+  primaryKeyField: 'chapterID',
+  titleField: 'title',
+  fields: [
+    FieldSchema(key: 'chapterID', label: 'Chapter ID', type: FieldType.text),
+    FieldSchema(
+        key: 'chapter',
+        label: 'Chapter (places and zones with this chapter belong to it)',
+        type: FieldType.integer,
+        defaultValue: 3),
+    FieldSchema(key: 'label', label: 'Label', type: FieldType.text),
+    FieldSchema(key: 'label_fr', label: 'Label (FR)', type: FieldType.text),
+    FieldSchema(key: 'title', label: 'Title', type: FieldType.text),
+    FieldSchema(key: 'title_fr', label: 'Title (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'campNodeId',
+        label: 'Camp scene (the story stands here while the chapter is open)',
+        type: FieldType.text),
+    FieldSchema(
+      key: 'activityGoal',
+      label:
+          'Activity goal (expeditions cleared and things done in the chapter\'s places before the main quest opens)',
+      type: FieldType.integer,
+      defaultValue: 6,
+    ),
+    FieldSchema(
+      key: 'mainQuestNeedsPlaceIds',
+      label: 'Places the main quest also needs found',
+      type: FieldType.stringList,
+    ),
+    FieldSchema(
+        key: 'mainQuestTitle', label: 'Main quest title', type: FieldType.text),
+    FieldSchema(
+        key: 'mainQuestTitle_fr',
+        label: 'Main quest title (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'mainQuestHint',
+        label: 'Main quest hint (shown while it is shut)',
+        type: FieldType.multilineText),
+    FieldSchema(
+        key: 'mainQuestHint_fr',
+        label: 'Main quest hint (FR)',
+        type: FieldType.multilineText),
   ],
 );
 
@@ -1913,6 +2070,7 @@ final List<DbSchema> gameDbSchemas = [
   itemSetsSchema,
   skillsSchema,
   skillMergesSchema,
+  skillTreesSchema,
   diceSchema,
   enemiesSchema,
   enemyShipsSchema,
@@ -1929,6 +2087,7 @@ final List<DbSchema> gameDbSchemas = [
   achievementsSchema,
   zonesSchema,
   portsSchema,
+  chaptersSchema,
   npcsSchema,
   spellsSchema,
 ];

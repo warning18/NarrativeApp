@@ -1,124 +1,161 @@
-# Chapter flow roadmap — status after v1.112
+# Chapter flow roadmap — status after v1.149
 
-The owner's intended structure, as stated when the difficulty/flow review
-was requested:
+The owner's intended structure (restated for v1.147):
 
-- **Chapter 1** — introduction: fleeing the hometown. Every origin leaves
-  with the first piece of the Shroud (the Void Banner); the rest of the
-  story is finding the other pieces.
-- **Chapter 2** — a second, bigger introduction to the roguelike mechanics.
-  It ends with building the transport out of the town: the Rusty Eel needs
-  a hull (Fisherman's Row) and a sail (Tanner's Court) before she can cast
-  off, and casting off is a choice about who comes along.
-- **Chapter 3** — after a long voyage, a remote coast: the camp is founded
-  in a cove a day's walk from the Spire of Judgment, and grows from a camp
-  into a town as the player builds it. The first main zone.
-- **Chapter 4** — the second, bigger zone.
-- **Chapter 5** — the last big zone.
-- **Chapter 6** — the final zone, open only to a whole Shroud (four pieces:
-  the heirloom, the Warden's standard, the Court's twin, the reliquary
-  thread), each of the last three taken at a cost.
-- The camp stays in the same place; a boat (FTL-like) carries the party to
-  the expeditions and later chapters.
-- Power is worn, not held: humans sew it into banners, elves paint it, the
-  dwarves cut it into stone, orcs ink it under scar tissue, the voidkin
-  carry the tear's own mark. There is no clean way through: the spine's
-  dilemmas (the unfurling, the wharf, the storm, the Warden, the altar, the
-  reliquary, the Sovereign's price) all cost something.
+- **Chapter 1** — introduction (tutorial 1): the player flees the
+  invasion of the hometown. Every origin leaves with the first piece of
+  the Shroud (the Void Banner).
+- **Chapter 2** — introduction (tutorial 2): the player reaches a town and
+  builds a ship to flee somewhere else and start from scratch. The Rusty
+  Eel needs a hull (Fisherman's Row) and a sail (Tanner's Court).
+- **Chapter 3** — introduction (tutorial 3), then the real game: the camp
+  is the main base. Expeditions on foot or by boat discover the lands
+  around it: a town, a village, other places. The party travels between
+  the camp and these places, and meets raids on the way. Once enough is
+  done, the chapter's main quest opens at the camp and leads to a piece
+  of the banner.
+- **Chapters 4, 5 and 6** — the same loop, each with its own lands, its
+  own places and its own piece of the banner.
+- **Ending** — from the camp, the last boss and the last piece.
+- **Epilogue** — the whole banner turns time back: New Game+.
 
-This document records what the four batches (v1.109 to v1.112) shipped
-against that structure, how the chapters flow now, how difficulty is
-modelled, what the 40-run simulator says, and what is still open.
+Chapters 1 and 2 are a straight road. From chapter 3 the game is not
+linear: each chapter is split between exploring (expeditions, places,
+bosses) and its main quest, which waits until enough has been explored.
 
 ## What shipped
 
 | Version | Batch | Headline |
 |---|---|---|
-| 1.109.0+137 | Hub loops | Harbor market and Spire district are loop hubs on every route; Main quests handed out at their beats; guaranteed quest drops; `hideIfFlags` on choices. |
-| 1.110.0+138 | Difficulty | Chapter difficulty curve; zone tiers, recommended levels and bosses; zone and camp-workshop gating; shared zone card. |
-| 1.111.0+139 | Boat | Camp founding beat; ports; the Rusty Eel (hull, bulwark, parts, shipwright, chart); voyages with sea events and ship battles. |
-| 1.112.0+140 | Late game | Chapter 4 and 5 hubs and zones, chapter 6 with the final zone and four endings, nine enemies, three ports, `launchZoneId`. |
+| 1.109.0+137 | Hub loops | Harbor market and Spire district are loop hubs; Main quests; guaranteed quest drops; `hideIfFlags`. |
+| 1.110.0+138 | Difficulty | Chapter difficulty curve; zone tiers, recommended levels and bosses. |
+| 1.111.0+139 | Boat | Camp founding; ports; the Rusty Eel; voyages with sea events and ship battles. |
+| 1.112.0+140 | Late game | Chapters 4 and 5 hubs and zones, chapter 6 and its endings. |
+| 1.140–1.146 | Camp | The camp as the story's base, camp works, travel back from towns, the skill economy and a difficulty retune. |
+| 1.147.0+176 | Open chapters | Chapters 3–6 as loops around the camp, found places, villages, a chapter 6 loop, six banner pieces, the time-rewind epilogue. |
+| 1.148.0+177 | Companion hint | The camp names places with a companion to meet; each chapter asks for 8 things done. |
+| 1.149.0+178 | Camp and quests | No camp before it is set up; every place leads back to the camp; the main quest waits for the chapter's quests. |
 
 ## How the chapters flow now
 
-| Chapter | Story hub (node) | Port | Zones (tier · recommended level · boss) | Main zone launched from the story |
+Each open chapter is a row of `assets/gamedata/chapters.json`: the camp
+scene the story stands at, the activity goal (8), the quest goal, the
+place the main quest needs visited first, and the main quest's title and
+hint. The camp's Chapter card shows "Explored: N of 8", "Quests
+completed: N of 2", the main quest, what it still needs, and word of any
+companion still to meet in a known place (`placeCompanionLeads`: an open
+scene that starts a companion's quest, unless the party's alignment or
+story rules them out).
+
+- **The camp** exists once chapter 3's landing scene sets it up ("Take
+  stock of the shore" sets `camp_founded`). Before that the Camp tab is
+  closed; setting it up opens the camp screen.
+
+- **Activities**: each thing done in one of the chapter's places (a
+  `hub_<place>_…` marker) and each of the chapter's expeditions cleared
+  (not its main zone, which belongs to the main quest).
+- **Places** are found by expeditions (zones.json `discoversPlaceIds`):
+  the first at the expedition's midpoint, all of them on clearing it. A
+  place without `mustDiscover` is known from the start of its chapter.
+- **Quests** (v1.149): the chapter's own quests turned in (quests.json
+  `chapter`), counted by `chapterQuestCount`. The goal is 2 in chapter 3
+  (the Ashen Quarter will not show a stranger the way into the Spire),
+  then 1 in chapters 4, 5 and 6. The quests a party can finish before
+  each main quest are listed in chapter_loop_test.dart.
+- **Travel**: a place on the camp's shore is a walk (the road may hold a
+  detour or a raid); a place with a landing of its own is a voyage there
+  and back. From any place of an open chapter (town, village or site)
+  the party can travel on to any other it knows, or back to the camp.
+- **The main quest** is a choice on the camp scene (`mainQuest`). Its
+  `travelPlaceId` is where the trip goes first; a `launchZoneId` runs the
+  main zone. It opens once the activity goal, the quest goal and the
+  needed place are all met, on the camp's card and in the story view
+  alike.
+
+| Chapter | Camp scene | Places (found by) | Expeditions (tier · rec. level · boss) | Main quest → banner piece |
 |---|---|---|---|---|
-| 1 | Iron Anvil stalls (891, loops) | — | — | — |
-| 2 | Harbor market (2015, 12 activities, mandatory on every route) | Smugglers' Wharf (on foot; Town Hub) | Fisherman's Row (1 · 3 · Dock Overseer), Tanner's Court (1 · 4 · Plague Hound), Lantern Docks (2 · 5 · Smuggler Captain, needs the hull patched) | — |
-| 3 | Camp founded (3001_camp), Spire district (3005, 14 activities) | Ashen Landing (home port, the camp's shore) | Cinder Row (2 · 6 · Iron Golem), Scaffold Yards (3 · 8 · Void Stalker, main, needs Cinder Row) | — |
-| 4 | Sunken Cloister (5010, 7 activities) | The Drowned Stair | Ossuary Galleries (1 · 8 · Bone Warden), The Drowned Stair (2 · 9 · Hollow Court Inquisitor, main) | Hub exit launches the Drowned Stair |
-| 5 | Reliquary Quarter (6010, 8 activities) | The Black Reliquary | Dead Heart Approach (2 · 10 · Tear-Spawn), The Shroud's Vigil (3 · 11 · Void Archon, main) | Hub exit launches the Shroud's Vigil |
-| 6 | Hollow Shore (7002) | The Hollow Shore (needs the Vigil cleared) | Beyond the Tear (3 · 12 · The Void Sovereign, main) | "Sail into the tear" launches Beyond the Tear |
+| 1 | — | — | — | the heirloom (every origin) |
+| 2 | — | Harbor market (2015) | Fisherman's Row, Tanner's Court, Lantern Docks | — (the boat) |
+| 3 | 3001_camp | Ashen Quarter 3005 (Cinder Row), Emberwick 3100 (Scaffold Yards) | Cinder Row (2 · 6 · Iron Golem), Scaffold Yards (3 · 8 · Void Stalker) | Climb the Spire → the Warden's standard |
+| 4 | 4999_camp | Wrack's End 5100, Drowned Cloister 5010 (Ossuary Galleries) | Ossuary Galleries (1 · 8 · Bone Warden) | The Drowned Stair (2 · 9 · Hollow Court Inquisitor) → the Court's twin |
+| 5 | 6002_camp | Rimewell 6100, Reliquary Quarter 6010 (Dead Heart Approach) | Dead Heart Approach (2 · 10 · Tear-Spawn) | The fourth piece: the Shroud's Vigil (3 · 11 · Void Archon) → the reliquary thread |
+| 6 | 7001 | Hollow Shore 7002, Greyhithe 7200, White Anchorage 7100 (Glass Strand) | Glass Strand (2 · 12 · Strand Colossus) | The White Fleet's Grave (3 · 13 · White Admiral) → the White Fleet's sail |
+| End | 7400 | — | — | Into the tear: Beyond the Tear (3 · 14 · Void Sovereign) → the Sovereign's mantle |
 
-Endings (node 7004): carry the Banner home (bearers), keep seeking it
-(seekers), sew the tear shut (bearers with alignment ≥ 15), take the
-Sovereign's crown (alignment ≤ −15).
+The Reliquary Quarter's first visit goes through its gate (`arrivalNodeId`
+6010_gate), where Lysa's fate plays out; its main quest needs the Quarter
+visited, so that scene is never skipped. The epilogue (7005 and its three
+variants) ends on the night before the invasion: the whole Banner turns
+time back, which is where New Game+ starts.
 
-The boat unlocks with the camp at chapter 3 and is moored at Ashen Landing.
-Ports appear on the chart once the story reaches their chapter (and their
-`requiredFlags` are set). A voyage is `voyageLength` days of sea events;
-raiders open a ship battle fought with the parts aboard.
+Old saves standing on the two scenes the update removed (5001, 5002) pick
+up at the fourth chapter's camp (`retiredNodeIds` in story_providers.dart).
 
 ## Difficulty model
 
-Enemy stats are scaled three ways, multiplied together, before the Elite
+Enemy stats are scaled four ways, multiplied together, before the Elite
 and pack multipliers:
 
-1. **Player level** (unchanged): health ×(1 + 0.12·(L−1)), damage
-   ×(1 + 0.08·(L−1)), rewards ×(1 + 0.10·(L−1)).
-2. **Chapter curve** (`chapterDifficultyMultiplier`): health
-   ×(1 + 0.12·(chapter−1)), damage half of that excess
-   (`damageShareOf`), rewards ×(1 + 0.10·(chapter−1)). A first pass with
-   +15%/chapter on both stats turned tuned chapter-2 fights into coin
-   flips and was dropped.
-3. **Zone tier** (`zoneTierMultiplier`): health ×(1 + 0.10·(tier−1)),
-   damage half of that.
+1. **Player level**: health ×(1 + 0.12·(L−1)), damage ×(1 + 0.08·(L−1)),
+   rewards ×(1 + 0.10·(L−1)).
+2. **Floor**: a regular enemy's health ×1.15, ×1.25, then ×1.35 from
+   chapter 3, and damage ×1.10, ×1.15, then ×1.20. Bosses take ×1.10
+   health and ×1.05 damage.
+3. **Chapter curve**: health ×(1 + 0.15·(chapter−1)), damage half of that
+   excess, rewards ×(1 + 0.10·(chapter−1)).
+4. **Zone tier**: health ×(1 + 0.10·(tier−1)), damage half of that.
 
-A fight's chapter is its story node's, or the zone's for an expedition
-(`EncounterModifiers.chapter`). Story and zone bosses (`soloOnlyEnemyIds`)
-are never drawn as random events.
+A fight's chapter is its scene's (`storyChapterOf`: a place's own
+chapter, however late the party comes back to it), or the zone's for an
+expedition.
+
+The open chapters send the party to sea about twice as often as before,
+so v1.147 adds two rules:
+
+- **Known waters** (`knownWatersRaiderChance`): a crossing to a port the
+  Eel has put in at before, or home, has a 15% chance of raiders a day
+  (35% on new waters) and at most one raider.
+- **Boarding crews** (`boardingChapterFor`) fight at most one chapter past
+  the chapter their ship first sails in, as the ship's hull does not grow
+  either.
 
 ## Simulation
 
-`scratchpad` holds a Python re-implementation of the playthrough
-(playthrough_sim.py through sim_v7.py) that follows the story graph with
-four choice strategies, models hubs (85% chance to take an untried
-activity), zones (attempted once the party reaches the recommended level),
-voyages, ship battles, the chapter curve and the spoils chest. 40 seeded
-runs per batch, alternating builds.
+`scratchpad` holds a Python re-implementation of the playthrough. v1.147
+added `sim_v147.py`: the spine above, the camp loop (rest, expeditions of
+the chapters reached, places found, trips to them and back), the main-quest
+gate, known waters, boarding crews, and bosses kept out of random pools.
+Two player styles, 200 seeded runs each:
 
-Final state (v1.112), 40 runs:
+- **Thorough**: visits every place of the chapter once (4 things done per
+  trip) and goes for the companions on offer.
+- **Rusher**: the minimum: the goals and the needed place only. With the
+  camp's hint (v1.148) a rusher also takes a companion on offer in a
+  place it visits.
 
-| Measure | Value |
-|---|---|
-| True endings | 40/40 (bearer 6, seeker 20, dawn 10, crown 4) |
-| Party level by chapter | 2.3 · 5.4 · 8.9 · 12.8 · 16.3 · 18.6 |
-| Hub activities per run | 2015: 7.9, 3005: 12.0, 5010: 6.5, 6010: 7.0 |
-| Quests completed per run | 22.5 (5.2 before v1.109) |
-| Voyages per run | 3.0, all landfalls; 142 raider battles won |
-| First-attempt boss win rate | Bone Warden 90%, Inquisitor 88%, Tear-Spawn 92%, Void Archon 72%, Void Sovereign 72% |
-| Chapter-2 story fights | 100% (Kroll at 55%, chapter 1) |
+With the quest goal (v1.149) both styles still open every gate without
+being forced through: they have 5.9 (thorough) and 5.8 (rusher) of chapter
+3's quests done at its gate, and 1.5 to 1.9 in chapters 4 to 6. A control
+run without the goal gives the same numbers, so the goal only stops a
+party that skips every quest.
 
-The simulator retries a lost fight without resting, so its per-attempt
-rates overstate the difficulty of the two hardest bosses (15% and 28% per
-attempt); the first-attempt rates above are the honest read.
+| Measure | Thorough (v1.148) | Rusher (v1.148) | Rusher, goal 8 without the hint | Rusher (v1.147: goal 6, no hint) | v1.146 |
+|---|---|---|---|---|---|
+| True endings | 200/200 | 200/200 | 200/200 | 199/200 | 200/200 |
+| Fights lost a run | 1.30 (median 1) | 1.10 (median 1) | 1.69 | 4.24 | 1.46 |
+| Companions recruited | 4.0 | 4.1 (none alone) | 3.6 (1 alone) | 3.3 (5 alone) | 4.2 |
+| Final level | 23.0 | 22.4 | 22.6 | 22.2 | 23.2 |
+| Level at the main quest (ch 3/4/5/6) | 9.1 · 12.4 · 16.5 · 20.7 | 9.1 · 12.4 · 16.6 · 20.1 | — | 8.9 · 12.3 · 16.2 · 19.8 | — |
+| Voyages / raiders a run | 20.5 / 10.9 | 18.4 / 10.0 | — | 17.9 / 9.9 | 10.8 / 11.2 |
+| First try: Archon · White Admiral · Sovereign | 98% · 92% · 94.5% | 98% · 93.5% · 96% | — | 95% · 87% · 89% | 87.5% · — · 89.5% |
 
 ## Open points
 
-- **Chapter 2–3 story fights sit at 100%** because the hub content
-  levels the party past them (mean level 8.9 entering chapter 3). Trimming
-  hub XP or raising the chapter-3 story enemies would restore tension; the
-  boss balance test's bands constrain the High Warden.
-- **Ship battles are deterministic**: no variance, no enemy specials. A
-  second tier of enemy ships with cooldown moves would make voyages more
-  than a resource check once the harpoon rack and plating are aboard.
-- **Zone and port names are English only** (`zoneName`, `flavorText`);
-  boss narration and port descriptions have French.
-- The in-app playthrough simulator and the autoplay engine ignore
-  `launchZoneId` (they skip the expedition).
-- Camp workshops still gate on chapter-3 zone flags; moving the
-  Hammersmith's requirement to a chapter-4 zone would delay tier 8–10
-  gear further.
-- Chapter 2's Lantern Docks is often cleared from chapter 3 by boat rather
-  than on foot, which is fine but means the "hull patched" flag from
-  Fisherman's Row is the only chapter-2 gate that matters.
+- **The activity goal and thorough players.** A thorough player reaches
+  10–12 things done before setting out; the goal of 8 mostly shapes the
+  rusher's pace (two trips a chapter).
+- **Midpoint discoveries are rare in the simulation**, since parties clear
+  every expedition. They matter for a player who retreats halfway.
+- **Ship battles are deterministic** (no variance, no enemy specials).
+- The in-app simulator tours each place once (3 things) before the main
+  quest; it does not model expeditions or voyages.

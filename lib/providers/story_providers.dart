@@ -10,6 +10,17 @@ const String _autosaveNodePrefsKey = 'autosave_story_node';
 const String _autosaveHistoryPrefsKey = 'autosave_story_history';
 const String _autosaveVisitedPrefsKey = 'autosave_story_visited';
 
+/// Scenes a story update took out, and where a save standing on one picks
+/// up instead: the Court's old road (5001, 5002) became the fourth
+/// chapter's camp and its main quest.
+const Map<String, String> retiredNodeIds = {
+  '5001': '4999_camp',
+  '5002': '4999_camp',
+};
+
+/// [nodeId], or the scene that replaced it (see [retiredNodeIds]).
+String liveNodeId(String nodeId) => retiredNodeIds[nodeId] ?? nodeId;
+
 final storyRepositoryProvider = Provider<StoryRepository>((ref) {
   return StoryRepository();
 });
@@ -108,8 +119,9 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// continuously via PlayerSessionNotifier) still reflect real progress.
   Future<void> _loadAutosave() async {
     final prefs = await SharedPreferences.getInstance();
-    final nodeId = prefs.getString(_autosaveNodePrefsKey);
-    if (nodeId == null) return;
+    final savedNodeId = prefs.getString(_autosaveNodePrefsKey);
+    if (savedNodeId == null) return;
+    final nodeId = liveNodeId(savedNodeId);
     final historyJson = prefs.getString(_autosaveHistoryPrefsKey);
     final history = historyJson != null
         ? (json.decode(historyJson) as List).map((e) => e.toString()).toList()
@@ -207,7 +219,8 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
   /// survive a save/load round trip. The fog-of-war set only ever grows, so
   /// loading an earlier checkpoint doesn't re-shadow map ground already
   /// revealed past that point.
-  void loadState(String nodeId, List<String> history) {
+  void loadState(String savedNodeId, List<String> history) {
+    final nodeId = liveNodeId(savedNodeId);
     state = StoryPlayState(
       currentNodeId: nodeId,
       history: history,

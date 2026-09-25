@@ -3,6 +3,8 @@
     "diceName": "starter_die",
     "cost": 0,
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Slash",
@@ -58,6 +60,8 @@
   "void_die": {
     "diceName": "void_die",
     "numberOfFaces": 4,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Void Rip",
@@ -98,6 +102,10 @@
   "iron_die": {
     "diceName": "iron_die",
     "numberOfFaces": 6,
+    "professions": [
+      "warrior"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Broadsword Cut",
@@ -154,6 +162,10 @@
   "flame_die": {
     "diceName": "flame_die",
     "numberOfFaces": 6,
+    "professions": [
+      "mage"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Fireball",
@@ -210,6 +222,10 @@
   "tide_die": {
     "diceName": "tide_die",
     "numberOfFaces": 6,
+    "professions": [
+      "cleric"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Cleansing Wave",
@@ -266,6 +282,10 @@
   "storm_die": {
     "diceName": "storm_die",
     "numberOfFaces": 6,
+    "professions": [
+      "ranger"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Gale Slash",
@@ -322,6 +342,10 @@
   "stone_die": {
     "diceName": "stone_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [
+      "dwarf"
+    ],
     "faces": [
       {
         "faceName": "Boulder Smash",
@@ -378,6 +402,10 @@
   "shadow_die": {
     "diceName": "shadow_die",
     "numberOfFaces": 6,
+    "professions": [
+      "rogue"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Shadow Stab",
@@ -434,6 +462,10 @@
   "holy_die": {
     "diceName": "holy_die",
     "numberOfFaces": 6,
+    "professions": [
+      "cleric"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Holy Blessing",
@@ -490,6 +522,10 @@
   "berserker_die": {
     "diceName": "berserker_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [
+      "orc"
+    ],
     "faces": [
       {
         "faceName": "Savage Cleave",
@@ -546,6 +582,10 @@
   "arcane_die": {
     "diceName": "arcane_die",
     "numberOfFaces": 6,
+    "professions": [
+      "mage"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Arcane Missile",
@@ -602,6 +642,10 @@
   "huntsman_die": {
     "diceName": "huntsman_die",
     "numberOfFaces": 6,
+    "professions": [
+      "ranger"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Quickdraw Shot",
@@ -658,6 +702,10 @@
   "liora_die": {
     "diceName": "liora_die",
     "numberOfFaces": 6,
+    "professions": [
+      "ranger"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Aimed Shot",
@@ -714,6 +762,10 @@
   "vess_die": {
     "diceName": "vess_die",
     "numberOfFaces": 6,
+    "professions": [
+      "mage"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Void Lance",
@@ -770,6 +822,10 @@
   "grosh_die": {
     "diceName": "grosh_die",
     "numberOfFaces": 6,
+    "professions": [
+      "warrior"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Cleave",
@@ -827,6 +883,11 @@
     "diceName": "apprentice_die",
     "cost": 60,
     "numberOfFaces": 6,
+    "professions": [
+      "mage",
+      "cleric"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Focus",
@@ -837,9 +898,9 @@
         "element": "None"
       },
       {
-        "faceName": "Focus",
-        "type": "Mana",
-        "value": 1,
+        "faceName": "Channeling",
+        "type": "Skill",
+        "value": 0,
         "linkedSkillID": "",
         "weight": 1.0,
         "element": "None"
@@ -883,6 +944,11 @@
     "diceName": "sage_die",
     "cost": 150,
     "numberOfFaces": 6,
+    "professions": [
+      "mage",
+      "cleric"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Deep Focus",
@@ -938,6 +1004,10 @@
   "tobin_die": {
     "diceName": "tobin_die",
     "numberOfFaces": 6,
+    "professions": [
+      "cleric"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Hammer",
@@ -994,6 +1064,10 @@
   "malrik_die": {
     "diceName": "malrik_die",
     "numberOfFaces": 6,
+    "professions": [
+      "rogue"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Gutting Knife",
@@ -1050,6 +1124,8 @@
   "gambler_die": {
     "diceName": "gambler_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Long Shot",
@@ -1106,6 +1182,8 @@
   "frost_die": {
     "diceName": "frost_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Rime Cut",
@@ -1162,6 +1240,10 @@
   "twinfang_die": {
     "diceName": "twinfang_die",
     "numberOfFaces": 6,
+    "professions": [
+      "rogue"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Left Fang",
@@ -1218,6 +1300,10 @@
   "bulwark_die": {
     "diceName": "bulwark_die",
     "numberOfFaces": 6,
+    "professions": [
+      "warrior"
+    ],
+    "races": [],
     "faces": [
       {
         "faceName": "Tower Shield",
@@ -1274,6 +1360,8 @@
   "pilgrim_die": {
     "diceName": "pilgrim_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Road Blessing",
@@ -1330,6 +1418,8 @@
   "tempest_die": {
     "diceName": "tempest_die",
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Arc Lash",
@@ -1387,6 +1477,8 @@
     "diceName": "ossuary_die",
     "cost": 220,
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Bone Cleaver",
@@ -1443,6 +1535,8 @@
     "diceName": "vigil_die",
     "cost": 250,
     "numberOfFaces": 7,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Lantern Strike",
@@ -1507,6 +1601,8 @@
     "diceName": "tearglass_die",
     "cost": 290,
     "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
     "faces": [
       {
         "faceName": "Glass Edge",

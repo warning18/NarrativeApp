@@ -94,4 +94,28 @@ void main() {
       }
     }
   });
+
+  test('known waters bring fewer raiders, and one a crossing at most', () {
+    var unknown = 0;
+    var known = 0;
+    for (var seed = 0; seed < 400; seed++) {
+      final first = buildVoyage(
+          random: Random(seed), length: 4, enemyShips: enemyShips, chapter: 4);
+      final again = buildVoyage(
+          random: Random(seed),
+          length: 4,
+          enemyShips: enemyShips,
+          chapter: 4,
+          knownWaters: true);
+      final raidersAgain =
+          again.where((e) => e.kind == SeaEventKind.raider).length;
+      expect(raidersAgain, lessThanOrEqualTo(1));
+      unknown += first.where((e) => e.kind == SeaEventKind.raider).length;
+      known += raidersAgain;
+      expect(again.length, first.length);
+    }
+    // About 1.4 raiders a first crossing of four days, under 0.6 after.
+    expect(unknown / 400, closeTo(1.4, 0.2));
+    expect(known / 400, lessThan(0.6));
+  });
 }

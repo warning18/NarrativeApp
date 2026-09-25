@@ -6,6 +6,7 @@
     "buildCost": 150,
     "partyCapacityBonus": 0,
     "requiredFlags": [],
+    "requiredAllyId": "kelda",
     "houseName_fr": "La Halle de Kelda",
     "description_fr": "Une halle-forge renforcée, bâtie selon les exigences de Kelda en personne. Elle a combattu sous assez de toits effondrés pour toute une vie, et ne montera plus la garde sous un autre tant qu’elle ne sera pas sûre que celui-ci tient."
   },
@@ -58,6 +59,17 @@
     "houseName_fr": "L’Antre de la Trame acérée",
     "description_fr": "Une arrière-salle sans enseigne, tenue discrète à dessein — le genre de contact que seuls les pieds légers et les mains vives parviennent jamais à nouer. Ouvre une porte dont la plupart des gens ignorent l’existence."
   },
+  "smugglers_cellar": {
+    "houseID": "smugglers_cellar",
+    "houseName": "Smugglers' Cellar",
+    "description": "The Smugglers' Vault goes wherever the Crusade's supply ships go, and it found our cove before the Inquisition did. Give it a dry cellar under the camp's standing wall and it opens its counter here: contraband steel a cut above the harbor forges, and a relic or two nobody admits to owning.",
+    "buildCost": 400,
+    "partyCapacityBonus": 0,
+    "unlocksShopId": "smugglers_vault",
+    "requiredFlags": [],
+    "houseName_fr": "La Cave des contrebandiers",
+    "description_fr": "Le Coffre des Contrebandiers va partout où vont les navires de ravitaillement de la Croisade, et il a trouvé notre crique avant l'Inquisition. Donnez-lui une cave au sec sous le mur encore debout du camp, et il y ouvre son comptoir : de l'acier de contrebande d'une autre trempe que celui des forges du port, et une relique ou deux que personne n'avoue posséder."
+  },
   "hearth_hall": {
     "houseID": "hearth_hall",
     "houseName": "Hearth-Hall",
@@ -97,5 +109,15 @@
     ],
     "houseName_fr": "Le Sanctuaire du Linceul",
     "description_fr": "Un sanctuaire pour abriter les fragments du Linceul entre la route et la traversée, bâti avec la pierre du Cœur Mort. Quoi que le Linceul ait appris de la déchirure, le groupe en porte un peu."
+  },
+  "harbor": {
+    "houseID": "harbor",
+    "houseName": "The Harbor",
+    "description": "A stone quay run out from the cove's standing wall, a slipway above the tide line and a shipwright who stayed. Once it stands, the Rusty Eel is refitted here: parts fitted to her slots, her hull made sound between voyages.",
+    "buildCost": 250,
+    "partyCapacityBonus": 0,
+    "requiredFlags": [],
+    "houseName_fr": "Le Port",
+    "description_fr": "Un quai de pierre lancé depuis le mur encore debout de la crique, une cale de halage au-dessus de la ligne de marée et un charpentier de marine qui est resté. Une fois bâti, c’est ici que le Rusty Eel est radoubé : des pièces montées dans ses emplacements, sa coque remise en état entre deux traversées."
   }
 }

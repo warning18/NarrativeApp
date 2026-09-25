@@ -87,7 +87,12 @@
     "bossFlavorTextFr": "Ce que la purge avait laissé debout au bout de la rangée n'était pas un étal. C'était une des sentinelles de fer de l'Inquisition, froide et à moitié ensevelie sous la cendre, et elle s'éveilla à l'instant où ma botte toucha le sigil sous les braises.",
     "recommendedLevel": 6,
     "zoneName_fr": "La Rue des Braises",
-    "flavorText_fr": "Ce que la purge a laissé des étals du Quartier des Cendres, fouillés deux fois par les mêmes foules : une fois pour tout ce qui valait encore d’être vendu, une fois pour tout ce qui valait encore d’être brûlé. Il existe un genre particulier de personne qui revient une troisième fois."
+    "flavorText_fr": "Ce que la purge a laissé des étals du Quartier des Cendres, fouillés deux fois par les mêmes foules : une fois pour tout ce qui valait encore d’être vendu, une fois pour tout ce qui valait encore d’être brûlé. Il existe un genre particulier de personne qui revient une troisième fois.",
+    "discoversPlaceIds": [
+      "3005"
+    ],
+    "midpointFlavorText": "Past the last of the burned stalls the ash gave way to streets that still had doors in them: the Ashen Quarter, burned by its own Inquisition and not quite dead of it. Someone was watching me from behind every one of those doors. I marked the way in.",
+    "midpointFlavorTextFr": "Au-delà des derniers étals brûlés, la cendre laissait place à des rues qui avaient encore des portes : le Quartier des Cendres, brûlé par sa propre Inquisition et pas tout à fait mort de l’avoir été. Derrière chacune de ces portes, quelqu’un m’observait. Je notai le chemin."
   },
   "z_scaffold_yards": {
     "zoneID": "z_scaffold_yards",
@@ -106,14 +111,17 @@
     "requiredFlags": [
       "cinder_row_cleared"
     ],
-    "isMainZone": true,
+    "isMainZone": false,
     "bossFlavorText": "The forges were cold, but something in the yard was not. It had been following me between the scaffolds for an hour, folding itself into shadows the lanterns should have burned away, and it finally stepped out where the ironworkers had stacked their last unpaid plate.",
     "bossFlavorTextFr": "Les forges étaient froides, mais quelque chose dans le chantier ne l'était pas. Cela me suivait entre les échafaudages depuis une heure, se pliant dans des ombres que les lanternes auraient dû brûler, et cela sortit enfin là où les ferronniers avaient empilé leurs dernières plaques impayées.",
     "recommendedLevel": 8,
     "midpointFlavorText": "Halfway up the yards the scaffolding gave way to the real thing: the frame of a cathedral the cultists had never finished, ribs of charred timber against the ash-sky, and on every beam a hymn scratched in the same hand. Above, something was still singing it.",
     "midpointFlavorTextFr": "À mi-hauteur des chantiers, l'échafaudage cédait la place à la chose elle-même : la charpente d'une cathédrale que les cultistes n'avaient jamais achevée, des côtes de bois calciné contre le ciel de cendre, et sur chaque poutre un hymne gravé de la même main. Au-dessus, quelque chose le chantait encore.",
     "zoneName_fr": "Les Chantiers aux Échafaudages",
-    "flavorText_fr": "Les ferronniers qui forgeaient les armures de l’Inquisition ont abandonné leur chantier quand les golems ont commencé à survivre à leurs maîtres. Les forges se sont refroidies, mais le fer froid garde mieux sa forme que la plupart des promesses faites dans ce quartier."
+    "flavorText_fr": "Les ferronniers qui forgeaient les armures de l’Inquisition ont abandonné leur chantier quand les golems ont commencé à survivre à leurs maîtres. Les forges se sont refroidies, mais le fer froid garde mieux sa forme que la plupart des promesses faites dans ce quartier.",
+    "discoversPlaceIds": [
+      "3100"
+    ]
   },
   "z_ossuary_galleries": {
     "zoneID": "z_ossuary_galleries",
@@ -121,7 +129,7 @@
     "chapter": 4,
     "expeditionCount": 3,
     "mapTheme": "hollowReaches",
-    "flavorText": "Galleries of stacked bone below the Sunken Cloister, flooded to the second shelf. The Court stored its dead here by the thousand and its secrets by the handful, and the water has been quietly rearranging both.",
+    "flavorText": "Galleries of stacked bone below the Drowned Cloister, flooded to the second shelf. The Court stored its dead here by the thousand and its secrets by the handful, and the water has been quietly rearranging both.",
     "rewardGold": 140,
     "rewardItemId": "",
     "rewardDiceId": "",
@@ -135,7 +143,13 @@
     "isMainZone": false,
     "recommendedLevel": 8,
     "zoneName_fr": "Les Galeries de l’Ossuaire",
-    "flavorText_fr": "Des galeries d’ossements empilés sous le Cloître Englouti, inondées jusqu’à la deuxième étagère. La Cour y rangeait ses morts par milliers et ses secrets par poignées, et l’eau réarrange tranquillement les uns comme les autres."
+    "flavorText_fr": "Des galeries d’ossements empilés sous le Cloître noyé, inondées jusqu’à la deuxième étagère. La Cour y rangeait ses morts par milliers et ses secrets par poignées, et l’eau réarrange tranquillement les uns comme les autres.",
+    "discoversPlaceIds": [
+      "5100",
+      "5010"
+    ],
+    "midpointFlavorText": "Halfway along the galleries a side-passage breathed salt instead of dust. I followed it to a sea-cave’s mouth, and daylight, and a cliff path climbing to houses built from hulls: a village, where the Court’s dead had no business and its wreckers had plenty. Below me the galleries went on, and somewhere above them, candles.",
+    "midpointFlavorTextFr": "À mi-chemin des galeries, un passage latéral soufflait le sel au lieu de la poussière. Je le suivis jusqu’à la bouche d’une grotte marine, à la lumière du jour, et à un sentier de falaise grimpant vers des maisons bâties avec des coques : un village, où les morts de la Cour n’avaient rien à faire et ses pilleurs d’épaves beaucoup. Sous mes pieds les galeries continuaient, et quelque part au-dessus d’elles, des chandelles."
   },
   "z_drowned_stair": {
     "zoneID": "z_drowned_stair",
@@ -185,7 +199,11 @@
     "midpointFlavorText": "The ash gave out at the edge of the dead heart, and where it ended the ground was glass: the city's stone gone smooth and dark in one breath, long ago. My boots rang on it. Whatever had done this had not been trying.",
     "midpointFlavorTextFr": "La cendre s'arrêtait à la lisière du cœur mort, et là où elle finissait le sol était de verre : la pierre de la ville devenue lisse et sombre en un souffle, il y a longtemps. Mes bottes y résonnaient. Ce qui avait fait cela n'avait pas fait d'effort.",
     "zoneName_fr": "Les Abords du Cœur Mort",
-    "flavorText_fr": "Les rues entre le Quartier du Reliquaire et la déchirure, où le temps s’est détraqué : du givre en été, des ombres couchées dans le mauvais sens, et des choses passées quand la déchirure s’est ouverte, qui n’ont jamais trouvé de raison de repartir."
+    "flavorText_fr": "Les rues entre le Quartier des Reliquaires et la déchirure, où le temps s’est détraqué : du givre en été, des ombres couchées dans le mauvais sens, et des choses passées quand la déchirure s’est ouverte, qui n’ont jamais trouvé de raison de repartir.",
+    "discoversPlaceIds": [
+      "6100",
+      "6010"
+    ]
   },
   "z_shroud_vigil": {
     "zoneID": "z_shroud_vigil",
@@ -231,10 +249,62 @@
     "bossFlavorTextFr": "Au bout de tout, il y avait un trône, parce qu'il y a toujours un trône, et dessus la chose qui connaissait le nom de ma famille depuis plus longtemps que moi — immense, couronnée d'éclats de la déchirure elle-même, ne portant aucun visage parce qu'elle n'en avait jamais eu besoin. Elle ne se leva pas. Elle n'en avait jamais eu besoin.",
     "requiredFlags": [],
     "isMainZone": true,
-    "recommendedLevel": 12,
+    "recommendedLevel": 14,
     "midpointFlavorText": "Past the tear the sea stopped pretending. The Eel ran on something that was not water, under a sky that was not one, toward a shore made of every place I had ever fought, the docks, the Spire, the drowned cloister, stitched edge to edge like a map made by someone who had only heard about maps. The reflections stood on it, waiting.",
-    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où je m'étais battu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
+    "midpointFlavorTextFr": "Passé la déchirure, la mer cessa de faire semblant. L'Eel filait sur quelque chose qui n'était pas de l'eau, sous un ciel qui n'en était pas un, vers un rivage fait de tous les lieux où j'avais combattu, les quais, la Flèche, le cloître noyé, cousus bord à bord comme une carte dessinée par quelqu'un qui n'aurait fait qu'entendre parler des cartes. Les reflets s'y tenaient, et attendaient.",
     "zoneName_fr": "Au-delà de la Déchirure",
     "flavorText_fr": "L’autre côté de la déchirure : pas de ciel, pas de sol qui reste là où on le laisse, et les visages de tous ceux que l’invasion a pris, qui marchent. Le Rusty Eel est la seule chose ici qui se souvienne de ce à quoi un monde est censé ressembler."
+  },
+  "z_glass_strand": {
+    "zoneID": "z_glass_strand",
+    "zoneName": "The Glass Strand",
+    "zoneName_fr": "La Grève de Verre",
+    "chapter": 6,
+    "expeditionCount": 3,
+    "mapTheme": "wildsBeyond",
+    "flavorText": "Where the tear first touched the Hollow Shore the sand ran to glass in one breath: a strand of it, smooth and dark and humming, strewn with the White Fleet’s wreckage and whatever came ashore with it.",
+    "flavorText_fr": "Là où la déchirure a d’abord touché la Rive Creuse, le sable s’est changé en verre d’un seul souffle : une grève entière, lisse, sombre et bourdonnante, jonchée des débris de la Flotte Blanche et de ce qui est venu à terre avec eux.",
+    "rewardGold": 220,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": "glass_strand_cleared",
+    "tier": 2,
+    "bossEnemyId": "strand_colossus",
+    "bossFlavorText": "At the end of the strand the wreckage stood up. It had been three ships’ keels and a chapel’s worth of glass, fused by the tear’s first breath into something with a shape and a grudge, and it had been guarding the way inland for a year without knowing what it guarded.",
+    "bossFlavorTextFr": "Au bout de la grève, les débris se levèrent. Ils avaient été trois quilles de navires et le verre d’une chapelle entière, fondus par le premier souffle de la déchirure en quelque chose qui avait une forme et une rancune, et qui gardait le chemin de l’intérieur depuis un an sans savoir ce qu’il gardait.",
+    "midpointFlavorText": "Halfway along the strand the glass gave way to dunes, and in the lee of the dunes, smoke: a village of grey-faced fishers mending nets on sand that should not have existed. They watched me pass the way people watch weather.",
+    "midpointFlavorTextFr": "À mi-chemin de la grève, le verre laissait place aux dunes, et à l’abri des dunes, une fumée : un village de pêcheurs au visage gris raccommodant leurs filets sur un sable qui n’aurait pas dû exister. Ils me regardèrent passer comme on regarde le temps qu’il fait.",
+    "requiredFlags": [],
+    "isMainZone": false,
+    "recommendedLevel": 12,
+    "discoversPlaceIds": [
+      "7200",
+      "7100"
+    ]
+  },
+  "z_white_fleet_grave": {
+    "zoneID": "z_white_fleet_grave",
+    "zoneName": "The White Fleet’s Grave",
+    "zoneName_fr": "Le Tombeau de la Flotte Blanche",
+    "chapter": 6,
+    "expeditionCount": 4,
+    "mapTheme": "wildsBeyond",
+    "flavorText": "Off the point the White Fleet lies where the tear put it: forty hulls on a floor of glass, masts still standing, and the flagship in their midst with its colours flying and its Admiral on the quarterdeck. The fifth piece of the Shroud is its mainsail.",
+    "flavorText_fr": "Au large de la pointe, la Flotte Blanche gît là où la déchirure l’a posée : quarante coques sur un fond de verre, les mâts encore debout, et au milieu le vaisseau amiral, couleurs au vent et son Amiral sur la dunette. La cinquième pièce du Linceul est sa grand-voile.",
+    "rewardGold": 260,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": "white_fleet_grave_cleared",
+    "tier": 3,
+    "bossEnemyId": "white_admiral",
+    "bossFlavorText": "The Admiral had never left his quarterdeck. The sea had been through him and the tear had been through the sea, and what stood at the rail now wore his white and his orders and nothing else of him, and it turned the flagship’s guns on the Eel as if the Crusade had never ended.",
+    "bossFlavorTextFr": "L’Amiral n’avait jamais quitté sa dunette. La mer l’avait traversé et la déchirure avait traversé la mer, et ce qui se tenait au bastingage portait désormais son blanc et ses ordres et rien d’autre de lui, et il tourna les canons du vaisseau amiral vers l’Eel comme si la Croisade n’avait jamais pris fin.",
+    "midpointFlavorText": "Between the hulls the water was clear to the glass, and on the glass lay the fleet’s dead in their white, in rows, as if someone had tidied them. The Eel’s shadow passed over them. None of them looked up. Ahead, on the flagship, the grey sail filled with a wind I could not feel.",
+    "midpointFlavorTextFr": "Entre les coques, l’eau était claire jusqu’au verre, et sur le verre gisaient les morts de la flotte dans leur blanc, en rangées, comme si quelqu’un les avait rangés. L’ombre de l’Eel passa sur eux. Aucun ne leva les yeux. Devant, sur le vaisseau amiral, la voile grise se gonflait d’un vent que je ne sentais pas.",
+    "requiredFlags": [],
+    "isMainZone": true,
+    "recommendedLevel": 13
   }
 }

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/stitched_ink.dart';
+import '../widgets/chart_map_painter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../data/map_charts.dart';
 import '../data/world_map.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -62,7 +62,7 @@ class _Tokens {
 String _lookName(WidgetRef ref, MapLook look) =>
     tr(ref, 'world_map_look_${look.name}');
 
-/// The story's world as a pixel map, for play mode: the places the story
+/// The story's world as a drawn chart, for play mode: the places the story
 /// has reached, the road the player walked between them, the player
 /// walking what they have done since the map last showed, and fog over
 /// the rest. Tapping a place tells what happens there.
@@ -81,9 +81,8 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   String? _selectedId;
   int _chapterFilter = 0;
 
-  ui.Image? _ground;
-  Uint8List _fog = Uint8List(0);
-  String _groundKey = '';
+  /// The geography the chart is drawn on (see map_charts.dart).
+  ChartGeography _geo = chartOf(MapShape.continental);
 
   final TransformationController _view = TransformationController();
   late final AnimationController _zoom = AnimationController(
@@ -144,7 +143,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // The water glints, the embers flicker and the road's dashes move,
+    // The traveller walks and the road's dashes move,
     // unless the device asks for less motion.
     _reduceMotion = MediaQuery.of(context).disableAnimations;
     if (_reduceMotion) {
@@ -163,50 +162,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     _zoom.dispose();
     _walk.dispose();
     _view.dispose();
-    _ground?.dispose();
     super.dispose();
-  }
-
-  /// The terrain in the chosen look, with fog over what the story has not
-  /// reached, drawn into an image once per look and set of reached places.
-  void _prepareGround(Set<String> discovered, MapStyle style) {
-    final key = '${style.look.name}:${(discovered.toList()..sort()).join(',')}';
-    if (key == _groundKey && _ground != null) return;
-    _groundKey = key;
-    final fog = fogMask(discovered);
-    final pixels = worldMapTerrain.pixels;
-    final recorder = ui.PictureRecorder();
-    final canvas = Canvas(recorder);
-    final paint = Paint()..isAntiAlias = false;
-    for (var y = 0; y < worldMapHeight; y++) {
-      var runStart = 0;
-      var runColor = -1;
-      for (var x = 0; x <= worldMapWidth; x++) {
-        var color = -1;
-        if (x < worldMapWidth) {
-          final i = y * worldMapWidth + x;
-          final base = 0xFF000000 | style.ground(pixels[i] & 0xFFFFFF);
-          color = fog[i] == 1
-              ? foggedColor(base, fog: style.fog, strength: style.fogStrength)
-              : base;
-        }
-        if (color == runColor) continue;
-        if (runColor != -1) {
-          paint.color = Color(runColor);
-          canvas.drawRect(
-              Rect.fromLTWH(runStart.toDouble(), y.toDouble(),
-                  (x - runStart).toDouble(), 1),
-              paint);
-        }
-        runStart = x;
-        runColor = color;
-      }
-    }
-    final picture = recorder.endRecording();
-    _ground?.dispose();
-    _ground = picture.toImageSync(worldMapWidth, worldMapHeight);
-    picture.dispose();
-    _fog = fog;
   }
 
   // ---- Zoom ----------------------------------------------------------
@@ -257,7 +213,8 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
   void _centreOn(Landmark? here) {
     if (here == null || _mapSize.isEmpty) return;
-    _animateView(_viewAt(_onMap(travellerSpot(here)), math.max(_scale, 3)));
+    _animateView(_viewAt(
+        _onMap(ChartMapPainter.spotOn(_geo, here)), math.max(_scale, 3)));
   }
 
   void _doubleTap() {
@@ -272,7 +229,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
   void _startWalk(List<Landmark> legs, Duration perLeg) {
     if (legs.length < 2) return;
-    _walkPath = [for (final l in legs) travellerSpot(l)];
+    _walkPath = [for (final l in legs) ChartMapPainter.spotOn(_geo, l)];
     _walk.duration = perLeg * (legs.length - 1);
     setState(() => _walking = true);
     _walk.forward(from: 0);
@@ -299,7 +256,8 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     var best = 12.0 * 12.0;
     for (final landmark in worldMapLandmarks) {
       if (!discovered.contains(landmark.id)) continue;
-      final dx = landmark.x - mx, dy = landmark.y - my;
+      final at = _geo.of(landmark);
+      final dx = at.dx - mx, dy = at.dy - my;
       final d = dx * dx + dy * dy;
       if (d <= best) {
         best = d;
@@ -309,13 +267,33 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     if (nearest != null) setState(() => _selectedId = nearest!.id);
   }
 
+  /// The next place the story goes after [here] that it has not reached.
+  Landmark? _nextPlace(Landmark? here, Set<String> discovered) {
+    if (here == null) return null;
+    final index = worldMapLandmarks.indexOf(here);
+    for (var i = index + 1; i < worldMapLandmarks.length; i++) {
+      if (!discovered.contains(worldMapLandmarks[i].id)) {
+        return worldMapLandmarks[i];
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final play = ref.watch(storyPlayProvider);
     final session = ref.watch(playerSessionProvider);
     final language = ref.watch(appLanguageProvider);
     final look = ref.watch(mapLookProvider);
-    final style = MapStyle.of(look);
+    final palette = ChartPalette.of(look);
+    final shape = ref.watch(mapShapeProvider);
+    final geo = chartOf(shape);
+    // A walk on the old geography would leave the road: it stops.
+    if (!identical(geo, _geo) && _walking) {
+      _walk.stop();
+      _walking = false;
+    }
+    _geo = geo;
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
         const <String, dynamic>{};
     final visited = {...play.visitedNodeIds, play.currentNodeId};
@@ -324,7 +302,6 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final discovered = discoveredLandmarkIds(visited);
     if (here != null) discovered.add(here.id);
     if (discovered.isEmpty) discovered.add(worldMapLandmarks.first.id);
-    _prepareGround(discovered, style);
 
     // On opening, the traveller walks what the story did since the map
     // last showed.
@@ -358,6 +335,13 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final tokens = dark ? _Tokens.dark : _Tokens.light;
     Color chapterColor(int n) =>
         dark ? mapChapter(n).dark : mapChapter(n).light;
+    // On the chart the colour follows the chart's own ground: the night
+    // look is dark, the parchment light, and the Shroud has no colour.
+    Color chartChapterColor(int n) => switch (look) {
+          MapLook.night => mapChapter(n).dark,
+          MapLook.parchment => mapChapter(n).light,
+          MapLook.shroud => const Color(0xFFA3A3AA),
+        };
 
     Widget mapBox(double width) {
       final inner = width - 8;
@@ -369,7 +353,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
           label: tr(ref, 'world_map_semantics'),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: style.frame,
+              color: palette.sea,
               border: Border.all(color: tokens.line, width: 4),
             ),
             child: ClipRect(
@@ -386,20 +370,22 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                   onDoubleTap: _doubleTap,
                   child: CustomPaint(
                     size: _mapSize,
-                    painter: _WorldMapPainter(
+                    painter: ChartMapPainter(
                       frame: _frame,
                       walk: _walk,
-                      style: style,
-                      ground: _ground!,
-                      fog: _fog,
+                      geography: _geo,
+                      palette: palette,
+                      language: language,
                       discovered: discovered,
                       legs: roadLegs(journey, discovered),
+                      ahead: _nextPlace(here, discovered),
                       selectedId: selected.id,
                       here: here,
                       walking: _walking,
                       walkPath: _walkPath,
                       chapterFilter: _chapterFilter,
                       reduceMotion: _reduceMotion,
+                      chapterColor: chartChapterColor,
                     ),
                   ),
                 ),
@@ -428,39 +414,94 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
               : () => _replay(journey),
         ),
         // The three looks side by side, the one shown picked out.
-        Container(
-          key: const Key('world_map_look'),
-          height: 36,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: tokens.line),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final option in MapLook.values)
-                Semantics(
-                  button: true,
-                  selected: option == look,
-                  child: InkWell(
-                    key: Key('world_map_look_${option.name}'),
-                    onTap: () =>
-                        ref.read(mapLookProvider.notifier).choose(option),
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      color: option == look ? tokens.line : Colors.transparent,
-                      child: Text(_lookName(ref, option),
-                          style: TextStyle(
-                              fontFamily: _pixelFont,
-                              fontSize: 14,
-                              color:
-                                  option == look ? tokens.ink : tokens.muted)),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Semantics(
+            container: true,
+            label: tr(ref, 'world_map_look'),
+            child: Container(
+              key: const Key('world_map_look'),
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: tokens.line),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final option in MapLook.values)
+                    Semantics(
+                      button: true,
+                      selected: option == look,
+                      child: InkWell(
+                        key: Key('world_map_look_${option.name}'),
+                        onTap: () =>
+                            ref.read(mapLookProvider.notifier).choose(option),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color:
+                              option == look ? tokens.line : Colors.transparent,
+                          child: Text(_lookName(ref, option),
+                              style: TextStyle(
+                                  fontFamily: _pixelFont,
+                                  fontSize: 14,
+                                  color: option == look
+                                      ? tokens.ink
+                                      : tokens.muted)),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-            ],
+                ],
+              ),
+            ),
+          ),
+        ),
+        // The three geographies the chart can be drawn on.
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Semantics(
+            container: true,
+            label: tr(ref, 'world_map_shape'),
+            child: Container(
+              key: const Key('world_map_shape'),
+              height: 36,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(color: tokens.line),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final option in MapShape.values)
+                    Semantics(
+                      button: true,
+                      selected: option == shape,
+                      child: InkWell(
+                        key: Key('world_map_shape_${option.name}'),
+                        onTap: () =>
+                            ref.read(mapShapeProvider.notifier).choose(option),
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color: option == shape
+                              ? tokens.line
+                              : Colors.transparent,
+                          child: Text(tr(ref, 'world_map_shape_${option.name}'),
+                              style: TextStyle(
+                                  fontFamily: _pixelFont,
+                                  fontSize: 14,
+                                  color: option == shape
+                                      ? tokens.ink
+                                      : tokens.muted)),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ),
       ],
@@ -906,198 +947,4 @@ class _LandmarkPanel extends ConsumerWidget {
       ),
     );
   }
-}
-
-class _WorldMapPainter extends CustomPainter {
-  _WorldMapPainter({
-    required this.frame,
-    required this.walk,
-    required this.style,
-    required this.ground,
-    required this.fog,
-    required this.discovered,
-    required this.legs,
-    required this.selectedId,
-    required this.here,
-    required this.walking,
-    required this.walkPath,
-    required this.chapterFilter,
-    required this.reduceMotion,
-  }) : super(repaint: Listenable.merge([frame, walk]));
-
-  final ValueNotifier<int> frame;
-  final Animation<double> walk;
-  final MapStyle style;
-  final ui.Image ground;
-  final Uint8List fog;
-  final Set<String> discovered;
-  final List<(Landmark, Landmark)> legs;
-  final String selectedId;
-  final Landmark? here;
-  final bool walking;
-  final List<(double, double)> walkPath;
-  final int chapterFilter;
-  final bool reduceMotion;
-
-  static final Paint _pixel = Paint()..isAntiAlias = false;
-
-  void _dot(Canvas canvas, num x, num y, Color color,
-      [num width = 1, num height = 1]) {
-    _pixel.color = color;
-    canvas.drawRect(
-        Rect.fromLTWH(
-            x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble()),
-        _pixel);
-  }
-
-  bool _clear(int x, int y) =>
-      x >= 0 &&
-      y >= 0 &&
-      x < worldMapWidth &&
-      y < worldMapHeight &&
-      fog[y * worldMapWidth + x] == 0;
-
-  bool _active(Landmark l) => chapterFilter == 0 || l.chapter == chapterFilter;
-
-  (int, int) _spriteSize(String sprite, int scale) {
-    final rows = mapSprites[sprite]!;
-    return (rows.first.length * scale, rows.length * scale);
-  }
-
-  /// A sprite drawn with its top-left corner at ([ox], [oy]).
-  void _spriteAt(Canvas canvas, String name, int ox, int oy, int scale,
-      {bool swap = false, double opacity = 1, Color? gold}) {
-    final rows = mapSprites[name]!;
-    for (var r = 0; r < rows.length; r++) {
-      for (var c = 0; c < rows[r].length; c++) {
-        var letter = rows[r][c];
-        if (letter == '.' || letter == ' ') continue;
-        if (swap) {
-          if (letter == 'p') {
-            letter = 'P';
-          } else if (letter == 'P') {
-            letter = 'p';
-          }
-        }
-        var color = gold != null && letter == 'y' ? gold : style.sprite(letter);
-        if (opacity < 1) color = color.withValues(alpha: opacity);
-        _dot(canvas, ox + c * scale, oy + r * scale, color, scale, scale);
-      }
-    }
-  }
-
-  /// A sprite drawn centred on ([cx], [cy]).
-  void _sprite(Canvas canvas, String name, num cx, num cy, int scale,
-      {bool swap = false, double opacity = 1, Color? gold}) {
-    final (w, h) = _spriteSize(name, scale);
-    _spriteAt(canvas, name, (cx - w / 2).round(), (cy - h / 2).round(), scale,
-        swap: swap, opacity: opacity, gold: gold);
-  }
-
-  /// Every pixel from [a] to [b], with its step number.
-  void _line(Landmark a, Landmark b, void Function(int x, int y, int k) plot) {
-    var x0 = a.x, y0 = a.y;
-    final x1 = b.x, y1 = b.y;
-    final dx = (x1 - x0).abs(), dy = -(y1 - y0).abs();
-    final sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
-    var err = dx + dy, k = 0;
-    while (true) {
-      plot(x0, y0, k++);
-      if (x0 == x1 && y0 == y1) break;
-      final e2 = 2 * err;
-      if (e2 >= dy) {
-        err += dy;
-        x0 += sx;
-      }
-      if (e2 <= dx) {
-        err += dx;
-        y0 += sy;
-      }
-    }
-  }
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final f = reduceMotion ? 0 : frame.value;
-    canvas.save();
-    canvas.scale(size.width / worldMapWidth, size.height / worldMapHeight);
-    const whole =
-        Rect.fromLTWH(0, 0, worldMapWidth * 1.0, worldMapHeight * 1.0);
-    canvas.drawImageRect(
-        ground,
-        whole,
-        whole,
-        Paint()
-          ..filterQuality = FilterQuality.none
-          ..isAntiAlias = false);
-
-    final terrain = worldMapTerrain;
-    for (final g in terrain.glints) {
-      if (!_clear(g.x, g.y)) continue;
-      if (reduceMotion ? g.phase < 2 : (f + g.phase) % 6 < 2) {
-        _dot(canvas, g.x, g.y, style.glint, 2, 1);
-      }
-    }
-    for (final (x, y) in terrain.fires) {
-      if (!_clear(x, y)) continue;
-      _dot(canvas, x, y, style.embers[(f + x + y) % 3]);
-    }
-
-    // The road the player walked, dashes moving along it.
-    for (final (a, b) in legs) {
-      final on = (_active(a) && _active(b)) ||
-          (chapterFilter != 0 &&
-              (a.chapter == chapterFilter || b.chapter == chapterFilter));
-      final color = style.road.withValues(alpha: on ? .85 : .22);
-      _line(a, b, (x, y, k) {
-        if ((k + f) % 4 == 0) _dot(canvas, x, y, color);
-      });
-    }
-
-    // The great tear over the shore, once the shore is reached.
-    if (discovered.contains('shore')) {
-      _sprite(canvas, 'tear', 244, 18, 2, swap: f.isOdd);
-    }
-    for (final l in worldMapLandmarks) {
-      if (!discovered.contains(l.id)) continue;
-      _sprite(canvas, l.sprite, l.x, l.y, l.big ? 2 : 1,
-          swap: l.sprite == 'tear' && f.isOdd, opacity: _active(l) ? 1 : .35);
-    }
-
-    // The chosen place: blinking corners.
-    final selected = landmarkById(selectedId);
-    if (selected != null && (reduceMotion || f % 4 < 3)) {
-      final (w, h) = _spriteSize(selected.sprite, selected.big ? 2 : 1);
-      final x0 = (selected.x - w / 2).round() - 2;
-      final y0 = (selected.y - h / 2).round() - 2;
-      final x1 = x0 + w + 3, y1 = y0 + h + 3;
-      for (final (x, y) in [
-        (x0, y0), (x1, y0), (x0, y1), (x1, y1), //
-        (x0 + 1, y0), (x0, y0 + 1), (x1 - 1, y0), (x1, y0 + 1),
-        (x0 + 1, y1), (x0, y1 - 1), (x1 - 1, y1), (x1, y1 - 1),
-      ]) {
-        _dot(canvas, x, y, style.mark);
-      }
-    }
-
-    // The player: walking the road, or standing where the story is with
-    // a marker bobbing overhead.
-    final standing = here;
-    if (walking && walkPath.length >= 2) {
-      final (px, py) = pointAlong(walkPath, walk.value);
-      final strides = (walk.value * (walkPath.length - 1) * 6).floor();
-      _spriteAt(canvas, strides.isOdd ? 'traveller_step' : 'traveller',
-          (px - 2.5).round(), (py - 6).round(), 1);
-    } else if (standing != null) {
-      final (px, py) = travellerSpot(standing);
-      final top = (py - 6).round();
-      _spriteAt(canvas, 'traveller', (px - 2.5).round(), top, 1);
-      final bob = f % 4 < 2 ? 0 : 1;
-      _sprite(canvas, 'pin', px, top - 4 - bob, 1, gold: style.mark);
-    }
-    canvas.restore();
-  }
-
-  @override
-  bool shouldRepaint(covariant _WorldMapPainter old) => true;
 }

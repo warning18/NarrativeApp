@@ -16,6 +16,7 @@ import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/narration_tokens.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 import 'package:narrative_data_app/models/story_node.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 
 Map<String, dynamic> _loadJson(String relative) {
   for (final path in [relative, '../$relative']) {
@@ -352,6 +353,7 @@ void main() {
   group('authored narration data', () {
     final dag = _loadJson('assets/Cleaned_Narrative_DAG.json');
     final zones = _loadJson('assets/gamedata/zones.json');
+    final houses = _loadJson('assets/gamedata/houses.json');
     final races = _loadJson('assets/gamedata/races.json');
     final professions = _loadJson('assets/gamedata/professions.json');
     final settable = <String>{
@@ -361,6 +363,8 @@ void main() {
               .map((f) => f.toString()),
       for (final zone in zones.values)
         if ((zone as Map)['rewardFlag'] != null) zone['rewardFlag'].toString(),
+      // Set when a camp house is built (see buildHouse).
+      for (final houseId in houses.keys) houseFlag(houseId),
       // Set by the story player itself when `@first_ally` resolves (see
       // story_player_screen.dart's _resolveEnemyIds).
       'companion_turned',
@@ -408,7 +412,9 @@ void main() {
           expect(line.line.fr, isNotEmpty);
         }
       }
-      expect(hubs, 4);
+      // The three late towns, the Hollow Shore, the chapter 3 to 6
+      // villages and the White Anchorage.
+      expect(hubs, 9);
     });
 
     test('persona keys name real races and professions, with French', () {
@@ -501,10 +507,13 @@ void main() {
       }
       expect(confront.choices.map((c) => c.alignmentMod).toSet(),
           containsAll([2, 0, -2]));
-      final sail = nodes['7002']!.choices.firstWhere(
+      // The crossing sets out from the camp's last night, by the Hollow
+      // Shore.
+      final sail = nodes['7400']!.choices.firstWhere(
           (c) => c.nextId == '7002_confront',
-          orElse: () => fail('7002 no longer leads to the confrontation'));
+          orElse: () => fail('the last camp no longer leads to the crossing'));
       expect(sail.launchesZone, isFalse);
+      expect(sail.travelPlaceId, '7002');
       expect(nodes['7002_crew']!.choices.single.nextId, '7002');
     });
 

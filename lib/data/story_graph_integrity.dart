@@ -74,10 +74,33 @@ StoryGraphReport checkStoryGraphIntegrity(
   final deadEndNodeIds = <String>[];
   var reachableEndingCount = 0;
 
+  // From chapter 3 the camp is the party's base, and the places of the
+  // chapters reached so far are a trip from it (see chapter_loop.dart), not
+  // a choice: a camp reaches every such place, and the scene its first
+  // visit goes through.
+  final places = [
+    for (final node in nodes.values)
+      if (node.settlement != null &&
+          !node.settlement!.isCamp &&
+          node.settlement!.chapter != null)
+        node,
+  ];
+
   while (queue.isNotEmpty) {
     final id = queue.removeFirst();
     if (!visited.add(id)) continue;
     final node = nodes[id]!;
+
+    final campChapter =
+        node.settlement?.isCamp == true ? node.settlement!.chapter : null;
+    if (campChapter != null) {
+      for (final place in places) {
+        if (place.settlement!.chapter! > campChapter) continue;
+        queue.add(place.id);
+        final arrival = place.settlement!.arrivalNodeId;
+        if (arrival != null && nodes.containsKey(arrival)) queue.add(arrival);
+      }
+    }
 
     var hasEnding = false;
     var hasForwardPath = false;

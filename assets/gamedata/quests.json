@@ -319,14 +319,14 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Silence the cultist acolyte in the ashes of Alster",
+        "description": "Silence the cultist acolyte in the Ashen Quarter",
         "type": "Kill",
         "targetEnemyID": "cultist_acolyte",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Faire taire l’acolyte cultiste dans les cendres d’Alster"
+        "description_fr": "Faire taire l’acolyte cultiste dans le Quartier des Cendres"
       }
     ],
     "rewardGold": 60,
@@ -495,7 +495,7 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Carry word of the Warden's fall back to Alster",
+        "description": "Carry word of the Warden's fall back to the camp",
         "type": "Talk",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -503,7 +503,7 @@
         "locationID": "",
         "requiredAmount": 1,
         "targetNPCID": "lysa",
-        "description_fr": "Porter à Alster la nouvelle de la chute du Gardien",
+        "description_fr": "Porter au camp la nouvelle de la chute du Gardien",
         "targetNPCName_fr": "Lysa"
       }
     ],
@@ -512,7 +512,7 @@
     "rewardItemID": "plate_emberproof",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "Go on. Tell them it's over. Tell them we can go home.",
+    "npcDialogueText": "Go on. Tell them it's over. Tell them this coast can be home.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -531,7 +531,7 @@
     "rewardAllyId": "",
     "grantsBannerPieceId": "",
     "questName_fr": "L’Aube d’Alster",
-    "npcDialogueText_fr": "Allez-y. Dites-leur que c’est fini. Dites-leur que nous pouvons rentrer chez nous."
+    "npcDialogueText_fr": "Allez-y. Dites-leur que c’est fini. Dites-leur que cette côte peut devenir notre foyer."
   },
   "q_ch2_keldas_stand": {
     "questID": "q_ch2_keldas_stand",
@@ -934,7 +934,7 @@
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
-    "questName_fr": "Le Mur des comptes",
+    "questName_fr": "Le Mur du Jugement",
     "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »"
   },
   "q_temptation_light": {
@@ -1378,5 +1378,49 @@
     "rewardAllyId": "malrik",
     "questName_fr": "La Part de Malrik",
     "npcDialogueText_fr": "« Je sais ce que vous êtes. Le quartier le sait. C’est pour ça que je vous parle à vous et pas aux saints. » Il fait tourner un reliquaire entre ses mains comme d’autres font tourner une pièce. « Les molosses rôdent autour de la chapelle où se trouve la bonne marchandise. Tuez-en un avec moi et je croirai que vous savez tenir votre part d’un marché, ce qui est plus rare dans cette ville que les reliques. »"
+  },
+  "q_ch6_the_white_fleet": {
+    "questID": "q_ch6_the_white_fleet",
+    "questName": "The White Fleet’s Grave",
+    "questName_fr": "Le Tombeau de la Flotte Blanche",
+    "chapter": 6,
+    "category": "Main",
+    "difficulty": "14",
+    "requiredAlignment": "Neutral",
+    "objectives": [
+      {
+        "description": "Defeat the White Admiral on his flagship",
+        "description_fr": "Vaincre l’Amiral Blanc sur son vaisseau amiral",
+        "type": "Kill",
+        "targetEnemyID": "white_admiral",
+        "targetItemID": "",
+        "targetNPCName": "",
+        "locationID": "",
+        "requiredAmount": 1
+      }
+    ],
+    "rewardGold": 300,
+    "rewardXP": 400,
+    "rewardItemID": "",
+    "alignmentChange": 0,
+    "nextQuestID": "q_ch6_beyond_the_tear",
+    "npcDialogueText": "The fleet that sailed to burn your city lies off the Hollow Shore on a floor of glass, and its flagship still flies the fifth piece of the Shroud as its mainsail.",
+    "npcDialogueText_fr": "La flotte partie brûler votre ville gît au large de la Rive Creuse sur un fond de verre, et son vaisseau amiral porte encore la cinquième pièce du Linceul en guise de grand-voile.",
+    "requiredGold": 0,
+    "requiredFlags": [],
+    "questChoices": [
+      {
+        "buttonText": "Accept",
+        "buttonText_fr": "Accepter",
+        "goldModifier": 0,
+        "alignmentModifier": 0,
+        "flagToAdd": "q_ch6_the_white_fleet_accepted",
+        "nextEventID": "",
+        "actionType": "Accept",
+        "lockedText": ""
+      }
+    ],
+    "rewardDiceID": "",
+    "rewardAllyId": ""
   }
 }

@@ -606,22 +606,22 @@ void main() {
     test('spends essence and raises the tier by one', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 10,
+        skillEssence: 1200,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], 1);
-      expect(notifier.state.skillEssence, 7); // cost of tier 0->1 is 3
+      expect(notifier.state.skillEssence, 200); // tier 0->1 costs 1,000
     });
 
     test('cost rises each subsequent tier', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 100,
+        skillEssence: 3500,
       ));
-      await notifier.upgradeSkillTier('fireball'); // 0->1, costs 3
-      await notifier.upgradeSkillTier('fireball'); // 1->2, costs 6
+      await notifier.upgradeSkillTier('fireball'); // 0->1, costs 1,000
+      await notifier.upgradeSkillTier('fireball'); // 1->2, costs 2,000
       expect(notifier.state.skillTiers['fireball'], 2);
-      expect(notifier.state.skillEssence, 91);
+      expect(notifier.state.skillEssence, 500);
     });
 
     test('is a no-op if the skill is not unlocked', () async {
@@ -634,18 +634,18 @@ void main() {
     test('is a no-op if essence is short', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
-        skillEssence: 2,
+        skillEssence: 999,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], isNull);
-      expect(notifier.state.skillEssence, 2);
+      expect(notifier.state.skillEssence, 999);
     });
 
     test('is a no-op once the skill is already at max tier', () async {
       final notifier = await notifierWith(baseSession(
         unlockedSkillIds: ['fireball'],
         skillTiers: {'fireball': maxSkillTier},
-        skillEssence: 1000,
+        skillEssence: 10000,
       ));
       await notifier.upgradeSkillTier('fireball');
       expect(notifier.state.skillTiers['fireball'], maxSkillTier);
@@ -788,6 +788,18 @@ void main() {
       expect(notifier.state.gold, 150);
       expect(notifier.state.builtHouseIds, contains('hammersmith'));
       expect(notifier.state.unlockedShopIds, contains('hammersmith_forge'));
+      // The story reads the building back.
+      expect(notifier.state.flags, contains('house_hammersmith'));
+    });
+
+    test('a save with houses but no house flags gets them on load', () {
+      final session = PlayerSession.fromJson({
+        'flags': ['camp_founded'],
+        'builtHouseIds': ['keldas_hall', 'hearth_hall'],
+      });
+      expect(session.flags,
+          ['camp_founded', 'house_keldas_hall', 'house_hearth_hall']);
+      expect(PlayerSession.fromJson(session.toJson()).flags, session.flags);
     });
 
     test('a house with no unlocksShopId never touches unlockedShopIds',
@@ -1023,8 +1035,9 @@ void main() {
       expect(notifier.state.mana, 6, reason: 'no manaAfter leaves mana alone');
     });
 
-    test('startNewGame grants the profession\'s die and spells with full mana',
-        () async {
+    test(
+        'a mage starts with the apprentice die alone, its Channel skill and '
+        'spells, at full mana', () async {
       final notifier = await notifierWith(baseSession());
       await notifier.startNewGame(
         raceId: 'human',
@@ -1032,18 +1045,24 @@ void main() {
         professionId: 'mage',
         profession: const {
           'standardSkillID': 'mage_arcane_missile',
+          'manaSkillID': 'mage_channel',
           'bonusIntelligence': 4,
           'startingDiceId': 'apprentice_die',
           'startingSpellIds': ['spell_arcane_bolt', 'spell_mana_ward'],
         },
       );
       final s = notifier.state;
-      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die']);
+      // One die: the apprentice die replaces the starter die.
+      expect(s.ownedDiceIds, ['apprentice_die']);
       expect(s.equippedDiceId, 'apprentice_die');
-      expect(s.diceSkillAssignments['apprentice_die'],
-          s.diceSkillAssignments['starter_die']);
-      expect(s.diceSkillAssignments['apprentice_die']?['4'],
-          'mage_arcane_missile');
+      expect(s.diceSkillAssignments.keys, ['apprentice_die']);
+      expect(s.diceSkillAssignments['apprentice_die'], {
+        '1': 'mage_channel',
+        '4': 'mage_arcane_missile',
+        '5': 'human_resolve',
+      });
+      expect(s.unlockedSkillIds,
+          ['mage_arcane_missile', 'mage_channel', 'human_resolve']);
       expect(s.knownSpellIds, ['spell_arcane_bolt', 'spell_mana_ward']);
       expect(s.mana, s.maxMana);
       expect(s.maxMana, greaterThanOrEqualTo(6));
@@ -1127,7 +1146,7 @@ void main() {
       );
       final s = notifier.state;
       expect(s.gold, defaultGold + 100);
-      expect(s.ownedDiceIds, ['starter_die', 'apprentice_die', 'iron_die']);
+      expect(s.ownedDiceIds, ['apprentice_die', 'iron_die']);
       expect(s.knownSpellIds,
           ['spell_arcane_bolt', 'spell_mana_ward', 'spell_frost_bind']);
       expect(s.newGamePlusCycle, 1);

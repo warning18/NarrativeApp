@@ -710,6 +710,16 @@ BoardingProfile boardingProfileFor(Map<String, dynamic> enemyShip) {
   );
 }
 
+/// The chapter a ship's boarding crew fights at: the crossing's [chapter],
+/// but never more than one past the chapter the ship first sails in
+/// (enemy_ships.json `minChapter`). A ship's hull does not grow with the
+/// chapters, and neither does its crew past that: the open chapters send
+/// the party to sea far more often, late ones included.
+int boardingChapterFor(int chapter, Map<String, dynamic> enemyShip) {
+  final first = (enemyShip['minChapter'] as num?)?.toInt() ?? 1;
+  return max(1, min(chapter, first + 1));
+}
+
 /// Sensible stations for [crew] aboard [ship], for a player who would
 /// rather not place them by hand (and for the simulator): the nimblest at
 /// the helm, the strongest at the guns, the next at the bulwark, the last

@@ -29,6 +29,10 @@ const String _starterDiceId = 'starter_die';
 const int _starterDieProfessionFaceIndex = 4;
 const int _starterDieRaceFaceIndex = 5;
 
+/// The apprentice die's Channeling face, where a caster's mana skill sits
+/// from the start (see `manaSkillID` in professions.json).
+const int _startingDieManaFaceIndex = 1;
+
 /// The active party's size before any house bonus -- the player plus one
 /// ally fits by default. Each built house's own `partyCapacityBonus`
 /// (houses.json) adds to this.
@@ -100,6 +104,10 @@ List<String> recipesAt(String shopId, Map<String, dynamic> items) => [
 /// by their companion id).
 const String playerWearerId = 'player';
 
+/// The flag a built camp house leaves for the story to read back
+/// ("house_hearth_hall").
+String houseFlag(String houseId) => 'house_$houseId';
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -139,6 +147,8 @@ class PlayerSession {
     this.xpEarnedThisRun = 0,
     this.shopPurchaseCounts = const {},
     this.characterName = '',
+    this.trackedQuestId = '',
+    this.masteredBranchId = '',
     this.shopUnlockNodeIds = const {},
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
@@ -202,7 +212,9 @@ class PlayerSession {
   /// of its flat attackDamage/armor, and some items gate equipping behind a
   /// minimum score (`meetsItemStatRequirement`) — a staff rewards
   /// Intelligence, a sword rewards Strength, matching whichever build
-  /// actually wields it. Wisdom has no combat tie-in of any kind.
+  /// actually wields it. Wisdom adds to healing, to the mana a Mana face
+  /// or mana skill gives (see `wisdomManaBonusFor` in spells.dart) and
+  /// shortens the statuses that land on the party.
   final int strength;
   final int dexterity;
   final int constitution;
@@ -253,6 +265,18 @@ class PlayerSession {
   /// (see RaceProfessionScreen's lock-in dialog) and fixed for the rest of
   /// the run.
   final String characterName;
+
+  /// The quest the player follows: its current goal shows above the story
+  /// (see QuestTrackerBar). '' when none was picked; the most recent
+  /// active quest stands in (see `followedQuestIdOf` in
+  /// quest_tracking.dart). Set when a quest is accepted with nothing
+  /// followed, cleared when it is turned in.
+  final String trackedQuestId;
+
+  /// The one skill-tree branch the character has mastered (see
+  /// skill_tree.dart): its skills fight one tier above their own. Empty
+  /// until a branch is mastered; only one ever is.
+  final String masteredBranchId;
 
   /// shopId -> the story node whose choice unlocked it. A shop is only
   /// browsable in the Play tab while the player is currently on that node;
@@ -518,6 +542,8 @@ class PlayerSession {
     int? xpEarnedThisRun,
     Map<String, int>? shopPurchaseCounts,
     String? characterName,
+    String? trackedQuestId,
+    String? masteredBranchId,
     Map<String, String>? shopUnlockNodeIds,
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
@@ -588,6 +614,8 @@ class PlayerSession {
       xpEarnedThisRun: xpEarnedThisRun ?? this.xpEarnedThisRun,
       shopPurchaseCounts: shopPurchaseCounts ?? this.shopPurchaseCounts,
       characterName: characterName ?? this.characterName,
+      trackedQuestId: trackedQuestId ?? this.trackedQuestId,
+      masteredBranchId: masteredBranchId ?? this.masteredBranchId,
       shopUnlockNodeIds: shopUnlockNodeIds ?? this.shopUnlockNodeIds,
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
@@ -664,6 +692,8 @@ class PlayerSession {
         'xpEarnedThisRun': xpEarnedThisRun,
         'shopPurchaseCounts': shopPurchaseCounts,
         'characterName': characterName,
+        'trackedQuestId': trackedQuestId,
+        'masteredBranchId': masteredBranchId,
         'shopUnlockNodeIds': shopUnlockNodeIds,
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
@@ -729,8 +759,12 @@ class PlayerSession {
       statPoints: (json['statPoints'] as num?)?.toInt() ?? 0,
       skillPoints: (json['skillPoints'] as num?)?.toInt() ?? 0,
       maxSkillSlots: (json['maxSkillSlots'] as num?)?.toInt() ?? 3,
-      flags: (json['flags'] as List?)?.map((e) => e.toString()).toList() ??
-          const [],
+      // Houses built before the story read them back get their flag here.
+      flags: {
+        ...?(json['flags'] as List?)?.map((e) => e.toString()),
+        ...?(json['builtHouseIds'] as List?)
+            ?.map((e) => houseFlag(e.toString())),
+      }.toList(),
       activeQuestIds: (json['activeQuestIds'] as List?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -785,6 +819,8 @@ class PlayerSession {
           ) ??
           const {},
       characterName: json['characterName'] as String? ?? '',
+      trackedQuestId: json['trackedQuestId'] as String? ?? '',
+      masteredBranchId: json['masteredBranchId'] as String? ?? '',
       shopUnlockNodeIds: (json['shopUnlockNodeIds'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), value.toString()),
           ) ??
@@ -1083,23 +1119,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         bonus(profession, 'startingGoldBonus');
     final skillPoints = bonus(profession, 'startingSkillPoints');
 
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    final starterAssignments = <String, String>{
-      if (professionSkillId.isNotEmpty)
-        _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty)
-        _starterDieRaceFaceIndex.toString(): raceSkillId,
-    };
-    // Race/profession signature skills default to isUnlocked: false in the
-    // skills db (most skills are locked until earned) but are wired
-    // directly into the starter die's Heritage/Profession Technique faces
-    // from the moment a character exists — so they need to be unlocked
-    // here too, or those faces would just fizzle on the very first roll.
-    final starterUnlockedSkills = <String>[
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-    ];
+    // Race/profession signature skills (and a caster's mana skill) default
+    // to isUnlocked: false in the skills db (most skills are locked until
+    // earned) but are wired directly into the starting die's faces from
+    // the moment a character exists -- so they are unlocked here too, or
+    // those faces would just fizzle on the very first roll.
+    final starterAssignments = _starterFaceAssignments(race, profession);
+    final starterUnlockedSkills = _starterSkillsFor(race, profession);
     final startingDiceId = _startingDiceIdFor(profession);
     final startingSpellIds = _startingSpellIdsFor(profession);
     // A New Game+ character inherits the previous cycle's legacy (see
@@ -1110,6 +1136,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       for (final id in legacy.legacyDiceIds)
         if (id != _starterDiceId && id != startingDiceId) id,
     ];
+    // One die to start with: the profession's own (a Mage's or Cleric's
+    // apprentice die replaces the starter die), plus a New Game+ legacy.
     final legacySpells = [
       for (final id in legacy.legacySpellIds)
         if (!startingSpellIds.contains(id)) id,
@@ -1149,11 +1177,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           _starterAssignmentsByDie(starterAssignments, startingDiceId),
       raceId: raceId,
       professionId: professionId,
-      ownedDiceIds: [
-        _starterDiceId,
-        if (startingDiceId != _starterDiceId) startingDiceId,
-        ...legacyDice,
-      ],
+      ownedDiceIds: [startingDiceId, ...legacyDice],
       equippedDiceId: startingDiceId,
       antidoteCount: (defaults['antidoteCount'] as num?)?.toInt() ?? 0,
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
@@ -1184,12 +1208,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  /// The die a new character of [profession] starts with equipped -- its
-  /// own `startingDiceId` (a Mage's or Cleric's apprentice die, with its
-  /// Mana faces) or the starter die. Every profession's starting die keeps
-  /// the Profession/Heritage Technique faces at the starter die's own
-  /// indexes ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]),
-  /// so the same face assignments serve both dice.
+  /// The one die a new character of [profession] starts with -- its own
+  /// `startingDiceId` (a Mage's or Cleric's apprentice die, with its Focus
+  /// and Channeling faces) or the starter die. Every profession's starting
+  /// die keeps the Profession/Heritage Technique faces at the same indexes
+  /// ([_starterDieProfessionFaceIndex]/[_starterDieRaceFaceIndex]).
   static String _startingDiceIdFor(Map<String, dynamic> profession) {
     final id = profession['startingDiceId']?.toString() ?? '';
     return id.isEmpty ? _starterDiceId : id;
@@ -1202,20 +1225,52 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           .toList() ??
       const [];
 
-  /// [starterAssignments] under the starter die AND the profession's own
-  /// starting die (when it has one), so the Technique faces resolve on
-  /// whichever of the two is equipped.
+  /// [starterAssignments] under the profession's starting die, the one
+  /// die a new character owns.
   static Map<String, Map<String, String>> _starterAssignmentsByDie(
     Map<String, String> starterAssignments,
     String startingDiceId,
   ) =>
       {
-        if (starterAssignments.isNotEmpty) ...{
-          _starterDiceId: starterAssignments,
-          if (startingDiceId != _starterDiceId)
-            startingDiceId: starterAssignments,
-        },
+        if (starterAssignments.isNotEmpty) startingDiceId: starterAssignments,
       };
+
+  /// The skills a new character of [race] and [profession] knows: the
+  /// profession's standard skill, a caster's mana skill (`manaSkillID`:
+  /// Channel for a Mage, Prayer for a Cleric) and the race's standard
+  /// skill. Nothing from another class: the generic Heavy Blow every open
+  /// Skill face falls back to is the only skill everyone shares.
+  static List<String> _starterSkillsFor(
+      Map<String, dynamic> race, Map<String, dynamic> profession) {
+    final ids = [
+      profession['standardSkillID']?.toString() ?? '',
+      profession['manaSkillID']?.toString() ?? '',
+      race['standardSkillID']?.toString() ?? '',
+    ];
+    return [
+      for (final id in ids.toSet())
+        if (id.isNotEmpty) id,
+    ];
+  }
+
+  /// Where the starter skills sit on the starting die: the profession's
+  /// technique on the Profession Technique face, the race's on the
+  /// Heritage Technique face, and a caster's mana skill on the apprentice
+  /// die's Channeling face.
+  static Map<String, String> _starterFaceAssignments(
+      Map<String, dynamic> race, Map<String, dynamic> profession) {
+    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
+    final manaSkillId = profession['manaSkillID']?.toString() ?? '';
+    final raceSkillId = race['standardSkillID']?.toString() ?? '';
+    return {
+      if (manaSkillId.isNotEmpty)
+        _startingDieManaFaceIndex.toString(): manaSkillId,
+      if (professionSkillId.isNotEmpty)
+        _starterDieProfessionFaceIndex.toString(): professionSkillId,
+      if (raceSkillId.isNotEmpty)
+        _starterDieRaceFaceIndex.toString(): raceSkillId,
+    };
+  }
 
   /// Sets the character's name — called once from the lock-in dialog right
   /// after character creation (see RaceProfessionScreen), before the
@@ -1267,6 +1322,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         !state.completedQuestIds.contains(questIDToProgress)) {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
     }
+    final newTracked = questIDToProgress != null &&
+            newActiveQuests.contains(questIDToProgress) &&
+            !state.activeQuestIds.contains(state.trackedQuestId)
+        ? questIDToProgress
+        : state.trackedQuestId;
     var newBannerPieces = state.bannerPiecesCollected;
     if (bannerPieceId != null &&
         bannerPieceId.isNotEmpty &&
@@ -1283,6 +1343,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
       activeQuestIds: newActiveQuests,
+      trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
     );
     if (loseAllyId != null && loseAllyId.isNotEmpty) {
@@ -1319,7 +1380,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         state.completedQuestIds.contains(questId)) {
       return;
     }
-    state = state.copyWith(activeQuestIds: [...state.activeQuestIds, questId]);
+    state = state.copyWith(
+      activeQuestIds: [...state.activeQuestIds, questId],
+      // With no quest followed yet, the one just taken on is followed.
+      trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
+          ? state.trackedQuestId
+          : questId,
+    );
+    await _persist();
+  }
+
+  /// Follows [questId]: its current goal shows above the story. Only an
+  /// active quest can be followed.
+  Future<void> trackQuest(String questId) async {
+    if (!state.activeQuestIds.contains(questId)) return;
+    state = state.copyWith(trackedQuestId: questId);
     await _persist();
   }
 
@@ -1386,6 +1461,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
+      // A quest turned in is no longer followed; the next active one
+      // stands in until the player picks another.
+      trackedQuestId:
+          state.trackedQuestId == questId ? '' : state.trackedQuestId,
       completedQuestIds: newCompleted,
       inventoryItemIds: newInventory,
       potionCount: state.potionCount + potionsGained,
@@ -1713,9 +1792,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       {String? unlocksShopId, List<String> requiredFlags = const []}) async {
     if (state.gold < cost || state.builtHouseIds.contains(houseId)) return;
     if (requiredFlags.any((flag) => !state.flags.contains(flag))) return;
+    // The story reads the camp's buildings back through a flag per house
+    // (see houseFlag).
+    final flag = houseFlag(houseId);
     state = state.copyWith(
       gold: state.gold - cost,
       builtHouseIds: [...state.builtHouseIds, houseId],
+      flags: state.flags.contains(flag) ? state.flags : [...state.flags, flag],
       townOrder: [...state.townPieces, houseId],
     );
     await _persist();
@@ -2151,12 +2234,29 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
-  Future<void> unlockSkill(String skillId) async {
-    if (state.skillPoints <= 0 || state.unlockedSkillIds.contains(skillId)) {
+  /// Masters [branchId] for [cost] skill points: the one skill-tree branch
+  /// whose skills fight a tier higher (see skill_tree.dart). No-op when a
+  /// branch is already mastered or the points are short; the caller checks
+  /// the branch is complete.
+  Future<void> masterBranch(String branchId, {required int cost}) async {
+    if (state.masteredBranchId.isNotEmpty || state.skillPoints < cost) return;
+    state = state.copyWith(
+      masteredBranchId: branchId,
+      skillPoints: state.skillPoints - cost,
+    );
+    await _persist();
+  }
+
+  /// Learns [skillId] for [cost] skill points (its place on its branch,
+  /// see skill_tree.dart's skillPointCostOf); no-op when short or known.
+  Future<void> unlockSkill(String skillId, {int cost = 1}) async {
+    if (cost < 1 ||
+        state.skillPoints < cost ||
+        state.unlockedSkillIds.contains(skillId)) {
       return;
     }
     state = state.copyWith(
-      skillPoints: state.skillPoints - 1,
+      skillPoints: state.skillPoints - cost,
       unlockedSkillIds: [...state.unlockedSkillIds, skillId],
     );
     await _persist();
@@ -2588,18 +2688,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillsLost: state.unlockedSkillIds.length,
     );
 
-    final professionSkillId = profession['standardSkillID']?.toString() ?? '';
-    final raceSkillId = race['standardSkillID']?.toString() ?? '';
-    final starterUnlockedSkills = <String>[
-      if (professionSkillId.isNotEmpty) professionSkillId,
-      if (raceSkillId.isNotEmpty) raceSkillId,
-    ];
-    final starterAssignments = <String, String>{
-      if (professionSkillId.isNotEmpty)
-        _starterDieProfessionFaceIndex.toString(): professionSkillId,
-      if (raceSkillId.isNotEmpty)
-        _starterDieRaceFaceIndex.toString(): raceSkillId,
-    };
+    final starterUnlockedSkills = _starterSkillsFor(race, profession);
+    final starterAssignments = _starterFaceAssignments(race, profession);
     final starterSkillPoints =
         (profession['startingSkillPoints'] as num?)?.toInt() ?? 0;
 
@@ -2615,6 +2705,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       xpEarnedThisRun: 0,
       unlockedSkillIds: starterUnlockedSkills,
       skillTiers: const {},
+      masteredBranchId: '',
       skillEssence: 0,
       skillPoints: starterSkillPoints,
       diceSkillAssignments: _starterAssignmentsByDie(

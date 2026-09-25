@@ -87,7 +87,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     _sail = installedSail(parts, session.shipPartIds);
     _sailStrength =
         _sail == null ? 1 : sailStrength(_sail!.medium, session.raceId);
-    var length = portVoyageLength(widget.toPort);
+    // The way home is as long as the way out: a voyage to the cove takes
+    // the days of the port it leaves.
+    var length = portVoyageLength(portIsHome(widget.toPort) && fromPort != null
+        ? fromPort
+        : widget.toPort);
     if (_sail?.power == SailPower.windknot) {
       final shorter = windknotLength(length, _sailStrength);
       if (shorter < length) {
@@ -100,6 +104,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       length: length,
       enemyShips: enemyShips,
       chapter: chapter,
+      // A port she has put in at before, or the way home, is known water.
+      knownWaters: portIsHome(widget.toPort) ||
+          session.visitedPortIds.contains(widget.toPortId),
     );
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
@@ -552,7 +559,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       random: _random,
       onFinished: _onBattleFinished,
       boarding: boardingProfileFor(_enemyData ?? const {}),
-      chapter: _chapter,
+      chapter: boardingChapterFor(_chapter, _enemyData ?? const {}),
       buildCrew: () => _buildCrew(
         session: ref.read(playerSessionProvider),
         companions: companions,

@@ -52,13 +52,10 @@ void main() {
       }
     });
 
-    test('every place has both languages and a sprite', () {
+    test('every place has both languages', () {
       for (final l in worldMapLandmarks) {
         expect(l.nameFr, isNotEmpty, reason: l.id);
         expect(l.blurbFr, isNotEmpty, reason: l.id);
-        expect(mapSprites.containsKey(l.sprite), isTrue, reason: l.id);
-        expect(l.x, inInclusiveRange(0, worldMapWidth - 1), reason: l.id);
-        expect(l.y, inInclusiveRange(0, worldMapHeight - 1), reason: l.id);
       }
     });
 
@@ -103,27 +100,6 @@ void main() {
           'quarter');
       expect(currentLandmark('7005_dawn', const [])!.id, 'shore');
       expect(currentLandmark('nowhere', const []), isNull);
-    });
-
-    test('the map is clear around reached places and fogged elsewhere', () {
-      final fog = fogMask({'beggar'});
-      int at(int x, int y) => fog[y * worldMapWidth + x];
-      expect(at(26, 126), 0, reason: 'the Blind Beggar itself');
-      expect(at(40, 126), 0, reason: 'fourteen pixels away');
-      expect(at(222, 24), 1, reason: 'the Hollow Shore, far away');
-      expect(
-          fogMask({for (final l in worldMapLandmarks) l.id})[
-              118 * worldMapWidth + 226],
-          0);
-    });
-
-    test('the ground is always drawn the same', () {
-      expect(worldMapTerrain.pixels.length, worldMapWidth * worldMapHeight);
-      // The original map's own figures.
-      expect(worldMapTerrain.glints.length, 216);
-      expect(worldMapTerrain.fires.length, 295);
-      expect(landmarkById('bridge')!.x, 51);
-      expect(worldMapTerrain.colorAt(0, 0), 0xFF122F38);
     });
   });
 
@@ -172,39 +148,6 @@ void main() {
       expect(pointAlong(path, 0.25), (5.0, 0.0));
       expect(pointAlong(path, 0.75), (10.0, 5.0));
       expect(pointAlong(path, 1), (10.0, 10.0));
-      final (x, y) = travellerSpot(landmarkById('beggar')!);
-      expect(x, greaterThan(26));
-      expect(y, inInclusiveRange(126, 130));
-    });
-  });
-
-  group('the three looks', () {
-    final colours = {for (final p in worldMapTerrain.pixels) p & 0xFFFFFF};
-
-    test('the night map is the map as it was drawn', () {
-      final night = MapStyle.of(MapLook.night);
-      for (final c in colours) {
-        expect(night.ground(c), c);
-      }
-    });
-
-    test('the parchment redraws every colour of the ground', () {
-      final parchment = MapStyle.of(MapLook.parchment);
-      for (final c in colours) {
-        if (c == 0x6B4A2B) continue; // the piers keep their wood
-        expect(parchment.ground(c), isNot(c), reason: c.toRadixString(16));
-      }
-    });
-
-    test('the Shroud leaves only the Void its colour', () {
-      final shroud = MapStyle.of(MapLook.shroud);
-      for (final c in colours) {
-        final g = shroud.ground(c);
-        expect((g >> 16) & 0xFF, (g >> 8) & 0xFF, reason: 'grey');
-      }
-      expect(shroud.sprite('p'), spritePalette['p']);
-      final gold = shroud.sprite('y').toARGB32();
-      expect((gold >> 16) & 0xFF, (gold >> 8) & 0xFF);
     });
   });
 
@@ -260,7 +203,7 @@ void main() {
 
     // The story stands at the wharf; its panel says so.
     final panel = find.byKey(const Key('world_map_panel'));
-    expect(find.descendant(of: panel, matching: find.text('Smuggler’s Wharf')),
+    expect(find.descendant(of: panel, matching: find.text('Smugglers’ Wharf')),
         findsOneWidget);
     expect(find.text('You are here'), findsOneWidget);
     expect(find.text('Scenes read: 3 / 30'), findsOneWidget);

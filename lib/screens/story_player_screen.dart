@@ -14,6 +14,7 @@ import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
 import '../data/narration_tokens.dart';
 import '../data/port_helpers.dart';
+import '../data/camp_state.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/sub_node_engine.dart';
@@ -24,6 +25,8 @@ import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/camp_presence_provider.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
@@ -42,8 +45,10 @@ import '../theme/stitched_ink.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/quest_tracker.dart';
 import '../widgets/tutorial_overlay.dart';
 import '../widgets/walking_companion_strip.dart';
 import '../widgets/zone_card.dart';
@@ -89,6 +94,36 @@ final _lastStoryNodeIdProvider = StateProvider<String?>((ref) => null);
 /// is the one on screen and nothing (a fight, a dialog, autoplay) covers
 /// it, so the pop-up never lands over another tab or another dialog.
 final _pendingArrivalProvider = StateProvider<Settlement?>((ref) => null);
+
+/// The text of each town or camp scene as the reader last saw it in full,
+/// by node id, this launch: coming back to the place with the same text
+/// folds it (see [_HubNarrationFold]).
+final _readHubNarrationProvider =
+    StateProvider<Map<String, String>>((ref) => const {});
+
+/// Whether the town or camp scene on screen is folded, decided once per
+/// visit so it doesn't fold itself the moment it has been read.
+final _hubNarrationFoldProvider =
+    StateProvider<_HubNarrationFold?>((ref) => null);
+
+class _HubNarrationFold {
+  const _HubNarrationFold(this.visitKey,
+      {required this.folded, required this.readBefore});
+
+  /// Arriving at the place: folded when this exact text was read before.
+  _HubNarrationFold.onArrival(this.visitKey, {String? lastRead, String? now})
+      : readBefore = lastRead != null,
+        folded = lastRead != null && lastRead == now;
+
+  /// The node and how far into the story the visit is, so each return to
+  /// the place is a new visit.
+  final String visitKey;
+  final bool folded;
+
+  /// Whether the place's scene had been read before this visit (even if
+  /// something in it is new), which is what lets it be folded.
+  final bool readBefore;
+}
 
 /// Whether the "Previously..." recap has been offered this launch.
 final _previouslyOfferedProvider = StateProvider<bool>((ref) => false);
@@ -204,19 +239,27 @@ class _StoryView extends ConsumerWidget {
         ref.read(_lastStoryNodeIdProvider) != node.id) {
       final previousNodeId = ref.read(_lastStoryNodeIdProvider);
       final arrivedNode = node;
+      final historyAtArrival = playState.history;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!context.mounted) return;
         if (ref.read(_lastStoryNodeIdProvider) == arrivedNode.id) return;
         ref.read(_lastStoryNodeIdProvider.notifier).state = arrivedNode.id;
         final settlement = arrivedNode.settlement;
+        // The camp says its own welcome: the Camp tab takes over from the
+        // story there (see CampScreen).
         if (settlement != null &&
-            isSettlementArrival(arrivedNode.id, previousNodeId)) {
+            !settlement.isCamp &&
+            isSettlementArrival(arrivedNode.id, previousNodeId,
+                history: historyAtArrival)) {
           ref.read(_pendingArrivalProvider.notifier).state = settlement;
         }
       });
     }
-    // ModalRoute.of makes this rebuild when a covering route goes away.
+    // ModalRoute.of makes this rebuild when a covering route goes away. At
+    // the camp the Story tab is closed (the camp stands in its place).
     final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
+        !(ref.watch(partyAtCampProvider) &&
+            ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
     // Picking a saved story back up: a short recap, once per launch.
     if (storyOnScreen &&
@@ -309,6 +352,46 @@ class _StoryView extends ConsumerWidget {
             .toList()
         : const <StoryChoice>[];
 
+    // A town or camp's scene, once read, folds to one line when the player
+    // comes back to the place, so its shops, people and expeditions get the
+    // screen. Text the reader hasn't seen (a new progress line, a
+    // companion's remark) shows it in full again, and the last fight's
+    // aftermath stays under the folded line.
+    final canFoldNarration = isHubNode &&
+        node.settlement != null &&
+        !playState.isInExcursion &&
+        !isStoryEnding(node);
+    final hubVisitKey = '${node.id}_${playState.history.length}';
+    final storedFold = ref.watch(_hubNarrationFoldProvider);
+    final hubFold = !canFoldNarration
+        ? null
+        : storedFold?.visitKey == hubVisitKey
+            ? storedFold!
+            : _HubNarrationFold.onArrival(
+                hubVisitKey,
+                lastRead: ref.read(_readHubNarrationProvider)[node.id],
+                now: displayDescription,
+              );
+    final narrationFolded = (hubFold?.folded ?? false) && !fullscreenReading;
+    if (hubFold != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) return;
+        if (ref.read(_hubNarrationFoldProvider)?.visitKey != hubVisitKey) {
+          ref.read(_hubNarrationFoldProvider.notifier).state = hubFold;
+        }
+        final read = ref.read(_readHubNarrationProvider);
+        if (!narrationFolded && read[node.id] != displayDescription) {
+          ref.read(_readHubNarrationProvider.notifier).state = {
+            ...read,
+            node.id: displayDescription,
+          };
+        }
+      });
+    }
+    void setNarrationFolded(bool folded) =>
+        ref.read(_hubNarrationFoldProvider.notifier).state =
+            _HubNarrationFold(hubVisitKey, folded: folded, readBefore: true);
+
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final storyTools = <Widget>[
       IconButton(
@@ -364,6 +447,10 @@ class _StoryView extends ConsumerWidget {
                       ],
                     )
                   : PlayerStatsBar(trailing: storyTools),
+            // The followed quest and the goal it waits on, under the
+            // numbers (and folded away with them while reading).
+            if (!fullscreenReading && !statusBarCollapsed)
+              const QuestTrackerBar(),
             // Edit Mode keeps its own line: back, the node's id and its
             // editor. A reader never sees node ids.
             if (!fullscreenReading && isEditMode)
@@ -410,125 +497,159 @@ class _StoryView extends ConsumerWidget {
             // of squeezing the story out or running off a small screen.
             Expanded(
               child: LayoutBuilder(builder: (context, area) {
-                final choiceBudget = area.maxHeight * 0.6;
+                // A folded town scene leaves the rest of the screen to the
+                // place itself.
+                final choiceBudget =
+                    narrationFolded ? area.maxHeight : area.maxHeight * 0.6;
+                Widget fillBelow(Widget child) => narrationFolded
+                    ? Expanded(
+                        child:
+                            Align(alignment: Alignment.topCenter, child: child))
+                    : child;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Expanded(
-                      // Scrolling down into the narration gives the status bar and
-                      // companion collapse toggles above/below no purpose (they'd
-                      // just be pushed off-screen anyway), so collapse both
-                      // automatically the moment the player starts reading down the
-                      // page. The manual chevrons stay available to re-expand.
-                      child: LayoutBuilder(
-                        // Captured here, above the SingleChildScrollView, because
-                        // that view gives its child unbounded height on the scroll
-                        // axis -- a LayoutBuilder nested inside it would only ever
-                        // see infinite height, not the actual viewport size.
-                        builder: (context, viewportConstraints) {
-                          return NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification is ScrollUpdateNotification &&
-                                  (notification.scrollDelta ?? 0) > 0) {
-                                if (!statusBarCollapsed) {
-                                  ref
-                                      .read(
-                                          _statusBarCollapsedProvider.notifier)
-                                      .state = true;
+                    if (narrationFolded)
+                      _FoldedNarration(
+                        key: ValueKey('${node.id}_folded'),
+                        label: tr(ref, 'hub_story_unfold'),
+                        onOpen: () => setNarrationFolded(false),
+                        uiTheme: node.uiTheme,
+                        aftermath: pendingAftermath,
+                        aftermathHeading: tr(ref, 'aftermath_heading'),
+                      )
+                    else
+                      Expanded(
+                        // Scrolling down into the narration gives the status bar and
+                        // companion collapse toggles above/below no purpose (they'd
+                        // just be pushed off-screen anyway), so collapse both
+                        // automatically the moment the player starts reading down the
+                        // page. The manual chevrons stay available to re-expand.
+                        child: LayoutBuilder(
+                          // Captured here, above the SingleChildScrollView, because
+                          // that view gives its child unbounded height on the scroll
+                          // axis -- a LayoutBuilder nested inside it would only ever
+                          // see infinite height, not the actual viewport size.
+                          builder: (context, viewportConstraints) {
+                            return NotificationListener<ScrollNotification>(
+                              onNotification: (notification) {
+                                if (notification is ScrollUpdateNotification &&
+                                    (notification.scrollDelta ?? 0) > 0) {
+                                  if (!statusBarCollapsed) {
+                                    ref
+                                        .read(_statusBarCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
+                                  if (!companionCollapsed) {
+                                    ref
+                                        .read(_companionCollapsedProvider
+                                            .notifier)
+                                        .state = true;
+                                  }
                                 }
-                                if (!companionCollapsed) {
-                                  ref
-                                      .read(
-                                          _companionCollapsedProvider.notifier)
-                                      .state = true;
-                                }
-                              }
-                              return false;
-                            },
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onDoubleTap: () => ref
-                                  .read(_fullscreenReadingProvider.notifier)
-                                  .state = !fullscreenReading,
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 320),
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeIn,
-                                transitionBuilder: _nodeTransition,
-                                child: SingleChildScrollView(
-                                  key: ValueKey(
-                                      '${node.id}_${playState.isInExcursion}_text'),
-                                  // Short narration otherwise leaves the freed-up
-                                  // space (status bar, node header, companion strip,
-                                  // choices all hidden) as dead blank area below the
-                                  // text card, which reads as "nothing happened"
-                                  // rather than an actual fullscreen mode. Centering
-                                  // it in the full viewport height makes the
-                                  // toggle's effect obvious.
-                                  child: fullscreenReading
-                                      ? SizedBox(
-                                          // A ConstrainedBox with only minHeight set
-                                          // still leaves maxHeight unbounded here
-                                          // (SingleChildScrollView never bounds its
-                                          // child's height) -- and Center collapses
-                                          // to wrap-content, ignoring minHeight,
-                                          // whenever its incoming max is unbounded.
-                                          // A fixed-height SizedBox forces a tight
-                                          // constraint so Center actually centers.
-                                          height: viewportConstraints.maxHeight,
-                                          child: Center(
-                                            child: _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              placeLabel: _placeLabel(
-                                                  ref, node.uiTheme),
-                                              moodLabel:
-                                                  _moodLabel(ref, node.mood),
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
-                                            ),
-                                          ),
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            if (playState.isInExcursion)
-                                              _DetourContextCard(
-                                                origin: playState
-                                                    .excursionOriginFor(french),
-                                                note:
-                                                    node.contextNoteFor(french),
+                                return false;
+                              },
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onDoubleTap: () => ref
+                                    .read(_fullscreenReadingProvider.notifier)
+                                    .state = !fullscreenReading,
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 320),
+                                  switchInCurve: Curves.easeOut,
+                                  switchOutCurve: Curves.easeIn,
+                                  transitionBuilder: _nodeTransition,
+                                  child: SingleChildScrollView(
+                                    key: ValueKey(
+                                        '${node.id}_${playState.isInExcursion}_text'),
+                                    // Short narration otherwise leaves the freed-up
+                                    // space (status bar, node header, companion strip,
+                                    // choices all hidden) as dead blank area below the
+                                    // text card, which reads as "nothing happened"
+                                    // rather than an actual fullscreen mode. Centering
+                                    // it in the full viewport height makes the
+                                    // toggle's effect obvious.
+                                    child: fullscreenReading
+                                        ? SizedBox(
+                                            // A ConstrainedBox with only minHeight set
+                                            // still leaves maxHeight unbounded here
+                                            // (SingleChildScrollView never bounds its
+                                            // child's height) -- and Center collapses
+                                            // to wrap-content, ignoring minHeight,
+                                            // whenever its incoming max is unbounded.
+                                            // A fixed-height SizedBox forces a tight
+                                            // constraint so Center actually centers.
+                                            height:
+                                                viewportConstraints.maxHeight,
+                                            child: Center(
+                                              child: _StoryText(
+                                                text: displayDescription,
+                                                uiTheme: node.uiTheme,
+                                                placeLabel: _placeLabel(
+                                                    ref, node.uiTheme),
+                                                moodLabel:
+                                                    _moodLabel(ref, node.mood),
+                                                epilogue: epilogue,
+                                                speakerLabel: speakerLabel,
+                                                aftermath: pendingAftermath,
+                                                aftermathHeading: tr(
+                                                    ref, 'aftermath_heading'),
+                                                epilogueHeading:
+                                                    tr(ref, 'epilogue_heading'),
                                               ),
-                                            _StoryText(
-                                              text: displayDescription,
-                                              uiTheme: node.uiTheme,
-                                              placeLabel: _placeLabel(
-                                                  ref, node.uiTheme),
-                                              moodLabel:
-                                                  _moodLabel(ref, node.mood),
-                                              epilogue: epilogue,
-                                              speakerLabel: speakerLabel,
-                                              aftermath: pendingAftermath,
-                                              aftermathHeading:
-                                                  tr(ref, 'aftermath_heading'),
-                                              epilogueHeading:
-                                                  tr(ref, 'epilogue_heading'),
                                             ),
-                                          ],
-                                        ),
+                                          )
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.stretch,
+                                            children: [
+                                              if (hubFold?.readBefore ?? false)
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: TextButton.icon(
+                                                    onPressed: () =>
+                                                        setNarrationFolded(
+                                                            true),
+                                                    icon: const Icon(
+                                                        Icons.expand_less),
+                                                    label: Text(tr(
+                                                        ref, 'hub_story_fold')),
+                                                  ),
+                                                ),
+                                              if (playState.isInExcursion)
+                                                _DetourContextCard(
+                                                  origin: playState
+                                                      .excursionOriginFor(
+                                                          french),
+                                                  note: node
+                                                      .contextNoteFor(french),
+                                                ),
+                                              _StoryText(
+                                                text: displayDescription,
+                                                uiTheme: node.uiTheme,
+                                                placeLabel: _placeLabel(
+                                                    ref, node.uiTheme),
+                                                moodLabel:
+                                                    _moodLabel(ref, node.mood),
+                                                epilogue: epilogue,
+                                                speakerLabel: speakerLabel,
+                                                aftermath: pendingAftermath,
+                                                aftermathHeading: tr(
+                                                    ref, 'aftermath_heading'),
+                                                epilogueHeading:
+                                                    tr(ref, 'epilogue_heading'),
+                                              ),
+                                            ],
+                                          ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-                    ),
                     if (!fullscreenReading) ...[
                       if (walkCompanionEnabled) ...[
                         if (!companionCollapsed)
@@ -560,7 +681,7 @@ class _StoryView extends ConsumerWidget {
                         ),
                       ] else
                         const SizedBox(height: 16),
-                      AnimatedSwitcher(
+                      fillBelow(AnimatedSwitcher(
                         duration: const Duration(milliseconds: 320),
                         switchInCurve: Curves.easeOut,
                         switchOutCurve: Curves.easeIn,
@@ -641,7 +762,7 @@ class _StoryView extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                      ),
+                      )),
                     ],
                   ],
                 );
@@ -657,6 +778,32 @@ class _StoryView extends ConsumerWidget {
 /// Whether [choice] is currently unreachable because its target node has
 /// requirements the player doesn't meet (shown disabled with its
 /// lockedText instead of being selectable).
+/// Whether [choice]'s road is still shut for [session] (its next scene
+/// asks for gold, alignment, flags or Charisma the character lacks).
+bool isStoryChoiceLocked(
+        StoryChoice choice, StoryData story, PlayerSession session) =>
+    _isChoiceLocked(choice, story, session, false);
+
+/// Takes [choice] from the scene the story is on, exactly as tapping it
+/// under the story would: its checks, fights, effects and the road after.
+/// The camp's way out uses it (see CampScreen).
+Future<void> takeStoryChoice(
+    BuildContext context, WidgetRef ref, StoryChoice choice) async {
+  final story = await ref.read(storyDataProvider.future);
+  if (!context.mounted) return;
+  final play = ref.read(storyPlayProvider);
+  await _selectChoice(
+    context: context,
+    ref: ref,
+    choice: choice,
+    story: story,
+    session: ref.read(playerSessionProvider),
+    currentNodeId: play.currentNodeId,
+    isExcursion: play.isInExcursion,
+    french: ref.read(appLanguageProvider) == AppLanguage.fr,
+  );
+}
+
 bool _isChoiceLocked(
   StoryChoice choice,
   StoryData story,
@@ -676,6 +823,14 @@ bool _isChoiceLocked(
       );
 }
 
+/// Whether [choice] is a camp's main quest still shut (see
+/// [chapterProgressProvider]): the camp's own button waits for the
+/// chapter's goals, and so does the same choice anywhere under the story.
+bool _mainQuestShut(WidgetRef ref, StoryChoice choice, bool isExcursion) =>
+    choice.mainQuest &&
+    !isExcursion &&
+    !(ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true);
+
 /// A node with this many choices or fewer keeps the plain flat list it's
 /// always had — most nodes are a handful of genuinely distinct narrative
 /// branches, and boxing those into sections would just add ceremony. Above
@@ -685,7 +840,16 @@ bool _isChoiceLocked(
 /// own main branches.
 const int _hubChoiceThreshold = 5;
 
-bool _isHubNode(StoryNode node) => node.choices.length > _hubChoiceThreshold;
+bool _isHubNode(StoryNode node) =>
+    node.choices.length > _hubChoiceThreshold || _isLoopPlace(node);
+
+/// A place of the open chapters (a town, a village, a site): always laid
+/// out as a place, with its way back to the camp and on to the others,
+/// however few things it has to do.
+bool _isLoopPlace(StoryNode node) {
+  final settlement = node.settlement;
+  return settlement != null && !settlement.isCamp && settlement.chapter != null;
+}
 
 /// Which "village" section a hub node's choice belongs in, derived from
 /// fields the choice already carries — no new JSON authoring needed. A
@@ -968,55 +1132,64 @@ Future<void> _selectChoice({
       !choice.opensCharacterCreation &&
       choice.nextId != currentNodeId &&
       atRest) {
-    final shops = await loadedGameDb(ref, shopsSchema);
-    final enemies = await loadedGameDb(ref, enemiesSchema);
-    final quests = await loadedGameDb(ref, questsSchema);
+    final chain = await rollRoadEncounter(ref,
+        chapter: chapter, fromNodeId: currentNodeId);
     if (!context.mounted) return;
-    final manualTheme = ref.read(mapThemeProvider);
-    final resolvedTheme = manualTheme ??
-        mapThemeForUiTheme(story.nodeFor(currentNodeId)?.uiTheme);
-    // Alignment has consequences on the road before anything else rolls:
-    // a hunter's ambush for a Good/Evil character, a temptation for a
-    // Neutral one (see alignment_events.dart). One fires instead of, not
-    // on top of, an ordinary excursion this transition.
-    final alignmentEvent = maybeAlignmentEvent(
-      alignmentScore: session.alignmentScore,
-      activeQuestIds: session.activeQuestIds,
-      completedQuestIds: session.completedQuestIds,
-      enemies: enemies,
-      chapter: chapter,
-      random: Random(),
-      enabled: ref.read(alignmentHuntersEnabledProvider),
-    );
-    if (alignmentEvent != null) {
-      playNotifier.startExcursion(alignmentEvent, choice.nextId,
-          origin: choice.text, originFr: choice.textFr);
-      return;
-    }
-    final excursion = SubNodeEngine.maybeGenerate(
-      random: Random(),
-      // A detour put off by a crisis is taken at the first road after it.
-      triggerChance:
-          playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
-      chapter: chapter,
-      shops: shops,
-      enemies: enemies,
-      quests: quests,
-      unlockedShopIds: session.unlockedShopIds,
-      unlockedEnemyIds: session.unlockedEnemyIds,
-      unlockedQuestIds: session.unlockedQuestIds,
-      completedQuestIds: session.completedQuestIds,
-      theme: resolvedTheme,
-      partySize: 1 + session.activeAllyIds.length,
-      alignmentLabel: session.alignmentLabel,
-    );
-    if (excursion != null) {
-      playNotifier.startExcursion(excursion, choice.nextId,
+    if (chain != null) {
+      playNotifier.startExcursion(chain, choice.nextId,
           origin: choice.text, originFr: choice.textFr);
       return;
     }
   }
   playNotifier.choose(choice.nextId);
+}
+
+/// What the road holds on the way on from [fromNodeId] in [chapter]: an
+/// alignment event first (a hunter's ambush for a Good or Evil character,
+/// a temptation for a Neutral one, see alignment_events.dart), else,
+/// sometimes, a detour (see SubNodeEngine); null when the road is quiet.
+/// A detour put off by a crisis is taken on the first road after it.
+/// Shared by the story's own roads and the trips between the camp and its
+/// places (see camp_travel.dart).
+Future<List<StoryNode>?> rollRoadEncounter(
+  WidgetRef ref, {
+  required int chapter,
+  required String fromNodeId,
+}) async {
+  final story = await ref.read(storyDataProvider.future);
+  final shops = await loadedGameDb(ref, shopsSchema);
+  final enemies = await loadedGameDb(ref, enemiesSchema);
+  final quests = await loadedGameDb(ref, questsSchema);
+  final session = ref.read(playerSessionProvider);
+  final playNotifier = ref.read(storyPlayProvider.notifier);
+  final resolvedTheme = ref.read(mapThemeProvider) ??
+      mapThemeForUiTheme(story.nodeFor(fromNodeId)?.uiTheme);
+  final alignmentEvent = maybeAlignmentEvent(
+    alignmentScore: session.alignmentScore,
+    activeQuestIds: session.activeQuestIds,
+    completedQuestIds: session.completedQuestIds,
+    enemies: enemies,
+    chapter: chapter,
+    random: Random(),
+    enabled: ref.read(alignmentHuntersEnabledProvider),
+  );
+  if (alignmentEvent != null) return alignmentEvent;
+  return SubNodeEngine.maybeGenerate(
+    random: Random(),
+    triggerChance:
+        playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
+    chapter: chapter,
+    shops: shops,
+    enemies: enemies,
+    quests: quests,
+    unlockedShopIds: session.unlockedShopIds,
+    unlockedEnemyIds: session.unlockedEnemyIds,
+    unlockedQuestIds: session.unlockedQuestIds,
+    completedQuestIds: session.completedQuestIds,
+    theme: resolvedTheme,
+    partySize: 1 + session.activeAllyIds.length,
+    alignmentLabel: session.alignmentLabel,
+  );
 }
 
 /// `@first_ally` among a choice's enemies is the first active companion,
@@ -1162,6 +1335,16 @@ class _HubSections extends ConsumerWidget {
     // A town's port: its own shops (those the story isn't offering as a
     // scene right now) and its expeditions.
     final settlement = node.settlement;
+    // Once the camp stands, it is where the party sleeps: resting in a town
+    // means walking back to it.
+    final restsAtCamp = settlement != null &&
+        !settlement.isCamp &&
+        session.flags.contains(campFoundedFlag);
+    final travelsFromHere = !isExcursion &&
+        canReturnToCampFrom(node,
+            inExcursion: isExcursion, flags: session.flags);
+    final travelsOn = travelsFromHere &&
+        ref.watch(knownPlacesProvider).any((p) => p.id != node.id);
     final ports = ref.watch(localizedDbProvider(portsSchema)).value;
     final shopsDb = ref.watch(localizedDbProvider(shopsSchema)).value;
     final zones = ref.watch(localizedDbProvider(zonesSchema)).value;
@@ -1404,14 +1587,60 @@ class _HubSections extends ConsumerWidget {
                     showImmersiveNotice(
                       context,
                       icon: Icons.local_fire_department,
-                      message: tr(ref, 'party_rested_message'),
+                      message: tr(
+                          ref,
+                          restsAtCamp
+                              ? 'party_rested_at_camp_message'
+                              : 'party_rested_message'),
                     );
                   },
                   icon: const Icon(Icons.local_fire_department_outlined),
-                  label: Text(tr(ref, 'rest_button')),
+                  label: Text(tr(ref,
+                      restsAtCamp ? 'rest_at_camp_button' : 'rest_button')),
                 ),
               ],
             ),
+            // Once the camp stands, a place is somewhere the party travels
+            // to from it: the way back, and on to the other places it knows.
+            if (travelsFromHere)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Row(
+                  children: [
+                    const Expanded(child: CampReturnButton()),
+                    if (travelsOn) const SizedBox(width: 8),
+                    if (travelsOn)
+                      OutlinedButton.icon(
+                        key: const Key('place_travel_on'),
+                        style: OutlinedButton.styleFrom(
+                            visualDensity: VisualDensity.compact),
+                        onPressed: () => showModalBottomSheet<void>(
+                          context: context,
+                          isScrollControlled: true,
+                          showDragHandle: true,
+                          builder: (_) => SafeArea(
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(tr(ref, 'travel_on_title'),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge),
+                                  const SizedBox(height: 8),
+                                  TravelOnList(fromNodeId: node.id),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        icon: const Icon(Icons.signpost_outlined, size: 18),
+                        label: Text(tr(ref, 'travel_on_button')),
+                      ),
+                  ],
+                ),
+              ),
             if (services.isNotEmpty)
               Flexible(
                 flex: 3,
@@ -1441,9 +1670,10 @@ class _HubSections extends ConsumerWidget {
   }
 }
 
-/// The pop-up on reaching a town or camp from elsewhere in the story: where
-/// the player is, and that the place's shops, expeditions and people are
-/// listed under the story, with the way onward at the bottom.
+/// The pop-up on reaching a town from elsewhere in the story: where the
+/// player is, and that the place's shops, expeditions and people are
+/// listed under the story, with the way onward at the bottom. (The camp
+/// says its own welcome: see CampScreen.)
 void _showSettlementArrival(
   BuildContext context,
   WidgetRef ref,
@@ -1456,6 +1686,11 @@ void _showSettlementArrival(
       : ports?[settlement.portId] as Map<String, dynamic>?;
   final portText = port == null ? '' : portDescriptionFor(port, french);
   final name = settlement.nameFor(french);
+  // After the founding, the camp is home: arriving there is coming back,
+  // and a town is somewhere away from it.
+  final campFounded =
+      ref.read(playerSessionProvider).flags.contains(campFoundedFlag);
+  final bodyKey = campFounded ? 'arrival_town_away_body' : 'arrival_town_body';
   showDialog<void>(
     context: context,
     builder: (dialogContext) {
@@ -1464,17 +1699,9 @@ void _showSettlementArrival(
         // A short screen scrolls the port's description and the guide
         // rather than overflowing.
         scrollable: true,
-        icon: Icon(
-          settlement.isCamp ? Icons.local_fire_department : Icons.location_city,
-          size: 36,
-        ),
+        icon: const Icon(Icons.location_city, size: 36),
         title: Text(
-          tr(
-                  ref,
-                  settlement.isCamp
-                      ? 'arrival_camp_title'
-                      : 'arrival_town_title')
-              .replaceAll('{place}', name),
+          tr(ref, 'arrival_town_title').replaceAll('{place}', name),
           textAlign: TextAlign.center,
         ),
         content: Column(
@@ -1488,12 +1715,7 @@ void _showSettlementArrival(
               const SizedBox(height: 12),
             ],
             Text(
-              tr(
-                      ref,
-                      settlement.isCamp
-                          ? 'arrival_camp_body'
-                          : 'arrival_town_body')
-                  .replaceAll('{place}', name),
+              tr(ref, bodyKey).replaceAll('{place}', name),
               style: theme.textTheme.bodyMedium,
             ),
           ],
@@ -1501,11 +1723,8 @@ void _showSettlementArrival(
         actions: [
           FilledButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(tr(
-                ref,
-                settlement.isCamp
-                    ? 'arrival_camp_button'
-                    : 'arrival_town_button')),
+            child: Text(tr(ref,
+                campFounded ? 'arrival_away_button' : 'arrival_town_button')),
           ),
         ],
       );
@@ -1535,8 +1754,14 @@ class _HubChoiceCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locked = _isChoiceLocked(choice, story, session, isExcursion);
-    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
+    final locked =
+        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final lockedLabel = mainQuestShut
+        ? tr(ref, 'main_quest_shut_lock')
+        : locked
+            ? choice.lockedTextFor(french)
+            : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);
@@ -1731,9 +1956,15 @@ class _ChoiceButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locked = _isChoiceLocked(choice, story, session, isExcursion);
+    final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
+    final locked =
+        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
 
-    final lockedLabel = locked ? choice.lockedTextFor(french) : null;
+    final lockedLabel = mainQuestShut
+        ? tr(ref, 'main_quest_shut_lock')
+        : locked
+            ? choice.lockedTextFor(french)
+            : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);
@@ -1749,6 +1980,7 @@ class _ChoiceButton extends ConsumerWidget {
     final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
 
     return ElevatedButton(
+      style: inkChoiceStyle(context),
       onPressed: locked
           ? null
           : () => _selectChoice(
@@ -1800,7 +2032,7 @@ class _ChoiceButton extends ConsumerWidget {
                       ),
                     ],
                   )
-                : _ChoiceLabel(label: label, choice: choice),
+                : _ChoiceLabel(label: label, choice: choice, locked: locked),
       ),
     );
   }
@@ -1809,10 +2041,17 @@ class _ChoiceButton extends ConsumerWidget {
 /// A plain choice's text, with what it costs or brings underneath as
 /// small tags ("+20 gold", "−10 HP", "Alignment −1").
 class _ChoiceLabel extends ConsumerWidget {
-  const _ChoiceLabel({required this.label, required this.choice});
+  const _ChoiceLabel({
+    required this.label,
+    required this.choice,
+    this.locked = false,
+  });
 
   final String label;
   final StoryChoice choice;
+
+  /// A choice the player can't take yet: its tags fade with the card.
+  final bool locked;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1842,7 +2081,10 @@ class _ChoiceLabel extends ConsumerWidget {
       children: [
         Text(label),
         const SizedBox(height: 6),
-        Wrap(spacing: 6, runSpacing: 4, children: tags),
+        Opacity(
+          opacity: locked ? 0.45 : 1,
+          child: Wrap(spacing: 6, runSpacing: 4, children: tags),
+        ),
       ],
     );
   }
@@ -1980,6 +2222,92 @@ List<TextSpan> _highlightedSpans(String body, TextStyle baseStyle) {
     ));
   }
   return spans;
+}
+
+/// A town or camp's scene the reader has already read, folded to one line
+/// that opens it again, with the last fight's aftermath under it when
+/// there is one -- so the place's own lists get the screen.
+class _FoldedNarration extends StatelessWidget {
+  const _FoldedNarration({
+    super.key,
+    required this.label,
+    required this.onOpen,
+    this.uiTheme,
+    this.aftermath,
+    this.aftermathHeading = '',
+  });
+
+  final String label;
+  final VoidCallback onOpen;
+  final String? uiTheme;
+  final String? aftermath;
+  final String aftermathHeading;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final palette = uiThemePaletteFor(uiTheme);
+    final accent = resolveUiAccent(theme.colorScheme, palette);
+    return Material(
+      color: accent.cardTint.withValues(alpha: 0.35),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: accent.border),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onOpen,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 10, 10, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.auto_stories_outlined,
+                      size: 20, color: accent.text),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(color: accent.text),
+                    ),
+                  ),
+                  Icon(Icons.expand_more, color: accent.text),
+                ],
+              ),
+              if (aftermath != null && aftermath!.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  aftermathHeading.toUpperCase(),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    letterSpacing: 1.5,
+                    color: accent.text.withValues(alpha: 0.8),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 160),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      aftermath!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontFamily: 'serif',
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 /// Renders a story node's narrative text with a book-like presentation:

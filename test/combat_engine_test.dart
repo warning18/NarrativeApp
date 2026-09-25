@@ -934,9 +934,9 @@ void main() {
     });
 
     test('upgrade cost rises per tier (3, 6, 9)', () {
-      expect(skillTierUpgradeCost(0), 3);
-      expect(skillTierUpgradeCost(1), 6);
-      expect(skillTierUpgradeCost(2), 9);
+      expect(skillTierUpgradeCost(0), 1000);
+      expect(skillTierUpgradeCost(1), 2000);
+      expect(skillTierUpgradeCost(2), 3000);
     });
   });
 

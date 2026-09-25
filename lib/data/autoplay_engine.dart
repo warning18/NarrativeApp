@@ -10,8 +10,10 @@ import '../models/ally_state.dart'
 import '../models/story_node.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import 'chapter_loop.dart';
 import 'chapter_spine.dart';
 import 'story_repository.dart';
+import 'zone_gating.dart';
 
 /// How an [autoplayToNode] or [autoplayToChapter] run ended.
 enum AutoplayStatus {
@@ -156,6 +158,44 @@ Future<void> _maybeCreateCharacter(
 /// all on a loss, so the caller can just retry — mirroring how a real lost
 /// fight doesn't persist anything either (full-heal-on-loss is a no-op to
 /// skip replicating here).
+/// Before a chapter's main quest is taken from its camp ([fromNodeId]),
+/// the chapter is explored the quick way: its expeditions (not its main
+/// zone) are cleared with their rewards, and the places they find are
+/// found. The live camp opens its main quest only once enough of the
+/// chapter is done (see chapter_loop.dart); autoplay walks the story's own
+/// edges, so it takes the main quest regardless, but leaves the session as
+/// a player's would be.
+Future<void> _exploreChapterBeforeMainQuest(
+  WidgetRef ref, {
+  required StoryData story,
+  required String fromNodeId,
+  required StoryChoice choice,
+  required Map<String, dynamic> zones,
+}) async {
+  if (!choice.mainQuest || zones.isEmpty) return;
+  final camp = story.nodeFor(fromNodeId)?.settlement;
+  final chapter = camp?.chapter;
+  if (camp == null || !camp.isCamp || chapter == null) return;
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final found = <String>[];
+  for (final entry in zones.entries) {
+    final zone = entry.value;
+    if (zone is! Map<String, dynamic> || zoneIsMain(zone)) continue;
+    if (((zone['chapter'] as num?)?.toInt() ?? 1) != chapter) continue;
+    await notifier.completeZone(
+      entry.key,
+      rewardGold: (zone['rewardGold'] as num?)?.toInt() ?? 0,
+      rewardFlag: zone['rewardFlag']?.toString(),
+    );
+    found.addAll(zoneDiscoveries(zone).map(placeFoundFlag));
+  }
+  final held = ref.read(playerSessionProvider).flags;
+  final missing = found.where((f) => !held.contains(f)).toSet().toList();
+  if (missing.isNotEmpty) {
+    await notifier.applyChoiceEffects(flagsToAdd: missing);
+  }
+}
+
 Future<bool> _simulateFight({
   required WidgetRef ref,
   required String? enemyId,
@@ -186,8 +226,11 @@ Future<bool> _simulateFight({
   final playerArmor = session.baseArmor +
       equipmentBonusFor(session.equippedItemIds, items, 'armor') +
       playerScalingBonus.armorBonus;
-  final assignments = session.diceSkillAssignments[session.equippedDiceId] ??
-      const <String, String>{};
+  final assignments = limitedFaceAssignments(
+      diceFaces,
+      session.diceSkillAssignments[session.equippedDiceId] ??
+          const <String, String>{},
+      skills);
 
   var enemyHealth = scaledMaxHealth(
       (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
@@ -269,6 +312,7 @@ Future<AutoplayResult> autoplayToNode(
   required Map<String, dynamic> enemies,
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
+  Map<String, dynamic> zones = const {},
   int maxCombatRetries = 8,
 }) async {
   final playState = ref.read(storyPlayProvider);
@@ -298,6 +342,9 @@ Future<AutoplayResult> autoplayToNode(
       stepsApplied += 1;
       continue;
     }
+
+    await _exploreChapterBeforeMainQuest(ref,
+        story: story, fromNodeId: fromNodeId, choice: choice, zones: zones);
 
     // Autoplay only ever resolves the first enemy of a multi-enemy pack
     // choice -- it's a dev "jump ahead in the story" tool, not a
@@ -398,6 +445,7 @@ Future<AutoplayResult> autoplayToChapter(
   required Map<String, dynamic> enemies,
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
+  Map<String, dynamic> zones = const {},
   int maxSteps = 200,
   int maxCombatRetries = 8,
   int maxAttempts = 10,
@@ -433,6 +481,7 @@ Future<AutoplayResult> autoplayToChapter(
       enemies: enemies,
       races: races,
       professions: professions,
+      zones: zones,
       // The forced attempt gets room for long hub loops too.
       maxSteps: last ? maxSteps * 3 : maxSteps,
       maxCombatRetries: maxCombatRetries,
@@ -456,6 +505,7 @@ Future<AutoplayResult> _playTowardChapter(
   required Map<String, dynamic> enemies,
   required Map<String, dynamic> races,
   required Map<String, dynamic> professions,
+  required Map<String, dynamic> zones,
   required int maxSteps,
   required int maxCombatRetries,
   required bool forceWins,
@@ -550,6 +600,9 @@ Future<AutoplayResult> _playTowardChapter(
       stepsApplied += 1;
       continue;
     }
+
+    await _exploreChapterBeforeMainQuest(ref,
+        story: story, fromNodeId: currentNodeId, choice: choice, zones: zones);
 
     // See the matching comment in autoplayToNode -- autoplay only ever
     // resolves the first enemy of a multi-enemy pack choice.

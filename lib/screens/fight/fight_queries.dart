@@ -235,6 +235,7 @@ extension _FightQueries on _FightScreenState {
         language: lang,
         activeEffects: actor.statusEffects,
         wisdomHealBonus: actor.wisdom ~/ 2,
+        wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
         forceCritical: surge,
         alignmentLabel: _alignmentLabel,
       );

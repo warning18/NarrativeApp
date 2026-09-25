@@ -1,10 +1,11 @@
 // The owner's story direction, checked against the authored data: every
 // origin carries the first piece of the Shroud; the chapter-2 exit builds
 // the boat; chapter 3 lands on a remote coast after a long voyage; the
-// Shroud's four pieces are taken on the spine, each of the last three at a
-// cost; the whole Shroud gates the final crossing; power is worn (each
-// race has a medium and the {sigil} token resolves for it); and there is
-// no clean way through the spine's dilemmas.
+// Shroud is cut into six, a piece at the end of each open chapter (3 to
+// 6), each at a cost, and the last taken from the Sovereign; five pieces
+// open the final crossing; power is worn (each race has a medium and the
+// {sigil} token resolves for it); and there is no clean way through the
+// spine's dilemmas.
 
 import 'dart:convert';
 import 'dart:io';
@@ -83,36 +84,48 @@ void main() {
       }
     });
 
-    test('four distinct pieces are taken on the spine, in chapter order', () {
+    test(
+        'six distinct pieces: the heirloom, one per open chapter, and the '
+        'Sovereign\'s', () {
       // Node ids number the story in reading order (1xxx chapter 1's
-      // epilogues, 4999 the Warden, 5xxx the Court, 6xxx the Quarter).
-      final granted = <String, ({String node, int chapter})>{};
+      // epilogues, 4999 the Warden, 5xxx the Court, 6xxx the Quarter, 7xxx
+      // the Hollow Shore and the crossing).
+      final granted = <String, ({String node, int band})>{};
       for (final entry in allChoices) {
         final id = entry.choice.grantsBannerPieceId;
         if (id == null || id.isEmpty) continue;
-        final chapter = int.parse(entry.node.id.split('_').first) ~/ 1000;
+        final band = int.parse(entry.node.id.split('_').first) ~/ 1000;
         final previous = granted[id];
         if (previous != null) {
-          expect(previous.chapter, chapter,
-              reason: '$id is granted in two chapters');
+          expect(previous.band, band, reason: '$id is granted in two chapters');
           continue;
         }
-        granted[id] = (node: entry.node.id, chapter: chapter);
+        granted[id] = (node: entry.node.id, band: band);
       }
       expect(granted.keys.toSet(), {
         'heirloom_shroud',
         'warden_standard',
         'moon_shard_shroud',
         'reliquary_thread',
+        'white_fleet_sail',
+        'sovereign_mantle',
       });
-      expect(granted['heirloom_shroud']!.chapter, lessThan(2));
+      expect(granted['heirloom_shroud']!.band, lessThan(2));
       expect(granted['warden_standard']!.node, '4999_standard');
       expect(granted['moon_shard_shroud']!.node, '5004_altar');
       expect(granted['reliquary_thread']!.node, '6010_thread');
-      expect(granted['warden_standard']!.chapter,
-          lessThan(granted['moon_shard_shroud']!.chapter));
-      expect(granted['moon_shard_shroud']!.chapter,
-          lessThan(granted['reliquary_thread']!.chapter));
+      expect(granted['white_fleet_sail']!.node, '7300');
+      expect(granted['sovereign_mantle']!.node, '7003');
+      final order = [
+        'warden_standard',
+        'moon_shard_shroud',
+        'reliquary_thread',
+        'white_fleet_sail',
+      ];
+      for (var i = 1; i < order.length; i++) {
+        expect(granted[order[i - 1]]!.band, lessThan(granted[order[i]]!.band),
+            reason: '${order[i - 1]} before ${order[i]}');
+      }
     });
 
     test('each late piece is unavoidable: every choice of its scene grants it',
@@ -121,6 +134,8 @@ void main() {
         ('4999_standard', 'warden_standard'),
         ('5004_altar', 'moon_shard_shroud'),
         ('6010_thread', 'reliquary_thread'),
+        ('7300', 'white_fleet_sail'),
+        ('7003', 'sovereign_mantle'),
       ]) {
         final node = nodes[id]!;
         expect(node.choices.length, greaterThanOrEqualTo(2), reason: id);
@@ -129,37 +144,68 @@ void main() {
               reason: '$id: ${choice.text}');
         }
       }
-      // The last piece makes the Shroud whole, on every path.
-      for (final choice in nodes['6010_thread']!.choices) {
+      // The fifth opens the crossing; the sixth, taken from the Sovereign,
+      // makes the Shroud whole, on every path.
+      for (final choice in nodes['7300']!.choices) {
+        expect(choice.flagsToAdd, contains('banner_five'));
+      }
+      for (final choice in nodes['7003']!.choices) {
         expect(choice.flagsToAdd, contains('banner_whole'));
       }
-      // And the pieces sit on the spine: the Warden's standard right after
-      // the High Warden, the altar between the Court and the ledger, the
-      // reliquary before the dead heart.
+      for (final node in nodes.values) {
+        if (node.id == '7003') continue;
+        for (final choice in node.choices) {
+          expect(choice.flagsToAdd, isNot(contains('banner_whole')),
+              reason: '${node.id} makes the Shroud whole too early');
+        }
+      }
+      // Each piece ends its chapter's main quest, set out on from the camp,
+      // and the story comes back to the next chapter's camp with it.
       expect(nodes['4999']!.choices.single.nextId, '4999_standard');
       for (final choice in nodes['4999_standard']!.choices) {
-        expect(choice.nextId, '5001');
+        expect(choice.nextId, '4999_camp');
       }
+      final court = nodes['4999_camp']!.choices.single;
+      expect(court.mainQuest, isTrue);
+      expect(court.launchZoneId, 'z_drowned_stair');
+      expect(court.nextId, '5003');
       expect(nodes['5004']!.choices.single.nextId, '5004_altar');
       expect(nodes['5004b']!.choices.single.nextId, '5004_altar');
       for (final choice in nodes['5004_altar']!.choices) {
         expect(choice.nextId, '5005');
       }
-      expect(
-          nodes['6010']!.choices.where((c) => c.nextId == '6010_thread').length,
-          1);
+      expect(nodes['6010']!.choices.where((c) => c.nextId == '6010_thread'),
+          isEmpty,
+          reason: 'the Quarter is a place; the thread is the main quest');
+      final thread = nodes['6002_camp']!.choices.single;
+      expect(thread.mainQuest, isTrue);
+      expect(thread.nextId, '6010_thread');
+      expect(thread.travelPlaceId, '6010');
       for (final choice in nodes['6010_thread']!.choices) {
         expect(choice.launchZoneId, 'z_shroud_vigil');
         expect(choice.nextId, '6003');
       }
+      final fleet = nodes['7001']!.choices.single;
+      expect(fleet.mainQuest, isTrue);
+      expect(fleet.launchZoneId, 'z_white_fleet_grave');
+      expect(fleet.nextId, '7300');
+      for (final choice in nodes['7300']!.choices) {
+        expect(choice.nextId, '7400');
+      }
     });
 
-    test('the whole Shroud opens the final crossing', () {
-      expect(nodes['7002_confront']!.reqFlags, contains('banner_whole'));
-      final sail = nodes['7002']!
-          .choices
-          .singleWhere((c) => c.nextId == '7002_confront');
-      expect(sail.lockedText, isNotEmpty);
+    test('five pieces open the final crossing; the Sovereign wears the sixth',
+        () {
+      expect(nodes['7002_confront']!.reqFlags, ['banner_five']);
+      expect(nodes['7002']!.choices.where((c) => c.nextId == '7002_confront'),
+          isEmpty,
+          reason: 'the crossing sets out from the camp');
+      final sail = nodes['7400']!.choices.single;
+      expect(sail.nextId, '7002_confront');
+      expect(sail.mainQuest, isTrue);
+      expect(sail.travelPlaceId, '7002');
+      expect(sail.showIfFlags, ['banner_five']);
+      expect(sail.lockedText ?? '', isEmpty);
       expect(sail.launchesZone, isFalse);
       for (final choice in nodes['7002_confront']!.choices) {
         expect(choice.nextId, '7002_price');
@@ -171,6 +217,17 @@ void main() {
       expect(
           nodes['7002_price']!.choices.any((c) => c.loseAllyId == '*'), isTrue,
           reason: 'the Sovereign can take a companion');
+    });
+
+    test('the whole Banner turns time back in every ending, for New Game+', () {
+      for (final id in ['7005', '7005_seeker', '7005_dawn', '7005_crown']) {
+        final node = nodes[id]!;
+        expect(node.description, contains('[EPILOGUE]'), reason: id);
+        expect(node.descriptionFr, contains('[ÉPILOGUE]'), reason: id);
+        expect(node.description, contains('the night before the invasion'),
+            reason: id);
+        expect(node.choices.single.isEnding, isTrue, reason: id);
+      }
     });
   });
 
@@ -256,6 +313,7 @@ void main() {
       '4999_standard',
       '5004_altar',
       '6010_thread',
+      '7300',
       '7002_price',
     ];
 
@@ -368,12 +426,13 @@ void main() {
     });
 
     test('the Quarter\'s gate settles her fate before the hub opens', () {
-      // 6002 no longer walks straight into the hub: the gate stands
-      // between, and a character who lost Lysa cannot pass it without
-      // taking one of the two fate scenes (each open to one side of the
-      // alignment line, so exactly one is ever available).
+      // The first trip to the Reliquary Quarter goes through its gate, and a
+      // character who lost Lysa cannot pass it without taking one of the two
+      // fate scenes (each open to one side of the alignment line, so exactly
+      // one is ever available).
+      expect(nodes['6010']!.settlement!.arrivalNodeId, '6010_gate');
       for (final choice in nodes['6002']!.choices) {
-        expect(choice.nextId, '6010_gate', reason: choice.text);
+        expect(choice.nextId, '6002_camp', reason: choice.text);
       }
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');

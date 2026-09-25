@@ -151,7 +151,9 @@ extension _FightCards on _FightScreenState {
       height: 28,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: face == null ? null : accent.withValues(alpha: 0.12),
+        color: face == null || _rolling
+            ? null
+            : _faceKindOf(face).color.withValues(alpha: 0.18),
         border: Border.all(
           color: face == null ? colorScheme.outlineVariant : accent,
           width: face == null ? 1 : 1.5,
@@ -743,7 +745,9 @@ extension _FightCards on _FightScreenState {
   /// The color that stands for [member] everywhere on the battle screen:
   /// their die tile, their card, their target dot on an enemy.
   Color _accentFor(_PartyMember member) {
-    if (member.isPlayer) return Theme.of(context).colorScheme.primary;
+    // The player's own colour, clear of the gold that marks an elite foe
+    // and a victory.
+    if (member.isPlayer) return Theme.of(context).colorScheme.secondary;
     final index = _party.indexWhere((m) => m.id == member.id) - 1;
     return _allyAccents[max(0, index) % _allyAccents.length];
   }

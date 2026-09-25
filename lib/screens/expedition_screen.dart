@@ -7,6 +7,7 @@ import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../data/alignment_events.dart';
+import '../data/chapter_loop.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
@@ -18,6 +19,8 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/story_providers.dart';
+import '../widgets/immersive_notice.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -203,6 +206,15 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       await _completeZone();
       return;
     }
+    // Halfway through, the zone reveals its first place (a town, a
+    // village, a site the party can travel to from now on).
+    if (countsTowardZone && nextIndex == _expeditionCount ~/ 2) {
+      final found = await _discoverPlaces(atEnd: false);
+      if (found.isNotEmpty && mounted) {
+        showImmersiveNotice(context,
+            icon: Icons.travel_explore, message: found.join('\n'));
+      }
+    }
     // Halfway through a zone of three or more events, its own narration
     // gets a word in before the next draw.
     if (countsTowardZone &&
@@ -371,6 +383,30 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             (choice.text == 'Follow the trail'));
   }
 
+  /// Marks the places the zone reveals at this point (see
+  /// zoneDiscoveriesAt) found, and returns a line for each newly found one.
+  Future<List<String>> _discoverPlaces({required bool atEnd}) async {
+    final ids = zoneDiscoveriesAt(widget.zone, atEnd: atEnd);
+    if (ids.isEmpty) return const [];
+    final flags = ref.read(playerSessionProvider).flags;
+    final fresh = [
+      for (final id in ids)
+        if (!flags.contains(placeFoundFlag(id))) id,
+    ];
+    if (fresh.isEmpty) return const [];
+    await ref.read(playerSessionProvider.notifier).applyChoiceEffects(
+        flagsToAdd: [for (final id in fresh) placeFoundFlag(id)]);
+    final story = ref.read(storyDataProvider).value;
+    final lang = ref.read(appLanguageProvider);
+    return [
+      for (final id in fresh)
+        trFor(lang, 'place_found_line').replaceAll(
+            '{place}',
+            story?.nodeFor(id)?.settlement?.nameFor(lang == AppLanguage.fr) ??
+                id),
+    ];
+  }
+
   Future<void> _completeZone() async {
     final notifier = ref.read(playerSessionProvider.notifier);
     final rewardGold = (widget.zone['rewardGold'] as num?)?.toInt() ?? 0;
@@ -390,7 +426,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
     );
 
-    final lines = <String>[];
+    final lines = <String>[...await _discoverPlaces(atEnd: true)];
     if (rewardGold > 0) {
       lines.add('+$rewardGold ${trFor(lang, 'gold_label')}');
     }

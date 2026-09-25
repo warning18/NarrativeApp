@@ -34,12 +34,12 @@ class EnemyIcons {
     'malrik_turned',
     'maren_turned',
     'masked_penitent',
-    'white_soldier',
     'plague_hound',
     'rat_matriarch',
     'sable_turned',
     'slum_thug',
     'smuggler_captain',
+    'strand_colossus',
     'street_bandit',
     'tear_spawn',
     'tobin_turned',
@@ -51,5 +51,7 @@ class EnemyIcons {
     'void_sovereign',
     'void_stalker',
     'void_wisp',
+    'white_admiral',
+    'white_soldier',
   ];
 }

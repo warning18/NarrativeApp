@@ -160,4 +160,54 @@ void main() {
       expect(capturedRef.read(playerSessionProvider).raceId, isNotEmpty);
     });
   });
+
+  testWidgets('taking a main quest from the camp explores the chapter first',
+      (WidgetTester tester) async {
+    late WidgetRef capturedRef;
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            capturedRef = ref;
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+    await tester.pump();
+
+    await tester.runAsync(() async {
+      Future<Map<String, dynamic>> load(DbSchema schema) =>
+          capturedRef.read(gameDbRepositoryProvider(schema)).loadRecords();
+      final story = await capturedRef.read(storyDataProvider.future);
+      // The saved session loads once, on first read: let it, so it does not
+      // land over what the walk earns.
+      capturedRef.read(playerSessionProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      capturedRef.read(storyPlayProvider.notifier).jumpTo('4999_camp');
+
+      final result = await autoplayToNode(
+        capturedRef,
+        story: story,
+        targetNodeId: '5003',
+        dice: await load(diceSchema),
+        skills: await load(skillsSchema),
+        items: await load(itemsSchema),
+        enemies: await load(enemiesSchema),
+        races: await load(racesSchema),
+        professions: await load(professionsSchema),
+        zones: await load(zonesSchema),
+      );
+
+      expect(result.status, AutoplayStatus.reachedTarget);
+      final session = capturedRef.read(playerSessionProvider);
+      // The fourth chapter's expeditions are cleared, not its main zone.
+      expect(session.completedZoneIds, contains('z_ossuary_galleries'));
+      expect(session.completedZoneIds, isNot(contains('z_drowned_stair')));
+      expect(session.completedZoneIds, isNot(contains('z_cinder_row')));
+      // ... and the places they find are found.
+      expect(session.flags, containsAll(['found_5100', 'found_5010']));
+      expect(session.flags, isNot(contains('found_3005')));
+    });
+  });
 }

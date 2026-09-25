@@ -1,0 +1,90 @@
+{
+  "ch3": {
+    "chapterID": "ch3",
+    "chapter": 3,
+    "label": "Chapter 3",
+    "label_fr": "Chapitre 3",
+    "title": "The Spire of Judgment",
+    "title_fr": "La Flèche du Jugement",
+    "campNodeId": "3001_camp",
+    "activityGoal": 8,
+    "questGoal": 2,
+    "mainQuestNeedsPlaceIds": [
+      "3005"
+    ],
+    "mainQuestTitle": "Climb the Spire",
+    "mainQuestTitle_fr": "Gravir la Flèche",
+    "mainQuestHint": "The Spire's gate is a day's walk inland, past the Ashen Quarter. Learn the coast first: its expeditions, its town, and the people left on it, who will not show a stranger the way in for nothing.",
+    "mainQuestHint_fr": "La porte de la Flèche est à un jour de marche dans les terres, au-delà du Quartier des Cendres. Apprenez d'abord la côte : ses expéditions, sa ville, et les gens qui y restent, qui ne montreront pas le chemin à un inconnu pour rien."
+  },
+  "ch4": {
+    "chapterID": "ch4",
+    "chapter": 4,
+    "label": "Chapter 4",
+    "label_fr": "Chapitre 4",
+    "title": "The Hollow Court",
+    "title_fr": "La Cour Creuse",
+    "campNodeId": "4999_camp",
+    "activityGoal": 8,
+    "questGoal": 1,
+    "mainQuestNeedsPlaceIds": [
+      "5010"
+    ],
+    "mainQuestTitle": "Down the Drowned Stair",
+    "mainQuestTitle_fr": "Descendre l'Escalier Noyé",
+    "mainQuestHint": "The Court keeps the second piece at the bottom of the Drowned Stair, three days along the coast. Find the way down first, and the people who live beside it.",
+    "mainQuestHint_fr": "La Cour garde la deuxième pièce au fond de l'Escalier Noyé, à trois jours le long de la côte. Trouvez d'abord le chemin, et les gens qui vivent à côté."
+  },
+  "ch5": {
+    "chapterID": "ch5",
+    "chapter": 5,
+    "label": "Chapter 5",
+    "label_fr": "Chapitre 5",
+    "title": "The Shroud's Truth",
+    "title_fr": "La Vérité du Linceul",
+    "campNodeId": "6002_camp",
+    "activityGoal": 8,
+    "questGoal": 1,
+    "mainQuestNeedsPlaceIds": [
+      "6010"
+    ],
+    "mainQuestTitle": "The Fourth Piece",
+    "mainQuestTitle_fr": "La quatrième pièce",
+    "mainQuestHint": "The ledger names a chapel in the Reliquary Quarter, in the Black Reliquary's city. Reach the city first, and learn what its frost has done to the people there.",
+    "mainQuestHint_fr": "Le registre nomme une chapelle du Quartier des Reliquaires, dans la cité du Reliquaire Noir. Atteignez d'abord la cité, et apprenez ce que son givre a fait à ceux qui y vivent."
+  },
+  "ch6": {
+    "chapterID": "ch6",
+    "chapter": 6,
+    "label": "Chapter 6",
+    "label_fr": "Chapitre 6",
+    "title": "The Hollow Shore",
+    "title_fr": "La Rive Creuse",
+    "campNodeId": "7001",
+    "activityGoal": 8,
+    "questGoal": 1,
+    "mainQuestNeedsPlaceIds": [
+      "7100"
+    ],
+    "mainQuestTitle": "The White Fleet's Grave",
+    "mainQuestTitle_fr": "Le Tombeau de la Flotte Blanche",
+    "mainQuestHint": "The fifth piece went down with the White Fleet off the Hollow Shore. Someone on that shore knows where the flagship lies; find them first.",
+    "mainQuestHint_fr": "La cinquième pièce a sombré avec la Flotte Blanche au large de la Rive Creuse. Quelqu'un, sur ce rivage, sait où gît le vaisseau amiral ; trouvez-le d'abord."
+  },
+  "ending": {
+    "chapterID": "ending",
+    "chapter": 7,
+    "label": "The End",
+    "label_fr": "Le Dénouement",
+    "title": "Beyond the Tear",
+    "title_fr": "Au-delà de la déchirure",
+    "campNodeId": "7400",
+    "activityGoal": 0,
+    "questGoal": 0,
+    "mainQuestNeedsPlaceIds": [],
+    "mainQuestTitle": "Into the Tear",
+    "mainQuestTitle_fr": "Dans la déchirure",
+    "mainQuestHint": "",
+    "mainQuestHint_fr": ""
+  }
+}
