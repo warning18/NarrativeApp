@@ -285,7 +285,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     final session = ref.watch(playerSessionProvider);
     final language = ref.watch(appLanguageProvider);
     final look = ref.watch(mapLookProvider);
-    final style = MapStyle.of(look);
+    final palette = ChartPalette.of(look);
     final shape = ref.watch(mapShapeProvider);
     _geo = chartOf(shape);
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value ??
@@ -340,7 +340,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
           label: tr(ref, 'world_map_semantics'),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: style.frame,
+              color: palette.sea,
               border: Border.all(color: tokens.line, width: 4),
             ),
             child: ClipRect(
@@ -361,7 +361,7 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
                       frame: _frame,
                       walk: _walk,
                       geography: _geo,
-                      palette: ChartPalette.of(look),
+                      palette: palette,
                       language: language,
                       discovered: discovered,
                       legs: roadLegs(journey, discovered),

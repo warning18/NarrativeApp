@@ -1,14 +1,13 @@
 import 'dart:math' as math;
-import 'dart:typed_data';
 import 'dart:ui' show Color;
 
 import '../l10n/app_locale.dart';
 
-/// The story's world as one pixel map, 256 × 176 map pixels: the 23
-/// landmarks every scene of the story happens at, the road between them in
-/// story order, and the terrain under them (generated, always the same).
-/// Play mode shows it from the header; a landmark appears once one of its
-/// scenes has been read.
+/// The story's world, on a chart 256 × 176 units across: the 23
+/// landmarks every scene of the story happens at and the road between them
+/// in story order. Play mode shows it from the header as a chart (see
+/// map_charts.dart, which places the landmarks on each geography); a
+/// landmark appears once one of its scenes has been read.
 
 const int worldMapWidth = 256;
 const int worldMapHeight = 176;
@@ -69,9 +68,6 @@ class Landmark {
   const Landmark({
     required this.id,
     required this.chapter,
-    required this.x,
-    required this.y,
-    required this.sprite,
     required this.nameEn,
     required this.nameFr,
     required this.blurbEn,
@@ -84,9 +80,6 @@ class Landmark {
 
   final String id;
   final int chapter;
-  final int x;
-  final int y;
-  final String sprite;
   final String nameEn;
   final String nameFr;
   final String blurbEn;
@@ -111,17 +104,11 @@ class Landmark {
       language == AppLanguage.fr ? blurbFr : blurbEn;
 }
 
-/// Where the river crosses row [y].
-double riverX(num y) => 48 + math.sin(y * 0.08) * 6;
-
 /// Every landmark, in the order the story reaches them.
 final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'beggar',
     chapter: 1,
-    x: 26,
-    y: 126,
-    sprite: 'tavern',
     nameEn: 'The Blind Beggar',
     nameFr: 'Le Mendiant Aveugle',
     blurbEn:
@@ -133,9 +120,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'alley',
     chapter: 1,
-    x: 30,
-    y: 100,
-    sprite: 'lamp',
     nameEn: 'Weaver’s Alley',
     nameFr: 'La Ruelle du Tisserand',
     blurbEn:
@@ -144,27 +128,21 @@ final List<Landmark> worldMapLandmarks = [
         'La route lente et obscure. Un chien de guerre affamé est pris dans des barbelés, à côté de son maître assassiné. Le libérer, dépouiller le maître, ou les laisser tous les deux.',
     scenes: ['270'],
   ),
-  Landmark(
+  const Landmark(
     id: 'bridge',
     chapter: 1,
-    x: riverX(112).round(),
-    y: 112,
-    sprite: 'bridge',
     nameEn: 'The Stone Bridge',
     nameFr: 'Le Pont de Pierre',
     blurbEn:
         'The fast, exposed road. Invasion soldiers have built a toll booth out of a market stall. Pay 50 gold or fight your way across.',
     blurbFr:
         'La route rapide et exposée. Des soldats de l’invasion ont fait d’un étal de marché un poste de péage. Payer 50 pièces d’or ou passer en force.',
-    scenes: const ['260', '261'],
-    fights: const ['slum_thug'],
+    scenes: ['260', '261'],
+    fights: ['slum_thug'],
   ),
   const Landmark(
     id: 'square',
     chapter: 1,
-    x: 58,
-    y: 86,
-    sprite: 'tear',
     nameEn: 'The Scorched Square',
     nameFr: 'La Place calcinée',
     blurbEn:
@@ -176,9 +154,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'market',
     chapter: 1,
-    x: 80,
-    y: 100,
-    sprite: 'stall',
     nameEn: 'The last stalls',
     nameFr: 'Les derniers étals',
     blurbEn:
@@ -191,9 +166,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'hovel',
     chapter: 1,
-    x: 18,
-    y: 72,
-    sprite: 'hovel',
     nameEn: 'Your parents’ hovel',
     nameFr: 'La masure de vos parents',
     blurbEn:
@@ -206,9 +178,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'hold',
     chapter: 1,
-    x: 40,
-    y: 48,
-    sprite: 'hold',
     nameEn: 'The Black Hold',
     nameFr: 'La Geôle Noire',
     blurbEn:
@@ -221,9 +190,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'sewers',
     chapter: 1,
-    x: 62,
-    y: 62,
-    sprite: 'grate',
     nameEn: 'The sewers',
     nameFr: 'Les égouts',
     blurbEn:
@@ -236,9 +202,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'docks',
     chapter: 1,
-    x: 102,
-    y: 80,
-    sprite: 'ship',
     nameEn: 'Alster docks',
     nameFr: 'Les docks d’Alster',
     blurbEn:
@@ -254,9 +217,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'tern',
     chapter: 2,
-    x: 102,
-    y: 56,
-    sprite: 'boat',
     nameEn: 'Tern Row',
     nameFr: 'Tern Row',
     blurbEn:
@@ -269,9 +229,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'wharf',
     chapter: 2,
-    x: 84,
-    y: 36,
-    sprite: 'crates',
     nameEn: 'Smuggler’s Wharf',
     nameFr: 'Le Quai des Contrebandiers',
     blurbEn:
@@ -294,9 +251,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'upper',
     chapter: 2,
-    x: 54,
-    y: 20,
-    sprite: 'gate',
     nameEn: 'The Upper Tier',
     nameFr: 'Le Palier Supérieur',
     blurbEn:
@@ -308,9 +262,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'berths',
     chapter: 2,
-    x: 86,
-    y: 15,
-    sprite: 'ship',
     atSea: true,
     nameEn: 'The old berths',
     nameFr: 'Les anciens mouillages',
@@ -323,9 +274,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'storm',
     chapter: 2,
-    x: 138,
-    y: 64,
-    sprite: 'storm',
     atSea: true,
     nameEn: 'The crossing',
     nameFr: 'La traversée',
@@ -338,9 +286,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'camp',
     chapter: 3,
-    x: 166,
-    y: 150,
-    sprite: 'tent',
     nameEn: 'The coast camp',
     nameFr: 'Le camp de la côte',
     blurbEn:
@@ -352,9 +297,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'quarter',
     chapter: 3,
-    x: 212,
-    y: 100,
-    sprite: 'ruins',
     nameEn: 'The Ashen Quarter',
     nameFr: 'Le Quartier de Cendre',
     blurbEn:
@@ -376,9 +318,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'spire',
     chapter: 3,
-    x: 230,
-    y: 70,
-    sprite: 'spire',
     nameEn: 'The Spire of Judgment',
     nameFr: 'La Flèche du Jugement',
     blurbEn:
@@ -394,9 +333,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'grate',
     chapter: 4,
-    x: 190,
-    y: 114,
-    sprite: 'skull',
     nameEn: 'The drain grate',
     nameFr: 'La grille d’égout',
     blurbEn:
@@ -408,9 +344,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'cloister',
     chapter: 4,
-    x: 176,
-    y: 132,
-    sprite: 'candles',
     nameEn: 'The Drowned Cloister',
     nameFr: 'Le Cloître noyé',
     blurbEn:
@@ -429,9 +362,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'court',
     chapter: 4,
-    x: 202,
-    y: 136,
-    sprite: 'altar',
     nameEn: 'The Hollow Court',
     nameFr: 'La Cour Creuse',
     blurbEn:
@@ -444,9 +374,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'reliquary',
     chapter: 5,
-    x: 236,
-    y: 120,
-    sprite: 'chapel',
     nameEn: 'The Reliquary Quarter',
     nameFr: 'Le Quartier des Reliquaires',
     blurbEn:
@@ -468,9 +395,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'heart',
     chapter: 5,
-    x: 222,
-    y: 152,
-    sprite: 'tear',
     big: true,
     nameEn: 'The dead heart',
     nameFr: 'Le cœur mort',
@@ -484,9 +408,6 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'shore',
     chapter: 6,
-    x: 222,
-    y: 24,
-    sprite: 'crown',
     nameEn: 'The Hollow Shore',
     nameFr: 'La Rive Creuse',
     blurbEn:
@@ -542,301 +463,6 @@ Landmark? currentLandmark(String currentNodeId, List<String> history) {
   return null;
 }
 
-// ---- Sprites and palette ------------------------------------------------
-
-Color _hex(String hex) =>
-    Color(int.parse(hex.substring(1), radix: 16) | 0xFF000000);
-
-/// The sprites' colours, one letter each.
-final Map<String, Color> spritePalette = {
-  for (final entry in const {
-    'k': '#14110f', 'n': '#3a3632', 'w': '#b9ad95', 'd': '#2a211b', //
-    'r': '#8c3b2e', 'y': '#f2c14e', 'g': '#7a7468', 'G': '#a39d90',
-    'p': '#8a4fd1', 'P': '#d7b8ff', 'v': '#22103a', 'b': '#6b4a2b',
-    'B': '#9c7446', 's': '#d9d2c1', 'o': '#e0762b', 'e': '#eeeae2',
-    'm': '#6d3fa0', 'c': '#b58b5a', 'x': '#9b2a2a', 't': '#3f8c8c',
-  }.entries)
-    entry.key: _hex(entry.value),
-};
-
-/// Each landmark's picture, a row of letters per pixel row ('.' is empty).
-const Map<String, List<String>> mapSprites = {
-  'tavern': ['..rrr..', '.rrrrr.', 'rrrrrrr', '.wwwww.', '.wywdw.', '.wwwdw.'],
-  'hovel': ['...r...', '..rrr..', '.rrr.r.', '.wwkww.', '.wwkdw.', '.wwwdw.'],
-  'bridge': ['GGGGGGGGG', 'gGgGgGgGg', 'g..g.g..g', 'g..g.g..g'],
-  'lamp': ['.yyy.', '.yoy.', '..b..', '..b..', '..b..', '.bbb.'],
-  'tear': [
-    '..P..', '..p..', '.pPp.', '.pvp.', '.pvp.', '.pvp.', '.pPp.', //
-    '..p..', '..P..',
-  ],
-  'stall': ['xexexex', 'xexexex', '.b...b.', '.bcccb.', '.bcccb.', '.b...b.'],
-  'hold': [
-    'n.n.n.n.n', 'nnnnnnnnn', 'nxnnnnnxn', 'nnnnnnnnn', 'nnnkkknnn', //
-    'nnnkkknnn',
-  ],
-  'grate': ['ggggggg', 'gkgkgkg', 'gkgkgkg', 'gkgkgkg', 'ggggggg'],
-  'ship': [
-    '....bs...', '....bss..', '....bsss.', '....bssss', '....b....', //
-    'bbbbbbbbb', '.bBBBBBb.', '..bbbbb..',
-  ],
-  'gate': [
-    'G.G.G.G.G', 'GGGGGGGGG', 'GgGGGGGgG', 'GGGkkkGGG', 'GGkkkkkGG', //
-    'GGkkkkkGG',
-  ],
-  'crates': ['bbb.bbb', 'bBb.bBb', 'bbb.bbb', 'bbbbbbb', 'bBbbbBb', 'bbbbbbb'],
-  'boat': ['...y...', '...e...', '..ee...', '.eeee..', 'eeeeee.', '.eeee..'],
-  'storm': [
-    '..ggg....', '.ggggggg.', 'ggggggggg', '.ggggggg.', '....y....', //
-    '...y.....', '....y....',
-  ],
-  'tent': ['....b....', '...ccc...', '..ccccc..', '.ccckccc.', 'ccckkkccc'],
-  'ruins': [
-    'g........', 'g...g....', 'gg..g..g.', 'gg.gg..gg', 'ggggg.ggg', //
-    'nnnnnnnnn',
-  ],
-  'spire': [
-    '...p...', '...G...', '...G...', '..GGG..', '..GmG..', '..GGG..', //
-    '.GGmGG.', '.GGGGG.', '.GGmGG.', 'GGGGGGG', 'GmGGGmG', 'GGGkGGG',
-    'GGGkGGG',
-  ],
-  'skull': ['.eeeee.', 'eeeeeee', 'ekeeeke', 'eeekeee', '.eeeee.', '.e.e.e.'],
-  'candles': [
-    '..y...y', '..o...o', '..e...e', '..e.y.e', '..e.o.e', 'ttttttt', //
-    'ttttttt',
-  ],
-  'altar': [
-    '....p....', '...pvp...', '....p....', 'kkkkkkkkk', '.kkkkkkk.', //
-    '.kk...kk.',
-  ],
-  'chapel': [
-    '...y...', '..yyy..', '...y...', '..www..', '.wwwww.', 'wwwwwww', //
-    'wwmwmww', 'wwwwwww', 'wwwdwww',
-  ],
-  'crown': ['y...y...y', 'yy.yyy.yy', 'yyyyyyyyy', 'yxyyxyyxy', 'yyyyyyyyy'],
-  // The "you are here" marker.
-  'pin': ['kkkkk', 'kyyyk', 'kyyyk', '.kyk.', '..k..'],
-  // The player, in the grey cloak, standing and mid-stride.
-  'traveller': ['.kkk.', 'kGcGk', '.GGG.', 'GGGGG', '.GGG.', '.k.k.'],
-  'traveller_step': ['.kkk.', 'kGcGk', '.GGG.', 'GGGGG', '.GGG.', 'k...k'],
-};
-
-// ---- Terrain -------------------------------------------------------------
-
-/// 32-bit integer multiply, as the map's noise was first written with.
-int _imul(int a, int b) {
-  a &= 0xFFFFFFFF;
-  b &= 0xFFFFFFFF;
-  final ah = (a >> 16) & 0xFFFF, al = a & 0xFFFF;
-  final bh = (b >> 16) & 0xFFFF, bl = b & 0xFFFF;
-  return (al * bl + (((ah * bl + al * bh) << 16) & 0xFFFFFFFF)).toSigned(32);
-}
-
-/// A repeatable value in [0, 1) for a grid point.
-double mapHash(int x, int y) {
-  var h = (_imul(x, 374761393) + _imul(y, 668265263)).toSigned(32);
-  h = _imul(h ^ ((h & 0xFFFFFFFF) >> 13), 1274126177);
-  return ((h ^ ((h & 0xFFFFFFFF) >> 16)) & 0xFFFFFFFF) / 4294967296;
-}
-
-double _valueNoise(double x, double y) {
-  final xi = x.floor(), yi = y.floor();
-  final xf = x - xi, yf = y - yi;
-  final u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
-  final a = mapHash(xi, yi), b = mapHash(xi + 1, yi);
-  final c = mapHash(xi, yi + 1), d = mapHash(xi + 1, yi + 1);
-  return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
-}
-
-double _ellipse(int x, int y, double cx, double cy, double rx, double ry) {
-  final dx = (x - cx) / rx, dy = (y - cy) / ry;
-  return 1 - (dx * dx + dy * dy);
-}
-
-/// A glint on open water, lit two frames in six from [phase].
-class MapGlint {
-  const MapGlint(this.x, this.y, this.phase);
-  final int x;
-  final int y;
-  final int phase;
-}
-
-/// The ground under the landmarks: one colour per map pixel (ARGB),
-/// the water's glints and the city's embers.
-class WorldMapTerrain {
-  WorldMapTerrain._(this.pixels, this.glints, this.fires);
-
-  final Uint32List pixels;
-  final List<MapGlint> glints;
-  final List<(int, int)> fires;
-
-  int colorAt(int x, int y) => pixels[y * worldMapWidth + x];
-
-  factory WorldMapTerrain.generate() {
-    const w = worldMapWidth, h = worldMapHeight;
-    final land = Uint8List(w * h), region = Uint8List(w * h);
-    final onLand = [
-      for (final l in worldMapLandmarks)
-        if (!l.atSea) l,
-    ];
-    for (var y = 0; y < h; y++) {
-      for (var x = 0; x < w; x++) {
-        final alster = _ellipse(x, y, 56, 92, 56, 80);
-        final coast = _ellipse(x, y, 205, 112, 52, 62);
-        final shore = _ellipse(x, y, 226, 22, 26, 12);
-        var raised = -1.0;
-        for (final l in onLand) {
-          final d = math
-              .sqrt(((x - l.x) * (x - l.x) + (y - l.y) * (y - l.y)).toDouble());
-          raised = math.max(raised, 1 - d / 8);
-        }
-        final n = (_valueNoise(x * .07, y * .07) - .5) * .5 +
-            (_valueNoise(x * .2 + 50, y * .2) - .5) * .25;
-        final v =
-            math.max(math.max(alster, coast), math.max(shore, raised)) + n;
-        final i = y * w + x;
-        if (v > 0) {
-          land[i] = 1;
-          region[i] = x < 130 ? 1 : (y < 40 && x > 190 ? 3 : 2);
-        }
-      }
-    }
-
-    final pixels = Uint32List(w * h);
-    final glints = <MapGlint>[];
-    final fires = <(int, int)>[];
-    void put(int x, int y, int rgb) => pixels[y * w + x] = 0xFF000000 | rgb;
-
-    for (var y = 0; y < h; y++) {
-      for (var x = 0; x < w; x++) {
-        final i = y * w + x;
-        final nz = _valueNoise(x * .15, y * .15);
-        final dith = ((x + y) & 1) == 1;
-        if (land[i] == 0) {
-          final near = (x > 0 && land[i - 1] == 1) ||
-              (x < w - 1 && land[i + 1] == 1) ||
-              (y > 0 && land[i - w] == 1) ||
-              (y < h - 1 && land[i + w] == 1);
-          if (near) {
-            put(x, y, 0x2F6B73);
-          } else {
-            put(
-                x,
-                y,
-                nz > .55 && dith
-                    ? 0x163A44
-                    : (nz < .3 && dith ? 0x0E2730 : 0x122F38));
-          }
-          if (!near && mapHash(x * 3, y * 7) < .012) {
-            glints.add(MapGlint(x, y, (mapHash(x, y) * 6).floor()));
-          }
-          continue;
-        }
-        final r = region[i];
-        if (r == 1) {
-          final du =
-              math.sqrt(((x - 54) * (x - 54) + (y - 20) * (y - 20)).toDouble());
-          if ((x - riverX(y)).abs() < 1.3 && y > 6) {
-            put(x, y, 0x1D4C57);
-            continue;
-          }
-          if (du >= 12 && du < 13.3) {
-            put(x, y, 0xA39D90);
-            continue;
-          }
-          if (du < 12) {
-            put(x, y, dith && nz > .5 ? 0x7A7468 : 0x6A6459);
-            if (mapHash(x, y + 9) < .05) fires.add((x, y));
-            continue;
-          }
-          put(
-              x,
-              y,
-              nz > .6 && dith
-                  ? 0x4A4032
-                  : (nz < .35 && dith ? 0x2F291F : 0x3B3326));
-          if (y > 55 && mapHash(x + 5, y) < .025) fires.add((x, y));
-        } else if (r == 2) {
-          final fr = math
-              .sqrt(((x - 230) * (x - 230) + (y - 138) * (y - 138)).toDouble());
-          if (fr < 24 && nz + (24 - fr) / 40 > .65) {
-            put(x, y, dith ? 0x9FB3BF : 0x7F939F);
-          } else {
-            put(
-                x,
-                y,
-                nz > .62 && dith
-                    ? 0x7B7A75
-                    : (nz < .3 && dith ? 0x4A4946 : 0x5E5C58));
-          }
-        } else {
-          put(x, y, nz > .5 && dith ? 0xB3AFA4 : 0x9A968C);
-        }
-      }
-    }
-    // Piers.
-    void pier(int x0, int y0, int dx, int dy, int length) {
-      for (var k = 0; k < length; k++) {
-        final x = x0 + dx * k, y = y0 + dy * k;
-        if (x >= 0 && x < w && y >= 0 && y < h) put(x, y, 0x6B4A2B);
-      }
-    }
-
-    pier(96, 24, 1, -1, 6);
-    pier(92, 40, 1, 0, 10);
-    pier(106, 82, 1, 0, 8);
-    pier(170, 156, -1, 1, 5);
-    return WorldMapTerrain._(pixels, glints, fires);
-  }
-}
-
-/// Generated once, on first use.
-final WorldMapTerrain worldMapTerrain = WorldMapTerrain.generate();
-
-// ---- Fog -----------------------------------------------------------------
-
-/// How far around a reached landmark the map is clear, in map pixels; the
-/// fog's edge is dithered over a few more.
-const double fogClearRadius = 26;
-const double fogEdge = 6;
-
-/// Per map pixel: 1 under fog, 0 clear. Around what has been reached the
-/// map is clear, with a checkerboard edge.
-Uint8List fogMask(Set<String> discovered) {
-  const w = worldMapWidth, h = worldMapHeight;
-  final mask = Uint8List(w * h)..fillRange(0, w * h, 1);
-  final reached = [
-    for (final l in worldMapLandmarks)
-      if (discovered.contains(l.id)) l,
-  ];
-  for (var y = 0; y < h; y++) {
-    for (var x = 0; x < w; x++) {
-      var nearest = double.infinity;
-      for (final l in reached) {
-        final d = math
-            .sqrt(((x - l.x) * (x - l.x) + (y - l.y) * (y - l.y)).toDouble());
-        if (d < nearest) nearest = d;
-      }
-      final i = y * w + x;
-      if (nearest <= fogClearRadius) {
-        mask[i] = 0;
-      } else if (nearest <= fogClearRadius + fogEdge) {
-        mask[i] = ((x + y) & 1) == 0 ? 1 : 0;
-      }
-    }
-  }
-  return mask;
-}
-
-/// [argb] under the fog: [strength] of the way to the [fog] colour.
-int foggedColor(int argb, {int fog = 0x0B0A0D, double strength = 0.78}) {
-  int mix(int shift) {
-    final c = (argb >> shift) & 0xFF, f = (fog >> shift) & 0xFF;
-    return (c * (1 - strength) + f * strength).round();
-  }
-
-  return 0xFF000000 | (mix(16) << 16) | (mix(8) << 8) | mix(0);
-}
-
 // ---- The player's journey --------------------------------------------------
 
 /// The places the story has passed through, in order: the landmark of
@@ -881,15 +507,6 @@ List<(Landmark, Landmark)> roadLegs(
     previous = landmark;
   }
   return legs;
-}
-
-/// Where the traveller stands at [landmark]: beside its picture, feet
-/// level with its base.
-(double, double) travellerSpot(Landmark landmark) {
-  final rows = mapSprites[landmark.sprite]!;
-  final scale = landmark.big ? 2 : 1;
-  final w = rows.first.length * scale, h = rows.length * scale;
-  return (landmark.x + w / 2 + 3, landmark.y + h / 2);
 }
 
 /// The most legs the traveller walks when the map opens.
@@ -950,115 +567,3 @@ int journeyWalkStart(List<Landmark> journey,
 /// chart, and the grey of the Shroud, where only the Void keeps its
 /// colour.
 enum MapLook { night, parchment, shroud }
-
-/// How one look paints the map: its ground, sprites, fog and marks.
-class MapStyle {
-  const MapStyle({
-    required this.look,
-    required this.ground,
-    required this.sprite,
-    required this.fog,
-    required this.fogStrength,
-    required this.glint,
-    required this.embers,
-    required this.road,
-    required this.mark,
-    required this.frame,
-  });
-
-  final MapLook look;
-
-  /// The terrain's colour (0xRRGGBB) in this look.
-  final int Function(int rgb) ground;
-
-  /// A sprite letter's colour in this look.
-  final Color Function(String letter) sprite;
-
-  /// What the unexplored world fades to, and how far.
-  final int fog;
-  final double fogStrength;
-  final Color glint;
-  final List<Color> embers;
-  final Color road;
-
-  /// The chosen place's corners.
-  final Color mark;
-
-  /// Behind the map, before it is drawn.
-  final Color frame;
-
-  static MapStyle of(MapLook look) => switch (look) {
-        MapLook.night => _night,
-        MapLook.parchment => _parchment,
-        MapLook.shroud => _shroud,
-      };
-}
-
-int _grey(int rgb, {double gain = 1, int lift = 0, int tint = 0}) {
-  final r = (rgb >> 16) & 0xFF, g = (rgb >> 8) & 0xFF, b = rgb & 0xFF;
-  final l = (0.299 * r + 0.587 * g + 0.114 * b) * gain + lift;
-  int c(int v) => v.clamp(0, 255);
-  final v = l.round();
-  return (c(v) << 16) | (c(v) << 8) | c(v + tint);
-}
-
-final MapStyle _night = MapStyle(
-  look: MapLook.night,
-  ground: (rgb) => rgb,
-  sprite: (letter) => spritePalette[letter]!,
-  fog: 0x0B0A0D,
-  fogStrength: 0.78,
-  glint: const Color(0xFF4A8A93),
-  embers: const [Color(0xFFE0762B), Color(0xFFF2C14E), Color(0xFF9B2A2A)],
-  road: const Color(0xFFEEEAE2),
-  mark: const Color(0xFFF2C14E),
-  frame: const Color(0xFF0D2129),
-);
-
-/// The night map's ground colours on paper: pale sea, sepia coasts and
-/// walls, sand and stone in ink washes.
-const Map<int, int> _parchmentGround = {
-  0x122F38: 0xC8D3C4, 0x163A44: 0xBCC9B9, 0x0E2730: 0xD2DBCD, // sea
-  0x2F6B73: 0x6E5A3E, // coastline, in ink
-  0x1D4C57: 0x8FA9A0, // river
-  0x3B3326: 0xE6D5B0, 0x4A4032: 0xDCC8A0, 0x2F291F: 0xEEE0C0, // Alster
-  0x6A6459: 0xCBB38A, 0x7A7468: 0xBFA67C, 0xA39D90: 0x6E5A3E, // the city
-  0x5E5C58: 0xD8C7A3, 0x7B7A75: 0xCDBB95, 0x4A4946: 0xE3D3B2, // the coast
-  0x9FB3BF: 0xEEF1EC, 0x7F939F: 0xE0E6E0, // frost
-  0x9A968C: 0xD6C29C, 0xB3AFA4: 0xCBB690, // the shore
-  0x6B4A2B: 0x6B4A2B, // piers
-};
-
-final MapStyle _parchment = MapStyle(
-  look: MapLook.parchment,
-  ground: (rgb) => _parchmentGround[rgb] ?? rgb,
-  sprite: (letter) => spritePalette[letter]!,
-  fog: 0xF3EBD8,
-  fogStrength: 0.82,
-  glint: const Color(0xFF8EA496),
-  embers: const [Color(0xFFB5531A), Color(0xFF8C3B2E), Color(0xFFC98A3B)],
-  road: const Color(0xFF8C3B2E),
-  mark: const Color(0xFF9B2A2A),
-  frame: const Color(0xFFB9A57A),
-);
-
-/// The Void's colours, the only ones the Shroud leaves.
-const Set<String> _voidLetters = {'p', 'P', 'v', 'm'};
-
-final MapStyle _shroud = MapStyle(
-  look: MapLook.shroud,
-  ground: (rgb) => _grey(rgb, gain: 1.1, lift: 6, tint: 4),
-  sprite: (letter) {
-    final color = spritePalette[letter]!;
-    if (_voidLetters.contains(letter)) return color;
-    final argb = color.toARGB32();
-    return Color(0xFF000000 | _grey(argb & 0xFFFFFF, gain: 1.05, lift: 8));
-  },
-  fog: 0x9C9CA3,
-  fogStrength: 0.72,
-  glint: const Color(0xFF6E6E76),
-  embers: const [Color(0xFFB98CF0), Color(0xFF8A4FD1), Color(0xFFD7B8FF)],
-  road: const Color(0xFFE9E6DF),
-  mark: const Color(0xFFD7B8FF),
-  frame: const Color(0xFF16161A),
-);

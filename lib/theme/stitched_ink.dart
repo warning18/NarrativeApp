@@ -254,7 +254,7 @@ ThemeData buildAppTheme(ColorScheme scheme) {
   );
   const buttonText =
       TextStyle(fontFamily: InkFonts.system, fontSize: 15, height: 1.2);
-  const buttonPadding = EdgeInsets.symmetric(horizontal: 18, vertical: 12);
+  const buttonPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 10);
 
   return base.copyWith(
     textTheme: textTheme,
@@ -301,35 +301,23 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       style: FilledButton.styleFrom(
         shape: shape,
         padding: buttonPadding,
-        minimumSize: const Size(64, 48),
         textStyle: buttonText.copyWith(fontWeight: FontWeight.w600),
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
-      // Story choices are elevated buttons: a card of Cloth with a seam,
-      // its text in the prose face.
       style: ElevatedButton.styleFrom(
         elevation: 0,
         shape: shape,
-        side: seamSide,
-        backgroundColor: scheme.surfaceContainer,
+        backgroundColor: scheme.surfaceContainerHighest,
         foregroundColor: scheme.onSurface,
-        disabledBackgroundColor: scheme.surfaceContainerLow,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        minimumSize: const Size(64, 52),
-        textStyle: const TextStyle(
-          fontFamily: InkFonts.prose,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          height: 1.35,
-        ),
+        padding: buttonPadding,
+        textStyle: buttonText,
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         shape: shape,
         padding: buttonPadding,
-        minimumSize: const Size(64, 44),
         side: BorderSide(color: scheme.outline),
         foregroundColor: scheme.onSurface,
         textStyle: buttonText,
@@ -425,6 +413,31 @@ ThemeData buildAppTheme(ColorScheme scheme) {
       ),
       decoration:
           BoxDecoration(color: scheme.inverseSurface, borderRadius: radius),
+    ),
+  );
+}
+
+/// A story choice: a card of Cloth with a seam, its text in the prose
+/// face. Only the story's choices are drawn this way; every other raised
+/// button keeps the theme's own button look.
+ButtonStyle inkChoiceStyle(BuildContext context) {
+  final scheme = Theme.of(context).colorScheme;
+  return ElevatedButton.styleFrom(
+    elevation: 0,
+    shape: RoundedRectangleBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(4)),
+      side: BorderSide(color: scheme.outlineVariant),
+    ),
+    backgroundColor: scheme.surfaceContainer,
+    foregroundColor: scheme.onSurface,
+    disabledBackgroundColor: scheme.surfaceContainerLow,
+    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+    minimumSize: const Size(64, 52),
+    textStyle: const TextStyle(
+      fontFamily: InkFonts.prose,
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      height: 1.35,
     ),
   );
 }

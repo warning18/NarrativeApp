@@ -63,9 +63,11 @@ class ChartGeography {
   bool labelsLeft(Landmark landmark) =>
       leftLabels.contains(landmark.id) || of(landmark).dx > 180;
 
-  /// Where [landmark] is on this chart.
+  /// Where [landmark] is on this chart (every landmark has a spot on
+  /// each; see map_charts_test.dart). One without falls to the middle.
   Offset of(Landmark landmark) =>
-      places[landmark.id] ?? Offset(landmark.x * 1.0, landmark.y * 1.0);
+      places[landmark.id] ??
+      const Offset(worldMapWidth / 2, worldMapHeight / 2);
 }
 
 ChartGeography chartOf(MapShape shape) => switch (shape) {

@@ -1749,6 +1749,7 @@ class _ChoiceButton extends ConsumerWidget {
     final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
 
     return ElevatedButton(
+      style: inkChoiceStyle(context),
       onPressed: locked
           ? null
           : () => _selectChoice(

@@ -427,7 +427,10 @@ class _SkillChip extends StatelessWidget {
     final chip = GestureDetector(
       onTap: onTap,
       child: Chip(
-        avatar: Icon(elementIcon(element), size: 18),
+        avatar: Icon(elementIcon(element),
+            size: 18,
+            color: elementColor(element,
+                plain: Theme.of(context).colorScheme.tertiary)),
         label: Text(label),
       ),
     );
@@ -506,7 +509,7 @@ class _FaceSlot extends StatelessWidget {
                   : (isHovering
                       ? colorScheme.primary
                       : assignedSkillId != null
-                          ? colorScheme.primary
+                          ? colorScheme.tertiary
                           : colorScheme.outlineVariant),
               width: (isHovering || isInvalidHover) ? 2 : 1,
             ),
@@ -547,12 +550,12 @@ class _FaceSlot extends StatelessWidget {
                   t('channeled_face_badge').replaceAll('{face}',
                       t(basicFaceLabelKey(face['type']?.toString() ?? ''))),
                   style: textTheme.labelSmall
-                      ?.copyWith(color: colorScheme.primary),
+                      ?.copyWith(color: colorScheme.tertiary),
                 )
               else if (assignedSkillId != null)
                 Text(t('custom_label'),
                     style: textTheme.labelSmall
-                        ?.copyWith(color: colorScheme.primary)),
+                        ?.copyWith(color: colorScheme.tertiary)),
               if (!locked && restrictionElement != null)
                 Text('$restrictionElement ${t('only_suffix')}',
                     style: textTheme.labelSmall),

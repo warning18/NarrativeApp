@@ -560,6 +560,13 @@ class _SkillList extends ConsumerWidget {
                   maxed
                       ? const Icon(Icons.check_circle, color: Colors.green)
                       : OutlinedButton(
+                          // Compact, so tier and button fit the row.
+                          style: OutlinedButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            minimumSize: const Size(0, 32),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
                           onPressed: essence >= upgradeCost
                               ? () => upgradeCallback(id)
                               : null,

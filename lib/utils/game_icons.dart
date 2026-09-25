@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../combat/skill_vfx.dart' show paletteForElement;
+
 import '../combat/spells.dart';
 
 IconData itemTypeIcon(String? itemType) {
@@ -62,6 +64,13 @@ IconData elementIcon(String? element) {
     default:
       return Icons.circle_outlined;
   }
+}
+
+/// The colour of [element], as its skills' effects are drawn (see
+/// skill_vfx.dart); a skill with no element takes [plain].
+Color elementColor(String? element, {required Color plain}) {
+  if (element == null || element == 'None') return plain;
+  return Color(paletteForElement(element).primary);
 }
 
 IconData questCategoryIcon(String? category) {

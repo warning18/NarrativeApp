@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.141.0+170]
+
+### Fixed
+- **Buttons look like buttons again.** Every raised button (Unlock on
+  the Skills screen, Roll Dice in a fight, +1 Point on Level Up, and the
+  rest) had taken the story choices' card look; only story choices keep
+  it now. Buttons are back to their standard sizes.
+- **Skills list.** An unlocked skill's tier and Upgrade button fit their
+  row again instead of overflowing it.
+- **Skills on the dice.** On the Dice Loadout screen a face set to a skill
+  is marked in the techniques' violet again instead of gold, and each
+  skill's element icon (fire, wind, water, void...) takes its element's
+  own colour.
+
+### Removed
+- **The pixel map.** Its generated terrain, fog, sprites and ground looks
+  are gone; the chart draws the map. Places keep their story data only;
+  where they sit is each geography's.
+
 ## [1.140.0+169]
 
 The world map is redrawn as a chart in the Stitched Ink design, on the
