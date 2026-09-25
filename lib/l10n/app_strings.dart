@@ -2038,6 +2038,91 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
+  'place_docks': {AppLanguage.en: 'The docks', AppLanguage.fr: 'Les quais'},
+  'place_cathedral': {
+    AppLanguage.en: 'The cathedral',
+    AppLanguage.fr: 'La cathédrale'
+  },
+  'place_catacombs': {
+    AppLanguage.en: 'The catacombs',
+    AppLanguage.fr: 'Les catacombes'
+  },
+  'place_slums': {AppLanguage.en: 'The slums', AppLanguage.fr: 'Les bas-fonds'},
+  'place_torture_chamber': {
+    AppLanguage.en: 'The torture chamber',
+    AppLanguage.fr: 'La salle de torture'
+  },
+  'place_market': {AppLanguage.en: 'The market', AppLanguage.fr: 'Le marché'},
+  'place_sewers': {AppLanguage.en: 'The sewers', AppLanguage.fr: 'Les égouts'},
+  'place_bridge': {AppLanguage.en: 'The bridge', AppLanguage.fr: 'Le pont'},
+  'place_hovel': {AppLanguage.en: 'The hovel', AppLanguage.fr: 'Le taudis'},
+  'place_gate': {AppLanguage.en: 'The gate', AppLanguage.fr: 'La porte'},
+  'mood_grim': {AppLanguage.en: 'Grim', AppLanguage.fr: 'Sombre'},
+  'mood_tense': {AppLanguage.en: 'Tense', AppLanguage.fr: 'Tendu'},
+  'mood_action': {AppLanguage.en: 'Action', AppLanguage.fr: 'Action'},
+  'mood_creepy': {AppLanguage.en: 'Eerie', AppLanguage.fr: 'Inquiétant'},
+  'mood_suspense': {AppLanguage.en: 'Suspense', AppLanguage.fr: 'Suspense'},
+  'mood_desperate': {AppLanguage.en: 'Desperate', AppLanguage.fr: 'Désespéré'},
+  'mood_triumphant': {
+    AppLanguage.en: 'Triumphant',
+    AppLanguage.fr: 'Triomphant'
+  },
+  'mood_reflective': {AppLanguage.en: 'Reflective', AppLanguage.fr: 'Pensif'},
+  'town_title': {
+    AppLanguage.en: 'The cliff town',
+    AppLanguage.fr: 'La ville de la falaise'
+  },
+  'town_additions_tab': {AppLanguage.en: 'Additions', AppLanguage.fr: 'Ajouts'},
+  'town_tap_to_preview': {
+    AppLanguage.en: 'Tap to see where it goes',
+    AppLanguage.fr: 'Touchez pour voir où il ira'
+  },
+  'town_need': {AppLanguage.en: 'need', AppLanguage.fr: 'manque'},
+  'town_start': {
+    AppLanguage.en: 'Build to climb the cliff.',
+    AppLanguage.fr: 'Construisez pour gravir la falaise.'
+  },
+  'town_raised_quay': {
+    AppLanguage.en: '{name} goes up on the quay.',
+    AppLanguage.fr: '{name} s\'élève sur le quai.'
+  },
+  'town_raised_level': {
+    AppLanguage.en: '{name} is raised on level {level}.',
+    AppLanguage.fr: '{name} s\'élève au niveau {level}.'
+  },
+  'town_counts': {
+    AppLanguage.en: '{houses} of {total} houses · {additions} additions',
+    AppLanguage.fr: '{houses} maisons sur {total} · {additions} ajouts'
+  },
+  'add_floor_name': {
+    AppLanguage.en: 'Timber room',
+    AppLanguage.fr: 'Chambre à colombages'
+  },
+  'add_floor_desc': {
+    AppLanguage.en: 'A room on stilts, one more light',
+    AppLanguage.fr: 'Une pièce sur pilotis, une lumière de plus'
+  },
+  'add_stair_name': {
+    AppLanguage.en: 'Lantern stair',
+    AppLanguage.fr: 'Escalier à lanterne'
+  },
+  'add_stair_desc': {
+    AppLanguage.en: 'Joins one level to the next',
+    AppLanguage.fr: 'Relie un niveau au suivant'
+  },
+  'add_store_name': {AppLanguage.en: 'Storehouse', AppLanguage.fr: 'Entrepôt'},
+  'add_store_desc': {
+    AppLanguage.en: 'Planks, crates and rope',
+    AppLanguage.fr: 'Planches, caisses et cordages'
+  },
+  'add_tower_name': {
+    AppLanguage.en: 'Watchtower',
+    AppLanguage.fr: 'Tour de guet'
+  },
+  'add_tower_desc': {
+    AppLanguage.en: 'A lantern to see the Shroud coming',
+    AppLanguage.fr: 'Une lanterne pour voir venir le Linceul'
+  },
   'unlocks_shop_prefix': {
     AppLanguage.en: 'Unlocks',
     AppLanguage.fr: 'Débloque',

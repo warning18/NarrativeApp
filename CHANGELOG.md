@@ -8,6 +8,47 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.139.0+168]
+
+The camp becomes a town on the cliff, and the story, character, skill
+challenge and map screens take on the Stitched Ink designs. Fights and
+ship battles keep their layout.
+
+### Added
+- **The cliff town.** The Camp tab opens on the town: the harbour and The
+  Rusty Eel at the bottom, every house built stacked up between two
+  cliffs, in pixel art. Houses take one to three plots across and one or
+  two levels up; each new one goes as low and as far right as it fits,
+  resting on what is below it, with timber struts under what overhangs.
+  The town scrolls, starting at the harbour.
+- **Building from the town.** A tray under the town lists the houses;
+  tapping one outlines where it will go and scrolls there, Build raises
+  it. Locked houses say what they wait on, and ones you cannot afford say
+  how much gold is missing. The boat sails from its button in the
+  harbour.
+- **Town additions.** A second tab sells pieces that only add to the
+  town, again and again: a timber room (40 gold), a lantern stair (60),
+  a storehouse (90) and a watchtower (120). They give no bonuses.
+- **Place and mood on the story page.** The scene's place (the docks, the
+  cathedral...) and mood show as tags above the text.
+- **The chapter in the header.** In play, the Story tab's header shows
+  the chapter's number and name, in the chapter's colour.
+
+### Changed
+- **Character sheet.** It opens on the character's name, race and
+  profession, level and experience, health, mana and gold, an alignment
+  bar from Evil to Good with the thresholds marked, a button when points
+  are waiting, and the eight abilities in a grid.
+- **Skill challenge.** A d20 shows each roll as it lands, with the sum
+  under it; successes and failures fill square counters; the result is
+  stamped at the end.
+- **World map.** Its title and place names use the title face; the three
+  looks are side by side instead of in a menu; chips have square corners.
+
+### Saves
+- Saves keep the order the town went up in (`townOrder`); older saves
+  build their town from their houses in the order they were built.
+
 ## [1.138.0+167]
 
 The whole app takes on the "Stitched Ink" look from the design proposal:

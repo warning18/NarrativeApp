@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
 import '../data/port_helpers.dart';
-import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -15,6 +14,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/camp_town_section.dart';
 import '../widgets/zone_card.dart';
 import 'boat_screen.dart';
 import 'dice_loadout_screen.dart';
@@ -135,6 +135,32 @@ class CampScreen extends ConsumerWidget {
       children: [
         if (embedded)
           const Align(alignment: Alignment.centerRight, child: GoldBadge()),
+        CampTownSection(
+          houses: houses,
+          shops: shops,
+          zones: zones,
+          achievements: achievements,
+          harborAction: OutlinedButton.icon(
+            key: const Key('town_set_sail'),
+            onPressed: restBlocked
+                ? null
+                : () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const BoatScreen()),
+                    ),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              backgroundColor: const Color(0xE614262A),
+              foregroundColor: const Color(0xFFECE7DC),
+              side: const BorderSide(color: Color(0xFF4FB0B0)),
+              textStyle:
+                  const TextStyle(fontFamily: 'PixelifySans', fontSize: 12),
+            ),
+            icon: const Icon(Icons.sailing, size: 16),
+            label: Text(tr(ref, 'boat_title')),
+          ),
+        ),
+        const Divider(height: 32),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -314,112 +340,6 @@ class CampScreen extends ConsumerWidget {
               ),
             );
           }),
-        const Divider(height: 32),
-        Text(tr(ref, 'houses_section'),
-            style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        ...(houses.keys.toList()..sort()).map((houseId) {
-          final house = houses[houseId] as Map<String, dynamic>;
-          final houseName = house['houseName']?.toString() ?? houseId;
-          final description = house['description']?.toString() ?? '';
-          final cost = (house['buildCost'] as num?)?.toInt() ?? 0;
-          final capacityBonus =
-              (house['partyCapacityBonus'] as num?)?.toInt() ?? 0;
-          final healthBonus = (house['partyHealthBonus'] as num?)?.toInt() ?? 0;
-          final damageBonus = (house['partyDamageBonus'] as num?)?.toInt() ?? 0;
-          final unlocksShopId = house['unlocksShopId']?.toString() ?? '';
-          final unlocksShopName = unlocksShopId.isNotEmpty
-              ? ((shops[unlocksShopId] as Map<String, dynamic>?)?['shopName']
-                      ?.toString() ??
-                  unlocksShopId)
-              : null;
-          final built = session.builtHouseIds.contains(houseId);
-          final affordable = session.gold >= cost;
-          final requiredFlags = requiredFlagsOf(house);
-          final unlocked = meetsRequiredFlags(house, session.flags);
-          final lockName = unlocked
-              ? null
-              : lockRequirementName(house, session.flags, zones);
-
-          final statsParts = <String>[
-            if (capacityBonus > 0)
-              '+$capacityBonus ${tr(ref, 'party_capacity_label')}',
-            if (healthBonus > 0)
-              '+$healthBonus% ${tr(ref, 'party_health_bonus_label')}',
-            if (damageBonus > 0)
-              '+$damageBonus% ${tr(ref, 'party_damage_bonus_label')}',
-            if (unlocksShopName != null)
-              '${tr(ref, 'unlocks_shop_prefix')}: $unlocksShopName',
-            if (!built && lockName != null)
-              '${tr(ref, 'requires_zone_prefix')}: $lockName',
-          ];
-
-          // The Build button sits under the description, not beside it:
-          // beside it, a phone squeezes the text into a narrow column.
-          return Card(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ListTile(
-                    leading: Icon(built
-                        ? Icons.home
-                        : unlocked
-                            ? Icons.home_outlined
-                            : Icons.lock_outline),
-                    title: Text(houseName),
-                    subtitle: Text(
-                      [
-                        description,
-                        if (statsParts.isNotEmpty) statsParts.join(' · '),
-                      ].where((s) => s.isNotEmpty).join('\n'),
-                    ),
-                    trailing: built
-                        ? const Icon(Icons.check_circle, color: Colors.green)
-                        : null,
-                  ),
-                  if (!built)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                          onPressed: (!affordable || !unlocked)
-                              ? null
-                              : () async {
-                                  await ref
-                                      .read(playerSessionProvider.notifier)
-                                      .buildHouse(houseId, cost,
-                                          unlocksShopId: unlocksShopId,
-                                          requiredFlags: requiredFlags);
-                                  final newAchievements = await ref
-                                      .read(playerSessionProvider.notifier)
-                                      .checkAchievements();
-                                  if (!context.mounted) return;
-                                  final achievementSuffix = newAchievements
-                                          .isEmpty
-                                      ? ''
-                                      : '\n${trFor(ref.read(appLanguageProvider), 'achievement_unlocked_prefix')}: '
-                                          '${newAchievements.map((id) => (achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
-                                  showImmersiveNotice(
-                                    context,
-                                    icon: Icons.home,
-                                    message:
-                                        '${trFor(ref.read(appLanguageProvider), 'house_built_prefix')}: '
-                                        '$houseName$achievementSuffix',
-                                  );
-                                },
-                          child: Text(
-                              '${tr(ref, 'build_button')} ($cost ${tr(ref, 'gold_label')})'),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          );
-        }),
         const Divider(height: 32),
         Text(tr(ref, 'boutiques_section'),
             style: Theme.of(context).textTheme.titleMedium),

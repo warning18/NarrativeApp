@@ -480,6 +480,10 @@ class _StoryView extends ConsumerWidget {
                                             child: _StoryText(
                                               text: displayDescription,
                                               uiTheme: node.uiTheme,
+                                              placeLabel: _placeLabel(
+                                                  ref, node.uiTheme),
+                                              moodLabel:
+                                                  _moodLabel(ref, node.mood),
                                               epilogue: epilogue,
                                               speakerLabel: speakerLabel,
                                               aftermath: pendingAftermath,
@@ -504,6 +508,10 @@ class _StoryView extends ConsumerWidget {
                                             _StoryText(
                                               text: displayDescription,
                                               uiTheme: node.uiTheme,
+                                              placeLabel: _placeLabel(
+                                                  ref, node.uiTheme),
+                                              moodLabel:
+                                                  _moodLabel(ref, node.mood),
                                               epilogue: epilogue,
                                               speakerLabel: speakerLabel,
                                               aftermath: pendingAftermath,
@@ -1982,6 +1990,8 @@ class _StoryText extends StatelessWidget {
   const _StoryText({
     required this.text,
     this.uiTheme,
+    this.placeLabel,
+    this.moodLabel,
     this.epilogue,
     this.epilogueHeading = '',
     this.speakerLabel,
@@ -2013,6 +2023,11 @@ class _StoryText extends StatelessWidget {
   /// entry, leaves this card looking exactly as it always has.
   final String? uiTheme;
 
+  /// Where the scene is and how it feels, as tags above the text (null:
+  /// no tag).
+  final String? placeLabel;
+  final String? moodLabel;
+
   @override
   Widget build(BuildContext context) {
     final header = storyHeaderFor(text);
@@ -2039,6 +2054,42 @@ class _StoryText extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (placeLabel != null || moodLabel != null) ...[
+              Wrap(
+                spacing: 8,
+                runSpacing: 6,
+                children: [
+                  if (placeLabel != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        border: Border.all(color: accent.border),
+                      ),
+                      child: Text(
+                        placeLabel!.toUpperCase(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelSmall
+                            ?.copyWith(color: accent.text, letterSpacing: 1),
+                      ),
+                    ),
+                  if (moodLabel != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        moodLabel!.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            letterSpacing: 1),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 14),
+            ],
             if (header != null && header.isNotEmpty) ...[
               Text(
                 header,
@@ -2426,4 +2477,21 @@ Future<void> _showDiscoveryModal(
       ],
     ),
   );
+}
+
+/// The tag for a scene's place (`context_taxonomy.ui_theme`), or null for
+/// none: only real places get one, not the prologue or the endings.
+String? _placeLabel(WidgetRef ref, String? uiTheme) {
+  if (uiTheme == null) return null;
+  final key = 'place_$uiTheme';
+  final label = tr(ref, key);
+  return label == key ? null : label;
+}
+
+/// The tag for a scene's mood, or null for none (a neutral one has none).
+String? _moodLabel(WidgetRef ref, String? mood) {
+  if (mood == null) return null;
+  final key = 'mood_$mood';
+  final label = tr(ref, key);
+  return label == key ? null : label;
 }
