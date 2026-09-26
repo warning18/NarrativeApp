@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
 import '../data/camp_state.dart';
+import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
 import '../gamedata/db_schema.dart';
@@ -34,7 +35,7 @@ import 'port_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skills_screen.dart';
 import 'story_player_screen.dart'
-    show composeNarration, isStoryChoiceLocked, storyBodyFor, takeStoryChoice;
+    show composeNarration, isStoryChoiceLocked, takeStoryChoice;
 
 /// The party's camp from chapter 3, its base: the story stands here
 /// between trips. What happened on coming back, the open chapter (how much

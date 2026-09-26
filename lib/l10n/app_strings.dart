@@ -1574,35 +1574,114 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Lecture automatique du récit',
   },
   'auto_read_aloud_setting_desc': {
-    AppLanguage.en: 'Reads each scene aloud as soon as it appears, using the '
-        "device's built-in voice (fast — never waits on Gemini).",
-    AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage, avec la "
-        "voix intégrée de l'appareil (rapide — n'attend jamais Gemini).",
+    AppLanguage.en: 'Reads each scene aloud as soon as it appears: in the '
+        "ElevenLabs voice when it is on, otherwise in the device's built-in "
+        'voice.',
+    AppLanguage.fr: "Lit chaque scène à voix haute dès son affichage : avec "
+        "la voix ElevenLabs si elle est activée, sinon avec la voix intégrée "
+        "de l'appareil.",
   },
-  'gemini_voice_setting_title': {
-    AppLanguage.en: 'Use Gemini AI voice (higher quality)',
-    AppLanguage.fr: "Utiliser la voix IA Gemini (meilleure qualité)",
+  'elevenlabs_voice_setting_title': {
+    AppLanguage.en: 'Use the ElevenLabs voice (recorded)',
+    AppLanguage.fr: 'Utiliser la voix ElevenLabs (enregistrée)',
   },
-  'gemini_voice_setting_desc': {
-    AppLanguage.en:
-        'Needs a Gemini API key (set one below in Edit mode) and an internet connection. '
-            'Falls back to the device voice otherwise.',
-    AppLanguage.fr:
-        "Nécessite une clé API Gemini (à définir ci-dessous en mode Édition) et une connexion "
-            "internet. Utilise sinon la voix de l'appareil.",
+  'elevenlabs_voice_setting_desc': {
+    AppLanguage.en: 'Each paragraph is recorded once with your ElevenLabs API '
+        'key and kept on this device, then plays offline. Scenes not recorded '
+        "yet are recorded when read (this uses ElevenLabs credits). Without a "
+        "key, only recorded scenes use this voice; the rest use the device "
+        'voice.',
+    AppLanguage.fr: "Chaque paragraphe est enregistré une fois avec ta clé API "
+        "ElevenLabs et gardé sur cet appareil, puis lu hors ligne. Les scènes "
+        "pas encore enregistrées le sont à la lecture (cela consomme des "
+        "crédits ElevenLabs). Sans clé, seules les scènes enregistrées "
+        "utilisent cette voix ; les autres, la voix de l'appareil.",
   },
-  'gemini_voice_picker_label': {
-    AppLanguage.en: 'Gemini voice',
-    AppLanguage.fr: 'Voix Gemini'
+  'elevenlabs_api_key_label': {
+    AppLanguage.en: 'ElevenLabs API key',
+    AppLanguage.fr: 'Clé API ElevenLabs',
   },
-  'gemini_voice_missing_key_hint': {
-    AppLanguage.en: 'No Gemini API key set — using the device voice instead.',
-    AppLanguage.fr:
-        "Aucune clé API Gemini définie — utilisation de la voix de l'appareil à la place.",
+  'elevenlabs_api_key_saved_hint': {
+    AppLanguage.en: 'A key is saved on this device. Enter a new one to '
+        'replace it.',
+    AppLanguage.fr: 'Une clé est enregistrée sur cet appareil. Saisis-en une '
+        'nouvelle pour la remplacer.',
   },
-  'gemini_voice_error_prefix': {
-    AppLanguage.en: 'Gemini voice failed',
-    AppLanguage.fr: 'Échec de la voix Gemini',
+  'elevenlabs_api_key_missing_hint': {
+    AppLanguage.en: 'No key: only scenes already recorded can be heard in '
+        'this voice. Stored only on this device.',
+    AppLanguage.fr: 'Pas de clé : seules les scènes déjà enregistrées '
+        "peuvent être lues avec cette voix. Stockée uniquement sur cet "
+        'appareil.',
+  },
+  'elevenlabs_voice_id_label': {
+    AppLanguage.en: 'ElevenLabs voice ID',
+    AppLanguage.fr: 'ID de voix ElevenLabs',
+  },
+  'elevenlabs_voice_id_hint': {
+    AppLanguage.en: 'Leave empty for the narrator voice ({id}). Each voice '
+        'keeps its own recordings.',
+    AppLanguage.fr: 'Laisse vide pour la voix du narrateur ({id}). Chaque '
+        'voix garde ses propres enregistrements.',
+  },
+  'elevenlabs_recorded_count': {
+    AppLanguage.en: '{count} paragraphs recorded in this language, in:',
+    AppLanguage.fr: '{count} paragraphes enregistrés dans cette langue, dans :',
+  },
+  'elevenlabs_record_all_button': {
+    AppLanguage.en: 'Record the whole story',
+    AppLanguage.fr: "Enregistrer toute l'histoire",
+  },
+  'elevenlabs_record_button': {
+    AppLanguage.en: 'Record',
+    AppLanguage.fr: 'Enregistrer',
+  },
+  'elevenlabs_record_confirm_body': {
+    AppLanguage.en: '{count} paragraphs are not recorded yet in this '
+        'language. Recording them sends about {chars} characters to '
+        'ElevenLabs, which uses about as many credits. Recordings already '
+        'made are kept if you stop.',
+    AppLanguage.fr: "{count} paragraphes ne sont pas encore enregistrés dans "
+        "cette langue. Les enregistrer envoie environ {chars} caractères à "
+        "ElevenLabs, soit à peu près autant de crédits. Les enregistrements "
+        "déjà faits sont gardés si tu t'arrêtes.",
+  },
+  'elevenlabs_record_nothing': {
+    AppLanguage.en: 'The whole story is already recorded in this language.',
+    AppLanguage.fr: "Toute l'histoire est déjà enregistrée dans cette langue.",
+  },
+  'elevenlabs_recording_title': {
+    AppLanguage.en: 'Recording the story…',
+    AppLanguage.fr: "Enregistrement de l'histoire…",
+  },
+  'elevenlabs_recording_progress': {
+    AppLanguage.en: '{done} / {total} paragraphs',
+    AppLanguage.fr: '{done} / {total} paragraphes',
+  },
+  'elevenlabs_record_done': {
+    AppLanguage.en: '{count} paragraphs recorded.',
+    AppLanguage.fr: '{count} paragraphes enregistrés.',
+  },
+  'elevenlabs_delete_button': {
+    AppLanguage.en: 'Delete recordings',
+    AppLanguage.fr: 'Supprimer les enregistrements',
+  },
+  'elevenlabs_delete_confirm': {
+    AppLanguage.en: "Delete this voice's recordings in both languages? "
+        'Recording them again uses ElevenLabs credits.',
+    AppLanguage.fr: 'Supprimer les enregistrements de cette voix dans les '
+        'deux langues ? Les refaire consommera des crédits ElevenLabs.',
+  },
+  'elevenlabs_deleted': {
+    AppLanguage.en: 'Recordings deleted.',
+    AppLanguage.fr: 'Enregistrements supprimés.',
+  },
+  'elevenlabs_web_unsupported': {
+    AppLanguage.en: 'Recorded voices need the app (Android, iOS or desktop); '
+        'the web version uses the device voice.',
+    AppLanguage.fr: "Les voix enregistrées nécessitent l'application "
+        '(Android, iOS ou ordinateur) ; la version web utilise la voix de '
+        "l'appareil.",
   },
   'voice_error_prefix': {
     AppLanguage.en: 'Voice failed',

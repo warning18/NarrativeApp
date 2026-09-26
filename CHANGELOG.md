@@ -8,6 +8,30 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.156.0+185]
+
+### Changed
+- **The story is read in a recorded ElevenLabs voice**, replacing the
+  Gemini voice. In Settings → Read-Aloud Voice, turn it on and enter your
+  ElevenLabs API key. The key is kept on this device only. The narrator
+  voice is `8TMmdpPgqHKvDOGYP2lN` by default, and you can enter another
+  voice ID.
+- Each paragraph is recorded once, saved on the device as an MP3 (with its
+  words in a `.txt` beside it), and played offline after that. A scene not
+  recorded yet is recorded the first time it is read. The next paragraph
+  records while the current one plays.
+- **Record the whole story** records every scene, companion aside,
+  callback, race and profession line and hub line in the current language
+  in one go. Before it starts, it shows how many ElevenLabs characters it
+  will use (about 146,000 in English and 163,000 in French). It can be
+  stopped at any point, and what was recorded is kept. **Delete
+  recordings** clears a voice.
+- A companion's aside is its own clip, so each scene is recorded once
+  whoever walks with you.
+- Auto-read uses the ElevenLabs voice when it is on, and the device voice
+  otherwise. Without a key, only scenes already recorded use the ElevenLabs
+  voice. The web version keeps the device voice.
+
 ## [1.155.0+184]
 
 ### Changed
