@@ -12,6 +12,7 @@ import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
+import '../data/narration_clips.dart';
 import '../data/narration_tokens.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
@@ -33,11 +34,10 @@ import '../providers/discovery_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/finished_story_provider.dart';
 import '../providers/game_db_providers.dart';
-import '../providers/gemini_tts_provider.dart';
+import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
-import '../providers/settings_providers.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
 import '../theme/stitched_ink.dart';
@@ -128,16 +128,31 @@ class _HubNarrationFold {
 /// Whether the "Previously..." recap has been offered this launch.
 final _previouslyOfferedProvider = StateProvider<bool>((ref) => false);
 
-/// Speaks [text] via the device's on-device text-to-speech engine — the
-/// fast default voice, used for auto-read and as read-aloud's fallback
-/// when the (opt-in) Gemini voice isn't enabled.
-Future<void> _speakNarration(WidgetRef ref, String text, AppLanguage language) {
-  return ref.read(ttsProvider.notifier).speak(text, language);
+/// Reads [paragraphs] aloud (see [readAloudParagraphs]): in the recorded
+/// ElevenLabs voice when it is on and the scene can be heard in it --
+/// already recorded on this device, or an API key to record it with -- and
+/// in the device's own text-to-speech voice otherwise.
+Future<void> _speakNarration(
+    WidgetRef ref, List<String> paragraphs, AppLanguage language) async {
+  final voice = ref.read(elevenLabsVoiceSettingsProvider);
+  final elevenLabs = ref.read(elevenLabsTtsProvider.notifier);
+  if (voice.enabled &&
+      NarrationRecordings.supported &&
+      (voice.hasApiKey ||
+          await elevenLabs.isRecorded(paragraphs,
+              settings: voice, language: language))) {
+    await ref.read(ttsProvider.notifier).stop();
+    return elevenLabs.speak(paragraphs, settings: voice, language: language);
+  }
+  await elevenLabs.stop();
+  return ref
+      .read(ttsProvider.notifier)
+      .speak(paragraphs.join('\n\n'), language);
 }
 
 void _stopAllNarration(WidgetRef ref) {
   ref.read(ttsProvider.notifier).stop();
-  ref.read(geminiTtsProvider.notifier).stop();
+  ref.read(elevenLabsTtsProvider.notifier).stop();
 }
 
 class StoryPlayerScreen extends ConsumerWidget {
@@ -291,37 +306,17 @@ class _StoryView extends ConsumerWidget {
       });
     }
 
-    // Fetch this node's Gemini narration ahead of time (if that voice is
-    // in use) so tapping read-aloud plays back instantly instead of
-    // waiting on a network round-trip. preload() itself no-ops once this
-    // node's clip is cached or already in flight, so calling it on every
-    // rebuild is cheap.
-    final geminiVoiceForPreload = ref.watch(geminiVoiceSettingsProvider);
-    final apiKeyForPreload = ref.watch(apiKeyProvider);
-    if (geminiVoiceForPreload.enabled &&
-        (apiKeyForPreload?.isNotEmpty ?? false)) {
-      ref.read(geminiTtsProvider.notifier).preload(
-            text: storyBodyFor(displayDescription),
-            apiKey: apiKeyForPreload!,
-            voiceName: geminiVoiceForPreload.voiceName,
-            language: language,
-          );
-    }
-
     // Auto-read: once enabled, speak each scene the moment it appears
-    // instead of waiting for a manual tap on the read-aloud button — always
-    // via the fast on-device voice, never Gemini (which would mean a
-    // network wait on every single scene).
+    // instead of waiting for a manual tap on the read-aloud button.
     if (ref.watch(autoReadAloudProvider)) {
       final autoReadKey = '${node.id}_${playState.isInExcursion}';
       if (ref.read(_autoReadLastNodeKeyProvider) != autoReadKey) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!context.mounted) return;
           ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
-          ref.read(geminiTtsProvider.notifier).stop();
           try {
-            await _speakNarration(
-                ref, storyBodyFor(displayDescription), language);
+            await _speakNarration(ref,
+                readAloudParagraphs(node, session, french: french), language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
             // failure here must still surface — otherwise it just looks
@@ -402,7 +397,9 @@ class _StoryView extends ConsumerWidget {
           MaterialPageRoute(builder: (_) => const JournalScreen()),
         ),
       ),
-      _ReadAloudButton(text: displayDescription, language: language),
+      _ReadAloudButton(
+          paragraphs: readAloudParagraphs(node, session, french: french),
+          language: language),
     ];
 
     return TutorialTrigger(
@@ -2133,26 +2130,23 @@ class _ChoiceLabel extends ConsumerWidget {
   }
 }
 
-/// Toggles reading the current node's narrative text aloud via the device's
-/// text-to-speech engine — voiced in whichever language the app is set to.
-/// Tapping again while speaking stops it.
+/// Toggles reading the current node's narrative text aloud -- in the
+/// recorded ElevenLabs voice when it is on, the device's text-to-speech
+/// voice otherwise (see [_speakNarration]) -- in whichever language the
+/// app is set to. Tapping again while speaking (or while a paragraph is
+/// being recorded) stops it.
 class _ReadAloudButton extends ConsumerWidget {
-  const _ReadAloudButton({required this.text, required this.language});
+  const _ReadAloudButton({required this.paragraphs, required this.language});
 
-  final String text;
+  final List<String> paragraphs;
   final AppLanguage language;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
-    final apiKey = ref.watch(apiKeyProvider);
-    final useGemini = geminiVoice.enabled && (apiKey?.isNotEmpty ?? false);
-
-    final geminiState = useGemini ? ref.watch(geminiTtsProvider) : null;
-    final isLoading = geminiState == GeminiTtsPlaybackState.loading;
-    final isSpeaking = useGemini
-        ? geminiState != GeminiTtsPlaybackState.idle
-        : ref.watch(ttsProvider);
+    final voiceState = ref.watch(elevenLabsTtsProvider);
+    final isLoading = voiceState == VoicePlaybackState.loading;
+    final isSpeaking =
+        voiceState != VoicePlaybackState.idle || ref.watch(ttsProvider);
 
     return IconButton(
       icon: isLoading
@@ -2173,56 +2167,23 @@ class _ReadAloudButton extends ConsumerWidget {
               : tr(ref, 'read_aloud_tooltip')),
       visualDensity: VisualDensity.compact,
       onPressed: () async {
-        if (useGemini) {
-          final notifier = ref.read(geminiTtsProvider.notifier);
-          if (isSpeaking) {
-            // Covers both the loading and playing states — tapping again
-            // cancels an in-flight request just as readily as it stops
-            // audio that's already sounding.
-            await notifier.stop();
-            return;
-          }
-          try {
-            await notifier.speak(
-              text: storyBodyFor(text),
-              apiKey: apiKey!,
-              voiceName: geminiVoice.voiceName,
-              language: language,
-            );
-          } catch (e) {
-            if (!context.mounted) return;
-            showImmersiveNotice(
-              context,
-              icon: Icons.error_outline,
-              message: '${tr(ref, 'gemini_voice_error_prefix')}: $e',
-            );
-          }
+        if (isSpeaking) {
+          _stopAllNarration(ref);
           return;
         }
-
-        final notifier = ref.read(ttsProvider.notifier);
-        if (isSpeaking) {
-          notifier.stop();
-        } else {
-          notifier.speak(storyBodyFor(text), language);
+        try {
+          await _speakNarration(ref, paragraphs, language);
+        } catch (e) {
+          if (!context.mounted) return;
+          showImmersiveNotice(
+            context,
+            icon: Icons.error_outline,
+            message: '${tr(ref, 'voice_error_prefix')}: $e',
+          );
         }
       },
     );
   }
-}
-
-final RegExp _storyHeaderPattern = RegExp(r'^\[(.+?)\]\s*');
-
-/// This node's `[CHAPTER N: TITLE]`-style leading header, if present.
-String? storyHeaderFor(String text) =>
-    _storyHeaderPattern.firstMatch(text)?.group(1);
-
-/// This node's narrative text with any leading `[CHAPTER N: TITLE]`-style
-/// header stripped off — used both for on-screen rendering and for what
-/// the read-aloud button speaks, so the header isn't read out loud.
-String storyBodyFor(String text) {
-  final match = _storyHeaderPattern.firstMatch(text);
-  return (match != null ? text.substring(match.end) : text).trim();
 }
 
 /// Builds the body's [TextSpan]s for quick skim-reading: the opening

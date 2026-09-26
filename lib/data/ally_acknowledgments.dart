@@ -704,6 +704,18 @@ String? allyAcknowledgmentFor(
   return table['*'];
 }
 
+/// Every companion line [nodeId] can show, the default for any company
+/// included -- what recording the whole story reads (see
+/// `narrationScript`).
+Iterable<String> allyAcknowledgmentVariantsFor(String nodeId,
+    {required bool french}) {
+  final table = (french ? _acksFr : _acksEn)[nodeId] ??
+      (french ? _acksEn : _acksFr)[nodeId];
+  return table == null
+      ? const []
+      : table.values.where((line) => line.isNotEmpty);
+}
+
 /// [description] with the companion line appended, if [nodeId] has one
 /// and a companion is active; otherwise returns [description] unchanged.
 String withAllyAcknowledgment(

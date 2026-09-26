@@ -19,6 +19,7 @@ import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
+import '../widgets/elevenlabs_voice_settings.dart';
 import 'playthrough_simulator_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -74,8 +75,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final tutorial = ref.watch(tutorialProvider);
     final appMode = ref.watch(appModeProvider);
     final isEditMode = appMode == AppMode.edit;
-    final geminiVoice = ref.watch(geminiVoiceSettingsProvider);
-    final apiKey = ref.watch(apiKeyProvider);
     final autoReadAloud = ref.watch(autoReadAloudProvider);
 
     return Scaffold(
@@ -418,49 +417,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (value) =>
                   ref.read(autoReadAloudProvider.notifier).setEnabled(value),
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(tr(ref, 'gemini_voice_setting_title')),
-              subtitle: Text(tr(ref, 'gemini_voice_setting_desc')),
-              value: geminiVoice.enabled,
-              onChanged: (value) => ref
-                  .read(geminiVoiceSettingsProvider.notifier)
-                  .setEnabled(value),
-            ),
-            if (geminiVoice.enabled) ...[
-              const SizedBox(height: 8),
-              DropdownButtonFormField<String>(
-                // See the map theme dropdown above: reactive to a watched
-                // provider value.
-                // ignore: deprecated_member_use
-                value: geminiVoice.voiceName,
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  labelText: tr(ref, 'gemini_voice_picker_label'),
-                ),
-                items: geminiVoiceChoices
-                    .map((voice) =>
-                        DropdownMenuItem(value: voice, child: Text(voice)))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    ref
-                        .read(geminiVoiceSettingsProvider.notifier)
-                        .setVoiceName(value);
-                  }
-                },
-              ),
-              if (apiKey == null || apiKey.isEmpty) ...[
-                const SizedBox(height: 8),
-                Text(
-                  tr(ref, 'gemini_voice_missing_key_hint'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodySmall
-                      ?.copyWith(color: Theme.of(context).colorScheme.error),
-                ),
-              ],
-            ],
+            const ElevenLabsVoiceSettingsSection(),
             const SizedBox(height: 24),
             Text(
               tr(ref, 'updates_section'),
