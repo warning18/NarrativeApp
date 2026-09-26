@@ -12,6 +12,8 @@ import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
@@ -40,11 +42,14 @@ class PortScreen extends ConsumerWidget {
     final title = titleKey != null
         ? tr(ref, titleKey!)
         : (port == null ? portId : portNameFor(port, fr));
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [PortServices(portId: portId)],
+    return TutorialTrigger(
+      topic: TutorialTopic.town,
+      child: Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [PortServices(portId: portId)],
+        ),
       ),
     );
   }

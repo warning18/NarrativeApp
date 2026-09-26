@@ -11,6 +11,8 @@ import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/ship_widgets.dart';
 import 'port_screen.dart';
@@ -95,13 +97,14 @@ class ShipScreen extends ConsumerWidget {
         PortChart(homeOnChart: !embedded),
       ],
     );
-    if (embedded) return body;
+    final triggered = TutorialTrigger(topic: TutorialTopic.town, child: body);
+    if (embedded) return triggered;
     return Scaffold(
       appBar: AppBar(
         title: Text(tr(ref, 'boat_title')),
         actions: const [GoldBadge()],
       ),
-      body: body,
+      body: triggered,
     );
   }
 }

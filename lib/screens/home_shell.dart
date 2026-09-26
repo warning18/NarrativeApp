@@ -16,6 +16,7 @@ import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
+import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import 'ai_generator_screen.dart';
@@ -194,19 +195,24 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               )
             : null,
         title: !isEditMode && index == 0
-            ? _ChapterTitle(fallback: titles[0])
+            ? TutorialTarget(
+                id: 'home.chapter', child: _ChapterTitle(fallback: titles[0]))
             : Text(titles[index]),
         actions: [
           // Edit Mode maps the story's scenes and paths; play mode shows
           // the world the story has reached.
-          IconButton(
-            icon: Icon(
-                isEditMode ? Icons.account_tree_outlined : Icons.map_outlined),
-            tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) =>
-                    isEditMode ? const StoryMapPage() : const WorldMapPage(),
+          TutorialTarget(
+            id: 'home.map',
+            child: IconButton(
+              icon: Icon(isEditMode
+                  ? Icons.account_tree_outlined
+                  : Icons.map_outlined),
+              tooltip: tr(ref, isEditMode ? 'title_map' : 'world_map_title'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) =>
+                      isEditMode ? const StoryMapPage() : const WorldMapPage(),
+                ),
               ),
             ),
           ),
@@ -233,47 +239,51 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ],
       ),
       body: IndexedStack(index: index, children: screens),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: visibleTabs.indexOf(index),
-        onDestinationSelected: (i) =>
-            ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
-        destinations: isEditMode
-            ? [
-                NavigationDestination(
-                    icon: const Icon(Icons.menu_book),
-                    label: tr(ref, 'nav_story')),
-                NavigationDestination(
-                    icon: const Icon(Icons.videogame_asset),
-                    label: tr(ref, 'nav_play')),
-                NavigationDestination(
-                    icon: const Icon(Icons.auto_awesome),
-                    label: tr(ref, 'nav_generate')),
-                NavigationDestination(
-                    icon: const Icon(Icons.storage),
-                    label: tr(ref, 'nav_data')),
-              ]
-            : [
-                for (final tab in visibleTabs)
-                  switch (tab) {
-                    0 => NavigationDestination(
-                        icon: const Icon(Icons.menu_book),
-                        label: tr(ref, 'nav_story')),
-                    1 => dotted(Icons.person_outline, tr(ref, 'nav_character'),
-                        show: badges.character,
-                        reason: tr(ref, 'badge_points_waiting')),
-                    2 => atCampTab
-                        ? dotted(Icons.local_fire_department_outlined,
-                            tr(ref, 'nav_camp'),
-                            show: badges.camp,
-                            reason: tr(ref, 'badge_house_affordable'))
-                        : NavigationDestination(
-                            icon: const Icon(Icons.sailing_outlined),
-                            label: tr(ref, 'nav_ship')),
-                    _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
-                        show: badges.other,
-                        reason: tr(ref, 'badge_quest_ready')),
-                  },
-              ],
+      bottomNavigationBar: TutorialTarget(
+        id: 'home.nav',
+        child: NavigationBar(
+          selectedIndex: visibleTabs.indexOf(index),
+          onDestinationSelected: (i) =>
+              ref.read(homeTabIndexProvider.notifier).state = visibleTabs[i],
+          destinations: isEditMode
+              ? [
+                  NavigationDestination(
+                      icon: const Icon(Icons.menu_book),
+                      label: tr(ref, 'nav_story')),
+                  NavigationDestination(
+                      icon: const Icon(Icons.videogame_asset),
+                      label: tr(ref, 'nav_play')),
+                  NavigationDestination(
+                      icon: const Icon(Icons.auto_awesome),
+                      label: tr(ref, 'nav_generate')),
+                  NavigationDestination(
+                      icon: const Icon(Icons.storage),
+                      label: tr(ref, 'nav_data')),
+                ]
+              : [
+                  for (final tab in visibleTabs)
+                    switch (tab) {
+                      0 => NavigationDestination(
+                          icon: const Icon(Icons.menu_book),
+                          label: tr(ref, 'nav_story')),
+                      1 => dotted(
+                          Icons.person_outline, tr(ref, 'nav_character'),
+                          show: badges.character,
+                          reason: tr(ref, 'badge_points_waiting')),
+                      2 => atCampTab
+                          ? dotted(Icons.local_fire_department_outlined,
+                              tr(ref, 'nav_camp'),
+                              show: badges.camp,
+                              reason: tr(ref, 'badge_house_affordable'))
+                          : NavigationDestination(
+                              icon: const Icon(Icons.sailing_outlined),
+                              label: tr(ref, 'nav_ship')),
+                      _ => dotted(Icons.more_horiz, tr(ref, 'nav_other'),
+                          show: badges.other,
+                          reason: tr(ref, 'badge_quest_ready')),
+                    },
+                ],
+        ),
       ),
     );
   }

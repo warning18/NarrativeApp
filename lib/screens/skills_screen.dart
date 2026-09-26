@@ -13,6 +13,8 @@ import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
@@ -479,95 +481,116 @@ class _SkillsScreenState extends ConsumerState<SkillsScreen> {
         title: Text('${tr(ref, 'skills')}$titleSuffix'),
         actions: [
           if (isPlayer)
-            IconButton(
-              icon: const Icon(Icons.auto_fix_high),
-              tooltip: tr(ref, 'craft_skill_button'),
-              onPressed: () => showMergeSkillsDialog(
-                context,
-                ref,
-                skills: skillsAsync.value ?? const {},
-                merges: merges,
-                unlockedSkillIds: session.unlockedSkillIds,
+            TutorialTarget(
+              id: 'skills.craft',
+              child: IconButton(
+                icon: const Icon(Icons.auto_fix_high),
+                tooltip: tr(ref, 'craft_skill_button'),
+                onPressed: () => showMergeSkillsDialog(
+                  context,
+                  ref,
+                  skills: skillsAsync.value ?? const {},
+                  merges: merges,
+                  unlockedSkillIds: session.unlockedSkillIds,
+                ),
               ),
             ),
           if (!isPlayer || !_treeView)
-            IconButton(
-              icon: Icon(_compareMode
-                  ? Icons.compare_arrows
-                  : Icons.compare_arrows_outlined),
-              tooltip: tr(ref, 'compare_button'),
-              onPressed: _toggleCompareMode,
+            TutorialTarget(
+              id: 'skills.compare',
+              child: IconButton(
+                icon: Icon(_compareMode
+                    ? Icons.compare_arrows
+                    : Icons.compare_arrows_outlined),
+                tooltip: tr(ref, 'compare_button'),
+                onPressed: _toggleCompareMode,
+              ),
             ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            // Wraps, so both counts fit a phone in French too.
-            child: Wrap(
-              alignment: WrapAlignment.spaceBetween,
-              spacing: 12,
-              runSpacing: 4,
-              children: [
-                Text(
-                  '${tr(ref, 'skill_points_label')}: $skillPoints',
-                  style: theme.textTheme.titleMedium,
+      body: TutorialTrigger(
+        topic: TutorialTopic.skills,
+        child: Column(
+          children: [
+            TutorialTarget(
+              id: 'skills.points',
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                // Wraps, so both counts fit a phone in French too.
+                child: Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: 12,
+                  runSpacing: 4,
+                  children: [
+                    Text(
+                      '${tr(ref, 'skill_points_label')}: $skillPoints',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    if (isPlayer)
+                      Text(
+                        '${tr(ref, 'skill_essence_label')}: ${session.skillEssence}',
+                        style: theme.textTheme.titleMedium,
+                      ),
+                  ],
                 ),
-                if (isPlayer)
-                  Text(
-                    '${tr(ref, 'skill_essence_label')}: ${session.skillEssence}',
-                    style: theme.textTheme.titleMedium,
-                  ),
-              ],
-            ),
-          ),
-          if (isPlayer)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: SegmentedButton<bool>(
-                segments: [
-                  ButtonSegment(
-                    value: true,
-                    icon: const Icon(Icons.account_tree_outlined),
-                    label: Text(tr(ref, 'skill_tree_view')),
-                  ),
-                  ButtonSegment(
-                    value: false,
-                    icon: const Icon(Icons.filter_list),
-                    label: Text(tr(ref, 'skill_list_view')),
-                  ),
-                ],
-                selected: {_treeView},
-                onSelectionChanged: (selection) => setState(() {
-                  _treeView = selection.first;
-                  _compareMode = false;
-                  _firstCompareId = null;
-                }),
               ),
             ),
-          if (_compareMode)
-            Container(
-              width: double.infinity,
-              color: theme.colorScheme.primaryContainer,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                _firstCompareId == null
-                    ? tr(ref, 'compare_hint_skills')
-                    : tr(ref, 'compare_first_selected'),
+            if (isPlayer)
+              TutorialTarget(
+                id: 'skills.views',
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: SegmentedButton<bool>(
+                    segments: [
+                      ButtonSegment(
+                        value: true,
+                        icon: const Icon(Icons.account_tree_outlined),
+                        label: Text(tr(ref, 'skill_tree_view')),
+                      ),
+                      ButtonSegment(
+                        value: false,
+                        icon: const Icon(Icons.filter_list),
+                        label: Text(tr(ref, 'skill_list_view')),
+                      ),
+                    ],
+                    selected: {_treeView},
+                    onSelectionChanged: (selection) => setState(() {
+                      _treeView = selection.first;
+                      _compareMode = false;
+                      _firstCompareId = null;
+                    }),
+                  ),
+                ),
+              ),
+            if (_compareMode)
+              Container(
+                width: double.infinity,
+                color: theme.colorScheme.primaryContainer,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Text(
+                  _firstCompareId == null
+                      ? tr(ref, 'compare_hint_skills')
+                      : tr(ref, 'compare_first_selected'),
+                ),
+              ),
+            Expanded(
+              child: TutorialTarget(
+                id: 'skills.list',
+                child: skillsAsync.when(
+                  data: (records) => records.isEmpty
+                      ? Center(child: Text(tr(ref, 'no_skills_defined')))
+                      : content(records),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) => Center(
+                      child:
+                          Text('${tr(ref, 'failed_to_load_skills')}: $error')),
+                ),
               ),
             ),
-          Expanded(
-            child: skillsAsync.when(
-              data: (records) => records.isEmpty
-                  ? Center(child: Text(tr(ref, 'no_skills_defined')))
-                  : content(records),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
-                  child: Text('${tr(ref, 'failed_to_load_skills')}: $error')),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

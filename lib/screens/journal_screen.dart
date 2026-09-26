@@ -9,6 +9,8 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 
 /// [entry]'s opening line with the reader's name and people filled in.
 String _personal(String text, PlayerSession session, bool french) =>
@@ -95,14 +97,17 @@ class JournalScreen extends ConsumerWidget {
       ));
     }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(tr(ref, 'journal_title'))),
-      body: entries.isEmpty
-          ? Center(child: Text(tr(ref, 'journal_empty')))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              children: children,
-            ),
+    return TutorialTrigger(
+      topic: TutorialTopic.journal,
+      child: Scaffold(
+        appBar: AppBar(title: Text(tr(ref, 'journal_title'))),
+        body: entries.isEmpty
+            ? Center(child: Text(tr(ref, 'journal_empty')))
+            : ListView(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                children: children,
+              ),
+      ),
     );
   }
 }

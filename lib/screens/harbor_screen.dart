@@ -8,6 +8,8 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/ship_widgets.dart';
@@ -63,12 +65,15 @@ class HarborScreen extends ConsumerWidget {
         ],
       );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(tr(ref, 'harbor_title')),
-        actions: const [GoldBadge()],
+    return TutorialTrigger(
+      topic: TutorialTopic.boat,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(tr(ref, 'harbor_title')),
+          actions: const [GoldBadge()],
+        ),
+        body: body,
       ),
-      body: body,
     );
   }
 }

@@ -18,6 +18,10 @@ import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
+import '../providers/tutorial_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_launcher.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
@@ -84,7 +88,7 @@ class PlayScreen extends ConsumerWidget {
         .where((id) => !session.seenEnemyIds.contains(id))
         .length;
 
-    return ListView(
+    final list = ListView(
       padding: const EdgeInsets.all(16),
       children: [
         if (isEditMode)
@@ -118,37 +122,40 @@ class PlayScreen extends ConsumerWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.ellipsis),
             ),
-            Wrap(
-              spacing: 4,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.save_outlined),
-                  tooltip: tr(ref, 'save_game_tooltip'),
-                  onPressed: () => showSaveSlotsSheet(context, saving: true),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.folder_open_outlined),
-                  tooltip: ironman
-                      ? tr(ref, 'ironman_load_tooltip')
-                      : tr(ref, 'load_game_tooltip'),
-                  onPressed: !hasSavedGame || ironman
-                      ? null
-                      : () => showSaveSlotsSheet(context, saving: false),
-                ),
-                if (isEditMode)
-                  TextButton.icon(
-                    onPressed: () async {
-                      await ref
-                          .read(playerSessionProvider.notifier)
-                          .resetSession(keepLegacy: false);
-                      ref
-                          .read(storyPlayProvider.notifier)
-                          .restart(StoryRepository.startNodeId);
-                    },
-                    icon: const Icon(Icons.restart_alt),
-                    label: Text(tr(ref, 'reset')),
+            TutorialTarget(
+              id: 'other.saves',
+              child: Wrap(
+                spacing: 4,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.save_outlined),
+                    tooltip: tr(ref, 'save_game_tooltip'),
+                    onPressed: () => showSaveSlotsSheet(context, saving: true),
                   ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.folder_open_outlined),
+                    tooltip: ironman
+                        ? tr(ref, 'ironman_load_tooltip')
+                        : tr(ref, 'load_game_tooltip'),
+                    onPressed: !hasSavedGame || ironman
+                        ? null
+                        : () => showSaveSlotsSheet(context, saving: false),
+                  ),
+                  if (isEditMode)
+                    TextButton.icon(
+                      onPressed: () async {
+                        await ref
+                            .read(playerSessionProvider.notifier)
+                            .resetSession(keepLegacy: false);
+                        ref
+                            .read(storyPlayProvider.notifier)
+                            .restart(StoryRepository.startNodeId);
+                      },
+                      icon: const Icon(Icons.restart_alt),
+                      label: Text(tr(ref, 'reset')),
+                    ),
+                ],
+              ),
             ),
           ],
         ),
@@ -250,77 +257,152 @@ class PlayScreen extends ConsumerWidget {
           if (!townHubUnlocked)
             (tr(ref, 'town_hub_title'), tr(ref, 'town_hub_locked_subtitle')),
         ]),
-        Card(
-          child: ListTile(
-            leading: const Icon(Icons.emoji_events_outlined),
-            title: Text(tr(ref, 'achievements_title')),
-            subtitle: Text(
-              '${session.unlockedAchievementIds.length} / $achievementsCount '
-              '${tr(ref, 'achievements_progress_label').toLowerCase()}',
+        TutorialTarget(
+          id: 'other.achievements',
+          child: Card(
+            child: ListTile(
+              leading: const Icon(Icons.emoji_events_outlined),
+              title: Text(tr(ref, 'achievements_title')),
+              subtitle: Text(
+                '${session.unlockedAchievementIds.length} / $achievementsCount '
+                '${tr(ref, 'achievements_progress_label').toLowerCase()}',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const AchievementsScreen()),
+                );
+              },
             ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const AchievementsScreen()),
-              );
-            },
           ),
         ),
         const Divider(height: 24),
-        _CollapsibleSection(
-          title: tr(ref, 'quests'),
-          badgeCount: unseenQuests,
-          readyCount:
-              isEditMode ? 0 : ref.watch(tabBadgesProvider).readyQuestCount,
-          readyLabel: tr(ref, 'quests_ready_label'),
-          onExpanded: () => ref
-              .read(playerSessionProvider.notifier)
-              .markAllSeenInCategory(quests: true),
-          child: questsAsync.when(
-            data: (records) => _QuestList(records: records),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+        TutorialTarget(
+          id: 'other.sections',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _CollapsibleSection(
+                title: tr(ref, 'quests'),
+                badgeCount: unseenQuests,
+                readyCount: isEditMode
+                    ? 0
+                    : ref.watch(tabBadgesProvider).readyQuestCount,
+                readyLabel: tr(ref, 'quests_ready_label'),
+                onExpanded: () => ref
+                    .read(playerSessionProvider.notifier)
+                    .markAllSeenInCategory(quests: true),
+                child: questsAsync.when(
+                  data: (records) => _QuestList(records: records),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) =>
+                      Text('${tr(ref, 'failed_to_load_quests')}: $error'),
+                ),
+              ),
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'shops'),
+                badgeCount: unseenShops,
+                onExpanded: () => ref
+                    .read(playerSessionProvider.notifier)
+                    .markAllSeenInCategory(shops: true),
+                child: shopsAsync.when(
+                  data: (records) => _ShopList(records: records),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) =>
+                      Text('${tr(ref, 'failed_to_load_shops')}: $error'),
+                ),
+              ),
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'bestiary'),
+                badgeCount: unseenEnemies,
+                onExpanded: () => ref
+                    .read(playerSessionProvider.notifier)
+                    .markAllSeenInCategory(enemies: true),
+                child: enemiesAsync.when(
+                  data: (records) => _EnemyList(records: records),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) =>
+                      Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+                ),
+              ),
+              const Divider(height: 24),
+              _CollapsibleSection(
+                title: tr(ref, 'npcs_section'),
+                child: npcsAsync.when(
+                  data: (records) => _NpcList(records: records),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  error: (error, stack) =>
+                      Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
+                ),
+              ),
+            ],
           ),
         ),
-        const Divider(height: 24),
-        _CollapsibleSection(
-          title: tr(ref, 'shops'),
-          badgeCount: unseenShops,
-          onExpanded: () => ref
-              .read(playerSessionProvider.notifier)
-              .markAllSeenInCategory(shops: true),
-          child: shopsAsync.when(
-            data: (records) => _ShopList(records: records),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Text('${tr(ref, 'failed_to_load_shops')}: $error'),
+        if (asOtherTab) ...[
+          const Divider(height: 24),
+          TutorialTarget(
+            id: 'other.tutorials',
+            child: _CollapsibleSection(
+              title: tr(ref, 'tutorials_section'),
+              child: const _TutorialList(),
+            ),
           ),
-        ),
-        const Divider(height: 24),
-        _CollapsibleSection(
-          title: tr(ref, 'bestiary'),
-          badgeCount: unseenEnemies,
-          onExpanded: () => ref
-              .read(playerSessionProvider.notifier)
-              .markAllSeenInCategory(enemies: true),
-          child: enemiesAsync.when(
-            data: (records) => _EnemyList(records: records),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Text('${tr(ref, 'failed_to_load_enemies')}: $error'),
+        ],
+      ],
+    );
+    return asOtherTab
+        ? TutorialTrigger(topic: TutorialTopic.other, child: list)
+        : list;
+  }
+}
+
+/// Every feature's tour, to play again: those not seen yet marked New.
+class _TutorialList extends ConsumerWidget {
+  const _TutorialList();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(tutorialProvider);
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(tr(ref, 'tutorials_section_hint'),
+            style: theme.textTheme.bodyMedium
+                ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        const SizedBox(height: 4),
+        for (final topic in TutorialTopic.values)
+          ListTile(
+            key: Key('tutorial_replay_${topic.name}'),
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(topic.icon),
+            title: Text(tr(ref, topic.titleKey)),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  tr(
+                      ref,
+                      settings.hasSeen(topic)
+                          ? 'tut_seen_label'
+                          : 'tut_new_label'),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                      color: settings.hasSeen(topic)
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.primary),
+                ),
+                const SizedBox(width: 4),
+                const Icon(Icons.play_arrow_rounded),
+              ],
+            ),
+            onTap: () => playTutorial(context, ref, topic),
           ),
-        ),
-        const Divider(height: 24),
-        _CollapsibleSection(
-          title: tr(ref, 'npcs_section'),
-          child: npcsAsync.when(
-            data: (records) => _NpcList(records: records),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) =>
-                Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
-          ),
-        ),
       ],
     );
   }

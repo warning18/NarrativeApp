@@ -19,7 +19,6 @@ import '../providers/tutorial_provider.dart';
 import '../providers/update_checker.dart';
 import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
-import '../widgets/tutorial_overlay.dart';
 import 'playthrough_simulator_screen.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -129,7 +128,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 onPressed: () async {
                   await ref.read(tutorialProvider.notifier).reset();
                   if (!context.mounted) return;
-                  showTutorialOverlay(context, ref);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(tr(ref, 'tutorial_reset_notice'))));
                 },
                 icon: const Icon(Icons.replay),
                 label: Text(tr(ref, 'tutorial_replay_button')),

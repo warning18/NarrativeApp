@@ -6,6 +6,8 @@ import '../data/skill_challenge.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 
 /// A multi-round "push your luck" contest: reach [successesNeeded]
 /// successful ability checks before [maxFailures] failed ones. Distinct
@@ -84,124 +86,134 @@ class _SkillChallengeScreenState extends ConsumerState<SkillChallengeScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'skill_challenge_title'))),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                abilityLabel.toUpperCase(),
-                style: theme.textTheme.labelMedium
-                    ?.copyWith(color: ink.ember, letterSpacing: 1.5),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                widget.promptText,
-                style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _PipRow(
-                      label: tr(ref, 'skill_challenge_successes_label'),
-                      filled: successesSoFar,
-                      total: widget.successesNeeded,
-                      color: ink.gold,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: _PipRow(
-                      label: tr(ref, 'skill_challenge_failures_label'),
-                      filled: failuresSoFar,
-                      total: widget.maxFailures,
-                      color: ink.blood,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              _D20(
-                roll: latest?.check.roll,
-                success: latest?.success,
-                // Smaller on a short screen, so the rounds keep room.
-                size: (MediaQuery.sizeOf(context).height * 0.18)
-                    .clamp(84.0, 150.0),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                latest == null
-                    ? '$abilityLabel ${tr(ref, 'check_label')} '
-                        '${tr(ref, 'vs_dc_label')} ${widget.dc}'
-                    : '${latest.check.roll} + $abilityLabel ${latest.check.modifier}'
-                        ' = ${latest.check.total}  ·  ${tr(ref, 'vs_dc_label')} ${widget.dc}',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium,
-              ),
-              const SizedBox(height: 12),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _revealed,
-                  itemBuilder: (context, index) {
-                    final round = _result.rounds[index];
-                    return _RoundTile(
-                      roundNumber: index + 1,
-                      roundLabel: tr(ref, 'skill_challenge_round_label'),
-                      result: round.check,
-                      success: round.success,
-                    );
-                  },
+      body: TutorialTrigger(
+        topic: TutorialTopic.skillChallenge,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  abilityLabel.toUpperCase(),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: ink.ember, letterSpacing: 1.5),
                 ),
-              ),
-              if (!_started)
-                FilledButton(
-                  onPressed: _begin,
-                  style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(52)),
-                  child: Text(tr(ref, 'skill_challenge_begin')),
-                )
-              else if (_finished)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 6),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(3),
-                          border: Border.all(
+                const SizedBox(height: 6),
+                Text(
+                  widget.promptText,
+                  style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
+                ),
+                const SizedBox(height: 16),
+                TutorialTarget(
+                  id: 'challenge.track',
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _PipRow(
+                          label: tr(ref, 'skill_challenge_successes_label'),
+                          filled: successesSoFar,
+                          total: widget.successesNeeded,
+                          color: ink.gold,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: _PipRow(
+                          label: tr(ref, 'skill_challenge_failures_label'),
+                          filled: failuresSoFar,
+                          total: widget.maxFailures,
+                          color: ink.blood,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TutorialTarget(
+                  id: 'challenge.die',
+                  child: _D20(
+                    roll: latest?.check.roll,
+                    success: latest?.success,
+                    // Smaller on a short screen, so the rounds keep room.
+                    size: (MediaQuery.sizeOf(context).height * 0.18)
+                        .clamp(84.0, 150.0),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  latest == null
+                      ? '$abilityLabel ${tr(ref, 'check_label')} '
+                          '${tr(ref, 'vs_dc_label')} ${widget.dc}'
+                      : '${latest.check.roll} + $abilityLabel ${latest.check.modifier}'
+                          ' = ${latest.check.total}  ·  ${tr(ref, 'vs_dc_label')} ${widget.dc}',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: 12),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _revealed,
+                    itemBuilder: (context, index) {
+                      final round = _result.rounds[index];
+                      return _RoundTile(
+                        roundNumber: index + 1,
+                        roundLabel: tr(ref, 'skill_challenge_round_label'),
+                        result: round.check,
+                        success: round.success,
+                      );
+                    },
+                  ),
+                ),
+                if (!_started)
+                  FilledButton(
+                    onPressed: _begin,
+                    style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(52)),
+                    child: Text(tr(ref, 'skill_challenge_begin')),
+                  )
+                else if (_finished)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(
+                                color: _result.success
+                                    ? ink.gold
+                                    : colorScheme.error),
+                          ),
+                          child: Text(
+                            (_result.success
+                                    ? tr(ref, 'skill_challenge_success_banner')
+                                    : tr(ref, 'skill_challenge_fail_banner'))
+                                .toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              letterSpacing: 2,
                               color: _result.success
                                   ? ink.gold
-                                  : colorScheme.error),
-                        ),
-                        child: Text(
-                          (_result.success
-                                  ? tr(ref, 'skill_challenge_success_banner')
-                                  : tr(ref, 'skill_challenge_fail_banner'))
-                              .toUpperCase(),
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            letterSpacing: 2,
-                            color:
-                                _result.success ? ink.gold : colorScheme.error,
+                                  : colorScheme.error,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      onPressed: () =>
-                          Navigator.of(context).pop(_result.success),
-                      style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(52)),
-                      child: Text(tr(ref, 'skill_challenge_continue')),
-                    ),
-                  ],
-                ),
-            ],
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () =>
+                            Navigator.of(context).pop(_result.success),
+                        style: FilledButton.styleFrom(
+                            minimumSize: const Size.fromHeight(52)),
+                        child: Text(tr(ref, 'skill_challenge_continue')),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
           ),
         ),
       ),

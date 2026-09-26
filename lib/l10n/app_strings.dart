@@ -3862,92 +3862,435 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Passer en mode En jeu',
   },
   'tutorial_setting_title': {
-    AppLanguage.en: 'Guided tour',
-    AppLanguage.fr: 'Visite guidée'
+    AppLanguage.en: 'Tutorials',
+    AppLanguage.fr: 'Tutoriels',
   },
   'tutorial_setting_desc': {
     AppLanguage.en:
-        'Show a short walkthrough the first time you enter In-Game mode.',
+        'Your companion shows you each feature the first time you find it.',
     AppLanguage.fr:
-        'Affiche une courte visite guidée la première fois que vous entrez en mode En jeu.',
+        'Votre compagnon vous présente chaque fonctionnalité la première fois que vous la découvrez.',
   },
   'tutorial_replay_button': {
-    AppLanguage.en: 'Replay tutorial',
-    AppLanguage.fr: 'Revoir le tutoriel',
+    AppLanguage.en: 'Show all tutorials again',
+    AppLanguage.fr: 'Revoir tous les tutoriels',
   },
-  'tutorial_skip_button': {AppLanguage.en: 'Skip', AppLanguage.fr: 'Passer'},
-  'tutorial_next_button': {AppLanguage.en: 'Next', AppLanguage.fr: 'Suivant'},
-  'tutorial_done_button': {
+  'tutorial_reset_notice': {
+    AppLanguage.en: 'Each tutorial will play again the next time you reach it.',
+    AppLanguage.fr:
+        'Chaque tutoriel sera rejoué la prochaine fois que vous y arriverez.',
+  },
+  'tutorials_section': {
+    AppLanguage.en: 'Tutorials',
+    AppLanguage.fr: 'Tutoriels',
+  },
+  'tutorials_section_hint': {
+    AppLanguage.en: 'Replay a tour of any feature.',
+    AppLanguage.fr: "Revoir la visite d'une fonctionnalité.",
+  },
+  'tut_seen_label': {
+    AppLanguage.en: 'Seen',
+    AppLanguage.fr: 'Vu',
+  },
+  'tut_new_label': {
+    AppLanguage.en: 'New',
+    AppLanguage.fr: 'Nouveau',
+  },
+  'tut_skip': {
+    AppLanguage.en: 'Skip',
+    AppLanguage.fr: 'Passer',
+  },
+  'tut_next': {
+    AppLanguage.en: 'Next',
+    AppLanguage.fr: 'Suivant',
+  },
+  'tut_done': {
     AppLanguage.en: 'Got it!',
-    AppLanguage.fr: 'Compris !'
+    AppLanguage.fr: 'Compris !',
   },
-  'tutorial_step1_title': {
-    AppLanguage.en: 'Welcome, adventurer!',
-    AppLanguage.fr: 'Bienvenue, aventurier !',
+  'tut_voice_on': {
+    AppLanguage.en: 'Read aloud',
+    AppLanguage.fr: 'Lire à voix haute',
   },
-  'tutorial_step1_body': {
-    AppLanguage.en:
-        "Hi, I'm your companion for the journey — let me show you around before "
-            'you dive in.',
-    AppLanguage.fr:
-        'Bonjour, je suis votre compagnon pour le voyage — laissez-moi vous faire '
-            'visiter avant de commencer.',
+  'tut_voice_off': {
+    AppLanguage.en: 'Stop reading aloud',
+    AppLanguage.fr: 'Arrêter la lecture',
   },
-  'tutorial_step1_body_named_prefix': {
-    AppLanguage.en: "Hi, I'm ",
-    AppLanguage.fr: 'Bonjour, je suis ',
+  'tut_guide_default_name': {
+    AppLanguage.en: 'your companion',
+    AppLanguage.fr: 'votre compagnon',
   },
-  'tutorial_step1_body_named_suffix': {
-    AppLanguage.en: ' — let me show you around before you dive in.',
-    AppLanguage.fr: ' — laissez-moi vous faire visiter avant de commencer.',
+  'tut_story_title': {
+    AppLanguage.en: 'The story',
+    AppLanguage.fr: "L'histoire",
   },
-  'tutorial_step2_title': {
-    AppLanguage.en: 'The Story tab',
-    AppLanguage.fr: "L'onglet Histoire"
-  },
-  'tutorial_step2_body': {
-    AppLanguage.en:
-        'This is where the tale unfolds. Read each passage, then pick a choice to '
-            'see what happens next.',
-    AppLanguage.fr:
-        "C'est ici que l'histoire se déroule. Lisez chaque passage, puis faites un "
-            'choix pour voir la suite.',
-  },
-  'tutorial_step3_title': {
-    AppLanguage.en: 'The Play tab',
-    AppLanguage.fr: "L'onglet Jouer"
-  },
-  'tutorial_step3_body': {
-    AppLanguage.en:
-        "Track active quests, browse shops, and check the bestiary here — "
-            "everything you've discovered so far.",
-    AppLanguage.fr:
-        'Suivez vos quêtes actives, visitez les boutiques et consultez le '
-            "bestiaire ici — tout ce que vous avez découvert jusqu'à présent.",
-  },
-  'tutorial_step4_title': {
+  'tut_character_title': {
     AppLanguage.en: 'Your character',
-    AppLanguage.fr: 'Votre personnage'
+    AppLanguage.fr: 'Votre personnage',
   },
-  'tutorial_step4_body': {
+  'tut_camp_title': {
+    AppLanguage.en: 'The camp',
+    AppLanguage.fr: 'Le camp',
+  },
+  'tut_other_title': {
+    AppLanguage.en: 'The Other tab',
+    AppLanguage.fr: "L'onglet Autre",
+  },
+  'tut_map_title': {
+    AppLanguage.en: 'The world map',
+    AppLanguage.fr: 'La carte du monde',
+  },
+  'tut_skills_title': {
+    AppLanguage.en: 'Skills',
+    AppLanguage.fr: 'Compétences',
+  },
+  'tut_dice_title': {
+    AppLanguage.en: 'Dice',
+    AppLanguage.fr: 'Dés',
+  },
+  'tut_inventory_title': {
+    AppLanguage.en: 'Inventory',
+    AppLanguage.fr: 'Inventaire',
+  },
+  'tut_levelUp_title': {
+    AppLanguage.en: 'Level up',
+    AppLanguage.fr: 'Montée de niveau',
+  },
+  'tut_fight_title': {
+    AppLanguage.en: 'Dice combat',
+    AppLanguage.fr: 'Combat aux dés',
+  },
+  'tut_skillChallenge_title': {
+    AppLanguage.en: 'Skill challenges',
+    AppLanguage.fr: 'Épreuves de compétence',
+  },
+  'tut_boat_title': {
+    AppLanguage.en: 'The harbour',
+    AppLanguage.fr: 'Le port',
+  },
+  'tut_voyage_title': {
+    AppLanguage.en: 'Voyages',
+    AppLanguage.fr: 'Traversées',
+  },
+  'tut_expedition_title': {
+    AppLanguage.en: 'Expeditions',
+    AppLanguage.fr: 'Expéditions',
+  },
+  'tut_town_title': {
+    AppLanguage.en: 'Towns and ports',
+    AppLanguage.fr: 'Villes et ports',
+  },
+  'tut_shop_title': {
+    AppLanguage.en: 'Shops',
+    AppLanguage.fr: 'Boutiques',
+  },
+  'tut_journal_title': {
+    AppLanguage.en: 'The journal',
+    AppLanguage.fr: 'Le journal',
+  },
+  'tut_achievements_title': {
+    AppLanguage.en: 'Achievements',
+    AppLanguage.fr: 'Succès',
+  },
+  'tut_story_1': {
     AppLanguage.en:
-        'Keep an eye on health, gold, and stats at the top of the screen. Win '
-            'fights to gain experience and level up.',
+        "Woof! I'm {name}. The first time you find something new, I'll show you around. Tap anywhere to go on, or Skip whenever you like.",
     AppLanguage.fr:
-        "Surveillez votre santé, votre or et vos statistiques en haut de l'écran. "
-            "Gagnez des combats pour prendre de l'expérience et monter de niveau.",
+        "Wouf ! Je suis {name}. La première fois que vous découvrez quelque chose, je vous fais visiter. Touchez l'écran pour continuer, ou Passer quand vous voulez.",
   },
-  'tutorial_step5_title': {
-    AppLanguage.en: 'Make it yours',
-    AppLanguage.fr: "Personnalisez l'expérience",
+  'tut_story_2': {
+    AppLanguage.en: 'This is the chapter you are in.',
+    AppLanguage.fr: 'Voici le chapitre en cours.',
   },
-  'tutorial_step5_body': {
+  'tut_story_3': {
     AppLanguage.en:
-        'Visit Settings anytime to adjust dark mode, read-aloud narration, and '
-            'more — including turning me on or off.',
+        'Your level, health, mana and gold. Tap them for alignment, quests and more. The book opens your journal; the speaker reads the page aloud.',
     AppLanguage.fr:
-        'Allez dans les paramètres à tout moment pour ajuster le mode sombre, la '
-            "narration vocale, et plus encore — y compris m'activer ou me désactiver.",
+        "Votre niveau, votre santé, votre mana et votre or. Touchez-les pour l'alignement, les quêtes et plus encore. Le livre ouvre le journal ; le haut-parleur lit la page.",
+  },
+  'tut_story_4': {
+    AppLanguage.en:
+        'The story itself. Scroll to read on, or double-tap the text to read it full screen.',
+    AppLanguage.fr:
+        "L'histoire elle-même. Faites défiler pour lire la suite, ou touchez deux fois le texte pour le lire en plein écran.",
+  },
+  'tut_story_5': {
+    AppLanguage.en:
+        "Choose what you do. Tags show what a choice costs or brings. A padlock means you can't take it yet.",
+    AppLanguage.fr:
+        'Choisissez ce que vous faites. Les étiquettes montrent ce que coûte ou rapporte un choix. Un cadenas : pas encore possible.',
+  },
+  'tut_story_6': {
+    AppLanguage.en:
+        "And that's me! I trot along each time the story moves on. The arrow tucks me away.",
+    AppLanguage.fr:
+        "Et ça, c'est moi ! Je trottine à chaque fois que l'histoire avance. La flèche me range.",
+  },
+  'tut_story_7': {
+    AppLanguage.en: 'The map shows every place the story has reached.',
+    AppLanguage.fr: "La carte montre chaque lieu atteint par l'histoire.",
+  },
+  'tut_story_8': {
+    AppLanguage.en:
+        'Your character, your camp and everything else live down here. A dot means something is waiting for you.',
+    AppLanguage.fr:
+        'Votre personnage, votre camp et tout le reste sont ici. Un point signale que quelque chose vous attend.',
+  },
+  'tut_camp_5': {
+    AppLanguage.en:
+        'Sail from here: pick a port on the chart. Each port has its own expeditions.',
+    AppLanguage.fr:
+        "Partez d'ici : choisissez un port sur la carte. Chaque port a ses propres expéditions.",
+  },
+  'tut_character_1': {
+    AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
+    AppLanguage.fr: "C'est vous : niveau et expérience, santé, mana et or.",
+  },
+  'tut_character_2': {
+    AppLanguage.en:
+        'Your choices tip you toward Good or Evil. Past either mark, the story changes, and so do I.',
+    AppLanguage.fr:
+        "Vos choix vous font pencher vers le Bien ou le Mal. Au-delà d'une marque, l'histoire change, et moi aussi.",
+  },
+  'tut_character_3': {
+    AppLanguage.en:
+        'Your eight abilities. They back story checks and fights. Hold one to see its full name.',
+    AppLanguage.fr:
+        'Vos huit caractéristiques. Elles servent aux épreuves et aux combats. Maintenez-en une pour voir son nom.',
+  },
+  'tut_character_4': {
+    AppLanguage.en:
+        'From here: your gear, your skills, your level-up points and your dice.',
+    AppLanguage.fr:
+        "D'ici : votre équipement, vos compétences, vos points de niveau et vos dés.",
+  },
+  'tut_camp_1': {
+    AppLanguage.en:
+        'Your cliff town. Every house you build climbs the cliff. Scroll inside it to see the top.',
+    AppLanguage.fr:
+        'Votre ville sur la falaise. Chaque maison construite grimpe la falaise. Faites défiler pour voir le sommet.',
+  },
+  'tut_camp_2': {
+    AppLanguage.en:
+        'Pick a house or an addition to see where it would go, then build it with gold.',
+    AppLanguage.fr:
+        "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l'or.",
+  },
+  'tut_camp_3': {
+    AppLanguage.en:
+        'The harbour, once you build it. Your boat is refitted there.',
+    AppLanguage.fr:
+        'Le port, une fois construit. On y remet votre bateau en état.',
+  },
+  'tut_camp_4': {
+    AppLanguage.en:
+        'Companions you recruit rest here. Choose who fights at your side.',
+    AppLanguage.fr:
+        'Les compagnons recrutés se reposent ici. Choisissez qui combat à vos côtés.',
+  },
+  'tut_other_1': {
+    AppLanguage.en: 'Save your game here, or load another one.',
+    AppLanguage.fr: 'Sauvegardez ici, ou chargez une autre partie.',
+  },
+  'tut_other_2': {
+    AppLanguage.en:
+        "The achievements you've earned, and the ones still waiting.",
+    AppLanguage.fr: 'Les succès obtenus, et ceux qui vous attendent.',
+  },
+  'tut_other_3': {
+    AppLanguage.en:
+        "Quests, shops, the bestiary and the people you've met. New entries get a count.",
+    AppLanguage.fr:
+        'Quêtes, boutiques, bestiaire et personnes rencontrées. Les nouveautés sont comptées.',
+  },
+  'tut_other_4': {
+    AppLanguage.en:
+        'And here you can replay any of my tours, whenever you like.',
+    AppLanguage.fr:
+        "Et ici, vous pouvez revoir n'importe laquelle de mes visites.",
+  },
+  'tut_map_1': {
+    AppLanguage.en:
+        'The chart of your journey. Places appear as the story reaches them. Tap one to read about it; pinch to zoom.',
+    AppLanguage.fr:
+        "La carte de votre voyage. Les lieux apparaissent quand l'histoire les atteint. Touchez-en un pour le découvrir ; pincez pour zoomer.",
+  },
+  'tut_map_2': {
+    AppLanguage.en:
+        'Zoom, find where you stand, or walk the whole journey again. The switches change how the chart looks and the shape of the land.',
+    AppLanguage.fr:
+        'Zoomez, retrouvez où vous êtes, ou refaites tout le voyage. Les boutons changent le style de la carte et la forme des terres.',
+  },
+  'tut_map_3': {
+    AppLanguage.en: 'Each chapter has its colour. Tap one to see its places.',
+    AppLanguage.fr:
+        'Chaque chapitre a sa couleur. Touchez-en un pour voir ses lieux.',
+  },
+  'tut_skills_1': {
+    AppLanguage.en:
+        'Skill points unlock new skills. Essence upgrades the ones you have.',
+    AppLanguage.fr:
+        'Les points de compétence débloquent de nouvelles compétences. L’essence améliore celles que vous avez.',
+  },
+  'tut_skills_2': {
+    AppLanguage.en:
+        'Each branch is learned from the top down. Learn a whole branch to master it; its skills then fight a tier higher. Tap a skill to see what it does.',
+    AppLanguage.fr:
+        "Chaque branche s'apprend de haut en bas. Apprenez toute une branche pour la maîtriser : ses compétences combattent alors un rang plus haut. Touchez une compétence pour voir ce qu'elle fait.",
+  },
+  'tut_skills_5': {
+    AppLanguage.en:
+        "See your class's skill tree, or every skill as a list with filters.",
+    AppLanguage.fr:
+        "Voyez l'arbre de compétences de votre classe, ou toutes les compétences en liste avec filtres.",
+  },
+  'tut_skills_3': {
+    AppLanguage.en: 'Fuse two skills you know into a stronger one.',
+    AppLanguage.fr: 'Fusionnez deux compétences connues en une plus puissante.',
+  },
+  'tut_skills_4': {
+    AppLanguage.en: 'Compare two skills side by side.',
+    AppLanguage.fr: 'Comparez deux compétences côte à côte.',
+  },
+  'tut_dice_1': {
+    AppLanguage.en: 'Pick the die you want to set up.',
+    AppLanguage.fr: 'Choisissez le dé à préparer.',
+  },
+  'tut_dice_2': {
+    AppLanguage.en:
+        'Its faces: attack, defend, heal and skill. In a fight, one lands at random.',
+    AppLanguage.fr:
+        'Ses faces : attaque, défense, soin et compétence. En combat, l’une tombe au hasard.',
+  },
+  'tut_dice_3': {
+    AppLanguage.en:
+        'Your skills. Drag one onto an open face, or tap an open face to choose.',
+    AppLanguage.fr:
+        'Vos compétences. Glissez-en une sur une face libre, ou touchez une face libre pour choisir.',
+  },
+  'tut_inventory_1': {
+    AppLanguage.en:
+        'Your gear. Tap an item to equip it or use it. Rarer items have a coloured edge.',
+    AppLanguage.fr:
+        'Votre équipement. Touchez un objet pour l’équiper ou l’utiliser. Les objets rares ont un bord coloré.',
+  },
+  'tut_inventory_2': {
+    AppLanguage.en: 'Compare two items before you choose.',
+    AppLanguage.fr: 'Comparez deux objets avant de choisir.',
+  },
+  'tut_levelUp_1': {
+    AppLanguage.en: 'Each level gives you points to spend.',
+    AppLanguage.fr: 'Chaque niveau vous donne des points à dépenser.',
+  },
+  'tut_levelUp_2': {
+    AppLanguage.en:
+        'Tap +1 Point to raise what you use most. Hold a line to learn what it does.',
+    AppLanguage.fr:
+        'Touchez +1 point pour améliorer ce que vous utilisez le plus. Maintenez une ligne pour savoir à quoi elle sert.',
+  },
+  'tut_fight_1': {
+    AppLanguage.en: "A fight! Here's how dice combat works.",
+    AppLanguage.fr: 'Un combat ! Voici comment marche le combat aux dés.',
+  },
+  'tut_fight_2': {
+    AppLanguage.en:
+        'Each of your fighters rolls a die. Tap a die to keep it, then reroll the others. Hold one to see all its faces.',
+    AppLanguage.fr:
+        'Chacun de vos combattants lance un dé. Touchez un dé pour le garder, puis relancez les autres. Maintenez-le pour voir ses faces.',
+  },
+  'tut_fight_3': {
+    AppLanguage.en:
+        'Your foes. With enough Perception you can see what they will do next.',
+    AppLanguage.fr:
+        'Vos ennemis. Avec assez de Perception, vous voyez ce qu’ils vont faire.',
+  },
+  'tut_fight_4': {
+    AppLanguage.en: 'Your side: health, shields and effects.',
+    AppLanguage.fr: 'Votre camp : santé, boucliers et effets.',
+  },
+  'tut_fight_5': {
+    AppLanguage.en:
+        'Roll, then confirm to play the faces you landed. Spells and items are here too.',
+    AppLanguage.fr:
+        'Lancez, puis confirmez pour jouer les faces obtenues. Les sorts et les objets sont ici aussi.',
+  },
+  'tut_fight_6': {
+    AppLanguage.en:
+        'The round and the battlefield. Momentum builds as you fight; when it is full, you can surge.',
+    AppLanguage.fr:
+        'Le tour et le champ de bataille. L’élan monte au fil du combat ; plein, il permet un déferlement.',
+  },
+  'tut_skillChallenge_1': {
+    AppLanguage.en:
+        'A skill challenge: roll the d20 and add your ability. Meet the number to succeed.',
+    AppLanguage.fr:
+        'Une épreuve : lancez le d20 et ajoutez votre caractéristique. Atteignez le seuil pour réussir.',
+  },
+  'tut_skillChallenge_2': {
+    AppLanguage.en: 'Get enough successes before too many failures.',
+    AppLanguage.fr: "Obtenez assez de succès avant trop d'échecs.",
+  },
+  'tut_boat_1': {
+    AppLanguage.en: 'The Rusty Eel on her slipway. Mend her hull here.',
+    AppLanguage.fr: 'La Rusty Eel sur sa cale. Réparez sa coque ici.',
+  },
+  'tut_boat_2': {
+    AppLanguage.en:
+        "Fit the shipwright's parts into her slots to make her stronger for the sea.",
+    AppLanguage.fr:
+        'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
+  },
+  'tut_voyage_1': {
+    AppLanguage.en:
+        'A crossing is a string of sea events: calm days mend the hull, storms cost it, wrecks can be salvaged.',
+    AppLanguage.fr:
+        "Une traversée est une suite d'événements : les jours calmes réparent la coque, les tempêtes l'abîment, les épaves se fouillent.",
+  },
+  'tut_voyage_2': {
+    AppLanguage.en:
+        'Raiders start a ship battle. Your party crews the stations; if the hull sinks, you limp back.',
+    AppLanguage.fr:
+        'Les pillards déclenchent une bataille navale. Votre groupe tient les postes ; si la coque coule, vous rentrez au port de départ.',
+  },
+  'tut_expedition_1': {
+    AppLanguage.en:
+        'An expedition is a chain of events in one zone. Clear them all to win its reward.',
+    AppLanguage.fr:
+        "Une expédition est une suite d'événements dans une zone. Terminez-les tous pour gagner sa récompense.",
+  },
+  'tut_expedition_2': {
+    AppLanguage.en:
+        'You can turn back between events. You keep what you found, but not the final reward.',
+    AppLanguage.fr:
+        'Vous pouvez rebrousser chemin entre deux événements. Vous gardez vos trouvailles, mais pas la récompense finale.',
+  },
+  'tut_town_1': {
+    AppLanguage.en:
+        'A port of call: rest, trade in its shops and set out on the expeditions nearby. The Rusty Eel takes you on to the next port.',
+    AppLanguage.fr:
+        'Une escale : reposez-vous, commercez et partez pour les expéditions voisines. La Rusty Eel vous emmène au port suivant.',
+  },
+  'tut_shop_1': {
+    AppLanguage.en: 'Buy what the merchant sells with your gold.',
+    AppLanguage.fr: 'Achetez ce que vend le marchand avec votre or.',
+  },
+  'tut_shop_2': {
+    AppLanguage.en:
+        'You can sell what you carry too: the tag at the top opens the sale.',
+    AppLanguage.fr:
+        'Vous pouvez aussi vendre ce que vous portez : l’étiquette en haut ouvre la vente.',
+  },
+  'tut_journal_1': {
+    AppLanguage.en:
+        'The story so far, newest first: each scene and the choice that left it.',
+    AppLanguage.fr:
+        "L'histoire jusqu'ici, la plus récente d'abord : chaque scène et le choix qui l'a conclue.",
+  },
+  'tut_achievements_1': {
+    AppLanguage.en:
+        'Every achievement. The ones you have earned are lit; the rest are waiting.',
+    AppLanguage.fr:
+        'Tous les succès. Ceux obtenus sont allumés ; les autres vous attendent.',
   },
   'hub_shops_section': {AppLanguage.en: 'Shops', AppLanguage.fr: 'Commerces'},
   'hub_challenges_section': {

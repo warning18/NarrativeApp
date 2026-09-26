@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/chart_map_painter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -346,46 +348,49 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
     Widget mapBox(double width) {
       final inner = width - 8;
       _mapSize = Size(inner, inner * worldMapHeight / worldMapWidth);
-      return SizedBox(
-        width: width,
-        height: _mapSize.height + 8,
-        child: Semantics(
-          label: tr(ref, 'world_map_semantics'),
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              color: palette.sea,
-              border: Border.all(color: tokens.line, width: 4),
-            ),
-            child: ClipRect(
-              child: InteractiveViewer(
-                transformationController: _view,
-                maxScale: _maxZoom,
-                child: GestureDetector(
-                  key: const Key('world_map_canvas'),
-                  behavior: HitTestBehavior.opaque,
-                  onTapUp: (details) =>
-                      _tapAt(details.localPosition, discovered),
-                  onDoubleTapDown: (details) =>
-                      _doubleTapAt = details.localPosition,
-                  onDoubleTap: _doubleTap,
-                  child: CustomPaint(
-                    size: _mapSize,
-                    painter: ChartMapPainter(
-                      frame: _frame,
-                      walk: _walk,
-                      geography: _geo,
-                      palette: palette,
-                      language: language,
-                      discovered: discovered,
-                      legs: roadLegs(journey, discovered),
-                      ahead: _nextPlace(here, discovered),
-                      selectedId: selected.id,
-                      here: here,
-                      walking: _walking,
-                      walkPath: _walkPath,
-                      chapterFilter: _chapterFilter,
-                      reduceMotion: _reduceMotion,
-                      chapterColor: chartChapterColor,
+      return TutorialTarget(
+        id: 'map.chart',
+        child: SizedBox(
+          width: width,
+          height: _mapSize.height + 8,
+          child: Semantics(
+            label: tr(ref, 'world_map_semantics'),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.sea,
+                border: Border.all(color: tokens.line, width: 4),
+              ),
+              child: ClipRect(
+                child: InteractiveViewer(
+                  transformationController: _view,
+                  maxScale: _maxZoom,
+                  child: GestureDetector(
+                    key: const Key('world_map_canvas'),
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: (details) =>
+                        _tapAt(details.localPosition, discovered),
+                    onDoubleTapDown: (details) =>
+                        _doubleTapAt = details.localPosition,
+                    onDoubleTap: _doubleTap,
+                    child: CustomPaint(
+                      size: _mapSize,
+                      painter: ChartMapPainter(
+                        frame: _frame,
+                        walk: _walk,
+                        geography: _geo,
+                        palette: palette,
+                        language: language,
+                        discovered: discovered,
+                        legs: roadLegs(journey, discovered),
+                        ahead: _nextPlace(here, discovered),
+                        selectedId: selected.id,
+                        here: here,
+                        walking: _walking,
+                        walkPath: _walkPath,
+                        chapterFilter: _chapterFilter,
+                        reduceMotion: _reduceMotion,
+                        chapterColor: chartChapterColor,
+                      ),
                     ),
                   ),
                 ),
@@ -398,136 +403,145 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
 
     // Under the map, never over it: zoom, back to where the story stands,
     // the journey walked again, and the map's look.
-    final controls = Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      alignment: WrapAlignment.spaceBetween,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        _MapControls(
-          tokens: tokens,
-          onZoomIn: () => _zoomBy(1.6),
-          onZoomOut: () => _zoomBy(1 / 1.6),
-          onCentre: here == null ? null : () => _centreOn(here),
-          onReplay: journey.length < 2 || _reduceMotion
-              ? null
-              : () => _replay(journey),
-        ),
-        // The three looks side by side, the one shown picked out.
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Semantics(
-            container: true,
-            label: tr(ref, 'world_map_look'),
-            child: Container(
-              key: const Key('world_map_look'),
-              height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: tokens.line),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final option in MapLook.values)
-                    Semantics(
-                      button: true,
-                      selected: option == look,
-                      child: InkWell(
-                        key: Key('world_map_look_${option.name}'),
-                        onTap: () =>
-                            ref.read(mapLookProvider.notifier).choose(option),
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          color:
-                              option == look ? tokens.line : Colors.transparent,
-                          child: Text(_lookName(ref, option),
-                              style: TextStyle(
-                                  fontFamily: _pixelFont,
-                                  fontSize: 14,
-                                  color: option == look
-                                      ? tokens.ink
-                                      : tokens.muted)),
+    final controls = TutorialTarget(
+      id: 'map.controls',
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          _MapControls(
+            tokens: tokens,
+            onZoomIn: () => _zoomBy(1.6),
+            onZoomOut: () => _zoomBy(1 / 1.6),
+            onCentre: here == null ? null : () => _centreOn(here),
+            onReplay: journey.length < 2 || _reduceMotion
+                ? null
+                : () => _replay(journey),
+          ),
+          // The three looks side by side, the one shown picked out.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Semantics(
+              container: true,
+              label: tr(ref, 'world_map_look'),
+              child: Container(
+                key: const Key('world_map_look'),
+                height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: tokens.line),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final option in MapLook.values)
+                      Semantics(
+                        button: true,
+                        selected: option == look,
+                        child: InkWell(
+                          key: Key('world_map_look_${option.name}'),
+                          onTap: () =>
+                              ref.read(mapLookProvider.notifier).choose(option),
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            color: option == look
+                                ? tokens.line
+                                : Colors.transparent,
+                            child: Text(_lookName(ref, option),
+                                style: TextStyle(
+                                    fontFamily: _pixelFont,
+                                    fontSize: 14,
+                                    color: option == look
+                                        ? tokens.ink
+                                        : tokens.muted)),
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        // The three geographies the chart can be drawn on.
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Semantics(
-            container: true,
-            label: tr(ref, 'world_map_shape'),
-            child: Container(
-              key: const Key('world_map_shape'),
-              height: 36,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(color: tokens.line),
-              ),
-              clipBehavior: Clip.antiAlias,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final option in MapShape.values)
-                    Semantics(
-                      button: true,
-                      selected: option == shape,
-                      child: InkWell(
-                        key: Key('world_map_shape_${option.name}'),
-                        onTap: () =>
-                            ref.read(mapShapeProvider.notifier).choose(option),
-                        child: Container(
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          color: option == shape
-                              ? tokens.line
-                              : Colors.transparent,
-                          child: Text(tr(ref, 'world_map_shape_${option.name}'),
-                              style: TextStyle(
-                                  fontFamily: _pixelFont,
-                                  fontSize: 14,
-                                  color: option == shape
-                                      ? tokens.ink
-                                      : tokens.muted)),
+          // The three geographies the chart can be drawn on.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Semantics(
+              container: true,
+              label: tr(ref, 'world_map_shape'),
+              child: Container(
+                key: const Key('world_map_shape'),
+                height: 36,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: tokens.line),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final option in MapShape.values)
+                      Semantics(
+                        button: true,
+                        selected: option == shape,
+                        child: InkWell(
+                          key: Key('world_map_shape_${option.name}'),
+                          onTap: () => ref
+                              .read(mapShapeProvider.notifier)
+                              .choose(option),
+                          child: Container(
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            color: option == shape
+                                ? tokens.line
+                                : Colors.transparent,
+                            child: Text(
+                                tr(ref, 'world_map_shape_${option.name}'),
+                                style: TextStyle(
+                                    fontFamily: _pixelFont,
+                                    fontSize: 14,
+                                    color: option == shape
+                                        ? tokens.ink
+                                        : tokens.muted)),
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
 
-    final chips = Wrap(
-      spacing: 6,
-      runSpacing: 6,
-      children: [
-        for (final n in [0, ...chaptersReached])
-          _PixelChip(
-            key: Key('world_map_chip_$n'),
-            label: n == 0
-                ? tr(ref, 'world_map_all')
-                : '${tr(ref, 'world_map_chapter_short')} $n',
-            selected: _chapterFilter == n,
-            color: n == 0 ? tokens.accent : chapterColor(n),
-            tokens: tokens,
-            onTap: () => setState(() {
-              _chapterFilter = n;
-              if (n != 0) {
-                _selectedId = reached.firstWhere((l) => l.chapter == n).id;
-              }
-            }),
-          ),
-      ],
+    final chips = TutorialTarget(
+      id: 'map.chapters',
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        children: [
+          for (final n in [0, ...chaptersReached])
+            _PixelChip(
+              key: Key('world_map_chip_$n'),
+              label: n == 0
+                  ? tr(ref, 'world_map_all')
+                  : '${tr(ref, 'world_map_chapter_short')} $n',
+              selected: _chapterFilter == n,
+              color: n == 0 ? tokens.accent : chapterColor(n),
+              tokens: tokens,
+              onTap: () => setState(() {
+                _chapterFilter = n;
+                if (n != 0) {
+                  _selectedId = reached.firstWhere((l) => l.chapter == n).id;
+                }
+              }),
+            ),
+        ],
+      ),
     );
 
     // Back and Next walk the road through the places reached, skipping
@@ -568,78 +582,84 @@ class _WorldMapPageState extends ConsumerState<WorldMapPage>
           color: tokens.muted),
     );
 
-    return Scaffold(
-      backgroundColor: tokens.bg,
-      appBar: AppBar(
+    return TutorialTrigger(
+      topic: TutorialTopic.map,
+      child: Scaffold(
         backgroundColor: tokens.bg,
-        foregroundColor: tokens.ink,
-        surfaceTintColor: Colors.transparent,
-        title: Text(
-          tr(ref, 'world_map_title'),
-          style: TextStyle(
-              fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
+        appBar: AppBar(
+          backgroundColor: tokens.bg,
+          foregroundColor: tokens.ink,
+          surfaceTintColor: Colors.transparent,
+          title: Text(
+            tr(ref, 'world_map_title'),
+            style: TextStyle(
+                fontFamily: InkFonts.display, fontSize: 24, color: tokens.ink),
+          ),
         ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth >= 900) {
-            final width = math.min((constraints.maxWidth - 48) * 0.62,
-                (constraints.maxHeight - 230) * worldMapWidth / worldMapHeight);
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        mapBox(width),
-                        const SizedBox(height: 8),
-                        controls,
-                        const SizedBox(height: 8),
-                        hint,
-                        const SizedBox(height: 10),
-                        chips,
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(child: SingleChildScrollView(child: panel)),
-                ],
-              ),
-            );
-          }
-          // On a phone the map stays put above the text, so pinching and
-          // panning it never fights the page's scrolling.
-          final width = math.min(constraints.maxWidth - 32,
-              constraints.maxHeight * 0.55 * worldMapWidth / worldMapHeight);
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: Center(child: mapBox(width)),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-                child: SizedBox(width: width, child: controls),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth >= 900) {
+              final width = math.min(
+                  (constraints.maxWidth - 48) * 0.62,
+                  (constraints.maxHeight - 230) *
+                      worldMapWidth /
+                      worldMapHeight);
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    hint,
-                    const SizedBox(height: 10),
-                    chips,
-                    const SizedBox(height: 14),
-                    panel,
+                    SizedBox(
+                      width: width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          mapBox(width),
+                          const SizedBox(height: 8),
+                          controls,
+                          const SizedBox(height: 8),
+                          hint,
+                          const SizedBox(height: 10),
+                          chips,
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(child: SingleChildScrollView(child: panel)),
                   ],
                 ),
-              ),
-            ],
-          );
-        },
+              );
+            }
+            // On a phone the map stays put above the text, so pinching and
+            // panning it never fights the page's scrolling.
+            final width = math.min(constraints.maxWidth - 32,
+                constraints.maxHeight * 0.55 * worldMapWidth / worldMapHeight);
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: Center(child: mapBox(width)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  child: SizedBox(width: width, child: controls),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    children: [
+                      hint,
+                      const SizedBox(height: 10),
+                      chips,
+                      const SizedBox(height: 14),
+                      panel,
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
