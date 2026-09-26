@@ -397,7 +397,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         appBar: AppBar(title: Text(title), automaticallyImplyLeading: false),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            // The battle keeps its own margins, so it has the width.
+            padding: _phase == _VoyagePhase.fight
+                ? EdgeInsets.zero
+                : const EdgeInsets.all(20),
             child: switch (_phase) {
               _VoyagePhase.event => _buildEvent(context,
                   fr: fr, enemyShips: enemyShips, parts: parts),
