@@ -98,6 +98,9 @@ class _PartCard extends ConsumerWidget {
     final roomDamage = (part['roomDamage'] as num?)?.toInt() ?? 1;
     final bonus = part['roomBonus'];
     final power = sailPowerOf(part);
+    final ranges = [
+      for (final r in (part['ranges'] as List?) ?? const []) r.toString(),
+    ];
     return [
       if (power != null) tr(ref, 'sail_power_${power.name}'),
       if (damage > 0) '${tr(ref, 'damage_label')} $damage',
@@ -107,9 +110,15 @@ class _PartCard extends ConsumerWidget {
       if (damage > 0 && part['piercesShield'] == true)
         tr(ref, 'pierces_shield_label'),
       if (damage > 0 && part['setsFire'] == true) tr(ref, 'sets_fire_label'),
+      if (damage > 0 && ranges.isNotEmpty && ranges.length < 3)
+        '${tr(ref, 'weapon_reach_label')} '
+            '${ranges.map((r) => tr(ref, 'ship_range_$r')).join(', ')}',
       if (bonus is Map)
         for (final entry in bonus.entries)
           '${tr(ref, 'ship_room_${entry.key}_title')} +${entry.value}',
+      if (((part['turnSecondsBonus'] as num?)?.toInt() ?? 0) > 0)
+        tr(ref, 'turn_seconds_bonus_label')
+            .replaceAll('{n}', '${part['turnSecondsBonus']}'),
     ].join(' · ');
   }
 

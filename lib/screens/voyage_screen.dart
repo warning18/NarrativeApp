@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sea_events.dart';
@@ -12,6 +13,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -330,6 +332,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       }
     }
     if (!mounted) return;
+    if (outcome.escaped) {
+      // The raider got away: nothing to take, and the Eel sails on as
+      // she is.
+      _log.add(_t('ship_log_got_away', ship: enemyName));
+      await notifier.setShipHull(_player!.hull);
+      await _advance();
+      return;
+    }
     if (outcome.won) {
       if (!outcome.boarded) _log.add(_t('ship_log_sunk', ship: enemyName));
       if (prizeLine != null) _log.add(prizeLine);
@@ -567,6 +577,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         professions: professions,
         gameConfig: gameConfig,
       ),
+      turnSeconds: ref.read(shipTurnTimerProvider)
+          ? shipTurnSeconds(
+              ship: _shipRecord,
+              parts: _parts,
+              installedPartIds: session.shipPartIds)
+          : null,
+      habit: habitFromName(_enemyData?['habit']?.toString()),
+      windKnot: _sail?.power == SailPower.windknot,
     );
   }
 

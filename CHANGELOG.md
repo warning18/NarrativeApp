@@ -8,6 +8,94 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.153.0+182]
+
+Ship battles become more than trading shots: ten new rules, each one a
+decision to make under the clock.
+
+### Added
+- **Speed pays.** In a timed battle, ending the turn with half the clock
+  left gives quick orders: +10% evasion against the volley that follows.
+  A bolt next to the clock lights while it is on offer.
+- **Crew orders, once a battle each.** Every crew member can give one:
+  All hands! (you: every damaged room mends a pip), Brace! (Kelda: half
+  the hull this round), Grapple! (Grosh: hauled side by side and
+  boarded, shields or not), Bless the deck (Maren: fires out, crew
+  healed), Shore up (Tobin: bulwark mended, a layer raised), Mark their
+  helmsman (Malrik: the enemy slips nothing this turn), Cut their
+  rigging (Sable: every enemy weapon loses a step of charge), Eagle eye
+  (Liora: the next shot is a critical), Void ward (Vess: the first enemy
+  shot is turned aside).
+- **Range.** The ships lie close, at medium range or far apart. Far off,
+  both are 10% harder to hit; side by side, 10% easier. The helm can
+  close in or pull away once a turn; the helm hand spends the turn on
+  it. Harpoons reach no farther than medium range and fire pots need
+  the ships close. Boarding, by either side, needs them side by side.
+  Enemy helms steer for the range they like (30% a working helm pip).
+- **Weather**, rolled each round, with the next round's shown:
+  calm, a tailwind for the Eel (+10% evasion, her helm turns without a
+  hand), a crosswind (+10% evasion for both; the Wind-Knot sail makes it
+  a tailwind), a squall (no fire starts, every fire goes out) and fog
+  (the enemy's aim hidden even from the Kraken's Eye, +5% evasion).
+- **Shot.** Round, chain (half the hull, tears a pip off their helm),
+  grape (half the hull, their crew repairs one less for two rounds) or
+  heated (three quarters of the hull, sets the room burning).
+- **Aimed shots.** Hold an enemy room instead of tapping it: a marker
+  sweeps the aim bar. Stop it in the green for a critical (cannot be
+  slipped, half again the hull, an extra pip); amber is a plain shot;
+  the red edges go wide.
+- **Enemy habits.** The Raider Skiff runs for open water when hurt and
+  escapes from long range (no prize, no loss). The Corsair Brig keeps
+  its distance and shoots the crew where they stand (half again the
+  hurt). The Inquisition Cutter rams once alongside: 12 hull through any
+  shield, and a leak. The Void Barge comes alongside to board every third
+  round, shields or not, twice at most. Shown under the enemy's name.
+- **Leaks.** A hit of 8 or more on the hold opens a leak (three at most),
+  2 hull each every round. A hand in the hold bails one a turn after
+  any fire; the enemy's crew plugs theirs.
+- **The sea itself.** From the second round, one round in ten: a rogue
+  wave takes a shield layer off both ships, a sea creature goes for the
+  ship lower in the water (10 hull and the hold), or a drifting wreck
+  takes the next enemy shot.
+- **Focused fire.** A room already hit this turn loses an extra pip per
+  hit; a crosshair marks it and the shot preview counts it.
+- `habit` on enemy ships and `ranges` on weapons in the data and in the
+  editor; the Harbor shows a weapon's reach.
+
+### Changed
+- The battle's rules moved out of the panel into a tested engine
+  (`ship_battle.dart`). A Monte Carlo of 14,400 battles on the real data
+  compares the new battle with the old one, Eel fitted early, mid and
+  late against every ship. Win rates stay within 14 points of the old
+  battle for every pairing: a player who uses the new tools lands
+  between 11 points below and 13 above, one who ignores them between
+  14 below and 11 above. Fights last about as long.
+
+### Fixed
+- Battle log lines no longer read "the The Rusty Eel's hold" or "de Le
+  Rusty Eel" (now "du Rusty Eel"); a crew member's hurt reads the same
+  for everyone in French.
+
+## [1.152.0+181]
+
+Ship battles run against the clock.
+
+### Added
+- **A clock on every ship-battle turn.** The Rusty Eel has 20 seconds a
+  turn to fire and move her crew. A bar and the seconds left show above
+  End turn, red for the last five. The clock stands still while the
+  enemy fires and while a deck is fought over.
+- **When time runs out, the turn ends as it stands.** A ready weapon not
+  fired keeps its charge ("holds her fire"), and the enemy fires back as
+  usual.
+- **The Speaking Tube**, a new Utility part at the Harbor (140 gold):
+  orders reach every station faster, and a turn lasts 8 seconds longer.
+  It shares the Utility slot with the Tar-Sealed Hull and the Spare
+  Canvas. Ships and parts carry the figures (`turnSeconds`,
+  `turnSecondsBonus`), so later refits can add more time (60 s at most).
+- **A setting to turn the clock off** (Settings, Combat: "Timed ship
+  battles"). Off, a turn waits for End turn as before.
+
 ## [1.151.0+180]
 
 Everything in one place: the design branch's last three updates (the

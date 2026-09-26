@@ -991,8 +991,16 @@ final DbSchema enemyShipsSchema = DbSchema(
     FieldSchema(
       key: 'weapons',
       label:
-          'Weapons [{weaponName, weaponName_fr, damage, chargeTurns, piercesShield, setsFire, roomDamage}]',
+          'Weapons [{weaponName, weaponName_fr, damage, chargeTurns, piercesShield, setsFire, roomDamage, ranges}] (ranges: close/medium/long; empty = all)',
       type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'habit',
+      label:
+          'Habit in battle (flee: runs for long range when hurt and escapes; marksman: keeps its distance and shoots the crew; ram: comes alongside and rams once; boarder: comes alongside and boards every third round)',
+      type: FieldType.enumeration,
+      enumOptions: ['none', 'flee', 'marksman', 'ram', 'boarder'],
+      defaultValue: 'none',
     ),
     FieldSchema(
       key: 'crew',
@@ -1085,6 +1093,13 @@ final DbSchema shipsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 1,
     ),
+    FieldSchema(
+      key: 'turnSeconds',
+      label:
+          'Turn Seconds (time to give a battle turn\'s orders, before parts)',
+      type: FieldType.integer,
+      defaultValue: 20,
+    ),
     visualAssetFieldSchema('ships'),
   ],
 );
@@ -1150,6 +1165,19 @@ final DbSchema shipPartsSchema = DbSchema(
       key: 'roomBonus',
       label: 'Room Bonus {helm, guns, bulwark, hold}: pips this part adds',
       type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'ranges',
+      label:
+          'Ranges (a weapon\'s reach in a ship battle: close/medium/long; none = all)',
+      type: FieldType.multiEnum,
+      enumOptions: ['close', 'medium', 'long'],
+    ),
+    FieldSchema(
+      key: 'turnSecondsBonus',
+      label: 'Turn Seconds Bonus (seconds this part adds to a battle turn)',
+      type: FieldType.integer,
+      defaultValue: 0,
     ),
     visualAssetFieldSchema('ship_parts'),
     FieldSchema(

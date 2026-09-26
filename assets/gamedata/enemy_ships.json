@@ -3,8 +3,8 @@
     "shipName": "raider_skiff",
     "displayName": "Raider Skiff",
     "displayName_fr": "Esquif de pillards",
-    "description": "An open boat with a bow chaser and a grapnel, a gunwale for a bulwark, and oars enough to slip a shot. It cannot take a beating; it means not to be hit.",
-    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée.",
+    "description": "An open boat with a bow chaser and a grapnel, a gunwale for a bulwark, and oars enough to slip a shot. It cannot take a beating; it means not to be hit. When she is hurt she runs for open water; close in before she is gone.",
+    "description_fr": "Une barque ouverte avec un canon de chasse et un grappin, un plat-bord pour tout pavois, et assez de rames pour esquiver un tir. Elle n'encaisse pas ; elle compte ne pas être touchée. Blessée, elle file vers le large ; rapprochez-vous avant qu'elle ne disparaisse.",
     "maxHull": 60,
     "rooms": {
       "helm": 2,
@@ -29,7 +29,10 @@
         "chargeTurns": 2,
         "piercesShield": false,
         "setsFire": false,
-        "roomDamage": 2
+        "roomDamage": 2,
+        "ranges": [
+          "close"
+        ]
       }
     ],
     "xpReward": 30,
@@ -43,14 +46,15 @@
     "boardingChance": 0.3,
     "prizePartId": "",
     "prizeGold": 30,
-    "shipName_fr": "Esquif de pillards"
+    "shipName_fr": "Esquif de pillards",
+    "habit": "flee"
   },
   "corsair_brig": {
     "shipName": "corsair_brig",
     "displayName": "Corsair Brig",
     "displayName_fr": "Brick corsaire",
-    "description": "Fast, well helmed and thinly built: twin ballistae that fire every turn, a helm that slips a quarter of what comes at it, and a bulwark that will not hold. Silence the helm and she is a target.",
-    "description_fr": "Rapide, bien barré et construit léger : deux balistes qui tirent à chaque tour, une barre qui esquive un quart de ce qui lui arrive, et un pavois qui ne tiendra pas. Faites taire la barre et il devient une cible.",
+    "description": "Fast, well helmed and thinly built: twin ballistae that fire every turn, a helm that slips a quarter of what comes at it, and a bulwark that will not hold. Silence the helm and she is a target. She keeps her distance and shoots at the crew where they stand.",
+    "description_fr": "Rapide, bien barré et construit léger : deux balistes qui tirent à chaque tour, une barre qui esquive un quart de ce qui lui arrive, et un pavois qui ne tiendra pas. Faites taire la barre et il devient une cible. Il garde ses distances et tire sur l'équipage à son poste.",
     "maxHull": 80,
     "rooms": {
       "helm": 3,
@@ -90,14 +94,15 @@
     "boardingChance": 0.4,
     "prizePartId": "spare_canvas",
     "prizeGold": 40,
-    "shipName_fr": "Brick corsaire"
+    "shipName_fr": "Brick corsaire",
+    "habit": "marksman"
   },
   "inquisition_cutter": {
     "shipName": "inquisition_cutter",
     "displayName": "Inquisition Cutter",
     "displayName_fr": "Cotre de l'Inquisition",
-    "description": "A cutter of the Crusade: a bulwark that holds a layer, a ballista, and fire arrows that go for the hold where the crew shelters. Keep someone near the fire.",
-    "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l'équipage s'abrite. Gardez quelqu'un près du feu.",
+    "description": "A cutter of the Crusade: a bulwark that holds a layer, a ballista, and fire arrows that go for the hold where the crew shelters. Keep someone near the fire. Her iron prow is made to ram: keep her off your side.",
+    "description_fr": "Un cotre de la Croisade : un pavois qui tient une couche, une baliste, et des flèches enflammées qui visent la cale où l'équipage s'abrite. Gardez quelqu'un près du feu. Sa proue de fer est faite pour éperonner : tenez-la à distance.",
     "maxHull": 95,
     "rooms": {
       "helm": 2,
@@ -137,14 +142,15 @@
     "boardingChance": 0.35,
     "prizePartId": "iron_plating",
     "prizeGold": 50,
-    "shipName_fr": "Cotre de l’Inquisition"
+    "shipName_fr": "Cotre de l’Inquisition",
+    "habit": "ram"
   },
   "void_barge": {
     "shipName": "void_barge",
     "displayName": "Void Barge",
     "displayName_fr": "Barge du Vide",
-    "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race.",
-    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course.",
+    "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race. She comes alongside to board, again and again, shields or not.",
+    "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course. Elle vient bord à bord pour aborder, encore et encore, boucliers ou non.",
     "maxHull": 140,
     "rooms": {
       "helm": 1,
@@ -169,7 +175,11 @@
         "chargeTurns": 2,
         "piercesShield": false,
         "setsFire": false,
-        "roomDamage": 2
+        "roomDamage": 2,
+        "ranges": [
+          "close",
+          "medium"
+        ]
       },
       {
         "weaponName": "Bow chaser",
@@ -193,6 +203,7 @@
     "boardingChance": 0.25,
     "prizePartId": "fire_pots",
     "prizeGold": 90,
-    "shipName_fr": "Barge du Vide"
+    "shipName_fr": "Barge du Vide",
+    "habit": "boarder"
   }
 }

@@ -21,6 +21,28 @@ import 'dart:math';
 /// The four rooms of any ship, in the order they are drawn.
 enum ShipRoom { helm, guns, bulwark, hold }
 
+/// How far apart the two ships lie (see ship_battle.dart): a battle opens
+/// at medium range. Some weapons reach only so far (a weapon's `ranges`).
+enum ShipRange { close, medium, long }
+
+ShipRange? rangeFromName(String name) {
+  for (final range in ShipRange.values) {
+    if (range.name == name) return range;
+  }
+  return null;
+}
+
+/// A weapon's `ranges` list off its record: every range when it names none.
+Set<ShipRange> _rangesFrom(Object? raw) {
+  final ranges = <ShipRange>{
+    if (raw is List)
+      for (final name in raw)
+        if (rangeFromName(name.toString()) != null)
+          rangeFromName(name.toString())!,
+  };
+  return ranges.isEmpty ? ShipRange.values.toSet() : ranges;
+}
+
 /// Shield layers are capped here whatever the bulwark's level.
 const int maxShieldLayers = 3;
 
@@ -35,6 +57,15 @@ const int fireHullDamagePerRound = 3;
 
 /// The share of a landed shot's damage its room's crew member takes.
 const double crewInjuryShare = 0.5;
+
+/// A shot that lands in the hold for this much hull or more opens a leak.
+const int leakHullThreshold = 8;
+
+/// No ship takes on water through more leaks than this.
+const int maxLeaks = 3;
+
+/// Hull lost per open leak at the end of every round.
+const int leakHullDamagePerRound = 2;
 
 /// One room's system: [level] pips, [damage] of them knocked out, and
 /// whether it is burning. A room at zero working pips is knocked out.
@@ -71,6 +102,7 @@ class ShipWeapon {
     this.incendiary = false,
     this.roomDamage = 1,
     this.charge = 0,
+    this.ranges = const {ShipRange.close, ShipRange.medium, ShipRange.long},
   });
 
   /// A player weapon off its ship_parts.json record; [damageBonus] is the
@@ -88,6 +120,7 @@ class ShipWeapon {
       piercing: part['piercesShield'] == true,
       incendiary: part['setsFire'] == true,
       roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
+      ranges: _rangesFrom(part['ranges']),
     );
   }
 
@@ -102,6 +135,7 @@ class ShipWeapon {
         piercing: raw['piercesShield'] == true,
         incendiary: raw['setsFire'] == true,
         roomDamage: max(1, (raw['roomDamage'] as num?)?.toInt() ?? 1),
+        ranges: _rangesFrom(raw['ranges']),
       );
 
   final String id;
@@ -122,7 +156,12 @@ class ShipWeapon {
   /// Charge so far, 0 to [chargeTurns].
   final int charge;
 
+  /// The ranges it reaches (a harpoon only close, a thrown pot not long).
+  final Set<ShipRange> ranges;
+
   bool get isReady => charge >= chargeTurns;
+
+  bool reaches(ShipRange range) => ranges.contains(range);
 
   String nameFor(bool french) => french && nameFr.isNotEmpty ? nameFr : name;
 
@@ -136,6 +175,7 @@ class ShipWeapon {
         incendiary: incendiary,
         roomDamage: roomDamage,
         charge: value.clamp(0, chargeTurns),
+        ranges: ranges,
       );
 
   ShipWeapon fired() => withCharge(0);
@@ -150,10 +190,15 @@ class ShipState {
     required this.rooms,
     required this.weapons,
     this.repairsPerRound = 1,
+    this.leaks = 0,
   });
 
   final int hull;
   final int maxHull;
+
+  /// Holes below the waterline, each costing hull every round until a
+  /// hand in the hold bails it (see [crewTurn]) or the enemy's crew plugs it.
+  final int leaks;
 
   /// How many repairs (or fires fought) an enemy ship's crew manages
   /// between volleys (see [enemyMaintenance]); the Eel's crew are real.
@@ -180,6 +225,7 @@ class ShipState {
     int? layers,
     Map<ShipRoom, RoomState>? rooms,
     List<ShipWeapon>? weapons,
+    int? leaks,
   }) =>
       ShipState(
         hull: hull ?? this.hull,
@@ -188,6 +234,7 @@ class ShipState {
         rooms: rooms ?? this.rooms,
         weapons: weapons ?? this.weapons,
         repairsPerRound: repairsPerRound,
+        leaks: (leaks ?? this.leaks).clamp(0, maxLeaks),
       );
 
   ShipState withRoom(ShipRoom which, RoomState state) =>
@@ -274,6 +321,8 @@ class ShotOutcome {
     this.roomDamage = 0,
     this.fireStarted = false,
     this.roomKnockedOut = false,
+    this.leakOpened = false,
+    this.helmDamage = 0,
   });
 
   final ShipState target;
@@ -285,22 +334,81 @@ class ShotOutcome {
   final bool fireStarted;
   final bool roomKnockedOut;
 
+  /// The shot holed the hold below the waterline (see [leakHullThreshold]).
+  final bool leakOpened;
+
+  /// Pips a chain shot tore off the helm on top of the room it hit.
+  final int helmDamage;
+
   bool get landed => !dodged && !absorbed;
 }
+
+/// What changes one shot from the plain weapon: the shot the gun is
+/// loaded with, a careful aim, a crew order, the room already hit this
+/// turn (see ship_battle.dart).
+class ShotMods {
+  const ShotMods({
+    this.damageFactor = 1.0,
+    this.extraRoomDamage = 0,
+    this.ignite = false,
+    this.noFire = false,
+    this.helmPips = 0,
+    this.sure = false,
+    this.floods = true,
+  });
+
+  /// Hull damage is the weapon's times this, at least 1.
+  final double damageFactor;
+
+  /// Pips knocked off the room hit on top of the weapon's own.
+  final int extraRoomDamage;
+
+  /// Sets the room burning even when the weapon doesn't.
+  final bool ignite;
+
+  /// Rain: no fire is started whatever the weapon.
+  final bool noFire;
+
+  /// Pips torn off the helm wherever the shot lands (chain shot).
+  final int helmPips;
+
+  /// The shot cannot be slipped by the helm.
+  final bool sure;
+
+  /// A heavy hit on the hold opens a leak.
+  final bool floods;
+
+  ShotMods merge(ShotMods other) => ShotMods(
+        damageFactor: damageFactor * other.damageFactor,
+        extraRoomDamage: extraRoomDamage + other.extraRoomDamage,
+        ignite: ignite || other.ignite,
+        noFire: noFire || other.noFire,
+        helmPips: helmPips + other.helmPips,
+        sure: sure || other.sure,
+        floods: floods && other.floods,
+      );
+}
+
+/// A weapon's hull damage under [factor]: rounded, and never below one
+/// for a weapon that does any.
+int scaledDamage(int damage, double factor) =>
+    damage <= 0 ? 0 : max(1, (damage * factor).round());
 
 /// One weapon fired at [room] of [target]. The helm's evasion is rolled
 /// first ([roll] in [0, 1)); then a shield layer stops a non-piercing shot,
 /// though the blow still cracks a pip off the bulwark behind it; a shot
 /// that gets through costs hull and knocks pips off the room it lands in,
-/// and an incendiary one leaves it burning.
+/// and an incendiary one leaves it burning. A heavy hit on the hold opens
+/// a leak. [mods] change the shot (see [ShotMods]).
 ShotOutcome resolveShot({
   required ShipState target,
   required ShipWeapon weapon,
   required ShipRoom room,
   required int evasionPercent,
   required double roll,
+  ShotMods mods = const ShotMods(),
 }) {
-  if (roll * 100 < evasionPercent) {
+  if (!mods.sure && roll * 100 < evasionPercent) {
     return ShotOutcome(target: target, room: room, dodged: true);
   }
   if (!weapon.piercing && target.layers > 0) {
@@ -318,22 +426,38 @@ ShotOutcome resolveShot({
       roomKnockedOut: !bulwark.isDown && cracked.isDown,
     );
   }
+  final burns = (weapon.incendiary || mods.ignite) && !mods.noFire;
   final before = target.room(room);
   final after = before.copyWith(
-    damage: before.damage + weapon.roomDamage,
-    onFire: before.onFire || weapon.incendiary,
+    damage: before.damage + weapon.roomDamage + mods.extraRoomDamage,
+    onFire: before.onFire || burns,
   );
-  var next = target
-      .copyWith(hull: max(0, target.hull - weapon.damage))
-      .withRoom(room, after);
+  final damage = scaledDamage(weapon.damage, mods.damageFactor);
+  var next =
+      target.copyWith(hull: max(0, target.hull - damage)).withRoom(room, after);
+  var helmDamage = 0;
+  if (mods.helmPips > 0) {
+    final helm = next.room(ShipRoom.helm);
+    final torn = helm.copyWith(damage: helm.damage + mods.helmPips);
+    helmDamage = torn.damage - helm.damage;
+    next = next.withRoom(ShipRoom.helm, torn);
+  }
+  final hullDamage = target.hull - next.hull;
+  final leak = mods.floods &&
+      room == ShipRoom.hold &&
+      hullDamage >= leakHullThreshold &&
+      next.leaks < maxLeaks;
+  if (leak) next = next.copyWith(leaks: next.leaks + 1);
   next = next.copyWith(layers: min(next.layers, next.maxLayers));
   return ShotOutcome(
     target: next,
     room: room,
-    hullDamage: target.hull - next.hull,
+    hullDamage: hullDamage,
     roomDamage: after.damage - before.damage,
-    fireStarted: weapon.incendiary && !before.onFire,
+    fireStarted: burns && !before.onFire,
     roomKnockedOut: !before.isDown && after.isDown,
+    leakOpened: leak,
+    helmDamage: helmDamage,
   );
 }
 
@@ -375,6 +499,7 @@ class CrewWork {
     this.fireOut = false,
     this.roomRepaired = false,
     this.hullRepaired = 0,
+    this.leakBailed = false,
   });
 
   final ShipCrew crew;
@@ -382,15 +507,17 @@ class CrewWork {
   final bool fireOut;
   final bool roomRepaired;
   final int hullRepaired;
+  final bool leakBailed;
 }
 
 /// The Eel's crew at their stations, at the start of the player's turn:
 /// each puts out the fire in their room or, if it isn't burning, repairs
 /// one pip of it, and either takes the turn, so that hand is [busy] and
 /// not at their station until the next one (no helmsman's evasion, no
-/// gunner's charge, no bulwark hand's layer). A hold hand whose room is
-/// sound patches the hull instead. Returns the ship, what each of them
-/// did, and the rooms whose hands are busy.
+/// gunner's charge, no bulwark hand's layer). A hold hand bails a leak
+/// before mending the hold, and whose room is sound and dry patches the
+/// hull instead. Returns the ship, what each of them did, and the rooms
+/// whose hands are busy.
 ({ShipState ship, List<CrewWork> work, Set<ShipRoom> busy}) crewTurn(
     ShipState ship, Stations stations) {
   var next = ship;
@@ -403,6 +530,12 @@ class CrewWork {
     if (state.onFire) {
       next = next.withRoom(room, state.copyWith(onFire: false));
       work.add(CrewWork(crew: crew, room: room, fireOut: true));
+      busy.add(room);
+      continue;
+    }
+    if (room == ShipRoom.hold && next.leaks > 0) {
+      next = next.copyWith(leaks: next.leaks - 1);
+      work.add(CrewWork(crew: crew, room: room, leakBailed: true));
       busy.add(room);
       continue;
     }
@@ -432,11 +565,13 @@ class EnemyMaintenance {
     required this.ship,
     this.firesOut = const [],
     this.repaired = const [],
+    this.leaksPlugged = 0,
   });
 
   final ShipState ship;
   final List<ShipRoom> firesOut;
   final List<ShipRoom> repaired;
+  final int leaksPlugged;
 }
 
 /// The order the enemy's crew tends its rooms in: its guns before all,
@@ -448,11 +583,15 @@ const List<ShipRoom> enemyRepairPriority = [
   ShipRoom.hold,
 ];
 
-EnemyMaintenance enemyMaintenance(ShipState ship) {
+/// [penalty] actions are lost to a crew cut down by grapeshot. A fire is
+/// fought first, then a leak plugged, then a pip mended.
+EnemyMaintenance enemyMaintenance(ShipState ship, {int penalty = 0}) {
   var next = ship;
   final firesOut = <ShipRoom>[];
   final repaired = <ShipRoom>[];
-  for (var action = 0; action < max(1, ship.repairsPerRound); action++) {
+  var plugged = 0;
+  final actions = max(0, max(1, ship.repairsPerRound) - penalty);
+  for (var action = 0; action < actions; action++) {
     ShipRoom? burning;
     for (final room in enemyRepairPriority) {
       if (next.room(room).onFire) {
@@ -463,6 +602,11 @@ EnemyMaintenance enemyMaintenance(ShipState ship) {
     if (burning != null) {
       next = next.withRoom(burning, next.room(burning).copyWith(onFire: false));
       firesOut.add(burning);
+      continue;
+    }
+    if (next.leaks > 0) {
+      next = next.copyWith(leaks: next.leaks - 1);
+      plugged++;
       continue;
     }
     ShipRoom? damaged;
@@ -477,7 +621,11 @@ EnemyMaintenance enemyMaintenance(ShipState ship) {
     next = next.withRoom(damaged, state.copyWith(damage: state.damage - 1));
     repaired.add(damaged);
   }
-  return EnemyMaintenance(ship: next, firesOut: firesOut, repaired: repaired);
+  return EnemyMaintenance(
+      ship: next,
+      firesOut: firesOut,
+      repaired: repaired,
+      leaksPlugged: plugged);
 }
 
 /// Where the enemy aims a weapon at [player]: fire goes for the hold
@@ -503,14 +651,26 @@ bool readyNextTurn(ShipWeapon weapon, ShipState ship) {
   return weapon.charge + 1 >= weapon.chargeTurns;
 }
 
-/// Fires burn and the bulwark comes back, for one ship, at the end of a
-/// round: each burning room loses a pip and costs hull, and a working
-/// bulwark raises one layer (two with a hand at it), never past what its
-/// pips can hold.
-({ShipState ship, List<ShipRoom> burned}) endRound(ShipState ship,
-    {bool bulwarkCrewed = false}) {
+/// Fires burn, leaks flood and the bulwark comes back, for one ship, at
+/// the end of a round: each burning room loses a pip and costs hull, each
+/// leak costs hull, and a working bulwark raises one layer (two with a
+/// hand at it), never past what its pips can hold. [rain] puts every fire
+/// out before it burns (a squall).
+({ShipState ship, List<ShipRoom> burned, List<ShipRoom> quenched, int flooded})
+    endRound(ShipState ship, {bool bulwarkCrewed = false, bool rain = false}) {
   var next = ship;
   final burned = <ShipRoom>[];
+  final quenched = <ShipRoom>[];
+  if (rain) {
+    for (final room in ShipRoom.values) {
+      final state = next.room(room);
+      if (!state.onFire) continue;
+      quenched.add(room);
+      next = next.withRoom(room, state.copyWith(onFire: false));
+    }
+  }
+  final flooded = min(next.hull, next.leaks * leakHullDamagePerRound);
+  if (flooded > 0) next = next.copyWith(hull: next.hull - flooded);
   for (final room in ShipRoom.values) {
     final state = next.room(room);
     if (!state.onFire) continue;
@@ -525,7 +685,7 @@ bool readyNextTurn(ShipWeapon weapon, ShipState ship) {
   } else {
     next = next.copyWith(layers: 0);
   }
-  return (ship: next, burned: burned);
+  return (ship: next, burned: burned, quenched: quenched, flooded: flooded);
 }
 
 /// The player's ship as it sets out: hull and rooms from ships.json plus
@@ -571,6 +731,29 @@ ShipState buildPlayerShip({
     weapons: weapons,
   );
   return state.copyWith(layers: state.maxLayers);
+}
+
+/// Seconds the player has for a turn when the ship's record names none.
+const int defaultTurnSeconds = 20;
+
+/// However well the Eel is fitted out, a turn never lasts longer.
+const int maxTurnSeconds = 60;
+
+/// Seconds the player has to give the turn's orders (fire, move the crew)
+/// before the turn ends on its own: the ship's `turnSeconds` plus every
+/// installed part's `turnSecondsBonus` (the Speaking Tube carries orders
+/// faster), capped at [maxTurnSeconds].
+int shipTurnSeconds({
+  required Map<String, dynamic> ship,
+  required Map<String, dynamic> parts,
+  required List<String> installedPartIds,
+}) {
+  var seconds = (ship['turnSeconds'] as num?)?.toInt() ?? defaultTurnSeconds;
+  for (final id in installedPartIds.toSet()) {
+    final part = parts[id] as Map<String, dynamic>?;
+    seconds += (part?['turnSecondsBonus'] as num?)?.toInt() ?? 0;
+  }
+  return seconds.clamp(1, maxTurnSeconds);
 }
 
 /// An enemy ship off its enemy_ships.json record: hull, rooms and the
@@ -635,9 +818,15 @@ ShotOutcome previewShot({
   required ShipState target,
   required ShipWeapon weapon,
   required ShipRoom room,
+  ShotMods mods = const ShotMods(),
 }) =>
     resolveShot(
-        target: target, weapon: weapon, room: room, evasionPercent: 0, roll: 1);
+        target: target,
+        weapon: weapon,
+        room: room,
+        evasionPercent: 0,
+        roll: 1,
+        mods: mods);
 
 /// True when a ship's rail is open to boarders: no shield layer stands and
 /// the bulwark itself is knocked out.

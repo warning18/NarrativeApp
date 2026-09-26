@@ -4558,9 +4558,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_board_hint': {
     AppLanguage.en:
-        'Their bulwark is down: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
+        'Side by side with their rail open: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
     AppLanguage.fr:
-        'Leur pavois est à terre : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
+        'Bord à bord, leur bastingage ouvert : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
   },
   'ship_auto_station_button': {
     AppLanguage.en: 'Auto-station',
@@ -4626,13 +4626,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_weapons_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
   'ship_crew_label': {AppLanguage.en: 'Crew', AppLanguage.fr: 'Équipage'},
   'ship_weapon_ready_label': {AppLanguage.en: 'ready', AppLanguage.fr: 'prête'},
+  'ship_turn_seconds': {AppLanguage.en: '{n} s', AppLanguage.fr: '{n} s'},
+  'ship_log_time_up': {
+    AppLanguage.en: 'Time runs out: the turn ends.',
+    AppLanguage.fr: 'Le temps est écoulé : le tour se termine.',
+  },
+  'ship_log_time_up_held': {
+    AppLanguage.en:
+        'Time runs out: {ship} holds her fire; her guns keep their charge.',
+    AppLanguage.fr:
+        'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
+  },
+  'turn_seconds_bonus_label': {
+    AppLanguage.en: '+{n} s per battle turn',
+    AppLanguage.fr: '+{n} s par tour de bataille',
+  },
+  'ship_turn_timer_setting_title': {
+    AppLanguage.en: 'Timed ship battles',
+    AppLanguage.fr: 'Batailles navales chronométrées',
+  },
+  'ship_turn_timer_setting_desc': {
+    AppLanguage.en:
+        'Each turn of a ship battle has a time limit (20 s, more with a Speaking Tube). When it runs out, the turn ends as it stands; a turn ended with half the time left is quick orders, +10% evasion.',
+    AppLanguage.fr:
+        'Chaque tour de bataille navale a une limite de temps (20 s, davantage avec un Porte-voix). Quand elle est écoulée, le tour se termine en l’état ; un tour terminé avec la moitié du temps restant donne des ordres rapides, +10 % d’esquive.',
+  },
   'ship_end_turn_button': {
     AppLanguage.en: 'End turn',
     AppLanguage.fr: 'Fin du tour'
   },
   'ship_fire_hint': {
-    AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
-    AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+    AppLanguage.en:
+        'Tap a ready weapon, then the room to hit; hold the room to take aim.',
+    AppLanguage.fr:
+        'Touchez une arme prête, puis la salle à frapper ; maintenez la salle pour viser.',
   },
   'ship_station_hint': {
     AppLanguage.en: 'Tap a crew member, then the room to send them to.',
@@ -4682,11 +4709,485 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_crew_hurt': {
     AppLanguage.en: '{crew} is hurt at the {room}, -{n}',
-    AppLanguage.fr: '{crew} est blessé à {room}, -{n}',
+    AppLanguage.fr: '{crew} prend un coup à {room}, -{n}',
   },
   'ship_log_enemy_repairs': {
     AppLanguage.en: 'The {ship} repairs its {room}',
     AppLanguage.fr: '{ship} répare {room}',
+  },
+  'ship_log_leak_bailed': {
+    AppLanguage.en: '{crew} bails out the hold',
+    AppLanguage.fr: '{crew} écope la cale',
+  },
+  'ship_log_shot_wide': {
+    AppLanguage.en: '{weapon} goes wide',
+    AppLanguage.fr: '{weapon} part à côté',
+  },
+  'ship_log_critical': {
+    AppLanguage.en: 'A clean hit!',
+    AppLanguage.fr: 'Coup parfait !',
+  },
+  'ship_log_focus': {
+    AppLanguage.en: 'Focused fire: the {room} takes another pip',
+    AppLanguage.fr: 'Tir concentré : {room} perd un cran de plus',
+  },
+  'ship_log_grape': {
+    AppLanguage.en: 'Grapeshot cuts down the {ship}\'s crew',
+    AppLanguage.fr: 'La mitraille fauche l\'équipage de {ship}',
+  },
+  'ship_log_close_in': {
+    AppLanguage.en: 'The {ship} closes in: {range}',
+    AppLanguage.fr: '{ship} se rapproche : {range}',
+  },
+  'ship_log_pull_away': {
+    AppLanguage.en: 'The {ship} pulls away: {range}',
+    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+  },
+  'ship_log_enemy_closes': {
+    AppLanguage.en: 'The {ship} closes in: {range}',
+    AppLanguage.fr: '{ship} se rapproche : {range}',
+  },
+  'ship_log_enemy_pulls_away': {
+    AppLanguage.en: 'The {ship} pulls away: {range}',
+    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+  },
+  'ship_log_quick_orders': {
+    AppLanguage.en: 'Quick orders: the Eel is already turning, +{n}% evasion',
+    AppLanguage.fr: 'Ordres rapides : l\'Eel vire déjà, +{n} % d\'esquive',
+  },
+  'ship_log_escaped': {
+    AppLanguage.en: 'The {ship} slips away over the horizon',
+    AppLanguage.fr: '{ship} disparaît à l\'horizon',
+  },
+  'ship_log_enemy_leak_plugged': {
+    AppLanguage.en: 'The {ship} plugs a leak',
+    AppLanguage.fr: '{ship} colmate une voie d\'eau',
+  },
+  'ship_log_rammed': {
+    AppLanguage.en: 'The {ship} rams you! -{n} hull, and the sea comes in',
+    AppLanguage.fr: '{ship} vous éperonne ! -{n} de coque, et la mer entre',
+  },
+  'ship_log_warded': {
+    AppLanguage.en: 'A ward of void turns {weapon} aside',
+    AppLanguage.fr: 'Une garde du Néant détourne {weapon}',
+  },
+  'ship_log_wreck_hit': {
+    AppLanguage.en: '{weapon} smashes into the drifting wreck',
+    AppLanguage.fr: '{weapon} s\'écrase sur l\'épave à la dérive',
+  },
+  'ship_log_squall_quench': {
+    AppLanguage.en: 'The squall puts out the {ship}\'s fires',
+    AppLanguage.fr: 'Le grain éteint les feux de {ship}',
+  },
+  'ship_log_flooding': {
+    AppLanguage.en: 'The {ship} takes on water, -{n} hull',
+    AppLanguage.fr: '{ship} embarque de l\'eau, -{n} de coque',
+  },
+  'ship_log_rigging_torn': {
+    AppLanguage.en: 'Chain shot tears the {ship}\'s rigging',
+    AppLanguage.fr: 'Les boulets ramés déchirent le gréement de {ship}',
+  },
+  'ship_log_leak': {
+    AppLanguage.en: 'The {ship} is holed below the waterline!',
+    AppLanguage.fr: 'Voie d\'eau sous la ligne de flottaison de {ship} !',
+  },
+  'ship_log_weather_calm': {
+    AppLanguage.en: 'The wind drops: calm',
+    AppLanguage.fr: 'Le vent tombe : calme',
+  },
+  'ship_log_weather_tailwind': {
+    AppLanguage.en: 'The wind swings behind the Eel',
+    AppLanguage.fr: 'Le vent passe dans le dos de l\'Eel',
+  },
+  'ship_log_weather_crosswind': {
+    AppLanguage.en: 'A crosswind rises: shots drift',
+    AppLanguage.fr: 'Un vent de travers se lève : les tirs dévient',
+  },
+  'ship_log_weather_squall': {
+    AppLanguage.en: 'A squall sweeps in: rain on every deck',
+    AppLanguage.fr: 'Un grain arrive : la pluie sur tous les ponts',
+  },
+  'ship_log_weather_fog': {
+    AppLanguage.en: 'Fog rolls in',
+    AppLanguage.fr: 'Le brouillard tombe',
+  },
+  'ship_event_rogue_wave': {
+    AppLanguage.en:
+        'A rogue wave breaks over both ships: a shield layer lost on each',
+    AppLanguage.fr:
+        'Une vague scélérate balaie les deux navires : chacun perd une couche de bouclier',
+  },
+  'ship_event_sea_creature': {
+    AppLanguage.en:
+        'Something huge rises under the {ship}! -{n} hull, the hold stove in',
+    AppLanguage.fr:
+        'Une chose énorme surgit sous {ship} ! -{n} de coque, la cale enfoncée',
+  },
+  'ship_event_wreck': {
+    AppLanguage.en:
+        'A wreck drifts between the ships: the next shot at the Eel will hit it',
+    AppLanguage.fr:
+        'Une épave dérive entre les navires : le prochain tir contre l\'Eel la touchera',
+  },
+  'ship_log_got_away': {
+    AppLanguage.en: 'The {ship} got away: no prize, but the Eel sails on',
+    AppLanguage.fr:
+        '{ship} a pris la fuite : pas de prise, mais l\'Eel poursuit sa route',
+  },
+  'ship_order_log_allHands': {
+    AppLanguage.en: '{crew}: "All hands!" Every damaged room is mended a pip',
+    AppLanguage.fr:
+        '{crew} : « Tout le monde sur le pont ! » Chaque salle endommagée regagne un cran',
+  },
+  'ship_order_log_brace': {
+    AppLanguage.en: '{crew}: "Brace!" The Eel takes half the hull this round',
+    AppLanguage.fr:
+        '{crew} : « Tenez bon ! » L\'Eel ne perd que la moitié de la coque ce tour-ci',
+  },
+  'ship_order_log_grapple': {
+    AppLanguage.en: '{crew}: "Grapple!" The ships are hauled side by side',
+    AppLanguage.fr:
+        '{crew} : « Grappins ! » Les navires sont hâlés bord à bord',
+  },
+  'ship_order_log_bless': {
+    AppLanguage.en:
+        '{crew} blesses the deck: the fires die and the crew take heart',
+    AppLanguage.fr:
+        '{crew} bénit le pont : les feux meurent et l\'équipage reprend courage',
+  },
+  'ship_order_log_shoreUp': {
+    AppLanguage.en: '{crew} shores up the bulwark: mended, and a layer raised',
+    AppLanguage.fr: '{crew} étaye le pavois : réparé, et une couche relevée',
+  },
+  'ship_order_log_markHelm': {
+    AppLanguage.en: '{crew} marks their helmsman: they slip nothing this turn',
+    AppLanguage.fr:
+        '{crew} marque leur timonier : il n\'esquive rien ce tour-ci',
+  },
+  'ship_order_log_cutRigging': {
+    AppLanguage.en:
+        '{crew} cuts their rigging: every weapon loses a step of charge',
+    AppLanguage.fr:
+        '{crew} coupe leur gréement : chaque arme perd un cran de charge',
+  },
+  'ship_order_log_eagleEye': {
+    AppLanguage.en: '{crew} takes aim: the next shot will be a clean hit',
+    AppLanguage.fr: '{crew} ajuste : le prochain tir fera mouche',
+  },
+  'ship_order_log_voidWard': {
+    AppLanguage.en: '{crew} raises a ward of void over the Eel',
+    AppLanguage.fr: '{crew} dresse une garde du Néant sur l\'Eel',
+  },
+  'ship_quick_orders_hint': {
+    AppLanguage.en:
+        'End the turn with half the clock left: +{n}% evasion against the volley that follows.',
+    AppLanguage.fr:
+        'Terminez le tour avec la moitié du temps restant : +{n} % d\'esquive contre la bordée qui suit.',
+  },
+  'ship_aim_fire_button': {
+    AppLanguage.en: 'Fire!',
+    AppLanguage.fr: 'Feu !',
+  },
+  'ship_weather_next_label': {
+    AppLanguage.en: 'next:',
+    AppLanguage.fr: 'ensuite :',
+  },
+  'ship_weather_calm': {
+    AppLanguage.en: 'Calm',
+    AppLanguage.fr: 'Calme',
+  },
+  'ship_weather_tailwind': {
+    AppLanguage.en: 'Tailwind',
+    AppLanguage.fr: 'Vent arrière',
+  },
+  'ship_weather_crosswind': {
+    AppLanguage.en: 'Crosswind',
+    AppLanguage.fr: 'Vent de travers',
+  },
+  'ship_weather_squall': {
+    AppLanguage.en: 'Squall',
+    AppLanguage.fr: 'Grain',
+  },
+  'ship_weather_fog': {
+    AppLanguage.en: 'Fog',
+    AppLanguage.fr: 'Brouillard',
+  },
+  'ship_weather_calm_hint': {
+    AppLanguage.en: 'Calm sea: nothing changes.',
+    AppLanguage.fr: 'Mer calme : rien ne change.',
+  },
+  'ship_weather_tailwind_hint': {
+    AppLanguage.en:
+        'Wind behind the Eel: +10% evasion for her, and her helm turns without a hand\'s work.',
+    AppLanguage.fr:
+        'Vent dans le dos de l\'Eel : +10 % d\'esquive pour elle, et sa barre manœuvre sans y employer personne.',
+  },
+  'ship_weather_crosswind_hint': {
+    AppLanguage.en:
+        'Shots drift: +10% evasion for both ships (the Wind-Knot turns it into a tailwind for the Eel).',
+    AppLanguage.fr:
+        'Les tirs dévient : +10 % d\'esquive pour les deux navires (le Nœud de Vent en fait un vent arrière pour l\'Eel).',
+  },
+  'ship_weather_squall_hint': {
+    AppLanguage.en:
+        'Rain on every deck: no fire starts, and every fire goes out at the end of the round.',
+    AppLanguage.fr:
+        'La pluie sur tous les ponts : aucun feu ne prend, et tous s\'éteignent en fin de tour.',
+  },
+  'ship_weather_fog_hint': {
+    AppLanguage.en:
+        'The enemy\'s aim cannot be read, and both ships gain +5% evasion.',
+    AppLanguage.fr:
+        'La visée ennemie ne se lit plus, et les deux navires gagnent +5 % d\'esquive.',
+  },
+  'ship_wreck_hint': {
+    AppLanguage.en:
+        'A wreck drifts between the ships: the next enemy shot hits it.',
+    AppLanguage.fr:
+        'Une épave dérive entre les navires : le prochain tir ennemi la touche.',
+  },
+  'ship_close_in_button': {
+    AppLanguage.en: 'Close in',
+    AppLanguage.fr: 'Approcher',
+  },
+  'ship_pull_away_button': {
+    AppLanguage.en: 'Pull away',
+    AppLanguage.fr: 'S\'éloigner',
+  },
+  'ship_range_close': {
+    AppLanguage.en: 'close range',
+    AppLanguage.fr: 'bord à bord',
+  },
+  'ship_range_medium': {
+    AppLanguage.en: 'medium range',
+    AppLanguage.fr: 'moyenne portée',
+  },
+  'ship_range_long': {
+    AppLanguage.en: 'long range',
+    AppLanguage.fr: 'longue portée',
+  },
+  'ship_range_close_title': {
+    AppLanguage.en: 'Close',
+    AppLanguage.fr: 'Bord à bord',
+  },
+  'ship_range_medium_title': {
+    AppLanguage.en: 'Medium range',
+    AppLanguage.fr: 'Moyenne portée',
+  },
+  'ship_range_long_title': {
+    AppLanguage.en: 'Long range',
+    AppLanguage.fr: 'Longue portée',
+  },
+  'ship_range_close_hint': {
+    AppLanguage.en:
+        'Side by side: -10% evasion for both ships; boarding is possible; every weapon reaches.',
+    AppLanguage.fr:
+        'Bord à bord : -10 % d\'esquive pour les deux navires ; l\'abordage est possible ; toutes les armes portent.',
+  },
+  'ship_range_medium_hint': {
+    AppLanguage.en: 'Medium range: no change; fire pots cannot reach.',
+    AppLanguage.fr:
+        'Moyenne portée : rien ne change ; les pots à feu ne portent pas.',
+  },
+  'ship_range_long_hint': {
+    AppLanguage.en:
+        'Far apart: +10% evasion for both ships; harpoons and fire pots cannot reach. A fleeing ship escapes from here.',
+    AppLanguage.fr:
+        'Loin l\'un de l\'autre : +10 % d\'esquive pour les deux navires ; harpons et pots à feu ne portent pas. Un navire en fuite s\'échappe d\'ici.',
+  },
+  'ship_habit_flee': {
+    AppLanguage.en: 'Runs when hurt',
+    AppLanguage.fr: 'Fuit une fois touché',
+  },
+  'ship_habit_marksman': {
+    AppLanguage.en: 'Keeps its distance, shoots the crew',
+    AppLanguage.fr: 'Garde ses distances, vise l\'équipage',
+  },
+  'ship_habit_ram': {
+    AppLanguage.en: 'Rams',
+    AppLanguage.fr: 'Éperonne',
+  },
+  'ship_habit_boarder': {
+    AppLanguage.en: 'Boards again and again',
+    AppLanguage.fr: 'Aborde encore et encore',
+  },
+  'ship_habit_none': {
+    AppLanguage.en: 'Fights',
+    AppLanguage.fr: 'Combat',
+  },
+  'ship_habit_none_hint': {
+    AppLanguage.en: 'An ordinary opponent.',
+    AppLanguage.fr: 'Un adversaire ordinaire.',
+  },
+  'ship_habit_flee_hint': {
+    AppLanguage.en:
+        'Closes in to grapple while healthy; at 40% hull or less it runs for long range, and escapes if it starts its turn there. Close in, or break its helm.',
+    AppLanguage.fr:
+        'Se rapproche pour agripper tant qu\'il est intact ; à 40 % de coque ou moins il file vers la longue portée, et s\'échappe s\'il y commence son tour. Rapprochez-vous, ou brisez sa barre.',
+  },
+  'ship_habit_marksman_hint': {
+    AppLanguage.en:
+        'Steers for long range and aims at the rooms your crew stand in; its hits hurt the crew half again as much.',
+    AppLanguage.fr:
+        'Cherche la longue portée et vise les salles où se tient votre équipage ; ses coups blessent moitié plus l\'équipage.',
+  },
+  'ship_habit_ram_hint': {
+    AppLanguage.en:
+        'Steers alongside and, once a battle, rams: 12 hull through any shield, and a leak.',
+    AppLanguage.fr:
+        'Vient bord à bord et, une fois par bataille, éperonne : 12 de coque à travers tout bouclier, et une voie d\'eau.',
+  },
+  'ship_habit_boarder_hint': {
+    AppLanguage.en:
+        'Steers alongside and boards every third round, shields or not (twice a battle at most).',
+    AppLanguage.fr:
+        'Vient bord à bord et aborde tous les trois tours, boucliers ou non (deux fois par bataille au plus).',
+  },
+  'ship_focus_hint': {
+    AppLanguage.en: 'Hit this turn: another hit here knocks off an extra pip.',
+    AppLanguage.fr:
+        'Touchée ce tour : un nouveau coup ici arrache un cran de plus.',
+  },
+  'ship_out_of_range_label': {
+    AppLanguage.en: 'out of reach',
+    AppLanguage.fr: 'hors de portée',
+  },
+  'ship_ammo_label': {
+    AppLanguage.en: 'Shot:',
+    AppLanguage.fr: 'Munition :',
+  },
+  'ship_ammo_round': {
+    AppLanguage.en: 'Round',
+    AppLanguage.fr: 'Boulet',
+  },
+  'ship_ammo_chain': {
+    AppLanguage.en: 'Chain',
+    AppLanguage.fr: 'Ramé',
+  },
+  'ship_ammo_grape': {
+    AppLanguage.en: 'Grape',
+    AppLanguage.fr: 'Mitraille',
+  },
+  'ship_ammo_heated': {
+    AppLanguage.en: 'Heated',
+    AppLanguage.fr: 'Rouge',
+  },
+  'ship_ammo_round_hint': {
+    AppLanguage.en: 'Round shot: the weapon as it is.',
+    AppLanguage.fr: 'Boulet : l\'arme telle quelle.',
+  },
+  'ship_ammo_chain_hint': {
+    AppLanguage.en:
+        'Chain shot: half the hull, but it tears a pip off their helm wherever it lands.',
+    AppLanguage.fr:
+        'Boulet ramé : moitié moins de coque, mais il arrache un cran à leur barre où qu\'il touche.',
+  },
+  'ship_ammo_grape_hint': {
+    AppLanguage.en:
+        'Grapeshot: half the hull, but their crew repairs one less for two rounds.',
+    AppLanguage.fr:
+        'Mitraille : moitié moins de coque, mais leur équipage répare une fois de moins pendant deux tours.',
+  },
+  'ship_ammo_heated_hint': {
+    AppLanguage.en:
+        'Heated shot: three quarters of the hull, and the room it lands in burns.',
+    AppLanguage.fr:
+        'Boulet rouge : trois quarts de la coque, et la salle touchée prend feu.',
+  },
+  'ship_orders_label': {
+    AppLanguage.en: 'Orders:',
+    AppLanguage.fr: 'Ordres :',
+  },
+  'ship_order_allHands': {
+    AppLanguage.en: 'All hands!',
+    AppLanguage.fr: 'Tous sur le pont !',
+  },
+  'ship_order_brace': {
+    AppLanguage.en: 'Brace!',
+    AppLanguage.fr: 'Tenez bon !',
+  },
+  'ship_order_grapple': {
+    AppLanguage.en: 'Grapple!',
+    AppLanguage.fr: 'Grappins !',
+  },
+  'ship_order_bless': {
+    AppLanguage.en: 'Bless the deck',
+    AppLanguage.fr: 'Bénir le pont',
+  },
+  'ship_order_shoreUp': {
+    AppLanguage.en: 'Shore up',
+    AppLanguage.fr: 'Étayer',
+  },
+  'ship_order_markHelm': {
+    AppLanguage.en: 'Mark their helmsman',
+    AppLanguage.fr: 'Marquer le timonier',
+  },
+  'ship_order_cutRigging': {
+    AppLanguage.en: 'Cut their rigging',
+    AppLanguage.fr: 'Couper le gréement',
+  },
+  'ship_order_eagleEye': {
+    AppLanguage.en: 'Eagle eye',
+    AppLanguage.fr: 'Œil d\'aigle',
+  },
+  'ship_order_voidWard': {
+    AppLanguage.en: 'Void ward',
+    AppLanguage.fr: 'Garde du Néant',
+  },
+  'ship_order_allHands_hint': {
+    AppLanguage.en:
+        'Once a battle: every damaged room on the Eel is mended a pip.',
+    AppLanguage.fr:
+        'Une fois par bataille : chaque salle endommagée de l\'Eel regagne un cran.',
+  },
+  'ship_order_brace_hint': {
+    AppLanguage.en: 'Once a battle: the Eel takes half the hull this round.',
+    AppLanguage.fr:
+        'Une fois par bataille : l\'Eel ne perd que la moitié de la coque ce tour-ci.',
+  },
+  'ship_order_grapple_hint': {
+    AppLanguage.en:
+        'Once a battle: the ships are hauled side by side and the grapples hold; board this turn, shields or not.',
+    AppLanguage.fr:
+        'Une fois par bataille : les navires sont hâlés bord à bord et les grappins tiennent ; abordez ce tour-ci, boucliers ou non.',
+  },
+  'ship_order_bless_hint': {
+    AppLanguage.en:
+        'Once a battle: every fire aboard goes out and the crew heal 10.',
+    AppLanguage.fr:
+        'Une fois par bataille : tous les feux à bord s\'éteignent et l\'équipage récupère 10 points de vie.',
+  },
+  'ship_order_shoreUp_hint': {
+    AppLanguage.en:
+        'Once a battle: the bulwark is mended and a shield layer raised.',
+    AppLanguage.fr:
+        'Une fois par bataille : le pavois est réparé et une couche de bouclier relevée.',
+  },
+  'ship_order_markHelm_hint': {
+    AppLanguage.en: 'Once a battle: the enemy slips nothing this turn.',
+    AppLanguage.fr:
+        'Une fois par bataille : l\'ennemi n\'esquive rien ce tour-ci.',
+  },
+  'ship_order_cutRigging_hint': {
+    AppLanguage.en: 'Once a battle: every enemy weapon loses a step of charge.',
+    AppLanguage.fr:
+        'Une fois par bataille : chaque arme ennemie perd un cran de charge.',
+  },
+  'ship_order_eagleEye_hint': {
+    AppLanguage.en:
+        'Once a battle: the next shot this turn cannot be slipped, does half again the hull and an extra pip.',
+    AppLanguage.fr:
+        'Une fois par bataille : le prochain tir de ce tour ne peut être esquivé, inflige moitié plus de coque et un cran de plus.',
+  },
+  'ship_order_voidWard_hint': {
+    AppLanguage.en:
+        'Once a battle: the first enemy shot this round is turned aside.',
+    AppLanguage.fr:
+        'Une fois par bataille : le premier tir ennemi de ce tour est détourné.',
+  },
+  'weapon_reach_label': {
+    AppLanguage.en: 'reach:',
+    AppLanguage.fr: 'portée :',
   },
   'ship_log_enemy_fire_out': {
     AppLanguage.en: 'The {ship} fights the fire in its {room}',

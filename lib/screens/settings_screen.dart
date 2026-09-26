@@ -67,6 +67,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final trembleEnabled = ref.watch(trembleEnabledProvider);
     final combatEffectsEnabled = ref.watch(combatEffectsEnabledProvider);
     final chestAutoOpen = ref.watch(chestAutoOpenProvider);
+    final shipTurnTimer = ref.watch(shipTurnTimerProvider);
     final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
     final companionAutoTarget = ref.watch(companionAutoTargetProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
@@ -329,6 +330,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (value) => ref
                   .read(permadeathEnabledProvider.notifier)
                   .setEnabled(value),
+            ),
+            SwitchListTile(
+              key: const Key('ship_turn_timer_setting'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'ship_turn_timer_setting_title')),
+              subtitle: Text(tr(ref, 'ship_turn_timer_setting_desc')),
+              value: shipTurnTimer,
+              onChanged: (value) =>
+                  ref.read(shipTurnTimerProvider.notifier).setEnabled(value),
             ),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
