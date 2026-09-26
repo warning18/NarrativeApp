@@ -104,7 +104,8 @@ class _PartCard extends ConsumerWidget {
     final bonus = part['roomBonus'];
     final power = sailPowerOf(part);
     final ranges = [
-      for (final r in (part['ranges'] as List?) ?? const []) r.toString(),
+      for (final r in ShipRange.values)
+        if (weaponRangesFrom(part['ranges']).contains(r)) r.name,
     ];
     return [
       if (power != null) tr(ref, 'sail_power_${power.name}'),

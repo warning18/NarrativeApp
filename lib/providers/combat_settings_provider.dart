@@ -1,158 +1,112 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String _tremblePrefsKey = 'combat_tremble_enabled';
-
-class TrembleNotifier extends StateNotifier<bool> {
-  TrembleNotifier() : super(true) {
-    _load();
+/// An on/off setting saved in [SharedPreferences] under [prefsKey]. It
+/// starts at [defaultValue] and takes the saved value a moment later;
+/// anything that reads it once, at the start of something long (a ship
+/// battle's clock), awaits [loaded] first so a player's choice is never
+/// missed after a restart.
+class PersistedFlagNotifier extends StateNotifier<bool> {
+  PersistedFlagNotifier(this.prefsKey, {required bool defaultValue})
+      : _defaultValue = defaultValue,
+        super(defaultValue) {
+    loaded = _load();
   }
+
+  final String prefsKey;
+  final bool _defaultValue;
+
+  /// Completes once the saved value (if any) is in [state].
+  late final Future<void> loaded;
+
+  /// Set when the player changes it before the saved value arrives: the
+  /// choice just made wins over the stale saved one.
+  bool _changed = false;
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_tremblePrefsKey) ?? true;
+    if (_changed || !mounted) return;
+    state = prefs.getBool(prefsKey) ?? _defaultValue;
   }
 
   Future<void> setEnabled(bool enabled) async {
+    _changed = true;
     state = enabled;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_tremblePrefsKey, enabled);
+    await prefs.setBool(prefsKey, enabled);
   }
 }
+
+StateNotifierProvider<PersistedFlagNotifier, bool> _flag(
+        String prefsKey, bool defaultValue) =>
+    StateNotifierProvider<PersistedFlagNotifier, bool>(
+        (ref) => PersistedFlagNotifier(prefsKey, defaultValue: defaultValue));
 
 /// Whether the screen should briefly shake when the player takes damage
-/// in combat. Defaults to on; persisted via [SharedPreferences].
-final trembleEnabledProvider =
-    StateNotifierProvider<TrembleNotifier, bool>((ref) => TrembleNotifier());
-
-const String _chestAutoOpenPrefsKey = 'combat_chest_auto_open';
-
-class ChestAutoOpenNotifier extends StateNotifier<bool> {
-  ChestAutoOpenNotifier() : super(false) {
-    _load();
-  }
-
-  Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_chestAutoOpenPrefsKey) ?? false;
-  }
-
-  Future<void> setEnabled(bool enabled) async {
-    state = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_chestAutoOpenPrefsKey, enabled);
-  }
-}
+/// in combat, or a mighty blow lands. Defaults to on.
+final trembleEnabledProvider = _flag('combat_tremble_enabled', true);
 
 /// Whether the post-fight spoils chest opens itself with every slot
 /// already revealed, instead of waiting for the player's tap. Defaults to
-/// off (the tap is the point); persisted via [SharedPreferences].
-final chestAutoOpenProvider =
-    StateNotifierProvider<ChestAutoOpenNotifier, bool>(
-        (ref) => ChestAutoOpenNotifier());
-
-const String _alignmentHuntersPrefsKey = 'alignment_hunters_enabled';
-
-class AlignmentHuntersNotifier extends StateNotifier<bool> {
-  AlignmentHuntersNotifier() : super(true) {
-    _load();
-  }
-
-  Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_alignmentHuntersPrefsKey) ?? true;
-  }
-
-  Future<void> setEnabled(bool enabled) async {
-    state = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_alignmentHuntersPrefsKey, enabled);
-  }
-}
+/// off (the tap is the point).
+final chestAutoOpenProvider = _flag('combat_chest_auto_open', false);
 
 /// Whether alignment has consequences on the road: angels hunting an
 /// Evil character, demons hunting a Good one, and temptations courting a
-/// Neutral one (see alignment_events.dart). Defaults to on; persisted via
-/// [SharedPreferences].
+/// Neutral one (see alignment_events.dart). Defaults to on.
 final alignmentHuntersEnabledProvider =
-    StateNotifierProvider<AlignmentHuntersNotifier, bool>(
-        (ref) => AlignmentHuntersNotifier());
-
-const String _companionAutoTargetPrefsKey = 'combat_companion_auto_target';
-
-class CompanionAutoTargetNotifier extends StateNotifier<bool> {
-  CompanionAutoTargetNotifier() : super(true) {
-    _load();
-  }
-
-  Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_companionAutoTargetPrefsKey) ?? true;
-  }
-
-  Future<void> setEnabled(bool enabled) async {
-    state = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_companionAutoTargetPrefsKey, enabled);
-  }
-}
+    _flag('alignment_hunters_enabled', true);
 
 /// Whether companions aim their own strikes in a pack fight (focus fire on
 /// the player's target, else the weakest enemy) or the player picks every
-/// party member's target by hand. Defaults to on; persisted via
-/// [SharedPreferences].
-final companionAutoTargetProvider =
-    StateNotifierProvider<CompanionAutoTargetNotifier, bool>(
-        (ref) => CompanionAutoTargetNotifier());
-
-const String _combatEffectsPrefsKey = 'combat_effects_enabled';
-
-class CombatEffectsNotifier extends StateNotifier<bool> {
-  CombatEffectsNotifier() : super(true) {
-    _load();
-  }
-
-  Future<void> _load() async {
-    final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_combatEffectsPrefsKey) ?? true;
-  }
-
-  Future<void> setEnabled(bool enabled) async {
-    state = enabled;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_combatEffectsPrefsKey, enabled);
-  }
-}
+/// party member's target by hand. Defaults to on.
+final companionAutoTargetProvider = _flag('combat_companion_auto_target', true);
 
 /// Whether fights draw their effects on screen: each skill's and spell's
 /// own effect, shields, heals, statuses, and the floating numbers.
-/// Defaults to on; persisted via [SharedPreferences].
-final combatEffectsEnabledProvider =
-    StateNotifierProvider<CombatEffectsNotifier, bool>(
-        (ref) => CombatEffectsNotifier());
+/// Defaults to on.
+final combatEffectsEnabledProvider = _flag('combat_effects_enabled', true);
 
-const String _shipTurnTimerPrefsKey = 'ship_turn_timer_enabled';
+/// Whether a ship battle's turns are timed (see shipTurnSeconds): on by
+/// default; off, a turn waits for End turn. A battle reads it once, after
+/// [PersistedFlagNotifier.loaded].
+final shipTurnTimerProvider = _flag('ship_turn_timer_enabled', true);
 
-class ShipTurnTimerNotifier extends StateNotifier<bool> {
-  ShipTurnTimerNotifier() : super(true) {
+/// How a ship battle's aimed shot plays (a long press on an enemy room):
+/// the marker at its usual speed, slower, or no aimed shots at all (a
+/// long press then does nothing, and every shot is a plain one).
+enum AimedShots { normal, slow, off }
+
+/// One sweep of the aim bar's marker, for [AimedShots.normal] or slow.
+Duration aimSweepFor(AimedShots setting) => setting == AimedShots.slow
+    ? const Duration(milliseconds: 1600)
+    : const Duration(milliseconds: 900);
+
+class AimedShotsNotifier extends StateNotifier<AimedShots> {
+  AimedShotsNotifier() : super(AimedShots.normal) {
     _load();
   }
 
+  static const String prefsKey = 'ship_aimed_shots';
+  bool _changed = false;
+
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    state = prefs.getBool(_shipTurnTimerPrefsKey) ?? true;
+    if (_changed || !mounted) return;
+    final saved = prefs.getString(prefsKey);
+    state = AimedShots.values
+        .firstWhere((v) => v.name == saved, orElse: () => AimedShots.normal);
   }
 
-  Future<void> setEnabled(bool enabled) async {
-    state = enabled;
+  Future<void> set(AimedShots value) async {
+    _changed = true;
+    state = value;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_shipTurnTimerPrefsKey, enabled);
+    await prefs.setString(prefsKey, value.name);
   }
 }
 
-/// Whether a ship battle's turns are timed (see shipTurnSeconds): on by
-/// default; off, a turn waits for End turn. Persisted via
-/// [SharedPreferences].
-final shipTurnTimerProvider =
-    StateNotifierProvider<ShipTurnTimerNotifier, bool>(
-        (ref) => ShipTurnTimerNotifier());
+/// How aimed shots play in ship battles (see [AimedShots]).
+final aimedShotsProvider =
+    StateNotifierProvider<AimedShotsNotifier, AimedShots>(
+        (ref) => AimedShotsNotifier());

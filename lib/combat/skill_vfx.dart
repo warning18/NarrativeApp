@@ -118,6 +118,18 @@ const Set<VfxStyle> _systemStyles = {
   VfxStyle.weaken,
 };
 
+/// Styles that tend a friend rather than strike a foe.
+const Set<VfxStyle> supportVfxStyles = {
+  VfxStyle.heal,
+  VfxStyle.shield,
+  VfxStyle.stoneShield,
+  VfxStyle.mana,
+  VfxStyle.shout,
+};
+
+/// Styles the fight plays for itself, which the tiers leave as they are.
+const Set<VfxStyle> systemVfxStyles = _systemStyles;
+
 /// Styles that travel from whoever acts to whoever is hit before landing.
 const Set<VfxStyle> projectileStyles = {
   VfxStyle.arrow,
@@ -170,6 +182,9 @@ const Map<String, VfxPalette> _elementPalettes = {
   // An enemy's plain attack, with no element of its own.
   'Enemy': VfxPalette(0xFFE53935, 0xFFFF8A65),
 };
+
+/// Every element with its own colors.
+List<String> get vfxElementNames => _elementPalettes.keys.toList();
 
 /// The colors of [element] ('None' for an unknown one).
 VfxPalette paletteForElement(String element) =>
@@ -343,5 +358,155 @@ VfxStyle styleForStatus(StatusEffectType type) {
       return VfxStyle.stun;
     case StatusEffectType.weaken:
       return VfxStyle.weaken;
+  }
+}
+
+// --- Power -----------------------------------------------------------------
+
+/// How strongly an effect plays: a light touch, an ordinary blow, a strong
+/// one, a mighty one (see [vfxPowerFor] and [vfxTierFor]). The same style
+/// grows with it: bigger, with more particles, a little longer, and with
+/// details only the stronger tiers get (a shockwave, embers, a flash of
+/// the whole screen).
+enum VfxTier { light, normal, strong, mighty }
+
+/// A skill's rarity as a starting power.
+const Map<String, double> _rarityPower = {
+  'common': 0.85,
+  'uncommon': 1.0,
+  'rare': 1.15,
+  'epic': 1.3,
+  'legendary': 1.45,
+};
+
+/// The weakest and strongest an effect ever plays.
+const double minVfxPower = 0.65;
+const double maxVfxPower = 1.9;
+
+/// The most an effect grows in size; past it, power shows in its details
+/// (more particles, a shockwave, a flash) and its length.
+const double maxVfxScale = 1.4;
+
+/// How strongly one effect plays, from [minVfxPower] to [maxVfxPower]
+/// (1 is an ordinary blow):
+/// - what it is: a skill by its [rarity] (common 0.85 to legendary 1.45),
+///   a spell by its [manaCost] (2 mana 1.05, 4 mana 1.25), a plain die
+///   face 0.9;
+/// - how far the skill is upgraded ([tier], +0.08 each);
+/// - how hard it lands: [amount] against the [targetMaxHealth] (a third of
+///   the target's health +0.25, a scratch under 4% -0.15), or the amount
+///   alone when the target's health is unknown;
+/// - a [critical] hit +0.2, a [boss] striking +0.15.
+double vfxPowerFor({
+  String? rarity,
+  int manaCost = 0,
+  int tier = 0,
+  int amount = 0,
+  int targetMaxHealth = 0,
+  bool critical = false,
+  bool boss = false,
+}) {
+  var power = rarity != null && _rarityPower.containsKey(rarity)
+      ? _rarityPower[rarity]!
+      : manaCost > 0
+          ? 0.85 + 0.1 * manaCost
+          : 0.9;
+  power += 0.08 * tier.clamp(0, 5);
+  if (amount > 0) {
+    if (targetMaxHealth > 0) {
+      final share = amount / targetMaxHealth;
+      if (share >= 0.3) {
+        power += 0.25;
+      } else if (share >= 0.18) {
+        power += 0.15;
+      } else if (share < 0.04) {
+        power -= 0.15;
+      } else if (share < 0.08) {
+        power -= 0.05;
+      }
+    } else if (amount >= 40) {
+      power += 0.25;
+    } else if (amount >= 25) {
+      power += 0.15;
+    } else if (amount <= 5) {
+      power -= 0.15;
+    }
+  }
+  if (critical) power += 0.2;
+  if (boss) power += 0.15;
+  return power.clamp(minVfxPower, maxVfxPower).toDouble();
+}
+
+/// The tier a [power] plays at.
+VfxTier vfxTierFor(double power) {
+  if (power < 0.9) return VfxTier.light;
+  if (power < 1.2) return VfxTier.normal;
+  if (power < 1.45) return VfxTier.strong;
+  return VfxTier.mighty;
+}
+
+/// A tier's representative power, for playing a tier on purpose (the
+/// Edit Mode effects gallery).
+double vfxPowerOfTier(VfxTier tier) => switch (tier) {
+      VfxTier.light => 0.75,
+      VfxTier.normal => 1.0,
+      VfxTier.strong => 1.3,
+      VfxTier.mighty => 1.65,
+    };
+
+/// How many more (or fewer) particles a tier throws.
+double vfxCountFactor(VfxTier tier) => switch (tier) {
+      VfxTier.light => 0.6,
+      VfxTier.normal => 1.0,
+      VfxTier.strong => 1.4,
+      VfxTier.mighty => 1.8,
+    };
+
+/// How much longer (or shorter) a tier plays.
+double vfxDurationFactor(VfxTier tier) => switch (tier) {
+      VfxTier.light => 0.85,
+      VfxTier.normal => 1.0,
+      VfxTier.strong => 1.12,
+      VfxTier.mighty => 1.3,
+    };
+
+/// A floating number's font size at each tier.
+double vfxTextSize(VfxTier tier) => switch (tier) {
+      VfxTier.light => 14,
+      VfxTier.normal => 17,
+      VfxTier.strong => 20,
+      VfxTier.mighty => 24,
+    };
+
+/// How long every effect holds still when a mighty blow lands.
+const Duration vfxHitStop = Duration(milliseconds: 90);
+
+/// After a hit-stop, none again for this long: blows landing together
+/// share one pause.
+const Duration vfxHitStopCooldown = Duration(milliseconds: 500);
+
+/// More effects than this in flight at once thin their extra details.
+const int vfxCrowdedBursts = 4;
+
+/// When, in a style's own time (0 to 1), its blow lands: a projectile on
+/// arrival, a meteor as it falls, a beam as it reaches the ground,
+/// anything else almost at once. The strong tiers' flash and shockwave
+/// start here.
+double vfxImpactAt(VfxStyle style) {
+  switch (style) {
+    case VfxStyle.arrow:
+    case VfxStyle.bolt:
+    case VfxStyle.fireball:
+    case VfxStyle.volley:
+      return 0.45;
+    case VfxStyle.meteor:
+      return 0.4;
+    case VfxStyle.holyFire:
+    case VfxStyle.radiance:
+      return 0.3;
+    case VfxStyle.lightning:
+      return 0.05;
+    default:
+      return 0.12;
   }
 }

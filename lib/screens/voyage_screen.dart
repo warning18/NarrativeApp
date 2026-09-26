@@ -220,6 +220,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _enemy = buildEnemyShip(data);
         _log.clear();
         _battleKey++;
+        // The battle reads the clock setting once: wait for the saved
+        // choice, not the default it starts at.
+        await ref.read(shipTurnTimerProvider.notifier).loaded;
         if (!mounted) return;
         setState(() {
           _phase = _VoyagePhase.fight;

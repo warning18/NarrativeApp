@@ -177,6 +177,48 @@ void main() {
     expect(_container(tester).read(pendingTourProvider), isNull);
   });
 
+  testWidgets(
+      'on a small phone with large text, Next stays on screen at every step',
+      (tester) async {
+    // A phone: 360 x 640, a navigation bar at the bottom, text at 150%.
+    tester.view.physicalSize = const Size(360, 640);
+    tester.view.devicePixelRatio = 1;
+    tester.view.padding = const FakeViewPadding(top: 24, bottom: 48);
+    tester.platformDispatcher.textScaleFactorTestValue = 1.5;
+    addTearDown(tester.view.reset);
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+    // The Story tour, with the story text taking up half the screen.
+    await tester.pumpWidget(_app(
+      home: const Scaffold(
+        body: TutorialTrigger(
+          topic: TutorialTopic.story,
+          child: Column(
+            children: [
+              SizedBox(height: 110),
+              TutorialTarget(
+                id: 'story.text',
+                child: SizedBox(height: 320, child: Text('The story')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ));
+    final steps = TutorialTopic.story.steps.length;
+    for (var step = 1; step <= steps; step++) {
+      await _wait(tester, 4000);
+      expect(find.text('$step / $steps'), findsOneWidget);
+      final next = tester.getRect(find.byKey(const Key('tutorial_next')));
+      expect(next.bottom, lessThanOrEqualTo(640 - 48),
+          reason: 'step $step: Next under the navigation bar');
+      expect(next.top, greaterThanOrEqualTo(24), reason: 'step $step');
+      await tester.tap(find.byKey(const Key('tutorial_next')));
+    }
+    await _wait(tester, 800);
+    expect(find.byKey(const Key('guide_dog')), findsNothing);
+  });
+
   testWidgets('a tour with no page of its own is told where the player is',
       (tester) async {
     await tester.pumpWidget(_app(

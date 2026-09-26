@@ -144,13 +144,19 @@ extension _FightActions on _FightScreenState {
     var hitsLanded = 0;
     final spellStyle = styleForSpell(
         vfx: spell.vfx, element: spell.element, effect: spell.effect.name);
+    // A dearer spell plays bigger, and more so the more it does.
+    double spellPower({int amount = 0, int maxHealth = 0}) => vfxPowerFor(
+        manaCost: spell.manaCost, amount: amount, targetMaxHealth: maxHealth);
     final casterKey = _memberCardKey(player.id);
     var spellFx = 0;
     for (final enemy in enemyTargets) {
       final fxDelay = spellFx++ * 120;
       if (spell.effect != SpellEffectKind.damage) {
         _fx(spellStyle, _enemyCardKey(enemy.key),
-            source: casterKey, element: spell.element, delayMs: fxDelay);
+            source: casterKey,
+            element: spell.element,
+            delayMs: fxDelay,
+            power: spellPower());
       }
       if (spell.effect == SpellEffectKind.damage) {
         final damage = amount;
@@ -159,7 +165,8 @@ extension _FightActions on _FightScreenState {
             element: spell.element,
             delayMs: fxDelay,
             text: '-$damage',
-            textKind: VfxTextKind.damage);
+            textKind: VfxTextKind.damage,
+            power: spellPower(amount: damage, maxHealth: enemy.maxHealth));
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
         if (damage > 0) {
@@ -200,7 +207,8 @@ extension _FightActions on _FightScreenState {
               element: spell.element,
               delayMs: fxDelay,
               text: '+$healing',
-              textKind: VfxTextKind.heal);
+              textKind: VfxTextKind.heal,
+              power: spellPower(amount: healing, maxHealth: member.maxHealth));
           member.currentHealth =
               min(member.maxHealth, member.currentHealth + healing);
           entries.add(_LogEntry(
@@ -217,7 +225,8 @@ extension _FightActions on _FightScreenState {
               element: spell.element,
               delayMs: fxDelay,
               text: '+$block',
-              textKind: VfxTextKind.block);
+              textKind: VfxTextKind.block,
+              power: spellPower(amount: block, maxHealth: member.maxHealth));
           _spellBlock[member.id] = (_spellBlock[member.id] ?? 0) + block;
           member.block += block;
           entries.add(_LogEntry(
@@ -226,7 +235,8 @@ extension _FightActions on _FightScreenState {
             _LogKind.playerBlock,
           ));
         case SpellEffectKind.cleanse:
-          _fx(spellStyle, memberKey, element: spell.element, delayMs: fxDelay);
+          _fx(spellStyle, memberKey,
+              element: spell.element, delayMs: fxDelay, power: spellPower());
           member.statusEffects = [];
           entries.add(_LogEntry(
             '${member.displayName} ${trFor(lang, 'cleansed_suffix')}',

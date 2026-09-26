@@ -994,10 +994,13 @@ final DbSchema enemyShipsSchema = DbSchema(
           'Weapons [{weaponName, weaponName_fr, damage, chargeTurns, piercesShield, setsFire, roomDamage, ranges}] (ranges: close/medium/long; empty = all)',
       type: FieldType.json,
     ),
+    // What the ship does beyond firing (see ship_battle.dart): flee runs
+    // for long range when hurt and escapes; marksman keeps its distance and
+    // shoots the crew; ram comes alongside and rams once; boarder comes
+    // alongside and boards every third round.
     FieldSchema(
       key: 'habit',
-      label:
-          'Habit in battle (flee: runs for long range when hurt and escapes; marksman: keeps its distance and shoots the crew; ram: comes alongside and rams once; boarder: comes alongside and boards every third round)',
+      label: 'Battle Habit',
       type: FieldType.enumeration,
       enumOptions: ['none', 'flee', 'marksman', 'ram', 'boarder'],
       defaultValue: 'none',

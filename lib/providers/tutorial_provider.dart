@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../tutorial/tutorial_topics.dart';
@@ -36,6 +37,10 @@ class TutorialSettings {
   final bool loaded;
 
   bool hasSeen(TutorialTopic topic) => seen.contains(topic.name);
+
+  /// Whether the one-time tip [id] has been shown (a ship battle's rules,
+  /// one at a time as each first comes up; see ShipBattlePanel).
+  bool hasSeenTip(String id) => seen.contains('tip:$id');
 
   TutorialSettings copyWith(
           {bool? enabled, Set<String>? seen, bool? voice, bool? loaded}) =>
@@ -85,7 +90,15 @@ class TutorialNotifier extends StateNotifier<TutorialSettings> {
     await prefs.setStringList(_seenTopicsPrefsKey, state.seen.toList());
   }
 
-  /// Forgets every tour shown, so each plays again the next time its
+  /// Marks the one-time tip [id] shown (see [TutorialSettings.hasSeenTip]).
+  Future<void> markTipSeen(String id) async {
+    if (state.hasSeenTip(id)) return;
+    state = state.copyWith(seen: {...state.seen, 'tip:$id'});
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_seenTopicsPrefsKey, state.seen.toList());
+  }
+
+  /// Forgets every tour and tip shown, so each plays again the next time its
   /// feature is reached (Settings' "Replay tutorials").
   Future<void> reset() async {
     state = state.copyWith(seen: {});

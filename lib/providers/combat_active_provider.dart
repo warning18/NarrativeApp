@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /// True while a FightScreen is on top of the navigation stack, so the
 /// walking companion can switch to its fighting stance instead of idling.

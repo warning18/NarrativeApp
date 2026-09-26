@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../gamedata/db_export.dart';
 import '../gamedata/db_schema.dart';
 import '../gamedata/field_schema.dart';
 import '../gamedata/quest_validation.dart';
 import '../providers/game_db_providers.dart';
+import '../widgets/data_export_sheet.dart';
 import 'game_db_record_editor_screen.dart';
 
 class GameDbListScreen extends ConsumerStatefulWidget {
@@ -54,6 +56,15 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
             icon: const Icon(Icons.copy),
             tooltip: 'Copy JSON',
             onPressed: () => _copyJson(context, recordsAsync.value),
+          ),
+          IconButton(
+            key: const Key('db_download'),
+            icon: const Icon(Icons.download_outlined),
+            tooltip: 'Download (JSON or CSV)',
+            onPressed: recordsAsync.value == null
+                ? null
+                : () => showCollectionExportSheet(
+                    context, ref, schema, recordsAsync.value!),
           ),
           IconButton(
             icon: const Icon(Icons.file_upload_outlined),
@@ -113,21 +124,28 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                     ),
                     if (filterField != null) ...[
                       const SizedBox(width: 8),
-                      DropdownButton<String?>(
-                        value: _filterValue,
-                        hint: Text(filterField.label),
-                        items: [
-                          const DropdownMenuItem<String?>(
-                              value: null, child: Text('All')),
-                          ...filterField.enumOptions.map(
-                            (option) => DropdownMenuItem<String?>(
-                              value: option,
-                              child: Text(option),
+                      // However long the field's label, the filter never
+                      // pushes the search box off the row.
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 150),
+                        child: DropdownButton<String?>(
+                          isExpanded: true,
+                          value: _filterValue,
+                          hint: Text(filterField.label,
+                              maxLines: 1, overflow: TextOverflow.ellipsis),
+                          items: [
+                            const DropdownMenuItem<String?>(
+                                value: null, child: Text('All')),
+                            ...filterField.enumOptions.map(
+                              (option) => DropdownMenuItem<String?>(
+                                value: option,
+                                child: Text(option),
+                              ),
                             ),
-                          ),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _filterValue = value),
+                          ],
+                          onChanged: (value) =>
+                              setState(() => _filterValue = value),
+                        ),
                       ),
                     ],
                   ],
@@ -345,4 +363,38 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
       await ref.read(gameDbProvider(schema).notifier).replaceAll(imported);
     }
   }
+}
+
+/// The ways to take one collection away: its records as JSON, as a CSV
+/// table, and its texts (English beside French) as CSV.
+Future<void> showCollectionExportSheet(BuildContext context, WidgetRef ref,
+    DbSchema schema, Map<String, dynamic> records) {
+  return showDataExportSheet(
+    context,
+    ref,
+    title: 'Download ${schema.label} (${records.length} records)',
+    options: [
+      DataExportOption(
+        icon: Icons.data_object,
+        title: 'Records (JSON)',
+        subtitle: 'Every record with every field, as the game stores it',
+        filename: '${schema.id}.json',
+        build: () async => recordsJson(records),
+      ),
+      DataExportOption(
+        icon: Icons.table_chart_outlined,
+        title: 'Records (CSV)',
+        subtitle: 'One row per record, one column per field',
+        filename: '${schema.id}.csv',
+        build: () async => recordsCsv(schema, records),
+      ),
+      DataExportOption(
+        icon: Icons.translate,
+        title: 'Texts (CSV)',
+        subtitle: 'Every text, one row each: English and French side by side',
+        filename: '${schema.id}_texts.csv',
+        build: () async => textsCsv([(schema, records)]),
+      ),
+    ],
+  );
 }

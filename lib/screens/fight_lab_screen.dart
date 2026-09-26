@@ -9,6 +9,7 @@ import '../combat/enemy_affix.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/chapter_grid_layout.dart';
+import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -21,6 +22,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import 'fight_screen.dart';
 import 'ship_battle_panel.dart';
+import 'vfx_gallery_screen.dart';
 import 'voyage_screen.dart';
 
 /// Zone-tier style multipliers offered for a test fight's enemies.
@@ -74,8 +76,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
 
   /// Runs [battle] as a test: the session is prepared (die, party, health)
   /// before and put back after, keeping what happened only when asked.
-  Future<void> _asTest(
-      Future<bool?> Function() battle, String wonKey, String lostKey) async {
+  /// [resultKey] words the battle's result for the closing note.
+  Future<void> _asTest<T>(Future<T?> Function() battle,
+      String Function(T? result) resultKey) async {
     if (_running) return;
     setState(() => _running = true);
     final notifier = ref.read(playerSessionProvider.notifier);
@@ -95,7 +98,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
     if (_fullHealth) await notifier.healPartyToFull();
 
     ref.read(combatActiveProvider.notifier).state = true;
-    final won = await battle();
+    final result = await battle();
     ref.read(combatActiveProvider.notifier).state = false;
 
     final after = ref.read(playerSessionProvider);
@@ -116,7 +119,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
     setState(() => _running = false);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
-        '${tr(ref, won == true ? wonKey : lostKey)} · '
+        '${tr(ref, resultKey(result))} · '
         '${tr(ref, _keep ? 'fight_lab_kept' : 'fight_lab_restored')}',
       ),
     ));
@@ -142,8 +145,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             ),
           ),
         ),
-        'fight_lab_fight_won',
-        'fight_lab_fight_lost',
+        (won) => won == true ? 'fight_lab_fight_won' : 'fight_lab_fight_lost',
       );
 
   Future<void> _runShip(Map<String, dynamic> enemyShips) async {
@@ -164,17 +166,27 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         shipId;
     final chapter = _chapter;
     final allParts = _allParts;
+    // The clock setting is read once for the whole battle: wait for the
+    // saved choice rather than the default.
+    await ref.read(shipTurnTimerProvider.notifier).loaded;
+    if (!mounted) return;
 
-    await _asTest(
+    await _asTest<ShipBattleOutcome>(
       () {
         final session = ref.read(playerSessionProvider);
         final ship = ships['rusty_eel'] as Map<String, dynamic>? ??
             (ships.values.isEmpty
                 ? const <String, dynamic>{}
                 : ships.values.first as Map<String, dynamic>);
+        // Every part but the sails (one sail at a time): the sail stays
+        // the one the boat carries, and its power plays as on a voyage.
         final installed = allParts
-            ? parts.keys.where((id) => !id.startsWith('sail_')).toList()
+            ? [
+                ...parts.keys.where((id) => !id.startsWith('sail_')),
+                ...session.shipPartIds.where((id) => id.startsWith('sail_')),
+              ]
             : session.shipPartIds;
+        final sail = installedSail(parts, installed);
         List<ShipCrew> crew() => buildShipCrew(
               session: ref.read(playerSessionProvider),
               companions: companions,
@@ -183,7 +195,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
               gameConfig: gameConfig,
               youLabel: trFor(lang, 'you_label'),
             );
-        return Navigator.of(context).push<bool>(
+        return Navigator.of(context).push<ShipBattleOutcome>(
           MaterialPageRoute(
             builder: (pageContext) => Scaffold(
               appBar: AppBar(
@@ -201,7 +213,8 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 shipName: trFor(lang, 'boat_title'),
                 enemyName: enemyName,
                 crew: crew(),
-                foresight: false,
+                foresight: sail?.power == SailPower.foresight,
+                windKnot: sail?.power == SailPower.windknot,
                 random: Random(),
                 boarding: boardingProfileFor(data),
                 chapter: chapter,
@@ -212,15 +225,19 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                         ship: ship, parts: parts, installedPartIds: installed)
                     : null,
                 habit: habitFromName(data['habit']?.toString()),
-                onFinished: (outcome) =>
-                    Navigator.of(pageContext).pop(outcome.won),
+                onFinished: (outcome) => Navigator.of(pageContext).pop(outcome),
               ),
             ),
           ),
         );
       },
-      'fight_lab_ship_won',
-      'fight_lab_ship_lost',
+      (outcome) => outcome == null
+          ? 'fight_lab_ship_lost'
+          : outcome.escaped
+              ? 'fight_lab_ship_escaped'
+              : outcome.won
+                  ? 'fight_lab_ship_won'
+                  : 'fight_lab_ship_lost',
     );
   }
 
@@ -250,6 +267,17 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           Text(tr(ref, 'fight_lab_intro'), style: theme.textTheme.bodySmall),
+          ListTile(
+            key: const Key('fight_lab_effects'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.auto_awesome),
+            title: Text(tr(ref, 'fight_lab_effects')),
+            subtitle: Text(tr(ref, 'fight_lab_effects_desc')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const VfxGalleryScreen()),
+            ),
+          ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(tr(ref, 'fight_lab_keep')),

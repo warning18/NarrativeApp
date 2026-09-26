@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/battlefield_condition.dart';
@@ -341,6 +342,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   @override
   void initState() {
     super.initState();
+    _vfx.addImpactListener(_onVfxImpact);
     final session = ref.read(playerSessionProvider);
     _playerLevel = session.level;
     _newGamePlusCycle = session.newGamePlusCycle;
@@ -364,6 +366,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
   @override
   void dispose() {
     _shakeController.dispose();
+    _vfx.removeImpactListener(_onVfxImpact);
     _vfx.dispose();
     _rollController.dispose();
     super.dispose();

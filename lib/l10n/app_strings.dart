@@ -316,6 +316,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Test battle lost',
     AppLanguage.fr: 'Bataille de test perdue',
   },
+  'fight_lab_ship_escaped': {
+    AppLanguage.en: 'The enemy got away',
+    AppLanguage.fr: 'L’ennemi s’est échappé',
+  },
   'fight_lab_restored': {
     AppLanguage.en: 'game put back as it was',
     AppLanguage.fr: 'partie remise comme avant',
@@ -3121,24 +3125,116 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Dodge!',
     AppLanguage.fr: 'Esquive !',
   },
+  'vfx_gallery_title': {
+    AppLanguage.en: 'Effects gallery',
+    AppLanguage.fr: 'Galerie des effets',
+  },
+  'vfx_gallery_intro': {
+    AppLanguage.en:
+        'Plays each skill effect at each power. In a fight, the power comes from the skill: its rarity, its upgrades, how much of the target\'s health it takes, a critical, a boss. A mighty blow also shakes the screen.',
+    AppLanguage.fr:
+        'Joue chaque effet de compétence à chaque puissance. En combat, la puissance vient de la compétence : sa rareté, ses améliorations, la part de vie de la cible qu’elle emporte, un critique, un boss. Un coup dévastateur fait aussi trembler l’écran.',
+  },
+  'vfx_gallery_hero': {
+    AppLanguage.en: 'Hero',
+    AppLanguage.fr: 'Héros',
+  },
+  'vfx_gallery_foe': {
+    AppLanguage.en: 'Foe',
+    AppLanguage.fr: 'Ennemi',
+  },
+  'vfx_gallery_power': {
+    AppLanguage.en: 'Power',
+    AppLanguage.fr: 'Puissance',
+  },
+  'vfx_gallery_particles': {
+    AppLanguage.en: 'particles',
+    AppLanguage.fr: 'particules',
+  },
+  'vfx_gallery_play': {
+    AppLanguage.en: 'Play',
+    AppLanguage.fr: 'Jouer',
+  },
+  'vfx_gallery_play_all': {
+    AppLanguage.en: 'All four',
+    AppLanguage.fr: 'Les quatre',
+  },
+  'vfx_gallery_element': {
+    AppLanguage.en: 'Element',
+    AppLanguage.fr: 'Élément',
+  },
+  'vfx_gallery_style': {
+    AppLanguage.en: 'Style (tap to play)',
+    AppLanguage.fr: 'Style (touchez pour jouer)',
+  },
+  'vfx_gallery_skill': {
+    AppLanguage.en: 'A real skill',
+    AppLanguage.fr: 'Une vraie compétence',
+  },
+  'vfx_gallery_no_skill': {
+    AppLanguage.en: 'None: pick a style and a power below',
+    AppLanguage.fr: 'Aucune : choisissez un style et une puissance plus bas',
+  },
+  'vfx_gallery_upgrades': {
+    AppLanguage.en: 'Upgrades',
+    AppLanguage.fr: 'Améliorations',
+  },
+  'vfx_gallery_share': {
+    AppLanguage.en: 'Share of the foe\'s health it takes',
+    AppLanguage.fr: 'Part de la vie de l’ennemi qu’elle emporte',
+  },
+  'vfx_gallery_critical': {
+    AppLanguage.en: 'Critical hit',
+    AppLanguage.fr: 'Coup critique',
+  },
+  'vfx_gallery_play_skill': {
+    AppLanguage.en: 'Play this skill',
+    AppLanguage.fr: 'Jouer cette compétence',
+  },
+  'vfx_tier_light': {
+    AppLanguage.en: 'Light',
+    AppLanguage.fr: 'Léger',
+  },
+  'vfx_tier_normal': {
+    AppLanguage.en: 'Normal',
+    AppLanguage.fr: 'Normal',
+  },
+  'vfx_tier_strong': {
+    AppLanguage.en: 'Strong',
+    AppLanguage.fr: 'Fort',
+  },
+  'vfx_tier_mighty': {
+    AppLanguage.en: 'Mighty',
+    AppLanguage.fr: 'Dévastateur',
+  },
+  'fight_lab_effects': {
+    AppLanguage.en: 'Effects gallery',
+    AppLanguage.fr: 'Galerie des effets',
+  },
+  'fight_lab_effects_desc': {
+    AppLanguage.en: 'Every skill effect, from a light touch to a mighty blow',
+    AppLanguage.fr:
+        'Chaque effet de compétence, du coup léger au coup dévastateur',
+  },
   'combat_effects_setting_title': {
     AppLanguage.en: 'Combat effects',
     AppLanguage.fr: 'Effets de combat',
   },
   'combat_effects_setting_desc': {
     AppLanguage.en:
-        'Draws each skill\'s and spell\'s effect on screen in fights, with floating damage and healing numbers.',
+        'Draws each skill\'s and spell\'s effect on screen in fights, bigger for a stronger one, with floating damage and healing numbers.',
     AppLanguage.fr:
-        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, avec les dégâts et soins flottants.",
+        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, plus grand pour les plus puissants, avec les dégâts et soins flottants.",
   },
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',
     AppLanguage.fr: "Tremblement d'écran à l'impact",
   },
   'tremble_setting_desc': {
-    AppLanguage.en: 'Shakes the screen briefly when you take damage in combat.',
+    AppLanguage.en:
+        'Shakes the screen briefly when you take damage in combat, and when a mighty blow lands (with a vibration).',
     AppLanguage.fr:
-        "Fait légèrement trembler l'écran lorsque vous subissez des dégâts au combat.",
+        "Fait légèrement trembler l'écran lorsque vous subissez des dégâts au combat, et quand un coup dévastateur porte (avec une vibration).",
   },
   'language_coverage_note': {
     AppLanguage.en:
@@ -5077,6 +5173,82 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'End turn',
     AppLanguage.fr: 'Fin du tour'
   },
+  'ship_fire_hint_no_aim': {
+    AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
+    AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+  },
+  'aimed_shots_setting_title': {
+    AppLanguage.en: 'Aimed shots in ship battles',
+    AppLanguage.fr: 'Tirs visés en bataille navale',
+  },
+  'aimed_shots_setting_desc': {
+    AppLanguage.en:
+        'Hold an enemy room to aim: stop the marker in the middle for a critical. Slow gives the marker more time; off makes every shot a plain one.',
+    AppLanguage.fr:
+        'Maintenez une salle ennemie pour viser : arrêtez le curseur au milieu pour un critique. Lent laisse plus de temps au curseur ; désactivé, chaque tir est un tir simple.',
+  },
+  'aimed_shots_normal': {AppLanguage.en: 'Normal', AppLanguage.fr: 'Normal'},
+  'aimed_shots_slow': {AppLanguage.en: 'Slow', AppLanguage.fr: 'Lent'},
+  'aimed_shots_off': {AppLanguage.en: 'Off', AppLanguage.fr: 'Désactivé'},
+  'tip_got_it': {AppLanguage.en: 'Got it', AppLanguage.fr: 'Compris'},
+  'tip_ship_range': {
+    AppLanguage.en:
+        'The ships start at medium range. Once a turn the helm can close in or pull away: far off, both ships are harder to hit; side by side, easier. Some weapons reach only so far.',
+    AppLanguage.fr:
+        'Les navires commencent à moyenne portée. Une fois par tour, la barre peut se rapprocher ou s’éloigner : de loin, les deux navires sont plus durs à toucher ; bord à bord, plus faciles. Certaines armes ne portent pas partout.',
+  },
+  'tip_ship_habit': {
+    AppLanguage.en: 'How {ship} fights:',
+    AppLanguage.fr: 'Comment {ship} se bat :',
+  },
+  'tip_ship_weather': {
+    AppLanguage.en:
+        'The weather turns every round, and the next round’s shows ahead. Wind throws the aim, rain puts fires out, fog hides where the enemy is aiming.',
+    AppLanguage.fr:
+        'Le temps change à chaque tour, et celui du tour suivant s’affiche d’avance. Le vent dévie les tirs, la pluie éteint les feux, le brouillard cache où l’ennemi vise.',
+  },
+  'tip_ship_aim': {
+    AppLanguage.en:
+        'Tap a room to fire, or hold it to take aim: stop the marker in the middle for a critical that cannot be slipped; at the edges the shot goes wide. Settings can slow the marker or turn aiming off.',
+    AppLanguage.fr:
+        'Touchez une salle pour tirer, ou maintenez-la pour viser : arrêtez le curseur au milieu pour un critique impossible à esquiver ; aux bords, le tir part à côté. Les réglages peuvent ralentir le curseur ou désactiver la visée.',
+  },
+  'tip_ship_ammo': {
+    AppLanguage.en:
+        'Change the shot: chain tears their helm, grape cuts down their crew so they repair less, heated sets fires. Each does less hull than round shot.',
+    AppLanguage.fr:
+        'Changez de munition : le boulet ramé arrache leur barre, la mitraille fauche leur équipage pour qu’il répare moins, le boulet chauffé met le feu. Chacune fait moins de dégâts à la coque que le boulet rond.',
+  },
+  'tip_ship_orders': {
+    AppLanguage.en:
+        'Each hand aboard can give one order a battle, from the crew sheet: a brace, a blessing, a critical shot, and more.',
+    AppLanguage.fr:
+        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis la fiche d’équipage : s’arc-bouter, bénir, un tir critique, et d’autres.',
+  },
+  'tip_ship_fire': {
+    AppLanguage.en:
+        'Fire aboard: a burning room loses a pip and 3 hull every round. The hand at that station puts it out at the start of the turn.',
+    AppLanguage.fr:
+        'Le feu à bord : une salle en flammes perd un cran et 3 points de coque à chaque tour. La personne à ce poste l’éteint au début du tour.',
+  },
+  'tip_ship_leak': {
+    AppLanguage.en:
+        'A leak: the sea is in the hold and costs hull every round until the hand in the hold bails it.',
+    AppLanguage.fr:
+        'Une voie d’eau : la mer entre dans la cale et coûte de la coque à chaque tour, jusqu’à ce que la personne en cale l’écope.',
+  },
+  'tip_ship_boarding': {
+    AppLanguage.en:
+        'Their rail is open and the ships lie side by side: you can board them. The deck is fought on the dice; winning it wins the battle and their hold.',
+    AppLanguage.fr:
+        'Leur bastingage est ouvert et les navires sont bord à bord : vous pouvez les aborder. Le pont se dispute aux dés ; le gagner vous donne la victoire et leur cale.',
+  },
+  'tip_ship_sea': {
+    AppLanguage.en:
+        'The sea has its own say: now and then a rogue wave, a sea creature or a drifting wreck changes the round.',
+    AppLanguage.fr:
+        'La mer a son mot à dire : de temps en temps, une lame de fond, une créature marine ou une épave à la dérive change le tour.',
+  },
   'ship_fire_hint': {
     AppLanguage.en:
         'Tap a ready weapon, then the room to hit; hold the room to take aim.',
@@ -5461,9 +5633,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_habit_boarder_hint': {
     AppLanguage.en:
-        'Steers alongside and boards every third round, shields or not (twice a battle at most).',
+        'Steers alongside and boards every third round spent side by side, shields or not (twice a battle at most).',
     AppLanguage.fr:
-        'Vient bord à bord et aborde tous les trois tours, boucliers ou non (deux fois par bataille au plus).',
+        'Vient bord à bord et aborde tous les trois tours passés bord à bord, boucliers ou non (deux fois par bataille au plus).',
   },
   'ship_focus_hint': {
     AppLanguage.en: 'Hit this turn: another hit here knocks off an extra pip.',
@@ -5480,9 +5652,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_evasion_hint': {
     AppLanguage.en:
-        'The chance this ship slips a shot: its helm, its helmsman and the weather.',
+        'The chance this ship slips a shot: its helm, its helmsman, the range and the weather. None at all with its helm knocked out.',
     AppLanguage.fr:
-        'La chance que ce navire esquive un tir : sa barre, son timonier et le temps.',
+        'La chance que ce navire esquive un tir : sa barre, son timonier, la portée et le temps. Aucune si sa barre est hors d\'usage.',
   },
   'ship_crew_button': {
     AppLanguage.en: 'Crew',

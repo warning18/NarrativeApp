@@ -8,6 +8,154 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.159.0+189]
+
+The release that brings every open branch together: the ElevenLabs voice
+(1.156.0, already released) and the unreleased work below it, 1.155.1 to
+1.158.0, built beside it (that line had its own 1.156.0, the Data tab
+downloads). Nothing in the game changes in this entry itself.
+
+### Changed
+- **Riverpod 3** (from 2.6): the app's state library. The on/off settings,
+  the game session and the other stores keep the same API through
+  Riverpod's `legacy` import. One behaviour differs: a screen hidden under
+  another one (the story under a fight, say) hears about changes when it
+  is shown again, with the latest change only. The quest-ready notice, the
+  camp arrival and the tab switches only need the latest change, so they
+  behave as before.
+- **flutter_lints 6** (from 3). No new findings.
+- **CI actions**: checkout v7, cache v6, upload-artifact v7, gitleaks v3,
+  action-gh-release v3.
+
+## [1.158.0+188]
+
+### Fixed
+- **Ship battles** (the review of v1.153):
+  - The **Timed ship battles** setting is waited for before a battle
+    starts. A player who turned the clock off and restarted the game
+    could get a timed battle anyway, from voyages and the fight lab.
+  - A ship whose **helm is knocked out slips nothing**, however far off
+    and whatever the wind. Range and weather used to add evasion even
+    then.
+  - A **weapon that goes out of range is put down** for one that still
+    reaches (or none), after the Eel closes in, pulls away or is hauled
+    alongside. The enemy's rooms light up only for a shot that can be
+    fired.
+  - **Liora's Eagle eye and Malrik's Mark their helmsman** wait for a turn
+    a weapon can fire, instead of being spent on nothing.
+  - **Chain shot on the helm** is logged and previewed in full: both pips
+    it tears off, and "helm knocked out" whether it was aimed at the helm
+    or tore it down from another room.
+  - The **Void Barge boards every third round spent alongside**, counted
+    only while the ships lie side by side. It used to board on the
+    battle's third, sixth and ninth rounds, even on the round it arrived.
+  - **Fight lab:** an enemy that gets away reads "The enemy got away", no
+    longer "lost", and the boat's sail plays its power (Wind-Knot,
+    Kraken's Eye) as on a voyage.
+  - The Harbour reads a weapon's reach with the battle's own rules.
+  - The battle log's French tidying builds its patterns once, not on every
+    refresh of the clock.
+- The on/off settings (tremble, combat effects, chest auto-open,
+  alignment hunters, companion targeting, the ship clock) share one
+  implementation; a choice made before the saved one loads now wins.
+
+### Added
+- **Ship battle tips.** The first time each rule comes up, a one-line tip
+  explains it: the range and the enemy's habit at the start, the weather
+  when it turns, aimed shots with the first ready gun, shot from the
+  second turn, orders, fire, a leak, an open rail, the sea's surprises.
+  One at a time, each once. They follow the tutorials setting, and
+  "Replay tutorials" shows them again.
+- **Aimed shots setting** (Settings): Normal, Slow (the marker takes
+  1.6 s instead of 0.9 s) or Off (a long press does nothing; every shot
+  is a plain one).
+- **Skill effects:**
+  - Damage and healing numbers are sized by the effect's tier: small for
+    a light touch, big for a mighty blow, which lands big and settles.
+  - The card a strong or mighty effect lands on reacts: a blow shoves it
+    aside and flashes it in the effect's color, a mighty one harder; a
+    strong heal or shield lifts it.
+  - A mighty blow freezes every effect for a split second as it lands
+    (hit-stop), shakes the screen and gives a heavy vibration, all under
+    the tremble setting. Blows landing together share one pause.
+  - With more than four effects in flight at once (a pack fight's dice
+    and a spell), the extra details are thinned and the screen flashes
+    once, so the frame holds.
+  - The effects gallery previews a real skill at the power a fight would
+    give it: its rarity, its upgrades, the share of the foe's health it
+    takes, a critical. The stand-ins recoil too.
+
+### Changed
+- **Ship battles on a phone:** the empty log is a thin strip until it
+  has lines, the tips fit on one row, and on a narrow phone the four
+  shots fit without the "Shot:" label. At 412 px wide the Eel's rooms
+  are now on screen when a battle opens.
+- The Void Barge's and the evasion's hints say the fixed rules.
+
+## [1.157.0+187]
+
+### Changed
+- **Skill effects play at the skill's power.** Every effect in a fight
+  now has a power, and a stronger skill looks stronger:
+  - **What the skill is**: its rarity (a common skill plays smaller than
+    an epic or legendary one), how far it is upgraded, and for a spell
+    its mana cost.
+  - **How hard it lands**: the share of the target's health it takes
+    (a blow that takes a third of it plays much bigger than a scratch),
+    a critical hit, and a boss's blows.
+  - **Four tiers**: light, normal, strong, mighty. A light effect is
+    smaller, shorter and throws fewer particles; a strong one adds a
+    second shockwave and lingering embers; a mighty one adds a flash of
+    the screen, a ring along the ground, light rays, and shakes the
+    screen as the blow lands (when screen tremble is on). A strong or
+    mighty heal or shield gets rising motes and a pillar of light
+    instead.
+  - Size grows up to a cap, so a mighty blow gets its extra details
+    without swallowing the screen.
+- **More detail in each style:**
+  - A slash leaves an afterimage, and a strong one crosses back.
+  - A heavy slash and an impact crack the ground.
+  - A pierce draws speed lines.
+  - Flame shimmers with heat and leaves embers.
+  - A fireball leaves smoke and embers.
+  - Frost brings a cold mist and falling snowflakes.
+  - A quake splits the ground.
+  - Lightning forks, and a mighty strike brings down a second bolt.
+  - Some styles grow in count with the tier: a volley fires 3 to 9
+    arrows, a claw rakes 3 to 5 marks, a shout sends 2 to 5 rings.
+
+### Added
+- **Effects gallery (Edit Mode, from the fight lab).** Plays any style,
+  in any element, at any of the four tiers (or all four in turn), to
+  see how an effect looks from a light touch to a mighty blow.
+
+## [1.156.0+186]
+
+### Added
+- **Download the game data from the Data tab (Edit Mode).** Each
+  collection (items, enemies, quests…) has a Download button with three
+  choices, each to copy or to save as a file:
+  - **Records (JSON)**: every record with every field, as the game
+    stores it (`items.json`).
+  - **Records (CSV)**: one row per record, an `id` column and one column
+    per field; lists and nested values go in their cell as JSON
+    (`items.csv`).
+  - **Texts (CSV)**: every text of the collection, one row each, with
+    the English and the French side by side (`items_texts.csv`). Nested
+    texts are included (a ship's weapon names, an enemy's encounter
+    lines one by one); ids, flags and numbers are left out.
+- **Download all data**, at the top of the Data tab: the same three,
+  for all 24 collections in one file (`game_data.json`,
+  `game_data.csv` with one row per field, and `game_texts.csv` with the
+  game's 1,334 texts).
+- The CSV files are UTF-8 with a byte order mark, so spreadsheets show
+  the French accents.
+
+### Fixed
+- The Enemy Ships list no longer overflows on a phone: its filter took
+  the new Battle Habit field's long label. The label is short now, and
+  a filter never pushes the search box off the row whatever its label.
+
 ## [1.156.0+185]
 
 ### Changed
@@ -31,6 +179,18 @@ isn't reconstructable from git history alone.
 - Auto-read uses the ElevenLabs voice when it is on, and the device voice
   otherwise. Without a key, only scenes already recorded use the ElevenLabs
   voice. The web version keeps the device voice.
+
+## [1.155.1+185]
+
+### Fixed
+- **The guide's Next button no longer goes off the screen.** On a phone
+  with large text, a long line (the Story tour's "The story itself…"
+  for one) made the speech bubble taller than the room kept for it, and
+  its bottom, Next included, ended up under the navigation bar. The
+  guide now measures the bubble at the player's text size before it
+  sits down, and keeps the bubble between Skip and the bottom of the
+  screen; if the words still don't fit, they scroll inside the bubble
+  and Next stays in place.
 
 ## [1.155.0+184]
 
