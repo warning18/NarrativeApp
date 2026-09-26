@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.155.0+185]
+## [1.156.0+186]
 
 ### Added
 - **Download the game data from the Data tab (Edit Mode).** Each
@@ -35,7 +35,7 @@ isn't reconstructable from git history alone.
   the new Battle Habit field's long label. The label is short now, and
   a filter never pushes the search box off the row whatever its label.
 
-## [1.154.1+184]
+## [1.155.1+185]
 
 ### Fixed
 - **The guide's Next button no longer goes off the screen.** On a phone
@@ -46,6 +46,26 @@ isn't reconstructable from git history alone.
   sits down, and keeps the bubble between Skip and the bottom of the
   screen; if the words still don't fit, they scroll inside the bubble
   and Next stays in place.
+## [1.155.0+184]
+
+### Changed
+- **Ship battles, redrawn.** Each ship is now drawn side on: a hull with
+  a mast and its flag, the helm, guns and bulwark on deck and the hold
+  below, each room with its pips, its crew and what is wrong with it
+  (fire, a leak, knocked out). Hulls are bars of planks, red for the
+  enemy and gold for the Eel. Every gun carries its charge as a ring,
+  and the enemy's show the room of the Eel they mean to hit.
+- The sea between the ships shows the weather and a range ruler with
+  the ships' distance marked. The log keeps a fixed size (the whole
+  battle opens from it), so the Eel never moves down the screen.
+- The player's turn sits in a panel at the bottom that is always in
+  reach: the clock along its top edge, the hint, the guns as cards, the
+  shot, the crew, and End turn. Both ships fit a phone's screen above it.
+- The crew and their orders open in one sheet: each hand's health, a
+  station to tap, and their order with what it does.
+- A shot's result rises off the room it hit: the damage, Slipped or
+  Blocked.
+- Stitched Ink colours throughout, in dark and light.
 
 ## [1.154.0+183]
 
