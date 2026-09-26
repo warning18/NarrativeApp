@@ -175,6 +175,12 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
   /// Completed by [stop] to cut short the clip currently playing.
   Completer<void>? _interrupt;
 
+  /// Recordings under way, by file path: a paragraph asked for again while
+  /// it is still being recorded (a reading stopped and started again, the
+  /// whole story recording alongside one) waits for that recording rather
+  /// than paying ElevenLabs for it twice.
+  final Map<String, Future<File>> _recording = {};
+
   /// The file for [text], recording it first if it isn't on the device.
   Future<File> clipFor(String text,
       {required ElevenLabsVoiceSettings settings,
@@ -185,15 +191,29 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     }
     final file = await recordings.fileFor(text,
         voiceId: settings.voiceId, language: language);
-    if (await file.exists()) return file;
+    if (await file.exists() && !_recording.containsKey(file.path)) {
+      return file;
+    }
+    // Checked after the last await, so no other request can slip in
+    // between this check and the recording being registered below.
+    final pending = _recording[file.path];
+    if (pending != null) return pending;
     if (!settings.hasApiKey) {
       throw ElevenLabsException(
           'This scene is not recorded yet and no ElevenLabs API key is set.');
     }
-    final mp3 = await _synthesize(
-        text: text, apiKey: settings.apiKey!, voiceId: settings.voiceId);
-    return recordings.save(text, mp3,
-        voiceId: settings.voiceId, language: language);
+    final recording = () async {
+      final mp3 = await _synthesize(
+          text: text, apiKey: settings.apiKey!, voiceId: settings.voiceId);
+      return recordings.save(text, mp3,
+          voiceId: settings.voiceId, language: language);
+    }();
+    _recording[file.path] = recording;
+    try {
+      return await recording;
+    } finally {
+      _recording.remove(file.path);
+    }
   }
 
   /// Whether every one of [paragraphs] is already recorded, so reading

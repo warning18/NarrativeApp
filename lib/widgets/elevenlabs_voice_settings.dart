@@ -30,6 +30,25 @@ class _ElevenLabsVoiceSettingsSectionState
   /// Bumped to re-read the recorded count after recording or deleting.
   int _countVersion = 0;
 
+  /// The recorded count and folder, read once per [_countVersion], voice
+  /// and language rather than on every rebuild.
+  String? _statusKey;
+  Future<(int, String)>? _status;
+
+  Future<(int, String)> _statusFor(String voiceId, AppLanguage language) {
+    final key = '$_countVersion|$voiceId|${language.name}';
+    if (key != _statusKey || _status == null) {
+      _statusKey = key;
+      final recordings = ref.read(elevenLabsTtsProvider.notifier).recordings;
+      Future<(int, String)> read() async => (
+            await recordings.count(voiceId: voiceId, language: language),
+            await recordings.folderPath(voiceId: voiceId, language: language),
+          );
+      _status = read();
+    }
+    return _status!;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -186,7 +205,6 @@ class _ElevenLabsVoiceSettingsSectionState
     final voice = ref.watch(elevenLabsVoiceSettingsProvider);
     final language = ref.watch(appLanguageProvider);
     final theme = Theme.of(context);
-    final notifier = ref.read(elevenLabsTtsProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -297,14 +315,7 @@ class _ElevenLabsVoiceSettingsSectionState
           ),
           const SizedBox(height: 12),
           FutureBuilder<(int, String)>(
-            key: ValueKey('$_countVersion|${voice.voiceId}|${language.name}'),
-            future: () async {
-              final count = await notifier.recordings
-                  .count(voiceId: voice.voiceId, language: language);
-              final folder = await notifier.recordings
-                  .folderPath(voiceId: voice.voiceId, language: language);
-              return (count, folder);
-            }(),
+            future: _statusFor(voice.voiceId, language),
             builder: (context, snapshot) {
               final data = snapshot.data;
               if (data == null) return const SizedBox.shrink();

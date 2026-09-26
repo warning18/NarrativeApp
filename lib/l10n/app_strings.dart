@@ -5474,6 +5474,48 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'out of reach',
     AppLanguage.fr: 'hors de portée',
   },
+  'ship_slips_label': {
+    AppLanguage.en: 'SLIPS {n}%',
+    AppLanguage.fr: 'ESQUIVE {n} %',
+  },
+  'ship_evasion_hint': {
+    AppLanguage.en:
+        'The chance this ship slips a shot: its helm, its helmsman and the weather.',
+    AppLanguage.fr:
+        'La chance que ce navire esquive un tir : sa barre, son timonier et le temps.',
+  },
+  'ship_crew_button': {
+    AppLanguage.en: 'Crew',
+    AppLanguage.fr: 'Équipage',
+  },
+  'ship_crew_title': {
+    AppLanguage.en: 'Crew & orders',
+    AppLanguage.fr: 'Équipage et ordres',
+  },
+  'ship_log_title': {
+    AppLanguage.en: 'Battle log',
+    AppLanguage.fr: 'Journal de bataille',
+  },
+  'ship_room_out_label': {
+    AppLanguage.en: 'OUT',
+    AppLanguage.fr: 'HS',
+  },
+  'ship_slipped_label': {
+    AppLanguage.en: 'Slipped',
+    AppLanguage.fr: 'Esquivé',
+  },
+  'ship_blocked_label': {
+    AppLanguage.en: 'Blocked',
+    AppLanguage.fr: 'Paré',
+  },
+  'ship_enemy_turn_label': {
+    AppLanguage.en: '{ship} fires',
+    AppLanguage.fr: '{ship} fait feu',
+  },
+  'ship_weapon_armed_label': {
+    AppLanguage.en: 'armed',
+    AppLanguage.fr: 'armée',
+  },
   'ship_ammo_label': {
     AppLanguage.en: 'Shot:',
     AppLanguage.fr: 'Munition :',

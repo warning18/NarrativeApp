@@ -276,6 +276,16 @@ void main() {
       expect(file.existsSync(), isTrue);
     });
 
+    test('a paragraph asked for twice at once is recorded once', () async {
+      final clips = await Future.wait([
+        notifier.clipFor('Twice.', settings: _voice, language: AppLanguage.en),
+        notifier.clipFor('Twice.', settings: _voice, language: AppLanguage.en),
+      ]);
+      expect(requested, ['Twice.']);
+      expect(clips[0].path, clips[1].path);
+      expect(clips[0].existsSync(), isTrue);
+    });
+
     test('recording the whole story stops when cancelled', () async {
       var calls = 0;
       final recorded = await notifier.recordAll(['A.', 'B.', 'C.'],

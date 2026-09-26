@@ -136,13 +136,23 @@ void main() {
         tester.widget<ChoiceChip>(find.byKey(const Key('ship_ammo_chain')));
     expect(chain.selected, isTrue);
 
-    // Kelda's order: brace. Spent once given.
+    // Kelda's order, from the crew sheet: brace. Spent once given.
+    await tester.tap(find.byKey(const Key('ship_crew_button')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('ship_crew_sheet')), findsOneWidget);
     await tester.tap(find.byKey(const Key('ship_order_brace')));
     await tester.pump();
     expect(find.textContaining('Brace!'), findsWidgets);
     final brace =
         tester.widget<ActionChip>(find.byKey(const Key('ship_order_brace')));
     expect(brace.onPressed, isNull);
+    // Kelda moves to the hold from the sheet.
+    await tester.tap(find.byKey(const Key('ship_station_kelda_hold')));
+    await tester.pump();
+    Navigator.of(tester.element(find.byKey(const Key('ship_crew_sheet'))))
+        .pop();
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('ship_crew_sheet')), findsNothing);
 
     // Hold an enemy room to take aim; the bar sweeps; fire.
     await tester.longPress(find.byKey(const Key('ship_room_enemy_guns')));
