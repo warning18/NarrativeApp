@@ -1629,8 +1629,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'voix garde ses propres enregistrements.',
   },
   'elevenlabs_recorded_count': {
-    AppLanguage.en: '{count} paragraphs recorded in this language, in:',
-    AppLanguage.fr: '{count} paragraphes enregistrés dans cette langue, dans :',
+    AppLanguage.en: 'In this language: {count} paragraphs recorded on this '
+        'device, {bundled} shipped inside the app. Recorded here:',
+    AppLanguage.fr: 'Dans cette langue : {count} paragraphes enregistrés sur '
+        "cet appareil, {bundled} fournis avec l'application. Enregistrés ici :",
   },
   'elevenlabs_record_all_button': {
     AppLanguage.en: 'Record the whole story',
@@ -1658,9 +1660,149 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Recording the story…',
     AppLanguage.fr: "Enregistrement de l'histoire…",
   },
-  'elevenlabs_recording_progress': {
-    AppLanguage.en: '{done} / {total} paragraphs',
-    AppLanguage.fr: '{done} / {total} paragraphes',
+  'elevenlabs_progress': {
+    AppLanguage.en: '{done} / {total}',
+    AppLanguage.fr: '{done} / {total}',
+  },
+  'elevenlabs_needs_key': {
+    AppLanguage.en: 'Set an ElevenLabs API key in Settings → Read-Aloud Voice '
+        'to record.',
+    AppLanguage.fr: 'Définis une clé API ElevenLabs dans Paramètres → Voix de '
+        'lecture pour enregistrer.',
+  },
+  'record_scene': {
+    AppLanguage.en: 'Record this scene',
+    AppLanguage.fr: 'Enregistrer cette scène',
+  },
+  'scene_recorded': {
+    AppLanguage.en: 'This scene is recorded',
+    AppLanguage.fr: 'Cette scène est enregistrée',
+  },
+  'narration_recording_open_button': {
+    AppLanguage.en: 'Choose scenes to record…',
+    AppLanguage.fr: 'Choisir les scènes à enregistrer…',
+  },
+  'narration_recording_title': {
+    AppLanguage.en: 'Record narration',
+    AppLanguage.fr: 'Enregistrer la narration',
+  },
+  'narration_recording_desc': {
+    AppLanguage.en: 'Pick scenes by kind and chapter, tick them, and record '
+        'them in the ElevenLabs voice. The mark on each scene shows how many '
+        'of its paragraphs are recorded (on this device or inside the app). '
+        'Push the recordings to GitHub to ship them with the game.',
+    AppLanguage.fr: "Choisis les scènes par type et par chapitre, coche-les et "
+        "enregistre-les avec la voix ElevenLabs. La marque de chaque scène "
+        "indique combien de ses paragraphes sont enregistrés (sur cet appareil "
+        "ou dans l'application). Envoie les enregistrements sur GitHub pour "
+        'les livrer avec le jeu.',
+  },
+  'narration_filter_kind': {AppLanguage.en: 'Kind', AppLanguage.fr: 'Type'},
+  'narration_filter_chapter': {
+    AppLanguage.en: 'Chapter',
+    AppLanguage.fr: 'Chapitre',
+  },
+  'narration_filter_language': {
+    AppLanguage.en: 'Languages',
+    AppLanguage.fr: 'Langues',
+  },
+  'narration_language_en': {
+    AppLanguage.en: 'English',
+    AppLanguage.fr: 'Anglais',
+  },
+  'narration_language_fr': {
+    AppLanguage.en: 'French',
+    AppLanguage.fr: 'Français',
+  },
+  'narration_category_main': {
+    AppLanguage.en: 'Main story',
+    AppLanguage.fr: 'Histoire principale',
+  },
+  'narration_category_places': {
+    AppLanguage.en: 'Places',
+    AppLanguage.fr: 'Lieux',
+  },
+  'narration_category_side': {
+    AppLanguage.en: 'Side scenes',
+    AppLanguage.fr: 'Scènes annexes',
+  },
+  'narration_category_endings': {
+    AppLanguage.en: 'Endings',
+    AppLanguage.fr: 'Fins',
+  },
+  'narration_chapter_prologue': {
+    AppLanguage.en: 'Prologue',
+    AppLanguage.fr: 'Prologue',
+  },
+  'narration_chapter_n': {
+    AppLanguage.en: 'Chapter {n}',
+    AppLanguage.fr: 'Chapitre {n}',
+  },
+  'narration_variations_title': {
+    AppLanguage.en: 'Include asides and variations',
+    AppLanguage.fr: 'Inclure apartés et variantes',
+  },
+  'narration_variations_desc': {
+    AppLanguage.en: "Each companion's aside, and the callback, race, "
+        "profession and hub lines a scene can add.",
+    AppLanguage.fr: "L'aparté de chaque compagnon, et les rappels, lignes de "
+        "race, de profession et de lieu qu'une scène peut ajouter.",
+  },
+  'narration_scenes_shown': {
+    AppLanguage.en: '{count} scenes',
+    AppLanguage.fr: '{count} scènes',
+  },
+  'narration_select_all': {
+    AppLanguage.en: 'Select all',
+    AppLanguage.fr: 'Tout cocher',
+  },
+  'narration_select_none': {
+    AppLanguage.en: 'Clear',
+    AppLanguage.fr: 'Tout décocher',
+  },
+  'narration_record_selected': {
+    AppLanguage.en: 'Record {count} selected scenes',
+    AppLanguage.fr: 'Enregistrer les {count} scènes cochées',
+  },
+  'elevenlabs_push_button': {
+    AppLanguage.en: 'Push recordings to GitHub',
+    AppLanguage.fr: 'Envoyer les enregistrements sur GitHub',
+  },
+  'elevenlabs_push_needs_token': {
+    AppLanguage.en: 'Set your GitHub token in Settings (Edit Mode) first.',
+    AppLanguage.fr: "Renseigne d'abord ton jeton GitHub dans les Paramètres "
+        '(mode Édition).',
+  },
+  'elevenlabs_push_checking': {
+    AppLanguage.en: 'Checking the repository…',
+    AppLanguage.fr: 'Vérification du dépôt…',
+  },
+  'elevenlabs_push_nothing': {
+    AppLanguage.en: 'Every recording on this device is already in the '
+        'repository.',
+    AppLanguage.fr: 'Tous les enregistrements de cet appareil sont déjà dans '
+        'le dépôt.',
+  },
+  'elevenlabs_push_confirm_body': {
+    AppLanguage.en: '{count} recordings are not in the repository yet. They '
+        'will be pushed in one commit to a new branch, {branch}, under '
+        'assets/narration/. Open a pull request from it to ship them inside '
+        'the app.',
+    AppLanguage.fr: "{count} enregistrements ne sont pas encore dans le dépôt. "
+        "Ils seront envoyés en un seul commit sur une nouvelle branche, "
+        "{branch}, dans assets/narration/. Ouvre une pull request depuis "
+        "celle-ci pour les livrer dans l'application.",
+  },
+  'elevenlabs_pushing_title': {
+    AppLanguage.en: 'Pushing recordings…',
+    AppLanguage.fr: 'Envoi des enregistrements…',
+  },
+  'elevenlabs_push_success_body': {
+    AppLanguage.en: 'The recordings are on a new branch. Merge a pull request '
+        'from it and the next build plays them without a key or a download.',
+    AppLanguage.fr: "Les enregistrements sont sur une nouvelle branche. "
+        "Fusionne une pull request depuis celle-ci et la prochaine version "
+        "les lira sans clé ni téléchargement.",
   },
   'elevenlabs_record_done': {
     AppLanguage.en: '{count} paragraphs recorded.',

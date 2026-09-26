@@ -3,6 +3,8 @@ import 'dart:convert';
 import '../models/story_node.dart';
 import '../providers/player_session_provider.dart';
 import 'ally_acknowledgments.dart';
+import 'chapter_grid_layout.dart';
+import 'chapter_spine.dart';
 import 'narration_tokens.dart';
 
 /// Recorded narration is kept one clip per paragraph, so a scene the story
@@ -105,21 +107,50 @@ List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
   ];
 }
 
-/// Every paragraph the story can read aloud to this player, for recording
-/// the whole story ahead of time: each scene, each companion's aside, and
-/// every callback, persona and hub line -- personalized with [personalize]
-/// and split the way [readAloudParagraphs] splits them, so the recordings
-/// match what the read-aloud button asks for. Insertion-ordered (story
-/// order), without duplicates.
-List<String> narrationScript(
-  Iterable<StoryNode> nodes, {
+/// The kinds of scene the recording page (Edit Mode) sorts the story
+/// into, so a part of it can be recorded on its own.
+enum NarrationCategory {
+  /// The fixed beats every playthrough passes through (see
+  /// [isMainBeatNode]).
+  mainStory,
+
+  /// Camps, towns, villages and sites (see [StoryNode.settlement]).
+  places,
+
+  /// Everything else the story visits: quests, recruitments, branches.
+  sideScenes,
+
+  /// The story's endings (see [isStoryEnding]).
+  endings,
+}
+
+NarrationCategory narrationCategoryOf(StoryNode node) {
+  if (isStoryEnding(node)) return NarrationCategory.endings;
+  if (isMainBeatNode(node.id)) return NarrationCategory.mainStory;
+  if (node.settlement != null) return NarrationCategory.places;
+  return NarrationCategory.sideScenes;
+}
+
+/// The chapter [node] is filed under on the recording page: 0 is the
+/// prologue (see [chapterOfNode]).
+int narrationChapterOf(StoryNode node) => chapterOfNode(node.id);
+
+/// Every paragraph [node] can be read aloud in, for recording it ahead of
+/// time: the scene itself and, with [variations], each companion's aside
+/// and every hub, callback and persona line it can add -- personalized
+/// with [personalize] and split the way [readAloudParagraphs] splits them,
+/// so the recordings match what the read-aloud button asks for.
+List<String> nodeNarrationScript(
+  StoryNode node, {
   required bool french,
   required String Function(String text) personalize,
+  bool variations = true,
 }) {
-  final script = <String>{};
-  for (final node in nodes) {
-    script.addAll(narrationParagraphs(
-        storyBodyFor(personalize(node.descriptionFor(french)))));
+  final script = <String>{
+    ...narrationParagraphs(
+        storyBodyFor(personalize(node.descriptionFor(french)))),
+  };
+  if (variations) {
     final extras = [
       ...allyAcknowledgmentVariantsFor(node.id, french: french),
       for (final line in node.hubProgress?.lines ?? const <HubProgressLine>[])
@@ -132,4 +163,20 @@ List<String> narrationScript(
     }
   }
   return script.toList();
+}
+
+/// Every paragraph the story can read aloud to this player, for recording
+/// the whole story ahead of time (see [nodeNarrationScript]).
+/// Insertion-ordered (story order), without duplicates.
+List<String> narrationScript(
+  Iterable<StoryNode> nodes, {
+  required bool french,
+  required String Function(String text) personalize,
+  bool variations = true,
+}) {
+  return {
+    for (final node in nodes)
+      ...nodeNarrationScript(node,
+          french: french, personalize: personalize, variations: variations),
+  }.toList();
 }

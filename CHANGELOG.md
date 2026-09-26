@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.160.0+190]
+
+Recording the narration, a part at a time, and keeping it in the game.
+
+### Added
+- **Record narration** (Edit Mode). Open it from Settings → Read-Aloud Voice
+  → *Choose scenes to record…*.
+  - It lists the story's scenes by kind (main story, places, side scenes,
+    endings), by chapter (prologue to chapter 6) and by language.
+  - Each scene shows how many of its paragraphs are recorded.
+  - Tick scenes, or *Select all* for a filter, then record them in one go.
+    It shows the ElevenLabs character cost before starting and can be
+    stopped.
+  - Companions' asides and the callback, race, profession and hub lines
+    are included, or can be left out.
+- **Record this scene** (Edit Mode). A microphone button beside the node ID
+  on the story screen records the scene on screen: every paragraph it can be
+  read in, in the app's language. The button lights up once the scene is
+  recorded.
+- **Push recordings to GitHub** (Edit Mode), from Settings or the recording
+  page.
+  - Every recording on the device that the repository doesn't have yet goes
+    to a new `narration-…` branch in a single commit, under
+    `assets/narration/<en|fr>/`, each with its words in a `.txt` beside it.
+  - It uses the GitHub token from the GitHub sync settings.
+- **Recordings ship inside the app.** Once a pull request from that branch
+  is merged, the game plays those scenes from its own files, with no API
+  key, no recording and no download. Settings shows how many recordings
+  are on the device and how many ship with the app.
+
+### Changed
+- ElevenLabs recordings are now 64 kbit/s MP3, half the size of before and
+  still clear for a voice. That matters now that recordings ship in the
+  app.
+
 ## [1.159.0+189]
 
 The release that brings every open branch together: the ElevenLabs voice

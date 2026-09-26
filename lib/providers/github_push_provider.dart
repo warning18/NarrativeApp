@@ -181,3 +181,135 @@ Future<GitPushResult> pushEditsToGitHub({
         'https://github.com/$_owner/$_repo/compare/$_baseBranch...$branchName?expand=1',
   );
 }
+
+/// One recording to add to the repository at [path] (see
+/// `bundledNarrationPath`).
+class GitBinaryFile {
+  const GitBinaryFile({required this.path, required this.read});
+
+  final String path;
+
+  /// The file's bytes, read only when it is pushed.
+  final Future<List<int>> Function() read;
+}
+
+/// Every path under [prefix] on [_baseBranch], so what the repository
+/// already holds is not pushed again.
+Future<Set<String>> repositoryPathsUnder(
+    {required String token, required String prefix}) async {
+  final commitSha = await _baseCommitSha(token);
+  final commit = await _getJson(token,
+      'https://api.github.com/repos/$_owner/$_repo/git/commits/$commitSha');
+  final treeSha = (commit['tree'] as Map<String, dynamic>)['sha'] as String;
+  final tree = await _getJson(token,
+      'https://api.github.com/repos/$_owner/$_repo/git/trees/$treeSha?recursive=1');
+  return {
+    for (final entry in (tree['tree'] as List? ?? const []))
+      if (entry is Map &&
+          entry['type'] == 'blob' &&
+          (entry['path'] as String? ?? '').startsWith(prefix))
+        entry['path'] as String,
+  };
+}
+
+/// Pushes [files] to a new branch [branchName] off [_baseBranch] as one
+/// commit (Git Data API: a blob per file, one tree, one commit), reporting
+/// `(done, total)` as each file is uploaded. Throws a descriptive
+/// [Exception] on the first failure; nothing reaches the repository
+/// unless every file uploaded.
+Future<GitPushResult> pushFilesToGitHub({
+  required String token,
+  required String branchName,
+  required String message,
+  required List<GitBinaryFile> files,
+  void Function(int done, int total)? onProgress,
+}) async {
+  if (files.isEmpty) throw Exception('Nothing to push.');
+  final baseSha = await _baseCommitSha(token);
+  final baseCommit = await _getJson(token,
+      'https://api.github.com/repos/$_owner/$_repo/git/commits/$baseSha');
+  final baseTree = (baseCommit['tree'] as Map<String, dynamic>)['sha'];
+
+  final entries = <Map<String, String>>[];
+  for (var i = 0; i < files.length; i++) {
+    final file = files[i];
+    final blob = await _postJson(
+      token,
+      'https://api.github.com/repos/$_owner/$_repo/git/blobs',
+      {'content': base64Encode(await file.read()), 'encoding': 'base64'},
+      what: 'upload ${file.path}',
+    );
+    entries.add({
+      'path': file.path,
+      'mode': '100644',
+      'type': 'blob',
+      'sha': blob['sha'] as String,
+    });
+    onProgress?.call(i + 1, files.length);
+  }
+
+  final tree = await _postJson(
+    token,
+    'https://api.github.com/repos/$_owner/$_repo/git/trees',
+    {'base_tree': baseTree, 'tree': entries},
+    what: 'build the commit',
+  );
+  final commit = await _postJson(
+    token,
+    'https://api.github.com/repos/$_owner/$_repo/git/commits',
+    {
+      'message': message,
+      'tree': tree['sha'],
+      'parents': [baseSha],
+    },
+    what: 'create the commit',
+  );
+  final refResponse = await http.post(
+    Uri.parse('https://api.github.com/repos/$_owner/$_repo/git/refs'),
+    headers: _headers(token),
+    body: json.encode(
+        {'ref': 'refs/heads/$branchName', 'sha': commit['sha'] as String}),
+  );
+  if (refResponse.statusCode == 422) {
+    throw Exception(
+        'A branch named "$branchName" already exists. Choose a different name.');
+  }
+  if (refResponse.statusCode != 201) {
+    throw Exception(
+        'Could not create branch "$branchName" (status ${refResponse.statusCode}).');
+  }
+  return GitPushResult(
+    branchName: branchName,
+    compareUrl:
+        'https://github.com/$_owner/$_repo/compare/$_baseBranch...$branchName?expand=1',
+  );
+}
+
+Future<String> _baseCommitSha(String token) async {
+  final ref = await _getJson(token,
+      'https://api.github.com/repos/$_owner/$_repo/git/ref/heads/$_baseBranch',
+      what: 'read the base branch. Check that your token is valid and has '
+          'access to this repository');
+  return (ref['object'] as Map<String, dynamic>)['sha'] as String;
+}
+
+Future<Map<String, dynamic>> _getJson(String token, String url,
+    {String? what}) async {
+  final response = await http.get(Uri.parse(url), headers: _headers(token));
+  if (response.statusCode != 200) {
+    throw Exception(
+        'Could not ${what ?? 'read the repository'} (status ${response.statusCode}).');
+  }
+  return json.decode(response.body) as Map<String, dynamic>;
+}
+
+Future<Map<String, dynamic>> _postJson(
+    String token, String url, Map<String, Object?> body,
+    {required String what}) async {
+  final response = await http.post(Uri.parse(url),
+      headers: _headers(token), body: json.encode(body));
+  if (response.statusCode != 201) {
+    throw Exception('Could not $what (status ${response.statusCode}).');
+  }
+  return json.decode(response.body) as Map<String, dynamic>;
+}
