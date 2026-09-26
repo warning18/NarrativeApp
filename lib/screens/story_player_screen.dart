@@ -49,6 +49,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/narration_recording_dialogs.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/walking_companion_strip.dart';
@@ -477,6 +478,18 @@ class _StoryView extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    if (NarrationRecordings.supported)
+                      _RecordSceneButton(
+                        paragraphs: {
+                          ...readAloudParagraphs(node, session, french: french),
+                          ...nodeNarrationScript(node,
+                              french: french,
+                              personalize: (text) => personalizeFor(
+                                  session, text,
+                                  french: french)),
+                        }.toList(),
+                        language: language,
+                      ),
                     if (!playState.isInExcursion) ...[
                       const SizedBox(width: 4),
                       IconButton(
@@ -2182,6 +2195,39 @@ class _ReadAloudButton extends ConsumerWidget {
             message: '${tr(ref, 'voice_error_prefix')}: $e',
           );
         }
+      },
+    );
+  }
+}
+
+/// Edit Mode: records the scene on screen -- every paragraph it can be
+/// read in, in the app's language, companions' asides and callbacks
+/// included -- so it plays offline and can be pushed to the repository.
+/// Lit once the whole scene is recorded.
+class _RecordSceneButton extends ConsumerWidget {
+  const _RecordSceneButton({required this.paragraphs, required this.language});
+
+  final List<String> paragraphs;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(narrationRecordingsVersionProvider);
+    final voice = ref.watch(elevenLabsVoiceSettingsProvider);
+    return FutureBuilder<bool>(
+      future: ref
+          .read(elevenLabsTtsProvider.notifier)
+          .isRecorded(paragraphs, settings: voice, language: language),
+      builder: (context, snapshot) {
+        final recorded = snapshot.data ?? false;
+        return IconButton(
+          icon: Icon(recorded ? Icons.mic : Icons.mic_none, size: 18),
+          color: recorded ? Theme.of(context).colorScheme.primary : null,
+          tooltip: tr(ref, recorded ? 'scene_recorded' : 'record_scene'),
+          visualDensity: VisualDensity.compact,
+          onPressed: () => recordNarration(context, ref, {language: paragraphs},
+              confirm: false),
+        );
       },
     );
   }

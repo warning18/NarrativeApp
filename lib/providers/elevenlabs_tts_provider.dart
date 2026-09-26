@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -42,7 +43,7 @@ Future<Uint8List> synthesizeWithElevenLabs({
   final uri = Uri.https(
     'api.elevenlabs.io',
     '/v1/text-to-speech/${Uri.encodeComponent(voiceId)}',
-    {'output_format': 'mp3_44100_128'},
+    {'output_format': elevenLabsOutputFormat},
   );
   final response = await http
       .post(
@@ -81,18 +82,70 @@ String elevenLabsErrorMessage(String body, int statusCode) {
   return 'ElevenLabs request failed (HTTP $statusCode).';
 }
 
-/// Where recorded narration lives on the device: one MP3 per paragraph
-/// under `narration/<voice id>/<en|fr>/<clip id>.mp3` in the app's
-/// documents folder, each with a `.txt` beside it holding the words it
-/// speaks, so the folder can be copied off the device and still read.
+/// ElevenLabs' MP3 at 64 kbit/s: clear for a speaking voice, and half
+/// the size of their default, which matters once recordings ship inside
+/// the app (see [bundledNarrationPath]).
+const String elevenLabsOutputFormat = 'mp3_44100_64';
+
+/// Where a recording is kept in the repository, and so inside the app
+/// once it is pushed (see `pushNarrationToGitHub`): the clip id already
+/// names the voice and the model, so every voice shares one folder per
+/// language.
+String bundledNarrationPath(String clipId, AppLanguage language) =>
+    'assets/narration/${language.name}/$clipId.mp3';
+
+/// One recording kept on this device (see [NarrationRecordings.localClips]).
+class LocalNarrationClip {
+  const LocalNarrationClip(
+      {required this.clipId, required this.language, required this.mp3});
+
+  final String clipId;
+  final AppLanguage language;
+  final File mp3;
+
+  /// The words it speaks, kept beside it.
+  File get text => File(mp3.path.replaceFirst(RegExp(r'\.mp3$'), '.txt'));
+}
+
+Future<Set<String>> _loadBundledNarration() async {
+  final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+  return manifest
+      .listAssets()
+      .where((path) => path.startsWith('assets/narration/'))
+      .toSet();
+}
+
+/// Where recorded narration lives: recorded on this device, one MP3 per
+/// paragraph under `narration/<voice id>/<en|fr>/<clip id>.mp3` in the
+/// app's documents folder, each with a `.txt` beside it holding the words
+/// it speaks; or shipped inside the app, once pushed to the repository
+/// (see [bundledNarrationPath]).
 class NarrationRecordings {
-  NarrationRecordings({Future<Directory> Function()? root})
-      : _root = root ?? getApplicationDocumentsDirectory;
+  NarrationRecordings({
+    Future<Directory> Function()? root,
+    Future<Set<String>> Function()? bundledAssets,
+  })  : _root = root ?? getApplicationDocumentsDirectory,
+        _loadBundled = bundledAssets ?? _loadBundledNarration;
 
   final Future<Directory> Function() _root;
+  final Future<Set<String>> Function() _loadBundled;
+  Future<Set<String>>? _bundled;
 
   /// The web build has no file system to keep recordings in.
   static bool get supported => !kIsWeb;
+
+  /// The recordings shipped inside the app, read once. An app without any
+  /// (or a test host without an asset manifest) has none.
+  Future<Set<String>> bundled() => _bundled ??= () async {
+        try {
+          return await _loadBundled();
+        } catch (_) {
+          return <String>{};
+        }
+      }();
+
+  String clipIdFor(String text, {required String voiceId}) =>
+      narrationClipId(text: text, voiceId: voiceId, modelId: elevenLabsModelId);
 
   Future<Directory> _voiceDir(String voiceId) async =>
       Directory('${(await _root()).path}/narration/$voiceId');
@@ -100,16 +153,37 @@ class NarrationRecordings {
   Future<Directory> _dir(String voiceId, AppLanguage language) async =>
       Directory('${(await _voiceDir(voiceId)).path}/${language.name}');
 
+  /// Where [text] is (or would be) recorded on this device.
   Future<File> fileFor(String text,
       {required String voiceId, required AppLanguage language}) async {
-    final id = narrationClipId(
-        text: text, voiceId: voiceId, modelId: elevenLabsModelId);
+    final id = clipIdFor(text, voiceId: voiceId);
     return File('${(await _dir(voiceId, language)).path}/$id.mp3');
+  }
+
+  /// Whether [text] ships inside the app in [voiceId].
+  Future<bool> isBundled(String text,
+          {required String voiceId, required AppLanguage language}) async =>
+      (await bundled()).contains(
+          bundledNarrationPath(clipIdFor(text, voiceId: voiceId), language));
+
+  /// What plays [text] without recording it: this device's recording, or
+  /// the one shipped inside the app; null when there is neither.
+  Future<Source?> sourceFor(String text,
+      {required String voiceId, required AppLanguage language}) async {
+    final file = await fileFor(text, voiceId: voiceId, language: language);
+    if (await file.exists()) return DeviceFileSource(file.path);
+    final asset =
+        bundledNarrationPath(clipIdFor(text, voiceId: voiceId), language);
+    if ((await bundled()).contains(asset)) {
+      // AssetSource paths are relative to the assets/ folder.
+      return AssetSource(asset.substring('assets/'.length));
+    }
+    return null;
   }
 
   Future<bool> has(String text,
           {required String voiceId, required AppLanguage language}) async =>
-      (await fileFor(text, voiceId: voiceId, language: language)).exists();
+      await sourceFor(text, voiceId: voiceId, language: language) != null;
 
   Future<File> save(String text, Uint8List mp3,
       {required String voiceId, required AppLanguage language}) async {
@@ -124,7 +198,8 @@ class NarrationRecordings {
     return partial.rename(file.path);
   }
 
-  /// How many paragraphs are recorded in [voiceId] and [language].
+  /// How many paragraphs are recorded on this device in [voiceId] and
+  /// [language].
   Future<int> count(
       {required String voiceId, required AppLanguage language}) async {
     final dir = await _dir(voiceId, language);
@@ -137,7 +212,36 @@ class NarrationRecordings {
           {required String voiceId, required AppLanguage language}) async =>
       (await _dir(voiceId, language)).path;
 
-  /// Deletes every recording in [voiceId], both languages.
+  /// How many recordings ship inside the app in [language], every voice
+  /// together.
+  Future<int> bundledCount(AppLanguage language) async => (await bundled())
+      .where((path) =>
+          path.startsWith('assets/narration/${language.name}/') &&
+          path.endsWith('.mp3'))
+      .length;
+
+  /// Every recording made on this device in [voiceId], both languages.
+  Future<List<LocalNarrationClip>> localClips(String voiceId) async {
+    final clips = <LocalNarrationClip>[];
+    for (final language in AppLanguage.values) {
+      final dir = await _dir(voiceId, language);
+      if (!await dir.exists()) continue;
+      await for (final entry in dir.list()) {
+        if (entry is! File || !entry.path.endsWith('.mp3')) continue;
+        final name = entry.uri.pathSegments.last;
+        clips.add(LocalNarrationClip(
+          clipId: name.substring(0, name.length - '.mp3'.length),
+          language: language,
+          mp3: entry,
+        ));
+      }
+    }
+    clips.sort((a, b) => a.mp3.path.compareTo(b.mp3.path));
+    return clips;
+  }
+
+  /// Deletes every recording made on this device in [voiceId], both
+  /// languages (the ones shipped inside the app stay).
   Future<void> deleteVoice(String voiceId) async {
     final dir = await _voiceDir(voiceId);
     if (await dir.exists()) await dir.delete(recursive: true);
@@ -181,8 +285,9 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
   /// than paying ElevenLabs for it twice.
   final Map<String, Future<File>> _recording = {};
 
-  /// The file for [text], recording it first if it isn't on the device.
-  Future<File> clipFor(String text,
+  /// What plays [text]: its recording on this device or inside the app,
+  /// recording it first when there is neither.
+  Future<Source> clipFor(String text,
       {required ElevenLabsVoiceSettings settings,
       required AppLanguage language}) async {
     if (!NarrationRecordings.supported) {
@@ -191,13 +296,17 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     }
     final file = await recordings.fileFor(text,
         voiceId: settings.voiceId, language: language);
-    if (await file.exists() && !_recording.containsKey(file.path)) {
-      return file;
+    if (!_recording.containsKey(file.path)) {
+      final existing = await recordings.sourceFor(text,
+          voiceId: settings.voiceId, language: language);
+      if (existing != null && !_recording.containsKey(file.path)) {
+        return existing;
+      }
     }
     // Checked after the last await, so no other request can slip in
     // between this check and the recording being registered below.
     final pending = _recording[file.path];
-    if (pending != null) return pending;
+    if (pending != null) return DeviceFileSource((await pending).path);
     if (!settings.hasApiKey) {
       throw ElevenLabsException(
           'This scene is not recorded yet and no ElevenLabs API key is set.');
@@ -210,7 +319,7 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     }();
     _recording[file.path] = recording;
     try {
-      return await recording;
+      return DeviceFileSource((await recording).path);
     } finally {
       _recording.remove(file.path);
     }
@@ -238,11 +347,11 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     if (paragraphs.isEmpty) return;
     final run = ++_run;
     state = VoicePlaybackState.loading;
-    Future<File>? next;
+    Future<Source>? next;
     try {
       next = clipFor(paragraphs.first, settings: settings, language: language);
       for (var i = 0; i < paragraphs.length; i++) {
-        final file = await next!;
+        final clip = await next!;
         next = null;
         if (run != _run) return;
         if (i + 1 < paragraphs.length) {
@@ -250,7 +359,7 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
               settings: settings, language: language);
         }
         state = VoicePlaybackState.playing;
-        await _playToEnd(file);
+        await _playToEnd(clip);
         if (run != _run) return;
         if (next != null) state = VoicePlaybackState.loading;
       }
@@ -262,10 +371,10 @@ class ElevenLabsTtsNotifier extends StateNotifier<VoicePlaybackState> {
     }
   }
 
-  Future<void> _playToEnd(File file) async {
+  Future<void> _playToEnd(Source clip) async {
     final interrupt = _interrupt = Completer<void>();
     final finished = _player.onPlayerComplete.first;
-    await _player.play(DeviceFileSource(file.path));
+    await _player.play(clip);
     await Future.any([finished, interrupt.future]);
   }
 
@@ -332,3 +441,7 @@ final elevenLabsTtsProvider =
     StateNotifierProvider<ElevenLabsTtsNotifier, VoicePlaybackState>(
   (ref) => ElevenLabsTtsNotifier(),
 );
+
+/// Bumped when the recording tools make or delete recordings, so the
+/// "recorded" marks and counts they show read the folder again.
+final narrationRecordingsVersionProvider = StateProvider<int>((ref) => 0);
