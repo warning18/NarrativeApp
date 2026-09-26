@@ -8,6 +8,18 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.154.1+184]
+
+### Fixed
+- **The guide's Next button no longer goes off the screen.** On a phone
+  with large text, a long line (the Story tour's "The story itself…"
+  for one) made the speech bubble taller than the room kept for it, and
+  its bottom, Next included, ended up under the navigation bar. The
+  guide now measures the bubble at the player's text size before it
+  sits down, and keeps the bubble between Skip and the bottom of the
+  screen; if the words still don't fit, they scroll inside the bubble
+  and Next stays in place.
+
 ## [1.154.0+183]
 
 ### Added

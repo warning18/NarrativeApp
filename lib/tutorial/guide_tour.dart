@@ -209,7 +209,42 @@ const double _dogSize = 104;
 const double _walkNative = 88;
 const double _sitNative = 64;
 const double _bubbleWidth = 340;
-const double _bubbleRoom = 200;
+// The bubble's parts around the words (see [_bubbleHeightFor]): the box's
+// padding and border, the gap the words keep on their right, and the tail.
+const double _bubbleFrame = 23;
+const double _bubbleTextInset = 35;
+const double _tailHeight = 10;
+// However little room is left, the bubble keeps this much: the speaker
+// line and Next, with a line of words scrolling between them.
+const double _bubbleMinHeight = 120;
+
+/// The bubble's left edge and width on a screen [screenWidth] wide.
+(double, double) _bubbleBox(double screenWidth) {
+  final left = ((screenWidth - _bubbleWidth) / 2).clamp(12.0, screenWidth);
+  return (left, math.min(_bubbleWidth, screenWidth - 2 * left));
+}
+
+TextStyle? _bubbleTextStyle(ThemeData theme) => theme.textTheme.bodyLarge
+    ?.copyWith(fontFamily: InkFonts.prose, fontSize: 16, height: 1.45);
+
+/// How tall the bubble grows around [text] at [width]: the words laid out
+/// in the player's own text size, the speaker line, Next, the padding and
+/// the tail. The guide keeps that much room free beside itself (see
+/// [_GuideTourState._placeDog]), so a long line on a small phone with large
+/// text never pushes Next off the screen.
+double _bubbleHeightFor(BuildContext context, String text, double width) {
+  final scaler = MediaQuery.textScalerOf(context);
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: _bubbleTextStyle(Theme.of(context))),
+    textDirection: Directionality.of(context),
+    textScaler: scaler,
+  )..layout(maxWidth: math.max(1.0, width - _bubbleTextInset));
+  final words = painter.height;
+  painter.dispose();
+  final speaker = math.max(40.0, scaler.scale(20));
+  final next = math.max(48.0, scaler.scale(14) + 28);
+  return _bubbleFrame + speaker + words + next + _tailHeight;
+}
 
 final Map<String, List<String>> _neutralWalk = {
   'east': companionFrames('Walking/east', 8),
@@ -316,7 +351,9 @@ class _GuideTourState extends ConsumerState<GuideTour>
       if (target.mounted) hole = _rectOf(target, screen);
     }
 
-    final (dog, above) = _placeDog(hole, screen, media.padding);
+    final (_, bubbleWidth) = _bubbleBox(screen.width);
+    final room = _bubbleHeightFor(context, _textOf(step), bubbleWidth);
+    final (dog, above) = _placeDog(hole, screen, media.padding, room);
     final from = _started
         ? Offset.lerp(
             _dogFrom, _dogTo, Curves.easeInOut.transform(_move.value))!
@@ -365,9 +402,16 @@ class _GuideTourState extends ConsumerState<GuideTour>
   /// Where the dog sits for a step lighting [hole]: under it when there is
   /// more room below, else over it, near its middle; in the middle of the
   /// screen when nothing is lit. Also whether the bubble goes above the dog.
-  (Offset, bool) _placeDog(Rect? hole, Size screen, EdgeInsets padding) {
+  /// [bubble] is the room the bubble needs (see [_bubbleHeightFor]); the
+  /// dog leaves it free between itself and the screen's edge, even if that
+  /// means sitting over part of the lit area.
+  (Offset, bool) _placeDog(
+      Rect? hole, Size screen, EdgeInsets padding, double bubble) {
     final top = padding.top + 56;
     final bottom = screen.height - padding.bottom - 12;
+    // Never so much that the dog itself is pushed off the screen: past
+    // that, the bubble's words scroll.
+    final room = math.min(bubble, math.max(0.0, bottom - top - _dogSize));
     // A lit part taking most of the screen leaves no room beside it: the
     // guide sits over it, in the middle.
     if (hole == null || hole.height > screen.height * 0.5) {
@@ -375,8 +419,7 @@ class _GuideTourState extends ConsumerState<GuideTour>
         Offset(
             (screen.width - _dogSize) / 2,
             math.min(
-                math.max((top + bottom + _bubbleRoom) / 2 - _dogSize / 2,
-                    top + _bubbleRoom),
+                math.max((top + bottom + room) / 2 - _dogSize / 2, top + room),
                 bottom - _dogSize)),
         true,
       );
@@ -386,10 +429,10 @@ class _GuideTourState extends ConsumerState<GuideTour>
         .toDouble();
     final below = bottom - hole.bottom >= hole.top - top;
     if (below) {
-      final y = math.min(hole.bottom + 4, bottom - _dogSize - _bubbleRoom);
+      final y = math.min(hole.bottom + 4, bottom - _dogSize - room);
       return (Offset(x, math.max(top, y)), false);
     }
-    final y = math.max(hole.top - 4 - _dogSize, top + _bubbleRoom);
+    final y = math.max(hole.top - 4 - _dogSize, top + room);
     return (Offset(x, math.min(y, bottom - _dogSize)), true);
   }
 
@@ -472,10 +515,24 @@ class _GuideTourState extends ConsumerState<GuideTour>
                   };
             final spriteSize =
                 walking ? _dogSize : _dogSize * _sitNative / _walkNative;
-            final bubbleLeft =
-                ((screen.width - _bubbleWidth) / 2).clamp(12.0, screen.width);
-            final bubbleWidth =
-                math.min(_bubbleWidth, screen.width - 2 * bubbleLeft);
+            final (bubbleLeft, bubbleWidth) = _bubbleBox(screen.width);
+            // The bubble stays between the Skip button and the bottom of
+            // the screen (the navigation bar), whatever its words.
+            final safeTop = media.padding.top + 56;
+            final safeBottom = screen.height - media.padding.bottom - 8;
+            var bubbleTop = safeTop;
+            var bubbleBottom = safeBottom;
+            if (_bubbleAbove) {
+              bubbleBottom = math.min(safeBottom, dog.dy + 6);
+              if (bubbleBottom - safeTop < _bubbleMinHeight) {
+                bubbleBottom = math.min(safeBottom, safeTop + _bubbleMinHeight);
+              }
+            } else {
+              bubbleTop = math.max(safeTop, dog.dy + _dogSize + 2);
+              if (safeBottom - bubbleTop < _bubbleMinHeight) {
+                bubbleTop = math.max(safeTop, safeBottom - _bubbleMinHeight);
+              }
+            }
             final tailX = (dog.dx + _dogSize / 2 - bubbleLeft - 9)
                 .clamp(14.0, bubbleWidth - 32);
 
@@ -546,9 +603,14 @@ class _GuideTourState extends ConsumerState<GuideTour>
                   Positioned(
                     left: bubbleLeft,
                     width: bubbleWidth,
-                    top: _bubbleAbove ? null : dog.dy + _dogSize + 2,
-                    bottom: _bubbleAbove ? screen.height - dog.dy - 6 : null,
-                    child: bubble,
+                    top: bubbleTop,
+                    bottom: screen.height - bubbleBottom,
+                    child: Align(
+                      alignment: _bubbleAbove
+                          ? Alignment.bottomCenter
+                          : Alignment.topCenter,
+                      child: bubble,
+                    ),
                   ),
                 Positioned(
                   top: media.padding.top + 8,
@@ -607,8 +669,7 @@ class _Bubble extends StatelessWidget {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final fill = theme.colorScheme.surfaceContainerHigh;
-    final textStyle = theme.textTheme.bodyLarge
-        ?.copyWith(fontFamily: InkFonts.prose, fontSize: 16, height: 1.45);
+    final textStyle = _bubbleTextStyle(theme);
     final tail = Padding(
       padding: EdgeInsets.only(left: tailX),
       child: CustomPaint(
@@ -650,20 +711,24 @@ class _Bubble extends StatelessWidget {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Semantics(
-              liveRegion: true,
-              label: fullText,
-              child: ExcludeSemantics(
-                // The whole line takes its room from the start, so the
-                // bubble doesn't grow while the words come.
-                child: Stack(
-                  children: [
-                    Opacity(
-                        opacity: 0, child: Text(fullText, style: textStyle)),
-                    Text(shown, style: textStyle),
-                  ],
+          // Where the screen is short, the words scroll and Next stays put.
+          Flexible(
+            child: SingleChildScrollView(
+              primary: false,
+              padding: const EdgeInsets.only(right: 8),
+              child: Semantics(
+                liveRegion: true,
+                label: fullText,
+                child: ExcludeSemantics(
+                  // The whole line takes its room from the start, so the
+                  // bubble doesn't grow while the words come.
+                  child: Stack(
+                    children: [
+                      Opacity(
+                          opacity: 0, child: Text(fullText, style: textStyle)),
+                      Text(shown, style: textStyle),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -682,7 +747,9 @@ class _Bubble extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: tailDown ? [box, tail] : [tail, box],
+      children: tailDown
+          ? [Flexible(child: box), tail]
+          : [tail, Flexible(child: box)],
     );
   }
 }
