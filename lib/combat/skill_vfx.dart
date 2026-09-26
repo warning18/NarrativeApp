@@ -470,6 +470,24 @@ double vfxDurationFactor(VfxTier tier) => switch (tier) {
       VfxTier.mighty => 1.3,
     };
 
+/// A floating number's font size at each tier.
+double vfxTextSize(VfxTier tier) => switch (tier) {
+      VfxTier.light => 14,
+      VfxTier.normal => 17,
+      VfxTier.strong => 20,
+      VfxTier.mighty => 24,
+    };
+
+/// How long every effect holds still when a mighty blow lands.
+const Duration vfxHitStop = Duration(milliseconds: 90);
+
+/// After a hit-stop, none again for this long: blows landing together
+/// share one pause.
+const Duration vfxHitStopCooldown = Duration(milliseconds: 500);
+
+/// More effects than this in flight at once thin their extra details.
+const int vfxCrowdedBursts = 4;
+
 /// When, in a style's own time (0 to 1), its blow lands: a projectile on
 /// arrival, a meteor as it falls, a beam as it reaches the ground,
 /// anything else almost at once. The strong tiers' flash and shockwave

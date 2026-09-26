@@ -11,7 +11,11 @@ extension _FightCards on _FightScreenState {
         for (final member in _party) ...[
           KeyedSubtree(
             key: _memberCardKey(member.id),
-            child: _buildPartyCard(member, items),
+            child: VfxRecoil(
+              controller: _vfx,
+              anchor: _memberCardKey(member.id),
+              child: _buildPartyCard(member, items),
+            ),
           ),
           const SizedBox(height: 6),
         ],
@@ -296,7 +300,11 @@ extension _FightCards on _FightScreenState {
         for (final enemy in _enemies) ...[
           KeyedSubtree(
             key: _enemyCardKey(enemy.key),
-            child: _buildEnemyCard(enemy, previews),
+            child: VfxRecoil(
+              controller: _vfx,
+              anchor: _enemyCardKey(enemy.key),
+              child: _buildEnemyCard(enemy, previews),
+            ),
           ),
           const SizedBox(height: 6),
         ],

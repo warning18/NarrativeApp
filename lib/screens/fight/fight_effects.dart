@@ -10,13 +10,23 @@ extension _FightEffects on _FightScreenState {
     _shakeController.forward(from: 0);
   }
 
+  /// A mighty blow landing, as the effect layer plays it: the screen
+  /// shakes and the phone gives a heavy tap, both under the tremble
+  /// setting.
+  void _onVfxImpact(VfxImpact impact) {
+    if (!mounted || !impact.hit || impact.tier != VfxTier.mighty) return;
+    if (!ref.read(trembleEnabledProvider)) return;
+    _shakeController.forward(from: 0);
+    HapticFeedback.heavyImpact();
+  }
+
   /// What one party member's die looks like on screen: the face's (or its
   /// skill's) effect on the enemy it hit with the damage floating off it,
   /// a critical's starburst, the status it left, a heal, a shield or mana
   /// on the member, and a lifesteal drawn back to them. Each plays at the
   /// power of the skill behind it (see [vfxPowerFor]): its rarity, its
   /// upgrades, how much of the target's health it takes, a critical; a
-  /// mighty blow also shakes the screen as it lands.
+  /// mighty blow also shakes the screen as it lands (see [_onVfxImpact]).
   void _playFaceEffects({
     required _PartyMember actor,
     required DiceFaceResult face,
@@ -63,9 +73,6 @@ extension _FightEffects on _FightScreenState {
           textKind: result.isCritical ? VfxTextKind.crit : VfxTextKind.damage,
           power: power,
         );
-        if (vfxTierFor(power) == VfxTier.mighty) {
-          _shakeAfter(delayMs + _impactMs(hitStyle, power));
-        }
         if (result.isCritical) {
           _vfx.play(
               style: VfxStyle.crit, target: targetKey, delayMs: delayMs + 250);
@@ -157,20 +164,6 @@ extension _FightEffects on _FightScreenState {
       big: big,
       power: power,
     );
-  }
-
-  /// When [style], played at [power], lands: for a shake timed on the blow
-  /// rather than on the throw.
-  int _impactMs(VfxStyle style, double power) => (vfxImpactAt(style) *
-          vfxDurationMs(style) *
-          vfxDurationFactor(vfxTierFor(power)))
-      .round();
-
-  /// Shakes the screen after [delayMs], if the fight is still on screen.
-  void _shakeAfter(int delayMs) {
-    Future<void>.delayed(Duration(milliseconds: delayMs), () {
-      if (mounted) _triggerShake();
-    });
   }
 
   /// What an enemy's move looks like on screen: its skill's effect (a

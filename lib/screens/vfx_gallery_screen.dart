@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/dice_faces.dart';
 import '../combat/skill_vfx.dart';
+import '../gamedata/db_schema.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/game_db_providers.dart';
 import '../widgets/combat_vfx.dart';
 
+/// The stand-in foe's health, for a real skill's share of it.
+const int _foeHealth = 60;
+
+/// Shares of the foe's health a previewed skill's blow can take.
+const List<double> _shares = [0.05, 0.15, 0.35];
+
 /// Edit Mode: plays any skill effect at any power, between a stand-in hero
-/// and foe, to see how a style looks from a light touch to a mighty blow.
+/// and foe, to see how a style looks from a light touch to a mighty blow;
+/// or a real skill at the power a fight would give it (its rarity, its
+/// upgrades, the share of the foe's health it takes, a critical).
 class VfxGalleryScreen extends ConsumerStatefulWidget {
   const VfxGalleryScreen({super.key});
 
@@ -21,6 +33,12 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
   VfxStyle _style = VfxStyle.slash;
   String _element = 'Fire';
   VfxTier _tier = VfxTier.normal;
+
+  // A real skill's preview.
+  String? _skillId;
+  int _upgrades = 0;
+  double _share = _shares[1];
+  bool _critical = false;
 
   @override
   void dispose() {
@@ -55,6 +73,47 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
     }
   }
 
+  /// The power a fight would give [skill] with the preview's settings (see
+  /// [vfxPowerFor]).
+  double _skillPower(Map<String, dynamic> skill) => vfxPowerFor(
+        rarity: skill['rarity']?.toString(),
+        tier: _upgrades,
+        amount: (_share * _foeHealth).round(),
+        targetMaxHealth: _foeHealth,
+        critical: _critical,
+      );
+
+  void _pickSkill(String? id, Map<String, dynamic> skills) {
+    final skill = skills[id] as Map<String, dynamic>?;
+    setState(() {
+      _skillId = id;
+      if (skill == null) return;
+      _style = styleForFace('Skill', skill);
+      final element = skill['element']?.toString() ?? 'None';
+      if (vfxElementNames.contains(element)) _element = element;
+    });
+  }
+
+  /// Plays the picked skill as a fight would: on the hero for a heal, at
+  /// the foe for the rest.
+  void _playSkill(Map<String, dynamic> skill) {
+    final support = isSupportSkill(skill);
+    final amount = (_share * _foeHealth).round();
+    _vfx.play(
+      style: _style,
+      target: support ? _hero : _foe,
+      source: support ? null : _hero,
+      element: _element,
+      text: support ? '+$amount' : '-$amount',
+      textKind: support
+          ? VfxTextKind.heal
+          : _critical
+              ? VfxTextKind.crit
+              : VfxTextKind.damage,
+      power: _skillPower(skill),
+    );
+  }
+
   static int _amountFor(VfxTier tier) => switch (tier) {
         VfxTier.light => 3,
         VfxTier.normal => 9,
@@ -68,6 +127,15 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     const styles = VfxStyle.values;
+    final lang = ref.watch(appLanguageProvider);
+    final skills = ref.watch(localizedDbProvider(skillsSchema)).value ??
+        const <String, dynamic>{};
+    final skillIds = [
+      for (final entry in skills.entries)
+        if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?)) entry.key,
+    ]..sort((a, b) => skillDisplayName(a, language: lang)
+        .compareTo(skillDisplayName(b, language: lang)));
+    final skill = skills[_skillId] as Map<String, dynamic>?;
     return Scaffold(
       appBar: AppBar(title: Text(tr(ref, 'vfx_gallery_title'))),
       body: Column(
@@ -87,20 +155,32 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                       bottom: 24,
                       width: 130,
                       height: 72,
-                      child: _StandIn(
-                          key: _hero,
-                          icon: Icons.person,
-                          label: tr(ref, 'vfx_gallery_hero')),
+                      child: KeyedSubtree(
+                        key: _hero,
+                        child: VfxRecoil(
+                          controller: _vfx,
+                          anchor: _hero,
+                          child: _StandIn(
+                              icon: Icons.person,
+                              label: tr(ref, 'vfx_gallery_hero')),
+                        ),
+                      ),
                     ),
                     Positioned(
                       right: 32,
                       top: 40,
                       width: 120,
                       height: 110,
-                      child: _StandIn(
-                          key: _foe,
-                          icon: Icons.pest_control,
-                          label: tr(ref, 'vfx_gallery_foe')),
+                      child: KeyedSubtree(
+                        key: _foe,
+                        child: VfxRecoil(
+                          controller: _vfx,
+                          anchor: _foe,
+                          child: _StandIn(
+                              icon: Icons.pest_control,
+                              label: tr(ref, 'vfx_gallery_foe')),
+                        ),
+                      ),
                     ),
                     Positioned.fill(
                       child: IgnorePointer(
@@ -119,6 +199,77 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
                 Text(tr(ref, 'vfx_gallery_intro'),
                     style: theme.textTheme.bodySmall),
                 const SizedBox(height: 12),
+                // A real skill, at the power a fight would give it.
+                DropdownButtonFormField<String?>(
+                  key: const Key('vfx_gallery_skill'),
+                  initialValue: _skillId,
+                  isExpanded: true,
+                  decoration:
+                      InputDecoration(labelText: tr(ref, 'vfx_gallery_skill')),
+                  items: [
+                    DropdownMenuItem<String?>(
+                        value: null,
+                        child: Text(tr(ref, 'vfx_gallery_no_skill'))),
+                    for (final id in skillIds)
+                      DropdownMenuItem<String?>(
+                          value: id,
+                          child: Text(skillDisplayName(id, language: lang),
+                              overflow: TextOverflow.ellipsis)),
+                  ],
+                  onChanged: (id) => _pickSkill(id, skills),
+                ),
+                if (skill != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    key: const Key('vfx_gallery_skill_power'),
+                    '${tr(ref, 'skill_rarity_${skill['rarity'] ?? 'common'}')}'
+                    ' · ${tr(ref, 'vfx_gallery_power')} '
+                    '${_skillPower(skill).toStringAsFixed(2)} · '
+                    '${_tierLabel(vfxTierFor(_skillPower(skill)))}',
+                    style: theme.textTheme.titleSmall,
+                  ),
+                  Row(
+                    children: [
+                      Text('${tr(ref, 'vfx_gallery_upgrades')} $_upgrades'),
+                      Expanded(
+                        child: Slider(
+                          value: _upgrades.toDouble(),
+                          max: 5,
+                          divisions: 5,
+                          label: '$_upgrades',
+                          onChanged: (v) =>
+                              setState(() => _upgrades = v.round()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(tr(ref, 'vfx_gallery_share'),
+                      style: theme.textTheme.labelLarge),
+                  Wrap(
+                    spacing: 6,
+                    children: [
+                      for (final share in _shares)
+                        ChoiceChip(
+                          label: Text('${(share * 100).round()} %'),
+                          selected: _share == share,
+                          onSelected: (_) => setState(() => _share = share),
+                        ),
+                    ],
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(tr(ref, 'vfx_gallery_critical')),
+                    value: _critical,
+                    onChanged: (v) => setState(() => _critical = v),
+                  ),
+                  FilledButton.icon(
+                    key: const Key('vfx_gallery_play_skill'),
+                    onPressed: () => _playSkill(skill),
+                    icon: const Icon(Icons.play_arrow),
+                    label: Text(tr(ref, 'vfx_gallery_play_skill')),
+                  ),
+                ],
+                const Divider(height: 28),
                 Text(tr(ref, 'vfx_gallery_power'),
                     style: theme.textTheme.labelLarge),
                 const SizedBox(height: 6),
@@ -215,7 +366,7 @@ class _VfxGalleryScreenState extends ConsumerState<VfxGalleryScreen> {
 
 /// A stand-in card for the stage.
 class _StandIn extends StatelessWidget {
-  const _StandIn({super.key, required this.icon, required this.label});
+  const _StandIn({required this.icon, required this.label});
 
   final IconData icon;
   final String label;

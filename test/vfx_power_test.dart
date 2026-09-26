@@ -112,6 +112,13 @@ void main() {
     });
   });
 
+  test('numbers grow with the tier', () {
+    for (var i = 1; i < VfxTier.values.length; i++) {
+      expect(vfxTextSize(VfxTier.values[i]),
+          greaterThan(vfxTextSize(VfxTier.values[i - 1])));
+    }
+  });
+
   group('burst', () {
     test('a mighty burst plays longer than a light one', () {
       for (final style in VfxStyle.values) {
@@ -289,6 +296,91 @@ void main() {
         final mighty = await coverage(style, VfxTier.mighty);
         expect(mighty, greaterThan(light * 1.5), reason: style.name);
       }
+    });
+
+    testWidgets('a strong blow lands: its card recoils, a light one is still',
+        (tester) async {
+      final controller = CombatVfxController();
+      final hero = GlobalKey();
+      final foe = GlobalKey();
+      final impacts = <VfxImpact>[];
+      controller.addImpactListener(impacts.add);
+      await tester.pumpWidget(MaterialApp(
+        home: Stack(
+          children: [
+            Positioned(
+                left: 20,
+                top: 300,
+                width: 160,
+                height: 70,
+                child: SizedBox(key: hero)),
+            Positioned(
+              left: 220,
+              top: 200,
+              width: 160,
+              height: 140,
+              child: KeyedSubtree(
+                key: foe,
+                child: VfxRecoil(
+                  controller: controller,
+                  anchor: foe,
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ),
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CombatVfxLayer(controller: controller),
+              ),
+            ),
+          ],
+        ),
+      ));
+      Offset shove() {
+        final moved = tester
+            .widget<Transform>(find.descendant(
+                of: find.byType(VfxRecoil), matching: find.byType(Transform)))
+            .transform
+            .getTranslation();
+        return Offset(moved.x, moved.y);
+      }
+
+      // A light slash lands without a word.
+      controller.play(
+          style: VfxStyle.slash,
+          target: foe,
+          source: hero,
+          textKind: VfxTextKind.damage,
+          power: vfxPowerOfTier(VfxTier.light));
+      for (var i = 0; i < 20; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(impacts, isEmpty);
+
+      // A mighty one: reported as it lands, and the foe's card is shoved.
+      controller.play(
+          style: VfxStyle.slash,
+          target: foe,
+          source: hero,
+          element: 'Fire',
+          textKind: VfxTextKind.damage,
+          power: vfxPowerOfTier(VfxTier.mighty));
+      var moved = false;
+      for (var i = 0; i < 12; i++) {
+        await tester.pump(const Duration(milliseconds: 30));
+        if (shove() != Offset.zero) moved = true;
+      }
+      expect(impacts, hasLength(1));
+      expect(impacts.single.target, foe);
+      expect(impacts.single.tier, VfxTier.mighty);
+      expect(impacts.single.hit, isTrue);
+      expect(moved, isTrue);
+      for (var i = 0; i < 40; i++) {
+        await tester.pump(const Duration(milliseconds: 50));
+      }
+      expect(shove(), Offset.zero, reason: 'it settles');
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      controller.dispose();
     });
   });
 }

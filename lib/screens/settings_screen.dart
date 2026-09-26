@@ -67,6 +67,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final combatEffectsEnabled = ref.watch(combatEffectsEnabledProvider);
     final chestAutoOpen = ref.watch(chestAutoOpenProvider);
     final shipTurnTimer = ref.watch(shipTurnTimerProvider);
+    final aimedShots = ref.watch(aimedShotsProvider);
     final alignmentHunters = ref.watch(alignmentHuntersEnabledProvider);
     final companionAutoTarget = ref.watch(companionAutoTargetProvider);
     final permadeathEnabled = ref.watch(permadeathEnabledProvider);
@@ -340,6 +341,25 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               onChanged: (value) =>
                   ref.read(shipTurnTimerProvider.notifier).setEnabled(value),
             ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'aimed_shots_setting_title')),
+              subtitle: Text(tr(ref, 'aimed_shots_setting_desc')),
+            ),
+            SegmentedButton<AimedShots>(
+              key: const Key('aimed_shots_setting'),
+              segments: [
+                for (final value in AimedShots.values)
+                  ButtonSegment(
+                      value: value,
+                      label: Text(tr(ref, 'aimed_shots_${value.name}'))),
+              ],
+              selected: {aimedShots},
+              showSelectedIcon: false,
+              onSelectionChanged: (picked) =>
+                  ref.read(aimedShotsProvider.notifier).set(picked.first),
+            ),
+            const SizedBox(height: 8),
             SwitchListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(tr(ref, 'chest_auto_open_setting_title')),

@@ -11,7 +11,9 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/combat_active_provider.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'fight_screen.dart';
 
@@ -202,11 +204,101 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     return tidyShipLine(text, lang);
   }
 
+  // --- One-time tips -------------------------------------------------------
+
+  /// The first rule of the battle on screen now that the player has not
+  /// had explained yet (see [TutorialSettings.hasSeenTip]): the range and
+  /// the enemy's habit at once, the weather when it turns, aimed shots
+  /// with the first ready gun, shot from the second turn, orders, fire,
+  /// a leak, an open rail, the sea's surprises. One at a time; none when
+  /// tutorials are off.
+  String? _pendingTip(TutorialSettings tutorial, AimedShots aimed) {
+    if (!tutorial.loaded || !tutorial.enabled || _over) return null;
+    if (!ref.read(tutorialAutoShowProvider)) return null;
+    final b = _battle;
+    final candidates = [
+      if (b.rules.range) 'ship_range',
+      if (b.rules.habits && widget.habit != EnemyHabit.none)
+        'ship_habit_${widget.habit.name}',
+      if (b.rules.weather && b.weather != SeaWeather.calm) 'ship_weather',
+      if (aimed != AimedShots.off && b.anyShotReady) 'ship_aim',
+      if (b.turn >= 2) 'ship_ammo',
+      if (b.crew.any(b.canOrder)) 'ship_orders',
+      if (b.player.rooms.values.any((r) => r.onFire)) 'ship_fire',
+      if (b.player.leaks > 0) 'ship_leak',
+      if (b.canBoardThem) 'ship_boarding',
+      if (b.log.any((l) => l.key.startsWith('ship_event_'))) 'ship_sea',
+    ];
+    for (final id in candidates) {
+      if (!tutorial.hasSeenTip(id)) return id;
+    }
+    return null;
+  }
+
+  Widget _buildTip(String id, AppLanguage lang) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final habit = id.startsWith('ship_habit_');
+    var text = habit
+        ? '${trFor(lang, 'tip_ship_habit').replaceAll('{ship}', widget.enemyName)} '
+            '${trFor(lang, '${id}_hint')}'
+        : trFor(lang, 'tip_$id');
+    text = tidyShipLine(text, lang);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Material(
+        key: Key('ship_tip_$id'),
+        color: theme.colorScheme.secondaryContainer,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+          side: BorderSide(color: ink.gold),
+        ),
+        // One row, so the ships stay on screen: the tip, and a tick to
+        // put it away for good.
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 6, 0, 6),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.lightbulb_outline,
+                  size: 18, color: theme.colorScheme.onSecondaryContainer),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(text,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                        height: 1.25,
+                        color: theme.colorScheme.onSecondaryContainer)),
+              ),
+              IconButton(
+                key: const Key('ship_tip_ok'),
+                tooltip: trFor(lang, 'tip_got_it'),
+                visualDensity: VisualDensity.compact,
+                icon: Icon(Icons.check, size: 20, color: ink.gold),
+                onPressed: () =>
+                    ref.read(tutorialProvider.notifier).markTipSeen(id),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   String? _firstReadyWeaponId() {
     for (final w in _battle.player.weapons) {
       if (_battle.canFire(w)) return w.id;
     }
     return null;
+  }
+
+  /// After the range changes, a weapon that no longer reaches is put down
+  /// for one that does (or none), so the enemy's rooms never invite a shot
+  /// that cannot be fired.
+  void _rearm() {
+    final armed = _battle.weaponById(_armedWeaponId);
+    if (armed == null || !_battle.canFire(armed)) {
+      _armedWeaponId = _firstReadyWeaponId();
+    }
   }
 
   void _cancelAim() {
@@ -518,13 +610,18 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final ink = InkColors.of(context);
     final enemies = ref.watch(localizedDbProvider(enemiesSchema)).value;
     final canBoard = _canBoardThem(enemies);
+    final aimed = ref.watch(aimedShotsProvider);
+    if (!_aim.isAnimating) _aim.duration = aimSweepFor(aimed);
     final hintKey = _selectedCrewId != null
         ? 'ship_station_hint'
         : _armedWeaponId != null
-            ? 'ship_fire_hint'
+            ? (aimed == AimedShots.off
+                ? 'ship_fire_hint_no_aim'
+                : 'ship_fire_hint')
             : canBoard
                 ? 'ship_board_hint'
                 : 'ship_station_hint';
+    final tip = _pendingTip(ref.watch(tutorialProvider), aimed);
     var hint = trFor(lang, hintKey);
     if (hintKey == 'ship_board_hint') {
       hint = hint.replaceAll(
@@ -541,6 +638,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           child: ListView(
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
             children: [
+              if (tip != null) _buildTip(tip, lang),
               _buildShipHeader(
                 name: widget.enemyName,
                 ship: _battle.enemy,
@@ -683,6 +781,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     ],
                     Expanded(
                       child: FilledButton.icon(
+                        key: const Key('ship_end_turn'),
                         style: FilledButton.styleFrom(
                             minimumSize: const Size.fromHeight(48)),
                         onPressed: _busy || _over
@@ -866,7 +965,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     label: trFor(lang, 'ship_close_in_button'),
                     onPressed:
                         canAct && closer != null && _battle.canMoveTo(closer)
-                            ? () => setState(() => _battle.maneuver(closer))
+                            ? () => setState(() {
+                                  _battle.maneuver(closer);
+                                  _rearm();
+                                })
                             : null,
                   ),
                   Expanded(
@@ -904,7 +1006,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     label: trFor(lang, 'ship_pull_away_button'),
                     onPressed:
                         canAct && farther != null && _battle.canMoveTo(farther)
-                            ? () => setState(() => _battle.maneuver(farther))
+                            ? () => setState(() {
+                                  _battle.maneuver(farther);
+                                  _rearm();
+                                })
                             : null,
                     trailing: true,
                   ),
@@ -1102,7 +1207,12 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final state = ship.room(room);
     final color = _roomColor(context, room);
     final crew = isPlayer ? _battle.crewById(_battle.stations[room]) : null;
-    final canFireHere = !isPlayer && _armedWeaponId != null && !_busy && !_over;
+    final armed = _battle.weaponById(_armedWeaponId);
+    final canFireHere = !isPlayer &&
+        armed != null &&
+        _battle.canFire(armed) &&
+        !_busy &&
+        !_over;
     final canStationHere = isPlayer && _selectedCrewId != null && !_busy;
     final aiming = !isPlayer && _aimRoom == room;
     final incoming = <ShipWeapon>[
@@ -1254,7 +1364,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             setState(() => _selectedCrewId = crew.id);
           }
         },
-        onLongPress: canFireHere ? () => _startAim(room) : null,
+        onLongPress:
+            canFireHere && ref.watch(aimedShotsProvider) != AimedShots.off
+                ? () => _startAim(room)
+                : null,
         child: Container(
           padding: const EdgeInsets.fromLTRB(6, 2, 5, 2),
           decoration: BoxDecoration(
@@ -1523,11 +1636,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   Widget _buildAmmo(AppLanguage lang) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
+    // On a narrow phone the four shots need the label's room.
+    final narrow = MediaQuery.sizeOf(context).width < 380;
     return Row(
       children: [
-        Text(trFor(lang, 'ship_ammo_label'),
-            style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-        const SizedBox(width: 6),
+        if (!narrow) ...[
+          Text(trFor(lang, 'ship_ammo_label'),
+              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+          const SizedBox(width: 6),
+        ],
         Expanded(
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -1746,7 +1863,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         onPressed: usable
             ? () => act(() {
                   _battle.giveOrder(member);
-                  _armedWeaponId ??= _firstReadyWeaponId();
+                  _rearm();
                 })
             : null,
       ),
@@ -1763,9 +1880,14 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final lines = log.length > 4 ? log.sublist(log.length - 4) : log;
     final style =
         theme.textTheme.bodySmall?.copyWith(fontSize: 12, height: 1.25);
+    // Empty on the first turn: a thin strip, growing to four lines.
     return Container(
       key: const Key('ship_log'),
-      height: 68,
+      height: lines.isEmpty
+          ? 32
+          : lines.length <= 2
+              ? 44
+              : 68,
       padding: const EdgeInsets.fromLTRB(10, 3, 0, 3),
       decoration: BoxDecoration(
         border: Border.all(color: ink.seam),
@@ -1796,6 +1918,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             key: const Key('ship_log_button'),
             tooltip: trFor(lang, 'ship_log_title'),
             visualDensity: VisualDensity.compact,
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints.tightFor(width: 36, height: 26),
             icon: Icon(Icons.history, size: 18, color: ink.ash),
             onPressed: log.isEmpty ? null : _openLog,
           ),
@@ -2141,6 +2265,12 @@ class _Flash extends StatelessWidget {
   }
 }
 
+// Built once: the log is tidied on every refresh, and the clock refreshes
+// every second.
+final RegExp _deElidedArticle = RegExp(r"\bde L['’]");
+final RegExp _deBeforeVowel = RegExp(r'\bde ([AEIOUÉÈÊ])');
+final RegExp _articleMidSentence = RegExp(r'([a-zà-ÿ]) (Le|La|Les) ');
+
 /// A log line with a ship's name dropped in, made to read right: a name
 /// that carries its own article ("The Rusty Eel", "Le Rusty Eel") after
 /// the line's article, and the French contractions (du, au, d’).
@@ -2152,11 +2282,10 @@ String tidyShipLine(String text, AppLanguage lang) {
         .replaceAll(' à Le ', ' au ')
         .replaceAll(' à Les ', ' aux ')
         .replaceAll(' de La ', ' de la ')
-        .replaceAllMapped(RegExp(r"\bde L['’]"), (_) => 'de l’')
-        .replaceAllMapped(
-            RegExp(r'\bde ([AEIOUÉÈÊ])'), (m) => 'd’${m.group(1)}')
+        .replaceAllMapped(_deElidedArticle, (_) => 'de l’')
+        .replaceAllMapped(_deBeforeVowel, (m) => 'd’${m.group(1)}')
         // "sous Le Rusty Eel": the name's article, mid-sentence.
-        .replaceAllMapped(RegExp(r'([a-zà-ÿ]) (Le|La|Les) '),
+        .replaceAllMapped(_articleMidSentence,
             (m) => '${m.group(1)} ${m.group(2)!.toLowerCase()} ');
   }
   return text.replaceAll('the The ', 'the ').replaceAll('The The ', 'The ');

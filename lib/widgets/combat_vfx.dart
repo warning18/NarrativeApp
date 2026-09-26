@@ -63,6 +63,15 @@ class VfxBurst {
   /// Set when the layer takes the burst: the layer clock's time it starts.
   Duration? startAt;
 
+  /// Set once the layer has reported the moment it lands (see
+  /// [VfxImpact]).
+  bool impacted = false;
+
+  /// When, on the layer's clock, the blow lands (see [vfxImpactAt]).
+  Duration get impactAt =>
+      startAt! +
+      Duration(milliseconds: (vfxImpactAt(style) * durationMs).round());
+
   /// How long the burst stays on screen: its style, then its number.
   int get lifeMs => durationMs + (text == null ? 0 : _textExtraMs);
 
@@ -99,10 +108,43 @@ List<VfxParticle> _makeParticles(int seed) {
   ];
 }
 
+/// The moment a strong or mighty effect lands on [target], as the layer
+/// plays it: a card recoils (see [VfxRecoil]), a mighty blow shakes the
+/// screen.
+class VfxImpact {
+  const VfxImpact({
+    required this.target,
+    required this.tier,
+    required this.hit,
+    required this.palette,
+  });
+
+  final GlobalKey target;
+  final VfxTier tier;
+
+  /// A blow (see [VfxBurst.hit]), not a heal or a shield.
+  final bool hit;
+  final VfxPalette palette;
+}
+
 /// Queues effects for a [CombatVfxLayer] to play.
 class CombatVfxController extends ChangeNotifier {
   final List<VfxBurst> _queue = [];
+  final List<void Function(VfxImpact)> _impactListeners = [];
   int _seed = 1;
+
+  /// Calls [listener] each time a strong or mighty effect lands.
+  void addImpactListener(void Function(VfxImpact) listener) =>
+      _impactListeners.add(listener);
+
+  void removeImpactListener(void Function(VfxImpact) listener) =>
+      _impactListeners.remove(listener);
+
+  void _reportImpact(VfxImpact impact) {
+    for (final listener in List.of(_impactListeners)) {
+      listener(impact);
+    }
+  }
 
   /// Plays [style] on [target] after [delayMs], in [element]'s colors, at
   /// [power] (see [vfxPowerFor]; a [big] one with none given plays at
@@ -173,6 +215,106 @@ Rect? globalRectOf(GlobalKey key) {
   return null;
 }
 
+/// Wraps a fighter's card so it answers a strong or mighty effect landing
+/// on [anchor] (see [VfxImpact]): a blow knocks it aside and flashes it
+/// in the effect's color, a mighty one harder; a strong heal or shield
+/// lifts it a little. Still when animations are off.
+class VfxRecoil extends StatefulWidget {
+  const VfxRecoil({
+    super.key,
+    required this.controller,
+    required this.anchor,
+    required this.child,
+  });
+
+  final CombatVfxController controller;
+  final GlobalKey anchor;
+  final Widget child;
+
+  @override
+  State<VfxRecoil> createState() => _VfxRecoilState();
+}
+
+class _VfxRecoilState extends State<VfxRecoil>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _anim = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 320));
+  VfxImpact? _impact;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addImpactListener(_onImpact);
+  }
+
+  @override
+  void didUpdateWidget(VfxRecoil oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeImpactListener(_onImpact);
+      widget.controller.addImpactListener(_onImpact);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeImpactListener(_onImpact);
+    _anim.dispose();
+    super.dispose();
+  }
+
+  void _onImpact(VfxImpact impact) {
+    if (!mounted || impact.target != widget.anchor) return;
+    if (MediaQuery.maybeOf(context)?.disableAnimations ?? false) return;
+    _impact = impact;
+    _anim.forward(from: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      child: widget.child,
+      builder: (context, child) {
+        final impact = _impact;
+        final t = _anim.value;
+        final live = impact != null && _anim.isAnimating;
+        final mighty = impact?.tier == VfxTier.mighty;
+        final fade = live ? 1 - t : 0.0;
+        // A blow: a damped shove sideways. A heal or shield: a lift.
+        final swing = sin(t * pi * 3) * fade * (mighty ? 8 : 4);
+        final offset = !live
+            ? Offset.zero
+            : impact.hit
+                ? Offset(swing, 0)
+                : Offset(0, -sin(t * pi) * 3);
+        final flash = live
+            ? Color(impact.palette.primary)
+                .withValues(alpha: (impact.hit ? 0.35 : 0.2) * fade * fade)
+            : Colors.transparent;
+        return Transform.translate(
+          offset: offset,
+          child: Stack(
+            children: [
+              child!,
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: flash,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
 /// The overlay that draws the bursts: sits over the battle, ignores
 /// touches, and ticks only while something is playing. With
 /// [reducedMotion] it draws the numbers alone, where they land, without
@@ -198,6 +340,15 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
   final List<VfxBurst> _active = [];
   final GlobalKey _boxKey = GlobalKey();
   Duration _base = Duration.zero;
+
+  /// Hit-stop: the ticker time the layer's clock is held until, and how
+  /// much held time the clock has given up since the ticker started.
+  Duration? _heldUntil;
+  Duration _held = Duration.zero;
+
+  /// No new hit-stop before this ticker time: blows landing together share
+  /// one pause instead of chaining theirs.
+  Duration _nextHoldAt = Duration.zero;
 
   @override
   void initState() {
@@ -232,12 +383,45 @@ class _CombatVfxLayerState extends State<CombatVfxLayer>
     }
     if (!_ticker.isActive) {
       _base = _clock.value;
+      _held = Duration.zero;
+      _heldUntil = null;
+      _nextHoldAt = Duration.zero;
       _ticker.start();
     }
   }
 
   void _onTick(Duration elapsed) {
-    final now = _base + elapsed;
+    final raw = _base + elapsed;
+    final heldUntil = _heldUntil;
+    if (heldUntil != null) {
+      // A mighty blow just landed: every effect holds still a moment.
+      if (raw < heldUntil) return;
+      _held += vfxHitStop;
+      _heldUntil = null;
+    }
+    final now = raw - _held;
+    for (final burst in _active) {
+      if (burst.impacted || now < burst.impactAt) continue;
+      burst.impacted = true;
+      if (burst.tier.index < VfxTier.strong.index ||
+          systemVfxStyles.contains(burst.style)) {
+        continue;
+      }
+      widget.controller._reportImpact(VfxImpact(
+        target: burst.target,
+        tier: burst.tier,
+        hit: burst.hit,
+        palette: burst.palette,
+      ));
+      if (burst.tier == VfxTier.mighty &&
+          burst.hit &&
+          !widget.reducedMotion &&
+          _heldUntil == null &&
+          raw >= _nextHoldAt) {
+        _heldUntil = raw + vfxHitStop;
+        _nextHoldAt = raw + vfxHitStop + vfxHitStopCooldown;
+      }
+    }
     _active.removeWhere(
         (b) => now > b.startAt! + Duration(milliseconds: b.lifeMs));
     _clock.value = now;
@@ -287,6 +471,16 @@ class _VfxPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final now = clock.value;
+    // Many effects at once (a pack fight's dice and a spell landing
+    // together): the extra details are thinned so the frame holds, and the
+    // screen flashes once.
+    var live = 0;
+    for (final burst in bursts) {
+      final start = burst.startAt;
+      if (start == null || now < start) continue;
+      if ((now - start).inMilliseconds <= burst.durationMs) live++;
+    }
+    final frame = _Frame(crowded: live > vfxCrowdedBursts);
     for (final burst in bursts) {
       final start = burst.startAt;
       if (start == null || now < start) continue;
@@ -298,7 +492,8 @@ class _VfxPainter extends CustomPainter {
           : resolve(burst.source!, burst.sourceFallback);
       final t = elapsedMs / burst.durationMs;
       if (!reducedMotion && t <= 1) {
-        _Fx(canvas, size, burst, target, source, t.clamp(0.0, 1.0)).paint();
+        _Fx(canvas, size, burst, target, source, t.clamp(0.0, 1.0), frame)
+            .paint();
       }
       if (burst.text != null) {
         _paintText(
@@ -314,7 +509,7 @@ class _VfxPainter extends CustomPainter {
       text: TextSpan(
         text: burst.text,
         style: TextStyle(
-          fontSize: burst.big || burst.textKind == VfxTextKind.crit ? 22 : 17,
+          fontSize: _textSize(burst) * _textPop(burst, t),
           fontWeight: FontWeight.w900,
           color: color.withValues(alpha: opacity),
           shadows: [
@@ -338,6 +533,31 @@ class _VfxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _VfxPainter oldDelegate) => true;
+}
+
+/// A floating number's size: by the burst's tier, a critical or a big one
+/// never below 22.
+double _textSize(VfxBurst burst) {
+  final size = vfxTextSize(burst.tier);
+  return burst.big || burst.textKind == VfxTextKind.crit ? max(size, 22) : size;
+}
+
+/// A strong or mighty number lands big and settles.
+double _textPop(VfxBurst burst, double t) {
+  if (burst.tier.index < VfxTier.strong.index || t >= 0.15) return 1;
+  final k = burst.tier == VfxTier.mighty ? 0.45 : 0.25;
+  return 1 + k * (1 - t / 0.15);
+}
+
+/// What the bursts drawn in one frame share.
+class _Frame {
+  _Frame({required this.crowded});
+
+  /// More than [vfxCrowdedBursts] effects in flight.
+  final bool crowded;
+
+  /// A burst has already flashed the screen this frame.
+  bool flashed = false;
 }
 
 int _textColor(VfxTextKind kind) {
@@ -384,7 +604,8 @@ double? _window(double t, double t0, double span) {
 /// One burst's drawing at progress [t]: its style, then the details its
 /// tier adds (see [_tierDetails]).
 class _Fx {
-  _Fx(this.canvas, this.layer, this.burst, this.rect, this.sourceRect, this.t)
+  _Fx(this.canvas, this.layer, this.burst, this.rect, this.sourceRect, this.t,
+      this.frame)
       : c = rect.center,
         s = min(rect.width, rect.height).clamp(40.0, 110.0).toDouble(),
         primary = Color(burst.palette.primary),
@@ -398,6 +619,7 @@ class _Fx {
   final Rect rect;
   final Rect? sourceRect;
   final double t;
+  final _Frame frame;
   final Offset c;
   final double s;
   final Color primary;
@@ -414,8 +636,10 @@ class _Fx {
 
   /// [count] particles as many as the tier throws, within the burst's
   /// supply.
-  int _n(int count) =>
-      max(1, min(p.length, (count * vfxCountFactor(tier)).round()));
+  int _n(int count) => max(
+      1,
+      min(p.length,
+          (count * vfxCountFactor(tier) * (frame.crowded ? 0.6 : 1)).round()));
 
   /// A light touch glows less.
   double get _glowK => tier == VfxTier.light ? 0.65 : 1.0;
@@ -1271,21 +1495,23 @@ class _Fx {
       return;
     }
     final at = vfxImpactAt(burst.style);
+    // In a crowd, the lingering and far-reaching details go first.
+    final full = !frame.crowded;
     if (burst.hit) {
       _flashCore(at, 0.18);
       if (strong) {
         _ring(at, 0.45, s * 0.2, s * 0.95, width: 2.5, color: secondary);
-        _embers(at + 0.1, 1 - at - 0.1);
+        if (full) _embers(at + 0.1, 1 - at - 0.1);
       }
       if (mighty) {
         _screenFlash(at, 0.25);
         _groundRing(at, 0.55);
-        _rays(at, 0.45);
+        if (full) _rays(at, 0.45);
         _ring(at + 0.08, 0.45, s * 0.3, s * 1.2, width: 4);
       }
     } else {
       if (strong) {
-        _motes(0.05, 0.9);
+        if (full) _motes(0.05, 0.9);
         _ring(0.1, 0.6, s * 0.3, s * 0.9, width: 2, color: secondary);
       }
       if (mighty) {
@@ -1307,7 +1533,8 @@ class _Fx {
   /// The whole layer washed in the burst's color for a heartbeat.
   void _screenFlash(double t0, double span, {double opacity = 0.16}) {
     final lt = _window(t, t0, span);
-    if (lt == null) return;
+    if (lt == null || frame.flashed) return;
+    frame.flashed = true;
     canvas.drawRect(
         Offset.zero & layer, _fill(primary, opacity * (1 - _easeOut(lt))));
   }

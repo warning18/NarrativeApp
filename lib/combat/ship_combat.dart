@@ -32,8 +32,10 @@ ShipRange? rangeFromName(String name) {
   return null;
 }
 
-/// A weapon's `ranges` list off its record: every range when it names none.
-Set<ShipRange> _rangesFrom(Object? raw) {
+/// A weapon's `ranges` list off its record: every range when it names
+/// none, and a name that is no range ignored. The Harbor reads a weapon's
+/// reach with this too, so it shows what the battle will do.
+Set<ShipRange> weaponRangesFrom(Object? raw) {
   final ranges = <ShipRange>{
     if (raw is List)
       for (final name in raw)
@@ -120,7 +122,7 @@ class ShipWeapon {
       piercing: part['piercesShield'] == true,
       incendiary: part['setsFire'] == true,
       roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
-      ranges: _rangesFrom(part['ranges']),
+      ranges: weaponRangesFrom(part['ranges']),
     );
   }
 
@@ -135,7 +137,7 @@ class ShipWeapon {
         piercing: raw['piercesShield'] == true,
         incendiary: raw['setsFire'] == true,
         roomDamage: max(1, (raw['roomDamage'] as num?)?.toInt() ?? 1),
-        ranges: _rangesFrom(raw['ranges']),
+        ranges: weaponRangesFrom(raw['ranges']),
       );
 
   final String id;
@@ -323,6 +325,7 @@ class ShotOutcome {
     this.roomKnockedOut = false,
     this.leakOpened = false,
     this.helmDamage = 0,
+    this.helmKnockedOut = false,
   });
 
   final ShipState target;
@@ -339,6 +342,10 @@ class ShotOutcome {
 
   /// Pips a chain shot tore off the helm on top of the room it hit.
   final int helmDamage;
+
+  /// A chain shot's tear knocked the helm out (when the shot landed in
+  /// another room; in the helm itself, [roomKnockedOut] says it).
+  final bool helmKnockedOut;
 
   bool get landed => !dodged && !absorbed;
 }
@@ -449,15 +456,22 @@ ShotOutcome resolveShot({
       next.leaks < maxLeaks;
   if (leak) next = next.copyWith(leaks: next.leaks + 1);
   next = next.copyWith(layers: min(next.layers, next.maxLayers));
+  // The room as the whole shot left it: a chain shot into the helm tears
+  // it twice, once as the room hit and once as the rigging.
+  final hit = next.room(room);
+  final helmBefore = target.room(ShipRoom.helm);
   return ShotOutcome(
     target: next,
     room: room,
     hullDamage: hullDamage,
-    roomDamage: after.damage - before.damage,
+    roomDamage: hit.damage - before.damage,
     fireStarted: burns && !before.onFire,
-    roomKnockedOut: !before.isDown && after.isDown,
+    roomKnockedOut: !before.isDown && hit.isDown,
     leakOpened: leak,
     helmDamage: helmDamage,
+    helmKnockedOut: room != ShipRoom.helm &&
+        !helmBefore.isDown &&
+        next.room(ShipRoom.helm).isDown,
   );
 }
 

@@ -42,6 +42,27 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('-34'), findsNothing,
         reason: 'numbers are painted, not widgets');
+    // A real skill: its power as a fight would give it.
+    for (var i = 0; i < 10 && find.text('Fireball').evaluate().isEmpty; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 100)));
+      await tester.pump();
+    }
+    await tester.tap(find.byKey(const Key('vfx_gallery_skill')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Fireball').last);
+    await tester.pumpAndSettle();
+    final power = find.byKey(const Key('vfx_gallery_skill_power'));
+    expect(power, findsOneWidget);
+    String powerText() => tester.widget<Text>(power).data!;
+    expect(powerText(), startsWith('Rare'));
+    final plain = powerText();
+    await tester.tap(find.text('Critical hit'));
+    await tester.pump();
+    expect(powerText(), isNot(plain), reason: 'a critical plays bigger');
+    await tester.tap(find.byKey(const Key('vfx_gallery_play_skill')));
+    await tester.pump(const Duration(milliseconds: 500));
+
     await tester.tap(find.byKey(const Key('vfx_gallery_play_all')));
     for (var i = 0; i < 100; i++) {
       await tester.pump(const Duration(milliseconds: 50));

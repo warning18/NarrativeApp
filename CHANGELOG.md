@@ -8,6 +8,71 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.158.0+188]
+
+### Fixed
+- **Ship battles** (the review of v1.153):
+  - The **Timed ship battles** setting is waited for before a battle
+    starts. A player who turned the clock off and restarted the game
+    could get a timed battle anyway, from voyages and the fight lab.
+  - A ship whose **helm is knocked out slips nothing**, however far off
+    and whatever the wind. Range and weather used to add evasion even
+    then.
+  - A **weapon that goes out of range is put down** for one that still
+    reaches (or none), after the Eel closes in, pulls away or is hauled
+    alongside. The enemy's rooms light up only for a shot that can be
+    fired.
+  - **Liora's Eagle eye and Malrik's Mark their helmsman** wait for a turn
+    a weapon can fire, instead of being spent on nothing.
+  - **Chain shot on the helm** is logged and previewed in full: both pips
+    it tears off, and "helm knocked out" whether it was aimed at the helm
+    or tore it down from another room.
+  - The **Void Barge boards every third round spent alongside**, counted
+    only while the ships lie side by side. It used to board on the
+    battle's third, sixth and ninth rounds, even on the round it arrived.
+  - **Fight lab:** an enemy that gets away reads "The enemy got away", no
+    longer "lost", and the boat's sail plays its power (Wind-Knot,
+    Kraken's Eye) as on a voyage.
+  - The Harbour reads a weapon's reach with the battle's own rules.
+  - The battle log's French tidying builds its patterns once, not on every
+    refresh of the clock.
+- The on/off settings (tremble, combat effects, chest auto-open,
+  alignment hunters, companion targeting, the ship clock) share one
+  implementation; a choice made before the saved one loads now wins.
+
+### Added
+- **Ship battle tips.** The first time each rule comes up, a one-line tip
+  explains it: the range and the enemy's habit at the start, the weather
+  when it turns, aimed shots with the first ready gun, shot from the
+  second turn, orders, fire, a leak, an open rail, the sea's surprises.
+  One at a time, each once. They follow the tutorials setting, and
+  "Replay tutorials" shows them again.
+- **Aimed shots setting** (Settings): Normal, Slow (the marker takes
+  1.6 s instead of 0.9 s) or Off (a long press does nothing; every shot
+  is a plain one).
+- **Skill effects:**
+  - Damage and healing numbers are sized by the effect's tier: small for
+    a light touch, big for a mighty blow, which lands big and settles.
+  - The card a strong or mighty effect lands on reacts: a blow shoves it
+    aside and flashes it in the effect's color, a mighty one harder; a
+    strong heal or shield lifts it.
+  - A mighty blow freezes every effect for a split second as it lands
+    (hit-stop), shakes the screen and gives a heavy vibration, all under
+    the tremble setting. Blows landing together share one pause.
+  - With more than four effects in flight at once (a pack fight's dice
+    and a spell), the extra details are thinned and the screen flashes
+    once, so the frame holds.
+  - The effects gallery previews a real skill at the power a fight would
+    give it: its rarity, its upgrades, the share of the foe's health it
+    takes, a critical. The stand-ins recoil too.
+
+### Changed
+- **Ship battles on a phone:** the empty log is a thin strip until it
+  has lines, the tips fit on one row, and on a narrow phone the four
+  shots fit without the "Shot:" label. At 412 px wide the Eel's rooms
+  are now on screen when a battle opens.
+- The Void Barge's and the evasion's hints say the fixed rules.
+
 ## [1.157.0+187]
 
 ### Changed

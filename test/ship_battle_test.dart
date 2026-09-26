@@ -510,14 +510,18 @@ void main() {
           habit: EnemyHabit.boarder,
           boarding: const BoardingProfile(crew: ['wisp'], chance: 0),
           rules: const ShipBattleRules(weather: false, seaEvents: false));
+      // Two rounds apart count for nothing, even on the battle's third.
+      expect(b.enemyBoards(), isNull);
+      expect(b.enemyBoards(), isNull);
       b.range = ShipRange.close;
-      expect(b.enemyBoards(), isNull, reason: 'round 1');
-      b.turn = 3;
-      expect(b.enemyBoards(), isNotNull, reason: 'shields up or not');
-      b.turn = 6;
-      expect(b.enemyBoards(), isNotNull);
-      b.turn = 9;
-      expect(b.enemyBoards(), isNull, reason: 'twice at most');
+      final boarded = [
+        for (var round = 1; round <= 9; round++) b.enemyBoards()
+      ];
+      expect([for (final r in boarded) r != null],
+          [false, false, true, false, false, true, false, false, false],
+          reason: 'the third and sixth rounds alongside, shields up or not; '
+              'twice at most');
+      expect(b.roundsAlongside, 9);
     });
 
     test('nobody boards across open water', () {

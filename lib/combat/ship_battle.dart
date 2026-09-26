@@ -146,7 +146,8 @@ int weatherEvasion(SeaWeather weather,
 
 /// A ship's evasion in the battle: its helm and helmsman (see
 /// [evasionFor]), the range, the weather and any [bonus], from 0 to
-/// [maxBattleEvasion].
+/// [maxBattleEvasion]. A ship whose helm is knocked out slips nothing,
+/// however far off or however the wind: nobody is steering her.
 int battleEvasion(
   ShipState ship, {
   ShipCrew? helmsman,
@@ -155,12 +156,14 @@ int battleEvasion(
   required bool eel,
   bool windKnot = false,
   int bonus = 0,
-}) =>
-    (evasionFor(ship, helmsman: helmsman) +
-            rangeEvasion(range) +
-            weatherEvasion(weather, eel: eel, windKnot: windKnot) +
-            bonus)
-        .clamp(0, maxBattleEvasion);
+}) {
+  if (ship.room(ShipRoom.helm).isDown) return 0;
+  return (evasionFor(ship, helmsman: helmsman) +
+          rangeEvasion(range) +
+          weatherEvasion(weather, eel: eel, windKnot: windKnot) +
+          bonus)
+      .clamp(0, maxBattleEvasion);
+}
 
 /// Where the marker stopped on the aim bar, 0 to 1: the middle is a
 /// critical, the edges go wide.
@@ -244,8 +247,9 @@ const int seaCreatureHull = 10;
 /// A rammer's prow: hull through any shield, and a leak.
 const int ramHullDamage = 12;
 
-/// A boarder comes over the rail every this many rounds alongside, shields
-/// or not, this many times a battle at most.
+/// A boarder comes over the rail every this many rounds alongside (the
+/// third, the sixth…, counted only while the ships lie side by side),
+/// shields or not, this many times a battle at most.
 const int boarderEvery = 3;
 const int boarderMaxTries = 2;
 
@@ -378,6 +382,10 @@ class ShipBattle {
   int grapeLeft = 0;
   bool rammed = false;
   int enemyBoardTries = 0;
+
+  /// Rounds the enemy has ended side by side with the Eel (see
+  /// [boarderEvery]).
+  int roundsAlongside = 0;
   bool boardingSpent = false;
   bool enemyBoardingSpent = false;
   List<ShipWeapon> _volley = const [];
@@ -616,7 +624,12 @@ class ShipBattle {
 
   // --- Orders -------------------------------------------------------------
 
+  /// True when a weapon can fire this turn.
+  bool get anyShotReady => player.weapons.any(canFire);
+
   /// True when [member]'s order can be given now and would do something.
+  /// Liora's eagle eye and Malrik's mark wait for a turn a weapon can
+  /// fire: spent on a silent turn they would do nothing.
   bool canOrder(ShipCrew member) {
     final order = orderFor(member);
     if (order == null || over || ordersUsed.contains(member.id)) return false;
@@ -628,9 +641,9 @@ class ShipBattle {
           crew.any((c) => c.health < c.maxHealth),
       CrewOrder.shoreUp => player.room(ShipRoom.bulwark).damage > 0 ||
           player.layers < player.maxLayers,
-      CrewOrder.markHelm => !helmMarked,
+      CrewOrder.markHelm => !helmMarked && anyShotReady,
       CrewOrder.cutRigging => enemy.weapons.any((w) => w.charge > 0),
-      CrewOrder.eagleEye => !eagleEye,
+      CrewOrder.eagleEye => !eagleEye && anyShotReady,
       CrewOrder.voidWard => !voidWard,
     };
   }
@@ -848,10 +861,11 @@ class ShipBattle {
   bool? enemyBoards() {
     if (over || !boarding.canBoard) return null;
     if (rules.range && range != ShipRange.close) return null;
+    roundsAlongside++;
     final tries = enemyBoardTries + (enemyBoardingSpent ? 1 : 0);
     final eager = rules.habits &&
         habit == EnemyHabit.boarder &&
-        turn % boarderEvery == 0 &&
+        roundsAlongside % boarderEvery == 0 &&
         tries < boarderMaxTries;
     if (eager) {
       enemyBoardTries++;
@@ -996,6 +1010,9 @@ class ShipBattle {
     }
     if (outcome.helmDamage > 0) {
       _add('ship_log_rigging_torn', side: target);
+    }
+    if (outcome.helmKnockedOut) {
+      _add('ship_log_room_down', side: target, room: ShipRoom.helm);
     }
     if (outcome.leakOpened) _add('ship_log_leak', side: target);
   }
