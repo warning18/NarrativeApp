@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.159.0+189]
+
+The release that brings every open branch together: the ElevenLabs voice
+(1.156.0, already released) and the unreleased work below it, 1.155.1 to
+1.158.0, built beside it (that line had its own 1.156.0, the Data tab
+downloads). Nothing in the game changes in this entry itself.
+
+### Changed
+- **Riverpod 3** (from 2.6): the app's state library. The on/off settings,
+  the game session and the other stores keep the same API through
+  Riverpod's `legacy` import. One behaviour differs: a screen hidden under
+  another one (the story under a fight, say) hears about changes when it
+  is shown again, with the latest change only. The quest-ready notice, the
+  camp arrival and the tab switches only need the latest change, so they
+  behave as before.
+- **flutter_lints 6** (from 3). No new findings.
+- **CI actions**: checkout v7, cache v6, upload-artifact v7, gitleaks v3,
+  action-gh-release v3.
+
 ## [1.158.0+188]
 
 ### Fixed

@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /// True while an ExpeditionScreen is on top of the navigation stack —
 /// mirrors [combatActiveProvider]'s own set/cleared-around-the-push
