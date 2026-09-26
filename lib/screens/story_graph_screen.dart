@@ -30,6 +30,7 @@ import 'story_node_editor_screen.dart';
 const double _nodeBoxWidth = 150;
 
 enum _NodeKind {
+  camp,
   characterCreation,
   combat,
   shop,
@@ -60,6 +61,9 @@ class _NodeStyle {
 /// to tell a companion-recruit quest (one with a non-empty `rewardAllyId`)
 /// apart from every other quest, so it gets its own legend entry.
 _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
+  // The camp's scenes: the party's base from chapter 3, where each open
+  // chapter stands between trips.
+  if (node.settlement?.isCamp ?? false) return _NodeKind.camp;
   if (node.choices.any((c) => c.opensCharacterCreation)) {
     return _NodeKind.characterCreation;
   }
@@ -83,6 +87,8 @@ _NodeKind _classify(StoryNode node, Map<String, dynamic> quests) {
 
 String _nodeKindLabelKey(_NodeKind kind) {
   switch (kind) {
+    case _NodeKind.camp:
+      return 'node_kind_camp';
     case _NodeKind.characterCreation:
       return 'node_kind_character_creation';
     case _NodeKind.combat:
@@ -99,6 +105,11 @@ String _nodeKindLabelKey(_NodeKind kind) {
 }
 
 Map<_NodeKind, _NodeStyle> _styles(ColorScheme colorScheme) => {
+      _NodeKind.camp: _NodeStyle(
+        color: Colors.deepOrange.shade300,
+        icon: Icons.local_fire_department,
+        radius: 14,
+      ),
       _NodeKind.characterCreation: _NodeStyle(
         color: Colors.purple.shade300,
         icon: Icons.person,
@@ -558,6 +569,7 @@ Future<void> _runAutoplay(
   final enemies = await _awaitGameDb(ref, enemiesSchema);
   final races = await _awaitGameDb(ref, racesSchema);
   final professions = await _awaitGameDb(ref, professionsSchema);
+  final zones = await _awaitGameDb(ref, zonesSchema);
 
   final result = await autoplayToNode(
     ref,
@@ -569,6 +581,7 @@ Future<void> _runAutoplay(
     enemies: enemies,
     races: races,
     professions: professions,
+    zones: zones,
   );
 
   if (!context.mounted) return;

@@ -12,6 +12,173 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
+  'nav_ship': {AppLanguage.en: 'Ship', AppLanguage.fr: 'Navire'},
+  'camp_party_section': {
+    AppLanguage.en: 'Who comes along',
+    AppLanguage.fr: 'Qui vous accompagne',
+  },
+  'camp_scene_title': {
+    AppLanguage.en: 'Back at the fire',
+    AppLanguage.fr: 'De retour au coin du feu',
+  },
+  'camp_scene_read_all': {
+    AppLanguage.en: 'Read it all',
+    AppLanguage.fr: 'Tout lire',
+  },
+  'camp_expeditions_section': {
+    AppLanguage.en: 'Expeditions from the camp',
+    AppLanguage.fr: 'Expéditions depuis le camp',
+  },
+  'camp_return_button': {
+    AppLanguage.en: 'Back to the camp',
+    AppLanguage.fr: 'Retour au camp',
+  },
+  'travel_walked_to': {
+    AppLanguage.en: 'You walk to {place}.',
+    AppLanguage.fr: 'Vous gagnez {place} à pied.',
+  },
+  'travel_road_to': {
+    AppLanguage.en: 'The road to {place}',
+    AppLanguage.fr: 'La route de {place}',
+  },
+  'travel_road_to_camp': {
+    AppLanguage.en: 'The road back to the camp',
+    AppLanguage.fr: 'La route du camp',
+  },
+  'travel_on_button': {
+    AppLanguage.en: 'Travel on',
+    AppLanguage.fr: 'Aller ailleurs',
+  },
+  'travel_on_title': {
+    AppLanguage.en: 'Where to next',
+    AppLanguage.fr: 'Et maintenant, où ?',
+  },
+  'places_section': {
+    AppLanguage.en: 'Places you know',
+    AppLanguage.fr: 'Lieux connus',
+  },
+  'places_empty': {
+    AppLanguage.en:
+        'No place found yet. Expeditions find them: a town, a village, a ruin worth the walk.',
+    AppLanguage.fr:
+        'Aucun lieu trouvé pour l’instant. Les expéditions les révèlent : une ville, un village, une ruine qui vaut la marche.',
+  },
+  'place_kind_town': {AppLanguage.en: 'Town', AppLanguage.fr: 'Ville'},
+  'place_kind_village': {AppLanguage.en: 'Village', AppLanguage.fr: 'Village'},
+  'place_kind_site': {AppLanguage.en: 'Site', AppLanguage.fr: 'Site'},
+  'place_kind_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Camp'},
+  'place_progress': {
+    AppLanguage.en: '{done}/{total} done',
+    AppLanguage.fr: '{done}/{total} faits',
+  },
+  'place_go_button': {AppLanguage.en: 'Go', AppLanguage.fr: 'Y aller'},
+  'place_found_line': {
+    AppLanguage.en: 'New place: {place}. You can travel there now.',
+    AppLanguage.fr:
+        'Nouveau lieu : {place}. Vous pouvez désormais vous y rendre.',
+  },
+  'companion_hint': {
+    AppLanguage.en: 'Word at the fire: someone in {place} might join you.',
+    AppLanguage.fr:
+        'Au coin du feu, on parle de quelqu’un qui pourrait vous rejoindre : {place}.',
+  },
+  'place_companion_label': {
+    AppLanguage.en: 'someone to meet',
+    AppLanguage.fr: 'quelqu’un à rencontrer',
+  },
+  'chapter_quests_progress': {
+    AppLanguage.en: 'Quests completed: {done} of {goal}',
+    AppLanguage.fr: 'Quêtes accomplies : {done} sur {goal}',
+  },
+  'main_quest_shut_lock': {
+    AppLanguage.en: 'Not yet: the camp shows what this chapter still asks.',
+    AppLanguage.fr: 'Pas encore : le camp indique ce que ce chapitre demande.',
+  },
+  'chapter_progress': {
+    AppLanguage.en: 'Explored: {done} of {goal}',
+    AppLanguage.fr: 'Exploré : {done} sur {goal}',
+  },
+  'main_quest_label': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'main_quest_needs_place': {
+    AppLanguage.en: 'Visit {place} first.',
+    AppLanguage.fr: 'Visitez d’abord {place}.',
+  },
+  'camp_route_walk': {
+    AppLanguage.en: 'a day’s walk',
+    AppLanguage.fr: 'une journée de marche',
+  },
+  'camp_route_sail': {
+    AppLanguage.en: '{n} days at sea',
+    AppLanguage.fr: '{n} jours de mer',
+  },
+  'camp_walked_back': {
+    AppLanguage.en: 'You walk back to the camp.',
+    AppLanguage.fr: 'Vous rentrez au camp à pied.',
+  },
+  'camp_away_title': {
+    AppLanguage.en: 'Away from the camp',
+    AppLanguage.fr: 'Loin du camp',
+  },
+  'camp_away_body': {
+    AppLanguage.en:
+        'The story has taken you away from the camp. You will be back at the fire when this road ends.',
+    AppLanguage.fr:
+        'Le récit se poursuit loin du camp. Vous retrouverez le feu au bout de cette route.',
+  },
+  'camp_away_town_body': {
+    AppLanguage.en:
+        'You are in {place}, {route} from the camp. The camp is your base: your companions’ gear, skills and dice, the works and the Harbor are there. Go back whenever you like.',
+    AppLanguage.fr:
+        'Vous êtes à {place}, à {route} du camp. Le camp est votre base : l’équipement, les compétences et les dés de vos compagnons, les ouvrages et le port s’y trouvent. Revenez-y quand vous voulez.',
+  },
+  'camp_sail_section': {
+    AppLanguage.en: 'Set sail',
+    AppLanguage.fr: 'Prendre la mer',
+  },
+  'camp_sail_hint': {
+    AppLanguage.en:
+        'Other ports’ expeditions are a voyage away. While the Rusty Eel is out, the Camp tab is the ship until you sail back.',
+    AppLanguage.fr:
+        'Les expéditions des autres ports sont à une traversée d’ici. Tant que le Rusty Eel est au large, l’onglet Campement devient le navire jusqu’à votre retour.',
+  },
+  'chart_empty': {
+    AppLanguage.en: 'No other port on the chart yet.',
+    AppLanguage.fr: 'Aucun autre port sur la carte pour l’instant.',
+  },
+  'sail_home_title': {
+    AppLanguage.en: 'Sail back to camp',
+    AppLanguage.fr: 'Rentrer au camp',
+  },
+  'ship_sailed_out_note': {
+    AppLanguage.en:
+        'You have sailed out from the camp. Its expeditions, shops and rest are wherever the Eel is moored; sail back to camp to go on with the story.',
+    AppLanguage.fr:
+        'Vous avez quitté le camp par la mer. Expéditions, boutiques et repos sont là où l’Eel est amarré ; rentrez au camp pour reprendre le récit.',
+  },
+  'ship_away_note': {
+    AppLanguage.en:
+        'The story has taken you away from camp. The Rusty Eel can still sail to the ports on the chart; the camp opens again when the story brings you back.',
+    AppLanguage.fr:
+        'Le récit se poursuit loin du camp. Le Rusty Eel peut encore gagner les ports de la carte ; le camp rouvre quand le récit vous y ramène.',
+  },
+  'ship_ashore_section': {
+    AppLanguage.en: 'Ashore at {port}',
+    AppLanguage.fr: 'À terre : {port}',
+  },
+  'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
+  'harbor_open_button': {
+    AppLanguage.en: 'Go to the harbor',
+    AppLanguage.fr: 'Aller au port',
+  },
+  'harbor_unlocks_note': {
+    AppLanguage.en: 'refits the Rusty Eel: repairs and ship parts',
+    AppLanguage.fr: 'radoube le Rusty Eel : réparations et pièces de navire',
+  },
+  'ally_gear_button': {AppLanguage.en: 'Gear', AppLanguage.fr: 'Équipement'},
+  'ally_dice_button': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dés'},
   'title_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'badge_points_waiting': {
     AppLanguage.en: 'points to spend',
@@ -196,9 +363,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'camp_tab_locked_body': {
     AppLanguage.en:
-        'Your camp is founded in chapter 3. From then on, this is where you rest, gather your companions, build and set sail.',
+        'Your camp is set up on the shore in chapter 3. From then on it is your base: you rest there, choose who comes along, build, and set out to the towns and expeditions around it.',
     AppLanguage.fr:
-        'Votre campement est fondé au chapitre 3. Dès lors, c’est ici que vous vous reposez, réunissez vos compagnons, bâtissez et prenez la mer.',
+        'Votre campement s’installe sur le rivage au chapitre 3. Il devient alors votre base : vous vous y reposez, choisissez qui vous accompagne, bâtissez et partez vers les villes et les expéditions alentour.',
   },
   'nav_map': {AppLanguage.en: 'Map', AppLanguage.fr: 'Carte'},
   'nav_generate': {AppLanguage.en: 'Generate', AppLanguage.fr: 'Générer'},
@@ -328,6 +495,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'character': {AppLanguage.en: 'Character', AppLanguage.fr: 'Personnage'},
   'language': {AppLanguage.en: 'Language', AppLanguage.fr: 'Langue'},
   'legend_title': {AppLanguage.en: 'Legend', AppLanguage.fr: 'Légende'},
+  'node_kind_camp': {
+    AppLanguage.en: 'Camp',
+    AppLanguage.fr: 'Camp',
+  },
   'node_kind_character_creation': {
     AppLanguage.en: 'Character Creation',
     AppLanguage.fr: 'Création de personnage',
@@ -980,13 +1151,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Backs Wisdom checks on story choices — reading people, sensing '
             'what\'s really going on. In a fight, it also strengthens every '
-            'point you heal and shortens how long Poison, Stun, or Weaken '
+            'point you heal, adds 1 mana to every Mana face and mana skill '
+            'per 3 Wisdom, and shortens how long Poison, Stun, or Weaken '
             'holds on to you.',
     AppLanguage.fr:
         'Intervient dans les jets de Sagesse des choix narratifs — lire '
             'les gens, sentir ce qui se trame vraiment. En combat, elle '
-            'renforce aussi chaque soin et raccourcit la durée du Poison, '
-            'de l\'Étourdissement ou de l\'Affaiblissement.',
+            'renforce aussi chaque soin, ajoute 1 point de mana à chaque '
+            'face Mana et compétence de mana tous les 3 points de Sagesse, '
+            'et raccourcit la durée du Poison, de l\'Étourdissement ou de '
+            'l\'Affaiblissement.',
   },
   'perception_desc': {
     AppLanguage.en:
@@ -1043,6 +1217,126 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Équipement'
   },
   'dice_label': {AppLanguage.en: 'Dice', AppLanguage.fr: 'Dé'},
+  'wisdom_mana_bonus_line': {
+    AppLanguage.en: 'Wisdom {wis}: +{n} mana on every Mana face and mana '
+        'skill (1 more per 3 Wisdom).',
+    AppLanguage.fr: 'Sagesse {wis} : +{n} mana sur chaque face Mana et '
+        'compétence de mana (1 de plus tous les 3 points).',
+  },
+  'quest_goal_ready': {
+    AppLanguage.en: 'Goal reached: turn it in',
+    AppLanguage.fr: 'Objectif atteint : à rendre',
+  },
+  'quest_goal_prefix': {AppLanguage.en: 'Goal:', AppLanguage.fr: 'Objectif :'},
+  'quest_updated_label': {
+    AppLanguage.en: 'Updated',
+    AppLanguage.fr: 'Mis à jour',
+  },
+  'quest_turn_in_button': {AppLanguage.en: 'Turn in', AppLanguage.fr: 'Rendre'},
+  'quest_main': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale'
+  },
+  'quest_side': {
+    AppLanguage.en: 'Side quest',
+    AppLanguage.fr: 'Quête secondaire'
+  },
+  'quest_following_label': {
+    AppLanguage.en: 'Followed: its goal shows above the story',
+    AppLanguage.fr: 'Suivie : son objectif s’affiche au-dessus du récit',
+  },
+  'quest_objectives_title': {
+    AppLanguage.en: 'Objectives',
+    AppLanguage.fr: 'Objectifs',
+  },
+  'quest_rewards_label': {
+    AppLanguage.en: 'Reward',
+    AppLanguage.fr: 'Récompense'
+  },
+  'quest_follow_button': {AppLanguage.en: 'Follow', AppLanguage.fr: 'Suivre'},
+  'quest_others_title': {
+    AppLanguage.en: 'Other quests in progress',
+    AppLanguage.fr: 'Autres quêtes en cours',
+  },
+  'quest_ally_joins_suffix': {
+    AppLanguage.en: 'joins you',
+    AppLanguage.fr: 'vous rejoint',
+  },
+  'quest_ready_notice': {
+    AppLanguage.en: 'Goal reached: {quest}. Turn it in from the quest above '
+        'the story.',
+    AppLanguage.fr: 'Objectif atteint : {quest}. Rendez-la depuis la quête '
+        'affichée au-dessus du récit.',
+  },
+  'quests_section_following': {
+    AppLanguage.en: 'Followed',
+    AppLanguage.fr: 'Suivie',
+  },
+  'quests_section_active': {
+    AppLanguage.en: 'In progress',
+    AppLanguage.fr: 'En cours',
+  },
+  'quests_section_available': {
+    AppLanguage.en: 'Offered',
+    AppLanguage.fr: 'Proposées',
+  },
+  'quests_section_done': {AppLanguage.en: 'Done', AppLanguage.fr: 'Terminées'},
+  'quests_none_found': {
+    AppLanguage.en: 'No quest yet. People and places in the story will ask '
+        'things of you.',
+    AppLanguage.fr: 'Aucune quête pour l’instant. Les gens et les lieux du '
+        'récit vous demanderont des choses.',
+  },
+  'bestiary_none_met': {
+    AppLanguage.en: 'No creature met yet.',
+    AppLanguage.fr: 'Aucune créature rencontrée pour l’instant.',
+  },
+  'bestiary_unmet_count': {
+    AppLanguage.en: '{n} more to meet on the road.',
+    AppLanguage.fr: 'Encore {n} à croiser en chemin.',
+  },
+  'shops_none_found': {
+    AppLanguage.en: 'No shop found yet.',
+    AppLanguage.fr: 'Aucune boutique trouvée pour l’instant.',
+  },
+  'shop_back_where_found': {
+    AppLanguage.en: 'Go back where you found it to trade.',
+    AppLanguage.fr: 'Retournez là où vous l’avez trouvée pour commercer.',
+  },
+  'shop_at_camp': {
+    AppLanguage.en: 'At the camp: open it from the Camp tab.',
+    AppLanguage.fr: 'Au camp : ouvrez-la depuis l’onglet Campement.',
+  },
+  'npcs_none_met': {
+    AppLanguage.en: 'No one to speak with yet.',
+    AppLanguage.fr: 'Personne à qui parler pour l’instant.',
+  },
+  'achievement_hidden_name': {
+    AppLanguage.en: 'Hidden achievement',
+    AppLanguage.fr: 'Succès caché',
+  },
+  'achievement_hidden_desc': {
+    AppLanguage.en: 'Keep playing to reveal it.',
+    AppLanguage.fr: 'Continuez à jouer pour le révéler.',
+  },
+  'face_kind_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
+  'face_kind_defend': {AppLanguage.en: 'Guard', AppLanguage.fr: 'Garde'},
+  'face_kind_heal': {AppLanguage.en: 'Heal', AppLanguage.fr: 'Soin'},
+  'face_kind_mana': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'face_kind_poison': {AppLanguage.en: 'Poison', AppLanguage.fr: 'Poison'},
+  'face_kind_stun': {AppLanguage.en: 'Stun', AppLanguage.fr: 'Étourdit'},
+  'face_kind_weaken': {AppLanguage.en: 'Weaken', AppLanguage.fr: 'Affaiblit'},
+  'face_kind_empty': {AppLanguage.en: 'Blank', AppLanguage.fr: 'Vide'},
+  'die_made_for_prefix': {
+    AppLanguage.en: 'Made for',
+    AppLanguage.fr: 'Conçu pour',
+  },
+  'reward_die_traded': {
+    AppLanguage.en: 'The {die} is made for another class: you took its '
+        'price in gold instead.',
+    AppLanguage.fr: 'Le {die} est fait pour une autre classe : vous en '
+        'avez pris le prix en or.',
+  },
   'none_equipped': {
     AppLanguage.en: '(none equipped)',
     AppLanguage.fr: '(aucun équipé)'
@@ -1060,6 +1354,99 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Votre inventaire est vide. Achetez ou pillez de l'équipement !",
   },
   'faces_label': {AppLanguage.en: 'faces', AppLanguage.fr: 'faces'},
+  'skill_tree_view': {AppLanguage.en: 'Tree', AppLanguage.fr: 'Arbre'},
+  'skill_list_view': {AppLanguage.en: 'List', AppLanguage.fr: 'Liste'},
+  'skill_tree_intro': {
+    AppLanguage.en:
+        'Each branch is learned from the top down, and the deeper the dearer: 1, 1, 2, then 3 points. Learn a whole branch of your class to master it: its skills then fight a tier higher. There are points for about two branches and one mastery, so choose your path.',
+    AppLanguage.fr:
+        'Chaque branche s’apprend de haut en bas, et plus on descend, plus c’est cher : 1, 1, 2, puis 3 points. Apprenez toute une branche de votre classe pour la maîtriser : ses compétences combattent alors un rang au-dessus. Les points suffisent pour environ deux branches et une maîtrise : choisissez votre voie.',
+  },
+  'skill_tree_mastered': {
+    AppLanguage.en:
+        'Mastered: {branch}. Its skills fight a tier higher. Each other branch can still be learned, but not mastered.',
+    AppLanguage.fr:
+        'Maîtrisée : {branch}. Ses compétences combattent un rang au-dessus. Les autres branches s’apprennent encore, mais ne se maîtrisent plus.',
+  },
+  'skill_after_label': {
+    AppLanguage.en: 'After {skill}',
+    AppLanguage.fr: 'Après {skill}',
+  },
+  'learn_for_point': {
+    AppLanguage.en: 'Learn (1 point)',
+    AppLanguage.fr: 'Apprendre (1 point)',
+  },
+  'learn_for_points': {
+    AppLanguage.en: 'Learn ({n} points)',
+    AppLanguage.fr: 'Apprendre ({n} points)',
+  },
+  'skill_points_needed': {
+    AppLanguage.en: 'Needs {n} skill points',
+    AppLanguage.fr: 'Il faut {n} points de compétence',
+  },
+  'skill_point_cost_one': {
+    AppLanguage.en: '1 skill point',
+    AppLanguage.fr: '1 point de compétence',
+  },
+  'skill_point_cost_many': {
+    AppLanguage.en: '{n} skill points',
+    AppLanguage.fr: '{n} points de compétence',
+  },
+  'no_skill_points': {
+    AppLanguage.en: 'No skill point to spend',
+    AppLanguage.fr: 'Aucun point de compétence à dépenser',
+  },
+  'mastery_label': {AppLanguage.en: 'Mastery', AppLanguage.fr: 'Maîtrise'},
+  'mastery_title': {
+    AppLanguage.en: 'Mastery of the {branch}',
+    AppLanguage.fr: 'Maîtrise : {branch}',
+  },
+  'mastery_body': {
+    AppLanguage.en:
+        'Every skill of this branch fights one tier higher. It costs {cost} skill points once the whole branch is learned, and only one branch can ever be mastered.',
+    AppLanguage.fr:
+        'Chaque compétence de cette branche combat un rang au-dessus. Elle coûte {cost} points de compétence une fois toute la branche apprise, et une seule branche peut être maîtrisée.',
+  },
+  'mastery_done': {
+    AppLanguage.en: 'Mastered.',
+    AppLanguage.fr: 'Maîtrisée.',
+  },
+  'mastery_closed': {
+    AppLanguage.en: 'Another branch is already mastered.',
+    AppLanguage.fr: 'Une autre branche est déjà maîtrisée.',
+  },
+  'mastery_needs_branch': {
+    AppLanguage.en: 'Learn every skill of this branch first.',
+    AppLanguage.fr: 'Apprenez d’abord toutes les compétences de cette branche.',
+  },
+  'mastery_button': {
+    AppLanguage.en: 'Master this branch ({cost} points)',
+    AppLanguage.fr: 'Maîtriser cette branche ({cost} points)',
+  },
+  'mastery_gained': {
+    AppLanguage.en: 'Mastered: {branch}',
+    AppLanguage.fr: 'Maîtrisée : {branch}',
+  },
+  'skill_filter_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Toutes'},
+  'filter_attack': {AppLanguage.en: 'Attack', AppLanguage.fr: 'Attaque'},
+  'filter_heal': {AppLanguage.en: 'Healing', AppLanguage.fr: 'Soin'},
+  'filter_mana': {AppLanguage.en: 'Mana', AppLanguage.fr: 'Mana'},
+  'filter_status': {AppLanguage.en: 'Status', AppLanguage.fr: 'Altération'},
+  'filter_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Connues'},
+  'filter_learnable': {
+    AppLanguage.en: 'Can learn',
+    AppLanguage.fr: 'À apprendre',
+  },
+  'filter_nothing': {
+    AppLanguage.en: 'No skill matches these filters.',
+    AppLanguage.fr: 'Aucune compétence ne correspond à ces filtres.',
+  },
+  'ally_skills_note': {
+    AppLanguage.en:
+        'A companion keeps to their own trade: {class} skills only, one point each, in any order. What their die already carries is theirs from the start.',
+    AppLanguage.fr:
+        'Un compagnon s’en tient à son métier : compétences de {class} uniquement, un point chacune, dans l’ordre voulu. Ce que porte déjà son dé lui appartient dès le départ.',
+  },
   'skill_points_label': {
     AppLanguage.en: 'Skill Points',
     AppLanguage.fr: 'Points de compétence',
@@ -1384,42 +1771,43 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Expéditions',
   },
   'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'hub_story_unfold': {
+    AppLanguage.en: 'Read the scene again',
+    AppLanguage.fr: 'Relire le récit',
+  },
+  'hub_story_fold': {
+    AppLanguage.en: 'Fold the scene',
+    AppLanguage.fr: 'Replier le récit',
+  },
   'leave_settlement_title': {
-    AppLanguage.en: 'Leave {place}',
-    AppLanguage.fr: 'Quitter {place}',
+    AppLanguage.en: 'Move on',
+    AppLanguage.fr: 'Quitter les lieux',
   },
   'leave_settlement_hint': {
     AppLanguage.en: 'Where the story goes next, when you are ready',
-    AppLanguage.fr: 'La suite de l’histoire, quand vous serez prêt',
+    AppLanguage.fr: 'La suite de l’histoire, quand vous le souhaitez',
   },
   'arrival_town_title': {
-    AppLanguage.en: 'You arrive in {place}',
-    AppLanguage.fr: 'Vous arrivez à {place}',
+    AppLanguage.en: '{place}',
+    AppLanguage.fr: '{place}',
   },
   'arrival_town_body': {
     AppLanguage.en:
-        'This is a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you are ready to move on, open "Leave {place}" at the bottom.',
+        'You arrive in a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you want to go on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
-        'Vous êtes en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous serez prêt à repartir, ouvrez « Quitter {place} » en bas.',
+        'Vous arrivez en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.',
   },
   'arrival_town_button': {
     AppLanguage.en: 'Enter the town',
     AppLanguage.fr: 'Entrer en ville',
   },
-  'arrival_camp_title': {
-    AppLanguage.en: 'You reach {place}',
-    AppLanguage.fr: 'Vous atteignez {place}',
-  },
-  'arrival_camp_body': {
+  'arrival_town_away_body': {
     AppLanguage.en:
-        'This is your camp. From now on the Camp page (Play tab) holds your companions, rest, the camp\'s works, its shops and the expeditions that leave from it.',
+        'You arrive at {place}. Its shops, people and challenges are listed under the story, and everything you do here counts toward the chapter. "Back to the camp" takes you home; "Travel on" takes you to the other places you know.',
     AppLanguage.fr:
-        'Voici votre camp. Désormais, la page Camp (onglet Jouer) réunit vos compagnons, le repos, les ouvrages du camp, ses boutiques et les expéditions qui en partent.',
+        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont listés sous le récit, et tout ce que vous y faites compte pour le chapitre. « Retour au camp » vous ramène à la base ; « Aller ailleurs » vous mène vers les autres lieux connus.',
   },
-  'arrival_camp_button': {
-    AppLanguage.en: 'Make camp',
-    AppLanguage.fr: 'Installer le camp',
-  },
+  'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
   'story_end_message': {
     AppLanguage.en:
         'Your story ends here. Begin again as someone new, or carry this run into New Game+.',
@@ -1609,15 +1997,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'lock_character_dialog_title': {
     AppLanguage.en: 'Your Character, Set in Stone',
-    AppLanguage.fr: 'Ton personnage, gravé dans la pierre',
+    AppLanguage.fr: 'Votre personnage, gravé dans la pierre',
   },
   'lock_character_dialog_desc': {
     AppLanguage.en:
         "Once you begin, your race and profession can't be changed for the rest "
             'of this run. Choose a name to carry with you.',
     AppLanguage.fr:
-        'Une fois commencé, ta race et ta profession ne pourront plus être '
-            'changées pour le reste de cette partie. Choisis un nom à porter.',
+        "Une fois l'histoire commencée, votre race et votre profession ne "
+            'pourront plus changer pour le reste de cette partie. Choisissez '
+            'un nom à porter.',
   },
   'character_name_field_label': {
     AppLanguage.en: 'Character name',
@@ -1633,11 +2022,39 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'begin_story_button': {
     AppLanguage.en: 'Begin Your Story',
-    AppLanguage.fr: 'Commencer ton histoire',
+    AppLanguage.fr: 'Commencer votre histoire',
   },
   'origin_stories_section_title': {
     AppLanguage.en: 'A Life Before This One',
     AppLanguage.fr: 'Une vie avant celle-ci',
+  },
+  'origin_stories_intro': {
+    AppLanguage.en: 'Five moments from before the story. How you met each '
+        'one shapes who you are when it begins.',
+    AppLanguage.fr: "Cinq moments d'avant l'histoire. Votre façon de réagir "
+        'à chacun façonne la personne que vous êtes quand elle commence.',
+  },
+  'origin_memory_progress': {
+    AppLanguage.en: 'Memory {n} of {total}',
+    AppLanguage.fr: 'Souvenir {n} sur {total}',
+  },
+  'origin_summary_title': {
+    AppLanguage.en: 'Who You Are',
+    AppLanguage.fr: 'Qui vous êtes',
+  },
+  'origin_summary_intro': {
+    AppLanguage.en: 'These memories are yours now. From here on, you tell '
+        'the story yourself.',
+    AppLanguage.fr: 'Ces souvenirs sont désormais les vôtres. À partir '
+        "d'ici, c'est vous qui racontez l'histoire.",
+  },
+  'origin_summary_change_hint': {
+    AppLanguage.en: 'Tap a memory to change your answer.',
+    AppLanguage.fr: 'Touchez un souvenir pour changer votre réponse.',
+  },
+  'origin_starting_alignment': {
+    AppLanguage.en: 'Starting alignment',
+    AppLanguage.fr: 'Alignement de départ',
   },
   'origin_childhood_bird_title': {
     AppLanguage.en: 'Childhood: The Injured Bird',
@@ -1648,20 +2065,20 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'As a child, you stumbled upon a sparrow with a broken wing, thrashing '
             'weakly in the grass.',
     AppLanguage.fr:
-        "Enfant, tu tombes sur un moineau à l'aile brisée, se débattant "
+        "Enfant, vous tombez sur un moineau à l'aile brisée qui se débat "
             "faiblement dans l'herbe.",
   },
   'origin_childhood_bird_good': {
     AppLanguage.en: 'Cup it in your hands and nurse it back to health',
-    AppLanguage.fr: 'Le prendre dans tes mains et le soigner',
+    AppLanguage.fr: 'Le prendre dans vos mains et le soigner',
   },
   'origin_childhood_bird_evil': {
     AppLanguage.en: 'Crush it beneath your heel and walk on',
-    AppLanguage.fr: 'Écraser sous ton talon et poursuivre ton chemin',
+    AppLanguage.fr: "L'écraser sous votre talon et poursuivre votre chemin",
   },
   'origin_childhood_bird_neutral': {
     AppLanguage.en: 'Leave it to nature and walk away',
-    AppLanguage.fr: 'Laisser à son sort et t\'en aller',
+    AppLanguage.fr: 'Le laisser à son sort et vous en aller',
   },
   'origin_childhood_beggar_title': {
     AppLanguage.en: "Childhood: The Beggar's Plea",
@@ -1672,8 +2089,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'An old beggar outside the market grabs your sleeve, pleading for the '
             'last piece of bread in your hand.',
     AppLanguage.fr:
-        "Un vieux mendiant devant le marché s'accroche à ta manche, suppliant "
-            'pour le dernier morceau de pain dans ta main.',
+        "Devant le marché, un vieux mendiant s'accroche à votre manche et "
+            'vous supplie de lui donner le dernier morceau de pain que vous '
+            'tenez.',
   },
   'origin_childhood_beggar_good': {
     AppLanguage.en: 'Give him the bread, even hungry yourself',
@@ -1681,11 +2099,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_childhood_beggar_evil': {
     AppLanguage.en: 'Mock him and eat it in front of him',
-    AppLanguage.fr: 'Te moquer de lui et le manger devant lui',
+    AppLanguage.fr: 'Vous moquer de lui et le manger sous ses yeux',
   },
   'origin_childhood_beggar_neutral': {
     AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
   },
   // Profession-flavored small variants of the beggar's-plea beat above —
   // same shape and length, reworded to each profession's own world. Rogue
@@ -1700,8 +2118,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'An old soldier begging outside the training yard grabs your sleeve, '
             'pleading for the last ration in your pack.',
     AppLanguage.fr:
-        "Un vieux soldat devant la cour d'entraînement s'accroche à ta manche, "
-            'suppliant pour la dernière ration dans ton sac.',
+        "Devant la cour d'entraînement, un vieux soldat s'accroche à "
+            'votre manche et vous supplie de lui donner la dernière ration de '
+            'votre sac.',
   },
   'origin_childhood_beggar_warrior_good': {
     AppLanguage.en: 'Give him the ration, even hungry yourself',
@@ -1709,11 +2128,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_childhood_beggar_warrior_evil': {
     AppLanguage.en: 'Mock his weakness and eat it in front of him',
-    AppLanguage.fr: 'Te moquer de sa faiblesse et la manger devant lui',
+    AppLanguage.fr: 'Vous moquer de sa faiblesse et la manger sous ses yeux',
   },
   'origin_childhood_beggar_warrior_neutral': {
     AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
   },
   'origin_childhood_beggar_mage_title': {
     AppLanguage.en: "Childhood: The Hedge-Mage's Plea",
@@ -1724,20 +2143,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'An old hedge-mage outside the arcane bazaar grabs your sleeve, pleading '
             'for the last warming charm in your hand.',
     AppLanguage.fr:
-        'Un vieux sorcier des rues devant le bazar arcanique s\'accroche à ta '
-            'manche, suppliant pour le dernier charme de chaleur dans ta main.',
+        "Devant le bazar arcanique, un vieux sorcier des rues s'accroche "
+            'à votre manche et vous supplie de lui donner le dernier charme '
+            'de chaleur que vous tenez.',
   },
   'origin_childhood_beggar_mage_good': {
     AppLanguage.en: 'Give him the charm, even cold yourself',
-    AppLanguage.fr: 'Lui donner le charme, même transi de froid',
+    AppLanguage.fr: 'Lui donner le charme, même si le froid vous mord',
   },
   'origin_childhood_beggar_mage_evil': {
     AppLanguage.en: 'Mock him and use it yourself in front of him',
-    AppLanguage.fr: "Te moquer de lui et l'utiliser devant lui",
+    AppLanguage.fr: "Vous moquer de lui et l'utiliser sous ses yeux",
   },
   'origin_childhood_beggar_mage_neutral': {
     AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
   },
   'origin_childhood_beggar_rogue_title': {
     AppLanguage.en: 'Childhood: The Rigged Game',
@@ -1747,10 +2167,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'An old card-sharp in the back alley waves you over, offering a game you '
             'can tell — even at your age — is rigged in your favor against the next mark.',
-    AppLanguage.fr:
-        'Un vieux tricheur de cartes dans la ruelle te fait signe, proposant une '
-            'partie que tu devines déjà — même à cet âge — truquée en ta faveur contre le '
-            'prochain pigeon.',
+    AppLanguage.fr: 'Dans la ruelle, un vieux tricheur vous fait signe et vous '
+        'propose une partie que vous devinez déjà — même à cet âge — '
+        'truquée en votre faveur contre le prochain pigeon.',
   },
   'origin_childhood_beggar_rogue_good': {
     AppLanguage.en: 'Warn the next mark before he sits down to lose',
@@ -1765,7 +2184,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'origin_childhood_beggar_rogue_neutral': {
     AppLanguage.en: 'Walk past without a word either way',
     AppLanguage.fr:
-        "Passer ton chemin sans un mot, dans un sens comme dans l'autre",
+        "Passer votre chemin sans un mot, dans un sens comme dans l'autre",
   },
   'origin_childhood_beggar_cleric_title': {
     AppLanguage.en: "Childhood: The Pilgrim's Plea",
@@ -1776,20 +2195,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'An old pilgrim outside the temple steps grabs your sleeve, pleading for '
             'the last coin in your hand for the offering box.',
     AppLanguage.fr:
-        "Un vieux pèlerin devant les marches du temple s'accroche à ta manche, "
-            'suppliant pour la dernière pièce dans ta main, pour le tronc des offrandes.',
+        "Au pied des marches du temple, un vieux pèlerin s'accroche à "
+            'votre manche et vous supplie de lui donner la dernière pièce que '
+            'vous tenez, pour le tronc des offrandes.',
   },
   'origin_childhood_beggar_cleric_good': {
     AppLanguage.en: 'Give him the coin, even poor yourself',
-    AppLanguage.fr: 'Lui donner la pièce, même démuni toi-même',
+    AppLanguage.fr: "Lui donner la pièce, même s'il ne vous reste rien",
   },
   'origin_childhood_beggar_cleric_evil': {
     AppLanguage.en: 'Mock his faith and pocket it in front of him',
-    AppLanguage.fr: 'Te moquer de sa foi et l\'empocher devant lui',
+    AppLanguage.fr: "Vous moquer de sa foi et l'empocher sous ses yeux",
   },
   'origin_childhood_beggar_cleric_neutral': {
     AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
   },
   'origin_childhood_beggar_ranger_title': {
     AppLanguage.en: "Childhood: The Trapper's Plea",
@@ -1800,24 +2220,25 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'An old trapper outside the hunting lodge grabs your sleeve, pleading for '
             'the last strip of dried meat in your pack.',
     AppLanguage.fr:
-        "Un vieux trappeur devant le pavillon de chasse s'accroche à ta manche, "
-            'suppliant pour la dernière lanière de viande séchée dans ton sac.',
+        "Devant le pavillon de chasse, un vieux trappeur s'accroche à "
+            'votre manche et vous supplie de lui donner la dernière lanière '
+            'de viande séchée de votre sac.',
   },
   'origin_childhood_beggar_ranger_good': {
     AppLanguage.en: 'Give him the meat, even hungry yourself',
-    AppLanguage.fr: 'Lui donner la viande, même affamé toi-même',
+    AppLanguage.fr: 'Lui donner la viande, même le ventre vide',
   },
   'origin_childhood_beggar_ranger_evil': {
     AppLanguage.en: 'Mock his hunger and eat it in front of him',
-    AppLanguage.fr: 'Te moquer de sa faim et la manger devant lui',
+    AppLanguage.fr: 'Vous moquer de sa faim et la manger sous ses yeux',
   },
   'origin_childhood_beggar_ranger_neutral': {
     AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Te dégager et continuer ton chemin sans un mot',
+    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
   },
   'origin_teen_bully_title': {
     AppLanguage.en: 'Teenage Years: The Bully',
-    AppLanguage.fr: 'Adolescence : Le tyran de cour',
+    AppLanguage.fr: 'Adolescence : La brute de la cour',
   },
   'origin_teen_bully_desc': {
     AppLanguage.en:
@@ -1829,15 +2250,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_teen_bully_good': {
     AppLanguage.en: 'Step in and stand between them',
-    AppLanguage.fr: 'Intervenir et te placer entre eux',
+    AppLanguage.fr: 'Intervenir et vous placer entre eux',
   },
   'origin_teen_bully_evil': {
     AppLanguage.en: 'Laugh and egg the bully on',
-    AppLanguage.fr: 'Rire et encourager le tyran',
+    AppLanguage.fr: 'Rire et encourager la brute',
   },
   'origin_teen_bully_neutral': {
     AppLanguage.en: 'Turn the corner and pretend you saw nothing',
-    AppLanguage.fr: "Tourner au coin et faire comme si tu n'avais rien vu",
+    AppLanguage.fr:
+        "Tourner au coin de la rue et faire comme si vous n'aviez rien vu",
   },
   'origin_teen_vase_title': {
     AppLanguage.en: 'Teenage Years: The Broken Vase',
@@ -1848,8 +2270,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Running through the market, you knock over a merchant's prized vase. "
             'It shatters at your feet.',
     AppLanguage.fr:
-        "En courant dans le marché, tu renverses le vase précieux d'un "
-            'marchand. Il se brise à tes pieds.',
+        "En courant dans le marché, vous renversez le vase précieux d'un "
+            'marchand. Il se brise à vos pieds.',
   },
   'origin_teen_vase_good': {
     AppLanguage.en: 'Confess and offer to work off the debt',
@@ -1861,7 +2283,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_teen_vase_neutral': {
     AppLanguage.en: 'Slip into the crowd before anyone notices',
-    AppLanguage.fr: 'Te fondre dans la foule avant que quiconque remarque',
+    AppLanguage.fr:
+        "Vous fondre dans la foule avant que personne ne s'en aperçoive",
   },
   'origin_teen_thief_title': {
     AppLanguage.en: 'Teenage Years: The Cornered Thief',
@@ -1872,8 +2295,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'You catch a gaunt, starving thief mid-theft, rifling through your '
             "family's stores.",
     AppLanguage.fr:
-        'Tu surprends un voleur famélique en train de fouiller les provisions '
-            'de ta famille.',
+        'Vous surprenez un voleur famélique en train de fouiller les '
+            'provisions de votre famille.',
   },
   'origin_teen_thief_good': {
     AppLanguage.en: 'Let them go, and press some food into their hands',
@@ -1881,7 +2304,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'origin_teen_thief_evil': {
     AppLanguage.en: 'Hand them to the guards, knowing what awaits them',
-    AppLanguage.fr: 'Le livrer aux gardes, sachant ce qui l\'attend',
+    AppLanguage.fr: "Le livrer aux gardes, en sachant ce qui l'attend",
   },
   'origin_teen_thief_neutral': {
     AppLanguage.en: 'Report the theft plainly and let others decide',
@@ -1910,10 +2333,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Decide later',
     AppLanguage.fr: 'Décider plus tard',
   },
-  'increased_suffix': {
-    AppLanguage.en: 'increased!',
-    AppLanguage.fr: 'augmenté(e) !'
-  },
   'none_label': {AppLanguage.en: 'None', AppLanguage.fr: 'Aucun'},
   'restriction_label': {
     AppLanguage.en: 'Restriction',
@@ -1926,6 +2345,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'die_label': {AppLanguage.en: 'Die', AppLanguage.fr: 'Dé'},
   'skill_faces_title': {AppLanguage.en: 'Faces', AppLanguage.fr: 'Faces'},
+  'skill_rarity_label': {AppLanguage.en: 'Rarity', AppLanguage.fr: 'Rareté'},
+  'skill_rarity_common': {AppLanguage.en: 'Common', AppLanguage.fr: 'Commune'},
+  'skill_rarity_uncommon': {
+    AppLanguage.en: 'Uncommon',
+    AppLanguage.fr: 'Peu commune',
+  },
+  'skill_rarity_rare': {AppLanguage.en: 'Rare', AppLanguage.fr: 'Rare'},
+  'skill_rarity_epic': {AppLanguage.en: 'Epic', AppLanguage.fr: 'Épique'},
+  'skill_rarity_legendary': {
+    AppLanguage.en: 'Legendary',
+    AppLanguage.fr: 'Légendaire',
+  },
+  'skill_faces_limit_hint': {
+    AppLanguage.en:
+        'A skill fits on 3 faces of a die at most if it is common, 2 if uncommon or rare, and 1 if epic or legendary.',
+    AppLanguage.fr:
+        'Une compétence tient sur 3 faces d’un dé au plus si elle est commune, 2 si elle est peu commune ou rare, et 1 si elle est épique ou légendaire.',
+  },
+  'skill_faces_count': {
+    AppLanguage.en: '{rarity} · on {n}/{max} faces',
+    AppLanguage.fr: '{rarity} · sur {n}/{max} faces',
+  },
+  'skill_faces_full': {
+    AppLanguage.en: '{rarity} · already on {max} faces of this die',
+    AppLanguage.fr: '{rarity} · déjà sur {max} faces de ce dé',
+  },
+  'skill_max_faces': {
+    AppLanguage.en: '{rarity} · {max} faces per die at most',
+    AppLanguage.fr: '{rarity} · {max} faces par dé au plus',
+  },
+  'face_over_limit_label': {
+    AppLanguage.en: 'Over its limit: the face does its own action',
+    AppLanguage.fr: 'Au-delà de sa limite : la face fait son action de base',
+  },
   'drag_skill_hint': {
     AppLanguage.en:
         'Each face casts the skill it shows. Tap an open face (pencil) to choose its skill, or drag a skill below onto it. Locked faces are the die\'s own signature.',
@@ -2016,6 +2469,16 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Vous et vos compagnons vous reposez et récupérez entièrement.',
   },
   'rest_button': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Se reposer'},
+  'rest_at_camp_button': {
+    AppLanguage.en: 'Rest at camp',
+    AppLanguage.fr: 'Se reposer au camp',
+  },
+  'party_rested_at_camp_message': {
+    AppLanguage.en:
+        'You walk back to camp, sleep by its fires and return rested.',
+    AppLanguage.fr:
+        'Vous regagnez le camp, dormez près de ses feux et revenez en pleine forme.',
+  },
   'rest_blocked_hint': {
     AppLanguage.en: 'Not while a fight or expedition is in progress.',
     AppLanguage.fr: "Impossible pendant un combat ou une expédition.",
@@ -2055,7 +2518,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'resolve_label': {AppLanguage.en: 'Resolve', AppLanguage.fr: 'Résolution'},
   'resolve_bonus_suffix': {
     AppLanguage.en: 'health and damage: the Shroud has learned this enemy',
-    AppLanguage.fr: 'de santé et de dégâts : le Suaire a appris cet ennemi'
+    AppLanguage.fr: 'de santé et de dégâts : le Linceul a appris cet ennemi'
   },
   'house_built_prefix': {AppLanguage.en: 'Built', AppLanguage.fr: 'Construit'},
   'build_button': {AppLanguage.en: 'Build', AppLanguage.fr: 'Construire'},
@@ -2168,8 +2631,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Ouvert seulement quand le récit est en ville',
   },
   'camp_locked_subtitle': {
-    AppLanguage.en: 'Reach Chapter 3 to unlock',
-    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+    AppLanguage.en: 'Opens once the camp is set up in chapter 3',
+    AppLanguage.fr: 'S’ouvre une fois le campement installé au chapitre 3',
   },
   'zones_cleared_label': {
     AppLanguage.en: 'Zones Cleared',
@@ -2294,6 +2757,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'banner_piece_reliquary_thread': {
     AppLanguage.en: 'The reliquary thread',
     AppLanguage.fr: 'Le fil du reliquaire',
+  },
+  'banner_piece_white_fleet_sail': {
+    AppLanguage.en: 'The White Fleet’s sail',
+    AppLanguage.fr: 'La voile de la Flotte Blanche',
+  },
+  'banner_piece_sovereign_mantle': {
+    AppLanguage.en: 'The Sovereign’s mantle',
+    AppLanguage.fr: 'Le manteau du Souverain',
   },
   'grants_banner_piece_id': {
     AppLanguage.en: 'Grants Banner piece (id)',
@@ -2878,7 +3349,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'you_died_title': {
     AppLanguage.en: 'You Died',
-    AppLanguage.fr: 'Vous êtes mort'
+    AppLanguage.fr: 'Vous avez péri'
   },
   'you_died_message': {
     AppLanguage.en:
@@ -3494,8 +3965,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Épreuves de compétence',
   },
   'tut_boat_title': {
-    AppLanguage.en: 'The boat',
-    AppLanguage.fr: 'Le bateau',
+    AppLanguage.en: 'The harbour',
+    AppLanguage.fr: 'Le port',
   },
   'tut_voyage_title': {
     AppLanguage.en: 'Voyages',
@@ -3565,6 +4036,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Votre personnage, votre camp et tout le reste sont ici. Un point signale que quelque chose vous attend.',
   },
+  'tut_camp_5': {
+    AppLanguage.en:
+        'Sail from here: pick a port on the chart. Each port has its own expeditions.',
+    AppLanguage.fr:
+        "Partez d'ici : choisissez un port sur la carte. Chaque port a ses propres expéditions.",
+  },
   'tut_character_1': {
     AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
     AppLanguage.fr: "C'est vous : niveau et expérience, santé, mana et or.",
@@ -3600,8 +4077,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "Choisissez une maison ou un ajout pour voir où il irait, puis construisez-le avec de l'or.",
   },
   'tut_camp_3': {
-    AppLanguage.en: 'The harbour. Your boat sails from here to other ports.',
-    AppLanguage.fr: "Le port. Votre bateau part d'ici vers d'autres ports.",
+    AppLanguage.en:
+        'The harbour, once you build it. Your boat is refitted there.',
+    AppLanguage.fr:
+        'Le port, une fois construit. On y remet votre bateau en état.',
   },
   'tut_camp_4': {
     AppLanguage.en:
@@ -3655,9 +4134,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_skills_2': {
     AppLanguage.en:
-        'Every skill you can learn. Unlock one, then upgrade it up to tier 3. A padlock means it belongs to another race or calling.',
+        'Each branch is learned from the top down. Learn a whole branch to master it; its skills then fight a tier higher. Tap a skill to see what it does.',
     AppLanguage.fr:
-        'Toutes les compétences possibles. Débloquez-en une, puis améliorez-la jusqu’au rang 3. Un cadenas : elle appartient à une autre race ou vocation.',
+        "Chaque branche s'apprend de haut en bas. Apprenez toute une branche pour la maîtriser : ses compétences combattent alors un rang plus haut. Touchez une compétence pour voir ce qu'elle fait.",
+  },
+  'tut_skills_5': {
+    AppLanguage.en:
+        "See your class's skill tree, or every skill as a list with filters.",
+    AppLanguage.fr:
+        "Voyez l'arbre de compétences de votre classe, ou toutes les compétences en liste avec filtres.",
   },
   'tut_skills_3': {
     AppLanguage.en: 'Fuse two skills you know into a stronger one.',
@@ -3746,16 +4231,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "Obtenez assez de succès avant trop d'échecs.",
   },
   'tut_boat_1': {
-    AppLanguage.en:
-        'The Rusty Eel. Fit parts from the shipwright into her slots to make her stronger.',
-    AppLanguage.fr:
-        'La Rusty Eel. Installez les pièces du charpentier dans ses emplacements pour la renforcer.',
+    AppLanguage.en: 'The Rusty Eel on her slipway. Mend her hull here.',
+    AppLanguage.fr: 'La Rusty Eel sur sa cale. Réparez sa coque ici.',
   },
   'tut_boat_2': {
     AppLanguage.en:
-        'Choose a port on the chart to set sail. Each port has its own expeditions.',
+        "Fit the shipwright's parts into her slots to make her stronger for the sea.",
     AppLanguage.fr:
-        'Choisissez un port sur la carte pour appareiller. Chaque port a ses propres expéditions.',
+        'Installez les pièces du charpentier dans ses emplacements pour la renforcer en mer.',
   },
   'tut_voyage_1': {
     AppLanguage.en:
@@ -3783,9 +4266,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_town_1': {
     AppLanguage.en:
-        'A port of call: rest, trade in its shops and set out on the expeditions nearby.',
+        'A port of call: rest, trade in its shops and set out on the expeditions nearby. The Rusty Eel takes you on to the next port.',
     AppLanguage.fr:
-        'Une escale : reposez-vous, commercez et partez pour les expéditions voisines.',
+        'Une escale : reposez-vous, commercez et partez pour les expéditions voisines. La Rusty Eel vous emmène au port suivant.',
   },
   'tut_shop_1': {
     AppLanguage.en: 'Buy what the merchant sells with your gold.',
@@ -4167,6 +4650,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Shroud’s vigil, kept',
     AppLanguage.fr: 'La Veillée du Linceul, tenue',
   },
+  'zone_flag_glass_strand_cleared': {
+    AppLanguage.en: 'The Glass Strand, crossed',
+    AppLanguage.fr: 'La Grève de Verre, traversée',
+  },
+  'zone_flag_white_fleet_grave_cleared': {
+    AppLanguage.en: 'The White Fleet’s grave, silent',
+    AppLanguage.fr: 'Le Tombeau de la Flotte Blanche, silencieux',
+  },
   'zone_flag_void_sovereign_fallen': {
     AppLanguage.en: 'The Void Sovereign, fallen',
     AppLanguage.fr: 'Le Souverain, tombé',
@@ -4176,8 +4667,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Rusty Eel'
   },
   'boat_locked_subtitle': {
-    AppLanguage.en: 'Reach Chapter 3 to unlock',
-    AppLanguage.fr: 'Atteignez le chapitre 3 pour débloquer',
+    AppLanguage.en: 'Opens once the camp is set up in chapter 3',
+    AppLanguage.fr: 'S’ouvre une fois le campement installé au chapitre 3',
   },
   'boat_at_port_prefix': {
     AppLanguage.en: 'Moored at',
@@ -4410,9 +4901,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_board_hint': {
     AppLanguage.en:
-        'Their bulwark is down: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
+        'Side by side with their rail open: board and fight {crew} at the rail (their helm may slip the grapples; it ends the turn).',
     AppLanguage.fr:
-        'Leur pavois est à terre : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
+        'Bord à bord, leur bastingage ouvert : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
   },
   'ship_auto_station_button': {
     AppLanguage.en: 'Auto-station',
@@ -4478,13 +4969,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_weapons_label': {AppLanguage.en: 'Weapons', AppLanguage.fr: 'Armes'},
   'ship_crew_label': {AppLanguage.en: 'Crew', AppLanguage.fr: 'Équipage'},
   'ship_weapon_ready_label': {AppLanguage.en: 'ready', AppLanguage.fr: 'prête'},
+  'ship_turn_seconds': {AppLanguage.en: '{n} s', AppLanguage.fr: '{n} s'},
+  'ship_log_time_up': {
+    AppLanguage.en: 'Time runs out: the turn ends.',
+    AppLanguage.fr: 'Le temps est écoulé : le tour se termine.',
+  },
+  'ship_log_time_up_held': {
+    AppLanguage.en:
+        'Time runs out: {ship} holds her fire; her guns keep their charge.',
+    AppLanguage.fr:
+        'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
+  },
+  'turn_seconds_bonus_label': {
+    AppLanguage.en: '+{n} s per battle turn',
+    AppLanguage.fr: '+{n} s par tour de bataille',
+  },
+  'ship_turn_timer_setting_title': {
+    AppLanguage.en: 'Timed ship battles',
+    AppLanguage.fr: 'Batailles navales chronométrées',
+  },
+  'ship_turn_timer_setting_desc': {
+    AppLanguage.en:
+        'Each turn of a ship battle has a time limit (20 s, more with a Speaking Tube). When it runs out, the turn ends as it stands; a turn ended with half the time left is quick orders, +10% evasion.',
+    AppLanguage.fr:
+        'Chaque tour de bataille navale a une limite de temps (20 s, davantage avec un Porte-voix). Quand elle est écoulée, le tour se termine en l’état ; un tour terminé avec la moitié du temps restant donne des ordres rapides, +10 % d’esquive.',
+  },
   'ship_end_turn_button': {
     AppLanguage.en: 'End turn',
     AppLanguage.fr: 'Fin du tour'
   },
   'ship_fire_hint': {
-    AppLanguage.en: 'Tap a ready weapon, then the room to hit.',
-    AppLanguage.fr: 'Touchez une arme prête, puis la salle à frapper.',
+    AppLanguage.en:
+        'Tap a ready weapon, then the room to hit; hold the room to take aim.',
+    AppLanguage.fr:
+        'Touchez une arme prête, puis la salle à frapper ; maintenez la salle pour viser.',
   },
   'ship_station_hint': {
     AppLanguage.en: 'Tap a crew member, then the room to send them to.',
@@ -4534,11 +5052,485 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_crew_hurt': {
     AppLanguage.en: '{crew} is hurt at the {room}, -{n}',
-    AppLanguage.fr: '{crew} est blessé à {room}, -{n}',
+    AppLanguage.fr: '{crew} prend un coup à {room}, -{n}',
   },
   'ship_log_enemy_repairs': {
     AppLanguage.en: 'The {ship} repairs its {room}',
     AppLanguage.fr: '{ship} répare {room}',
+  },
+  'ship_log_leak_bailed': {
+    AppLanguage.en: '{crew} bails out the hold',
+    AppLanguage.fr: '{crew} écope la cale',
+  },
+  'ship_log_shot_wide': {
+    AppLanguage.en: '{weapon} goes wide',
+    AppLanguage.fr: '{weapon} part à côté',
+  },
+  'ship_log_critical': {
+    AppLanguage.en: 'A clean hit!',
+    AppLanguage.fr: 'Coup parfait !',
+  },
+  'ship_log_focus': {
+    AppLanguage.en: 'Focused fire: the {room} takes another pip',
+    AppLanguage.fr: 'Tir concentré : {room} perd un cran de plus',
+  },
+  'ship_log_grape': {
+    AppLanguage.en: 'Grapeshot cuts down the {ship}\'s crew',
+    AppLanguage.fr: 'La mitraille fauche l\'équipage de {ship}',
+  },
+  'ship_log_close_in': {
+    AppLanguage.en: 'The {ship} closes in: {range}',
+    AppLanguage.fr: '{ship} se rapproche : {range}',
+  },
+  'ship_log_pull_away': {
+    AppLanguage.en: 'The {ship} pulls away: {range}',
+    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+  },
+  'ship_log_enemy_closes': {
+    AppLanguage.en: 'The {ship} closes in: {range}',
+    AppLanguage.fr: '{ship} se rapproche : {range}',
+  },
+  'ship_log_enemy_pulls_away': {
+    AppLanguage.en: 'The {ship} pulls away: {range}',
+    AppLanguage.fr: '{ship} s\'éloigne : {range}',
+  },
+  'ship_log_quick_orders': {
+    AppLanguage.en: 'Quick orders: the Eel is already turning, +{n}% evasion',
+    AppLanguage.fr: 'Ordres rapides : l\'Eel vire déjà, +{n} % d\'esquive',
+  },
+  'ship_log_escaped': {
+    AppLanguage.en: 'The {ship} slips away over the horizon',
+    AppLanguage.fr: '{ship} disparaît à l\'horizon',
+  },
+  'ship_log_enemy_leak_plugged': {
+    AppLanguage.en: 'The {ship} plugs a leak',
+    AppLanguage.fr: '{ship} colmate une voie d\'eau',
+  },
+  'ship_log_rammed': {
+    AppLanguage.en: 'The {ship} rams you! -{n} hull, and the sea comes in',
+    AppLanguage.fr: '{ship} vous éperonne ! -{n} de coque, et la mer entre',
+  },
+  'ship_log_warded': {
+    AppLanguage.en: 'A ward of void turns {weapon} aside',
+    AppLanguage.fr: 'Une garde du Néant détourne {weapon}',
+  },
+  'ship_log_wreck_hit': {
+    AppLanguage.en: '{weapon} smashes into the drifting wreck',
+    AppLanguage.fr: '{weapon} s\'écrase sur l\'épave à la dérive',
+  },
+  'ship_log_squall_quench': {
+    AppLanguage.en: 'The squall puts out the {ship}\'s fires',
+    AppLanguage.fr: 'Le grain éteint les feux de {ship}',
+  },
+  'ship_log_flooding': {
+    AppLanguage.en: 'The {ship} takes on water, -{n} hull',
+    AppLanguage.fr: '{ship} embarque de l\'eau, -{n} de coque',
+  },
+  'ship_log_rigging_torn': {
+    AppLanguage.en: 'Chain shot tears the {ship}\'s rigging',
+    AppLanguage.fr: 'Les boulets ramés déchirent le gréement de {ship}',
+  },
+  'ship_log_leak': {
+    AppLanguage.en: 'The {ship} is holed below the waterline!',
+    AppLanguage.fr: 'Voie d\'eau sous la ligne de flottaison de {ship} !',
+  },
+  'ship_log_weather_calm': {
+    AppLanguage.en: 'The wind drops: calm',
+    AppLanguage.fr: 'Le vent tombe : calme',
+  },
+  'ship_log_weather_tailwind': {
+    AppLanguage.en: 'The wind swings behind the Eel',
+    AppLanguage.fr: 'Le vent passe dans le dos de l\'Eel',
+  },
+  'ship_log_weather_crosswind': {
+    AppLanguage.en: 'A crosswind rises: shots drift',
+    AppLanguage.fr: 'Un vent de travers se lève : les tirs dévient',
+  },
+  'ship_log_weather_squall': {
+    AppLanguage.en: 'A squall sweeps in: rain on every deck',
+    AppLanguage.fr: 'Un grain arrive : la pluie sur tous les ponts',
+  },
+  'ship_log_weather_fog': {
+    AppLanguage.en: 'Fog rolls in',
+    AppLanguage.fr: 'Le brouillard tombe',
+  },
+  'ship_event_rogue_wave': {
+    AppLanguage.en:
+        'A rogue wave breaks over both ships: a shield layer lost on each',
+    AppLanguage.fr:
+        'Une vague scélérate balaie les deux navires : chacun perd une couche de bouclier',
+  },
+  'ship_event_sea_creature': {
+    AppLanguage.en:
+        'Something huge rises under the {ship}! -{n} hull, the hold stove in',
+    AppLanguage.fr:
+        'Une chose énorme surgit sous {ship} ! -{n} de coque, la cale enfoncée',
+  },
+  'ship_event_wreck': {
+    AppLanguage.en:
+        'A wreck drifts between the ships: the next shot at the Eel will hit it',
+    AppLanguage.fr:
+        'Une épave dérive entre les navires : le prochain tir contre l\'Eel la touchera',
+  },
+  'ship_log_got_away': {
+    AppLanguage.en: 'The {ship} got away: no prize, but the Eel sails on',
+    AppLanguage.fr:
+        '{ship} a pris la fuite : pas de prise, mais l\'Eel poursuit sa route',
+  },
+  'ship_order_log_allHands': {
+    AppLanguage.en: '{crew}: "All hands!" Every damaged room is mended a pip',
+    AppLanguage.fr:
+        '{crew} : « Tout le monde sur le pont ! » Chaque salle endommagée regagne un cran',
+  },
+  'ship_order_log_brace': {
+    AppLanguage.en: '{crew}: "Brace!" The Eel takes half the hull this round',
+    AppLanguage.fr:
+        '{crew} : « Tenez bon ! » L\'Eel ne perd que la moitié de la coque ce tour-ci',
+  },
+  'ship_order_log_grapple': {
+    AppLanguage.en: '{crew}: "Grapple!" The ships are hauled side by side',
+    AppLanguage.fr:
+        '{crew} : « Grappins ! » Les navires sont hâlés bord à bord',
+  },
+  'ship_order_log_bless': {
+    AppLanguage.en:
+        '{crew} blesses the deck: the fires die and the crew take heart',
+    AppLanguage.fr:
+        '{crew} bénit le pont : les feux meurent et l\'équipage reprend courage',
+  },
+  'ship_order_log_shoreUp': {
+    AppLanguage.en: '{crew} shores up the bulwark: mended, and a layer raised',
+    AppLanguage.fr: '{crew} étaye le pavois : réparé, et une couche relevée',
+  },
+  'ship_order_log_markHelm': {
+    AppLanguage.en: '{crew} marks their helmsman: they slip nothing this turn',
+    AppLanguage.fr:
+        '{crew} marque leur timonier : il n\'esquive rien ce tour-ci',
+  },
+  'ship_order_log_cutRigging': {
+    AppLanguage.en:
+        '{crew} cuts their rigging: every weapon loses a step of charge',
+    AppLanguage.fr:
+        '{crew} coupe leur gréement : chaque arme perd un cran de charge',
+  },
+  'ship_order_log_eagleEye': {
+    AppLanguage.en: '{crew} takes aim: the next shot will be a clean hit',
+    AppLanguage.fr: '{crew} ajuste : le prochain tir fera mouche',
+  },
+  'ship_order_log_voidWard': {
+    AppLanguage.en: '{crew} raises a ward of void over the Eel',
+    AppLanguage.fr: '{crew} dresse une garde du Néant sur l\'Eel',
+  },
+  'ship_quick_orders_hint': {
+    AppLanguage.en:
+        'End the turn with half the clock left: +{n}% evasion against the volley that follows.',
+    AppLanguage.fr:
+        'Terminez le tour avec la moitié du temps restant : +{n} % d\'esquive contre la bordée qui suit.',
+  },
+  'ship_aim_fire_button': {
+    AppLanguage.en: 'Fire!',
+    AppLanguage.fr: 'Feu !',
+  },
+  'ship_weather_next_label': {
+    AppLanguage.en: 'next:',
+    AppLanguage.fr: 'ensuite :',
+  },
+  'ship_weather_calm': {
+    AppLanguage.en: 'Calm',
+    AppLanguage.fr: 'Calme',
+  },
+  'ship_weather_tailwind': {
+    AppLanguage.en: 'Tailwind',
+    AppLanguage.fr: 'Vent arrière',
+  },
+  'ship_weather_crosswind': {
+    AppLanguage.en: 'Crosswind',
+    AppLanguage.fr: 'Vent de travers',
+  },
+  'ship_weather_squall': {
+    AppLanguage.en: 'Squall',
+    AppLanguage.fr: 'Grain',
+  },
+  'ship_weather_fog': {
+    AppLanguage.en: 'Fog',
+    AppLanguage.fr: 'Brouillard',
+  },
+  'ship_weather_calm_hint': {
+    AppLanguage.en: 'Calm sea: nothing changes.',
+    AppLanguage.fr: 'Mer calme : rien ne change.',
+  },
+  'ship_weather_tailwind_hint': {
+    AppLanguage.en:
+        'Wind behind the Eel: +10% evasion for her, and her helm turns without a hand\'s work.',
+    AppLanguage.fr:
+        'Vent dans le dos de l\'Eel : +10 % d\'esquive pour elle, et sa barre manœuvre sans y employer personne.',
+  },
+  'ship_weather_crosswind_hint': {
+    AppLanguage.en:
+        'Shots drift: +10% evasion for both ships (the Wind-Knot turns it into a tailwind for the Eel).',
+    AppLanguage.fr:
+        'Les tirs dévient : +10 % d\'esquive pour les deux navires (le Nœud de Vent en fait un vent arrière pour l\'Eel).',
+  },
+  'ship_weather_squall_hint': {
+    AppLanguage.en:
+        'Rain on every deck: no fire starts, and every fire goes out at the end of the round.',
+    AppLanguage.fr:
+        'La pluie sur tous les ponts : aucun feu ne prend, et tous s\'éteignent en fin de tour.',
+  },
+  'ship_weather_fog_hint': {
+    AppLanguage.en:
+        'The enemy\'s aim cannot be read, and both ships gain +5% evasion.',
+    AppLanguage.fr:
+        'La visée ennemie ne se lit plus, et les deux navires gagnent +5 % d\'esquive.',
+  },
+  'ship_wreck_hint': {
+    AppLanguage.en:
+        'A wreck drifts between the ships: the next enemy shot hits it.',
+    AppLanguage.fr:
+        'Une épave dérive entre les navires : le prochain tir ennemi la touche.',
+  },
+  'ship_close_in_button': {
+    AppLanguage.en: 'Close in',
+    AppLanguage.fr: 'Approcher',
+  },
+  'ship_pull_away_button': {
+    AppLanguage.en: 'Pull away',
+    AppLanguage.fr: 'S\'éloigner',
+  },
+  'ship_range_close': {
+    AppLanguage.en: 'close range',
+    AppLanguage.fr: 'bord à bord',
+  },
+  'ship_range_medium': {
+    AppLanguage.en: 'medium range',
+    AppLanguage.fr: 'moyenne portée',
+  },
+  'ship_range_long': {
+    AppLanguage.en: 'long range',
+    AppLanguage.fr: 'longue portée',
+  },
+  'ship_range_close_title': {
+    AppLanguage.en: 'Close',
+    AppLanguage.fr: 'Bord à bord',
+  },
+  'ship_range_medium_title': {
+    AppLanguage.en: 'Medium range',
+    AppLanguage.fr: 'Moyenne portée',
+  },
+  'ship_range_long_title': {
+    AppLanguage.en: 'Long range',
+    AppLanguage.fr: 'Longue portée',
+  },
+  'ship_range_close_hint': {
+    AppLanguage.en:
+        'Side by side: -10% evasion for both ships; boarding is possible; every weapon reaches.',
+    AppLanguage.fr:
+        'Bord à bord : -10 % d\'esquive pour les deux navires ; l\'abordage est possible ; toutes les armes portent.',
+  },
+  'ship_range_medium_hint': {
+    AppLanguage.en: 'Medium range: no change; fire pots cannot reach.',
+    AppLanguage.fr:
+        'Moyenne portée : rien ne change ; les pots à feu ne portent pas.',
+  },
+  'ship_range_long_hint': {
+    AppLanguage.en:
+        'Far apart: +10% evasion for both ships; harpoons and fire pots cannot reach. A fleeing ship escapes from here.',
+    AppLanguage.fr:
+        'Loin l\'un de l\'autre : +10 % d\'esquive pour les deux navires ; harpons et pots à feu ne portent pas. Un navire en fuite s\'échappe d\'ici.',
+  },
+  'ship_habit_flee': {
+    AppLanguage.en: 'Runs when hurt',
+    AppLanguage.fr: 'Fuit une fois touché',
+  },
+  'ship_habit_marksman': {
+    AppLanguage.en: 'Keeps its distance, shoots the crew',
+    AppLanguage.fr: 'Garde ses distances, vise l\'équipage',
+  },
+  'ship_habit_ram': {
+    AppLanguage.en: 'Rams',
+    AppLanguage.fr: 'Éperonne',
+  },
+  'ship_habit_boarder': {
+    AppLanguage.en: 'Boards again and again',
+    AppLanguage.fr: 'Aborde encore et encore',
+  },
+  'ship_habit_none': {
+    AppLanguage.en: 'Fights',
+    AppLanguage.fr: 'Combat',
+  },
+  'ship_habit_none_hint': {
+    AppLanguage.en: 'An ordinary opponent.',
+    AppLanguage.fr: 'Un adversaire ordinaire.',
+  },
+  'ship_habit_flee_hint': {
+    AppLanguage.en:
+        'Closes in to grapple while healthy; at 40% hull or less it runs for long range, and escapes if it starts its turn there. Close in, or break its helm.',
+    AppLanguage.fr:
+        'Se rapproche pour agripper tant qu\'il est intact ; à 40 % de coque ou moins il file vers la longue portée, et s\'échappe s\'il y commence son tour. Rapprochez-vous, ou brisez sa barre.',
+  },
+  'ship_habit_marksman_hint': {
+    AppLanguage.en:
+        'Steers for long range and aims at the rooms your crew stand in; its hits hurt the crew half again as much.',
+    AppLanguage.fr:
+        'Cherche la longue portée et vise les salles où se tient votre équipage ; ses coups blessent moitié plus l\'équipage.',
+  },
+  'ship_habit_ram_hint': {
+    AppLanguage.en:
+        'Steers alongside and, once a battle, rams: 12 hull through any shield, and a leak.',
+    AppLanguage.fr:
+        'Vient bord à bord et, une fois par bataille, éperonne : 12 de coque à travers tout bouclier, et une voie d\'eau.',
+  },
+  'ship_habit_boarder_hint': {
+    AppLanguage.en:
+        'Steers alongside and boards every third round, shields or not (twice a battle at most).',
+    AppLanguage.fr:
+        'Vient bord à bord et aborde tous les trois tours, boucliers ou non (deux fois par bataille au plus).',
+  },
+  'ship_focus_hint': {
+    AppLanguage.en: 'Hit this turn: another hit here knocks off an extra pip.',
+    AppLanguage.fr:
+        'Touchée ce tour : un nouveau coup ici arrache un cran de plus.',
+  },
+  'ship_out_of_range_label': {
+    AppLanguage.en: 'out of reach',
+    AppLanguage.fr: 'hors de portée',
+  },
+  'ship_ammo_label': {
+    AppLanguage.en: 'Shot:',
+    AppLanguage.fr: 'Munition :',
+  },
+  'ship_ammo_round': {
+    AppLanguage.en: 'Round',
+    AppLanguage.fr: 'Boulet',
+  },
+  'ship_ammo_chain': {
+    AppLanguage.en: 'Chain',
+    AppLanguage.fr: 'Ramé',
+  },
+  'ship_ammo_grape': {
+    AppLanguage.en: 'Grape',
+    AppLanguage.fr: 'Mitraille',
+  },
+  'ship_ammo_heated': {
+    AppLanguage.en: 'Heated',
+    AppLanguage.fr: 'Rouge',
+  },
+  'ship_ammo_round_hint': {
+    AppLanguage.en: 'Round shot: the weapon as it is.',
+    AppLanguage.fr: 'Boulet : l\'arme telle quelle.',
+  },
+  'ship_ammo_chain_hint': {
+    AppLanguage.en:
+        'Chain shot: half the hull, but it tears a pip off their helm wherever it lands.',
+    AppLanguage.fr:
+        'Boulet ramé : moitié moins de coque, mais il arrache un cran à leur barre où qu\'il touche.',
+  },
+  'ship_ammo_grape_hint': {
+    AppLanguage.en:
+        'Grapeshot: half the hull, but their crew repairs one less for two rounds.',
+    AppLanguage.fr:
+        'Mitraille : moitié moins de coque, mais leur équipage répare une fois de moins pendant deux tours.',
+  },
+  'ship_ammo_heated_hint': {
+    AppLanguage.en:
+        'Heated shot: three quarters of the hull, and the room it lands in burns.',
+    AppLanguage.fr:
+        'Boulet rouge : trois quarts de la coque, et la salle touchée prend feu.',
+  },
+  'ship_orders_label': {
+    AppLanguage.en: 'Orders:',
+    AppLanguage.fr: 'Ordres :',
+  },
+  'ship_order_allHands': {
+    AppLanguage.en: 'All hands!',
+    AppLanguage.fr: 'Tous sur le pont !',
+  },
+  'ship_order_brace': {
+    AppLanguage.en: 'Brace!',
+    AppLanguage.fr: 'Tenez bon !',
+  },
+  'ship_order_grapple': {
+    AppLanguage.en: 'Grapple!',
+    AppLanguage.fr: 'Grappins !',
+  },
+  'ship_order_bless': {
+    AppLanguage.en: 'Bless the deck',
+    AppLanguage.fr: 'Bénir le pont',
+  },
+  'ship_order_shoreUp': {
+    AppLanguage.en: 'Shore up',
+    AppLanguage.fr: 'Étayer',
+  },
+  'ship_order_markHelm': {
+    AppLanguage.en: 'Mark their helmsman',
+    AppLanguage.fr: 'Marquer le timonier',
+  },
+  'ship_order_cutRigging': {
+    AppLanguage.en: 'Cut their rigging',
+    AppLanguage.fr: 'Couper le gréement',
+  },
+  'ship_order_eagleEye': {
+    AppLanguage.en: 'Eagle eye',
+    AppLanguage.fr: 'Œil d\'aigle',
+  },
+  'ship_order_voidWard': {
+    AppLanguage.en: 'Void ward',
+    AppLanguage.fr: 'Garde du Néant',
+  },
+  'ship_order_allHands_hint': {
+    AppLanguage.en:
+        'Once a battle: every damaged room on the Eel is mended a pip.',
+    AppLanguage.fr:
+        'Une fois par bataille : chaque salle endommagée de l\'Eel regagne un cran.',
+  },
+  'ship_order_brace_hint': {
+    AppLanguage.en: 'Once a battle: the Eel takes half the hull this round.',
+    AppLanguage.fr:
+        'Une fois par bataille : l\'Eel ne perd que la moitié de la coque ce tour-ci.',
+  },
+  'ship_order_grapple_hint': {
+    AppLanguage.en:
+        'Once a battle: the ships are hauled side by side and the grapples hold; board this turn, shields or not.',
+    AppLanguage.fr:
+        'Une fois par bataille : les navires sont hâlés bord à bord et les grappins tiennent ; abordez ce tour-ci, boucliers ou non.',
+  },
+  'ship_order_bless_hint': {
+    AppLanguage.en:
+        'Once a battle: every fire aboard goes out and the crew heal 10.',
+    AppLanguage.fr:
+        'Une fois par bataille : tous les feux à bord s\'éteignent et l\'équipage récupère 10 points de vie.',
+  },
+  'ship_order_shoreUp_hint': {
+    AppLanguage.en:
+        'Once a battle: the bulwark is mended and a shield layer raised.',
+    AppLanguage.fr:
+        'Une fois par bataille : le pavois est réparé et une couche de bouclier relevée.',
+  },
+  'ship_order_markHelm_hint': {
+    AppLanguage.en: 'Once a battle: the enemy slips nothing this turn.',
+    AppLanguage.fr:
+        'Une fois par bataille : l\'ennemi n\'esquive rien ce tour-ci.',
+  },
+  'ship_order_cutRigging_hint': {
+    AppLanguage.en: 'Once a battle: every enemy weapon loses a step of charge.',
+    AppLanguage.fr:
+        'Une fois par bataille : chaque arme ennemie perd un cran de charge.',
+  },
+  'ship_order_eagleEye_hint': {
+    AppLanguage.en:
+        'Once a battle: the next shot this turn cannot be slipped, does half again the hull and an extra pip.',
+    AppLanguage.fr:
+        'Une fois par bataille : le prochain tir de ce tour ne peut être esquivé, inflige moitié plus de coque et un cran de plus.',
+  },
+  'ship_order_voidWard_hint': {
+    AppLanguage.en:
+        'Once a battle: the first enemy shot this round is turned aside.',
+    AppLanguage.fr:
+        'Une fois par bataille : le premier tir ennemi de ce tour est détourné.',
+  },
+  'weapon_reach_label': {
+    AppLanguage.en: 'reach:',
+    AppLanguage.fr: 'portée :',
   },
   'ship_log_enemy_fire_out': {
     AppLanguage.en: 'The {ship} fights the fire in its {room}',

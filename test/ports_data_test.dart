@@ -94,12 +94,14 @@ void main() {
         expect((part['cost'] as num).toInt(), greaterThanOrEqualTo(0));
         expect(part['partName_fr']?.toString() ?? '', isNotEmpty);
         // A part is a weapon (it fires at a room), a room upgrade (it adds
-        // pips), or a painted sail (see sail_powers.dart); a weapon has
-        // a battle line in both languages and a charge time.
+        // pips), a painted sail (see sail_powers.dart), or time on the
+        // battle clock (see shipTurnSeconds); a weapon has a battle line
+        // in both languages and a charge time.
         final painted = (part['sailPower']?.toString() ?? '').isNotEmpty;
         final damage = (part['damageAmount'] as num?)?.toInt() ?? 0;
         final bonus = part['roomBonus'];
         final upgrades = bonus is Map && bonus.isNotEmpty;
+        final timed = ((part['turnSecondsBonus'] as num?)?.toInt() ?? 0) > 0;
         if (damage > 0) {
           expect(part['battleActionLabel_fr']?.toString() ?? '', isNotEmpty,
               reason: entry.key);
@@ -113,7 +115,7 @@ void main() {
                 reason: '${entry.key} upgrades unknown room $room');
           }
         }
-        expect(damage > 0 || upgrades || painted, isTrue,
+        expect(damage > 0 || upgrades || painted || timed, isTrue,
             reason: '${entry.key} does nothing');
       }
     });

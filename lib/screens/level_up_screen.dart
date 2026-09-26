@@ -38,16 +38,9 @@ class LevelUpScreen extends ConsumerWidget {
           title: Text(label),
           subtitle: Text(valueText),
           trailing: ElevatedButton(
+            // The value on the row goes up; no message on top of it.
             onPressed: session.statPoints > 0
-                ? () async {
-                    await notifier.spendStatPoint(stat: statKey);
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content:
-                              Text('$label ${tr(ref, 'increased_suffix')}')),
-                    );
-                  }
+                ? () => notifier.spendStatPoint(stat: statKey)
                 : null,
             child: Text(tr(ref, 'plus_one_point')),
           ),

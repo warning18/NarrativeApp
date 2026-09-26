@@ -64,6 +64,7 @@ class SimCharacter {
         defaults(key) + bonus(race, bonusKey) + bonus(profession, bonusKey);
 
     final professionSkillId = profession['standardSkillID']?.toString() ?? '';
+    final manaSkillId = profession['manaSkillID']?.toString() ?? '';
     final raceSkillId = race['standardSkillID']?.toString() ?? '';
     final startingDiceId = profession['startingDiceId']?.toString() ?? '';
     final dieId = startingDiceId.isEmpty ? 'starter_die' : startingDiceId;
@@ -89,12 +90,16 @@ class SimCharacter {
       wisdom: stat('wisdom', 'bonusWisdom'),
       luck: stat('luck', 'bonusLuck'),
       diceFaces: faces,
+      // The same starting kit as PlayerSessionNotifier.startNewGame: a
+      // caster's mana skill sits on the apprentice die's Channeling face.
       diceSkillAssignments: {
+        if (manaSkillId.isNotEmpty) '1': manaSkillId,
         if (professionSkillId.isNotEmpty) '4': professionSkillId,
         if (raceSkillId.isNotEmpty) '5': raceSkillId,
       },
       unlockedSkillIds: {
         if (professionSkillId.isNotEmpty) professionSkillId,
+        if (manaSkillId.isNotEmpty) manaSkillId,
         if (raceSkillId.isNotEmpty) raceSkillId,
       },
       knownSpells: startingSpells,
@@ -584,6 +589,7 @@ SimFightOutcome simulateSimFight({
         c.casterDamage(items, element, itemSets: itemSets),
         activeEffects: c.statusEffects,
         wisdomHealBonus: c.wisdom ~/ 2,
+        wisdomManaBonus: wisdomManaBonusFor(c.wisdom),
         luck: c.luck,
         random: random,
         critChanceBonus: gear.critChance,

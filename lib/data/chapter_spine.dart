@@ -32,23 +32,27 @@ const List<ChapterSpine> chapterSpines = [
     {'3030', '3040', '3050'},
     {'4999'},
   ]),
+  // From chapter 4 each chapter opens at the camp: its places and
+  // expeditions first (see chapter_loop.dart), then its main quest.
   ChapterSpine(4, [
-    {'5001'},
-    {'5002'},
-    {'5010'},
+    {'4999_camp'},
     {'5003'},
+    {'5004', '5004b'},
+    {'5004_altar'},
     {'5005'},
   ]),
   ChapterSpine(5, [
     {'6001'},
     {'6002'},
-    {'6010'},
+    {'6002_camp'},
     {'6003'},
     {'6004'},
   ]),
   ChapterSpine(6, [
     {'7001'},
-    {'7002'},
+    {'7300'},
+    {'7400'},
+    {'7002_confront'},
     {'7003'},
     {'7004'},
     {'7005', '7005_seeker', '7005_dawn', '7005_crown'},

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart';
+import '../data/skill_tree.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -10,6 +11,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../widgets/detail_dialog.dart';
 
@@ -103,13 +105,27 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
         ? ally.diceSkillAssignments
         : session.diceSkillAssignments[_selectedDiceId] ??
             const <String, String>{};
+    // A skill takes no more faces than its rarity allows: the picks past
+    // that (a save from before the limits) do their face's own action.
+    final limited = limitedFaceAssignments(faces, assignments, skills);
+    // A companion's faces take their own class's skills and their die's
+    // kit only (see allySkillIds); the player's, anything they know.
+    final allyOwn = ally == null
+        ? null
+        : allySkillIds(skills,
+                professionId: companion?['professionId']?.toString() ?? '',
+                known: ally.unlockedSkillIds)
+            .toSet();
     final unlockedSkillIds = <String>{
       for (final entry in skills.entries)
         if (!isEnemyOnlySkill(entry.value as Map<String, dynamic>?) &&
             (((entry.value as Map<String, dynamic>)['isUnlocked'] as bool? ??
                     false) ||
                 (ally?.unlockedSkillIds ?? session.unlockedSkillIds)
-                    .contains(entry.key)))
+                    .contains(entry.key)) &&
+            (allyOwn == null ||
+                allyOwn.contains(entry.key) ||
+                (entry.value as Map<String, dynamic>)['isUnlocked'] == true))
           entry.key,
     }.toList()
       ..sort();
@@ -136,10 +152,8 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 items: diceIds
                     .map((id) => DropdownMenuItem(
                         value: id,
-                        child: Text(
-                            (dice[id] as Map<String, dynamic>?)?['diceName']
-                                    ?.toString() ??
-                                id)))
+                        child: Text(dieDisplayName(id,
+                            language: ref.watch(appLanguageProvider)))))
                     .toList(),
                 onChanged: (value) => setState(() => _selectedDiceId = value),
               ),
@@ -167,6 +181,13 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                 tr(ref, 'drag_skill_hint'),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
+              const SizedBox(height: 8),
+              FaceColorLegend(language: language),
+              const SizedBox(height: 8),
+              Text(
+                tr(ref, 'skill_faces_limit_hint'),
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
               const SizedBox(height: 12),
               TutorialTarget(
                 id: 'dice.faces',
@@ -178,8 +199,12 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                       Builder(builder: (context) {
                         final face = faces[index];
                         final open = isAssignableFace(face);
-                        final assignedSkillId =
+                        final pickedSkillId =
                             open ? assignments[index.toString()] : null;
+                        final overLimit = pickedSkillId != null &&
+                            limited[index.toString()] != pickedSkillId;
+                        final assignedSkillId =
+                            overLimit ? null : pickedSkillId;
                         final faceElement =
                             face['element']?.toString() ?? 'None';
                         // A skill face with an element takes only skills of
@@ -207,29 +232,36 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                                 .clearDiceFaceSkill(_selectedDiceId!, index);
                         final skillId = faceSkillId(face, assignedSkillId);
                         return _FaceSlot(
+                          key: Key('face_slot_$index'),
                           face: face,
                           chance: totalWeight <= 0
                               ? 0
                               : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
                                   totalWeight,
                           assignedSkillId: assignedSkillId,
+                          overLimitSkillId: overLimit ? pickedSkillId : null,
                           language: language,
                           locked: !open,
                           restrictionElement: restriction,
                           skills: skills,
+                          accepts: (id) => canSetSkillOnFace(
+                              id, index, faces, assignments, skills),
                           onAccept: assign,
-                          onClear: assignedSkillId == null ? null : clear,
+                          onClear: pickedSkillId == null ? null : clear,
                           onTap: open
                               ? () => _pickSkill(
                                     context,
                                     face: face,
+                                    faceIndex: index,
+                                    faces: faces,
+                                    assignments: assignments,
                                     skills: skills,
                                     unlockedSkillIds: unlockedSkillIds,
                                     restriction: restriction,
                                     current: assignedSkillId,
                                     onPick: assign,
                                     onClear:
-                                        assignedSkillId == null ? null : clear,
+                                        pickedSkillId == null ? null : clear,
                                   )
                               : skillId == null
                                   ? null
@@ -257,10 +289,17 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     runSpacing: 8,
                     children: unlockedSkillIds.map((id) {
                       final skill = skills[id] as Map<String, dynamic>?;
+                      final onDie =
+                          facesCastingSkill(id, faces, assignments, skills);
+                      final name = skillDisplayName(id,
+                          language: ref.watch(appLanguageProvider));
                       return _SkillChip(
                         skillId: id,
-                        label: skillDisplayName(id,
-                            language: ref.watch(appLanguageProvider)),
+                        label: onDie == 0
+                            ? name
+                            : '$name · $onDie/${maxFacesForSkill(skill)}',
+                        rarity: skillRarity(skill),
+                        kind: skillKind(skill),
                         element: skill?['element']?.toString(),
                         onTap: () => _showSkillDetail(context, id, skill),
                       );
@@ -281,6 +320,9 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
   void _pickSkill(
     BuildContext context, {
     required Map<String, dynamic> face,
+    required int faceIndex,
+    required List<Map<String, dynamic>> faces,
+    required Map<String, String> assignments,
     required Map<String, dynamic> skills,
     required List<String> unlockedSkillIds,
     required String? restriction,
@@ -340,20 +382,49 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                     child: Text(t('no_skills_unlocked_hint')),
                   ),
                 for (final id in choices)
-                  ListTile(
-                    leading: Icon(elementIcon(
-                        (skills[id] as Map<String, dynamic>?)?['element']
-                            ?.toString())),
-                    title: Text(skillDisplayName(id, language: lang)),
-                    subtitle: Text(_skillSummary(
-                        skills[id] as Map<String, dynamic>?, lang)),
-                    selected: id == current,
-                    trailing: id == current ? const Icon(Icons.check) : null,
-                    onTap: () {
-                      Navigator.of(sheetContext).pop();
-                      onPick(id);
-                    },
-                  ),
+                  Builder(builder: (_) {
+                    final skill = skills[id] as Map<String, dynamic>?;
+                    final rarity = skillRarity(skill);
+                    final max = maxFacesForSkill(skill);
+                    // At its limit a skill can't take one more face; the
+                    // face's own pick stays choosable.
+                    final allowed = id == current ||
+                        canSetSkillOnFace(
+                            id, faceIndex, faces, assignments, skills);
+                    final onDie =
+                        facesCastingSkill(id, faces, assignments, skills);
+                    final limitLine = (allowed
+                            ? t('skill_faces_count').replaceAll('{n}', '$onDie')
+                            : t('skill_faces_full'))
+                        .replaceAll('{rarity}', t(rarity.labelKey))
+                        .replaceAll('{max}', '$max');
+                    return ListTile(
+                      key: Key('pick_skill_$id'),
+                      enabled: allowed,
+                      leading: Icon(skillKind(skill).icon,
+                          color: skillKind(skill).color),
+                      title: Text(skillDisplayName(id, language: lang)),
+                      subtitle: Text.rich(TextSpan(children: [
+                        TextSpan(text: _skillSummary(skill, lang)),
+                        TextSpan(
+                          text: '\n$limitLine',
+                          style: TextStyle(
+                              color: allowed
+                                  ? rarity.color
+                                  : theme.colorScheme.error),
+                        ),
+                      ])),
+                      isThreeLine: true,
+                      selected: id == current,
+                      trailing: id == current ? const Icon(Icons.check) : null,
+                      onTap: allowed
+                          ? () {
+                              Navigator.of(sheetContext).pop();
+                              onPick(id);
+                            }
+                          : null,
+                    );
+                  }),
               ],
             ),
           ),
@@ -369,6 +440,7 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
     final element = skill?['element']?.toString();
     final cost = (skill?['cost'] as num?)?.toInt() ?? 0;
     final requiredSkillId = skill?['requiredSkillID']?.toString() ?? '';
+    final rarity = skillRarity(skill);
 
     showDetailDialog(
       context,
@@ -378,6 +450,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       closeLabel: t('close_button'),
       rows: [
         MapEntry(t('element_label'), element ?? t('none_label')),
+        MapEntry(
+            t('skill_rarity_label'),
+            t('skill_max_faces')
+                .replaceAll('{rarity}', t(rarity.labelKey))
+                .replaceAll('{max}', '${maxFacesForSkill(skill)}')),
         MapEntry(t('cost_label'), '$cost'),
         MapEntry(t('damage_mod_label'), '${skill?['damageMod'] ?? 0}'),
         MapEntry(t('damage_multiplier_label'),
@@ -414,8 +491,11 @@ String _skillSummary(Map<String, dynamic>? skill, AppLanguage lang) {
   final heal = (skill?['healAmount'] as num?)?.toInt() ?? 0;
   final element = skill?['element']?.toString() ?? 'None';
   final status = skill?['inflictsStatus']?.toString() ?? '';
+  final manaGain = (skill?['manaGain'] as num?)?.toInt() ?? 0;
   return [
-    if (damageMod > 0 || multiplier != 1.0)
+    if (manaGain > 0)
+      '${trFor(lang, 'mana_label')} +$manaGain'
+    else if (damageMod > 0 || multiplier != 1.0)
       '${trFor(lang, 'damage_word')} +$damageMod'
           '${multiplier != 1.0 ? ' ×$multiplier' : ''}',
     if (heal > 0) '${trFor(lang, 'face_heal_label')} $heal',
@@ -428,12 +508,20 @@ class _SkillChip extends StatelessWidget {
   const _SkillChip({
     required this.skillId,
     required this.label,
+    required this.kind,
+    required this.rarity,
     this.element,
     this.onTap,
   });
 
   final String skillId;
   final String label;
+
+  /// How rare the skill is: the chip's outline.
+  final SkillRarity rarity;
+
+  /// What the skill does, for its colour (see FaceKind).
+  final FaceKind kind;
   final String? element;
   final VoidCallback? onTap;
 
@@ -442,14 +530,10 @@ class _SkillChip extends StatelessWidget {
     final chip = GestureDetector(
       onTap: onTap,
       child: Chip(
-        avatar: Icon(elementIcon(element),
-            size: 18,
-            color: elementColor(element,
-                plain: Theme.of(context).colorScheme.tertiary,
-                ink: Theme.of(context).brightness == Brightness.light
-                    ? Theme.of(context).colorScheme.onSurface
-                    : null)),
+        avatar: Icon(kind.icon, size: 18, color: kind.color),
         label: Text(label),
+        backgroundColor: kind.color.withValues(alpha: 0.12),
+        side: BorderSide(color: rarity.color, width: 1.5),
       ),
     );
     return Draggable<String>(
@@ -467,6 +551,7 @@ class _SkillChip extends StatelessWidget {
 /// a skill by tap (a picker) or by dragging a skill chip onto them.
 class _FaceSlot extends StatelessWidget {
   const _FaceSlot({
+    super.key,
     required this.face,
     required this.chance,
     required this.assignedSkillId,
@@ -475,6 +560,8 @@ class _FaceSlot extends StatelessWidget {
     required this.onClear,
     required this.locked,
     required this.skills,
+    required this.accepts,
+    this.overLimitSkillId,
     this.restrictionElement,
     this.onTap,
   });
@@ -482,6 +569,13 @@ class _FaceSlot extends StatelessWidget {
   final Map<String, dynamic> face;
   final double chance;
   final String? assignedSkillId;
+
+  /// A pick past its skill's limit (a save from before the limits): shown,
+  /// but the face does its own action.
+  final String? overLimitSkillId;
+
+  /// Whether a dragged skill may go on this face (its rarity's limit).
+  final bool Function(String skillId) accepts;
   final AppLanguage language;
   final ValueChanged<String> onAccept;
   final VoidCallback? onClear;
@@ -504,6 +598,12 @@ class _FaceSlot extends StatelessWidget {
         : _skillSummary(skills[skillId] as Map<String, dynamic>?, language);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
+    // The face wears the colour of what it does (see FaceKind): red hits,
+    // steel guards, pink heals, blue mana, status colours for poison,
+    // stun and weaken.
+    final kind = skillId == null
+        ? faceKind(face['type']?.toString() ?? '')
+        : skillKind(skills[skillId] as Map<String, dynamic>?);
 
     Widget content(bool isHovering, bool isInvalidHover) {
       return GestureDetector(
@@ -516,20 +616,17 @@ class _FaceSlot extends StatelessWidget {
                 ? colorScheme.errorContainer
                 : (isHovering
                     ? colorScheme.primaryContainer
-                    : locked
-                        ? colorScheme.surfaceContainerHighest
-                            .withValues(alpha: 0.5)
-                        : colorScheme.surfaceContainerHighest),
+                    : kind.color.withValues(alpha: locked ? 0.08 : 0.14)),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: isInvalidHover
                   ? colorScheme.error
                   : (isHovering
                       ? colorScheme.primary
-                      : assignedSkillId != null
-                          ? colorScheme.tertiary
-                          : colorScheme.outlineVariant),
-              width: (isHovering || isInvalidHover) ? 2 : 1,
+                      : kind.color.withValues(alpha: locked ? 0.45 : 0.9)),
+              width: (isHovering || isInvalidHover || assignedSkillId != null)
+                  ? 2
+                  : 1,
             ),
           ),
           child: Column(
@@ -538,6 +635,8 @@ class _FaceSlot extends StatelessWidget {
             children: [
               Row(
                 children: [
+                  Icon(kind.icon, size: 16, color: kind.color),
+                  const SizedBox(width: 4),
                   Expanded(child: Text(name, style: textTheme.titleSmall)),
                   if (locked)
                     Icon(Icons.lock_outline,
@@ -561,6 +660,13 @@ class _FaceSlot extends StatelessWidget {
                 style: textTheme.labelSmall
                     ?.copyWith(color: colorScheme.onSurfaceVariant),
               ),
+              if (overLimitSkillId != null)
+                Text(
+                  '${skillDisplayName(overLimitSkillId!, language: language)}: '
+                  '${t('face_over_limit_label')}',
+                  style:
+                      textTheme.labelSmall?.copyWith(color: colorScheme.error),
+                ),
               if (locked)
                 Text(t('fixed_face_label'), style: textTheme.labelSmall)
               else if (channeled)
@@ -587,6 +693,7 @@ class _FaceSlot extends StatelessWidget {
 
     return DragTarget<String>(
       onWillAcceptWithDetails: (details) {
+        if (!accepts(details.data)) return false;
         final restriction = restrictionElement;
         if (restriction == null) return true;
         final skillElement =

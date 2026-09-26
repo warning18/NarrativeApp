@@ -8,7 +8,7 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.143.0+172]
+## [1.154.0+183]
 
 ### Added
 - **The companion dog is now your guide.** The first time you reach a
@@ -18,9 +18,9 @@ isn't reconstructable from git history alone.
   on; Skip ends the tour at any time. A speaker button in the bubble reads
   the lines aloud.
 - Tours for the Story, Character, Camp and Other tabs, the world map,
-  skills, dice, inventory, level up, dice combat, skill challenges, the
-  boat, voyages, expeditions, towns, shops, the journal and achievements,
-  in English and French.
+  the skill tree, dice, inventory, level up, dice combat, skill
+  challenges, the harbour, voyages, expeditions, towns, shops, the
+  journal and achievements, in English and French.
 - **Tutorials** in the Other tab lists every tour, marks the ones not seen
   yet as New, and plays any of them again: on its own tab or page when it
   has one, so the dog points at the real thing.
@@ -31,9 +31,118 @@ isn't reconstructable from git history alone.
 - Settings' tutorial switch now covers every tour, and "Show all
   tutorials again" plays each one again the next time you reach it.
 
-## [1.142.0+171]
+## [1.153.0+182]
+
+Ship battles become more than trading shots: ten new rules, each one a
+decision to make under the clock.
+
+### Added
+- **Speed pays.** In a timed battle, ending the turn with half the clock
+  left gives quick orders: +10% evasion against the volley that follows.
+  A bolt next to the clock lights while it is on offer.
+- **Crew orders, once a battle each.** Every crew member can give one:
+  All hands! (you: every damaged room mends a pip), Brace! (Kelda: half
+  the hull this round), Grapple! (Grosh: hauled side by side and
+  boarded, shields or not), Bless the deck (Maren: fires out, crew
+  healed), Shore up (Tobin: bulwark mended, a layer raised), Mark their
+  helmsman (Malrik: the enemy slips nothing this turn), Cut their
+  rigging (Sable: every enemy weapon loses a step of charge), Eagle eye
+  (Liora: the next shot is a critical), Void ward (Vess: the first enemy
+  shot is turned aside).
+- **Range.** The ships lie close, at medium range or far apart. Far off,
+  both are 10% harder to hit; side by side, 10% easier. The helm can
+  close in or pull away once a turn; the helm hand spends the turn on
+  it. Harpoons reach no farther than medium range and fire pots need
+  the ships close. Boarding, by either side, needs them side by side.
+  Enemy helms steer for the range they like (30% a working helm pip).
+- **Weather**, rolled each round, with the next round's shown:
+  calm, a tailwind for the Eel (+10% evasion, her helm turns without a
+  hand), a crosswind (+10% evasion for both; the Wind-Knot sail makes it
+  a tailwind), a squall (no fire starts, every fire goes out) and fog
+  (the enemy's aim hidden even from the Kraken's Eye, +5% evasion).
+- **Shot.** Round, chain (half the hull, tears a pip off their helm),
+  grape (half the hull, their crew repairs one less for two rounds) or
+  heated (three quarters of the hull, sets the room burning).
+- **Aimed shots.** Hold an enemy room instead of tapping it: a marker
+  sweeps the aim bar. Stop it in the green for a critical (cannot be
+  slipped, half again the hull, an extra pip); amber is a plain shot;
+  the red edges go wide.
+- **Enemy habits.** The Raider Skiff runs for open water when hurt and
+  escapes from long range (no prize, no loss). The Corsair Brig keeps
+  its distance and shoots the crew where they stand (half again the
+  hurt). The Inquisition Cutter rams once alongside: 12 hull through any
+  shield, and a leak. The Void Barge comes alongside to board every third
+  round, shields or not, twice at most. Shown under the enemy's name.
+- **Leaks.** A hit of 8 or more on the hold opens a leak (three at most),
+  2 hull each every round. A hand in the hold bails one a turn after
+  any fire; the enemy's crew plugs theirs.
+- **The sea itself.** From the second round, one round in ten: a rogue
+  wave takes a shield layer off both ships, a sea creature goes for the
+  ship lower in the water (10 hull and the hold), or a drifting wreck
+  takes the next enemy shot.
+- **Focused fire.** A room already hit this turn loses an extra pip per
+  hit; a crosshair marks it and the shot preview counts it.
+- `habit` on enemy ships and `ranges` on weapons in the data and in the
+  editor; the Harbor shows a weapon's reach.
+
+### Changed
+- The battle's rules moved out of the panel into a tested engine
+  (`ship_battle.dart`). A Monte Carlo of 14,400 battles on the real data
+  compares the new battle with the old one, Eel fitted early, mid and
+  late against every ship. Win rates stay within 14 points of the old
+  battle for every pairing: a player who uses the new tools lands
+  between 11 points below and 13 above, one who ignores them between
+  14 below and 11 above. Fights last about as long.
 
 ### Fixed
+- Battle log lines no longer read "the The Rusty Eel's hold" or "de Le
+  Rusty Eel" (now "du Rusty Eel"); a crew member's hurt reads the same
+  for everyone in French.
+
+## [1.152.0+181]
+
+Ship battles run against the clock.
+
+### Added
+- **A clock on every ship-battle turn.** The Rusty Eel has 20 seconds a
+  turn to fire and move her crew. A bar and the seconds left show above
+  End turn, red for the last five. The clock stands still while the
+  enemy fires and while a deck is fought over.
+- **When time runs out, the turn ends as it stands.** A ready weapon not
+  fired keeps its charge ("holds her fire"), and the enemy fires back as
+  usual.
+- **The Speaking Tube**, a new Utility part at the Harbor (140 gold):
+  orders reach every station faster, and a turn lasts 8 seconds longer.
+  It shares the Utility slot with the Tar-Sealed Hull and the Spare
+  Canvas. Ships and parts carry the figures (`turnSeconds`,
+  `turnSecondsBonus`), so later refits can add more time (60 s at most).
+- **A setting to turn the clock off** (Settings, Combat: "Timed ship
+  battles"). Off, a turn waits for End turn as before.
+
+## [1.151.0+180]
+
+Everything in one place: the design branch's last three updates (the
+chart map, colour fixes, review fixes) join the open chapters and the
+skill tree.
+
+### Fixed
+- **No pop-up when a stat point is spent.** Level Up no longer shows
+  "Base Armor increased!" after each +1 Point; the row's value goes up.
+- **The points on the character sheet say which kind they are.** Stat
+  points open Level Up and skill points open the skill tree ("2 Skill
+  Points"), instead of one sum that led to Level Up showing 0.
+
+### Changed
+- **The pixel map is gone for good**; the world map is the chart. The
+  open chapters' places (Emberwick, Wrack's End, Rimewell, the White
+  Anchorage, Greyhithe, the White Fleet's grave) have a spot on each of
+  the chart's three geographies; the White Fleet's grave lies at sea.
+- Die faces and skills keep their colour per effect; the skills list's
+  cards take the design's square corners.
+
+### From the design branch 1.142.0+171: review fixes
+
+**Fixed**
 - **Full review pass on the Stitched Ink branch.** The traveller on the
   chart no longer has a place name drawn over it. Houses are drawn only
   for places already reached, and switching the map's geography mid-walk
@@ -43,9 +152,9 @@ isn't reconstructable from git history alone.
   toggles are announced by name to screen readers. Stale "pixel map"
   wording is gone from the map's description and comments.
 
-## [1.141.0+170]
+### From the design branch 1.141.0+170: colours, and no more pixel map
 
-### Fixed
+**Fixed**
 - **Buttons look like buttons again.** Every raised button (Unlock on
   the Skills screen, Roll Dice in a fight, +1 Point on Level Up, and the
   rest) had taken the story choices' card look; only story choices keep
@@ -57,17 +166,17 @@ isn't reconstructable from git history alone.
   skill's element icon (fire, wind, water, void...) takes its element's
   own colour.
 
-### Removed
+**Removed**
 - **The pixel map.** Its generated terrain, fog, sprites and ground looks
   are gone; the chart draws the map. Places keep their story data only;
   where they sit is each geography's.
 
-## [1.140.0+169]
+### From the design branch 1.140.0+169: the chart map
 
 The world map is redrawn as a chart in the Stitched Ink design, on the
 geography of your choice.
 
-### Added
+**Added**
 - **Three geographies.** Under the map: *Continent* (one land round an
   inland sea, Alster on its west arm, the Ashen Coast on the east, the
   Hollow Cape to the north), *Archipelago* (Alster an island, the later
@@ -75,7 +184,7 @@ geography of your choice.
   great river whose mouths fan into the Grey Bay, the later chapters on
   the far bank). Chosen under the map and remembered.
 
-### Changed
+**Changed**
 - **The map is a chart.** Sea and land with smooth coasts, rivers, small
   roofs about each place, the road walked in moving gold dashes, a dotted
   way on to the next place, the places reached in their chapter's
@@ -88,13 +197,19 @@ geography of your choice.
 - The three looks (Night, Parchment, Shroud) colour the chart; the
   traveller and the pin still walk the road.
 
-## [1.139.0+168]
+## [1.150.0+179]
+
+Brings in main's redesign (PR #98, numbered 1.138.0+167 and 1.139.0+168
+there): the Stitched Ink look and the camp as a town on the cliff, on
+top of this branch's open chapters (1.138 to 1.149 here).
+
+### From main 1.139.0+168: the cliff town
 
 The camp becomes a town on the cliff, and the story, character, skill
 challenge and map screens take on the Stitched Ink designs. Fights and
 ship battles keep their layout.
 
-### Added
+**Added**
 - **The cliff town.** The Camp tab opens on the town: the harbour and The
   Rusty Eel at the bottom, every house built stacked up between two
   cliffs, in pixel art. Houses take one to three plots across and one or
@@ -114,7 +229,7 @@ ship battles keep their layout.
 - **The chapter in the header.** In play, the Story tab's header shows
   the chapter's number and name, in the chapter's colour.
 
-### Changed
+**Changed**
 - **Character sheet.** It opens on the character's name, race and
   profession, level and experience, health, mana and gold, an alignment
   bar from Evil to Good with the thresholds marked, a button when points
@@ -125,22 +240,22 @@ ship battles keep their layout.
 - **World map.** Its title and place names use the title face; the three
   looks are side by side instead of in a menu; chips have square corners.
 
-### Saves
+**Saves**
 - Saves keep the order the town went up in (`townOrder`); older saves
   build their town from their houses in the order they were built.
 
-### Fixed
+**Fixed**
 - The character sheet's ability boxes use each language's own short
   names (French *Charisme* and *Chance* no longer both read CHA).
 - Build in the camp's tray only reports a house or an addition going up
   when it actually did, and a locked house never reads "Requires: null".
 
-## [1.138.0+167]
+### From main 1.138.0+167: Stitched Ink
 
 The whole app takes on the "Stitched Ink" look from the design proposal:
 a dark book you read, stitched to a game you play.
 
-### Added
+**Added**
 - **Stitched Ink palette, now the default.** Shroud-dark pages, Bone
   ink, Banner gold for the main action, with a parchment variant in light
   mode. The other palettes stay in Settings.
@@ -152,7 +267,7 @@ a dark book you read, stitched to a game you play.
   alignment shows it underneath as small tags ("+20 gold", "−10 HP",
   "Alignment −1").
 
-### Changed
+**Changed**
 - **Shapes.** 4 px corners and 1 px seams instead of rounded, shadowed
   cards, for buttons, cards, dialogs, sheets, chips and the tab bar.
 - **The story page.** The prose sits on the bare page beside a dashed
@@ -164,6 +279,512 @@ a dark book you read, stitched to a game you play.
   and gold, red for health, mana's colour for mana.
 - **Dice and the fight log.** Colours by meaning: ember for attacks,
   steel for guarding, green for healing, purple for techniques.
+
+## [1.149.0+178]
+
+The camp opens once it is set up, every place leads back to it, and the
+cathedral waits for the chapter's quests.
+
+### Fixed
+- **No camp before it is set up.** On the chapter 3 shore (3001), the
+  Camp tab used to offer the way "back" to a camp that did not exist yet.
+  It now stays closed until "Take stock of the shore" sets up the camp
+  (`camp_founded`). That choice opens the camp screen, from which the
+  party travels to the towns, villages and expeditions it knows. The
+  "locked" lines say "Opens once the camp is set up in chapter 3".
+- **Villages and the Hollow Shore were dead ends.** Emberwick, Wrack's
+  End, Rimewell, Greyhithe and the Hollow Shore have too few choices to
+  count as hubs, so they had no "Back to the camp" or "Travel on" row.
+  Every place of an open chapter now gets that row, like the towns.
+
+### Changed
+- **The main quest waits for the chapter's quests.** Besides 8 things
+  done and the needed place visited, each chapter now asks for some of
+  its own quests to be turned in (`questGoal` in chapters.json): 2 in
+  chapter 3, then 1 in chapters 4, 5 and 6. So the Spire's gates stay
+  shut until the Ashen Quarter trusts the party. The camp's Chapter card
+  shows "Quests completed: N of 2". The chapter 3 hint and the Quarter's
+  scene (3005) now say the way in has to be earned.
+- **The main quest is shut in the story view too.** A camp scene shown
+  as a story page (Edit Mode) greys out the main quest ("Not yet: the
+  camp shows what this chapter still asks.") until the camp opens it.
+
+### Added
+- **Camp on the editor map.** Camp scenes have their own colour and icon
+  in the map legend.
+
+### Balance (Python simulation, 200 runs a style)
+- Every run reaches the true ending and meets the quest goals without
+  being forced through. At the chapter 3 gate, thorough players and
+  rushers have 5.9 and 5.8 of the chapter's quests done (at least 2).
+  In chapters 4 to 6 they have 1.5 to 1.9 (at least 1).
+- A control run without the quest goal gives the same numbers (1.45
+  fights lost a run for thorough players). The goal asks for what
+  players already do, and stops only a party that skips every quest.
+
+## [1.148.0+177]
+
+A word at the camp about companions, and a longer look round each chapter.
+
+### Added
+- **Companion hint at the camp.** When a place the party knows has
+  someone who could still join, the Chapter card says so ("Word at the
+  fire: someone in the Ashen Quarter might join you."). The place's card
+  is tagged "someone to meet". The hint follows the recruit scenes
+  (`placeCompanionLeads`):
+  - it leaves out a companion the party's alignment or story rules out
+    (Tobin for a party that is not Good, Malrik for one that is not Evil,
+    Maren once Lysa is lost);
+  - it keeps one who only asks for gold (Grosh);
+  - it goes once the companion has joined or their scene is done.
+
+### Changed
+- **Each chapter asks for 8 things done** before its main quest (was 6),
+  so a party makes about one more trip in each chapter.
+
+### Balance (Python simulation, 200 runs a style)
+- **Rushers** (only what the gate asks):
+  - Before this change: 4.24 fights lost a run, 3.3 companions, 5 runs
+    with no companion.
+  - With the goal of 8 alone: 1.69 lost a run, 3.6 companions, 1 run
+    with no companion.
+  - With the hint as well: 1.10 lost a run, 4.1 companions, none alone.
+    Every run finishes.
+- **Thorough players:** 1.30 fights lost a run, 4.0 companions. They
+  already did more than 8.
+
+### Tests
+- `chapter_loop_test`:
+  - the goal of 8;
+  - companions to meet: a town's leads and a village's none;
+  - leads leaving once met or done;
+  - alignment and story gates.
+- `camp_flow_test` checks the hint and the place tag once the Ashen
+  Quarter is found, and opens the main quest at 8 of 8.
+
+## [1.147.0+176]
+
+The camp is the base from chapter 3 on. Each chapter is explored from it,
+and its main quest opens once enough of it has been done.
+
+### Added
+- **Open chapters** (`assets/gamedata/chapters.json`, `chapter_loop.dart`).
+  Chapters 3 to 6 and the Ending each stand at the camp. The camp's
+  Chapter card shows how much is explored ("Explored: 4 of 6") and the
+  chapter's main quest. The main quest stays shut until six things are
+  done and its key place has been visited. A thing done is one of the
+  chapter's expeditions cleared, or an activity in one of its places.
+- **Places are found by expeditions** (zones.json `discoversPlaceIds`):
+  the first at the expedition's midpoint, all of them on clearing it.
+  The camp lists the places found, with how far they are and how much of
+  each is done.
+- **Travel between the camp and the places.** A place on the camp's shore
+  is a walk, and the road may hold a detour or a raid. A place with its
+  own landing is a voyage there and back. From a place the party can go
+  back to the camp or travel on to another place it knows.
+- **Four villages**: Emberwick (chapter 3), Wrack's End (4), Rimewell (5)
+  and Greyhithe (6), each with five scenes, a fight, a check and a second
+  beat.
+- **Chapter 6 is a loop on the Hollow Shore.** It adds a town (the White
+  Anchorage, with its chandlery), the Glass Strand expedition (the Strand
+  Colossus), and the White Fleet's Grave (the White Admiral), where the
+  fifth piece lies. The Ending sets out from the camp into the tear.
+- **Six banner pieces:** the heirloom, the Warden's standard, the Court's
+  twin, the reliquary thread, the White Fleet's sail and the Sovereign's
+  mantle. **The epilogue** ends on the night before the invasion: the
+  whole Banner turns time back, which is where New Game+ starts.
+
+### Changed
+- The camp no longer asks for its shore's expeditions before the story
+  moves on. The main quest's gate replaces that rule, and the Leave the
+  camp sheet is gone.
+- Fights in a place use the place's own chapter, however late the party
+  comes back to it. Fights in the camp's towns used chapter 1 before.
+- **Known waters:** a crossing to a port the Eel has put in at before, or
+  home, has a 15% chance of raiders a day (35% on new waters) and meets
+  one raider at most.
+- **Boarding crews** fight at most one chapter past the chapter their
+  ship first sails in.
+- The Court's road (5001, 5002) became the fourth chapter's camp and main
+  quest. Saves on those scenes pick up at the camp.
+- Edit Mode: Play to Chapter and autoplay clear a chapter's expeditions
+  and find its places before taking its main quest. The in-app simulator
+  tours each place before the main quest.
+
+### Balance (Python simulation, 200 runs a style)
+- **Thorough players** visit every place and go for the companions:
+  - 1.25 fights lost a run (1.146: 1.46), median 1.
+  - Every run finishes, with 4.0 companions.
+  - At first try, the White Admiral is beaten 90.5% of the time, the
+    Void Sovereign 94.5% and the Archon 98%.
+- **Rushers** do only what the gate asks:
+  - 4.24 fights lost a run, median 1.
+  - 5 runs out of 200 recruit no companion and account for most of those
+    losses.
+- About 20 voyages a run (10.8 before), with the same number of raiders
+  as before (about 11) thanks to known waters.
+
+### Tests
+- `test/chapter_loop_test.dart`: loops, camps, chapters, known places,
+  discoveries, activity counts and the main-quest gate.
+- `test/camp_flow_test.dart` plays the loop in the app:
+  - it finds a place and walks to it;
+  - it goes back to the camp;
+  - the main quest opens;
+  - a later place is reached by voyage.
+- Known waters (`sea_events_test`), boarding crews (`ship_combat_test`),
+  retired scenes (`story_providers_test`), autoplay exploring a chapter
+  (`autoplay_engine_test`), and the story tests for six pieces, chapter 6
+  and the epilogue.
+
+## [1.146.0+175]
+
+Skills cost what they are worth, and the fights are tuned to the new economy.
+
+### Changed
+- **Skill tiers cost 1,000, 2,000 and 3,000 essence** (they cost 3, 6 and
+  9, so essence, which comes in with XP, raised every skill to tier 3 by
+  mid-run). A first tier now comes around level 5, a first skill at tier 3
+  around level 11, and about three skills reach tier 3 by the end.
+- **The deeper a tree skill, the more points it costs:** 1, 1, 2, then 3
+  points down a branch (`branchSkillPointCosts`), 7 for a whole branch.
+  Mastery stays at 2 points, and the two reputation skills and the
+  companions' skills at 1. The points cover about two branches and one
+  mastery, where the whole tree was learned by level 15.
+- The tree marks a skill that costs more than a point, its sheet's button
+  says what it costs ("Learn (3 points)", or "Needs 3 skill points"), and
+  the list shows the cost of each skill not yet known.
+- **Difficulty retuned for the new economy.** A regular enemy's floor now
+  ramps over the first chapters: health ×1.15, ×1.25, then ×1.35 from
+  chapter 3; damage ×1.10, ×1.15, then ×1.20. It was ×1.15 and ×1.10
+  throughout. The chapter step goes from 0.12 to 0.15 a chapter, and
+  bosses get a floor of their own (×1.10 health, ×1.05 damage; they had
+  none).
+- **The Void Barge's boarders** are a void hound and two void wisps (two
+  hounds and a wisp), and board at 25% (30%). Half of the simulated
+  parties lost that fight.
+
+### Balance (Python simulation, 200 runs)
+- Before the retune, the new economy lost 0.12 fights a run. After it:
+  - 1.46 fights lost a run (median 1, 92 of 200 runs without a loss).
+  - Every run finishes.
+  - Chapter 1 is won 97.9% of the time.
+  - The Void Sovereign and the Archon are beaten at the first try by 89.5%
+    and 87.5% of the parties.
+- The Void Barge boarders are beaten 84% of the time (45%).
+- With the costs, a run learns about 11 skills (13) and ends with about 1
+  point left (6), 2.8 skills at tier 3 (5.3), and all three camp works
+  built in 85% of the runs (24%).
+
+### Tests
+- `test/skill_tree_test.dart` covers the depth costs, a skill waiting for
+  its points, and a tree that costs more than a run's points.
+- `test/difficulty_curve_test.dart` covers the ramped floor and the boss
+  floor. The Void Sovereign phase test in `test/sim_combat_test.dart` uses
+  a stronger test character (900 health, 100 damage) to reach its first
+  phase against the harder curve.
+- Tier costs in `combat_engine_test` and `player_session_provider_test`.
+
+## [1.145.0+174]
+
+The camp is reachable from every town, and a skill can't fill a die.
+
+### Added
+- **Back to the camp, from any town once the camp stands.** The Ashen
+  Quarter, the Drowned Cloister and the Reliquary Quarter each show "Back to
+  the camp" with how far it is. The story waits in the town while the party
+  is at the camp: its expeditions, its works and Harbor, the voyages out,
+  and the companions' gear, skills and dice.
+- **Set out for the town again from the camp.** The camp shows where the
+  story waits. Its small leave button becomes "Set out for {town}", with a
+  last look at who comes along, and the Story tab comes back on the town.
+- **The boat between the camp and a town.** The Ashen Quarter is a day's
+  walk inland; the Drowned Cloister (the Drowned Stair) and the Reliquary
+  Quarter (its river gate) are voyages on the Rusty Eel, sea events and
+  raiders included, both ways. New `landingPortId` on a story settlement
+  names the port a town's voyage lands at.
+- **Skill rarity.** Every skill has a rarity (common, uncommon, rare, epic,
+  legendary; new `rarity` field in skills.json, set from each skill's
+  strength), and a skill fits on at most 3 faces of a die if common, 2 if
+  uncommon or rare, and 1 if epic or legendary. A die's own fixed faces
+  count toward it; its open faces left as Heavy Blow don't.
+- The dice loadout shows each skill's rarity and how many of its faces it
+  already takes; the picker greys out a skill at its limit, and a dragged
+  skill won't drop on one face too many. The skill tree's sheet shows the
+  rarity too.
+
+### Changed
+- Away from the camp, the Camp tab is the way back to it (from a town) and
+  the Rusty Eel's state; it is the Ship tab only while the Eel is out on an
+  expedition from the camp.
+- A voyage back to the camp takes as long as the voyage out to the port it
+  leaves (it took the home cove's 2 days from anywhere).
+- Fights apply the rarity limits to saved dice: a skill set on more faces
+  than it may take keeps its first faces, and the others do their own action
+  (shown as "Over its limit" in the loadout).
+
+## [1.144.0+173]
+
+Skills grow on a tree, and the player has to pick a path; companions keep
+to their own trade.
+
+### Added
+- **A skill tree for each class.** Three branches of four skills, learned
+  from the top down, one skill point each: Bulwark, Vanguard and Warlord
+  for the Warrior; Evocation, Tempest and Aegis for the Mage; Shadow, Venom
+  and Trickster for the Rogue; Judgment, Devotion and Vigil for the Cleric;
+  Marksman, Trapper and Wilds for the Ranger. Every class skill sits on its
+  class's tree, and a new character's own skills open a branch.
+- **A heritage branch for each race**: its three skills, in order.
+- **Mastery: the specialisation.** A class branch learned in full can be
+  mastered for 2 skill points, and its skills then fight one tier above
+  their own (on top of what skill essence has bought). Only one branch is
+  ever mastered, so the others stay a side road.
+- The Skills screen opens on the tree (tap a skill to see what it does
+  and learn it, tap a mastery star to master its branch), with a **List**
+  view that filters by what a skill does (attack, healing, mana, status)
+  and by known or learnable now. Spells sit under the skills in both.
+- Skill trees are game data (`skill_trees.json`), editable in Edit Mode.
+
+### Changed
+- **Skill points buy the tree only**: the next skill on a branch, or a
+  skill the character's reputation opens (Zealous Conviction, Ruthless
+  Edge). Skills already known stay known; a die's own skills still work
+  for whoever holds it, and crafted skills still come from recipes.
+- **Companions keep it simple**: they learn their own class's skills only,
+  in any order, one point each, and their dice take only those skills and
+  what their die already carries. A rogue companion learns rogue skills.
+- Permadeath resets the mastery with the rest of the skill build.
+
+## [1.143.0+172]
+
+The camp is somewhere the party goes back to, not a tab it carries around.
+While the story stands at the camp, the camp takes the Story tab's place;
+away from it, that tab is the ship.
+
+### Changed
+- **The camp opens only at the camp.** When the story comes back to the
+  cove (the founding, the return after the Spire, the stop before the
+  Reliquary Quarter), the Story tab closes and the Camp tab opens with the
+  scene the story tells there (its first lines, the rest a tap away), the
+  followed quest, and the camp itself. Building, choosing who comes along,
+  gear, skills and dice of companions, the camp's shops and its shore's
+  expeditions are all there, and only there.
+- **Leaving the camp** is a small "Leave camp" button at the top of the
+  page. It opens a last look at who comes along (companions can be added
+  or benched there) and the story's own ways out of the scene; picking one
+  closes the camp and brings the Story tab back.
+- **The camp keeps the party until its shore is safe**: the expeditions on
+  the camp's own shore (Cinder Row, then the Scaffold Yards) must be
+  cleared before the story can move on. The camp says so, and "Leave camp"
+  lists what is left.
+- **Setting sail from the camp**: other ports' expeditions are a voyage
+  away. Once the Rusty Eel makes landfall, the Camp tab becomes the ship:
+  the port she is moored at (its rest, shops and expeditions), the chart,
+  and "Sail back to camp" first. The camp comes back when she does.
+- **Away from the camp** (the story has moved on), the Camp tab is the
+  Ship tab: her hull, what she carries, and the chart to the other ports.
+  The way home is the story's.
+- Coming back to the camp through the story brings the Eel home with it.
+- A companion's own house (Kelda's Hall) is offered only once that
+  companion has joined. The Camp tab's dot for a house to build shows only
+  at the camp.
+- The camp's arrival pop-up is gone (the camp page says it all); towns keep
+  theirs, with its text updated for the ship.
+
+### Added
+- **The Harbor**, a camp house (250 gold): once built, a Harbor button
+  sits at the top of the camp and opens the slipway, where the Eel's hull
+  is repaired and the shipwright's parts are fitted. It is now the only
+  place she is refitted. The story mentions it on coming home.
+
+## [1.142.0+171]
+
+The play-mode lists only show what the player has discovered, and a
+followed quest keeps its current goal in sight above the story.
+
+### Added
+- **A followed quest.** Its name and current goal ("Goal: Clear three
+  catacomb ghouls (1/3)") show under the numbers above the story, with a
+  Turn in button once every objective is met and a short "Updated"
+  highlight when the goal moves on. Tapping it opens the quest: what was
+  asked, each objective with its progress, the reward, and the other
+  quests in progress to follow instead.
+- A quest taken on is followed when no other quest is; any quest in
+  progress can be followed from the Quests list (pin) or the quest sheet.
+  A quest turned in hands over to the next one in progress.
+- **"Goal reached"**: when a quest in progress has every objective met, a
+  notice says so once (after the fight, if it happened in one).
+- The "Previously" card lists each quest in progress with its current goal.
+
+### Changed
+- **Play mode lists show only what was discovered**:
+  - Quests: offered, in progress or done, the followed one first, then
+    those ready to turn in, in progress, offered and done. Their objectives
+    show before the quest is taken on too.
+  - Bestiary: creatures the party has beaten, with a count of those still
+    to meet.
+  - Shops: the ones found, saying where to trade ("where you found it", or
+    "at the camp" for a camp house's shop).
+  - People: those the story has reached (their chapter and flag) or
+    already spoken to.
+  - Achievements: an achievement not earned yet keeps its name and how to
+    earn it hidden.
+  - Edit Mode still lists everything.
+- Turning a quest in (from the list or above the story) names the item
+  won instead of its id.
+
+## [1.141.0+170]
+
+Each class starts with its own die and its own skills, dice made for a class
+go to that class, every face shows what it does by its colour, and Wisdom
+now feeds the mana pool.
+
+### Changed
+- **One die to start with.** A new Mage or Cleric owns the apprentice die
+  only (it replaces the starter die); a Warrior, Rogue or Ranger owns the
+  starter die only. A New Game+ legacy still adds the dice of the last
+  cycle.
+- **Starting skills match the class.** A character starts with their
+  class's technique, their race's technique and, for a caster, a mana
+  skill: **Channel** (Mage) and **Prayer** (Cleric), new skills that add 2
+  mana (plus Wisdom) and sit on the apprentice die's Channeling face.
+  Nothing is shared by every class any more except Heavy Blow, the basic
+  strike an open Skill face falls back to: Fireball is a Mage skill, Shadow
+  Step and Second Wind are general skills to learn with a point, and Void
+  Blast no longer needs Fireball first.
+- **The skill list shows only what the character can learn**: their class's
+  and race's skills and the general ones, known skills first. Another
+  class's skills, and merges they could never craft, are no longer listed.
+- **Dice are made for a class** (or a race): the apprentice and sage dice
+  for casters, the flame and arcane dice for mages, the holy and tide dice
+  for clerics, the storm and huntsman dice for rangers, the shadow and
+  twinfang dice for rogues, the iron and bulwark dice for warriors, the
+  stone die for dwarves and the berserker die for orcs. Shops show who a die
+  is made for and only sell it to them; the die picker only equips your
+  own. A quest reward die made for another class is paid in gold (its
+  price) instead.
+- **Wisdom adds mana**: one more point per 3 Wisdom on every Mana face and
+  mana skill (a human Cleric starts with +2). The skills screen shows the
+  bonus, and the Wisdom description says so.
+
+### Added
+- **Colours by effect on every die face**: red for attacks, steel for
+  guards, pink for heals, blue for mana, and a status skill wears its
+  status's colour (poison green, stun amber, weaken purple). The fight's
+  dice tray, the face sheet, the party cards, the dice loadout, the skill
+  chips and the skill list all use them, with a colour key on the loadout
+  and in the face sheet.
+
+## [1.140.0+169]
+
+From chapter 3 on, the camp is the party's base: the story comes back to it,
+towns are places visited away from it, and what is built there is read back.
+
+### Added
+- **Two returns to the camp.** After the Spire the party walks home with the
+  Warden's standard before going down to the Court, as promised ("three
+  days"): sleep a night by the fires (+40 health) or leave before dawn with
+  what the camp can spare (+40 gold). Before the Reliquary Quarter, going
+  back to the camp first is a third way there (+30 health, and the frost at
+  the Quarter's gate has spread a street further). Both scenes open with a
+  "Back at camp" pop-up.
+- **The camp grows in the story.** Building a house now leaves a flag
+  (house_…), including on older saves, and every house is read back: Kelda's
+  Hall, the Barracks Annex, the Hammersmith, the Academy and the Smugglers'
+  Cellar on the first return, the Sharpweave Den, Banner Loft, Hearth-Hall
+  and Shroud Shrine on the second, on the Hollow Shore and in the "home"
+  ending.
+- **The Smugglers' Cellar**, a new camp house (400 gold) that opens the
+  Smugglers' Vault at the camp. The Vault no longer turns up "relocated" in
+  the Ashen Quarter.
+- **The Drowned Cloister and the Reliquary Quarter are towns**, with their
+  name in the header and an arrival pop-up (including when entering the
+  Quarter through its gate).
+- **Endings bring the camp home**: the Eel comes into the cove to the camp's
+  fires; the lanterns hang on the camp's landing; the seeker leaves the camp
+  its stores and keeps the Eel; the dawn ending has a camp to come back to,
+  or its ashes if it was given away.
+
+### Changed
+- **Rest in a town is "Rest at camp"** once the camp is founded: the party
+  walks back for the night.
+- **Arrival pop-ups**: the camp's names the Camp tab (not the old "Play"
+  tab) and says "your base from now on"; coming back reads "Back at camp";
+  towns after the founding say you are away from camp. Titles no longer
+  break on names with an article ("Vous arrivez à Le Quartier…"), and
+  "Leave {place}" is now "Move on" / « Quitter les lieux ».
+- **Story fixes**: the Ashen Quarter's text is written as an arrival, a
+  day's walk from the camp; the camp's smoke is a day behind you, not on the
+  shingle; three days, not a week; the crew is sent back to the camp (where
+  the Eel is), and the Eel's arrival on the Hollow Shore is explained; one
+  camp line in 7004 instead of two contradicting ones; quests and Lysa point
+  to the camp instead of Alster; the 7002 rest is a night on the sand.
+- **One name per place** (French mostly): Quartier des Cendres, Néant (not
+  Vide), Coffre des Contrebandiers, Quartier des Reliquaires, Cloître noyé /
+  Drowned Cloister, Rive Creuse, Linceul (not Suaire or Voile), Mur du
+  Jugement, Haut Gardien, the Rusty Eel as "l'Eel" and masculine, the camp
+  as "The Cove Camp" / « Le camp de la crique ».
+- **The narrator is no longer a man by default**: English lines like "a man
+  who has never owned anything" and "A man can build…", and about 45 French
+  agreements in chapters 3–7 (plus Lysa, Sister Inès and the death screen:
+  « Vous avez péri »), now read for any character. Lysa and Sister Inès say
+  « vous ».
+
+## [1.139.0+168]
+
+A town's scene folds away once it has been read.
+
+### Changed
+- **Towns and camps fold their scene when the player comes back.** Back
+  in a town from one of its shops, people or challenges, the scene the
+  player has already read shrinks to one line, "Read the scene again", and
+  the town's own lists (shops, people, expeditions, the way on) get the
+  rest of the screen. A tap opens the scene again, and "Fold the scene"
+  closes it. The first arrival still shows the scene in full, and so does
+  any return where the scene has something new (a progress line, a
+  callback, a companion's remark). The last fight's aftermath stays
+  visible under the folded line.
+- The French hint under "Leave {place}" no longer assumes the player's
+  gender ("quand vous le souhaitez" instead of "quand vous serez prêt").
+
+## [1.138.0+167]
+
+Character creation's five memories get their own page, and the French
+speaks to the player as "vous" throughout.
+
+### Added
+- **The memories have their own page.** "A Life Before This One" opens
+  after naming the character, with one line on what the memories do, a
+  progress bar, the memory's title and scene, and its three answers in a
+  shuffled order (the same order if you come back to it).
+- **A summary before the story.** "Who You Are" lists each memory with
+  the answer given and the starting alignment they add up to. Tapping a
+  memory reopens it to change the answer; "Begin Your Story" starts the
+  story. The closing line hands the telling over to the player, as the
+  story itself is told in the first person.
+
+### Changed
+- **French in "vous".** The name dialog and all memories (including the
+  five profession variants of the beggar memory) now use "vous" instead of
+  "tu", with grammar fixes (missing pronouns, "supplier de", "avant que
+  personne ne s'en aperçoive") and wording that doesn't assume the
+  player's gender ("même si le froid vous mord", "même s'il ne vous reste
+  rien"). "Le tyran de cour" becomes "La brute de la cour".
+- The name dialog's button now reads Continue (the story starts after the
+  memories).
+- The memories' alignment is added once, at the end, instead of after
+  each answer.
+
+### Fixed
+- **Android Back skipped a memory.** Back during the memories closed the
+  question without an answer, so a memory could be skipped with no
+  alignment, and five presses skipped them all. Back now returns to the
+  previous memory; on the first one it returns to the character sheet with
+  nothing applied, and Continue starts again (with the name kept).
+- **Crash after naming the character.** The name field's controller was
+  thrown away while the dialog was still closing, which raised an error
+  after tapping the button. The dialog now owns the controller.
 
 ## [1.137.0+166]
 

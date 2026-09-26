@@ -41,8 +41,8 @@
     "portName": "The Drowned Stair",
     "portName_fr": "L'Escalier Noyé",
     "chapter": 4,
-    "description": "A flooded landing below the Spire where the catacombs meet the water. The Sunken Cloister's deserters keep a lantern lit for boats that know the channel, and the Court's own stair goes down from here.",
-    "description_fr": "Un débarcadère inondé sous la Flèche, là où les catacombes rejoignent l'eau. Les déserteurs du Cloître Englouti gardent une lanterne allumée pour les bateaux qui connaissent le chenal, et l'escalier même de la Cour descend d'ici.",
+    "description": "A flooded landing below the Spire where the catacombs meet the water. The Drowned Cloister's deserters keep a lantern lit for boats that know the channel, and the Court's own stair goes down from here.",
+    "description_fr": "Un débarcadère inondé sous la Flèche, là où les catacombes rejoignent l'eau. Les déserteurs du Cloître noyé gardent une lanterne allumée pour les bateaux qui connaissent le chenal, et l'escalier même de la Cour descend d'ici.",
     "zoneIds": [
       "z_ossuary_galleries",
       "z_drowned_stair"
@@ -60,7 +60,7 @@
     "portName_fr": "Le Reliquaire Noir",
     "chapter": 5,
     "description": "The Reliquary Quarter's river gate, its chains rusted open since the tear. The last lantern in the quarter burns on the quay, and every street beyond it runs toward the city's dead heart.",
-    "description_fr": "La porte fluviale du Quartier du Reliquaire, ses chaînes rouillées en position ouverte depuis la déchirure. La dernière lanterne du quartier brûle sur le quai, et chaque rue au-delà court vers le cœur mort de la ville.",
+    "description_fr": "La porte fluviale du Quartier des Reliquaires, ses chaînes rouillées en position ouverte depuis la déchirure. La dernière lanterne du quartier brûle sur le quai, et chaque rue au-delà court vers le cœur mort de la ville.",
     "zoneIds": [
       "z_dead_heart_approach",
       "z_shroud_vigil"
@@ -80,9 +80,13 @@
     "description": "A strip of grey sand the tear drew out of the dead heart like a splinter. Across the water the tear stands open like a door, and the Rusty Eel is the only thing on the shore that remembers what a world is supposed to look like.",
     "description_fr": "Une bande de sable gris que la déchirure a tirée du cœur mort comme une écharde. De l'autre côté de l'eau, la déchirure est ouverte comme une porte, et le Rusty Eel est la seule chose sur la rive qui se souvienne de ce à quoi un monde est censé ressembler.",
     "zoneIds": [
+      "z_glass_strand",
+      "z_white_fleet_grave",
       "z_beyond_the_tear"
     ],
-    "shopIds": [],
+    "shopIds": [
+      "anchorage_chandlery"
+    ],
     "voyageLength": 4,
     "isHome": false,
     "requiredFlags": [

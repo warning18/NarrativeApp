@@ -205,6 +205,7 @@ extension _FightRounds on _FightScreenState {
         language: lang,
         activeEffects: actor.statusEffects,
         wisdomHealBonus: actor.wisdom ~/ 2,
+        wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
         luck: actor.luck +
             (actor.isPlayer && _luckyCoinArmed ? _luckyCoinLuckBonus : 0),
         random: _random,

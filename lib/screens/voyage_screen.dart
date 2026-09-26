@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
 import '../data/sea_events.dart';
@@ -12,6 +13,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -89,7 +91,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     _sail = installedSail(parts, session.shipPartIds);
     _sailStrength =
         _sail == null ? 1 : sailStrength(_sail!.medium, session.raceId);
-    var length = portVoyageLength(widget.toPort);
+    // The way home is as long as the way out: a voyage to the cove takes
+    // the days of the port it leaves.
+    var length = portVoyageLength(portIsHome(widget.toPort) && fromPort != null
+        ? fromPort
+        : widget.toPort);
     if (_sail?.power == SailPower.windknot) {
       final shorter = windknotLength(length, _sailStrength);
       if (shorter < length) {
@@ -102,6 +108,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       length: length,
       enemyShips: enemyShips,
       chapter: chapter,
+      // A port she has put in at before, or the way home, is known water.
+      knownWaters: portIsHome(widget.toPort) ||
+          session.visitedPortIds.contains(widget.toPortId),
     );
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
@@ -325,6 +334,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       }
     }
     if (!mounted) return;
+    if (outcome.escaped) {
+      // The raider got away: nothing to take, and the Eel sails on as
+      // she is.
+      _log.add(_t('ship_log_got_away', ship: enemyName));
+      await notifier.setShipHull(_player!.hull);
+      await _advance();
+      return;
+    }
     if (outcome.won) {
       if (!outcome.boarded) _log.add(_t('ship_log_sunk', ship: enemyName));
       if (prizeLine != null) _log.add(prizeLine);
@@ -557,7 +574,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       random: _random,
       onFinished: _onBattleFinished,
       boarding: boardingProfileFor(_enemyData ?? const {}),
-      chapter: _chapter,
+      chapter: boardingChapterFor(_chapter, _enemyData ?? const {}),
       buildCrew: () => _buildCrew(
         session: ref.read(playerSessionProvider),
         companions: companions,
@@ -565,6 +582,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         professions: professions,
         gameConfig: gameConfig,
       ),
+      turnSeconds: ref.read(shipTurnTimerProvider)
+          ? shipTurnSeconds(
+              ship: _shipRecord,
+              parts: _parts,
+              installedPartIds: session.shipPartIds)
+          : null,
+      habit: habitFromName(_enemyData?['habit']?.toString()),
+      windKnot: _sail?.power == SailPower.windknot,
     );
   }
 

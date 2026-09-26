@@ -151,7 +151,9 @@ extension _FightCards on _FightScreenState {
       height: 28,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: face == null ? null : accent.withValues(alpha: 0.12),
+        color: face == null || _rolling
+            ? null
+            : _faceKindOf(face).color.withValues(alpha: 0.18),
         border: Border.all(
           color: face == null ? colorScheme.outlineVariant : accent,
           width: face == null ? 1 : 1.5,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
+import '../data/quest_tracking.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -22,12 +23,11 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_launcher.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
-import '../widgets/immersive_notice.dart';
-import '../widgets/level_up_dialog.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
 import 'achievements_screen.dart';
-import 'boat_screen.dart';
+import 'ship_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'fight_lab_screen.dart';
@@ -63,7 +63,9 @@ class PlayScreen extends ConsumerWidget {
     final town = townNode?.settlement;
     final townPortId = town != null && !town.isCamp ? town.portId : null;
     final townHubUnlocked = townPortId != null;
-    final campUnlocked = chapterOfNode(playState.currentNodeId) >= campChapter;
+    // The camp (and the boat with it) once it stands: landfall in chapter
+    // 3 comes a scene before it is founded.
+    final campUnlocked = session.flags.contains(campFoundedFlag);
     // In play this page is the Other tab: the character and the camp (with
     // the boat) have tabs of their own.
     final asOtherTab = !isEditMode;
@@ -228,7 +230,7 @@ class PlayScreen extends ConsumerWidget {
                   Text('${tr(ref, 'boat_at_port_prefix')}: $mooredPortName'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const BoatScreen()),
+                MaterialPageRoute(builder: (_) => const ShipScreen()),
               ),
             ),
           ),
@@ -506,14 +508,19 @@ class _QuestList extends ConsumerWidget {
     }
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final companions =
-        ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
-    final races = ref.watch(localizedDbProvider(racesSchema)).value ?? const {};
-    final professions =
-        ref.watch(localizedDbProvider(professionsSchema)).value ?? const {};
-    final achievements =
-        ref.watch(localizedDbProvider(achievementsSchema)).value ?? const {};
-    final keys = records.keys.toList()..sort();
+    // In play, only the quests the player has come across -- offered,
+    // taken on or done -- the followed one first. Edit Mode lists all.
+    final keys = isEditMode
+        ? (records.keys.toList()..sort())
+        : questDisplayOrder(
+            records.keys.where((id) => questDiscovered(id, session)),
+            records,
+            session);
+    if (keys.isEmpty) {
+      return Text(tr(ref, 'quests_none_found'),
+          style: Theme.of(context).textTheme.bodyMedium);
+    }
+    final followedId = followedQuestIdOf(session);
 
     return Column(
       children: keys.map((questId) {
@@ -529,10 +536,8 @@ class _QuestList extends ConsumerWidget {
         final dialogue = quest['npcDialogueText']?.toString() ?? '';
         final isCompleted = session.completedQuestIds.contains(questId);
         final isActive = session.activeQuestIds.contains(questId);
-        final isDiscovered = isEditMode ||
-            isCompleted ||
-            isActive ||
-            session.unlockedQuestIds.contains(questId);
+        final isFollowed = isActive && questId == followedId;
+        final isDiscovered = isEditMode || questDiscovered(questId, session);
         final requiredGold = (quest['requiredGold'] as num?)?.toInt() ?? 0;
         final requiredFlags = (quest['requiredFlags'] as List?)
                 ?.map((e) => e.toString())
@@ -549,7 +554,9 @@ class _QuestList extends ConsumerWidget {
         if (isCompleted) {
           statusLabel = tr(ref, 'status_completed');
         } else if (isActive) {
-          statusLabel = tr(ref, 'status_active');
+          statusLabel = objectivesMet
+              ? tr(ref, 'quest_goal_ready')
+              : tr(ref, 'status_active');
         } else if (!isDiscovered) {
           statusLabel = tr(ref, 'status_undiscovered');
         } else if (!meetsRequirements) {
@@ -567,120 +574,26 @@ class _QuestList extends ConsumerWidget {
           trailing = ElevatedButton(
             onPressed: !objectivesMet
                 ? null
-                : () async {
-                    final rewardGold =
-                        (quest['rewardGold'] as num?)?.toInt() ?? 0;
-                    final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
-                    final rewardItemId = quest['rewardItemID']?.toString();
-                    final nextQuestId = quest['nextQuestID']?.toString();
-                    final rewardDiceId = quest['rewardDiceID']?.toString();
-                    final rewardAllyId = quest['rewardAllyId']?.toString();
-                    final grantsBannerPieceId =
-                        quest['grantsBannerPieceId']?.toString();
-                    final alignmentMod =
-                        (quest['alignmentChange'] as num?)?.toInt() ?? 0;
-                    final leveledUp = await ref
-                        .read(playerSessionProvider.notifier)
-                        .completeQuest(
-                          questId,
-                          rewardGold: rewardGold,
-                          rewardXP: rewardXp,
-                          rewardItemId: rewardItemId,
-                          nextQuestId: nextQuestId,
-                          rewardDiceId: rewardDiceId,
-                          grantsBannerPieceId: grantsBannerPieceId,
-                          alignmentMod: alignmentMod,
-                          rewardItem: rewardItemId == null
-                              ? null
-                              : ref
-                                      .read(localizedDbProvider(itemsSchema))
-                                      .value?[rewardItemId]
-                                  as Map<String, dynamic>?,
-                        );
-                    String? recruitedName;
-                    if (rewardAllyId != null && rewardAllyId.isNotEmpty) {
-                      final companion =
-                          companions[rewardAllyId] as Map<String, dynamic>?;
-                      final race = races[companion?['raceId']?.toString() ?? '']
-                          as Map<String, dynamic>?;
-                      final profession = professions[
-                              companion?['professionId']?.toString() ?? '']
-                          as Map<String, dynamic>?;
-                      await ref
-                          .read(playerSessionProvider.notifier)
-                          .recruitAlly(
-                            rewardAllyId,
-                            race: race,
-                            profession: profession,
-                            companion: companion,
-                            dice: ref
-                                    .read(localizedDbProvider(diceSchema))
-                                    .value ??
-                                const {},
-                            houses: ref
-                                    .read(localizedDbProvider(housesSchema))
-                                    .value ??
-                                const {},
-                            requiredHouseId:
-                                companion?['requiredHouseId']?.toString(),
-                          );
-                      recruitedName = companion?['companionName']?.toString() ??
-                          rewardAllyId;
-                    }
-                    final newAchievements = await ref
-                        .read(playerSessionProvider.notifier)
-                        .checkAchievements(
-                            totalCompanionCount: companions.length);
-                    if (!context.mounted) return;
-                    final lang = ref.read(appLanguageProvider);
-                    final achievementNames = newAchievements
-                        .map((id) =>
-                            (achievements[id] as Map<String, dynamic>?)?[
-                                    'achievementName']
-                                ?.toString() ??
-                            id)
-                        .toList();
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.emoji_events_outlined,
-                      message:
-                          '${trFor(lang, 'quest_complete_prefix')}: $questName '
-                          '(+$rewardGold ${trFor(lang, 'gold_label')}, +$rewardXp XP'
-                          '${rewardItemId != null && rewardItemId.isNotEmpty ? ", +$rewardItemId" : ""}'
-                          '${rewardDiceId != null && rewardDiceId.isNotEmpty ? ", +$rewardDiceId" : ""}'
-                          '${recruitedName != null ? ", ${trFor(lang, 'recruited_prefix')} $recruitedName" : ""})'
-                          '${grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty ? "\n${trFor(lang, 'banner_piece_found_prefix')}" : ""}'
-                          '${achievementNames.isNotEmpty ? "\n${trFor(lang, 'achievement_unlocked_prefix')}: ${achievementNames.join(", ")}" : ""}',
-                    );
-                    if (leveledUp) {
-                      final newLevel = ref.read(playerSessionProvider).level;
-                      showLevelUpDialog(context, ref, newLevel: newLevel);
-                    }
-                  },
+                : () => turnInQuest(context, ref, questId),
             child: Text(tr(ref, 'complete')),
           );
         } else {
           trailing = ElevatedButton(
             onPressed: !meetsRequirements
                 ? null
-                : () async {
-                    await ref
-                        .read(playerSessionProvider.notifier)
-                        .acceptQuest(questId);
-                    if (!context.mounted) return;
-                    final lang = ref.read(appLanguageProvider);
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.assignment_turned_in_outlined,
-                      message:
-                          '${trFor(lang, 'quest_accepted_prefix')}: $questName',
-                    );
-                  },
+                : () => acceptQuestWithNotice(context, ref, questId),
             child: Text(tr(ref, 'accept')),
           );
         }
 
+        final theme = Theme.of(context);
         return Card(
+          shape: isFollowed
+              ? RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: theme.colorScheme.primary, width: 2),
+                )
+              : null,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -691,23 +604,51 @@ class _QuestList extends ConsumerWidget {
                     Icon(questIcon(category, firstObjectiveType)),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(questName,
-                          style: Theme.of(context).textTheme.titleMedium),
+                      child:
+                          Text(questName, style: theme.textTheme.titleMedium),
                     ),
+                    // Follow a quest in progress: its goal shows above the
+                    // story.
+                    if (isActive && !isEditMode)
+                      IconButton(
+                        tooltip: isFollowed
+                            ? tr(ref, 'quests_section_following')
+                            : tr(ref, 'quest_follow_button'),
+                        icon: Icon(
+                          isFollowed ? Icons.push_pin : Icons.push_pin_outlined,
+                          color: isFollowed ? theme.colorScheme.primary : null,
+                        ),
+                        onPressed: isFollowed
+                            ? null
+                            : () => ref
+                                .read(playerSessionProvider.notifier)
+                                .trackQuest(questId),
+                      ),
                   ],
                 ),
+                if (category != null && category.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 36),
+                    child: Text(
+                      tr(ref, category == 'Main' ? 'quest_main' : 'quest_side'),
+                      style: theme.textTheme.labelSmall
+                          ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                    ),
+                  ),
                 if (dialogue.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   Text(
                     dialogue,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontFamily: 'serif',
-                          height: 1.55,
-                          letterSpacing: 0.1,
-                        ),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontFamily: 'serif',
+                      height: 1.55,
+                      letterSpacing: 0.1,
+                    ),
                   ),
                 ],
-                if (isActive && objectiveStatuses.isNotEmpty) ...[
+                // What is asked: shown before the quest is taken on too,
+                // so the player knows the goal when choosing.
+                if (!isCompleted && objectiveStatuses.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   ...objectiveStatuses.map((status) => Padding(
                         padding: const EdgeInsets.only(top: 2),
@@ -715,31 +656,26 @@ class _QuestList extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Icon(
-                              status.met
+                              isActive && status.met
                                   ? Icons.check_circle
                                   : Icons.radio_button_unchecked,
                               size: 16,
-                              color: status.met
+                              color: isActive && status.met
                                   ? Colors.green
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurfaceVariant,
+                                  : theme.colorScheme.onSurfaceVariant,
                             ),
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                status.required > 1
+                                isActive && status.required > 1
                                     ? '${status.description} '
                                         '(${status.current}/${status.required})'
                                     : status.description,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      decoration: status.met
-                                          ? TextDecoration.lineThrough
-                                          : null,
-                                    ),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  decoration: isActive && status.met
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ),
                               ),
                             ),
                           ],
@@ -753,7 +689,7 @@ class _QuestList extends ConsumerWidget {
                     Expanded(
                       child: Text(
                         '${tr(ref, 'status_label')}: $statusLabel',
-                        style: Theme.of(context).textTheme.labelMedium,
+                        style: theme.textTheme.labelMedium,
                       ),
                     ),
                     trailing,
@@ -781,15 +717,23 @@ class _ShopList extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final currentNodeId = ref.watch(storyPlayProvider).currentNodeId;
-    final keys = records.keys.toList()..sort();
+    // In play, only the shops the player has found.
+    final keys = [
+      for (final id in records.keys)
+        if (isEditMode || session.unlockedShopIds.contains(id)) id,
+    ]..sort();
+    if (keys.isEmpty) {
+      return Text(tr(ref, 'shops_none_found'),
+          style: Theme.of(context).textTheme.bodyMedium);
+    }
 
     return Column(
       children: keys.map((shopId) {
         final shop = records[shopId] as Map<String, dynamic>;
         final shopName = shop['shopName']?.toString() ?? shopId;
         final discovered = session.unlockedShopIds.contains(shopId);
-        final onTriggerNode =
-            session.shopUnlockNodeIds[shopId] == currentNodeId;
+        final foundAt = session.shopUnlockNodeIds[shopId];
+        final onTriggerNode = foundAt == currentNodeId;
         final accessible = isEditMode || (discovered && onTriggerNode);
         return Card(
           child: ListTile(
@@ -798,9 +742,12 @@ class _ShopList extends ConsumerWidget {
             subtitle: Text(
               accessible
                   ? shop['shopDescription']?.toString() ?? ''
-                  : (discovered
-                      ? tr(ref, 'shop_left_behind')
-                      : tr(ref, 'shop_undiscovered')),
+                  : !discovered
+                      ? tr(ref, 'shop_undiscovered')
+                      // A camp house's shop was found by building it.
+                      : foundAt == null
+                          ? tr(ref, 'shop_at_camp')
+                          : tr(ref, 'shop_back_where_found'),
             ),
             trailing: accessible ? const Icon(Icons.chevron_right) : null,
             onTap: !accessible
@@ -832,16 +779,43 @@ class _EnemyList extends ConsumerWidget {
     }
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
-    final keys = records.keys.toList()..sort();
+    // In play, only the creatures the party has met and beaten; the rest
+    // stay a count, not a list of names.
+    final keys = [
+      for (final id in records.keys)
+        if (isEditMode || enemyDiscovered(id, session)) id,
+    ]..sort();
+    final unmet = records.length - keys.length;
 
     return Column(
-      children: keys.map((enemyId) {
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (keys.isEmpty)
+          Text(tr(ref, 'bestiary_none_met'),
+              style: Theme.of(context).textTheme.bodyMedium),
+        ..._enemyCards(context, ref, keys, session, isEditMode),
+        if (!isEditMode && unmet > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              tr(ref, 'bestiary_unmet_count').replaceAll('{n}', '$unmet'),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant),
+            ),
+          ),
+      ],
+    );
+  }
+
+  List<Widget> _enemyCards(BuildContext context, WidgetRef ref,
+      List<String> keys, PlayerSession session, bool isEditMode) {
+    return [
+      ...keys.map((enemyId) {
         final enemy = records[enemyId] as Map<String, dynamic>;
         final enemyName = enemy['enemyName']?.toString() ?? enemyId;
         final maxHealth = (enemy['maxHealth'] as num?)?.toInt() ?? 0;
         final damage = (enemy['damage'] as num?)?.toInt() ?? 0;
-        final accessible =
-            isEditMode || session.unlockedEnemyIds.contains(enemyId);
+        final accessible = isEditMode || enemyDiscovered(enemyId, session);
         return Card(
           child: ListTile(
             leading: Icon(accessible ? enemyIcon : Icons.lock_outline),
@@ -869,8 +843,8 @@ class _EnemyList extends ConsumerWidget {
                   ),
           ),
         );
-      }).toList(),
-    );
+      }),
+    ];
   }
 }
 
@@ -887,42 +861,42 @@ class _NpcList extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
     final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
-    final keys = records.keys.toList()..sort();
+    final chapter = chapterOfNode(ref.watch(storyPlayProvider).currentNodeId);
+    // In play, only the people the story has brought the player to.
+    final keys = [
+      for (final id in records.keys)
+        if (isEditMode ||
+            npcDiscovered(
+                id, records[id] as Map<String, dynamic>, session, chapter))
+          id,
+    ]..sort();
+    if (keys.isEmpty) {
+      return Text(tr(ref, 'npcs_none_met'),
+          style: Theme.of(context).textTheme.bodyMedium);
+    }
 
     return Column(
       children: keys.map((npcId) {
         final npc = records[npcId] as Map<String, dynamic>;
         final npcName = npc['npcName']?.toString() ?? npcId;
-        final requiredFlag = npc['requiredFlag']?.toString() ?? '';
-        final discovered =
-            requiredFlag.isEmpty || session.flags.contains(requiredFlag);
-        final accessible = isEditMode || discovered;
         final talkedTo = session.talkedToNpcIds.contains(npcId);
+        final description =
+            french && (npc['description_fr']?.toString().isNotEmpty ?? false)
+                ? npc['description_fr'].toString()
+                : npc['description']?.toString() ?? '';
         return Card(
           child: ListTile(
-            leading: Icon(accessible
-                ? (talkedTo ? Icons.check_circle : Icons.person_outline)
-                : Icons.lock_outline),
+            leading: Icon(talkedTo ? Icons.check_circle : Icons.person_outline),
             title: Text(npcName),
-            subtitle: Text(
-              accessible
-                  ? (french
-                      ? (npc['description_fr']?.toString().isNotEmpty ?? false)
-                          ? npc['description_fr'].toString()
-                          : npc['description']?.toString() ?? ''
-                      : npc['description']?.toString() ?? '')
-                  : tr(ref, 'npc_not_yet_met'),
-            ),
-            trailing: accessible ? const Icon(Icons.chevron_right) : null,
-            onTap: !accessible
-                ? null
-                : () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => NpcDetailScreen(npcId: npcId, npc: npc),
-                      ),
-                    );
-                  },
+            subtitle: Text(description),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => NpcDetailScreen(npcId: npcId, npc: npc),
+                ),
+              );
+            },
           ),
         );
       }).toList(),

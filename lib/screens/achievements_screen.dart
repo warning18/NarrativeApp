@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../gamedata/db_schema.dart';
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -16,6 +17,9 @@ class AchievementsScreen extends ConsumerWidget {
     final achievementsAsync =
         ref.watch(localizedDbProvider(achievementsSchema));
     final session = ref.watch(playerSessionProvider);
+    // In play, an achievement keeps its name and how to earn it hidden
+    // until it is earned.
+    final reveal = ref.watch(appModeProvider) == AppMode.edit;
 
     return TutorialTrigger(
       topic: TutorialTopic.achievements,
@@ -37,9 +41,14 @@ class AchievementsScreen extends ConsumerWidget {
                 const SizedBox(height: 12),
                 ...keys.map((id) {
                   final record = records[id] as Map<String, dynamic>;
-                  final name = record['achievementName']?.toString() ?? id;
-                  final description = record['description']?.toString() ?? '';
                   final unlocked = session.unlockedAchievementIds.contains(id);
+                  final shown = unlocked || reveal;
+                  final name = shown
+                      ? record['achievementName']?.toString() ?? id
+                      : tr(ref, 'achievement_hidden_name');
+                  final description = shown
+                      ? record['description']?.toString() ?? ''
+                      : tr(ref, 'achievement_hidden_desc');
                   final colorScheme = Theme.of(context).colorScheme;
                   return Card(
                     color: unlocked ? colorScheme.primaryContainer : null,

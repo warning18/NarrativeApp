@@ -30,6 +30,8 @@ class StoryChoice {
     this.launchZoneId,
     this.grantsBannerPieceId,
     this.loseAllyId,
+    this.mainQuest = false,
+    this.travelPlaceId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -72,6 +74,8 @@ class StoryChoice {
       launchZoneId: json['launchZoneId'] as String?,
       grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
       loseAllyId: json['loseAllyId'] as String?,
+      mainQuest: json['mainQuest'] as bool? ?? false,
+      travelPlaceId: json['travelPlaceId'] as String?,
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -193,6 +197,18 @@ class StoryChoice {
 
   bool get launchesZone => launchZoneId != null && launchZoneId!.isNotEmpty;
 
+  /// A camp's way into its chapter's main quest: shut until the chapter's
+  /// activity goal is met (see chapter_loop.dart), then the camp's "Set
+  /// out" for the banner piece.
+  final bool mainQuest;
+
+  /// A place (its story node id) the party travels to before this choice
+  /// resolves: a walk, or a voyage to the place's landing (see
+  /// camp_travel.dart). The main quest sets out this way from the camp.
+  final String? travelPlaceId;
+
+  bool get travels => travelPlaceId != null && travelPlaceId!.isNotEmpty;
+
   bool isHiddenFor(Iterable<String> flags) =>
       hideIfFlags.any((flag) => flags.contains(flag)) ||
       showIfFlags.any((flag) => !flags.contains(flag));
@@ -256,6 +272,8 @@ class StoryChoice {
           'grantsBannerPieceId': grantsBannerPieceId,
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
+        if (mainQuest) 'mainQuest': mainQuest,
+        if (travels) 'travelPlaceId': travelPlaceId,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -636,9 +654,16 @@ class Settlement {
     required this.name,
     this.nameFr,
     this.portId,
+    this.landingPortId,
+    this.chapter,
+    this.mustDiscover = false,
+    this.blurb,
+    this.blurbFr,
+    this.arrivalNodeId,
   });
 
-  /// 'town' or 'camp'.
+  /// 'camp', 'town', 'village' or 'site' (anything else: a landmark, a
+  /// beach, a ruin). Read as 'town' when missing or unknown.
   final String kind;
   final String name;
   final String? nameFr;
@@ -647,21 +672,64 @@ class Settlement {
   /// any.
   final String? portId;
 
+  /// The ports.json row where the Rusty Eel puts in for this place, when
+  /// the voyage between it and the camp lands somewhere other than
+  /// [portId] (a town whose expeditions the story launches itself offers
+  /// no port services, but is still a voyage away).
+  final String? landingPortId;
+
+  /// The chapter whose lands this place belongs to (chapters.json): a
+  /// camp's is the chapter it is the base of. From chapter 3 the places of
+  /// the chapters reached so far are the party's to travel between, and a
+  /// chapter's own places count toward its main quest.
+  final int? chapter;
+
+  /// Whether the party must first find this place (an expedition or a
+  /// scene sets `found_<id>`, see [placeFoundFlag]) before it can travel
+  /// there. A place that needn't be found is known from its chapter on.
+  final bool mustDiscover;
+
+  /// One line for the place's card at the camp.
+  final String? blurb;
+  final String? blurbFr;
+
+  /// The scene the first visit goes through before the place itself (the
+  /// Reliquary Quarter's gate).
+  final String? arrivalNodeId;
+
   bool get isCamp => kind == 'camp';
 
   String nameFor(bool french) =>
       french && (nameFr?.isNotEmpty ?? false) ? nameFr! : name;
 
+  String? blurbFor(bool french) {
+    final text = french && (blurbFr?.isNotEmpty ?? false) ? blurbFr : blurb;
+    return (text?.isEmpty ?? true) ? null : text;
+  }
+
+  static const Set<String> _kinds = {'camp', 'town', 'village', 'site'};
+
   static Settlement? fromJson(Object? raw) {
     if (raw is! Map) return null;
     final name = raw['name']?.toString() ?? '';
     if (name.isEmpty) return null;
-    final portId = raw['portId']?.toString() ?? '';
+    String? text(String key) {
+      final value = raw[key]?.toString() ?? '';
+      return value.isEmpty ? null : value;
+    }
+
+    final kind = raw['kind']?.toString() ?? '';
     return Settlement(
-      kind: raw['kind']?.toString() == 'camp' ? 'camp' : 'town',
+      kind: _kinds.contains(kind) ? kind : 'town',
       name: name,
       nameFr: raw['name_fr']?.toString(),
-      portId: portId.isEmpty ? null : portId,
+      portId: text('portId'),
+      landingPortId: text('landingPortId'),
+      chapter: (raw['chapter'] as num?)?.toInt(),
+      mustDiscover: raw['mustDiscover'] == true,
+      blurb: text('blurb'),
+      blurbFr: text('blurb_fr'),
+      arrivalNodeId: text('arrivalNodeId'),
     );
   }
 
@@ -670,8 +738,18 @@ class Settlement {
         'name': name,
         if (nameFr != null && nameFr!.isNotEmpty) 'name_fr': nameFr,
         if (portId != null) 'portId': portId,
+        if (landingPortId != null) 'landingPortId': landingPortId,
+        if (chapter != null) 'chapter': chapter,
+        if (mustDiscover) 'mustDiscover': true,
+        if (blurb != null) 'blurb': blurb,
+        if (blurbFr != null) 'blurb_fr': blurbFr,
+        if (arrivalNodeId != null) 'arrivalNodeId': arrivalNodeId,
       };
 }
+
+/// The flag that marks the place at [placeNodeId] found (see
+/// [Settlement.mustDiscover]).
+String placeFoundFlag(String placeNodeId) => 'found_$placeNodeId';
 
 class HubProgress {
   const HubProgress({required this.prefix, required this.lines});

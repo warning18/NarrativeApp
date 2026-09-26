@@ -15,12 +15,13 @@ import '../combat/loot_box.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
 import '../data/encounter_text.dart';
+import '../data/skill_tree.dart';
 import '../combat/skill_vfx.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
-import '../data/chapter_spine.dart';
+import '../data/chapter_loop.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -36,6 +37,7 @@ import '../providers/permadeath_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
@@ -389,6 +391,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final spellsAsync = ref.watch(localizedDbProvider(spellsSchema));
     final itemSetsAsync = ref.watch(localizedDbProvider(itemSetsSchema));
     final housesAsync = ref.watch(localizedDbProvider(housesSchema));
+    final skillTreesAsync = ref.watch(gameDbProvider(skillTreesSchema));
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
@@ -402,6 +405,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final spellsDb = spellsAsync.value;
     final itemSetsDb = itemSetsAsync.value;
     final houses = housesAsync.value;
+    final skillTrees = skillTreesAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -412,7 +416,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         gameConfig == null ||
         spellsDb == null ||
         itemSetsDb == null ||
-        houses == null) {
+        houses == null ||
+        skillTrees == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -422,7 +427,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
           gameConfigAsync.error ??
           spellsAsync.error ??
           itemSetsAsync.error ??
-          housesAsync.error;
+          housesAsync.error ??
+          skillTreesAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -437,7 +443,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
     _itemSets = parseItemSets(itemSetsDb);
     _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice);
+        items, _itemSets, houses, dice, skillTrees, skills);
     _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in

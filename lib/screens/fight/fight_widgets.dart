@@ -50,50 +50,18 @@ IconData _logIcon(_LogKind kind) {
   }
 }
 
-/// Icon for a die face's own type — distinct from [_logIcon], which is
-/// about a resolved log line's category.
-IconData _faceTypeIcon(String type) {
-  switch (type) {
-    case 'Attack':
-      return Icons.bolt;
-    case 'Defend':
-      return Icons.shield;
-    case 'Heal':
-      return Icons.favorite;
-    case 'Skill':
-      return Icons.auto_awesome;
-    case 'Mana':
-      return manaIcon;
-    default:
-      return Icons.remove_circle_outline;
-  }
-}
+/// Icon for a die face's own type -- distinct from [_logIcon], which is
+/// about a resolved log line's category. Colours come from [FaceKind].
+IconData _faceTypeIcon(String type) => faceKind(type).icon;
 
-// A die face's colour says what it does, the same everywhere in the app:
-// ember for attacks, steel for guarding, green for healing, tide for
-// mana and the Void's purple for techniques. Mid-tones, legible on both
-// the dark page and the parchment one.
+// The fight log's colours (Stitched Ink): ember for the party's hits,
+// steel for guarding, green for healing and the Void's purple for a
+// boss's new phase. Mid-tones, legible on the dark page and the parchment
+// one. Die faces take their colour from [FaceKind].
 const Color _attackColor = Color(0xFFD9692A);
 const Color _defendColor = Color(0xFF7F92A6);
 const Color _healColor = Color(0xFF5FA64C);
 const Color _skillColor = Color(0xFF9270DA);
-
-Color _faceTypeColor(String type) {
-  switch (type) {
-    case 'Attack':
-      return _attackColor;
-    case 'Defend':
-      return _defendColor;
-    case 'Heal':
-      return _healColor;
-    case 'Mana':
-      return manaColor;
-    case 'Skill':
-      return _skillColor;
-    default:
-      return Colors.grey;
-  }
-}
 
 /// A small pill showing one active status effect's icon and how many
 /// rounds it has left — the visual half of the status-effect system,

@@ -624,7 +624,7 @@ const _wildsBeyond = ExcursionFlavor(
     'Une étagère de marchandises suspendue par des cordes pend entre deux branches robustes.',
     'Un étal se dresse sur le sable exactement là où se tenait le marché aux poissons des quais, tenu par un reflet qui se souvient des prix.',
     'Ce qui fut un marchand a étalé des marchandises qui furent réelles, et prend des pièces qui le sont encore.',
-    'Une charrette du Quartier de Cendre repose sous la mauvaise lumière, son propriétaire le visage détourné, sa marchandise bonne.',
+    'Une charrette du Quartier des Cendres repose sous la mauvaise lumière, son propriétaire le visage détourné, sa marchandise bonne.',
     'Le comptoir de la Dernière Lanterne est ici, ou une copie, et la copie vend.',
     'Un négociant sans ombre propose un prix honnête et ne lève pas les yeux, ce qui est une miséricorde.',
   ],

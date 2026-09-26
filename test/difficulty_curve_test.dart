@@ -7,18 +7,18 @@ void main() {
   group('chapterDifficultyMultiplier', () {
     test('chapter 1 is the baseline and each chapter adds the step', () {
       expect(chapterDifficultyMultiplier(1), 1.0);
-      expect(chapterDifficultyMultiplier(2), closeTo(1.12, 1e-9));
-      expect(chapterDifficultyMultiplier(3), closeTo(1.24, 1e-9));
-      expect(chapterDifficultyMultiplier(6), closeTo(1.60, 1e-9));
+      expect(chapterDifficultyMultiplier(2), closeTo(1.15, 1e-9));
+      expect(chapterDifficultyMultiplier(3), closeTo(1.30, 1e-9));
+      expect(chapterDifficultyMultiplier(6), closeTo(1.75, 1e-9));
     });
 
     test('damage climbs half as fast as health', () {
       expect(damageShareOf(1.0), 1.0);
-      expect(damageShareOf(1.24), closeTo(1.12, 1e-9));
+      expect(damageShareOf(1.3), closeTo(1.15, 1e-9));
       expect(damageShareOf(1.6), closeTo(1.3, 1e-9));
       expect(
           damageShareOf(chapterDifficultyMultiplier(4) * zoneTierMultiplier(3)),
-          closeTo(1 + (1.36 * 1.2 - 1) / 2, 1e-9));
+          closeTo(1 + (1.45 * 1.2 - 1) / 2, 1e-9));
     });
 
     test('a chapter below 1 (unknown node) is treated as chapter 1', () {
@@ -37,23 +37,33 @@ void main() {
   });
 
   group('difficultyCurveFor', () {
-    test('a regular enemy gets the flat floor on top of the chapter curve', () {
+    test('a regular enemy\'s floor ramps over the first three chapters', () {
+      expect(enemyHealthBaseMultiplier(1), 1.15);
+      expect(enemyHealthBaseMultiplier(2), 1.25);
+      expect(enemyHealthBaseMultiplier(3), 1.35);
+      expect(enemyHealthBaseMultiplier(6), 1.35);
+      expect(enemyHealthBaseMultiplier(0), 1.15);
+      expect(enemyDamageBaseMultiplier(1), 1.10);
+      expect(enemyDamageBaseMultiplier(2), 1.15);
+      expect(enemyDamageBaseMultiplier(5), 1.20);
       final curve = difficultyCurveFor(chapter: 1);
-      expect(curve.health, closeTo(enemyHealthBaseMultiplier, 1e-9));
-      expect(curve.damage, closeTo(enemyDamageBaseMultiplier, 1e-9));
+      expect(curve.health, closeTo(1.15, 1e-9));
+      expect(curve.damage, closeTo(1.10, 1e-9));
       final later = difficultyCurveFor(chapter: 3, zoneMultiplier: 1.2);
-      expect(
-          later.health, closeTo(enemyHealthBaseMultiplier * 1.24 * 1.2, 1e-9));
-      expect(later.damage,
-          closeTo(enemyDamageBaseMultiplier * damageShareOf(1.24 * 1.2), 1e-9));
+      expect(later.health, closeTo(1.35 * 1.30 * 1.2, 1e-9));
+      expect(later.damage, closeTo(1.20 * damageShareOf(1.30 * 1.2), 1e-9));
     });
 
-    test('a boss skips the floor: its difficulty comes from its phases', () {
+    test('a boss takes its own lighter floor: its phases do the rest', () {
       final boss = difficultyCurveFor(chapter: 1, isBoss: true);
-      expect(boss.health, 1.0);
-      expect(boss.damage, 1.0);
-      expect(difficultyCurveFor(chapter: 4, isBoss: true).health,
-          closeTo(chapterDifficultyMultiplier(4), 1e-9));
+      expect(boss.health, bossHealthBaseMultiplier);
+      expect(boss.damage, bossDamageBaseMultiplier);
+      expect(bossHealthBaseMultiplier, lessThan(enemyHealthBaseMultiplier(1)));
+      expect(bossDamageBaseMultiplier, lessThan(enemyDamageBaseMultiplier(1)));
+      expect(
+          difficultyCurveFor(chapter: 4, isBoss: true).health,
+          closeTo(
+              bossHealthBaseMultiplier * chapterDifficultyMultiplier(4), 1e-9));
     });
 
     test('every New Game+ cycle scales health and damage alike', () {

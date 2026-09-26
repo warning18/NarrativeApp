@@ -542,22 +542,36 @@ class _InventoryBody extends ConsumerWidget {
         child: ListView(
           shrinkWrap: true,
           children: ownedDiceIds.map((id) {
-            final faceCount = (dice[id] as Map<String, dynamic>?)?['faces']
-                    is List
-                ? ((dice[id] as Map<String, dynamic>)['faces'] as List).length
-                : 0;
+            final die = dice[id] as Map<String, dynamic>?;
+            final faceCount = (die?['faces'] as List?)?.length ?? 0;
+            final session = ref.read(playerSessionProvider);
+            // A die made for another class (a New Game+ legacy, say) stays
+            // in the bag but can't be rolled.
+            final usable = dieUsableBy(die,
+                professionId: session.professionId, raceId: session.raceId);
+            final madeFor = dieMadeForLabel(
+                die,
+                ref.read(localizedDbProvider(professionsSchema)).value ??
+                    const {},
+                ref.read(localizedDbProvider(racesSchema)).value ?? const {});
+            final lang = ref.read(appLanguageProvider);
             return ListTile(
+              enabled: usable,
               leading: const Icon(Icons.casino),
-              title: Text(
-                  dieDisplayName(id, language: ref.watch(appLanguageProvider))),
-              subtitle: Text(
-                  '$faceCount $facesLabel · ${dieFacesSummary(dice[id] as Map<String, dynamic>?, ref.read(appLanguageProvider))}'),
+              title: Text(dieDisplayName(id, language: lang)),
+              subtitle: Text([
+                '$faceCount $facesLabel · ${dieFacesSummary(die, lang)}',
+                if (madeFor.isNotEmpty)
+                  '${trFor(lang, 'die_made_for_prefix')} $madeFor',
+              ].join('\n')),
               trailing:
                   id == currentlyEquippedId ? const Icon(Icons.check) : null,
-              onTap: () {
-                ref.read(playerSessionProvider.notifier).equipDice(id);
-                Navigator.of(sheetContext).pop();
-              },
+              onTap: !usable
+                  ? null
+                  : () {
+                      ref.read(playerSessionProvider.notifier).equipDice(id);
+                      Navigator.of(sheetContext).pop();
+                    },
             );
           }).toList(),
         ),

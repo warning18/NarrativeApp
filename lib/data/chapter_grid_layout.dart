@@ -1,11 +1,12 @@
 import 'dart:collection';
 
 import '../data/story_repository.dart';
+import '../models/story_node.dart';
 
 /// Which chapter a node id belongs to, by its numeric id prefix — mirrors
 /// the boundaries used throughout the codebase (e.g. the playthrough
 /// simulator's chapter buckets): 0 = prologue, 1 = <2000, 2 = <3000,
-/// 3 = <5000, 4 = <6000, 5 = everything else. Non-numeric ids (companion
+/// 3 = <5000, 4 = <6000, 5 = <7000, 6 = everything else. Non-numeric ids (companion
 /// recruit bridge nodes like "2015_kelda", flag variants like
 /// "6001_seeker") still start with their parent's numeric id, so the
 /// leading-digits match handles them the same way.
@@ -18,7 +19,8 @@ int chapterOfNode(String nodeId) {
   if (n < 3000) return 2;
   if (n < 5000) return 3;
   if (n < 6000) return 4;
-  return 5;
+  if (n < 7000) return 5;
+  return 6;
 }
 
 /// Each chapter's own BFS root(s) for column assignment — the same first
@@ -30,8 +32,8 @@ const Map<int, Set<String>> _chapterRoots = {
   1: {'100'},
   2: {'2001'},
   3: {'3001'},
-  4: {'5001'},
-  5: {'6001', '6001_seeker'},
+  4: {'5003'},
+  5: {'6001'},
   6: {'7001'},
 };
 
@@ -81,9 +83,13 @@ Map<String, GridSlot> computeChapterGridSlots(StoryData story,
   final chapters = byChapter.keys.toList()..sort();
   for (final chapter in chapters) {
     final nodes = byChapter[chapter]!;
-    final roots = (_chapterRoots[chapter] ?? const <String>{})
-        .where(nodes.contains)
-        .toList();
+    // An open chapter's places are reached by travel, not by a choice:
+    // each is a root of its own (see chapter_loop.dart).
+    final roots = [
+      ...(_chapterRoots[chapter] ?? const <String>{}).where(nodes.contains),
+      for (final id in nodes..sort())
+        if (_isTravelPlace(story.nodeFor(id))) id,
+    ];
     final effectiveRoots = roots.isNotEmpty ? roots : [nodes.first];
 
     final depth = <String, int>{};
@@ -207,4 +213,9 @@ ChapterBandLayout computeChapterBandLayout(
   }
   return ChapterBandLayout(
       bandStartY: bandStartY, maxColumn: maxColumn, totalHeight: y);
+}
+
+bool _isTravelPlace(StoryNode? node) {
+  final settlement = node?.settlement;
+  return settlement != null && !settlement.isCamp && settlement.chapter != null;
 }

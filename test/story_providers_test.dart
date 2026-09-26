@@ -58,6 +58,15 @@ void main() {
     expect(notifier.state.visitedNodeIds, {'100', '200', '999'});
   });
 
+  test('a save on a scene the story took out picks up where it went', () {
+    final notifier = StoryPlayNotifier('100');
+    notifier.loadState('5001', ['3001_camp', '4999_camp']);
+    expect(notifier.state.currentNodeId, '4999_camp');
+    notifier.loadState('5002', ['4999_camp']);
+    expect(notifier.state.currentNodeId, '4999_camp');
+    expect(liveNodeId('5003'), '5003');
+  });
+
   test('visited set persists across autosave load', () async {
     final first = StoryPlayNotifier('100');
     // Let the constructor's own autosave load (which finds nothing, since

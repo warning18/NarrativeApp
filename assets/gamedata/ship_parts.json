@@ -30,8 +30,12 @@
     "setsFire": false,
     "roomDamage": 2,
     "roomBonus": {},
-    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite.",
-    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent."
+    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite, but their lines reach no farther than medium range.",
+    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent, mais leurs filins ne portent pas au-delà de la moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
+    ]
   },
   "fire_pots": {
     "partID": "fire_pots",
@@ -47,8 +51,11 @@
     "setsFire": true,
     "roomDamage": 1,
     "roomBonus": {},
-    "description": "Clay pots of pitch, four turns to ready (three with a gunner). The room they land in burns until someone fights the fire, and the hull with it.",
-    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier). La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec."
+    "description": "Clay pots of pitch, four turns to ready (three with a gunner), hurled by hand: the ships must lie close. The room they land in burns until someone fights the fire, and the hull with it.",
+    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec.",
+    "ranges": [
+      "close"
+    ]
   },
   "iron_plating": {
     "partID": "iron_plating",
@@ -106,6 +113,24 @@
     },
     "description": "Spare canvas bent to the yards: one more pip on the helm, so the Eel answers faster and slips more shots.",
     "description_fr": "De la toile de rechange enverguée : un cran de plus pour la barre, donc l'Eel répond plus vite et esquive davantage."
+  },
+  "speaking_tube": {
+    "partID": "speaking_tube",
+    "partName": "Speaking Tube",
+    "partName_fr": "Porte-voix",
+    "slotType": "Utility",
+    "cost": 140,
+    "battleActionLabel": "",
+    "battleActionLabel_fr": "",
+    "damageAmount": 0,
+    "chargeTurns": 0,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 0,
+    "roomBonus": {},
+    "turnSecondsBonus": 8,
+    "description": "A brass pipe run from the helm to every deck: orders reach the guns and the hold before the smoke does, and a battle turn lasts 8 seconds longer.",
+    "description_fr": "Un tuyau de laiton qui court de la barre à chaque pont : les ordres arrivent aux pièces et à la cale avant la fumée, et un tour de bataille dure 8 secondes de plus."
   },
   "sail_gulls_wing": {
     "partID": "sail_gulls_wing",

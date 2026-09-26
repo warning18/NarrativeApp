@@ -203,7 +203,7 @@ void main() {
 
     // The story stands at the wharf; its panel says so.
     final panel = find.byKey(const Key('world_map_panel'));
-    expect(find.descendant(of: panel, matching: find.text('Smuggler’s Wharf')),
+    expect(find.descendant(of: panel, matching: find.text('Smugglers’ Wharf')),
         findsOneWidget);
     expect(find.text('You are here'), findsOneWidget);
     expect(find.text('Scenes read: 3 / 30'), findsOneWidget);

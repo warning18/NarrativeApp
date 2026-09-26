@@ -35,6 +35,10 @@ bool _hasImpact(StoryChoice c) =>
     (c.grantsBannerPieceId?.isNotEmpty ?? false) ||
     (c.loseAllyId?.isNotEmpty ?? false) ||
     (c.launchZoneId?.isNotEmpty ?? false) ||
+    // A camp's way into its chapter's main quest is the chapter's turn,
+    // and a trip to where it starts.
+    c.mainQuest ||
+    c.travels ||
     c.opensCharacterCreation;
 
 void main() {
@@ -89,12 +93,8 @@ void main() {
   });
 
   test('a lock the story already decided is hidden, not explained', () {
-    // The one explained story lock is the final crossing: the whole Shroud
-    // is earned on the spine, so the line is never shown, but it states
-    // what the tear wants (story_direction_test pins it).
     for (final node in nodes.values) {
       for (final choice in node.choices) {
-        if (node.id == '7002' && choice.nextId == '7002_confront') continue;
         final target = nodes[choice.nextId];
         if (target == null || target.reqFlags.isEmpty) continue;
         expect(choice.showIfFlags, containsAll(target.reqFlags),

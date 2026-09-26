@@ -68,6 +68,112 @@ bool isAssignableFace(Map<String, dynamic> face) {
   return basicFaceTypes.contains(type);
 }
 
+/// How rare a skill is: the rarer, the fewer faces of one die it may take
+/// (see [skillRarityFaceLimits]), so a die can't be six of the same skill.
+enum SkillRarity { common, uncommon, rare, epic, legendary }
+
+/// Faces of one die a skill of each rarity may take.
+const Map<SkillRarity, int> skillRarityFaceLimits = {
+  SkillRarity.common: 3,
+  SkillRarity.uncommon: 2,
+  SkillRarity.rare: 2,
+  SkillRarity.epic: 1,
+  SkillRarity.legendary: 1,
+};
+
+/// [skill]'s rarity (skills.json `rarity`); a skill without one is rated
+/// by its strength, its `cost`: 0–1 common, 2 uncommon, 3 rare, 4–5 epic,
+/// 6 and up legendary.
+SkillRarity skillRarity(Map<String, dynamic>? skill) {
+  final named = skill?['rarity']?.toString() ?? '';
+  for (final rarity in SkillRarity.values) {
+    if (rarity.name == named) return rarity;
+  }
+  final cost = (skill?['cost'] as num?)?.toInt() ?? 0;
+  if (cost <= 1) return SkillRarity.common;
+  if (cost == 2) return SkillRarity.uncommon;
+  if (cost == 3) return SkillRarity.rare;
+  if (cost <= 5) return SkillRarity.epic;
+  return SkillRarity.legendary;
+}
+
+/// Faces of one die [skill] may take.
+int maxFacesForSkill(Map<String, dynamic>? skill) =>
+    skillRarityFaceLimits[skillRarity(skill)]!;
+
+/// The player's picks that hold on a die of [faces], face by face: a skill
+/// already on as many faces as its rarity allows (the die's own fixed
+/// faces counted first, then the picks in face order) goes no further, and
+/// the faces past that do their own action. An open face left as it is
+/// (Heavy Blow) doesn't count. Keeps a save from before the limits to them.
+Map<String, String> limitedFaceAssignments(
+  List<Map<String, dynamic>> faces,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills,
+) {
+  final counts = <String, int>{};
+  for (final face in faces) {
+    if (isAssignableFace(face)) continue;
+    final own = faceSkillId(face, null);
+    if (own != null) counts[own] = (counts[own] ?? 0) + 1;
+  }
+  final kept = <String, String>{};
+  for (var i = 0; i < faces.length; i++) {
+    final picked = assignments[i.toString()];
+    if (picked == null || picked.isEmpty || !isAssignableFace(faces[i])) {
+      continue;
+    }
+    final used = counts[picked] ?? 0;
+    if (used >= maxFacesForSkill(skills[picked] as Map<String, dynamic>?)) {
+      continue;
+    }
+    counts[picked] = used + 1;
+    kept[i.toString()] = picked;
+  }
+  return kept;
+}
+
+/// Faces of a die of [faces] that count against [skillId]'s limit with
+/// [assignments]: its fixed faces and the picks that hold, leaving out
+/// face [exceptIndex] when given.
+int facesCastingSkill(
+  String skillId,
+  List<Map<String, dynamic>> faces,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills, {
+  int? exceptIndex,
+}) {
+  final kept = limitedFaceAssignments(faces, assignments, skills);
+  var count = 0;
+  for (var i = 0; i < faces.length; i++) {
+    if (i == exceptIndex) continue;
+    final counted = isAssignableFace(faces[i])
+        ? kept[i.toString()]
+        : faceSkillId(faces[i], null);
+    if (counted == skillId) count++;
+  }
+  return count;
+}
+
+/// Whether [skillId] may go on face [faceIndex]: an open face, and the
+/// skill on fewer of the die's other faces than its rarity allows.
+bool canSetSkillOnFace(
+  String skillId,
+  int faceIndex,
+  List<Map<String, dynamic>> faces,
+  Map<String, String> assignments,
+  Map<String, dynamic> skills,
+) {
+  if (faceIndex < 0 ||
+      faceIndex >= faces.length ||
+      !isAssignableFace(faces[faceIndex])) {
+    return false;
+  }
+  return facesCastingSkill(skillId, faces, assignments, skills,
+          exceptIndex: faceIndex) <
+      maxFacesForSkill(skills[skillId] as Map<String, dynamic>?);
+}
+
 /// Whether a skill on [face] works at [channeledSkillPower].
 bool isBasicFace(Map<String, dynamic> face) =>
     basicFaceTypes.contains(face['type']?.toString() ?? '');
@@ -137,6 +243,47 @@ DiceFaceResult applyFaceAssignment(
     }
   }
   return result.withFaceName(rolledFaceName(result, language));
+}
+
+List<String> _idList(Map<String, dynamic>? record, String key) =>
+    (record?[key] as List?)
+        ?.map((e) => e.toString())
+        .where((e) => e.isNotEmpty)
+        .toList() ??
+    const [];
+
+/// The professions [die] is made for (dice.json `professions`); empty
+/// means anyone.
+List<String> dieProfessionIds(Map<String, dynamic>? die) =>
+    _idList(die, 'professions');
+
+/// The races [die] is made for (dice.json `races`); empty means anyone.
+List<String> dieRaceIds(Map<String, dynamic>? die) => _idList(die, 'races');
+
+/// Whether a character of [professionId] and [raceId] may buy and roll
+/// [die]: a Mage's apprentice die is no use to a Warrior, a dwarf's stone
+/// die no use to an elf.
+bool dieUsableBy(Map<String, dynamic>? die,
+    {required String professionId, required String raceId}) {
+  final professions = dieProfessionIds(die);
+  final races = dieRaceIds(die);
+  return (professions.isEmpty || professions.contains(professionId)) &&
+      (races.isEmpty || races.contains(raceId));
+}
+
+/// "Mage, Cleric": who [die] is made for, named from the localized
+/// professions and races tables; '' for a die anyone can use.
+String dieMadeForLabel(Map<String, dynamic>? die,
+    Map<String, dynamic> professions, Map<String, dynamic> races) {
+  final names = [
+    for (final id in dieProfessionIds(die))
+      (professions[id] as Map<String, dynamic>?)?['professionName']
+              ?.toString() ??
+          id,
+    for (final id in dieRaceIds(die))
+      (races[id] as Map<String, dynamic>?)?['raceName']?.toString() ?? id,
+  ];
+  return names.join(', ');
 }
 
 /// The signature skills [die] carries on its fixed skill faces. Whoever

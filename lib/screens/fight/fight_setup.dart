@@ -3,12 +3,13 @@ part of '../fight_screen.dart';
 /// Building the enemies and the party, and starting the fight.
 extension _FightSetup on _FightScreenState {
   /// The story chapter this fight belongs to: the caller's (an expedition
-  /// passes its zone's), else the current story node's, else 1. Drives the
-  /// chapter difficulty curve and the chest's loot window.
+  /// passes its zone's), else the current scene's (a place's own chapter,
+  /// see storyChapterOf). Drives the chapter difficulty curve and the
+  /// chest's loot window.
   int get _chapter =>
       widget.modifiers.chapter ??
-      chapterForNode(ref.read(storyPlayProvider).currentNodeId) ??
-      1;
+      storyChapterOf(ref.read(storyPlayProvider).currentNodeId,
+          ref.read(storyDataProvider).value);
 
   /// Builds [_enemies] — a solo fight rolls Elite (see [_eliteChance]); a
   /// pack (`widget.additionalEnemyIds` non-empty) never does. A pack member
@@ -158,6 +159,8 @@ extension _FightSetup on _FightScreenState {
     Map<String, ItemSet> itemSets,
     Map<String, dynamic> houses,
     Map<String, dynamic> dice,
+    Map<String, dynamic> skillTrees,
+    Map<String, dynamic> skills,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -170,9 +173,17 @@ extension _FightSetup on _FightScreenState {
       houses: houses,
     );
 
-    final playerDiceAssignments =
+    // A skill takes no more of a die's faces than its rarity allows; a
+    // save from before the limits keeps the first of its faces.
+    List<Map<String, dynamic>> facesOf(String? diceId) =>
+        ((dice[diceId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
+            ?.cast<Map<String, dynamic>>() ??
+        const [];
+    final playerDiceAssignments = limitedFaceAssignments(
+        facesOf(_selectedDiceId),
         session.diceSkillAssignments[_selectedDiceId] ??
-            const <String, String>{};
+            const <String, String>{},
+        skills);
     final playerLabel = session.characterName.isNotEmpty
         ? session.characterName
         : trFor(ref.read(appLanguageProvider), 'you_label');
@@ -194,7 +205,9 @@ extension _FightSetup on _FightScreenState {
       ],
       diceSkillAssignments: playerDiceAssignments,
       equippedDiceId: _selectedDiceId,
-      skillTiers: session.skillTiers,
+      // A mastered branch's skills fight a tier above their own.
+      skillTiers: effectiveSkillTiers(
+          session.skillTiers, skillTrees, session.masteredBranchId),
       strength: session.strength,
       dexterity: session.dexterity,
       constitution: session.constitution,
@@ -244,7 +257,10 @@ extension _FightSetup on _FightScreenState {
               dice[companion['signatureDiceId']?.toString() ?? '']
                   as Map<String, dynamic>?),
         ],
-        diceSkillAssignments: allyState.diceSkillAssignments,
+        diceSkillAssignments: limitedFaceAssignments(
+            facesOf(companion['signatureDiceId']?.toString()),
+            allyState.diceSkillAssignments,
+            skills),
         equippedDiceId: companion['signatureDiceId']?.toString(),
         strength: base.strength,
         dexterity: base.dexterity,

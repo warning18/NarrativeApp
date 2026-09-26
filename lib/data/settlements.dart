@@ -1,6 +1,10 @@
 import '../models/story_node.dart';
 import 'story_repository.dart';
 
+/// Set when the camp is founded (3001_camp): from then on the camp is the
+/// party's base, and towns are places visited away from it.
+const String campFoundedFlag = 'camp_founded';
+
 /// Whether [nodeId] is the place [placeNodeId] itself or one of its own
 /// scenes ("2015_kelda" belongs to "2015"), which all lead back to it.
 bool isWithinPlace(String nodeId, String placeNodeId) =>
@@ -9,9 +13,14 @@ bool isWithinPlace(String nodeId, String placeNodeId) =>
 /// Whether reaching the settlement at [settlementNodeId] from
 /// [previousNodeId] is an arrival -- coming from elsewhere in the story --
 /// rather than a return from one of its own scenes. Opening the game there
-/// (no previous scene) is not: the player was already in the place.
-bool isSettlementArrival(String settlementNodeId, String? previousNodeId) =>
-    previousNodeId != null && !isWithinPlace(previousNodeId, settlementNodeId);
+/// (no previous scene) is not: the player was already in the place. Given
+/// the scenes read so far ([history]), a first visit is an arrival even
+/// through one of the place's own scenes (the Reliquary Quarter's gate).
+bool isSettlementArrival(String settlementNodeId, String? previousNodeId,
+        {List<String>? history}) =>
+    previousNodeId != null &&
+    (!isWithinPlace(previousNodeId, settlementNodeId) ||
+        (history != null && !history.contains(settlementNodeId)));
 
 /// The town or camp node the player stands in at [currentNodeId]: the node
 /// itself when it is one, or the settlement one of whose scenes it is.

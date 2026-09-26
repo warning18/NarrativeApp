@@ -36,6 +36,7 @@ enum TutorialTopic {
     TutorialStep('tut_camp_2', target: 'camp.tray'),
     TutorialStep('tut_camp_3', target: 'camp.boat'),
     TutorialStep('tut_camp_4', target: 'camp.roster'),
+    TutorialStep('tut_camp_5', target: 'camp.sail'),
   ]),
   other(Icons.more_horiz, homeTab: 3, steps: [
     TutorialStep('tut_other_1', target: 'other.saves'),
@@ -50,6 +51,7 @@ enum TutorialTopic {
   ]),
   skills(Icons.auto_awesome, steps: [
     TutorialStep('tut_skills_1', target: 'skills.points'),
+    TutorialStep('tut_skills_5', target: 'skills.views'),
     TutorialStep('tut_skills_2', target: 'skills.list'),
     TutorialStep('tut_skills_3', target: 'skills.craft'),
     TutorialStep('tut_skills_4', target: 'skills.compare'),
@@ -79,7 +81,8 @@ enum TutorialTopic {
     TutorialStep('tut_skillChallenge_1', target: 'challenge.die'),
     TutorialStep('tut_skillChallenge_2', target: 'challenge.track'),
   ]),
-  boat(Icons.sailing, steps: [
+  // The Harbour, where the Rusty Eel is refitted.
+  boat(Icons.anchor, steps: [
     TutorialStep('tut_boat_1'),
     TutorialStep('tut_boat_2'),
   ]),
