@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.155.0+185]
+
+### Added
+- **Download the game data from the Data tab (Edit Mode).** Each
+  collection (items, enemies, quests…) has a Download button with three
+  choices, each to copy or to save as a file:
+  - **Records (JSON)**: every record with every field, as the game
+    stores it (`items.json`).
+  - **Records (CSV)**: one row per record, an `id` column and one column
+    per field; lists and nested values go in their cell as JSON
+    (`items.csv`).
+  - **Texts (CSV)**: every text of the collection, one row each, with
+    the English and the French side by side (`items_texts.csv`). Nested
+    texts are included (a ship's weapon names, an enemy's encounter
+    lines one by one); ids, flags and numbers are left out.
+- **Download all data**, at the top of the Data tab: the same three,
+  for all 24 collections in one file (`game_data.json`,
+  `game_data.csv` with one row per field, and `game_texts.csv` with the
+  game's 1,334 texts).
+- The CSV files are UTF-8 with a byte order mark, so spreadsheets show
+  the French accents.
+
+### Fixed
+- The Enemy Ships list no longer overflows on a phone: its filter took
+  the new Battle Habit field's long label. The label is short now, and
+  a filter never pushes the search box off the row whatever its label.
+
 ## [1.154.1+184]
 
 ### Fixed
