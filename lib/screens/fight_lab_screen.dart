@@ -21,6 +21,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import 'fight_screen.dart';
 import 'ship_battle_panel.dart';
+import 'vfx_gallery_screen.dart';
 import 'voyage_screen.dart';
 
 /// Zone-tier style multipliers offered for a test fight's enemies.
@@ -250,6 +251,17 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
         children: [
           Text(tr(ref, 'fight_lab_intro'), style: theme.textTheme.bodySmall),
+          ListTile(
+            key: const Key('fight_lab_effects'),
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.auto_awesome),
+            title: Text(tr(ref, 'fight_lab_effects')),
+            subtitle: Text(tr(ref, 'fight_lab_effects_desc')),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const VfxGalleryScreen()),
+            ),
+          ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(tr(ref, 'fight_lab_keep')),

@@ -10,10 +10,11 @@ import '../combat/skill_vfx.dart';
 enum VfxTextKind { damage, hurt, heal, block, mana, crit, info }
 
 /// One effect in flight: a [VfxStyle] played on [target] (and, for the
-/// travelling styles, from [source]), with an optional floating [text].
-/// Anchors are the widgets' [GlobalKey]s, resolved at every frame so an
-/// effect follows its card; the rects captured when it was played stand
-/// in if a card is gone.
+/// travelling styles, from [source]), with an optional floating [text],
+/// at a [power] (see [vfxPowerFor]) that sets its size, its particles, its
+/// length and the details its [tier] adds. Anchors are the widgets'
+/// [GlobalKey]s, resolved at every frame so an effect follows its card;
+/// the rects captured when it was played stand in if a card is gone.
 class VfxBurst {
   VfxBurst({
     required this.style,
@@ -26,8 +27,13 @@ class VfxBurst {
     this.text,
     this.textKind = VfxTextKind.info,
     this.big = false,
+    this.power = 1.0,
+    this.hit = true,
     required this.seed,
-  })  : durationMs = vfxDurationMs(style),
+  })  : tier = vfxTierFor(power),
+        durationMs =
+            (vfxDurationMs(style) * vfxDurationFactor(vfxTierFor(power)))
+                .round(),
         particles = _makeParticles(seed);
 
   final VfxStyle style;
@@ -40,6 +46,16 @@ class VfxBurst {
   final String? text;
   final VfxTextKind textKind;
   final bool big;
+
+  /// How strongly it plays (see [vfxPowerFor]): its size, and through its
+  /// [tier] its particles, length and extra details.
+  final double power;
+
+  /// A blow landing (as against a heal, a shield, mana): the strong tiers
+  /// give a blow a shockwave, embers and a flash, and the rest a rising
+  /// aura.
+  final bool hit;
+  final VfxTier tier;
   final int seed;
   final int durationMs;
   final List<VfxParticle> particles;
@@ -65,10 +81,13 @@ class VfxParticle {
   final double dx;
 }
 
+/// Enough particles for the busiest style at the mightiest tier.
+const int vfxParticleCount = 64;
+
 List<VfxParticle> _makeParticles(int seed) {
   final random = Random(seed);
   return [
-    for (var i = 0; i < 24; i++)
+    for (var i = 0; i < vfxParticleCount; i++)
       VfxParticle(
         random.nextDouble() * pi * 2,
         0.45 + random.nextDouble() * 0.55,
@@ -85,7 +104,10 @@ class CombatVfxController extends ChangeNotifier {
   final List<VfxBurst> _queue = [];
   int _seed = 1;
 
-  /// Plays [style] on [target] after [delayMs], in [element]'s colors.
+  /// Plays [style] on [target] after [delayMs], in [element]'s colors, at
+  /// [power] (see [vfxPowerFor]; a [big] one with none given plays at
+  /// 1.35). [hit] says whether it is a blow landing; left out, a heal, a
+  /// shield or mana number says it isn't, and the style decides otherwise.
   void play({
     required VfxStyle style,
     required GlobalKey target,
@@ -95,6 +117,8 @@ class CombatVfxController extends ChangeNotifier {
     String? text,
     VfxTextKind textKind = VfxTextKind.info,
     bool big = false,
+    double? power,
+    bool? hit,
   }) {
     _queue.add(VfxBurst(
       style: style,
@@ -107,6 +131,8 @@ class CombatVfxController extends ChangeNotifier {
       text: text,
       textKind: textKind,
       big: big,
+      power: power ?? (big ? 1.35 : 1.0),
+      hit: hit ?? _isBlow(style, textKind),
       seed: _seed++ * 7919,
     ));
     notifyListeners();
@@ -117,6 +143,23 @@ class CombatVfxController extends ChangeNotifier {
     final queued = List<VfxBurst>.of(_queue);
     _queue.clear();
     return queued;
+  }
+}
+
+/// Whether an effect is a blow landing: a damage number says it is, a heal,
+/// shield or mana number that it isn't; with no number, the style decides.
+bool _isBlow(VfxStyle style, VfxTextKind kind) {
+  switch (kind) {
+    case VfxTextKind.damage:
+    case VfxTextKind.hurt:
+    case VfxTextKind.crit:
+      return true;
+    case VfxTextKind.heal:
+    case VfxTextKind.block:
+    case VfxTextKind.mana:
+      return false;
+    case VfxTextKind.info:
+      return !supportVfxStyles.contains(style);
   }
 }
 
@@ -255,7 +298,7 @@ class _VfxPainter extends CustomPainter {
           : resolve(burst.source!, burst.sourceFallback);
       final t = elapsedMs / burst.durationMs;
       if (!reducedMotion && t <= 1) {
-        _Fx(canvas, burst, target, source, t.clamp(0.0, 1.0)).paint();
+        _Fx(canvas, size, burst, target, source, t.clamp(0.0, 1.0)).paint();
       }
       if (burst.text != null) {
         _paintText(
@@ -338,15 +381,19 @@ double? _window(double t, double t0, double span) {
   return (t - t0) / span;
 }
 
-/// One burst's drawing at progress [t].
+/// One burst's drawing at progress [t]: its style, then the details its
+/// tier adds (see [_tierDetails]).
 class _Fx {
-  _Fx(this.canvas, this.burst, this.rect, this.sourceRect, this.t)
+  _Fx(this.canvas, this.layer, this.burst, this.rect, this.sourceRect, this.t)
       : c = rect.center,
         s = min(rect.width, rect.height).clamp(40.0, 110.0).toDouble(),
         primary = Color(burst.palette.primary),
         secondary = Color(burst.palette.secondary);
 
   final Canvas canvas;
+
+  /// The whole layer, for a mighty blow's flash of the screen.
+  final Size layer;
   final VfxBurst burst;
   final Rect rect;
   final Rect? sourceRect;
@@ -357,7 +404,21 @@ class _Fx {
   final Color secondary;
 
   List<VfxParticle> get p => burst.particles;
-  double get scale => burst.big ? 1.35 : 1.0;
+
+  /// The burst's size: its power (see [vfxPowerFor]), capped so a mighty
+  /// blow grows by its details rather than swallowing the screen.
+  double get scale => min(burst.power, maxVfxScale);
+  VfxTier get tier => burst.tier;
+  bool get strong => tier.index >= VfxTier.strong.index;
+  bool get mighty => tier == VfxTier.mighty;
+
+  /// [count] particles as many as the tier throws, within the burst's
+  /// supply.
+  int _n(int count) =>
+      max(1, min(p.length, (count * vfxCountFactor(tier)).round()));
+
+  /// A light touch glows less.
+  double get _glowK => tier == VfxTier.light ? 0.65 : 1.0;
 
   Paint _fill(Color color, double opacity) => Paint()
     ..color = color.withValues(alpha: opacity.clamp(0.0, 1.0))
@@ -375,16 +436,30 @@ class _Fx {
       sourceRect?.center ?? Offset(rect.left - s * 1.2, c.dy - s * 0.8);
 
   void paint() {
+    _style();
+    _tierDetails();
+  }
+
+  void _style() {
     switch (burst.style) {
       case VfxStyle.slash:
+        // An afterimage trails the blade; a strong cut crosses back.
+        if (tier != VfxTier.light) {
+          _slash(0.06, 1,
+              width: 0.045, shift: const Offset(0.09, 0.07), fade: 0.35);
+        }
         _slash(0, 1);
+        if (strong) _slash(0.14, -1, width: 0.055);
         _sparks(0.15, 0.5, count: 8, reach: 0.6);
       case VfxStyle.heavySlash:
+        _slash(0.06, 1, width: 0.07, shift: const Offset(0.1, 0.08), fade: 0.3);
         _slash(0, 1, width: 0.11);
         _slash(0.12, -1, width: 0.11);
         _ring(0.2, 0.5, s * 0.1, s * 0.9, width: 5);
         _sparks(0.2, 0.6, count: 14, reach: 0.9);
+        _cracks(0.18, 0.7, count: 3);
       case VfxStyle.pierce:
+        _speedLines(0, 0.35);
         _pierce();
       case VfxStyle.whirl:
         _whirl();
@@ -392,6 +467,7 @@ class _Fx {
         _claw();
       case VfxStyle.impact:
         _impact();
+        _cracks(0.05, 0.85);
       case VfxStyle.arrow:
         _arrow(_from, c, 0, 0.45);
         _sparks(0.45, 0.45, count: 8, reach: 0.5);
@@ -405,20 +481,26 @@ class _Fx {
       case VfxStyle.lightning:
         _lightning();
       case VfxStyle.flame:
+        _shimmer(0, 0.9);
         _glow(c, s * 0.6, 0, 0.5, secondary);
         _rise(0, 1, count: 20, height: 1.0, width: 0.45, sizeK: 0.12);
+        _embers(0.25, 0.75);
       case VfxStyle.fireball:
         _orb(0, 0.45, radius: 0.16, trail: true);
         _explosion(0.45, 0.55, reach: 1.0);
+        _smoke(count: 5, reach: 0.5, t0: 0.6, span: 0.4);
+        _embers(0.5, 0.5);
       case VfxStyle.meteor:
         _meteor();
       case VfxStyle.holyFire:
         _beam(0, 0.5, width: 0.3);
         _rise(0.35, 0.65, count: 16, height: 0.9, width: 0.4, sizeK: 0.1);
       case VfxStyle.frost:
+        _mist(0, 1);
         _shards();
         _ring(0, 0.6, s * 0.1, s * 0.95, width: 3, color: secondary);
         _glow(c, s * 0.5, 0, 0.4, primary);
+        _snowflakes(0.1, 0.9);
       case VfxStyle.splash:
         _droplets();
         _ellipseRing(0.05, 0.6);
@@ -430,6 +512,7 @@ class _Fx {
       case VfxStyle.wind:
         _gusts();
       case VfxStyle.quake:
+        _cracks(0, 0.9, count: 6);
         _quake();
       case VfxStyle.voidRift:
         _voidRift();
@@ -474,7 +557,7 @@ class _Fx {
   void _glow(Offset at, double radius, double t0, double span, Color color) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    final opacity = _fade(lt, 0.2, 0.3) * 0.55;
+    final opacity = _fade(lt, 0.2, 0.3) * 0.55 * _glowK;
     final r = radius * scale * (0.6 + 0.4 * _easeOut(lt));
     canvas.drawCircle(
       at,
@@ -501,7 +584,7 @@ class _Fx {
     final lt = _window(t, t0, span);
     if (lt == null) return;
     final origin = at ?? c;
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < _n(count); i++) {
       final q = p[i % p.length];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0) continue;
@@ -519,15 +602,19 @@ class _Fx {
   }
 
   /// A curved blade stroke across the target, drawn on then fading.
-  /// [dir] 1 runs top-left to bottom-right, -1 the mirror.
-  void _slash(double t0, int dir, {double width = 0.07}) {
+  /// [dir] 1 runs top-left to bottom-right, -1 the mirror. [shift] (in
+  /// fractions of the target's size) and [fade] draw an afterimage: the
+  /// same stroke, set off and fainter.
+  void _slash(double t0, int dir,
+      {double width = 0.07, Offset shift = Offset.zero, double fade = 1}) {
     final lt = _window(t, t0, 0.75);
     if (lt == null) return;
     final reveal = (lt / 0.35).clamp(0.0, 1.0);
-    final opacity = lt < 0.35 ? 1.0 : max(0.0, 1 - (lt - 0.35) / 0.65);
-    final a = Offset(c.dx - dir * s * 0.65, c.dy - s * 0.5);
-    final b = Offset(c.dx + dir * s * 0.65, c.dy + s * 0.5);
-    final ctrl = Offset(c.dx + dir * s * 0.4, c.dy - s * 0.35);
+    final opacity = fade * (lt < 0.35 ? 1.0 : max(0.0, 1 - (lt - 0.35) / 0.65));
+    final o = c + Offset(shift.dx * s, shift.dy * s);
+    final a = Offset(o.dx - dir * s * 0.65 * scale, o.dy - s * 0.5 * scale);
+    final b = Offset(o.dx + dir * s * 0.65 * scale, o.dy + s * 0.5 * scale);
+    final ctrl = Offset(o.dx + dir * s * 0.4 * scale, o.dy - s * 0.35 * scale);
     final path = Path()
       ..moveTo(a.dx, a.dy)
       ..quadraticBezierTo(ctrl.dx, ctrl.dy, b.dx, b.dy);
@@ -574,12 +661,15 @@ class _Fx {
   }
 
   void _claw() {
-    for (var i = 0; i < 3; i++) {
-      final lt = _window(t, i * 0.06, 0.7);
+    // Three marks; a strong rake four, a mighty one five.
+    final marks = tier == VfxTier.mighty ? 5 : (strong ? 4 : 3);
+    for (var i = 0; i < marks; i++) {
+      final lt = _window(t, i * 0.05, 0.7);
       if (lt == null) continue;
       final reveal = (lt / 0.3).clamp(0.0, 1.0);
       final opacity = lt < 0.3 ? 1.0 : max(0.0, 1 - (lt - 0.3) / 0.7);
-      final off = Offset((i - 1) * s * 0.2, (i - 1) * -s * 0.05);
+      final lane = i - (marks - 1) / 2;
+      final off = Offset(lane * s * 0.2, lane * -s * 0.05);
       final a = c + off + Offset(s * 0.45, -s * 0.5);
       final b = c + off + Offset(-s * 0.35, s * 0.5);
       final head = Offset.lerp(a, b, reveal)!;
@@ -624,11 +714,21 @@ class _Fx {
   }
 
   void _volley() {
-    for (var i = 0; i < 5; i++) {
-      final from = Offset(c.dx - s * 1.4 + i * s * 0.22, rect.top - s * 1.3);
-      final to =
-          Offset(c.dx + (i - 2) * s * 0.2, c.dy + (i.isEven ? 0 : s * 0.12));
-      final t0 = i * 0.07;
+    // Five arrows; three for a light volley, up to nine for a mighty one.
+    final arrows = switch (tier) {
+      VfxTier.light => 3,
+      VfxTier.normal => 5,
+      VfxTier.strong => 7,
+      VfxTier.mighty => 9,
+    };
+    final step = 0.35 / arrows;
+    for (var i = 0; i < arrows; i++) {
+      final lane = i - (arrows - 1) / 2;
+      final from = Offset(
+          c.dx - s * 1.4 + i * s * 0.22 * 5 / arrows, rect.top - s * 1.3);
+      final to = Offset(
+          c.dx + lane * s * 0.2 * 5 / arrows, c.dy + (i.isEven ? 0 : s * 0.12));
+      final t0 = i * step;
       _arrow(from, to, t0, 0.4);
       _sparks(t0 + 0.4, 0.35, count: 5, reach: 0.35, at: to);
     }
@@ -698,7 +798,7 @@ class _Fx {
   void _jitterBolts(double t0, double span) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < _n(4); i++) {
       final q = p[i];
       final dir = Offset(cos(q.angle), sin(q.angle));
       final path = Path()..moveTo(c.dx, c.dy);
@@ -716,17 +816,40 @@ class _Fx {
   void _lightning() {
     final lt = _window(t, 0, 0.5);
     if (lt != null && ((lt * 12).floor().isEven || lt < 0.15)) {
-      final top = Offset(c.dx + s * 0.25, rect.top - s * 1.1);
-      final path = Path()..moveTo(top.dx, top.dy);
-      const segments = 7;
-      for (var i = 1; i <= segments; i++) {
-        final f = i / segments;
-        final base = Offset.lerp(top, c, f)!;
-        final wobble = i == segments ? 0.0 : p[i].dx * s * 0.22;
-        path.lineTo(base.dx + wobble, base.dy);
+      // A mighty strike brings down a second bolt beside the first.
+      for (var bolt = 0; bolt < (mighty ? 2 : 1); bolt++) {
+        final side = bolt == 0 ? 0.25 : -0.35;
+        final top = Offset(c.dx + s * side, rect.top - s * 1.1);
+        final path = Path()..moveTo(top.dx, top.dy);
+        const segments = 7;
+        final points = <Offset>[];
+        for (var i = 1; i <= segments; i++) {
+          final f = i / segments;
+          final base = Offset.lerp(top, c, f)!;
+          final wobble = i == segments ? 0.0 : p[i + bolt * 8].dx * s * 0.22;
+          final point = Offset(base.dx + wobble, base.dy);
+          points.add(point);
+          path.lineTo(point.dx, point.dy);
+        }
+        canvas.drawPath(path, _stroke(primary, 1 - lt * 0.5, s * 0.08 * scale));
+        canvas.drawPath(path, _stroke(Colors.white, 1, s * 0.03 * scale));
+        // Forks: short branches off the bolt's bends.
+        final forks = tier == VfxTier.light ? 0 : (strong ? 3 : 2);
+        for (var k = 0; k < forks; k++) {
+          final from = points[1 + k * 2];
+          final q = p[20 + k + bolt * 4];
+          final fork = Path()..moveTo(from.dx, from.dy);
+          var at = from;
+          for (var j = 0; j < 3; j++) {
+            at = at +
+                Offset(q.dx.sign * s * 0.12, s * 0.1) +
+                Offset(q.spin * s * 0.05, 0);
+            fork.lineTo(at.dx, at.dy);
+          }
+          canvas.drawPath(
+              fork, _stroke(secondary, 0.8 * (1 - lt), s * 0.03 * scale));
+        }
       }
-      canvas.drawPath(path, _stroke(primary, 1 - lt * 0.5, s * 0.08 * scale));
-      canvas.drawPath(path, _stroke(Colors.white, 1, s * 0.03 * scale));
     }
     _glow(c, s * 0.9, 0.05, 0.5, secondary);
     _sparks(0.2, 0.6, count: 14, reach: 0.9, color: secondary);
@@ -764,7 +887,7 @@ class _Fx {
       double sizeK = 0.1}) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < _n(count); i++) {
       final q = p[i % p.length];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
@@ -779,7 +902,7 @@ class _Fx {
   void _shards() {
     final lt = _window(t, 0, 0.75);
     if (lt == null) return;
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < _n(12); i++) {
       final q = p[i];
       final dist = s * 0.95 * q.speed * _easeOut(lt) * scale;
       final pos = c + Offset(cos(q.angle), sin(q.angle)) * dist;
@@ -800,7 +923,7 @@ class _Fx {
   void _droplets() {
     final lt = _window(t, 0, 0.9);
     if (lt == null) return;
-    for (var i = 0; i < 14; i++) {
+    for (var i = 0; i < _n(14); i++) {
       final q = p[i];
       final local =
           ((lt - q.delay * 0.5) / (1 - q.delay * 0.5)).clamp(0.0, 1.0);
@@ -835,7 +958,7 @@ class _Fx {
   void _bubbles() {
     final lt = _window(t, 0, 1);
     if (lt == null) return;
-    for (var i = 0; i < 12; i++) {
+    for (var i = 0; i < _n(12); i++) {
       final q = p[i];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
@@ -848,10 +971,11 @@ class _Fx {
     }
   }
 
-  void _smoke({int count = 7, double reach = 0.55}) {
-    final lt = _window(t, 0, 1);
+  void _smoke(
+      {int count = 7, double reach = 0.55, double t0 = 0, double span = 1}) {
+    final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < _n(count); i++) {
       final q = p[i];
       final at =
           c + Offset(q.dx * s * reach, q.spin * s * reach * 0.6) * _easeOut(lt);
@@ -899,7 +1023,7 @@ class _Fx {
   void _quakeRocks(double t0, double span) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < _n(10); i++) {
       final q = p[i + 4];
       final x = c.dx + q.dx * s * 0.6;
       final y =
@@ -935,7 +1059,7 @@ class _Fx {
   void _spiralIn(double t0, double span, {int count = 16}) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < count; i++) {
+    for (var i = 0; i < _n(count); i++) {
       final q = p[i % p.length];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
@@ -952,7 +1076,7 @@ class _Fx {
     final to = sourceRect?.center ?? Offset(c.dx, rect.top - s);
     if (lt != null) {
       final ctrl = Offset((c.dx + to.dx) / 2, min(c.dy, to.dy) - s * 0.8);
-      for (var i = 0; i < 14; i++) {
+      for (var i = 0; i < _n(14); i++) {
         final q = p[i];
         final local =
             ((lt - q.delay * 1.5) / (1 - q.delay * 1.5)).clamp(0.0, 1.0);
@@ -988,7 +1112,7 @@ class _Fx {
   void _twinkles(double t0, double span, {Color? color}) {
     final lt = _window(t, t0, span);
     if (lt == null) return;
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < _n(9); i++) {
       final q = p[i + 8];
       final at = c + Offset(q.dx * s * 0.6, q.spin * s * 0.5);
       final phase = sin(pi * ((lt * 2 + q.delay * 3) % 1));
@@ -1011,7 +1135,7 @@ class _Fx {
   void _pluses() {
     final lt = _window(t, 0, 1);
     if (lt == null) return;
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < _n(8); i++) {
       final q = p[i];
       final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
       if (local <= 0 || local >= 1) continue;
@@ -1062,8 +1186,14 @@ class _Fx {
 
   void _shout() {
     final origin = sourceRect?.center ?? c;
-    for (var i = 0; i < 3; i++) {
-      final lt = _window(t, i * 0.15, 0.6);
+    final rings = switch (tier) {
+      VfxTier.light => 2,
+      VfxTier.normal => 3,
+      VfxTier.strong => 4,
+      VfxTier.mighty => 5,
+    };
+    for (var i = 0; i < rings; i++) {
+      final lt = _window(t, i * 0.45 / rings, 0.6);
       if (lt == null) continue;
       canvas.drawCircle(origin, s * (0.2 + 1.2 * _easeOut(lt)) * scale,
           _stroke(i == 1 ? secondary : primary, 1 - lt, 4 * (1 - lt) + 1));
@@ -1125,6 +1255,243 @@ class _Fx {
       final outer = c + dir * (s * (0.3 + 0.9 * _easeOut(lt)) * scale);
       canvas.drawLine(inner, outer,
           _stroke(primary, 1 - lt, (i.isEven ? 5 : 3) * (1 - lt) + 1));
+    }
+  }
+
+  // --- Tier details ---------------------------------------------------------
+
+  /// What a strong or mighty burst adds on top of its style. A blow gets,
+  /// at the moment it lands, a white flash, then a second shockwave and
+  /// embers, then (mighty) a flash of the whole screen, a ring across the
+  /// ground and rays. Anything else (a heal, a shield) rises: motes and a
+  /// ring, then a pillar of light. A light burst adds nothing, and the
+  /// system styles (a crit's burst, a miss, a phase) keep their own look.
+  void _tierDetails() {
+    if (tier == VfxTier.light || systemVfxStyles.contains(burst.style)) {
+      return;
+    }
+    final at = vfxImpactAt(burst.style);
+    if (burst.hit) {
+      _flashCore(at, 0.18);
+      if (strong) {
+        _ring(at, 0.45, s * 0.2, s * 0.95, width: 2.5, color: secondary);
+        _embers(at + 0.1, 1 - at - 0.1);
+      }
+      if (mighty) {
+        _screenFlash(at, 0.25);
+        _groundRing(at, 0.55);
+        _rays(at, 0.45);
+        _ring(at + 0.08, 0.45, s * 0.3, s * 1.2, width: 4);
+      }
+    } else {
+      if (strong) {
+        _motes(0.05, 0.9);
+        _ring(0.1, 0.6, s * 0.3, s * 0.9, width: 2, color: secondary);
+      }
+      if (mighty) {
+        _pillar(0, 0.85);
+        _screenFlash(0.05, 0.25, opacity: 0.1);
+      }
+    }
+  }
+
+  /// A white-hot core where the blow lands.
+  void _flashCore(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final k = sin(pi * lt);
+    _glowAt(c, s * 0.4 * scale, Colors.white, 0.55 * k);
+    _glowAt(c, s * 0.7 * scale, primary, 0.3 * k);
+  }
+
+  /// The whole layer washed in the burst's color for a heartbeat.
+  void _screenFlash(double t0, double span, {double opacity = 0.16}) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    canvas.drawRect(
+        Offset.zero & layer, _fill(primary, opacity * (1 - _easeOut(lt))));
+  }
+
+  /// A flat ring running out along the ground under the target.
+  void _groundRing(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final e = _easeOut(lt);
+    final ground = Offset(c.dx, rect.bottom - s * 0.08);
+    final w = s * (0.4 + 1.5 * e) * scale;
+    canvas.drawOval(Rect.fromCenter(center: ground, width: w, height: w * 0.22),
+        _stroke(secondary, 1 - lt, 5 * (1 - lt) + 1));
+    canvas.drawOval(
+        Rect.fromCenter(center: ground, width: w * 0.7, height: w * 0.14),
+        _fill(primary, 0.25 * (1 - lt)));
+  }
+
+  /// Long thin rays thrown out from the target.
+  void _rays(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    const count = 10;
+    for (var i = 0; i < count; i++) {
+      final q = p[30 + i];
+      final angle = i * 2 * pi / count + q.spin * 0.25;
+      final dir = Offset(cos(angle), sin(angle));
+      final reach = s * (0.45 + 0.75 * q.speed * _easeOut(lt));
+      final inner = c + dir * (reach * 0.55);
+      final outer = c + dir * reach;
+      canvas.drawLine(inner, outer,
+          _stroke(i.isEven ? Colors.white : secondary, 0.6 * (1 - lt), 1.5));
+    }
+  }
+
+  /// Soft dots rising around the target, for a strong heal or shield.
+  void _motes(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    for (var i = 0; i < _n(12); i++) {
+      final q = p[40 + i % 24];
+      final local = ((lt - q.delay * 2) / (1 - q.delay * 2)).clamp(0.0, 1.0);
+      if (local <= 0 || local >= 1) continue;
+      final x = c.dx + q.dx * s * 0.75 + sin(local * 5 + q.angle) * s * 0.06;
+      final y = rect.bottom - local * s * 1.5 * q.speed;
+      final r = s * 0.035 * q.size * scale;
+      _glowAt(Offset(x, y), r * 3, secondary, 0.4 * _fade(local, 0.2, 0.6));
+      canvas.drawCircle(
+          Offset(x, y), r, _fill(Colors.white, 0.8 * _fade(local, 0.2, 0.6)));
+    }
+  }
+
+  /// A column of light standing on the target.
+  void _pillar(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final opacity = _fade(lt, 0.2, 0.5) * 0.45;
+    final w = s * 0.7 * scale * (0.6 + 0.4 * sin(pi * lt));
+    final column = Rect.fromLTRB(
+        c.dx - w / 2, rect.top - s * 1.2, c.dx + w / 2, rect.bottom);
+    canvas.drawRect(
+      column,
+      Paint()
+        ..shader = ui.Gradient.linear(column.topCenter, column.bottomCenter, [
+          secondary.withValues(alpha: 0),
+          primary.withValues(alpha: opacity),
+          Colors.white.withValues(alpha: opacity),
+        ], const [
+          0,
+          0.7,
+          1
+        ]),
+    );
+  }
+
+  /// Glowing specks that linger and drift up after a blow or a flame.
+  void _embers(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    for (var i = 0; i < _n(10); i++) {
+      final q = p[20 + i % 40];
+      final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
+      if (local <= 0 || local >= 1) continue;
+      final at = c +
+          Offset(q.dx * s * 0.6 * scale + sin(local * 7 + q.angle) * s * 0.05,
+              q.spin * s * 0.25 - local * s * 0.8 * q.speed);
+      final flicker = 0.6 + 0.4 * sin(local * 30 + q.angle * 5);
+      final r = s * 0.025 * q.size;
+      _glowAt(at, r * 4, primary, 0.35 * (1 - local));
+      canvas.drawCircle(
+          at, r, _fill(i.isEven ? secondary : primary, flicker * (1 - local)));
+    }
+  }
+
+  /// Streaks behind a thrust, along its line.
+  void _speedLines(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    const dir = Offset(0.95, -0.3);
+    const across = Offset(0.3, 0.95);
+    final lines = _n(4);
+    for (var i = 0; i < lines; i++) {
+      final q = p[i + 10];
+      final lane = (i - (lines - 1) / 2) * s * 0.12;
+      final head =
+          c - dir * (s * (0.4 + 0.6 * (1 - _easeOut(lt)))) + across * lane;
+      final tail = head - dir * (s * (0.4 + 0.3 * q.speed));
+      canvas.drawLine(tail, head, _stroke(secondary, 0.7 * (1 - lt), 1.5));
+    }
+  }
+
+  /// Jagged cracks running out from where the blow lands.
+  void _cracks(double t0, double span, {int count = 5}) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final grow = _easeOut((lt / 0.3).clamp(0.0, 1.0));
+    final opacity = lt < 0.5 ? 1.0 : 1 - (lt - 0.5) / 0.5;
+    final cracks = strong ? count + 2 : count;
+    for (var i = 0; i < cracks; i++) {
+      final q = p[i + 44];
+      final angle = i * 2 * pi / cracks + q.spin * 0.4;
+      final length = s * (0.35 + 0.35 * q.speed) * scale * grow;
+      final path = Path()..moveTo(c.dx, c.dy);
+      var at = c;
+      const steps = 4;
+      for (var j = 1; j <= steps; j++) {
+        final bend = angle + (j.isEven ? 0.35 : -0.35) * q.dx;
+        at = at + Offset(cos(bend), sin(bend)) * (length / steps);
+        path.lineTo(at.dx, at.dy);
+      }
+      canvas.drawPath(path, _stroke(primary, 0.6 * opacity, s * 0.04));
+      canvas.drawPath(
+          path, _stroke(const Color(0xFF2B1D14), 0.85 * opacity, s * 0.018));
+    }
+  }
+
+  /// Heat haze: wavy threads rising over a flame.
+  void _shimmer(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final opacity = _fade(lt, 0.2, 0.6) * 0.35;
+    for (var i = 0; i < 3; i++) {
+      final x0 = c.dx + (i - 1) * s * 0.3;
+      final path = Path()..moveTo(x0, rect.bottom);
+      const steps = 8;
+      for (var j = 1; j <= steps; j++) {
+        final y = rect.bottom - (s * 1.4 * scale) * j / steps;
+        final x = x0 + sin(j * 1.3 + lt * 12 + i) * s * 0.06;
+        path.lineTo(x, y);
+      }
+      canvas.drawPath(path, _stroke(secondary, opacity, 2));
+    }
+  }
+
+  /// A cold mist settling over the target.
+  void _mist(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    final opacity = _fade(lt, 0.25, 0.5) * 0.25 * _glowK;
+    for (var i = 0; i < 5; i++) {
+      final q = p[i + 50];
+      final at = c +
+          Offset(q.dx * s * 0.55 + lt * q.spin * s * 0.2, q.spin * s * 0.25);
+      _glowAt(at, s * (0.3 + 0.2 * q.size) * scale, secondary, opacity);
+    }
+  }
+
+  /// Six-armed flakes drifting down and turning.
+  void _snowflakes(double t0, double span) {
+    final lt = _window(t, t0, span);
+    if (lt == null) return;
+    for (var i = 0; i < _n(6); i++) {
+      final q = p[i + 56 < p.length ? i + 56 : i];
+      final local = ((lt - q.delay) / (1 - q.delay)).clamp(0.0, 1.0);
+      if (local <= 0 || local >= 1) continue;
+      final at = Offset(c.dx + q.dx * s * 0.8,
+          rect.top - s * 0.2 + local * (rect.height + s * 0.2));
+      final r = s * 0.06 * q.size * scale;
+      final spin = q.spin * local * 4;
+      final paint = _stroke(Colors.white, _fade(local, 0.15, 0.7), 1.3);
+      for (var arm = 0; arm < 6; arm++) {
+        final a = spin + arm * pi / 3;
+        canvas.drawLine(at, at + Offset(cos(a), sin(a)) * r, paint);
+      }
     }
   }
 }

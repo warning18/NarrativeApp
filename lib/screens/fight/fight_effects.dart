@@ -13,7 +13,10 @@ extension _FightEffects on _FightScreenState {
   /// What one party member's die looks like on screen: the face's (or its
   /// skill's) effect on the enemy it hit with the damage floating off it,
   /// a critical's starburst, the status it left, a heal, a shield or mana
-  /// on the member, and a lifesteal drawn back to them.
+  /// on the member, and a lifesteal drawn back to them. Each plays at the
+  /// power of the skill behind it (see [vfxPowerFor]): its rarity, its
+  /// upgrades, how much of the target's health it takes, a critical; a
+  /// mighty blow also shakes the screen as it lands.
   void _playFaceEffects({
     required _PartyMember actor,
     required DiceFaceResult face,
@@ -34,19 +37,35 @@ extension _FightEffects on _FightScreenState {
         : null;
     final style = styleForFace(face.type, skill);
     final support = isSupportSkill(skill);
+    final rarity = skill?['rarity']?.toString();
+    final tier = skill == null ? 0 : actor.skillTiers[_effectiveSkillId(face)];
+    double powerFor(int amount, int maxHealth, {bool critical = false}) =>
+        vfxPowerFor(
+          rarity: rarity,
+          tier: tier ?? 0,
+          amount: amount,
+          targetMaxHealth: maxHealth,
+          critical: critical,
+        );
     if (target != null) {
       final targetKey = _enemyCardKey(target.key);
       if (dealt > 0) {
+        final power =
+            powerFor(dealt, target.maxHealth, critical: result.isCritical);
+        final hitStyle = support ? VfxStyle.slash : style;
         _vfx.play(
-          style: support ? VfxStyle.slash : style,
+          style: hitStyle,
           target: targetKey,
           source: actorKey,
           element: element,
           delayMs: delayMs,
           text: '-$dealt',
           textKind: result.isCritical ? VfxTextKind.crit : VfxTextKind.damage,
-          big: result.isCritical,
+          power: power,
         );
+        if (vfxTierFor(power) == VfxTier.mighty) {
+          _shakeAfter(delayMs + _impactMs(hitStyle, power));
+        }
         if (result.isCritical) {
           _vfx.play(
               style: VfxStyle.crit, target: targetKey, delayMs: delayMs + 250);
@@ -87,6 +106,7 @@ extension _FightEffects on _FightScreenState {
         delayMs: delayMs + (dealt > 0 && !support ? 250 : 0),
         text: '+$healing',
         textKind: VfxTextKind.heal,
+        power: powerFor(healing, actor.maxHealth),
       );
     }
     if (block > 0) {
@@ -96,6 +116,7 @@ extension _FightEffects on _FightScreenState {
         delayMs: delayMs,
         text: '+$block',
         textKind: VfxTextKind.block,
+        power: powerFor(block, actor.maxHealth),
       );
     }
     if (result.manaGained > 0) {
@@ -122,6 +143,7 @@ extension _FightEffects on _FightScreenState {
     String? text,
     VfxTextKind textKind = VfxTextKind.info,
     bool big = false,
+    double? power,
   }) {
     if (!_effectsOn) return;
     _vfx.play(
@@ -133,7 +155,22 @@ extension _FightEffects on _FightScreenState {
       text: text,
       textKind: textKind,
       big: big,
+      power: power,
     );
+  }
+
+  /// When [style], played at [power], lands: for a shake timed on the blow
+  /// rather than on the throw.
+  int _impactMs(VfxStyle style, double power) => (vfxImpactAt(style) *
+          vfxDurationMs(style) *
+          vfxDurationFactor(vfxTierFor(power)))
+      .round();
+
+  /// Shakes the screen after [delayMs], if the fight is still on screen.
+  void _shakeAfter(int delayMs) {
+    Future<void>.delayed(Duration(milliseconds: delayMs), () {
+      if (mounted) _triggerShake();
+    });
   }
 
   /// What an enemy's move looks like on screen: its skill's effect (a
@@ -165,6 +202,7 @@ extension _FightEffects on _FightScreenState {
       return;
     }
     final style = styleForEnemyMove(skillId, skills);
+    final skill = skills[skillId] as Map<String, dynamic>?;
     _vfx.play(
       style: style,
       target: targetKey,
@@ -173,6 +211,14 @@ extension _FightEffects on _FightScreenState {
       delayMs: delayMs,
       text: damage > 0 ? '-$damage' : null,
       textKind: VfxTextKind.hurt,
+      // A boss's blows, and a blow that takes much of the member's health,
+      // play bigger; a plain enemy's scratch smaller.
+      power: vfxPowerFor(
+        rarity: skill?['rarity']?.toString(),
+        amount: damage,
+        targetMaxHealth: target.maxHealth,
+        boss: isBossEnemy(enemy.enemyId, enemy.data),
+      ),
     );
     if (damage <= 0 || warded) {
       _vfx.play(

@@ -3042,15 +3042,82 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Dodge!',
     AppLanguage.fr: 'Esquive !',
   },
+  'vfx_gallery_title': {
+    AppLanguage.en: 'Effects gallery',
+    AppLanguage.fr: 'Galerie des effets',
+  },
+  'vfx_gallery_intro': {
+    AppLanguage.en:
+        'Plays each skill effect at each power. In a fight, the power comes from the skill: its rarity, its upgrades, how much of the target\'s health it takes, a critical, a boss. A mighty blow also shakes the screen.',
+    AppLanguage.fr:
+        'Joue chaque effet de compétence à chaque puissance. En combat, la puissance vient de la compétence : sa rareté, ses améliorations, la part de vie de la cible qu’elle emporte, un critique, un boss. Un coup dévastateur fait aussi trembler l’écran.',
+  },
+  'vfx_gallery_hero': {
+    AppLanguage.en: 'Hero',
+    AppLanguage.fr: 'Héros',
+  },
+  'vfx_gallery_foe': {
+    AppLanguage.en: 'Foe',
+    AppLanguage.fr: 'Ennemi',
+  },
+  'vfx_gallery_power': {
+    AppLanguage.en: 'Power',
+    AppLanguage.fr: 'Puissance',
+  },
+  'vfx_gallery_particles': {
+    AppLanguage.en: 'particles',
+    AppLanguage.fr: 'particules',
+  },
+  'vfx_gallery_play': {
+    AppLanguage.en: 'Play',
+    AppLanguage.fr: 'Jouer',
+  },
+  'vfx_gallery_play_all': {
+    AppLanguage.en: 'All four',
+    AppLanguage.fr: 'Les quatre',
+  },
+  'vfx_gallery_element': {
+    AppLanguage.en: 'Element',
+    AppLanguage.fr: 'Élément',
+  },
+  'vfx_gallery_style': {
+    AppLanguage.en: 'Style (tap to play)',
+    AppLanguage.fr: 'Style (touchez pour jouer)',
+  },
+  'vfx_tier_light': {
+    AppLanguage.en: 'Light',
+    AppLanguage.fr: 'Léger',
+  },
+  'vfx_tier_normal': {
+    AppLanguage.en: 'Normal',
+    AppLanguage.fr: 'Normal',
+  },
+  'vfx_tier_strong': {
+    AppLanguage.en: 'Strong',
+    AppLanguage.fr: 'Fort',
+  },
+  'vfx_tier_mighty': {
+    AppLanguage.en: 'Mighty',
+    AppLanguage.fr: 'Dévastateur',
+  },
+  'fight_lab_effects': {
+    AppLanguage.en: 'Effects gallery',
+    AppLanguage.fr: 'Galerie des effets',
+  },
+  'fight_lab_effects_desc': {
+    AppLanguage.en: 'Every skill effect, from a light touch to a mighty blow',
+    AppLanguage.fr:
+        'Chaque effet de compétence, du coup léger au coup dévastateur',
+  },
   'combat_effects_setting_title': {
     AppLanguage.en: 'Combat effects',
     AppLanguage.fr: 'Effets de combat',
   },
   'combat_effects_setting_desc': {
     AppLanguage.en:
-        'Draws each skill\'s and spell\'s effect on screen in fights, with floating damage and healing numbers.',
+        'Draws each skill\'s and spell\'s effect on screen in fights, bigger for a stronger one, with floating damage and healing numbers.',
     AppLanguage.fr:
-        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, avec les dégâts et soins flottants.",
+        "Affiche l'effet de chaque compétence et de chaque sort pendant les combats, plus grand pour les plus puissants, avec les dégâts et soins flottants.",
   },
   'tremble_setting_title': {
     AppLanguage.en: 'Screen tremble on hit',

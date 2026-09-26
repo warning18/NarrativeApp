@@ -8,6 +8,43 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.157.0+187]
+
+### Changed
+- **Skill effects play at the skill's power.** Every effect in a fight
+  now has a power, and a stronger skill looks stronger:
+  - **What the skill is**: its rarity (a common skill plays smaller than
+    an epic or legendary one), how far it is upgraded, and for a spell
+    its mana cost.
+  - **How hard it lands**: the share of the target's health it takes
+    (a blow that takes a third of it plays much bigger than a scratch),
+    a critical hit, and a boss's blows.
+  - **Four tiers**: light, normal, strong, mighty. A light effect is
+    smaller, shorter and throws fewer particles; a strong one adds a
+    second shockwave and lingering embers; a mighty one adds a flash of
+    the screen, a ring along the ground, light rays, and shakes the
+    screen as the blow lands (when screen tremble is on). A strong or
+    mighty heal or shield gets rising motes and a pillar of light
+    instead.
+  - Size grows up to a cap, so a mighty blow gets its extra details
+    without swallowing the screen.
+- **More detail in each style:**
+  - A slash leaves an afterimage, and a strong one crosses back.
+  - A heavy slash and an impact crack the ground.
+  - A pierce draws speed lines.
+  - Flame shimmers with heat and leaves embers.
+  - A fireball leaves smoke and embers.
+  - Frost brings a cold mist and falling snowflakes.
+  - A quake splits the ground.
+  - Lightning forks, and a mighty strike brings down a second bolt.
+  - Some styles grow in count with the tier: a volley fires 3 to 9
+    arrows, a claw rakes 3 to 5 marks, a shout sends 2 to 5 rings.
+
+### Added
+- **Effects gallery (Edit Mode, from the fight lab).** Plays any style,
+  in any element, at any of the four tiers (or all four in turn), to
+  see how an effect looks from a light touch to a mighty blow.
+
 ## [1.156.0+186]
 
 ### Added
