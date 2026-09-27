@@ -77,7 +77,7 @@ void main() {
     await _closeDialogs(tester);
 
     expect(container.read(storyPlayProvider).currentNodeId, '250');
-    final remark = container.read(pendingRemarkProvider);
+    final remark = container.read(pendingRemarksProvider).firstOrNull;
     expect(remark?.companionId, 'maren');
     expect(remark?.kind, RemarkKind.kindApproved);
     expect(find.byType(CompanionRemarkView), findsOneWidget);

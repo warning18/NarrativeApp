@@ -8,11 +8,16 @@ import 'approval.dart';
 ///
 /// - One the party has an opinion on (see approval.dart): a kind or cruel
 ///   choice, one that fills the purse, or a scene's own reaction. The
-///   companion who took it hardest speaks, every time.
+///   companion who took it hardest speaks, every time; when someone took
+///   it the other way, they answer (v1.168).
 /// - One that only shows what the player can do: an ability check passed
 ///   or failed, a fight slipped past. Someone speaks at most once every
 ///   [remarkCooldownChoices] choices, so the party doesn't narrate every
 ///   step.
+///
+/// The heaviest choices of the story have lines written for them (v1.168,
+/// see [deedRemarkKeys]): a companion with such a line says it rather than
+/// one of their general ones.
 ///
 /// Companions take turns (the one who spoke least recently goes first)
 /// and go through their lines before repeating one.
@@ -33,6 +38,9 @@ enum RemarkKind {
 
   /// A check that took the party round a fight (`avoidFightOnSuccess`).
   sneakedPast,
+
+  /// A drink shared at the camp (v1.168).
+  drink,
 }
 
 /// A remark about a check or a sneak waits this many choices after the
@@ -55,21 +63,29 @@ class RemarkDeed {
   final Map<String, int> approvalMods;
 }
 
-/// One companion's remark: who, about what, and which of their lines.
-/// The words are looked up when shown ([lineFor]), so the remark follows
-/// a change of language.
+/// One companion's remark: who, about what, and which of their lines --
+/// one of their general lines for [kind], or, with a [deedKey], the line
+/// written for that very choice. The words are looked up when shown
+/// ([lineFor]), so the remark follows a change of language.
 class CompanionRemark {
   const CompanionRemark({
     required this.companionId,
     required this.kind,
-    required this.index,
+    this.index = 0,
+    this.deedKey,
   });
 
   final String companionId;
   final RemarkKind kind;
   final int index;
+  final String? deedKey;
 
   String lineFor({required bool french}) {
+    final key = deedKey;
+    if (key != null) {
+      final line = deedRemarkFor(key, companionId, french: french);
+      if (line != null) return line;
+    }
     final lines = remarkLinesFor(companionId, kind, french: french);
     return lines.isEmpty ? '' : lines[index % lines.length];
   }
@@ -79,10 +95,11 @@ class CompanionRemark {
       other is CompanionRemark &&
       other.companionId == companionId &&
       other.kind == kind &&
-      other.index == index;
+      other.index == index &&
+      other.deedKey == deedKey;
 
   @override
-  int get hashCode => Object.hash(companionId, kind, index);
+  int get hashCode => Object.hash(companionId, kind, index, deedKey);
 }
 
 /// Who spoke when, and which lines have been used: kept for the session,
@@ -111,23 +128,26 @@ class RemarkMemory {
   final Map<String, int> used;
 }
 
-/// The remark for the choice the player just made, if any, and the
-/// memory after it. [reactions] are the party's reactions to [deed] (what
+/// What the party says about the choice the player just made -- nothing,
+/// one remark, or a remark and an answer -- and the memory after it.
+/// [reactions] are the party's reactions to [deed] (what
 /// applyChoiceEffects or reactToDeed returned); [companions] is the raw
-/// companions table, for their weights. [action] is what the choice showed
-/// of the player besides: a check passed or failed, a fight slipped past.
+/// companions table, for their weights. [deedKeys] name the choice for its
+/// written lines (see [deedKeysFor]). [action] is what the choice showed of
+/// the player besides: a check passed or failed, a fight slipped past.
 /// [activeAllyIds] is the party once the choice is done: whoever walked
 /// out says their piece in the approval notice instead.
-({CompanionRemark? remark, RemarkMemory memory}) pickRemark({
+({List<CompanionRemark> remarks, RemarkMemory memory}) pickRemark({
   required RemarkMemory memory,
   required List<String> activeAllyIds,
   List<ApprovalChange> reactions = const [],
   RemarkDeed deed = const RemarkDeed(),
   Map<String, dynamic> companions = const {},
+  List<String> deedKeys = const [],
   RemarkKind? action,
 }) {
   final choice = memory.choices + 1;
-  final counted = RemarkMemory(
+  var current = RemarkMemory(
     seed: memory.seed,
     choices: choice,
     lastRemarkAt: memory.lastRemarkAt,
@@ -136,59 +156,119 @@ class RemarkMemory {
   );
   int lastSpoke(String id) => memory.lastSpokeAt[id] ?? -1;
   int partyPlace(String id) => activeAllyIds.indexOf(id);
+  final deedKey = deedKeys.where(_deedLinesEn.containsKey).firstOrNull;
+  bool hasDeedLine(String id) =>
+      deedKey != null && deedRemarkFor(deedKey, id, french: false) != null;
 
   // A deed the party cares about: whoever took it hardest. One who just
   // came to trust the player completely, started losing patience or
   // walked out says so in the approval notice, in words of their own.
-  final moved = [
+  final moved = <String, ({int delta, RemarkKind kind})>{
     for (final reaction in reactions)
       if (!reaction.hasOwnWords && activeAllyIds.contains(reaction.companionId))
-        (
-          reaction: reaction,
+        reaction.companionId: (
+          delta: reaction.delta,
           kind: remarkKindFor(
             reaction,
             companions[reaction.companionId] as Map<String, dynamic>?,
             deed,
           ),
         ),
-  ]..removeWhere((m) => remarkLinesFor(m.reaction.companionId, m.kind).isEmpty);
-  if (moved.isNotEmpty) {
-    moved.sort((a, b) {
-      final byWeight = b.reaction.delta.abs().compareTo(a.reaction.delta.abs());
-      if (byWeight != 0) return byWeight;
-      final byTurn = lastSpoke(a.reaction.companionId)
-          .compareTo(lastSpoke(b.reaction.companionId));
-      if (byTurn != 0) return byTurn;
-      return partyPlace(a.reaction.companionId)
-          .compareTo(partyPlace(b.reaction.companionId));
+  }..removeWhere(
+      (id, m) => !hasDeedLine(id) && remarkLinesFor(id, m.kind).isEmpty);
+  // Who has something to say: whoever was moved, and whoever has a line
+  // written for this choice. A written line comes first, then the
+  // strongest feeling, then whoever spoke least recently.
+  final candidates = {
+    ...moved.keys,
+    for (final id in activeAllyIds)
+      if (hasDeedLine(id)) id,
+  }.toList();
+  int byTurns(String a, String b) {
+    final byTurn = lastSpoke(a).compareTo(lastSpoke(b));
+    return byTurn != 0 ? byTurn : partyPlace(a).compareTo(partyPlace(b));
+  }
+
+  int weight(String id) => moved[id]?.delta.abs() ?? 0;
+  if (candidates.isNotEmpty) {
+    candidates.sort((a, b) {
+      final byLine = (hasDeedLine(b) ? 1 : 0) - (hasDeedLine(a) ? 1 : 0);
+      if (byLine != 0) return byLine;
+      final byWeight = weight(b).compareTo(weight(a));
+      return byWeight != 0 ? byWeight : byTurns(a, b);
     });
-    final speaker = moved.first;
-    return _spoken(counted, speaker.reaction.companionId, speaker.kind);
+    final first = candidates.first;
+    final remarks = <CompanionRemark>[];
+    CompanionRemark say(String id) {
+      final RemarkKind kind = moved[id]?.kind ?? RemarkKind.approved;
+      if (hasDeedLine(id)) {
+        current = _noted(current, id);
+        return CompanionRemark(companionId: id, kind: kind, deedKey: deedKey);
+      }
+      final spoken = _spoken(current, id, kind);
+      current = spoken.memory;
+      return spoken.remark;
+    }
+
+    remarks.add(say(first));
+    // Someone who took it the other way answers.
+    final firstDelta = moved[first]?.delta ?? 0;
+    final answerers = [
+      for (final entry in moved.entries)
+        if (entry.key != first &&
+            firstDelta != 0 &&
+            entry.value.delta.sign == -firstDelta.sign)
+          entry.key,
+    ]..sort((a, b) {
+        final byWeight = weight(b).compareTo(weight(a));
+        return byWeight != 0 ? byWeight : byTurns(a, b);
+      });
+    if (answerers.isNotEmpty) remarks.add(say(answerers.first));
+    return (remarks: remarks, memory: current);
   }
 
   // A check or a sneak: someone speaks up, now and then.
   final last = memory.lastRemarkAt;
   if (action == null ||
       (last != null && choice - last < remarkCooldownChoices)) {
-    return (remark: null, memory: counted);
+    return (remarks: const [], memory: current);
   }
   final speakers = [
     for (final id in activeAllyIds)
       if (remarkLinesFor(id, action).isNotEmpty) id,
-  ]..sort((a, b) {
-      final byTurn = lastSpoke(a).compareTo(lastSpoke(b));
-      return byTurn != 0 ? byTurn : partyPlace(a).compareTo(partyPlace(b));
-    });
-  if (speakers.isEmpty) return (remark: null, memory: counted);
-  return _spoken(counted, speakers.first, action);
+  ]..sort(byTurns);
+  if (speakers.isEmpty) return (remarks: const [], memory: current);
+  final spoken = _spoken(current, speakers.first, action);
+  return (remarks: [spoken.remark], memory: spoken.memory);
 }
 
-({CompanionRemark? remark, RemarkMemory memory}) _spoken(
+/// [companionId]'s word to the player on a drink shared at the camp, and
+/// the memory after it; nothing when they have no such line.
+({CompanionRemark? remark, RemarkMemory memory}) drinkRemark(
+    RemarkMemory memory, String companionId) {
+  if (remarkLinesFor(companionId, RemarkKind.drink).isEmpty) {
+    return (remark: null, memory: memory);
+  }
+  final spoken = _spoken(memory, companionId, RemarkKind.drink);
+  return (remark: spoken.remark, memory: spoken.memory);
+}
+
+/// [memory] with [companionId] having just spoken.
+RemarkMemory _noted(RemarkMemory memory, String companionId) => RemarkMemory(
+      seed: memory.seed,
+      choices: memory.choices,
+      lastRemarkAt: memory.choices,
+      lastSpokeAt: {...memory.lastSpokeAt, companionId: memory.choices},
+      used: memory.used,
+    );
+
+({CompanionRemark remark, RemarkMemory memory}) _spoken(
     RemarkMemory memory, String companionId, RemarkKind kind) {
   final key = '$companionId/${kind.name}';
   final count = memory.used[key] ?? 0;
   final lines = remarkLinesFor(companionId, kind);
   final start = (memory.seed + _stableHash(key)) % lines.length;
+  final noted = _noted(memory, companionId);
   return (
     remark: CompanionRemark(
       companionId: companionId,
@@ -196,10 +276,10 @@ class RemarkMemory {
       index: (start + count) % lines.length,
     ),
     memory: RemarkMemory(
-      seed: memory.seed,
-      choices: memory.choices,
-      lastRemarkAt: memory.choices,
-      lastSpokeAt: {...memory.lastSpokeAt, companionId: memory.choices},
+      seed: noted.seed,
+      choices: noted.choices,
+      lastRemarkAt: noted.lastRemarkAt,
+      lastSpokeAt: noted.lastSpokeAt,
       used: {...memory.used, key: count + 1},
     ),
   );
@@ -271,6 +351,426 @@ List<String> remarkLinesFor(String companionId, RemarkKind kind,
 /// Every companion with lines, for tests.
 Iterable<String> get companionsWithRemarks => _remarksEn.keys;
 
+/// The names a story choice goes by for its written lines: the flags it
+/// sets, then `nodeId#index`, its place among [choices] in [nodeId]'s
+/// scene (for a choice with no flag of its own).
+List<String> deedKeysFor<T>(
+        String nodeId, List<T> choices, T choice, List<String> flags) =>
+    [
+      ...flags,
+      if (choices.contains(choice)) '$nodeId#${choices.indexOf(choice)}',
+    ];
+
+/// The line [companionId] has for the choice named [deedKey], if any.
+String? deedRemarkFor(String deedKey, String companionId,
+        {required bool french}) =>
+    (french ? _deedLinesFr : _deedLinesEn)[deedKey]?[companionId] ??
+    (french ? _deedLinesEn : _deedLinesFr)[deedKey]?[companionId];
+
+/// Every choice with written lines, for tests.
+Iterable<String> get deedRemarkKeys => _deedLinesEn.keys;
+
+/// Every companion's lines for [deedKey], in English or French, for tests.
+Map<String, String> deedRemarksOf(String deedKey, {required bool french}) =>
+    (french ? _deedLinesFr : _deedLinesEn)[deedKey] ?? const {};
+
+// Lines written for the story's heaviest choices, by the choice's flag (or
+// `nodeId#index`), then by companion. Only companions who can be in the
+// party by then have one.
+const _deedLinesEn = <String, Map<String, String>>{
+  // The Inquisitor on the pier, beaten.
+  '960#1': {
+    'vess': "You could have made him scream. He'd have deserved it. I'm glad "
+        "you didn't want to.",
+  },
+  '960#2': {
+    'vess': 'The dark taught me that too. Making them pay. It never once felt '
+        'like being paid back.',
+  },
+  // The wharf: a boat for twenty, a hundred waiting.
+  'refugees_aboard': {
+    'kelda': "A hundred on a boat built for twenty, and the stores over the "
+        "side. That's a gate held. I'll bail if I have to.",
+    'sable': "There go three weeks of food, for a hundred mouths that'll eat "
+        "for three days. I'll be hungry and right, love. There are worse "
+        'things to be.',
+    'liora': "I counted them up the gangway. All of them. I'll count them off "
+        'again on the other side.',
+    'vess': "The children didn't look at me like I was the dark. I think it's "
+        'because you let me carry one.',
+  },
+  'refugees_left': {
+    'kelda': "Twenty who can fight. I'd have picked the same twenty. I'll hate "
+        'it the same, too.',
+    'sable': "Hard sum. Right sum. Don't look back at the wharf; it doesn't "
+        'change the numbers.',
+    'liora': "I can still see their lanterns from up here. I'm going to watch "
+        "them until I can't.",
+    'vess': 'They will remember who chose. I remember every door that closed '
+        'on me.',
+  },
+  'sailed_alone': {
+    'kelda': 'A hundred people on that wharf, and the Eel sails light. I held '
+        'a gate once so nobody would ever have to watch that.',
+    'sable': "Light, fast and full. I'd have said it myself. I didn't think "
+        "you would.",
+    'liora': "I watched the three orphans until the smoke took the wharf. I'm "
+        'still watching them.',
+    'vess': "The Void does this. Leaves people on a shore. I didn't think you "
+        'would.',
+  },
+  // The storm: the tow-line to the refugees' skiff.
+  'skiff_cut': {
+    'kelda': "There were people in that skiff. I heard them over the storm. "
+        "I'll hear them for a while.",
+    'sable': "Them or us, and you chose us. I'll drink to that. I won't enjoy "
+        'the drink.',
+    'liora': "I had that rope in my sights. I could have held it. You didn't "
+        'ask.',
+    'vess': 'The sea took them the way the dark takes things. Quickly, and '
+        'without asking whose they were.',
+  },
+  // Tern Row: the toll-man talked down.
+  'tern_row_spared': {
+    'kelda': "No blood on the Row, and the toll-man walked off thinking it was "
+        "his idea. That's how a gate should be held.",
+    'sable': "You talked a tyrant out of his toll and came away paid. I'm "
+        'almost proud. Almost.',
+    'liora': "Nadira's lanterns are still lit. I checked from the roof.",
+  },
+  // The Reckoning Wall: the auxiliary out-argued.
+  'reckoning_wall_saved': {
+    'maren': "You quoted the Code at him. I once wrote notes in the margins of "
+        "those procedures. I never thought I'd hear them save a wall of "
+        'names.',
+    'grosh': 'Grosh wanted to break the oil man. Words worked. Grosh is... '
+        'surprised.',
+    'liora': 'The names stay on the wall. Good. Somebody has to keep counting '
+        'them.',
+  },
+  // The standard, stitched into a living man.
+  'standard_cut_living': {
+    'maren': 'He was still breathing. I have watched the Inquisition take '
+        'cloth from the living. I never thought I would watch you do it.',
+    'grosh': 'Quick. The fire was coming. Grosh would have done the same.',
+    'kelda': "The camp needed us back. I know. I also know what I heard in "
+        'that sanctum.',
+  },
+  '4999_standard#2': {
+    'maren': 'The blade first. It was the only kindness left in that room, and '
+        'you found it.',
+    'kelda': 'Clean and quick, the way a soldier would want it. He was one, '
+        'once.',
+  },
+  // The Court's sleepers in the Shroud's twin.
+  'court_woken': {
+    'malrik': "Waking them cost us a quarter hour we didn't have. Nothing "
+        "personal, but I'd have let them sleep. Lucky for them you're not me.",
+    'tobin': "They knew their own names at the end. I've sung over worse "
+        'deaths than that. Not many.',
+    'maren': 'They died as themselves. That is more than the Inquisition ever '
+        'gave anyone it wrapped in cloth.',
+  },
+  'court_never_woke': {
+    'malrik':
+        "Efficient. The Court kept them asleep because asleep is cheaper. "
+            "You've learned the ledger.",
+    'tobin': "Two of those faces had names you knew. I'll say them tonight, "
+        "since they didn't get to.",
+    'maren': 'They never woke. I keep telling myself that is a mercy. I keep '
+        'not believing it.',
+  },
+  // The Hollow Shore: the legate's pact.
+  'inquisition_pact': {
+    'maren': 'A white pole above a white cathedral. I carried that pole once. '
+        'I swore I never would again, and now I am walking behind it.',
+    'tobin': 'The Ashen Quarter burned under that saint. You took its purse.',
+    'malrik': 'A crown and a purse from the people who burned your city. '
+        'Nothing personal: best deal on the table.',
+    'grosh': 'Heavy purse. Grosh does not like the rowers. Grosh will watch '
+        'them.',
+  },
+  'pact_refused': {
+    'maren': 'You sent the white sail back. I have waited half my life to see '
+        'someone do that.',
+    'tobin': 'No crown from them. Good. Let the tide have their saint.',
+    'malrik': "Three hundred gold, rowing away. I'll mourn it in private.",
+    'kelda': "Good. I've held gates against that sail. I wasn't about to start "
+        'holding them for it.',
+  },
+  // The tear's price.
+  'sovereign_took_companion': {
+    'kelda': "It took one of us, and you held out the hand. I've buried "
+        "soldiers. I'd never seen one sold.",
+    'sable': "Everyone has a price. I didn't think you'd pay yours in people.",
+    'maren': 'I will say their name every morning. Someone should, now.',
+    'malrik': "Nothing personal. That's what I told myself the first time I "
+        'sold someone. It stopped working.',
+  },
+  'legate_given': {
+    'malrik': "The legate. Now that's a price I can respect. He'd have sold us "
+        'for less.',
+    'maren': 'He was a bad man. It was still a man you gave to that thing.',
+    'grosh': 'Good. Nobody liked the legate. Not even the rowers.',
+  },
+  'sovereign_blood': {
+    'maren': 'Your own blood, and not ours. I will pray over the crossing. '
+        'Over you first.',
+    'kelda': "You paid it yourself. That's the whole of being in charge, and "
+        'you knew it.',
+    'grosh': 'Grosh would have given Grosh blood. You did not ask. Grosh... '
+        'remembers that.',
+    'liora': "I'll watch your back on the crossing. Closer than usual.",
+  },
+  'camp_given': {
+    'kelda': "I built half those walls. Let the coast burn, you said. I'll be "
+        'a while forgiving that.',
+    'tobin': 'There were candles in that camp. I lit most of them.',
+    'sable': 'All that coin in timber and rope, gone for a door. At least '
+        "it's a big door.",
+    'vess': "Places burn. I know. It was the first place that ever let me "
+        'stay.',
+  },
+  // The flagship's sail, the fifth piece.
+  'flagship_burned': {
+    'sable': "Burn the ship, keep the sail, sell the brass. I've taught you "
+        'well.',
+    'tobin': "There were sailors still below. The fire didn't ask which ones "
+        'were living.',
+    'kelda': "Fastest way to a sail. Not the way I'll tell it, later.",
+  },
+  'sail_bought': {
+    'malrik': 'A hundred and fifty to riggers, for a job a torch would have '
+        'done. My heart.',
+    'tobin': "The Anchorage eats this winter. That's worth more than the "
+        'sail.',
+    'maren': "You paid people for honest work. It seems small. It isn't.",
+  },
+  // Greyhithe's eldest and the Court's page.
+  'greyhithe_names_read': {
+    'maren': "You read her daughter's name aloud. That is what a ledger is "
+        'for, in the end.',
+    'tobin': "I'll sing for the daughter tonight, now that I know her name.",
+    'liora': "She held your hands while you read. I've never seen anyone hold "
+        'on that hard.',
+  },
+  '7200_elder_later#1': {
+    'maren': 'You lied to spare her. I have told that lie. It never spared '
+        'anyone for long.',
+    'malrik': "A kind lie. Cheap, too. I'd have charged her for the truth.",
+    'tobin': "She'll go on waiting now. That's the price of the lie, and she "
+        'pays it, not you.',
+  },
+  // The wreckers' false lamps.
+  'false_lamps_out': {
+    'grosh': 'Grosh does not understand paying a man to stop. But the lamps '
+        'are out. Good.',
+    'sable': 'Paying a wrecker to stop wrecking. Charming. Ruinous, but '
+        'charming.',
+    'tobin': "No more ships on those rocks. I'll light a candle for the ones "
+        'already there.',
+    'liora': 'I watched the last lamp go out from the headland. Clean dark. '
+        'Good dark.',
+  },
+};
+
+const _deedLinesFr = <String, Map<String, String>>{
+  '960#1': {
+    'vess': "Vous auriez pu le faire hurler. Il l'aurait mérité. Je suis "
+        "contente que vous n'en ayez pas eu envie.",
+  },
+  '960#2': {
+    'vess': "Le noir m'a appris ça aussi. Leur faire payer. Ça n'a jamais "
+        "ressemblé à une dette qu'on me rendait.",
+  },
+  'refugees_aboard': {
+    'kelda': 'Cent personnes sur un bateau fait pour vingt, et les vivres '
+        "par-dessus bord. Ça, c'est une porte tenue. J'écoperai s'il le faut.",
+    'sable': 'Voilà trois semaines de vivres jetées pour cent bouches qui '
+        "mangeront trois jours. J'aurai faim et raison, mon chou. Il y a pire.",
+    'liora': 'Je les ai comptés sur la passerelle. Tous. Je les recompterai de '
+        "l'autre côté.",
+    'vess': "Les enfants ne m'ont pas regardée comme si j'étais le noir. Je "
+        "crois que c'est parce que vous m'avez laissée en porter un.",
+  },
+  'refugees_left': {
+    'kelda': "Vingt qui savent se battre. J'aurais choisi les mêmes. Et je "
+        'détesterai ça tout autant.',
+    'sable': 'Calcul dur. Calcul juste. Ne regardez pas le quai ; ça ne change '
+        'pas les chiffres.',
+    'liora': "Je vois encore leurs lanternes d'ici. Je vais les regarder "
+        "jusqu'à ce que je ne puisse plus.",
+    'vess': 'Ils se souviendront de qui a choisi. Je me souviens de chaque '
+        "porte qui s'est fermée devant moi.",
+  },
+  'sailed_alone': {
+    'kelda': "Cent personnes sur ce quai, et l'Eel navigue légère. J'ai tenu "
+        "une porte, autrefois, pour que personne n'ait jamais à voir ça.",
+    'sable': "Légère, rapide et pleine. Je l'aurais dit moi-même. Je ne "
+        'pensais pas que vous le feriez.',
+    'liora': "J'ai regardé les trois orphelins jusqu'à ce que la fumée avale "
+        'le quai. Je les regarde encore.',
+    'vess': 'Le Vide fait ça. Il laisse les gens sur un rivage. Je ne pensais '
+        'pas que vous le feriez.',
+  },
+  'skiff_cut': {
+    'kelda': 'Il y avait des gens dans cette barque. Je les ai entendus '
+        'par-dessus la tempête. Je les entendrai encore un moment.',
+    'sable': "Eux ou nous, et vous avez choisi nous. J'y boirai. Sans y "
+        'prendre plaisir.',
+    'liora': "J'avais cette corde en vue. J'aurais pu la tenir. Vous ne m'avez "
+        'rien demandé.',
+    'vess': 'La mer les a pris comme le noir prend les choses. Vite, et sans '
+        'demander à qui elles étaient.',
+  },
+  'tern_row_spared': {
+    'kelda': "Pas de sang dans Tern Row, et l'homme du péage est parti en "
+        "croyant que c'était son idée. C'est comme ça qu'on tient une porte.",
+    'sable': 'Vous avez fait renoncer un petit tyran à son péage, avec une '
+        'récompense en prime. Je suis presque fière. Presque.',
+    'liora': "Les lanternes de Nadira sont encore allumées. J'ai vérifié "
+        'depuis le toit.',
+  },
+  'reckoning_wall_saved': {
+    'maren': "Vous lui avez cité le Code. J'ai annoté ces procédures, "
+        "autrefois. Je n'aurais jamais cru les entendre sauver un mur de "
+        'noms.',
+    'grosh': "Grosh voulait casser l'homme à l'huile. Les mots ont marché. "
+        'Grosh est... surpris.',
+    'liora': "Les noms restent sur le mur. Bien. Il faut bien que quelqu'un "
+        'continue à les compter.',
+  },
+  'standard_cut_living': {
+    'maren': "Il respirait encore. J'ai vu l'Inquisition arracher du tissu à "
+        'des vivants. Je ne pensais pas vous voir le faire.',
+    'grosh': 'Vite fait. Le feu arrivait. Grosh aurait fait pareil.',
+    'kelda': "Le camp avait besoin de nous. Je sais. Je sais aussi ce que j'ai "
+        'entendu dans ce sanctuaire.',
+  },
+  '4999_standard#2': {
+    'maren': "La lame d'abord. C'était la seule bonté qui restait dans cette "
+        "pièce, et vous l'avez trouvée.",
+    'kelda': "Net et rapide, comme un soldat l'aurait voulu. Il en était un, "
+        'autrefois.',
+  },
+  'court_woken': {
+    'malrik': 'Les réveiller nous a coûté un quart d’heure que nous '
+        "n'avions pas. Rien de personnel, mais je les aurais laissés dormir. "
+        "Heureusement pour eux, vous n'êtes pas moi.",
+    'tobin': "Ils connaissaient leur propre nom, à la fin. J'ai chanté sur de "
+        'pires morts. Pas beaucoup.',
+    'maren': "Ils sont morts en étant eux-mêmes. C'est plus que l'Inquisition "
+        "n'a jamais accordé à ceux qu'elle enveloppait de tissu.",
+  },
+  'court_never_woke': {
+    'malrik': "Efficace. La Cour les gardait endormis parce que c'est moins "
+        'cher. Vous avez appris le registre.',
+    'tobin': 'Deux de ces visages avaient des noms que vous connaissiez. Je '
+        "les dirai ce soir, puisqu'ils n'ont pas pu.",
+    'maren': "Ils ne se sont jamais réveillés. Je me répète que c'est une "
+        "miséricorde. Je n'arrive pas à le croire.",
+  },
+  'inquisition_pact': {
+    'maren': "Un mât blanc au-dessus d'une cathédrale blanche. J'ai porté ce "
+        "mât, autrefois. J'avais juré de ne jamais recommencer, et me voilà "
+        'qui marche derrière.',
+    'tobin': 'Le Quartier des Cendres a brûlé sous ce saint. Vous avez pris sa '
+        'bourse.',
+    'malrik': 'Une couronne et une bourse offertes par ceux qui ont brûlé '
+        'votre ville. Rien de personnel : la meilleure affaire sur la table.',
+    'grosh': "Grosse bourse. Grosh n'aime pas les rameurs. Grosh va les "
+        'surveiller.',
+  },
+  'pact_refused': {
+    'maren': "Vous avez renvoyé la voile blanche. J'ai attendu la moitié de "
+        'ma vie de voir quelqu’un faire ça.',
+    'tobin': "Pas de couronne venue d'eux. Bien. Que la marée garde leur "
+        'saint.',
+    'malrik': "Trois cents pièces d'or qui s'éloignent à la rame. Je les "
+        'pleurerai en privé.',
+    'kelda': "Bien. J'ai tenu des portes contre cette voile. Pas question de "
+        'commencer à les tenir pour elle.',
+  },
+  'sovereign_took_companion': {
+    'kelda': "Il a pris quelqu'un d'entre nous, et c'est vous qui avez tendu "
+        "la main. J'ai enterré des soldats. Je n'en avais jamais vu vendre.",
+    'sable': 'Tout le monde a un prix. Je ne pensais pas que vous paieriez le '
+        'vôtre en gens.',
+    'maren': 'Je dirai son nom chaque matin. Il faut bien que quelqu’un le '
+        'fasse, désormais.',
+    'malrik': "Rien de personnel. C'est ce que je me suis dit la première fois "
+        "que j'ai vendu quelqu'un. Ça a cessé de marcher.",
+  },
+  'legate_given': {
+    'malrik': 'Le légat. Voilà un prix que je respecte. Il nous aurait vendus '
+        'pour moins que ça.',
+    'maren': "C'était un homme mauvais. C'était quand même un homme que vous "
+        'avez livré à cette chose.',
+    'grosh': "Bien. Personne n'aimait le légat. Pas même les rameurs.",
+  },
+  'sovereign_blood': {
+    'maren': 'Votre propre sang, et pas le nôtre. Je prierai sur la '
+        "traversée. Sur vous d'abord.",
+    'kelda': "Vous avez payé vous-même. C'est tout ce que veut dire "
+        'commander, et vous le saviez.',
+    'grosh': "Grosh aurait donné le sang de Grosh. Vous n'avez pas demandé. "
+        "Grosh... s'en souvient.",
+    'liora': 'Je surveillerai vos arrières pendant la traversée. De plus près '
+        "que d'habitude.",
+  },
+  'camp_given': {
+    'kelda': "J'ai monté la moitié de ces murs. Que la côte brûle, avez-vous "
+        'dit. Il me faudra du temps pour vous le pardonner.',
+    'tobin': "Il y avait des chandelles dans ce camp. J'en ai allumé la "
+        'plupart.',
+    'sable': 'Tout cet argent en bois et en cordage, parti pour une porte. Au '
+        "moins, c'est une grande porte.",
+    'vess': "Les lieux brûlent. Je sais. C'était le premier endroit qui "
+        "m'ait laissée rester.",
+  },
+  'flagship_burned': {
+    'sable': 'Brûler le navire, garder la voile, vendre le cuivre. Je vous ai '
+        'bien appris.',
+    'tobin': "Il restait des marins en bas. Le feu n'a pas demandé lesquels "
+        'vivaient encore.',
+    'kelda': 'Le chemin le plus court vers une voile. Pas celui que je '
+        'raconterai, plus tard.',
+  },
+  'sail_bought': {
+    'malrik': "Cent cinquante pièces à des gréeurs, pour un travail qu'une "
+        'torche aurait fait. Mon cœur.',
+    'tobin': 'Le Mouillage mangera cet hiver. Ça vaut plus que la voile.',
+    'maren': "Vous avez payé des gens pour un travail honnête. Ça semble peu "
+        "de chose. Ça ne l'est pas.",
+  },
+  'greyhithe_names_read': {
+    'maren': "Vous avez lu à voix haute le nom de sa fille. C'est à ça que "
+        'sert un registre, au bout du compte.',
+    'tobin': 'Je chanterai pour la fille ce soir, maintenant que je connais '
+        'son nom.',
+    'liora': "Elle vous a tenu les mains pendant que vous lisiez. Je n'ai "
+        "jamais vu personne s'accrocher aussi fort.",
+  },
+  '7200_elder_later#1': {
+    'maren': "Vous avez menti pour l'épargner. J'ai dit ce mensonge-là. Il "
+        "n'a jamais épargné personne longtemps.",
+    'malrik': 'Un mensonge gentil. Et bon marché. Moi, je lui aurais fait '
+        'payer la vérité.',
+    'tobin': "Elle va continuer d'attendre, maintenant. C'est le prix du "
+        "mensonge, et c'est elle qui le paie, pas vous.",
+  },
+  'false_lamps_out': {
+    'grosh': "Grosh ne comprend pas qu'on paie un homme pour qu'il arrête. "
+        'Mais les lampes sont éteintes. Bien.',
+    'sable': "Payer un naufrageur pour qu'il cesse. Charmant. Ruineux, mais "
+        'charmant.',
+    'tobin': "Plus de navires sur ces rochers. J'allumerai une chandelle pour "
+        'ceux qui y sont déjà.',
+    'liora': "J'ai regardé la dernière lampe s'éteindre depuis le cap. Un noir "
+        'propre. Un bon noir.',
+  },
+};
+
 // The lines. French addresses the player as « vous », with nothing that
 // agrees with the player's gender.
 
@@ -308,6 +808,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       'Walking round a fight. Not my style, but nobody bled.',
       'Quietly done. My shield thanks you.',
+    ],
+    RemarkKind.drink: [
+      "To the gate, and whoever's behind it. Your round, I see.",
+      "Dwarven ale's better. Don't tell the barkeep. Thank you.",
     ],
   },
   'sable': {
@@ -350,6 +854,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
           'knew about.',
       'Quiet feet. I could make something of you yet.',
     ],
+    RemarkKind.drink: [
+      "Buying the drinks. You're learning how to keep a partner, love.",
+      "I'll pretend I don't know what this costs. Cheers.",
+    ],
   },
   'maren': {
     RemarkKind.kindApproved: [
@@ -386,6 +894,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
       'No one died. I will take that, every time.',
       'Mercy is sometimes only a quiet step. That one was well placed.',
     ],
+    RemarkKind.drink: [
+      "I took a vow against this, once. Tomorrow I'll take another.",
+      "Thank you. It's been a long time since anyone poured for me.",
+    ],
   },
   'liora': {
     RemarkKind.kindApproved: [
@@ -419,6 +931,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       'Nobody looked up. Nobody ever looks up.',
       'Quiet. Good. I had an arrow ready anyway.',
+    ],
+    RemarkKind.drink: [
+      "Up on the roof, then. Better view, and nobody hears us toast.",
+      "One cup. I'm still on watch. I'm always on watch.",
     ],
   },
   'vess': {
@@ -454,6 +970,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       "Shadows are easier when you're not afraid of them.",
       "Not a sound. Like the dark. I'd know.",
+    ],
+    RemarkKind.drink: [
+      "Nobody drank with me in the dark. It was very quiet. This is better.",
+      "The whispers go quiet when I'm warm. Thank you.",
     ],
   },
   'grosh': {
@@ -494,6 +1014,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
       'Grosh wanted to smash. Grosh will smash later.',
       'Sneaking. Hmph. Faster than fighting, Grosh admits.',
     ],
+    RemarkKind.drink: [
+      "DRINK! Grosh likes you more now. This is how it works.",
+      "Grosh will drink yours too, if you are slow.",
+    ],
   },
   'tobin': {
     RemarkKind.kindApproved: [
@@ -533,6 +1057,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
       "Nobody hurt. That's a hymn I know by heart.",
       'Good. Let them live to change their minds.',
     ],
+    RemarkKind.drink: [
+      "The brothers brewed better, but they never shared it. Your health.",
+      "I'll sing after the second cup. You've been warned.",
+    ],
   },
   'malrik': {
     RemarkKind.kindDisapproved: [
@@ -571,6 +1099,10 @@ const _remarksEn = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       'No fight, no cost, no witnesses. Perfect.',
       'Stealth. The cheapest kind of victory.',
+    ],
+    RemarkKind.drink: [
+      "A drink on your coin. I'll book it as a gift, not a debt. Rare, for me.",
+      "To profit. And, fine, to you.",
     ],
   },
 };
@@ -612,6 +1144,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
       "Contourner un combat, ce n'est pas mon genre. Mais personne n'a "
           'saigné.',
       'Proprement fait. Mon bouclier vous remercie.',
+    ],
+    RemarkKind.drink: [
+      "À la porte, et à ceux qui sont derrière. C'est votre tournée, à ce que je vois.",
+      "La bière naine est meilleure. Ne le dites pas au tavernier. Merci.",
     ],
   },
   'sable': {
@@ -657,6 +1193,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
       'Des pas discrets. Je finirai peut-être par faire quelque chose de '
           'vous.',
     ],
+    RemarkKind.drink: [
+      "Vous payez la tournée. Vous apprenez à garder une associée, mon chou.",
+      "Je vais faire comme si je ne savais pas ce que ça coûte. Santé.",
+    ],
   },
   'maren': {
     RemarkKind.kindApproved: [
@@ -696,6 +1236,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
       'La miséricorde tient parfois à un pas silencieux. Celui-ci était '
           'bien placé.',
     ],
+    RemarkKind.drink: [
+      "J'ai fait vœu de ne pas boire, autrefois. Demain, j'en ferai un autre.",
+      "Merci. Il y a longtemps que personne ne m'avait servie.",
+    ],
   },
   'liora': {
     RemarkKind.kindApproved: [
@@ -729,6 +1273,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       "Personne n'a levé les yeux. Personne ne lève jamais les yeux.",
       "Silence. Bien. J'avais une flèche prête, au cas où.",
+    ],
+    RemarkKind.drink: [
+      "Sur le toit, alors. Meilleure vue, et personne ne nous entend trinquer.",
+      "Une coupe. Je suis encore de garde. Je suis toujours de garde.",
     ],
   },
   'vess': {
@@ -766,6 +1314,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       "Les ombres sont plus faciles quand on n'en a pas peur.",
       "Pas un bruit. Comme dans le noir. Je m'y connais.",
+    ],
+    RemarkKind.drink: [
+      "Personne ne buvait avec moi, dans le noir. C'était très calme. C'est mieux ainsi.",
+      "Les murmures se taisent quand j'ai chaud. Merci.",
     ],
   },
   'grosh': {
@@ -805,6 +1357,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       'Grosh voulait frapper. Grosh frappera plus tard.',
       "Se faufiler. Hmpf. Plus rapide que se battre, Grosh l'admet.",
+    ],
+    RemarkKind.drink: [
+      "À BOIRE ! Grosh vous aime davantage maintenant. C'est comme ça que ça marche.",
+      "Grosh boira aussi le vôtre, si vous traînez.",
     ],
   },
   'tobin': {
@@ -849,6 +1405,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
       "Personne de blessé. C'est un hymne que je connais par cœur.",
       "Bien. Qu'ils vivent assez pour changer d'avis.",
     ],
+    RemarkKind.drink: [
+      "Les frères brassaient mieux, mais ils ne partageaient jamais. À votre santé.",
+      "Je chanterai après la deuxième coupe. C'est dit.",
+    ],
   },
   'malrik': {
     RemarkKind.kindDisapproved: [
@@ -888,6 +1448,10 @@ const _remarksFr = <String, Map<RemarkKind, List<String>>>{
     RemarkKind.sneakedPast: [
       'Pas de combat, pas de frais, pas de témoins. Parfait.',
       'La discrétion. La victoire la moins chère.',
+    ],
+    RemarkKind.drink: [
+      "Un verre à vos frais. Je le note comme un cadeau, pas une dette. C'est rare, chez moi.",
+      "Au profit. Et, bon, à vous.",
     ],
   },
 };

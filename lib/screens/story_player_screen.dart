@@ -12,6 +12,7 @@ import '../data/alignment_events.dart';
 import '../data/approval.dart';
 import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
+import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
@@ -222,17 +223,25 @@ class _StoryView extends ConsumerWidget {
     // and for the name over a companion's remark on it.
     final companionNames =
         ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
-    final pendingRemark = ref.watch(pendingRemarkProvider);
-    final remarkLine = pendingRemark?.lineFor(french: french) ?? '';
-    final remark = pendingRemark == null || remarkLine.isEmpty
-        ? null
-        : (
-            speaker: (companionNames[pendingRemark.companionId]
+    final remarks = [
+      for (final remark in ref.watch(pendingRemarksProvider))
+        if (remark.lineFor(french: french).isNotEmpty)
+          (
+            speaker: (companionNames[remark.companionId]
                         as Map<String, dynamic>?)?['companionName']
                     ?.toString() ??
-                pendingRemark.companionId,
-            line: remarkLine,
-          );
+                remark.companionId,
+            line: remark.lineFor(french: french),
+          ),
+    ];
+    final checkOutcome = ref.watch(pendingCheckOutcomeProvider);
+    // What opens the scene before its own text, read aloud with it.
+    final opening = [
+      if (pendingAftermath != null && pendingAftermath.isNotEmpty)
+        pendingAftermath,
+      if (checkOutcome != null && checkOutcome.isNotEmpty) checkOutcome,
+      for (final remark in remarks) '${remark.speaker}: ${remark.line}',
+    ];
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
     if (pendingDiscovery != null) {
       final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
@@ -338,8 +347,11 @@ class _StoryView extends ConsumerWidget {
           if (!context.mounted) return;
           ref.read(_autoReadLastNodeKeyProvider.notifier).state = autoReadKey;
           try {
-            await _speakNarration(ref,
-                readAloudParagraphs(node, session, french: french), language);
+            await _speakNarration(
+                ref,
+                readAloudParagraphs(node, session,
+                    french: french, opening: opening),
+                language);
           } catch (e) {
             // Auto-read fires without the player asking for it, so a
             // failure here must still surface — otherwise it just looks
@@ -421,7 +433,8 @@ class _StoryView extends ConsumerWidget {
         ),
       ),
       _ReadAloudButton(
-          paragraphs: readAloudParagraphs(node, session, french: french),
+          paragraphs: readAloudParagraphs(node, session,
+              french: french, opening: opening),
           language: language),
     ];
 
@@ -559,7 +572,8 @@ class _StoryView extends ConsumerWidget {
                           uiTheme: node.uiTheme,
                           aftermath: pendingAftermath,
                           aftermathHeading: tr(ref, 'aftermath_heading'),
-                          remark: remark,
+                          outcome: checkOutcome,
+                          remarks: remarks,
                           french: french,
                         )
                       else
@@ -644,7 +658,8 @@ class _StoryView extends ConsumerWidget {
                                                     aftermath: pendingAftermath,
                                                     aftermathHeading: tr(ref,
                                                         'aftermath_heading'),
-                                                    remark: remark,
+                                                    outcome: checkOutcome,
+                                                    remarks: remarks,
                                                     french: french,
                                                     epilogueHeading: tr(ref,
                                                         'epilogue_heading'),
@@ -690,7 +705,8 @@ class _StoryView extends ConsumerWidget {
                                                     aftermath: pendingAftermath,
                                                     aftermathHeading: tr(ref,
                                                         'aftermath_heading'),
-                                                    remark: remark,
+                                                    outcome: checkOutcome,
+                                                    remarks: remarks,
                                                     french: french,
                                                     epilogueHeading: tr(ref,
                                                         'epilogue_heading'),
@@ -981,7 +997,8 @@ Future<void> _selectChoice({
   // The last fight's aftermath opened this scene, and a companion's remark
   // on the last choice; moving on retires both.
   ref.read(pendingAftermathProvider.notifier).state = null;
-  ref.read(pendingRemarkProvider.notifier).state = null;
+  ref.read(pendingCheckOutcomeProvider.notifier).state = null;
+  ref.read(pendingRemarksProvider.notifier).state = const [];
   var skipRewardEffects = false;
   // What the choice showed of the player, for the party to remark on.
   RemarkKind? shown;
@@ -1023,6 +1040,19 @@ Future<void> _selectChoice({
       success = result.success;
     }
     if (success && choice.avoidFightOnSuccess) fightAvoided = true;
+    // A check with no scene of its own to tell it is told in a sentence.
+    if (checkOutcomeNeedsTelling(
+      success: success,
+      onTheRoad: isExcursion,
+      hasFailScene: (choice.failNextId ?? '').isNotEmpty,
+      isSneak: choice.avoidFightOnSuccess,
+    )) {
+      ref.read(pendingCheckOutcomeProvider.notifier).state =
+          checkOutcomeLineFor(choice.checkAbility!,
+              success: success,
+              french: french,
+              seed: Random().nextInt(1 << 20));
+    }
     shown = !success
         ? RemarkKind.checkFailed
         : fightAvoided
@@ -1205,6 +1235,14 @@ Future<void> _selectChoice({
         goldMod: isExcursion ? 0 : choice.goldMod,
         approvalMods: choice.approvalMods,
       ),
+      deedKeys: isExcursion
+          ? const []
+          : deedKeysFor(
+              currentNodeId,
+              story.nodeFor(currentNodeId)?.choices ?? const <StoryChoice>[],
+              choice,
+              choice.flagsToAdd,
+            ),
       shown: shown,
     );
   }
@@ -1337,10 +1375,11 @@ void _noteRemark(
   WidgetRef ref, {
   List<ApprovalChange> reactions = const [],
   RemarkDeed deed = const RemarkDeed(),
+  List<String> deedKeys = const [],
   RemarkKind? shown,
 }) {
-  ref.read(pendingRemarkProvider.notifier).state =
-      speakUpAbout(ref, reactions: reactions, deed: deed, action: shown);
+  ref.read(pendingRemarksProvider.notifier).state = speakUpAbout(ref,
+      reactions: reactions, deed: deed, deedKeys: deedKeys, action: shown);
 }
 
 /// Writes the fight that just ended into the next scene's opening line
@@ -2348,7 +2387,8 @@ class _FoldedNarration extends StatelessWidget {
     this.uiTheme,
     this.aftermath,
     this.aftermathHeading = '',
-    this.remark,
+    this.outcome,
+    this.remarks = const [],
     this.french = false,
   });
 
@@ -2358,9 +2398,11 @@ class _FoldedNarration extends StatelessWidget {
   final String? aftermath;
   final String aftermathHeading;
 
-  /// A companion's remark on the last choice (see companion_remarks.dart),
-  /// kept under the folded line like the aftermath.
-  final ({String speaker, String line})? remark;
+  /// A check's outcome in words (see check_outcomes.dart) and what the
+  /// party said about the last choice (see companion_remarks.dart), kept
+  /// under the folded line like the aftermath.
+  final String? outcome;
+  final List<({String speaker, String line})> remarks;
   final bool french;
 
   @override
@@ -2422,11 +2464,22 @@ class _FoldedNarration extends StatelessWidget {
                   ),
                 ),
               ],
-              if (remark != null) ...[
+              if (outcome != null && outcome!.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  outcome!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontFamily: 'serif',
+                    fontStyle: FontStyle.italic,
+                    height: 1.5,
+                  ),
+                ),
+              ],
+              for (final remark in remarks) ...[
                 const SizedBox(height: 10),
                 CompanionRemarkView(
-                  speaker: remark!.speaker,
-                  line: remark!.line,
+                  speaker: remark.speaker,
+                  line: remark.line,
                   color: accent.text,
                   french: french,
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -2458,15 +2511,18 @@ class _StoryText extends StatelessWidget {
     this.speakerLabel,
     this.aftermath,
     this.aftermathHeading = '',
-    this.remark,
+    this.outcome,
+    this.remarks = const [],
     this.french = false,
   });
 
   final String text;
 
-  /// A companion's remark on the last choice (see companion_remarks.dart),
-  /// opening the scene after the aftermath, if any.
-  final ({String speaker, String line})? remark;
+  /// A check's outcome in words (see check_outcomes.dart), then what the
+  /// party said about the last choice (see companion_remarks.dart): the
+  /// scene opens with them, after the aftermath, if any.
+  final String? outcome;
+  final List<({String speaker, String line})> remarks;
   final bool french;
 
   /// Who is speaking, for a scene voiced by someone other than the
@@ -2504,6 +2560,7 @@ class _StoryText extends StatelessWidget {
     final palette = uiThemePaletteFor(uiTheme);
     final accent = resolveUiAccent(colorScheme, palette);
     final hasAftermath = aftermath != null && aftermath!.isNotEmpty;
+    final hasOutcome = outcome != null && outcome!.isNotEmpty;
 
     final baseStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
               fontFamily: InkFonts.prose,
@@ -2580,7 +2637,7 @@ class _StoryText extends StatelessWidget {
               ),
               const SizedBox(height: 16),
             ],
-            if (hasAftermath || remark != null) ...[
+            if (hasAftermath || hasOutcome || remarks.isNotEmpty) ...[
               if (hasAftermath) ...[
                 Text(
                   aftermathHeading.toUpperCase(),
@@ -2597,15 +2654,25 @@ class _StoryText extends StatelessWidget {
                   style: baseStyle.copyWith(fontStyle: FontStyle.italic),
                 ),
               ],
-              if (hasAftermath && remark != null) const SizedBox(height: 14),
-              if (remark != null)
+              if (hasOutcome) ...[
+                if (hasAftermath) const SizedBox(height: 12),
+                Text(
+                  outcome!,
+                  textAlign: TextAlign.start,
+                  style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                ),
+              ],
+              for (final (i, remark) in remarks.indexed) ...[
+                if (hasAftermath || hasOutcome || i > 0)
+                  const SizedBox(height: 14),
                 CompanionRemarkView(
-                  speaker: remark!.speaker,
-                  line: remark!.line,
+                  speaker: remark.speaker,
+                  line: remark.line,
                   color: accent.text,
                   french: french,
                   style: baseStyle,
                 ),
+              ],
               const SizedBox(height: 14),
               Center(
                 child: Container(

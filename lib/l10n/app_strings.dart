@@ -1595,7 +1595,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "yet are recorded when read (this uses ElevenLabs credits). Without a "
         "key, only recorded scenes use this voice; the rest use the device "
         'voice.',
-    AppLanguage.fr: "Chaque paragraphe est enregistré une fois avec ta clé API "
+    AppLanguage.fr: "Chaque paragraphe est enregistré une fois avec votre clé API "
         "ElevenLabs et gardé sur cet appareil, puis lu hors ligne. Les scènes "
         "pas encore enregistrées le sont à la lecture (cela consomme des "
         "crédits ElevenLabs). Sans clé, seules les scènes enregistrées "
@@ -1648,7 +1648,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "{count} paragraphes ne sont pas encore enregistrés dans "
         "cette langue. Les enregistrer envoie environ {chars} caractères à "
         "ElevenLabs, soit à peu près autant de crédits. Les enregistrements "
-        "déjà faits sont gardés si tu t'arrêtes.",
+        "déjà faits sont gardés si vous arrêtez.",
   },
   'elevenlabs_record_nothing': {
     AppLanguage.en: 'The whole story is already recorded in this language.',

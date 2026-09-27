@@ -10,6 +10,8 @@ import '../data/companion_remarks.dart';
 final remarkMemoryProvider = StateProvider<RemarkMemory>(
     (ref) => RemarkMemory(seed: Random().nextInt(1 << 20)));
 
-/// The companion's remark the next scene opens with, set when a choice is
-/// made and cleared as soon as the player makes the next one.
-final pendingRemarkProvider = StateProvider<CompanionRemark?>((ref) => null);
+/// What the party says the next scene opens with (a remark, and maybe an
+/// answer to it), set when a choice is made and cleared as soon as the
+/// player makes the next one.
+final pendingRemarksProvider =
+    StateProvider<List<CompanionRemark>>((ref) => const []);

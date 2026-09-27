@@ -18,3 +18,8 @@ final pendingAftermathProvider = StateProvider<String?>((ref) => null);
 /// then leaves a detour, and an expedition ends as a retreat rather than
 /// a defeat. Whoever reads it clears it.
 final lastFightRetreatedProvider = StateProvider<bool>((ref) => false);
+
+/// A check's outcome in words (see check_outcomes.dart), for a check with
+/// no scene of its own to tell it: the next scene opens with it, and the
+/// next choice retires it.
+final pendingCheckOutcomeProvider = StateProvider<String?>((ref) => null);

@@ -427,16 +427,16 @@ const Map<String, Map<String, String>> _acksFr = {
         "laissèrent la place, et le silence, dont l'heure suivante avait "
         "besoin.",
     'kelda': " « Il a tenu la mauvaise chose, dit Kelda en le regardant, mais "
-        "il l'a tenue. Ne le fais pas attendre pour le principe. »",
+        "il l'a tenue. Ne le faites pas attendre pour le principe. »",
     'maren': " Maren s'agenouilla à sa tête, là où il pouvait la voir, et lui "
         "dit ce qu'une clerc dit à un mourant, et ne me dit pas quoi faire, "
         "ce qui de sa part était une miséricorde à laquelle je ne "
         "m'attendais pas.",
     'grosh': " Grosh tourna le dos au Gardien et surveilla la porte du "
-        "sanctuaire. « La cathédrale brûle, dit-il. Quoi que tu fasses, "
-        "fais-le avant le toit. »",
+        "sanctuaire. « La cathédrale brûle, dit-il. Quoi que vous fassiez, "
+        "faites-le avant le toit. »",
     'vess': " Vess ne pouvait détacher les yeux du gris dans l'étendard. "
-        "« C'est la même étoffe, dit-elle. Elle sait ce que tu vas faire. "
+        "« C'est la même étoffe, dit-elle. Elle sait ce que vous allez faire. "
         "Elle attend de voir comment. »",
   },
   '5004_altar': {
@@ -471,7 +471,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "bottes.",
     'vess': " Vess se tenait aussi loin du reliquaire que la chapelle le "
         "permettait. « Il me connaît, dit-elle. Le fil qu'il contient. Ne le "
-        "laisse pas sortir près de moi. »",
+        "laissez pas sortir près de moi. »",
   },
   '7002_price': {
     '*': " L'équipage entendit le prix avec moi, et je regardai chacun "
@@ -487,7 +487,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "discuta pas, et ne me laissa pas discuter non plus.",
     'liora': " Liora s'avança avant que j'aie fini d'entendre le prix, "
         "débanda son arc et me le tendit. « Neuf flèches, dit-elle. "
-        "Sers-t'en. »",
+        "Servez-vous-en. »",
     'vess': " Vess s'avança avant que j'aie fini d'entendre le prix. « Il "
         "connaît mon nom, dit-elle. Qu'il ait le reste. Il s'étouffera "
         "avec. »",
@@ -508,8 +508,8 @@ const Map<String, Map<String, String>> _acksFr = {
         "légat, le bouclier levé, et il n'était pas levé contre lui.",
     'maren': " Maren dit mon nom une fois, tout bas, comme on dit un nom à "
         "quelqu'un qui marche vers un précipice.",
-    'vess': " « Il ne t'offre pas une couronne, dit Vess. Il offre un "
-        "porteur à la déchirure. Demande-lui qui lui a appris les mots. »",
+    'vess': " « Il ne vous offre pas une couronne, dit Vess. Il offre un "
+        "porteur à la déchirure. Demandez-lui qui lui a appris les mots. »",
     'malrik': " Malrik regarda la bourse du légat, puis le légat, puis moi, "
         "et dit : « Quoi qu'il paie, ce n'est pas assez, et je dis cela en "
         "professionnel. »",
@@ -643,7 +643,7 @@ const Map<String, Map<String, String>> _acksFr = {
   '7002_crew': {
     '*': " Ils se tenaient en demi-cercle lâche sur le sable et me laissèrent "
         "finir, ce qui était une réponse en soi.",
-    'kelda': " Kelda ne dit rien avant que j'aie terminé, puis : « Tu parles "
+    'kelda': " Kelda ne dit rien avant que j'aie terminé, puis : « Vous parlez "
         "trop avant un combat. Depuis toujours. » Elle souriait. Je n'avais "
         "jamais vu cela.",
     'sable': " « Discours terminé ? demanda Sable. Tant mieux. J'allais "
@@ -652,7 +652,7 @@ const Map<String, Map<String, String>> _acksFr = {
         "longtemps, sans rien dire du tout, ce qui, venant d'elle, était une "
         "bénédiction.",
     'vess': " Vess attendit que les autres se soient détournés. « Il connaît "
-        "mon nom aussi, dit-elle. Là-bas. S'il le prononce, n'écoute pas ce "
+        "mon nom aussi, dit-elle. Là-bas. S'il le prononce, n'écoutez pas ce "
         "que je ferai ensuite. »",
     'grosh': " Grosh grogna, ce que j'avais appris à lire, et me posa sur "
         "l'épaule une main qui faillit m'envoyer dans le sable.",
@@ -685,9 +685,14 @@ const Map<String, Map<String, String>> _acksFr = {
 /// Node ids that carry a companion line -- exposed for tests.
 Iterable<String> get acknowledgedNodeIds => _acksEn.keys;
 
-/// The line for [nodeId] and the party's [activeAllyIds]: the first active
-/// companion with their own authored line speaks, otherwise the default
-/// for any company; nothing when the character walks alone.
+/// The line for [nodeId] and the party's [activeAllyIds]: one of the
+/// active companions with their own authored line speaks, otherwise the
+/// default for any company; nothing when the character walks alone.
+///
+/// Which of them speaks turns with the scene (v1.168): picked by the
+/// node's id among the voiced companions in the party, so it's the same
+/// every time the scene is read (and in both languages), but the first
+/// companion in the party isn't the one who always gets the line.
 String? allyAcknowledgmentFor(
   String nodeId, {
   required List<String> activeAllyIds,
@@ -697,11 +702,24 @@ String? allyAcknowledgmentFor(
   final table = (french ? _acksFr : _acksEn)[nodeId] ??
       (french ? _acksEn : _acksFr)[nodeId];
   if (table == null) return null;
-  for (final id in activeAllyIds) {
-    final line = table[id];
-    if (line != null && line.isNotEmpty) return line;
+  final voices = _acksEn[nodeId] ?? table;
+  final speakers = [
+    for (final id in activeAllyIds)
+      if ((voices[id] ?? '').isNotEmpty) id,
+  ];
+  if (speakers.isEmpty) return table['*'];
+  final speaker = speakers[_sceneTurn(nodeId) % speakers.length];
+  final line = table[speaker];
+  return line != null && line.isNotEmpty ? line : table['*'];
+}
+
+/// A number fixed for [nodeId] on every platform and run.
+int _sceneTurn(String nodeId) {
+  var hash = 7;
+  for (final unit in nodeId.codeUnits) {
+    hash = (hash * 31 + unit) & 0x3fffffff;
   }
-  return table['*'];
+  return hash;
 }
 
 /// Every companion line [nodeId] can show, the default for any company

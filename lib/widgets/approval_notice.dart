@@ -15,16 +15,24 @@ import 'immersive_notice.dart';
 /// approval.dart): "Maren approves." for each reaction, and a companion's
 /// own words when they come to trust the player completely, start losing
 /// patience, or walk out (with who took their seat). [companions] is the
-/// localized companions table. [remark] (see companion_remarks.dart) is
-/// what one of them says about it, after their reaction.
+/// localized companions table. [remarks] (see companion_remarks.dart) are
+/// what they say about it, each after its speaker's reaction.
 List<String> approvalReactionLines(
   List<ApprovalChange> reactions,
   Map<String, dynamic> companions,
   String Function(String key) t, {
-  CompanionRemark? remark,
+  List<CompanionRemark> remarks = const [],
   bool french = false,
 }) {
   final lines = <String>[];
+  String nameOf(String id) =>
+      (companions[id] as Map<String, dynamic>?)?['companionName']?.toString() ??
+      id;
+  String quoted(CompanionRemark remark) {
+    final words = remark.lineFor(french: french);
+    return words.isEmpty ? '' : '${nameOf(remark.companionId)}: “$words”';
+  }
+
   for (final reaction in reactions) {
     final companion =
         companions[reaction.companionId] as Map<String, dynamic>? ?? const {};
@@ -37,9 +45,8 @@ List<String> approvalReactionLines(
     lines.add(
         t(reaction.delta > 0 ? 'approval_approves' : 'approval_disapproves')
             .replaceAll('{name}', name));
-    if (remark != null && remark.companionId == reaction.companionId) {
-      final words = remark.lineFor(french: french);
-      if (words.isNotEmpty) lines.add('$name: “$words”');
+    for (final remark in remarks) {
+      if (remark.companionId == reaction.companionId) lines.add(quoted(remark));
     }
     if (!reaction.tierChanged) continue;
     final after = reaction.tierAfter;
@@ -66,20 +73,27 @@ List<String> approvalReactionLines(
         ..add(t('approval_wary_notice').replaceAll('{name}', name));
     }
   }
+  // A companion with words for the choice who wasn't moved by it.
+  for (final remark in remarks) {
+    if (!reactions.any((r) => r.companionId == remark.companionId)) {
+      lines.add(quoted(remark));
+    }
+  }
   return [
     for (final line in lines)
       if (line.isNotEmpty) line,
   ];
 }
 
-/// The remark the party makes about [deed], which [reactions] answer (see
+/// What the party says about [deed], which [reactions] answer (see
 /// companion_remarks.dart): picked, remembered, and returned for a notice
-/// to show. [action] is what the choice showed of the player besides (a
-/// check, a sneak).
-CompanionRemark? speakUpAbout(
+/// to show. [deedKeys] name the choice for its written lines; [action] is
+/// what the choice showed of the player besides (a check, a sneak).
+List<CompanionRemark> speakUpAbout(
   WidgetRef ref, {
   List<ApprovalChange> reactions = const [],
   RemarkDeed deed = const RemarkDeed(),
+  List<String> deedKeys = const [],
   RemarkKind? action,
 }) {
   final picked = pickRemark(
@@ -88,10 +102,11 @@ CompanionRemark? speakUpAbout(
     reactions: reactions,
     deed: deed,
     companions: ref.read(gameDbProvider(companionsSchema)).value ?? const {},
+    deedKeys: deedKeys,
     action: action,
   );
   ref.read(remarkMemoryProvider.notifier).state = picked.memory;
-  return picked.remark;
+  return picked.remarks;
 }
 
 /// Shows [reactions] in one notice, if there are any. With [deed] (what
@@ -106,13 +121,14 @@ Future<void> showApprovalReactions(
   if (reactions.isEmpty || !context.mounted) return;
   final companions =
       ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
-  final remark =
-      deed == null ? null : speakUpAbout(ref, reactions: reactions, deed: deed);
+  final remarks = deed == null
+      ? const <CompanionRemark>[]
+      : speakUpAbout(ref, reactions: reactions, deed: deed);
   final lines = approvalReactionLines(
     reactions,
     companions,
     (key) => tr(ref, key),
-    remark: remark,
+    remarks: remarks,
     french: ref.read(appLanguageProvider) == AppLanguage.fr,
   );
   final warm = reactions.fold<int>(0, (sum, r) => sum + r.delta) >= 0;

@@ -164,7 +164,7 @@ Future<void> turnInQuest(
       reactions,
       companions,
       (key) => trFor(lang, key),
-      remark: speakUpAbout(ref, reactions: reactions, deed: deed),
+      remarks: speakUpAbout(ref, reactions: reactions, deed: deed),
       french: lang == AppLanguage.fr,
     ),
   ];

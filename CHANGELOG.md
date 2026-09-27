@@ -8,6 +8,46 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.168.0+198]
+
+The nine narration proposals from 1.167.
+
+### Added
+- **Companions have lines written for the story's heaviest choices**: 23 of
+  them, from the Inquisitor on the pier to the tear's price (the wharf, the
+  skiff in the storm, the standard, the Court's sleepers, the legate's
+  pact, the flagship's sail…). A companion with such a line says it rather
+  than a general one.
+- **The party answers itself.** When one companion approves and another
+  disapproves, the second answers the first: Maren blesses, Malrik bills.
+- **A check with no scene of its own is told in a sentence**: searching
+  further, scavenging and slipping past on a detour or an expedition, in
+  the narrator's voice (every ability, pass and fail, EN and FR).
+- **Comments at sea and at camp.** A crew member now and then remarks on
+  pushing through a storm, boarding a derelict or outrunning raiders (in
+  the ship's log), and a companion thanks you for a shared drink.
+- **Dialogue in 13 scenes** that were narration only: Kelda and Sable at
+  the market, the harbor master, Tern Row's toll-man and Nadira, Reya at
+  the Reckoning Wall, the runner, the Court's deserter, the headman, the
+  widow, the road-keeper, the helmsman, Greyhithe's eldest and the legate.
+
+### Changed
+- **Companions take turns in the scene asides.** The line went to the
+  first companion in the party every time; it now turns with the scene.
+- **Shorter sentences.** 86 of the longest (over 50 words in English, 55 in
+  French) are split, in both languages.
+- **Read aloud, a scene opens as it does on screen**: the fight's
+  aftermath, a check's outcome and the party's remarks come first.
+- **French speaks to the player as « vous » everywhere**: companions' fight
+  and chest lines, their words in the asides, and two settings texts.
+  Lines said to an enemy keep « tu ».
+
+### Fixed
+- **The story no longer makes the narrator male** in four more places: the
+  swim under the wharf ("a grown man's shoulders", « plus ou moins
+  intact »), the Rat's origin (« m'ait surpris ») and Tern Row (« je fus
+  ravi »).
+
 ## [1.167.0+197]
 
 The party speaks up about what the player does.

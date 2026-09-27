@@ -9,6 +9,7 @@ import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_loop.dart';
+import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
@@ -25,6 +26,7 @@ import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart';
+import '../widgets/companion_remark_view.dart';
 import '../widgets/immersive_notice.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
@@ -74,6 +76,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   /// The last fight's aftermath, opening the next event's text.
   String? _aftermath;
+
+  /// A check's outcome in words (see check_outcomes.dart) and a
+  /// companion's remark on it (see companion_remarks.dart), opening the
+  /// next event like the aftermath.
+  String? _checkOutcome;
+  List<CompanionRemark> _remarks = const [];
 
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
@@ -253,6 +261,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     setState(() {
       _busy = true;
       _aftermath = null;
+      _checkOutcome = null;
+      _remarks = const [];
     });
     final notifier = ref.read(playerSessionProvider.notifier);
     // A bonus event (a hunt's trail or quarry, or an alignment ambush that
@@ -285,6 +295,23 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       if (!mounted) return;
       fightAvoided = result.success && choice.avoidFightOnSuccess;
       checkFailed = !result.success;
+      if (checkOutcomeNeedsTelling(
+        success: result.success,
+        onTheRoad: true,
+        hasFailScene: false,
+        isSneak: choice.avoidFightOnSuccess,
+      )) {
+        _checkOutcome = checkOutcomeLineFor(result.ability,
+            success: result.success,
+            french: lang == AppLanguage.fr,
+            seed: Random().nextInt(1 << 20));
+      }
+      _remarks = speakUpAbout(ref,
+          action: !result.success
+              ? RemarkKind.checkFailed
+              : fightAvoided
+                  ? RemarkKind.sneakedPast
+                  : RemarkKind.checkPassed);
     }
 
     final enemyIds =
@@ -665,6 +692,39 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
+                if (_checkOutcome != null && _checkOutcome!.isNotEmpty) ...[
+                  Text(
+                    _checkOutcome!,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          fontStyle: FontStyle.italic,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                for (final remark in _remarks)
+                  if (remark
+                      .lineFor(french: lang == AppLanguage.fr)
+                      .isNotEmpty) ...[
+                    CompanionRemarkView(
+                      speaker: ((ref
+                                          .watch(localizedDbProvider(
+                                              companionsSchema))
+                                          .value ??
+                                      const {})[remark.companionId]
+                                  as Map<String, dynamic>?)?['companionName']
+                              ?.toString() ??
+                          remark.companionId,
+                      line: remark.lineFor(french: lang == AppLanguage.fr),
+                      color: Theme.of(context).colorScheme.primary,
+                      french: lang == AppLanguage.fr,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge
+                          ?.copyWith(height: 1.5),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
                 Text(
                   node.descriptionFor(lang == AppLanguage.fr),
                   style: Theme.of(context)

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_engine.dart';
 import '../data/approval.dart';
 import '../data/camp_state.dart';
+import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
@@ -18,6 +19,7 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -864,10 +866,25 @@ class _ApprovalPanel extends ConsumerWidget {
                           .read(playerSessionProvider.notifier)
                           .shareDrink(ally.companionId, chapter: chapter);
                       if (done && context.mounted) {
+                        // They say something back (see
+                        // companion_remarks.dart).
+                        final said = drinkRemark(
+                            ref.read(remarkMemoryProvider), ally.companionId);
+                        ref.read(remarkMemoryProvider.notifier).state =
+                            said.memory;
+                        final words = said.remark?.lineFor(
+                                french: ref.read(appLanguageProvider) ==
+                                    AppLanguage.fr) ??
+                            '';
                         showImmersiveNotice(context,
                             icon: Icons.local_drink,
-                            message: tr(ref, 'share_drink_notice')
-                                .replaceAll('{name}', name));
+                            message: [
+                              tr(ref, 'share_drink_notice')
+                                  .replaceAll('{name}', name),
+                              if (words.isNotEmpty) '$name: “$words”',
+                            ].join('\n'),
+                            duration: Duration(
+                                milliseconds: words.isEmpty ? 2200 : 4200));
                       }
                     },
               icon: const Icon(Icons.local_drink_outlined, size: 18),
