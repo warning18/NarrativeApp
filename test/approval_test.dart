@@ -1,4 +1,4 @@
-// Companion approval (v1.162): the pure rules, the party's reaction to a
+// Companion approval (v1.163): the pure rules, the party's reaction to a
 // choice, walking out, the drink at the camp, the save file and the data.
 import 'dart:convert';
 import 'dart:io';

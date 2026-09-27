@@ -434,7 +434,7 @@ class _SimEnemy {
 
   bool get isAlive => health > 0;
 
-  /// v1.160 intents, as the fight screen keeps them: a raised guard, a
+  /// v1.162 intents, as the fight screen keeps them: a raised guard, a
   /// held wind-up, a broken one, and how many rallies raised the damage.
   int guard = 0;
   EnemyMoveResult? charged;

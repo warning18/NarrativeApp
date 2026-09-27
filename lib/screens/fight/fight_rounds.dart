@@ -178,7 +178,7 @@ extension _FightRounds on _FightScreenState {
     var lastEnemyDamage = 0;
     var hitsLanded = 0;
     var manaGained = 0;
-    // Taunt (v1.160): the member who kept the biggest Defend face this round
+    // Taunt (v1.162): the member who kept the biggest Defend face this round
     // draws the enemies' attacks in a party fight (see _takeEnemyTurn).
     String? guardianId;
     var guardianBlock = 0;
@@ -606,7 +606,7 @@ extension _FightRounds on _FightScreenState {
     );
   }
 
-  /// Lands a party hit of [damage] and [element] on [enemy] (v1.160): its
+  /// Lands a party hit of [damage] and [element] on [enemy] (v1.162): its
   /// weakness or resistance first, then its raised guard. Returns what gets
   /// through, notes it towards breaking a wind-up, and reveals the
   /// weakness/resistance on the enemy's card with a log line the first

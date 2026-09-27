@@ -3,7 +3,7 @@ import 'dart:math';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 
-/// What an enemy does with its turn (v1.160). Most turns are an [attack];
+/// What an enemy does with its turn (v1.162). Most turns are an [attack];
 /// the other four change the fight's shape instead of just its numbers:
 ///
 /// - [heal]: the enemy mends itself and doesn't swing.
@@ -116,7 +116,7 @@ int scaledEnemyHeal(int heal, {required int maxHealth, int? baseMaxHealth}) {
   return (heal * maxHealth / base).round();
 }
 
-/// Momentum after the party takes a hit (v1.160): a hit costs one point
+/// Momentum after the party takes a hit (v1.162): a hit costs one point
 /// instead of wiping the whole meter, so a party that trades blows can
 /// still build to a surge.
 int momentumAfterHit(int momentum) => max(0, momentum - 1);

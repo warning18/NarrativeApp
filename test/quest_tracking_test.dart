@@ -229,7 +229,7 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('quest_tracker_turn_in')));
     await _settle(tester);
-    // The bounty asks how it's settled (v1.162): take the sapper's coins.
+    // The bounty asks how it's settled (v1.163): take the sapper's coins.
     expect(find.text('How do you settle it?'), findsOneWidget);
     expect(container.read(playerSessionProvider).completedQuestIds,
         isNot(contains('q_ch4_ossuary_bounty')));

@@ -1,4 +1,4 @@
-// An enemy that raises its guard (v1.160): the log says so, its card shows
+// An enemy that raises its guard (v1.162): the log says so, its card shows
 // the guard, and the party's next hits are soaked by it.
 import 'dart:convert';
 import 'dart:io';

@@ -3401,7 +3401,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'il ne se passe rien.',
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
-  // v1.160: the camp's bounty board (see contracts.dart).
+  // v1.162: the camp's bounty board (see contracts.dart).
   'bounty_board_section': {
     AppLanguage.en: 'Bounty board',
     AppLanguage.fr: 'Tableau des contrats',
@@ -3450,7 +3450,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Tous les combats comptent. Un nouveau tableau apparaît quand ceux-ci sont réclamés ou au chapitre suivant.',
   },
-  // v1.162: level-up perks.
+  // v1.163: level-up perks.
   'perk_choose_title': {
     AppLanguage.en: 'Choose a perk',
     AppLanguage.fr: 'Choisissez un atout',
@@ -3578,7 +3578,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Une fois par combat, un coup fatal vous laisse à 1 point de vie.',
   },
-  // v1.162: sea choices.
+  // v1.163: sea choices.
   'ship_log_paid': {
     AppLanguage.en: 'Paid {n} gold; the raider sheers off',
     AppLanguage.fr: '{n} pièces d’or versées ; le pillard s’écarte',
@@ -3625,7 +3625,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{n} gold',
     AppLanguage.fr: '{n} or',
   },
-  // v1.162: quest turn-in choices.
+  // v1.163: quest turn-in choices.
   'turn_in_choice_title': {
     AppLanguage.en: 'How do you settle it?',
     AppLanguage.fr: 'Comment réglez-vous l’affaire ?',
@@ -3634,7 +3634,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{min}–{max} gold, by how you settle it',
     AppLanguage.fr: '{min} à {max} or, selon votre décision',
   },
-  // v1.162: companion approval.
+  // v1.163: companion approval.
   'approval_label': {
     AppLanguage.en: 'Approval',
     AppLanguage.fr: 'Estime',
@@ -3723,7 +3723,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{name} warms to you.',
     AppLanguage.fr: '{name} vous apprécie un peu plus.',
   },
-  // v1.160: enemy intents, weaknesses, taunt.
+  // v1.162: enemy intents, weaknesses, taunt.
   'telegraph_category_guard': {
     AppLanguage.en: 'Guard',
     AppLanguage.fr: 'Garde',

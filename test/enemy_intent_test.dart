@@ -1,4 +1,4 @@
-// Enemy intents, weaknesses and the momentum drain (v1.160): the pure
+// Enemy intents, weaknesses and the momentum drain (v1.162): the pure
 // rules, resolveEnemyMove's reading of them, and the data that uses them.
 import 'dart:convert';
 import 'dart:io';

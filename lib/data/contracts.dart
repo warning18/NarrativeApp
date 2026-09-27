@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// The camp's bounty board (v1.160): three contracts posted at a time, each
+/// The camp's bounty board (v1.162): three contracts posted at a time, each
 /// a short goal met in ordinary fights, paid in gold and skill essence at
 /// the board. A fresh board goes up once all three are claimed or the
 /// chapter turns, so there's always a next thing to aim a fight at.

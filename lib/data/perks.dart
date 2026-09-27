@@ -2,7 +2,7 @@ import 'dart:math';
 
 import '../combat/gear_effects.dart';
 
-/// Level-up perks (v1.162): every second level (2, 4, 6...) offers three
+/// Level-up perks (v1.163): every second level (2, 4, 6...) offers three
 /// perks to choose one from, on top of the stat points. (One a level made
 /// fights noticeably easier in the playthrough simulator; one every other
 /// level keeps them where they were.) Most can be taken more

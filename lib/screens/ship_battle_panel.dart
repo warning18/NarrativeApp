@@ -15,6 +15,7 @@ import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/ship_fx.dart';
 import 'fight_screen.dart';
 
 /// How a ship battle ended: who won, the Eel as she is now (hull, rooms),
@@ -123,7 +124,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
 }
 
 class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final ShipBattle _battle;
   String? _armedWeaponId;
   String? _selectedCrewId;
@@ -140,9 +141,33 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   ShipRoom? _aimRoom;
   late final AnimationController _aim;
 
+  // --- Particles (see ship_fx.dart) ---------------------------------------
+
+  final ShipFxController _fx = ShipFxController();
+
+  /// Anchors for the particles: every room of both ships, both hulls and
+  /// the sea between them.
+  final Map<(bool, ShipRoom), GlobalKey> _roomKeys = {
+    for (final eel in [true, false])
+      for (final room in ShipRoom.values) (eel, room): GlobalKey(),
+  };
+  final Map<bool, GlobalKey> _hullKeys = {
+    true: GlobalKey(),
+    false: GlobalKey()
+  };
+  final GlobalKey _seaKey = GlobalKey();
+
+  /// The ship going down at the end, and how far along.
+  bool? _sinkingEel;
+  late final AnimationController _sink;
+  Timer? _finishTimer;
+  final List<Timer> _fxTimers = [];
+
   @override
   void initState() {
     super.initState();
+    _sink = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1300));
     _aim = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 900));
     _battle = ShipBattle(
@@ -166,6 +191,12 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       timer.cancel();
     }
     _aim.dispose();
+    _sink.dispose();
+    _fx.dispose();
+    _finishTimer?.cancel();
+    for (final timer in _fxTimers) {
+      timer.cancel();
+    }
     super.dispose();
   }
 
@@ -347,8 +378,22 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   void _fire(ShipRoom room, {AimResult? aim}) {
     final weaponId = _armedWeaponId;
     if (_busy || _over || weaponId == null) return;
+    final weapon = _battle.weaponById(weaponId);
+    final ammo = _battle.ammo;
+    final logged = _battle.log.length;
     final outcome = _battle.fire(weaponId, room, aim: aim);
-    _flash(outcome, onEel: false);
+    if (outcome != null && weapon != null) {
+      _playShot(outcome, _battle.log.sublist(logged),
+          fromEel: true,
+          kind: weapon.incendiary || ammo == ShipAmmo.heated
+              ? ShipShotKind.heated
+              : switch (ammo) {
+                  ShipAmmo.chain => ShipShotKind.chain,
+                  ShipAmmo.grape => ShipShotKind.grape,
+                  _ => ShipShotKind.round,
+                });
+    }
+    _flashLater(outcome, onEel: false);
     setState(() {
       _cancelAim();
       if (outcome != null) _armedWeaponId = _firstReadyWeaponId();
@@ -392,16 +437,24 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       _selectedCrewId = null;
       _cancelAim();
     });
+    final beforeEnemy = _battle.log.length;
     _battle.startEnemyPhase(quickOrders: quick);
+    _playLines(_battle.log.sublist(beforeEnemy));
     if (_battle.over) {
       _finish();
       return;
     }
     setState(() {});
     for (final weapon in _battle.enemyVolley) {
+      final logged = _battle.log.length;
       final shot = _battle.fireEnemy(weapon);
       if (!mounted) return;
-      _flash(shot, onEel: true);
+      if (shot != null) {
+        _playShot(shot, _battle.log.sublist(logged),
+            fromEel: false,
+            kind: weapon.incendiary ? ShipShotKind.heated : ShipShotKind.round);
+      }
+      _flashLater(shot, onEel: true);
       setState(() {});
       await Future.delayed(const Duration(milliseconds: 350));
       if (!mounted) return;
@@ -415,7 +468,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       return;
     }
     if (!mounted) return;
+    final beforeRound = _battle.log.length;
     _battle.endRound();
+    _playLines(_battle.log.sublist(beforeRound));
     if (_battle.over) {
       setState(() {});
       _finish();
@@ -434,6 +489,25 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     _clock?.cancel();
     _cancelAim();
     if (mounted) setState(() => _busy = true);
+    final end = _battle.end;
+    final sinking = end == BattleEnd.won
+        ? false
+        : end == BattleEnd.lost
+            ? true
+            : null;
+    if (sinking != null && mounted && !_still) {
+      // The losing ship goes down before the battle hands its result on.
+      setState(() => _sinkingEel = sinking);
+      _sink.forward(from: 0);
+      _fx.play(ShipFxKind.bubbles, _hullKeys[sinking]!);
+      _fx.play(ShipFxKind.bubbles, _hullKeys[sinking]!, delay: 0.5);
+      _finishTimer = Timer(const Duration(milliseconds: 1400), _report);
+      return;
+    }
+    _report();
+  }
+
+  void _report() {
     final end = _battle.end;
     widget.onFinished(ShipBattleOutcome(
       won: end == BattleEnd.won || end == BattleEnd.boarded,
@@ -524,7 +598,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       _selectedCrewId = null;
       _cancelAim();
     });
-    if (!_battle.throwGrapples()) {
+    final hooked = _battle.throwGrapples();
+    if (hooked && !_still) {
+      _fx.shot(_roomKeys[(true, ShipRoom.bulwark)]!,
+          _roomKeys[(false, ShipRoom.bulwark)]!, ShipShotKind.chain,
+          arrival: const [ShipFxKind.ring]);
+    }
+    if (!hooked) {
       setState(() => _busy = false);
       await _endTurn();
       return;
@@ -572,6 +652,142 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   final Map<(bool, ShipRoom), (String, int)> _flashes = {};
   int _flashCount = 0;
   final Map<(bool, ShipRoom), Timer> _flashTimers = {};
+
+  /// Whether the device asks for less motion: no particles, no waiting on
+  /// a ball in flight or a ship going down.
+  bool get _still => MediaQuery.maybeOf(context)?.disableAnimations ?? false;
+
+  /// Says what a shot did once its ball has landed (at once when still).
+  void _flashLater(ShotOutcome? outcome, {required bool onEel}) {
+    if (outcome == null) return;
+    if (_still) {
+      _flash(outcome, onEel: onEel);
+      return;
+    }
+    late final Timer timer;
+    timer = Timer(Duration(milliseconds: (shipShotSeconds * 1000).round()), () {
+      _fxTimers.remove(timer);
+      if (!mounted) return;
+      setState(() => _flash(outcome, onEel: onEel));
+    });
+    _fxTimers.add(timer);
+  }
+
+  /// A shot across, from [fromEel]'s guns to the room it was aimed at, and
+  /// what it did there: the same for either ship.
+  void _playShot(ShotOutcome outcome, List<BattleLine> lines,
+      {required bool fromEel, required ShipShotKind kind}) {
+    if (_still) return;
+    final target = !fromEel;
+    final keys = lines.map((l) => l.key).toSet();
+    final arrival = <ShipFxKind>[
+      if (outcome.absorbed) ShipFxKind.shield,
+      if (outcome.landed) ShipFxKind.splinters,
+      if (outcome.landed && keys.contains('ship_log_critical'))
+        ShipFxKind.critical,
+      if (outcome.fireStarted) ShipFxKind.ignite,
+      if (outcome.roomKnockedOut) ShipFxKind.knockedOut,
+      if (outcome.helmDamage > 0 || keys.contains('ship_log_rigging_torn'))
+        ShipFxKind.fibres,
+    ];
+    _fx.shot(_roomKeys[(fromEel, ShipRoom.guns)]!,
+        _roomKeys[(target, outcome.room)]!, kind,
+        arrival: arrival);
+    if (outcome.dodged) {
+      _fx.play(ShipFxKind.splash, _hullKeys[target]!, delay: shipShotSeconds);
+    }
+    if (outcome.leakOpened) {
+      _fx.play(ShipFxKind.bubbles, _roomKeys[(target, ShipRoom.hold)]!,
+          delay: shipShotSeconds);
+    }
+  }
+
+  /// What the rest of a round did, besides the shots: the sea's events, a
+  /// ram, boarders.
+  void _playLines(List<BattleLine> lines) {
+    if (_still) return;
+    for (final line in lines) {
+      switch (line.key) {
+        case 'ship_event_rogue_wave':
+          _fx.play(ShipFxKind.wave, _seaKey);
+        case 'ship_event_sea_creature':
+          _fx.play(ShipFxKind.bubbles,
+              _roomKeys[(line.side == BattleSide.eel, ShipRoom.hold)]!);
+        case 'ship_event_wreck':
+          _fx.play(ShipFxKind.debris, _seaKey);
+        case 'ship_log_rammed':
+          // The rammer's bow into the other ship's.
+          final hit = line.side != BattleSide.eel;
+          _fx.play(ShipFxKind.splinters, _roomKeys[(hit, ShipRoom.bulwark)]!);
+          _fx.play(ShipFxKind.splinters, _roomKeys[(!hit, ShipRoom.bulwark)]!,
+              delay: 0.05);
+        case 'ship_log_boarders':
+          _fx.shot(_roomKeys[(false, ShipRoom.bulwark)]!,
+              _roomKeys[(true, ShipRoom.bulwark)]!, ShipShotKind.chain,
+              arrival: const [ShipFxKind.ring]);
+      }
+    }
+  }
+
+  /// What an order looks like as it is given.
+  void _playOrder(CrewOrder order) {
+    if (_still) return;
+    switch (order) {
+      case CrewOrder.allHands:
+        for (final room in ShipRoom.values) {
+          final state = _battle.player.room(room);
+          if (state.damage > 0 || room == ShipRoom.guns) {
+            _fx.play(ShipFxKind.sparkles, _roomKeys[(true, room)]!);
+          }
+        }
+      case CrewOrder.bless:
+        _fx.play(ShipFxKind.motes, _hullKeys[true]!);
+      case CrewOrder.brace:
+      case CrewOrder.voidWard:
+        _fx.play(ShipFxKind.ring, _hullKeys[true]!);
+      case CrewOrder.shoreUp:
+        _fx.play(ShipFxKind.shield, _roomKeys[(true, ShipRoom.bulwark)]!);
+      case CrewOrder.markHelm:
+        _fx.play(ShipFxKind.critical, _roomKeys[(false, ShipRoom.helm)]!);
+      case CrewOrder.cutRigging:
+        _fx.play(ShipFxKind.fibres, _roomKeys[(false, ShipRoom.guns)]!);
+      case CrewOrder.eagleEye:
+        _fx.play(ShipFxKind.ring, _hullKeys[false]!);
+      case CrewOrder.grapple:
+        break;
+    }
+  }
+
+  /// The battle's lasting effects: the weather, rooms burning, holds
+  /// leaking, on both ships.
+  ShipFxAmbient _ambient() {
+    final rules = widget.rules;
+    final weather = !rules.weather
+        ? ShipFxWeather.none
+        : switch (_battle.weather) {
+            SeaWeather.fog => ShipFxWeather.fog,
+            SeaWeather.squall => ShipFxWeather.rain,
+            SeaWeather.tailwind => ShipFxWeather.wind,
+            _ => ShipFxWeather.none,
+          };
+    return ShipFxAmbient(
+      weather: weather,
+      burning: [
+        for (final eel in [true, false])
+          for (final room in ShipRoom.values)
+            if ((eel ? _battle.player : _battle.enemy).room(room).onFire)
+              _roomKeys[(eel, room)]!,
+      ],
+      leaking: [
+        for (final eel in [true, false])
+          if ((eel ? _battle.player : _battle.enemy).leaks > 0)
+            (
+              _roomKeys[(eel, ShipRoom.hold)]!,
+              (eel ? _battle.player : _battle.enemy).leaks
+            ),
+      ],
+    );
+  }
 
   void _flash(ShotOutcome? outcome, {required bool onEel}) {
     if (outcome == null) return;
@@ -631,43 +847,67 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       hint = trFor(lang, 'ship_enemy_turn_label')
           .replaceAll('{ship}', widget.enemyName);
     }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final ink2 = ink;
+    return Stack(
       children: [
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-            children: [
-              if (tip != null) _buildTip(tip, lang),
-              _buildShipHeader(
-                name: widget.enemyName,
-                ship: _battle.enemy,
-                evasion: _battle.enemyEvasion,
-                color: ink.blood,
-                habit: widget.habit,
+        Positioned.fill(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+                children: [
+                  if (tip != null) _buildTip(tip, lang),
+                  _buildShipHeader(
+                    name: widget.enemyName,
+                    ship: _battle.enemy,
+                    evasion: _battle.enemyEvasion,
+                    color: ink.blood,
+                    habit: widget.habit,
+                  ),
+                  const SizedBox(height: 4),
+                  _buildHull(
+                      ship: _battle.enemy, isPlayer: false, color: ink.blood),
+                  const SizedBox(height: 4),
+                  _buildEnemyWeapons(fr),
+                  const SizedBox(height: 8),
+                  _buildSea(lang),
+                  const SizedBox(height: 6),
+                  _buildLog(context),
+                  const SizedBox(height: 8),
+                  _buildShipHeader(
+                    name: widget.shipName,
+                    ship: _battle.player,
+                    evasion: _battle.playerEvasion,
+                    color: ink.gold,
+                  ),
+                  const SizedBox(height: 4),
+                  _buildHull(
+                      ship: _battle.player, isPlayer: true, color: ink.gold),
+                ],
               ),
-              const SizedBox(height: 4),
-              _buildHull(
-                  ship: _battle.enemy, isPlayer: false, color: ink.blood),
-              const SizedBox(height: 4),
-              _buildEnemyWeapons(fr),
-              const SizedBox(height: 8),
-              _buildSea(lang),
-              const SizedBox(height: 6),
-              _buildLog(context),
-              const SizedBox(height: 8),
-              _buildShipHeader(
-                name: widget.shipName,
-                ship: _battle.player,
-                evasion: _battle.playerEvasion,
-                color: ink.gold,
-              ),
-              const SizedBox(height: 4),
-              _buildHull(ship: _battle.player, isPlayer: true, color: ink.gold),
-            ],
+            ),
+            _buildDock(lang, fr, enemies, canBoard, hint),
+          ],
+        )),
+        Positioned.fill(
+          child: ShipFxLayer(
+            controller: _fx,
+            ambient: _ambient,
+            palette: ShipFxPalette(
+              gold: ink2.gold,
+              ember: ink2.ember,
+              blood: ink2.blood,
+              tide: ink2.tide,
+              wood: _roomColor(context, ShipRoom.hold),
+              steel: _roomColor(context, ShipRoom.bulwark),
+              smoke: ink2.ash,
+              light: const Color(0xFFFFF3C4),
+              voidColor: ink2.voidColor,
+            ),
           ),
         ),
-        _buildDock(lang, fr, enemies, canBoard, hint),
       ],
     );
   }
@@ -902,121 +1142,126 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ? ShipRange.values[range.index + 1]
         : null;
     final canAct = !_busy && !_over;
-    return Container(
-      key: const Key('ship_sea_strip'),
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        border: Border.symmetric(horizontal: BorderSide(color: ink.seam)),
-      ),
-      child: CustomPaint(
-        painter: _WavesPainter(color: ink.tide.withValues(alpha: 0.16)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (rules.weather)
-              Tooltip(
-                message:
-                    trFor(lang, 'ship_weather_${_battle.weather.name}_hint'),
-                child: Row(
-                  children: [
-                    Icon(_weatherIcon(_battle.weather),
-                        size: 16, color: _weatherColor(ink, _battle.weather)),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: Text(
-                        trFor(lang, 'ship_weather_${_battle.weather.name}'),
-                        style: theme.textTheme.labelMedium,
-                        overflow: TextOverflow.ellipsis,
+    return KeyedSubtree(
+      key: _seaKey,
+      child: Container(
+        key: const Key('ship_sea_strip'),
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          border: Border.symmetric(horizontal: BorderSide(color: ink.seam)),
+        ),
+        child: CustomPaint(
+          painter: _WavesPainter(color: ink.tide.withValues(alpha: 0.16)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (rules.weather)
+                Tooltip(
+                  message:
+                      trFor(lang, 'ship_weather_${_battle.weather.name}_hint'),
+                  child: Row(
+                    children: [
+                      Icon(_weatherIcon(_battle.weather),
+                          size: 16, color: _weatherColor(ink, _battle.weather)),
+                      const SizedBox(width: 4),
+                      Flexible(
+                        child: Text(
+                          trFor(lang, 'ship_weather_${_battle.weather.name}'),
+                          style: theme.textTheme.labelMedium,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    Text('${trFor(lang, 'ship_weather_next_label')} ',
-                        style: muted),
-                    Icon(_weatherIcon(_battle.nextWeather),
-                        size: 14, color: ink.ash),
-                    const SizedBox(width: 2),
-                    Flexible(
-                      child: Text(
-                        trFor(lang, 'ship_weather_${_battle.nextWeather.name}'),
-                        style: muted,
-                        overflow: TextOverflow.ellipsis,
+                      const SizedBox(width: 10),
+                      Text('${trFor(lang, 'ship_weather_next_label')} ',
+                          style: muted),
+                      Icon(_weatherIcon(_battle.nextWeather),
+                          size: 14, color: ink.ash),
+                      const SizedBox(width: 2),
+                      Flexible(
+                        child: Text(
+                          trFor(
+                              lang, 'ship_weather_${_battle.nextWeather.name}'),
+                          style: muted,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                    ),
-                    if (_battle.wreck) ...[
-                      const Spacer(),
-                      Tooltip(
-                        message: trFor(lang, 'ship_wreck_hint'),
-                        child: Icon(Icons.sailing_outlined,
-                            size: 16,
-                            color: _roomColor(context, ShipRoom.hold)),
-                      ),
+                      if (_battle.wreck) ...[
+                        const Spacer(),
+                        Tooltip(
+                          message: trFor(lang, 'ship_wreck_hint'),
+                          child: Icon(Icons.sailing_outlined,
+                              size: 16,
+                              color: _roomColor(context, ShipRoom.hold)),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-              ),
-            if (rules.range) ...[
-              if (rules.weather) const SizedBox(height: 3),
-              Row(
-                key: const Key('ship_range_bar'),
-                children: [
-                  _maneuverButton(
-                    key: const Key('ship_close_in'),
-                    icon: Icons.keyboard_double_arrow_left,
-                    label: trFor(lang, 'ship_close_in_button'),
-                    onPressed:
-                        canAct && closer != null && _battle.canMoveTo(closer)
-                            ? () => setState(() {
-                                  _battle.maneuver(closer);
-                                  _rearm();
-                                })
-                            : null,
                   ),
-                  Expanded(
-                    child: Tooltip(
-                      message: trFor(lang, 'ship_range_${range.name}_hint'),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 16,
-                            width: double.infinity,
-                            child: CustomPaint(
-                              painter: _RangeRulerPainter(
-                                at: range.index,
-                                of: ShipRange.values.length,
-                                mark: ink.gold,
-                                line: ink.ash,
-                                fill: theme.colorScheme.surface,
+                ),
+              if (rules.range) ...[
+                if (rules.weather) const SizedBox(height: 3),
+                Row(
+                  key: const Key('ship_range_bar'),
+                  children: [
+                    _maneuverButton(
+                      key: const Key('ship_close_in'),
+                      icon: Icons.keyboard_double_arrow_left,
+                      label: trFor(lang, 'ship_close_in_button'),
+                      onPressed:
+                          canAct && closer != null && _battle.canMoveTo(closer)
+                              ? () => setState(() {
+                                    _battle.maneuver(closer);
+                                    _rearm();
+                                  })
+                              : null,
+                    ),
+                    Expanded(
+                      child: Tooltip(
+                        message: trFor(lang, 'ship_range_${range.name}_hint'),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 16,
+                              width: double.infinity,
+                              child: CustomPaint(
+                                painter: _RangeRulerPainter(
+                                  at: range.index,
+                                  of: ShipRange.values.length,
+                                  mark: ink.gold,
+                                  line: ink.ash,
+                                  fill: theme.colorScheme.surface,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            trFor(lang, 'ship_range_${range.name}_title'),
-                            key: const Key('ship_range_label'),
-                            style: theme.textTheme.labelSmall
-                                ?.copyWith(color: ink.gold),
-                          ),
-                        ],
+                            const SizedBox(height: 2),
+                            Text(
+                              trFor(lang, 'ship_range_${range.name}_title'),
+                              key: const Key('ship_range_label'),
+                              style: theme.textTheme.labelSmall
+                                  ?.copyWith(color: ink.gold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  _maneuverButton(
-                    key: const Key('ship_pull_away'),
-                    icon: Icons.keyboard_double_arrow_right,
-                    label: trFor(lang, 'ship_pull_away_button'),
-                    onPressed:
-                        canAct && farther != null && _battle.canMoveTo(farther)
-                            ? () => setState(() {
-                                  _battle.maneuver(farther);
-                                  _rearm();
-                                })
-                            : null,
-                    trailing: true,
-                  ),
-                ],
-              ),
+                    _maneuverButton(
+                      key: const Key('ship_pull_away'),
+                      icon: Icons.keyboard_double_arrow_right,
+                      label: trFor(lang, 'ship_pull_away_button'),
+                      onPressed: canAct &&
+                              farther != null &&
+                              _battle.canMoveTo(farther)
+                          ? () => setState(() {
+                                _battle.maneuver(farther);
+                                _rearm();
+                              })
+                          : null,
+                      trailing: true,
+                    ),
+                  ],
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
@@ -1162,33 +1407,54 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ShipRoom.bulwark: at(0.655, 0.25, 0.95, 0.585),
         ShipRoom.hold: at(0.1, 0.625, 0.9, 0.87),
       };
-      return SizedBox(
-        key: Key('ship_hull_${isPlayer ? 'eel' : 'enemy'}'),
-        height: height,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: _HullPainter(
-                  accent: color,
-                  fill: theme.colorScheme.surfaceContainer,
-                  seam: ink.seam,
-                  mast: ink.ash,
-                ),
-              ),
+      final sinking = _sinkingEel == isPlayer;
+      return AnimatedBuilder(
+        animation: _sink,
+        builder: (context, child) {
+          if (!sinking) return child!;
+          final t = Curves.easeIn.transform(_sink.value);
+          return Opacity(
+            opacity: (1 - t * 0.8).clamp(0.0, 1.0),
+            child: Transform.translate(
+              offset: Offset(0, 40 * t),
+              child: Transform.rotate(angle: -0.25 * t, child: child),
             ),
-            for (final entry in rooms.entries)
-              Positioned.fromRect(
-                rect: entry.value,
-                child: _buildRoomTile(
-                  ship: ship,
-                  room: entry.key,
-                  isPlayer: isPlayer,
-                  wide: entry.key == ShipRoom.hold,
+          );
+        },
+        child: KeyedSubtree(
+          key: _hullKeys[isPlayer],
+          child: SizedBox(
+            key: Key('ship_hull_${isPlayer ? 'eel' : 'enemy'}'),
+            height: height,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: _HullPainter(
+                      accent: color,
+                      fill: theme.colorScheme.surfaceContainer,
+                      seam: ink.seam,
+                      mast: ink.ash,
+                    ),
+                  ),
                 ),
-              ),
-          ],
+                for (final entry in rooms.entries)
+                  Positioned.fromRect(
+                    rect: entry.value,
+                    child: KeyedSubtree(
+                      key: _roomKeys[(isPlayer, entry.key)],
+                      child: _buildRoomTile(
+                        ship: ship,
+                        room: entry.key,
+                        isPlayer: isPlayer,
+                        wide: entry.key == ShipRoom.hold,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       );
     });
@@ -1308,7 +1574,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           ],
           for (var i = 0; i < leaks; i++)
             Icon(Icons.water_drop,
-                key: const Key('ship_leak'), size: 13, color: ink.tide),
+                key: Key('ship_leak_$i'), size: 13, color: ink.tide),
           for (final w in incoming) ...[
             const SizedBox(width: 2),
             Icon(Icons.warning_amber_rounded, size: 14, color: ink.blood),
@@ -1863,6 +2129,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         onPressed: usable
             ? () => act(() {
                   _battle.giveOrder(member);
+                  _playOrder(order);
                   _rearm();
                 })
             : null,

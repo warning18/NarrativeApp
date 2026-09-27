@@ -1,4 +1,4 @@
-// An enemy that winds up (v1.160): the wind-up shows on its card and in its
+// An enemy that winds up (v1.162): the wind-up shows on its card and in its
 // intent whatever the party's Perception, and the blow lands the turn
 // after unless the party breaks it.
 import 'dart:convert';

@@ -53,7 +53,7 @@ void main() {
       };
       expect(flagged, hasLength(18));
       expect(flagged, contains('sovereign_unmaking'));
-      // v1.160's enemy intents: guard, wind-ups, rallies, a heal.
+      // v1.162's enemy intents: guard, wind-ups, rallies, a heal.
       expect(
           flagged,
           containsAll([

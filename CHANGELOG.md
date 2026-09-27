@@ -8,7 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.162.0+192]
+## [1.164.0+194]
+
+### Fixed
+- **The voyage tour plays by itself.** Its trigger only wrapped the
+  loading spinner, so the tour was cancelled the moment the crossing
+  loaded and never started on its own. It now waits for the first day at
+  sea and lights the hull and the day's choices.
+- The voyage tour is rewritten for the sea choices (paying off or
+  outrunning raiders, pushing through storms, boarding wrecks, the stat
+  each check rolls), in English and French.
+
+### Added
+- **Ship battles in the Tutorials list.** The battle still teaches itself
+  with one-time tips as each rule comes up; the new entry sums the rules
+  up (rooms, crew posts, firing and aiming, range, shot and orders,
+  boarding, winning and losing) and brings those tips back for the next
+  battle.
+
+## [1.163.0+193]
 
 Companions with opinions, quests that ask how they end, decisions at sea,
 and a perk to choose as the character grows.
@@ -56,8 +74,8 @@ and a perk to choose as the character grows.
   like levels do.
 
 ### Balance
-- The playthrough simulator now plays the v1.161 rules (enemy intents,
-  weaknesses, the momentum drain, the enemy heals) and v1.162's perks.
+- The playthrough simulator now plays the v1.162 rules (enemy intents,
+  weaknesses, the momentum drain, the enemy heals) and v1.163's perks.
   It ran 40 playthroughs per variant on two seed sets:
   - **old rules:** 0.3 and 1.1 losses per run, with stuck runs (26
     losses to the White Admiral in one);
@@ -71,7 +89,7 @@ and a perk to choose as the character grows.
   quarter of them broken by the party), guard 13 times and rally 10
   times; the party lands about 26 hits on a weakness.
 
-## [1.161.0+191]
+## [1.162.0+192]
 
 Fights that change shape from turn to turn, detours with a choice in them,
 and something to aim the next fight at.
@@ -137,6 +155,32 @@ and something to aim the next fight at.
 - **Bounty quests** (the Ossuary bounty, Faces of the Fallen) count only
   the kills made after the quest is taken. Kills from earlier in the run
   used to complete them on the spot.
+## [1.161.0+191]
+
+### Added
+- **Ship battles come alive.** Every shot now flies: a muzzle flash and
+  smoke at the gun, the ball arcing across the sea, then what it did on
+  arrival: splinters on a hit, a gold ward on a blocked one, a splash
+  beside a ship that slipped it, a flash on a critical, fibres from torn
+  rigging, a flare where a fire catches and bubbles where a leak opens.
+  Chain, grape and heated shot each look their own. It works both ways:
+  the enemy's volleys land on the Rusty Eel with the same effects.
+- Burning rooms smoke and throw embers and leaking holds drip, on either
+  ship, for as long as they last. Fog drifts, squalls bring rain and
+  lightning, and a tailwind streaks across the battle.
+- Sea events show: a rogue wave rolls across the sea, a creature
+  bubbles up under its ship, a wreck scatters debris. A ram splinters
+  both bulwarks, and boarding lines fly from whichever ship throws them.
+- Crew orders answer too: All hands sparkles on the rooms being fixed, a
+  blessing glows over the Eel, Brace and the void ward ring the hull, and
+  marking the helm or cutting rigging flashes on the enemy.
+- The loser goes down: the beaten ship tilts and sinks in bubbles before
+  the battle ends.
+- With reduced motion turned on in the phone's settings, none of this is
+  drawn and nothing waits for it.
+
+### Fixed
+- A ship with two or more leaks no longer breaks the battle screen.
 
 ## [1.160.0+190]
 

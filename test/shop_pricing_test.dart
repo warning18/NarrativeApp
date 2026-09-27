@@ -1,4 +1,4 @@
-// Shop prices and restocking (v1.160): Charisma haggles the price down, and
+// Shop prices and restocking (v1.162): Charisma haggles the price down, and
 // potions and scrolls come back every chapter while gear stays one of a kind.
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -37,11 +37,11 @@ class SeaEvent {
   String choiceTextFor(bool fr) =>
       fr && choiceTextFr.isNotEmpty ? choiceTextFr : choiceText;
 
-  /// What the crew can do about it (v1.162), the usual answer first.
+  /// What the crew can do about it (v1.163), the usual answer first.
   List<SeaChoice> get choices => seaChoicesFor(kind);
 }
 
-/// What the crew does with a day at sea (v1.162). Each event kind offers a
+/// What the crew does with a day at sea (v1.163). Each event kind offers a
 /// few (see [seaChoicesFor]): fight a raider or pay it off or run, ride a
 /// storm out or push through it or shelter, salvage a derelict or board
 /// it or leave it, spend a calm day on the hull or on the crew.

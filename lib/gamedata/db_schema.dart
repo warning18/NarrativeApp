@@ -488,7 +488,7 @@ final DbSchema skillsSchema = DbSchema(
         label: 'Enemy only (never offered to the party)',
         type: FieldType.boolean,
         defaultValue: false),
-    // v1.160: what an enemy using this skill does with its turn (empty: an
+    // v1.162: what an enemy using this skill does with its turn (empty: an
     // attack, or a heal when the skill only heals). See enemy_intent.dart.
     FieldSchema(
       key: 'intent',
@@ -941,7 +941,7 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Guile (resists Perception telegraphing)',
         type: FieldType.integer,
         defaultValue: 0),
-    // v1.160: the party's hits of these elements land ×1.5 / ×½.
+    // v1.162: the party's hits of these elements land ×1.5 / ×½.
     FieldSchema(
       key: 'weakTo',
       label: 'Weak to (elements)',

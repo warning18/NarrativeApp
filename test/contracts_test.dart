@@ -1,4 +1,4 @@
-// The camp's bounty board (v1.160): rolling a board, counting fights toward
+// The camp's bounty board (v1.162): rolling a board, counting fights toward
 // each contract, saving it, and paying it out at the board.
 import 'dart:math';
 

@@ -98,7 +98,7 @@ class StoryChoice {
   final String text;
   final String nextId;
 
-  /// A way round a fight (v1.160): with an ability check, success skips the
+  /// A way round a fight (v1.162): with an ability check, success skips the
   /// fight this choice carries and failure starts it (under
   /// [forcedCondition], an ambush for a sneak gone wrong).
   final bool avoidFightOnSuccess;

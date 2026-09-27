@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// Companion approval (v1.162): how a recruited companion feels about the
+/// Companion approval (v1.163): how a recruited companion feels about the
 /// choices the player makes in front of them.
 ///
 /// Each companion's record in companions.json says what they think of a

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// One way to settle a quest when it's turned in (v1.162): keep the purse
+/// One way to settle a quest when it's turned in (v1.163): keep the purse
 /// or give it back, sell the list or guard it. A quest's `turnInChoices`
 /// replaces its fixed reward with a decision; each choice sets its own
 /// gold and alignment (the quest's own when left out), may set a story

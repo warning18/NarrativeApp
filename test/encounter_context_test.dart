@@ -94,7 +94,7 @@ void main() {
         final choice = node.choices.first;
         if (!choice.triggersCombat) continue;
         final pack = choice.allTriggerEnemyIds.length > 1;
-        // v1.160: the second way is a Dexterity check round the same fight,
+        // v1.162: the second way is a Dexterity check round the same fight,
         // an ambush if it fails.
         final sneak = node.choices.last;
         expect(sneak.checkAbility, 'dexterity');

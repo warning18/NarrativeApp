@@ -401,7 +401,7 @@ class PlayerSession {
   /// [enemyKillCounts] as they stood when each quest was accepted (quest id
   /// -> enemy id -> kills): a `countFromAccept` Kill objective (a bounty
   /// for several of a common foe) counts only kills made since. Quests
-  /// accepted before v1.160 have none and count lifetime kills.
+  /// accepted before v1.162 have none and count lifetime kills.
   final Map<String, Map<String, int>> questKillBaselines;
 
   /// The camp's bounty board (see contracts.dart): the contracts posted

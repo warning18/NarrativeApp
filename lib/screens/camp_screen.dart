@@ -197,7 +197,7 @@ class CampScreen extends ConsumerWidget {
           else
             for (final place in places) PlaceCard(place: place),
 
-          // Short goals for ordinary fights, paid at the camp (v1.160).
+          // Short goals for ordinary fights, paid at the camp (v1.162).
           section(tr(ref, 'bounty_board_section')),
           const BountyBoard(),
         ],

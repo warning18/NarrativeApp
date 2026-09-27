@@ -1,4 +1,4 @@
-// Detours as choices (v1.160): a way round a fight, a gamble on a cache, a
+// Detours as choices (v1.162): a way round a fight, a gamble on a cache, a
 // rest traded for a purse; random draws that keep their dangers; flavor
 // lines that don't come straight back round.
 import 'dart:math';

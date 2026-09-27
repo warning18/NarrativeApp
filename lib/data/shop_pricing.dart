@@ -1,6 +1,6 @@
 import 'dart:math';
 
-/// What a shop charges (v1.160): a silver tongue haggles. Each point of
+/// What a shop charges (v1.162): a silver tongue haggles. Each point of
 /// Charisma takes [charismaDiscountPerPoint] off the listed price, up to
 /// [maxCharismaDiscount].
 const double charismaDiscountPerPoint = 0.02;
@@ -16,7 +16,7 @@ int shopPriceFor(int cost, int charisma) {
   return max(1, (cost * (1 - charismaDiscountFor(charisma))).round());
 }
 
-/// Item types a shop restocks every chapter (v1.160): the things that get
+/// Item types a shop restocks every chapter (v1.162): the things that get
 /// used up. Gear stays one of a kind.
 const Set<String> restockingItemTypes = {'Potion', 'Scroll'};
 

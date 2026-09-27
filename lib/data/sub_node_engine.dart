@@ -396,7 +396,7 @@ class SubNodeEngine {
   /// yet than one it has beaten before (see [weightedEnemyPool]).
   static const int unseenEnemyWeight = 3;
 
-  /// The random-draw pool at [chapter] as a weighted list (v1.160): every
+  /// The random-draw pool at [chapter] as a weighted list (v1.162): every
   /// eligible enemy (see [filterEnemyPool]), foes not met yet
   /// [unseenEnemyWeight] times over and beaten ones once. The road keeps
   /// its dangers once the party has met them all -- before, a beaten kind
@@ -604,7 +604,7 @@ class SubNodeEngine {
           triggerEnemyId: pack ? null : ids.single,
           triggerEnemyIds: pack ? ids : const [],
         ),
-        // A way round (v1.160): a Dexterity check slips past; a failed one
+        // A way round (v1.162): a Dexterity check slips past; a failed one
         // starts the fight with the enemy striking first.
         StoryChoice(
           text: pack ? 'Slip past them' : 'Slip past',

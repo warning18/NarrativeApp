@@ -260,7 +260,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final countsTowardZone = !_isBonusNode(_current);
     final isBoss = _isBossNode(_current);
 
-    // A check on the road (v1.160): sneak past, dig deeper, scavenge. A
+    // A check on the road (v1.162): sneak past, dig deeper, scavenge. A
     // failed one forfeits the choice's reward; a sneak that works leaves
     // its fight behind, and one that fails starts it.
     var fightAvoided = false;

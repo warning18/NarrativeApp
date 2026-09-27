@@ -225,7 +225,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     await ref.read(playerSessionProvider.notifier).setShipHull(hull);
   }
 
-  /// Resolves the day's [event] the way the crew [choice] (v1.162: each
+  /// Resolves the day's [event] the way the crew [choice] (v1.163: each
   /// event has a few, see [seaChoicesFor]).
   Future<void> _resolveEvent(
     SeaEvent event,
