@@ -101,6 +101,15 @@ const List<String> elementOptions = [
 
 // 'Empty' is intentionally excluded: no die face may be empty in play, so
 // the Data tab only offers face types that are actually usable in combat.
+const List<String> enemyIntentOptions = [
+  '',
+  'attack',
+  'heal',
+  'guard',
+  'charge',
+  'rally',
+];
+
 const List<String> faceTypeOptions = [
   'Attack',
   'Defend',
@@ -479,6 +488,45 @@ final DbSchema skillsSchema = DbSchema(
         label: 'Enemy only (never offered to the party)',
         type: FieldType.boolean,
         defaultValue: false),
+    // v1.160: what an enemy using this skill does with its turn (empty: an
+    // attack, or a heal when the skill only heals). See enemy_intent.dart.
+    FieldSchema(
+      key: 'intent',
+      label: 'Enemy intent (attack / heal / guard / charge / rally)',
+      type: FieldType.enumeration,
+      enumOptions: enemyIntentOptions,
+    ),
+    FieldSchema(
+        key: 'guardMultiplier',
+        label: 'Guard: block as a multiple of the enemy damage',
+        type: FieldType.decimal,
+        defaultValue: 1.0),
+    FieldSchema(
+        key: 'chargeMultiplier',
+        label: 'Charge: the released blow as a multiple of the move',
+        type: FieldType.decimal,
+        defaultValue: 2.0),
+    FieldSchema(
+        key: 'rallyPercent',
+        label: 'Rally: damage bonus in % for the enemy and its pack',
+        type: FieldType.integer,
+        defaultValue: 20),
+    FieldSchema(
+        key: 'releaseMessage',
+        label: 'Charge: line the released blow lands with',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'releaseMessage_fr',
+        label: 'Charge: line the released blow lands with (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'enemyBattleMessage',
+        label: 'Battle message when an enemy uses it',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'enemyBattleMessage_fr',
+        label: 'Battle message when an enemy uses it (FR)',
+        type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',
@@ -893,6 +941,19 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Guile (resists Perception telegraphing)',
         type: FieldType.integer,
         defaultValue: 0),
+    // v1.160: the party's hits of these elements land ×1.5 / ×½.
+    FieldSchema(
+      key: 'weakTo',
+      label: 'Weak to (elements)',
+      type: FieldType.multiEnum,
+      enumOptions: elementOptions,
+    ),
+    FieldSchema(
+      key: 'resists',
+      label: 'Resists (elements)',
+      type: FieldType.multiEnum,
+      enumOptions: elementOptions,
+    ),
     FieldSchema(
         key: 'packEligible',
         label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',

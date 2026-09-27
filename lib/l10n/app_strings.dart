@@ -3401,6 +3401,121 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'il ne se passe rien.',
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  // v1.160: enemy intents, weaknesses, taunt.
+  'telegraph_category_guard': {
+    AppLanguage.en: 'Guard',
+    AppLanguage.fr: 'Garde',
+  },
+  'telegraph_category_charge': {
+    AppLanguage.en: 'Wind-up',
+    AppLanguage.fr: 'Préparation',
+  },
+  'telegraph_category_rally': {
+    AppLanguage.en: 'Rallying cry',
+    AppLanguage.fr: 'Cri de ralliement',
+  },
+  'charge_release_suffix': {
+    AppLanguage.en: 'unleashes the blow it wound up!',
+    AppLanguage.fr: ': le coup préparé s’abat !',
+  },
+  'charge_broken_suffix': {
+    AppLanguage.en: 'is knocked off balance: the wind-up is broken!',
+    AppLanguage.fr: 'perd l’équilibre : son élan est brisé !',
+  },
+  'staggered_skip_turn_suffix': {
+    AppLanguage.en: 'is still reeling and loses the turn.',
+    AppLanguage.fr: 'chancelle encore et perd son tour.',
+  },
+  'weak_to_suffix': {
+    AppLanguage.en: 'is weak to',
+    AppLanguage.fr: '— point faible :',
+  },
+  'resists_suffix': {
+    AppLanguage.en: 'resists',
+    AppLanguage.fr: '— résistance :',
+  },
+  'weak_to_label': {
+    AppLanguage.en: 'Weak to',
+    AppLanguage.fr: 'Point faible :',
+  },
+  'resists_label': {
+    AppLanguage.en: 'Resists',
+    AppLanguage.fr: 'Résistance :',
+  },
+  'guard_soaks_suffix': {
+    AppLanguage.en: '— the guard soaks',
+    AppLanguage.fr: '— la garde absorbe',
+  },
+  'enemy_recovers_word': {
+    AppLanguage.en: 'recovers',
+    AppLanguage.fr: 'récupère',
+  },
+  'enemy_guards_word': {
+    AppLanguage.en: 'raises a guard of',
+    AppLanguage.fr: 'lève sa garde :',
+  },
+  'enemy_winds_up_suffix': {
+    AppLanguage.en: 'is winding up a heavy blow. Break it before it lands!',
+    AppLanguage.fr:
+        'prépare un coup puissant. Brisez son élan avant qu’il ne frappe !',
+  },
+  'enemy_rallies_message': {
+    AppLanguage.en: 'The enemy presses harder',
+    AppLanguage.fr: 'L’ennemi redouble d’ardeur',
+  },
+  'rally_spent_message': {
+    AppLanguage.en: 'The pack is already roused to the full.',
+    AppLanguage.fr: 'La meute est déjà à son comble.',
+  },
+  'draws_attacks_suffix': {
+    AppLanguage.en: "stands guard and draws the enemy's attacks.",
+    AppLanguage.fr: 'monte la garde et attire les coups de l’ennemi.',
+  },
+  'enemy_guard_tooltip': {
+    AppLanguage.en: 'Raised guard: soaks your next hits',
+    AppLanguage.fr: 'Garde levée : absorbe vos prochains coups',
+  },
+  'winding_up_label': {
+    AppLanguage.en: 'Winding up',
+    AppLanguage.fr: 'Prépare un coup',
+  },
+  'winding_up_tooltip': {
+    AppLanguage.en:
+        'Winding up a double-strength blow. Deal a quarter of its health this round, stun it or hit its weakness to break it.',
+    AppLanguage.fr:
+        'Prépare un coup de double force. Infligez un quart de ses PV ce tour-ci, étourdissez l’ennemi ou frappez son point faible pour briser l’élan.',
+  },
+  'staggered_label': {
+    AppLanguage.en: 'Staggered',
+    AppLanguage.fr: 'Déséquilibre',
+  },
+  'rallied_label': {
+    AppLanguage.en: 'Rallied',
+    AppLanguage.fr: 'Ardeur',
+  },
+  'intent_staggered_label': {
+    AppLanguage.en: 'Staggered: loses its next turn',
+    AppLanguage.fr: 'Déséquilibre : perd son prochain tour',
+  },
+  'intent_charged_label': {
+    AppLanguage.en: 'Charged blow incoming!',
+    AppLanguage.fr: 'Coup chargé imminent !',
+  },
+  'defend_draws_attacks_hint': {
+    AppLanguage.en: 'draws attacks',
+    AppLanguage.fr: 'attire les coups',
+  },
+  'element_name_fire': {AppLanguage.en: 'Fire', AppLanguage.fr: 'Feu'},
+  'element_name_ice': {AppLanguage.en: 'Ice', AppLanguage.fr: 'Glace'},
+  'element_name_void': {AppLanguage.en: 'Void', AppLanguage.fr: 'Vide'},
+  'element_name_wind': {AppLanguage.en: 'Wind', AppLanguage.fr: 'Vent'},
+  'element_name_water': {AppLanguage.en: 'Water', AppLanguage.fr: 'Eau'},
+  'element_name_earth': {AppLanguage.en: 'Earth', AppLanguage.fr: 'Terre'},
+  'element_name_electricity': {
+    AppLanguage.en: 'Lightning',
+    AppLanguage.fr: 'Foudre',
+  },
+  'element_name_light': {AppLanguage.en: 'Light', AppLanguage.fr: 'Lumière'},
   'telegraph_category_attack': {
     AppLanguage.en: 'Attack',
     AppLanguage.fr: 'Attaque',

@@ -159,7 +159,8 @@ extension _FightActions on _FightScreenState {
             power: spellPower());
       }
       if (spell.effect == SpellEffectKind.damage) {
-        final damage = amount;
+        final damage =
+            _landHitOnEnemy(enemy, amount, spell.element, entries, lang);
         _fx(spellStyle, _enemyCardKey(enemy.key),
             source: casterKey,
             element: spell.element,
@@ -247,6 +248,7 @@ extension _FightActions on _FightScreenState {
           break;
       }
     }
+    _checkChargeBreaks(entries, lang);
     _advanceBossPhases(entries, lang, skills);
     if (hitsLanded > 0) {
       final before = _momentum;

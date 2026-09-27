@@ -166,6 +166,7 @@ class PlayerSession {
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
+    this.questKillBaselines = const {},
     this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -366,12 +367,17 @@ class PlayerSession {
   /// Lifetime count of each enemy defeated (enemyId -> times beaten),
   /// incremented in [PlayerSessionNotifier.applyCombatResult]'s win path.
   /// Backs Kill-type quest objectives (see quest_objectives.dart) —
-  /// lifetime rather than "since the quest was accepted" is a deliberate
-  /// simplification: every current Kill objective needs exactly 1, so a
-  /// player who beat the target enemy before picking up the quest gets
-  /// immediate credit instead of being made to grind out a second, purely
-  /// bureaucratic kill.
+  /// lifetime rather than "since the quest was accepted" by default: a
+  /// single-kill objective on a foe the player already beat gives
+  /// immediate credit instead of a purely bureaucratic second kill. A
+  /// bounty with `countFromAccept` counts from [questKillBaselines].
   final Map<String, int> enemyKillCounts;
+
+  /// [enemyKillCounts] as they stood when each quest was accepted (quest id
+  /// -> enemy id -> kills): a `countFromAccept` Kill objective (a bounty
+  /// for several of a common foe) counts only kills made since. Quests
+  /// accepted before v1.160 have none and count lifetime kills.
+  final Map<String, Map<String, int>> questKillBaselines;
 
   /// Defeats each boss has dealt the party this run (enemy id -> losses):
   /// Resolve reads it back as a stacking bonus against that boss (see
@@ -561,6 +567,7 @@ class PlayerSession {
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
+    Map<String, Map<String, int>>? questKillBaselines,
     Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -635,6 +642,7 @@ class PlayerSession {
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
+      questKillBaselines: questKillBaselines ?? this.questKillBaselines,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
@@ -711,6 +719,7 @@ class PlayerSession {
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
+        'questKillBaselines': questKillBaselines,
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
@@ -873,6 +882,14 @@ class PlayerSession {
           const [],
       enemyKillCounts: (json['enemyKillCounts'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
+      questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
+            (quest, kills) => MapEntry(
+              quest.toString(),
+              (kills as Map).map((enemy, count) =>
+                  MapEntry(enemy.toString(), (count as num).toInt())),
+            ),
           ) ??
           const {},
       bossDefeatCounts: (json['bossDefeatCounts'] as Map?)?.map(
@@ -1382,6 +1399,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      questKillBaselines: {
+        ...state.questKillBaselines,
+        questId: Map<String, int>.of(state.enemyKillCounts),
+      },
       // With no quest followed yet, the one just taken on is followed.
       trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
           ? state.trackedQuestId

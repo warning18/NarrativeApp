@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../providers/player_session_provider.dart';
 
 /// One [ObjectiveStatus] per entry in a quest's `objectives` array — quests
@@ -41,7 +43,8 @@ List<ObjectiveStatus> objectiveStatusesFor(
           const [];
   return [
     for (final objective in objectives)
-      _statusFor(objective, session, grandfathered: grandfathered),
+      _statusFor(objective, session,
+          grandfathered: grandfathered, questId: questId),
   ];
 }
 
@@ -61,6 +64,7 @@ ObjectiveStatus _statusFor(
   Map<String, dynamic> objective,
   PlayerSession session, {
   required bool grandfathered,
+  String questId = '',
 }) {
   final description = objective['description']?.toString() ?? '';
   final requiredAmount = (objective['requiredAmount'] as num?)?.toInt() ?? 1;
@@ -85,7 +89,13 @@ ObjectiveStatus _statusFor(
           met: true,
         );
       }
-      final current = session.enemyKillCounts[targetEnemyId] ?? 0;
+      // A bounty (`countFromAccept`) counts only the kills made since the
+      // quest was taken; anything else counts lifetime kills.
+      final baseline = objective['countFromAccept'] == true
+          ? (session.questKillBaselines[questId]?[targetEnemyId] ?? 0)
+          : 0;
+      final current =
+          max(0, (session.enemyKillCounts[targetEnemyId] ?? 0) - baseline);
       return ObjectiveStatus(
         description: description,
         current: current > requiredAmount ? requiredAmount : current,

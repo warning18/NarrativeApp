@@ -269,9 +269,17 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// reads this, and an Ambush hides every telegraph while it's still 1.
   int _roundsStarted = 0;
 
-  /// Damaging party hits landed since the party last took a hit. At
-  /// [_momentumThreshold] the next Attack/Skill face is a guaranteed
-  /// critical (which spends it).
+  /// The member whose kept Defend face draws the enemies' attacks this
+  /// round (see _confirmRoll): null outside a party fight or when nobody
+  /// defended.
+  String? _guardianId;
+
+  /// Wind-ups the party broke this fight (see _checkChargeBreaks).
+  int _chargesBroken = 0;
+
+  /// Damaging party hits landed, less one for every hit the party takes
+  /// (see momentumAfterHit). At [_momentumThreshold] the next Attack/Skill
+  /// face is a guaranteed critical (which spends it).
   int _momentum = 0;
 
   /// The member the player chose to cash a ready momentum surge on (see

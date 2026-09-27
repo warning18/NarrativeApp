@@ -434,6 +434,28 @@ class _SimEnemy {
 
   bool get isAlive => health > 0;
 
+  /// v1.160 intents, as the fight screen keeps them: a raised guard, a
+  /// held wind-up, a broken one, and how many rallies raised the damage.
+  int guard = 0;
+  EnemyMoveResult? charged;
+  bool staggered = false;
+  int rallies = 0;
+  int damageThisRound = 0;
+  bool hitWeakness = false;
+
+  /// A party hit of [damage] and [element]: weakness or resistance, then
+  /// the guard. Returns what gets through and tallies it towards breaking
+  /// a wind-up.
+  int takeHit(int damage, String element) {
+    if (damage <= 0) return damage;
+    if (elementMultiplierFor(data, element) > 1.0) hitWeakness = true;
+    final through =
+        damageThroughGuard(damageAfterElement(damage, data, element), guard);
+    guard = through.guard;
+    damageThisRound += through.damage;
+    return through.damage;
+  }
+
   /// Plays every phase crossed since the last check; returns how many.
   int advancePhases() {
     if (phases.isEmpty || !isAlive) return 0;
@@ -549,6 +571,10 @@ SimFightOutcome simulateSimFight({
 
   while (rounds < maxRounds) {
     rounds++;
+    for (final e in ens) {
+      e.damageThisRound = 0;
+      e.hitWeakness = false;
+    }
     // --- party round start: poison, stun ---
     final poison = poisonDamageFor(c.statusEffects);
     if (poison > 0) c.currentHealth = max(0, c.currentHealth - poison);
@@ -596,9 +622,10 @@ SimFightOutcome simulateSimFight({
       );
       final target = firstLiving();
       if (target != null && result.damageDealt > 0) {
-        target.health = max(0, target.health - result.damageDealt);
+        final landed = target.takeHit(result.damageDealt, element);
+        target.health = max(0, target.health - landed);
         if (element != 'None') target.elementsHit.add(element);
-        final drained = gear.lifestealFor(result.damageDealt);
+        final drained = gear.lifestealFor(landed);
         if (drained > 0) {
           c.currentHealth = min(c.maxHealth, c.currentHealth + drained);
         }
@@ -625,9 +652,25 @@ SimFightOutcome simulateSimFight({
     advancePhases();
     if (allDead()) return finish(true);
 
+    // A wind-up answered hard enough breaks (see chargeBroken).
+    for (final e in ens) {
+      if (e.isAlive &&
+          e.charged != null &&
+          chargeBroken(
+            damageThisRound: e.damageThisRound,
+            maxHealth: e.maxHealth,
+            stunned: isStunned(e.statusEffects),
+            hitWeakness: e.hitWeakness,
+          )) {
+        e.charged = null;
+        e.staggered = true;
+      }
+    }
+
     // --- enemy turn ---
     for (final e in ens) {
       if (!e.isAlive) continue;
+      e.guard = 0;
       final ePoison = poisonDamageFor(e.statusEffects);
       if (ePoison > 0) {
         e.health = max(0, e.health - ePoison);
@@ -636,16 +679,59 @@ SimFightOutcome simulateSimFight({
       }
       if (isStunned(e.statusEffects)) {
         e.statusEffects = tickStatusEffects(e.statusEffects);
+        e.charged = null;
+        e.staggered = false;
         continue;
       }
-      final move = resolveEnemyMove(
-        enemy: {...e.data, 'damage': e.damage},
-        skills: skills,
-        enemyCurrentHealth: e.health,
-        enemyMaxHealth: e.maxHealth,
-        random: random,
-        elementsHitThisRound: e.elementsHit,
-      );
+      if (e.staggered) {
+        e.staggered = false;
+        e.statusEffects = tickStatusEffects(e.statusEffects);
+        continue;
+      }
+      final held = e.charged;
+      e.charged = null;
+      final move = held ??
+          resolveEnemyMove(
+            enemy: {...e.data, 'damage': e.damage},
+            skills: skills,
+            enemyCurrentHealth: e.health,
+            enemyMaxHealth: e.maxHealth,
+            random: random,
+            elementsHitThisRound: e.elementsHit,
+          );
+      final baseMax = (e.data['maxHealth'] as num?)?.toInt() ?? e.maxHealth;
+      if (held == null && move.intent != EnemyIntent.attack) {
+        switch (move.intent) {
+          case EnemyIntent.heal:
+            e.health = min(
+                e.maxHealth,
+                e.health +
+                    scaledEnemyHeal(move.healAmount,
+                        maxHealth: e.maxHealth, baseMaxHealth: baseMax));
+          case EnemyIntent.guard:
+            e.guard = move.guardAmount;
+          case EnemyIntent.charge:
+            e.charged = move;
+          case EnemyIntent.rally:
+            for (final other in ens) {
+              if (!other.isAlive || other.rallies >= maxRallyStacks) continue;
+              other.damage =
+                  (other.damage * (1 + move.rallyPercent / 100)).round();
+              other.rallies++;
+            }
+          case EnemyIntent.attack:
+            break;
+        }
+        e.statusEffects = tickStatusEffects(e.statusEffects);
+        continue;
+      }
+      if (move.healAmount > 0) {
+        e.health = min(
+            e.maxHealth,
+            e.health +
+                scaledEnemyHeal(move.healAmount,
+                    maxHealth: e.maxHealth, baseMaxHealth: baseMax));
+      }
       final moveDamage = applyWeaken(move.damage, e.statusEffects);
       final dodged = random.nextDouble() * 100 <
           dodgeChanceFor(c.dexterity) + gear.dodgeChance;
@@ -771,7 +857,7 @@ int _castSpellIfWorth(
     }
     final status = spellStatusFor(spell, level: c.level);
     for (final e in targets) {
-      e.health = max(0, e.health - amount);
+      e.health = max(0, e.health - e.takeHit(amount, spell.element));
       if (spell.element != 'None') e.elementsHit.add(spell.element);
       if (status != null && e.isAlive) {
         e.statusEffects = applyStatusEffect(e.statusEffects, status);

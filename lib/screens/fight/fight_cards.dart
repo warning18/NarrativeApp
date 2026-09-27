@@ -170,6 +170,53 @@ extension _FightCards on _FightScreenState {
     );
   }
 
+  /// A small labelled state chip on an enemy card: winding up, staggered,
+  /// rallied.
+  Widget _stateChip(IconData icon, String label, Color color,
+      {String? tooltip}) {
+    final chip = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(5),
+        border: Border.all(color: color.withValues(alpha: 0.7)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 11, color: color),
+          const SizedBox(width: 2),
+          Text(label,
+              style: TextStyle(
+                  fontSize: 10, fontWeight: FontWeight.w600, color: color)),
+        ],
+      ),
+    );
+    return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
+  }
+
+  /// The elements [enemy] is known to be weak to (green, ×1.5) and to
+  /// resist (grey, ×½) -- see [_knownElementsFor].
+  List<Widget> _elementChips(_EnemyMember enemy) {
+    if (!enemy.isAlive) return const [];
+    final lang = ref.watch(appLanguageProvider);
+    final known = _knownElementsFor(enemy);
+    return [
+      for (final element in known.weak)
+        Tooltip(
+          message:
+              '${trFor(lang, 'weak_to_label')} ${elementLabel(element, lang)}',
+          child: _miniStat(elementIcon(element), '×1.5', Colors.green.shade700),
+        ),
+      for (final element in known.resist)
+        Tooltip(
+          message:
+              '${trFor(lang, 'resists_label')} ${elementLabel(element, lang)}',
+          child: _miniStat(elementIcon(element), '×½', Colors.blueGrey),
+        ),
+    ];
+  }
+
   Widget _miniStat(IconData icon, String value, Color color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -442,6 +489,25 @@ extension _FightCards on _FightScreenState {
                             fontSize: 10, fontStyle: FontStyle.italic)),
                   for (final effect in enemy.statusEffects)
                     _StatusEffectChip(effect: effect),
+                  if (enemy.isAlive && enemy.guard > 0)
+                    Tooltip(
+                      message: tr(ref, 'enemy_guard_tooltip'),
+                      child: _miniStat(
+                          Icons.shield, '${enemy.guard}', Colors.blueGrey),
+                    ),
+                  if (enemy.isAlive && enemy.chargedBlow != null)
+                    _stateChip(Icons.hourglass_top, tr(ref, 'winding_up_label'),
+                        Colors.deepOrange,
+                        tooltip: tr(ref, 'winding_up_tooltip')),
+                  if (enemy.isAlive && enemy.staggered)
+                    _stateChip(Icons.sync_problem, tr(ref, 'staggered_label'),
+                        Colors.teal),
+                  if (enemy.isAlive && enemy.rallyStacks > 0)
+                    _stateChip(
+                        Icons.campaign,
+                        '${tr(ref, 'rallied_label')} ×${enemy.rallyStacks}',
+                        Colors.red.shade700),
+                  ..._elementChips(enemy),
                 ],
               ),
               if (enemy.affixes.isNotEmpty) ...[
@@ -525,7 +591,36 @@ extension _FightCards on _FightScreenState {
         fontWeight: FontWeight.w600);
 
     Widget content;
-    if (pending == null || tier == TelegraphTier.none) {
+    if (enemy.staggered) {
+      content = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.sync_problem,
+              size: 12, color: colorScheme.onErrorContainer),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(tr(ref, 'intent_staggered_label'),
+                style: textStyle, maxLines: 2),
+          ),
+        ],
+      );
+    } else if (pending != null &&
+        pending.release &&
+        tier == TelegraphTier.none) {
+      // A wind-up is plain to see, whatever the party can read of the rest.
+      content = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.warning_amber,
+              size: 12, color: colorScheme.onErrorContainer),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(tr(ref, 'intent_charged_label'),
+                style: textStyle, maxLines: 2),
+          ),
+        ],
+      );
+    } else if (pending == null || tier == TelegraphTier.none) {
       content = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -539,10 +634,25 @@ extension _FightCards on _FightScreenState {
       final targetName = _memberById(pending.targetId)?.displayName ?? '?';
       final showCategory =
           tier == TelegraphTier.category || tier == TelegraphTier.full;
-      final categoryIcon = switch (categoryFor(pending.move)) {
-        MoveCategory.attack => Icons.bolt,
-        MoveCategory.healSelf => Icons.healing,
-        MoveCategory.statusDebuff => Icons.sick,
+      final categoryIcon = pending.release
+          ? Icons.warning_amber
+          : switch (categoryFor(pending.move)) {
+              MoveCategory.attack => Icons.bolt,
+              MoveCategory.healSelf => Icons.healing,
+              MoveCategory.statusDebuff => Icons.sick,
+              MoveCategory.guard => Icons.shield_outlined,
+              MoveCategory.charge => Icons.hourglass_top,
+              MoveCategory.rally => Icons.campaign,
+            };
+      // A heal, guard, wind-up or rally doesn't swing at anyone this turn.
+      final hitsParty =
+          pending.release || pending.move.intent == EnemyIntent.attack;
+      final stanceLabel = switch (categoryFor(pending.move)) {
+        MoveCategory.healSelf => tr(ref, 'telegraph_category_heal'),
+        MoveCategory.guard => tr(ref, 'telegraph_category_guard'),
+        MoveCategory.charge => tr(ref, 'telegraph_category_charge'),
+        MoveCategory.rally => tr(ref, 'telegraph_category_rally'),
+        _ => enemy.displayName,
       };
       content = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,7 +662,7 @@ extension _FightCards on _FightScreenState {
             children: [
               Icon(showCategory ? categoryIcon : Icons.visibility,
                   size: 12, color: colorScheme.onErrorContainer),
-              if (tier == TelegraphTier.full && hit != null) ...[
+              if (hitsParty && tier == TelegraphTier.full && hit != null) ...[
                 const SizedBox(width: 2),
                 // What lands after armor, resist and block, then (dimmed)
                 // what the blow carries before them.
@@ -575,12 +685,19 @@ extension _FightCards on _FightScreenState {
                   size: 11, color: colorScheme.onErrorContainer),
               const SizedBox(width: 3),
               Expanded(
-                child: Text(targetName,
+                child: Text(
+                    hitsParty
+                        ? targetName
+                        : showCategory
+                            ? stanceLabel
+                            : enemy.displayName,
                     style: textStyle,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               ),
-              if (tier == TelegraphTier.full && pending.move.element != 'None')
+              if (hitsParty &&
+                  tier == TelegraphTier.full &&
+                  pending.move.element != 'None')
                 Icon(elementIcon(pending.move.element),
                     size: 12, color: colorScheme.onErrorContainer),
             ],
@@ -651,6 +768,9 @@ extension _FightCards on _FightScreenState {
               MoveCategory.attack => 'telegraph_category_attack',
               MoveCategory.healSelf => 'telegraph_category_heal',
               MoveCategory.statusDebuff => 'telegraph_category_debuff',
+              MoveCategory.guard => 'telegraph_category_guard',
+              MoveCategory.charge => 'telegraph_category_charge',
+              MoveCategory.rally => 'telegraph_category_rally',
             });
     final intentText = switch (tier) {
       TelegraphTier.none => trFor(lang, 'intent_unknown_desc'),
@@ -658,11 +778,31 @@ extension _FightCards on _FightScreenState {
         '${trFor(lang, 'intent_target_prefix')} $targetName.',
       TelegraphTier.category =>
         '${trFor(lang, 'intent_target_prefix')} $targetName ($categoryLabel).',
-      TelegraphTier.full => '${trFor(lang, 'intent_target_prefix')} $targetName: '
-          '${pending!.move.message} '
-          '(${pending.move.damage} ${trFor(lang, 'damage_word')}'
-          '${pending.move.element != 'None' ? ', ${pending.move.element}' : ''}).',
+      TelegraphTier.full => pending!.release ||
+              pending.move.intent == EnemyIntent.attack
+          ? '${trFor(lang, 'intent_target_prefix')} $targetName: '
+              '${pending.move.message} '
+              '(${pending.move.damage} ${trFor(lang, 'damage_word')}'
+              '${pending.move.element != 'None' ? ', ${elementLabel(pending.move.element, lang)}' : ''}).'
+          : '$categoryLabel: ${pending.move.message}',
     };
+    final stateLines = <String>[
+      if (enemy.staggered) trFor(lang, 'intent_staggered_label'),
+      if (pending?.release ?? false) trFor(lang, 'winding_up_tooltip'),
+      if (enemy.guard > 0)
+        '${trFor(lang, 'enemy_guard_tooltip')} (${enemy.guard})',
+      if (enemy.rallyStacks > 0)
+        '${trFor(lang, 'rallied_label')} ×${enemy.rallyStacks}',
+    ];
+    final known = _knownElementsFor(enemy);
+    final elementLine = [
+      if (known.weak.isNotEmpty)
+        '${trFor(lang, 'weak_to_label')} '
+            '${known.weak.map((e) => elementLabel(e, lang)).join(', ')} (×1.5)',
+      if (known.resist.isNotEmpty)
+        '${trFor(lang, 'resists_label')} '
+            '${known.resist.map((e) => elementLabel(e, lang)).join(', ')} (×½)',
+    ].join(' · ');
     return showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -691,6 +831,15 @@ extension _FightCards on _FightScreenState {
                   ' · ${trFor(lang, 'damage_label')} ${enemy.damage}',
                   style: theme.textTheme.bodyMedium,
                 ),
+                if (elementLine.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(elementLine, style: theme.textTheme.bodySmall),
+                ],
+                for (final line in stateLines)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(line, style: theme.textTheme.bodySmall),
+                  ),
                 if (enemy.affixes.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   for (final affix in enemy.affixes)

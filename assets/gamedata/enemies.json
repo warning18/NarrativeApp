@@ -4,6 +4,8 @@
     "maxHealth": 56,
     "damage": 9,
     "guile": 0,
+    "weakTo": [],
+    "resists": [],
     "xpReward": 15,
     "goldReward": 10,
     "lootTable": [
@@ -16,7 +18,30 @@
         "dropRate": 10
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 1,
     "packEligible": true,
     "hunterAlignment": "",
@@ -40,6 +65,12 @@
     "maxHealth": 111,
     "damage": 17,
     "guile": 1,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 45,
     "goldReward": 30,
     "lootTable": [
@@ -67,6 +98,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 1,
@@ -90,6 +132,10 @@
     "maxHealth": 150,
     "damage": 18,
     "guile": 2,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [],
     "xpReward": 80,
     "goldReward": 50,
     "lootTable": [
@@ -150,6 +196,10 @@
     "maxHealth": 62,
     "damage": 9,
     "guile": 0,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [],
     "xpReward": 19,
     "goldReward": 12,
     "lootTable": [
@@ -162,7 +212,19 @@
         "dropRate": 10
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "rallying_cry",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 2,
     "packEligible": true,
     "hunterAlignment": "",
@@ -186,6 +248,8 @@
     "maxHealth": 78,
     "damage": 10,
     "guile": 0,
+    "weakTo": [],
+    "resists": [],
     "xpReward": 28,
     "goldReward": 19,
     "lootTable": [
@@ -202,7 +266,30 @@
         "dropRate": 10
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "bind_wounds",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 1,
     "packEligible": true,
     "hunterAlignment": "",
@@ -226,6 +313,12 @@
     "maxHealth": 100,
     "damage": 11,
     "guile": 1,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 37,
     "goldReward": 26,
     "lootTable": [
@@ -249,6 +342,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "void_gathering",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 3,
@@ -274,6 +378,12 @@
     "maxHealth": 150,
     "damage": 18,
     "guile": 2,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 46,
     "goldReward": 33,
     "lootTable": [
@@ -290,7 +400,30 @@
         "dropRate": 15
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "rallying_cry",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 2,
     "packEligible": false,
     "hunterAlignment": "",
@@ -312,6 +445,12 @@
     "maxHealth": 121,
     "damage": 14,
     "guile": 3,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 55,
     "goldReward": 40,
     "lootTable": [
@@ -335,6 +474,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "void_gathering",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 3,
@@ -360,6 +510,10 @@
     "maxHealth": 180,
     "damage": 21,
     "guile": 3,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [],
     "xpReward": 64,
     "goldReward": 47,
     "lootTable": [
@@ -432,6 +586,12 @@
     "maxHealth": 175,
     "damage": 21,
     "guile": 2,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Earth"
+    ],
     "xpReward": 73,
     "goldReward": 54,
     "lootTable": [
@@ -504,6 +664,12 @@
     "maxHealth": 180,
     "damage": 21,
     "guile": 3,
+    "weakTo": [
+      "Water"
+    ],
+    "resists": [
+      "Earth"
+    ],
     "xpReward": 82,
     "goldReward": 61,
     "lootTable": [
@@ -580,6 +746,12 @@
     "maxHealth": 200,
     "damage": 23,
     "guile": 5,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 91,
     "goldReward": 68,
     "lootTable": [
@@ -682,6 +854,12 @@
     "maxHealth": 170,
     "damage": 19,
     "guile": 6,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 100,
     "goldReward": 75,
     "lootTable": [
@@ -757,6 +935,10 @@
     "maxHealth": 145,
     "damage": 19,
     "guile": 4,
+    "weakTo": [],
+    "resists": [
+      "Light"
+    ],
     "xpReward": 70,
     "goldReward": 55,
     "lootTable": [
@@ -825,6 +1007,12 @@
     "maxHealth": 160,
     "damage": 20,
     "guile": 7,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 109,
     "goldReward": 82,
     "lootTable": [
@@ -889,6 +1077,12 @@
     "maxHealth": 165,
     "damage": 21,
     "guile": 7,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 118,
     "goldReward": 89,
     "lootTable": [
@@ -975,6 +1169,12 @@
     "maxHealth": 139,
     "damage": 17,
     "guile": 2,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Water"
+    ],
     "xpReward": 40,
     "goldReward": 28,
     "lootTable": [
@@ -1006,6 +1206,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 2,
@@ -1055,6 +1266,12 @@
     "maxHealth": 120,
     "damage": 14,
     "guile": 1,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 46,
     "goldReward": 34,
     "lootTable": [
@@ -1071,7 +1288,30 @@
         "dropRate": 10
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "rallying_cry",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 3,
     "packEligible": true,
     "hunterAlignment": "",
@@ -1095,6 +1335,12 @@
     "maxHealth": 120,
     "damage": 15,
     "guile": 5,
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
     "xpReward": 60,
     "goldReward": 45,
     "lootTable": [
@@ -1144,6 +1390,12 @@
     "maxHealth": 175,
     "damage": 20,
     "guile": 8,
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
     "xpReward": 115,
     "goldReward": 85,
     "lootTable": [
@@ -1222,6 +1474,13 @@
     "maxHealth": 105,
     "damage": 14,
     "guile": 4,
+    "weakTo": [
+      "Light",
+      "Ice"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 55,
     "goldReward": 40,
     "lootTable": [
@@ -1271,6 +1530,12 @@
     "maxHealth": 185,
     "damage": 22,
     "guile": 8,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 110,
     "goldReward": 80,
     "lootTable": [
@@ -1349,6 +1614,13 @@
     "maxHealth": 145,
     "damage": 18,
     "guile": 3,
+    "weakTo": [
+      "Light",
+      "Fire"
+    ],
+    "resists": [
+      "Ice"
+    ],
     "xpReward": 60,
     "goldReward": 42,
     "lootTable": [
@@ -1372,6 +1644,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 4,
@@ -1397,6 +1680,13 @@
     "maxHealth": 320,
     "damage": 30,
     "guile": 6,
+    "weakTo": [
+      "Earth",
+      "Light"
+    ],
+    "resists": [
+      "Ice"
+    ],
     "xpReward": 120,
     "goldReward": 90,
     "lootTable": [
@@ -1431,6 +1721,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 4,
@@ -1480,6 +1781,12 @@
     "maxHealth": 340,
     "damage": 33,
     "guile": 9,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Light"
+    ],
     "xpReward": 150,
     "goldReward": 110,
     "lootTable": [
@@ -1578,6 +1885,12 @@
     "maxHealth": 155,
     "damage": 20,
     "guile": 4,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 70,
     "goldReward": 50,
     "lootTable": [
@@ -1597,6 +1910,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "pack_howl",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 5,
@@ -1622,6 +1946,12 @@
     "maxHealth": 300,
     "damage": 28,
     "guile": 6,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 105,
     "goldReward": 80,
     "lootTable": [
@@ -1689,6 +2019,12 @@
     "maxHealth": 260,
     "damage": 26,
     "guile": 8,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 140,
     "goldReward": 100,
     "lootTable": [
@@ -1768,6 +2104,12 @@
     "maxHealth": 380,
     "damage": 32,
     "guile": 10,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 190,
     "goldReward": 140,
     "lootTable": [
@@ -1866,6 +2208,10 @@
     "maxHealth": 180,
     "damage": 22,
     "guile": 7,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [],
     "xpReward": 95,
     "goldReward": 70,
     "lootTable": [
@@ -1921,6 +2267,12 @@
     "maxHealth": 390,
     "damage": 31,
     "guile": 12,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 300,
     "goldReward": 220,
     "lootTable": [
@@ -2042,6 +2394,12 @@
     "maxHealth": 320,
     "damage": 32,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2108,6 +2466,12 @@
     "maxHealth": 260,
     "damage": 36,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2174,6 +2538,12 @@
     "maxHealth": 280,
     "damage": 30,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2240,6 +2610,12 @@
     "maxHealth": 250,
     "damage": 38,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2306,6 +2682,12 @@
     "maxHealth": 240,
     "damage": 40,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2372,6 +2754,12 @@
     "maxHealth": 360,
     "damage": 34,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2438,6 +2826,12 @@
     "maxHealth": 300,
     "damage": 28,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2504,6 +2898,12 @@
     "maxHealth": 290,
     "damage": 36,
     "guile": 9,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2570,6 +2970,12 @@
     "maxHealth": 340,
     "damage": 31,
     "guile": 10,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 320,
     "goldReward": 0,
     "lootTable": [],
@@ -2636,6 +3042,12 @@
     "maxHealth": 250,
     "damage": 25,
     "guile": 8,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
     "xpReward": 160,
     "goldReward": 0,
     "lootTable": [],
@@ -2690,6 +3102,12 @@
     "maxHealth": 90,
     "damage": 24,
     "guile": 1,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Ice"
+    ],
     "xpReward": 14,
     "goldReward": 9,
     "lootTable": [
@@ -2698,7 +3116,30 @@
         "dropRate": 20
       }
     ],
-    "skillMoves": [],
+    "skillMoves": [
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
     "minChapter": 1,
     "packEligible": false,
     "hunterAlignment": "",
@@ -2713,6 +3154,13 @@
     "maxHealth": 150,
     "damage": 19,
     "guile": 3,
+    "weakTo": [
+      "Earth",
+      "Light"
+    ],
+    "resists": [
+      "Ice"
+    ],
     "xpReward": 64,
     "goldReward": 45,
     "lootTable": [
@@ -2740,6 +3188,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
       }
     ],
     "minChapter": 4,
@@ -2765,6 +3224,12 @@
     "maxHealth": 165,
     "damage": 21,
     "guile": 5,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Water"
+    ],
     "xpReward": 80,
     "goldReward": 58,
     "lootTable": [
@@ -2792,6 +3257,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "bind_wounds",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 5,
@@ -2817,6 +3293,12 @@
     "maxHealth": 175,
     "damage": 23,
     "guile": 7,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Void"
+    ],
     "xpReward": 100,
     "goldReward": 72,
     "lootTable": [
@@ -2851,6 +3333,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": -1
       }
     ],
     "minChapter": 6,
@@ -2876,6 +3369,12 @@
     "maxHealth": 330,
     "damage": 29,
     "guile": 5,
+    "weakTo": [
+      "Water"
+    ],
+    "resists": [
+      "Earth"
+    ],
     "xpReward": 125,
     "goldReward": 95,
     "lootTable": [
@@ -2910,6 +3409,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": -1
       }
     ],
     "minChapter": 6,
@@ -2945,6 +3455,12 @@
     "maxHealth": 395,
     "damage": 32,
     "guile": 11,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Ice"
+    ],
     "xpReward": 200,
     "goldReward": 150,
     "lootTable": [

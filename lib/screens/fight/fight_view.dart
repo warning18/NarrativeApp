@@ -708,6 +708,26 @@ extension _FightView on _FightScreenState {
       icon = FaceKind.defend.icon;
       text = '${preview.block}';
       color = FaceKind.defend.color;
+      // In a party fight the biggest Defend kept draws the enemies'
+      // attacks (see _confirmRoll's taunt).
+      if (_party.where((m) => !m.isKnockedOut).length > 1) {
+        return Tooltip(
+          message: tr(ref, 'defend_draws_attacks_hint'),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 11, color: color),
+              const SizedBox(width: 2),
+              Text(text,
+                  style: TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.bold, color: color)),
+              const SizedBox(width: 2),
+              Icon(Icons.my_location, size: 10, color: color),
+            ],
+          ),
+        );
+      }
     } else if (result.manaGained > 0) {
       icon = manaIcon;
       text = '+${result.manaGained}';

@@ -1085,6 +1085,7 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 3,
+        "countFromAccept": true,
         "description_fr": "Débarrasser les galeries inondées de trois goules des catacombes"
       }
     ],
@@ -1261,6 +1262,7 @@
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 2,
+        "countFromAccept": true,
         "description_fr": "Abattre les reflets creux qui portent les visages des vaincus"
       }
     ],
