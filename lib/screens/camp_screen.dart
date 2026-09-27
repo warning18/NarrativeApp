@@ -24,6 +24,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
+import '../widgets/bounty_board.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
@@ -194,6 +195,10 @@ class CampScreen extends ConsumerWidget {
                     ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
           else
             for (final place in places) PlaceCard(place: place),
+
+          // Short goals for ordinary fights, paid at the camp (v1.160).
+          section(tr(ref, 'bounty_board_section')),
+          const BountyBoard(),
         ],
 
         // The camp's town on the cliff: what has been built, and the tray

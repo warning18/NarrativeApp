@@ -8,6 +8,73 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.160.0+190]
+
+Fights that change shape from turn to turn, detours with a choice in them,
+and something to aim the next fight at.
+
+### Added
+- **Enemy intents.** An enemy's turn is no longer always a hit:
+  - **Guard** (Brace): it raises a guard worth its own damage that soaks
+    the party's next hits.
+  - **Wind-up** (Heavy Wind-up, Void Gathering): it gathers itself, and
+    next turn the blow lands at double weight (×1.8 for the Void). The
+    party breaks it by dealing a quarter of its health in one round, by
+    stunning it, or by hitting a weakness. A broken wind-up leaves it
+    **staggered**: it loses its next turn.
+  - **Rally** (Rallying Cry, Pack Howl): it and every living packmate hit
+    20–25% harder. An enemy can be rallied at most twice a fight.
+  - **Mend** (Bind Wounds): it heals instead of hitting.
+  A wound-up enemy is marked at every Perception tier, and the telegraph
+  names a coming guard, wind-up or rally from the category tier up. Slum thugs,
+  bandits, ghouls, bone wardens, Inquisition soldiers, void hounds and
+  the Strand Colossus, among others, use them.
+- **Weaknesses and resistances.** 44 of 47 enemies are weak to an element
+  (×1.5 damage) and 41 resist one (×½): ghouls fear Light and Fire and
+  shrug off Ice, the Inquisition burns poorly but conducts lightning. A
+  weakness shows on the enemy once it has been hit with it, and all of
+  them show from the category telegraph tier or for a kind already
+  beaten.
+- **Taunt.** In a party fight, whoever keeps the biggest Defend face
+  draws the enemies' attacks that round.
+- **Detours with a choice** (expeditions and excursions):
+  - A fight can be **slipped past** with a Dexterity check (DC 9 +
+    chapter, +2 for a pack). A failed sneak starts the fight as an
+    ambush.
+  - A cache can be **dug deeper** with a Perception check: 2.5 times the
+    gold, or nothing.
+  - A rest spot can be **scavenged** with a Luck check instead of healing.
+  - Treasure gold and rest healing grow with the chapter.
+- **The bounty board at the camp.** Three contracts at a time: hunt so
+  many of one foe, win against packs, win without anyone falling or
+  drinking a potion, break wind-ups, hit weaknesses, beat marked foes.
+  Each pays gold and skill essence at the board (more in later
+  chapters). A fresh board goes up once all three are claimed or the
+  chapter turns.
+- **Charisma haggles.** Each point takes 2% off shop prices, up to 20%.
+- **Shops restock** potions and scrolls every chapter. Gear stays one of
+  a kind.
+
+### Changed
+- **Momentum** drops by one when the party takes a hit, instead of
+  falling to nothing.
+- **The road keeps its dangers.** Random encounters draw every enemy the
+  chapter allows, not only the ones never met; unmet ones come three
+  times as often. Late detours used to run dry into treasure.
+- Detour descriptions don't repeat within five detours.
+- Player skills that enemies use are described as the enemy's move ("A
+  ragged breath, and the enemy steadies."), not as "You …", in both
+  languages.
+
+### Fixed
+- **Enemy heals.** Second Wind, Stoneskin and the other heal-only skills
+  enemies use hit the party for the enemy's full damage and healed
+  nothing. They now heal, scaled with the enemy's health, and don't hit.
+  Shadow Step's self-heal now applies too.
+- **Bounty quests** (the Ossuary bounty, Faces of the Fallen) count only
+  the kills made after the quest is taken. Kills from earlier in the run
+  used to complete them on the spot.
+
 ## [1.159.0+189]
 
 The release that brings every open branch together: the ElevenLabs voice

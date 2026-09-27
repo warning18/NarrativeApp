@@ -199,6 +199,15 @@ extension _FightRewards on _FightScreenState {
         lootPityStreak: nextPityStreak(session.lootPityStreak, chest.tier),
         recentLootIds: nextRecentLootIds(session.recentLootIds, chest.itemIds),
         manaAfter: _mana,
+        contractTally: ContractTally(
+          defeatedEnemyIds: defeated.map((e) => e.enemyId).toList(),
+          pack: _enemies.length > 1,
+          flawless: !_potionUsed && !_anyKnockedOut,
+          chargesBroken: _chargesBroken,
+          weaknessHits: _weaknessHits,
+          markedBeaten:
+              defeated.where((e) => _isElite || e.affixes.isNotEmpty).length,
+        ),
       );
       // A knocked-out ally is revived at partial health on a win; a
       // survivor's ending health is simply persisted as-is. Level-ups

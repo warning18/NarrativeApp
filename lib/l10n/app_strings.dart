@@ -3401,6 +3401,55 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'il ne se passe rien.',
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  // v1.160: the camp's bounty board (see contracts.dart).
+  'bounty_board_section': {
+    AppLanguage.en: 'Bounty board',
+    AppLanguage.fr: 'Tableau des contrats',
+  },
+  'contract_hunt': {
+    AppLanguage.en: 'Put down {n} × {enemy}',
+    AppLanguage.fr: 'Abattre {n} × {enemy}',
+  },
+  'contract_packs': {
+    AppLanguage.en: 'Win {n} fights against a pack',
+    AppLanguage.fr: 'Gagner {n} combats contre une meute',
+  },
+  'contract_flawless': {
+    AppLanguage.en: 'Win {n} fights with nobody down and no potion drunk',
+    AppLanguage.fr:
+        'Gagner {n} combats sans que personne ne tombe et sans boire de potion',
+  },
+  'contract_breaker': {
+    AppLanguage.en: 'Break {n} enemy wind-ups',
+    AppLanguage.fr: 'Briser l’élan ennemi {n} fois',
+  },
+  'contract_weakness': {
+    AppLanguage.en: 'Hit an enemy weakness {n} times',
+    AppLanguage.fr: 'Frapper un point faible ennemi {n} fois',
+  },
+  'contract_marked': {
+    AppLanguage.en: 'Beat {n} marked foes (an affix or an Elite)',
+    AppLanguage.fr: 'Vaincre {n} ennemis marqués (un trait ou une élite)',
+  },
+  'contract_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Réclamer'},
+  'contract_claimed': {
+    AppLanguage.en: 'Contract paid:',
+    AppLanguage.fr: 'Contrat payé :',
+  },
+  'contract_essence_label': {
+    AppLanguage.en: 'essence',
+    AppLanguage.fr: 'essence',
+  },
+  'contracts_posting': {
+    AppLanguage.en: 'A fresh notice is going up on the board…',
+    AppLanguage.fr: 'Une nouvelle affiche est placardée sur le tableau…',
+  },
+  'contracts_hint': {
+    AppLanguage.en:
+        'Fights anywhere count. A new board goes up once these are claimed or the chapter turns.',
+    AppLanguage.fr:
+        'Tous les combats comptent. Un nouveau tableau apparaît quand ceux-ci sont réclamés ou au chapitre suivant.',
+  },
   // v1.160: enemy intents, weaknesses, taunt.
   'telegraph_category_guard': {
     AppLanguage.en: 'Guard',

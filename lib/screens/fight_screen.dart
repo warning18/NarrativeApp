@@ -23,6 +23,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
 import '../data/chapter_loop.dart';
+import '../data/contracts.dart' show ContractTally;
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -274,8 +275,10 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// defended.
   String? _guardianId;
 
-  /// Wind-ups the party broke this fight (see _checkChargeBreaks).
+  /// Wind-ups the party broke this fight (see _checkChargeBreaks), and
+  /// hits that landed on a weakness: both count on the camp's bounty board.
   int _chargesBroken = 0;
+  int _weaknessHits = 0;
 
   /// Damaging party hits landed, less one for every hit the party takes
   /// (see momentumAfterHit). At [_momentumThreshold] the next Attack/Skill

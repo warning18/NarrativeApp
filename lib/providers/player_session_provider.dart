@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/contracts.dart';
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -167,6 +168,9 @@ class PlayerSession {
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
     this.questKillBaselines = const {},
+    this.contracts = const [],
+    this.contractsChapter = 0,
+    this.contractBoards = 0,
     this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -379,6 +383,13 @@ class PlayerSession {
   /// accepted before v1.160 have none and count lifetime kills.
   final Map<String, Map<String, int>> questKillBaselines;
 
+  /// The camp's bounty board (see contracts.dart): the contracts posted
+  /// and not yet claimed, the chapter they went up in, and how many boards
+  /// have been posted this run (for fresh ids).
+  final List<Contract> contracts;
+  final int contractsChapter;
+  final int contractBoards;
+
   /// Defeats each boss has dealt the party this run (enemy id -> losses):
   /// Resolve reads it back as a stacking bonus against that boss (see
   /// party_bonus.dart). Reset with everything else on a new game.
@@ -568,6 +579,9 @@ class PlayerSession {
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
     Map<String, Map<String, int>>? questKillBaselines,
+    List<Contract>? contracts,
+    int? contractsChapter,
+    int? contractBoards,
     Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -643,6 +657,9 @@ class PlayerSession {
           bannerPiecesCollected ?? this.bannerPiecesCollected,
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
       questKillBaselines: questKillBaselines ?? this.questKillBaselines,
+      contracts: contracts ?? this.contracts,
+      contractsChapter: contractsChapter ?? this.contractsChapter,
+      contractBoards: contractBoards ?? this.contractBoards,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
@@ -720,6 +737,9 @@ class PlayerSession {
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
         'questKillBaselines': questKillBaselines,
+        'contracts': [for (final c in contracts) c.toJson()],
+        'contractsChapter': contractsChapter,
+        'contractBoards': contractBoards,
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
@@ -884,6 +904,13 @@ class PlayerSession {
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
           ) ??
           const {},
+      contracts: (json['contracts'] as List?)
+              ?.whereType<Map>()
+              .map((c) => Contract.fromJson(Map<String, dynamic>.from(c)))
+              .toList() ??
+          const [],
+      contractsChapter: (json['contractsChapter'] as num?)?.toInt() ?? 0,
+      contractBoards: (json['contractBoards'] as num?)?.toInt() ?? 0,
       questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
             (quest, kills) => MapEntry(
               quest.toString(),
@@ -1411,6 +1438,34 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// Puts a fresh bounty board up at the camp (see rollContracts) for
+  /// [chapter], replacing whatever was there.
+  Future<void> postContractBoard(List<Contract> board,
+      {required int chapter}) async {
+    state = state.copyWith(
+      contracts: board,
+      contractsChapter: chapter,
+      contractBoards: state.contractBoards + 1,
+    );
+    await _persist();
+  }
+
+  /// Pays a met contract's gold and essence and takes it off the board.
+  Future<void> claimContract(String contractId) async {
+    final contract =
+        state.contracts.where((c) => c.id == contractId).firstOrNull;
+    if (contract == null || !contract.done) return;
+    state = state.copyWith(
+      gold: state.gold + contract.rewardGold,
+      skillEssence: state.skillEssence + contract.rewardEssence,
+      contracts: [
+        for (final c in state.contracts)
+          if (c.id != contractId) c,
+      ],
+    );
+    await _persist();
+  }
+
   /// Follows [questId]: its current goal shows above the story. Only an
   /// active quest can be followed.
   Future<void> trackQuest(String questId) async {
@@ -1521,15 +1576,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Buys [itemId] from [shopId]. Shops have a fixed stock per item
   /// ([stockLimit], from the shop's stockQuantities data) that this tracks
-  /// via [PlayerSession.shopPurchaseCounts] and never replenishes.
+  /// via [PlayerSession.shopPurchaseCounts]: gear never replenishes, and
+  /// potions and scrolls restock each chapter (their [stockKey] carries the
+  /// chapter, see stockKeyFor).
   Future<void> buyItem(
     String shopId,
     String itemId,
     int cost,
     int stockLimit, {
     Map<String, dynamic>? item,
+    String? stockKey,
   }) async {
-    final key = '$shopId::$itemId';
+    // A restocking consumable is counted per chapter (see stockKeyFor).
+    final key = stockKey ?? '$shopId::$itemId';
     final purchased = state.shopPurchaseCounts[key] ?? 0;
     if (state.gold < cost || purchased >= stockLimit) return;
     // A spellbook is read on the spot: the spell joins [knownSpellIds] and
@@ -2575,6 +2634,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? lootPityStreak,
     List<String>? recentLootIds,
     int? manaAfter,
+    ContractTally? contractTally,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -2654,6 +2714,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,
       enemyKillCounts: newKillCounts,
+      contracts: contractTally == null
+          ? null
+          : [
+              for (final c in state.contracts)
+                progressContract(c, contractTally),
+            ],
       lootPityStreak: lootPityStreak,
       recentLootIds: recentLootIds,
       mana: manaAfter?.clamp(0, state.maxMana),

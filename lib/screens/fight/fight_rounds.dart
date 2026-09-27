@@ -617,7 +617,10 @@ extension _FightRounds on _FightScreenState {
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
     if (multiplier != 1.0) {
-      if (multiplier > 1.0) enemy.hitWeaknessThisRound = true;
+      if (multiplier > 1.0) {
+        enemy.hitWeaknessThisRound = true;
+        _weaknessHits++;
+      }
       if (enemy.revealedElements.add(element)) {
         entries.add(_LogEntry(
           '${enemy.displayName} ${trFor(lang, multiplier > 1.0 ? 'weak_to_suffix' : 'resists_suffix')} '
