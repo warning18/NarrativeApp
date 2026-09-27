@@ -151,6 +151,25 @@ void main() {
         isTrue);
   });
 
+  test('a new chapter keeps the contracts already met, unclaimed', () {
+    final earned =
+        _contract(ContractKind.hunt, target: 'harbor_rat', progress: 3);
+    final halfway = _contract(ContractKind.packs, progress: 1);
+    final fresh = rollContracts(
+      chapter: 4,
+      huntPool: const ['harbor_rat'],
+      random: Random(1),
+      boardNumber: 9,
+    );
+    final board = repostBoard([earned, halfway], fresh);
+    expect(board, hasLength(contractBoardSize));
+    expect(board.first, same(earned), reason: 'earned, still to claim');
+    expect(board, isNot(contains(halfway)), reason: 'unmet: the new board');
+    expect(board.skip(1).map((c) => c.id), fresh.take(2).map((c) => c.id));
+    // Nothing earned: a whole fresh board.
+    expect(repostBoard([halfway], fresh), fresh);
+  });
+
   test('PlayerSession keeps the board through toJson/fromJson', () {
     final session = baseSession().copyWith(
       contracts: [
@@ -266,6 +285,19 @@ void main() {
           objectiveStatusesFor('q_bounty', bounty, notifier.state).single;
       expect(bountyStatus.current, 2);
       expect(bountyStatus.met, isTrue);
+    });
+
+    test('only a bounty keeps a baseline, only for its foes, until done',
+        () async {
+      final notifier = await _notifierWith(baseSession()
+          .copyWith(enemyKillCounts: {'bone_warden': 3, 'harbor_rat': 40}));
+      await notifier.acceptQuest('q_bounty', quest: bounty);
+      await notifier.acceptQuest('q_lifetime', quest: lifetime);
+      expect(notifier.state.questKillBaselines, {
+        'q_bounty': {'bone_warden': 3},
+      });
+      await notifier.completeQuest('q_bounty');
+      expect(notifier.state.questKillBaselines, isEmpty);
     });
 
     test('the baseline survives the save file', () {

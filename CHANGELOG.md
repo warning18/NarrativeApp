@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.166.0+196]
+
+A review of the whole PR: fifteen bugs fixed and four balance changes.
+
+### Fixed
+- **Defending no longer draws a whole pack onto one party member.** Taunt
+  sent every enemy's blow to whoever kept the biggest Defend face, but
+  their block only soaked the first; the rest landed in full (three blows
+  of 15 against Defend 8 took 37). Now the defender steps in only while
+  their guard holds, and later blows go where they were aimed.
+- **"Give it one of the crew" takes the companion in the scene.** Who the
+  story takes is settled before the party reacts, and they don't react
+  themselves; before, a companion walking out over that choice left the
+  story to take whoever had just stepped into their seat.
+- **A companion the story takes leaves their seat to the bench too**, like
+  one who walks out (the finale's "one of the crew", a companion turned).
+  Nobody is seated whose house gate can't be read.
+- **The bounty board keeps contracts already met.** A new chapter used to
+  replace the board, losing earned but unclaimed rewards.
+- **A level-up perk can always be chosen.** The picker on the Character
+  tab drew its offer only once; a level-up with no level-up window (a ship
+  battle's) left a pick with nothing to choose from.
+- **Saving a node in Edit Mode keeps every choice field.** Ten had no
+  control in the editor and were dropped: showIfFlags, main-quest and
+  travel markers, hunts, the sneak round a fight, approval reactions.
+- **No hunt trail after a fight the party slipped past.**
+- **Loot on the road isn't greed.** A detour's cache or an expedition's
+  find no longer costs the approval of companions who dislike profit.
+- **A failed run from raiders keeps its roll and its toll on the log.**
+- **The day added by sheltering follows the voyage's rules**: one raider
+  a crossing on known waters, none past a flight sail.
+- An enemy skill set to "attack" in the data editor attacks, even one
+  that only heals.
+- Edit Mode's "play to" fights play the enemy's wind-ups, guards, rallies
+  and heals as the fight screen does.
+- The same seed builds the same detour, whatever detours came before.
+- Save files keep a bounty's kill counts only for the foes it counts, and
+  drop them when it's done.
+
+### Changed
+- **Work on offer.** A story choice that leads to a side job not yet
+  taken on shows it (the market's informant, Tern Row, Liora's watch).
+- **Boarding a derelict** rolls against the sea DC + 3.
+- **Maren** no longer minds profit; she still minds cruelty.
+- **"Copy the list"** at the Reckoning Wall pays 80 gold (was 50) and the
+  party approves.
+
 ## [1.165.0+195]
 
 Two fixes from a 50-playthrough simulation of 1.164.

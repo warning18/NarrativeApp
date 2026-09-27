@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../data/story_repository.dart';
+import '../data/sub_node_engine.dart';
 import '../models/story_node.dart';
 
 const String _autosaveNodePrefsKey = 'autosave_story_node';
@@ -272,8 +273,6 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     );
   }
 
-  /// Advances past the current excursion node, either to the next generated
-  /// node in the queue or, once it's empty, back to the real story.
   /// Leaves the detour at once, back to the scene it set out from -- the
   /// party slipped away from it.
   void leaveExcursion() {
@@ -281,8 +280,19 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
     if (resume != null) choose(resume);
   }
 
-  void advanceExcursion() {
-    if (state.excursionQueue.isEmpty) {
+  /// Advances past the current excursion node, either to the next generated
+  /// node in the queue or, once it's empty, back to the real story. After a
+  /// fight the party [slippedPast], a hunt that would have followed it (a
+  /// trail, then the quarry: see SubNodeEngine.withHunts) is dropped: none
+  /// of the pack ran, because none of it was fought.
+  void advanceExcursion({bool slippedPast = false}) {
+    var queue = state.excursionQueue;
+    if (slippedPast &&
+        queue.isNotEmpty &&
+        SubNodeEngine.isHuntTrail(queue.first)) {
+      queue = queue.skip(2).toList();
+    }
+    if (queue.isEmpty) {
       final resume = state.resumeNodeId;
       if (resume != null) choose(resume);
       return;
@@ -291,8 +301,8 @@ class StoryPlayNotifier extends StateNotifier<StoryPlayState> {
       currentNodeId: state.currentNodeId,
       history: state.history,
       visitedNodeIds: state.visitedNodeIds,
-      activeExcursionNode: state.excursionQueue.first,
-      excursionQueue: state.excursionQueue.skip(1).toList(),
+      activeExcursionNode: queue.first,
+      excursionQueue: queue.skip(1).toList(),
       resumeNodeId: state.resumeNodeId,
       excursionOrigin: state.excursionOrigin,
       excursionOriginFr: state.excursionOriginFr,

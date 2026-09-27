@@ -12,14 +12,17 @@ import '../l10n/app_strings.dart';
 ///   unless the party breaks it first (see [chargeBroken]).
 /// - [rally]: it rouses itself and every packmate to hit harder.
 ///
-/// A skill says which with its `intent` field ('heal', 'guard', 'charge',
-/// 'rally'). A skill with no `intent` that only heals (no damageMod, a
+/// A skill says which with its `intent` field ('attack', 'heal', 'guard',
+/// 'charge', 'rally'). A skill with no `intent` that only heals (no damageMod, a
 /// healAmount) is a heal, so the player skills enemies borrow (Second
 /// Wind, Stoneskin, Revive Prayer) mend the enemy instead of hitting.
 enum EnemyIntent { attack, heal, guard, charge, rally }
 
 EnemyIntent enemyIntentOf(Map<String, dynamic> skill) {
   switch (skill['intent']?.toString()) {
+    // Said outright: an attack, even for a skill that only heals.
+    case 'attack':
+      return EnemyIntent.attack;
     case 'heal':
       return EnemyIntent.heal;
     case 'guard':
@@ -120,6 +123,17 @@ int scaledEnemyHeal(int heal, {required int maxHealth, int? baseMaxHealth}) {
 /// instead of wiping the whole meter, so a party that trades blows can
 /// still build to a surge.
 int momentumAfterHit(int momentum) => max(0, momentum - 1);
+
+/// Taunt (v1.162): whether a blow aimed at someone else goes to the party
+/// member who kept the biggest Defend face this round instead. Only while
+/// their guard holds: the first blow they take spends it, and the rest of
+/// the enemies' blows go where they were aimed.
+bool guardianTakesBlow({
+  required bool guardianStanding,
+  required int guardianBlock,
+  required bool aimedAtGuardian,
+}) =>
+    guardianStanding && guardianBlock > 0 && !aimedAtGuardian;
 
 /// An element's name in [language] ('Fire' → 'Feu'); the id itself when no
 /// name is written for it.

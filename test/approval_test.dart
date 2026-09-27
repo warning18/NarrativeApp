@@ -101,16 +101,27 @@ void main() {
           alignmentMod: -2, goldMod: 30, companions: companions);
       final byId = {for (final r in reactions) r.companionId: r};
       expect(byId.keys, unorderedEquals(['maren', 'malrik']));
-      // Maren: cruelty -3, profit -1.
-      expect(byId['maren']!.delta, -4);
+      // Maren: cruelty -3; profit doesn't move her (v1.166).
+      expect(byId['maren']!.delta, -3);
       // Malrik: cruelty +2, profit +3.
       expect(byId['malrik']!.delta, 5);
       final allies = {
         for (final a in notifier.state.recruitedAllies) a.companionId: a
       };
-      expect(allies['maren']!.approval, startingApproval - 4);
+      expect(allies['maren']!.approval, startingApproval - 3);
       expect(allies['kelda']!.approval, startingApproval,
           reason: 'benched: not there to see it');
+    });
+
+    test('loot on the road is not greed', () async {
+      final notifier = await _notifierWith(baseSession(
+          recruitedAllies: [_ally('maren'), _ally('malrik')],
+          activeAllyIds: const ['maren', 'malrik']));
+      final reactions = await notifier.applyChoiceEffects(
+          goldMod: 60, companions: companions, goldIsProfit: false);
+      expect(reactions, isEmpty);
+      expect(notifier.state.gold, greaterThanOrEqualTo(60),
+          reason: 'the gold itself is still taken');
     });
 
     test('a choice with no deed in it moves nobody', () async {
@@ -159,6 +170,55 @@ void main() {
       // Maren and Liora tie; Maren was recruited first.
       expect(tobin.replacedBy, 'maren');
       expect(notifier.state.activeAllyIds, ['grosh', 'maren']);
+    });
+
+    test('the story takes its companion before anyone reacts', () async {
+      // "Give it one of the crew" (7002_price): `*` is Maren, the only one
+      // in the party. Her own reaction would have made her walk out and
+      // left `*` to take whoever stepped into her seat.
+      final notifier = await _notifierWith(baseSession(recruitedAllies: [
+        _ally('maren', approval: -5),
+        _ally('grosh'),
+      ], activeAllyIds: const [
+        'maren'
+      ]));
+      final reactions = await notifier.applyChoiceEffects(
+          loseAllyId: '*',
+          alignmentMod: -2,
+          approvalMods: const {'*': -4},
+          companions: companions);
+      expect(reactions.where((r) => r.companionId == 'maren'), isEmpty);
+      final state = notifier.state;
+      expect(state.lostAllyIds, ['maren']);
+      expect(state.departedAllyIds, isEmpty);
+      expect(state.activeAllyIds, ['grosh'], reason: 'Grosh takes the seat');
+    });
+
+    test('a companion the story takes leaves their seat to the bench',
+        () async {
+      final notifier = await _notifierWith(baseSession(recruitedAllies: [
+        _ally('tobin'),
+        _ally('grosh'),
+        _ally('maren'),
+      ], activeAllyIds: const [
+        'tobin',
+        'grosh'
+      ]));
+      expect(notifier.loseAlly('tobin', companions: companions), 'maren');
+      expect(notifier.state.activeAllyIds, ['grosh', 'maren']);
+      expect(notifier.state.lostAllyIds, ['tobin']);
+    });
+
+    test('without the companions table, nobody is seated blind', () async {
+      final notifier = await _notifierWith(baseSession(recruitedAllies: [
+        _ally('tobin'),
+        _ally('kelda'),
+      ], activeAllyIds: const [
+        'tobin'
+      ]));
+      expect(notifier.loseAlly('tobin'), isNull,
+          reason: 'Kelda\'s house gate can\'t be read');
+      expect(notifier.state.activeAllyIds, isEmpty);
     });
 
     test('a companion whose house isn\'t built can\'t step in', () async {

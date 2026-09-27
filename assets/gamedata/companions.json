@@ -82,7 +82,7 @@
     "companionName_fr": "Sœur Maren",
     "approvesGood": 3,
     "approvesEvil": -3,
-    "approvesProfit": -1,
+    "approvesProfit": 0,
     "devotedLine": "I stopped counting my penance somewhere on this road. I think I have you to thank.",
     "devotedLineFr": "J'ai cessé de compter ma pénitence quelque part sur cette route. Je crois que c'est grâce à vous.",
     "warnLine": "I burned for the Inquisition once. I will not do it again for you.",

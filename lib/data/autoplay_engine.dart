@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
@@ -196,6 +197,100 @@ Future<void> _exploreChapterBeforeMainQuest(
   }
 }
 
+/// One autoplay fight, player against [enemy] (already scaled: its
+/// `damage` at the party's level, [enemyMaxHealth] its scaled health), the
+/// way the fight screen plays the enemy's intents (see enemy_intent.dart):
+/// a wind-up swings nothing and lands its blow the next turn unless the
+/// player breaks it (then the enemy loses that turn), a guard soaks the
+/// player's next hits until the enemy acts again, a rally raises its damage
+/// (at most [maxRallyStacks] times), and a heal mends it, scaled the way
+/// its health was. Ends when either side drops or after [maxTurns].
+@visibleForTesting
+({int playerHealth, int enemyHealth}) autoplayDuel({
+  required List<Map<String, dynamic>> diceFaces,
+  required Map<String, String> assignments,
+  required Map<String, dynamic> skills,
+  required int playerDamage,
+  required int playerArmor,
+  required int playerHealth,
+  required int playerMaxHealth,
+  required Map<String, dynamic> enemy,
+  required int enemyMaxHealth,
+  required Random random,
+  int maxTurns = 60,
+}) {
+  var enemyHealth = enemyMaxHealth;
+  final baseDamage = (enemy['damage'] as num?)?.toInt() ?? 0;
+  final baseMaxHealth = (enemy['maxHealth'] as num?)?.toInt();
+  var guard = 0;
+  int? chargedBlow;
+  var rallyPercent = 0;
+  var rallies = 0;
+  // A real fight can't run forever either (the player or the enemy always
+  // eventually hits 0); this is just a safety valve against a pathological
+  // stat combination stalemating the loop.
+  for (var turn = 0; turn < maxTurns && diceFaces.isNotEmpty; turn++) {
+    var face = rollDie(diceFaces, random);
+    face = applyFaceAssignment(face, diceFaces[face.faceIndex],
+        assignments[face.faceIndex.toString()]);
+    final result = resolvePlayerFace(face, skills, playerDamage);
+    final through = damageThroughGuard(result.damageDealt, guard);
+    guard = through.guard;
+    enemyHealth = max(0, enemyHealth - through.damage);
+    playerHealth = min(playerMaxHealth, playerHealth + result.healingDone);
+    if (enemyHealth <= 0) break;
+
+    // The enemy's turn: a raised guard lasts until now.
+    guard = 0;
+    final held = chargedBlow;
+    if (held != null) {
+      chargedBlow = null;
+      if (chargeBroken(
+          damageThisRound: through.damage, maxHealth: enemyMaxHealth)) {
+        continue; // staggered: the blow never lands, the turn is lost
+      }
+      playerHealth = max(
+          0, playerHealth - max(0, held - result.blockAmount - playerArmor));
+      if (playerHealth <= 0) break;
+      continue;
+    }
+    final move = resolveEnemyMove(
+      enemy: {
+        ...enemy,
+        'damage': baseDamage * (100 + rallyPercent) ~/ 100,
+      },
+      skills: skills,
+      enemyCurrentHealth: enemyHealth,
+      enemyMaxHealth: enemyMaxHealth,
+      random: random,
+    );
+    final heal = scaledEnemyHeal(move.healAmount,
+        maxHealth: enemyMaxHealth, baseMaxHealth: baseMaxHealth);
+    switch (move.intent) {
+      case EnemyIntent.charge:
+        chargedBlow = move.damage;
+      case EnemyIntent.guard:
+        guard = move.guardAmount;
+      case EnemyIntent.rally:
+        if (rallies < maxRallyStacks) {
+          rallies++;
+          rallyPercent += move.rallyPercent;
+        }
+      case EnemyIntent.heal:
+        enemyHealth = min(enemyMaxHealth, enemyHealth + heal);
+      case EnemyIntent.attack:
+        playerHealth = max(
+            0,
+            playerHealth -
+                max(0, move.damage - result.blockAmount - playerArmor));
+        // An attack that also mends (Shadow Step) mends after the hit.
+        enemyHealth = min(enemyMaxHealth, enemyHealth + heal);
+    }
+    if (playerHealth <= 0) break;
+  }
+  return (playerHealth: playerHealth, enemyHealth: enemyHealth);
+}
+
 Future<bool> _simulateFight({
   required WidgetRef ref,
   required String? enemyId,
@@ -232,37 +327,25 @@ Future<bool> _simulateFight({
           const <String, String>{},
       skills);
 
-  var enemyHealth = scaledMaxHealth(
+  final enemyMaxHealth = scaledMaxHealth(
       (enemy['maxHealth'] as num?)?.toInt() ?? 1, session.level);
-  final enemyMaxHealth = enemyHealth;
   final enemyDamage =
       scaledDamage((enemy['damage'] as num?)?.toInt() ?? 0, session.level);
-  var playerHealth =
-      session.currentHealth > 0 ? session.currentHealth : session.maxHealth;
-
-  // A real fight can't run forever either (the player or the enemy always
-  // eventually hits 0); this is just a safety valve against a pathological
-  // stat combination stalemating the loop.
-  for (var turn = 0; turn < 60 && diceFaces.isNotEmpty; turn++) {
-    var face = rollDie(diceFaces, random);
-    face = applyFaceAssignment(face, diceFaces[face.faceIndex],
-        assignments[face.faceIndex.toString()]);
-    final result = resolvePlayerFace(face, skills, playerDamage);
-    enemyHealth = max(0, enemyHealth - result.damageDealt);
-    playerHealth = min(session.maxHealth, playerHealth + result.healingDone);
-    if (enemyHealth <= 0) break;
-
-    final move = resolveEnemyMove(
-      enemy: {...enemy, 'damage': enemyDamage},
-      skills: skills,
-      enemyCurrentHealth: enemyHealth,
-      enemyMaxHealth: enemyMaxHealth,
-      random: random,
-    );
-    final damageTaken = max(0, move.damage - result.blockAmount - playerArmor);
-    playerHealth = max(0, playerHealth - damageTaken);
-    if (playerHealth <= 0) break;
-  }
+  final duel = autoplayDuel(
+    diceFaces: diceFaces,
+    assignments: assignments,
+    skills: skills,
+    playerDamage: playerDamage,
+    playerArmor: playerArmor,
+    playerHealth:
+        session.currentHealth > 0 ? session.currentHealth : session.maxHealth,
+    playerMaxHealth: session.maxHealth,
+    enemy: {...enemy, 'damage': enemyDamage},
+    enemyMaxHealth: enemyMaxHealth,
+    random: random,
+  );
+  var playerHealth = duel.playerHealth;
+  final enemyHealth = duel.enemyHealth;
   if (playerHealth <= 0 || enemyHealth > 0) {
     if (!forceWin) return false;
     // A forced win: the walk goes on, the party battered but standing.

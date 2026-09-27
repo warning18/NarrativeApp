@@ -200,5 +200,22 @@ void main() {
     // The picker is gone; the list shows the perk taken.
     expect(find.byKey(const Key('perk_offer_vigor')), findsNothing);
     expect(find.byKey(const Key('perk_owned_keenEye')), findsOneWidget);
+
+    // A level-up with no dialog (a ship battle's) brings a pick while the
+    // picker stays built: it draws the offer itself.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(container
+            .read(playerSessionProvider)
+            .copyWith(pendingPerkPicks: 1, perkOffer: const [])));
+    await tester.pump();
+    await tester.runAsync(() => Future<void>.delayed(Duration.zero));
+    await tester.pump();
+    expect(container.read(playerSessionProvider).perkOffer,
+        hasLength(perkOfferSize));
+    expect(find.byWidgetPredicate((w) {
+      final key = w.key;
+      return key is ValueKey<String> && key.value.startsWith('perk_offer_');
+    }), findsNWidgets(perkOfferSize));
   });
 }

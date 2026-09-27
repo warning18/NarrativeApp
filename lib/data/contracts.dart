@@ -3,7 +3,8 @@ import 'dart:math';
 /// The camp's bounty board (v1.162): three contracts posted at a time, each
 /// a short goal met in ordinary fights, paid in gold and skill essence at
 /// the board. A fresh board goes up once all three are claimed or the
-/// chapter turns, so there's always a next thing to aim a fight at.
+/// chapter turns, so there's always a next thing to aim a fight at; a
+/// contract already met stays up until it's claimed (see [repostBoard]).
 enum ContractKind {
   /// Put down so many of one common foe.
   hunt,
@@ -149,7 +150,7 @@ List<Contract> rollContracts({
   final gold = contractGoldFor(chapter);
   final essence = contractEssenceFor(chapter);
   return [
-    for (final (i, kind) in kinds.take(3).indexed)
+    for (final (i, kind) in kinds.take(contractBoardSize).indexed)
       Contract(
         id: 'board${boardNumber}_$i',
         kind: kind,
@@ -167,6 +168,23 @@ List<Contract> rollContracts({
         rewardGold: gold,
         rewardEssence: essence,
       ),
+  ];
+}
+
+/// Contracts on the board at a time.
+const int contractBoardSize = 3;
+
+/// The board a new notice puts up: contracts already met but not yet
+/// claimed stay (they were earned, and a new chapter must not take them),
+/// and [fresh] ones fill the rest of the board.
+List<Contract> repostBoard(List<Contract> current, List<Contract> fresh) {
+  final earned = [
+    for (final contract in current)
+      if (contract.done) contract,
+  ];
+  return [
+    ...earned,
+    ...fresh.take(max(0, contractBoardSize - earned.length)),
   ];
 }
 

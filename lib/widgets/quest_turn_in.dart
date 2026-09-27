@@ -17,11 +17,13 @@ import 'turn_in_choice_dialog.dart';
 /// says so.
 Future<void> acceptQuestWithNotice(
     BuildContext context, WidgetRef ref, String questId) async {
-  await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
-  if (!context.mounted) return;
-  final lang = ref.read(appLanguageProvider);
   final quest = (ref.read(localizedDbProvider(questsSchema)).value ??
       const {})[questId] as Map<String, dynamic>?;
+  await ref
+      .read(playerSessionProvider.notifier)
+      .acceptQuest(questId, quest: quest);
+  if (!context.mounted) return;
+  final lang = ref.read(appLanguageProvider);
   showImmersiveNotice(
     context,
     icon: Icons.assignment_turned_in_outlined,

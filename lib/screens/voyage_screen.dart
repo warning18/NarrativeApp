@@ -190,12 +190,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return fr && nameFr.isNotEmpty ? nameFr : name;
   }
 
-  /// Rolls [ability] against the sea's DC and writes the roll in the log.
-  bool _seaCheck(String ability) {
+  /// Rolls [choice]'s check against its DC (see seaChoiceDc) and writes the
+  /// roll in the log.
+  bool _seaCheck(SeaChoice choice) {
     final lang = ref.read(appLanguageProvider);
     final result = rollAbilityCheck(
-      ability: ability,
-      dc: seaCheckDc(_chapter),
+      ability: choice.checkAbility!,
+      dc: seaChoiceDc(choice, _chapter),
       session: ref.read(playerSessionProvider),
       random: _random,
     );
@@ -240,7 +241,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         await _loseHull(_stormLoss(event), 'ship_log_storm');
         await _advance();
       case SeaAction.pushThrough:
-        if (_seaCheck(choice.checkAbility!)) {
+        if (_seaCheck(choice)) {
           _log.add(_t('ship_log_pushed_through'));
         } else {
           await _loseHull(_stormLoss(event) * pushThroughFailMultiplier,
@@ -248,14 +249,26 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         }
         await _advance();
       case SeaAction.shelter:
-        // Safe in a cove, but the crossing takes another day at sea.
-        final extra = buildVoyage(
+        // Safe in a cove, but the crossing takes another day at sea: one
+        // drawn by the same rules as the rest (known waters send one
+        // raider a crossing at most; a flight sail lifts the Eel over
+        // storms and raiders, and then the day is no longer at all).
+        var extra = buildVoyage(
           random: _random,
           length: 1,
           enemyShips: _enemyShips,
           chapter: _chapter,
           knownWaters: _knownWaters,
+          alreadyRaided: _events!.any((e) => e.kind == SeaEventKind.raider),
         );
+        if (_sail?.power == SailPower.flight) {
+          extra = [
+            for (final day in extra)
+              if (day.kind != SeaEventKind.storm &&
+                  day.kind != SeaEventKind.raider)
+                day,
+          ];
+        }
         _events = [
           ..._events!.take(_index + 1),
           ...extra,
@@ -283,7 +296,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _log.add(_t('ship_log_salvage', n: gold));
         await _advance();
       case SeaAction.board:
-        if (_seaCheck(choice.checkAbility!)) {
+        if (_seaCheck(choice)) {
           final gold = (event.gold * boardGoldMultiplier).round();
           await notifier.applyChoiceEffects(goldMod: gold);
           _log.add(_t('ship_log_boarded', n: gold));
@@ -303,21 +316,23 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _log.add(_t('ship_log_paid', n: tribute));
         await _advance();
       case SeaAction.outrun:
-        if (_seaCheck(choice.checkAbility!)) {
+        if (_seaCheck(choice)) {
           _log.add(_t('ship_log_outran'));
           await _advance();
           return;
         }
-        // Caught: they rake the Eel as they close, then it's a fight.
+        // Caught: they rake the Eel as they close, then it's a fight. The
+        // roll and the raking stay on the log, to say why the hull fell.
         await _loseHull(outrunFailHullLoss, 'ship_log_outrun_failed');
-        await _startRaiderFight(event, enemyShips);
+        await _startRaiderFight(event, enemyShips, keepLog: true);
       case SeaAction.fight:
         await _startRaiderFight(event, enemyShips);
     }
   }
 
   Future<void> _startRaiderFight(
-      SeaEvent event, Map<String, dynamic> enemyShips) async {
+      SeaEvent event, Map<String, dynamic> enemyShips,
+      {bool keepLog = false}) async {
     final data = enemyShips[event.enemyShipId] as Map<String, dynamic>?;
     if (data == null) {
       await _advance();
@@ -325,8 +340,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     }
     _enemyData = data;
     _enemy = buildEnemyShip(data);
-    // The fight's own log starts clean; what led to it stays on the day.
-    _log.clear();
+    // The fight's own log starts clean, unless what led to it (a failed
+    // run) has to stay to explain it.
+    if (!keepLog) _log.clear();
     _battleKey++;
     // The battle reads the clock setting once: wait for the saved
     // choice, not the default it starts at.
@@ -735,7 +751,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return ability == null
         ? text
         : '$text (${trFor(lang, '${ability}_label')}, '
-            '${trFor(lang, 'vs_dc_label')} ${seaCheckDc(_chapter)})';
+            '${trFor(lang, 'vs_dc_label')} ${seaChoiceDc(choice, _chapter)})';
   }
 
   Widget _choiceButton({

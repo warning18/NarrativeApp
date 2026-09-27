@@ -47,11 +47,14 @@ class _BountyBoardState extends ConsumerState<BountyBoard> {
           enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
     ).toSet().toList()
       ..sort();
-    final board = rollContracts(
-      chapter: chapter,
-      huntPool: huntPool,
-      random: Random(),
-      boardNumber: session.contractBoards + 1,
+    final board = repostBoard(
+      session.contracts,
+      rollContracts(
+        chapter: chapter,
+        huntPool: huntPool,
+        random: Random(),
+        boardNumber: session.contractBoards + 1,
+      ),
     );
     await ref
         .read(playerSessionProvider.notifier)

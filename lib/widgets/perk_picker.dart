@@ -17,12 +17,24 @@ class PerkPicker extends ConsumerStatefulWidget {
 
 class _PerkPickerState extends ConsumerState<PerkPicker> {
   bool _busy = false;
+  bool _offering = false;
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) ref.read(playerSessionProvider.notifier).ensurePerkOffer();
+  /// Draws the offer whenever a pick is waiting without one: the picker on
+  /// the Character tab stays built while a level-up that shows no dialog
+  /// (a ship battle's, a voyage's) brings a pick, so drawing it only once,
+  /// when the picker was first built, left nothing to choose from.
+  void _offerIfWaiting(PlayerSession session) {
+    if (_offering ||
+        session.pendingPerkPicks <= 0 ||
+        session.perkOffer.isNotEmpty) {
+      return;
+    }
+    _offering = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        await ref.read(playerSessionProvider.notifier).ensurePerkOffer();
+      }
+      _offering = false;
     });
   }
 
@@ -37,6 +49,7 @@ class _PerkPickerState extends ConsumerState<PerkPicker> {
   @override
   Widget build(BuildContext context) {
     final session = ref.watch(playerSessionProvider);
+    _offerIfWaiting(session);
     if (session.pendingPerkPicks <= 0 || session.perkOffer.isEmpty) {
       return const SizedBox.shrink();
     }

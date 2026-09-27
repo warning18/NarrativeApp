@@ -3713,6 +3713,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: '{name} leaves the party for good.',
     AppLanguage.fr: '{name} quitte le groupe pour de bon.',
   },
+  'choice_work_ahead': {
+    AppLanguage.en: 'Work on offer',
+    AppLanguage.fr: 'Du travail proposé',
+  },
   'approval_replaced_notice': {
     AppLanguage.en: '{name} takes {left}’s place in the party.',
     AppLanguage.fr: '{name} prend la place de {left} dans le groupe.',

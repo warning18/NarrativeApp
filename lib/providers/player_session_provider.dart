@@ -1400,6 +1400,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// The companions in the party react to it (see approval.dart), by the
   /// weights in their [companions] records and the choice's own
   /// [approvalMods]; the reactions are returned, for the story to show.
+  /// [goldIsProfit] false: the gold is loot picked up on the road (a
+  /// detour's cache, an expedition's find), not a deed a companion who
+  /// dislikes greed would hold against the player.
   Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
@@ -1410,12 +1413,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? loseAllyId,
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
+    bool goldIsProfit = true,
   }) async {
+    // Who the story takes is settled by the party as it stands in the
+    // scene, before anyone reacts: a companion walking out over this very
+    // choice must not leave `*` to take whoever steps into their seat.
+    final lostId = loseAllyId == null || loseAllyId.isEmpty
+        ? null
+        : loseAllyId == '*'
+            ? state.activeAllyIds.firstOrNull
+            : loseAllyId;
     final reactions = _reactToDeed(
       companions: companions,
       alignmentMod: alignmentMod,
-      goldMod: goldMod,
+      goldMod: goldIsProfit ? goldMod : 0,
       approvalMods: approvalMods,
+      // Taken by the story: they don't stay to have an opinion.
+      exclude: lostId,
     );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
@@ -1449,11 +1463,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
     );
-    if (loseAllyId != null && loseAllyId.isNotEmpty) {
-      final id = loseAllyId == '*'
-          ? (state.activeAllyIds.isEmpty ? null : state.activeAllyIds.first)
-          : loseAllyId;
-      if (id != null) loseAlly(id, persist: false);
+    if (lostId != null) {
+      loseAlly(lostId, persist: false, companions: companions);
     }
     await _persist();
     return reactions;
@@ -1484,6 +1495,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int alignmentMod = 0,
     int goldMod = 0,
     Map<String, int> approvalMods = const {},
+    String? exclude,
   }) {
     final reactions = <ApprovalChange>[];
     final allies = [...state.recruitedAllies];
@@ -1491,6 +1503,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       final ally = allies[i];
       // Only the party sees it; a benched companion was elsewhere.
       if (!state.activeAllyIds.contains(ally.companionId)) continue;
+      if (ally.companionId == exclude) continue;
       final delta = approvalDeltaFor(
         companions[ally.companionId] as Map<String, dynamic>?,
         alignmentMod: alignmentMod,
@@ -1512,18 +1525,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         companionId: reaction.companionId,
         before: reaction.before,
         after: reaction.after,
-        replacedBy: _departAlly(reaction.companionId, companions),
+        replacedBy: _removeAlly(reaction.companionId,
+            lost: false, companions: companions),
       );
     }
     return reactions;
   }
 
-  /// [companionId] has had enough and walks out: off the roster and the
-  /// party, and never back this run. Their seat doesn't stay empty (a
-  /// finale fought one companion short can be out of reach): the benched
-  /// companion who thinks best of the player steps in, the earlier
-  /// recruit on a tie, as long as their house is built. Returns who did.
-  String? _departAlly(String companionId, Map<String, dynamic> companions) {
+  /// Takes [companionId] off the roster and out of the party, for good:
+  /// [lost] when the story took them (lostAllyIds, the story's {lost}
+  /// lines), else they walked out (departedAllyIds). Their seat doesn't stay
+  /// empty (a finale fought one companion short can be out of reach): the
+  /// benched companion who thinks best of the player steps in, the earlier
+  /// recruit on a tie, once their house is built. Returns who did.
+  String? _removeAlly(
+    String companionId, {
+    required bool lost,
+    required Map<String, dynamic> companions,
+  }) {
     final roster = [
       for (final ally in state.recruitedAllies)
         if (ally.companionId != companionId) ally,
@@ -1547,22 +1566,25 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         active.add(replacement);
       }
     }
+    List<String> plus(List<String> ids) =>
+        ids.contains(companionId) ? ids : [...ids, companionId];
     state = state.copyWith(
       recruitedAllies: roster,
       activeAllyIds: active,
-      departedAllyIds: state.departedAllyIds.contains(companionId)
-          ? state.departedAllyIds
-          : [...state.departedAllyIds, companionId],
+      lostAllyIds: lost ? plus(state.lostAllyIds) : state.lostAllyIds,
+      departedAllyIds:
+          lost ? state.departedAllyIds : plus(state.departedAllyIds),
     );
     return replacement;
   }
 
   /// Whether [companion]'s own house gate (companions.json
-  /// `requiredHouseId`), if any, is built.
+  /// `requiredHouseId`), if any, is built. Without their record (the table
+  /// still loading, a caller that passed none) the gate can't be read, so
+  /// they can't be seated.
   bool _houseBuiltFor(Object? companion) {
-    final house = companion is Map<String, dynamic>
-        ? companion['requiredHouseId']?.toString() ?? ''
-        : '';
+    if (companion is! Map<String, dynamic>) return false;
+    final house = companion['requiredHouseId']?.toString() ?? '';
     return house.isEmpty || state.builtHouseIds.contains(house);
   }
 
@@ -1630,42 +1652,59 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// The story takes [companionId] for good: out of the roster and the
-  /// party, and never recruited again this run. A no-op for an unknown or
-  /// already-lost id.
-  void loseAlly(String companionId, {bool persist = true}) {
+  /// party, and never recruited again this run; a benched companion takes
+  /// their seat (see [_removeAlly], which reads the house gates off
+  /// [companions]). A no-op for an unknown or already-lost id. Returns who
+  /// stepped in, if anyone.
+  String? loseAlly(
+    String companionId, {
+    bool persist = true,
+    Map<String, dynamic> companions = const {},
+  }) {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
-      return;
+      return null;
     }
-    state = state.copyWith(
-      recruitedAllies: state.recruitedAllies
-          .where((a) => a.companionId != companionId)
-          .toList(),
-      activeAllyIds:
-          state.activeAllyIds.where((id) => id != companionId).toList(),
-      lostAllyIds: state.lostAllyIds.contains(companionId)
-          ? state.lostAllyIds
-          : [...state.lostAllyIds, companionId],
-    );
+    final replacement =
+        _removeAlly(companionId, lost: true, companions: companions);
     if (persist) _persist();
+    return replacement;
   }
 
-  Future<void> acceptQuest(String questId) async {
+  /// Takes on [questId]. A bounty in [quest] (a `countFromAccept` Kill
+  /// objective) remembers its foes' kill counts now, so only the kills
+  /// made after count (see [questKillBaselines]); a quest with none stores
+  /// nothing. Without [quest] the objectives can't be read, and every
+  /// count is kept, as before.
+  Future<void> acceptQuest(String questId,
+      {Map<String, dynamic>? quest}) async {
     if (state.activeQuestIds.contains(questId) ||
         state.completedQuestIds.contains(questId)) {
       return;
     }
+    final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
-      questKillBaselines: {
-        ...state.questKillBaselines,
-        questId: Map<String, int>.of(state.enemyKillCounts),
-      },
+      questKillBaselines: baseline.isEmpty
+          ? state.questKillBaselines
+          : {...state.questKillBaselines, questId: baseline},
       // With no quest followed yet, the one just taken on is followed.
       trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
           ? state.trackedQuestId
           : questId,
     );
     await _persist();
+  }
+
+  Map<String, int> _bountyBaseline(Map<String, dynamic>? quest) {
+    if (quest == null) return Map<String, int>.of(state.enemyKillCounts);
+    return {
+      for (final objective in (quest['objectives'] as List?) ?? const [])
+        if (objective is Map &&
+            objective['type'] == 'Kill' &&
+            objective['countFromAccept'] == true)
+          objective['targetEnemyID'].toString():
+              state.enemyKillCounts[objective['targetEnemyID'].toString()] ?? 0,
+    };
   }
 
   /// Puts a fresh bounty board up at the camp (see rollContracts) for
@@ -1769,6 +1808,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
+      // A finished bounty's baseline has nothing left to count.
+      questKillBaselines: state.questKillBaselines.containsKey(questId)
+          ? ({...state.questKillBaselines}..remove(questId))
+          : state.questKillBaselines,
       // A quest turned in is no longer followed; the next active one
       // stands in until the player picks another.
       trackedQuestId:

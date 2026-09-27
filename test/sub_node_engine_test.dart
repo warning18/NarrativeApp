@@ -96,6 +96,30 @@ void main() {
     });
   });
 
+  test('the same seed builds the same detour, whatever came before', () {
+    final shops = _data('shops');
+    final enemies = _data('enemies');
+    final quests = _data('quests');
+    List<StoryNode>? detour(int seed) => SubNodeEngine.maybeGenerate(
+          random: Random(seed),
+          chapter: 3,
+          shops: shops,
+          enemies: enemies,
+          quests: quests,
+          unlockedShopIds: const [],
+          unlockedEnemyIds: const [],
+          unlockedQuestIds: const [],
+          completedQuestIds: const [],
+          triggerChance: 1,
+        );
+    SubNodeEngine.resetFlavorMemory();
+    final first = [for (var seed = 0; seed < 20; seed++) _shape(detour(seed))];
+    // The recent-lines memory is full of the first pass now; the chains
+    // themselves mustn't change with it.
+    final again = [for (var seed = 0; seed < 20; seed++) _shape(detour(seed))];
+    expect(again, first);
+  });
+
   group('filterQuestPool', () {
     final quests = {
       'q_open': {'chapter': 4, 'requiredAlignment': 'Neutral'},
@@ -348,3 +372,15 @@ void main() {
     });
   });
 }
+
+Map<String, dynamic> _data(String name) =>
+    jsonDecode(File('assets/gamedata/$name.json').readAsStringSync())
+        as Map<String, dynamic>;
+
+/// What a detour chain is, leaving its wording aside: each node's choices'
+/// fights, gold and checks.
+List<String> _shape(List<StoryNode>? chain) => [
+      for (final node in chain ?? const <StoryNode>[])
+        for (final c in node.choices)
+          '${c.allTriggerEnemyIds.join('+')}|${c.goldMod}|${c.checkAbility}',
+    ];

@@ -2,6 +2,7 @@
 // rules, and a crossing sailed on fixed days.
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -66,6 +67,35 @@ void main() {
       expect(event.choices.first.text, event.choiceText);
     });
 
+    test('a day added by sheltering keeps the known-waters rule', () {
+      final ships = _load('enemy_ships.json');
+      var raiders = 0;
+      for (var seed = 0; seed < 300; seed++) {
+        final day = buildVoyage(
+          random: Random(seed),
+          length: 1,
+          enemyShips: ships,
+          chapter: 4,
+          knownWaters: true,
+          alreadyRaided: true,
+        ).single;
+        if (day.kind == SeaEventKind.raider) raiders++;
+      }
+      expect(raiders, 0, reason: 'one raider a crossing on known waters');
+      // Open water still sends them.
+      final open = [
+        for (var seed = 0; seed < 300; seed++)
+          buildVoyage(
+            random: Random(seed),
+            length: 1,
+            enemyShips: ships,
+            chapter: 4,
+            alreadyRaided: true,
+          ).single.kind,
+      ];
+      expect(open, contains(SeaEventKind.raider));
+    });
+
     test('the price of passage and the checks', () {
       final ships = _load('enemy_ships.json');
       expect(tributeFor(ships['raider_skiff'] as Map<String, dynamic>), 50);
@@ -73,6 +103,13 @@ void main() {
       expect(tributeFor(null), 60);
       expect(seaCheckDc(3), 12);
       expect(seaCheckDc(0), seaCheckDc(1));
+      // Boarding is the harder check; the others roll the base DC.
+      final board = seaChoicesFor(SeaEventKind.derelict)
+          .firstWhere((c) => c.action == SeaAction.board);
+      final outrun = seaChoicesFor(SeaEventKind.raider)
+          .firstWhere((c) => c.action == SeaAction.outrun);
+      expect(seaChoiceDc(board, 3), 12 + boardCheckDcBonus);
+      expect(seaChoiceDc(outrun, 3), 12);
     });
   });
 

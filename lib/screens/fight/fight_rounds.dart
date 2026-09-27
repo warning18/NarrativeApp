@@ -931,11 +931,15 @@ extension _FightRounds on _FightScreenState {
         target = conscious[_random.nextInt(conscious.length)];
       }
       // Taunt: whoever kept the biggest Defend face steps in front of the
-      // blow meant for someone else.
+      // blow meant for someone else, while their guard holds (see
+      // guardianTakesBlow).
       final guardian = _guardianId == null ? null : _memberById(_guardianId!);
       if (guardian != null &&
-          !guardian.isKnockedOut &&
-          guardian.id != target.id) {
+          guardianTakesBlow(
+            guardianStanding: !guardian.isKnockedOut,
+            guardianBlock: guardian.block,
+            aimedAtGuardian: guardian.id == target.id,
+          )) {
         target = guardian;
         if (!guardAnnounced) {
           guardAnnounced = true;

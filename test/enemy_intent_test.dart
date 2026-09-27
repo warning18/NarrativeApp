@@ -42,12 +42,43 @@ void main() {
   final skills = _load('skills.json');
   final enemies = _load('enemies.json');
 
+  group('taunt', () {
+    test('the defender steps in while the guard holds, then no more', () {
+      expect(
+          guardianTakesBlow(
+              guardianStanding: true, guardianBlock: 8, aimedAtGuardian: false),
+          isTrue);
+      // The first blow spent the block: the next goes where it was aimed.
+      expect(
+          guardianTakesBlow(
+              guardianStanding: true, guardianBlock: 0, aimedAtGuardian: false),
+          isFalse);
+      expect(
+          guardianTakesBlow(
+              guardianStanding: false,
+              guardianBlock: 8,
+              aimedAtGuardian: false),
+          isFalse);
+      expect(
+          guardianTakesBlow(
+              guardianStanding: true, guardianBlock: 8, aimedAtGuardian: true),
+          isFalse,
+          reason: 'already theirs');
+    });
+  });
+
   group('enemyIntentOf', () {
     test('reads the intent field', () {
       expect(enemyIntentOf({'intent': 'guard'}), EnemyIntent.guard);
       expect(enemyIntentOf({'intent': 'charge'}), EnemyIntent.charge);
       expect(enemyIntentOf({'intent': 'rally'}), EnemyIntent.rally);
       expect(enemyIntentOf({'intent': 'heal'}), EnemyIntent.heal);
+    });
+
+    test('an attack said outright stays an attack, even one that heals', () {
+      expect(
+          enemyIntentOf({'intent': 'attack', 'damageMod': 0, 'healAmount': 18}),
+          EnemyIntent.attack);
     });
 
     test('a skill that only heals is a heal; a strike is an attack', () {

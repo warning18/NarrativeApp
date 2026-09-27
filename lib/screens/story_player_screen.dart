@@ -17,6 +17,7 @@ import '../data/narration_clips.dart';
 import '../data/narration_tokens.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
+import '../data/quest_hints.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/turn_in_choices.dart';
@@ -890,7 +891,7 @@ bool _mainQuestShut(WidgetRef ref, StoryChoice choice, bool isExcursion) =>
 /// several independent things to do" (shop here, fight that, talk to
 /// them), so [_HubSections] takes over presenting everything but the node's
 /// own main branches.
-const int _hubChoiceThreshold = 5;
+const int _hubChoiceThreshold = hubChoiceCount;
 
 bool _isHubNode(StoryNode node) =>
     node.choices.length > _hubChoiceThreshold || _isLoopPlace(node);
@@ -1105,6 +1106,8 @@ Future<void> _selectChoice({
               approvalMods: choice.approvalMods,
               companions:
                   ref.read(gameDbProvider(companionsSchema)).value ?? const {},
+              // A detour's cache is loot, not greed.
+              goldIsProfit: !isExcursion,
             );
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {
@@ -1158,7 +1161,7 @@ Future<void> _selectChoice({
   }
 
   if (isExcursion) {
-    playNotifier.advanceExcursion();
+    playNotifier.advanceExcursion(slippedPast: fightAvoided);
     return;
   }
 
@@ -1261,7 +1264,9 @@ Future<List<String>> _resolveEnemyIds(WidgetRef ref, List<String> ids) async {
   final allyId =
       session.activeAllyIds.isEmpty ? null : session.activeAllyIds.first;
   if (allyId != null) {
-    notifier.loseAlly(allyId);
+    notifier.loseAlly(allyId,
+        companions:
+            ref.read(gameDbProvider(companionsSchema)).value ?? const {});
     await notifier.applyChoiceEffects(flagsToAdd: const ['companion_turned']);
   } else {
     await notifier.applyChoiceEffects(flagsToAdd: const ['legate_fought']);
@@ -2035,6 +2040,17 @@ class _ChoiceButton extends ConsumerWidget {
         ? ref.watch(localizedDbProvider(enemiesSchema)).value
         : null;
     final roster = isExcursion ? null : _fightRosterFor(choice, enemies);
+    // A side job waits a scene or two down this way: say so.
+    final workAhead = !isExcursion &&
+        !locked &&
+        questOfferedAhead(
+          choice: choice,
+          story: story,
+          takenQuestIds: {
+            ...session.activeQuestIds,
+            ...session.completedQuestIds,
+          },
+        );
 
     return ElevatedButton(
       style: inkChoiceStyle(context),
@@ -2089,7 +2105,12 @@ class _ChoiceButton extends ConsumerWidget {
                       ),
                     ],
                   )
-                : _ChoiceLabel(label: label, choice: choice, locked: locked),
+                : _ChoiceLabel(
+                    label: label,
+                    choice: choice,
+                    locked: locked,
+                    workAhead: workAhead,
+                  ),
       ),
     );
   }
@@ -2102,6 +2123,7 @@ class _ChoiceLabel extends ConsumerWidget {
     required this.label,
     required this.choice,
     this.locked = false,
+    this.workAhead = false,
   });
 
   final String label;
@@ -2109,6 +2131,9 @@ class _ChoiceLabel extends ConsumerWidget {
 
   /// A choice the player can't take yet: its tags fade with the card.
   final bool locked;
+
+  /// A side job is on offer down this way (see questOfferedAhead).
+  final bool workAhead;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -2130,6 +2155,8 @@ class _ChoiceLabel extends ConsumerWidget {
           label: '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
           color: ink.voidColor,
         ),
+      if (workAhead)
+        InkTag(label: tr(ref, 'choice_work_ahead'), color: ink.gold),
     ];
     if (tags.isEmpty) return Text(label);
     return Column(
@@ -2708,7 +2735,9 @@ Future<void> _showDiscoveryModal(
       session.meetsRequirements(reqGold: requiredGold, reqFlags: requiredFlags);
 
   Future<void> acceptDiscoveredQuest() async {
-    await ref.read(playerSessionProvider.notifier).acceptQuest(questId!);
+    await ref
+        .read(playerSessionProvider.notifier)
+        .acceptQuest(questId!, quest: quest);
     if (!context.mounted) return;
     showImmersiveNotice(
       context,

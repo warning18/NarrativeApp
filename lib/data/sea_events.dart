@@ -114,6 +114,16 @@ List<SeaChoice> seaChoicesFor(SeaEventKind kind) => switch (kind) {
 /// The DC of a check at sea in [chapter] (the same as a detour's).
 int seaCheckDc(int chapter) => 9 + max(1, chapter);
 
+/// Boarding a derelict is the harder check (v1.166): at the base DC a
+/// sharp-eyed character passed nine times in ten, and boarding stopped
+/// being a choice.
+const int boardCheckDcBonus = 3;
+
+/// The DC [choice] rolls against in [chapter].
+int seaChoiceDc(SeaChoice choice, int chapter) =>
+    seaCheckDc(chapter) +
+    (choice.action == SeaAction.board ? boardCheckDcBonus : 0);
+
 /// What a raider takes to sheer off: twice what it would have paid out.
 int tributeFor(Map<String, dynamic>? ship) =>
     2 * ((ship?['goldReward'] as num?)?.toInt() ?? 30);
@@ -225,17 +235,20 @@ const double knownWatersRaiderChance = 0.15;
 /// Draws a voyage of [length] days. Roughly a third of days bring a raider
 /// (when any ship may sail at [chapter]; fewer on [knownWaters]), a fifth a
 /// storm, a fifth a derelict, the rest calm water or a sighting.
+/// [alreadyRaided]: the days drawn continue a crossing that has met its
+/// raider already (a day added by sheltering), so known waters send none.
 List<SeaEvent> buildVoyage({
   required Random random,
   required int length,
   required Map<String, dynamic> enemyShips,
   required int chapter,
   bool knownWaters = false,
+  bool alreadyRaided = false,
 }) {
   final raiders = raiderPoolFor(enemyShips, chapter);
   final chance = knownWaters ? knownWatersRaiderChance : raiderChance;
   final events = <SeaEvent>[];
-  var raided = false;
+  var raided = alreadyRaided;
   for (var i = 0; i < max(1, length); i++) {
     var roll = random.nextDouble();
     final canRaid = raiders.isNotEmpty && !(knownWaters && raided);

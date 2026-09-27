@@ -1011,11 +1011,14 @@
       {
         "choiceText": "Copy the list for the camp's records",
         "choiceText_fr": "Recopier la liste pour les archives du camp",
-        "rewardGold": 50,
+        "rewardGold": 80,
         "alignmentChange": 5,
         "flag": "reckoning_list_copied",
         "resultText": "The list goes into your pack, name by name. Someone should carry it.",
-        "resultText_fr": "La liste rejoint votre sac, nom après nom. Il faut bien que quelqu’un la porte."
+        "resultText_fr": "La liste rejoint votre sac, nom après nom. Il faut bien que quelqu’un la porte.",
+        "approvalMods": {
+          "*": 1
+        }
       },
       {
         "choiceText": "Sell the list to the Inquisition's clerks",

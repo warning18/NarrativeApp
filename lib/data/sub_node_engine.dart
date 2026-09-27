@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import '../combat/combat_engine.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/loot_box.dart';
@@ -128,6 +130,14 @@ class SubNodeEngine {
   static bool detourAllowedBetween(String? fromMood, String? toMood) =>
       !(tenseMoods.contains(fromMood) && tenseMoods.contains(toMood));
 
+  /// What ends a hunt's trail node id (see [isHuntTrail]).
+  static const String huntTrailSuffix = '_trail';
+
+  /// Whether [node] is a hunt's trail (see [buildHuntNodes]), with the
+  /// quarry's node right after it in the chain.
+  static bool isHuntTrail(StoryNode node) =>
+      node.id.startsWith('gen_') && node.id.endsWith(huntTrailSuffix);
+
   /// Odds a pack fight in a chain is followed by a hunt: a trail node, then
   /// the pack's named survivor -- a tougher specimen with two affixes and a
   /// guaranteed Gold chest (see [buildHuntNodes]).
@@ -234,7 +244,7 @@ class SubNodeEngine {
     required Random random,
   }) {
     _counter++;
-    final trailId = 'gen_$_counter';
+    final trailId = 'gen_$_counter$huntTrailSuffix';
     _counter++;
     final quarryNodeId = 'gen_$_counter';
     final name = huntNameFor(quarryId, random);
@@ -639,6 +649,11 @@ class SubNodeEngine {
   /// Recently shown flavor lines, per category, so the same line doesn't
   /// come round twice in a few detours.
   static final Map<String, List<int>> _recentFlavor = {};
+
+  /// Forgets the recent lines (see [_freshIndex]), for tests that compare
+  /// texts as well as the chain.
+  @visibleForTesting
+  static void resetFlavorMemory() => _recentFlavor.clear();
   static const int _flavorMemory = 5;
 
   /// A line index in [0, length) not among the last few shown for
@@ -646,11 +661,12 @@ class SubNodeEngine {
   static int _freshIndex(String category, int length, Random random) {
     if (length <= 0) return 0;
     final recent = _recentFlavor.putIfAbsent(category, () => []);
+    // One draw, always: a line seen lately steps on to the next fresh one
+    // rather than rerolling, so the draws after it (the rest of the chain)
+    // don't shift with what earlier detours happened to show.
     var idx = random.nextInt(length);
-    for (var tries = 0;
-        tries < 4 && recent.contains(idx) && length > recent.length;
-        tries++) {
-      idx = random.nextInt(length);
+    for (var step = 0; step < length && recent.contains(idx); step++) {
+      idx = (idx + 1) % length;
     }
     recent.add(idx);
     while (recent.length > min(_flavorMemory, length - 1)) {

@@ -396,6 +396,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         approvalMods: choice.approvalMods,
         companions:
             ref.read(gameDbProvider(companionsSchema)).value ?? const {},
+        // What an expedition turns up is loot, not greed.
+        goldIsProfit: false,
       );
       if (reactions.isNotEmpty && mounted) {
         await showApprovalReactions(context, ref, reactions);
