@@ -22,7 +22,9 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
+import '../data/approval.dart';
 import '../data/chapter_loop.dart';
+import '../data/perks.dart';
 import '../data/contracts.dart' show ContractTally;
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -317,6 +319,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// [_startFight].
   final Set<String> _armedCharmIds = {};
   int _maxRollsThisFight = _maxRolls;
+
+  /// The player's level-up perks (see perks.dart), read at party build.
+  PerkEffects _perks = PerkEffects.none;
+
+  /// Hits needed for a surge: [_momentumThreshold], less a Battle Rhythm
+  /// perk.
+  int get _momentumNeeded => max(1, _momentumThreshold - _perks.momentumDrop);
   bool _luckyCoinArmed = false;
   bool _ironSkinArmed = false;
   int _wardingCharges = 0;

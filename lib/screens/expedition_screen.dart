@@ -23,6 +23,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/approval_notice.dart';
 import '../widgets/immersive_notice.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
@@ -386,13 +387,19 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
 
     if (choice.hasEffects && !checkFailed) {
-      await notifier.applyChoiceEffects(
+      final reactions = await notifier.applyChoiceEffects(
         goldMod: choice.goldMod,
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         questIDToProgress: choice.questIDToProgress,
+        approvalMods: choice.approvalMods,
+        companions:
+            ref.read(gameDbProvider(companionsSchema)).value ?? const {},
       );
+      if (reactions.isNotEmpty && mounted) {
+        await showApprovalReactions(context, ref, reactions);
+      }
     }
     if (!mounted) return;
     await _advance(
@@ -555,6 +562,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final zoneName = widget.zone['zoneName']?.toString() ?? '';
     final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
+    // Kept loaded for the party's reactions to a choice (see approval.dart).
+    ref.watch(localizedDbProvider(companionsSchema));
     final shops = shopsAsync.value;
     final enemies = enemiesAsync.value;
 

@@ -333,7 +333,7 @@ extension _FightView on _FightScreenState {
   /// battlefield condition (if any) and the momentum meter.
   Widget _buildBattleChips() {
     final condition = _condition;
-    final ready = _momentum >= _momentumThreshold;
+    final ready = _momentum >= _momentumNeeded;
     return Wrap(
       spacing: 6,
       runSpacing: 4,
@@ -344,7 +344,7 @@ extension _FightView on _FightScreenState {
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready
               ? tr(ref, 'momentum_ready_label')
-              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumThreshold',
+              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
         ),
       ],
     );
@@ -498,7 +498,7 @@ extension _FightView on _FightScreenState {
                 ),
             ],
           ),
-          if (_momentum >= _momentumThreshold && !_rolling)
+          if (_momentum >= _momentumNeeded && !_rolling)
             _buildSurgePicker(acting),
           const SizedBox(height: 4),
           Text(

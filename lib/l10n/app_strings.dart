@@ -3450,6 +3450,279 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Tous les combats comptent. Un nouveau tableau apparaît quand ceux-ci sont réclamés ou au chapitre suivant.',
   },
+  // v1.162: level-up perks.
+  'perk_choose_title': {
+    AppLanguage.en: 'Choose a perk',
+    AppLanguage.fr: 'Choisissez un atout',
+  },
+  'perk_section': {
+    AppLanguage.en: 'Perks',
+    AppLanguage.fr: 'Atouts',
+  },
+  'perk_pending': {
+    AppLanguage.en: '{n} perk(s) to choose',
+    AppLanguage.fr: '{n} atout(s) à choisir',
+  },
+  'perk_rank': {
+    AppLanguage.en: 'Rank {n}/{max}',
+    AppLanguage.fr: 'Rang {n}/{max}',
+  },
+  'perks_none': {
+    AppLanguage.en: 'No perks yet. Each level brings one to choose.',
+    AppLanguage.fr:
+        'Aucun atout pour l’instant. Chaque niveau en apporte un à choisir.',
+  },
+  'perk_steadyHands': {
+    AppLanguage.en: 'Steady Hands',
+    AppLanguage.fr: 'Mains sûres',
+  },
+  'perk_steadyHands_desc': {
+    AppLanguage.en: 'One more roll each round in fights.',
+    AppLanguage.fr: 'Un lancer de plus par tour en combat.',
+  },
+  'perk_apothecary': {
+    AppLanguage.en: 'Apothecary',
+    AppLanguage.fr: 'Apothicairerie',
+  },
+  'perk_apothecary_desc': {
+    AppLanguage.en: 'Potions heal 10 more.',
+    AppLanguage.fr: 'Les potions soignent 10 de plus.',
+  },
+  'perk_keenEye': {
+    AppLanguage.en: 'Keen Eye',
+    AppLanguage.fr: 'Œil perçant',
+  },
+  'perk_keenEye_desc': {
+    AppLanguage.en: '+5% chance of a critical hit.',
+    AppLanguage.fr: '+5 % de chances de coup critique.',
+  },
+  'perk_lightFeet': {
+    AppLanguage.en: 'Light Feet',
+    AppLanguage.fr: 'Pas léger',
+  },
+  'perk_lightFeet_desc': {
+    AppLanguage.en: '+4% chance to dodge.',
+    AppLanguage.fr: '+4 % de chances d’esquive.',
+  },
+  'perk_heavyHand': {
+    AppLanguage.en: 'Heavy Hand',
+    AppLanguage.fr: 'Main lourde',
+  },
+  'perk_heavyHand_desc': {
+    AppLanguage.en: '+2 damage on every attack.',
+    AppLanguage.fr: '+2 dégâts à chaque attaque.',
+  },
+  'perk_ironHide': {
+    AppLanguage.en: 'Iron Hide',
+    AppLanguage.fr: 'Cuir de fer',
+  },
+  'perk_ironHide_desc': {
+    AppLanguage.en: '+2 armor.',
+    AppLanguage.fr: '+2 d’armure.',
+  },
+  'perk_vigor': {
+    AppLanguage.en: 'Vigor',
+    AppLanguage.fr: 'Vigueur',
+  },
+  'perk_vigor_desc': {
+    AppLanguage.en: '+15 max health.',
+    AppLanguage.fr: '+15 de santé maximale.',
+  },
+  'perk_battleRhythm': {
+    AppLanguage.en: 'Battle Rhythm',
+    AppLanguage.fr: 'Rythme du combat',
+  },
+  'perk_battleRhythm_desc': {
+    AppLanguage.en: 'Momentum surges after 2 hits instead of 3.',
+    AppLanguage.fr: 'L’élan se déclenche après 2 coups au lieu de 3.',
+  },
+  'perk_plunderer': {
+    AppLanguage.en: 'Plunderer',
+    AppLanguage.fr: 'Pillage',
+  },
+  'perk_plunderer_desc': {
+    AppLanguage.en: '+10% gold from fights.',
+    AppLanguage.fr: '+10 % d’or gagné en combat.',
+  },
+  'perk_quickStudy': {
+    AppLanguage.en: 'Quick Study',
+    AppLanguage.fr: 'Apprentissage rapide',
+  },
+  'perk_quickStudy_desc': {
+    AppLanguage.en: '+10% XP from fights.',
+    AppLanguage.fr: '+10 % d’XP gagnée en combat.',
+  },
+  'perk_leader': {
+    AppLanguage.en: 'Leader',
+    AppLanguage.fr: 'Commandement',
+  },
+  'perk_leader_desc': {
+    AppLanguage.en: 'Companions deal +5% damage.',
+    AppLanguage.fr: 'Les membres du groupe infligent +5 % de dégâts.',
+  },
+  'perk_deepWell': {
+    AppLanguage.en: 'Deep Well',
+    AppLanguage.fr: 'Puits profond',
+  },
+  'perk_deepWell_desc': {
+    AppLanguage.en: '+2 max mana.',
+    AppLanguage.fr: '+2 de mana maximal.',
+  },
+  'perk_lastStand': {
+    AppLanguage.en: 'Last Stand',
+    AppLanguage.fr: 'Dernier rempart',
+  },
+  'perk_lastStand_desc': {
+    AppLanguage.en:
+        'Once a fight, a killing blow leaves you at 1 health instead.',
+    AppLanguage.fr:
+        'Une fois par combat, un coup fatal vous laisse à 1 point de vie.',
+  },
+  // v1.162: sea choices.
+  'ship_log_paid': {
+    AppLanguage.en: 'Paid {n} gold; the raider sheers off',
+    AppLanguage.fr: '{n} pièces d’or versées ; le pillard s’écarte',
+  },
+  'ship_log_outran': {
+    AppLanguage.en: 'The Eel outruns them',
+    AppLanguage.fr: 'Le Rusty Eel les distance',
+  },
+  'ship_log_outrun_failed': {
+    AppLanguage.en: 'They catch the Eel and rake her: {n} hull',
+    AppLanguage.fr:
+        'Ils rattrapent le Rusty Eel et le mitraillent : {n} points de coque',
+  },
+  'ship_log_pushed_through': {
+    AppLanguage.en: 'Through the storm with nothing lost',
+    AppLanguage.fr: 'La tempête est passée sans rien perdre',
+  },
+  'ship_log_push_failed': {
+    AppLanguage.en: 'The storm punishes the gamble: {n} hull',
+    AppLanguage.fr: 'La tempête punit le pari : {n} points de coque',
+  },
+  'ship_log_sheltered': {
+    AppLanguage.en: 'Sheltered in a cove; the crossing takes a day longer',
+    AppLanguage.fr:
+        'À l’abri dans une crique ; la traversée prend un jour de plus',
+  },
+  'ship_log_boarded': {
+    AppLanguage.en: 'Found {n} gold in the hold',
+    AppLanguage.fr: '{n} pièces d’or trouvées dans la cale',
+  },
+  'ship_log_board_trap': {
+    AppLanguage.en: 'Something aboard was waiting: {n} health lost',
+    AppLanguage.fr: 'Quelque chose attendait à bord : {n} points de vie perdus',
+  },
+  'ship_log_passed_by': {
+    AppLanguage.en: 'The derelict drifts astern',
+    AppLanguage.fr: 'L’épave dérive derrière vous',
+  },
+  'ship_log_rested': {
+    AppLanguage.en: 'The crew rests: {n} health back',
+    AppLanguage.fr: 'L’équipage se repose : {n} points de vie récupérés',
+  },
+  'sea_choice_cost': {
+    AppLanguage.en: '{n} gold',
+    AppLanguage.fr: '{n} or',
+  },
+  // v1.162: quest turn-in choices.
+  'turn_in_choice_title': {
+    AppLanguage.en: 'How do you settle it?',
+    AppLanguage.fr: 'Comment réglez-vous l’affaire ?',
+  },
+  'turn_in_gold_varies': {
+    AppLanguage.en: '{min}–{max} gold, by how you settle it',
+    AppLanguage.fr: '{min} à {max} or, selon votre décision',
+  },
+  // v1.162: companion approval.
+  'approval_label': {
+    AppLanguage.en: 'Approval',
+    AppLanguage.fr: 'Estime',
+  },
+  'approval_devoted': {
+    AppLanguage.en: 'Devoted',
+    AppLanguage.fr: 'Dévouement',
+  },
+  'approval_friendly': {
+    AppLanguage.en: 'Friendly',
+    AppLanguage.fr: 'Amitié',
+  },
+  'approval_neutral': {
+    AppLanguage.en: 'Neutral',
+    AppLanguage.fr: 'Neutralité',
+  },
+  'approval_wary': {
+    AppLanguage.en: 'Wary',
+    AppLanguage.fr: 'Méfiance',
+  },
+  'approval_estranged': {
+    AppLanguage.en: 'Estranged',
+    AppLanguage.fr: 'Rupture',
+  },
+  'approval_effect_devoted': {
+    AppLanguage.en: '+10% damage and health in fights',
+    AppLanguage.fr: '+10 % de dégâts et de santé en combat',
+  },
+  'approval_effect_friendly': {
+    AppLanguage.en: '+5% damage in fights',
+    AppLanguage.fr: '+5 % de dégâts en combat',
+  },
+  'approval_effect_wary': {
+    AppLanguage.en: '−10% damage in fights; leaves if pushed further',
+    AppLanguage.fr: '−10 % de dégâts en combat ; part si cela continue',
+  },
+  'approval_likes': {
+    AppLanguage.en: 'Likes',
+    AppLanguage.fr: 'Apprécie',
+  },
+  'approval_dislikes': {
+    AppLanguage.en: 'Dislikes',
+    AppLanguage.fr: 'Réprouve',
+  },
+  'deed_good': {
+    AppLanguage.en: 'kindness',
+    AppLanguage.fr: 'la bonté',
+  },
+  'deed_evil': {
+    AppLanguage.en: 'cruelty',
+    AppLanguage.fr: 'la cruauté',
+  },
+  'deed_profit': {
+    AppLanguage.en: 'profit',
+    AppLanguage.fr: 'le profit',
+  },
+  'approval_approves': {
+    AppLanguage.en: '{name} approves.',
+    AppLanguage.fr: '{name} approuve.',
+  },
+  'approval_disapproves': {
+    AppLanguage.en: '{name} disapproves.',
+    AppLanguage.fr: '{name} désapprouve.',
+  },
+  'approval_devoted_notice': {
+    AppLanguage.en: '{name} trusts you completely now.',
+    AppLanguage.fr: '{name} vous accorde désormais toute sa confiance.',
+  },
+  'approval_wary_notice': {
+    AppLanguage.en: '{name} is losing patience with you.',
+    AppLanguage.fr: '{name} perd patience avec vous.',
+  },
+  'approval_leaves_notice': {
+    AppLanguage.en: '{name} leaves the party for good.',
+    AppLanguage.fr: '{name} quitte le groupe pour de bon.',
+  },
+  'share_drink_button': {
+    AppLanguage.en: 'Share a drink ({cost} gold)',
+    AppLanguage.fr: 'Partager un verre ({cost} or)',
+  },
+  'share_drink_done': {
+    AppLanguage.en: 'Drink shared this chapter',
+    AppLanguage.fr: 'Verre partagé ce chapitre',
+  },
+  'share_drink_notice': {
+    AppLanguage.en: '{name} warms to you.',
+    AppLanguage.fr: '{name} vous apprécie un peu plus.',
+  },
   // v1.160: enemy intents, weaknesses, taunt.
   'telegraph_category_guard': {
     AppLanguage.en: 'Guard',

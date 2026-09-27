@@ -207,7 +207,7 @@ extension _FightQueries on _FightScreenState {
   /// acting member on an Attack face, then on a Skill face -- an Attack
   /// first, so the surge isn't spent on a skill face that only heals.
   String? _surgeRecipient() {
-    if (_momentum < _momentumThreshold) return null;
+    if (_momentum < _momentumNeeded) return null;
     bool isStrike(String id) {
       final type = _currentFaces[id]?.type;
       return type == 'Attack' || type == 'Skill';

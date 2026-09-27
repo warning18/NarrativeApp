@@ -165,6 +165,10 @@ extension _FightSetup on _FightScreenState {
     if (_partyBuilt) return;
     _partyBuilt = true;
     _companions = companions;
+    // Level-up perks (see perks.dart): the rolls a round allows here, the
+    // rest as the fight goes.
+    _perks = session.perkEffects;
+    _maxRollsThisFight = _maxRolls + _perks.extraRolls;
     _alignmentLabel = session.alignmentLabel;
     _partyBonus = partyBonusFor(
       bossDefeatCounts: session.bossDefeatCounts,
@@ -215,7 +219,8 @@ extension _FightSetup on _FightScreenState {
       wisdom: session.wisdom,
       luck: session.luck,
       perception: session.perception,
-      gear: gearEffectsFor(session.equippedItemIds, items, itemSets),
+      gear:
+          _perks.over(gearEffectsFor(session.equippedItemIds, items, itemSets)),
     );
 
     final activeAllies = <_PartyMember>[];
@@ -237,15 +242,22 @@ extension _FightSetup on _FightScreenState {
               const {};
       final base = deriveAllyBaseStats(
           gameConfig: gameConfig, race: race, profession: profession);
+      // A devoted companion fights harder, a wary one holds back.
+      final tier = approvalTierFor(allyState.approval);
       final liveMaxHealth = _partyBonus
-          .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel));
+              .scaleMaxHealth(scaledMaxHealth(base.maxHealth, _playerLevel)) *
+          approvalHealthPercent(tier) ~/
+          100;
       activeAllies.add(_PartyMember(
         id: companionId,
         displayName: companion['companionName']?.toString() ?? companionId,
         isPlayer: false,
         maxHealth: liveMaxHealth,
-        baseDamage: _partyBonus
-            .scaleDamage(scaledDamage(base.baseDamage, _playerLevel)),
+        // A leader's allies (a perk) hit a little harder too.
+        baseDamage: _perks.scaleAllyDamage(_partyBonus
+                .scaleDamage(scaledDamage(base.baseDamage, _playerLevel)) *
+            approvalDamagePercent(tier) ~/
+            100),
         armor: base.baseArmor,
         currentHealth: _partyBonus
             .scaleCurrentHealth(allyState.currentHealth)
@@ -328,7 +340,7 @@ extension _FightSetup on _FightScreenState {
     for (final id in _armedCharmIds) {
       switch (id) {
         case 'charm_fourth_roll':
-          _maxRollsThisFight = _maxRolls + 1;
+          _maxRollsThisFight += 1;
         case 'charm_lucky_coin':
           _luckyCoinArmed = true;
         case 'charm_iron_skin':

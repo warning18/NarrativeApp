@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/dice_faces.dart';
 import '../data/quest_objectives.dart';
 import '../data/quest_tracking.dart';
+import '../data/turn_in_choices.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -343,8 +345,16 @@ String _rewardsLine(Map<String, dynamic> quest,
   final itemId = quest['rewardItemID']?.toString() ?? '';
   final diceId = quest['rewardDiceID']?.toString() ?? '';
   final allyId = quest['rewardAllyId']?.toString() ?? '';
+  final choiceGolds = [
+    for (final choice in turnInChoicesOf(quest)) choice.goldFor(gold),
+  ];
   return [
-    if (gold > 0) '$gold ${trFor(lang, 'gold_label')}',
+    if (choiceGolds.isNotEmpty)
+      trFor(lang, 'turn_in_gold_varies')
+          .replaceAll('{min}', '${choiceGolds.reduce(min)}')
+          .replaceAll('{max}', '${choiceGolds.reduce(max)}')
+    else if (gold > 0)
+      '$gold ${trFor(lang, 'gold_label')}',
     if (xp > 0) '$xp XP',
     if (itemId.isNotEmpty)
       (db(itemsSchema)[itemId] as Map<String, dynamic>?)?['itemName']

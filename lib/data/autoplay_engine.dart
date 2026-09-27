@@ -388,6 +388,7 @@ Future<AutoplayResult> autoplayToNode(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         questIDToProgress: choice.questIDToProgress,
+        approvalMods: choice.approvalMods,
       );
     }
     if (choice.hasUnlocks) {
@@ -656,6 +657,7 @@ Future<AutoplayResult> _playTowardChapter(
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
         questIDToProgress: choice.questIDToProgress,
+        approvalMods: choice.approvalMods,
       );
     }
     if (choice.hasUnlocks) {

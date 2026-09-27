@@ -14,6 +14,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
+import '../widgets/perk_picker.dart';
 import '../widgets/mana_meter.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
@@ -331,6 +332,25 @@ class _CharacterHeader extends ConsumerWidget {
               ),
             ),
           ],
+        // Level-up perks (see perks.dart): the choice waiting, if any,
+        // then the ones taken.
+        const SizedBox(height: 14),
+        Card(
+          key: const Key('character_perks'),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(tr(ref, 'perk_section'),
+                    style: Theme.of(context).textTheme.titleSmall),
+                const SizedBox(height: 8),
+                const PerkPicker(),
+                const PerkList(),
+              ],
+            ),
+          ),
+        ),
         const SizedBox(height: 14),
         TutorialTarget(
           id: 'character.abilities',

@@ -19,6 +19,7 @@ import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
+import '../data/turn_in_choices.dart';
 import '../data/sub_node_engine.dart';
 import '../data/ui_theme_palettes.dart';
 import '../gamedata/db_schema.dart';
@@ -48,6 +49,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/approval_notice.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_tracker.dart';
@@ -211,6 +213,8 @@ class _StoryView extends ConsumerWidget {
       }
     });
 
+    // Kept loaded for the party's reactions to a choice (see approval.dart).
+    ref.watch(localizedDbProvider(companionsSchema));
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
     if (pendingDiscovery != null) {
       final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
@@ -1089,15 +1093,23 @@ Future<void> _selectChoice({
 
   final playNotifier = ref.read(storyPlayProvider.notifier);
   if (choice.hasEffects && !skipRewardEffects) {
-    ref.read(playerSessionProvider.notifier).applyChoiceEffects(
-          goldMod: choice.goldMod,
-          alignmentMod: choice.alignmentMod,
-          healAmount: choice.healAmount,
-          flagsToAdd: choice.flagsToAdd,
-          questIDToProgress: choice.questIDToProgress,
-          bannerPieceId: choice.grantsBannerPieceId,
-          loseAllyId: choice.loseAllyId,
-        );
+    final reactions =
+        await ref.read(playerSessionProvider.notifier).applyChoiceEffects(
+              goldMod: choice.goldMod,
+              alignmentMod: choice.alignmentMod,
+              healAmount: choice.healAmount,
+              flagsToAdd: choice.flagsToAdd,
+              questIDToProgress: choice.questIDToProgress,
+              bannerPieceId: choice.grantsBannerPieceId,
+              loseAllyId: choice.loseAllyId,
+              approvalMods: choice.approvalMods,
+              companions:
+                  ref.read(gameDbProvider(companionsSchema)).value ?? const {},
+            );
+    // How the party took it, before the story moves on.
+    if (reactions.isNotEmpty && context.mounted) {
+      await showApprovalReactions(context, ref, reactions);
+    }
   }
   if (choice.hasUnlocks) {
     final enemyIds = resolvedEnemyIds.toSet();
@@ -2729,7 +2741,15 @@ Future<void> _showDiscoveryModal(
         if (requiredFlags.isNotEmpty)
           MapEntry(
               trFor(lang, 'required_flags_label'), requiredFlags.join(', ')),
-        if (rewardGold > 0)
+        // A quest settled by a choice pays by it (see turn_in_choices.dart).
+        if (turnInChoicesOf(quest).isNotEmpty)
+          MapEntry(trFor(lang, 'reward_gold_label'), () {
+            final golds = [
+              for (final c in turnInChoicesOf(quest)) c.goldFor(rewardGold)
+            ]..sort();
+            return '${golds.first}–${golds.last}';
+          }())
+        else if (rewardGold > 0)
           MapEntry(trFor(lang, 'reward_gold_label'), '$rewardGold'),
         if (rewardXp > 0) MapEntry(trFor(lang, 'reward_xp_label'), '$rewardXp'),
         if (rewardItemId.isNotEmpty)

@@ -229,9 +229,16 @@ void main() {
     await _settle(tester);
     await tester.tap(find.byKey(const Key('quest_tracker_turn_in')));
     await _settle(tester);
+    // The bounty asks how it's settled (v1.162): take the sapper's coins.
+    expect(find.text('How do you settle it?'), findsOneWidget);
+    expect(container.read(playerSessionProvider).completedQuestIds,
+        isNot(contains('q_ch4_ossuary_bounty')));
+    await tester.tap(find.byKey(const Key('turn_in_choice_0')));
+    await _settle(tester);
     final s = container.read(playerSessionProvider);
     expect(s.completedQuestIds, contains('q_ch4_ossuary_bounty'));
     expect(s.gold, 10 + 90);
+    expect(find.textContaining('Three coins, as promised'), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
     await _settle(tester);
     // The other quest in progress now stands in.

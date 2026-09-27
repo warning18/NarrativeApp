@@ -710,7 +710,27 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Tuyau de l’indicateur",
-    "npcDialogueText_fr": "Le bruit court sur les quais qu’un gardien détourne des marchandises de contrebande pour son propre compte. Occupez-vous de lui, et il y aura une part pour vous."
+    "npcDialogueText_fr": "Le bruit court sur les quais qu’un gardien détourne des marchandises de contrebande pour son propre compte. Occupez-vous de lui, et il y aura une part pour vous.",
+    "turnInChoices": [
+      {
+        "choiceText": "Take your cut of the skimmed goods",
+        "choiceText_fr": "Prendre votre part des marchandises détournées",
+        "rewardGold": 90,
+        "alignmentChange": -3,
+        "flag": "informant_cut_taken",
+        "resultText": "The informant counts it out twice, smiling the whole time.",
+        "resultText_fr": "L’informateur compte deux fois, sans cesser de sourire."
+      },
+      {
+        "choiceText": "Give the goods back to the dockhands he robbed",
+        "choiceText_fr": "Rendre les marchandises aux dockers qu’il a volés",
+        "rewardGold": 15,
+        "alignmentChange": 8,
+        "flag": "informant_goods_returned",
+        "resultText": "The dockhands don't thank you out loud. They don't have to.",
+        "resultText_fr": "Les dockers ne vous remercient pas à voix haute. Ils n’en ont pas besoin."
+      }
+    ]
   },
   "q_ch2_terns_toll": {
     "questID": "q_ch2_terns_toll",
@@ -754,7 +774,26 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Péage de Tern Row",
-    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »"
+    "npcDialogueText_fr": "« Il appelle ça un péage de débarquement », dit Nadira, pesant chaque mot avant de le dépenser. « Ce péage n’existe pas. Il n’y a que ce qu’il pense pouvoir nous soutirer par la menace. Faites-lui refaire ses comptes, et Tern Row s’en souviendra. »",
+    "turnInChoices": [
+      {
+        "choiceText": "Pocket the toll he collected",
+        "choiceText_fr": "Empocher le péage qu’il a extorqué",
+        "rewardGold": 85,
+        "alignmentChange": -4,
+        "resultText": "Nadira sees the purse go into your coat. Tern Row will remember that too.",
+        "resultText_fr": "Nadira voit la bourse disparaître dans votre manteau. Tern Row s’en souviendra aussi."
+      },
+      {
+        "choiceText": "Give the toll back to Tern Row",
+        "choiceText_fr": "Rendre le péage à Tern Row",
+        "rewardGold": 10,
+        "alignmentChange": 8,
+        "flag": "terns_toll_returned",
+        "resultText": "Nadira shares it out to the last copper, and sets one coin aside for you.",
+        "resultText_fr": "Nadira le partage jusqu’au dernier sou, et met une pièce de côté pour vous."
+      }
+    ]
   },
   "q_ch2_lioras_watch": {
     "questID": "q_ch2_lioras_watch",
@@ -799,7 +838,31 @@
     "rewardDiceID": "",
     "rewardAllyId": "liora",
     "questName_fr": "Le Guet de Liora",
-    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »"
+    "npcDialogueText_fr": "« Je surveille ce bout de toits depuis trois jours, dit-elle sans baisser son arc, et vous êtes la première chose à le traverser qui mérite qu’on la vise plutôt qu’on vise à côté. » Le capitaine qui fait partir des bateaux du môle nord vend aux réfugiés des passages qu’il n’a aucune intention d’assurer. « Aidez-moi à solder ce compte, et je trouverai le reste de cette ville un peu moins digne d’être surveillé seule. »",
+    "turnInChoices": [
+      {
+        "choiceText": "Keep the captain's purse",
+        "choiceText_fr": "Garder la bourse du capitaine",
+        "rewardGold": 95,
+        "alignmentChange": -4,
+        "approvalMods": {
+          "liora": -2
+        },
+        "resultText": "Liora watches you weigh the purse, and says nothing at all.",
+        "resultText_fr": "Liora vous regarde soupeser la bourse, sans rien dire."
+      },
+      {
+        "choiceText": "Refund the refugees their fares",
+        "choiceText_fr": "Rembourser leur passage aux réfugiés",
+        "rewardGold": 10,
+        "alignmentChange": 6,
+        "approvalMods": {
+          "liora": 2
+        },
+        "resultText": "The families are gone by morning, on a boat that actually sails.",
+        "resultText_fr": "Les familles sont parties au matin, sur un bateau qui prend vraiment la mer."
+      }
+    ]
   },
   "q_ch1_vess_in_the_dark": {
     "questID": "q_ch1_vess_in_the_dark",
@@ -935,7 +998,35 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Le Mur du Jugement",
-    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »"
+    "npcDialogueText_fr": "« Dans les rapports, ils appellent ça une relocalisation », dit Reya sans lever les yeux du mur. « Moi, j’appelle ça une liste. Il veut que la liste disparaisse avant que quiconque d’officiel ait à expliquer la différence. »",
+    "turnInChoices": [
+      {
+        "choiceText": "Guard the wall where it stands",
+        "choiceText_fr": "Protéger le mur là où il se dresse",
+        "rewardGold": 30,
+        "alignmentChange": 8,
+        "resultText": "Reya chalks one more line on the wall: the day it was not taken down.",
+        "resultText_fr": "Reya trace une ligne de plus sur le mur : le jour où il n’a pas été abattu."
+      },
+      {
+        "choiceText": "Copy the list for the camp's records",
+        "choiceText_fr": "Recopier la liste pour les archives du camp",
+        "rewardGold": 50,
+        "alignmentChange": 5,
+        "flag": "reckoning_list_copied",
+        "resultText": "The list goes into your pack, name by name. Someone should carry it.",
+        "resultText_fr": "La liste rejoint votre sac, nom après nom. Il faut bien que quelqu’un la porte."
+      },
+      {
+        "choiceText": "Sell the list to the Inquisition's clerks",
+        "choiceText_fr": "Vendre la liste aux greffiers de l’Inquisition",
+        "rewardGold": 150,
+        "alignmentChange": -10,
+        "flag": "reckoning_list_sold",
+        "resultText": "The clerk pays without reading it. That was always the point.",
+        "resultText_fr": "Le greffier paie sans la lire. C’était tout l’enjeu."
+      }
+    ]
   },
   "q_temptation_light": {
     "questID": "q_temptation_light",
@@ -1112,7 +1203,25 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Prime de l’Ossuaire",
-    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »"
+    "npcDialogueText_fr": "« Elles montent avec l’eau et redescendent avec elle, et entre-temps elles dévorent tout ce que la Cour a laissé derrière elle. » Le sapeur aligne trois pièces sur la corniche. « Trois goules, trois pièces. Je ne suis pas cousu d’or, et elles non plus. »",
+    "turnInChoices": [
+      {
+        "choiceText": "Take the sapper's coins",
+        "choiceText_fr": "Prendre les pièces du sapeur",
+        "rewardGold": 90,
+        "alignmentChange": 0,
+        "resultText": "Three coins, as promised. The sapper doesn't watch them go.",
+        "resultText_fr": "Trois pièces, comme promis. Le sapeur ne les regarde pas partir."
+      },
+      {
+        "choiceText": "Leave the coins on the ledge",
+        "choiceText_fr": "Laisser les pièces sur le rebord",
+        "rewardGold": 0,
+        "alignmentChange": 5,
+        "resultText": "The sapper stares at the coins, then at you, then pockets them fast.",
+        "resultText_fr": "Le sapeur fixe les pièces, puis vous, puis les empoche en vitesse."
+      }
+    ]
   },
   "q_ch5_the_dead_heart": {
     "questID": "q_ch5_the_dead_heart",
@@ -1200,7 +1309,45 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "La Confession du pénitent",
-    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant."
+    "npcDialogueText_fr": "« J’ai brûlé le Quartier des Cendres sur un ordre que je n’ai jamais lu. Si vous portez la liste des enlevés, alors vous portez aussi mon nom — et je préfère en répondre devant vous que devant ce qui attend à la déchirure. » Le pénitent pose sa lame entre vous, la garde en avant.",
+    "turnInChoices": [
+      {
+        "choiceText": "Grant him absolution",
+        "choiceText_fr": "Lui accorder l’absolution",
+        "rewardGold": 60,
+        "alignmentChange": 10,
+        "flag": "penitent_absolved",
+        "approvalMods": {
+          "maren": 2,
+          "tobin": 1
+        },
+        "resultText": "He weeps without a sound, and walks toward the tear to meet it unarmed.",
+        "resultText_fr": "Il pleure sans un bruit, et marche vers la déchirure pour l’affronter sans arme."
+      },
+      {
+        "choiceText": "Carry out the sentence",
+        "choiceText_fr": "Exécuter la sentence",
+        "rewardGold": 120,
+        "alignmentChange": 0,
+        "flag": "penitent_executed",
+        "approvalMods": {
+          "maren": -2,
+          "kelda": 1,
+          "grosh": 1
+        },
+        "resultText": "It is quick. It is more than he gave the Ashen Quarter.",
+        "resultText_fr": "C’est rapide. C’est plus qu’il n’en a accordé au Quartier des Cendres."
+      },
+      {
+        "choiceText": "Take his blade and his purse, and leave him to the tear",
+        "choiceText_fr": "Prendre sa lame et sa bourse, et l’abandonner à la déchirure",
+        "rewardGold": 220,
+        "alignmentChange": -8,
+        "flag": "penitent_robbed",
+        "resultText": "His purse is heavy. The Inquisition paid well for what he did.",
+        "resultText_fr": "Sa bourse est lourde. L’Inquisition payait bien pour ce qu’il a fait."
+      }
+    ]
   },
   "q_ch6_beyond_the_tear": {
     "questID": "q_ch6_beyond_the_tear",

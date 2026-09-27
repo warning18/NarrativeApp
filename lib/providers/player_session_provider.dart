@@ -8,7 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/perks.dart';
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -157,6 +159,10 @@ class PlayerSession {
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
+    this.departedAllyIds = const [],
+    this.perkRanks = const {},
+    this.pendingPerkPicks = 0,
+    this.perkOffer = const [],
     this.builtHouseIds = const [],
     this.townOrder = const [],
     this.unlockedAchievementIds = const [],
@@ -311,6 +317,21 @@ class PlayerSession {
   /// Companions the story took for good (see [StoryChoice.loseAllyId]);
   /// never re-recruited this run, cleared with a new game.
   final List<String> lostAllyIds;
+
+  /// Companions who walked out over the player's choices (see
+  /// approval.dart); never re-recruited this run. Kept apart from
+  /// [lostAllyIds], which the story's `{lost}` lines name.
+  final List<String> departedAllyIds;
+
+  /// Level-up perks taken (see perks.dart): perk name -> rank.
+  final Map<String, int> perkRanks;
+
+  /// Perks still to choose, one per level reached; and the three on offer
+  /// for the next pick, kept so reopening the choice doesn't redraw it.
+  final int pendingPerkPicks;
+  final List<String> perkOffer;
+
+  PerkEffects get perkEffects => perkEffectsFor(perkRanks);
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
@@ -469,7 +490,9 @@ class PlayerSession {
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
-  int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
+  int get maxMana =>
+      maxManaFor(intelligence: intelligence, wisdom: wisdom) +
+      perkEffects.maxMana;
 
   int get xpToNextLevel => level * 100;
 
@@ -568,6 +591,10 @@ class PlayerSession {
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
+    List<String>? departedAllyIds,
+    Map<String, int>? perkRanks,
+    int? pendingPerkPicks,
+    List<String>? perkOffer,
     List<String>? builtHouseIds,
     List<String>? townOrder,
     List<String>? unlockedAchievementIds,
@@ -644,6 +671,10 @@ class PlayerSession {
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
+      departedAllyIds: departedAllyIds ?? this.departedAllyIds,
+      perkRanks: perkRanks ?? this.perkRanks,
+      pendingPerkPicks: pendingPerkPicks ?? this.pendingPerkPicks,
+      perkOffer: perkOffer ?? this.perkOffer,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
       unlockedAchievementIds:
@@ -726,6 +757,10 @@ class PlayerSession {
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
+        'departedAllyIds': departedAllyIds,
+        'perkRanks': perkRanks,
+        'pendingPerkPicks': pendingPerkPicks,
+        'perkOffer': perkOffer,
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
         'unlockedAchievementIds': unlockedAchievementIds,
@@ -872,6 +907,18 @@ class PlayerSession {
               const [],
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      departedAllyIds: (json['departedAllyIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      perkRanks: (json['perkRanks'] as Map?)?.map(
+            (id, rank) => MapEntry(id.toString(), (rank as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
+      pendingPerkPicks: (json['pendingPerkPicks'] as num?)?.toInt() ?? 0,
+      perkOffer:
+          (json['perkOffer'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
@@ -1349,7 +1396,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// the story deals (a storm, a burning cathedral) and never kills: health
   /// stops at 1. [bannerPieceId] adds a piece of the Shroud; [loseAllyId]
   /// (an id, or `*` for the first active ally) takes a companion for good.
-  Future<void> applyChoiceEffects({
+  ///
+  /// The companions in the party react to it (see approval.dart), by the
+  /// weights in their [companions] records and the choice's own
+  /// [approvalMods]; the reactions are returned, for the story to show.
+  Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
     int healAmount = 0,
@@ -1357,7 +1408,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? questIDToProgress,
     String? bannerPieceId,
     String? loseAllyId,
+    Map<String, int> approvalMods = const {},
+    Map<String, dynamic> companions = const {},
   }) async {
+    final reactions = _reactToDeed(
+      companions: companions,
+      alignmentMod: alignmentMod,
+      goldMod: goldMod,
+      approvalMods: approvalMods,
+    );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
     if (questIDToProgress != null &&
@@ -1397,6 +1456,140 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       if (id != null) loseAlly(id, persist: false);
     }
     await _persist();
+    return reactions;
+  }
+
+  /// The companions in the party react to a deed that moved alignment by
+  /// [alignmentMod] and gold by [goldMod], plus a scene's own
+  /// [approvalMods] (see approval.dart) -- a quest's outcome, say. One
+  /// pushed to the end of their patience leaves the party for good.
+  Future<List<ApprovalChange>> reactToDeed({
+    required Map<String, dynamic> companions,
+    int alignmentMod = 0,
+    int goldMod = 0,
+    Map<String, int> approvalMods = const {},
+  }) async {
+    final reactions = _reactToDeed(
+      companions: companions,
+      alignmentMod: alignmentMod,
+      goldMod: goldMod,
+      approvalMods: approvalMods,
+    );
+    if (reactions.isNotEmpty) await _persist();
+    return reactions;
+  }
+
+  List<ApprovalChange> _reactToDeed({
+    required Map<String, dynamic> companions,
+    int alignmentMod = 0,
+    int goldMod = 0,
+    Map<String, int> approvalMods = const {},
+  }) {
+    final reactions = <ApprovalChange>[];
+    final allies = [...state.recruitedAllies];
+    for (var i = 0; i < allies.length; i++) {
+      final ally = allies[i];
+      // Only the party sees it; a benched companion was elsewhere.
+      if (!state.activeAllyIds.contains(ally.companionId)) continue;
+      final delta = approvalDeltaFor(
+        companions[ally.companionId] as Map<String, dynamic>?,
+        alignmentMod: alignmentMod,
+        goldMod: goldMod,
+        explicit: explicitApprovalFor(approvalMods, ally.companionId),
+      );
+      final after = approvalAfter(ally.approval, delta);
+      if (after == ally.approval) continue;
+      reactions.add(ApprovalChange(
+          companionId: ally.companionId, before: ally.approval, after: after));
+      allies[i] = ally.copyWith(approval: after);
+    }
+    if (reactions.isEmpty) return reactions;
+    state = state.copyWith(recruitedAllies: allies);
+    for (final reaction in reactions.where((r) => r.leaves)) {
+      _departAlly(reaction.companionId);
+    }
+    return reactions;
+  }
+
+  /// [companionId] has had enough and walks out: off the roster and the
+  /// party, and never back this run.
+  void _departAlly(String companionId) {
+    state = state.copyWith(
+      recruitedAllies: [
+        for (final ally in state.recruitedAllies)
+          if (ally.companionId != companionId) ally,
+      ],
+      activeAllyIds: [
+        for (final id in state.activeAllyIds)
+          if (id != companionId) id,
+      ],
+      departedAllyIds: state.departedAllyIds.contains(companionId)
+          ? state.departedAllyIds
+          : [...state.departedAllyIds, companionId],
+    );
+  }
+
+  /// Shares a drink with [companionId] at the camp: [giftCostFor] the
+  /// [chapter] in gold for [giftApproval], once a chapter per companion.
+  /// Returns false when it can't be done (no gold, already this chapter).
+  Future<bool> shareDrink(String companionId, {required int chapter}) async {
+    final ally = state.recruitedAllies
+        .where((a) => a.companionId == companionId)
+        .firstOrNull;
+    final cost = giftCostFor(chapter);
+    if (ally == null || ally.giftChapter == chapter || state.gold < cost) {
+      return false;
+    }
+    final allies = [
+      for (final a in state.recruitedAllies)
+        a.companionId == companionId
+            ? a.copyWith(
+                approval: approvalAfter(a.approval, giftApproval),
+                giftChapter: chapter)
+            : a,
+    ];
+    state = state.copyWith(gold: state.gold - cost, recruitedAllies: allies);
+    await _persist();
+    return true;
+  }
+
+  /// The perks on offer for the next pick (see perks.dart), drawn once and
+  /// kept until one is chosen. Empty when there's no pick to make.
+  Future<List<String>> ensurePerkOffer({Random? random}) async {
+    if (state.pendingPerkPicks <= 0) return const [];
+    if (state.perkOffer.isNotEmpty) return state.perkOffer;
+    final offer = [
+      for (final perk in rollPerkOffer(state.perkRanks, random ?? Random()))
+        perk.name,
+    ];
+    state = state.copyWith(perkOffer: offer);
+    await _persist();
+    return offer;
+  }
+
+  /// Takes [perkName] from the offer: one more rank of it, one pick fewer.
+  /// Vigor's health is added right away.
+  Future<bool> choosePerk(String perkName) async {
+    final perk = perkFromName(perkName);
+    if (perk == null ||
+        state.pendingPerkPicks <= 0 ||
+        !state.perkOffer.contains(perkName) ||
+        (state.perkRanks[perkName] ?? 0) >= perkInfo[perk]!.maxRank) {
+      return false;
+    }
+    final health = perk == Perk.vigor ? vigorHealthPerRank : 0;
+    state = state.copyWith(
+      perkRanks: {
+        ...state.perkRanks,
+        perkName: (state.perkRanks[perkName] ?? 0) + 1,
+      },
+      pendingPerkPicks: state.pendingPerkPicks - 1,
+      perkOffer: const [],
+      maxHealth: state.maxHealth + health,
+      currentHealth: state.currentHealth + health,
+    );
+    await _persist();
+    return true;
   }
 
   /// The story takes [companionId] for good: out of the roster and the
@@ -1534,6 +1727,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
+      pendingPerkPicks: state.pendingPerkPicks + leveled.levelsGained,
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -1781,6 +1975,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }) async {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (state.lostAllyIds.contains(companionId)) return;
+    if (state.departedAllyIds.contains(companionId)) return;
     final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
     final raceSkillId = race?['standardSkillID']?.toString() ?? '';
     // A companion's signature die IS their kit: every skill one of its
@@ -2706,6 +2901,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
       skillPoints: leveled.skillPoints + skillPointsGained,
+      pendingPerkPicks: state.pendingPerkPicks + leveled.levelsGained,
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       potionCount: state.potionCount + potionsGained,

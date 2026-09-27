@@ -7,6 +7,7 @@ import '../combat/combat_engine.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/port_helpers.dart';
+import '../data/ability_check.dart';
 import '../data/sea_events.dart';
 import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
@@ -36,11 +37,15 @@ class VoyageScreen extends ConsumerStatefulWidget {
     required this.fromPortId,
     required this.toPortId,
     required this.toPort,
+    @visibleForTesting this.debugEvents,
   });
 
   final String fromPortId;
   final String toPortId;
   final Map<String, dynamic> toPort;
+
+  /// The days at sea to sail instead of drawing them, for tests.
+  final List<SeaEvent>? debugEvents;
 
   @override
   ConsumerState<VoyageScreen> createState() => _VoyageScreenState();
@@ -73,6 +78,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   final List<String> _log = [];
   bool _busy = false;
 
+  /// Kept from cast-off to draw the extra day a sheltered storm costs.
+  bool _knownWaters = false;
+  Map<String, dynamic> _enemyShips = const {};
+
   void _ensureStarted({
     required Map<String, dynamic> ships,
     required Map<String, dynamic> parts,
@@ -103,15 +112,18 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       }
       length = shorter;
     }
-    _events = buildVoyage(
-      random: _random,
-      length: length,
-      enemyShips: enemyShips,
-      chapter: chapter,
-      // A port she has put in at before, or the way home, is known water.
-      knownWaters: portIsHome(widget.toPort) ||
-          session.visitedPortIds.contains(widget.toPortId),
-    );
+    // A port she has put in at before, or the way home, is known water.
+    _knownWaters = portIsHome(widget.toPort) ||
+        session.visitedPortIds.contains(widget.toPortId);
+    _enemyShips = enemyShips;
+    _events = widget.debugEvents ??
+        buildVoyage(
+          random: _random,
+          length: length,
+          enemyShips: enemyShips,
+          chapter: chapter,
+          knownWaters: _knownWaters,
+        );
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
       final skipped = _events!.length - lifted.length;
@@ -176,59 +188,155 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return fr && nameFr.isNotEmpty ? nameFr : name;
   }
 
+  /// Rolls [ability] against the sea's DC and writes the roll in the log.
+  bool _seaCheck(String ability) {
+    final lang = ref.read(appLanguageProvider);
+    final result = rollAbilityCheck(
+      ability: ability,
+      dc: seaCheckDc(_chapter),
+      session: ref.read(playerSessionProvider),
+      random: _random,
+    );
+    _log.add('${trFor(lang, '${result.ability}_label')} '
+        '${trFor(lang, 'check_label')}: '
+        '${result.roll} + ${result.modifier} = ${result.total} '
+        '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
+        '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}');
+    return result.success;
+  }
+
+  /// A storm's toll on the hull, eased by a void-marked sail.
+  int _stormLoss(SeaEvent event) {
+    var loss = -event.hullDelta;
+    if (_sail?.power == SailPower.voidmark) {
+      loss = voidmarkStormLoss(loss, _sailStrength);
+      _log.add(_t('ship_log_void_calm'));
+    }
+    return loss;
+  }
+
+  Future<void> _loseHull(int loss, String logKey) async {
+    final player = _player!;
+    final hull = max(1, player.hull - loss);
+    _player = player.copyWith(hull: hull);
+    _log.add(_t(logKey, n: player.hull - hull));
+    await ref.read(playerSessionProvider.notifier).setShipHull(hull);
+  }
+
+  /// Resolves the day's [event] the way the crew [choice] (v1.162: each
+  /// event has a few, see [seaChoicesFor]).
   Future<void> _resolveEvent(
-    SeaEvent event, {
+    SeaEvent event,
+    SeaChoice choice, {
     required Map<String, dynamic> enemyShips,
   }) async {
     setState(() => _busy = true);
     final notifier = ref.read(playerSessionProvider.notifier);
     final player = _player!;
-    switch (event.kind) {
-      case SeaEventKind.storm:
-        var loss = -event.hullDelta;
-        if (_sail?.power == SailPower.voidmark) {
-          loss = voidmarkStormLoss(loss, _sailStrength);
-          _log.add(_t('ship_log_void_calm'));
-        }
-        final hull = max(1, player.hull - loss);
-        _player = player.copyWith(hull: hull);
-        _log.add(_t('ship_log_storm', n: player.hull - hull));
-        await notifier.setShipHull(hull);
+    switch (choice.action) {
+      case SeaAction.rideOut:
+        await _loseHull(_stormLoss(event), 'ship_log_storm');
         await _advance();
-      case SeaEventKind.calm:
+      case SeaAction.pushThrough:
+        if (_seaCheck(choice.checkAbility!)) {
+          _log.add(_t('ship_log_pushed_through'));
+        } else {
+          await _loseHull(_stormLoss(event) * pushThroughFailMultiplier,
+              'ship_log_push_failed');
+        }
+        await _advance();
+      case SeaAction.shelter:
+        // Safe in a cove, but the crossing takes another day at sea.
+        final extra = buildVoyage(
+          random: _random,
+          length: 1,
+          enemyShips: _enemyShips,
+          chapter: _chapter,
+          knownWaters: _knownWaters,
+        );
+        _events = [
+          ..._events!.take(_index + 1),
+          ...extra,
+          ..._events!.skip(_index + 1),
+        ];
+        _log.add(_t('ship_log_sheltered'));
+        await _advance();
+      case SeaAction.repair:
         final hull = min(player.maxHull, player.hull + event.hullDelta);
         _player = player.copyWith(hull: hull);
         _log.add(_t('ship_log_calm', n: hull - player.hull));
         await notifier.setShipHull(hull);
         await _advance();
-      case SeaEventKind.derelict:
+      case SeaAction.rest:
+        final session = ref.read(playerSessionProvider);
+        final heal = max(1, session.maxHealth * restHealPercent ~/ 100);
+        await notifier.applyChoiceEffects(healAmount: heal);
+        _log.add(_t('ship_log_rested', n: heal));
+        await _advance();
+      case SeaAction.salvage:
         final gold = _sail?.power == SailPower.windknot
             ? windknotSalvage(event.gold, _sailStrength)
             : event.gold;
         await notifier.applyChoiceEffects(goldMod: gold);
         _log.add(_t('ship_log_salvage', n: gold));
         await _advance();
-      case SeaEventKind.sighting:
+      case SeaAction.board:
+        if (_seaCheck(choice.checkAbility!)) {
+          final gold = (event.gold * boardGoldMultiplier).round();
+          await notifier.applyChoiceEffects(goldMod: gold);
+          _log.add(_t('ship_log_boarded', n: gold));
+        } else {
+          final session = ref.read(playerSessionProvider);
+          final wound = max(1, session.maxHealth * boardWoundPercent ~/ 100);
+          await notifier.applyChoiceEffects(healAmount: -wound);
+          _log.add(_t('ship_log_board_trap', n: wound));
+        }
         await _advance();
-      case SeaEventKind.raider:
-        final data = enemyShips[event.enemyShipId] as Map<String, dynamic>?;
-        if (data == null) {
+      case SeaAction.passBy:
+        _log.add(_t('ship_log_passed_by'));
+        await _advance();
+      case SeaAction.sailOn:
+        await _advance();
+      case SeaAction.payOff:
+        final tribute =
+            tributeFor(enemyShips[event.enemyShipId] as Map<String, dynamic>?);
+        await notifier.applyChoiceEffects(goldMod: -tribute);
+        _log.add(_t('ship_log_paid', n: tribute));
+        await _advance();
+      case SeaAction.outrun:
+        if (_seaCheck(choice.checkAbility!)) {
+          _log.add(_t('ship_log_outran'));
           await _advance();
           return;
         }
-        _enemyData = data;
-        _enemy = buildEnemyShip(data);
-        _log.clear();
-        _battleKey++;
-        // The battle reads the clock setting once: wait for the saved
-        // choice, not the default it starts at.
-        await ref.read(shipTurnTimerProvider.notifier).loaded;
-        if (!mounted) return;
-        setState(() {
-          _phase = _VoyagePhase.fight;
-          _busy = false;
-        });
+        // Caught: they rake the Eel as they close, then it's a fight.
+        await _loseHull(outrunFailHullLoss, 'ship_log_outrun_failed');
+        await _startRaiderFight(event, enemyShips);
+      case SeaAction.fight:
+        await _startRaiderFight(event, enemyShips);
     }
+  }
+
+  Future<void> _startRaiderFight(
+      SeaEvent event, Map<String, dynamic> enemyShips) async {
+    final data = enemyShips[event.enemyShipId] as Map<String, dynamic>?;
+    if (data == null) {
+      await _advance();
+      return;
+    }
+    _enemyData = data;
+    _enemy = buildEnemyShip(data);
+    // The fight's own log starts clean; what led to it stays on the day.
+    _log.clear();
+    _battleKey++;
+    // The battle reads the clock setting once: wait for the saved
+    // choice, not the default it starts at.
+    await ref.read(shipTurnTimerProvider.notifier).loaded;
+    if (!mounted) return;
+    setState(() {
+      _phase = _VoyagePhase.fight;
+      _busy = false;
+    });
   }
 
   Future<void> _advance() async {
@@ -545,14 +653,52 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ),
         _buildLog(context),
         const SizedBox(height: 12),
-        ElevatedButton(
-          onPressed:
-              _busy ? null : () => _resolveEvent(event, enemyShips: enemyShips),
-          child: Text(event.choiceTextFor(fr)),
-        ),
+        for (final (i, choice) in event.choices.indexed) ...[
+          if (i > 0) const SizedBox(height: 8),
+          _choiceButton(
+            key: Key('sea_choice_${choice.action.name}'),
+            primary: i == 0,
+            onPressed: _busy || !_canAfford(event, choice, enemyShips)
+                ? null
+                : () => _resolveEvent(event, choice, enemyShips: enemyShips),
+            label: _choiceLabel(event, choice, enemyShips, fr),
+          ),
+        ],
       ],
     );
   }
+
+  bool _canAfford(
+          SeaEvent event, SeaChoice choice, Map<String, dynamic> enemyShips) =>
+      choice.action != SeaAction.payOff ||
+      ref.read(playerSessionProvider).gold >=
+          tributeFor(enemyShips[event.enemyShipId] as Map<String, dynamic>?);
+
+  String _choiceLabel(SeaEvent event, SeaChoice choice,
+      Map<String, dynamic> enemyShips, bool fr) {
+    final lang = ref.read(appLanguageProvider);
+    final text = choice.textFor(fr);
+    if (choice.action == SeaAction.payOff) {
+      final tribute =
+          tributeFor(enemyShips[event.enemyShipId] as Map<String, dynamic>?);
+      return '$text (${trFor(lang, 'sea_choice_cost').replaceAll('{n}', '$tribute')})';
+    }
+    final ability = choice.checkAbility;
+    return ability == null
+        ? text
+        : '$text (${trFor(lang, '${ability}_label')}, '
+            '${trFor(lang, 'vs_dc_label')} ${seaCheckDc(_chapter)})';
+  }
+
+  Widget _choiceButton({
+    required Key key,
+    required bool primary,
+    required VoidCallback? onPressed,
+    required String label,
+  }) =>
+      primary
+          ? ElevatedButton(key: key, onPressed: onPressed, child: Text(label))
+          : OutlinedButton(key: key, onPressed: onPressed, child: Text(label));
 
   Widget _buildFight({
     required bool fr,

@@ -5870,7 +5870,10 @@
         "alignmentMod": -2,
         "flagsToAdd": [
           "sovereign_took_companion"
-        ]
+        ],
+        "approvalMods": {
+          "*": -4
+        }
       },
       {
         "text": "Give it the legate",
@@ -5893,7 +5896,10 @@
         "healAmount": -45,
         "flagsToAdd": [
           "sovereign_blood"
-        ]
+        ],
+        "approvalMods": {
+          "*": 2
+        }
       },
       {
         "text": "Give it the camp. Let the coast burn behind you",
@@ -5967,7 +5973,10 @@
         "alignmentMod": 1,
         "flagsToAdd": [
           "turned_carried"
-        ]
+        ],
+        "approvalMods": {
+          "*": 2
+        }
       },
       {
         "text": "Leave the body to the legate's rowers",
@@ -5976,7 +5985,10 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "turned_left"
-        ]
+        ],
+        "approvalMods": {
+          "*": -2
+        }
       }
     ]
   },

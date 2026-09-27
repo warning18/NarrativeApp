@@ -34,6 +34,7 @@ class StoryChoice {
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
+    this.approvalMods = const {},
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -80,6 +81,11 @@ class StoryChoice {
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
       forcedCondition: json['forcedCondition'] as String?,
+      approvalMods: (json['approvalMods'] as Map?)?.map(
+            (id, delta) =>
+                MapEntry(id.toString(), (delta as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -197,6 +203,11 @@ class StoryChoice {
   /// heirloom piece, and the spine's three dilemmas the rest.
   final String? grantsBannerPieceId;
 
+  /// How companions in the party react to this choice beyond what its
+  /// alignment and gold already say (see approval.dart): companion id -> a
+  /// change in approval, `*` for everyone in the party.
+  final Map<String, int> approvalMods;
+
   /// A companion this choice costs for good -- their id, or `*` for the
   /// first active ally (whoever steps forward). Nothing happens when the
   /// character walks alone; the choice's other costs still do.
@@ -291,6 +302,7 @@ class StoryChoice {
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
           'forcedCondition': forcedCondition,
+        if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -323,7 +335,8 @@ class StoryChoice {
       flagsToAdd.isNotEmpty ||
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
-      (loseAllyId != null && loseAllyId!.isNotEmpty);
+      (loseAllyId != null && loseAllyId!.isNotEmpty) ||
+      approvalMods.isNotEmpty;
 }
 
 class StoryNode {

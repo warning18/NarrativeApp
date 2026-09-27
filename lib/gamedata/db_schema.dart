@@ -1372,6 +1372,12 @@ final DbSchema questsSchema = DbSchema(
           'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, actionType, lockedText}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+      key: 'turnInChoices',
+      label:
+          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr}]',
+      type: FieldType.json,
+    ),
     visualAssetFieldSchema('quests'),
   ],
 );
@@ -1653,6 +1659,54 @@ final DbSchema companionsSchema = DbSchema(
     FieldSchema(
       key: 'chestLineFr',
       label: 'Big Chest Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'approvesGood',
+      label: 'Approval of a Kind Deed (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'approvesEvil',
+      label: 'Approval of a Cruel Deed (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'approvesProfit',
+      label: 'Approval of Filling the Purse (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'devotedLine',
+      label: 'Devoted Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'devotedLineFr',
+      label: 'Devoted Line (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'warnLine',
+      label: 'Losing Patience Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'warnLineFr',
+      label: 'Losing Patience Line (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'leaveLine',
+      label: 'Walking Out Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'leaveLineFr',
+      label: 'Walking Out Line (FR)',
       type: FieldType.text,
     ),
     visualAssetFieldSchema('companions'),

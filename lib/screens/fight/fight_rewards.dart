@@ -156,6 +156,9 @@ extension _FightRewards on _FightScreenState {
       final chest = rollLootBox(lootContext, items, _random);
       loot.addAll(chest.itemIds);
       goldGain += chest.gold;
+      // Plunderer and Quick Study (level-up perks) add their share.
+      goldGain = _perks.scaleGold(goldGain);
+      xpGain = _perks.scaleXp(xpGain);
 
       final lang = ref.read(appLanguageProvider);
       final chestBanter =
@@ -188,7 +191,9 @@ extension _FightRewards on _FightScreenState {
       // its charge is spent below, once the loot has been granted.
       final drinks = spoils.drinkItemIds.length;
       final hpAfterSpoils = min(
-          player.maxHealth, player.currentHealth + drinks * potionHealAmount);
+          player.maxHealth,
+          player.currentHealth +
+              drinks * (potionHealAmount + _perks.potionBonus));
       final leveledUp = await notifier.applyCombatResult(
         hpAfter: hpAfterSpoils,
         enemyIds: defeated.map((e) => e.enemyId).toList(),

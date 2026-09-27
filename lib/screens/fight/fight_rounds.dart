@@ -357,8 +357,8 @@ extension _FightRounds on _FightScreenState {
 
     if (hitsLanded > 0) {
       final before = _momentum;
-      _momentum = min(_momentumThreshold, _momentum + hitsLanded);
-      if (before < _momentumThreshold && _momentum >= _momentumThreshold) {
+      _momentum = min(_momentumNeeded, _momentum + hitsLanded);
+      if (before < _momentumNeeded && _momentum >= _momentumNeeded) {
         newEntries.add(
             _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
       }
