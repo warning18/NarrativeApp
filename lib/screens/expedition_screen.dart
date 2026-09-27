@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
+import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_loop.dart';
 import '../data/map_themes.dart';
@@ -159,7 +160,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       unlockedShopIds: session.unlockedShopIds,
       chapter: zoneChapter,
     );
-    final enemyPool = SubNodeEngine.filterEnemyPool(
+    final enemyPool = SubNodeEngine.weightedEnemyPool(
       enemies: enemies,
       unlockedEnemyIds: session.unlockedEnemyIds,
       chapter: zoneChapter,
@@ -177,6 +178,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       ),
       enemies: enemies,
       shops: shops,
+      chapter: zoneChapter,
     );
   }
 
@@ -257,7 +259,34 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final countsTowardZone = !_isBonusNode(_current);
     final isBoss = _isBossNode(_current);
 
-    final enemyIds = choice.allTriggerEnemyIds;
+    // A check on the road (v1.160): sneak past, dig deeper, scavenge. A
+    // failed one forfeits the choice's reward; a sneak that works leaves
+    // its fight behind, and one that fails starts it.
+    var fightAvoided = false;
+    var checkFailed = false;
+    if (choice.hasAbilityCheck) {
+      final lang = ref.read(appLanguageProvider);
+      final result = rollAbilityCheck(
+        ability: choice.checkAbility!,
+        dc: choice.checkDC ?? 10,
+        session: ref.read(playerSessionProvider),
+      );
+      await showImmersiveNotice(
+        context,
+        icon: result.success ? Icons.check_circle : Icons.cancel,
+        message: '${trFor(lang, '${result.ability}_label')} '
+            '${trFor(lang, 'check_label')}: '
+            '${result.roll} + ${result.modifier} = ${result.total} '
+            '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
+            '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}',
+      );
+      if (!mounted) return;
+      fightAvoided = result.success && choice.avoidFightOnSuccess;
+      checkFailed = !result.success;
+    }
+
+    final enemyIds =
+        fightAvoided ? const <String>[] : choice.allTriggerEnemyIds;
     if (enemyIds.isNotEmpty) {
       final resolvedEnemies = {
         for (final eid in enemyIds) eid: enemies[eid] as Map<String, dynamic>?,
@@ -356,7 +385,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       return;
     }
 
-    if (choice.hasEffects) {
+    if (choice.hasEffects && !checkFailed) {
       await notifier.applyChoiceEffects(
         goldMod: choice.goldMod,
         alignmentMod: choice.alignmentMod,

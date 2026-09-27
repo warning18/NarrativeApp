@@ -1,4 +1,5 @@
 import '../models/story_node.dart';
+import 'battlefield_condition.dart';
 import 'combat_engine.dart' show zoneTierMultiplier;
 import 'enemy_affix.dart';
 import 'loot_box.dart';
@@ -22,6 +23,7 @@ class EncounterModifiers {
     this.isZoneBoss = false,
     this.lossContinues = false,
     this.isTest = false,
+    this.forcedCondition,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -71,6 +73,10 @@ class EncounterModifiers {
   /// permadeath flow, whatever the setting.
   final bool isTest;
 
+  /// The battlefield condition this fight is forced into (a sneak gone
+  /// wrong is an ambush), instead of rolling one.
+  final BattlefieldCondition? forcedCondition;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -83,7 +89,8 @@ class EncounterModifiers {
       !isHunterAmbush &&
       !isZoneBoss &&
       !lossContinues &&
-      !isTest;
+      !isTest &&
+      forcedCondition == null;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw).
@@ -101,6 +108,7 @@ class EncounterModifiers {
         isZoneBoss: isZoneBoss,
         lossContinues: lossContinues,
         isTest: isTest,
+        forcedCondition: forcedCondition,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -144,6 +152,8 @@ class EncounterModifiers {
     if (choice.hasLossBranch) {
       return const EncounterModifiers(lossContinues: true);
     }
+    final forced = battlefieldConditionFromName(choice.forcedCondition);
+    if (forced != null) return EncounterModifiers(forcedCondition: forced);
     return none;
   }
 }

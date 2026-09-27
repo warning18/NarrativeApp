@@ -953,6 +953,8 @@ Future<void> _selectChoice({
   // The last fight's aftermath opened this scene; moving on retires it.
   ref.read(pendingAftermathProvider.notifier).state = null;
   var skipRewardEffects = false;
+  // A sneak that works (avoidFightOnSuccess) leaves the fight behind.
+  var fightAvoided = false;
   if (choice.hasAbilityCheck) {
     bool success;
     if (choice.hasSkillChallenge) {
@@ -988,6 +990,7 @@ Future<void> _selectChoice({
       if (!context.mounted) return;
       success = result.success;
     }
+    if (success && choice.avoidFightOnSuccess) fightAvoided = true;
     if (!success) {
       final failTarget = choice.failNextId;
       if (failTarget != null && failTarget.isNotEmpty && !isExcursion) {
@@ -1038,8 +1041,9 @@ Future<void> _selectChoice({
     }
   }
 
-  var resolvedEnemyIds = choice.allTriggerEnemyIds;
-  if (choice.triggersCombat) {
+  var resolvedEnemyIds =
+      fightAvoided ? const <String>[] : choice.allTriggerEnemyIds;
+  if (choice.triggersCombat && !fightAvoided) {
     final enemies = await loadedGameDb(ref, enemiesSchema);
     final ids = await _resolveEnemyIds(ref, choice.allTriggerEnemyIds);
     resolvedEnemyIds = ids;

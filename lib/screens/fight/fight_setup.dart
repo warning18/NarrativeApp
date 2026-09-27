@@ -26,7 +26,7 @@ extension _FightSetup on _FightScreenState {
         isRandomDrawEnemy(entries.first.key) &&
         modifiers.forcedAffixes.isEmpty &&
         _random.nextDouble() < _eliteChance;
-    _condition =
+    _condition = modifiers.forcedCondition ??
         rollBattlefieldCondition(enemyCount: entries.length, random: _random);
 
     final affixes = rollEncounterAffixes(

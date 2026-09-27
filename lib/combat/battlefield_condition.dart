@@ -55,6 +55,14 @@ int conditionFortuneBonus(BattlefieldCondition? condition) =>
       _ => 0,
     };
 
+/// The condition named [name] ('ambush', 'dark'...), or null.
+BattlefieldCondition? battlefieldConditionFromName(String? name) {
+  for (final condition in BattlefieldCondition.values) {
+    if (condition.name == name) return condition;
+  }
+  return null;
+}
+
 /// Rolls this fight's condition, or null (the common case). Cramped only
 /// makes sense against three or more enemies, so it's left out of the pool
 /// for anything smaller.

@@ -48,7 +48,7 @@ class SubNodeEngine {
       unlockedShopIds: unlockedShopIds,
       chapter: chapter,
     );
-    final enemyPool = filterEnemyPool(
+    final enemyPool = weightedEnemyPool(
       enemies: enemies,
       unlockedEnemyIds: unlockedEnemyIds,
       chapter: chapter,
@@ -100,6 +100,7 @@ class SubNodeEngine {
           enemies: enemies,
           shops: shops,
           quests: quests,
+          chapter: chapter,
         ),
     ];
     return withHunts(chain, enemies: enemies, random: random, flavor: flavor);
@@ -391,6 +392,31 @@ class SubNodeEngine {
         .toList();
   }
 
+  /// How much likelier a random draw is to be a foe the party hasn't met
+  /// yet than one it has beaten before (see [weightedEnemyPool]).
+  static const int unseenEnemyWeight = 3;
+
+  /// The random-draw pool at [chapter] as a weighted list (v1.160): every
+  /// eligible enemy (see [filterEnemyPool]), foes not met yet
+  /// [unseenEnemyWeight] times over and beaten ones once. The road keeps
+  /// its dangers once the party has met them all -- before, a beaten kind
+  /// never came back and late detours ran dry into treasure.
+  static List<String> weightedEnemyPool({
+    required Map<String, dynamic> enemies,
+    required List<String> unlockedEnemyIds,
+    required int chapter,
+  }) {
+    final eligible = filterEnemyPool(
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter);
+    return [
+      for (final id in eligible)
+        for (var i = 0;
+            i < (unlockedEnemyIds.contains(id) ? 1 : unseenEnemyWeight);
+            i++)
+          id,
+    ];
+  }
+
   /// Builds a single typed flavor-pool node (shop/enemy/treasure/rest/quest,
   /// or a plain generic beat if none of those roll) — the same weighted
   /// draw [maybeGenerate] chains together for excursions, exposed on its
@@ -410,12 +436,13 @@ class SubNodeEngine {
     Map<String, dynamic> enemies = const {},
     Map<String, dynamic> shops = const {},
     Map<String, dynamic> quests = const {},
+    int chapter = 1,
   }) {
     _counter++;
     final id = 'gen_$_counter';
 
     if (questId != null) {
-      final idx = random.nextInt(flavor.quest.length);
+      final idx = _freshIndex('quest', flavor.quest.length, random);
       final quest = quests[questId] as Map<String, dynamic>?;
       final questName = quest?['questName']?.toString() ?? '';
       final objective = _firstObjective(quest);
@@ -442,7 +469,7 @@ class SubNodeEngine {
     final roll = random.nextDouble();
     if (shopPool.isNotEmpty && roll < 0.25) {
       final shopId = shopPool[random.nextInt(shopPool.length)];
-      final idx = random.nextInt(flavor.shop.length);
+      final idx = _freshIndex('shop', flavor.shop.length, random);
       final shopName =
           (shops[shopId] as Map<String, dynamic>?)?['shopName']?.toString() ??
               '';
@@ -462,7 +489,7 @@ class SubNodeEngine {
       );
     }
     if (enemyPool.isNotEmpty && roll < 0.5) {
-      final idx = random.nextInt(flavor.enemy.length);
+      final idx = _freshIndex('enemy', flavor.enemy.length, random);
       // A pack fight never draws a solo-only enemy (the tuned bosses and
       // uniques -- see soloOnlyEnemyIds) -- those stay solo encounters
       // exclusively, drawn only through the plain single-enemy path below.
@@ -474,14 +501,17 @@ class SubNodeEngine {
           for (var i = 0; i < size; i++)
             packEligible[random.nextInt(packEligible.length)],
         ];
-        return _fightNode(id, ids, idx, flavor, enemies, pack: true);
+        return _fightNode(id, ids, idx, flavor, enemies,
+            pack: true, chapter: chapter);
       }
       final enemyId = enemyPool[random.nextInt(enemyPool.length)];
-      return _fightNode(id, [enemyId], idx, flavor, enemies, pack: false);
+      return _fightNode(id, [enemyId], idx, flavor, enemies,
+          pack: false, chapter: chapter);
     }
     if (roll < 0.65) {
-      final goldFound = 5 + random.nextInt(16);
-      final idx = random.nextInt(flavor.treasure.length);
+      final goldFound = treasureGoldFor(chapter, 5 + random.nextInt(16));
+      final dugUp = (goldFound * digDeeperMultiplier).round();
+      final idx = _freshIndex('treasure', flavor.treasure.length, random);
       return StoryNode(
         id: id,
         description: flavor.treasure[idx],
@@ -493,25 +523,45 @@ class SubNodeEngine {
             nextId: id,
             goldMod: goldFound,
           ),
+          // A gamble: search on for the rest of the cache, or come away
+          // with nothing if the eyes miss it.
+          StoryChoice(
+            text: 'Dig deeper ($dugUp gold, or nothing)',
+            textFr: 'Chercher plus loin ($dugUp or, ou rien)',
+            nextId: id,
+            goldMod: dugUp,
+            checkAbility: 'perception',
+            checkDC: detourCheckDc(chapter),
+          ),
         ],
       );
     }
     if (roll < 0.8) {
-      final idx = random.nextInt(flavor.rest.length);
+      final idx = _freshIndex('rest', flavor.rest.length, random);
+      final scavenged = treasureGoldFor(chapter, 8 + random.nextInt(9));
       return StoryNode(
         id: id,
         description: flavor.rest[idx],
         descriptionFr: flavor.restFr[idx],
-        choices: const [
+        choices: [
           StoryChoice(
-              text: 'Rest a while',
-              textFr: 'Se reposer un moment',
+              text: 'Rest a while (+${restHealFor(chapter)} HP)',
+              textFr: 'Se reposer un moment (+${restHealFor(chapter)} PV)',
               nextId: '',
-              healAmount: 20),
+              healAmount: restHealFor(chapter)),
+          // Skip the rest and poke around instead: health or a purse.
+          StoryChoice(
+            text: 'Scavenge instead ($scavenged gold)',
+            textFr: 'Fouiller plutôt ($scavenged or)',
+            nextId: '',
+            goldMod: scavenged,
+            checkAbility: 'luck',
+            checkDC: detourCheckDc(chapter) - 1,
+          ),
         ],
       );
     }
-    final idx = random.nextInt(flavor.generic.length);
+    final idx = _freshIndex('generic', flavor.generic.length, random);
     return StoryNode(
       id: id,
       description: flavor.generic[idx],
@@ -536,6 +586,7 @@ class SubNodeEngine {
     ExcursionFlavor flavor,
     Map<String, dynamic> enemies, {
     required bool pack,
+    int chapter = 1,
   }) {
     final line = encounterLineFor(ids: ids, enemies: enemies, index: idx);
     final label = enemies.isEmpty
@@ -553,8 +604,59 @@ class SubNodeEngine {
           triggerEnemyId: pack ? null : ids.single,
           triggerEnemyIds: pack ? ids : const [],
         ),
+        // A way round (v1.160): a Dexterity check slips past; a failed one
+        // starts the fight with the enemy striking first.
+        StoryChoice(
+          text: pack ? 'Slip past them' : 'Slip past',
+          textFr: pack ? 'Passer en douce' : 'Passer en douce',
+          nextId: id,
+          triggerEnemyId: pack ? null : ids.single,
+          triggerEnemyIds: pack ? ids : const [],
+          checkAbility: 'dexterity',
+          checkDC: detourCheckDc(chapter) + (pack ? 2 : 0),
+          avoidFightOnSuccess: true,
+          forcedCondition: 'ambush',
+        ),
       ],
     );
+  }
+
+  /// A detour's check difficulty at [chapter]: 10 in the first chapter,
+  /// one more for each after it (a sneak past a pack is two harder).
+  static int detourCheckDc(int chapter) => 9 + max(1, chapter);
+
+  /// A find's gold at [chapter]: [base] grows by half again per chapter,
+  /// so a late cache is worth stopping for.
+  static int treasureGoldFor(int chapter, int base) =>
+      (base * (1 + 0.5 * (max(1, chapter) - 1))).round();
+
+  /// What digging deeper into a cache pays, as a multiple of taking it.
+  static const double digDeeperMultiplier = 2.5;
+
+  /// A roadside rest heals 20, and 10 more per chapter after the first.
+  static int restHealFor(int chapter) => 20 + 10 * (max(1, chapter) - 1);
+
+  /// Recently shown flavor lines, per category, so the same line doesn't
+  /// come round twice in a few detours.
+  static final Map<String, List<int>> _recentFlavor = {};
+  static const int _flavorMemory = 5;
+
+  /// A line index in [0, length) not among the last few shown for
+  /// [category] -- a few rerolls at most, then whatever came up.
+  static int _freshIndex(String category, int length, Random random) {
+    if (length <= 0) return 0;
+    final recent = _recentFlavor.putIfAbsent(category, () => []);
+    var idx = random.nextInt(length);
+    for (var tries = 0;
+        tries < 4 && recent.contains(idx) && length > recent.length;
+        tries++) {
+      idx = random.nextInt(length);
+    }
+    recent.add(idx);
+    while (recent.length > min(_flavorMemory, length - 1)) {
+      recent.removeAt(0);
+    }
+    return idx;
   }
 
   /// A quest's first objective, as written in quests.json, or null.
