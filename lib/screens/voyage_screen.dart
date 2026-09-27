@@ -25,10 +25,12 @@ import 'ship_battle_panel.dart';
 enum _VoyagePhase { event, fight, arrived, failed }
 
 /// One crossing of the Rusty Eel from port to port: a short chain of sea
-/// events drawn once at cast-off (see [buildVoyage]) -- calm days that
-/// mend the hull, storms that cost it, derelicts worth salvaging, and
-/// raiders that open a room-by-room ship battle (see [ShipBattlePanel])
-/// fought with the parts aboard and the party as crew. Landfall pops
+/// events drawn once at cast-off (see [buildVoyage]), each asking what the
+/// crew does (see [seaChoicesFor]) -- calm days to mend the hull or rest,
+/// storms to ride out, push through or shelter from, derelicts to salvage
+/// or board, and raiders to pay off, outrun or fight in a room-by-room
+/// ship battle (see [ShipBattlePanel]) with the parts aboard and the party
+/// as crew. Landfall pops
 /// `true` and moors the boat at the new port; a sunk hull pops `false`,
 /// the Eel limping back to the port she left.
 class VoyageScreen extends ConsumerStatefulWidget {
@@ -491,8 +493,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         races == null ||
         professions == null ||
         gameConfig == null) {
-      return TutorialTrigger(
-        topic: TutorialTopic.voyage,
+      return _tour(
+        ready: false,
         child: Scaffold(
           appBar: AppBar(title: Text(title)),
           body: const Center(child: CircularProgressIndicator()),
@@ -502,6 +504,43 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     _ensureStarted(
         ships: ships, parts: parts, enemyShips: enemyShips, ports: ports);
 
+    // The tour waits for a day at sea, so it has the hull and the choices
+    // to point at (not the spinner, nor a battle already under way).
+    return _tour(
+      ready: _phase == _VoyagePhase.event,
+      child: _buildScreen(
+        context,
+        title: title,
+        lang: lang,
+        fr: fr,
+        enemyShips: enemyShips,
+        parts: parts,
+        companions: companions,
+        races: races,
+        professions: professions,
+        gameConfig: gameConfig,
+      ),
+    );
+  }
+
+  /// The voyage's tour around [child]. The one trigger stays put from the
+  /// spinner to the first day, so its pause carries over when the data
+  /// lands.
+  Widget _tour({required bool ready, required Widget child}) =>
+      TutorialTrigger(topic: TutorialTopic.voyage, ready: ready, child: child);
+
+  Widget _buildScreen(
+    BuildContext context, {
+    required String title,
+    required AppLanguage lang,
+    required bool fr,
+    required Map<String, dynamic> enemyShips,
+    required Map<String, dynamic> parts,
+    required Map<String, dynamic> companions,
+    required Map<String, dynamic> races,
+    required Map<String, dynamic> professions,
+    required Map<String, dynamic> gameConfig,
+  }) {
     return PopScope(
       canPop: _phase == _VoyagePhase.arrived || _phase == _VoyagePhase.failed,
       child: Scaffold(
@@ -615,7 +654,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           style: Theme.of(context).textTheme.labelMedium,
         ),
         const SizedBox(height: 16),
-        _buildShipBars(context, _player!, trFor(lang, 'boat_title')),
+        TutorialTarget(
+          id: 'voyage.hull',
+          child: _buildShipBars(context, _player!, trFor(lang, 'boat_title')),
+        ),
         const SizedBox(height: 16),
         Expanded(
           child: SingleChildScrollView(
@@ -653,17 +695,26 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ),
         _buildLog(context),
         const SizedBox(height: 12),
-        for (final (i, choice) in event.choices.indexed) ...[
-          if (i > 0) const SizedBox(height: 8),
-          _choiceButton(
-            key: Key('sea_choice_${choice.action.name}'),
-            primary: i == 0,
-            onPressed: _busy || !_canAfford(event, choice, enemyShips)
-                ? null
-                : () => _resolveEvent(event, choice, enemyShips: enemyShips),
-            label: _choiceLabel(event, choice, enemyShips, fr),
+        TutorialTarget(
+          id: 'voyage.choices',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final (i, choice) in event.choices.indexed) ...[
+                if (i > 0) const SizedBox(height: 8),
+                _choiceButton(
+                  key: Key('sea_choice_${choice.action.name}'),
+                  primary: i == 0,
+                  onPressed: _busy || !_canAfford(event, choice, enemyShips)
+                      ? null
+                      : () =>
+                          _resolveEvent(event, choice, enemyShips: enemyShips),
+                  label: _choiceLabel(event, choice, enemyShips, fr),
+                ),
+              ],
+            ],
           ),
-        ],
+        ),
       ],
     );
   }

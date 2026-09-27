@@ -90,7 +90,21 @@ enum TutorialTopic {
   ]),
   voyage(Icons.directions_boat_outlined, steps: [
     TutorialStep('tut_voyage_1'),
-    TutorialStep('tut_voyage_2'),
+    TutorialStep('tut_voyage_2', target: 'voyage.hull'),
+    TutorialStep('tut_voyage_3', target: 'voyage.choices'),
+    TutorialStep('tut_voyage_4', target: 'voyage.choices'),
+  ]),
+  // Never played on its own: a ship battle teaches itself with one-time
+  // tips as each rule comes up (see ShipBattlePanel). Played from the
+  // Tutorials list, it sums the rules up and brings those tips back for
+  // the next battle (see playTutorial).
+  shipBattle(Icons.sailing, steps: [
+    TutorialStep('tut_shipBattle_1'),
+    TutorialStep('tut_shipBattle_2'),
+    TutorialStep('tut_shipBattle_3'),
+    TutorialStep('tut_shipBattle_4'),
+    TutorialStep('tut_shipBattle_5'),
+    TutorialStep('tut_shipBattle_6'),
   ]),
   expedition(Icons.explore_outlined, steps: [
     TutorialStep('tut_expedition_1'),

@@ -4584,6 +4584,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Voyages',
     AppLanguage.fr: 'Traversées',
   },
+  'tut_shipBattle_title': {
+    AppLanguage.en: 'Ship battles',
+    AppLanguage.fr: 'Batailles navales',
+  },
   'tut_expedition_title': {
     AppLanguage.en: 'Expeditions',
     AppLanguage.fr: 'Expéditions',
@@ -4854,15 +4858,63 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_voyage_1': {
     AppLanguage.en:
-        'A crossing is a string of sea events: calm days mend the hull, storms cost it, wrecks can be salvaged.',
+        'A crossing takes a few days at sea, and each day brings something: a calm, a storm, a wreck or raiders.',
     AppLanguage.fr:
-        "Une traversée est une suite d'événements : les jours calmes réparent la coque, les tempêtes l'abîment, les épaves se fouillent.",
+        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose : un calme plat, une tempête, une épave ou des pillards.',
   },
   'tut_voyage_2': {
     AppLanguage.en:
-        'Raiders start a ship battle. Your party crews the stations; if the hull sinks, you limp back.',
+        'Watch the hull. Storms and raiders wear it down, calm days let you mend it. If it gives out, the Rusty Eel limps back to the port she left.',
     AppLanguage.fr:
-        'Les pillards déclenchent une bataille navale. Votre groupe tient les postes ; si la coque coule, vous rentrez au port de départ.',
+        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, la Rusty Eel regagne tant bien que mal son port de départ.',
+  },
+  'tut_voyage_3': {
+    AppLanguage.en:
+        'Each day, choose what the crew does. Some choices roll one of your stats, named on the button: pushing through a storm, boarding a wreck, outrunning raiders.',
+    AppLanguage.fr:
+        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton : forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
+  },
+  'tut_voyage_4': {
+    AppLanguage.en:
+        'Raiders can be paid off or outrun. Fight them and it becomes a ship battle, with your party crewing the stations.',
+    AppLanguage.fr:
+        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale : votre groupe tient les postes.',
+  },
+  'tut_shipBattle_1': {
+    AppLanguage.en:
+        'A ship battle is fought room by room. Each ship has four: the helm dodges, the guns charge the weapons, the bulwark raises shields and the hold repairs the hull.',
+    AppLanguage.fr:
+        'Une bataille navale se joue salle par salle. Chaque navire en a quatre : la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
+  },
+  'tut_shipBattle_2': {
+    AppLanguage.en:
+        'Tap a crew member, then a room, to post them there. A hand at a post makes the room work better, repairs it and fights its fires.',
+    AppLanguage.fr:
+        'Touchez un membre d’équipage, puis une salle, pour l’y poster. Une personne à son poste fait mieux fonctionner la salle, la répare et y combat le feu.',
+  },
+  'tut_shipBattle_3': {
+    AppLanguage.en:
+        'When a weapon is charged, tap it, then the enemy room to hit: the shot costs them hull and weakens that room. Hold the room instead to take aim, unless aiming is off in Settings.',
+    AppLanguage.fr:
+        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper : le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
+  },
+  'tut_shipBattle_4': {
+    AppLanguage.en:
+        'Close in or pull away, change each gun’s shot, and give each hand’s one order from the crew sheet. Side by side with their rail open, you can board them.',
+    AppLanguage.fr:
+        'Approchez ou éloignez-vous, changez la munition de chaque arme et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
+  },
+  'tut_shipBattle_5': {
+    AppLanguage.en:
+        'Then end the turn and they answer. Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left.',
+    AppLanguage.fr:
+        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque de la Rusty Eel cède, elle regagne tant bien que mal son port de départ.',
+  },
+  'tut_shipBattle_6': {
+    AppLanguage.en:
+        'The detailed tips are back: they will show again, one at a time, in your next ship battle.',
+    AppLanguage.fr:
+        'Les conseils détaillés sont de retour : ils s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
   },
   'tut_expedition_1': {
     AppLanguage.en:
