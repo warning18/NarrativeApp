@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.161.0+191]
+
+### Added
+- **Ship battles come alive.** Every shot now flies: a muzzle flash and
+  smoke at the gun, the ball arcing across the sea, then what it did on
+  arrival: splinters on a hit, a gold ward on a blocked one, a splash
+  beside a ship that slipped it, a flash on a critical, fibres from torn
+  rigging, a flare where a fire catches and bubbles where a leak opens.
+  Chain, grape and heated shot each look their own. It works both ways:
+  the enemy's volleys land on the Rusty Eel with the same effects.
+- Burning rooms smoke and throw embers and leaking holds drip, on either
+  ship, for as long as they last. Fog drifts, squalls bring rain and
+  lightning, and a tailwind streaks across the battle.
+- Sea events show: a rogue wave rolls across the sea, a creature
+  bubbles up under its ship, a wreck scatters debris. A ram splinters
+  both bulwarks, and boarding lines fly from whichever ship throws them.
+- Crew orders answer too: All hands sparkles on the rooms being fixed, a
+  blessing glows over the Eel, Brace and the void ward ring the hull, and
+  marking the helm or cutting rigging flashes on the enemy.
+- The loser goes down: the beaten ship tilts and sinks in bubbles before
+  the battle ends.
+- With reduced motion turned on in the phone's settings, none of this is
+  drawn and nothing waits for it.
+
+### Fixed
+- A ship with two or more leaks no longer breaks the battle screen.
+
 ## [1.160.0+190]
 
 ### Fixed
