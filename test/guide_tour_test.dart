@@ -240,4 +240,37 @@ void main() {
     await tester.tap(find.byKey(const Key('tutorial_skip')));
     await _wait(tester, 800);
   });
+
+  testWidgets('the light falls on its target inside the safe area',
+      (tester) async {
+    // The app lies inside its safe area (see main.dart): the tour's box
+    // starts below the status bar, and its light must follow.
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    tester.view.padding = const FakeViewPadding(top: 40, bottom: 24);
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(ProviderScope(
+      overrides: [tutorialAutoShowProvider.overrideWithValue(true)],
+      child: MaterialApp(
+        theme: buildAppTheme(stitchedInkScheme(Brightness.dark)),
+        builder: (context, child) => SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: child!,
+          ),
+        ),
+        home: const _Page(),
+      ),
+    ));
+    await _wait(tester);
+    expect(find.byKey(const Key('guide_dog')), findsOneWidget);
+    final target = tester.getRect(find.text('Points: 2'));
+    final hole = debugGuideHole!;
+    // The overlay starts 40 below the screen's top.
+    expect(hole.top, closeTo(target.top - 40, 0.5));
+    expect(hole.left, closeTo(target.left, 0.5));
+    expect(hole.height, closeTo(target.height, 0.5));
+    await tester.tap(find.byKey(const Key('tutorial_skip')));
+    await _wait(tester, 800);
+  });
 }

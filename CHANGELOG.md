@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.160.0+190]
+
+### Fixed
+- **The tutorial lights up the right thing.** The app sits inside the
+  phone's safe area, but the guide measured the screen from its very top,
+  so the gold frame and the dimmed cut-out landed a status bar's height
+  below what the dog was talking about, and the speech bubble's tail
+  missed the dog. The guide now measures from its own corner.
+- The bubble's tail now meets the sitting dog's head, and the dog sits
+  right under a lit part instead of a gap away.
+- A part filling most of the screen (a whole list) is no longer framed:
+  the guide just talks about it.
+- Skip moves to the left when the lit button is in the top-right corner
+  (Compare in the inventory), instead of covering it.
+- A step about something not on screen yet (the harbour before it is
+  built, Compare in the skill tree, a die's skills when there are none)
+  is left out rather than described over nothing.
+
 ## [1.159.0+189]
 
 The release that brings every open branch together: the ElevenLabs voice
