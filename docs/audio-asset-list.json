@@ -10017,7 +10017,7 @@
       "trigger": "dog angel form",
       "variations": 3,
       "priority": "P2",
-      "notes": "step: wing flutter / hoof click"
+      "notes": "Paw steps with a soft wing flutter"
     },
     {
       "id": "sfx_dog_angel_bark",
@@ -10030,7 +10030,7 @@
       "trigger": "dog angel form",
       "variations": 3,
       "priority": "P2",
-      "notes": "bark: chime tail / reverb growl"
+      "notes": "Bark with a chime tail"
     },
     {
       "id": "sfx_dog_angel_shimmer",
@@ -10043,7 +10043,7 @@
       "trigger": "dog angel form",
       "variations": 3,
       "priority": "P2",
-      "notes": "shimmer: chime shimmer"
+      "notes": "Chime shimmer"
     },
     {
       "id": "sfx_dog_demon_step",
@@ -10056,7 +10056,7 @@
       "trigger": "dog demon form",
       "variations": 3,
       "priority": "P2",
-      "notes": "step: wing flutter / hoof click"
+      "notes": "Hoof-like clicks"
     },
     {
       "id": "sfx_dog_demon_bark",
@@ -10069,7 +10069,7 @@
       "trigger": "dog demon form",
       "variations": 3,
       "priority": "P2",
-      "notes": "bark: chime tail / reverb growl"
+      "notes": "Growling bark with reverb"
     },
     {
       "id": "sfx_dog_demon_ember",
@@ -10082,7 +10082,7 @@
       "trigger": "dog demon form",
       "variations": 3,
       "priority": "P2",
-      "notes": "ember: ember crackle"
+      "notes": "Ember crackle"
     },
     {
       "id": "vo_kelda_bark_crit",

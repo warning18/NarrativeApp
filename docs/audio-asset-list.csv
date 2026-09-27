@@ -768,12 +768,12 @@ sfx_dog_transform,sfx,SFX,False,Dog companion,Dog,Alignment form change,alignmen
 sfx_guide_appear,sfx,SFX,False,Dog companion,Dog,Tutorial guide appears (18 topics),guide_tour,1,P2,
 sfx_guide_next,sfx,SFX,False,Dog companion,Dog,Tutorial next step,guide next,1,P2,
 sfx_guide_skip,sfx,SFX,False,Dog companion,Dog,Tutorial skipped,guide skip,1,P2,
-sfx_dog_angel_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): step,dog angel form,3,P2,step: wing flutter / hoof click
-sfx_dog_angel_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): bark,dog angel form,3,P2,bark: chime tail / reverb growl
-sfx_dog_angel_shimmer,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): shimmer,dog angel form,3,P2,shimmer: chime shimmer
-sfx_dog_demon_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): step,dog demon form,3,P2,step: wing flutter / hoof click
-sfx_dog_demon_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): bark,dog demon form,3,P2,bark: chime tail / reverb growl
-sfx_dog_demon_ember,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): ember,dog demon form,3,P2,ember: ember crackle
+sfx_dog_angel_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): step,dog angel form,3,P2,Paw steps with a soft wing flutter
+sfx_dog_angel_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): bark,dog angel form,3,P2,Bark with a chime tail
+sfx_dog_angel_shimmer,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): shimmer,dog angel form,3,P2,Chime shimmer
+sfx_dog_demon_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): step,dog demon form,3,P2,Hoof-like clicks
+sfx_dog_demon_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): bark,dog demon form,3,P2,Growling bark with reverb
+sfx_dog_demon_ember,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): ember,dog demon form,3,P2,Ember crackle
 vo_kelda_bark_crit,vo,VO,False,Voice-over,Companion barks,kelda: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
 vo_kelda_bark_dodge,vo,VO,False,Voice-over,Companion barks,kelda: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
 vo_kelda_bark_fight_start,vo,VO,False,Voice-over,Companion barks,kelda: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
