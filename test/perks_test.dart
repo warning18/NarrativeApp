@@ -76,9 +76,11 @@ void main() {
       expect(rollPerkOffer(everything, Random(1)), isEmpty);
     });
 
-    test('one pick per level reached from the second', () {
+    test('one pick every second level', () {
       expect(perkPicksFor(1, 2), 1);
-      expect(perkPicksFor(3, 5), 2);
+      expect(perkPicksFor(2, 3), 0);
+      expect(perkPicksFor(3, 5), 1);
+      expect(perkPicksFor(1, 7), 3);
       expect(perkPicksFor(4, 4), 0);
     });
 
@@ -132,9 +134,9 @@ void main() {
     test('a quest that levels brings its picks too', () async {
       final notifier = await _notifierWith(
           baseSession(level: 1, activeQuestIds: const ['q']));
-      await notifier.completeQuest('q', rewardXP: 100 + 200);
-      expect(notifier.state.level, 3);
-      expect(notifier.state.pendingPerkPicks, 2);
+      await notifier.completeQuest('q', rewardXP: 100 + 200 + 300);
+      expect(notifier.state.level, 4);
+      expect(notifier.state.pendingPerkPicks, 2, reason: 'levels 2 and 4');
     });
 
     test('perks survive the save file; an old save has none', () {

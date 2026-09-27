@@ -2,8 +2,10 @@ import 'dart:math';
 
 import '../combat/gear_effects.dart';
 
-/// Level-up perks (v1.162): every level from the second offers three perks
-/// to choose one from, on top of the stat points. Most can be taken more
+/// Level-up perks (v1.162): every second level (2, 4, 6...) offers three
+/// perks to choose one from, on top of the stat points. (One a level made
+/// fights noticeably easier in the playthrough simulator; one every other
+/// level keeps them where they were.) Most can be taken more
 /// than once, up to their [PerkInfo.maxRank]; each rank adds the same again.
 /// Perks are kept through permadeath, like levels and stats; a New Game+
 /// starts without them.
@@ -149,7 +151,15 @@ List<Perk> perksAvailable(Map<String, int> ranks) => [
 List<Perk> rollPerkOffer(Map<String, int> ranks, Random random) =>
     (perksAvailable(ranks)..shuffle(random)).take(perkOfferSize).toList();
 
-/// Perk picks a level-up from [levelBefore] to [levelAfter] brings: one
-/// per level reached from the second on.
-int perkPicksFor(int levelBefore, int levelAfter) =>
-    max(0, levelAfter - max(1, levelBefore));
+/// Levels that bring a perk to choose: every [perkLevelStep]th.
+const int perkLevelStep = 2;
+
+/// Perk picks a level-up from [levelBefore] to [levelAfter] brings: one per
+/// perk level (see [perkLevelStep]) reached on the way.
+int perkPicksFor(int levelBefore, int levelAfter) {
+  var picks = 0;
+  for (var level = max(1, levelBefore) + 1; level <= levelAfter; level++) {
+    if (level % perkLevelStep == 0) picks++;
+  }
+  return picks;
+}

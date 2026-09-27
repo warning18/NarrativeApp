@@ -3468,9 +3468,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Rang {n}/{max}',
   },
   'perks_none': {
-    AppLanguage.en: 'No perks yet. Each level brings one to choose.',
+    AppLanguage.en: 'No perks yet. Every second level brings one to choose.',
     AppLanguage.fr:
-        'Aucun atout pour l’instant. Chaque niveau en apporte un à choisir.',
+        'Aucun atout pour l’instant. Un niveau sur deux en apporte un à choisir.',
   },
   'perk_steadyHands': {
     AppLanguage.en: 'Steady Hands',
@@ -3482,7 +3482,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'perk_apothecary': {
     AppLanguage.en: 'Apothecary',
-    AppLanguage.fr: 'Apothicairerie',
+    AppLanguage.fr: 'Apothicaire',
   },
   'perk_apothecary_desc': {
     AppLanguage.en: 'Potions heal 10 more.',

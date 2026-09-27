@@ -8,6 +8,69 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.162.0+192]
+
+Companions with opinions, quests that ask how they end, decisions at sea,
+and a perk to choose as the character grows.
+
+### Added
+- **Companion approval.** Each companion cares about kindness, cruelty
+  and profit in their own way (Maren and Tobin about mercy, Malrik,
+  Sable and Grosh about the purse, and so on). Every choice made in
+  front of them moves their approval, and they say so ("Maren
+  approves."). A few finale choices have their own reactions: giving the
+  Sovereign one of the crew costs everyone's trust. Benched companions
+  don't see what they weren't there for.
+  - **Friendly** companions deal +5% damage; **devoted** ones +10% damage
+    and health.
+  - **Wary** companions deal −10% damage and warn the player. Pushed
+    further, a companion leaves the party for good, in their own words.
+  - At the camp, each companion's card shows the meter, what they like
+    and dislike, and a **drink to share** once a chapter (gold for a
+    little approval).
+- **Quest turn-in choices.** Six quests ask how they're settled, each way
+  with its own gold, alignment and companion reactions:
+  - take the informant's cut or give the goods back;
+  - keep the smuggler's purse or refund the refugees (Liora watches);
+  - pocket Tern Row's toll or return it;
+  - guard the Reckoning Wall, copy its list, or sell it to the
+    Inquisition;
+  - take the sapper's three coins or leave them;
+  - absolve the penitent, carry out the sentence, or rob him.
+- **Choices at sea.** Every day of a voyage asks what the crew does:
+  - raiders: fight, pay them off (twice their bounty), or try to outrun
+    them (Dexterity; failing costs hull, then it's a fight);
+  - storms: ride them out, push through under full sail (Strength:
+    nothing lost, or double the damage), or shelter in a cove at the
+    cost of one more day at sea;
+  - derelicts: salvage, board her (Perception: 2.5 times the gold, or a
+    wound), or leave her;
+  - calm days: repairs or rest (a quarter of the health back).
+- **Level-up perks.** Every second level offers three perks to choose
+  one from (the level-up window and the character sheet both have the
+  choice): Steady Hands (a roll more each round), Apothecary, Keen Eye,
+  Light Feet, Heavy Hand, Iron Hide, Vigor, Battle Rhythm (momentum
+  after 2 hits), Plunderer, Quick Study, Leader (companions +5% damage),
+  Deep Well and Last Stand (one killing blow a fight leaves 1 health).
+  Most can be taken up to three times. Perks stay through permadeath
+  like levels do.
+
+### Balance
+- The playthrough simulator now plays the v1.161 rules (enemy intents,
+  weaknesses, the momentum drain, the enemy heals) and v1.162's perks.
+  It ran 40 playthroughs per variant on two seed sets:
+  - **old rules:** 0.3 and 1.1 losses per run, with stuck runs (26
+    losses to the White Admiral in one);
+  - **new rules, a perk every level:** 0.1 and 0.2 losses per run;
+  - **new rules, a perk every other level (shipped):** 0.3 and 0.2
+    losses per run, worst run 3, first-attempt wins 98–100% in every
+    chapter.
+
+  A perk every level made fights noticeably easier; one every other level
+  keeps them where they were. Per run, enemies wind up about 10 times (a
+  quarter of them broken by the party), guard 13 times and rally 10
+  times; the party lands about 26 hits on a weakness.
+
 ## [1.161.0+191]
 
 Fights that change shape from turn to turn, detours with a choice in them,

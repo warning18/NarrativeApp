@@ -326,7 +326,7 @@ class PlayerSession {
   /// Level-up perks taken (see perks.dart): perk name -> rank.
   final Map<String, int> perkRanks;
 
-  /// Perks still to choose, one per level reached; and the three on offer
+  /// Perks still to choose, one every second level; and the three on offer
   /// for the next pick, kept so reopening the choice doesn't redraw it.
   final int pendingPerkPicks;
   final List<String> perkOffer;
@@ -1727,7 +1727,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
-      pendingPerkPicks: state.pendingPerkPicks + leveled.levelsGained,
+      pendingPerkPicks:
+          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
@@ -2901,7 +2902,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
       skillPoints: leveled.skillPoints + skillPointsGained,
-      pendingPerkPicks: state.pendingPerkPicks + leveled.levelsGained,
+      pendingPerkPicks:
+          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       potionCount: state.potionCount + potionsGained,
