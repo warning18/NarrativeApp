@@ -30,6 +30,15 @@ The party speaks up about what the player does.
 - "Work on offer" is for side jobs: a choice that leads to the main quest
   is no longer tagged (both ways over the river were).
 
+### Fixed
+- **The story no longer calls the character a man.** After the rooftop
+  ledger, "what kind of man kept that ledger" (EN and FR) and "un homme
+  qui vient de choisir la clémence" (FR) now say "person" and
+  « quiconque ».
+- **French speaks to the player as « vous » from the first screen**: the
+  opening question, "Choose who you are" and "Keep what's left of
+  yourself" were in « tu ».
+
 ## [1.166.0+196]
 
 A review of the whole PR: fifteen bugs fixed and four balance changes.

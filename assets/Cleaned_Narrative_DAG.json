@@ -2,7 +2,7 @@
   "0": {
     "id": "0",
     "description": "Every story worth telling, I have come to learn, insists on lying about where it begins — and this one is no exception, though it will at least have the decency to ask first. Before the noise, before the invasion, before the blood that would not stay where blood is supposed to stay, there is only a single question, patient as a creditor: who were you, before all this? In this world, power is not held; it is worn. The Crusade sews its saints into white standards and paints its faces onto porcelain. The painted folk of the old forests carry their sigils on skin and bark. The stone-marked cut theirs into steel and wall. The inked carry it under scar tissue, where it cannot be taken. And there are those the tear marked without asking, who carry a power nobody sewed, painted, cut or inked, and who are welcome nowhere for it.",
-    "description_fr": "Toute histoire digne d'être racontée, j'ai fini par l'apprendre, ment sur l'endroit où elle commence — et celle-ci ne fait pas exception, bien qu'elle ait au moins la décence de le demander d'abord. Avant le vacarme, avant l'invasion, avant le sang qui refusait obstinément de rester là où le sang est censé rester, il n'y a qu'une seule question, patiente comme un créancier : qui étais-tu, avant tout cela ? Dans ce monde, le pouvoir ne se tient pas ; il se porte. La Croisade coud ses saints dans des étendards blancs et peint ses visages sur la porcelaine. Le peuple peint des vieilles forêts porte ses sigils sur la peau et l'écorce. Les marqués de pierre taillent les leurs dans l'acier et le mur. Les encrés le portent sous la cicatrice, là où on ne peut le prendre. Et il y a ceux que la déchirure a marqués sans demander, qui portent un pouvoir que nul n'a cousu, peint, taillé ni encré, et que nul n'accueille pour cela.",
+    "description_fr": "Toute histoire digne d'être racontée, j'ai fini par l'apprendre, ment sur l'endroit où elle commence — et celle-ci ne fait pas exception, bien qu'elle ait au moins la décence de le demander d'abord. Avant le vacarme, avant l'invasion, avant le sang qui refusait obstinément de rester là où le sang est censé rester, il n'y a qu'une seule question, patiente comme un créancier : qui étiez-vous, avant tout cela ? Dans ce monde, le pouvoir ne se tient pas ; il se porte. La Croisade coud ses saints dans des étendards blancs et peint ses visages sur la porcelaine. Le peuple peint des vieilles forêts porte ses sigils sur la peau et l'écorce. Les marqués de pierre taillent les leurs dans l'acier et le mur. Les encrés le portent sous la cicatrice, là où on ne peut le prendre. Et il y a ceux que la déchirure a marqués sans demander, qui portent un pouvoir que nul n'a cousu, peint, taillé ni encré, et que nul n'accueille pour cela.",
     "context_taxonomy": {
       "ui_theme": "prologue",
       "mood": "neutral",
@@ -14,7 +14,7 @@
     "choices": [
       {
         "text": "Choose who you are...",
-        "text_fr": "Choisis qui tu es...",
+        "text_fr": "Choisissez qui vous êtes...",
         "next_id": "100",
         "opensCharacterCreation": true
       }
@@ -1132,7 +1132,7 @@
       },
       {
         "text": "Keep what's left of yourself",
-        "text_fr": "Garder ce qu'il reste de toi",
+        "text_fr": "Garder ce qu'il reste de soi",
         "next_id": "1001",
         "showIfFlags": [
           "lysa_lost"
@@ -3168,7 +3168,7 @@
   "965_mercy": {
     "id": "965_mercy",
     "description": "Kroll's grip finally failed him, sooner than it might have; I had seen to that myself, unwilling to stretch even a monster's dying out the slow, deliberate way his Crusade had stretched out this whole night. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like triumph and more like a debt quietly marked paid. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because anyone who has just chosen mercy over an available cruelty generally prefers not to stand around admiring the choice.",
-    "description_fr": "La prise de Kroll finit par céder, plus tôt qu'elle ne l'aurait pu ; j'y avais veillé moi-même, refusant d'étirer même l'agonie d'un monstre de cette façon lente et délibérée dont sa Croisade avait étiré toute cette nuit. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à un triomphe qu'à une dette discrètement soldée. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce qu'un homme qui vient de choisir la clémence plutôt qu'une cruauté à portée de main préfère généralement ne pas s'attarder à admirer son choix.",
+    "description_fr": "La prise de Kroll finit par céder, plus tôt qu'elle ne l'aurait pu ; j'y avais veillé moi-même, refusant d'étirer même l'agonie d'un monstre de cette façon lente et délibérée dont sa Croisade avait étiré toute cette nuit. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à un triomphe qu'à une dette discrètement soldée. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que quiconque vient de choisir la clémence plutôt qu'une cruauté à portée de main préfère généralement ne pas s'attarder à admirer son choix.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "grim",
@@ -3188,7 +3188,7 @@
       },
       {
         "text": "Keep what's left of yourself",
-        "text_fr": "Garder ce qu'il reste de toi",
+        "text_fr": "Garder ce qu'il reste de soi",
         "next_id": "1001",
         "showIfFlags": [
           "lysa_lost"
@@ -3215,8 +3215,8 @@
   },
   "965_vengeance": {
     "id": "965_vengeance",
-    "description": "Kroll's grip finally failed him, and not quickly; I had made certain of that, keeping careful, deliberate count against everything his mask had cost me since the tavern. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like victory and more like the first installment on a debt I suspected I had only just started collecting. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because I found I did not, just yet, want to examine too closely what kind of man kept that particular kind of ledger.",
-    "description_fr": "La prise de Kroll finit par céder, et pas vite ; j'y avais veillé, tenant un compte soigneux et délibéré de tout ce que son masque m'avait coûté depuis la taverne. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à une victoire qu'au premier versement d'une dette dont je soupçonnais n'avoir fait que commencer le recouvrement. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que je préférais, pour l'instant, ne pas examiner de trop près quelle sorte d'homme tenait ce genre de registre.",
+    "description": "Kroll's grip finally failed him, and not quickly; I had made certain of that, keeping careful, deliberate count against everything his mask had cost me since the tavern. He dropped away into the black water without ceremony or, so far as I could tell, further comment, the chain rattling loose and suddenly weightless in my hands in a way that felt less like victory and more like the first installment on a debt I suspected I had only just started collecting. I started to climb, because climbing, unlike almost everything else that had happened to me lately, was at least a task with an obvious and achievable end, and because I found I did not, just yet, want to examine too closely what kind of person kept that particular kind of ledger.",
+    "description_fr": "La prise de Kroll finit par céder, et pas vite ; j'y avais veillé, tenant un compte soigneux et délibéré de tout ce que son masque m'avait coûté depuis la taverne. Il tomba dans l'eau noire sans cérémonie ni, autant que je pus en juger, commentaire supplémentaire, la chaîne cliquetant, soudain lâche et sans poids entre mes mains, d'une façon qui ressemblait moins à une victoire qu'au premier versement d'une dette dont je soupçonnais n'avoir fait que commencer le recouvrement. Je me mis à grimper, car grimper, contrairement à presque tout ce qui m'était arrivé ces derniers temps, était au moins une tâche dotée d'une fin claire et atteignable, et parce que je préférais, pour l'instant, ne pas examiner de trop près quelle sorte de personne tenait ce genre de registre.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "action",
@@ -3236,7 +3236,7 @@
       },
       {
         "text": "Keep what's left of yourself",
-        "text_fr": "Garder ce qu'il reste de toi",
+        "text_fr": "Garder ce qu'il reste de soi",
         "next_id": "1001",
         "showIfFlags": [
           "lysa_lost"
