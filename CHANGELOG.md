@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.167.0+197]
+
+The party speaks up about what the player does.
+
+### Added
+- **Companions remark on your choices.** When a choice moves the party (a
+  kind or cruel deed, one that fills the purse, a scene's own reaction),
+  the companion who took it hardest says so in their own voice, and the
+  next scene opens with their words under their name. A check passed or
+  failed, or a fight slipped past, gets a remark too, at most once every
+  three choices. Companions take turns and use all their lines before one
+  repeats. The eight companions have about twenty lines each, in English
+  and French.
+- Quest turn-ins and expeditions quote the remark in the approval notice.
+
+### Changed
+- A companion whose opinion crosses into "friendly" can still remark; only
+  the three changes with words of their own (trusting the player
+  completely, losing patience, walking out) take the remark's place.
+- "Work on offer" is for side jobs: a choice that leads to the main quest
+  is no longer tagged (both ways over the river were).
+
 ## [1.166.0+196]
 
 A review of the whole PR: fifteen bugs fixed and four balance changes.

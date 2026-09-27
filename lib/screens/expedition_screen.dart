@@ -9,6 +9,7 @@ import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_loop.dart';
+import '../data/companion_remarks.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
@@ -400,7 +401,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         goldIsProfit: false,
       );
       if (reactions.isNotEmpty && mounted) {
-        await showApprovalReactions(context, ref, reactions);
+        await showApprovalReactions(context, ref, reactions,
+            deed: RemarkDeed(
+                alignmentMod: choice.alignmentMod,
+                approvalMods: choice.approvalMods));
       }
     }
     if (!mounted) return;

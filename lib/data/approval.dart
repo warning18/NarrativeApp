@@ -108,6 +108,15 @@ class ApprovalChange {
 
   /// They have had enough: this change took them to [leavingApproval].
   bool get leaves => tierAfter == ApprovalTier.estranged;
+
+  /// The change is one the companion puts in their own words (see
+  /// approval_notice.dart): they walk out, come to trust the player
+  /// completely, or start losing patience.
+  bool get hasOwnWords =>
+      tierChanged &&
+      (leaves ||
+          (tierAfter == ApprovalTier.devoted && delta > 0) ||
+          (tierAfter == ApprovalTier.wary && delta < 0));
 }
 
 /// Gold it costs to share a drink with a companion at the camp in

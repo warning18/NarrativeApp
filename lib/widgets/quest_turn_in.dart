@@ -7,6 +7,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../data/companion_remarks.dart';
 import '../data/turn_in_choices.dart';
 import 'approval_notice.dart';
 import 'immersive_notice.dart';
@@ -118,11 +119,16 @@ Future<void> turnInQuest(
   }
   // The party's reaction to how it was settled (see approval.dart); a
   // companion who just joined sees it too.
-  final reactions = await notifier.reactToDeed(
-    companions: companions,
+  final deed = RemarkDeed(
     alignmentMod: alignmentMod,
     goldMod: picked?.profitOver(questGold) ?? 0,
     approvalMods: picked?.approvalMods ?? const {},
+  );
+  final reactions = await notifier.reactToDeed(
+    companions: companions,
+    alignmentMod: deed.alignmentMod,
+    goldMod: deed.goldMod,
+    approvalMods: deed.approvalMods,
   );
   final newAchievements =
       await notifier.checkAchievements(totalCompanionCount: companions.length);
@@ -154,7 +160,13 @@ Future<void> turnInQuest(
     if (achievementNames.isNotEmpty)
       '${trFor(lang, 'achievement_unlocked_prefix')}: '
           '${achievementNames.join(', ')}',
-    ...approvalReactionLines(reactions, companions, (key) => trFor(lang, key)),
+    ...approvalReactionLines(
+      reactions,
+      companions,
+      (key) => trFor(lang, key),
+      remark: speakUpAbout(ref, reactions: reactions, deed: deed),
+      french: lang == AppLanguage.fr,
+    ),
   ];
   showImmersiveNotice(
     context,

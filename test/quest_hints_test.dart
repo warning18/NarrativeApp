@@ -42,6 +42,30 @@ void main() {
     }
   });
 
+  test('the main quest is no side job', () {
+    final quests =
+        jsonDecode(File('assets/gamedata/quests.json').readAsStringSync())
+            as Map<String, dynamic>;
+    final main = mainQuestIdsOf(quests);
+    expect(main, contains('q_retrieve_banner'));
+    expect(main, isNot(contains('q_ch2_terns_toll')));
+    // Both ways over the river hand out the Heirloom of Alster.
+    for (final choice in story.nodeFor('250')!.choices) {
+      expect(
+          questOfferedAhead(
+              choice: choice, story: story, takenQuestIds: const {}),
+          isTrue);
+      expect(
+          questOfferedAhead(
+              choice: choice,
+              story: story,
+              takenQuestIds: const {},
+              mainQuestIds: main),
+          isFalse,
+          reason: choice.text);
+    }
+  });
+
   test('a way back to a hub is not tagged for the jobs it holds', () {
     final back = choiceTo('2015_ternrow_talked', '2015');
     expect(

@@ -10,15 +10,21 @@ import 'story_repository.dart';
 ///
 /// A hub (a place with many things to do, a settlement) isn't looked into:
 /// a way back to one would otherwise be tagged for every job it holds,
-/// and those show on its own choices there.
+/// and those show on its own choices there. The main quest
+/// ([mainQuestIds]) isn't a side job: the story walks the player into it
+/// whichever way they go.
 bool questOfferedAhead({
   required StoryChoice choice,
   required StoryData story,
   required Set<String> takenQuestIds,
+  Set<String> mainQuestIds = const {},
 }) {
   bool offers(StoryChoice c) {
     final id = c.unlockQuestId;
-    return id != null && id.isNotEmpty && !takenQuestIds.contains(id);
+    return id != null &&
+        id.isNotEmpty &&
+        !takenQuestIds.contains(id) &&
+        !mainQuestIds.contains(id);
   }
 
   bool isHub(StoryNode node) =>
@@ -46,6 +52,12 @@ bool questOfferedAhead({
   }
   return false;
 }
+
+/// The ids of [quests] (the quests table) that belong to the main quest.
+Set<String> mainQuestIdsOf(Map<String, dynamic> quests) => {
+      for (final entry in quests.entries)
+        if ((entry.value as Map?)?['category']?.toString() == 'Main') entry.key,
+    };
 
 /// More choices than this make a node a hub (the story view's own rule).
 const int hubChoiceCount = 5;
