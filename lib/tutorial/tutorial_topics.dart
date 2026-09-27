@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 /// One line of a tour: what the guide says (`tut_<topic>_<n>` in
 /// app_strings.dart) and, when [target] is set, the part of the screen it
 /// lights up while it says it (see TutorialTarget). A step whose target
-/// isn't on screen is still said, with nothing lit.
+/// isn't on screen is still said, with nothing lit, unless it is
+/// [optional]: then it is left out (the harbour before it is built).
 class TutorialStep {
-  const TutorialStep(this.textKey, {this.target});
+  const TutorialStep(this.textKey, {this.target, this.optional = false});
 
   final String textKey;
   final String? target;
+  final bool optional;
 }
 
 /// A feature with a tour of its own. Its tour plays the first time the
@@ -34,7 +36,7 @@ enum TutorialTopic {
   camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
     TutorialStep('tut_camp_1', target: 'camp.town'),
     TutorialStep('tut_camp_2', target: 'camp.tray'),
-    TutorialStep('tut_camp_3', target: 'camp.boat'),
+    TutorialStep('tut_camp_3', target: 'camp.boat', optional: true),
     TutorialStep('tut_camp_4', target: 'camp.roster'),
     TutorialStep('tut_camp_5', target: 'camp.sail'),
   ]),
@@ -54,12 +56,12 @@ enum TutorialTopic {
     TutorialStep('tut_skills_5', target: 'skills.views'),
     TutorialStep('tut_skills_2', target: 'skills.list'),
     TutorialStep('tut_skills_3', target: 'skills.craft'),
-    TutorialStep('tut_skills_4', target: 'skills.compare'),
+    TutorialStep('tut_skills_4', target: 'skills.compare', optional: true),
   ]),
   dice(Icons.casino_outlined, steps: [
-    TutorialStep('tut_dice_1', target: 'dice.choice'),
+    TutorialStep('tut_dice_1', target: 'dice.choice', optional: true),
     TutorialStep('tut_dice_2', target: 'dice.faces'),
-    TutorialStep('tut_dice_3', target: 'dice.skills'),
+    TutorialStep('tut_dice_3', target: 'dice.skills', optional: true),
   ]),
   inventory(Icons.backpack_outlined, steps: [
     TutorialStep('tut_inventory_1', target: 'inventory.body'),
