@@ -90,11 +90,16 @@ class ApprovalChange {
     required this.companionId,
     required this.before,
     required this.after,
+    this.replacedBy,
   });
 
   final String companionId;
   final int before;
   final int after;
+
+  /// When they walked out: the benched companion who took their seat in
+  /// the party, if there was one to take it.
+  final String? replacedBy;
 
   int get delta => after - before;
   ApprovalTier get tierBefore => approvalTierFor(before);

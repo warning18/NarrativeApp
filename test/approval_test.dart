@@ -139,6 +139,45 @@ void main() {
       expect(state.departedAllyIds, ['tobin']);
       expect(state.lostAllyIds, isEmpty,
           reason: 'the story\'s {lost} lines are for companions it took');
+      expect(tobin.replacedBy, isNull, reason: 'nobody on the bench');
+    });
+
+    test('the seat left empty goes to the bench, the warmest first', () async {
+      final notifier = await _notifierWith(baseSession(recruitedAllies: [
+        _ally('tobin', approval: -8),
+        _ally('grosh'),
+        _ally('sable', approval: 1),
+        _ally('maren', approval: 6),
+        _ally('liora', approval: 6),
+      ], activeAllyIds: const [
+        'tobin',
+        'grosh'
+      ]));
+      final reactions = await notifier.applyChoiceEffects(
+          alignmentMod: -5, companions: companions);
+      final tobin = reactions.singleWhere((r) => r.companionId == 'tobin');
+      // Maren and Liora tie; Maren was recruited first.
+      expect(tobin.replacedBy, 'maren');
+      expect(notifier.state.activeAllyIds, ['grosh', 'maren']);
+    });
+
+    test('a companion whose house isn\'t built can\'t step in', () async {
+      Future<ApprovalChange> walkOut(List<String> built) async {
+        final notifier = await _notifierWith(
+            baseSession(builtHouseIds: built, recruitedAllies: [
+          _ally('tobin', approval: -8),
+          _ally('kelda', approval: 15),
+          _ally('grosh'),
+        ], activeAllyIds: const [
+          'tobin'
+        ]));
+        final reactions = await notifier.applyChoiceEffects(
+            alignmentMod: -5, companions: companions);
+        return reactions.singleWhere((r) => r.companionId == 'tobin');
+      }
+
+      expect((await walkOut(const [])).replacedBy, 'grosh');
+      expect((await walkOut(const ['keldas_hall'])).replacedBy, 'kelda');
     });
 
     test('a quest outcome can name its own reactions', () async {
@@ -154,7 +193,11 @@ void main() {
         const [
           ApprovalChange(companionId: 'maren', before: 10, after: 13),
           ApprovalChange(companionId: 'grosh', before: -3, after: -6),
-          ApprovalChange(companionId: 'malrik', before: -10, after: -14),
+          ApprovalChange(
+              companionId: 'malrik',
+              before: -10,
+              after: -14,
+              replacedBy: 'kelda'),
         ],
         companions,
         (key) => key,
@@ -164,6 +207,25 @@ void main() {
       expect(lines, contains(contains("I don't work for promises")));
       expect(lines, contains(contains('Nothing profitable, either')));
       expect(lines, contains('approval_leaves_notice'));
+      expect(lines.last, 'approval_replaced_notice',
+          reason: 'who took the seat comes right after');
+    });
+
+    test('the notice names who stepped in', () {
+      final lines = approvalReactionLines(
+        const [
+          ApprovalChange(
+              companionId: 'malrik',
+              before: -10,
+              after: -14,
+              replacedBy: 'kelda'),
+        ],
+        companions,
+        (key) => key == 'approval_replaced_notice'
+            ? '{name} takes {left}’s place in the party.'
+            : key,
+      );
+      expect(lines.last, 'Kelda takes Malrik Sarn’s place in the party.');
     });
   });
 

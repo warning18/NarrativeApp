@@ -1505,28 +1505,65 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     }
     if (reactions.isEmpty) return reactions;
     state = state.copyWith(recruitedAllies: allies);
-    for (final reaction in reactions.where((r) => r.leaves)) {
-      _departAlly(reaction.companionId);
+    for (var i = 0; i < reactions.length; i++) {
+      final reaction = reactions[i];
+      if (!reaction.leaves) continue;
+      reactions[i] = ApprovalChange(
+        companionId: reaction.companionId,
+        before: reaction.before,
+        after: reaction.after,
+        replacedBy: _departAlly(reaction.companionId, companions),
+      );
     }
     return reactions;
   }
 
   /// [companionId] has had enough and walks out: off the roster and the
-  /// party, and never back this run.
-  void _departAlly(String companionId) {
+  /// party, and never back this run. Their seat doesn't stay empty (a
+  /// finale fought one companion short can be out of reach): the benched
+  /// companion who thinks best of the player steps in, the earlier
+  /// recruit on a tie, as long as their house is built. Returns who did.
+  String? _departAlly(String companionId, Map<String, dynamic> companions) {
+    final roster = [
+      for (final ally in state.recruitedAllies)
+        if (ally.companionId != companionId) ally,
+    ];
+    final active = [
+      for (final id in state.activeAllyIds)
+        if (id != companionId) id,
+    ];
+    String? replacement;
+    if (state.activeAllyIds.contains(companionId)) {
+      final bench = [
+        for (final ally in roster)
+          if (!active.contains(ally.companionId) &&
+              _houseBuiltFor(companions[ally.companionId]))
+            ally,
+      ];
+      if (bench.isNotEmpty) {
+        replacement = bench
+            .reduce((best, ally) => ally.approval > best.approval ? ally : best)
+            .companionId;
+        active.add(replacement);
+      }
+    }
     state = state.copyWith(
-      recruitedAllies: [
-        for (final ally in state.recruitedAllies)
-          if (ally.companionId != companionId) ally,
-      ],
-      activeAllyIds: [
-        for (final id in state.activeAllyIds)
-          if (id != companionId) id,
-      ],
+      recruitedAllies: roster,
+      activeAllyIds: active,
       departedAllyIds: state.departedAllyIds.contains(companionId)
           ? state.departedAllyIds
           : [...state.departedAllyIds, companionId],
     );
+    return replacement;
+  }
+
+  /// Whether [companion]'s own house gate (companions.json
+  /// `requiredHouseId`), if any, is built.
+  bool _houseBuiltFor(Object? companion) {
+    final house = companion is Map<String, dynamic>
+        ? companion['requiredHouseId']?.toString() ?? ''
+        : '';
+    return house.isEmpty || state.builtHouseIds.contains(house);
   }
 
   /// Shares a drink with [companionId] at the camp: [giftCostFor] the

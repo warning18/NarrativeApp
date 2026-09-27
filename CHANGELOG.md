@@ -8,6 +8,26 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.165.0+195]
+
+Two fixes from a 50-playthrough simulation of 1.164.
+
+### Fixed
+- **A companion who walks out no longer leaves an empty seat.** The
+  benched companion who thinks best of the player steps in (the earlier
+  recruit on a tie, and only once their house is built), and the notice
+  says who took the place. In the simulation, players who never refilled
+  the seat by hand fought the finale a companion short: 2 to 5 runs in 50
+  got stuck on the Void Sovereign (up to 250 losses, one run never
+  finished). With the seat filled, 0.2 losses per run and no stuck runs.
+
+### Changed
+- **Boarding a derelict is a gamble again.** A passed Perception check
+  now pays twice the salvage (was 2.5 times), and a failed one costs the
+  Rusty Eel 12 hull as the hulk rolls against her (was a wound that healed
+  before it mattered). Wrecks now bring in about 18% less gold per run in
+  the simulation; a character without sharp eyes salvages more often.
+
 ## [1.164.0+194]
 
 ### Fixed

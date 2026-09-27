@@ -288,10 +288,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           await notifier.applyChoiceEffects(goldMod: gold);
           _log.add(_t('ship_log_boarded', n: gold));
         } else {
-          final session = ref.read(playerSessionProvider);
-          final wound = max(1, session.maxHealth * boardWoundPercent ~/ 100);
-          await notifier.applyChoiceEffects(healAmount: -wound);
-          _log.add(_t('ship_log_board_trap', n: wound));
+          await _loseHull(boardFailHullLoss, 'ship_log_board_holed');
         }
         await _advance();
       case SeaAction.passBy:

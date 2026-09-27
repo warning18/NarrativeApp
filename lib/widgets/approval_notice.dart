@@ -10,7 +10,8 @@ import 'immersive_notice.dart';
 /// The lines that tell the player how the party took a choice (see
 /// approval.dart): "Maren approves." for each reaction, and a companion's
 /// own words when they come to trust the player completely, start losing
-/// patience, or walk out. [companions] is the localized companions table.
+/// patience, or walk out (with who took their seat). [companions] is the
+/// localized companions table.
 List<String> approvalReactionLines(
   List<ApprovalChange> reactions,
   Map<String, dynamic> companions,
@@ -35,6 +36,15 @@ List<String> approvalReactionLines(
       lines
         ..add(quote('leaveLine'))
         ..add(t('approval_leaves_notice').replaceAll('{name}', name));
+      final seat = reaction.replacedBy;
+      if (seat != null) {
+        final stepsIn =
+            (companions[seat] as Map<String, dynamic>?)?['companionName']
+                ?.toString();
+        lines.add(t('approval_replaced_notice')
+            .replaceAll('{name}', stepsIn ?? seat)
+            .replaceAll('{left}', name));
+      }
     } else if (after == ApprovalTier.devoted && reaction.delta > 0) {
       lines
         ..add(quote('devotedLine'))

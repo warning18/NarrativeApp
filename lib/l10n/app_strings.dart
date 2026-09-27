@@ -3609,9 +3609,11 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Found {n} gold in the hold',
     AppLanguage.fr: '{n} pièces d’or trouvées dans la cale',
   },
-  'ship_log_board_trap': {
-    AppLanguage.en: 'Something aboard was waiting: {n} health lost',
-    AppLanguage.fr: 'Quelque chose attendait à bord : {n} points de vie perdus',
+  'ship_log_board_holed': {
+    AppLanguage.en:
+        'The hulk rolled against the Eel as she was grappled: {n} hull lost',
+    AppLanguage.fr:
+        'L’épave a roulé contre la Rusty Eel pendant l’abordage : {n} points de coque perdus',
   },
   'ship_log_passed_by': {
     AppLanguage.en: 'The derelict drifts astern',
@@ -3710,6 +3712,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'approval_leaves_notice': {
     AppLanguage.en: '{name} leaves the party for good.',
     AppLanguage.fr: '{name} quitte le groupe pour de bon.',
+  },
+  'approval_replaced_notice': {
+    AppLanguage.en: '{name} takes {left}’s place in the party.',
+    AppLanguage.fr: '{name} prend la place de {left} dans le groupe.',
   },
   'share_drink_button': {
     AppLanguage.en: 'Share a drink ({cost} gold)',

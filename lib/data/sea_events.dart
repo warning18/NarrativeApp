@@ -125,12 +125,15 @@ const int outrunFailHullLoss = 8;
 const int pushThroughFailMultiplier = 2;
 
 /// Boarding a derelict pays this many times its salvage, when the eyes
-/// catch the rot in time.
-const double boardGoldMultiplier = 2.5;
+/// catch the rot in time. (2.5 made boarding the answer every time the
+/// check was even odds: the playthrough simulator boarded 740 wrecks in
+/// 50 runs and salvaged 349.)
+const double boardGoldMultiplier = 2;
 
-/// A boarding gone wrong (a rotten deck, a trap, something still aboard)
-/// wounds the crew by this share of the player's max health.
-const int boardWoundPercent = 15;
+/// A boarding gone wrong: the hulk rolls against the Eel as she's
+/// grappled and stoves in her side, for this much hull and nothing found.
+/// (A wound used to be the price, and it healed before it mattered.)
+const int boardFailHullLoss = 12;
 
 /// A calm day spent resting heals this share of the player's max health.
 const int restHealPercent = 25;
