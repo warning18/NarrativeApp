@@ -1,21 +1,10 @@
 name: Build iOS
 
-# Checks the iPhone build on pull requests that touch what it depends on,
-# and builds one by hand on any branch (Actions > Build iOS > Run
-# workflow); the IPA is kept as the run's artifact. Releases get their IPA
-# from build_apk.yml, next to the APK. An iPhone build needs a Mac, and
-# macOS minutes count ten times against a private repo's Actions quota, so
-# this doesn't run on every push. Analyze and the tests run in
-# build_apk.yml; this job only builds.
+# Builds the iPhone app by hand, on any branch (Actions > Build iOS > Run
+# workflow); the IPA is kept as the run's artifact. It doesn't run on pull
+# requests: the iPhone build is only checked when asked. Releases get their
+# IPA from build_apk.yml, next to the APK.
 on:
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'ios/**'
-      - 'pubspec.yaml'
-      - 'pubspec.lock'
-      - '.github/workflows/build_ios.yml'
-      - '.github/actions/build-ios/**'
   workflow_dispatch:
 
 concurrency:

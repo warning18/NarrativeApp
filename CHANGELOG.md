@@ -34,6 +34,9 @@ The iPhone app is shared as a file, like the Android one.
   devices, Settings says where new versions are.
 - The Build iOS workflow's artifact is now `ios-ipa`, and the file is named
   `NarrativeApp-<version>.ipa`.
+- **Build iOS runs only by hand** (Actions, Build iOS, Run workflow). It no
+  longer runs on pull requests, so the iPhone build is only checked when
+  asked.
 
 ## [1.171.0+201]
 
