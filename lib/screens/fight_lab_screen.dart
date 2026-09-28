@@ -212,6 +212,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 enemy: buildEnemyShip(data),
                 shipName: trFor(lang, 'boat_title'),
                 enemyName: enemyName,
+                enemyShipId: shipId,
                 crew: crew(),
                 foresight: sail?.power == SailPower.foresight,
                 windKnot: sail?.power == SailPower.windknot,
