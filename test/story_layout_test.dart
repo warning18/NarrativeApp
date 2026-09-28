@@ -104,6 +104,9 @@ void main() {
       await tester.tap(dialogButton.first, warnIfMissed: false);
       await _settle(tester);
     }
+    _expectNoLayoutError(tester, '2015 read, Enter under it');
+    await tester.tap(find.byKey(const Key('hub_enter')));
+    await _settle(tester);
     _expectNoLayoutError(tester, '2015 with one activity done');
     expect(find.textContaining(' done'), findsOneWidget);
     expect(find.text(finished.text), findsOneWidget);

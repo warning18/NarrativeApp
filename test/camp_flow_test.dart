@@ -282,6 +282,11 @@ void main() {
       await tester.tap(find.text('Go in', skipOffstage: false));
       await _settle(tester);
     }
+    // The town's scene is read once, then the town opens behind Enter.
+    if (find.byKey(const Key('hub_enter')).evaluate().isNotEmpty) {
+      await tester.tap(find.byKey(const Key('hub_enter')));
+      await _settle(tester);
+    }
     // In the town, the camp is a walk back; no other place is known yet.
     expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
     expect(find.byKey(const Key('place_travel_on')), findsNothing);
@@ -323,6 +328,8 @@ void main() {
     // The village's first visit says what a place is, like the town's.
     expect(find.text('Go in', skipOffstage: false), findsOneWidget);
     await tester.tap(find.text('Go in', skipOffstage: false));
+    await _settle(tester);
+    await tester.tap(find.byKey(const Key('hub_enter')));
     await _settle(tester);
     expect(find.byKey(const Key('town_back_to_camp')), findsOneWidget);
     expect(find.byKey(const Key('place_travel_on')), findsOneWidget);
