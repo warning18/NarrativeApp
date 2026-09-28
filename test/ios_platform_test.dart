@@ -1,7 +1,7 @@
 // The app on an iPhone (v1.171): read-aloud asks iOS to play through the
-// Ring/Silent switch, and Settings doesn't offer the Android updater (an
-// APK the app installs itself), saying where new versions come from
-// instead.
+// Ring/Silent switch. Since v1.172 the updater works there too, fetching
+// the release's IPA instead of its APK; a device the app can't update
+// (a desktop) says where new versions are instead.
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,32 +45,35 @@ void main() {
     expect(calls.where((c) => c.method == 'setSharedInstance'), isEmpty);
   });
 
-  testWidgets('on an iPhone, Settings says where updates come from',
+  testWidgets('Settings offers the updater on Android and iPhone only',
       (tester) async {
     SharedPreferences.setMockInitialValues({});
     _listenToTts();
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    try {
+    Future<void> openSettings(TargetPlatform platform) async {
+      debugDefaultTargetPlatformOverride = platform;
+      await tester.pumpWidget(const SizedBox());
       await tester.pumpWidget(
           const ProviderScope(child: MaterialApp(home: SettingsScreen())));
       await tester.runAsync(
           () => Future<void>.delayed(const Duration(milliseconds: 100)));
       await tester.pump();
+    }
+
+    try {
+      for (final platform in [TargetPlatform.android, TargetPlatform.iOS]) {
+        await openSettings(platform);
+        expect(
+            find.text('Check for Updates', skipOffstage: false), findsOneWidget,
+            reason: '$platform');
+        expect(find.byKey(const Key('updates_elsewhere_note')), findsNothing);
+      }
+      await openSettings(TargetPlatform.linux);
       expect(find.byKey(const Key('updates_elsewhere_note')), findsOneWidget);
       expect(find.text('Check for Updates', skipOffstage: false), findsNothing);
-      expect(
-          find.byIcon(Icons.system_update, skipOffstage: false), findsNothing);
     } finally {
       debugDefaultTargetPlatformOverride = null;
     }
-
-    // On Android the updater stays.
     await tester.pumpWidget(const SizedBox());
-    await tester.pumpWidget(
-        const ProviderScope(child: MaterialApp(home: SettingsScreen())));
-    await tester.pump();
-    expect(find.byKey(const Key('updates_elsewhere_note')), findsNothing);
-    expect(find.text('Check for Updates', skipOffstage: false), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

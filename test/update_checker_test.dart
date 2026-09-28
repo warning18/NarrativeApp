@@ -4,6 +4,7 @@
 // right, and exactly the kind of off-by-one string parsing that's easy to
 // silently break while editing nearby code.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/providers/update_checker.dart';
@@ -39,6 +40,42 @@ void main() {
       expect(isNewerVersion('1.50', '1.49.2'), isTrue);
       expect(isNewerVersion('1.49', '1.49.0'), isFalse);
       expect(isNewerVersion('2', '1.99.99'), isTrue);
+    });
+  });
+
+  group('the file a release carries for this device', () {
+    // As the latest release lists them since v1.172: the APK, then the IPA
+    // added by the iPhone job.
+    const assets = [
+      {'name': 'app-release.apk', 'id': 1},
+      {'name': 'NarrativeApp-1.172.0.ipa', 'id': 2},
+    ];
+
+    test('Android takes the APK and iPhone the IPA', () {
+      expect(pickUpdateAsset(assets, '.apk')?['id'], 1);
+      expect(pickUpdateAsset(assets, '.ipa')?['id'], 2);
+      expect(
+          pickUpdateAsset(const [
+            {'name': 'App.IPA', 'id': 3}
+          ], '.ipa'),
+          isNotNull,
+          reason: 'whatever the case of the name');
+      expect(
+          pickUpdateAsset(const [
+            {'name': 'app-release.apk'}
+          ], '.ipa'),
+          isNull,
+          reason: 'a release from before iPhone builds');
+    });
+
+    test('by platform', () {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      expect(updateFileExtension, '.ipa');
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      expect(updateFileExtension, '.apk');
+      debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+      expect(updateFileExtension, isNull);
+      debugDefaultTargetPlatformOverride = null;
     });
   });
 }

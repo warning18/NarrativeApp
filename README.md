@@ -17,3 +17,13 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 # NarrativeApp
+
+## Installing
+
+Each release on GitHub (Releases, latest version, Assets) has:
+
+- `app-release.apk` for Android: open it on the phone to install it. Later
+  versions install from the app itself (Settings → Check for Updates).
+- `NarrativeApp-<version>.ipa` for iPhone: it has to be signed with your own
+  Apple ID when you install it, which works without a Mac. See
+  [docs/INSTALL_IPHONE.md](docs/INSTALL_IPHONE.md).

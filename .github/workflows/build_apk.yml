@@ -55,6 +55,9 @@ jobs:
       # Only the release step (push-to-main only) actually writes anything
       # (a tag + a GitHub Release); every other step here is read-only.
       contents: write
+    outputs:
+      # The release's version, for ios-release to attach the IPA to it.
+      version: ${{ steps.version.outputs.version }}
     env:
       # When these repository secrets are set (Settings > Secrets and
       # variables > Actions), every release APK is signed with the same
@@ -143,3 +146,29 @@ jobs:
           name: v${{ steps.version.outputs.version }}
           make_latest: true
           files: build/app/outputs/flutter-apk/app-release.apk
+
+  ios-release:
+    # Every release carries the iPhone build too, next to the APK: an
+    # unsigned IPA that whoever installs it signs with their own Apple ID
+    # (see docs/INSTALL_IPHONE.md). It waits for the Android job, which
+    # creates the release, then adds the IPA to it. A failure here leaves
+    # the Android release as it is.
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: macos-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build the IPA
+        id: ipa
+        uses: ./.github/actions/build-ios
+
+      - name: Add the IPA to the release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ needs.build.outputs.version }}
+          files: ${{ steps.ipa.outputs.path }}

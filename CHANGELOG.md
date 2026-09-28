@@ -8,6 +8,33 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.172.0+202]
+
+The iPhone app is shared as a file, like the Android one.
+
+### Added
+- **Every release has an IPA next to the APK.** After the Android job
+  publishes a release (each push to `main`), a macOS job (`ios-release` in
+  `build_apk.yml`) builds the iPhone app and adds
+  `NarrativeApp-<version>.ipa` to the same release. If the iPhone build
+  fails, the Android release stays as it is. The build steps are shared
+  with the Build iOS workflow (`.github/actions/build-ios`).
+- **Installing on iPhone without a Mac**
+  (`docs/INSTALL_IPHONE.md`, linked from the README): the IPA is signed
+  with your own free Apple ID when you install it, with Sideloadly (from a
+  Windows or Mac computer) or SideStore / AltStore (on the phone). A free
+  Apple ID keeps the app working 7 days at a time, and three such apps at
+  most.
+
+### Changed
+- **"Check for Updates" works on iPhone.** It finds the IPA in the latest
+  release (the APK on Android), downloads it and opens it. From there,
+  Share opens it in AltStore or SideStore, which install it, or saves it
+  to Files. The dialog explains this before the download. On other
+  devices, Settings says where new versions are.
+- The Build iOS workflow's artifact is now `ios-ipa`, and the file is named
+  `NarrativeApp-<version>.ipa`.
+
 ## [1.171.0+201]
 
 The app builds for iPhone.

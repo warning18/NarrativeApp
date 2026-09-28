@@ -3887,11 +3887,34 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Rechercher des mises à jour',
   },
   'updates_elsewhere_note': {
-    AppLanguage.en: 'On this device, new versions come from where you '
-        'installed the app (TestFlight, or a new build).',
-    AppLanguage.fr: 'Sur cet appareil, les nouvelles versions arrivent par '
-        "là où vous avez installé l'application (TestFlight, ou une "
-        'nouvelle compilation).',
+    AppLanguage.en: "On this device, get new versions from the project's "
+        'releases on GitHub.',
+    AppLanguage.fr: 'Sur cet appareil, les nouvelles versions se récupèrent '
+        'dans les versions publiées du projet sur GitHub.',
+  },
+  'update_available_suffix_ios': {
+    AppLanguage.en: 'is available. Download it now?',
+    AppLanguage.fr: 'est disponible. La télécharger maintenant ?',
+  },
+  'ios_update_hint': {
+    AppLanguage.en: 'An iPhone installs it through AltStore or SideStore: '
+        'in the screen that opens, use Share to open it in one of them. '
+        'Or save it to Files and install it from a computer with '
+        'Sideloadly.',
+    AppLanguage.fr: "Un iPhone l'installe avec AltStore ou SideStore : dans "
+        "l'écran qui s'ouvre, utilisez Partager pour l'ouvrir dans l'une de "
+        "ces applications. Ou enregistrez-le dans Fichiers et installez-le "
+        'depuis un ordinateur avec Sideloadly.',
+  },
+  'download_open_button': {
+    AppLanguage.en: 'Download & Open',
+    AppLanguage.fr: 'Télécharger et ouvrir',
+  },
+  'ios_open_failed': {
+    AppLanguage.en: "Couldn't open the downloaded file. It is also in the "
+        'latest release on GitHub.',
+    AppLanguage.fr: "Impossible d'ouvrir le fichier téléchargé. Il se trouve "
+        'aussi dans la dernière version publiée sur GitHub.',
   },
   'checking_for_updates': {
     AppLanguage.en: 'Checking…',

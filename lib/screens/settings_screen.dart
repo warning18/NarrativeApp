@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'
-    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -451,9 +449,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
-            // The update is an APK the app installs itself: Android only.
-            // An iPhone gets new versions where it got the app.
-            if (defaultTargetPlatform != TargetPlatform.android)
+            // The app fetches its own update on Android (the APK) and on
+            // iPhone (the IPA, handed to AltStore or SideStore); elsewhere
+            // new versions come from the releases.
+            if (updateFileExtension == null)
               Text(
                 tr(ref, 'updates_elsewhere_note'),
                 key: const Key('updates_elsewhere_note'),
@@ -782,7 +781,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     UpdateInfo? info;
     var failed = false;
     try {
-      info = await checkForUpdate(githubToken: githubToken);
+      info = await checkForUpdate(
+          githubToken: githubToken, fileExtension: updateFileExtension!);
     } catch (_) {
       failed = true;
     }
@@ -802,13 +802,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       return;
     }
 
+    // An iPhone can't install the IPA by itself: the app downloads it and
+    // hands it over (see installUpdate), and says so first.
+    final iphone = updateFileExtension == '.ipa';
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(trFor(lang, 'update_available_title')),
         content: Text(
           '${trFor(lang, 'update_available_prefix')} ${info!.version} '
-          '${trFor(lang, 'update_available_suffix')}',
+          '${trFor(lang, iphone ? 'update_available_suffix_ios' : 'update_available_suffix')}'
+          '${iphone ? '\n\n${trFor(lang, 'ios_update_hint')}' : ''}',
         ),
         actions: [
           TextButton(
@@ -817,7 +821,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: Text(trFor(lang, 'download_install_button')),
+            child: Text(trFor(lang,
+                iphone ? 'download_open_button' : 'download_install_button')),
           ),
         ],
       ),
@@ -852,7 +857,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
 
     try {
-      final path = await downloadApk(
+      final path = await downloadUpdate(
         info,
         githubToken: githubToken,
         onProgress: (p) {
@@ -862,11 +867,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       );
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      final installResult = await installApk(path);
+      final installResult = await installUpdate(path);
       if (!installResult.launched) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(trFor(lang, 'install_failed'))),
+          SnackBar(
+              content: Text(trFor(
+                  lang,
+                  updateFileExtension == '.ipa'
+                      ? 'ios_open_failed'
+                      : 'install_failed'))),
         );
       }
     } catch (_) {
