@@ -460,8 +460,9 @@ void main() {
         }
       }
       // The three late towns, the Hollow Shore, the chapter 3 to 6
-      // villages and the White Anchorage.
-      expect(hubs, 9);
+      // villages, the White Anchorage and (v1.173) the three side-story
+      // villages: Akagiri, the Kindly Hill and Highhearth.
+      expect(hubs, 12);
     });
 
     test('persona keys name real races and professions, with French', () {

@@ -608,6 +608,9 @@ const Set<String> zoneBossEnemyIds = {
   'bone_warden',
   'tear_spawn',
   'strand_colossus',
+  'horn_taker',
+  'teind_rider',
+  'frost_kept_giant',
 };
 
 /// Whether [enemyId] may be drawn at random (a detour, an expedition's

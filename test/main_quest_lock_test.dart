@@ -78,7 +78,9 @@ void main() {
         ])));
     await _settle(tester);
     expect(find.text(shut, skipOffstage: false), findsNothing);
-    expect(find.text('Walk inland and climb the Spire', skipOffstage: false),
+    expect(
+        find.text('Once the coast is known, climb the Spire',
+            skipOffstage: false),
         findsOneWidget);
     await tester.pump(const Duration(seconds: 5));
   });

@@ -8,7 +8,8 @@
     "description_fr": "La plage de galets sous le campement, où le Rusty Eel est hissé au-dessus de la ligne de marée. Rien ne s'y vend que le campement ne fabrique déjà, mais chaque traversée commence et finit sur cette bande de pierres grises.",
     "zoneIds": [
       "z_cinder_row",
-      "z_scaffold_yards"
+      "z_scaffold_yards",
+      "z_exorcists_road"
     ],
     "shopIds": [],
     "voyageLength": 2,
@@ -45,6 +46,7 @@
     "description_fr": "Un débarcadère inondé sous la Flèche, là où les catacombes rejoignent l'eau. Les déserteurs du Cloître noyé gardent une lanterne allumée pour les bateaux qui connaissent le chenal, et l'escalier même de la Cour descend d'ici.",
     "zoneIds": [
       "z_ossuary_galleries",
+      "z_changeling_fen",
       "z_drowned_stair"
     ],
     "shopIds": [
@@ -63,6 +65,7 @@
     "description_fr": "La porte fluviale du Quartier des Reliquaires, ses chaînes rouillées en position ouverte depuis la déchirure. La dernière lanterne du quartier brûle sur le quai, et chaque rue au-delà court vers le cœur mort de la ville.",
     "zoneIds": [
       "z_dead_heart_approach",
+      "z_frost_quarry",
       "z_shroud_vigil"
     ],
     "shopIds": [

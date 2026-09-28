@@ -1797,7 +1797,7 @@
     "healthMod": 0,
     "isActiveSkill": true,
     "damageMultiplier": 1.2,
-    "battleMessage": "Kroll calls down a column of searing white light!",
+    "battleMessage": "A column of searing white light comes down!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "inflictsStatus": "Stun",
@@ -1807,7 +1807,7 @@
     "vfx": "radiance",
     "name_fr": "Jugement radieux",
     "description_fr": "La lumière même de l’Inquisition, tournée contre quiconque elle juge indigne.",
-    "battleMessage_fr": "Kroll fait tomber une colonne de lumière blanche et brûlante !"
+    "battleMessage_fr": "Une colonne de lumière blanche et brûlante s’abat !"
   },
   "celestial_ward": {
     "id": "celestial_ward",

@@ -407,14 +407,14 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Wrest the moon shard from the void wisp",
+        "description": "Wrest the moon shard from the grey candle",
         "type": "Kill",
         "targetEnemyID": "void_wisp",
         "targetItemID": "artifact_moon_shard",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Arracher l’éclat de lune au feu follet du Néant"
+        "description_fr": "Arracher l’éclat de lune à la chandelle grise"
       }
     ],
     "rewardGold": 90,
@@ -1040,14 +1040,14 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down a Pit Imp",
+        "description": "Put down a Pit Wretch",
         "type": "Kill",
         "targetEnemyID": "demon_imp",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre un Diablotin de la Fosse"
+        "description_fr": "Abattre un Gueux de la Fosse"
       }
     ],
     "rewardGold": 60,
@@ -1361,14 +1361,14 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Defeat the Void Sovereign beyond the tear",
+        "description": "Defeat the Sovereign beyond the tear",
         "type": "Kill",
         "targetEnemyID": "void_sovereign",
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Vaincre le Souverain du Néant au-delà de la déchirure"
+        "description_fr": "Vaincre le Souverain au-delà de la déchirure"
       }
     ],
     "rewardGold": 400,

@@ -441,7 +441,7 @@
     "enemyName_fr": "Soldat de l’Inquisition"
   },
   "void_wisp": {
-    "enemyName": "Void Wisp",
+    "enemyName": "Grey Candle",
     "maxHealth": 121,
     "damage": 14,
     "guile": 3,
@@ -495,15 +495,15 @@
     "description_fr": "Une étincelle de la lumière froide de la déchirure, attirée par la chaleur et par le Linceul comme une phalène qui dévore la flamme.",
     "encounterText": [
       "A cold light drifts across your path and stops. It has no face, but it leans toward what you carry the way a flame leans toward air, and the air around you begins to freeze.",
-      "The candles along the way have all gone out, and something is eating their light. The wisp turns from the last wick toward you, because you are warmer."
+      "The candles along the way have all gone out, and something is eating their light. The grey candle turns from the last wick toward you, because you are warmer."
     ],
     "encounterText_fr": [
       "Une lumière froide dérive en travers de votre chemin et s'arrête. Elle n'a pas de visage, mais elle se penche vers ce que vous portez comme une flamme vers l'air, et l'air autour de vous commence à geler.",
-      "Les chandelles le long du chemin se sont toutes éteintes, et quelque chose dévore leur lumière. Le feu follet se détourne de la dernière mèche vers vous, parce que vous êtes plus chaud."
+      "Les chandelles le long du chemin se sont toutes éteintes, et quelque chose dévore leur lumière. La chandelle grise se détourne de la dernière mèche vers vous, parce que vous dégagez plus de chaleur."
     ],
-    "packText": "Wisps gather where the tear is thin, and they have felt the Shroud's pull. They circle you in slow, tightening rings.",
-    "packText_fr": "Les feux follets se rassemblent là où la déchirure est mince, et ils ont senti l'attrait du Linceul. Ils vous encerclent en anneaux lents qui se resserrent.",
-    "enemyName_fr": "Feu follet du Néant"
+    "packText": "Grey candles gather where the tear is thin, and they have felt the Shroud's pull. They circle you in slow, tightening rings.",
+    "packText_fr": "Les chandelles grises se rassemblent là où la déchirure est mince, et elles ont senti l'attrait du Linceul. Elles vous encerclent en anneaux lents qui se resserrent.",
+    "enemyName_fr": "Chandelle grise"
   },
   "smuggler_captain": {
     "enemyName": "Smuggler Captain",
@@ -931,7 +931,7 @@
     "enemyName_fr": "Haut Gardien de l’Inquisition"
   },
   "kroll_the_branded": {
-    "enemyName": "Inquisitor Kroll",
+    "enemyName": "Inquisitor Clement",
     "maxHealth": 145,
     "damage": 19,
     "guile": 4,
@@ -977,8 +977,8 @@
         "healthThreshold": 45,
         "name": "Branded Fury",
         "nameFr": "Fureur du marqué",
-        "message": "Kroll tears the brand open, and the light comes out of the wound.",
-        "messageFr": "Kroll rouvre la marque, et la lumière jaillit de la plaie.",
+        "message": "Clement tears the brand open, and the light comes out of the wound.",
+        "messageFr": "Clément rouvre la marque, et la lumière jaillit de la plaie.",
         "damageMultiplier": 1.15,
         "healPercent": 0,
         "cleanse": true,
@@ -998,9 +998,9 @@
         "replaceMoves": false
       }
     ],
-    "description": "An inquisitor branded by his own order, who enjoys his work, and whose work is you.",
-    "description_fr": "Un inquisiteur marqué au fer par son propre ordre, qui aime son travail, et dont le travail, c'est vous.",
-    "enemyName_fr": "Inquisiteur Kroll"
+    "description": "Brother Clement of the Inquisition, named for a mercy nobody has ever caught him at. Branded by his own order; enjoys his work; his work is you.",
+    "description_fr": "Frère Clément, de l’Inquisition, nommé d’après une clémence dont personne ne l’a jamais surpris à faire preuve. Marqué au fer par son propre ordre ; il aime son travail ; son travail, c’est vous.",
+    "enemyName_fr": "Inquisiteur Clément"
   },
   "hollow_court_zealot": {
     "enemyName": "Hollow Court Zealot",
@@ -1470,7 +1470,7 @@
     "enemyName_fr": "Justicier du Chœur"
   },
   "demon_imp": {
-    "enemyName": "Pit Imp",
+    "enemyName": "Pit Wretch",
     "maxHealth": 105,
     "damage": 14,
     "guile": 4,
@@ -1523,7 +1523,7 @@
     "hunterTier": 1,
     "description": "A small, grinning thing of the Pit, sent to spoil the righteous and bring back something they loved.",
     "description_fr": "Une petite chose ricanante de la Fosse, envoyée corrompre les justes et rapporter quelque chose qu'ils aimaient.",
-    "enemyName_fr": "Diablotin de la Fosse"
+    "enemyName_fr": "Gueux de la Fosse"
   },
   "demon_tormentor": {
     "enemyName": "Tormentor of the Pit",
@@ -1942,7 +1942,7 @@
     "enemyName_fr": "Molosse du Néant"
   },
   "tear_spawn": {
-    "enemyName": "Tear-Spawn",
+    "enemyName": "The Unstitched",
     "maxHealth": 300,
     "damage": 28,
     "guile": 6,
@@ -2006,13 +2006,13 @@
     "description_fr": "Une chose qui a rampé hors de la déchirure avant d'être une chose, et qui apprend depuis à en être une.",
     "encounterText": [
       "The air splits along a seam no wider than a hair, and something climbs out of it in the wrong order. It is drawn to the Shroud the way water is drawn downhill.",
-      "A tear-spawn is feeding on what is left of a shrine. It has almost learned what a mouth is for, and it turns toward you to practise."
+      "An unstitched thing is feeding on what is left of a shrine. It has almost learned what a mouth is for, and it turns toward you to practise."
     ],
     "encounterText_fr": [
       "L'air se fend le long d'une couture pas plus large qu'un cheveu, et quelque chose en sort dans le mauvais ordre. Il est attiré par le Linceul comme l'eau par la pente.",
       "Un rejeton de la déchirure se nourrit de ce qui reste d'un sanctuaire. Il a presque appris à quoi sert une bouche, et il se tourne vers vous pour s'exercer."
     ],
-    "enemyName_fr": "Engeance de la déchirure"
+    "enemyName_fr": "Le Décousu"
   },
   "inquisition_penitent": {
     "enemyName": "Inquisition Penitent",
@@ -2263,7 +2263,7 @@
     "enemyName_fr": "Reflet creux"
   },
   "void_sovereign": {
-    "enemyName": "The Void Sovereign",
+    "enemyName": "The Sovereign",
     "maxHealth": 390,
     "damage": 31,
     "guile": 12,
@@ -2387,7 +2387,7 @@
     ],
     "description": "The thing behind the tear, which has wanted the Shroud whole for longer than there has been a Church to hide it.",
     "description_fr": "La chose derrière la déchirure, qui veut le Linceul entier depuis plus longtemps qu'il n'existe d'Église pour le cacher.",
-    "enemyName_fr": "Le Souverain du Néant"
+    "enemyName_fr": "Le Souverain"
   },
   "kelda_turned": {
     "enemyName": "Kelda, Turned",
@@ -3350,8 +3350,8 @@
     "packEligible": true,
     "hunterAlignment": "",
     "hunterTier": 0,
-    "description": "A knight of the Hollow Court who followed the Void Sovereign beyond the Tear and was unmade there: armor that keeps the shape of a man, held together by nothing at all.",
-    "description_fr": "Un chevalier de la Cour Creuse qui a suivi le Souverain du Néant au-delà de la Déchirure et y a été défait : une armure qui garde la forme d’un homme, tenue par rien du tout.",
+    "description": "A knight of the Hollow Court who followed the Sovereign beyond the Tear and was unmade there: armor that keeps the shape of a man, held together by nothing at all.",
+    "description_fr": "Un chevalier de la Cour Creuse qui a suivi le Souverain au-delà de la Déchirure et y a été défait : une armure qui garde la forme d’un homme, tenue par rien du tout.",
     "encounterText": [
       "A suit of armor stands across the path with nothing inside it, visor open on the dark. When you step closer it draws its sword: it swore to let no one reach the Sovereign, and it has forgotten everything else.",
       "The unmade knight has smelled the Shroud on you. It remembers being whole, and it believes that wrapped in what you carry, it would be whole again."
@@ -3557,6 +3557,276 @@
     ],
     "encounterText_fr": [
       "Sur la dunette du vaisseau amiral, l’Amiral se retourne, et la flotte noyée se retourne avec lui."
+    ]
+  },
+  "horn_taker": {
+    "enemyName": "The Horn-Taker",
+    "enemyName_fr": "Le Preneur de Cornes",
+    "maxHealth": 190,
+    "damage": 22,
+    "guile": 5,
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 86,
+    "goldReward": 64,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "warden_signet",
+        "dropRate": 15
+      },
+      {
+        "itemID": "shield_t5",
+        "dropRate": 12
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Last Rites",
+        "nameFr": "Derniers sacrements",
+        "message": "The Horn-Taker rings his bell and starts the rite again from the beginning, louder.",
+        "messageFr": "Le Preneur de Cornes agite sa cloche et reprend le rituel depuis le début, plus fort.",
+        "damageMultiplier": 1.1,
+        "healPercent": 10,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Spire’s senior exorcist, who proves each exorcism by bringing a horn home, and has brought home three hundred and six.",
+    "description_fr": "Le plus ancien exorciste de la Flèche, qui prouve chaque exorcisme en rapportant une corne, et en a rapporté trois cent six.",
+    "encounterText": [
+      "The Horn-Taker rings his bell once, for form’s sake, and reaches for his saw."
+    ],
+    "encounterText_fr": [
+      "Le Preneur de Cornes agite sa cloche une fois, pour la forme, et tend la main vers sa scie."
+    ]
+  },
+  "teind_rider": {
+    "enemyName": "The Teind-Rider",
+    "enemyName_fr": "Le Cavalier de la Dîme",
+    "maxHealth": 335,
+    "damage": 31,
+    "guile": 8,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
+    "xpReward": 140,
+    "goldReward": 100,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "hollow_court_seal",
+        "dropRate": 15
+      },
+      {
+        "itemID": "sword_t8",
+        "dropRate": 10
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Ledger Closed",
+        "nameFr": "Registre fermé",
+        "message": "The Teind-Rider closes his ledger. What is written in it now is written.",
+        "messageFr": "Le Cavalier de la Dîme referme son registre. Ce qui y est écrit l’est désormais.",
+        "damageMultiplier": 1.1,
+        "healPercent": 10,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "A Hollow Court inquisitor who has ridden up the fen road every seventh year for three hundred years to collect the Kindly Hill’s teind, with the ledger already filled in.",
+    "description_fr": "Un inquisiteur de la Cour Creuse qui remonte la route du marais tous les sept ans depuis trois siècles pour percevoir la dîme de la Colline des Bienveillants, le registre déjà rempli.",
+    "encounterText": [
+      "The Teind-Rider lowers his lantern to read your face, then checks it against the ledger."
+    ],
+    "encounterText_fr": [
+      "Le Cavalier de la Dîme abaisse sa lanterne pour lire votre visage, puis le compare au registre."
+    ]
+  },
+  "frost_kept_giant": {
+    "enemyName": "Gorm, Kept by the Frost",
+    "enemyName_fr": "Gorm, que le givre a gardé",
+    "maxHealth": 345,
+    "damage": 29,
+    "guile": 4,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Ice"
+    ],
+    "xpReward": 130,
+    "goldReward": 95,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "cloak_frostward",
+        "dropRate": 15
+      },
+      {
+        "itemID": "material_iron_ore",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Thaw",
+        "nameFr": "Dégel",
+        "message": "Cracks run through the frost on Gorm, and what is underneath is angrier.",
+        "messageFr": "Des fissures courent dans le givre qui couvre Gorm, et ce qu’il y a dessous est plus en colère.",
+        "damageMultiplier": 1.15,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "Gorm of Highhearth, who went up to the quarry to read the names on the tally-stone three winters ago, and whom the tear’s frost has kept standing there since.",
+    "description_fr": "Gorm de Haut-Âtre, monté à la carrière lire les noms de la pierre de compte il y a trois hivers, et que le givre de la déchirure y tient debout depuis.",
+    "encounterText": [
+      "The frost on the giant cracks as he turns, and he lifts a hammer he has been holding for three winters."
+    ],
+    "encounterText_fr": [
+      "Le givre du géant se fend quand il se retourne, et il lève une masse qu’il tient depuis trois hivers."
     ]
   }
 }

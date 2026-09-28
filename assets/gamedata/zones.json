@@ -306,5 +306,92 @@
     "requiredFlags": [],
     "isMainZone": true,
     "recommendedLevel": 13
+  },
+  "z_exorcists_road": {
+    "zoneID": "z_exorcists_road",
+    "zoneName": "The Exorcists’ Road",
+    "zoneName_fr": "La Route des Exorcistes",
+    "chapter": 3,
+    "expeditionCount": 3,
+    "mapTheme": "ashenStreets",
+    "flavorText": "The pilgrim road the Spire’s exorcists walk up into the red hills every spring, marked every mile with a warding post, a bell and a bowl of salt. It is the best-kept road on the Ashen Coast. Nothing has ever been exorcised by it, but the posts are beautifully kept.",
+    "flavorText_fr": "La route de pèlerinage que les exorcistes de la Flèche gravissent chaque printemps vers les collines rouges, marquée à chaque mille d’un poteau de garde, d’une cloche et d’un bol de sel. C’est la route la mieux entretenue de la Côte de Cendre. Elle n’a jamais exorcisé quoi que ce soit, mais ses poteaux sont magnifiquement entretenus.",
+    "rewardGold": 110,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": "exorcists_road_cleared",
+    "tier": 2,
+    "bossEnemyId": "horn_taker",
+    "bossFlavorText": "At the top of the road stood the chapel where the exorcists robed, and in its door the Horn-Taker himself: sixty years old and upright as a warding post, a bone saw at his belt and the rite already in his mouth. He did not seem to think I was possessed. He seemed to think I was in the way, which in his experience came to the same thing.",
+    "bossFlavorTextFr": "En haut de la route se dressait la chapelle où les exorcistes revêtaient leurs robes, et dans sa porte le Preneur de Cornes en personne : soixante ans, droit comme un poteau de garde, une scie à os à la ceinture et le rituel déjà à la bouche. Il ne semblait pas penser qu’un démon m’habitait. Il semblait penser que je gênais, ce qui, d’expérience, revenait au même.",
+    "midpointFlavorText": "Halfway up, where the warding posts thinned out, the road came over a shoulder of the hill into warm air. Below me the terraces went down in steps to a valley full of steam, and from every eave of the village in the steam hung a bell, and all of them were ringing. The exorcists had never mentioned that the demons had a village. I marked the way down.",
+    "midpointFlavorTextFr": "À mi-hauteur, là où les poteaux de garde se raréfiaient, la route passait l’épaule de la colline et entrait dans un air tiède. En contrebas, des terrasses descendaient en gradins vers une vallée pleine de vapeur, et à chaque avant-toit du village dans la vapeur pendait une cloche, et toutes sonnaient. Les exorcistes n’avaient jamais mentionné que les démons avaient un village. Je notai le chemin qui y descendait.",
+    "requiredFlags": [
+      "cinder_row_cleared"
+    ],
+    "isMainZone": false,
+    "recommendedLevel": 7,
+    "discoversPlaceIds": [
+      "3200"
+    ]
+  },
+  "z_changeling_fen": {
+    "zoneID": "z_changeling_fen",
+    "zoneName": "The Changeling Fen",
+    "zoneName_fr": "Le Marais des Changelins",
+    "chapter": 4,
+    "expeditionCount": 3,
+    "mapTheme": "hollowReaches",
+    "flavorText": "Reed-beds and black pools between the Drowned Cloister and the higher ground, lit at night by lights that belong neither to the Court nor to the villages, and crossed every seventh year by a rider with a lantern and a ledger. The fen villages bar their doors when he passes, and count their children in the morning.",
+    "flavorText_fr": "Des roselières et des mares noires entre le Cloître noyé et les hauteurs, éclairées la nuit par des lumières qui n’appartiennent ni à la Cour ni aux villages, et traversées tous les sept ans par un cavalier avec une lanterne et un registre. Les villages du marais barrent leurs portes à son passage, et comptent leurs enfants au matin.",
+    "rewardGold": 150,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": "changeling_fen_cleared",
+    "tier": 2,
+    "bossEnemyId": "teind_rider",
+    "bossFlavorText": "He came up the fen road at dusk, as he had every seventh year for three hundred years: the Teind-Rider, a Court inquisitor on a white horse, with a lantern on a pole and the ledger in his saddlebag already filled in. He reined in when he saw me on the road and checked the ledger. I was not in it, he said, and it seemed to trouble him in the mild way an unbalanced column troubles a clerk, which he proposed to correct.",
+    "bossFlavorTextFr": "Il remonta la route du marais au crépuscule, comme il le faisait tous les sept ans depuis trois siècles : le Cavalier de la Dîme, un inquisiteur de la Cour sur un cheval blanc, une lanterne au bout d’une perche et, dans sa sacoche, le registre déjà rempli. Il retint sa monture en me voyant sur la route et consulta le registre. Je n’y figurais pas, dit-il, et cela semblait le contrarier comme une colonne qui ne tombe pas juste contrarie un commis ; il se proposa d’y remédier.",
+    "midpointFlavorText": "Halfway across the fen the grey gave out all at once, and there was a hill standing up out of the reeds, as green as a hill in a story, with the evening sun on it, although it was not evening and there was no sun. I could see no door. I had the distinct impression that there was one, and that it could see me.",
+    "midpointFlavorTextFr": "À mi-chemin du marais, le gris cessa d’un coup, et une colline se dressait hors des roseaux, verte comme une colline de conte, avec le soleil du soir sur elle, alors qu’il n’était pas le soir et qu’il n’y avait pas de soleil. Je ne voyais aucune porte. J’avais la très nette impression qu’il y en avait une, et qu’elle me voyait.",
+    "requiredFlags": [
+      "ossuary_galleries_cleared"
+    ],
+    "isMainZone": false,
+    "recommendedLevel": 9,
+    "discoversPlaceIds": [
+      "5200"
+    ]
+  },
+  "z_frost_quarry": {
+    "zoneID": "z_frost_quarry",
+    "zoneName": "The Frost Quarry",
+    "zoneName_fr": "La Carrière de Givre",
+    "chapter": 5,
+    "expeditionCount": 3,
+    "mapTheme": "wildsBeyond",
+    "flavorText": "The quarries above Highhearth where the Reliquary’s stone was cut, a hundred steps of white rock climbing into the frost the tear sends down. The Inquisition owns them, on paper. Nobody has worked them since the giants stopped being written down.",
+    "flavorText_fr": "Les carrières au-dessus de Haut-Âtre, où l’on a taillé la pierre du Reliquaire : cent gradins de roche blanche qui montent dans le givre que la déchirure envoie. L’Inquisition les possède, sur le papier. Personne ne les exploite plus depuis qu’on a cessé d’écrire les géants.",
+    "rewardGold": 190,
+    "rewardItemId": "",
+    "rewardDiceId": "",
+    "rewardAllyId": "",
+    "rewardFlag": "frost_quarry_cleared",
+    "tier": 2,
+    "bossEnemyId": "frost_kept_giant",
+    "bossFlavorText": "At the top of the quarry, beside a stone the size of a cart with names cut into every face of it, stood a giant nobody had warned me about in time: frost in his beard, frost in his eyes, frost where the rest of him had been, holding a hammer he had been holding for three winters. The tear had not killed him. It had kept him, and it had given him something to do.",
+    "bossFlavorTextFr": "Au sommet de la carrière, à côté d’une pierre de la taille d’une charrette couverte de noms sur toutes ses faces, se tenait un géant dont personne ne m’avait parlé à temps : du givre dans la barbe, du givre dans les yeux, du givre là où avait été le reste de lui, une masse à la main qu’il tenait depuis trois hivers. La déchirure ne l’avait pas tué. Elle l’avait gardé, et lui avait trouvé une occupation.",
+    "midpointFlavorText": "Halfway up the quarry road a chimney showed over the ridge, then a roof, then a door I could have ridden a horse through without ducking, and smoke going up from a hearth that had not gone cold in six hundred years. There were giants in those days, scripture says. Scripture had been misinformed. I marked the way down.",
+    "midpointFlavorTextFr": "À mi-hauteur de la route de la carrière, une cheminée apparut au-dessus de la crête, puis un toit, puis une porte que j’aurais pu passer à cheval sans baisser la tête, et une fumée montant d’un âtre qui n’avait pas refroidi depuis six cents ans. Il y avait des géants en ce temps-là, disent les Écritures. Les Écritures étaient mal renseignées. Je notai le chemin qui y descendait.",
+    "requiredFlags": [
+      "dead_heart_cleared"
+    ],
+    "isMainZone": false,
+    "recommendedLevel": 10,
+    "discoversPlaceIds": [
+      "6200"
+    ]
   }
 }

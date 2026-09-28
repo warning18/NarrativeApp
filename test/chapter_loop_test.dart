@@ -123,6 +123,31 @@ void main() {
     }
   });
 
+  test('the side-story villages each have their own expedition to find them',
+      () {
+    const villages = {
+      '3200': ('z_exorcists_road', 3, 'hub_3200_smith_later'),
+      '5200': ('z_changeling_fen', 4, 'hub_5200_nell_later'),
+      '6200': ('z_frost_quarry', 5, 'hub_6200_eldest_later'),
+    };
+    for (final entry in villages.entries) {
+      final (zoneId, chapter, lateMarker) = entry.value;
+      final place = story.nodeFor(entry.key)!;
+      expect(place.settlement!.kind, 'village', reason: entry.key);
+      expect(place.settlement!.chapter, chapter, reason: entry.key);
+      final zone = zones[zoneId] as Map<String, dynamic>;
+      expect(zone['chapter'], chapter, reason: zoneId);
+      expect(zone['isMainZone'], isFalse, reason: zoneId);
+      expect(zoneDiscoveriesAt(zone, atEnd: false), [entry.key]);
+      // The village's second visit waits on its expedition being cleared.
+      final later = place.choices.firstWhere(
+          (c) => c.hideIfFlags.contains(lateMarker),
+          orElse: () => fail('${entry.key} has no follow-up'));
+      expect(later.showIfFlags, contains(zone['rewardFlag']));
+      expect(placeActivityMarkers(place).length, 5, reason: entry.key);
+    }
+  });
+
   test('an expedition finds its first place halfway, the rest at the end', () {
     final ossuary = zones['z_ossuary_galleries'] as Map<String, dynamic>;
     expect(zoneDiscoveriesAt(ossuary, atEnd: false), ['5100']);

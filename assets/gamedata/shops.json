@@ -27,7 +27,7 @@
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
-    "shopName": "Smuggler's Secret Cache",
+    "shopName": "The Tide Cellar",
     "shopDescription": "Hidden beneath the rusty pier, contraband gear changes hands.",
     "unlockLevel": 2,
     "buildCost": 150,
@@ -57,7 +57,7 @@
     },
     "minChapter": 1,
     "detourEligible": true,
-    "shopName_fr": "La Cache secrète du contrebandier",
+    "shopName_fr": "La Cave aux Marées",
     "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
   },
   "weaponsmith_forge": {
@@ -367,7 +367,7 @@
   },
   "sharpweave_den": {
     "shopID": "sharpweave_den",
-    "shopName": "Sharpweave Den",
+    "shopName": "The Needle House",
     "shopDescription": "No sign, no stall -- just a door that opens if you already know it's there, and the finest edges in the city behind it.",
     "unlockLevel": 1,
     "buildCost": 0,
@@ -395,7 +395,7 @@
     },
     "minChapter": 3,
     "detourEligible": false,
-    "shopName_fr": "L’Antre de la Trame acérée",
+    "shopName_fr": "La Maison des Aiguilles",
     "shopDescription_fr": "Ni enseigne, ni étal — juste une porte qui s’ouvre si vous savez déjà qu’elle est là, et derrière elle les plus fines lames de la ville."
   },
   "ossuary_relics": {

@@ -333,9 +333,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Linceul gris',
   },
   'menu_subtitle': {
-    AppLanguage.en: 'A tale of dice, debts and a banner that should not exist',
+    AppLanguage.en: 'A tale of dice, debts and a shroud that should not exist',
     AppLanguage.fr:
-        'Un récit de dés, de dettes et d’une bannière qui ne devrait pas exister',
+        'Un récit de dés, de dettes et d’un linceul qui ne devrait pas exister',
   },
   'menu_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
   'menu_new_game': {
@@ -2850,8 +2850,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le manteau du Souverain',
   },
   'grants_banner_piece_id': {
-    AppLanguage.en: 'Grants Banner piece (id)',
-    AppLanguage.fr: 'Accorde un fragment de la Bannière (id)',
+    AppLanguage.en: 'Grants Shroud piece (id)',
+    AppLanguage.fr: 'Accorde une pièce du Linceul (id)',
   },
   'lose_ally_id': {
     AppLanguage.en: 'Companion lost for good (id, or * for the first active)',
@@ -5362,12 +5362,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Glass Strand, crossed',
     AppLanguage.fr: 'La Grève de Verre, traversée',
   },
+  'zone_flag_exorcists_road_cleared': {
+    AppLanguage.en: 'The Exorcists’ Road, walked to the top',
+    AppLanguage.fr: 'La Route des Exorcistes, gravie jusqu’en haut',
+  },
+  'zone_flag_changeling_fen_cleared': {
+    AppLanguage.en: 'The Changeling Fen, its rider unhorsed',
+    AppLanguage.fr: 'Le Marais des Changelins, son cavalier désarçonné',
+  },
+  'zone_flag_frost_quarry_cleared': {
+    AppLanguage.en: 'The Frost Quarry, its tally-stone read',
+    AppLanguage.fr: 'La Carrière de Givre, sa pierre de compte lue',
+  },
   'zone_flag_white_fleet_grave_cleared': {
     AppLanguage.en: 'The White Fleet’s grave, silent',
     AppLanguage.fr: 'Le Tombeau de la Flotte Blanche, silencieux',
   },
   'zone_flag_void_sovereign_fallen': {
-    AppLanguage.en: 'The Void Sovereign, fallen',
+    AppLanguage.en: 'The Sovereign, fallen',
     AppLanguage.fr: 'Le Souverain, tombé',
   },
   'boat_title': {

@@ -8,6 +8,57 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.173.0+203]
+
+Three side-story villages, each found by its own expedition, and the
+narrative review applied.
+
+### Added
+- **Akagiri, the oni village (chapter 3).** Found halfway up the new
+  Exorcists' Road expedition (after Cinder Row), whose boss is the
+  Horn-Taker, the Spire's senior exorcist, who proves each exorcism with a
+  sawn-off horn. In the village: break an exorcists' salt circle (fight),
+  out-drink the brewers (Constitution), hear Tetsu the smith, soak in the
+  hot springs, and, once the road is cleared, give the horns back.
+- **The Kindly Hill (chapter 4).** The Good Folk's green hill in the grey
+  fen, found on the new Changeling Fen expedition (after the Ossuary
+  Galleries), whose boss is the Teind-Rider, the Hollow Court inquisitor
+  who collects the hill's mortal every seventh year. Drive the Court's
+  sextons off the barrows (fight), play the riddle-game (Intelligence; lose
+  and it takes a year), sit with Nell, this year's teind, sleep one night
+  by the clock, and tell Nell the rider will not come.
+- **Highhearth, the giants' village (chapter 5).** The last forty giants,
+  who cut the Reliquary's stone and were paid by being written out of
+  scripture, found on the new Frost Quarry expedition (after the Dead
+  Heart Approach), whose boss is Gorm, a giant the tear's frost has kept
+  standing for three winters. Hold the quarry gate (fight), help the
+  midwife (Dexterity), hear Hathra on the old contract, sleep by a fire six
+  hundred years old, and bring back the names from the tally-stone.
+- Each village has its own place on the world map (all three looks), a
+  line when enough of it is done, and a payoff at the next chapter's camp.
+
+### Changed
+- **Kroll is now Inquisitor Clement**, "the Branded": the order hands out
+  its names the way it hands out its mercy. The pier scene names him and
+  sets up the Eel's anchor chain the fight ends on; whoever kept Lysa sends
+  her up the chain first, and she pulls the narrator over the rail.
+- **Story fixes.** The Beggar's keeper, dead since the tavern, no longer
+  dies again at the hovel: it is old Hesk, the neighbour. The Shroud is
+  called the Shroud; "Void Banner" is only what the Inquisition calls it.
+  The Ashen Quarter's scenes no longer send you back to "the archives". The
+  High Warden is met before he is fought. The sixth piece is the
+  Sovereign's crown, from the tear to the crown ending. "No one's back",
+  not "no one back". The camp's first choice waits for the coast to be
+  known.
+- **Tone.** The narrator is never "a man"; fewer "considerably" and "with
+  the particular" in chapters 1–2; a dry line in the late scenes that had
+  gone earnest; "the ledger's last page" varied. Renamed foes and places:
+  Pit Wretch, Grey Candle, the Unstitched, the Sovereign, the Tide Cellar
+  and the Needle House.
+- **Payoffs.** The two faces at the Hollow Court's altar are named; each
+  ending says what going back costs or keeps; every scene has its place,
+  mood and speaker tags.
+
 ## [1.172.0+202]
 
 The iPhone app is shared as a file, like the Android one.
