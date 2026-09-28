@@ -423,6 +423,23 @@ and a perk to choose as the character grows.
   quarter of them broken by the party), guard 13 times and rally 10
   times; the party lands about 26 hits on a weakness.
 
+## [1.163.0+193] (main, #109: towns read once)
+
+### Changed
+- **A town's story is read once.** Arriving in a town or at the camp, its
+  scene fills the screen with a single Enter under it; the town's lists
+  wait until you go in. Once read, the place opens straight onto its
+  lists, then and on every later visit, even after closing the app (the
+  scenes read are kept in the save). Reread on the place's card opens the
+  scene again, and a scene that changed (a new line for something you
+  did) shows in full once more.
+- **The town screen is tidier.** The place's name, how much of it is done,
+  Rest and Reread share one card; its shops, expeditions, people and
+  challenges are tabs (with All to see everything), each tab counting
+  what is left to do; the walking companion steps aside while the town
+  is open; and "Move on" is one line at the bottom that only takes the
+  room it needs.
+
 ## [1.162.0+192]
 
 Fights that change shape from turn to turn, detours with a choice in them,

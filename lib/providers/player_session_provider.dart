@@ -111,6 +111,17 @@ const String playerWearerId = 'player';
 /// ("house_hearth_hall").
 String houseFlag(String houseId) => 'house_$houseId';
 
+/// The key a scene's [text] is remembered as read under (see
+/// PlayerSession.readSceneKeys): the node and a hash of the words, so a
+/// changed scene reads as new.
+String sceneReadKey(String nodeId, String text) {
+  var hash = 0x811c9dc5;
+  for (final unit in text.codeUnits) {
+    hash = ((hash ^ unit) * 0x01000193) & 0xffffffff;
+  }
+  return '$nodeId#${hash.toRadixString(16)}';
+}
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -156,6 +167,7 @@ class PlayerSession {
     this.seenShopIds = const [],
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
+    this.readSceneKeys = const [],
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -303,6 +315,11 @@ class PlayerSession {
   final List<String> seenShopIds;
   final List<String> seenQuestIds;
   final List<String> seenEnemyIds;
+
+  /// The town and camp scenes the player has read in full, as
+  /// `<nodeId>#<hash of the text>` (see sceneReadKey): coming back to one
+  /// whose text hasn't changed opens straight onto the place.
+  final List<String> readSceneKeys;
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -588,6 +605,7 @@ class PlayerSession {
     List<String>? seenShopIds,
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
+    List<String>? readSceneKeys,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -668,6 +686,7 @@ class PlayerSession {
       seenShopIds: seenShopIds ?? this.seenShopIds,
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
+      readSceneKeys: readSceneKeys ?? this.readSceneKeys,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -754,6 +773,7 @@ class PlayerSession {
         'seenShopIds': seenShopIds,
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
+        'readSceneKeys': readSceneKeys,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -897,6 +917,9 @@ class PlayerSession {
               const [],
       seenEnemyIds:
           (json['seenEnemyIds'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      readSceneKeys:
+          (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
@@ -2550,6 +2573,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       seenQuestIds: newSeenQuestIds,
       seenEnemyIds: newSeenEnemyIds,
     );
+    await _persist();
+  }
+
+  /// Marks the town or camp scene [key] (see sceneReadKey) as read.
+  Future<void> markSceneRead(String key) async {
+    if (state.readSceneKeys.contains(key)) return;
+    state = state.copyWith(readSceneKeys: [...state.readSceneKeys, key]);
     await _persist();
   }
 
