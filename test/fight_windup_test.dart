@@ -38,6 +38,24 @@ Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
 bool _logShows(String text) =>
     find.textContaining(text, findRichText: true).evaluate().isNotEmpty;
 
+/// Taps the button labelled [label] once it is enabled. The enemy's line
+/// shows before its turn is over, and a busy machine can still be in that
+/// turn when the test moves on: the buttons are there, but disabled, and a
+/// tap then does nothing.
+Future<void> _tapWhenEnabled(WidgetTester tester, String label) async {
+  bool enabled() {
+    final button = find.ancestor(
+        of: find.text(label),
+        matching: find.byWidgetPredicate((w) => w is ButtonStyleButton));
+    return button.evaluate().isNotEmpty &&
+        (button.evaluate().first.widget as ButtonStyleButton).enabled;
+  }
+
+  await _pumpUntil(tester, enabled);
+  expect(enabled(), isTrue, reason: '"$label" never became enabled');
+  await tester.tap(find.text(label));
+}
+
 Map<String, dynamic> _enemy(String id) {
   for (final path in [
     'assets/gamedata/enemies.json',
@@ -102,9 +120,8 @@ void main() {
     await tester.tap(find.text('Enter Battle'));
     await _settle(tester);
 
-    await tester.tap(find.text('Roll Dice'));
-    await _settle(tester);
-    await tester.tap(find.text('Confirm'));
+    await _tapWhenEnabled(tester, 'Roll Dice');
+    await _tapWhenEnabled(tester, 'Confirm');
     await _pumpUntil(tester, () => _logShows('is winding up'));
 
     expect(
@@ -112,9 +129,8 @@ void main() {
     expect(find.text('Winding up'), findsOneWidget);
     expect(find.text('Charged blow incoming!'), findsOneWidget);
 
-    await tester.tap(find.text('Roll Dice'));
-    await _settle(tester);
-    await tester.tap(find.text('Confirm'));
+    await _tapWhenEnabled(tester, 'Roll Dice');
+    await _tapWhenEnabled(tester, 'Confirm');
     await _pumpUntil(
         tester,
         () =>
