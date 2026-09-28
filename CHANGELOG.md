@@ -8,6 +8,31 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.169.0+199]
+
+The companions' remarks become game data, edited in the Data tab like the
+rest of the game.
+
+### Changed
+- **Companion Remarks is a table in the Data tab**
+  (`assets/gamedata/companion_remarks.json`, 142 records). Each record is
+  one companion, a trigger (a kind, cruel or profitable deed they like or
+  dislike, a scene's own reaction, a check, a sneak, a drink at the camp,
+  or one story choice) and the lines they pick from, in English and
+  French. Records can be edited, added and removed; the game reads the
+  table, saved edits included, and the Data tab's GitHub push writes it
+  back like the other tables. Two records for the same companion and
+  trigger add their lines together; a French list left empty falls back to
+  the English.
+- **Help under the fields** in the record editor, where a label alone
+  can't explain a field (used by the new table).
+
+### Fixed
+- **Saving a record no longer cuts sentences apart at their commas.** The
+  editor took list fields as comma-separated, so saving any enemy (its
+  encounter texts) or NPC (their dialogue) split every sentence with a
+  comma in it into pieces. List fields are now edited one entry per line.
+
 ## [1.168.0+198]
 
 The nine narration proposals from 1.167.

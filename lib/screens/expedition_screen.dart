@@ -22,6 +22,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -704,7 +705,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                 ],
                 for (final remark in _remarks)
                   if (remark
-                      .lineFor(french: lang == AppLanguage.fr)
+                      .lineFor(ref.watch(remarkBookProvider),
+                          french: lang == AppLanguage.fr)
                       .isNotEmpty) ...[
                     CompanionRemarkView(
                       speaker: ((ref
@@ -715,7 +717,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                                   as Map<String, dynamic>?)?['companionName']
                               ?.toString() ??
                           remark.companionId,
-                      line: remark.lineFor(french: lang == AppLanguage.fr),
+                      line: remark.lineFor(ref.watch(remarkBookProvider),
+                          french: lang == AppLanguage.fr),
                       color: Theme.of(context).colorScheme.primary,
                       french: lang == AppLanguage.fr,
                       style: Theme.of(context)

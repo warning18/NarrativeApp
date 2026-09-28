@@ -223,15 +223,17 @@ class _StoryView extends ConsumerWidget {
     // and for the name over a companion's remark on it.
     final companionNames =
         ref.watch(localizedDbProvider(companionsSchema)).value ?? const {};
+    // The Companion Remarks table, kept loaded for the party's words.
+    final remarkBook = ref.watch(remarkBookProvider);
     final remarks = [
       for (final remark in ref.watch(pendingRemarksProvider))
-        if (remark.lineFor(french: french).isNotEmpty)
+        if (remark.lineFor(remarkBook, french: french).isNotEmpty)
           (
             speaker: (companionNames[remark.companionId]
                         as Map<String, dynamic>?)?['companionName']
                     ?.toString() ??
                 remark.companionId,
-            line: remark.lineFor(french: french),
+            line: remark.lineFor(remarkBook, french: french),
           ),
     ];
     final checkOutcome = ref.watch(pendingCheckOutcomeProvider);

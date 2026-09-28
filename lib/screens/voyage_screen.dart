@@ -19,6 +19,7 @@ import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/remark_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
@@ -222,7 +223,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
             : slipped
                 ? RemarkKind.sneakedPast
                 : RemarkKind.checkPassed)) {
-      final line = remark.lineFor(french: french);
+      final line = remark.lineFor(ref.read(remarkBookProvider), french: french);
       if (line.isEmpty) continue;
       final name =
           (names[remark.companionId] as Map<String, dynamic>?)?['companionName']
@@ -518,6 +519,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   Widget build(BuildContext context) {
     final lang = ref.watch(appLanguageProvider);
     final fr = lang == AppLanguage.fr;
+    // Loaded before the first check at sea, for the crew's remarks.
+    ref.watch(remarkBookProvider);
     final ships = ref.watch(localizedDbProvider(shipsSchema)).value;
     final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value;
     final enemyShips = ref.watch(localizedDbProvider(enemyShipsSchema)).value;

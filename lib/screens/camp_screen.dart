@@ -788,6 +788,8 @@ class _ApprovalPanel extends ConsumerWidget {
     final tier = approvalTierFor(ally.approval);
     final chapter = ref.watch(reachedChapterProvider);
     final gold = ref.watch(playerSessionProvider.select((s) => s.gold));
+    // Loaded before a drink is shared, for the companion's word of thanks.
+    ref.watch(remarkBookProvider);
     final color = switch (tier) {
       ApprovalTier.devoted => Colors.amber.shade600,
       ApprovalTier.friendly => Colors.green.shade500,
@@ -868,11 +870,12 @@ class _ApprovalPanel extends ConsumerWidget {
                       if (done && context.mounted) {
                         // They say something back (see
                         // companion_remarks.dart).
-                        final said = drinkRemark(
+                        final book = ref.read(remarkBookProvider);
+                        final said = drinkRemark(book,
                             ref.read(remarkMemoryProvider), ally.companionId);
                         ref.read(remarkMemoryProvider.notifier).state =
                             said.memory;
-                        final words = said.remark?.lineFor(
+                        final words = said.remark?.lineFor(book,
                                 french: ref.read(appLanguageProvider) ==
                                     AppLanguage.fr) ??
                             '';

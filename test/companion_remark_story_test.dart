@@ -82,7 +82,10 @@ void main() {
     expect(remark?.kind, RemarkKind.kindApproved);
     expect(find.byType(CompanionRemarkView), findsOneWidget);
     expect(find.text('SISTER MAREN'), findsOneWidget);
-    expect(find.text('“${remark!.lineFor(french: false)}”'), findsOneWidget);
+    final line =
+        remark!.lineFor(container.read(remarkBookProvider), french: false);
+    expect(line, isNotEmpty, reason: 'from the Companion Remarks table');
+    expect(find.text('“$line”'), findsOneWidget);
     expect(tester.takeException(), isNull);
 
     // The next choice moves on, and the remark goes with the scene it

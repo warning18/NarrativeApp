@@ -26,6 +26,7 @@ class FieldSchema {
     this.enumOptions = const [],
     this.defaultValue,
     this.referenceSchemaId,
+    this.help,
   });
 
   final String key;
@@ -38,4 +39,8 @@ class FieldSchema {
   /// [DbSchema] (see db_schema.dart) whose existing record keys populate
   /// this field's picker, or [storyEventsReferenceId] for story node ids.
   final String? referenceSchemaId;
+
+  /// A line or two under the field in the Data tab's editor: what the
+  /// field means and how to fill it in, when the label alone can't say.
+  final String? help;
 }

@@ -158,6 +158,8 @@ IconData gameDbIcon(String schemaId) {
       return Icons.diversity_3;
     case 'professions':
       return Icons.work;
+    case 'companion_remarks':
+      return Icons.record_voice_over;
     default:
       return Icons.table_chart;
   }

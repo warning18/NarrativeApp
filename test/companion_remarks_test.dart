@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/approval.dart';
 import 'package:narrative_data_app/data/companion_remarks.dart';
+import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/widgets/approval_notice.dart';
 
 Map<String, dynamic> _companions() {
@@ -26,8 +27,13 @@ Map<String, dynamic> _companions() {
 ApprovalChange _moved(String id, int delta, {int before = 3}) =>
     ApprovalChange(companionId: id, before: before, after: before + delta);
 
+RemarkBook _book() => RemarkBook(jsonDecode(
+        File('assets/gamedata/companion_remarks.json').readAsStringSync())
+    as Map<String, dynamic>);
+
 void main() {
   final companions = _companions();
+  final book = _book();
   Map<String, dynamic> record(String id) =>
       companions[id] as Map<String, dynamic>;
 
@@ -41,7 +47,7 @@ void main() {
     ];
 
     test('every companion speaks, on every deed they care about', () {
-      expect(companionsWithRemarks.toSet(), companions.keys.toSet());
+      expect(book.companions.toSet(), companions.keys.toSet());
       for (final id in companions.keys) {
         final weights = record(id);
         final good = (weights['approvesGood'] as num?)?.toInt() ?? 0;
@@ -57,17 +63,17 @@ void main() {
           if (profit < 0) RemarkKind.profitDisapproved,
         ];
         for (final kind in needed) {
-          expect(remarkLinesFor(id, kind), hasLength(greaterThanOrEqualTo(2)),
+          expect(book.linesFor(id, kind), hasLength(greaterThanOrEqualTo(2)),
               reason: '$id ${kind.name}');
         }
       }
     });
 
     test('English and French line up, and none is empty', () {
-      for (final id in companionsWithRemarks) {
+      for (final id in book.companions) {
         for (final kind in RemarkKind.values) {
-          final en = remarkLinesFor(id, kind);
-          final fr = remarkLinesFor(id, kind, french: true);
+          final en = book.linesFor(id, kind);
+          final fr = book.linesFor(id, kind, french: true);
           expect(fr.length, en.length, reason: '$id ${kind.name}');
           for (final line in [...en, ...fr]) {
             expect(line.trim(), isNotEmpty, reason: '$id ${kind.name}');
@@ -80,9 +86,9 @@ void main() {
     test('French speaks to the player as « vous »', () {
       final tu = RegExp(r"(?<!\p{L})(?:(?:tu|toi|ton|ta|tes)(?!\p{L})|t['’])",
           caseSensitive: false, unicode: true);
-      for (final id in companionsWithRemarks) {
+      for (final id in book.companions) {
         for (final kind in RemarkKind.values) {
-          for (final line in remarkLinesFor(id, kind, french: true)) {
+          for (final line in book.linesFor(id, kind, french: true)) {
             // « s'est tu » is the Void falling silent, not « tu ».
             expect(tu.hasMatch(line.replaceAll("s'est tu", '')), isFalse,
                 reason: line);
@@ -94,10 +100,10 @@ void main() {
     test('a remark reads in the language on screen', () {
       const remark = CompanionRemark(
           companionId: 'maren', kind: RemarkKind.kindApproved, index: 0);
-      expect(remark.lineFor(french: false),
-          remarkLinesFor('maren', RemarkKind.kindApproved).first);
-      expect(remark.lineFor(french: true),
-          remarkLinesFor('maren', RemarkKind.kindApproved, french: true).first);
+      expect(remark.lineFor(book, french: false),
+          book.linesFor('maren', RemarkKind.kindApproved).first);
+      expect(remark.lineFor(book, french: true),
+          book.linesFor('maren', RemarkKind.kindApproved, french: true).first);
     });
   });
 
@@ -147,6 +153,7 @@ void main() {
   group('who speaks, and when', () {
     test('whoever took the deed hardest', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['kelda', 'maren'],
         reactions: [_moved('kelda', 2), _moved('maren', 3)],
@@ -160,6 +167,7 @@ void main() {
 
     test('on a tie, whoever spoke least recently', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(choices: 5, lastSpokeAt: {'kelda': 4}),
         activeAllyIds: const ['kelda', 'liora'],
         reactions: [_moved('kelda', 2), _moved('liora', 2)],
@@ -174,6 +182,7 @@ void main() {
       // approval notice. Sable walked out. Kelda only warmed to the player,
       // which has no words of its own.
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['maren', 'kelda'],
         reactions: [
@@ -191,6 +200,7 @@ void main() {
       var memory = const RemarkMemory();
       for (var i = 0; i < 4; i++) {
         final picked = pickRemark(
+          book: book,
           memory: memory,
           activeAllyIds: const ['maren'],
           reactions: [_moved('maren', 3)],
@@ -207,6 +217,7 @@ void main() {
       final spoken = <bool>[];
       for (var i = 0; i < 7; i++) {
         final picked = pickRemark(
+          book: book,
           memory: memory,
           activeAllyIds: const ['kelda'],
           action: RemarkKind.checkPassed,
@@ -220,7 +231,9 @@ void main() {
 
     test('plain choices pass without a word, and count', () {
       final picked = pickRemark(
-          memory: const RemarkMemory(), activeAllyIds: const ['kelda']);
+          book: book,
+          memory: const RemarkMemory(),
+          activeAllyIds: const ['kelda']);
       expect(picked.remarks, isEmpty);
       expect(picked.memory.choices, 1);
       expect(picked.memory.lastRemarkAt, isNull);
@@ -228,6 +241,7 @@ void main() {
 
     test('nobody to speak when the character walks alone', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const [],
         action: RemarkKind.checkFailed,
@@ -240,6 +254,7 @@ void main() {
       final speakers = <String>[];
       for (var i = 0; i < 4; i++) {
         final picked = pickRemark(
+          book: book,
           memory: RemarkMemory(
             seed: memory.seed,
             choices: memory.choices + remarkCooldownChoices,
@@ -259,10 +274,11 @@ void main() {
     test('every line is used before one repeats', () {
       for (final seed in [0, 7, 12345]) {
         var memory = RemarkMemory(seed: seed);
-        final lines = remarkLinesFor('maren', RemarkKind.kindApproved);
+        final lines = book.linesFor('maren', RemarkKind.kindApproved);
         final heard = <int>[];
         for (var i = 0; i < lines.length * 2; i++) {
           final picked = pickRemark(
+            book: book,
             memory: memory,
             activeAllyIds: const ['maren'],
             reactions: [_moved('maren', 3)],
@@ -283,6 +299,7 @@ void main() {
   group('an answer, when the party is split (v1.168)', () {
     test('the one who took it the other way answers', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['maren', 'malrik', 'kelda'],
         reactions: [
@@ -301,6 +318,7 @@ void main() {
 
     test('nobody answers when everyone agrees', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['maren', 'kelda'],
         reactions: [_moved('maren', 3), _moved('kelda', 2)],
@@ -314,6 +332,7 @@ void main() {
   group('lines written for a choice (v1.168)', () {
     test('a written line comes before a general one, answers included', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['kelda', 'sable'],
         reactions: [_moved('kelda', 2), _moved('sable', -1)],
@@ -324,14 +343,15 @@ void main() {
       expect(picked.remarks.map((r) => r.companionId), ['kelda', 'sable']);
       expect(picked.remarks.map((r) => r.deedKey),
           ['refugees_aboard', 'refugees_aboard']);
-      expect(picked.remarks.first.lineFor(french: false),
-          deedRemarkFor('refugees_aboard', 'kelda', french: false));
-      expect(picked.remarks.last.lineFor(french: true),
-          deedRemarkFor('refugees_aboard', 'sable', french: true));
+      expect(picked.remarks.first.lineFor(book, french: false),
+          book.choiceLinesFor('refugees_aboard', 'kelda', french: false).first);
+      expect(picked.remarks.last.lineFor(book, french: true),
+          book.choiceLinesFor('refugees_aboard', 'sable', french: true).first);
     });
 
     test('a companion with a written line speaks even if unmoved', () {
       final picked = pickRemark(
+        book: book,
         memory: const RemarkMemory(),
         activeAllyIds: const ['grosh', 'maren'],
         deedKeys: const ['4999_standard#2'],
@@ -372,32 +392,131 @@ void main() {
         return n;
       }
 
-      expect(deedRemarkKeys, hasLength(greaterThanOrEqualTo(20)));
+      expect(book.choiceKeys, hasLength(greaterThanOrEqualTo(20)));
       final tu = RegExp(r"(?<!\p{L})(?:(?:tu|toi|ton|ta|tes)(?!\p{L})|t['’])",
           caseSensitive: false, unicode: true);
-      for (final key in deedRemarkKeys) {
+      for (final key in book.choiceKeys) {
         expect(choicesNamed(key), 1, reason: key);
-        final en = deedRemarksOf(key, french: false);
-        final fr = deedRemarksOf(key, french: true);
+        final en = book.choiceLinesOf(key, french: false);
+        final fr = book.choiceLinesOf(key, french: true);
         expect(fr.keys.toSet(), en.keys.toSet(), reason: key);
         for (final id in en.keys) {
           expect(companions, contains(id), reason: '$key $id');
-          expect(en[id]!.trim(), isNotEmpty);
-          expect(tu.hasMatch(fr[id]!), isFalse, reason: fr[id]);
+          expect(en[id], isNotEmpty);
+          for (final line in fr[id]!) {
+            expect(tu.hasMatch(line), isFalse, reason: line);
+          }
         }
       }
     });
   });
 
+  group('the Companion Remarks table (v1.169)', () {
+    final records = jsonDecode(
+            File('assets/gamedata/companion_remarks.json').readAsStringSync())
+        as Map<String, dynamic>;
+
+    test('is a game-data table the Data tab edits', () {
+      expect(gameDbSchemas, contains(companionRemarksSchema));
+      expect(companionRemarksSchema.assetPath,
+          'assets/gamedata/companion_remarks.json');
+      final fields = {for (final f in companionRemarksSchema.fields) f.key};
+      for (final entry in records.entries) {
+        final record = entry.value as Map<String, dynamic>;
+        expect(fields, containsAll(record.keys), reason: entry.key);
+        expect(record['remarkID'], entry.key);
+      }
+    });
+
+    test('every record names a companion, a trigger and its lines', () {
+      for (final entry in records.entries) {
+        final record = entry.value as Map<String, dynamic>;
+        final trigger = record['trigger'] as String;
+        expect(companions, contains(record['companionID']), reason: entry.key);
+        expect(remarkTriggerOptions, contains(trigger), reason: entry.key);
+        expect((record['choiceKey'] as String? ?? '').isNotEmpty,
+            trigger == choiceRemarkTrigger,
+            reason: '${entry.key}: a choice key goes with the choice trigger');
+        final en = record['lines'] as List;
+        final fr = record['lines_fr'] as List;
+        expect(en, isNotEmpty, reason: entry.key);
+        expect(fr.length, en.length,
+            reason: '${entry.key}: every line has its French');
+      }
+    });
+
+    test('what the table says is what the companions say', () {
+      final edited = RemarkBook({
+        'kelda_checkPassed': {
+          'remarkID': 'kelda_checkPassed',
+          'companionID': 'kelda',
+          'trigger': 'checkPassed',
+          'lines': ['Nicely done, and I mean it, truly.'],
+          'lines_fr': ['Bien fait, et je le pense, vraiment.'],
+        },
+      });
+      final picked = pickRemark(
+        book: edited,
+        memory: const RemarkMemory(),
+        activeAllyIds: const ['kelda'],
+        action: RemarkKind.checkPassed,
+      );
+      expect(picked.remarks.single.lineFor(edited, french: false),
+          'Nicely done, and I mean it, truly.');
+      expect(picked.remarks.single.lineFor(edited, french: true),
+          'Bien fait, et je le pense, vraiment.');
+      // Nothing for a trigger the table has no lines for.
+      expect(
+          pickRemark(
+            book: edited,
+            memory: const RemarkMemory(),
+            activeAllyIds: const ['kelda'],
+            action: RemarkKind.checkFailed,
+          ).remarks,
+          isEmpty);
+    });
+
+    test('records add up; a French list left empty falls back', () {
+      final merged = RemarkBook({
+        'a': {
+          'companionID': 'vess',
+          'trigger': 'drink',
+          'lines': ['One.'],
+          'lines_fr': <String>[],
+        },
+        'b': {
+          'companionID': 'vess',
+          'trigger': 'drink',
+          'lines': ['Two.'],
+        },
+        'c': {
+          'companionID': 'vess',
+          'trigger': 'no-such-trigger',
+          'lines': ['Ignored.'],
+        },
+        'd': {
+          'companionID': 'vess',
+          'trigger': 'choice',
+          'lines': ['No choice named: ignored.'],
+        },
+      });
+      expect(merged.linesFor('vess', RemarkKind.drink), ['One.', 'Two.']);
+      expect(merged.linesFor('vess', RemarkKind.drink, french: true),
+          ['One.', 'Two.']);
+      expect(merged.choiceKeys, isEmpty);
+      expect(RemarkBook.empty.companions, isEmpty);
+    });
+  });
+
   test('a drink at the camp gets a word of thanks', () {
     for (final id in companions.keys) {
-      expect(remarkLinesFor(id, RemarkKind.drink), hasLength(2), reason: id);
+      expect(book.linesFor(id, RemarkKind.drink), hasLength(2), reason: id);
     }
-    final picked = drinkRemark(const RemarkMemory(), 'grosh');
+    final picked = drinkRemark(book, const RemarkMemory(), 'grosh');
     expect(picked.remark?.kind, RemarkKind.drink);
-    expect(picked.remark!.lineFor(french: false), isNotEmpty);
+    expect(picked.remark!.lineFor(book, french: false), isNotEmpty);
     expect(picked.memory.lastSpokeAt, contains('grosh'));
-    expect(drinkRemark(const RemarkMemory(), 'nobody').remark, isNull);
+    expect(drinkRemark(book, const RemarkMemory(), 'nobody').remark, isNull);
   });
 
   test('the approval notice quotes the remark after its reaction', () {
@@ -405,6 +524,7 @@ void main() {
       [_moved('kelda', 2), _moved('maren', 3)],
       companions,
       (key) => key == 'approval_approves' ? '{name} approves.' : key,
+      book: book,
       remarks: const [
         CompanionRemark(
             companionId: 'maren', kind: RemarkKind.kindApproved, index: 1),
@@ -413,7 +533,7 @@ void main() {
     expect(lines, [
       'Kelda approves.',
       'Sister Maren approves.',
-      'Sister Maren: “${remarkLinesFor('maren', RemarkKind.kindApproved)[1]}”',
+      'Sister Maren: “${book.linesFor('maren', RemarkKind.kindApproved)[1]}”',
     ]);
   });
 }

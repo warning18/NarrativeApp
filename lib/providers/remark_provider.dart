@@ -1,8 +1,18 @@
 import 'dart:math';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider;
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/companion_remarks.dart';
+import '../gamedata/db_schema.dart';
+import 'game_db_providers.dart';
+
+/// The companions' remark lines, from the Companion Remarks table (edits
+/// made in the Data tab included); empty until the table has loaded.
+final remarkBookProvider = Provider<RemarkBook>((ref) {
+  final records = ref.watch(gameDbProvider(companionRemarksSchema)).value;
+  return records == null ? RemarkBook.empty : RemarkBook(records);
+});
 
 /// Who has spoken up about the player's choices this session, and with
 /// which lines (see companion_remarks.dart): companions take turns and

@@ -9,6 +9,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../data/companion_remarks.dart';
 import '../data/turn_in_choices.dart';
+import '../providers/remark_provider.dart';
 import 'approval_notice.dart';
 import 'immersive_notice.dart';
 import 'level_up_dialog.dart';
@@ -165,6 +166,7 @@ Future<void> turnInQuest(
       companions,
       (key) => trFor(lang, key),
       remarks: speakUpAbout(ref, reactions: reactions, deed: deed),
+      book: ref.read(remarkBookProvider),
       french: lang == AppLanguage.fr,
     ),
   ];

@@ -1,4 +1,5 @@
 import '../combat/skill_vfx.dart';
+import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import 'field_schema.dart';
 
 class DbSchema {
@@ -2211,6 +2212,65 @@ final DbSchema itemSetsSchema = DbSchema(
   ],
 );
 
+/// What the companions say about the player's choices (see
+/// lib/data/companion_remarks.dart): one record per companion and trigger,
+/// with the lines they pick from.
+final DbSchema companionRemarksSchema = DbSchema(
+  id: 'companion_remarks',
+  label: 'Companion Remarks',
+  assetPath: 'assets/gamedata/companion_remarks.json',
+  primaryKeyField: 'remarkID',
+  titleField: 'remarkID',
+  fields: [
+    FieldSchema(key: 'remarkID', label: 'Remark ID', type: FieldType.text),
+    FieldSchema(
+      key: 'companionID',
+      label: 'Companion',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
+    FieldSchema(
+      key: 'trigger',
+      label: 'When they say it',
+      type: FieldType.enumeration,
+      enumOptions: remarkTriggerOptions,
+      help: 'kindApproved / kindDisapproved: a kind deed they like / '
+          'dislike. cruelApproved, cruelDisapproved, profitApproved, '
+          'profitDisapproved: the same for cruelty and for gold earned. '
+          'approved / disapproved: a scene\'s own reaction. checkPassed, '
+          'checkFailed, sneakedPast: a check. drink: a drink at the camp. '
+          'choice: one story choice, named below.',
+    ),
+    FieldSchema(
+      key: 'choiceKey',
+      label: 'Story choice',
+      type: FieldType.text,
+      help: 'Only with the trigger "choice": a flag the choice sets, or '
+          'nodeId#index (the choice\'s place in its scene, counting from 0).',
+    ),
+    FieldSchema(
+      key: 'note',
+      label: 'Note for editors',
+      type: FieldType.text,
+      help: 'What the choice is, so the lines can be read in context.',
+    ),
+    FieldSchema(
+      key: 'lines',
+      label: 'Lines',
+      type: FieldType.stringList,
+      help: 'One is said at a time; all are used before any repeats.',
+    ),
+    FieldSchema(
+      key: 'lines_fr',
+      label: 'Lines (French)',
+      type: FieldType.stringList,
+      help: 'In the same order as the English. « vous » to the player, '
+          'nothing that agrees with the player\'s gender. Left empty, the '
+          'English is used.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -2229,6 +2289,7 @@ final List<DbSchema> gameDbSchemas = [
   racesSchema,
   professionsSchema,
   companionsSchema,
+  companionRemarksSchema,
   housesSchema,
   achievementsSchema,
   zonesSchema,

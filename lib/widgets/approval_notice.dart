@@ -16,12 +16,14 @@ import 'immersive_notice.dart';
 /// own words when they come to trust the player completely, start losing
 /// patience, or walk out (with who took their seat). [companions] is the
 /// localized companions table. [remarks] (see companion_remarks.dart) are
-/// what they say about it, each after its speaker's reaction.
+/// what they say about it, each after its speaker's reaction, in the
+/// words [book] has for them.
 List<String> approvalReactionLines(
   List<ApprovalChange> reactions,
   Map<String, dynamic> companions,
   String Function(String key) t, {
   List<CompanionRemark> remarks = const [],
+  RemarkBook? book,
   bool french = false,
 }) {
   final lines = <String>[];
@@ -29,7 +31,7 @@ List<String> approvalReactionLines(
       (companions[id] as Map<String, dynamic>?)?['companionName']?.toString() ??
       id;
   String quoted(CompanionRemark remark) {
-    final words = remark.lineFor(french: french);
+    final words = remark.lineFor(book ?? RemarkBook.empty, french: french);
     return words.isEmpty ? '' : '${nameOf(remark.companionId)}: “$words”';
   }
 
@@ -97,6 +99,7 @@ List<CompanionRemark> speakUpAbout(
   RemarkKind? action,
 }) {
   final picked = pickRemark(
+    book: ref.read(remarkBookProvider),
     memory: ref.read(remarkMemoryProvider),
     activeAllyIds: ref.read(playerSessionProvider).activeAllyIds,
     reactions: reactions,
@@ -129,6 +132,7 @@ Future<void> showApprovalReactions(
     companions,
     (key) => tr(ref, key),
     remarks: remarks,
+    book: ref.read(remarkBookProvider),
     french: ref.read(appLanguageProvider) == AppLanguage.fr,
   );
   final warm = reactions.fold<int>(0, (sum, r) => sum + r.delta) >= 0;
