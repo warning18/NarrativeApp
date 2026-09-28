@@ -15,6 +15,7 @@ import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/ship_cutaway.dart';
 import '../widgets/ship_fx.dart';
 import 'fight_screen.dart';
 
@@ -67,6 +68,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     required this.enemy,
     required this.shipName,
     required this.enemyName,
+    this.enemyShipId,
     required this.crew,
     required this.foresight,
     required this.random,
@@ -85,6 +87,10 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   final ShipState enemy;
   final String shipName;
   final String enemyName;
+
+  /// The enemy's id in enemy_ships.json (`shipName`), which picks its
+  /// sprite (see ShipCutaway.forEnemy).
+  final String? enemyShipId;
   final List<ShipCrew> crew;
 
   /// True with the Kraken's Eye aboard: the enemy's aim is shown.
@@ -867,8 +873,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     habit: widget.habit,
                   ),
                   const SizedBox(height: 4),
-                  _buildHull(
-                      ship: _battle.enemy, isPlayer: false, color: ink.blood),
+                  _buildHull(ship: _battle.enemy, isPlayer: false),
                   const SizedBox(height: 4),
                   _buildEnemyWeapons(fr),
                   const SizedBox(height: 8),
@@ -883,8 +888,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     color: ink.gold,
                   ),
                   const SizedBox(height: 4),
-                  _buildHull(
-                      ship: _battle.player, isPlayer: true, color: ink.gold),
+                  _buildHull(ship: _battle.player, isPlayer: true),
                 ],
               ),
             ),
@@ -1386,73 +1390,112 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     );
   }
 
-  /// A ship drawn side on: the hull, a mast and its flag, the three rooms
-  /// on deck (helm aft, guns amidships, bulwark forward) and the hold
-  /// below them.
-  Widget _buildHull({
-    required ShipState ship,
-    required bool isPlayer,
-    required Color color,
-  }) {
-    final theme = Theme.of(context);
+  /// A ship drawn as a pixel-art cutaway (see ShipCutaway): its four
+  /// rooms show inside the hull, helm aft, guns amidships and bulwark
+  /// forward on the upper deck, the hold below, and each room is the tile
+  /// that is tapped. The enemy is mirrored to face the Eel; a ship below
+  /// half its hull is drawn battered.
+  Widget _buildHull({required ShipState ship, required bool isPlayer}) {
     final ink = InkColors.of(context);
-    const height = 140.0;
+    final cutaway = isPlayer
+        ? ShipCutaway.rustyEel
+        : ShipCutaway.forEnemy(widget.enemyShipId, widget.enemy);
+    final asset = cutaway.asset(
+      battered: ship.hull * 2 < ship.maxHull,
+      refit: ShipCutaway.refitOf(widget.player),
+    );
+    final flip = !isPlayer;
     return LayoutBuilder(builder: (context, constraints) {
-      final w = constraints.maxWidth;
-      Rect at(double l, double t, double r, double b) =>
-          Rect.fromLTRB(w * l, height * t, w * r, height * b);
-      final rooms = {
-        ShipRoom.helm: at(0.05, 0.25, 0.345, 0.585),
-        ShipRoom.guns: at(0.355, 0.25, 0.645, 0.585),
-        ShipRoom.bulwark: at(0.655, 0.25, 0.95, 0.585),
-        ShipRoom.hold: at(0.1, 0.625, 0.9, 0.87),
-      };
+      final w = min(constraints.maxWidth, 520.0);
+      final height =
+          w * ShipCutaway.spriteSize.height / ShipCutaway.spriteSize.width;
+      final unit = w / ShipCutaway.spriteSize.width;
       final sinking = _sinkingEel == isPlayer;
-      return AnimatedBuilder(
-        animation: _sink,
-        builder: (context, child) {
-          if (!sinking) return child!;
-          final t = Curves.easeIn.transform(_sink.value);
-          return Opacity(
-            opacity: (1 - t * 0.8).clamp(0.0, 1.0),
-            child: Transform.translate(
-              offset: Offset(0, 40 * t),
-              child: Transform.rotate(angle: -0.25 * t, child: child),
-            ),
-          );
-        },
-        child: KeyedSubtree(
-          key: _hullKeys[isPlayer],
-          child: SizedBox(
-            key: Key('ship_hull_${isPlayer ? 'eel' : 'enemy'}'),
-            height: height,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned.fill(
-                  child: CustomPaint(
-                    painter: _HullPainter(
-                      accent: color,
-                      fill: theme.colorScheme.surfaceContainer,
-                      seam: ink.seam,
-                      mast: ink.ash,
-                    ),
-                  ),
-                ),
-                for (final entry in rooms.entries)
-                  Positioned.fromRect(
-                    rect: entry.value,
-                    child: KeyedSubtree(
-                      key: _roomKeys[(isPlayer, entry.key)],
-                      child: _buildRoomTile(
-                        ship: ship,
-                        room: entry.key,
-                        isPlayer: isPlayer,
-                        wide: entry.key == ShipRoom.hold,
+      final crew = isPlayer
+          ? {
+              for (final room in ShipRoom.values)
+                room: [
+                  if (_battle.crewById(_battle.stations[room]) case final hand?)
+                    hand.isPlayer ? ink.gold : ink.tide,
+                ],
+            }
+          : const <ShipRoom, List<Color>>{};
+      return Center(
+        child: AnimatedBuilder(
+          animation: _sink,
+          builder: (context, child) {
+            if (!sinking) return child!;
+            final t = Curves.easeIn.transform(_sink.value);
+            return Opacity(
+              opacity: (1 - t * 0.8).clamp(0.0, 1.0),
+              child: Transform.translate(
+                offset: Offset(0, 40 * t),
+                child: Transform.rotate(angle: -0.25 * t, child: child),
+              ),
+            );
+          },
+          child: KeyedSubtree(
+            key: _hullKeys[isPlayer],
+            child: SizedBox(
+              key: Key('ship_hull_${isPlayer ? 'eel' : 'enemy'}'),
+              width: w,
+              height: height,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned.fill(
+                    child: Transform.flip(
+                      flipX: flip,
+                      child: Image.asset(
+                        asset,
+                        key: Key('ship_sprite_${isPlayer ? 'eel' : 'enemy'}'),
+                        fit: BoxFit.fill,
+                        filterQuality: FilterQuality.none,
+                        gaplessPlayback: true,
+                        excludeFromSemantics: true,
+                        errorBuilder: (_, __, ___) => const SizedBox(),
                       ),
                     ),
                   ),
-              ],
+                  for (final room in ShipRoom.values)
+                    Positioned.fromRect(
+                      rect: cutaway.roomRect(room, w, flip: flip),
+                      child: KeyedSubtree(
+                        key: _roomKeys[(isPlayer, room)],
+                        child: Stack(
+                          fit: StackFit.expand,
+                          clipBehavior: Clip.none,
+                          children: [
+                            IgnorePointer(
+                              child: CustomPaint(
+                                painter: RoomArtPainter(
+                                  unit: unit,
+                                  crew: crew[room] ?? const [],
+                                  onFire: ship.room(room).onFire,
+                                  down: ship.room(room).isDown,
+                                  water: room == ShipRoom.hold
+                                      ? min(ship.leaks * 2, 10)
+                                      : 0,
+                                  flip: flip,
+                                  ember: ink.ember,
+                                  gold: ink.gold,
+                                  blood: ink.blood,
+                                  tide: ink.tide,
+                                ),
+                              ),
+                            ),
+                            _buildRoomTile(
+                              ship: ship,
+                              room: room,
+                              isPlayer: isPlayer,
+                              wide: room == ShipRoom.hold,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1506,16 +1549,14 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       border = ink.blood;
       borderWidth = 2;
     } else {
-      border = state.isDown ? ink.seam : color.withValues(alpha: 0.55);
+      border = state.isDown ? ink.seam : color.withValues(alpha: 0.4);
       borderWidth = 1;
     }
-    final background = state.isDown
-        ? colorScheme.surfaceContainerHighest
-        : canFireHere
-            ? ink.gold.withValues(alpha: aiming ? 0.22 : 0.10)
-            : state.onFire
-                ? ink.ember.withValues(alpha: 0.16)
-                : colorScheme.surface.withValues(alpha: 0.85);
+    // The room itself is drawn on the ship (see _buildHull): the tile is
+    // only a frame over it, tinted when it can be fired at.
+    final background = canFireHere
+        ? ink.gold.withValues(alpha: aiming ? 0.22 : 0.10)
+        : Colors.transparent;
 
     final title = Row(
       mainAxisSize: MainAxisSize.min,
@@ -1591,28 +1632,42 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ],
       ),
     );
-    final token = crew == null ? null : _crewToken(crew, size: 18);
+    final token = crew == null ? null : _crewToken(crew, size: 16);
+    // Labels sit on small dark chips so the room's art shows around them:
+    // the name at the top, the pips and marks along the bottom.
+    Widget chip(Widget child) => Container(
+          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+          decoration: BoxDecoration(
+            color: colorScheme.surface.withValues(alpha: 0.78),
+            borderRadius: BorderRadius.circular(3),
+          ),
+          child: child,
+        );
     final content = wide
-        ? Row(
-            children: [
-              Flexible(child: title),
-              const SizedBox(width: 8),
-              Expanded(child: status),
-              if (token != null) token,
-            ],
+        ? Align(
+            alignment: Alignment.topLeft,
+            child: chip(Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Flexible(child: title),
+                const SizedBox(width: 6),
+                Flexible(child: status),
+                if (token != null) ...[const SizedBox(width: 4), token],
+              ],
+            )),
           )
         : Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              chip(Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(child: title),
-                  if (token != null) token,
+                  Flexible(child: title),
+                  if (token != null) ...[const SizedBox(width: 3), token],
                 ],
-              ),
-              const SizedBox(height: 2),
-              status,
+              )),
+              Align(alignment: Alignment.bottomRight, child: chip(status)),
             ],
           );
     return Tooltip(
@@ -1634,8 +1689,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             canFireHere && ref.watch(aimedShotsProvider) != AimedShots.off
                 ? () => _startAim(room)
                 : null,
+        behavior: HitTestBehavior.opaque,
         child: Container(
-          padding: const EdgeInsets.fromLTRB(6, 2, 5, 2),
+          padding: const EdgeInsets.all(2),
           decoration: BoxDecoration(
             color: background,
             borderRadius: BorderRadius.circular(4),
@@ -2273,79 +2329,6 @@ class _AimBarPainter extends CustomPainter {
       old.wide != wide ||
       old.steady != steady ||
       old.perfect != perfect;
-}
-
-/// A ship side on: the hull with its deck line, a dashed line between
-/// the deck and the hold, and a mast flying a flag.
-class _HullPainter extends CustomPainter {
-  const _HullPainter({
-    required this.accent,
-    required this.fill,
-    required this.seam,
-    required this.mast,
-  });
-
-  final Color accent;
-  final Color fill;
-  final Color seam;
-  final Color mast;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final deck = h * 0.2;
-    final hull = Path()
-      ..moveTo(w * 0.02, deck)
-      ..lineTo(w * 0.98, deck)
-      ..lineTo(w * 0.94, h * 0.86)
-      ..quadraticBezierTo(w * 0.8, h * 0.97, w * 0.5, h * 0.97)
-      ..quadraticBezierTo(w * 0.2, h * 0.97, w * 0.07, h * 0.86)
-      ..close();
-    canvas.drawPath(hull, Paint()..color = fill);
-    canvas.drawPath(
-        hull,
-        Paint()
-          ..color = accent.withValues(alpha: 0.7)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2);
-    canvas.drawLine(
-        Offset(w * 0.02, deck),
-        Offset(w * 0.98, deck),
-        Paint()
-          ..color = accent
-          ..strokeWidth = 3);
-    // Deck and hold.
-    final dash = Paint()
-      ..color = seam
-      ..strokeWidth = 1;
-    for (var x = w * 0.06; x < w * 0.94; x += 8) {
-      canvas.drawLine(Offset(x, h * 0.605), Offset(x + 4, h * 0.605), dash);
-    }
-    // Mast and flag.
-    final mastX = w * 0.5;
-    canvas.drawLine(
-        Offset(mastX, deck),
-        Offset(mastX, h * 0.02),
-        Paint()
-          ..color = mast
-          ..strokeWidth = 2);
-    final flag = Path()
-      ..moveTo(mastX + 1, h * 0.03)
-      ..lineTo(mastX + 26, h * 0.03)
-      ..lineTo(mastX + 20, h * 0.075)
-      ..lineTo(mastX + 26, h * 0.12)
-      ..lineTo(mastX + 1, h * 0.12)
-      ..close();
-    canvas.drawPath(flag, Paint()..color = accent);
-  }
-
-  @override
-  bool shouldRepaint(covariant _HullPainter old) =>
-      old.accent != accent ||
-      old.fill != fill ||
-      old.seam != seam ||
-      old.mast != mast;
 }
 
 /// A hull bar made of ten planks, filled from the left.

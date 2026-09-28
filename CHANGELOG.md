@@ -458,6 +458,26 @@ and something to aim the next fight at.
 - **Bounty quests** (the Ossuary bounty, Faces of the Fallen) count only
   the kills made after the quest is taken. Kills from earlier in the run
   used to complete them on the spot.
+
+## [1.162.0+192] (main, #108: ship cutaways)
+
+### Changed
+- **Ship battles show the ships in pixel art, cut open.** The drawn hull
+  outline is gone: each ship is a pixel-art cutaway with its near side
+  open, and the four rooms are inside it, the helm aft, the guns
+  amidships, the bulwark forward and the hold below. The rooms are what
+  you tap, as before, with their names and pips on small labels.
+- Every ship has its own look: the Rusty Eel (patched sail, rusted bands,
+  an eel at the prow), the Raider Skiff, the Corsair Brig, the
+  Inquisition Cutter and the Void Barge. The enemy faces the Eel, so its
+  helm is on the right.
+- What happens in a room is drawn in it: the hands stationed there stand
+  in it, a fire burns on its floor, a knocked-out room goes dark and is
+  crossed out, and the hold fills with water, two rows a leak.
+- A ship below half its hull is drawn battered, holed and with torn
+  sails, and the Eel shows her refits: a crow's nest once her rooms reach
+  level 2, iron plates on the bulwark at level 3.
+
 ## [1.161.0+191]
 
 ### Added

@@ -807,6 +807,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       enemy: _enemy!,
       shipName: trFor(lang, 'boat_title'),
       enemyName: _enemyName(fr),
+      enemyShipId: _enemyData?['shipName']?.toString(),
       crew: _buildCrew(
         session: session,
         companions: companions,

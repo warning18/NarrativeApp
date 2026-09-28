@@ -87,6 +87,7 @@ flutter:
     - assets/visuals/enemy_ships/
     - assets/visuals/ships/
     - assets/visuals/ship_parts/
+    - assets/visuals/ship_cutaways/
     - assets/visuals/quests/
     - assets/visuals/shops/
     - assets/visuals/gates/
