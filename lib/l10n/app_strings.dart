@@ -3886,6 +3886,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Check for Updates',
     AppLanguage.fr: 'Rechercher des mises à jour',
   },
+  'updates_elsewhere_note': {
+    AppLanguage.en: 'On this device, new versions come from where you '
+        'installed the app (TestFlight, or a new build).',
+    AppLanguage.fr: 'Sur cet appareil, les nouvelles versions arrivent par '
+        "là où vous avez installé l'application (TestFlight, ou une "
+        'nouvelle compilation).',
+  },
   'checking_for_updates': {
     AppLanguage.en: 'Checking…',
     AppLanguage.fr: 'Recherche en cours…'

@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.171.0+201]
+
+The app builds for iPhone.
+
+### Added
+- **An iOS build in CI** (`.github/workflows/build_ios.yml`). A macOS
+  runner builds the app and packages an unsigned IPA
+  (`NarrativeApp-<version>-unsigned.ipa`, artifact `ios-unsigned-ipa`). It
+  runs on pull requests that touch the iOS project, `pubspec.yaml` or
+  `pubspec.lock`, and by hand from the Actions tab (Build iOS, Run
+  workflow). It doesn't run on every push because macOS minutes count ten
+  times against a private repository's quota. The IPA is unsigned: it
+  installs through a tool that signs it with your own Apple ID (Sideloadly,
+  AltStore), or it becomes a TestFlight build once an Apple Developer
+  account's certificate and profile are added.
+- **The iOS project is set up:** a Podfile for iOS 15 (the oldest iOS every
+  plugin supports is 13), the Pods settings in the Xcode configurations,
+  and the export-compliance answer TestFlight asks for (the app uses only
+  standard HTTPS).
+
+### Changed
+- **Read-aloud on iPhone plays with the Ring/Silent switch on,** like a
+  podcast, and lowers other apps' sound while it speaks. Without this, iOS
+  silences an app's speech when the switch is on. ElevenLabs voices
+  already played that way.
+- **Settings on iPhone doesn't offer "Check for Updates".** That button
+  downloads an APK and installs it, which only Android can do. iPhone
+  shows where new versions come from instead (TestFlight, or a new build).
+
 ## [1.170.0+200]
 
 The companions speak over the screen, in a speech bubble like the guide's

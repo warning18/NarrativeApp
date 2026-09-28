@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -449,22 +451,31 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 12),
-            OutlinedButton.icon(
-              onPressed:
-                  (_checkingUpdate || _downloading) ? null : _checkForUpdates,
-              icon: _checkingUpdate
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.system_update),
-              label: Text(
-                _checkingUpdate
-                    ? tr(ref, 'checking_for_updates')
-                    : tr(ref, 'check_for_updates_button'),
+            // The update is an APK the app installs itself: Android only.
+            // An iPhone gets new versions where it got the app.
+            if (defaultTargetPlatform != TargetPlatform.android)
+              Text(
+                tr(ref, 'updates_elsewhere_note'),
+                key: const Key('updates_elsewhere_note'),
+                style: Theme.of(context).textTheme.bodySmall,
+              )
+            else
+              OutlinedButton.icon(
+                onPressed:
+                    (_checkingUpdate || _downloading) ? null : _checkForUpdates,
+                icon: _checkingUpdate
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.system_update),
+                label: Text(
+                  _checkingUpdate
+                      ? tr(ref, 'checking_for_updates')
+                      : tr(ref, 'check_for_updates_button'),
+                ),
               ),
-            ),
             if (isEditMode) ...[
               const SizedBox(height: 24),
               Text(

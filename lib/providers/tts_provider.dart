@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
@@ -11,6 +13,17 @@ class TtsNotifier extends StateNotifier<bool> {
     _tts.setCompletionHandler(() => state = false);
     _tts.setCancelHandler(() => state = false);
     _tts.setErrorHandler((message) => state = false);
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      // iOS silences an app's speech with the Ring/Silent switch unless the
+      // app says it plays audio on purpose: read-aloud does, like a
+      // podcast, lowering other apps' sound while it speaks.
+      _tts.setSharedInstance(true);
+      _tts.setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playback,
+        const [IosTextToSpeechAudioCategoryOptions.duckOthers],
+        IosTextToSpeechAudioMode.spokenAudio,
+      );
+    }
   }
 
   final FlutterTts _tts = FlutterTts();

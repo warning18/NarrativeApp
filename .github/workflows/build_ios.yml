@@ -1,0 +1,65 @@
+name: Build iOS
+
+# An iPhone build needs a Mac with Xcode, so this runs on a macOS runner.
+# macOS minutes count ten times against a private repo's Actions quota, so
+# it doesn't run on every push: only when a pull request touches what the
+# iOS build depends on, or by hand (Actions > Build iOS > Run workflow, on
+# any branch). Analyze and the tests run in build_apk.yml; this job only
+# builds.
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'ios/**'
+      - 'pubspec.yaml'
+      - 'pubspec.lock'
+      - '.github/workflows/build_ios.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build the app (unsigned)
+        # No Apple signing identity is set up yet: the app is built as is,
+        # to be signed when it is installed (see the IPA step below).
+        run: flutter build ios --release --no-codesign
+
+      - name: Package an unsigned IPA
+        # An .ipa is the .app in a Payload folder, zipped. Unsigned, it
+        # installs through a tool that signs it with the installer's own
+        # Apple ID (Sideloadly, AltStore) -- or it is the starting point for
+        # a signed TestFlight build once an Apple Developer account's
+        # certificate and profile are added as secrets.
+        run: |
+          version=$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//' | cut -d'+' -f1)
+          mkdir -p build/ipa/Payload
+          cp -R build/ios/iphoneos/Runner.app build/ipa/Payload/
+          (cd build/ipa && zip -qry "../NarrativeApp-$version-unsigned.ipa" Payload)
+          ls -la build/*.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-unsigned-ipa
+          path: build/*.ipa
