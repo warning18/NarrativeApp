@@ -1854,6 +1854,19 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Expéditions',
   },
   'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
+  'hub_enter_button': {
+    AppLanguage.en: 'Enter {place}',
+    AppLanguage.fr: 'Entrer : {place}',
+  },
+  'hub_back_button': {
+    AppLanguage.en: 'Back to {place}',
+    AppLanguage.fr: 'Retour : {place}',
+  },
+  'hub_enter_hint': {
+    AppLanguage.en: 'Read once: Reread it any time from the place\'s card.',
+    AppLanguage.fr: 'Lu une fois : « Relire » sur la carte du lieu.',
+  },
   'hub_story_unfold': {
     AppLanguage.en: 'Read the scene again',
     AppLanguage.fr: 'Relire le récit',
@@ -1876,9 +1889,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'arrival_town_body': {
     AppLanguage.en:
-        'You arrive in a town. Its shops, expeditions, people and challenges are listed under the story; you can come and go between them as you like. When you want to go on with the story, open "Move on" at the bottom.',
+        'You arrive in a town. Read what is happening here, then enter: its shops, expeditions, people and challenges are sorted into tabs, and you can come and go between them as you like. When you want to go on with the story, open "Move on" at the bottom.',
     AppLanguage.fr:
-        'Vous arrivez en ville. Ses boutiques, expéditions, habitants et défis sont listés sous le récit ; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.',
+        'Vous arrivez en ville. Lisez ce qui s’y passe, puis entrez : ses boutiques, expéditions, habitants et défis sont rangés par onglets ; allez de l’un à l’autre à votre guise. Quand vous voudrez reprendre la route, ouvrez « Quitter les lieux » en bas.',
   },
   'arrival_town_button': {
     AppLanguage.en: 'Enter the town',
@@ -1886,9 +1899,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'arrival_town_away_body': {
     AppLanguage.en:
-        'You arrive at {place}. Its shops, people and challenges are listed under the story, and everything you do here counts toward the chapter. "Back to the camp" takes you home; "Travel on" takes you to the other places you know.',
+        'You arrive at {place}. Its shops, people and challenges are sorted into tabs once you enter, and everything you do here counts toward the chapter. "Back to the camp" takes you home; "Travel on" takes you to the other places you know.',
     AppLanguage.fr:
-        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont listés sous le récit, et tout ce que vous y faites compte pour le chapitre. « Retour au camp » vous ramène à la base ; « Aller ailleurs » vous mène vers les autres lieux connus.',
+        'Vous arrivez à {place}. Ses boutiques, habitants et défis sont rangés par onglets une fois entré, et tout ce que vous y faites compte pour le chapitre. « Retour au camp » vous ramène à la base ; « Aller ailleurs » vous mène vers les autres lieux connus.',
   },
   'arrival_away_button': {AppLanguage.en: 'Go in', AppLanguage.fr: 'Entrer'},
   'story_end_message': {

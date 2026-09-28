@@ -8,6 +8,23 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.163.0+193]
+
+### Changed
+- **A town's story is read once.** Arriving in a town or at the camp, its
+  scene fills the screen with a single Enter under it; the town's lists
+  wait until you go in. Once read, the place opens straight onto its
+  lists, then and on every later visit, even after closing the app (the
+  scenes read are kept in the save). Reread on the place's card opens the
+  scene again, and a scene that changed (a new line for something you
+  did) shows in full once more.
+- **The town screen is tidier.** The place's name, how much of it is done,
+  Rest and Reread share one card; its shops, expeditions, people and
+  challenges are tabs (with All to see everything), each tab counting
+  what is left to do; the walking companion steps aside while the town
+  is open; and "Move on" is one line at the bottom that only takes the
+  room it needs.
+
 ## [1.162.0+192]
 
 ### Changed
