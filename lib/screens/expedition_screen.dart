@@ -22,12 +22,11 @@ import '../providers/aftermath_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
-import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart';
-import '../widgets/companion_remark_view.dart';
+import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
@@ -78,9 +77,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// The last fight's aftermath, opening the next event's text.
   String? _aftermath;
 
-  /// A check's outcome in words (see check_outcomes.dart) and a
-  /// companion's remark on it (see companion_remarks.dart), opening the
-  /// next event like the aftermath.
+  /// A check's outcome in words (see check_outcomes.dart), opening the
+  /// next event like the aftermath, and a companion's remark on it (see
+  /// companion_remarks.dart), shown over the next event in a speech bubble.
   String? _checkOutcome;
   List<CompanionRemark> _remarks = const [];
 
@@ -613,25 +612,29 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
     return TutorialTrigger(
       topic: TutorialTopic.expedition,
-      child: Scaffold(
-        appBar: AppBar(title: Text(zoneName)),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: switch (_phase) {
-              _ExpeditionPhase.event => _buildEvent(context,
-                  shops: shops, enemies: enemies, lang: lang),
-              _ExpeditionPhase.completed => _buildSummary(
-                  context,
-                  icon: Icons.flag_circle,
-                  title: trFor(lang, 'zone_cleared_prefix'),
-                ),
-              _ExpeditionPhase.retreated => _buildSummary(
-                  context,
-                  icon: Icons.directions_walk,
-                  title: trFor(lang, 'expedition_ended_title'),
-                ),
-            },
+      child: CompanionRemarksTrigger(
+        remarks: _remarks,
+        ready: !_busy,
+        child: Scaffold(
+          appBar: AppBar(title: Text(zoneName)),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: switch (_phase) {
+                _ExpeditionPhase.event => _buildEvent(context,
+                    shops: shops, enemies: enemies, lang: lang),
+                _ExpeditionPhase.completed => _buildSummary(
+                    context,
+                    icon: Icons.flag_circle,
+                    title: trFor(lang, 'zone_cleared_prefix'),
+                  ),
+                _ExpeditionPhase.retreated => _buildSummary(
+                    context,
+                    icon: Icons.directions_walk,
+                    title: trFor(lang, 'expedition_ended_title'),
+                  ),
+              },
+            ),
           ),
         ),
       ),
@@ -703,31 +706,6 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                for (final remark in _remarks)
-                  if (remark
-                      .lineFor(ref.watch(remarkBookProvider),
-                          french: lang == AppLanguage.fr)
-                      .isNotEmpty) ...[
-                    CompanionRemarkView(
-                      speaker: ((ref
-                                          .watch(localizedDbProvider(
-                                              companionsSchema))
-                                          .value ??
-                                      const {})[remark.companionId]
-                                  as Map<String, dynamic>?)?['companionName']
-                              ?.toString() ??
-                          remark.companionId,
-                      line: remark.lineFor(ref.watch(remarkBookProvider),
-                          french: lang == AppLanguage.fr),
-                      color: Theme.of(context).colorScheme.primary,
-                      french: lang == AppLanguage.fr,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(height: 1.5),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
                 Text(
                   node.descriptionFor(lang == AppLanguage.fr),
                   style: Theme.of(context)

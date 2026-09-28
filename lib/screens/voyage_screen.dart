@@ -23,6 +23,7 @@ import '../providers/remark_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
+import '../widgets/companion_remark_bubble.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -212,25 +213,19 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   }
 
   /// Now and then, one of the crew says something about how a check at
-  /// sea went (see companion_remarks.dart), and the log keeps it.
-  void _crewRemark(bool success, {bool slipped = false}) {
-    final french = ref.read(appLanguageProvider) == AppLanguage.fr;
-    final names =
-        ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
-    for (final remark in speakUpAbout(ref,
+  /// sea went (see companion_remarks.dart), in a speech bubble over the
+  /// sea; the voyage goes on once the player has heard it.
+  Future<void> _crewRemark(bool success, {bool slipped = false}) async {
+    final remarks = speakUpAbout(ref,
         action: !success
             ? RemarkKind.checkFailed
             : slipped
                 ? RemarkKind.sneakedPast
-                : RemarkKind.checkPassed)) {
-      final line = remark.lineFor(ref.read(remarkBookProvider), french: french);
-      if (line.isEmpty) continue;
-      final name =
-          (names[remark.companionId] as Map<String, dynamic>?)?['companionName']
-                  ?.toString() ??
-              remark.companionId;
-      _log.add('$name: “$line”');
-    }
+                : RemarkKind.checkPassed);
+    if (remarks.isEmpty || !mounted) return;
+    // The roll and its result on the log first, under the bubble.
+    setState(() {});
+    await showCompanionRemarks(context, ref, remarks);
   }
 
   /// A storm's toll on the hull, eased by a void-marked sail.
@@ -273,7 +268,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           await _loseHull(_stormLoss(event) * pushThroughFailMultiplier,
               'ship_log_push_failed');
         }
-        _crewRemark(through);
+        await _crewRemark(through);
         await _advance();
       case SeaAction.shelter:
         // Safe in a cove, but the crossing takes another day at sea: one
@@ -331,7 +326,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         } else {
           await _loseHull(boardFailHullLoss, 'ship_log_board_holed');
         }
-        _crewRemark(boarded);
+        await _crewRemark(boarded);
         await _advance();
       case SeaAction.passBy:
         _log.add(_t('ship_log_passed_by'));
@@ -347,14 +342,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       case SeaAction.outrun:
         if (_seaCheck(choice)) {
           _log.add(_t('ship_log_outran'));
-          _crewRemark(true, slipped: true);
+          await _crewRemark(true, slipped: true);
           await _advance();
           return;
         }
         // Caught: they rake the Eel as they close, then it's a fight. The
         // roll and the raking stay on the log, to say why the hull fell.
         await _loseHull(outrunFailHullLoss, 'ship_log_outrun_failed');
-        _crewRemark(false);
+        await _crewRemark(false);
         await _startRaiderFight(event, enemyShips, keepLog: true);
       case SeaAction.fight:
         await _startRaiderFight(event, enemyShips);

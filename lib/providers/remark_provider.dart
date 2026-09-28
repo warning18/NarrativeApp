@@ -25,3 +25,9 @@ final remarkMemoryProvider = StateProvider<RemarkMemory>(
 /// player makes the next one.
 final pendingRemarksProvider =
     StateProvider<List<CompanionRemark>>((ref) => const []);
+
+/// The last set of remarks shown in a speech bubble (see
+/// companion_remark_bubble.dart), so each set is shown once however often
+/// the screen under it is rebuilt.
+final shownRemarksProvider =
+    StateProvider<List<CompanionRemark>?>((ref) => null);

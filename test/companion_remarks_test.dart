@@ -519,21 +519,12 @@ void main() {
     expect(drinkRemark(book, const RemarkMemory(), 'nobody').remark, isNull);
   });
 
-  test('the approval notice quotes the remark after its reaction', () {
+  test('the approval notice leaves the words to the speech bubbles', () {
     final lines = approvalReactionLines(
       [_moved('kelda', 2), _moved('maren', 3)],
       companions,
       (key) => key == 'approval_approves' ? '{name} approves.' : key,
-      book: book,
-      remarks: const [
-        CompanionRemark(
-            companionId: 'maren', kind: RemarkKind.kindApproved, index: 1),
-      ],
     );
-    expect(lines, [
-      'Kelda approves.',
-      'Sister Maren approves.',
-      'Sister Maren: “${book.linesFor('maren', RemarkKind.kindApproved)[1]}”',
-    ]);
+    expect(lines, ['Kelda approves.', 'Sister Maren approves.']);
   });
 }

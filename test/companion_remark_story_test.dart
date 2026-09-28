@@ -1,6 +1,7 @@
 // Companion remarks in the story (v1.167): a kind choice made with Maren in
-// the party opens the next scene with her words about it, and the next
-// choice retires them.
+// the party opens the next scene with her words about it -- since v1.170
+// in a speech bubble over the scene, like the guide's in a tour, not in
+// the scene's text -- and the next choice retires them.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +15,8 @@ import 'package:narrative_data_app/models/ally_state.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/remark_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
-import 'package:narrative_data_app/widgets/companion_remark_view.dart';
+import 'package:narrative_data_app/widgets/companion_remark_bubble.dart';
+import 'package:narrative_data_app/widgets/speech_bubble.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
 
@@ -69,7 +71,7 @@ void main() {
     container.read(storyPlayProvider.notifier).jumpTo('100');
     await _settle(tester);
     await _closeDialogs(tester);
-    expect(find.byType(CompanionRemarkView), findsNothing);
+    expect(find.byType(CompanionRemarkOverlay), findsNothing);
 
     await tester.tap(find.text('Help a neighbor out of the smoke first'));
     // The approval notice, then the next scene.
@@ -80,13 +82,32 @@ void main() {
     final remark = container.read(pendingRemarksProvider).firstOrNull;
     expect(remark?.companionId, 'maren');
     expect(remark?.kind, RemarkKind.kindApproved);
-    expect(find.byType(CompanionRemarkView), findsOneWidget);
-    expect(find.text('SISTER MAREN'), findsOneWidget);
     final line =
         remark!.lineFor(container.read(remarkBookProvider), french: false);
     expect(line, isNotEmpty, reason: 'from the Companion Remarks table');
-    expect(find.text('“$line”'), findsOneWidget);
+
+    // She says it in a speech bubble over the scene, typed out, her name
+    // on it; the scene's own text doesn't carry it.
+    expect(find.byType(CompanionRemarkOverlay), findsOneWidget);
+    final bubble = find.byType(SpeechBubble);
+    expect(bubble, findsOneWidget);
+    expect(find.descendant(of: bubble, matching: find.text('SISTER MAREN')),
+        findsOneWidget);
+    expect(
+        find.descendant(of: bubble, matching: find.text(line)), findsWidgets);
+    expect(find.text('“$line”'), findsNothing);
+    expect(find.textContaining(line), findsNWidgets(2),
+        reason: 'the bubble only (its words and the room they take)');
     expect(tester.takeException(), isNull);
+
+    // Heard: the bubble goes, and doesn't come back with the next rebuild.
+    await tester.tap(find.byKey(const Key('remark_next')));
+    await _settle(tester);
+    expect(find.byType(CompanionRemarkOverlay), findsNothing);
+    await _settle(tester, rounds: 3);
+    expect(find.byType(CompanionRemarkOverlay), findsNothing);
+    expect(container.read(pendingRemarksProvider), isNotEmpty,
+        reason: 'still read aloud with the scene');
 
     // The next choice moves on, and the remark goes with the scene it
     // opened.
@@ -94,7 +115,7 @@ void main() {
     await _settle(tester, rounds: 12);
     await _closeDialogs(tester);
     expect(container.read(storyPlayProvider).currentNodeId, isNot('250'));
-    expect(find.byType(CompanionRemarkView), findsNothing);
+    expect(find.text('SISTER MAREN'), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

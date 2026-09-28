@@ -24,6 +24,7 @@ import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
@@ -869,25 +870,20 @@ class _ApprovalPanel extends ConsumerWidget {
                           .shareDrink(ally.companionId, chapter: chapter);
                       if (done && context.mounted) {
                         // They say something back (see
-                        // companion_remarks.dart).
-                        final book = ref.read(remarkBookProvider);
-                        final said = drinkRemark(book,
+                        // companion_remarks.dart), in a speech bubble
+                        // after the notice.
+                        final said = drinkRemark(ref.read(remarkBookProvider),
                             ref.read(remarkMemoryProvider), ally.companionId);
                         ref.read(remarkMemoryProvider.notifier).state =
                             said.memory;
-                        final words = said.remark?.lineFor(book,
-                                french: ref.read(appLanguageProvider) ==
-                                    AppLanguage.fr) ??
-                            '';
-                        showImmersiveNotice(context,
+                        await showImmersiveNotice(context,
                             icon: Icons.local_drink,
-                            message: [
-                              tr(ref, 'share_drink_notice')
-                                  .replaceAll('{name}', name),
-                              if (words.isNotEmpty) '$name: “$words”',
-                            ].join('\n'),
-                            duration: Duration(
-                                milliseconds: words.isEmpty ? 2200 : 4200));
+                            message: tr(ref, 'share_drink_notice')
+                                .replaceAll('{name}', name));
+                        final remark = said.remark;
+                        if (remark != null && context.mounted) {
+                          await showCompanionRemarks(context, ref, [remark]);
+                        }
                       }
                     },
               icon: const Icon(Icons.local_drink_outlined, size: 18),

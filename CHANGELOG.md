@@ -8,6 +8,36 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.170.0+200]
+
+The companions speak over the screen, in a speech bubble like the guide's
+in a tutorial, instead of in the scene's text.
+
+### Changed
+- **Remarks show in a speech bubble.** What a companion says about the
+  last choice no longer opens the next scene's text. It pops up over the
+  scene, once the scene is on screen and any arrival, discovery or
+  tutorial pop-up has closed: the tutorial's bubble (name on top, words
+  typed out, gold border), its tail pointing at a round badge with the
+  speaker's initial at the bottom of the screen. Tap anywhere or "Go on"
+  to close it; the first tap shows the words at once. When a second
+  companion answers, their badge stands on the other side and the bubble
+  counts "1 / 2". Each remark shows once, and read-aloud still reads it
+  with the scene.
+- **The same bubble everywhere companions talk:** after a check on an
+  expedition or at sea (the log keeps the roll), after a drink at the camp
+  (after the "warms to you" notice), and after an approval notice or a
+  quest turn-in. There, the notice keeps the facts ("Maren approves",
+  "Malrik leaves the party") and the bubble has the words, including what
+  a companion says when they come to trust you completely, lose patience
+  or walk out.
+- The guide's tour and the companions share one speech bubble widget.
+
+### Fixed
+- A quest turn-in that brought a level waited for its notice to close
+  before showing the level-up dialog; the notice's auto-close could
+  otherwise pop the dialog instead.
+
 ## [1.169.0+199]
 
 The companions' remarks become game data, edited in the Data tab like the

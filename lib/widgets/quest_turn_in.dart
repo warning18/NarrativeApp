@@ -9,8 +9,8 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../data/companion_remarks.dart';
 import '../data/turn_in_choices.dart';
-import '../providers/remark_provider.dart';
 import 'approval_notice.dart';
+import 'companion_remark_bubble.dart';
 import 'immersive_notice.dart';
 import 'level_up_dialog.dart';
 import 'turn_in_choice_dialog.dart';
@@ -161,20 +161,22 @@ Future<void> turnInQuest(
     if (achievementNames.isNotEmpty)
       '${trFor(lang, 'achievement_unlocked_prefix')}: '
           '${achievementNames.join(', ')}',
-    ...approvalReactionLines(
-      reactions,
-      companions,
-      (key) => trFor(lang, key),
-      remarks: speakUpAbout(ref, reactions: reactions, deed: deed),
-      book: ref.read(remarkBookProvider),
-      french: lang == AppLanguage.fr,
-    ),
+    ...approvalReactionLines(reactions, companions, (key) => trFor(lang, key)),
   ];
-  showImmersiveNotice(
+  // What the party says about how it was settled (see
+  // companion_remarks.dart) comes after the notice, in speech bubbles.
+  final remarks = speakUpAbout(ref, reactions: reactions, deed: deed);
+  await showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
     message: lines.join('\n'),
   );
+  if (!context.mounted) return;
+  await showSpokenLines(context, ref, [
+    ...approvalReactionWords(reactions, companions),
+    ...spokenRemarks(ref, remarks),
+  ]);
+  if (!context.mounted) return;
   if (leveledUp) {
     showLevelUpDialog(context, ref,
         newLevel: ref.read(playerSessionProvider).level);

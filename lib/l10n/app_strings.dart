@@ -4530,6 +4530,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Got it!',
     AppLanguage.fr: 'Compris !',
   },
+  'remark_done': {
+    AppLanguage.en: 'Go on',
+    AppLanguage.fr: 'Continuer',
+  },
   'tut_voice_on': {
     AppLanguage.en: 'Read aloud',
     AppLanguage.fr: 'Lire à voix haute',

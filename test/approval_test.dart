@@ -263,12 +263,36 @@ void main() {
         (key) => key,
       );
       expect(lines.first, 'approval_approves');
-      expect(lines, contains(contains('I stopped counting my penance')));
-      expect(lines, contains(contains("I don't work for promises")));
-      expect(lines, contains(contains('Nothing profitable, either')));
+      expect(lines, contains('approval_devoted_notice'));
+      expect(lines, contains('approval_wary_notice'));
       expect(lines, contains('approval_leaves_notice'));
       expect(lines.last, 'approval_replaced_notice',
           reason: 'who took the seat comes right after');
+      // Their own words are said in speech bubbles, not in the notice.
+      expect(lines.join(), isNot(contains('“')));
+    });
+
+    test('what they say when their trust turns goes in speech bubbles', () {
+      final words = approvalReactionWords(
+        const [
+          ApprovalChange(companionId: 'maren', before: 10, after: 13),
+          ApprovalChange(companionId: 'kelda', before: 0, after: 2),
+          ApprovalChange(companionId: 'grosh', before: -3, after: -6),
+          ApprovalChange(
+              companionId: 'malrik',
+              before: -10,
+              after: -14,
+              replacedBy: 'kelda'),
+        ],
+        companions,
+      );
+      expect(
+          [for (final w in words) w.companionId], ['maren', 'grosh', 'malrik'],
+          reason: 'Kelda was moved, but her trust did not turn');
+      expect(words[0].line, contains('I stopped counting my penance'));
+      expect(words[1].line, contains("I don't work for promises"));
+      expect(words[2].line, contains('Nothing profitable, either'));
+      expect(words[0].speaker, 'Sister Maren');
     });
 
     test('the notice names who stepped in', () {
