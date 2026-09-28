@@ -13,6 +13,55 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'nav_ship': {AppLanguage.en: 'Ship', AppLanguage.fr: 'Navire'},
+  'nav_journey': {AppLanguage.en: 'Journey', AppLanguage.fr: 'Parcours'},
+  'journey_pick_hint': {
+    AppLanguage.en:
+        'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
+    AppLanguage.fr:
+        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
+  },
+  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
+  'journey_you_are_here': {
+    AppLanguage.en: 'You are here',
+    AppLanguage.fr: 'Vous êtes ici',
+  },
+  'journey_leads_to': {
+    AppLanguage.en: 'To {place}',
+    AppLanguage.fr: 'Vers {place}',
+  },
+  'journey_ended': {
+    AppLanguage.en: 'The road ends here. The Story tab has what comes next.',
+    AppLanguage.fr:
+        'La route s’arrête ici. L’onglet Histoire vous montre la suite.',
+  },
+  'journey_open_story': {
+    AppLanguage.en: 'Open the story',
+    AppLanguage.fr: 'Ouvrir l’histoire',
+  },
+  'journey_read_in_story': {
+    AppLanguage.en: 'Read the scene in the Story tab',
+    AppLanguage.fr: 'Lire la scène dans l’onglet Histoire',
+  },
+  'journey_kind_ending': {AppLanguage.en: 'Ending', AppLanguage.fr: 'Fin'},
+  'journey_kind_mainQuest': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'journey_kind_expedition': {
+    AppLanguage.en: 'Expedition',
+    AppLanguage.fr: 'Expédition',
+  },
+  'journey_kind_fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'journey_kind_challenge': {
+    AppLanguage.en: 'Challenge',
+    AppLanguage.fr: 'Épreuve',
+  },
+  'journey_kind_check': {AppLanguage.en: 'Roll', AppLanguage.fr: 'Jet'},
+  'journey_kind_shop': {AppLanguage.en: 'Shop', AppLanguage.fr: 'Boutique'},
+  'journey_kind_quest': {AppLanguage.en: 'Work', AppLanguage.fr: 'Travail'},
+  'journey_kind_travel': {AppLanguage.en: 'Voyage', AppLanguage.fr: 'Voyage'},
+  'journey_kind_rest': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Repos'},
+  'journey_kind_road': {AppLanguage.en: 'Road', AppLanguage.fr: 'Route'},
   'camp_party_section': {
     AppLanguage.en: 'Who comes along',
     AppLanguage.fr: 'Qui vous accompagne',

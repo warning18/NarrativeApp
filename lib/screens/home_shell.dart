@@ -23,6 +23,7 @@ import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
 import 'game_data_home_screen.dart';
+import 'journey_screen.dart';
 import 'play_screen.dart';
 import 'settings_screen.dart';
 import 'ship_screen.dart';
@@ -30,8 +31,9 @@ import 'story_graph_screen.dart';
 import 'story_player_screen.dart';
 import 'world_map_screen.dart';
 
-/// The game under the main menu. In play: Story, Character, Camp and
-/// Other (quests, shops, bestiary, people, saves); while the party is at
+/// The game under the main menu. In play: Story, Journey (the story on a
+/// map, its ways on as steps to pick), Character, Camp and Other (quests,
+/// shops, bestiary, people, saves); while the party is at
 /// the camp (its scene, or gone back to it from a town), the camp takes
 /// the Story tab's place until the party leaves; away from it the Camp tab
 /// is the way back, and the ship while the Eel is out. In Edit Mode: Story,
@@ -57,7 +59,12 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     CharacterScreen(embedded: true),
     _CampTab(),
     PlayScreen(),
+    JourneyScreen(),
   ];
+
+  /// The story tab last open in play (Story or Journey): leaving the camp
+  /// goes back to it.
+  int _storyTab = 0;
 
   /// Goals reached during a fight, announced once it is over.
   final List<String> _pendingReadyQuestIds = [];
@@ -136,7 +143,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ref.read(appModeProvider) == AppMode.edit) {
         return;
       }
-      ref.read(homeTabIndexProvider.notifier).state = next ? _campTab : 0;
+      ref.read(homeTabIndexProvider.notifier).state =
+          next ? _campTab : _storyTab;
     });
 
     final isEditMode = ref.watch(appModeProvider) == AppMode.edit;
@@ -157,15 +165,22 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             tr(ref, 'character'),
             tr(ref, atCampTab ? 'camp_title' : 'boat_title'),
             tr(ref, 'title_other'),
+            tr(ref, 'nav_journey'),
           ];
     final language = ref.watch(appLanguageProvider);
-    // While the story stands at the camp its tab is closed: the tabs are
+    // While the story stands at the camp its tabs are closed: the tabs are
     // Camp, Character and Other, and the Story tab's index means the camp.
     final storyHidden = !isEditMode && ref.watch(partyAtCampProvider);
-    final visibleTabs =
-        storyHidden ? const [_campTab, 1, 3] : const [0, 1, 2, 3];
+    final visibleTabs = isEditMode
+        ? const [0, 1, 2, 3]
+        : storyHidden
+            ? const [_campTab, 1, 3]
+            : const [0, journeyTabIndex, 1, 2, 3];
     var index = ref.watch(homeTabIndexProvider).clamp(0, screens.length - 1);
-    if (!visibleTabs.contains(index)) index = _campTab;
+    if (!visibleTabs.contains(index)) index = isEditMode ? 0 : _campTab;
+    if (!isEditMode && (index == 0 || index == journeyTabIndex)) {
+      _storyTab = index;
+    }
     final canLeave = Navigator.of(context).canPop();
     final badges = ref.watch(tabBadgesProvider);
 
@@ -194,7 +209,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                     Navigator.of(context).popUntil((route) => route.isFirst),
               )
             : null,
-        title: !isEditMode && index == 0
+        title: !isEditMode && (index == 0 || index == journeyTabIndex)
             ? TutorialTarget(
                 id: 'home.chapter', child: _ChapterTitle(fallback: titles[0]))
             : Text(titles[index]),
@@ -266,6 +281,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                       0 => NavigationDestination(
                           icon: const Icon(Icons.menu_book),
                           label: tr(ref, 'nav_story')),
+                      journeyTabIndex => NavigationDestination(
+                          icon: const Icon(Icons.alt_route),
+                          label: tr(ref, 'nav_journey')),
                       1 => dotted(
                           Icons.person_outline, tr(ref, 'nav_character'),
                           show: badges.character,

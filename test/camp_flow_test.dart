@@ -18,6 +18,7 @@ import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/story_providers.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
+import 'package:narrative_data_app/screens/story_player_screen.dart';
 import 'package:narrative_data_app/screens/voyage_screen.dart';
 
 Map<String, dynamic> _data(String name) =>
@@ -196,7 +197,11 @@ void main() {
 
     // Setting up camp opens it: the Story tab closes, the camp opens with
     // its scene and its chapter, and the Eel is back in the cove.
-    final setUp = find.text('Take stock of the shore', skipOffstage: false);
+    // (Under the Story tab: the Journey tab shows the same way on.)
+    final setUp = find.descendant(
+        of: find.byType(StoryPlayerScreen, skipOffstage: false),
+        matching: find.text('Take stock of the shore', skipOffstage: false),
+        skipOffstage: false);
     await tester.ensureVisible(setUp);
     await tester.tap(setUp);
     await _settle(tester);

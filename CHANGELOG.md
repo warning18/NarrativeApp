@@ -8,6 +8,37 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.174.0+204]
+
+A Journey tab: the story and the map in one screen.
+
+### Added
+- **Journey tab (play mode, between Story and Character).** The scene the
+  story is on reads at the top, the same text as the Story tab with what
+  the last fight or roll left behind. Under it is a chart in the world
+  map's look (Night, Parchment or Shroud): the party's mark with the place's
+  name, the last places passed on the road behind, and every way on from
+  the scene as a step ahead. Each step's icon and colour say what it holds:
+  road, fight, roll, challenge, shop, work, voyage, rest, expedition, main
+  quest or ending. Faint dots above a step show how many ways go on from
+  it, and "To …" names the place it leads to when that is somewhere else.
+- Tapping a step picks it. The bar under the map shows its full text and
+  what it costs or brings (gold, HP, alignment, the roll and its DC, who is
+  fought). Go, or a second tap, takes it exactly as the choice under the
+  story would: the same checks, fights, detours, effects and pop-ups.
+  Shut ways stay on the map, locked, with the reason shown.
+- A town's many ways stack in rows. The rows interleave, the roads to the
+  far rows fade, and the map scrolls. The scene text folds to two lines to
+  give the map more room. A detour shows on the map like any scene, with
+  the way it interrupts; an ending sends the player to the Story tab for
+  the ending screen and New Game+.
+
+### Changed
+- Arrival pop-ups, the "previously" recap and the companions' remarks now
+  show over the Journey tab as well as the Story tab.
+- At the camp the Journey tab closes along with the Story tab. Leaving the
+  camp returns to whichever of the two was open last.
+
 ## [1.173.0+203]
 
 Three side-story villages, each found by its own expedition, and the

@@ -65,6 +65,7 @@ import '../utils/pixel_icons/game_pixel_icons.dart';
 import 'expedition_screen.dart';
 import 'fight_screen.dart';
 import 'journal_screen.dart';
+import 'journey_screen.dart' show journeyTabIndex;
 import 'race_profession_screen.dart';
 import 'shop_detail_screen.dart';
 import 'skill_challenge_screen.dart';
@@ -308,8 +309,13 @@ class _StoryView extends ConsumerWidget {
       });
     }
     // ModalRoute.of makes this rebuild when a covering route goes away. At
-    // the camp the Story tab is closed (the camp stands in its place).
-    final storyOnScreen = ref.watch(homeTabIndexProvider) == 0 &&
+    // the camp the Story tab is closed (the camp stands in its place). The
+    // Journey tab tells the same scene, so what the story says on arrival
+    // shows over it too.
+    final storyTab = ref.watch(homeTabIndexProvider);
+    final storyOnScreen = (storyTab == 0 ||
+            (storyTab == journeyTabIndex &&
+                ref.watch(appModeProvider) != AppMode.edit)) &&
         !(ref.watch(partyAtCampProvider) &&
             ref.watch(appModeProvider) != AppMode.edit) &&
         (ModalRoute.of(context)?.isCurrent ?? true);
