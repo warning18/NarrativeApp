@@ -2995,6 +2995,87 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Clear {n} encounters here to claim the zone.',
     AppLanguage.fr: 'Franchissez {n} rencontres ici pour conquérir la zone.',
   },
+  'expedition_goal_escort': {
+    AppLanguage.en:
+        'Bring the wagons through {n} stages; {boss} waits at the end. You are paid for what arrives.',
+    AppLanguage.fr:
+        'Menez les chariots à travers {n} étapes ; {boss} attend au bout. La paie dépend de ce qui arrive.',
+  },
+  'expedition_goal_delivery': {
+    AppLanguage.en:
+        'Deliver within {days} days: {n} stages, then {boss}. Destination: {place}. Late, it pays half.',
+    AppLanguage.fr:
+        'Livrez en {days} jours : {n} étapes, puis {boss}. Destination : {place}. En retard, la paie est de moitié.',
+  },
+  'escort_cargo_label': {
+    AppLanguage.en: 'Wagons’ load',
+    AppLanguage.fr: 'Chargement',
+  },
+  'delivery_days_line': {
+    AppLanguage.en: 'Days on the road: {used} of {deadline}',
+    AppLanguage.fr: 'Jours de route : {used} sur {deadline}',
+  },
+  'escort_cargo_lost': {
+    AppLanguage.en: 'The wagons lost {n}% of their load ({left}% left).',
+    AppLanguage.fr:
+        'Les chariots ont perdu {n} % de leur chargement (il en reste {left} %).',
+  },
+  'escort_day_lost': {
+    AppLanguage.en: 'That cost a day on the road.',
+    AppLanguage.fr: 'Cela a coûté une journée de route.',
+  },
+  'delivery_day_lost': {
+    AppLanguage.en: 'That cost a day: {used} of {deadline} days gone.',
+    AppLanguage.fr: 'Cela a coûté une journée : {used} jours sur {deadline}.',
+  },
+  'delivery_day_saved': {
+    AppLanguage.en: 'A day saved: {used} of {deadline} days gone.',
+    AppLanguage.fr: 'Une journée de gagnée : {used} jours sur {deadline}.',
+  },
+  'expedition_hurt': {
+    AppLanguage.en: 'The effort cost you {n} health.',
+    AppLanguage.fr: 'L’effort vous a coûté {n} points de vie.',
+  },
+  'escort_lost_message': {
+    AppLanguage.en:
+        'The last wagon is gone. There is nothing left to deliver, and nobody left to pay you.',
+    AppLanguage.fr:
+        'Le dernier chariot est perdu. Il n’y a plus rien à livrer, et plus personne pour vous payer.',
+  },
+  'escort_arrived': {
+    AppLanguage.en: 'The wagons arrived with {n}% of their load.',
+    AppLanguage.fr: 'Les chariots sont arrivés avec {n} % de leur chargement.',
+  },
+  'escort_item_missed': {
+    AppLanguage.en: 'Too little arrived for the merchant’s extra thanks.',
+    AppLanguage.fr:
+        'Trop peu est arrivé pour mériter la gratitude du marchand.',
+  },
+  'delivery_on_time': {
+    AppLanguage.en: 'Delivered on time: {used} of {deadline} days.',
+    AppLanguage.fr: 'Livré à temps : {used} jours sur {deadline}.',
+  },
+  'delivery_late': {
+    AppLanguage.en: 'Delivered {n} days late: half the pay, and no thanks.',
+    AppLanguage.fr:
+        'Livré avec {n} jours de retard : la moitié de la paie, et aucun remerciement.',
+  },
+  'escort_done_title': {
+    AppLanguage.en: 'The wagons are in',
+    AppLanguage.fr: 'Les chariots sont arrivés',
+  },
+  'delivery_done_title': {
+    AppLanguage.en: 'Delivered',
+    AppLanguage.fr: 'Livraison faite',
+  },
+  'expedition_kind_escort': {
+    AppLanguage.en: 'Escort',
+    AppLanguage.fr: 'Escorte',
+  },
+  'expedition_kind_delivery': {
+    AppLanguage.en: 'Delivery',
+    AppLanguage.fr: 'Livraison',
+  },
   'expedition_defeated_message': {
     AppLanguage.en:
         "You're overwhelmed and pull back to town — everything you'd already gained this run stays with you, but this zone's prize is still out there.",
@@ -5579,6 +5660,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'zone_flag_exorcists_road_cleared': {
     AppLanguage.en: 'The Exorcists’ Road, walked to the top',
     AppLanguage.fr: 'La Route des Exorcistes, gravie jusqu’en haut',
+  },
+  'zone_flag_salt_road_cleared': {
+    AppLanguage.en: 'The Salt Road, the Wreckers’ lantern put out',
+    AppLanguage.fr: 'La Route du Sel, la lanterne des Naufrageurs éteinte',
+  },
+  'zone_flag_fever_bark_delivered': {
+    AppLanguage.en: 'Fever-Bark for the Wall, the chest delivered',
+    AppLanguage.fr: 'L’Écorce pour le Mur, le coffre livré',
+  },
+  'zone_flag_bell_road_cleared': {
+    AppLanguage.en: 'The Bell Road, the bells brought home',
+    AppLanguage.fr: 'La Route des Cloches, les cloches ramenées',
+  },
+  'zone_flag_ember_run_delivered': {
+    AppLanguage.en: 'The Ember Run, the hearths of Rimewell lit again',
+    AppLanguage.fr:
+        'La Course des Braises, les foyers de Puits-de-Givre rallumés',
+  },
+  'zone_flag_lantern_train_cleared': {
+    AppLanguage.en: 'The Lantern Train, the oil brought up the hill',
+    AppLanguage.fr: 'Le Convoi des Lanternes, l’huile montée sur les hauteurs',
   },
   'zone_flag_changeling_fen_cleared': {
     AppLanguage.en: 'The Changeling Fen, its rider unhorsed',

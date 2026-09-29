@@ -1901,6 +1901,28 @@ final DbSchema zonesSchema = DbSchema(
           'Discovers Places (story node ids: the first at the midpoint, the rest on clearing the zone)',
       type: FieldType.stringList,
     ),
+    FieldSchema(
+      key: 'kind',
+      label:
+          'Kind (clear: random events; escort: wagons whose load pays; delivery: a parcel with a deadline)',
+      type: FieldType.enumeration,
+      enumOptions: const ['clear', 'escort', 'delivery'],
+    ),
+    FieldSchema(
+      key: 'deadlineDays',
+      label: 'Delivery Deadline (days; default: stages + 2)',
+      type: FieldType.integer,
+    ),
+    FieldSchema(
+      key: 'destinationName',
+      label: 'Delivery Destination',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'destinationName_fr',
+      label: 'Delivery Destination (FR)',
+      type: FieldType.text,
+    ),
     visualAssetFieldSchema('zones'),
   ],
 );

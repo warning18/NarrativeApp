@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.179.0+209]
+
+Two new kinds of expedition: escorts, paid for what arrives, and
+deliveries, which race a deadline. There is one of them in each chapter
+from 2 to 6.
+
+### Added
+- **Escorts.** The wagons set out at 100% load. Each stage is a scene on
+  the road with a choice to make: an ambush (hold the line or slip past),
+  a broken axle, a ford in flood, a chain across the road with a toll,
+  thieves among the crates at night, mules that will not cross, and
+  stragglers asking for a place on a wagon. Fights, failed rolls and
+  kindness each cost some of the load. A safe choice costs a day instead,
+  and that day passes on the world's clock. The boss takes another 10%.
+  Pay is the zone's gold times the share that arrives. The zone's item
+  comes only with half the load or more, and losing all of it ends the
+  escort.
+- **Deliveries.** A parcel to carry by a deadline: 6 days for 4 stages.
+  Each stage takes a day. A safe detour or a failed roll costs another,
+  and a paid guide saves one. The scenes are a crossroads, a checkpoint,
+  pursuers, a rotten bridge, a shepherd who knows a shortcut, a storm,
+  and a stranger's letter to carry on the way. On time pays in full
+  with the item; late pays half without it.
+- The expedition screen shows the wagons' load or the days on the road
+  under the progress bar. After each choice it says what it cost (load,
+  a day, health). Zone cards carry an Escort or Delivery tag.
+- **Five expeditions, each with its own boss**, in English and French:
+  - *The Salt Road* (chapter 2, escort): Brine Jack.
+  - *Fever-Bark for the Wall* (chapter 3, delivery to the Reckoning
+    Wall): Purifier Hesk.
+  - *The Bell Road* (chapter 4, escort): the Knell-Keeper.
+  - *The Ember Run* (chapter 5, delivery to Rimewell): the Rime Bailiff.
+  - *The Lantern Train* (chapter 6, escort): the Glass Shepherd.
+
+### Balance (Python simulator, 60 runs)
+- The five bosses sit with their chapter's other zone bosses. Their
+  first fight is won 98–100% of the time in 6.8 to 12 rounds, against
+  5 to 17 for the others.
+- Escorts arrive with 70–80% of the load on average, never less than
+  25%. They pay 70–80% of the zone's gold and keep the item 95–100% of
+  the time.
+- Deliveries were first given 5 days (one to spare), and a careful party
+  arrived late more than half the time. With 6 days, they are on time
+  82–87% of the time.
+- An escort or delivery has about 0.3 fights before the boss, so its
+  stages are about choices rather than fights.
+
 ## [1.178.0+208]
 
 Angels and demons come less often and finish what they start, and stalls

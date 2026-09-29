@@ -12,6 +12,7 @@ import '../data/alignment_events.dart';
 import '../data/chapter_loop.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
+import '../data/expedition_kinds.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
@@ -20,6 +21,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -44,18 +46,27 @@ enum _ExpeditionPhase { event, completed, retreated }
 /// events, ends the run without the zone's own banked reward (see
 /// [PlayerSessionNotifier.completeZone]) — everything already gained this
 /// run (gold, items, XP from any won fight) is kept regardless.
+///
+/// An escort or a delivery (zones.json `kind`, see expedition_kinds.dart)
+/// walks its own stages instead of random events: the wagons' load or the
+/// days on the road are shown under the progress bar, each choice says
+/// what it cost, and the pay at the end follows what arrived and when.
 class ExpeditionScreen extends ConsumerStatefulWidget {
-  const ExpeditionScreen({super.key, required this.zoneId, required this.zone});
+  const ExpeditionScreen(
+      {super.key, required this.zoneId, required this.zone, this.random});
 
   final String zoneId;
   final Map<String, dynamic> zone;
+
+  /// The expedition's draws (a test's seeded one); a fresh one by default.
+  final Random? random;
 
   @override
   ConsumerState<ExpeditionScreen> createState() => _ExpeditionScreenState();
 }
 
 class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
-  final _random = Random();
+  late final Random _random = widget.random ?? Random();
   int _index = 0;
   StoryNode? _current;
   _ExpeditionPhase _phase = _ExpeditionPhase.event;
@@ -83,6 +94,24 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// companion_remarks.dart), shown over the next event in a speech bubble.
   String? _checkOutcome;
   List<CompanionRemark> _remarks = const [];
+
+  /// What the expedition asks (see expedition_kinds.dart).
+  late final ExpeditionKind _kind = expeditionKindOf(widget.zone);
+
+  /// An escort's load left, in percent, and a delivery's days on the road.
+  int _cargo = escortCargoFull;
+  int _daysUsed = 0;
+
+  /// The escort's or delivery's current stage (its choices' costs), and
+  /// the stages already met this expedition.
+  ExpeditionStep? _step;
+  final Set<String> _usedScenes = {};
+
+  /// What the last choice cost the wagons or the days, opening the next
+  /// event.
+  String? _kindNote;
+
+  int get _deadline => deliveryDeadlineOf(widget.zone);
 
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
@@ -169,6 +198,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     unawaited(ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
         ambushed:
             alignmentEvent != null && isHunterAmbushChain(alignmentEvent)));
+    _step = null;
     if (alignmentEvent != null) return alignmentEvent.first;
     final shopPool = SubNodeEngine.filterShopPool(
       shops: shops,
@@ -180,6 +210,22 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       unlockedEnemyIds: session.unlockedEnemyIds,
       chapter: zoneChapter,
     );
+    // An escort or a delivery walks its own stages, not the zone's random
+    // events.
+    if (_kind != ExpeditionKind.clear) {
+      final step = buildKindStep(
+        _kind,
+        chapter: zoneChapter,
+        random: _random,
+        used: _usedScenes,
+        enemyPool: enemyPool,
+        packPool: SubNodeEngine.filterPackPool(
+            enemies: enemies, enemyPool: enemyPool),
+      );
+      _usedScenes.add(step.key);
+      _step = step;
+      return step.node;
+    }
     return SubNodeEngine.buildNode(
       random: _random,
       flavor: flavorFor(theme),
@@ -205,6 +251,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (_bonusQueue.isNotEmpty) {
       setState(() {
         _current = _bonusQueue.removeAt(0);
+        _step = null;
         _busy = false;
       });
       return;
@@ -218,6 +265,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         setState(() {
           _index = nextIndex;
           _current = _buildBossNode(boss);
+          _step = null;
           _busy = false;
         });
         return;
@@ -246,6 +294,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         setState(() {
           _index = nextIndex;
           _current = beat;
+          _step = null;
           _busy = false;
         });
         return;
@@ -267,6 +316,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       _busy = true;
       _aftermath = null;
       _checkOutcome = null;
+      _kindNote = null;
       _remarks = const [];
     });
     final notifier = ref.read(playerSessionProvider.notifier);
@@ -275,6 +325,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     // own event count.
     final countsTowardZone = !_isBonusNode(_current);
     final isBoss = _isBossNode(_current);
+    // What this choice costs an escort's wagons or a delivery's days.
+    final step =
+        _step != null && identical(_step!.node, _current) ? _step : null;
+    final stepOutcome = step != null
+        ? step.outcomeFor(_current!.choices.indexOf(choice))
+        : isBoss && _kind == ExpeditionKind.escort
+            ? escortBossOutcome
+            : null;
 
     // A check on the road (v1.162): sneak past, dig deeper, scavenge. A
     // failed one forfeits the choice's reward; a sneak that works leaves
@@ -369,6 +427,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         await notifier.unlockContent(enemyId: eid);
       }
       if (!mounted) return;
+      if (!await _applyStepOutcome(stepOutcome,
+          failed: checkFailed, fought: true, isStage: step != null)) {
+        return;
+      }
       if (isBoss) {
         _bossDone = true;
         await _completeZone();
@@ -442,8 +504,71 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       }
     }
     if (!mounted) return;
+    if (!await _applyStepOutcome(stepOutcome,
+        failed: checkFailed, fought: false, isStage: step != null)) {
+      return;
+    }
     await _advance(
         shops: shops, enemies: enemies, countsTowardZone: countsTowardZone);
+  }
+
+  /// What a choice of an escort's or a delivery's stage cost ([outcome],
+  /// resolved by whether its roll [failed] and whether the party
+  /// [fought]): the wagons' load, the days on the road (a stage takes one,
+  /// when [isStage]; extra ones pass on the world's clock too) and the
+  /// leader's health. False when the last of the load was lost, which ends
+  /// the escort.
+  Future<bool> _applyStepOutcome(StepOutcome? outcome,
+      {required bool failed,
+      required bool fought,
+      required bool isStage}) async {
+    if (outcome == null || _kind == ExpeditionKind.clear) return true;
+    final lang = ref.read(appLanguageProvider);
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final cost = outcome.resolve(failed: failed, fought: fought);
+    final notes = <String>[];
+    if (_kind == ExpeditionKind.escort && cost.cargo != 0) {
+      _cargo = (_cargo + cost.cargo).clamp(0, escortCargoFull);
+      if (cost.cargo < 0) {
+        notes.add(trFor(lang, 'escort_cargo_lost')
+            .replaceAll('{n}', '${-cost.cargo}')
+            .replaceAll('{left}', '$_cargo'));
+      }
+    }
+    if (_kind == ExpeditionKind.delivery && isStage) {
+      _daysUsed = max(0, _daysUsed + 1 + cost.days);
+      if (cost.days != 0) {
+        notes.add(trFor(lang,
+                cost.days > 0 ? 'delivery_day_lost' : 'delivery_day_saved')
+            .replaceAll('{used}', '$_daysUsed')
+            .replaceAll('{deadline}', '$_deadline'));
+      }
+    } else if (_kind == ExpeditionKind.escort && cost.days > 0) {
+      notes.add(trFor(lang, 'escort_day_lost'));
+    }
+    // A day lost on the road is a day on the world's clock (see
+    // journey_rules.dart).
+    if (cost.days > 0) {
+      await notifier.passDays(cost.days,
+          chapter: ref.read(reachedChapterProvider));
+    }
+    if (cost.hurt > 0) {
+      final session = ref.read(playerSessionProvider);
+      final bite = max(1, (session.maxHealth * cost.hurt / 100).round());
+      await notifier.applyChoiceEffects(healAmount: -bite);
+      notes.add(trFor(lang, 'expedition_hurt').replaceAll('{n}', '$bite'));
+    }
+    if (!mounted) return false;
+    _kindNote = notes.isEmpty ? null : notes.join(' ');
+    if (_kind == ExpeditionKind.escort && _cargo <= 0) {
+      setState(() {
+        _phase = _ExpeditionPhase.retreated;
+        _summaryLines = [trFor(lang, 'escort_lost_message')];
+        _busy = false;
+      });
+      return false;
+    }
+    return true;
   }
 
   /// A hunt node (trail or quarry), a hunter ambush, or a temptation --
@@ -487,12 +612,42 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   Future<void> _completeZone() async {
     final notifier = ref.read(playerSessionProvider.notifier);
-    final rewardGold = (widget.zone['rewardGold'] as num?)?.toInt() ?? 0;
-    final rewardItemId = widget.zone['rewardItemId']?.toString() ?? '';
+    final lang = ref.read(appLanguageProvider);
+    final zoneGold = (widget.zone['rewardGold'] as num?)?.toInt() ?? 0;
+    final zoneItemId = widget.zone['rewardItemId']?.toString() ?? '';
+    // An escort is paid for the load that arrived, a delivery for arriving
+    // in time; either keeps its extra thanks (the item) for doing well.
+    final kindLines = <String>[];
+    var rewardGold = zoneGold;
+    var rewardItemId = zoneItemId;
+    switch (_kind) {
+      case ExpeditionKind.clear:
+        break;
+      case ExpeditionKind.escort:
+        rewardGold = escortPayFor(zoneGold, _cargo);
+        kindLines
+            .add(trFor(lang, 'escort_arrived').replaceAll('{n}', '$_cargo'));
+        if (!escortKeepsItem(_cargo) && zoneItemId.isNotEmpty) {
+          rewardItemId = '';
+          kindLines.add(trFor(lang, 'escort_item_missed'));
+        }
+      case ExpeditionKind.delivery:
+        final onTime = deliveryOnTime(daysUsed: _daysUsed, deadline: _deadline);
+        rewardGold =
+            deliveryPayFor(zoneGold, daysUsed: _daysUsed, deadline: _deadline);
+        if (onTime) {
+          kindLines.add(trFor(lang, 'delivery_on_time')
+              .replaceAll('{used}', '$_daysUsed')
+              .replaceAll('{deadline}', '$_deadline'));
+        } else {
+          rewardItemId = '';
+          kindLines.add(trFor(lang, 'delivery_late')
+              .replaceAll('{n}', '${_daysUsed - _deadline}'));
+        }
+    }
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';
     final rewardFlag = widget.zone['rewardFlag']?.toString() ?? '';
-    final lang = ref.read(appLanguageProvider);
     final companions =
         ref.read(localizedDbProvider(companionsSchema)).value ?? const {};
 
@@ -504,7 +659,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       rewardFlag: rewardFlag.isNotEmpty ? rewardFlag : null,
     );
 
-    final lines = <String>[...await _discoverPlaces(atEnd: true)];
+    final lines = <String>[
+      ...kindLines,
+      ...await _discoverPlaces(atEnd: true),
+    ];
     if (rewardGold > 0) {
       lines.add('+$rewardGold ${trFor(lang, 'gold_label')}');
     }
@@ -632,8 +790,18 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                     shops: shops, enemies: enemies, lang: lang),
                 _ExpeditionPhase.completed => _buildSummary(
                     context,
-                    icon: Icons.flag_circle,
-                    title: trFor(lang, 'zone_cleared_prefix'),
+                    icon: switch (_kind) {
+                      ExpeditionKind.escort => Icons.local_shipping,
+                      ExpeditionKind.delivery => Icons.markunread_mailbox,
+                      ExpeditionKind.clear => Icons.flag_circle,
+                    },
+                    title: trFor(
+                        lang,
+                        switch (_kind) {
+                          ExpeditionKind.escort => 'escort_done_title',
+                          ExpeditionKind.delivery => 'delivery_done_title',
+                          ExpeditionKind.clear => 'zone_cleared_prefix',
+                        }),
                   ),
                 _ExpeditionPhase.retreated => _buildSummary(
                     context,
@@ -669,6 +837,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   : '${trFor(lang, 'expedition_progress_label')} ${_index + 1} / $_expeditionCount',
           style: Theme.of(context).textTheme.labelMedium,
         ),
+        if (_kind != ExpeditionKind.clear) ...[
+          const SizedBox(height: 8),
+          _kindGauge(context, lang),
+        ],
         const SizedBox(height: 4),
         // Why every event here happens: the party came to clear this
         // place, and its guardian stands between them and what it holds.
@@ -713,6 +885,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
+                if (_kindNote != null) ...[
+                  Text(
+                    _kindNote!,
+                    key: const ValueKey('expedition_kind_note'),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
                 Text(
                   node.descriptionFor(lang == AppLanguage.fr),
                   style: Theme.of(context)
@@ -745,17 +927,79 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   }
 
   /// "Clear 4 encounters here, then its guardian, Overseer Renn, to claim
-  /// the zone." -- the reason the party is fighting its way through.
+  /// the zone." -- the reason the party is fighting its way through. An
+  /// escort's or a delivery's says what it is paid for.
   String _goalLine(AppLanguage lang, Map<String, dynamic> enemies) {
     final bossName =
         (enemies[_bossEnemyId] as Map<String, dynamic>?)?['enemyName']
                 ?.toString() ??
             '';
-    final key =
-        bossName.isEmpty ? 'expedition_goal_no_boss' : 'expedition_goal';
+    final key = switch (_kind) {
+      ExpeditionKind.escort => 'expedition_goal_escort',
+      ExpeditionKind.delivery => 'expedition_goal_delivery',
+      ExpeditionKind.clear =>
+        bossName.isEmpty ? 'expedition_goal_no_boss' : 'expedition_goal',
+    };
+    final place = widget.zone['destinationName']?.toString() ?? '';
     return trFor(lang, key)
         .replaceAll('{n}', '$_expeditionCount')
-        .replaceAll('{boss}', bossName);
+        .replaceAll('{boss}', bossName)
+        .replaceAll('{days}', '$_deadline')
+        .replaceAll('{place}', place);
+  }
+
+  /// An escort's load left, or a delivery's days on the road against its
+  /// deadline: a bar that reddens as it runs short.
+  Widget _kindGauge(BuildContext context, AppLanguage lang) {
+    final scheme = Theme.of(context).colorScheme;
+    if (_kind == ExpeditionKind.escort) {
+      final low = _cargo < escortItemCargo;
+      return Row(
+        key: const ValueKey('expedition_cargo_gauge'),
+        children: [
+          Icon(Icons.local_shipping,
+              size: 18, color: low ? scheme.error : scheme.primary),
+          const SizedBox(width: 6),
+          Text('${trFor(lang, 'escort_cargo_label')} $_cargo%',
+              style: Theme.of(context).textTheme.labelMedium),
+          const SizedBox(width: 8),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: _cargo / escortCargoFull,
+              color: low ? scheme.error : scheme.primary,
+            ),
+          ),
+        ],
+      );
+    }
+    // Days left against the stages left: red once the parcel can only
+    // arrive late.
+    final stagesLeft = max(0, _expeditionCount - _index);
+    final late = _daysUsed + stagesLeft > _deadline;
+    return Row(
+      key: const ValueKey('expedition_deadline_gauge'),
+      children: [
+        Icon(Icons.hourglass_bottom,
+            size: 18, color: late ? scheme.error : scheme.primary),
+        const SizedBox(width: 6),
+        Text(
+          trFor(lang, 'delivery_days_line')
+              .replaceAll('{used}', '$_daysUsed')
+              .replaceAll('{deadline}', '$_deadline'),
+          style: Theme.of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(color: late ? scheme.error : null),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: LinearProgressIndicator(
+            value: (_daysUsed / _deadline).clamp(0.0, 1.0),
+            color: late ? scheme.error : scheme.primary,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildSummary(BuildContext context,

@@ -3828,5 +3828,454 @@
     "encounterText_fr": [
       "Le givre du géant se fend quand il se retourne, et il lève une masse qu’il tient depuis trois hivers."
     ]
+  },
+  "brine_jack": {
+    "enemyName": "Brine Jack",
+    "enemyName_fr": "Jack la Saumure",
+    "maxHealth": 185,
+    "damage": 21,
+    "guile": 3,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Water"
+    ],
+    "xpReward": 66,
+    "goldReward": 50,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 20
+      },
+      {
+        "itemID": "boots_tidewalker",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 2,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Wrecker’s Lantern",
+        "nameFr": "Lanterne de naufrageur",
+        "message": "Brine Jack swings his lantern, and the ground seems to pitch like a deck in a swell.",
+        "messageFr": "Jack la Saumure fait tournoyer sa lanterne, et le sol semble tanguer comme un pont dans la houle.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "heavy_windup",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The captain of the Wreckers, who light false lamps on the rocks on stormy nights and work the coast road on the others.",
+    "description_fr": "Le capitaine des Naufrageurs, qui allument de faux feux sur les rochers les soirs de tempête et écument la route côtière les autres soirs.",
+    "encounterText": [
+      "Brine Jack plants the pole of his lantern in the road and looks at the wagons the way a gull looks at a gutting table."
+    ],
+    "encounterText_fr": [
+      "Jack la Saumure plante la perche de sa lanterne sur la route et regarde les chariots comme une mouette regarde un étal de vidage."
+    ]
+  },
+  "purifier_hesk": {
+    "enemyName": "Purifier Hesk",
+    "enemyName_fr": "Le Purificateur Hesk",
+    "maxHealth": 190,
+    "damage": 22,
+    "guile": 5,
+    "weakTo": [
+      "Water"
+    ],
+    "resists": [
+      "Fire"
+    ],
+    "xpReward": 86,
+    "goldReward": 64,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "boots_iron_shod",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "zealous_conviction",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 3,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "The Pyre Lit",
+        "nameFr": "Le bûcher allumé",
+        "message": "Hesk sets his torches to the dry brush along the Wall. The air goes thick with smoke.",
+        "messageFr": "Hesk met le feu aux broussailles sèches le long du Mur. L’air s’épaissit de fumée.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "fireball",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "An Inquisition purifier sent to burn the fever out of the Reckoning Wall, and the shacks along with it.",
+    "description_fr": "Un purificateur de l’Inquisition envoyé pour chasser la fièvre du Mur du Jugement par le feu, et les baraques avec.",
+    "encounterText": [
+      "Purifier Hesk lifts a torch in each hand and asks, very politely, what is in the chest."
+    ],
+    "encounterText_fr": [
+      "Le Purificateur Hesk lève une torche dans chaque main et demande, fort poliment, ce que contient le coffre."
+    ]
+  },
+  "knell_keeper": {
+    "enemyName": "The Knell-Keeper",
+    "enemyName_fr": "Le Gardien du Glas",
+    "maxHealth": 330,
+    "damage": 30,
+    "guile": 8,
+    "weakTo": [
+      "Light",
+      "Earth"
+    ],
+    "resists": [
+      "Void"
+    ],
+    "xpReward": 135,
+    "goldReward": 98,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "hollow_court_seal",
+        "dropRate": 12
+      },
+      {
+        "itemID": "helm_drowned_sallet",
+        "dropRate": 12
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 4,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Forty Tongues",
+        "nameFr": "Quarante battants",
+        "message": "The Knell-Keeper shakes his belt of bell-tongues. The sound goes into your teeth.",
+        "messageFr": "Le Gardien du Glas secoue sa ceinture de battants. Le son vous entre dans les dents.",
+        "damageMultiplier": 1.1,
+        "healPercent": 10,
+        "cleanse": true,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "A servant of the Hollow Court who has cut down forty village bells and keeps their tongues on his belt.",
+    "description_fr": "Un serviteur de la Cour Creuse qui a abattu quarante cloches de village et en garde les battants à sa ceinture.",
+    "encounterText": [
+      "The Knell-Keeper holds out a hand for the bells, as if they had been cast for him."
+    ],
+    "encounterText_fr": [
+      "Le Gardien du Glas tend la main vers les cloches, comme si elles avaient été coulées pour lui."
+    ]
+  },
+  "rime_bailiff": {
+    "enemyName": "The Rime Bailiff",
+    "enemyName_fr": "L’Huissier du Givre",
+    "maxHealth": 340,
+    "damage": 29,
+    "guile": 6,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Ice"
+    ],
+    "xpReward": 130,
+    "goldReward": 95,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "cloak_frostward",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 5,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "Distraint",
+        "nameFr": "Saisie",
+        "message": "The Rime Bailiff stamps his ledger. The cold takes its tithe of your strength.",
+        "messageFr": "L’Huissier du Givre tamponne son registre. Le froid prélève sa dîme sur vos forces.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "heavy_windup",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 25,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 2
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "A bailiff of the Black Reliquary who collects the city’s warmth for the chapel, and takes a dim view of embers carried past his table.",
+    "description_fr": "Un huissier du Reliquaire Noir qui collecte la chaleur de la ville pour la chapelle, et voit d’un mauvais œil les braises qui passent devant sa table.",
+    "encounterText": [
+      "The Rime Bailiff dips his pen, and the ink freezes on the nib."
+    ],
+    "encounterText_fr": [
+      "L’Huissier du Givre trempe sa plume, et l’encre gèle sur le bec."
+    ]
+  },
+  "glass_shepherd": {
+    "enemyName": "The Glass Shepherd",
+    "enemyName_fr": "Le Berger de Verre",
+    "maxHealth": 330,
+    "damage": 29,
+    "guile": 7,
+    "weakTo": [
+      "Earth"
+    ],
+    "resists": [
+      "Void"
+    ],
+    "xpReward": 125,
+    "goldReward": 95,
+    "lootTable": [
+      {
+        "itemID": "potion_major",
+        "dropRate": 25
+      },
+      {
+        "itemID": "tear_glass_blade",
+        "dropRate": 12
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_drain",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 15,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 50,
+        "name": "The Count Resumes",
+        "nameFr": "Le compte reprend",
+        "message": "The Glass Shepherd starts counting again. With every number it speaks, the lanterns dim.",
+        "messageFr": "Le Berger de Verre se remet à compter. À chaque nombre prononcé, les lanternes faiblissent.",
+        "damageMultiplier": 1.1,
+        "healPercent": 10,
+        "cleanse": false,
+        "addMoves": [],
+        "replaceMoves": false
+      }
+    ],
+    "description": "Something out of the Tear that herds the lost toward it with a crook of fused sand, and counts them as they go.",
+    "description_fr": "Une chose sortie de la Déchirure qui mène les égarés vers elle avec une houlette de sable fondu, et les compte en chemin.",
+    "encounterText": [
+      "The Glass Shepherd turns its face toward the lanterns and, softly, begins to count."
+    ],
+    "encounterText_fr": [
+      "Le Berger de Verre tourne son visage vers les lanternes et, doucement, se met à compter."
+    ]
   }
 }

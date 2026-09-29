@@ -611,6 +611,12 @@ const Set<String> zoneBossEnemyIds = {
   'horn_taker',
   'teind_rider',
   'frost_kept_giant',
+  // v1.179's escorts and deliveries.
+  'brine_jack',
+  'purifier_hesk',
+  'knell_keeper',
+  'rime_bailiff',
+  'glass_shepherd',
 };
 
 /// Whether [enemyId] may be drawn at random (a detour, an expedition's
