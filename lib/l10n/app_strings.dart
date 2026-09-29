@@ -121,9 +121,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'road_threat_off': {
     AppLanguage.en:
-        'After {n} days in a chapter, its enemies start to gather strength. A night’s rest or a voyage takes days.',
+        'After {n} days in this chapter, its enemies start to gather strength. A night’s rest or a voyage takes days.',
     AppLanguage.fr:
-        'Après {n} jours dans un chapitre, ses ennemis commencent à se renforcer. Une nuit de repos ou un voyage prend des jours.',
+        'Après {n} jours dans ce chapitre, ses ennemis commencent à se renforcer. Une nuit de repos ou un voyage prend des jours.',
   },
   'road_rations_line': {
     AppLanguage.en: 'Rations: {n}/{max}',

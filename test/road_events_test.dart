@@ -8,6 +8,7 @@ import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/combat/battlefield_condition.dart';
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/loot_box.dart';
 import 'package:narrative_data_app/data/journey_rules.dart';
@@ -113,9 +114,15 @@ void main() {
       final modifiers = EncounterModifiers.fromChoice(fight);
       expect(modifiers.forceElite, isTrue);
       expect(modifiers.chestTierFloor, ChestTier.silver);
+      expect(modifiers.healthMultiplier, championHealthMultiplier);
+      expect(modifiers.forcedCondition, isNull);
       final sneak = node.choices[1];
       expect(sneak.avoidFightOnSuccess, isTrue);
       expect(sneak.checkDC, greaterThan(SubNodeEngine.detourCheckDc(3)));
+      // Caught slipping past, the party is ambushed by the champion.
+      final caught = EncounterModifiers.fromChoice(sneak);
+      expect(caught.forceElite, isTrue);
+      expect(caught.forcedCondition, BattlefieldCondition.ambush);
       // With no foe to draw, a shrine stands there instead.
       expect(
           roadEventChain(RoadEventKind.champion,
@@ -125,6 +132,25 @@ void main() {
               .first
               .healAmount,
           greaterThan(0));
+    });
+
+    test('a champion is one of the chapter’s own foes', () {
+      final enemies = _json('assets/gamedata/enemies.json');
+      int minChapter(String id) =>
+          ((enemies[id] as Map<String, dynamic>)['minChapter'] as num?)
+              ?.toInt() ??
+          1;
+      for (var chapter = 2; chapter <= 6; chapter++) {
+        final pool = championPoolFor(enemies, chapter);
+        expect(pool, isNotEmpty, reason: 'chapter $chapter');
+        final drawable = SubNodeEngine.filterEnemyPool(
+            enemies: enemies, unlockedEnemyIds: const [], chapter: chapter);
+        for (final id in pool) {
+          expect(drawable, contains(id));
+          expect(minChapter(id), inInclusiveRange(chapter - 1, chapter),
+              reason: '$id in chapter $chapter');
+        }
+      }
     });
 
     test('a shrine heals, more for an offering; the caravan sells', () {

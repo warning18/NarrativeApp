@@ -11,7 +11,7 @@ import '../models/story_node.dart';
 /// A beat is met as a detour (see [maybeRecurringEncounter]): one scene,
 /// its choices setting `met_<who>_<beat>` and what the party chose, which
 /// the next beat reads.
-const double recurringChance = 0.25;
+const double recurringChance = 0.4;
 
 class _Beat {
   const _Beat({

@@ -1452,8 +1452,7 @@ Future<List<StoryNode>?> roadEventOn(
   return roadEventChain(
     event,
     chapter: chapter,
-    enemyPool: SubNodeEngine.filterEnemyPool(
-        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+    enemyPool: championPoolFor(enemies, chapter),
     seed: stableHash('$fromNodeId>$toNodeId#$historyLength'),
   );
 }

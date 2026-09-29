@@ -20,8 +20,21 @@ const int stepsPerDay = 4;
 /// the character's maximum health (never the last point).
 const double hungerShare = 0.08;
 
-/// Days a chapter can take before its enemies start to gather strength.
+/// Days a chapter can take before its enemies start to gather strength
+/// (see [threatGraceDaysFor]).
 const int threatGraceDays = 6;
+
+/// The open chapters' grace: their places lie across the sea, and every
+/// voyage takes days, so a party that sails to each of them once would
+/// otherwise meet stronger enemies for going where the chapter sends it.
+/// Measured with the playthrough simulator (v1.177): a party that does
+/// everything a chapter holds spends about 28 days in chapters 4 and 5
+/// and 37 in chapter 6; past these, the lingering shows.
+const Map<int, int> _threatGraceByChapter = {4: 24, 5: 24, 6: 32};
+
+/// Days [chapter] can take before its enemies start to gather strength.
+int threatGraceDaysFor(int chapter) =>
+    _threatGraceByChapter[chapter] ?? threatGraceDays;
 
 /// How much stronger (health and damage) enemies get per day past the
 /// grace, and at most.
@@ -60,11 +73,11 @@ int hungerDamage({required int health, required int maxHealth}) {
   return math.max(0, math.min(bite, health - 1));
 }
 
-/// How much stronger enemies are after [daysInChapter] days in the
-/// current chapter: nothing for the first [threatGraceDays], then
+/// How much stronger enemies are after [daysInChapter] days in
+/// [chapter]: nothing for its grace (see [threatGraceDaysFor]), then
 /// [threatPerDay] a day up to [threatMax].
-double threatFor(int daysInChapter) =>
-    (math.max(0, daysInChapter - threatGraceDays) * threatPerDay)
+double threatFor(int daysInChapter, {required int chapter}) =>
+    (math.max(0, daysInChapter - threatGraceDaysFor(chapter)) * threatPerDay)
         .clamp(0.0, threatMax);
 
 /// What one step on the road did (see PlayerSessionNotifier.takeRoadStep).

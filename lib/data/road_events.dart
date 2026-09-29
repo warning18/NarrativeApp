@@ -10,8 +10,9 @@ import 'sub_node_engine.dart';
 /// of the journey (see [roadEventFor]), so the Journey map can show it
 /// before the party sets out, and the party can pick its road by it:
 ///
-/// * a champion barring the way: an Elite of the chapter's foes, with a
-///   better chest, or a hard sneak past it;
+/// * a champion barring the way: an Elite of the chapter's own foes (see
+///   [championPoolFor]) a quarter tougher still, with a better chest, or
+///   a hard sneak past it;
 /// * a wayside shrine: health back, more for an offering;
 /// * the Wayfarer's Caravan: rare stock for sale on the roadside.
 ///
@@ -69,6 +70,20 @@ RoadEventKind? roadEventFor({
   return RoadEventKind.caravan;
 }
 
+/// The foes a champion is drawn from in [chapter]: the random draws of
+/// [enemies] (see SubNodeEngine.filterEnemyPool) first met in this
+/// chapter or the one before, so that a champion is one of the chapter's
+/// own and not an old foe the party has long outgrown.
+List<String> championPoolFor(Map<String, dynamic> enemies, int chapter) => [
+      for (final id in SubNodeEngine.filterEnemyPool(
+          enemies: enemies, unlockedEnemyIds: const [], chapter: chapter))
+        if ((((enemies[id] as Map<String, dynamic>?)?['minChapter'] as num?)
+                    ?.toInt() ??
+                1) >=
+            chapter - 1)
+          id,
+    ];
+
 /// What praying at a shrine heals in [chapter], and what an offering
 /// costs and heals.
 int shrineHealFor(int chapter) => 25 + 10 * max(1, chapter);
@@ -76,9 +91,8 @@ int shrineOfferingFor(int chapter) => 10 * max(1, chapter);
 int shrineOfferingHealFor(int chapter) => 2 * shrineHealFor(chapter);
 
 /// The scene [kind] plays as a detour on its road in [chapter]: one node
-/// with its choices. A champion is drawn from the chapter's random foes
-/// ([enemyPool], see SubNodeEngine.filterEnemyPool); with none to draw, a
-/// shrine stands there instead. [seed] picks the lines and the foe.
+/// with its choices. A champion is drawn from [enemyPool] (see
+/// [championPoolFor]); with none to draw, a shrine stands there instead. [seed] picks the lines and the foe.
 List<StoryNode> roadEventChain(
   RoadEventKind kind, {
   required int chapter,

@@ -9,6 +9,11 @@ import 'loot_box.dart';
 /// guaranteed Gold chest, or an alignment hunter's Silver floor. The
 /// default ([EncounterModifiers.none]) is every fight the game ran before
 /// these existed: affixes and the chest tier roll normally.
+/// A road champion's health over an ordinary Elite's (road_events.dart):
+/// with it, a champion lasts about half again as long as a story fight
+/// (the playthrough simulator, v1.177).
+const double championHealthMultiplier = 1.25;
+
 class EncounterModifiers {
   const EncounterModifiers({
     this.forcedAffixes = const [],
@@ -136,10 +141,14 @@ class EncounterModifiers {
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
     if (choice.roadEvent == 'elite') {
-      return const EncounterModifiers(
+      // A road's champion (road_events.dart): an Elite a quarter tougher
+      // still, and an ambush when the party failed to slip past it.
+      return EncounterModifiers(
         forceElite: true,
         chestTierFloor: ChestTier.silver,
         rewardMultiplier: 1.25,
+        healthMultiplier: championHealthMultiplier,
+        forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
       );
     }
     if (choice.isHunterAmbush) {

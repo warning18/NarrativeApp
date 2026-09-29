@@ -8,6 +8,55 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.177.0+207]
+
+The road's numbers, tuned with the playthrough simulator. The simulator
+now plays v1.176's rules. Over 200 playthroughs on two sets of seeds,
+compared with v1.175's rules on the same seeds, it showed where they
+missed.
+
+### Changed
+- **The threat waits longer in the chapters crossed by sea.** In chapters
+  4 to 6, most days pass at sea: about 25 to 33 days a chapter for a party
+  that sails to every place, against 1 to 5 days on the road and at rest.
+  With a 6-day grace, 41% of chapter 4's fights and 44% of chapter 6's
+  came under the threat, most at the full +30%. The party was punished
+  for going where the chapter sends it. The grace is now 24 days in
+  chapters 4 and 5 and 32 in chapter 6 (still 6 in chapters 2 and 3).
+  - About a sixth to a quarter of those chapters' fights come under the
+    threat now, at +2 to 3% on average: a party that does everything
+    meets it near the chapter's end, and one that lingers still reaches
+    +30%.
+  - The Road panel says how many days the current chapter allows.
+- **Champions are a real fight.** A champion was drawn from every enemy
+  up to the chapter, often an early one the party had long outgrown. It
+  took no longer than an ordinary detour fight (5.8 rounds, like a story
+  fight). A champion is now one of the chapter's own foes (first met in
+  this chapter or the one before), with a quarter more health. It now
+  takes about 8.3 rounds, and the simulated party still wins 99% of
+  first attempts.
+- **Familiar faces come back more often.** At a 25% chance, a
+  traveller's third meeting happened in only about a quarter of runs.
+  At 40%, Oswin's full story is seen in about 70% of runs, Wren's and
+  Mira's in about half. Detour fights barely change (1.4 to 1.3 a run).
+
+### Fixed
+- A party caught slipping past a champion is ambushed, as the failed
+  roll says. The ambush was lost when the fight began.
+
+### Checked and left as they are
+- **Rations.** Buying at markets, no simulated party ever went hungry.
+  The longest walk between two markets was three roads, and rations cost
+  about 270 gold a run. A party that never buys takes about 12 hungry
+  steps a run and wins as often.
+- **The sellsword.** Hired whenever the threat is up, it is paid about
+  1,500 gold a run and deals about a tenth of the enemies' health in the
+  fights it joins.
+- **Shrines, the caravan, detours.** Detour fights fell from 5.2 to 1.4 a
+  run and champions add 2.4, so fights per run stay about the same.
+  Losses per run are unchanged against v1.175, and the gold left at the
+  end falls by about 17%.
+
 ## [1.176.0+206]
 
 Play with fewer taps, and a road worth planning: choices come back, days

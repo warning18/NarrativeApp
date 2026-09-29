@@ -80,7 +80,7 @@ class RoadPanel extends ConsumerWidget {
               ? tr(ref, 'road_threat_on')
                   .replaceAll('{p}', '${(threat * 100).round()}')
               : tr(ref, 'road_threat_off')
-                  .replaceAll('{n}', '$threatGraceDays'),
+                  .replaceAll('{n}', '${threatGraceDaysFor(chapter)}'),
           tint: threat > 0 ? theme.colorScheme.error : ink.gold,
         ),
         line(

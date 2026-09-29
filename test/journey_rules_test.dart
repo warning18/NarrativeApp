@@ -28,11 +28,27 @@ void main() {
     });
 
     test('enemies gather strength past the grace, up to a ceiling', () {
-      expect(threatFor(0), 0);
-      expect(threatFor(threatGraceDays), 0);
-      expect(threatFor(threatGraceDays + 1), closeTo(threatPerDay, 1e-9));
-      expect(threatFor(threatGraceDays + 4), closeTo(4 * threatPerDay, 1e-9));
-      expect(threatFor(1000), threatMax);
+      expect(threatFor(0, chapter: 3), 0);
+      expect(threatFor(threatGraceDays, chapter: 3), 0);
+      expect(threatFor(threatGraceDays + 1, chapter: 3),
+          closeTo(threatPerDay, 1e-9));
+      expect(threatFor(threatGraceDays + 4, chapter: 3),
+          closeTo(4 * threatPerDay, 1e-9));
+      expect(threatFor(1000, chapter: 3), threatMax);
+    });
+
+    test('the chapters crossed by sea have a longer grace', () {
+      // A voyage takes days: a party that sails to each of an open
+      // chapter's places isn't lingering.
+      expect(threatGraceDaysFor(2), threatGraceDays);
+      expect(threatGraceDaysFor(3), threatGraceDays);
+      for (final chapter in [4, 5, 6]) {
+        expect(threatGraceDaysFor(chapter), greaterThanOrEqualTo(24));
+        expect(threatFor(20, chapter: chapter), 0);
+        expect(threatFor(threatGraceDaysFor(chapter) + 2, chapter: chapter),
+            closeTo(2 * threatPerDay, 1e-9));
+      }
+      expect(threatGraceDaysFor(6), greaterThan(threatGraceDaysFor(5)));
     });
 
     test('hunger bites a share of health, never the last point', () {
@@ -138,7 +154,7 @@ void main() {
       await notifier.passDays(1, chapter: 4);
       expect(notifier.state.clockChapter, 4);
       expect(notifier.state.chapterStartDay, 3);
-      await notifier.passDays(threatGraceDays + 1, chapter: 4);
+      await notifier.passDays(threatGraceDaysFor(4) + 1, chapter: 4);
       expect(notifier.state.threatIn(4), closeTo(2 * threatPerDay, 1e-9));
       // Another chapter starts its own count.
       expect(notifier.state.threatIn(5), 0);

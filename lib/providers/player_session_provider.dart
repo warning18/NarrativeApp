@@ -359,7 +359,7 @@ class PlayerSession {
   /// spent in it (see [threatFor]).
   double threatIn(int chapter) =>
       roadRulesApply(chapter) && clockChapter == chapter
-          ? threatFor(day - chapterStartDay)
+          ? threatFor(day - chapterStartDay, chapter: chapter)
           : 0;
 
   /// Companions recruited through story quests — permanent for this save
