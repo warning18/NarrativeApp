@@ -8,6 +8,16 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.176.0+206]
+
+### Added
+- **The Journey tab has its tour.** The first time you open it, the guide
+  dog shows it around in five steps: what the Journey is, the scene you
+  are in (fold it, or double-tap to read it full screen), the map (your
+  mark, a step for every way on, what each step's colour means, the road
+  behind you), picking a step and Go, and the tab bar to switch back to
+  the Story. It is in the Tutorials list too, to replay any time.
+
 ## [1.175.0+205]
 
 The Journey tab walks, remembers and has hills.

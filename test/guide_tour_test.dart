@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
+import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/tutorial_provider.dart';
 import 'package:narrative_data_app/providers/walk_companion_provider.dart';
+import 'package:narrative_data_app/screens/journey_screen.dart';
 import 'package:narrative_data_app/theme/stitched_ink.dart';
 import 'package:narrative_data_app/tutorial/guide_tour.dart';
 import 'package:narrative_data_app/tutorial/tutorial_launcher.dart';
@@ -324,5 +327,55 @@ void main() {
     expect(hole.height, closeTo(target.height, 0.5));
     await tester.tap(find.byKey(const Key('tutorial_skip')));
     await _wait(tester, 800);
+  });
+
+  test('the Journey tour opens the Journey tab', () {
+    expect(TutorialTopic.journey.homeTab, journeyTabIndex);
+  });
+
+  testWidgets('the Journey tab tours its scene, its map and its pick',
+      (tester) async {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+            const MethodChannel('flutter_tts'), (call) async => 1);
+    tester.view.physicalSize = const Size(400, 860);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(_app(home: const Scaffold(body: JourneyScreen())));
+    // The story loads from the bundle before the map can show.
+    for (var i = 0; i < 6; i++) {
+      await tester.runAsync(
+          () => Future<void>.delayed(const Duration(milliseconds: 200)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    // No tour before there is a character to follow.
+    expect(find.byKey(const Key('guide_dog')), findsNothing);
+    await tester.runAsync(() => _container(tester)
+        .read(playerSessionProvider.notifier)
+        .loadSession(PlayerSession.fromJson(
+            {'raceId': 'human', 'professionId': 'warrior'})));
+    await _wait(tester);
+
+    final steps = TutorialTopic.journey.steps.length;
+    expect(find.text('1 / $steps'), findsOneWidget);
+    for (var step = 1; step <= steps; step++) {
+      // Past the walk and the whole line.
+      await _wait(tester, 5000);
+      expect(find.text('$step / $steps'), findsOneWidget);
+      final target = TutorialTopic.journey.steps[step - 1].target;
+      // The scene, the map and the pick are lit on this page; the tab bar
+      // lives in the home shell, not here.
+      if (target != null && target.startsWith('journey.')) {
+        expect(debugGuideHole, isNotNull, reason: target);
+      }
+      await tester.tap(find.byKey(const Key('tutorial_next')));
+    }
+    await _wait(tester, 800);
+    expect(find.byKey(const Key('guide_dog')), findsNothing);
+    expect(
+        _container(tester)
+            .read(tutorialProvider)
+            .hasSeen(TutorialTopic.journey),
+        isTrue);
   });
 }

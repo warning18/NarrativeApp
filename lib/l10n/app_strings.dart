@@ -4764,6 +4764,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The map shows every place the story has reached.',
     AppLanguage.fr: "La carte montre chaque lieu atteint par l'histoire.",
   },
+  'tut_journey_title': {
+    AppLanguage.en: 'The Journey',
+    AppLanguage.fr: 'Le Parcours',
+  },
+  'tut_journey_1': {
+    AppLanguage.en:
+        'This is the Journey: the same story as the Story tab, told on a map, so you can see where each way leads before you take it.',
+    AppLanguage.fr:
+        "Voici le Parcours : la même histoire que dans l'onglet Histoire, racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.",
+  },
+  'tut_journey_2': {
+    AppLanguage.en:
+        'The scene you are in. Fold it to give the map more room, or double-tap it to read it full screen.',
+    AppLanguage.fr:
+        'La scène où vous êtes. Repliez-la pour laisser plus de place à la carte, ou touchez-la deux fois pour la lire en plein écran.',
+  },
+  'tut_journey_3': {
+    AppLanguage.en:
+        'Your mark, and one step ahead for every way on. Its icon and colour say what it holds: a fight, a roll, a shop, a rest. Below you, the road you have already walked this chapter.',
+    AppLanguage.fr:
+        'Votre repère, et une étape devant pour chaque chemin. Son icône et sa couleur disent ce qu’elle réserve : un combat, un jet, une boutique, un repos. Sous vous, la route déjà parcourue ce chapitre.',
+  },
+  'tut_journey_4': {
+    AppLanguage.en:
+        'Tap a step to see what it costs or brings. Go, or a second tap on the step, walks the party there.',
+    AppLanguage.fr:
+        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Partir », ou un second toucher sur l’étape, y mène le groupe.',
+  },
+  'tut_journey_5': {
+    AppLanguage.en:
+        'Story and Journey are two views of the same tale: switch between them whenever you like.',
+    AppLanguage.fr:
+        'Histoire et Parcours sont deux vues du même récit : passez de l’une à l’autre quand vous voulez.',
+  },
   'tut_story_8': {
     AppLanguage.en:
         'Your character, your camp and everything else live down here. A dot means something is waiting for you.',
