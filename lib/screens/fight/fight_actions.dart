@@ -9,8 +9,9 @@ extension _FightActions on _FightScreenState {
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
     final heal = _condition == BattlefieldCondition.shrine
-        ? (_potionHealAmount * shrineHealMultiplier).round()
-        : _potionHealAmount;
+        ? ((_potionHealAmount + _perks.potionBonus) * shrineHealMultiplier)
+            .round()
+        : _potionHealAmount + _perks.potionBonus;
     _potionUsed = true;
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
@@ -159,7 +160,8 @@ extension _FightActions on _FightScreenState {
             power: spellPower());
       }
       if (spell.effect == SpellEffectKind.damage) {
-        final damage = amount;
+        final damage =
+            _landHitOnEnemy(enemy, amount, spell.element, entries, lang);
         _fx(spellStyle, _enemyCardKey(enemy.key),
             source: casterKey,
             element: spell.element,
@@ -247,11 +249,12 @@ extension _FightActions on _FightScreenState {
           break;
       }
     }
+    _checkChargeBreaks(entries, lang);
     _advanceBossPhases(entries, lang, skills);
     if (hitsLanded > 0) {
       final before = _momentum;
-      _momentum = min(_momentumThreshold, _momentum + hitsLanded);
-      if (before < _momentumThreshold && _momentum >= _momentumThreshold) {
+      _momentum = min(_momentumNeeded, _momentum + hitsLanded);
+      if (before < _momentumNeeded && _momentum >= _momentumNeeded) {
         entries.add(
             _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
       }

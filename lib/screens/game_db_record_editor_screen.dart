@@ -58,8 +58,10 @@ class _GameDbRecordEditorScreenState
         case FieldType.stringList:
           final list = (value as List?)?.map((e) => e.toString()).toList() ??
               const <String>[];
+          // One entry per line: entries are often sentences, commas and
+          // all (dialogue, encounter texts, companion remarks).
           _textControllers[field.key] =
-              TextEditingController(text: list.join(', '));
+              TextEditingController(text: list.join('\n'));
           break;
         case FieldType.referenceList:
         case FieldType.multiEnum:
@@ -115,7 +117,7 @@ class _GameDbRecordEditorScreenState
         case FieldType.stringList:
           final raw = _textControllers[field.key]!.text;
           result[field.key] = raw
-              .split(',')
+              .split('\n')
               .map((s) => s.trim())
               .where((s) => s.isNotEmpty)
               .toList();
@@ -240,7 +242,10 @@ class _GameDbRecordEditorScreenState
             // ignore: deprecated_member_use
             value: dropdownValue,
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
             items: options
                 .map((option) =>
                     DropdownMenuItem(value: option, child: Text(option)))
@@ -262,7 +267,10 @@ class _GameDbRecordEditorScreenState
             // ignore: deprecated_member_use
             value: dropdownValue,
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
             items: [
               const DropdownMenuItem(value: '', child: Text('(none)')),
               ...options.map((option) =>
@@ -282,9 +290,14 @@ class _GameDbRecordEditorScreenState
           padding: const EdgeInsets.only(bottom: 12),
           child: TextField(
             controller: _textControllers[field.key],
+            minLines: 2,
+            maxLines: 12,
             decoration: InputDecoration(
-              labelText: '${field.label} (comma-separated)',
+              labelText: '${field.label} (one per line)',
+              helperText: field.help,
+              helperMaxLines: 8,
               border: const OutlineInputBorder(),
+              alignLabelWithHint: true,
             ),
           ),
         );
@@ -298,6 +311,8 @@ class _GameDbRecordEditorScreenState
             style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
             decoration: InputDecoration(
               labelText: field.label,
+              helperText: field.help,
+              helperMaxLines: 8,
               border: const OutlineInputBorder(),
               alignLabelWithHint: true,
             ),
@@ -311,7 +326,10 @@ class _GameDbRecordEditorScreenState
             minLines: 2,
             maxLines: 6,
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
           ),
         );
       case FieldType.integer:
@@ -321,7 +339,10 @@ class _GameDbRecordEditorScreenState
             controller: _textControllers[field.key],
             keyboardType: const TextInputType.numberWithOptions(signed: true),
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
           ),
         );
       case FieldType.decimal:
@@ -332,7 +353,10 @@ class _GameDbRecordEditorScreenState
             keyboardType: const TextInputType.numberWithOptions(
                 signed: true, decimal: true),
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
           ),
         );
       case FieldType.text:
@@ -341,7 +365,10 @@ class _GameDbRecordEditorScreenState
           child: TextField(
             controller: _textControllers[field.key],
             decoration: InputDecoration(
-                labelText: field.label, border: const OutlineInputBorder()),
+                labelText: field.label,
+                helperText: field.help,
+                helperMaxLines: 8,
+                border: const OutlineInputBorder()),
           ),
         );
       case FieldType.image:
@@ -356,6 +383,8 @@ class _GameDbRecordEditorScreenState
                   controller: controller,
                   decoration: InputDecoration(
                     labelText: field.label,
+                    helperText: field.help,
+                    helperMaxLines: 8,
                     hintText: 'e.g. sword_iron.png',
                     border: const OutlineInputBorder(),
                   ),
@@ -381,7 +410,10 @@ class _GameDbRecordEditorScreenState
       padding: const EdgeInsets.only(bottom: 12),
       child: InputDecorator(
         decoration: InputDecoration(
-            labelText: field.label, border: const OutlineInputBorder()),
+            labelText: field.label,
+            helperText: field.help,
+            helperMaxLines: 8,
+            border: const OutlineInputBorder()),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import 'detail_dialog.dart';
+import 'perk_picker.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
 /// spend their new stat point(s) immediately, right in the modal, or close
@@ -138,6 +139,8 @@ class _LevelUpDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // A perk to choose for the new level (see perks.dart).
+            const PerkPicker(),
             Text(
               '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
               style: Theme.of(context)

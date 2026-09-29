@@ -214,7 +214,7 @@ void main() {
           activeAllyIds: const ['grosh'], french: false)!;
       expect(grosh, isNot(contains('Grosh')));
       expect(grosh, isNot(kelda));
-      // The first active ally with a voice speaks.
+      // The only active ally with a voice speaks.
       expect(
           allyAcknowledgmentFor('2015',
               activeAllyIds: const ['grosh', 'sable'], french: false),
@@ -223,6 +223,53 @@ void main() {
           withAllyAcknowledgment('2015', 'Body.',
               activeAllyIds: const ['kelda'], french: true),
           startsWith('Body. Kelda'));
+    });
+
+    test('the voiced companions take turns from scene to scene', () {
+      const party = [
+        'kelda',
+        'sable',
+        'maren',
+        'liora',
+        'vess',
+        'grosh',
+        'tobin',
+        'malrik'
+      ];
+      final firstSpeaks = <String>[];
+      final speakers = <String>{};
+      for (final nodeId in acknowledgedNodeIds) {
+        final line =
+            allyAcknowledgmentFor(nodeId, activeAllyIds: party, french: false);
+        final voiced = [
+          for (final id in party)
+            if (allyAcknowledgmentFor(nodeId,
+                    activeAllyIds: [id], french: false) !=
+                allyAcknowledgmentFor(nodeId,
+                    activeAllyIds: const ['nobody'], french: false))
+              id,
+        ];
+        if (voiced.length < 2) continue;
+        final speaker = voiced.firstWhere((id) =>
+            allyAcknowledgmentFor(nodeId, activeAllyIds: [id], french: false) ==
+            line);
+        speakers.add(speaker);
+        if (speaker == voiced.first) firstSpeaks.add(nodeId);
+        // The same companion in French, and every time.
+        final fr =
+            allyAcknowledgmentFor(nodeId, activeAllyIds: party, french: true);
+        expect(
+            fr,
+            allyAcknowledgmentFor(nodeId,
+                activeAllyIds: [speaker], french: true),
+            reason: nodeId);
+        expect(
+            allyAcknowledgmentFor(nodeId, activeAllyIds: party, french: false),
+            line);
+      }
+      expect(speakers.length, greaterThanOrEqualTo(5));
+      expect(firstSpeaks.length, lessThan(acknowledgedNodeIds.length ~/ 2),
+          reason: 'the first voiced companion no longer speaks everywhere');
     });
 
     test('every acknowledged node has matching English and French voices', () {
@@ -413,8 +460,9 @@ void main() {
         }
       }
       // The three late towns, the Hollow Shore, the chapter 3 to 6
-      // villages and the White Anchorage.
-      expect(hubs, 9);
+      // villages, the White Anchorage and (v1.173) the three side-story
+      // villages: Akagiri, the Kindly Hill and Highhearth.
+      expect(hubs, 12);
     });
 
     test('persona keys name real races and professions, with French', () {

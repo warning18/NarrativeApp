@@ -126,6 +126,7 @@ final companionLeadsProvider = Provider<Map<String, List<String>>>((ref) {
   final unavailable = [
     for (final ally in session.recruitedAllies) ally.companionId,
     ...session.lostAllyIds,
+    ...session.departedAllyIds,
   ];
   final leads = <String, List<String>>{};
   for (final place in ref.watch(knownPlacesProvider)) {

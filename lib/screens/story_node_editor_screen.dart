@@ -265,9 +265,21 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
   }
 }
 
+/// A choice as the editor would save it, untouched: what a node round-
+/// trips to when it is opened and saved without edits. Tests use it to
+/// check the editor keeps every field.
+@visibleForTesting
+StoryChoice debugEditorRoundTrip(StoryChoice choice) {
+  final draft = _ChoiceEditState(choice);
+  final saved = draft.toChoice();
+  draft.dispose();
+  return saved;
+}
+
 class _ChoiceEditState {
   _ChoiceEditState(StoryChoice choice)
-      : textController = TextEditingController(text: choice.text),
+      : _original = choice,
+        textController = TextEditingController(text: choice.text),
         textFrController = TextEditingController(text: choice.textFr ?? ''),
         nextId = choice.nextId,
         goldModController =
@@ -312,6 +324,12 @@ class _ChoiceEditState {
             text: choice.challengeMaxFailures?.toString() ?? '');
 
   _ChoiceEditState.blank() : this(const StoryChoice(text: '', nextId: 'EXIT'));
+
+  /// The choice as it was opened: the fields this editor has no control
+  /// for (hunts, showIfFlags, main-quest and travel markers, the sneak
+  /// round a fight, approval reactions...) are saved back from it as they
+  /// were, not dropped.
+  final StoryChoice _original;
 
   final TextEditingController textController;
   final TextEditingController textFrController;
@@ -435,6 +453,16 @@ class _ChoiceEditState {
             int.tryParse(challengeSuccessesNeededController.text.trim()),
         challengeMaxFailures:
             int.tryParse(challengeMaxFailuresController.text.trim()),
+        huntName: _original.huntName,
+        huntAffixes: _original.huntAffixes,
+        chestFloor: _original.chestFloor,
+        isHunterAmbush: _original.isHunterAmbush,
+        showIfFlags: _original.showIfFlags,
+        mainQuest: _original.mainQuest,
+        travelPlaceId: _original.travelPlaceId,
+        avoidFightOnSuccess: _original.avoidFightOnSuccess,
+        forcedCondition: _original.forcedCondition,
+        approvalMods: _original.approvalMods,
       );
 }
 

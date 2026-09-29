@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../data/approval.dart';
 import '../data/camp_state.dart';
+import '../data/companion_remarks.dart';
 import '../data/narration_clips.dart' show storyBodyFor;
 import '../data/port_helpers.dart';
 import '../data/zone_gating.dart';
@@ -17,13 +19,16 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
+import '../widgets/bounty_board.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
@@ -194,6 +199,10 @@ class CampScreen extends ConsumerWidget {
                     ?.copyWith(color: theme.colorScheme.onSurfaceVariant))
           else
             for (final place in places) PlaceCard(place: place),
+
+          // Short goals for ordinary fights, paid at the camp (v1.162).
+          section(tr(ref, 'bounty_board_section')),
+          const BountyBoard(),
         ],
 
         // The camp's town on the cliff: what has been built, and the tray
@@ -734,6 +743,7 @@ class _AllyCard extends ConsumerWidget {
                         ),
               ),
             ),
+            _ApprovalPanel(companion: companion ?? const {}, ally: ally),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -759,6 +769,131 @@ class _AllyCard extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// How a companion feels about the player (see approval.dart): the tier on
+/// a meter, what it does in a fight, what they like and dislike, and a
+/// drink to share once a chapter.
+class _ApprovalPanel extends ConsumerWidget {
+  const _ApprovalPanel({required this.companion, required this.ally});
+
+  final Map<String, dynamic> companion;
+  final AllyState ally;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final tier = approvalTierFor(ally.approval);
+    final chapter = ref.watch(reachedChapterProvider);
+    final gold = ref.watch(playerSessionProvider.select((s) => s.gold));
+    // Loaded before a drink is shared, for the companion's word of thanks.
+    ref.watch(remarkBookProvider);
+    final color = switch (tier) {
+      ApprovalTier.devoted => Colors.amber.shade600,
+      ApprovalTier.friendly => Colors.green.shade500,
+      ApprovalTier.neutral => theme.colorScheme.outline,
+      _ => theme.colorScheme.error,
+    };
+    final effectKey = switch (tier) {
+      ApprovalTier.devoted => 'approval_effect_devoted',
+      ApprovalTier.friendly => 'approval_effect_friendly',
+      ApprovalTier.wary || ApprovalTier.estranged => 'approval_effect_wary',
+      ApprovalTier.neutral => null,
+    };
+    String deeds(bool liked) => [
+          for (final (field, key) in const [
+            ('approvesGood', 'deed_good'),
+            ('approvesEvil', 'deed_evil'),
+            ('approvesProfit', 'deed_profit'),
+          ])
+            if (((companion[field] as num?)?.toInt() ?? 0) * (liked ? 1 : -1) >
+                0)
+              tr(ref, key),
+        ].join(', ');
+    final likes = deeds(true);
+    final dislikes = deeds(false);
+    final cost = giftCostFor(chapter);
+    final shared = ally.giftChapter == chapter;
+    final name = companion['companionName']?.toString() ?? ally.companionId;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('${tr(ref, 'approval_label')}: ',
+                  style: theme.textTheme.labelMedium),
+              Text(tr(ref, approvalTierKey(tier)),
+                  key: Key('approval_tier_${ally.companionId}'),
+                  style: theme.textTheme.labelMedium
+                      ?.copyWith(color: color, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: LinearProgressIndicator(
+                  value: (ally.approval - minApproval) /
+                      (maxApproval - minApproval),
+                  minHeight: 5,
+                  color: color,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ],
+          ),
+          if (effectKey != null)
+            Text(tr(ref, effectKey),
+                style: theme.textTheme.bodySmall?.copyWith(color: color)),
+          if (likes.isNotEmpty || dislikes.isNotEmpty)
+            Text(
+              [
+                if (likes.isNotEmpty) '${tr(ref, 'approval_likes')}: $likes',
+                if (dislikes.isNotEmpty)
+                  '${tr(ref, 'approval_dislikes')}: $dislikes',
+              ].join(' · '),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: Key('share_drink_${ally.companionId}'),
+              style: _compact,
+              onPressed: shared || gold < cost
+                  ? null
+                  : () async {
+                      final done = await ref
+                          .read(playerSessionProvider.notifier)
+                          .shareDrink(ally.companionId, chapter: chapter);
+                      if (done && context.mounted) {
+                        // They say something back (see
+                        // companion_remarks.dart), in a speech bubble
+                        // after the notice.
+                        final said = drinkRemark(ref.read(remarkBookProvider),
+                            ref.read(remarkMemoryProvider), ally.companionId);
+                        ref.read(remarkMemoryProvider.notifier).state =
+                            said.memory;
+                        await showImmersiveNotice(context,
+                            icon: Icons.local_drink,
+                            message: tr(ref, 'share_drink_notice')
+                                .replaceAll('{name}', name));
+                        final remark = said.remark;
+                        if (remark != null && context.mounted) {
+                          await showCompanionRemarks(context, ref, [remark]);
+                        }
+                      }
+                    },
+              icon: const Icon(Icons.local_drink_outlined, size: 18),
+              label: Text(shared
+                  ? tr(ref, 'share_drink_done')
+                  : tr(ref, 'share_drink_button')
+                      .replaceAll('{cost}', '$cost')),
+            ),
+          ),
+        ],
       ),
     );
   }

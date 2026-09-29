@@ -241,6 +241,58 @@ void main() {
     await _wait(tester, 800);
   });
 
+  testWidgets('the Ship battle entry tells the rules and brings the tips back',
+      (tester) async {
+    SharedPreferences.setMockInitialValues({
+      'app_mode': 'inGame',
+      'tutorial_seen_topics': [
+        'fight',
+        'tip:ship_range',
+        'tip:ship_habit_ram',
+        'tip:other_tip',
+      ],
+    });
+    await tester.pumpWidget(_app(
+      autoShow: false,
+      home: Scaffold(
+        body: Consumer(
+          builder: (context, ref, _) {
+            // The Tutorials list watches the settings, so they are loaded
+            // before anything is tapped.
+            ref.watch(tutorialProvider);
+            return TextButton(
+              onPressed: () =>
+                  playTutorial(context, ref, TutorialTopic.shipBattle),
+              child: const Text('Replay'),
+            );
+          },
+        ),
+      ),
+    ));
+    await _wait(tester, 300);
+    expect(_container(tester).read(tutorialProvider).hasSeenTip('ship_range'),
+        isTrue);
+
+    await tester.tap(find.text('Replay'));
+    await _wait(tester);
+    expect(find.byKey(const Key('guide_dog')), findsOneWidget);
+    expect(find.text('1 / ${TutorialTopic.shipBattle.steps.length}'),
+        findsOneWidget);
+    final settings = _container(tester).read(tutorialProvider);
+    expect(settings.hasSeenTip('ship_range'), isFalse);
+    expect(settings.hasSeenTip('ship_habit_ram'), isFalse);
+    expect(settings.hasSeenTip('other_tip'), isTrue, reason: 'not a ship tip');
+    expect(settings.hasSeen(TutorialTopic.fight), isTrue);
+    expect(settings.hasSeen(TutorialTopic.shipBattle), isTrue);
+    await tester.tap(find.byKey(const Key('tutorial_skip')));
+    await _wait(tester, 800);
+
+    // Kept that way for the next launch.
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getStringList('tutorial_seen_topics'),
+        unorderedEquals(['fight', 'tip:other_tip', 'shipBattle']));
+  });
+
   testWidgets('the light falls on its target inside the safe area',
       (tester) async {
     // The app lies inside its safe area (see main.dart): the tour's box

@@ -1,4 +1,5 @@
 import '../combat/skill_vfx.dart';
+import '../data/companion_remarks.dart' show remarkTriggerOptions;
 import 'field_schema.dart';
 
 class DbSchema {
@@ -101,6 +102,15 @@ const List<String> elementOptions = [
 
 // 'Empty' is intentionally excluded: no die face may be empty in play, so
 // the Data tab only offers face types that are actually usable in combat.
+const List<String> enemyIntentOptions = [
+  '',
+  'attack',
+  'heal',
+  'guard',
+  'charge',
+  'rally',
+];
+
 const List<String> faceTypeOptions = [
   'Attack',
   'Defend',
@@ -479,6 +489,45 @@ final DbSchema skillsSchema = DbSchema(
         label: 'Enemy only (never offered to the party)',
         type: FieldType.boolean,
         defaultValue: false),
+    // v1.162: what an enemy using this skill does with its turn (empty: an
+    // attack, or a heal when the skill only heals). See enemy_intent.dart.
+    FieldSchema(
+      key: 'intent',
+      label: 'Enemy intent (attack / heal / guard / charge / rally)',
+      type: FieldType.enumeration,
+      enumOptions: enemyIntentOptions,
+    ),
+    FieldSchema(
+        key: 'guardMultiplier',
+        label: 'Guard: block as a multiple of the enemy damage',
+        type: FieldType.decimal,
+        defaultValue: 1.0),
+    FieldSchema(
+        key: 'chargeMultiplier',
+        label: 'Charge: the released blow as a multiple of the move',
+        type: FieldType.decimal,
+        defaultValue: 2.0),
+    FieldSchema(
+        key: 'rallyPercent',
+        label: 'Rally: damage bonus in % for the enemy and its pack',
+        type: FieldType.integer,
+        defaultValue: 20),
+    FieldSchema(
+        key: 'releaseMessage',
+        label: 'Charge: line the released blow lands with',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'releaseMessage_fr',
+        label: 'Charge: line the released blow lands with (FR)',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'enemyBattleMessage',
+        label: 'Battle message when an enemy uses it',
+        type: FieldType.text),
+    FieldSchema(
+        key: 'enemyBattleMessage_fr',
+        label: 'Battle message when an enemy uses it (FR)',
+        type: FieldType.text),
     FieldSchema(
         key: 'description',
         label: 'Description',
@@ -893,6 +942,19 @@ final DbSchema enemiesSchema = DbSchema(
         label: 'Guile (resists Perception telegraphing)',
         type: FieldType.integer,
         defaultValue: 0),
+    // v1.162: the party's hits of these elements land ×1.5 / ×½.
+    FieldSchema(
+      key: 'weakTo',
+      label: 'Weak to (elements)',
+      type: FieldType.multiEnum,
+      enumOptions: elementOptions,
+    ),
+    FieldSchema(
+      key: 'resists',
+      label: 'Resists (elements)',
+      type: FieldType.multiEnum,
+      enumOptions: elementOptions,
+    ),
     FieldSchema(
         key: 'packEligible',
         label: 'Pack Eligible (may appear in a random 2-3 enemy pack)',
@@ -1311,6 +1373,12 @@ final DbSchema questsSchema = DbSchema(
           'Quest Choices [{buttonText, goldModifier, alignmentModifier, flagToAdd, nextEventID, actionType, lockedText}]',
       type: FieldType.json,
     ),
+    FieldSchema(
+      key: 'turnInChoices',
+      label:
+          'Turn-in Choices [{choiceText, choiceText_fr, rewardGold, alignmentChange, flag, approvalMods: {companionId|*: n}, resultText, resultText_fr}]',
+      type: FieldType.json,
+    ),
     visualAssetFieldSchema('quests'),
   ],
 );
@@ -1592,6 +1660,54 @@ final DbSchema companionsSchema = DbSchema(
     FieldSchema(
       key: 'chestLineFr',
       label: 'Big Chest Banter (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'approvesGood',
+      label: 'Approval of a Kind Deed (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'approvesEvil',
+      label: 'Approval of a Cruel Deed (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'approvesProfit',
+      label: 'Approval of Filling the Purse (-3 to 3)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'devotedLine',
+      label: 'Devoted Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'devotedLineFr',
+      label: 'Devoted Line (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'warnLine',
+      label: 'Losing Patience Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'warnLineFr',
+      label: 'Losing Patience Line (FR)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'leaveLine',
+      label: 'Walking Out Line (EN)',
+      type: FieldType.text,
+    ),
+    FieldSchema(
+      key: 'leaveLineFr',
+      label: 'Walking Out Line (FR)',
       type: FieldType.text,
     ),
     visualAssetFieldSchema('companions'),
@@ -2096,6 +2212,65 @@ final DbSchema itemSetsSchema = DbSchema(
   ],
 );
 
+/// What the companions say about the player's choices (see
+/// lib/data/companion_remarks.dart): one record per companion and trigger,
+/// with the lines they pick from.
+final DbSchema companionRemarksSchema = DbSchema(
+  id: 'companion_remarks',
+  label: 'Companion Remarks',
+  assetPath: 'assets/gamedata/companion_remarks.json',
+  primaryKeyField: 'remarkID',
+  titleField: 'remarkID',
+  fields: [
+    FieldSchema(key: 'remarkID', label: 'Remark ID', type: FieldType.text),
+    FieldSchema(
+      key: 'companionID',
+      label: 'Companion',
+      type: FieldType.reference,
+      referenceSchemaId: 'companions',
+    ),
+    FieldSchema(
+      key: 'trigger',
+      label: 'When they say it',
+      type: FieldType.enumeration,
+      enumOptions: remarkTriggerOptions,
+      help: 'kindApproved / kindDisapproved: a kind deed they like / '
+          'dislike. cruelApproved, cruelDisapproved, profitApproved, '
+          'profitDisapproved: the same for cruelty and for gold earned. '
+          'approved / disapproved: a scene\'s own reaction. checkPassed, '
+          'checkFailed, sneakedPast: a check. drink: a drink at the camp. '
+          'choice: one story choice, named below.',
+    ),
+    FieldSchema(
+      key: 'choiceKey',
+      label: 'Story choice',
+      type: FieldType.text,
+      help: 'Only with the trigger "choice": a flag the choice sets, or '
+          'nodeId#index (the choice\'s place in its scene, counting from 0).',
+    ),
+    FieldSchema(
+      key: 'note',
+      label: 'Note for editors',
+      type: FieldType.text,
+      help: 'What the choice is, so the lines can be read in context.',
+    ),
+    FieldSchema(
+      key: 'lines',
+      label: 'Lines',
+      type: FieldType.stringList,
+      help: 'One is said at a time; all are used before any repeats.',
+    ),
+    FieldSchema(
+      key: 'lines_fr',
+      label: 'Lines (French)',
+      type: FieldType.stringList,
+      help: 'In the same order as the English. « vous » to the player, '
+          'nothing that agrees with the player\'s gender. Left empty, the '
+          'English is used.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -2114,6 +2289,7 @@ final List<DbSchema> gameDbSchemas = [
   racesSchema,
   professionsSchema,
   companionsSchema,
+  companionRemarksSchema,
   housesSchema,
   achievementsSchema,
   zonesSchema,

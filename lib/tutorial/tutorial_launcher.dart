@@ -29,6 +29,11 @@ void playTutorial(BuildContext context, WidgetRef ref, TutorialTopic topic) {
     TutorialTopic.achievements => const AchievementsScreen(),
     _ => null,
   };
+  // The ship battle teaches itself as it goes; asking for it again brings
+  // its tips back for the next battle, on top of the summary told here.
+  if (topic == TutorialTopic.shipBattle) {
+    unawaited(ref.read(tutorialProvider.notifier).forgetTips('ship_'));
+  }
   final tab = topic.homeTab;
   if (tab == null && page == null) {
     showGuideTour(context, ref, topic);

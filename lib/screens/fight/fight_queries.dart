@@ -35,6 +35,24 @@ extension _FightQueries on _FightScreenState {
     return _condition == BattlefieldCondition.dark ? darkenedTier(tier) : tier;
   }
 
+  /// The elements [enemy] is known to be weak to or to resist: all of them
+  /// once the party reads it at the category tier or better, or has beaten
+  /// its kind before; otherwise only the ones a hit has revealed this
+  /// fight.
+  ({List<String> weak, List<String> resist}) _knownElementsFor(
+      _EnemyMember enemy) {
+    final tier = _effectiveTierFor(enemy);
+    final knowsAll = tier == TelegraphTier.category ||
+        tier == TelegraphTier.full ||
+        (ref.read(playerSessionProvider).enemyKillCounts[enemy.enemyId] ?? 0) >
+            0;
+    bool known(String e) => knowsAll || enemy.revealedElements.contains(e);
+    return (
+      weak: enemyWeaknesses(enemy.data).where(known).toList(),
+      resist: enemyResistances(enemy.data).where(known).toList(),
+    );
+  }
+
   /// Records whether any living enemy reads at the full tier right now --
   /// the spoils chest's Perception extra slot.
   void _noteTelegraphReads() {
@@ -189,7 +207,7 @@ extension _FightQueries on _FightScreenState {
   /// acting member on an Attack face, then on a Skill face -- an Attack
   /// first, so the surge isn't spent on a skill face that only heals.
   String? _surgeRecipient() {
-    if (_momentum < _momentumThreshold) return null;
+    if (_momentum < _momentumNeeded) return null;
     bool isStrike(String id) {
       final type = _currentFaces[id]?.type;
       return type == 'Attack' || type == 'Skill';

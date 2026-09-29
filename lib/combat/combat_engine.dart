@@ -3,6 +3,9 @@ import 'dart:math';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import 'status_effect.dart';
+import 'enemy_intent.dart';
+
+export 'enemy_intent.dart';
 
 /// Reads a skill or enemy-move record's `inflictsStatus`/`statusDuration`/
 /// `statusMagnitude` fields into a [StatusEffect], or null if the record
@@ -390,10 +393,31 @@ class EnemyMoveResult {
     this.element = 'None',
     this.healAmount = 0,
     this.skillId = '',
+    this.intent = EnemyIntent.attack,
+    this.guardAmount = 0,
+    this.rallyPercent = 0,
+    this.releaseMessage = '',
   });
 
+  /// What the move does to its target. For a [EnemyIntent.charge] it's the
+  /// blow the wind-up will release next turn; for a heal, guard or rally
+  /// it's 0 (the enemy doesn't swing that turn).
   final int damage;
   final String message;
+
+  /// What the enemy does with its turn (see enemy_intent.dart).
+  final EnemyIntent intent;
+
+  /// Block a [EnemyIntent.guard] raises.
+  final int guardAmount;
+
+  /// Damage bonus, in percent, a [EnemyIntent.rally] gives the enemy and
+  /// every living packmate.
+  final int rallyPercent;
+
+  /// The line a [EnemyIntent.charge]'s blow lands with, the turn after the
+  /// wind-up ('' for the default).
+  final String releaseMessage;
 
   /// The skills.json id of the move used, or '' for a plain attack -- what
   /// the fight screen plays on screen for it (see skill_vfx.dart).
@@ -410,9 +434,10 @@ class EnemyMoveResult {
   /// it already applies armor/block.
   final String element;
 
-  /// The referenced skill's own `healAmount` field (self-heal), if any —
-  /// read here purely so a telegraph preview (see [categoryFor]) can tell
-  /// a self-heal move apart from a plain attack.
+  /// The referenced skill's own `healAmount` field: what the enemy mends
+  /// itself by when it uses the move (a heal, or a strike that also heals
+  /// like Shadow Step). Scaled with the enemy's health by the fight screen
+  /// (see scaledEnemyHeal).
   final int healAmount;
 }
 
@@ -477,18 +502,53 @@ EnemyMoveResult resolveEnemyMove({
       final skill = skills[skillId] as Map<String, dynamic>;
       final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
       final multiplier = (skill['damageMultiplier'] as num?)?.toDouble() ?? 1.0;
-      final damage = applyWeaken(
-        (baseDamage + (damageMod * multiplier)).round(),
-        activeEffects,
-      );
+      final intent = enemyIntentOf(skill);
+      final strike = (baseDamage + (damageMod * multiplier)).round();
+      final damage = switch (intent) {
+        EnemyIntent.attack => applyWeaken(strike, activeEffects),
+        EnemyIntent.charge => applyWeaken(
+            (strike *
+                    ((skill['chargeMultiplier'] as num?)?.toDouble() ??
+                        defaultChargeMultiplier))
+                .round(),
+            activeEffects),
+        _ => 0,
+      };
+      // A player skill an enemy borrows says "you" to the player; its
+      // enemy-voiced line reads right from the other side of the fight.
+      final enemyLine = language == AppLanguage.fr
+          ? skill['enemyBattleMessage_fr']?.toString() ??
+              skill['enemyBattleMessage']?.toString()
+          : skill['enemyBattleMessage']?.toString();
       return EnemyMoveResult(
         damage: damage,
-        message: skill['battleMessage']?.toString() ??
+        message: enemyLine ??
+            skill['battleMessage']?.toString() ??
             '$enemyName ${t('attacks_suffix')}',
-        inflictedStatus: _inflictedStatusFrom(skill),
+        inflictedStatus:
+            intent == EnemyIntent.attack || intent == EnemyIntent.charge
+                ? _inflictedStatusFrom(skill)
+                : null,
         element: skill['element']?.toString() ?? 'None',
         healAmount: (skill['healAmount'] as num?)?.toInt() ?? 0,
         skillId: skillId,
+        intent: intent,
+        guardAmount: intent == EnemyIntent.guard
+            ? (baseDamage *
+                    ((skill['guardMultiplier'] as num?)?.toDouble() ??
+                        defaultGuardMultiplier))
+                .round()
+            : 0,
+        rallyPercent: intent == EnemyIntent.rally
+            ? (skill['rallyPercent'] as num?)?.toInt() ?? defaultRallyPercent
+            : 0,
+        releaseMessage: intent == EnemyIntent.charge
+            ? (language == AppLanguage.fr
+                    ? skill['releaseMessage_fr']?.toString()
+                    : null) ??
+                skill['releaseMessage']?.toString() ??
+                ''
+            : '',
       );
     }
     break;
@@ -548,6 +608,9 @@ const Set<String> zoneBossEnemyIds = {
   'bone_warden',
   'tear_spawn',
   'strand_colossus',
+  'horn_taker',
+  'teind_rider',
+  'frost_kept_giant',
 };
 
 /// Whether [enemyId] may be drawn at random (a detour, an expedition's
@@ -597,13 +660,25 @@ TelegraphTier telegraphTierFor(int perception, int guile) {
 /// preview -- coarser than the move's real effect, matching what a
 /// mid-Perception read can actually tell. A status-inflicting move always
 /// reads as [statusDebuff], even if it also deals damage (the debuff is the
-/// scarier, more decision-relevant half of "roughly what it does");
-/// otherwise a positive [EnemyMoveResult.healAmount] with no damage reads
-/// as [healSelf]; everything else is a plain [attack].
-enum MoveCategory { attack, healSelf, statusDebuff }
+/// scarier, more decision-relevant half of "roughly what it does"); a
+/// heal, guard, wind-up or rally reads as what it is (see [EnemyIntent]);
+/// everything else is a plain [attack].
+enum MoveCategory { attack, healSelf, statusDebuff, guard, charge, rally }
 
 MoveCategory categoryFor(EnemyMoveResult move) {
   if (move.inflictedStatus != null) return MoveCategory.statusDebuff;
+  switch (move.intent) {
+    case EnemyIntent.heal:
+      return MoveCategory.healSelf;
+    case EnemyIntent.guard:
+      return MoveCategory.guard;
+    case EnemyIntent.charge:
+      return MoveCategory.charge;
+    case EnemyIntent.rally:
+      return MoveCategory.rally;
+    case EnemyIntent.attack:
+      break;
+  }
   if (move.healAmount > 0 && move.damage <= 0) return MoveCategory.healSelf;
   return MoveCategory.attack;
 }

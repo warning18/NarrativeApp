@@ -41,7 +41,9 @@
     "vfx": "heal",
     "name_fr": "Second souffle",
     "description_fr": "Récupérez d’un coup une partie de votre santé.",
-    "battleMessage_fr": "Vous reprenez votre souffle."
+    "battleMessage_fr": "Vous reprenez votre souffle.",
+    "enemyBattleMessage": "A ragged breath, and the enemy steadies.",
+    "enemyBattleMessage_fr": "Un souffle rauque, et l’ennemi se ressaisit."
   },
   "void_blast": {
     "id": "void_blast",
@@ -85,7 +87,9 @@
     "vfx": "shadow",
     "name_fr": "Pas de l’ombre",
     "description_fr": "Filez à travers les ombres pour esquiver les attaques.",
-    "battleMessage_fr": "Vous disparaissez dans la fumée trouble."
+    "battleMessage_fr": "Vous disparaissez dans la fumée trouble.",
+    "enemyBattleMessage": "Slips into the smoke and strikes from somewhere else!",
+    "enemyBattleMessage_fr": "Se glisse dans la fumée et frappe d’ailleurs !"
   },
   "human_resolve": {
     "id": "human_resolve",
@@ -239,7 +243,9 @@
     "vfx": "stone_shield",
     "name_fr": "Peau de pierre",
     "description_fr": "Durcissez votre peau comme la pierre de carrière.",
-    "battleMessage_fr": "Votre peau se change en granit un instant."
+    "battleMessage_fr": "Votre peau se change en granit un instant.",
+    "enemyBattleMessage": "Skin greys over into stone.",
+    "enemyBattleMessage_fr": "La peau se couvre d’un gris de pierre."
   },
   "dwarf_hammer_blow": {
     "id": "dwarf_hammer_blow",
@@ -305,7 +311,9 @@
     "vfx": "heavy_slash",
     "name_fr": "Rage berserk",
     "description_fr": "Laissez la rage porter votre arme plus loin que ne le pourrait l’habileté.",
-    "battleMessage_fr": "Un voile rouge s’empare de vous."
+    "battleMessage_fr": "Un voile rouge s’empare de vous.",
+    "enemyBattleMessage": "A red rage takes hold, and the blows come wild!",
+    "enemyBattleMessage_fr": "Une rage rouge prend le dessus, et les coups pleuvent !"
   },
   "orc_savage_cleave": {
     "id": "orc_savage_cleave",
@@ -399,7 +407,9 @@
     "vfx": "drain",
     "name_fr": "Toucher entropique",
     "description_fr": "Défaites la chair de l’ennemi d’un simple contact.",
-    "battleMessage_fr": "La réalité s’effiloche là où vous touchez."
+    "battleMessage_fr": "La réalité s’effiloche là où vous touchez.",
+    "enemyBattleMessage": "Reality frays where the touch lands.",
+    "enemyBattleMessage_fr": "La réalité s’effiloche là où tombe le toucher."
   },
   "voidkin_starless_gaze": {
     "id": "voidkin_starless_gaze",
@@ -446,7 +456,9 @@
     "vfx": "impact",
     "name_fr": "Coup de bouclier",
     "description_fr": "Écrasez votre bouclier contre la garde ennemie.",
-    "battleMessage_fr": "Votre bouclier résonne contre l’ennemi."
+    "battleMessage_fr": "Votre bouclier résonne contre l’ennemi.",
+    "enemyBattleMessage": "A shield rim slams in hard!",
+    "enemyBattleMessage_fr": "Le rebord d’un bouclier frappe de plein fouet !"
   },
   "warrior_whirlwind": {
     "id": "warrior_whirlwind",
@@ -851,7 +863,9 @@
     "vfx": "heal",
     "name_fr": "Prière de relèvement",
     "description_fr": "Priez pour une force qui dépasse la vôtre.",
-    "battleMessage_fr": "Votre voix s’affermit, et vous avec."
+    "battleMessage_fr": "Votre voix s’affermit, et vous avec.",
+    "enemyBattleMessage": "A murmured prayer knits torn flesh.",
+    "enemyBattleMessage_fr": "Une prière murmurée referme les chairs déchirées."
   },
   "cleric_purify": {
     "id": "cleric_purify",
@@ -895,7 +909,9 @@
     "vfx": "arrow",
     "name_fr": "Tir visé",
     "description_fr": "Prenez le temps d’aligner le tir parfait.",
-    "battleMessage_fr": "Le tir touche exactement là où vous visiez."
+    "battleMessage_fr": "Le tir touche exactement là où vous visiez.",
+    "enemyBattleMessage": "An arrow lands exactly where it was aimed.",
+    "enemyBattleMessage_fr": "Une flèche touche exactement là où elle était visée."
   },
   "ranger_beast_bond": {
     "id": "ranger_beast_bond",
@@ -1448,7 +1464,9 @@
     "vfx": "heavy_slash",
     "name_fr": "Attaque lourde",
     "description_fr": "Un coup lourd et prévisible, porté de toutes vos forces.",
-    "battleMessage_fr": "Vous prenez votre élan et frappez de toutes vos forces."
+    "battleMessage_fr": "Vous prenez votre élan et frappez de toutes vos forces.",
+    "enemyBattleMessage": "A wind-up, then a swing with everything behind it!",
+    "enemyBattleMessage_fr": "Un élan, puis un coup porté de toutes ses forces !"
   },
   "zealous_conviction": {
     "id": "zealous_conviction",
@@ -1779,7 +1797,7 @@
     "healthMod": 0,
     "isActiveSkill": true,
     "damageMultiplier": 1.2,
-    "battleMessage": "Kroll calls down a column of searing white light!",
+    "battleMessage": "A column of searing white light comes down!",
     "restrictedRaceID": "",
     "restrictedProfessionID": "",
     "inflictsStatus": "Stun",
@@ -1789,7 +1807,7 @@
     "vfx": "radiance",
     "name_fr": "Jugement radieux",
     "description_fr": "La lumière même de l’Inquisition, tournée contre quiconque elle juge indigne.",
-    "battleMessage_fr": "Kroll fait tomber une colonne de lumière blanche et brûlante !"
+    "battleMessage_fr": "Une colonne de lumière blanche et brûlante s’abat !"
   },
   "celestial_ward": {
     "id": "celestial_ward",
@@ -2087,5 +2105,158 @@
     "description_fr": "Une prière à mi-voix qui ravive votre foi : gagnez 2 points de mana, davantage avec la Sagesse.",
     "battleMessage_fr": "Vous murmurez une prière et sentez la lumière revenir.",
     "manaGain": 2
+  },
+  "brace": {
+    "id": "brace",
+    "element": "None",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Sets its feet and raises its guard.",
+    "healAmount": 0,
+    "damageMod": 0,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "Feet set, guard up.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "shield",
+    "enemyOnly": true,
+    "intent": "guard",
+    "name_fr": "Garde haute",
+    "description_fr": "Ancre ses appuis et lève sa garde.",
+    "battleMessage_fr": "Appuis ancrés, garde haute.",
+    "guardMultiplier": 1.0
+  },
+  "heavy_windup": {
+    "id": "heavy_windup",
+    "element": "None",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Winds up a blow that lands at double weight next turn, unless it is broken first.",
+    "healAmount": 0,
+    "damageMod": 4,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "Muscles bunch and the weapon rises high.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "heavy_slash",
+    "enemyOnly": true,
+    "intent": "charge",
+    "name_fr": "Élan écrasant",
+    "description_fr": "Prépare un coup qui s’abat avec une force double au tour suivant, sauf si son élan est brisé.",
+    "battleMessage_fr": "Les muscles se tendent, l’arme se lève haut.",
+    "chargeMultiplier": 2.0,
+    "releaseMessage": "The wound-up blow comes crashing down!",
+    "releaseMessage_fr": "Le coup longuement préparé s’abat de tout son poids !"
+  },
+  "void_gathering": {
+    "id": "void_gathering",
+    "element": "Void",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Gathers the Void for a burst that lands next turn, unless it is broken first.",
+    "healAmount": 0,
+    "damageMod": 6,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "The air darkens as the Void gathers.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "void_rift",
+    "enemyOnly": true,
+    "intent": "charge",
+    "name_fr": "Vide amassé",
+    "description_fr": "Amasse le Vide pour une déflagration au tour suivant, sauf si son élan est brisé.",
+    "battleMessage_fr": "L’air s’assombrit tandis que le Vide s’amasse.",
+    "chargeMultiplier": 1.8,
+    "releaseMessage": "The gathered Void bursts outward!",
+    "releaseMessage_fr": "Le Vide amassé éclate d’un coup !"
+  },
+  "rallying_cry": {
+    "id": "rallying_cry",
+    "element": "None",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "A cry that makes it and its pack hit harder for the rest of the fight.",
+    "healAmount": 0,
+    "damageMod": 0,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "A harsh cry goes up, and the others answer it.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "shout",
+    "enemyOnly": true,
+    "intent": "rally",
+    "name_fr": "Clameur",
+    "description_fr": "Un cri qui fait frapper plus fort l’ennemi et sa meute jusqu’à la fin du combat.",
+    "battleMessage_fr": "Un cri rauque s’élève, et les autres y répondent.",
+    "rallyPercent": 20
+  },
+  "pack_howl": {
+    "id": "pack_howl",
+    "element": "None",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "A howl that makes the beast and its pack hit harder for the rest of the fight.",
+    "healAmount": 0,
+    "damageMod": 0,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "A long howl rises, and every hackle with it.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "shout",
+    "enemyOnly": true,
+    "intent": "rally",
+    "name_fr": "Hurlement de meute",
+    "description_fr": "Un hurlement qui fait frapper plus fort la bête et sa meute jusqu’à la fin du combat.",
+    "battleMessage_fr": "Un long hurlement s’élève, et tous les poils se hérissent.",
+    "rallyPercent": 25
+  },
+  "bind_wounds": {
+    "id": "bind_wounds",
+    "element": "None",
+    "cost": 0,
+    "rarity": "common",
+    "requiredSkillID": "",
+    "isUnlocked": false,
+    "description": "Snatches a moment to bind its wounds instead of striking.",
+    "healAmount": 16,
+    "damageMod": 0,
+    "healthMod": 0,
+    "isActiveSkill": true,
+    "damageMultiplier": 1.0,
+    "battleMessage": "A moment snatched to bind the worst of the wounds.",
+    "restrictedRaceID": "",
+    "restrictedProfessionID": "",
+    "alignment": "",
+    "vfx": "heal",
+    "enemyOnly": true,
+    "intent": "heal",
+    "name_fr": "Pansement hâtif",
+    "description_fr": "Profite d’un instant pour panser ses plaies au lieu de frapper.",
+    "battleMessage_fr": "Un instant volé pour panser le pire des plaies."
   }
 }

@@ -2,7 +2,7 @@
 // choice is a short line, never a paragraph; a lock the story already
 // decided is hidden, not explained; no node whose only choice is
 // "continue"; every choice costs something, gains something, or leaves a
-// mark a later scene reads back; and the Kroll scenes read the same on
+// mark a later scene reads back; and the Clement scenes read the same on
 // both origins (a player who kept Lysa was never in the Black Hold).
 
 import 'dart:convert';
@@ -147,7 +147,7 @@ void main() {
             reason: '${node.id}: ${choice.text} explains a hidden lock');
       }
     }
-    // Kroll's aftermath shows one climb, never both.
+    // Clement's aftermath shows one climb, never both.
     for (final id in ['965', '965_mercy', '965_vengeance']) {
       final climbs = nodes[id]!.choices;
       expect(climbs.where((c) => c.nextId == '1000').single.showIfFlags,
@@ -224,11 +224,21 @@ void main() {
     expect(nodes['281_scarred']!.description, startsWith('The tear won.'));
   });
 
-  test('the Kroll scenes read the same on both origins', () {
-    final kroll = nodes['960']!;
-    expect(kroll.description, isNot(contains('torturer')));
-    expect(kroll.flagCallbacks.map((c) => c.flag).toSet(),
+  test('the Clement scenes read the same on both origins', () {
+    final pier = nodes['960']!;
+    expect(pier.description, isNot(contains('torturer')));
+    // He is named, and the anchor chain the fight ends on is set up.
+    expect(pier.description, contains('Clement'));
+    expect(pier.description, contains('chain'));
+    expect(pier.flagCallbacks.map((c) => c.flag).toSet(),
         {'lysa_lost', 'lysa_survived'});
+    // Whoever kept Lysa sent her up the chain first.
+    expect(
+        pier.flagCallbacks
+            .singleWhere((c) => c.flag == 'lysa_survived')
+            .line
+            .en,
+        contains('chain'));
     for (final id in ['965', '965_mercy', '965_vengeance']) {
       final text = nodes[id]!.description.toLowerCase();
       expect(text, isNot(contains('session')), reason: id);

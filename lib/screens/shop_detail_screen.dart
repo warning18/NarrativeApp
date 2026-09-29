@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
+import '../data/shop_pricing.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -49,6 +51,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     final races = ref.watch(localizedDbProvider(racesSchema)).value ??
         const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
+    final chapter = ref.watch(reachedChapterProvider);
     final lang = ref.watch(appLanguageProvider);
     final itemSets = parseItemSets(
         ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
@@ -98,11 +101,18 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                 return Center(child: Text(tr(ref, 'shop_no_stock')));
               }
 
+              // Potions and scrolls restock each chapter; gear doesn't.
+              String stockKey(String itemId) =>
+                  stockKeyFor(widget.shopId, itemId,
+                      itemType:
+                          (items[itemId] as Map<String, dynamic>?)?['itemType']
+                              ?.toString(),
+                      chapter: chapter);
+
               int remainingFor(String itemId) {
                 final limit = stockQuantities[itemId] ?? 1;
                 final purchased =
-                    session.shopPurchaseCounts['${widget.shopId}::$itemId'] ??
-                        0;
+                    session.shopPurchaseCounts[stockKey(itemId)] ?? 0;
                 return limit - purchased;
               }
 
@@ -111,10 +121,12 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       ?.toString() ??
                   itemId;
 
-              int costFor(String itemId) =>
+              // Listed price, less the buyer's Charisma discount.
+              int costFor(String itemId) => shopPriceFor(
                   ((items[itemId] as Map<String, dynamic>?)?['cost'] as num?)
-                      ?.toInt() ??
-                  0;
+                          ?.toInt() ??
+                      0,
+                  session.charisma);
 
               final availableTypes = stock
                   .map((id) => (items[id] as Map<String, dynamic>?)?['itemType']
@@ -337,7 +349,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                 .read(playerSessionProvider.notifier)
                                 .buyItem(
                                     widget.shopId, itemId, cost, stockLimit,
-                                    item: item);
+                                    item: item, stockKey: stockKey(itemId));
                             if (!context.mounted) return;
                             showImmersiveNotice(
                               context,
@@ -505,7 +517,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           ...diceStock.map((diceId) {
                             final theme = Theme.of(context);
                             final die = dice[diceId] as Map<String, dynamic>?;
-                            final cost = (die?['cost'] as num?)?.toInt() ?? 0;
+                            final cost = shopPriceFor(
+                                (die?['cost'] as num?)?.toInt() ?? 0,
+                                session.charisma);
                             final owned = session.ownedDiceIds.contains(diceId);
                             final canAfford = session.gold >= cost;
                             // A die made for another class or race is shown

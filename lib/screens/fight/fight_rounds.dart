@@ -178,6 +178,10 @@ extension _FightRounds on _FightScreenState {
     var lastEnemyDamage = 0;
     var hitsLanded = 0;
     var manaGained = 0;
+    // Taunt (v1.162): the member who kept the biggest Defend face this round
+    // draws the enemies' attacks in a party fight (see _takeEnemyTurn).
+    String? guardianId;
+    var guardianBlock = 0;
     final surgeTo = _surgeRecipient();
     for (final actor in _actingParty) {
       final face = _currentFaces[actor.id];
@@ -241,6 +245,10 @@ extension _FightRounds on _FightScreenState {
       // A spell's block this round (Mana Ward, War Shout) stacks under the
       // face's own -- see [_spellBlock].
       actor.block = block + (_spellBlock[actor.id] ?? 0);
+      if (result.blockAmount > 0 && actor.block > guardianBlock) {
+        guardianId = actor.id;
+        guardianBlock = actor.block;
+      }
       newEntries
           .add(_LogEntry('${_actorPrefix(actor)}${result.message}', kind));
       if (surge) {
@@ -286,15 +294,17 @@ extension _FightRounds on _FightScreenState {
           ));
         }
         final wasAlive = target.isAlive;
-        target.currentHealth = max(0, target.currentHealth - damage);
-        dealt = damage;
-        if (damage > 0) {
+        final landed =
+            _landHitOnEnemy(target, damage, element, newEntries, lang);
+        target.currentHealth = max(0, target.currentHealth - landed);
+        dealt = landed;
+        if (landed > 0) {
           lastDamagedEnemyKey = target.key;
-          lastEnemyDamage = damage;
+          lastEnemyDamage = landed;
           hitsLanded++;
           // Lifesteal (a Bloodthorn Blade, the full Hollow Court set) and
           // mana on hit (a Siphon Wand) pay out per landed hit.
-          final drained = actor.gear.lifestealFor(damage);
+          final drained = actor.gear.lifestealFor(landed);
           if (drained > 0 && actor.currentHealth < actor.maxHealth) {
             drainedFx = drained;
             actor.currentHealth =
@@ -310,7 +320,7 @@ extension _FightRounds on _FightScreenState {
         if (wasAlive && !target.isAlive) {
           _lastKillWasCritical = result.isCritical;
         }
-        if (element != 'None' && damage > 0) {
+        if (element != 'None' && landed > 0) {
           target.elementsHitThisRound.add(element);
         }
         final inflicted = result.inflictedStatus;
@@ -340,12 +350,15 @@ extension _FightRounds on _FightScreenState {
       );
     }
 
+    _guardianId =
+        _party.where((m) => !m.isKnockedOut).length > 1 ? guardianId : null;
+    _checkChargeBreaks(newEntries, lang);
     _advanceBossPhases(newEntries, lang, skills);
 
     if (hitsLanded > 0) {
       final before = _momentum;
-      _momentum = min(_momentumThreshold, _momentum + hitsLanded);
-      if (before < _momentumThreshold && _momentum >= _momentumThreshold) {
+      _momentum = min(_momentumNeeded, _momentum + hitsLanded);
+      if (before < _momentumNeeded && _momentum >= _momentumNeeded) {
         newEntries.add(
             _LogEntry(trFor(lang, 'momentum_ready_message'), _LogKind.info));
       }
@@ -500,10 +513,15 @@ extension _FightRounds on _FightScreenState {
         enemy.pendingMove = _PendingEnemyMove(
           move: pending.move,
           targetId: conscious[_random.nextInt(conscious.length)].id,
+          release: pending.release,
         );
       }
     }
     _noteTelegraphReads();
+    for (final enemy in _enemies) {
+      enemy.damageThisRound = 0;
+      enemy.hitWeaknessThisRound = false;
+    }
 
     _update(() {
       _log.addAll(newEntries);
@@ -512,6 +530,7 @@ extension _FightRounds on _FightScreenState {
       _selectedTargets.clear();
       _lockedActorIds.clear();
       _spellBlock.clear();
+      _guardianId = null;
       _selectedActorId = null;
       _awaitingDecision = false;
       // A fresh round with nothing hit yet on any enemy — otherwise a
@@ -548,11 +567,175 @@ extension _FightRounds on _FightScreenState {
   /// exactly as every enemy did before telegraphing existed, and shows no
   /// telegraph.
   void _preRollMoveFor(_EnemyMember enemy, Map<String, dynamic> skills) {
-    if (!enemy.isAlive || enemy.hasReactiveMoves) {
+    if (!enemy.isAlive) {
+      enemy.pendingMove = null;
+      return;
+    }
+    // A wound-up blow is already decided: it's what comes next.
+    if (enemy.chargedBlow != null) {
+      final conscious = _party.where((m) => !m.isKnockedOut).toList();
+      enemy.pendingMove = _PendingEnemyMove(
+        move: _releaseOf(enemy),
+        targetId: conscious.isEmpty
+            ? _party.first.id
+            : conscious[_random.nextInt(conscious.length)].id,
+        release: true,
+      );
+      return;
+    }
+    if (enemy.hasReactiveMoves) {
       enemy.pendingMove = null;
       return;
     }
     enemy.pendingMove = _rollMoveAndTargetFor(enemy, skills);
+  }
+
+  /// The blow [enemy]'s wind-up releases: the charged move as a plain
+  /// attack, with its own landing line.
+  EnemyMoveResult _releaseOf(_EnemyMember enemy) {
+    final charged = enemy.chargedBlow!;
+    final lang = ref.read(appLanguageProvider);
+    return EnemyMoveResult(
+      damage: charged.damage,
+      message: charged.releaseMessage.isNotEmpty
+          ? charged.releaseMessage
+          : '${enemy.displayName} ${trFor(lang, 'charge_release_suffix')}',
+      inflictedStatus: charged.inflictedStatus,
+      element: charged.element,
+      skillId: charged.skillId,
+    );
+  }
+
+  /// Lands a party hit of [damage] and [element] on [enemy] (v1.162): its
+  /// weakness or resistance first, then its raised guard. Returns what gets
+  /// through, notes it towards breaking a wind-up, and reveals the
+  /// weakness/resistance on the enemy's card with a log line the first
+  /// time.
+  int _landHitOnEnemy(_EnemyMember enemy, int damage, String element,
+      List<_LogEntry> entries, AppLanguage lang) {
+    if (damage <= 0) return damage;
+    final multiplier = elementMultiplierFor(enemy.data, element);
+    var landed = damageAfterElement(damage, enemy.data, element);
+    if (multiplier != 1.0) {
+      if (multiplier > 1.0) {
+        enemy.hitWeaknessThisRound = true;
+        _weaknessHits++;
+      }
+      if (enemy.revealedElements.add(element)) {
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, multiplier > 1.0 ? 'weak_to_suffix' : 'resists_suffix')} '
+          '${elementLabel(element, lang)}.',
+          _LogKind.info,
+        ));
+      }
+    }
+    if (enemy.guard > 0) {
+      final through = damageThroughGuard(landed, enemy.guard);
+      final soaked = landed - through.damage;
+      enemy.guard = through.guard;
+      landed = through.damage;
+      if (soaked > 0) {
+        entries.add(_LogEntry(
+          '${enemy.displayName} ${trFor(lang, 'guard_soaks_suffix')} $soaked.',
+          _LogKind.info,
+        ));
+      }
+    }
+    enemy.damageThisRound += landed;
+    return landed;
+  }
+
+  /// Breaks every wind-up the party answered hard enough this round (see
+  /// chargeBroken): the held blow is lost and the enemy loses its next
+  /// turn.
+  void _checkChargeBreaks(List<_LogEntry> entries, AppLanguage lang) {
+    for (final enemy in _enemies) {
+      if (!enemy.isAlive || enemy.chargedBlow == null) continue;
+      if (!chargeBroken(
+        damageThisRound: enemy.damageThisRound,
+        maxHealth: enemy.maxHealth,
+        stunned: isStunned(enemy.statusEffects),
+        hitWeakness: enemy.hitWeaknessThisRound,
+      )) {
+        continue;
+      }
+      enemy.chargedBlow = null;
+      enemy.staggered = true;
+      enemy.pendingMove = null;
+      _chargesBroken++;
+      _fx(VfxStyle.stun, _enemyCardKey(enemy.key), delayMs: 250, big: true);
+      entries.add(_LogEntry(
+        '${enemy.displayName} ${trFor(lang, 'charge_broken_suffix')}',
+        _LogKind.playerDamage,
+      ));
+    }
+  }
+
+  /// A turn [enemy] spends on something other than a swing: mending
+  /// itself, raising its guard, winding up, or rallying its pack.
+  void _resolveEnemyStance(
+      _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay) {
+    final key = _enemyCardKey(enemy.key);
+    switch (move.intent) {
+      case EnemyIntent.heal:
+        final amount = scaledEnemyHeal(move.healAmount,
+            maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth);
+        final healed = min(amount, enemy.maxHealth - enemy.currentHealth);
+        _fx(VfxStyle.heal, key,
+            delayMs: delay, text: '+$healed', textKind: VfxTextKind.heal);
+        _update(() {
+          enemy.currentHealth += healed;
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_recovers_word')} $healed '
+            '${trFor(lang, 'hp_label')}.',
+            _LogKind.info,
+          ));
+        });
+      case EnemyIntent.guard:
+        _fx(VfxStyle.shield, key,
+            delayMs: delay,
+            text: '+${move.guardAmount}',
+            textKind: VfxTextKind.block);
+        _update(() {
+          enemy.guard = move.guardAmount;
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_guards_word')} ${move.guardAmount}.',
+            _LogKind.info,
+          ));
+        });
+      case EnemyIntent.charge:
+        _fx(VfxStyle.phase, key, delayMs: delay);
+        _update(() {
+          enemy.chargedBlow = move;
+          _log.add(_LogEntry(
+            '${move.message} ${enemy.displayName} '
+            '${trFor(lang, 'enemy_winds_up_suffix')}',
+            _LogKind.enemyDamage,
+          ));
+        });
+      case EnemyIntent.rally:
+        var rallied = 0;
+        for (final other in _enemies) {
+          if (!other.isAlive || other.rallyStacks >= maxRallyStacks) continue;
+          other.damage = (other.damage * (1 + move.rallyPercent / 100)).round();
+          other.rallyStacks++;
+          rallied++;
+          _fx(VfxStyle.shout, _enemyCardKey(other.key), delayMs: delay);
+        }
+        _update(() {
+          _log.add(_LogEntry(
+            rallied == 0
+                ? '${move.message} ${trFor(lang, 'rally_spent_message')}'
+                : '${move.message} ${trFor(lang, 'enemy_rallies_message')} '
+                    '(+${move.rallyPercent}%)',
+            _LogKind.enemyDamage,
+          ));
+        });
+      case EnemyIntent.attack:
+        break;
+    }
   }
 
   /// Plays every boss phase a living enemy has crossed since the last
@@ -667,9 +850,12 @@ extension _FightRounds on _FightScreenState {
     }
 
     var enemyFx = 0;
+    var guardAnnounced = false;
     for (final enemy in _enemies) {
       if (!enemy.isAlive) continue;
       final fxDelay = enemyFx++ * 220;
+      // A raised guard lasts until the enemy's next turn comes round.
+      enemy.guard = 0;
 
       final poison = poisonDamageFor(enemy.statusEffects);
       if (poison > 0) {
@@ -695,6 +881,21 @@ extension _FightRounds on _FightScreenState {
             _LogKind.info,
           ));
           enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
+          enemy.chargedBlow = null;
+          enemy.staggered = false;
+        });
+        continue;
+      }
+
+      // A broken wind-up: the enemy reels and loses this turn.
+      if (enemy.staggered) {
+        _update(() {
+          _log.add(_LogEntry(
+            '${enemy.displayName} ${trFor(lang, 'staggered_skip_turn_suffix')}',
+            _LogKind.info,
+          ));
+          enemy.staggered = false;
+          enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         });
         continue;
       }
@@ -712,16 +913,41 @@ extension _FightRounds on _FightScreenState {
 
       final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
       final move = pending.move;
+      if (!pending.release && move.intent != EnemyIntent.attack) {
+        _resolveEnemyStance(enemy, move, lang, fxDelay);
+        enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
+        continue;
+      }
+      if (pending.release) enemy.chargedBlow = null;
       final moveDamage =
           _incomingDamage(enemy, move, leaderStanding: leaderStanding);
 
-      final _PartyMember target;
+      _PartyMember target;
       final cachedTarget = _memberById(pending.targetId);
       if (cachedTarget != null && !cachedTarget.isKnockedOut) {
         target = cachedTarget;
       } else {
         final conscious = _party.where((m) => !m.isKnockedOut).toList();
         target = conscious[_random.nextInt(conscious.length)];
+      }
+      // Taunt: whoever kept the biggest Defend face steps in front of the
+      // blow meant for someone else, while their guard holds (see
+      // guardianTakesBlow).
+      final guardian = _guardianId == null ? null : _memberById(_guardianId!);
+      if (guardian != null &&
+          guardianTakesBlow(
+            guardianStanding: !guardian.isKnockedOut,
+            guardianBlock: guardian.block,
+            aimedAtGuardian: guardian.id == target.id,
+          )) {
+        target = guardian;
+        if (!guardAnnounced) {
+          guardAnnounced = true;
+          _update(() => _log.add(_LogEntry(
+                '${guardian.displayName} ${trFor(lang, 'draws_attacks_suffix')}',
+                _LogKind.playerBlock,
+              )));
+        }
       }
 
       final mitigation = _mitigationFor(target, move.element, items);
@@ -760,7 +986,7 @@ extension _FightRounds on _FightScreenState {
         target.block = 0;
         _lastDamageTaken = damageTaken;
         _lastDamagedMemberId = target.id;
-        if (damageTaken > 0) _momentum = 0;
+        if (damageTaken > 0) _momentum = momentumAfterHit(_momentum);
         if (wasDodged) {
           _log.add(_LogEntry(
             target.isPlayer
@@ -827,6 +1053,26 @@ extension _FightRounds on _FightScreenState {
         inflicted: inflicted,
         delayMs: fxDelay,
       );
+      if (move.healAmount > 0 && enemy.isAlive) {
+        final healed = min(
+            scaledEnemyHeal(move.healAmount,
+                maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth),
+            enemy.maxHealth - enemy.currentHealth);
+        if (healed > 0) {
+          _fx(VfxStyle.heal, _enemyCardKey(enemy.key),
+              delayMs: fxDelay + 300,
+              text: '+$healed',
+              textKind: VfxTextKind.heal);
+          _update(() {
+            enemy.currentHealth += healed;
+            _log.add(_LogEntry(
+              '${enemy.displayName} ${trFor(lang, 'enemy_recovers_word')} '
+              '$healed ${trFor(lang, 'hp_label')}.',
+              _LogKind.info,
+            ));
+          });
+        }
+      }
       if (secondWind) {
         _fx(VfxStyle.heal, _memberCardKey(target.id),
             delayMs: fxDelay + 450, big: true);

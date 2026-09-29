@@ -22,7 +22,10 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
+import '../data/approval.dart';
 import '../data/chapter_loop.dart';
+import '../data/perks.dart';
+import '../data/contracts.dart' show ContractTally;
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -269,9 +272,19 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// reads this, and an Ambush hides every telegraph while it's still 1.
   int _roundsStarted = 0;
 
-  /// Damaging party hits landed since the party last took a hit. At
-  /// [_momentumThreshold] the next Attack/Skill face is a guaranteed
-  /// critical (which spends it).
+  /// The member whose kept Defend face draws the enemies' attacks this
+  /// round (see _confirmRoll): null outside a party fight or when nobody
+  /// defended.
+  String? _guardianId;
+
+  /// Wind-ups the party broke this fight (see _checkChargeBreaks), and
+  /// hits that landed on a weakness: both count on the camp's bounty board.
+  int _chargesBroken = 0;
+  int _weaknessHits = 0;
+
+  /// Damaging party hits landed, less one for every hit the party takes
+  /// (see momentumAfterHit). At [_momentumThreshold] the next Attack/Skill
+  /// face is a guaranteed critical (which spends it).
   int _momentum = 0;
 
   /// The member the player chose to cash a ready momentum surge on (see
@@ -306,6 +319,13 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// [_startFight].
   final Set<String> _armedCharmIds = {};
   int _maxRollsThisFight = _maxRolls;
+
+  /// The player's level-up perks (see perks.dart), read at party build.
+  PerkEffects _perks = PerkEffects.none;
+
+  /// Hits needed for a surge: [_momentumThreshold], less a Battle Rhythm
+  /// perk.
+  int get _momentumNeeded => max(1, _momentumThreshold - _perks.momentumDrop);
   bool _luckyCoinArmed = false;
   bool _ironSkinArmed = false;
   int _wardingCharges = 0;

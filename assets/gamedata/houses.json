@@ -48,7 +48,7 @@
   },
   "sharpweave_den": {
     "houseID": "sharpweave_den",
-    "houseName": "Sharpweave Den",
+    "houseName": "The Needle House",
     "description": "A back room with no sign, kept quiet on purpose — the kind of contact only a light-footed, fast-handed sort ever manages to make. Opens a door most people never know is there.",
     "buildCost": 350,
     "partyCapacityBonus": 0,
@@ -56,7 +56,7 @@
     "requiredFlags": [
       "banner_second_piece_lead"
     ],
-    "houseName_fr": "L’Antre de la Trame acérée",
+    "houseName_fr": "La Maison des Aiguilles",
     "description_fr": "Une arrière-salle sans enseigne, tenue discrète à dessein — le genre de contact que seuls les pieds légers et les mains vives parviennent jamais à nouer. Ouvre une porte dont la plupart des gens ignorent l’existence."
   },
   "smugglers_cellar": {

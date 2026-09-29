@@ -333,7 +333,7 @@ extension _FightView on _FightScreenState {
   /// battlefield condition (if any) and the momentum meter.
   Widget _buildBattleChips() {
     final condition = _condition;
-    final ready = _momentum >= _momentumThreshold;
+    final ready = _momentum >= _momentumNeeded;
     return Wrap(
       spacing: 6,
       runSpacing: 4,
@@ -344,7 +344,7 @@ extension _FightView on _FightScreenState {
           ready ? Icons.local_fire_department : Icons.trending_up,
           ready
               ? tr(ref, 'momentum_ready_label')
-              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumThreshold',
+              : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
         ),
       ],
     );
@@ -498,7 +498,7 @@ extension _FightView on _FightScreenState {
                 ),
             ],
           ),
-          if (_momentum >= _momentumThreshold && !_rolling)
+          if (_momentum >= _momentumNeeded && !_rolling)
             _buildSurgePicker(acting),
           const SizedBox(height: 4),
           Text(
@@ -708,6 +708,26 @@ extension _FightView on _FightScreenState {
       icon = FaceKind.defend.icon;
       text = '${preview.block}';
       color = FaceKind.defend.color;
+      // In a party fight the biggest Defend kept draws the enemies'
+      // attacks (see _confirmRoll's taunt).
+      if (_party.where((m) => !m.isKnockedOut).length > 1) {
+        return Tooltip(
+          message: tr(ref, 'defend_draws_attacks_hint'),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 11, color: color),
+              const SizedBox(width: 2),
+              Text(text,
+                  style: TextStyle(
+                      fontSize: 10, fontWeight: FontWeight.bold, color: color)),
+              const SizedBox(width: 2),
+              Icon(Icons.my_location, size: 10, color: color),
+            ],
+          ),
+        );
+      }
     } else if (result.manaGained > 0) {
       icon = manaIcon;
       text = '+${result.manaGained}';

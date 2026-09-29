@@ -51,8 +51,19 @@ void main() {
         for (final e in skills.entries)
           if (isEnemyOnlySkill(e.value as Map<String, dynamic>)) e.key,
       };
-      expect(flagged, hasLength(12));
+      expect(flagged, hasLength(18));
       expect(flagged, contains('sovereign_unmaking'));
+      // v1.162's enemy intents: guard, wind-ups, rallies, a heal.
+      expect(
+          flagged,
+          containsAll([
+            'brace',
+            'heavy_windup',
+            'void_gathering',
+            'rallying_cry',
+            'pack_howl',
+            'bind_wounds',
+          ]));
       expect(flagged.intersection(usedByParty), isEmpty);
       for (final id in flagged) {
         expect((skills[id] as Map<String, dynamic>)['isUnlocked'], isFalse,

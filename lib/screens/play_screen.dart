@@ -173,7 +173,10 @@ class PlayScreen extends ConsumerWidget {
               // Spending stat/skill points is entirely manual and nothing else
               // nudges toward it, so an unspent balance is easy to forget —
               // same badge treatment as the unseen-content sections below.
-              trailing: session.statPoints + session.skillPoints > 0
+              trailing: session.statPoints +
+                          session.skillPoints +
+                          session.pendingPerkPicks >
+                      0
                   ? Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

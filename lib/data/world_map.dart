@@ -3,8 +3,8 @@ import 'dart:ui' show Color;
 
 import '../l10n/app_locale.dart';
 
-/// The story's world, on a chart 256 × 176 units across: the 23
-/// landmarks every scene of the story happens at and the road between them
+/// The story's world, on a chart 256 × 176 units across: the landmarks
+/// every scene of the story happens at and the road between them
 /// in story order. Play mode shows it from the header as a chart (see
 /// map_charts.dart, which places the landmarks on each geography); a
 /// landmark appears once one of its scenes has been read.
@@ -201,9 +201,9 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Alster docks',
     nameFr: 'Les docks d’Alster',
     blurbEn:
-        'The Rusty Eel weighs anchor. Plead, bargain or threaten your way past the smuggler, then face Kroll the Branded on the pier. How you finish him, and what you climb toward, sets your origin: Guardian, Rat or Broken.',
+        'The Rusty Eel weighs anchor. Plead, bargain or threaten your way past the smuggler, then face Inquisitor Clement, the Branded, on the anchor chain. How you finish him, and what you climb toward, sets your origin: Guardian, Rat or Broken.',
     blurbFr:
-        'Le Rusty Eel lève l’ancre. Suppliez, marchandez ou menacez pour passer le contrebandier, puis affrontez Kroll sur la jetée. La façon dont vous l’achevez, et ce vers quoi vous grimpez, fixe votre origine : Gardien, Rat ou Brisé.',
+        'Le Rusty Eel lève l’ancre. Suppliez, marchandez ou menacez pour passer le contrebandier, puis affrontez l’Inquisiteur Clément, le Marqué, sur la chaîne d’ancre. La façon dont vous l’achevez, et ce vers quoi vous grimpez, fixe votre origine : Gardien, Rat ou Brisé.',
     scenes: [
       '891', '895', '896', '897', '898', '960', '965', '965_mercy', //
       '965_vengeance', '1000', '1001', '1002',
@@ -327,6 +327,21 @@ final List<Landmark> worldMapLandmarks = [
     fights: ['inquisition_auxiliary'],
   ),
   const Landmark(
+    id: 'akagiri',
+    chapter: 3,
+    nameEn: 'Akagiri',
+    nameFr: 'Akagiri',
+    blurbEn:
+        'The oni village on the terraces above the hot springs, at the top of the Exorcists’ Road: bells on every eave, a smith with a sawn-off horn, brewers who bet on their guests, and the Horn-Taker’s chest of proofs.',
+    blurbFr:
+        'Le village des oni sur les terrasses au-dessus des sources chaudes, en haut de la Route des Exorcistes : des cloches à chaque avant-toit, un forgeron à la corne sciée, des brasseurs qui parient sur leurs invités, et le coffre de preuves du Preneur de Cornes.',
+    scenes: [
+      '3200', '3200_circle', '3200_brew', '3200_brew_failed', //
+      '3200_smith', '3200_smith_later', '3200_springs',
+    ],
+    fights: ['inquisition_soldier', 'inquisition_auxiliary'],
+  ),
+  const Landmark(
     id: 'spire',
     chapter: 3,
     nameEn: 'The Spire of Judgment',
@@ -355,6 +370,21 @@ final List<Landmark> worldMapLandmarks = [
       '5100_headman', '5100_headman_later', '5100_nets',
     ],
     fights: ['drowned_pilgrim'],
+  ),
+  const Landmark(
+    id: 'kindly',
+    chapter: 4,
+    nameEn: 'The Kindly Hill',
+    nameFr: 'La Colline des Bienveillants',
+    blurbEn:
+        'A green hill in the grey fen where it is always a summer evening: the Good Folk’s riddle-table, a clock that shows what a visit costs, and Nell, this year’s teind to the Hollow Court, knitting a grey shawl.',
+    blurbFr:
+        'Une colline verte dans le marais gris, où c’est toujours un soir d’été : la table aux énigmes des Bienveillants, une horloge qui montre ce que coûte une visite, et Nell, la dîme de cette année pour la Cour Creuse, qui tricote un châle gris.',
+    scenes: [
+      '5200', '5200_barrows', '5200_riddles', '5200_riddles_failed', //
+      '5200_nell', '5200_nell_later', '5200_sleep',
+    ],
+    fights: ['bone_sexton', 'catacomb_ghoul'],
   ),
   const Landmark(
     id: 'cloister',
@@ -421,6 +451,21 @@ final List<Landmark> worldMapLandmarks = [
       '6100_keeper', '6100_keeper_later', '6100_bread',
     ],
     fights: ['void_hound', 'drowned_pilgrim'],
+  ),
+  const Landmark(
+    id: 'highhearth',
+    chapter: 5,
+    nameEn: 'Highhearth',
+    nameFr: 'Haut-Âtre',
+    blurbEn:
+        'The last forty giants, below the Frost Quarry: they cut the stone for the Reliquary and were paid by being written out of scripture. A fire six hundred years old, a first child in eleven years, and a tally-stone of names.',
+    blurbFr:
+        'Les quarante derniers géants, sous la Carrière de Givre : ils ont taillé la pierre du Reliquaire et ont été payés en étant rayés des Écritures. Un feu vieux de six cents ans, un premier enfant en onze ans, et une pierre de compte couverte de noms.',
+    scenes: [
+      '6200', '6200_gate', '6200_birth', '6200_birth_failed', //
+      '6200_eldest', '6200_eldest_later', '6200_hearth',
+    ],
+    fights: ['void_hound', 'void_hound'],
   ),
   const Landmark(
     id: 'heart',

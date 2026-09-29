@@ -207,6 +207,9 @@ Build these as layered stems if possible. The fight runs in phases (roll → res
 | z_beyond_the_tear | 6 | wildsBeyond | No sky, the Eel on "not-water", a throne | void_sovereign |
 | z_glass_strand | 6 | wildsBeyond | Humming glass sand, wreckage, dunes | strand_colossus |
 | z_white_fleet_grave | 6 | wildsBeyond | 40 hulls on glass, flags snapping, silence | white_admiral |
+| z_exorcists_road | 3 | ashenStreets | Warding bells on every post, pines, warm steam | horn_taker |
+| z_changeling_fen | 4 | hollowReaches | Reeds, black pools, a lantern on a pole | teind_rider |
+| z_frost_quarry | 5 | wildsBeyond | Frost wind, cut stone, a hammer that won't fall | frost_kept_giant |
 
 Naming: `amb_zone_<id>_loop` plus `amb_zone_<id>_boss_approach`.
 
@@ -435,7 +438,7 @@ There is no family field in the data, so this grouping was made for audio. Each 
 | Demonic "Pit" | demon_imp, demon_tormentor | Chittering imp; guttural tormentor |
 | Turned companions | kelda_, sable_, maren_, liora_, vess_, grosh_, tobin_, malrik_turned | Reuse the companion VO actor with combat efforts (§12) |
 
-\* = zone boss or unique. The 7 zone bosses are dock_overseer, plague_hound, smuggler_captain, iron_golem, bone_warden, tear_spawn and strand_colossus.
+\* = zone boss or unique. The 10 zone bosses are dock_overseer, plague_hound, smuggler_captain, iron_golem, bone_warden, tear_spawn, strand_colossus, horn_taker, teind_rider and frost_kept_giant.
 
 **Enemy-only signature skills (12)**, each a bespoke SFX: plague_bite, void_drain, disorienting_pulse, molten_backlash, matriarch_brood_call, golem_meltdown, warden_bone_storm, archon_eclipse, sovereign_unmaking, zealot_martyrdom, manifestation_many_faces, stalker_ambush.
 

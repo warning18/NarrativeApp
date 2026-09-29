@@ -1,0 +1,33 @@
+name: Build iOS
+
+# Builds the iPhone app by hand, on any branch (Actions > Build iOS > Run
+# workflow); the IPA is kept as the run's artifact. It doesn't run on pull
+# requests: the iPhone build is only checked when asked. Releases get their
+# IPA from build_apk.yml, next to the APK.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Build the IPA
+        id: ipa
+        uses: ./.github/actions/build-ios
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ipa
+          path: ${{ steps.ipa.outputs.path }}

@@ -82,9 +82,11 @@ String personalizeFor(PlayerSession session, String text,
 /// player: the same words `composeNarration` shows, with the companion's
 /// aside as a clip of its own rather than run on to the scene's last
 /// paragraph, so the scene itself is recorded once whoever walks with the
-/// character.
+/// character. [opening] is what the scene opens with on screen before its
+/// own text (the last fight's aftermath, a check's outcome, the party's
+/// remarks), read first.
 List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
-    {required bool french}) {
+    {required bool french, List<String> opening = const []}) {
   String personal(String text) => personalizeFor(session, text, french: french);
   final aside = allyAcknowledgmentFor(node.id,
       activeAllyIds: session.activeAllyIds, french: french);
@@ -100,6 +102,7 @@ List<String> readAloudParagraphs(StoryNode node, PlayerSession session,
     ),
   ];
   return [
+    for (final line in opening) ...narrationParagraphs(line),
     ...narrationParagraphs(storyBodyFor(personal(node.descriptionFor(french)))),
     for (final extra in extras) ...narrationParagraphs(personal(extra)),
   ];

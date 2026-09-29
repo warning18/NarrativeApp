@@ -8,9 +8,10 @@ import 'camp_presence_provider.dart';
 import 'game_db_providers.dart';
 import 'player_session_provider.dart';
 
-/// Stat or skill points waiting to be spent on the character sheet.
+/// Stat or skill points waiting to be spent on the character sheet, or a
+/// level-up perk waiting to be chosen.
 bool hasPointsToSpend(PlayerSession session) =>
-    session.statPoints + session.skillPoints > 0;
+    session.statPoints + session.skillPoints + session.pendingPerkPicks > 0;
 
 /// The houses whose Build button is live: on offer (an ally's own hall
 /// once they have joined), not built yet, their required flags met, and

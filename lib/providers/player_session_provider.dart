@@ -8,6 +8,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/approval.dart';
+import '../data/contracts.dart';
+import '../data/perks.dart';
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -168,6 +171,10 @@ class PlayerSession {
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
+    this.departedAllyIds = const [],
+    this.perkRanks = const {},
+    this.pendingPerkPicks = 0,
+    this.perkOffer = const [],
     this.builtHouseIds = const [],
     this.townOrder = const [],
     this.unlockedAchievementIds = const [],
@@ -178,6 +185,10 @@ class PlayerSession {
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
+    this.questKillBaselines = const {},
+    this.contracts = const [],
+    this.contractsChapter = 0,
+    this.contractBoards = 0,
     this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -324,6 +335,21 @@ class PlayerSession {
   /// never re-recruited this run, cleared with a new game.
   final List<String> lostAllyIds;
 
+  /// Companions who walked out over the player's choices (see
+  /// approval.dart); never re-recruited this run. Kept apart from
+  /// [lostAllyIds], which the story's `{lost}` lines name.
+  final List<String> departedAllyIds;
+
+  /// Level-up perks taken (see perks.dart): perk name -> rank.
+  final Map<String, int> perkRanks;
+
+  /// Perks still to choose, one every second level; and the three on offer
+  /// for the next pick, kept so reopening the choice doesn't redraw it.
+  final int pendingPerkPicks;
+  final List<String> perkOffer;
+
+  PerkEffects get perkEffects => perkEffectsFor(perkRanks);
+
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
   /// `requiredHouseId`) and/or raises party capacity
@@ -383,12 +409,24 @@ class PlayerSession {
   /// Lifetime count of each enemy defeated (enemyId -> times beaten),
   /// incremented in [PlayerSessionNotifier.applyCombatResult]'s win path.
   /// Backs Kill-type quest objectives (see quest_objectives.dart) —
-  /// lifetime rather than "since the quest was accepted" is a deliberate
-  /// simplification: every current Kill objective needs exactly 1, so a
-  /// player who beat the target enemy before picking up the quest gets
-  /// immediate credit instead of being made to grind out a second, purely
-  /// bureaucratic kill.
+  /// lifetime rather than "since the quest was accepted" by default: a
+  /// single-kill objective on a foe the player already beat gives
+  /// immediate credit instead of a purely bureaucratic second kill. A
+  /// bounty with `countFromAccept` counts from [questKillBaselines].
   final Map<String, int> enemyKillCounts;
+
+  /// [enemyKillCounts] as they stood when each quest was accepted (quest id
+  /// -> enemy id -> kills): a `countFromAccept` Kill objective (a bounty
+  /// for several of a common foe) counts only kills made since. Quests
+  /// accepted before v1.162 have none and count lifetime kills.
+  final Map<String, Map<String, int>> questKillBaselines;
+
+  /// The camp's bounty board (see contracts.dart): the contracts posted
+  /// and not yet claimed, the chapter they went up in, and how many boards
+  /// have been posted this run (for fresh ids).
+  final List<Contract> contracts;
+  final int contractsChapter;
+  final int contractBoards;
 
   /// Defeats each boss has dealt the party this run (enemy id -> losses):
   /// Resolve reads it back as a stacking bonus against that boss (see
@@ -469,7 +507,9 @@ class PlayerSession {
       legacyGold > 0 || legacyDiceIds.isNotEmpty || legacySpellIds.isNotEmpty;
 
   /// The mana pool's size -- see `maxManaFor` in spells.dart.
-  int get maxMana => maxManaFor(intelligence: intelligence, wisdom: wisdom);
+  int get maxMana =>
+      maxManaFor(intelligence: intelligence, wisdom: wisdom) +
+      perkEffects.maxMana;
 
   int get xpToNextLevel => level * 100;
 
@@ -569,6 +609,10 @@ class PlayerSession {
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
+    List<String>? departedAllyIds,
+    Map<String, int>? perkRanks,
+    int? pendingPerkPicks,
+    List<String>? perkOffer,
     List<String>? builtHouseIds,
     List<String>? townOrder,
     List<String>? unlockedAchievementIds,
@@ -579,6 +623,10 @@ class PlayerSession {
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
+    Map<String, Map<String, int>>? questKillBaselines,
+    List<Contract>? contracts,
+    int? contractsChapter,
+    int? contractBoards,
     Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -642,6 +690,10 @@ class PlayerSession {
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
+      departedAllyIds: departedAllyIds ?? this.departedAllyIds,
+      perkRanks: perkRanks ?? this.perkRanks,
+      pendingPerkPicks: pendingPerkPicks ?? this.pendingPerkPicks,
+      perkOffer: perkOffer ?? this.perkOffer,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
       unlockedAchievementIds:
@@ -654,6 +706,10 @@ class PlayerSession {
       bannerPiecesCollected:
           bannerPiecesCollected ?? this.bannerPiecesCollected,
       enemyKillCounts: enemyKillCounts ?? this.enemyKillCounts,
+      questKillBaselines: questKillBaselines ?? this.questKillBaselines,
+      contracts: contracts ?? this.contracts,
+      contractsChapter: contractsChapter ?? this.contractsChapter,
+      contractBoards: contractBoards ?? this.contractBoards,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
@@ -721,6 +777,10 @@ class PlayerSession {
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
+        'departedAllyIds': departedAllyIds,
+        'perkRanks': perkRanks,
+        'pendingPerkPicks': pendingPerkPicks,
+        'perkOffer': perkOffer,
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
         'unlockedAchievementIds': unlockedAchievementIds,
@@ -731,6 +791,10 @@ class PlayerSession {
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
         'enemyKillCounts': enemyKillCounts,
+        'questKillBaselines': questKillBaselines,
+        'contracts': [for (final c in contracts) c.toJson()],
+        'contractsChapter': contractsChapter,
+        'contractBoards': contractBoards,
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
@@ -867,6 +931,18 @@ class PlayerSession {
       lostAllyIds:
           (json['lostAllyIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      departedAllyIds: (json['departedAllyIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      perkRanks: (json['perkRanks'] as Map?)?.map(
+            (id, rank) => MapEntry(id.toString(), (rank as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
+      pendingPerkPicks: (json['pendingPerkPicks'] as num?)?.toInt() ?? 0,
+      perkOffer:
+          (json['perkOffer'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -896,6 +972,21 @@ class PlayerSession {
           const [],
       enemyKillCounts: (json['enemyKillCounts'] as Map?)?.map(
             (key, value) => MapEntry(key.toString(), (value as num).toInt()),
+          ) ??
+          const {},
+      contracts: (json['contracts'] as List?)
+              ?.whereType<Map>()
+              .map((c) => Contract.fromJson(Map<String, dynamic>.from(c)))
+              .toList() ??
+          const [],
+      contractsChapter: (json['contractsChapter'] as num?)?.toInt() ?? 0,
+      contractBoards: (json['contractBoards'] as num?)?.toInt() ?? 0,
+      questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
+            (quest, kills) => MapEntry(
+              quest.toString(),
+              (kills as Map).map((enemy, count) =>
+                  MapEntry(enemy.toString(), (count as num).toInt())),
+            ),
           ) ??
           const {},
       bossDefeatCounts: (json['bossDefeatCounts'] as Map?)?.map(
@@ -1328,7 +1419,14 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// the story deals (a storm, a burning cathedral) and never kills: health
   /// stops at 1. [bannerPieceId] adds a piece of the Shroud; [loseAllyId]
   /// (an id, or `*` for the first active ally) takes a companion for good.
-  Future<void> applyChoiceEffects({
+  ///
+  /// The companions in the party react to it (see approval.dart), by the
+  /// weights in their [companions] records and the choice's own
+  /// [approvalMods]; the reactions are returned, for the story to show.
+  /// [goldIsProfit] false: the gold is loot picked up on the road (a
+  /// detour's cache, an expedition's find), not a deed a companion who
+  /// dislikes greed would hold against the player.
+  Future<List<ApprovalChange>> applyChoiceEffects({
     int goldMod = 0,
     int alignmentMod = 0,
     int healAmount = 0,
@@ -1336,7 +1434,26 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     String? questIDToProgress,
     String? bannerPieceId,
     String? loseAllyId,
+    Map<String, int> approvalMods = const {},
+    Map<String, dynamic> companions = const {},
+    bool goldIsProfit = true,
   }) async {
+    // Who the story takes is settled by the party as it stands in the
+    // scene, before anyone reacts: a companion walking out over this very
+    // choice must not leave `*` to take whoever steps into their seat.
+    final lostId = loseAllyId == null || loseAllyId.isEmpty
+        ? null
+        : loseAllyId == '*'
+            ? state.activeAllyIds.firstOrNull
+            : loseAllyId;
+    final reactions = _reactToDeed(
+      companions: companions,
+      alignmentMod: alignmentMod,
+      goldMod: goldIsProfit ? goldMod : 0,
+      approvalMods: approvalMods,
+      // Taken by the story: they don't stay to have an opinion.
+      exclude: lostId,
+    );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
     if (questIDToProgress != null &&
@@ -1369,46 +1486,274 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
     );
-    if (loseAllyId != null && loseAllyId.isNotEmpty) {
-      final id = loseAllyId == '*'
-          ? (state.activeAllyIds.isEmpty ? null : state.activeAllyIds.first)
-          : loseAllyId;
-      if (id != null) loseAlly(id, persist: false);
+    if (lostId != null) {
+      loseAlly(lostId, persist: false, companions: companions);
     }
     await _persist();
+    return reactions;
+  }
+
+  /// The companions in the party react to a deed that moved alignment by
+  /// [alignmentMod] and gold by [goldMod], plus a scene's own
+  /// [approvalMods] (see approval.dart) -- a quest's outcome, say. One
+  /// pushed to the end of their patience leaves the party for good.
+  Future<List<ApprovalChange>> reactToDeed({
+    required Map<String, dynamic> companions,
+    int alignmentMod = 0,
+    int goldMod = 0,
+    Map<String, int> approvalMods = const {},
+  }) async {
+    final reactions = _reactToDeed(
+      companions: companions,
+      alignmentMod: alignmentMod,
+      goldMod: goldMod,
+      approvalMods: approvalMods,
+    );
+    if (reactions.isNotEmpty) await _persist();
+    return reactions;
+  }
+
+  List<ApprovalChange> _reactToDeed({
+    required Map<String, dynamic> companions,
+    int alignmentMod = 0,
+    int goldMod = 0,
+    Map<String, int> approvalMods = const {},
+    String? exclude,
+  }) {
+    final reactions = <ApprovalChange>[];
+    final allies = [...state.recruitedAllies];
+    for (var i = 0; i < allies.length; i++) {
+      final ally = allies[i];
+      // Only the party sees it; a benched companion was elsewhere.
+      if (!state.activeAllyIds.contains(ally.companionId)) continue;
+      if (ally.companionId == exclude) continue;
+      final delta = approvalDeltaFor(
+        companions[ally.companionId] as Map<String, dynamic>?,
+        alignmentMod: alignmentMod,
+        goldMod: goldMod,
+        explicit: explicitApprovalFor(approvalMods, ally.companionId),
+      );
+      final after = approvalAfter(ally.approval, delta);
+      if (after == ally.approval) continue;
+      reactions.add(ApprovalChange(
+          companionId: ally.companionId, before: ally.approval, after: after));
+      allies[i] = ally.copyWith(approval: after);
+    }
+    if (reactions.isEmpty) return reactions;
+    state = state.copyWith(recruitedAllies: allies);
+    for (var i = 0; i < reactions.length; i++) {
+      final reaction = reactions[i];
+      if (!reaction.leaves) continue;
+      reactions[i] = ApprovalChange(
+        companionId: reaction.companionId,
+        before: reaction.before,
+        after: reaction.after,
+        replacedBy: _removeAlly(reaction.companionId,
+            lost: false, companions: companions),
+      );
+    }
+    return reactions;
+  }
+
+  /// Takes [companionId] off the roster and out of the party, for good:
+  /// [lost] when the story took them (lostAllyIds, the story's {lost}
+  /// lines), else they walked out (departedAllyIds). Their seat doesn't stay
+  /// empty (a finale fought one companion short can be out of reach): the
+  /// benched companion who thinks best of the player steps in, the earlier
+  /// recruit on a tie, once their house is built. Returns who did.
+  String? _removeAlly(
+    String companionId, {
+    required bool lost,
+    required Map<String, dynamic> companions,
+  }) {
+    final roster = [
+      for (final ally in state.recruitedAllies)
+        if (ally.companionId != companionId) ally,
+    ];
+    final active = [
+      for (final id in state.activeAllyIds)
+        if (id != companionId) id,
+    ];
+    String? replacement;
+    if (state.activeAllyIds.contains(companionId)) {
+      final bench = [
+        for (final ally in roster)
+          if (!active.contains(ally.companionId) &&
+              _houseBuiltFor(companions[ally.companionId]))
+            ally,
+      ];
+      if (bench.isNotEmpty) {
+        replacement = bench
+            .reduce((best, ally) => ally.approval > best.approval ? ally : best)
+            .companionId;
+        active.add(replacement);
+      }
+    }
+    List<String> plus(List<String> ids) =>
+        ids.contains(companionId) ? ids : [...ids, companionId];
+    state = state.copyWith(
+      recruitedAllies: roster,
+      activeAllyIds: active,
+      lostAllyIds: lost ? plus(state.lostAllyIds) : state.lostAllyIds,
+      departedAllyIds:
+          lost ? state.departedAllyIds : plus(state.departedAllyIds),
+    );
+    return replacement;
+  }
+
+  /// Whether [companion]'s own house gate (companions.json
+  /// `requiredHouseId`), if any, is built. Without their record (the table
+  /// still loading, a caller that passed none) the gate can't be read, so
+  /// they can't be seated.
+  bool _houseBuiltFor(Object? companion) {
+    if (companion is! Map<String, dynamic>) return false;
+    final house = companion['requiredHouseId']?.toString() ?? '';
+    return house.isEmpty || state.builtHouseIds.contains(house);
+  }
+
+  /// Shares a drink with [companionId] at the camp: [giftCostFor] the
+  /// [chapter] in gold for [giftApproval], once a chapter per companion.
+  /// Returns false when it can't be done (no gold, already this chapter).
+  Future<bool> shareDrink(String companionId, {required int chapter}) async {
+    final ally = state.recruitedAllies
+        .where((a) => a.companionId == companionId)
+        .firstOrNull;
+    final cost = giftCostFor(chapter);
+    if (ally == null || ally.giftChapter == chapter || state.gold < cost) {
+      return false;
+    }
+    final allies = [
+      for (final a in state.recruitedAllies)
+        a.companionId == companionId
+            ? a.copyWith(
+                approval: approvalAfter(a.approval, giftApproval),
+                giftChapter: chapter)
+            : a,
+    ];
+    state = state.copyWith(gold: state.gold - cost, recruitedAllies: allies);
+    await _persist();
+    return true;
+  }
+
+  /// The perks on offer for the next pick (see perks.dart), drawn once and
+  /// kept until one is chosen. Empty when there's no pick to make.
+  Future<List<String>> ensurePerkOffer({Random? random}) async {
+    if (state.pendingPerkPicks <= 0) return const [];
+    if (state.perkOffer.isNotEmpty) return state.perkOffer;
+    final offer = [
+      for (final perk in rollPerkOffer(state.perkRanks, random ?? Random()))
+        perk.name,
+    ];
+    state = state.copyWith(perkOffer: offer);
+    await _persist();
+    return offer;
+  }
+
+  /// Takes [perkName] from the offer: one more rank of it, one pick fewer.
+  /// Vigor's health is added right away.
+  Future<bool> choosePerk(String perkName) async {
+    final perk = perkFromName(perkName);
+    if (perk == null ||
+        state.pendingPerkPicks <= 0 ||
+        !state.perkOffer.contains(perkName) ||
+        (state.perkRanks[perkName] ?? 0) >= perkInfo[perk]!.maxRank) {
+      return false;
+    }
+    final health = perk == Perk.vigor ? vigorHealthPerRank : 0;
+    state = state.copyWith(
+      perkRanks: {
+        ...state.perkRanks,
+        perkName: (state.perkRanks[perkName] ?? 0) + 1,
+      },
+      pendingPerkPicks: state.pendingPerkPicks - 1,
+      perkOffer: const [],
+      maxHealth: state.maxHealth + health,
+      currentHealth: state.currentHealth + health,
+    );
+    await _persist();
+    return true;
   }
 
   /// The story takes [companionId] for good: out of the roster and the
-  /// party, and never recruited again this run. A no-op for an unknown or
-  /// already-lost id.
-  void loseAlly(String companionId, {bool persist = true}) {
+  /// party, and never recruited again this run; a benched companion takes
+  /// their seat (see [_removeAlly], which reads the house gates off
+  /// [companions]). A no-op for an unknown or already-lost id. Returns who
+  /// stepped in, if anyone.
+  String? loseAlly(
+    String companionId, {
+    bool persist = true,
+    Map<String, dynamic> companions = const {},
+  }) {
     if (!state.recruitedAllies.any((a) => a.companionId == companionId)) {
-      return;
+      return null;
     }
-    state = state.copyWith(
-      recruitedAllies: state.recruitedAllies
-          .where((a) => a.companionId != companionId)
-          .toList(),
-      activeAllyIds:
-          state.activeAllyIds.where((id) => id != companionId).toList(),
-      lostAllyIds: state.lostAllyIds.contains(companionId)
-          ? state.lostAllyIds
-          : [...state.lostAllyIds, companionId],
-    );
+    final replacement =
+        _removeAlly(companionId, lost: true, companions: companions);
     if (persist) _persist();
+    return replacement;
   }
 
-  Future<void> acceptQuest(String questId) async {
+  /// Takes on [questId]. A bounty in [quest] (a `countFromAccept` Kill
+  /// objective) remembers its foes' kill counts now, so only the kills
+  /// made after count (see [questKillBaselines]); a quest with none stores
+  /// nothing. Without [quest] the objectives can't be read, and every
+  /// count is kept, as before.
+  Future<void> acceptQuest(String questId,
+      {Map<String, dynamic>? quest}) async {
     if (state.activeQuestIds.contains(questId) ||
         state.completedQuestIds.contains(questId)) {
       return;
     }
+    final baseline = _bountyBaseline(quest);
     state = state.copyWith(
       activeQuestIds: [...state.activeQuestIds, questId],
+      questKillBaselines: baseline.isEmpty
+          ? state.questKillBaselines
+          : {...state.questKillBaselines, questId: baseline},
       // With no quest followed yet, the one just taken on is followed.
       trackedQuestId: state.activeQuestIds.contains(state.trackedQuestId)
           ? state.trackedQuestId
           : questId,
+    );
+    await _persist();
+  }
+
+  Map<String, int> _bountyBaseline(Map<String, dynamic>? quest) {
+    if (quest == null) return Map<String, int>.of(state.enemyKillCounts);
+    return {
+      for (final objective in (quest['objectives'] as List?) ?? const [])
+        if (objective is Map &&
+            objective['type'] == 'Kill' &&
+            objective['countFromAccept'] == true)
+          objective['targetEnemyID'].toString():
+              state.enemyKillCounts[objective['targetEnemyID'].toString()] ?? 0,
+    };
+  }
+
+  /// Puts a fresh bounty board up at the camp (see rollContracts) for
+  /// [chapter], replacing whatever was there.
+  Future<void> postContractBoard(List<Contract> board,
+      {required int chapter}) async {
+    state = state.copyWith(
+      contracts: board,
+      contractsChapter: chapter,
+      contractBoards: state.contractBoards + 1,
+    );
+    await _persist();
+  }
+
+  /// Pays a met contract's gold and essence and takes it off the board.
+  Future<void> claimContract(String contractId) async {
+    final contract =
+        state.contracts.where((c) => c.id == contractId).firstOrNull;
+    if (contract == null || !contract.done) return;
+    state = state.copyWith(
+      gold: state.gold + contract.rewardGold,
+      skillEssence: state.skillEssence + contract.rewardEssence,
+      contracts: [
+        for (final c in state.contracts)
+          if (c.id != contractId) c,
+      ],
     );
     await _persist();
   }
@@ -1481,9 +1826,15 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           leveled.leveledUp ? leveled.maxHealth : state.currentHealth,
       statPoints: leveled.statPoints,
       skillPoints: leveled.skillPoints,
+      pendingPerkPicks:
+          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
       gold: state.gold + rewardGold,
       alignmentScore: state.alignmentScore + alignmentMod,
       activeQuestIds: newActive,
+      // A finished bounty's baseline has nothing left to count.
+      questKillBaselines: state.questKillBaselines.containsKey(questId)
+          ? ({...state.questKillBaselines}..remove(questId))
+          : state.questKillBaselines,
       // A quest turned in is no longer followed; the next active one
       // stands in until the player picks another.
       trackedQuestId:
@@ -1523,15 +1874,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Buys [itemId] from [shopId]. Shops have a fixed stock per item
   /// ([stockLimit], from the shop's stockQuantities data) that this tracks
-  /// via [PlayerSession.shopPurchaseCounts] and never replenishes.
+  /// via [PlayerSession.shopPurchaseCounts]: gear never replenishes, and
+  /// potions and scrolls restock each chapter (their [stockKey] carries the
+  /// chapter, see stockKeyFor).
   Future<void> buyItem(
     String shopId,
     String itemId,
     int cost,
     int stockLimit, {
     Map<String, dynamic>? item,
+    String? stockKey,
   }) async {
-    final key = '$shopId::$itemId';
+    // A restocking consumable is counted per chapter (see stockKeyFor).
+    final key = stockKey ?? '$shopId::$itemId';
     final purchased = state.shopPurchaseCounts[key] ?? 0;
     if (state.gold < cost || purchased >= stockLimit) return;
     // A spellbook is read on the spot: the spell joins [knownSpellIds] and
@@ -1724,6 +2079,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }) async {
     if (state.recruitedAllies.any((a) => a.companionId == companionId)) return;
     if (state.lostAllyIds.contains(companionId)) return;
+    if (state.departedAllyIds.contains(companionId)) return;
     final professionSkillId = profession?['standardSkillID']?.toString() ?? '';
     final raceSkillId = race?['standardSkillID']?.toString() ?? '';
     // A companion's signature die IS their kit: every skill one of its
@@ -2584,6 +2940,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int? lootPityStreak,
     List<String>? recentLootIds,
     int? manaAfter,
+    ContractTally? contractTally,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -2655,6 +3012,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: newHealth,
       statPoints: leveled.statPoints + statPointsGained,
       skillPoints: leveled.skillPoints + skillPointsGained,
+      pendingPerkPicks:
+          state.pendingPerkPicks + perkPicksFor(state.level, leveled.level),
       gold: state.gold + goldGain,
       inventoryItemIds: [...state.inventoryItemIds, ...carried],
       potionCount: state.potionCount + potionsGained,
@@ -2663,6 +3022,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       skillEssence: state.skillEssence + xpGain,
       recruitedAllies: newAllies,
       enemyKillCounts: newKillCounts,
+      contracts: contractTally == null
+          ? null
+          : [
+              for (final c in state.contracts)
+                progressContract(c, contractTally),
+            ],
       lootPityStreak: lootPityStreak,
       recentLootIds: recentLootIds,
       mana: manaAfter?.clamp(0, state.maxMana),

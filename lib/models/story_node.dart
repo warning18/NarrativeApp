@@ -32,6 +32,9 @@ class StoryChoice {
     this.loseAllyId,
     this.mainQuest = false,
     this.travelPlaceId,
+    this.avoidFightOnSuccess = false,
+    this.forcedCondition,
+    this.approvalMods = const {},
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -76,6 +79,13 @@ class StoryChoice {
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       travelPlaceId: json['travelPlaceId'] as String?,
+      avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
+      forcedCondition: json['forcedCondition'] as String?,
+      approvalMods: (json['approvalMods'] as Map?)?.map(
+            (id, delta) =>
+                MapEntry(id.toString(), (delta as num?)?.toInt() ?? 0),
+          ) ??
+          const {},
       hideIfFlags:
           (json['hideIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -87,6 +97,16 @@ class StoryChoice {
 
   final String text;
   final String nextId;
+
+  /// A way round a fight (v1.162): with an ability check, success skips the
+  /// fight this choice carries and failure starts it (under
+  /// [forcedCondition], an ambush for a sneak gone wrong).
+  final bool avoidFightOnSuccess;
+
+  /// A battlefield condition (battlefield_condition.dart's id, e.g.
+  /// 'ambush') the fight this choice starts is forced into, instead of
+  /// rolling one.
+  final String? forcedCondition;
   final int goldMod;
   final int alignmentMod;
   final int healAmount;
@@ -183,6 +203,11 @@ class StoryChoice {
   /// heirloom piece, and the spine's three dilemmas the rest.
   final String? grantsBannerPieceId;
 
+  /// How companions in the party react to this choice beyond what its
+  /// alignment and gold already say (see approval.dart): companion id -> a
+  /// change in approval, `*` for everyone in the party.
+  final Map<String, int> approvalMods;
+
   /// A companion this choice costs for good -- their id, or `*` for the
   /// first active ally (whoever steps forward). Nothing happens when the
   /// character walks alone; the choice's other costs still do.
@@ -274,6 +299,10 @@ class StoryChoice {
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
         if (travels) 'travelPlaceId': travelPlaceId,
+        if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
+        if (forcedCondition != null && forcedCondition!.isNotEmpty)
+          'forcedCondition': forcedCondition,
+        if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -306,7 +335,8 @@ class StoryChoice {
       flagsToAdd.isNotEmpty ||
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
-      (loseAllyId != null && loseAllyId!.isNotEmpty);
+      (loseAllyId != null && loseAllyId!.isNotEmpty) ||
+      approvalMods.isNotEmpty;
 }
 
 class StoryNode {

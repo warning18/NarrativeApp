@@ -13,6 +13,67 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'nav_camp': {AppLanguage.en: 'Camp', AppLanguage.fr: 'Campement'},
   'nav_other': {AppLanguage.en: 'Other', AppLanguage.fr: 'Autres'},
   'nav_ship': {AppLanguage.en: 'Ship', AppLanguage.fr: 'Navire'},
+  'nav_journey': {AppLanguage.en: 'Journey', AppLanguage.fr: 'Parcours'},
+  'journey_pick_hint': {
+    AppLanguage.en:
+        'Tap a step on the map to see where it leads; tap it again or press Go to take it.',
+    AppLanguage.fr:
+        'Touchez une étape de la carte pour voir où elle mène ; touchez-la encore ou appuyez sur Partir pour la prendre.',
+  },
+  'journey_go': {AppLanguage.en: 'Go', AppLanguage.fr: 'Partir'},
+  'journey_you_are_here': {
+    AppLanguage.en: 'You are here',
+    AppLanguage.fr: 'Vous êtes ici',
+  },
+  'journey_leads_to': {
+    AppLanguage.en: 'To {place}',
+    AppLanguage.fr: 'Vers {place}',
+  },
+  'journey_ended': {
+    AppLanguage.en: 'The road ends here. The Story tab has what comes next.',
+    AppLanguage.fr:
+        'La route s’arrête ici. L’onglet Histoire vous montre la suite.',
+  },
+  'journey_open_story': {
+    AppLanguage.en: 'Open the story',
+    AppLanguage.fr: 'Ouvrir l’histoire',
+  },
+  'journey_read_in_story': {
+    AppLanguage.en: 'Read the scene in the Story tab',
+    AppLanguage.fr: 'Lire la scène dans l’onglet Histoire',
+  },
+  'journey_chapter_start': {
+    AppLanguage.en: 'Where the chapter began',
+    AppLanguage.fr: 'Là où le chapitre a commencé',
+  },
+  'journey_reading_exit': {
+    AppLanguage.en: 'Back to the map',
+    AppLanguage.fr: 'Revenir à la carte',
+  },
+  'journey_way_taken': {
+    AppLanguage.en: 'Way taken: {way}',
+    AppLanguage.fr: 'Chemin pris : {way}',
+  },
+  'journey_kind_ending': {AppLanguage.en: 'Ending', AppLanguage.fr: 'Fin'},
+  'journey_kind_mainQuest': {
+    AppLanguage.en: 'Main quest',
+    AppLanguage.fr: 'Quête principale',
+  },
+  'journey_kind_expedition': {
+    AppLanguage.en: 'Expedition',
+    AppLanguage.fr: 'Expédition',
+  },
+  'journey_kind_fight': {AppLanguage.en: 'Fight', AppLanguage.fr: 'Combat'},
+  'journey_kind_challenge': {
+    AppLanguage.en: 'Challenge',
+    AppLanguage.fr: 'Épreuve',
+  },
+  'journey_kind_check': {AppLanguage.en: 'Roll', AppLanguage.fr: 'Jet'},
+  'journey_kind_shop': {AppLanguage.en: 'Shop', AppLanguage.fr: 'Boutique'},
+  'journey_kind_quest': {AppLanguage.en: 'Work', AppLanguage.fr: 'Travail'},
+  'journey_kind_travel': {AppLanguage.en: 'Voyage', AppLanguage.fr: 'Voyage'},
+  'journey_kind_rest': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Repos'},
+  'journey_kind_road': {AppLanguage.en: 'Road', AppLanguage.fr: 'Route'},
   'camp_party_section': {
     AppLanguage.en: 'Who comes along',
     AppLanguage.fr: 'Qui vous accompagne',
@@ -333,9 +394,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Linceul gris',
   },
   'menu_subtitle': {
-    AppLanguage.en: 'A tale of dice, debts and a banner that should not exist',
+    AppLanguage.en: 'A tale of dice, debts and a shroud that should not exist',
     AppLanguage.fr:
-        'Un récit de dés, de dettes et d’une bannière qui ne devrait pas exister',
+        'Un récit de dés, de dettes et d’un linceul qui ne devrait pas exister',
   },
   'menu_continue': {AppLanguage.en: 'Continue', AppLanguage.fr: 'Continuer'},
   'menu_new_game': {
@@ -1595,7 +1656,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         "yet are recorded when read (this uses ElevenLabs credits). Without a "
         "key, only recorded scenes use this voice; the rest use the device "
         'voice.',
-    AppLanguage.fr: "Chaque paragraphe est enregistré une fois avec ta clé API "
+    AppLanguage.fr: "Chaque paragraphe est enregistré une fois avec votre clé API "
         "ElevenLabs et gardé sur cet appareil, puis lu hors ligne. Les scènes "
         "pas encore enregistrées le sont à la lecture (cela consomme des "
         "crédits ElevenLabs). Sans clé, seules les scènes enregistrées "
@@ -1648,7 +1709,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: "{count} paragraphes ne sont pas encore enregistrés dans "
         "cette langue. Les enregistrer envoie environ {chars} caractères à "
         "ElevenLabs, soit à peu près autant de crédits. Les enregistrements "
-        "déjà faits sont gardés si tu t'arrêtes.",
+        "déjà faits sont gardés si vous arrêtez.",
   },
   'elevenlabs_record_nothing': {
     AppLanguage.en: 'The whole story is already recorded in this language.',
@@ -2863,8 +2924,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le manteau du Souverain',
   },
   'grants_banner_piece_id': {
-    AppLanguage.en: 'Grants Banner piece (id)',
-    AppLanguage.fr: 'Accorde un fragment de la Bannière (id)',
+    AppLanguage.en: 'Grants Shroud piece (id)',
+    AppLanguage.fr: 'Accorde une pièce du Linceul (id)',
   },
   'lose_ally_id': {
     AppLanguage.en: 'Companion lost for good (id, or * for the first active)',
@@ -3414,6 +3475,453 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'il ne se passe rien.',
   },
   'attacks_suffix': {AppLanguage.en: 'attacks!', AppLanguage.fr: 'attaque !'},
+  // v1.162: the camp's bounty board (see contracts.dart).
+  'bounty_board_section': {
+    AppLanguage.en: 'Bounty board',
+    AppLanguage.fr: 'Tableau des contrats',
+  },
+  'contract_hunt': {
+    AppLanguage.en: 'Put down {n} × {enemy}',
+    AppLanguage.fr: 'Abattre {n} × {enemy}',
+  },
+  'contract_packs': {
+    AppLanguage.en: 'Win {n} fights against a pack',
+    AppLanguage.fr: 'Gagner {n} combats contre une meute',
+  },
+  'contract_flawless': {
+    AppLanguage.en: 'Win {n} fights with nobody down and no potion drunk',
+    AppLanguage.fr:
+        'Gagner {n} combats sans que personne ne tombe et sans boire de potion',
+  },
+  'contract_breaker': {
+    AppLanguage.en: 'Break {n} enemy wind-ups',
+    AppLanguage.fr: 'Briser l’élan ennemi {n} fois',
+  },
+  'contract_weakness': {
+    AppLanguage.en: 'Hit an enemy weakness {n} times',
+    AppLanguage.fr: 'Frapper un point faible ennemi {n} fois',
+  },
+  'contract_marked': {
+    AppLanguage.en: 'Beat {n} marked foes (an affix or an Elite)',
+    AppLanguage.fr: 'Vaincre {n} ennemis marqués (un trait ou une élite)',
+  },
+  'contract_claim': {AppLanguage.en: 'Claim', AppLanguage.fr: 'Réclamer'},
+  'contract_claimed': {
+    AppLanguage.en: 'Contract paid:',
+    AppLanguage.fr: 'Contrat payé :',
+  },
+  'contract_essence_label': {
+    AppLanguage.en: 'essence',
+    AppLanguage.fr: 'essence',
+  },
+  'contracts_posting': {
+    AppLanguage.en: 'A fresh notice is going up on the board…',
+    AppLanguage.fr: 'Une nouvelle affiche est placardée sur le tableau…',
+  },
+  'contracts_hint': {
+    AppLanguage.en:
+        'Fights anywhere count. A new board goes up once these are claimed or the chapter turns.',
+    AppLanguage.fr:
+        'Tous les combats comptent. Un nouveau tableau apparaît quand ceux-ci sont réclamés ou au chapitre suivant.',
+  },
+  // v1.163: level-up perks.
+  'perk_choose_title': {
+    AppLanguage.en: 'Choose a perk',
+    AppLanguage.fr: 'Choisissez un atout',
+  },
+  'perk_section': {
+    AppLanguage.en: 'Perks',
+    AppLanguage.fr: 'Atouts',
+  },
+  'perk_pending': {
+    AppLanguage.en: '{n} perk(s) to choose',
+    AppLanguage.fr: '{n} atout(s) à choisir',
+  },
+  'perk_rank': {
+    AppLanguage.en: 'Rank {n}/{max}',
+    AppLanguage.fr: 'Rang {n}/{max}',
+  },
+  'perks_none': {
+    AppLanguage.en: 'No perks yet. Every second level brings one to choose.',
+    AppLanguage.fr:
+        'Aucun atout pour l’instant. Un niveau sur deux en apporte un à choisir.',
+  },
+  'perk_steadyHands': {
+    AppLanguage.en: 'Steady Hands',
+    AppLanguage.fr: 'Mains sûres',
+  },
+  'perk_steadyHands_desc': {
+    AppLanguage.en: 'One more roll each round in fights.',
+    AppLanguage.fr: 'Un lancer de plus par tour en combat.',
+  },
+  'perk_apothecary': {
+    AppLanguage.en: 'Apothecary',
+    AppLanguage.fr: 'Apothicaire',
+  },
+  'perk_apothecary_desc': {
+    AppLanguage.en: 'Potions heal 10 more.',
+    AppLanguage.fr: 'Les potions soignent 10 de plus.',
+  },
+  'perk_keenEye': {
+    AppLanguage.en: 'Keen Eye',
+    AppLanguage.fr: 'Œil perçant',
+  },
+  'perk_keenEye_desc': {
+    AppLanguage.en: '+5% chance of a critical hit.',
+    AppLanguage.fr: '+5 % de chances de coup critique.',
+  },
+  'perk_lightFeet': {
+    AppLanguage.en: 'Light Feet',
+    AppLanguage.fr: 'Pas léger',
+  },
+  'perk_lightFeet_desc': {
+    AppLanguage.en: '+4% chance to dodge.',
+    AppLanguage.fr: '+4 % de chances d’esquive.',
+  },
+  'perk_heavyHand': {
+    AppLanguage.en: 'Heavy Hand',
+    AppLanguage.fr: 'Main lourde',
+  },
+  'perk_heavyHand_desc': {
+    AppLanguage.en: '+2 damage on every attack.',
+    AppLanguage.fr: '+2 dégâts à chaque attaque.',
+  },
+  'perk_ironHide': {
+    AppLanguage.en: 'Iron Hide',
+    AppLanguage.fr: 'Cuir de fer',
+  },
+  'perk_ironHide_desc': {
+    AppLanguage.en: '+2 armor.',
+    AppLanguage.fr: '+2 d’armure.',
+  },
+  'perk_vigor': {
+    AppLanguage.en: 'Vigor',
+    AppLanguage.fr: 'Vigueur',
+  },
+  'perk_vigor_desc': {
+    AppLanguage.en: '+15 max health.',
+    AppLanguage.fr: '+15 de santé maximale.',
+  },
+  'perk_battleRhythm': {
+    AppLanguage.en: 'Battle Rhythm',
+    AppLanguage.fr: 'Rythme du combat',
+  },
+  'perk_battleRhythm_desc': {
+    AppLanguage.en: 'Momentum surges after 2 hits instead of 3.',
+    AppLanguage.fr: 'L’élan se déclenche après 2 coups au lieu de 3.',
+  },
+  'perk_plunderer': {
+    AppLanguage.en: 'Plunderer',
+    AppLanguage.fr: 'Pillage',
+  },
+  'perk_plunderer_desc': {
+    AppLanguage.en: '+10% gold from fights.',
+    AppLanguage.fr: '+10 % d’or gagné en combat.',
+  },
+  'perk_quickStudy': {
+    AppLanguage.en: 'Quick Study',
+    AppLanguage.fr: 'Apprentissage rapide',
+  },
+  'perk_quickStudy_desc': {
+    AppLanguage.en: '+10% XP from fights.',
+    AppLanguage.fr: '+10 % d’XP gagnée en combat.',
+  },
+  'perk_leader': {
+    AppLanguage.en: 'Leader',
+    AppLanguage.fr: 'Commandement',
+  },
+  'perk_leader_desc': {
+    AppLanguage.en: 'Companions deal +5% damage.',
+    AppLanguage.fr: 'Les membres du groupe infligent +5 % de dégâts.',
+  },
+  'perk_deepWell': {
+    AppLanguage.en: 'Deep Well',
+    AppLanguage.fr: 'Puits profond',
+  },
+  'perk_deepWell_desc': {
+    AppLanguage.en: '+2 max mana.',
+    AppLanguage.fr: '+2 de mana maximal.',
+  },
+  'perk_lastStand': {
+    AppLanguage.en: 'Last Stand',
+    AppLanguage.fr: 'Dernier rempart',
+  },
+  'perk_lastStand_desc': {
+    AppLanguage.en:
+        'Once a fight, a killing blow leaves you at 1 health instead.',
+    AppLanguage.fr:
+        'Une fois par combat, un coup fatal vous laisse à 1 point de vie.',
+  },
+  // v1.163: sea choices.
+  'ship_log_paid': {
+    AppLanguage.en: 'Paid {n} gold; the raider sheers off',
+    AppLanguage.fr: '{n} pièces d’or versées ; le pillard s’écarte',
+  },
+  'ship_log_outran': {
+    AppLanguage.en: 'The Eel outruns them',
+    AppLanguage.fr: 'Le Rusty Eel les distance',
+  },
+  'ship_log_outrun_failed': {
+    AppLanguage.en: 'They catch the Eel and rake her: {n} hull',
+    AppLanguage.fr:
+        'Ils rattrapent le Rusty Eel et le mitraillent : {n} points de coque',
+  },
+  'ship_log_pushed_through': {
+    AppLanguage.en: 'Through the storm with nothing lost',
+    AppLanguage.fr: 'La tempête est passée sans rien perdre',
+  },
+  'ship_log_push_failed': {
+    AppLanguage.en: 'The storm punishes the gamble: {n} hull',
+    AppLanguage.fr: 'La tempête punit le pari : {n} points de coque',
+  },
+  'ship_log_sheltered': {
+    AppLanguage.en: 'Sheltered in a cove; the crossing takes a day longer',
+    AppLanguage.fr:
+        'À l’abri dans une crique ; la traversée prend un jour de plus',
+  },
+  'ship_log_boarded': {
+    AppLanguage.en: 'Found {n} gold in the hold',
+    AppLanguage.fr: '{n} pièces d’or trouvées dans la cale',
+  },
+  'ship_log_board_holed': {
+    AppLanguage.en:
+        'The hulk rolled against the Eel as she was grappled: {n} hull lost',
+    AppLanguage.fr:
+        'L’épave a roulé contre la Rusty Eel pendant l’abordage : {n} points de coque perdus',
+  },
+  'ship_log_passed_by': {
+    AppLanguage.en: 'The derelict drifts astern',
+    AppLanguage.fr: 'L’épave dérive derrière vous',
+  },
+  'ship_log_rested': {
+    AppLanguage.en: 'The crew rests: {n} health back',
+    AppLanguage.fr: 'L’équipage se repose : {n} points de vie récupérés',
+  },
+  'sea_choice_cost': {
+    AppLanguage.en: '{n} gold',
+    AppLanguage.fr: '{n} or',
+  },
+  // v1.163: quest turn-in choices.
+  'turn_in_choice_title': {
+    AppLanguage.en: 'How do you settle it?',
+    AppLanguage.fr: 'Comment réglez-vous l’affaire ?',
+  },
+  'turn_in_gold_varies': {
+    AppLanguage.en: '{min}–{max} gold, by how you settle it',
+    AppLanguage.fr: '{min} à {max} or, selon votre décision',
+  },
+  // v1.163: companion approval.
+  'approval_label': {
+    AppLanguage.en: 'Approval',
+    AppLanguage.fr: 'Estime',
+  },
+  'approval_devoted': {
+    AppLanguage.en: 'Devoted',
+    AppLanguage.fr: 'Dévouement',
+  },
+  'approval_friendly': {
+    AppLanguage.en: 'Friendly',
+    AppLanguage.fr: 'Amitié',
+  },
+  'approval_neutral': {
+    AppLanguage.en: 'Neutral',
+    AppLanguage.fr: 'Neutralité',
+  },
+  'approval_wary': {
+    AppLanguage.en: 'Wary',
+    AppLanguage.fr: 'Méfiance',
+  },
+  'approval_estranged': {
+    AppLanguage.en: 'Estranged',
+    AppLanguage.fr: 'Rupture',
+  },
+  'approval_effect_devoted': {
+    AppLanguage.en: '+10% damage and health in fights',
+    AppLanguage.fr: '+10 % de dégâts et de santé en combat',
+  },
+  'approval_effect_friendly': {
+    AppLanguage.en: '+5% damage in fights',
+    AppLanguage.fr: '+5 % de dégâts en combat',
+  },
+  'approval_effect_wary': {
+    AppLanguage.en: '−10% damage in fights; leaves if pushed further',
+    AppLanguage.fr: '−10 % de dégâts en combat ; part si cela continue',
+  },
+  'approval_likes': {
+    AppLanguage.en: 'Likes',
+    AppLanguage.fr: 'Apprécie',
+  },
+  'approval_dislikes': {
+    AppLanguage.en: 'Dislikes',
+    AppLanguage.fr: 'Réprouve',
+  },
+  'deed_good': {
+    AppLanguage.en: 'kindness',
+    AppLanguage.fr: 'la bonté',
+  },
+  'deed_evil': {
+    AppLanguage.en: 'cruelty',
+    AppLanguage.fr: 'la cruauté',
+  },
+  'deed_profit': {
+    AppLanguage.en: 'profit',
+    AppLanguage.fr: 'le profit',
+  },
+  'approval_approves': {
+    AppLanguage.en: '{name} approves.',
+    AppLanguage.fr: '{name} approuve.',
+  },
+  'approval_disapproves': {
+    AppLanguage.en: '{name} disapproves.',
+    AppLanguage.fr: '{name} désapprouve.',
+  },
+  'approval_devoted_notice': {
+    AppLanguage.en: '{name} trusts you completely now.',
+    AppLanguage.fr: '{name} vous accorde désormais toute sa confiance.',
+  },
+  'approval_wary_notice': {
+    AppLanguage.en: '{name} is losing patience with you.',
+    AppLanguage.fr: '{name} perd patience avec vous.',
+  },
+  'approval_leaves_notice': {
+    AppLanguage.en: '{name} leaves the party for good.',
+    AppLanguage.fr: '{name} quitte le groupe pour de bon.',
+  },
+  'choice_work_ahead': {
+    AppLanguage.en: 'Work on offer',
+    AppLanguage.fr: 'Du travail proposé',
+  },
+  'approval_replaced_notice': {
+    AppLanguage.en: '{name} takes {left}’s place in the party.',
+    AppLanguage.fr: '{name} prend la place de {left} dans le groupe.',
+  },
+  'share_drink_button': {
+    AppLanguage.en: 'Share a drink ({cost} gold)',
+    AppLanguage.fr: 'Partager un verre ({cost} or)',
+  },
+  'share_drink_done': {
+    AppLanguage.en: 'Drink shared this chapter',
+    AppLanguage.fr: 'Verre partagé ce chapitre',
+  },
+  'share_drink_notice': {
+    AppLanguage.en: '{name} warms to you.',
+    AppLanguage.fr: '{name} vous apprécie un peu plus.',
+  },
+  // v1.162: enemy intents, weaknesses, taunt.
+  'telegraph_category_guard': {
+    AppLanguage.en: 'Guard',
+    AppLanguage.fr: 'Garde',
+  },
+  'telegraph_category_charge': {
+    AppLanguage.en: 'Wind-up',
+    AppLanguage.fr: 'Préparation',
+  },
+  'telegraph_category_rally': {
+    AppLanguage.en: 'Rallying cry',
+    AppLanguage.fr: 'Cri de ralliement',
+  },
+  'charge_release_suffix': {
+    AppLanguage.en: 'unleashes the blow it wound up!',
+    AppLanguage.fr: ': le coup préparé s’abat !',
+  },
+  'charge_broken_suffix': {
+    AppLanguage.en: 'is knocked off balance: the wind-up is broken!',
+    AppLanguage.fr: 'perd l’équilibre : son élan est brisé !',
+  },
+  'staggered_skip_turn_suffix': {
+    AppLanguage.en: 'is still reeling and loses the turn.',
+    AppLanguage.fr: 'chancelle encore et perd son tour.',
+  },
+  'weak_to_suffix': {
+    AppLanguage.en: 'is weak to',
+    AppLanguage.fr: '— point faible :',
+  },
+  'resists_suffix': {
+    AppLanguage.en: 'resists',
+    AppLanguage.fr: '— résistance :',
+  },
+  'weak_to_label': {
+    AppLanguage.en: 'Weak to',
+    AppLanguage.fr: 'Point faible :',
+  },
+  'resists_label': {
+    AppLanguage.en: 'Resists',
+    AppLanguage.fr: 'Résistance :',
+  },
+  'guard_soaks_suffix': {
+    AppLanguage.en: '— the guard soaks',
+    AppLanguage.fr: '— la garde absorbe',
+  },
+  'enemy_recovers_word': {
+    AppLanguage.en: 'recovers',
+    AppLanguage.fr: 'récupère',
+  },
+  'enemy_guards_word': {
+    AppLanguage.en: 'raises a guard of',
+    AppLanguage.fr: 'lève sa garde :',
+  },
+  'enemy_winds_up_suffix': {
+    AppLanguage.en: 'is winding up a heavy blow. Break it before it lands!',
+    AppLanguage.fr:
+        'prépare un coup puissant. Brisez son élan avant qu’il ne frappe !',
+  },
+  'enemy_rallies_message': {
+    AppLanguage.en: 'The enemy presses harder',
+    AppLanguage.fr: 'L’ennemi redouble d’ardeur',
+  },
+  'rally_spent_message': {
+    AppLanguage.en: 'The pack is already roused to the full.',
+    AppLanguage.fr: 'La meute est déjà à son comble.',
+  },
+  'draws_attacks_suffix': {
+    AppLanguage.en: "stands guard and draws the enemy's attacks.",
+    AppLanguage.fr: 'monte la garde et attire les coups de l’ennemi.',
+  },
+  'enemy_guard_tooltip': {
+    AppLanguage.en: 'Raised guard: soaks your next hits',
+    AppLanguage.fr: 'Garde levée : absorbe vos prochains coups',
+  },
+  'winding_up_label': {
+    AppLanguage.en: 'Winding up',
+    AppLanguage.fr: 'Prépare un coup',
+  },
+  'winding_up_tooltip': {
+    AppLanguage.en:
+        'Winding up a double-strength blow. Deal a quarter of its health this round, stun it or hit its weakness to break it.',
+    AppLanguage.fr:
+        'Prépare un coup de double force. Infligez un quart de ses PV ce tour-ci, étourdissez l’ennemi ou frappez son point faible pour briser l’élan.',
+  },
+  'staggered_label': {
+    AppLanguage.en: 'Staggered',
+    AppLanguage.fr: 'Déséquilibre',
+  },
+  'rallied_label': {
+    AppLanguage.en: 'Rallied',
+    AppLanguage.fr: 'Ardeur',
+  },
+  'intent_staggered_label': {
+    AppLanguage.en: 'Staggered: loses its next turn',
+    AppLanguage.fr: 'Déséquilibre : perd son prochain tour',
+  },
+  'intent_charged_label': {
+    AppLanguage.en: 'Charged blow incoming!',
+    AppLanguage.fr: 'Coup chargé imminent !',
+  },
+  'defend_draws_attacks_hint': {
+    AppLanguage.en: 'draws attacks',
+    AppLanguage.fr: 'attire les coups',
+  },
+  'element_name_fire': {AppLanguage.en: 'Fire', AppLanguage.fr: 'Feu'},
+  'element_name_ice': {AppLanguage.en: 'Ice', AppLanguage.fr: 'Glace'},
+  'element_name_void': {AppLanguage.en: 'Void', AppLanguage.fr: 'Vide'},
+  'element_name_wind': {AppLanguage.en: 'Wind', AppLanguage.fr: 'Vent'},
+  'element_name_water': {AppLanguage.en: 'Water', AppLanguage.fr: 'Eau'},
+  'element_name_earth': {AppLanguage.en: 'Earth', AppLanguage.fr: 'Terre'},
+  'element_name_electricity': {
+    AppLanguage.en: 'Lightning',
+    AppLanguage.fr: 'Foudre',
+  },
+  'element_name_light': {AppLanguage.en: 'Light', AppLanguage.fr: 'Lumière'},
   'telegraph_category_attack': {
     AppLanguage.en: 'Attack',
     AppLanguage.fr: 'Attaque',
@@ -3451,6 +3959,36 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'check_for_updates_button': {
     AppLanguage.en: 'Check for Updates',
     AppLanguage.fr: 'Rechercher des mises à jour',
+  },
+  'updates_elsewhere_note': {
+    AppLanguage.en: "On this device, get new versions from the project's "
+        'releases on GitHub.',
+    AppLanguage.fr: 'Sur cet appareil, les nouvelles versions se récupèrent '
+        'dans les versions publiées du projet sur GitHub.',
+  },
+  'update_available_suffix_ios': {
+    AppLanguage.en: 'is available. Download it now?',
+    AppLanguage.fr: 'est disponible. La télécharger maintenant ?',
+  },
+  'ios_update_hint': {
+    AppLanguage.en: 'An iPhone installs it through AltStore or SideStore: '
+        'in the screen that opens, use Share to open it in one of them. '
+        'Or save it to Files and install it from a computer with '
+        'Sideloadly.',
+    AppLanguage.fr: "Un iPhone l'installe avec AltStore ou SideStore : dans "
+        "l'écran qui s'ouvre, utilisez Partager pour l'ouvrir dans l'une de "
+        "ces applications. Ou enregistrez-le dans Fichiers et installez-le "
+        'depuis un ordinateur avec Sideloadly.',
+  },
+  'download_open_button': {
+    AppLanguage.en: 'Download & Open',
+    AppLanguage.fr: 'Télécharger et ouvrir',
+  },
+  'ios_open_failed': {
+    AppLanguage.en: "Couldn't open the downloaded file. It is also in the "
+        'latest release on GitHub.',
+    AppLanguage.fr: "Impossible d'ouvrir le fichier téléchargé. Il se trouve "
+        'aussi dans la dernière version publiée sur GitHub.',
   },
   'checking_for_updates': {
     AppLanguage.en: 'Checking…',
@@ -4096,6 +4634,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Got it!',
     AppLanguage.fr: 'Compris !',
   },
+  'remark_done': {
+    AppLanguage.en: 'Go on',
+    AppLanguage.fr: 'Continuer',
+  },
   'tut_voice_on': {
     AppLanguage.en: 'Read aloud',
     AppLanguage.fr: 'Lire à voix haute',
@@ -4159,6 +4701,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tut_voyage_title': {
     AppLanguage.en: 'Voyages',
     AppLanguage.fr: 'Traversées',
+  },
+  'tut_shipBattle_title': {
+    AppLanguage.en: 'Ship battles',
+    AppLanguage.fr: 'Batailles navales',
   },
   'tut_expedition_title': {
     AppLanguage.en: 'Expeditions',
@@ -4430,15 +4976,63 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_voyage_1': {
     AppLanguage.en:
-        'A crossing is a string of sea events: calm days mend the hull, storms cost it, wrecks can be salvaged.',
+        'A crossing takes a few days at sea, and each day brings something: a calm, a storm, a wreck or raiders.',
     AppLanguage.fr:
-        "Une traversée est une suite d'événements : les jours calmes réparent la coque, les tempêtes l'abîment, les épaves se fouillent.",
+        'Une traversée dure quelques jours en mer, et chaque jour apporte quelque chose : un calme plat, une tempête, une épave ou des pillards.',
   },
   'tut_voyage_2': {
     AppLanguage.en:
-        'Raiders start a ship battle. Your party crews the stations; if the hull sinks, you limp back.',
+        'Watch the hull. Storms and raiders wear it down, calm days let you mend it. If it gives out, the Rusty Eel limps back to the port she left.',
     AppLanguage.fr:
-        'Les pillards déclenchent une bataille navale. Votre groupe tient les postes ; si la coque coule, vous rentrez au port de départ.',
+        'Surveillez la coque. Les tempêtes et les pillards l’usent, les jours calmes permettent de la réparer. Si elle cède, la Rusty Eel regagne tant bien que mal son port de départ.',
+  },
+  'tut_voyage_3': {
+    AppLanguage.en:
+        'Each day, choose what the crew does. Some choices roll one of your stats, named on the button: pushing through a storm, boarding a wreck, outrunning raiders.',
+    AppLanguage.fr:
+        'Chaque jour, choisissez ce que fait l’équipage. Certains choix lancent l’une de vos caractéristiques, indiquée sur le bouton : forcer le passage dans une tempête, fouiller une épave, distancer des pillards.',
+  },
+  'tut_voyage_4': {
+    AppLanguage.en:
+        'Raiders can be paid off or outrun. Fight them and it becomes a ship battle, with your party crewing the stations.',
+    AppLanguage.fr:
+        'Les pillards peuvent être payés ou distancés. Si vous les combattez, c’est une bataille navale : votre groupe tient les postes.',
+  },
+  'tut_shipBattle_1': {
+    AppLanguage.en:
+        'A ship battle is fought room by room. Each ship has four: the helm dodges, the guns charge the weapons, the bulwark raises shields and the hold repairs the hull.',
+    AppLanguage.fr:
+        'Une bataille navale se joue salle par salle. Chaque navire en a quatre : la barre esquive, les canons chargent les armes, le pavois lève les boucliers et la cale répare la coque.',
+  },
+  'tut_shipBattle_2': {
+    AppLanguage.en:
+        'Tap a crew member, then a room, to post them there. A hand at a post makes the room work better, repairs it and fights its fires.',
+    AppLanguage.fr:
+        'Touchez un membre d’équipage, puis une salle, pour l’y poster. Une personne à son poste fait mieux fonctionner la salle, la répare et y combat le feu.',
+  },
+  'tut_shipBattle_3': {
+    AppLanguage.en:
+        'When a weapon is charged, tap it, then the enemy room to hit: the shot costs them hull and weakens that room. Hold the room instead to take aim, unless aiming is off in Settings.',
+    AppLanguage.fr:
+        'Quand une arme est chargée, touchez-la, puis la salle ennemie à frapper : le tir leur coûte de la coque et affaiblit cette salle. Maintenez plutôt la salle pour viser, sauf si la visée est désactivée dans les réglages.',
+  },
+  'tut_shipBattle_4': {
+    AppLanguage.en:
+        'Close in or pull away, change each gun’s shot, and give each hand’s one order from the crew sheet. Side by side with their rail open, you can board them.',
+    AppLanguage.fr:
+        'Approchez ou éloignez-vous, changez la munition de chaque arme et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
+  },
+  'tut_shipBattle_5': {
+    AppLanguage.en:
+        'Then end the turn and they answer. Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left.',
+    AppLanguage.fr:
+        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque de la Rusty Eel cède, elle regagne tant bien que mal son port de départ.',
+  },
+  'tut_shipBattle_6': {
+    AppLanguage.en:
+        'The detailed tips are back: they will show again, one at a time, in your next ship battle.',
+    AppLanguage.fr:
+        'Les conseils détaillés sont de retour : ils s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
   },
   'tut_expedition_1': {
     AppLanguage.en:
@@ -4842,12 +5436,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Glass Strand, crossed',
     AppLanguage.fr: 'La Grève de Verre, traversée',
   },
+  'zone_flag_exorcists_road_cleared': {
+    AppLanguage.en: 'The Exorcists’ Road, walked to the top',
+    AppLanguage.fr: 'La Route des Exorcistes, gravie jusqu’en haut',
+  },
+  'zone_flag_changeling_fen_cleared': {
+    AppLanguage.en: 'The Changeling Fen, its rider unhorsed',
+    AppLanguage.fr: 'Le Marais des Changelins, son cavalier désarçonné',
+  },
+  'zone_flag_frost_quarry_cleared': {
+    AppLanguage.en: 'The Frost Quarry, its tally-stone read',
+    AppLanguage.fr: 'La Carrière de Givre, sa pierre de compte lue',
+  },
   'zone_flag_white_fleet_grave_cleared': {
     AppLanguage.en: 'The White Fleet’s grave, silent',
     AppLanguage.fr: 'Le Tombeau de la Flotte Blanche, silencieux',
   },
   'zone_flag_void_sovereign_fallen': {
-    AppLanguage.en: 'The Void Sovereign, fallen',
+    AppLanguage.en: 'The Sovereign, fallen',
     AppLanguage.fr: 'Le Souverain, tombé',
   },
   'boat_title': {

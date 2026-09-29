@@ -13,6 +13,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/tts_provider.dart';
 import '../providers/tutorial_provider.dart';
 import '../theme/stitched_ink.dart';
+import '../widgets/speech_bubble.dart';
 import 'tutorial_topics.dart';
 
 // --- Targets --------------------------------------------------------------
@@ -95,6 +96,9 @@ const double _sitTop = _dogSize - _dogSize * _sitNative / _walkNative;
 // --- Starting a tour ------------------------------------------------------
 
 bool _tourShowing = false;
+
+/// Whether a tour is playing now (other pop-overs wait for it to end).
+bool get guideTourShowing => _tourShowing;
 
 /// The part the tour lit last, in the tour's own coordinates (tests read
 /// it to check the light falls on its target).
@@ -236,9 +240,6 @@ const double _bubbleMinHeight = 120;
   return (left, math.min(_bubbleWidth, screenWidth - 2 * left));
 }
 
-TextStyle? _bubbleTextStyle(ThemeData theme) => theme.textTheme.bodyLarge
-    ?.copyWith(fontFamily: InkFonts.prose, fontSize: 16, height: 1.45);
-
 /// How tall the bubble grows around [text] at [width]: the words laid out
 /// in the player's own text size, the speaker line, Next, the padding and
 /// the tail. The guide keeps that much room free beside itself (see
@@ -247,7 +248,7 @@ TextStyle? _bubbleTextStyle(ThemeData theme) => theme.textTheme.bodyLarge
 double _bubbleHeightFor(BuildContext context, String text, double width) {
   final scaler = MediaQuery.textScalerOf(context);
   final painter = TextPainter(
-    text: TextSpan(text: text, style: _bubbleTextStyle(Theme.of(context))),
+    text: TextSpan(text: text, style: speechBubbleTextStyle(Theme.of(context))),
     textDirection: Directionality.of(context),
     textScaler: scaler,
   )..layout(maxWidth: math.max(1.0, width - _bubbleTextInset));
@@ -588,7 +589,8 @@ class _GuideTourState extends ConsumerState<GuideTour>
               final tailX = (dog.dx + _dogSize / 2 - bubbleLeft - 9)
                   .clamp(14.0, bubbleWidth - 32);
 
-              final bubble = _Bubble(
+              final bubble = SpeechBubble(
+                nextKey: const Key('tutorial_next'),
                 speaker:
                     name.isEmpty ? tr(ref, 'tut_guide_default_name') : name,
                 fullText: text,
@@ -691,158 +693,6 @@ class _GuideTourState extends ConsumerState<GuideTour>
       ),
     );
   }
-}
-
-/// What the guide says, in a speech bubble whose tail points at it.
-class _Bubble extends StatelessWidget {
-  const _Bubble({
-    required this.speaker,
-    required this.fullText,
-    required this.shown,
-    required this.counter,
-    required this.nextLabel,
-    required this.onNext,
-    required this.voice,
-    required this.voiceLabel,
-    required this.onVoice,
-    required this.tailX,
-    required this.tailDown,
-  });
-
-  final String speaker;
-  final String fullText;
-  final String shown;
-  final String counter;
-  final String nextLabel;
-  final VoidCallback onNext;
-  final bool voice;
-  final String voiceLabel;
-  final VoidCallback onVoice;
-  final double tailX;
-  final bool tailDown;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    final fill = theme.colorScheme.surfaceContainerHigh;
-    final textStyle = _bubbleTextStyle(theme);
-    final tail = Padding(
-      padding: EdgeInsets.only(left: tailX),
-      child: CustomPaint(
-        size: const Size(18, 10),
-        painter: _TailPainter(fill: fill, stroke: ink.gold, down: tailDown),
-      ),
-    );
-    final box = Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 8, 10),
-      decoration: BoxDecoration(
-        color: fill,
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: ink.gold, width: 1.5),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(speaker.toUpperCase(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                        fontFamily: InkFonts.system,
-                        letterSpacing: 1.5,
-                        color: ink.gold)),
-              ),
-              Text(counter,
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(fontFamily: InkFonts.system, color: ink.ash)),
-              IconButton(
-                tooltip: voiceLabel,
-                visualDensity: VisualDensity.compact,
-                onPressed: onVoice,
-                icon: Icon(voice ? Icons.volume_up : Icons.volume_off_outlined,
-                    size: 20, color: voice ? ink.gold : ink.ash),
-              ),
-            ],
-          ),
-          // Where the screen is short, the words scroll and Next stays put.
-          Flexible(
-            child: SingleChildScrollView(
-              primary: false,
-              padding: const EdgeInsets.only(right: 8),
-              child: Semantics(
-                liveRegion: true,
-                label: fullText,
-                child: ExcludeSemantics(
-                  // The whole line takes its room from the start, so the
-                  // bubble doesn't grow while the words come.
-                  child: Stack(
-                    children: [
-                      Opacity(
-                          opacity: 0, child: Text(fullText, style: textStyle)),
-                      Text(shown, style: textStyle),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              key: const Key('tutorial_next'),
-              onPressed: onNext,
-              child: Text(nextLabel),
-            ),
-          ),
-        ],
-      ),
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: tailDown
-          ? [Flexible(child: box), tail]
-          : [tail, Flexible(child: box)],
-    );
-  }
-}
-
-class _TailPainter extends CustomPainter {
-  _TailPainter({required this.fill, required this.stroke, required this.down});
-
-  final Color fill;
-  final Color stroke;
-  final bool down;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-    final path = down
-        ? (Path()
-          ..moveTo(0, -1)
-          ..lineTo(w / 2, h)
-          ..lineTo(w, -1))
-        : (Path()
-          ..moveTo(0, h + 1)
-          ..lineTo(w / 2, 0)
-          ..lineTo(w, h + 1));
-    canvas.drawPath(path, Paint()..color = fill);
-    canvas.drawPath(
-        path,
-        Paint()
-          ..color = stroke
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.5);
-  }
-
-  @override
-  bool shouldRepaint(covariant _TailPainter old) =>
-      old.fill != fill || old.stroke != stroke || old.down != down;
 }
 
 /// The screen dimmed all over but for [hole], ringed in [ring].

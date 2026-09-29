@@ -91,9 +91,16 @@ void main() {
           maxPackSize: 2,
           enemies: rats,
         );
-        final choice = node.choices.single;
+        final choice = node.choices.first;
         if (!choice.triggersCombat) continue;
         final pack = choice.allTriggerEnemyIds.length > 1;
+        // v1.162: the second way is a Dexterity check round the same fight,
+        // an ambush if it fails.
+        final sneak = node.choices.last;
+        expect(sneak.checkAbility, 'dexterity');
+        expect(sneak.avoidFightOnSuccess, isTrue);
+        expect(sneak.forcedCondition, 'ambush');
+        expect(sneak.allTriggerEnemyIds, choice.allTriggerEnemyIds);
         expect(
             node.description,
             pack
@@ -113,7 +120,7 @@ void main() {
           shopPool: const [],
           enemyPool: const ['rat'],
         );
-        final choice = node.choices.single;
+        final choice = node.choices.first;
         if (!choice.triggersCombat) continue;
         expect(flavor.enemy, contains(node.description));
         expect(choice.text, 'Fight');
@@ -153,7 +160,7 @@ void main() {
           enemyPool: const [],
           shops: shops,
         );
-        final choice = node.choices.single;
+        final choice = node.choices.first;
         if ((choice.unlockShopId ?? '').isEmpty) continue;
         expect(choice.text, "Take a look: Widow's Table");
         expect(choice.textFr, "Jeter un œil : Widow's Table");

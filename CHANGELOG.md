@@ -8,7 +8,450 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.175.0+205]
+
+The Journey tab walks, remembers and has hills.
+
+### Added
+- **The party walks.** Go, or a second tap on a step, walks the party's
+  mark along the road to it. The road fills in behind the party, the other
+  ways fade, and the map follows. The step taken ends where the mark
+  stood, so the next scene's map takes over without a jump, and only then
+  does the choice play out (its roll, fight or detour). With the system's
+  "remove animations" setting on, the step is taken at once.
+- **The chapter behind the party.** Below the mark, the road runs down
+  through every scene of the chapter so far (the latest 40), each with the
+  way taken out of it and each new place named where the road reaches it.
+  It ends at "Where the chapter began". The map opens on the party with the
+  scene just left in view, and scrolls down to the rest. Tapping a scene
+  on that road shows it again, with the way taken. On a detour, the scene
+  it interrupts is the latest on the road.
+- **Relief.** Gentle hills under the map: contour lines in the look's own
+  colour (a stronger index line every other level), a soft shade on each
+  hill's far side, and a small peak mark on the highest. Each chapter has
+  its own land, and the land stays put as the party walks, so the hills
+  pass under the mark from one scene to the next.
+- **Reading full screen.** A double-tap on the scene's text reads it full
+  screen, as in the Story tab: larger text, a short scene centred. The map
+  button or another double-tap brings the map back. A double-tap on the
+  folded scene opens it straight to full screen.
+
+## [1.174.0+204]
+
+A Journey tab: the story and the map in one screen.
+
+### Added
+- **Journey tab (play mode, between Story and Character).** The scene the
+  story is on reads at the top, the same text as the Story tab with what
+  the last fight or roll left behind. Under it is a chart in the world
+  map's look (Night, Parchment or Shroud): the party's mark with the place's
+  name, the last places passed on the road behind, and every way on from
+  the scene as a step ahead. Each step's icon and colour say what it holds:
+  road, fight, roll, challenge, shop, work, voyage, rest, expedition, main
+  quest or ending. Faint dots above a step show how many ways go on from
+  it, and "To …" names the place it leads to when that is somewhere else.
+- Tapping a step picks it. The bar under the map shows its full text and
+  what it costs or brings (gold, HP, alignment, the roll and its DC, who is
+  fought). Go, or a second tap, takes it exactly as the choice under the
+  story would: the same checks, fights, detours, effects and pop-ups.
+  Shut ways stay on the map, locked, with the reason shown.
+- A town's many ways stack in rows. The rows interleave, the roads to the
+  far rows fade, and the map scrolls. The scene text folds to two lines to
+  give the map more room. A detour shows on the map like any scene, with
+  the way it interrupts; an ending sends the player to the Story tab for
+  the ending screen and New Game+.
+
+### Changed
+- Arrival pop-ups, the "previously" recap and the companions' remarks now
+  show over the Journey tab as well as the Story tab.
+- At the camp the Journey tab closes along with the Story tab. Leaving the
+  camp returns to whichever of the two was open last.
+
+## [1.173.0+203]
+
+Three side-story villages, each found by its own expedition, and the
+narrative review applied.
+
+### Added
+- **Akagiri, the oni village (chapter 3).** Found halfway up the new
+  Exorcists' Road expedition (after Cinder Row), whose boss is the
+  Horn-Taker, the Spire's senior exorcist, who proves each exorcism with a
+  sawn-off horn. In the village: break an exorcists' salt circle (fight),
+  out-drink the brewers (Constitution), hear Tetsu the smith, soak in the
+  hot springs, and, once the road is cleared, give the horns back.
+- **The Kindly Hill (chapter 4).** The Good Folk's green hill in the grey
+  fen, found on the new Changeling Fen expedition (after the Ossuary
+  Galleries), whose boss is the Teind-Rider, the Hollow Court inquisitor
+  who collects the hill's mortal every seventh year. Drive the Court's
+  sextons off the barrows (fight), play the riddle-game (Intelligence; lose
+  and it takes a year), sit with Nell, this year's teind, sleep one night
+  by the clock, and tell Nell the rider will not come.
+- **Highhearth, the giants' village (chapter 5).** The last forty giants,
+  who cut the Reliquary's stone and were paid by being written out of
+  scripture, found on the new Frost Quarry expedition (after the Dead
+  Heart Approach), whose boss is Gorm, a giant the tear's frost has kept
+  standing for three winters. Hold the quarry gate (fight), help the
+  midwife (Dexterity), hear Hathra on the old contract, sleep by a fire six
+  hundred years old, and bring back the names from the tally-stone.
+- Each village has its own place on the world map (all three looks), a
+  line when enough of it is done, and a payoff at the next chapter's camp.
+
+### Changed
+- **Kroll is now Inquisitor Clement**, "the Branded": the order hands out
+  its names the way it hands out its mercy. The pier scene names him and
+  sets up the Eel's anchor chain the fight ends on; whoever kept Lysa sends
+  her up the chain first, and she pulls the narrator over the rail.
+- **Story fixes.** The Beggar's keeper, dead since the tavern, no longer
+  dies again at the hovel: it is old Hesk, the neighbour. The Shroud is
+  called the Shroud; "Void Banner" is only what the Inquisition calls it.
+  The Ashen Quarter's scenes no longer send you back to "the archives". The
+  High Warden is met before he is fought. The sixth piece is the
+  Sovereign's crown, from the tear to the crown ending. "No one's back",
+  not "no one back". The camp's first choice waits for the coast to be
+  known.
+- **Tone.** The narrator is never "a man"; fewer "considerably" and "with
+  the particular" in chapters 1–2; a dry line in the late scenes that had
+  gone earnest; "the ledger's last page" varied. Renamed foes and places:
+  Pit Wretch, Grey Candle, the Unstitched, the Sovereign, the Tide Cellar
+  and the Needle House.
+- **Payoffs.** The two faces at the Hollow Court's altar are named; each
+  ending says what going back costs or keeps; every scene has its place,
+  mood and speaker tags.
+
+## [1.172.0+202]
+
+The iPhone app is shared as a file, like the Android one.
+
+### Added
+- **Every release has an IPA next to the APK.** After the Android job
+  publishes a release (each push to `main`), a macOS job (`ios-release` in
+  `build_apk.yml`) builds the iPhone app and adds
+  `NarrativeApp-<version>.ipa` to the same release. If the iPhone build
+  fails, the Android release stays as it is. The build steps are shared
+  with the Build iOS workflow (`.github/actions/build-ios`).
+- **Installing on iPhone without a Mac**
+  (`docs/INSTALL_IPHONE.md`, linked from the README): the IPA is signed
+  with your own free Apple ID when you install it, with Sideloadly (from a
+  Windows or Mac computer) or SideStore / AltStore (on the phone). A free
+  Apple ID keeps the app working 7 days at a time, and three such apps at
+  most.
+
+### Changed
+- **"Check for Updates" works on iPhone.** It finds the IPA in the latest
+  release (the APK on Android), downloads it and opens it. From there,
+  Share opens it in AltStore or SideStore, which install it, or saves it
+  to Files. The dialog explains this before the download. On other
+  devices, Settings says where new versions are.
+- The Build iOS workflow's artifact is now `ios-ipa`, and the file is named
+  `NarrativeApp-<version>.ipa`.
+- **Build iOS runs only by hand** (Actions, Build iOS, Run workflow). It no
+  longer runs on pull requests, so the iPhone build is only checked when
+  asked.
+
+## [1.171.0+201]
+
+The app builds for iPhone.
+
+### Added
+- **An iOS build in CI** (`.github/workflows/build_ios.yml`). A macOS
+  runner builds the app and packages an unsigned IPA
+  (`NarrativeApp-<version>-unsigned.ipa`, artifact `ios-unsigned-ipa`). It
+  runs on pull requests that touch the iOS project, `pubspec.yaml` or
+  `pubspec.lock`, and by hand from the Actions tab (Build iOS, Run
+  workflow). It doesn't run on every push because macOS minutes count ten
+  times against a private repository's quota. The IPA is unsigned: it
+  installs through a tool that signs it with your own Apple ID (Sideloadly,
+  AltStore), or it becomes a TestFlight build once an Apple Developer
+  account's certificate and profile are added.
+- **The iOS project is set up:** a Podfile for iOS 15 (the oldest iOS every
+  plugin supports is 13), the Pods settings in the Xcode configurations,
+  and the export-compliance answer TestFlight asks for (the app uses only
+  standard HTTPS).
+
+### Changed
+- **Read-aloud on iPhone plays with the Ring/Silent switch on,** like a
+  podcast, and lowers other apps' sound while it speaks. Without this, iOS
+  silences an app's speech when the switch is on. ElevenLabs voices
+  already played that way.
+- **Settings on iPhone doesn't offer "Check for Updates".** That button
+  downloads an APK and installs it, which only Android can do. iPhone
+  shows where new versions come from instead (TestFlight, or a new build).
+
+## [1.170.0+200]
+
+The companions speak over the screen, in a speech bubble like the guide's
+in a tutorial, instead of in the scene's text.
+
+### Changed
+- **Remarks show in a speech bubble.** What a companion says about the
+  last choice no longer opens the next scene's text. It pops up over the
+  scene, once the scene is on screen and any arrival, discovery or
+  tutorial pop-up has closed: the tutorial's bubble (name on top, words
+  typed out, gold border), its tail pointing at a round badge with the
+  speaker's initial at the bottom of the screen. Tap anywhere or "Go on"
+  to close it; the first tap shows the words at once. When a second
+  companion answers, their badge stands on the other side and the bubble
+  counts "1 / 2". Each remark shows once, and read-aloud still reads it
+  with the scene.
+- **The same bubble everywhere companions talk:** after a check on an
+  expedition or at sea (the log keeps the roll), after a drink at the camp
+  (after the "warms to you" notice), and after an approval notice or a
+  quest turn-in. There, the notice keeps the facts ("Maren approves",
+  "Malrik leaves the party") and the bubble has the words, including what
+  a companion says when they come to trust you completely, lose patience
+  or walk out.
+- The guide's tour and the companions share one speech bubble widget.
+
+### Fixed
+- A quest turn-in that brought a level waited for its notice to close
+  before showing the level-up dialog; the notice's auto-close could
+  otherwise pop the dialog instead.
+
+## [1.169.0+199]
+
+The companions' remarks become game data, edited in the Data tab like the
+rest of the game.
+
+### Changed
+- **Companion Remarks is a table in the Data tab**
+  (`assets/gamedata/companion_remarks.json`, 142 records). Each record is
+  one companion, a trigger (a kind, cruel or profitable deed they like or
+  dislike, a scene's own reaction, a check, a sneak, a drink at the camp,
+  or one story choice) and the lines they pick from, in English and
+  French. Records can be edited, added and removed; the game reads the
+  table, saved edits included, and the Data tab's GitHub push writes it
+  back like the other tables. Two records for the same companion and
+  trigger add their lines together; a French list left empty falls back to
+  the English.
+- **Help under the fields** in the record editor, where a label alone
+  can't explain a field (used by the new table).
+
+### Fixed
+- **Saving a record no longer cuts sentences apart at their commas.** The
+  editor took list fields as comma-separated, so saving any enemy (its
+  encounter texts) or NPC (their dialogue) split every sentence with a
+  comma in it into pieces. List fields are now edited one entry per line.
+
+## [1.168.0+198]
+
+The nine narration proposals from 1.167.
+
+### Added
+- **Companions have lines written for the story's heaviest choices**: 23 of
+  them, from the Inquisitor on the pier to the tear's price (the wharf, the
+  skiff in the storm, the standard, the Court's sleepers, the legate's
+  pact, the flagship's sail…). A companion with such a line says it rather
+  than a general one.
+- **The party answers itself.** When one companion approves and another
+  disapproves, the second answers the first: Maren blesses, Malrik bills.
+- **A check with no scene of its own is told in a sentence**: searching
+  further, scavenging and slipping past on a detour or an expedition, in
+  the narrator's voice (every ability, pass and fail, EN and FR).
+- **Comments at sea and at camp.** A crew member now and then remarks on
+  pushing through a storm, boarding a derelict or outrunning raiders (in
+  the ship's log), and a companion thanks you for a shared drink.
+- **Dialogue in 13 scenes** that were narration only: Kelda and Sable at
+  the market, the harbor master, Tern Row's toll-man and Nadira, Reya at
+  the Reckoning Wall, the runner, the Court's deserter, the headman, the
+  widow, the road-keeper, the helmsman, Greyhithe's eldest and the legate.
+
+### Changed
+- **Companions take turns in the scene asides.** The line went to the
+  first companion in the party every time; it now turns with the scene.
+- **Shorter sentences.** 86 of the longest (over 50 words in English, 55 in
+  French) are split, in both languages.
+- **Read aloud, a scene opens as it does on screen**: the fight's
+  aftermath, a check's outcome and the party's remarks come first.
+- **French speaks to the player as « vous » everywhere**: companions' fight
+  and chest lines, their words in the asides, and two settings texts.
+  Lines said to an enemy keep « tu ».
+
+### Fixed
+- **The story no longer makes the narrator male** in four more places: the
+  swim under the wharf ("a grown man's shoulders", « plus ou moins
+  intact »), the Rat's origin (« m'ait surpris ») and Tern Row (« je fus
+  ravi »).
+
+## [1.167.0+197]
+
+The party speaks up about what the player does.
+
+### Added
+- **Companions remark on your choices.** When a choice moves the party (a
+  kind or cruel deed, one that fills the purse, a scene's own reaction),
+  the companion who took it hardest says so in their own voice, and the
+  next scene opens with their words under their name. A check passed or
+  failed, or a fight slipped past, gets a remark too, at most once every
+  three choices. Companions take turns and use all their lines before one
+  repeats. The eight companions have about twenty lines each, in English
+  and French.
+- Quest turn-ins and expeditions quote the remark in the approval notice.
+
+### Changed
+- A companion whose opinion crosses into "friendly" can still remark; only
+  the three changes with words of their own (trusting the player
+  completely, losing patience, walking out) take the remark's place.
+- "Work on offer" is for side jobs: a choice that leads to the main quest
+  is no longer tagged (both ways over the river were).
+
+### Fixed
+- **The story no longer calls the character a man.** After the rooftop
+  ledger, "what kind of man kept that ledger" (EN and FR) and "un homme
+  qui vient de choisir la clémence" (FR) now say "person" and
+  « quiconque ».
+- **French speaks to the player as « vous » from the first screen**: the
+  opening question, "Choose who you are" and "Keep what's left of
+  yourself" were in « tu ».
+
+## [1.166.0+196]
+
+A review of the whole PR: fifteen bugs fixed and four balance changes.
+
+### Fixed
+- **Defending no longer draws a whole pack onto one party member.** Taunt
+  sent every enemy's blow to whoever kept the biggest Defend face, but
+  their block only soaked the first; the rest landed in full (three blows
+  of 15 against Defend 8 took 37). Now the defender steps in only while
+  their guard holds, and later blows go where they were aimed.
+- **"Give it one of the crew" takes the companion in the scene.** Who the
+  story takes is settled before the party reacts, and they don't react
+  themselves; before, a companion walking out over that choice left the
+  story to take whoever had just stepped into their seat.
+- **A companion the story takes leaves their seat to the bench too**, like
+  one who walks out (the finale's "one of the crew", a companion turned).
+  Nobody is seated whose house gate can't be read.
+- **The bounty board keeps contracts already met.** A new chapter used to
+  replace the board, losing earned but unclaimed rewards.
+- **A level-up perk can always be chosen.** The picker on the Character
+  tab drew its offer only once; a level-up with no level-up window (a ship
+  battle's) left a pick with nothing to choose from.
+- **Saving a node in Edit Mode keeps every choice field.** Ten had no
+  control in the editor and were dropped: showIfFlags, main-quest and
+  travel markers, hunts, the sneak round a fight, approval reactions.
+- **No hunt trail after a fight the party slipped past.**
+- **Loot on the road isn't greed.** A detour's cache or an expedition's
+  find no longer costs the approval of companions who dislike profit.
+- **A failed run from raiders keeps its roll and its toll on the log.**
+- **The day added by sheltering follows the voyage's rules**: one raider
+  a crossing on known waters, none past a flight sail.
+- An enemy skill set to "attack" in the data editor attacks, even one
+  that only heals.
+- Edit Mode's "play to" fights play the enemy's wind-ups, guards, rallies
+  and heals as the fight screen does.
+- The same seed builds the same detour, whatever detours came before.
+- Save files keep a bounty's kill counts only for the foes it counts, and
+  drop them when it's done.
+
+### Changed
+- **Work on offer.** A story choice that leads to a side job not yet
+  taken on shows it (the market's informant, Tern Row, Liora's watch).
+- **Boarding a derelict** rolls against the sea DC + 3.
+- **Maren** no longer minds profit; she still minds cruelty.
+- **"Copy the list"** at the Reckoning Wall pays 80 gold (was 50) and the
+  party approves.
+
+## [1.165.0+195]
+
+Two fixes from a 50-playthrough simulation of 1.164.
+
+### Fixed
+- **A companion who walks out no longer leaves an empty seat.** The
+  benched companion who thinks best of the player steps in (the earlier
+  recruit on a tie, and only once their house is built), and the notice
+  says who took the place. In the simulation, players who never refilled
+  the seat by hand fought the finale a companion short: 2 to 5 runs in 50
+  got stuck on the Void Sovereign (up to 250 losses, one run never
+  finished). With the seat filled, 0.2 losses per run and no stuck runs.
+
+### Changed
+- **Boarding a derelict is a gamble again.** A passed Perception check
+  now pays twice the salvage (was 2.5 times), and a failed one costs the
+  Rusty Eel 12 hull as the hulk rolls against her (was a wound that healed
+  before it mattered). Wrecks now bring in about 18% less gold per run in
+  the simulation; a character without sharp eyes salvages more often.
+
+## [1.164.0+194]
+
+### Fixed
+- **The voyage tour plays by itself.** Its trigger only wrapped the
+  loading spinner, so the tour was cancelled the moment the crossing
+  loaded and never started on its own. It now waits for the first day at
+  sea and lights the hull and the day's choices.
+- The voyage tour is rewritten for the sea choices (paying off or
+  outrunning raiders, pushing through storms, boarding wrecks, the stat
+  each check rolls), in English and French.
+
+### Added
+- **Ship battles in the Tutorials list.** The battle still teaches itself
+  with one-time tips as each rule comes up; the new entry sums the rules
+  up (rooms, crew posts, firing and aiming, range, shot and orders,
+  boarding, winning and losing) and brings those tips back for the next
+  battle.
+
 ## [1.163.0+193]
+
+Companions with opinions, quests that ask how they end, decisions at sea,
+and a perk to choose as the character grows.
+
+### Added
+- **Companion approval.** Each companion cares about kindness, cruelty
+  and profit in their own way (Maren and Tobin about mercy, Malrik,
+  Sable and Grosh about the purse, and so on). Every choice made in
+  front of them moves their approval, and they say so ("Maren
+  approves."). A few finale choices have their own reactions: giving the
+  Sovereign one of the crew costs everyone's trust. Benched companions
+  don't see what they weren't there for.
+  - **Friendly** companions deal +5% damage; **devoted** ones +10% damage
+    and health.
+  - **Wary** companions deal −10% damage and warn the player. Pushed
+    further, a companion leaves the party for good, in their own words.
+  - At the camp, each companion's card shows the meter, what they like
+    and dislike, and a **drink to share** once a chapter (gold for a
+    little approval).
+- **Quest turn-in choices.** Six quests ask how they're settled, each way
+  with its own gold, alignment and companion reactions:
+  - take the informant's cut or give the goods back;
+  - keep the smuggler's purse or refund the refugees (Liora watches);
+  - pocket Tern Row's toll or return it;
+  - guard the Reckoning Wall, copy its list, or sell it to the
+    Inquisition;
+  - take the sapper's three coins or leave them;
+  - absolve the penitent, carry out the sentence, or rob him.
+- **Choices at sea.** Every day of a voyage asks what the crew does:
+  - raiders: fight, pay them off (twice their bounty), or try to outrun
+    them (Dexterity; failing costs hull, then it's a fight);
+  - storms: ride them out, push through under full sail (Strength:
+    nothing lost, or double the damage), or shelter in a cove at the
+    cost of one more day at sea;
+  - derelicts: salvage, board her (Perception: 2.5 times the gold, or a
+    wound), or leave her;
+  - calm days: repairs or rest (a quarter of the health back).
+- **Level-up perks.** Every second level offers three perks to choose
+  one from (the level-up window and the character sheet both have the
+  choice): Steady Hands (a roll more each round), Apothecary, Keen Eye,
+  Light Feet, Heavy Hand, Iron Hide, Vigor, Battle Rhythm (momentum
+  after 2 hits), Plunderer, Quick Study, Leader (companions +5% damage),
+  Deep Well and Last Stand (one killing blow a fight leaves 1 health).
+  Most can be taken up to three times. Perks stay through permadeath
+  like levels do.
+
+### Balance
+- The playthrough simulator now plays the v1.162 rules (enemy intents,
+  weaknesses, the momentum drain, the enemy heals) and v1.163's perks.
+  It ran 40 playthroughs per variant on two seed sets:
+  - **old rules:** 0.3 and 1.1 losses per run, with stuck runs (26
+    losses to the White Admiral in one);
+  - **new rules, a perk every level:** 0.1 and 0.2 losses per run;
+  - **new rules, a perk every other level (shipped):** 0.3 and 0.2
+    losses per run, worst run 3, first-attempt wins 98–100% in every
+    chapter.
+
+  A perk every level made fights noticeably easier; one every other level
+  keeps them where they were. Per run, enemies wind up about 10 times (a
+  quarter of them broken by the party), guard 13 times and rally 10
+  times; the party lands about 26 hits on a weakness.
+
+## [1.163.0+193] (main, #109: towns read once)
 
 ### Changed
 - **A town's story is read once.** Arriving in a town or at the camp, its
@@ -26,6 +469,73 @@ isn't reconstructable from git history alone.
   room it needs.
 
 ## [1.162.0+192]
+
+Fights that change shape from turn to turn, detours with a choice in them,
+and something to aim the next fight at.
+
+### Added
+- **Enemy intents.** An enemy's turn is no longer always a hit:
+  - **Guard** (Brace): it raises a guard worth its own damage that soaks
+    the party's next hits.
+  - **Wind-up** (Heavy Wind-up, Void Gathering): it gathers itself, and
+    next turn the blow lands at double weight (×1.8 for the Void). The
+    party breaks it by dealing a quarter of its health in one round, by
+    stunning it, or by hitting a weakness. A broken wind-up leaves it
+    **staggered**: it loses its next turn.
+  - **Rally** (Rallying Cry, Pack Howl): it and every living packmate hit
+    20–25% harder. An enemy can be rallied at most twice a fight.
+  - **Mend** (Bind Wounds): it heals instead of hitting.
+  A wound-up enemy is marked at every Perception tier, and the telegraph
+  names a coming guard, wind-up or rally from the category tier up. Slum thugs,
+  bandits, ghouls, bone wardens, Inquisition soldiers, void hounds and
+  the Strand Colossus, among others, use them.
+- **Weaknesses and resistances.** 44 of 47 enemies are weak to an element
+  (×1.5 damage) and 41 resist one (×½): ghouls fear Light and Fire and
+  shrug off Ice, the Inquisition burns poorly but conducts lightning. A
+  weakness shows on the enemy once it has been hit with it, and all of
+  them show from the category telegraph tier or for a kind already
+  beaten.
+- **Taunt.** In a party fight, whoever keeps the biggest Defend face
+  draws the enemies' attacks that round.
+- **Detours with a choice** (expeditions and excursions):
+  - A fight can be **slipped past** with a Dexterity check (DC 9 +
+    chapter, +2 for a pack). A failed sneak starts the fight as an
+    ambush.
+  - A cache can be **dug deeper** with a Perception check: 2.5 times the
+    gold, or nothing.
+  - A rest spot can be **scavenged** with a Luck check instead of healing.
+  - Treasure gold and rest healing grow with the chapter.
+- **The bounty board at the camp.** Three contracts at a time: hunt so
+  many of one foe, win against packs, win without anyone falling or
+  drinking a potion, break wind-ups, hit weaknesses, beat marked foes.
+  Each pays gold and skill essence at the board (more in later
+  chapters). A fresh board goes up once all three are claimed or the
+  chapter turns.
+- **Charisma haggles.** Each point takes 2% off shop prices, up to 20%.
+- **Shops restock** potions and scrolls every chapter. Gear stays one of
+  a kind.
+
+### Changed
+- **Momentum** drops by one when the party takes a hit, instead of
+  falling to nothing.
+- **The road keeps its dangers.** Random encounters draw every enemy the
+  chapter allows, not only the ones never met; unmet ones come three
+  times as often. Late detours used to run dry into treasure.
+- Detour descriptions don't repeat within five detours.
+- Player skills that enemies use are described as the enemy's move ("A
+  ragged breath, and the enemy steadies."), not as "You …", in both
+  languages.
+
+### Fixed
+- **Enemy heals.** Second Wind, Stoneskin and the other heal-only skills
+  enemies use hit the party for the enemy's full damage and healed
+  nothing. They now heal, scaled with the enemy's health, and don't hit.
+  Shadow Step's self-heal now applies too.
+- **Bounty quests** (the Ossuary bounty, Faces of the Fallen) count only
+  the kills made after the quest is taken. Kills from earlier in the run
+  used to complete them on the spot.
+
+## [1.162.0+192] (main, #108: ship cutaways)
 
 ### Changed
 - **Ship battles show the ships in pixel art, cut open.** The drawn hull

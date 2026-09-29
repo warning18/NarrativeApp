@@ -6,8 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_aftermath.dart';
 import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
+import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/chapter_loop.dart';
+import '../data/check_outcomes.dart';
+import '../data/companion_remarks.dart';
 import '../data/map_themes.dart';
 import '../data/sub_node_engine.dart';
 import '../data/zone_gating.dart';
@@ -22,6 +25,8 @@ import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/approval_notice.dart';
+import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
@@ -71,6 +76,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   /// The last fight's aftermath, opening the next event's text.
   String? _aftermath;
+
+  /// A check's outcome in words (see check_outcomes.dart), opening the
+  /// next event like the aftermath, and a companion's remark on it (see
+  /// companion_remarks.dart), shown over the next event in a speech bubble.
+  String? _checkOutcome;
+  List<CompanionRemark> _remarks = const [];
 
   int get _expeditionCount =>
       (widget.zone['expeditionCount'] as num?)?.toInt() ?? 3;
@@ -159,7 +170,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       unlockedShopIds: session.unlockedShopIds,
       chapter: zoneChapter,
     );
-    final enemyPool = SubNodeEngine.filterEnemyPool(
+    final enemyPool = SubNodeEngine.weightedEnemyPool(
       enemies: enemies,
       unlockedEnemyIds: session.unlockedEnemyIds,
       chapter: zoneChapter,
@@ -177,6 +188,7 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       ),
       enemies: enemies,
       shops: shops,
+      chapter: zoneChapter,
     );
   }
 
@@ -249,6 +261,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     setState(() {
       _busy = true;
       _aftermath = null;
+      _checkOutcome = null;
+      _remarks = const [];
     });
     final notifier = ref.read(playerSessionProvider.notifier);
     // A bonus event (a hunt's trail or quarry, or an alignment ambush that
@@ -257,7 +271,51 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final countsTowardZone = !_isBonusNode(_current);
     final isBoss = _isBossNode(_current);
 
-    final enemyIds = choice.allTriggerEnemyIds;
+    // A check on the road (v1.162): sneak past, dig deeper, scavenge. A
+    // failed one forfeits the choice's reward; a sneak that works leaves
+    // its fight behind, and one that fails starts it.
+    var fightAvoided = false;
+    var checkFailed = false;
+    if (choice.hasAbilityCheck) {
+      final lang = ref.read(appLanguageProvider);
+      final result = rollAbilityCheck(
+        ability: choice.checkAbility!,
+        dc: choice.checkDC ?? 10,
+        session: ref.read(playerSessionProvider),
+      );
+      await showImmersiveNotice(
+        context,
+        icon: result.success ? Icons.check_circle : Icons.cancel,
+        message: '${trFor(lang, '${result.ability}_label')} '
+            '${trFor(lang, 'check_label')}: '
+            '${result.roll} + ${result.modifier} = ${result.total} '
+            '${trFor(lang, 'vs_dc_label')} ${result.dc} — '
+            '${trFor(lang, result.success ? 'ability_check_success' : 'ability_check_fail')}',
+      );
+      if (!mounted) return;
+      fightAvoided = result.success && choice.avoidFightOnSuccess;
+      checkFailed = !result.success;
+      if (checkOutcomeNeedsTelling(
+        success: result.success,
+        onTheRoad: true,
+        hasFailScene: false,
+        isSneak: choice.avoidFightOnSuccess,
+      )) {
+        _checkOutcome = checkOutcomeLineFor(result.ability,
+            success: result.success,
+            french: lang == AppLanguage.fr,
+            seed: Random().nextInt(1 << 20));
+      }
+      _remarks = speakUpAbout(ref,
+          action: !result.success
+              ? RemarkKind.checkFailed
+              : fightAvoided
+                  ? RemarkKind.sneakedPast
+                  : RemarkKind.checkPassed);
+    }
+
+    final enemyIds =
+        fightAvoided ? const <String>[] : choice.allTriggerEnemyIds;
     if (enemyIds.isNotEmpty) {
       final resolvedEnemies = {
         for (final eid in enemyIds) eid: enemies[eid] as Map<String, dynamic>?,
@@ -356,14 +414,25 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       return;
     }
 
-    if (choice.hasEffects) {
-      await notifier.applyChoiceEffects(
+    if (choice.hasEffects && !checkFailed) {
+      final reactions = await notifier.applyChoiceEffects(
         goldMod: choice.goldMod,
         alignmentMod: choice.alignmentMod,
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         questIDToProgress: choice.questIDToProgress,
+        approvalMods: choice.approvalMods,
+        companions:
+            ref.read(gameDbProvider(companionsSchema)).value ?? const {},
+        // What an expedition turns up is loot, not greed.
+        goldIsProfit: false,
       );
+      if (reactions.isNotEmpty && mounted) {
+        await showApprovalReactions(context, ref, reactions,
+            deed: RemarkDeed(
+                alignmentMod: choice.alignmentMod,
+                approvalMods: choice.approvalMods));
+      }
     }
     if (!mounted) return;
     await _advance(
@@ -526,6 +595,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final zoneName = widget.zone['zoneName']?.toString() ?? '';
     final shopsAsync = ref.watch(localizedDbProvider(shopsSchema));
     final enemiesAsync = ref.watch(localizedDbProvider(enemiesSchema));
+    // Kept loaded for the party's reactions to a choice (see approval.dart).
+    ref.watch(localizedDbProvider(companionsSchema));
     final shops = shopsAsync.value;
     final enemies = enemiesAsync.value;
 
@@ -541,25 +612,29 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
     return TutorialTrigger(
       topic: TutorialTopic.expedition,
-      child: Scaffold(
-        appBar: AppBar(title: Text(zoneName)),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: switch (_phase) {
-              _ExpeditionPhase.event => _buildEvent(context,
-                  shops: shops, enemies: enemies, lang: lang),
-              _ExpeditionPhase.completed => _buildSummary(
-                  context,
-                  icon: Icons.flag_circle,
-                  title: trFor(lang, 'zone_cleared_prefix'),
-                ),
-              _ExpeditionPhase.retreated => _buildSummary(
-                  context,
-                  icon: Icons.directions_walk,
-                  title: trFor(lang, 'expedition_ended_title'),
-                ),
-            },
+      child: CompanionRemarksTrigger(
+        remarks: _remarks,
+        ready: !_busy,
+        child: Scaffold(
+          appBar: AppBar(title: Text(zoneName)),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: switch (_phase) {
+                _ExpeditionPhase.event => _buildEvent(context,
+                    shops: shops, enemies: enemies, lang: lang),
+                _ExpeditionPhase.completed => _buildSummary(
+                    context,
+                    icon: Icons.flag_circle,
+                    title: trFor(lang, 'zone_cleared_prefix'),
+                  ),
+                _ExpeditionPhase.retreated => _buildSummary(
+                    context,
+                    icon: Icons.directions_walk,
+                    title: trFor(lang, 'expedition_ended_title'),
+                  ),
+              },
+            ),
           ),
         ),
       ),
@@ -614,6 +689,16 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
                 if (_aftermath != null && _aftermath!.isNotEmpty) ...[
                   Text(
                     _aftermath!,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          height: 1.5,
+                          fontStyle: FontStyle.italic,
+                        ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                if (_checkOutcome != null && _checkOutcome!.isNotEmpty) ...[
+                  Text(
+                    _checkOutcome!,
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           height: 1.5,
                           fontStyle: FontStyle.italic,

@@ -1,0 +1,43 @@
+name: Build the iPhone app (unsigned IPA)
+description: >
+  Builds the app for iPhone without signing it and packages it as an
+  unsigned .ipa, the way it is shared (see docs/INSTALL_IPHONE.md). Runs on
+  a macOS runner, after the repository is checked out.
+
+outputs:
+  path:
+    description: The .ipa file, relative to the repository root.
+    value: ${{ steps.package.outputs.path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        cache: true
+
+    - name: Get dependencies
+      shell: bash
+      run: flutter pub get
+
+    - name: Build the app (unsigned)
+      # No Apple signing identity here: whoever installs the IPA signs it
+      # with their own Apple ID (Sideloadly, AltStore, SideStore).
+      shell: bash
+      run: flutter build ios --release --no-codesign
+
+    - name: Package an unsigned IPA
+      # An .ipa is the .app in a Payload folder, zipped.
+      id: package
+      shell: bash
+      run: |
+        version=$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//' | cut -d'+' -f1)
+        rm -rf build/ipa
+        mkdir -p build/ipa/Payload
+        cp -R build/ios/iphoneos/Runner.app build/ipa/Payload/
+        ipa="build/NarrativeApp-$version.ipa"
+        (cd build/ipa && zip -qry "../$(basename "$ipa")" Payload)
+        ls -la "$ipa"
+        echo "path=$ipa" >> "$GITHUB_OUTPUT"

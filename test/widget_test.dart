@@ -65,15 +65,15 @@ void main() {
     await tester.pumpAndSettle(const Duration(milliseconds: 100));
     expect(find.byKey(const Key('menu_edit_mode')), findsOneWidget);
 
-    // A new game plays: Story, Character, Camp, Other (under character
-    // creation, which the first scene opens).
+    // A new game plays: Story, Journey, Character, Camp, Other (under
+    // character creation, which the first scene opens).
     await tester.tap(find.byKey(const Key('menu_new_game')));
     await pumpABit();
     expect(tester.takeException(), isNull);
     final bar = find.byType(NavigationBar, skipOffstage: false);
     expect(find.byType(NavigationDestination, skipOffstage: false),
-        findsNWidgets(4));
-    for (final label in ['Character', 'Camp', 'Other']) {
+        findsNWidgets(5));
+    for (final label in ['Journey', 'Character', 'Camp', 'Other']) {
       expect(
           find.descendant(
               of: bar, matching: find.text(label, skipOffstage: false)),

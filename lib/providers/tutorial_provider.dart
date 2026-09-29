@@ -98,6 +98,19 @@ class TutorialNotifier extends StateNotifier<TutorialSettings> {
     await prefs.setStringList(_seenTopicsPrefsKey, state.seen.toList());
   }
 
+  /// Forgets the one-time tips whose ids start with [prefix], so they
+  /// show again (the Ship battle entry of the Tutorials list).
+  Future<void> forgetTips(String prefix) async {
+    final seen = {
+      for (final id in state.seen)
+        if (!id.startsWith('tip:$prefix')) id,
+    };
+    if (seen.length == state.seen.length) return;
+    state = state.copyWith(seen: seen);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_seenTopicsPrefsKey, state.seen.toList());
+  }
+
   /// Forgets every tour and tip shown, so each plays again the next time its
   /// feature is reached (Settings' "Replay tutorials").
   Future<void> reset() async {

@@ -1,3 +1,5 @@
+import '../data/approval.dart';
+
 /// A recruited companion's persistent, player-managed state — the ally
 /// equivalent of the handful of [PlayerSession] fields that aren't derived
 /// automatically (equipment, learned skills, current health).
@@ -18,6 +20,8 @@ class AllyState {
     this.unlockedSkillIds = const [],
     this.skillPoints = 0,
     this.diceSkillAssignments = const {},
+    this.approval = startingApproval,
+    this.giftChapter = 0,
   });
 
   /// A deliberately-oversized `currentHealth` meaning "fully healed,"
@@ -54,12 +58,21 @@ class AllyState {
   /// ally only ever has the one die.
   final Map<String, String> diceSkillAssignments;
 
+  /// How the companion feels about the player's choices (see approval.dart).
+  final int approval;
+
+  /// The chapter a drink was last shared with them at the camp (0: never),
+  /// so it's once a chapter.
+  final int giftChapter;
+
   AllyState copyWith({
     int? currentHealth,
     List<String>? equippedItemIds,
     List<String>? unlockedSkillIds,
     int? skillPoints,
     Map<String, String>? diceSkillAssignments,
+    int? approval,
+    int? giftChapter,
   }) {
     return AllyState(
       companionId: companionId,
@@ -68,6 +81,8 @@ class AllyState {
       unlockedSkillIds: unlockedSkillIds ?? this.unlockedSkillIds,
       skillPoints: skillPoints ?? this.skillPoints,
       diceSkillAssignments: diceSkillAssignments ?? this.diceSkillAssignments,
+      approval: approval ?? this.approval,
+      giftChapter: giftChapter ?? this.giftChapter,
     );
   }
 
@@ -78,6 +93,8 @@ class AllyState {
         'unlockedSkillIds': unlockedSkillIds,
         'skillPoints': skillPoints,
         'diceSkillAssignments': diceSkillAssignments,
+        'approval': approval,
+        'giftChapter': giftChapter,
       };
 
   factory AllyState.fromJson(Map<String, dynamic> json) {
@@ -98,6 +115,8 @@ class AllyState {
                 MapEntry(faceIndex.toString(), skillId.toString()),
           ) ??
           const {},
+      approval: (json['approval'] as num?)?.toInt() ?? startingApproval,
+      giftChapter: (json['giftChapter'] as num?)?.toInt() ?? 0,
     );
   }
 }

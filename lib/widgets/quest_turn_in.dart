@@ -7,18 +7,25 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../data/companion_remarks.dart';
+import '../data/turn_in_choices.dart';
+import 'approval_notice.dart';
+import 'companion_remark_bubble.dart';
 import 'immersive_notice.dart';
 import 'level_up_dialog.dart';
+import 'turn_in_choice_dialog.dart';
 
 /// Takes on [questId] (it becomes the followed quest when none is) and
 /// says so.
 Future<void> acceptQuestWithNotice(
     BuildContext context, WidgetRef ref, String questId) async {
-  await ref.read(playerSessionProvider.notifier).acceptQuest(questId);
-  if (!context.mounted) return;
-  final lang = ref.read(appLanguageProvider);
   final quest = (ref.read(localizedDbProvider(questsSchema)).value ??
       const {})[questId] as Map<String, dynamic>?;
+  await ref
+      .read(playerSessionProvider.notifier)
+      .acceptQuest(questId, quest: quest);
+  if (!context.mounted) return;
+  final lang = ref.read(appLanguageProvider);
   showImmersiveNotice(
     context,
     icon: Icons.assignment_turned_in_outlined,
@@ -44,7 +51,18 @@ Future<void> turnInQuest(
   final companions = db(companionsSchema);
   final items = db(itemsSchema);
 
-  var rewardGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
+  // A quest that asks how it's settled (see turn_in_choices.dart) pays by
+  // the choice; backing out leaves it open.
+  final choices = turnInChoicesOf(quest);
+  TurnInChoice? picked;
+  if (choices.isNotEmpty) {
+    picked = await showTurnInChoiceDialog(context, ref,
+        quest: quest, choices: choices);
+    if (picked == null || !context.mounted) return;
+  }
+  final questGold = (quest['rewardGold'] as num?)?.toInt() ?? 0;
+  final questAlignment = (quest['alignmentChange'] as num?)?.toInt() ?? 0;
+  var rewardGold = picked?.goldFor(questGold) ?? questGold;
   final rewardXp = (quest['rewardXP'] as num?)?.toInt() ?? 0;
   final rewardItemId = quest['rewardItemID']?.toString();
   final nextQuestId = quest['nextQuestID']?.toString();
@@ -64,7 +82,7 @@ Future<void> turnInQuest(
   }
   final rewardAllyId = quest['rewardAllyId']?.toString();
   final grantsBannerPieceId = quest['grantsBannerPieceId']?.toString();
-  final alignmentMod = (quest['alignmentChange'] as num?)?.toInt() ?? 0;
+  final alignmentMod = picked?.alignmentFor(questAlignment) ?? questAlignment;
   final rewardItem = rewardItemId == null
       ? null
       : items[rewardItemId] as Map<String, dynamic>?;
@@ -97,6 +115,22 @@ Future<void> turnInQuest(
     );
     recruitedName = companion?['companionName']?.toString() ?? rewardAllyId;
   }
+  if (picked != null && picked.flag.isNotEmpty) {
+    await notifier.applyChoiceEffects(flagsToAdd: [picked.flag]);
+  }
+  // The party's reaction to how it was settled (see approval.dart); a
+  // companion who just joined sees it too.
+  final deed = RemarkDeed(
+    alignmentMod: alignmentMod,
+    goldMod: picked?.profitOver(questGold) ?? 0,
+    approvalMods: picked?.approvalMods ?? const {},
+  );
+  final reactions = await notifier.reactToDeed(
+    companions: companions,
+    alignmentMod: deed.alignmentMod,
+    goldMod: deed.goldMod,
+    approvalMods: deed.approvalMods,
+  );
   final newAchievements =
       await notifier.checkAchievements(totalCompanionCount: companions.length);
   if (!context.mounted) return;
@@ -119,6 +153,7 @@ Future<void> turnInQuest(
   ];
   final lines = [
     '${trFor(lang, 'quest_complete_prefix')}: $questName (${gains.join(', ')})',
+    if (picked != null && picked.resultText.isNotEmpty) picked.resultText,
     if (tradedDieName != null)
       trFor(lang, 'reward_die_traded').replaceAll('{die}', tradedDieName),
     if (grantsBannerPieceId != null && grantsBannerPieceId.isNotEmpty)
@@ -126,12 +161,22 @@ Future<void> turnInQuest(
     if (achievementNames.isNotEmpty)
       '${trFor(lang, 'achievement_unlocked_prefix')}: '
           '${achievementNames.join(', ')}',
+    ...approvalReactionLines(reactions, companions, (key) => trFor(lang, key)),
   ];
-  showImmersiveNotice(
+  // What the party says about how it was settled (see
+  // companion_remarks.dart) comes after the notice, in speech bubbles.
+  final remarks = speakUpAbout(ref, reactions: reactions, deed: deed);
+  await showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
     message: lines.join('\n'),
   );
+  if (!context.mounted) return;
+  await showSpokenLines(context, ref, [
+    ...approvalReactionWords(reactions, companions),
+    ...spokenRemarks(ref, remarks),
+  ]);
+  if (!context.mounted) return;
   if (leveledUp) {
     showLevelUpDialog(context, ref,
         newLevel: ref.read(playerSessionProvider).level);

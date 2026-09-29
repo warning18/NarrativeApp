@@ -237,9 +237,14 @@ class _PartyMember {
 /// [targetId] ever gets a live fallback re-pick, if the cached target was
 /// knocked out in the meantime.
 class _PendingEnemyMove {
-  const _PendingEnemyMove({required this.move, required this.targetId});
+  const _PendingEnemyMove(
+      {required this.move, required this.targetId, this.release = false});
 
   final EnemyMoveResult move;
+
+  /// True when this is the blow a wind-up (see [_EnemyMember.chargedBlow])
+  /// releases: executing it spends the charge.
+  final bool release;
 
   /// The [_PartyMember.id] this move is aimed at.
   final String targetId;
@@ -341,6 +346,35 @@ class _EnemyMember {
   BossPhase? get currentPhase => phaseIndex > 0 && phaseIndex <= phases.length
       ? phases[phaseIndex - 1]
       : null;
+
+  /// Block from a raised guard (see EnemyIntent.guard): it soaks the
+  /// party's hits and drops when the enemy's next turn comes round.
+  int guard = 0;
+
+  /// The blow a wind-up is holding (see EnemyIntent.charge): released on
+  /// the enemy's next turn unless the party breaks it (see chargeBroken).
+  EnemyMoveResult? chargedBlow;
+
+  /// Set when the party broke the wind-up: the enemy reels and loses its
+  /// next turn.
+  bool staggered = false;
+
+  /// Damage the party has dealt this enemy since the current round began,
+  /// and whether any of it hit a weakness: what breaks a wind-up.
+  int damageThisRound = 0;
+  bool hitWeaknessThisRound = false;
+
+  /// How many rallies have raised this enemy's damage (capped at
+  /// maxRallyStacks).
+  int rallyStacks = 0;
+
+  /// Elements this enemy was hit with this fight that turned out to be a
+  /// weakness or a resistance: shown on its card from then on.
+  final Set<String> revealedElements = {};
+
+  /// The enemy's unscaled max health in enemies.json -- what its heals
+  /// scale from (see scaledEnemyHeal).
+  int get baseMaxHealth => (data['maxHealth'] as num?)?.toInt() ?? maxHealth;
 
   bool get isAlive => currentHealth > 0;
 }
