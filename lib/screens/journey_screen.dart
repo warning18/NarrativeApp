@@ -1,6 +1,8 @@
 import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
@@ -25,6 +27,7 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/journey_fx.dart';
 import '../widgets/player_stats_bar.dart';
 import 'journal_screen.dart';
 import 'story_player_screen.dart'
@@ -118,7 +121,8 @@ class _JourneyView extends ConsumerStatefulWidget {
   ConsumerState<_JourneyView> createState() => _JourneyViewState();
 }
 
-class _JourneyViewState extends ConsumerState<_JourneyView> {
+class _JourneyViewState extends ConsumerState<_JourneyView>
+    with SingleTickerProviderStateMixin {
   /// The scene the selection and the chart belong to; a new scene clears
   /// the one and draws a new other.
   String? _sceneKey;
@@ -137,6 +141,26 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
   /// scene's map takes over.
   Offset _terrainShift = Offset.zero;
 
+  /// The place and chapter the map last showed: reaching a new place
+  /// stamps its name on the map, a new chapter burns its map open.
+  String? _shownPlace;
+  int? _shownChapter;
+  String? _stamp;
+  bool _burn = false;
+
+  /// Counts the times the tab is opened from another: the map unrolls.
+  int _unroll = 0;
+
+  /// The jolt going into a fight: the map shakes and its edges run red.
+  late final AnimationController _jolt = AnimationController(
+      vsync: this, duration: const Duration(milliseconds: 380));
+
+  @override
+  void dispose() {
+    _jolt.dispose();
+    super.dispose();
+  }
+
   String _sceneKeyOf(StoryPlayState play) =>
       '${play.activeExcursionNode?.id ?? play.currentNodeId}'
       '_${play.isInExcursion}_${play.history.length}';
@@ -153,6 +177,13 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
       }
       if (!mounted) return;
       if (walked != null) _terrainShift += walked;
+      if (walked != null &&
+          (step.kind == JourneyStepKind.fight ||
+              step.kind == JourneyStepKind.expedition)) {
+        await _jolt.forward(from: 0);
+        if (!mounted) return;
+      }
+      if (!mounted) return;
       await takeStoryChoice(context, ref, step.choice);
     } finally {
       if (mounted) {
@@ -178,49 +209,77 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
 
   /// A scene passed earlier: where it was, how the party left it, and the
   /// scene itself.
-  void _showPast(_PastMark mark) {
+  void _showPast(_PastMark mark, Offset origin) {
     final story = widget.story;
     final node = story.nodeFor(mark.nodeId);
     if (node == null) return;
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
     final text =
         composeNarration(node, ref.read(playerSessionProvider), french: french);
-    showModalBottomSheet<void>(
+    // The sheet grows out of the scene's mark on the road.
+    final screen = MediaQuery.of(context).size;
+    final alignment = Alignment(
+      (origin.dx / screen.width * 2 - 1).clamp(-1.0, 1.0),
+      (origin.dy / screen.height * 2 - 1).clamp(-1.0, 1.0),
+    );
+    final still = MediaQuery.of(context).disableAnimations;
+    showGeneralDialog<void>(
       context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (context) {
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      transitionDuration: Duration(milliseconds: still ? 0 : 300),
+      transitionBuilder: (context, animation, _, child) {
+        final curved =
+            CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        return FadeTransition(
+          opacity: curved,
+          child: ScaleTransition(
+              scale: curved, alignment: alignment, child: child),
+        );
+      },
+      pageBuilder: (context, _, __) {
         final theme = Theme.of(context);
         final ink = InkColors.of(context);
-        return ConstrainedBox(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.7),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (mark.place != null)
-                  Text(mark.place!,
-                      style: theme.textTheme.titleLarge
-                          ?.copyWith(fontFamily: InkFonts.display)),
-                const SizedBox(height: 8),
-                Text(
-                  text,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                      fontFamily: InkFonts.prose, fontSize: 15, height: 1.45),
+        return Align(
+          alignment: Alignment.bottomCenter,
+          child: Material(
+            color: theme.colorScheme.surfaceContainerLow,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (mark.place != null)
+                      Text(mark.place!,
+                          style: theme.textTheme.titleLarge
+                              ?.copyWith(fontFamily: InkFonts.display)),
+                    const SizedBox(height: 8),
+                    Text(
+                      text,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                          fontFamily: InkFonts.prose,
+                          fontSize: 15,
+                          height: 1.45),
+                    ),
+                    if (mark.way != null) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        tr(ref, 'journey_way_taken')
+                            .replaceAll('{way}', mark.way!),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                            fontFamily: InkFonts.prose,
+                            fontStyle: FontStyle.italic,
+                            color: ink.ash),
+                      ),
+                    ],
+                  ],
                 ),
-                if (mark.way != null) ...[
-                  const SizedBox(height: 12),
-                  Text(
-                    tr(ref, 'journey_way_taken').replaceAll('{way}', mark.way!),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                        fontFamily: InkFonts.prose,
-                        fontStyle: FontStyle.italic,
-                        color: ink.ash),
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
         );
@@ -239,8 +298,16 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
     final palette = ChartPalette.of(look);
     final node = play.activeExcursionNode ?? story.nodeFor(play.currentNodeId);
 
+    // Opened from another tab: the map unrolls.
+    ref.listen<int>(homeTabIndexProvider, (previous, next) {
+      if (next == journeyTabIndex && previous != journeyTabIndex) {
+        setState(() => _unroll++);
+      }
+    });
+
     final sceneKey = _sceneKeyOf(play);
-    if (sceneKey != _sceneKey) {
+    final newScene = sceneKey != _sceneKey;
+    if (newScene) {
       _sceneKey = sceneKey;
       _selected = null;
       _chartKey = GlobalKey();
@@ -301,6 +368,20 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
     final hereName = play.isInExcursion
         ? tr(ref, 'detour')
         : node.settlement?.nameFor(french) ?? standing?.name(language) ?? '';
+    final chapter = chapterOfNode(play.currentNodeId);
+    if (newScene) {
+      // A place not shown before is stamped on the map; a new chapter
+      // burns its map open. The first map the tab shows does neither.
+      _stamp = _shownPlace != null &&
+              !play.isInExcursion &&
+              hereName.isNotEmpty &&
+              hereName != _shownPlace
+          ? hereName
+          : null;
+      _burn = _shownChapter != null && chapter != _shownChapter;
+      if (!play.isInExcursion) _shownPlace = hereName;
+      _shownChapter = chapter;
+    }
 
     // The chapter behind it, latest first. On a detour the scene it
     // interrupts is the latest, left by the way the detour is met on.
@@ -427,29 +508,65 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
                               )
                             : TutorialTarget(
                                 id: 'journey.chart',
-                                child: AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 280),
-                                  child: _JourneyChart(
-                                    key: _chartKey,
-                                    steps: steps,
-                                    selected: _selected,
-                                    hereName: hereName,
-                                    youAreHere: tr(ref, 'journey_you_are_here'),
-                                    leadsTo: tr(ref, 'journey_leads_to'),
-                                    past: pastMarks,
-                                    pastReachesStart: past.reachesStart,
-                                    chapterStart:
-                                        tr(ref, 'journey_chapter_start'),
-                                    palette: palette,
-                                    ink: look == MapLook.parchment
-                                        ? InkColors.light
-                                        : InkColors.dark,
-                                    greyed: look == MapLook.shroud,
-                                    terrainShift: _terrainShift,
-                                    terrainSeed: 7 +
-                                        chapterOfNode(play.currentNodeId) * 13,
-                                    onTap: _tap,
-                                    onPastTap: _showPast,
+                                // Going into a fight the map jolts and its
+                                // edges run red (see _take).
+                                child: AnimatedBuilder(
+                                  animation: _jolt,
+                                  builder: (context, child) {
+                                    final t = _jolt.value;
+                                    if (t == 0 || t == 1) return child!;
+                                    final shake =
+                                        math.sin(t * math.pi * 7) * 6 * (1 - t);
+                                    return Stack(
+                                      fit: StackFit.passthrough,
+                                      children: [
+                                        Transform.translate(
+                                          offset: Offset(shake, shake * 0.4),
+                                          child: child,
+                                        ),
+                                        Positioned.fill(
+                                          child: IgnorePointer(
+                                            child: CustomPaint(
+                                              painter: JourneyJoltPainter(
+                                                t: t,
+                                                colour: InkColors.dark.blood,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                  child: AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 280),
+                                    child: _JourneyChart(
+                                      key: _chartKey,
+                                      steps: steps,
+                                      selected: _selected,
+                                      hereName: hereName,
+                                      youAreHere:
+                                          tr(ref, 'journey_you_are_here'),
+                                      leadsTo: tr(ref, 'journey_leads_to'),
+                                      past: pastMarks,
+                                      pastReachesStart: past.reachesStart,
+                                      chapterStart:
+                                          tr(ref, 'journey_chapter_start'),
+                                      palette: palette,
+                                      ink: look == MapLook.parchment
+                                          ? InkColors.light
+                                          : InkColors.dark,
+                                      greyed: look == MapLook.shroud,
+                                      terrainShift: _terrainShift,
+                                      terrainSeed: 7 +
+                                          chapterOfNode(play.currentNodeId) *
+                                              13,
+                                      onTap: _tap,
+                                      onPastTap: _showPast,
+                                      stamp: _stamp,
+                                      burn: _burn,
+                                      unroll: _unroll,
+                                      weather: journeyWeatherFor(chapter),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -557,7 +674,12 @@ class _ScenePanel extends ConsumerWidget {
           ),
           const SizedBox(height: 4),
         ],
-        Text(text, style: prose),
+        // A new scene's words come out of the ink, top to bottom.
+        InkReveal(
+          key: ValueKey(text),
+          animate: !reading && !MediaQuery.of(context).disableAnimations,
+          child: Text(text, style: prose),
+        ),
       ],
     );
     return DecoratedBox(
@@ -770,7 +892,23 @@ class _JourneyChart extends StatefulWidget {
     required this.terrainSeed,
     required this.onTap,
     required this.onPastTap,
+    this.stamp,
+    this.burn = false,
+    this.unroll = 0,
+    this.weather = JourneyWeather.none,
   });
+
+  /// A place reached that the map hadn't shown: its name is stamped.
+  final String? stamp;
+
+  /// A new chapter: the map burns open from the party's mark.
+  final bool burn;
+
+  /// Changes each time the tab is opened from another: the map unrolls.
+  final int unroll;
+
+  /// The chapter's weather (see journeyWeatherFor).
+  final JourneyWeather weather;
 
   final List<_Step> steps;
   final int? selected;
@@ -798,14 +936,14 @@ class _JourneyChart extends StatefulWidget {
   final Offset terrainShift;
   final int terrainSeed;
   final void Function(int index, _Step step) onTap;
-  final void Function(_PastMark mark) onPastTap;
+  final void Function(_PastMark mark, Offset origin) onPastTap;
 
   @override
   State<_JourneyChart> createState() => _JourneyChartState();
 }
 
 class _JourneyChartState extends State<_JourneyChart>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   static const double _stepRadius = 22;
   static const double _hereRadius = 26;
   static const double _top = 40;
@@ -830,11 +968,111 @@ class _JourneyChartState extends State<_JourneyChart>
   Offset _here = Offset.zero;
   List<Offset> _centres = const [];
 
+  // --- Motion (see journey_fx.dart) ---------------------------------------
+
+  /// Seconds the map has been on screen: the effects are drawn from it.
+  final ValueNotifier<double> _clock = ValueNotifier(0);
+
+  /// Ticks while something on the map is still arriving (the ways inking
+  /// in, the stamp, the unroll, a burn, a rattle), for the widgets.
+  final ValueNotifier<double> _phase = ValueNotifier(0);
+  Ticker? _ticker;
+  double _clockBase = 0;
+  bool _animate = false;
+
+  /// When the last one-off moment began, on the clock.
+  double _lastEvent = 0;
+  double _unrollAt = -10;
+  (int, double)? _rattle;
+  final List<JourneyFootprint> _footprints = [];
+  (Offset, double)? _dust;
+  ui.PathMetric? _walkRoad;
+  double _nextPrint = 0;
+  int _printSide = 1;
+
+  @override
+  void initState() {
+    super.initState();
+    _walk.addListener(_onWalk);
+    _walk.addStatusListener((status) {
+      if (status == AnimationStatus.completed && _walking != null) {
+        final i = _walking!;
+        if (i < _centres.length) _dust = (_centres[i], _clock.value);
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Only on screen, and not with the system's reduced motion.
+    final animate = !MediaQuery.of(context).disableAnimations &&
+        Visibility.of(context) &&
+        TickerMode.valuesOf(context).enabled;
+    if (animate == _animate) return;
+    _animate = animate;
+    if (animate) {
+      _ticker ??= createTicker((elapsed) {
+        final now = _clockBase + elapsed.inMicroseconds / 1e6;
+        _clock.value = now;
+        if (now - _lastEvent < 3.8) _phase.value = now;
+      });
+      _ticker!.start();
+    } else if (_ticker?.isActive ?? false) {
+      _clockBase = _clock.value;
+      _ticker!.stop();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant _JourneyChart old) {
+    super.didUpdateWidget(old);
+    if (old.unroll != widget.unroll) {
+      _unrollAt = _clock.value;
+      _lastEvent = _clock.value;
+    }
+  }
+
+  void _onWalk() {
+    final road = _walkRoad;
+    if (road == null || !_animate) return;
+    final t = Curves.easeInOut.transform(_walk.value);
+    // A footprint every little way, left and right.
+    while (_nextPrint <= t && _nextPrint < 0.97) {
+      final tangent = road.getTangentForOffset(road.length * _nextPrint);
+      if (tangent != null) {
+        final normal = Offset(-tangent.vector.dy, tangent.vector.dx);
+        _footprints.add(JourneyFootprint(
+          tangent.position + normal * 4.0 * _printSide.toDouble(),
+          _clock.value,
+          math.atan2(tangent.vector.dy, tangent.vector.dx) + math.pi / 2,
+        ));
+        _printSide = -_printSide;
+      }
+      _nextPrint += 0.07;
+    }
+  }
+
+  /// How far the ways have inked in (0 to 1): all of them at once with
+  /// the system's reduced motion, or on a new chapter (which burns open).
+  double get _reveal =>
+      !_animate || widget.burn ? 1 : (_clock.value / 1.0).clamp(0.0, 1.0);
+
+  /// Step [i]'s road drawn so far, and its mark's pop.
+  double _roadReveal(int i) =>
+      ((_reveal - i * 0.08) / 0.55).clamp(0.0, 1.0).toDouble();
+  double _markReveal(int i) =>
+      ((_reveal - 0.4 - i * 0.08) / 0.35).clamp(0.0, 1.0).toDouble();
+
   /// Walks the party's mark along the road to step [index], the map
   /// following it and coming back to where it opened; returns how far the
   /// party went (the step's place less its own).
   Future<Offset?> walkTo(int index) async {
     if (index >= _centres.length) return null;
+    _walkRoad = _roadPath(_here, _centres[index]).computeMetrics().first;
+    _nextPrint = 0.07;
+    _footprints.clear();
+    _dust = null;
     setState(() => _walking = index);
     final scroll = _scroll;
     if (scroll != null &&
@@ -856,6 +1094,9 @@ class _JourneyChartState extends State<_JourneyChart>
 
   @override
   void dispose() {
+    _ticker?.dispose();
+    _clock.dispose();
+    _phase.dispose();
     _walk.dispose();
     _scroll?.dispose();
     super.dispose();
@@ -931,13 +1172,13 @@ class _JourneyChartState extends State<_JourneyChart>
             color: palette.label,
           );
 
-          return SingleChildScrollView(
+          final map = SingleChildScrollView(
             controller: _scroll,
             child: SizedBox(
               width: width,
               height: height,
               child: AnimatedBuilder(
-                animation: _walk,
+                animation: Listenable.merge([_walk, _phase]),
                 builder: (context, _) {
                   // The walk: the mark goes along its road, and the map
                   // follows a little behind, so the step taken ends where
@@ -955,7 +1196,23 @@ class _JourneyChartState extends State<_JourneyChart>
                     traveller = at(t);
                     camera = here - at(t * t);
                   }
-                  return Transform.translate(
+                  final now = _clock.value;
+                  final walkingKind = walking != null && walking < steps.length
+                      ? steps[walking].kind
+                      : null;
+                  final selectedIndex = walking ?? widget.selected;
+                  Path? selectedRoad;
+                  if (widget.selected != null &&
+                      walking == null &&
+                      widget.selected! < centres.length &&
+                      !steps[widget.selected!].locked) {
+                    selectedRoad = _roadPath(
+                        _roadStart(here, centres[widget.selected!], width),
+                        centres[widget.selected!].translate(0, _stepRadius));
+                  }
+                  final burning = _animate && widget.burn && now < 1.4;
+                  final burnT = (now / 1.3).clamp(0.0, 1.0);
+                  final chart = Transform.translate(
                     offset: camera,
                     child: Stack(
                       clipBehavior: Clip.none,
@@ -994,9 +1251,81 @@ class _JourneyChartState extends State<_JourneyChart>
                               pastGoesOn: !widget.pastReachesStart,
                               walking: walking,
                               progress: t,
+                              reveals: [
+                                for (var i = 0; i < steps.length; i++)
+                                  _roadReveal(i),
+                              ],
                             ),
                           ),
                         ),
+                        // What each step holds, the weather, the picked
+                        // road flowing, footprints (see journey_fx.dart).
+                        if (_animate)
+                          Positioned.fill(
+                            child: IgnorePointer(
+                              child: CustomPaint(
+                                painter: JourneyFxPainter(
+                                  time: _clock,
+                                  steps: [
+                                    for (var i = 0; i < steps.length; i++)
+                                      if (_markReveal(i) >= 1)
+                                        JourneyFxStep(
+                                          centre: centres[i],
+                                          kind: steps[i].kind,
+                                          colour: _colorFor(steps[i].kind,
+                                              widget.ink, palette,
+                                              greyed: widget.greyed),
+                                          locked: steps[i].locked,
+                                          row: steps[i].slot.row,
+                                        ),
+                                  ],
+                                  here: traveller ?? here,
+                                  hereRadius: _hereRadius,
+                                  stepRadius: _stepRadius,
+                                  mark: palette.mark,
+                                  fog: palette.fog,
+                                  weather: widget.greyed
+                                      ? JourneyWeather.none
+                                      : widget.weather,
+                                  weatherColour: switch (widget.weather) {
+                                    JourneyWeather.rain =>
+                                      const Color(0xFF8FC3CF),
+                                    JourneyWeather.snow =>
+                                      const Color(0xFFEFF3F6),
+                                    _ => palette.place,
+                                  },
+                                  selectedRoad: selectedRoad,
+                                  selected: walking == null &&
+                                          selectedIndex != null &&
+                                          selectedIndex < steps.length &&
+                                          !steps[selectedIndex].locked &&
+                                          _markReveal(selectedIndex) >= 1
+                                      ? selectedIndex
+                                      : null,
+                                  footprints: _footprints,
+                                  footprintColour: palette.place,
+                                  dust: _dust,
+                                  dice: traveller != null &&
+                                          (walkingKind ==
+                                                  JourneyStepKind.check ||
+                                              walkingKind ==
+                                                  JourneyStepKind.challenge)
+                                      ? traveller.translate(
+                                          _hereRadius * 0.9,
+                                          -_hereRadius -
+                                              10 +
+                                              math.sin(now * 14).abs() * -8)
+                                      : null,
+                                  diceColour: widget.ink.tide,
+                                  rattle: _rattle == null ||
+                                          _rattle!.$1 >= centres.length
+                                      ? null
+                                      : (centres[_rattle!.$1], _rattle!.$2),
+                                  rattleColour: widget.ink.blood,
+                                ),
+                              ),
+                            ),
+                          ),
                         // The chapter's earlier scenes.
                         for (var i = 0; i < widget.past.length; i++)
                           _pastLabel(
@@ -1062,16 +1391,151 @@ class _JourneyChartState extends State<_JourneyChart>
                             top: traveller.dy - _hereRadius,
                             child: _partyMark(palette),
                           ),
+                        // A place the map hadn't shown: its name stamped
+                        // over the mark, ink spreading under it.
+                        if (widget.stamp != null && _animate && now < 4.2)
+                          ..._stampMark(here, now, width),
                       ],
                     ),
+                  );
+                  if (!burning) return chart;
+                  // A new chapter: its map burns open from the mark.
+                  return Stack(
+                    children: [
+                      ClipPath(
+                        clipper: JourneyBurnClipper(t: burnT, centre: here),
+                        child: chart,
+                      ),
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: JourneyBurnPainter(
+                                t: burnT,
+                                centre: here,
+                                ember: widget.ink.ember),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
             ),
           );
+          // Opened from another tab, the map unrolls down from the scene
+          // on a gold rod.
+          return AnimatedBuilder(
+            animation: _phase,
+            child: map,
+            builder: (context, child) {
+              final f = _animate
+                  ? Curves.easeInOutCubic.transform(
+                      ((_clock.value - _unrollAt) / 0.55).clamp(0.0, 1.0))
+                  : 1.0;
+              if (f >= 1) return child!;
+              final h = box.maxHeight;
+              return Stack(
+                children: [
+                  ClipRect(
+                    clipper: _TopReveal(f),
+                    child: child,
+                  ),
+                  Positioned(
+                    left: 0,
+                    right: 0,
+                    top: (h * f - 3).clamp(0.0, h - 6),
+                    height: 6,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(3),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [palette.mark, widget.ink.gold],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
         }),
       ),
     );
+  }
+
+  List<Widget> _stampMark(Offset here, double now, double width) {
+    final palette = widget.palette;
+    final appear = ((now - 0.9) / 0.6).clamp(0.0, 1.0);
+    final fade = ((4.2 - now) / 0.6).clamp(0.0, 1.0);
+    final s = Curves.easeOutBack.transform(appear);
+    final spread = ((now - 0.95) / 1.1).clamp(0.0, 1.0);
+    return [
+      if (spread > 0 && spread < 1)
+        Positioned(
+          left: here.dx - 90,
+          top: here.dy - 90,
+          width: 180,
+          height: 180,
+          child: IgnorePointer(
+            child: Opacity(
+              opacity: (1 - spread) * 0.7,
+              child: Transform.scale(
+                scale: 0.3 + spread * 1.2,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(colors: [
+                      palette.mark.withValues(alpha: 0.5),
+                      palette.mark.withValues(alpha: 0),
+                    ]),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      if (appear > 0)
+        Positioned(
+          left: 0,
+          width: width,
+          // Under the mark, over the road behind: the ways ahead keep
+          // their words.
+          top: here.dy + _hereRadius + 10,
+          child: IgnorePointer(
+            child: Center(
+              child: Opacity(
+                opacity: (appear * 2).clamp(0.0, 1.0) * fade,
+                child: Transform.rotate(
+                  angle: -0.1 + (1 - s) * -0.14,
+                  child: Transform.scale(
+                    scale: 1.6 - 0.6 * s,
+                    child: Container(
+                      key: const ValueKey('journey_stamp'),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: palette.land.withValues(alpha: 0.75),
+                        borderRadius: BorderRadius.circular(4),
+                        border: Border.all(color: palette.mark, width: 2),
+                      ),
+                      child: Text(
+                        widget.stamp!,
+                        style: TextStyle(
+                          fontFamily: InkFonts.display,
+                          fontSize: 16,
+                          color: palette.mark,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+    ];
   }
 
   Widget _partyMark(ChartPalette palette) => Container(
@@ -1123,40 +1587,50 @@ class _JourneyChartState extends State<_JourneyChart>
       left: onRight ? point.dx + 14 : point.dx - 14 - labelWidth,
       width: labelWidth,
       top: point.dy - 9,
-      child: GestureDetector(
-        key: ValueKey('journey_past_$i'),
-        behavior: HitTestBehavior.opaque,
-        onTap: () => widget.onPastTap(mark),
-        child: Opacity(
-          opacity: fade,
-          child: Column(
-            crossAxisAlignment:
-                onRight ? CrossAxisAlignment.start : CrossAxisAlignment.end,
-            children: [
-              if (mark.newPlace && mark.place != null)
-                Text(
-                  mark.place!.toUpperCase(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: onRight ? TextAlign.left : TextAlign.right,
-                  style: noteStyle.copyWith(
-                      fontSize: 10,
-                      letterSpacing: 1.2,
-                      color: palette.place.withValues(alpha: 0.8)),
-                ),
-              if (mark.way != null)
-                Text(
-                  mark.way!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: onRight ? TextAlign.left : TextAlign.right,
-                  style: placeStyle.copyWith(
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                    color: palette.place.withValues(alpha: 0.75),
+      child: Builder(
+        builder: (context) => GestureDetector(
+          key: ValueKey('journey_past_$i'),
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            // The sheet grows out of the scene's mark.
+            final box = context.findRenderObject() as RenderBox?;
+            final origin = box == null
+                ? Offset.zero
+                : box.localToGlobal(
+                    Offset(onRight ? 0 : box.size.width, box.size.height / 2));
+            widget.onPastTap(mark, origin);
+          },
+          child: Opacity(
+            opacity: fade,
+            child: Column(
+              crossAxisAlignment:
+                  onRight ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              children: [
+                if (mark.newPlace && mark.place != null)
+                  Text(
+                    mark.place!.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: onRight ? TextAlign.left : TextAlign.right,
+                    style: noteStyle.copyWith(
+                        fontSize: 10,
+                        letterSpacing: 1.2,
+                        color: palette.place.withValues(alpha: 0.8)),
                   ),
-                ),
-            ],
+                if (mark.way != null)
+                  Text(
+                    mark.way!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: onRight ? TextAlign.left : TextAlign.right,
+                    style: placeStyle.copyWith(
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                      color: palette.place.withValues(alpha: 0.75),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1174,12 +1648,23 @@ class _JourneyChartState extends State<_JourneyChart>
         ? palette.label
         : _colorFor(step.kind, widget.ink, palette, greyed: widget.greyed);
     final isSelected = widget.selected == i || _walking == i;
+    // A new scene: the mark pops in once its road reaches it, and the
+    // words fade up after.
+    final pop = _markReveal(i);
+    final popScale = pop >= 1 ? 1.0 : Curves.easeOutBack.transform(pop);
+    // A shut way tapped shakes its padlock.
+    final rattle = _rattle;
+    final rattleAge =
+        rattle != null && rattle.$1 == i ? _clock.value - rattle.$2 : 1.0;
+    final shake = rattleAge < 0.45
+        ? math.sin(rattleAge * 42) * 0.35 * (1 - rattleAge / 0.45)
+        : 0.0;
     return Positioned(
       left: left,
       top: centre.dy - _stepRadius,
       width: w,
       child: Opacity(
-        opacity: 1 - fading * 0.7,
+        opacity: (1 - fading * 0.7) * pop.clamp(0.0, 1.0),
         child: Semantics(
           button: true,
           selected: isSelected,
@@ -1187,14 +1672,24 @@ class _JourneyChartState extends State<_JourneyChart>
           child: GestureDetector(
             key: ValueKey('journey_step_$i'),
             behavior: HitTestBehavior.opaque,
-            onTap: _walking == null ? () => widget.onTap(i, step) : null,
+            onTap: _walking == null
+                ? () {
+                    if (step.locked && _animate) {
+                      _rattle = (i, _clock.value);
+                      _lastEvent = _clock.value;
+                    }
+                    widget.onTap(i, step);
+                  }
+                : null,
             child: Column(
               children: [
                 Transform.translate(
                   offset: Offset(centre.dx - left - w / 2, 0),
                   child: AnimatedScale(
-                    scale: isSelected ? 1.15 : 1,
-                    duration: const Duration(milliseconds: 160),
+                    scale: (isSelected ? 1.15 : 1) * popScale,
+                    duration: pop >= 1
+                        ? const Duration(milliseconds: 160)
+                        : Duration.zero,
                     child: Container(
                       width: _stepRadius * 2,
                       height: _stepRadius * 2,
@@ -1206,10 +1701,15 @@ class _JourneyChartState extends State<_JourneyChart>
                           width: isSelected ? 3 : 2,
                         ),
                       ),
-                      child: Icon(
-                        step.locked ? Icons.lock_outline : _iconFor(step.kind),
-                        size: 20,
-                        color: isSelected ? palette.land : colour,
+                      child: Transform.rotate(
+                        angle: shake,
+                        child: Icon(
+                          step.locked
+                              ? Icons.lock_outline
+                              : _iconFor(step.kind),
+                          size: 20,
+                          color: isSelected ? palette.land : colour,
+                        ),
                       ),
                     ),
                   ),
@@ -1262,6 +1762,29 @@ class _JourneyChartState extends State<_JourneyChart>
 
 /// The road from [from] up to [to]: leaving straight up, arriving from
 /// straight below.
+/// Where step [centre]'s road leaves the party's mark: on the side it
+/// heads for (as _JourneyPainter draws it).
+Offset _roadStart(Offset here, Offset centre, double width) {
+  final lean =
+      ((centre.dx - here.dx) / width * 1.6).clamp(-math.pi / 3, math.pi / 3);
+  return here +
+      Offset(math.sin(lean) * _JourneyChartState._hereRadius,
+          -math.cos(lean) * _JourneyChartState._hereRadius);
+}
+
+/// The top [fraction] of the map, as it unrolls.
+class _TopReveal extends CustomClipper<Rect> {
+  const _TopReveal(this.fraction);
+  final double fraction;
+
+  @override
+  Rect getClip(Size size) =>
+      Rect.fromLTWH(0, 0, size.width, size.height * fraction);
+
+  @override
+  bool shouldReclip(_TopReveal old) => old.fraction != fraction;
+}
+
 Path _roadPath(Offset from, Offset to) {
   final dy = (from.dy - to.dy).abs();
   return Path()
@@ -1376,7 +1899,12 @@ class _JourneyPainter extends CustomPainter {
     required this.pastGoesOn,
     required this.walking,
     required this.progress,
+    this.reveals = const [],
   });
+
+  /// How much of each way's road has inked in (a new scene draws them out
+  /// from the mark, one after the other); missing means all of it.
+  final List<double> reveals;
 
   final ChartPalette palette;
   final Offset here;
@@ -1488,7 +2016,13 @@ class _JourneyPainter extends CustomPainter {
       final start = here +
           Offset(math.sin(lean) * hereRadius, -math.cos(lean) * hereRadius);
       final end = step.centre.translate(0, stepRadius);
-      final path = _roadPath(start, end);
+      var path = _roadPath(start, end);
+      final reveal = s < reveals.length ? reveals[s] : 1.0;
+      if (reveal <= 0) continue;
+      if (reveal < 1) {
+        final metric = path.computeMetrics().first;
+        path = metric.extractPath(0, metric.length * reveal);
+      }
       final fade = walking != null && walking != s ? 1 - progress * 0.8 : 1.0;
       final paint = Paint()
         ..style = PaintingStyle.stroke
@@ -1507,7 +2041,7 @@ class _JourneyPainter extends CustomPainter {
       }
       // What lies past the step: a dot for each way on from it, at the
       // edge of the fog.
-      if (!step.locked && step.onward > 0) {
+      if (!step.locked && step.onward > 0 && reveal >= 1) {
         final forks = math.min(step.onward, 3);
         final fog = Paint()..color = palette.label.withValues(alpha: 0.6);
         for (var f = 0; f < forks; f++) {
@@ -1557,6 +2091,10 @@ class _JourneyPainter extends CustomPainter {
       old.here != here ||
       old.walking != walking ||
       old.progress != progress ||
+      old.reveals.length != reveals.length ||
+      [
+        for (var i = 0; i < reveals.length; i++) old.reveals[i] != reveals[i],
+      ].any((changed) => changed) ||
       old.pastGoesOn != pastGoesOn ||
       old.past.length != past.length ||
       old.steps.length != steps.length ||

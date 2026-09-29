@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.177.0+207]
+
+### Added
+- **The Journey map moves.** Ten transitions:
+  - a new scene's words come out of the ink, top to bottom, and its ways
+    draw out from your mark one after the other, each step popping in at
+    the end of its road;
+  - a place the map hadn't shown is stamped under your mark, ink
+    spreading from it;
+  - the picked way flows with ink toward its step, which breathes a ring;
+  - walking leaves fading footprints and a puff of dust where it stops;
+  - opening the tab from another, the map unrolls on a gold rod;
+  - a new chapter burns its map open from your mark, an ember ring at
+    the edge;
+  - a scene on the road behind opens out of its own mark;
+  - a shut way's padlock rattles with a red flash;
+  - going into a fight, the map jolts and its edges run red.
+- **And ten effects that say what a step holds:** a fight's (or an
+  expedition's) heartbeat and embers, a shop's or a quest's glint, a
+  rest's fireflies, a roll's glimmer (and a die tumbling beside you on
+  the way to it), a voyage's ripples, the main quest's column of gold,
+  the Void seeping from an ending, fog drifting over a town's far ways,
+  each chapter's weather (ash over the Lower City, Alster and the Spire,
+  rain over the Hollow Court and the Hollow Shore, snow in the giants'
+  frost), and your mark glowing softly so the eye finds it.
+- The effects run only while the Journey tab is on screen, and not at
+  all with the phone's reduced-motion setting: the map is then drawn at
+  once, as before.
+
 ## [1.176.0+206]
 
 ### Added
