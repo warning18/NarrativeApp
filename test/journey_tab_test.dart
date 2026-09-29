@@ -1,5 +1,7 @@
 // The Journey tab: the story's ways on as steps on a map. Picking one
-// says what it holds; Go takes it, as its choice under the story would.
+// says what it holds; Go walks the party there and takes it, as its
+// choice under the story would. The chapter's earlier scenes lie below
+// the party, and a double-tap reads the scene full screen.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,6 +55,8 @@ void main() {
     // In play the Journey tab sits beside the Story tab.
     expect(find.text('Journey'), findsOneWidget);
     final play = container.read(storyPlayProvider.notifier);
+    play.jumpTo('2001');
+    await _settle(tester);
     play.jumpTo('2005');
     await _settle(tester);
     await tester.tap(find.text('Journey'));
@@ -68,6 +72,30 @@ void main() {
     }
     expect(find.text('You are here'.toUpperCase()), findsOneWidget);
 
+    // The scene before, on the road below the party, and what happened
+    // there a tap away.
+    expect(find.byKey(const ValueKey('journey_past_0')), findsOneWidget);
+    expect(find.text('Head toward the wharf'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('journey_past_0')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Way taken: Head toward the wharf'), findsOneWidget);
+    await tester.tapAt(const Offset(200, 40));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Way taken: Head toward the wharf'), findsNothing);
+
+    // A double-tap reads the scene full screen; the map button (or
+    // another double-tap) brings the map back.
+    final sceneText = find.byKey(const ValueKey('journey_scene_text'));
+    await tester.tap(sceneText);
+    await tester.pump(const Duration(milliseconds: 60));
+    await tester.tap(sceneText);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('journey_reading_exit')), findsOneWidget);
+    expect(find.byKey(const ValueKey('journey_step_0')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('journey_reading_exit')));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('journey_step_0')), findsOneWidget);
+
     // Picking one says what it is; Go takes it.
     final taken = node.choices.first;
     await tester.tap(find.byKey(const ValueKey('journey_step_0')));
@@ -75,6 +103,12 @@ void main() {
     expect(find.text('ROAD'), findsOneWidget);
     expect(find.text(taken.text), findsNWidgets(2));
     await tester.tap(find.byKey(const ValueKey('journey_go')));
+    // The party walks there first.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
+    expect(container.read(storyPlayProvider).currentNodeId, '2005');
+    await tester.pump(const Duration(milliseconds: 700));
     await _settle(tester);
     // The road there may hold a detour first, which the map then shows.
     final after = container.read(storyPlayProvider);

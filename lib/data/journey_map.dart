@@ -1,4 +1,5 @@
 import '../models/story_node.dart';
+import 'chapter_grid_layout.dart';
 
 /// What a step on the Journey map holds, read off the choice that takes
 /// it: its mark on the map and the word under it.
@@ -106,4 +107,53 @@ List<JourneySlot> journeySlots(int count, {int perRow = journeyStepsPerRow}) {
     }
   }
   return slots;
+}
+
+/// A scene the party has passed through in this chapter, as the Journey
+/// map draws it under the party: the scene, and the way taken out of it
+/// (null when the story moved on some other way: a voyage, a jump).
+class JourneyPastStep {
+  const JourneyPastStep({required this.nodeId, this.wayTaken});
+
+  final String nodeId;
+  final StoryChoice? wayTaken;
+}
+
+/// The most scenes the Journey map keeps below the party.
+const int journeyPastLimit = 40;
+
+/// The scenes of the current chapter the party has come through, the
+/// latest first: [history] read back from [currentNodeId] while its
+/// scenes stay in the same chapter, a scene the story stayed on (a shop
+/// visited from a town) counted once. Each carries the choice that led
+/// on from it to the scene after, when one did.
+({List<JourneyPastStep> steps, bool reachesStart}) journeyChapterPast({
+  required List<String> history,
+  required String currentNodeId,
+  required StoryNode? Function(String id) nodeFor,
+  int limit = journeyPastLimit,
+}) {
+  final chapter = chapterOfNode(currentNodeId);
+  final steps = <JourneyPastStep>[];
+  var next = currentNodeId;
+  for (final id in history.reversed) {
+    if (chapterOfNode(id) != chapter) {
+      return (steps: steps, reachesStart: true);
+    }
+    if (id == next) continue;
+    if (steps.length == limit) return (steps: steps, reachesStart: false);
+    final node = nodeFor(id);
+    StoryChoice? way;
+    for (final choice in node?.choices ?? const <StoryChoice>[]) {
+      if (choice.nextId == next ||
+          choice.failNextId == next ||
+          choice.loseNextId == next) {
+        way = choice;
+        break;
+      }
+    }
+    steps.add(JourneyPastStep(nodeId: id, wayTaken: way));
+    next = id;
+  }
+  return (steps: steps, reachesStart: true);
 }

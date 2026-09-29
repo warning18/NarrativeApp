@@ -42,6 +42,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Read the scene in the Story tab',
     AppLanguage.fr: 'Lire la scène dans l’onglet Histoire',
   },
+  'journey_chapter_start': {
+    AppLanguage.en: 'Where the chapter began',
+    AppLanguage.fr: 'Là où le chapitre a commencé',
+  },
+  'journey_reading_exit': {
+    AppLanguage.en: 'Back to the map',
+    AppLanguage.fr: 'Revenir à la carte',
+  },
+  'journey_way_taken': {
+    AppLanguage.en: 'Way taken: {way}',
+    AppLanguage.fr: 'Chemin pris : {way}',
+  },
   'journey_kind_ending': {AppLanguage.en: 'Ending', AppLanguage.fr: 'Fin'},
   'journey_kind_mainQuest': {
     AppLanguage.en: 'Main quest',

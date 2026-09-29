@@ -2,9 +2,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/journey_map.dart';
+import 'package:narrative_data_app/data/journey_relief.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 
 StoryChoice _choice(Map<String, dynamic> json) =>
@@ -136,5 +139,124 @@ void main() {
       }
     }
     expect(journeySlots(biggest), hasLength(biggest));
+  });
+
+  group('the chapter behind the party', () {
+    StoryNode node(String id, List<Map<String, dynamic>> choices) =>
+        StoryNode.fromJson(id, {'description': id, 'choices': choices});
+    final nodes = {
+      '1900': node('1900', [
+        {'text': 'To the harbour', 'next_id': '2001'},
+      ]),
+      '2001': node('2001', [
+        {'text': 'Head toward the wharf', 'next_id': '2005'},
+      ]),
+      '2005': node('2005', [
+        {'text': 'Disembark', 'next_id': '2015'},
+        {
+          'text': 'Sneak',
+          'next_id': '2020',
+          'checkAbility': 'dexterity',
+          'failNextId': '2025'
+        },
+      ]),
+      '2025': node('2025', [
+        {'text': 'Visit the stalls', 'next_id': '2025'},
+        {'text': 'Walk on', 'next_id': '2030'},
+      ]),
+    };
+
+    test('reads back through the chapter, the latest scene first', () {
+      final past = journeyChapterPast(
+        history: ['1900', '2001', '2005', '2025', '2025'],
+        currentNodeId: '2030',
+        nodeFor: (id) => nodes[id],
+      );
+      expect([for (final s in past.steps) s.nodeId], ['2025', '2005', '2001']);
+      // The way out of each, even through a failed roll.
+      expect([for (final s in past.steps) s.wayTaken?.text],
+          ['Walk on', 'Sneak', 'Head toward the wharf']);
+      // Chapter 1's last scene is not part of chapter 2's road.
+      expect(past.reachesStart, isTrue);
+    });
+
+    test('a scene with no choice leading on keeps no way taken', () {
+      final past = journeyChapterPast(
+        history: ['2001'],
+        currentNodeId: '2999',
+        nodeFor: (id) => nodes[id],
+      );
+      expect(past.steps.single.wayTaken, isNull);
+    });
+
+    test('a long chapter keeps only the latest scenes', () {
+      final past = journeyChapterPast(
+        history: [for (var i = 0; i < 60; i++) '${2100 + i}'],
+        currentNodeId: '2200',
+        nodeFor: (id) => null,
+        limit: 10,
+      );
+      expect(past.steps, hasLength(10));
+      expect(past.steps.first.nodeId, '2159');
+      expect(past.reachesStart, isFalse);
+    });
+  });
+
+  group('relief', () {
+    test('heights stay between 0 and 1 and are the same every time', () {
+      for (var i = 0; i < 400; i++) {
+        final x = i * 37.3 - 3000, y = i * -21.7 + 900;
+        final h = reliefHeight(x, y);
+        expect(h, inInclusiveRange(0, 1));
+        expect(reliefHeight(x, y), h);
+      }
+    });
+
+    test('the land rises and falls gently', () {
+      var steepest = 0.0;
+      var low = 1.0, high = 0.0;
+      for (var y = -600.0; y < 600; y += 7) {
+        for (var x = -300.0; x < 300; x += 7) {
+          final h = reliefHeight(x, y);
+          low = h < low ? h : low;
+          high = h > high ? h : high;
+          final step = (reliefHeight(x + 2, y) - h).abs();
+          steepest = step > steepest ? step : steepest;
+        }
+      }
+      // Hills and hollows both, and no cliff between two close points.
+      expect(high - low, greaterThan(0.4));
+      expect(steepest, lessThan(0.05));
+    });
+
+    test('contours follow their level and join up', () {
+      const area = Rect.fromLTWH(-200, -200, 400, 400);
+      for (final level in reliefLevels) {
+        final segments = reliefContour(
+            area: area, level: level, height: reliefHeight, cell: 10);
+        for (final (a, b) in segments) {
+          for (final p in [a, b]) {
+            expect(area.inflate(0.01).contains(p), isTrue);
+            // A crossing sits on the level, give or take the grid.
+            expect((reliefHeight(p.dx, p.dy) - level).abs(), lessThan(0.06));
+          }
+          // No segment jumps across the map.
+          expect((a - b).distance, lessThan(10 * 1.5));
+        }
+      }
+    });
+
+    test('a peak is higher than the land around it', () {
+      const area = Rect.fromLTWH(-1200, -1200, 2400, 2400);
+      final peaks = reliefPeaks(area: area, height: reliefHeight);
+      expect(peaks, isNotEmpty);
+      for (final p in peaks) {
+        final top = reliefHeight(p.dx, p.dy);
+        expect(top, greaterThan(0.7));
+        for (final d in [const Offset(30, 0), const Offset(0, -30)]) {
+          expect(reliefHeight(p.dx + d.dx, p.dy + d.dy), lessThan(top));
+        }
+      }
+    });
   });
 }

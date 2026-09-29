@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.175.0+205]
+
+The Journey tab walks, remembers and has hills.
+
+### Added
+- **The party walks.** Go, or a second tap on a step, walks the party's
+  mark along the road to it. The road fills in behind the party, the other
+  ways fade, and the map follows. The step taken ends where the mark
+  stood, so the next scene's map takes over without a jump, and only then
+  does the choice play out (its roll, fight or detour). With the system's
+  "remove animations" setting on, the step is taken at once.
+- **The chapter behind the party.** Below the mark, the road runs down
+  through every scene of the chapter so far (the latest 40), each with the
+  way taken out of it and each new place named where the road reaches it.
+  It ends at "Where the chapter began". The map opens on the party with the
+  scene just left in view, and scrolls down to the rest. Tapping a scene
+  on that road shows it again, with the way taken. On a detour, the scene
+  it interrupts is the latest on the road.
+- **Relief.** Gentle hills under the map: contour lines in the look's own
+  colour (a stronger index line every other level), a soft shade on each
+  hill's far side, and a small peak mark on the highest. Each chapter has
+  its own land, and the land stays put as the party walks, so the hills
+  pass under the mark from one scene to the next.
+- **Reading full screen.** A double-tap on the scene's text reads it full
+  screen, as in the Story tab: larger text, a short scene centred. The map
+  button or another double-tap brings the map back. A double-tap on the
+  folded scene opens it straight to full screen.
+
 ## [1.174.0+204]
 
 A Journey tab: the story and the map in one screen.
