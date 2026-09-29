@@ -23,6 +23,8 @@ import '../providers/map_look_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import '../widgets/player_stats_bar.dart';
 import 'journal_screen.dart';
 import 'story_player_screen.dart'
@@ -379,84 +381,100 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
         ? steps[_selected!]
         : null;
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            PlayerStatsBar(trailing: tools),
-            const SizedBox(height: 8),
-            Expanded(
-              child: LayoutBuilder(builder: (context, area) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxHeight: math.max(96, area.maxHeight * 0.32)),
-                      child: _ScenePanel(
-                        key: ValueKey('journey_scene_$sceneKey'),
-                        node: node,
-                        french: french,
-                        folded: _sceneFolded,
-                        reading: false,
-                        onFold: (folded) =>
-                            setState(() => _sceneFolded = folded),
-                        onReading: (reading) =>
-                            setState(() => _reading = reading),
-                        detour: detour,
+    // The guide shows the tab around the first time it opens (see
+    // TutorialTopic.journey), once there is a character to follow.
+    return TutorialTrigger(
+      topic: TutorialTopic.journey,
+      ready: session.raceId.isNotEmpty,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              PlayerStatsBar(trailing: tools),
+              const SizedBox(height: 8),
+              Expanded(
+                child: LayoutBuilder(builder: (context, area) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      TutorialTarget(
+                        id: 'journey.scene',
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxHeight: math.max(96, area.maxHeight * 0.32)),
+                          child: _ScenePanel(
+                            key: ValueKey('journey_scene_$sceneKey'),
+                            node: node,
+                            french: french,
+                            folded: _sceneFolded,
+                            reading: false,
+                            onFold: (folded) =>
+                                setState(() => _sceneFolded = folded),
+                            onReading: (reading) =>
+                                setState(() => _reading = reading),
+                            detour: detour,
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: ended
-                          ? _EndedPanel(
-                              title: tr(ref, 'the_end'),
-                              message: tr(ref, 'journey_ended'),
-                            )
-                          : AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 280),
-                              child: _JourneyChart(
-                                key: _chartKey,
-                                steps: steps,
-                                selected: _selected,
-                                hereName: hereName,
-                                youAreHere: tr(ref, 'journey_you_are_here'),
-                                leadsTo: tr(ref, 'journey_leads_to'),
-                                past: pastMarks,
-                                pastReachesStart: past.reachesStart,
-                                chapterStart: tr(ref, 'journey_chapter_start'),
-                                palette: palette,
-                                ink: look == MapLook.parchment
-                                    ? InkColors.light
-                                    : InkColors.dark,
-                                greyed: look == MapLook.shroud,
-                                terrainShift: _terrainShift,
-                                terrainSeed:
-                                    7 + chapterOfNode(play.currentNodeId) * 13,
-                                onTap: _tap,
-                                onPastTap: _showPast,
-                              ),
-                            ),
-                    ),
-                    if (!ended) ...[
                       const SizedBox(height: 10),
-                      _StepDetail(
-                        step: selected,
-                        busy: _busy,
-                        french: french,
-                        isExcursion: play.isInExcursion,
-                        onGo: selected == null
-                            ? null
-                            : () => _take(_selected!, selected),
+                      Expanded(
+                        child: ended
+                            ? _EndedPanel(
+                                title: tr(ref, 'the_end'),
+                                message: tr(ref, 'journey_ended'),
+                              )
+                            : TutorialTarget(
+                                id: 'journey.chart',
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 280),
+                                  child: _JourneyChart(
+                                    key: _chartKey,
+                                    steps: steps,
+                                    selected: _selected,
+                                    hereName: hereName,
+                                    youAreHere: tr(ref, 'journey_you_are_here'),
+                                    leadsTo: tr(ref, 'journey_leads_to'),
+                                    past: pastMarks,
+                                    pastReachesStart: past.reachesStart,
+                                    chapterStart:
+                                        tr(ref, 'journey_chapter_start'),
+                                    palette: palette,
+                                    ink: look == MapLook.parchment
+                                        ? InkColors.light
+                                        : InkColors.dark,
+                                    greyed: look == MapLook.shroud,
+                                    terrainShift: _terrainShift,
+                                    terrainSeed: 7 +
+                                        chapterOfNode(play.currentNodeId) * 13,
+                                    onTap: _tap,
+                                    onPastTap: _showPast,
+                                  ),
+                                ),
+                              ),
                       ),
+                      if (!ended) ...[
+                        const SizedBox(height: 10),
+                        TutorialTarget(
+                          id: 'journey.pick',
+                          child: _StepDetail(
+                            step: selected,
+                            busy: _busy,
+                            french: french,
+                            isExcursion: play.isInExcursion,
+                            onGo: selected == null
+                                ? null
+                                : () => _take(_selected!, selected),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                );
-              }),
-            ),
-          ],
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );

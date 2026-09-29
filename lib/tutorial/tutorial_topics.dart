@@ -27,6 +27,14 @@ enum TutorialTopic {
     TutorialStep('tut_story_7', target: 'home.map'),
     TutorialStep('tut_story_8', target: 'home.nav'),
   ]),
+  // The Journey tab (home tab 4, see journeyTabIndex): the story on a map.
+  journey(Icons.alt_route, homeTab: 4, steps: [
+    TutorialStep('tut_journey_1'),
+    TutorialStep('tut_journey_2', target: 'journey.scene'),
+    TutorialStep('tut_journey_3', target: 'journey.chart', optional: true),
+    TutorialStep('tut_journey_4', target: 'journey.pick', optional: true),
+    TutorialStep('tut_journey_5', target: 'home.nav'),
+  ]),
   character(Icons.person_outline, homeTab: 1, steps: [
     TutorialStep('tut_character_1', target: 'character.header'),
     TutorialStep('tut_character_2', target: 'character.alignment'),
