@@ -60,6 +60,18 @@ bool allObjectivesMet(
     objectiveStatusesFor(questId, questRecord, session)
         .every((status) => status.met);
 
+/// The foes a Kill [objective] counts: its `targetEnemyIDs` (any of them,
+/// e.g. every hunter of one side), or its single `targetEnemyID`.
+List<String> killTargetsOf(Map<String, dynamic> objective) {
+  final many = [
+    for (final id in (objective['targetEnemyIDs'] as List?) ?? const [])
+      if (id.toString().isNotEmpty) id.toString(),
+  ];
+  if (many.isNotEmpty) return many;
+  final one = objective['targetEnemyID']?.toString() ?? '';
+  return one.isEmpty ? const [] : [one];
+}
+
 ObjectiveStatus _statusFor(
   Map<String, dynamic> objective,
   PlayerSession session, {
@@ -79,9 +91,9 @@ ObjectiveStatus _statusFor(
 
   switch (objective['type']?.toString()) {
     case 'Kill':
-      final targetEnemyId = objective['targetEnemyID']?.toString() ?? '';
+      final targets = killTargetsOf(objective);
       // No target data to gate on -- treat as flavor text, not enforceable.
-      if (targetEnemyId.isEmpty) {
+      if (targets.isEmpty) {
         return ObjectiveStatus(
           description: description,
           current: requiredAmount,
@@ -90,12 +102,17 @@ ObjectiveStatus _statusFor(
         );
       }
       // A bounty (`countFromAccept`) counts only the kills made since the
-      // quest was taken; anything else counts lifetime kills.
-      final baseline = objective['countFromAccept'] == true
-          ? (session.questKillBaselines[questId]?[targetEnemyId] ?? 0)
-          : 0;
-      final current =
-          max(0, (session.enemyKillCounts[targetEnemyId] ?? 0) - baseline);
+      // quest was taken; anything else counts lifetime kills. Any of the
+      // objective's foes counts (see [killTargetsOf]).
+      final fromAccept = objective['countFromAccept'] == true;
+      var current = 0;
+      for (final targetEnemyId in targets) {
+        final baseline = fromAccept
+            ? (session.questKillBaselines[questId]?[targetEnemyId] ?? 0)
+            : 0;
+        current +=
+            max(0, (session.enemyKillCounts[targetEnemyId] ?? 0) - baseline);
+      }
       return ObjectiveStatus(
         description: description,
         current: current > requiredAmount ? requiredAmount : current,

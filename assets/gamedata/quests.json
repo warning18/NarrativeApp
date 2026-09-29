@@ -1040,14 +1040,19 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down a Pit Wretch",
+        "description": "Put down a creature of the Pit",
         "type": "Kill",
         "targetEnemyID": "demon_imp",
+        "targetEnemyIDs": [
+          "demon_imp",
+          "demon_tormentor"
+        ],
+        "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre un Gueux de la Fosse"
+        "description_fr": "Abattre une créature de la Fosse"
       }
     ],
     "rewardGold": 60,
@@ -1084,14 +1089,19 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down a Sentinel of the Choir",
+        "description": "Put down a soldier of the Choir",
         "type": "Kill",
         "targetEnemyID": "angel_sentinel",
+        "targetEnemyIDs": [
+          "angel_sentinel",
+          "angel_judicator"
+        ],
+        "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre une Sentinelle du Chœur"
+        "description_fr": "Abattre un soldat du Chœur"
       }
     ],
     "rewardGold": 90,

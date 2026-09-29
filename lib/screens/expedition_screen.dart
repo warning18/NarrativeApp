@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -163,7 +164,11 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       chapter: zoneChapter,
       random: _random,
       enabled: ref.read(alignmentHuntersEnabledProvider),
+      rollsSinceAmbush: session.alignmentRollsSinceAmbush,
     );
+    unawaited(ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
+        ambushed:
+            alignmentEvent != null && isHunterAmbushChain(alignmentEvent)));
     if (alignmentEvent != null) return alignmentEvent.first;
     final shopPool = SubNodeEngine.filterShopPool(
       shops: shops,
@@ -392,7 +397,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     final shopId = choice.unlockShopId;
     if (shopId != null && shopId.isNotEmpty) {
       final shop = shops[shopId] as Map<String, dynamic>?;
-      await notifier.unlockContent(shopId: shopId);
+      // Met on the expedition's road: gone once the party moves on.
+      await notifier.unlockContent(
+          shopId: shopId, shopUnlockNodeId: roadShopNodeId);
       if (shop != null && mounted) {
         await Navigator.of(context).push(
           MaterialPageRoute(

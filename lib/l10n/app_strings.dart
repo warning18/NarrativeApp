@@ -1500,6 +1500,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'No shop found yet.',
     AppLanguage.fr: 'Aucune boutique trouvée pour l’instant.',
   },
+  'shop_met_on_road': {
+    AppLanguage.en: 'Met on the road, and gone on down it.',
+    AppLanguage.fr: 'Une rencontre de la route, qui a repris son chemin.',
+  },
   'shop_back_where_found': {
     AppLanguage.en: 'Go back where you found it to trade.',
     AppLanguage.fr: 'Retournez là où vous l’avez trouvée pour commercer.',

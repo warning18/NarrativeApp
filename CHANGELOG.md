@@ -8,6 +8,40 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.178.0+208]
+
+Angels and demons come less often and finish what they start, and stalls
+met on the road stay on the road.
+
+### Changed
+- **Hunters are rarer and give the party a breather.** A hunter now comes
+  6% of the time at ±20 alignment (was 10%), plus 0.15% per point past
+  that (was 0.2%), up to 15% (was 22%). After an ambush, the next five
+  alignment rolls send no hunter. In the simulator, hunter fights fall
+  from 6.6 to 3.1 a run, from the most common random fight to about as
+  common as a champion. Temptations for a Neutral party are unchanged.
+- **Twelve ambush openings instead of four.** Angels and demons each
+  arrive six ways, in English and French.
+
+### Fixed
+- **A temptation quest's quarry always comes.** A party that struck the
+  demon's bargain and then grew Good met only demons, so the bargain's
+  angel never came and the quest could not be finished. While a
+  temptation quest is open, its side now hunts the party first, whatever
+  the alignment.
+- **Any of the Choir's or the Pit's soldiers counts.** "A Charge of Light"
+  needs any creature of the Pit and "A Bargain in Shadow" any soldier of
+  the Choir, including the stronger ones that come from chapter 3. Only
+  kills made after the quest is taken count. In the simulator, runs
+  ending with one of them still open fall from 10 in 200 to 4.
+- **The Wayfarer's Caravan moves on.** A stall met on the road was
+  recorded against the scene the party had just left. Back in that town
+  or at the camp, the Shops list opened it again. Stalls met on detours
+  and expeditions, and the caravan, are now marked as met on the road and
+  stay shut in the Shops list. A shop the story places in a town stays
+  open there, even after its stall was met on the road.
+- Expedition stalls no longer claim to be at the camp in the Shops list.
+
 ## [1.177.0+207]
 
 The road's numbers, tuned with the playthrough simulator. The simulator

@@ -37,6 +37,33 @@ void main() {
       expect(allObjectivesMet('q_first_blood', killQuest, session), isTrue);
     });
 
+    test('any of targetEnemyIDs counts, from the quest taken on', () {
+      final quest = <String, dynamic>{
+        'objectives': [
+          {
+            'description': 'Put down a creature of the Pit',
+            'type': 'Kill',
+            'targetEnemyID': 'demon_imp',
+            'targetEnemyIDs': ['demon_imp', 'demon_tormentor'],
+            'countFromAccept': true,
+            'requiredAmount': 1,
+          },
+        ],
+      };
+      final before = baseSession().copyWith(
+        enemyKillCounts: {'demon_imp': 2},
+        questKillBaselines: {
+          'q_charge': {'demon_imp': 2}
+        },
+      );
+      expect(allObjectivesMet('q_charge', quest, before), isFalse);
+      final tormentor = before
+          .copyWith(enemyKillCounts: {'demon_imp': 2, 'demon_tormentor': 1});
+      expect(allObjectivesMet('q_charge', quest, tormentor), isTrue);
+      expect(killTargetsOf(quest['objectives'][0] as Map<String, dynamic>),
+          ['demon_imp', 'demon_tormentor']);
+    });
+
     test('a kill against a different enemy does not satisfy it', () {
       final session =
           baseSession().copyWith(enemyKillCounts: {'rat_matriarch': 5});

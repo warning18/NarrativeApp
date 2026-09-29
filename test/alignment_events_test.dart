@@ -9,6 +9,7 @@ import 'package:narrative_data_app/combat/combat_engine.dart';
 import 'package:narrative_data_app/data/alignment_events.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
 import 'package:narrative_data_app/models/ally_state.dart';
+import 'package:narrative_data_app/models/story_node.dart';
 
 final Map<String, dynamic> _enemies = {
   'harbor_rat': {'minChapter': 1},
@@ -35,12 +36,36 @@ void main() {
       expect(huntedSideFor(alignmentScore: 0, activeQuestIds: [darkQuestId]),
           'Evil');
     });
+
+    test('a temptation quest’s quarry comes, whatever the score', () {
+      // Struck the demon's bargain, then grew Good: the angels it asked
+      // for still come, or the quest could never be finished.
+      expect(huntedSideFor(alignmentScore: 60, activeQuestIds: [darkQuestId]),
+          'Evil');
+      expect(huntedSideFor(alignmentScore: -60, activeQuestIds: [lightQuestId]),
+          'Good');
+    });
   });
 
   test('hunter odds rise with the score and cap', () {
     expect(hunterChanceFor(20), hunterBaseChance);
-    expect(hunterChanceFor(40), closeTo(hunterBaseChance + 0.04, 1e-9));
+    expect(hunterChanceFor(40),
+        closeTo(hunterBaseChance + 20 * hunterChancePerAlignmentPoint, 1e-9));
     expect(hunterChanceFor(400), hunterChanceCap);
+    expect(hunterBaseChance, lessThanOrEqualTo(0.06));
+  });
+
+  test('the ambushes open six ways a side, in both languages', () {
+    for (final side in ['Good', 'Evil']) {
+      final openings = <String>{};
+      for (var seed = 0; seed < 200; seed++) {
+        final node = buildHunterAmbushNode(
+            enemies: _enemies, side: side, chapter: 3, random: Random(seed))!;
+        openings.add(node.description);
+        expect(node.descriptionFr, isNotEmpty);
+      }
+      expect(openings, hasLength(6), reason: side);
+    }
   });
 
   test('tier-2 hunters wait for chapter 3', () {
@@ -147,8 +172,38 @@ void main() {
           expect(neutral.single.choices.length, 2);
         }
       }
-      expect(ambushes, inInclusiveRange(30, 110));
+      expect(ambushes, inInclusiveRange(20, 60));
       expect(temptations, inInclusiveRange(25, 85));
+    });
+
+    test('the hunters wait out a cooldown after an ambush', () {
+      List<StoryNode>? roll(int score, int since, int seed) =>
+          maybeAlignmentEvent(
+            alignmentScore: score,
+            activeQuestIds: const [],
+            completedQuestIds: const [],
+            enemies: _enemies,
+            chapter: 3,
+            random: Random(seed),
+            rollsSinceAmbush: since,
+          );
+      for (var since = 0; since < hunterCooldownRolls; since++) {
+        for (var seed = 0; seed < 300; seed++) {
+          expect(roll(-80, since, seed), isNull);
+        }
+      }
+      final after = [
+        for (var seed = 0; seed < 300; seed++)
+          roll(-80, hunterCooldownRolls, seed)
+      ].whereType<List<StoryNode>>().toList();
+      expect(after, isNotEmpty);
+      expect(after.every(isHunterAmbushChain), isTrue);
+      // A Neutral character's temptations don't wait.
+      final courted = [for (var seed = 0; seed < 300; seed++) roll(0, 0, seed)]
+          .whereType<List<StoryNode>>()
+          .toList();
+      expect(courted, isNotEmpty);
+      expect(courted.any(isHunterAmbushChain), isFalse);
     });
   });
 

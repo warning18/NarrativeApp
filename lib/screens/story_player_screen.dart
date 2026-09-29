@@ -1282,7 +1282,8 @@ Future<void> _selectChoice({
           shopId: choice.unlockShopId,
           questId: choice.unlockQuestId,
           enemyId: enemyIds.isEmpty ? null : enemyIds.first,
-          shopUnlockNodeId: currentNodeId,
+          // A stall met on a detour moves on with the road.
+          shopUnlockNodeId: isExcursion ? roadShopNodeId : currentNodeId,
         );
     // A pack's remaining distinct enemy ids each get their own unlock
     // call -- the common (single-enemy) case above already covers the
@@ -1303,8 +1304,8 @@ Future<void> _selectChoice({
     final newQuestId = choice.unlockQuestId ?? '';
     if (isExcursion && newShopId.isNotEmpty) {
       // A stall met on the road is only there while the player stands at
-      // it: "Take a look" opens it now. (Recorded against the scene the
-      // detour left, it could never be reached from the Shops tab.)
+      // it: "Take a look" opens it now, and the Shops list marks it as met
+      // on the road (see roadShopNodeId).
       final shop = (await loadedGameDb(ref, shopsSchema))[newShopId]
           as Map<String, dynamic>?;
       if (shop != null && context.mounted) {
@@ -1548,7 +1549,10 @@ Future<List<StoryNode>?> rollRoadEncounter(
     chapter: chapter,
     random: dice(),
     enabled: ref.read(alignmentHuntersEnabledProvider),
+    rollsSinceAmbush: session.alignmentRollsSinceAmbush,
   );
+  await ref.read(playerSessionProvider.notifier).noteAlignmentRoll(
+      ambushed: alignmentEvent != null && isHunterAmbushChain(alignmentEvent));
   if (alignmentEvent != null) return alignmentEvent;
   // Now and then, someone met on an earlier road (see
   // recurring_encounters.dart).

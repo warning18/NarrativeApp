@@ -8,10 +8,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/contracts.dart';
 import '../data/journey_rules.dart';
 import '../data/perks.dart';
+import '../data/quest_objectives.dart' show killTargetsOf;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -124,6 +126,11 @@ String sceneReadKey(String nodeId, String text) {
   return '$nodeId#${hash.toRadixString(16)}';
 }
 
+/// [PlayerSession.shopUnlockNodeIds]' mark for a shop met on the road
+/// rather than found in a scene: it moved on, and is never browsable again
+/// from the Shops list.
+const String roadShopNodeId = '@road';
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -177,6 +184,7 @@ class PlayerSession {
     this.clockChapter = 0,
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
+    this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -315,7 +323,9 @@ class PlayerSession {
   /// leaving it hides the shop again (it reappears if the player returns).
   /// Unlike [unlockedShopIds], entries here are never removed, so
   /// historical stats (e.g. the playthrough simulator) still see every shop
-  /// ever discovered.
+  /// ever discovered. A shop met on the road (a detour's stall, the
+  /// Wayfarer's Caravan) is [roadShopNodeId]: it was there only while the
+  /// party stood at it.
   final Map<String, String> shopUnlockNodeIds;
 
   /// Ids the player has already viewed in the Play tab, used to compute the
@@ -354,6 +364,11 @@ class PlayerSession {
 
   /// Fights left on a hired sellsword's contract (see journey_rules.dart).
   final int sellswordFights;
+
+  /// Alignment events rolled since the last hunter's ambush: a hunter
+  /// waits [hunterCooldownRolls] of them before the next (see
+  /// alignment_events.dart).
+  final int alignmentRollsSinceAmbush;
 
   /// How much stronger enemies are in [chapter] for the days the party has
   /// spent in it (see [threatFor]).
@@ -654,6 +669,7 @@ class PlayerSession {
     int? clockChapter,
     int? chapterStartDay,
     int? sellswordFights,
+    int? alignmentRollsSinceAmbush,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -742,6 +758,8 @@ class PlayerSession {
       clockChapter: clockChapter ?? this.clockChapter,
       chapterStartDay: chapterStartDay ?? this.chapterStartDay,
       sellswordFights: sellswordFights ?? this.sellswordFights,
+      alignmentRollsSinceAmbush:
+          alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -836,6 +854,7 @@ class PlayerSession {
         'clockChapter': clockChapter,
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
+        'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -992,6 +1011,9 @@ class PlayerSession {
       clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
       chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
       sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
+      alignmentRollsSinceAmbush:
+          (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
+              hunterCooldownRolls,
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -1527,11 +1549,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
+    var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
         questIDToProgress.isNotEmpty &&
         !state.activeQuestIds.contains(questIDToProgress) &&
         !state.completedQuestIds.contains(questIDToProgress)) {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
+      // Taken on in a scene, with no quest record at hand: every kill
+      // count is kept, so a bounty's `countFromAccept` still counts from
+      // now (as acceptQuest does with the record).
+      newKillBaselines = {
+        ...newKillBaselines,
+        questIDToProgress: Map<String, int>.of(state.enemyKillCounts),
+      };
     }
     final newTracked = questIDToProgress != null &&
             newActiveQuests.contains(questIDToProgress) &&
@@ -1554,6 +1584,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
       activeQuestIds: newActiveQuests,
+      questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
     );
@@ -1793,11 +1824,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (quest == null) return Map<String, int>.of(state.enemyKillCounts);
     return {
       for (final objective in (quest['objectives'] as List?) ?? const [])
-        if (objective is Map &&
+        if (objective is Map<String, dynamic> &&
             objective['type'] == 'Kill' &&
             objective['countFromAccept'] == true)
-          objective['targetEnemyID'].toString():
-              state.enemyKillCounts[objective['targetEnemyID'].toString()] ?? 0,
+          for (final id in killTargetsOf(objective))
+            id: state.enemyKillCounts[id] ?? 0,
     };
   }
 
@@ -2555,7 +2586,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       if (!newShops.contains(shopId)) {
         newShops = [...newShops, shopId];
       }
-      if (shopUnlockNodeId != null && shopUnlockNodeId.isNotEmpty) {
+      // Meeting a shop's stall on the road never takes it away from the
+      // scene where the story placed it.
+      final keepsItsPlace = shopUnlockNodeId == roadShopNodeId &&
+          newShopUnlockNodeIds.containsKey(shopId);
+      if (shopUnlockNodeId != null &&
+          shopUnlockNodeId.isNotEmpty &&
+          !keepsItsPlace) {
         newShopUnlockNodeIds = {
           ...newShopUnlockNodeIds,
           shopId: shopUnlockNodeId
@@ -2758,6 +2795,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> spendSellswordFight() async {
     if (state.sellswordFights <= 0) return;
     state = state.copyWith(sellswordFights: state.sellswordFights - 1);
+    await _persist();
+  }
+
+  /// An alignment event was rolled (see maybeAlignmentEvent): [ambushed]
+  /// when it sent a hunter, which starts the hunters' cooldown over.
+  Future<void> noteAlignmentRoll({required bool ambushed}) async {
+    final next = ambushed
+        ? 0
+        : min(hunterCooldownRolls, state.alignmentRollsSinceAmbush + 1);
+    if (next == state.alignmentRollsSinceAmbush) return;
+    state = state.copyWith(alignmentRollsSinceAmbush: next);
     await _persist();
   }
 
