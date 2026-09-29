@@ -11,12 +11,11 @@ import '../providers/chapter_loop_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
-import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/road_panel.dart';
 import '../widgets/camp_travel.dart';
-import '../widgets/immersive_notice.dart';
 import '../widgets/zone_card.dart';
 import 'expedition_screen.dart';
 import 'shop_detail_screen.dart';
@@ -114,17 +113,8 @@ class PortServices extends ConsumerWidget {
           child: OutlinedButton.icon(
             onPressed: restBlocked
                 ? null
-                : () async {
-                    await ref
-                        .read(playerSessionProvider.notifier)
-                        .healPartyToFull();
-                    if (!context.mounted) return;
-                    showImmersiveNotice(
-                      context,
-                      icon: Icons.local_fire_department,
-                      message: tr(ref, 'party_rested_message'),
-                    );
-                  },
+                : () => restTheNight(context, ref,
+                    message: tr(ref, 'party_rested_message')),
             icon: const Icon(Icons.local_fire_department_outlined),
             label: Text(tr(ref, 'rest_button')),
           ),

@@ -32,3 +32,13 @@ final campPresenceProvider = Provider<CampPresence>((ref) {
         playerSessionProvider.select((s) => s.flags.contains(campFoundedFlag))),
   );
 });
+
+/// Whether the story stands in a place (a town, a village, the camp),
+/// where rations are sold and a sellsword can be hired (see
+/// journey_rules.dart).
+final atMarketProvider = Provider<bool>((ref) {
+  final play = ref.watch(storyPlayProvider);
+  if (play.isInExcursion) return false;
+  final story = ref.watch(storyDataProvider).value;
+  return story?.nodeFor(play.currentNodeId)?.settlement != null;
+});

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../combat/combat_aftermath.dart';
+import '../data/scene_flow.dart';
 
 /// The most recent fight's outcome, published by FightScreen right before
 /// it pops -- the story player reads it to write the fight's aftermath
@@ -23,3 +24,13 @@ final lastFightRetreatedProvider = StateProvider<bool>((ref) => false);
 /// no scene of its own to tell it: the next scene opens with it, and the
 /// next choice retires it.
 final pendingCheckOutcomeProvider = StateProvider<String?>((ref) => null);
+
+/// The plain scenes read on the way to this one (see scene_flow.dart):
+/// they open it, above its own text, and the next choice retires them.
+final pendingPreludeProvider =
+    StateProvider<List<ScenePrelude>>((ref) => const []);
+
+/// What the last step on the road cost (a day gone, hunger, rations
+/// running low; see journey_rules.dart): the next scene opens with it, and
+/// the next choice retires it.
+final pendingRoadNoteProvider = StateProvider<String?>((ref) => null);

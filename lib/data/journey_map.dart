@@ -46,7 +46,9 @@ JourneyStepKind journeyStepKindOf(StoryChoice choice) {
   if (choice.isEnding) return JourneyStepKind.ending;
   if (choice.mainQuest) return JourneyStepKind.mainQuest;
   if (choice.launchesZone) return JourneyStepKind.expedition;
-  if (choice.triggersCombat) return JourneyStepKind.fight;
+  if (choice.triggersCombat || choice.triggersShipBattle) {
+    return JourneyStepKind.fight;
+  }
   if (choice.hasSkillChallenge) return JourneyStepKind.challenge;
   if (choice.hasAbilityCheck) return JourneyStepKind.check;
   if ((choice.unlockShopId ?? '').isNotEmpty) return JourneyStepKind.shop;

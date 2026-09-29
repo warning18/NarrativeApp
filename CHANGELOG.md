@@ -8,6 +8,86 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.176.0+206]
+
+Play with fewer taps, and a road worth planning: choices come back, days
+pass, travellers return, and the last chapters build to set pieces.
+
+### Added
+- **Choices come back, and say so.** When a later scene has a line that an
+  earlier choice earned, the line now says which choice it was
+  ("Because you chose …"). The journal has a new tab, **What changed**,
+  listing every such line the party has seen, newest first. On the Journey
+  map, a scene behind the party with such a line has a small history mark.
+  Tapping the scene shows the line again.
+- **A look ahead on the Journey map.** Small icons above each step show
+  what the next scene holds (a fight, a roll, a shop and so on). When a
+  scene has only one way on, the map picks it for you, so Go is a single
+  tap.
+- **Days, rations and a gathering threat (from chapter 2).** A road
+  between two places eats a ration, and every four roads end a day. The
+  pack holds 12 rations. You start with 10 and can buy more at any town or
+  camp market, at 4 gold plus 2 per chapter each. With none left, each
+  road costs 8% of your health. After six days in one chapter, its enemies
+  gather strength: +3% health and damage per day, up to +30% (bosses
+  excepted). A fight says so in its log. Resting passes a night; a voyage
+  passes its days. The status sheet has a new **Road** panel with the day,
+  the threat, your rations and buttons to buy them. Your rations and the
+  day also show in the stats bar.
+- **A sellsword for hire.** From the Road panel, hire a sellsword for
+  three fights (120 gold plus 80 per chapter). The sellsword strikes the
+  weakest enemy at the start of each of your rounds.
+- **Road events, visible before you set out.** From chapter 2, about a
+  third of the roads between two places hold something, marked on the
+  Journey step and named in its details:
+  - **A champion.** An Elite of the chapter's enemies, with at least a
+    silver chest and a quarter more reward. You can instead try a hard
+    Dexterity roll to slip past it; if it fails, the fight starts with an
+    ambush.
+  - **A wayside shrine.** Health back, and twice as much for an offering.
+  - **The Wayfarer's Caravan.** A roadside shop with its own stock.
+
+  What a road holds is fixed for that road at that point in the journey,
+  so you can choose your road by it. A road event replaces a detour on
+  that road.
+- **Familiar faces.** Three travellers are met again and again, three
+  times each over the chapters: Wren the mapmaker, Brother Oswin the
+  defrocked monk and Mira the treasure hunter. Each meeting is written
+  for what the party did at the last one. A kindness, a hard bargain or a
+  cold shoulder is paid back in kind, and one of them can come to blows.
+- **Set pieces in the last chapters.**
+  - **A chase out of the Court's catacombs,** against a 20-second clock.
+    If you wait too long, the party is caught and must fight its way out.
+    A failed roll corners the party, with the same result.
+  - **The siege of the camp,** in two timed waves. First, hold the
+    palisade in a fight, light the beach fires to bluff with a Charisma
+    roll, or get the children to the boats. Then, sally out against the
+    enemy's zealot, or hold the gate in a Constitution skill challenge. A
+    failed bluff, a lost gate or the children's escape means a fight in
+    the breach. Back at camp, the scene tells what the party did.
+  - **Crossing the Hollow Shore,** unseen by Dexterity or Wisdom skill
+    challenges, or by force. If you are spotted, an alarm scene follows.
+  - **A sea battle with the Crusade's last cutter** from the Anchorage.
+    It uses the full ship battle, with its gold, XP and prize. If you
+    lose, the ship limps home.
+- **Timed scenes.** A scene can carry a clock (`time_limit`, and
+  `timeout_choice` for the choice taken when time runs out). The clock
+  runs only while the scene is on screen, and not in Edit Mode. The node
+  editor keeps both fields.
+
+### Changed
+- **Fewer Continue presses.** A scene with a single plain way on is read
+  on the way to the next scene. It sits above the next scene's text, set
+  off by a ⁂, and the story no longer stops on it. At most two such scenes
+  are read in a row. Towns, timed scenes, endings and hub updates still
+  stop the story, and Edit Mode shows every scene as before.
+- **Fewer, shorter detours.** A road now has a 35% chance of a detour (was
+  70%). A detour lasts one or two scenes, or three or four when it carries
+  a quest (was up to seven). What waits on a road is now chosen in this
+  order: an alignment event, a familiar face (25%), then a detour.
+- **Retreat costs more.** Running from a fight now costs a fifth of your
+  gold (was 15%) and a potion, if you carry one.
+
 ## [1.175.0+205]
 
 The Journey tab walks, remembers and has hills.

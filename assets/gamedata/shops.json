@@ -534,5 +534,43 @@
     "detourEligible": false,
     "shopName_fr": "La Chandlerie des charpentiers d’épaves",
     "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte."
+  },
+  "wayfarer_caravan": {
+    "shopID": "wayfarer_caravan",
+    "shopName": "Wayfarer's Caravan",
+    "shopDescription": "A mule train that never stops in one town for long: potions, charms and the odd rare piece bought off the last road.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "antidote",
+      "charm_iron_skin",
+      "charm_warding",
+      "tome_of_insight",
+      "cloak_frostward",
+      "plate_emberproof",
+      "warden_signet"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Charm"
+    ],
+    "diceStock": [
+      "gambler_die"
+    ],
+    "stockQuantities": {
+      "potion_major": 2,
+      "antidote": 1,
+      "charm_iron_skin": 1,
+      "charm_warding": 1,
+      "tome_of_insight": 1,
+      "cloak_frostward": 1,
+      "plate_emberproof": 1,
+      "warden_signet": 1
+    },
+    "minChapter": 2,
+    "detourEligible": false,
+    "shopName_fr": "La Caravane du Voyageur",
+    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route."
   }
 }

@@ -10,6 +10,7 @@ import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/journey_rules.dart';
 import '../data/perks.dart';
 import '../models/ally_state.dart';
 
@@ -58,8 +59,9 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
 
-/// The share of the purse a retreat costs (see [retreatCostFor]).
-const double retreatGoldShare = 0.15;
+/// The share of the purse a retreat costs (see [retreatCostFor]); a
+/// potion, when the pack holds one, is dropped too.
+const double retreatGoldShare = 0.2;
 
 /// The least a retreat costs, when the party has that much.
 const int retreatMinimumGold = 10;
@@ -168,6 +170,13 @@ class PlayerSession {
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
     this.readSceneKeys = const [],
+    this.seenEchoKeys = const [],
+    this.provisions = provisionsStart,
+    this.day = 1,
+    this.stepsToday = 0,
+    this.clockChapter = 0,
+    this.chapterStartDay = 1,
+    this.sellswordFights = 0,
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -320,6 +329,38 @@ class PlayerSession {
   /// `<nodeId>#<hash of the text>` (see sceneReadKey): coming back to one
   /// whose text hasn't changed opens straight onto the place.
   final List<String> readSceneKeys;
+
+  /// The echoes the player has read (see echoes.dart): a scene's line with
+  /// the earlier choice that earned it, as `<nodeId>|<flag>`. The journal's
+  /// "What changed" page lists them.
+  final List<String> seenEchoKeys;
+
+  /// Rations carried (see journey_rules.dart): one is eaten on each step
+  /// of the road from chapter 2 on; with none left the party goes hungry.
+  final int provisions;
+
+  /// The day of the journey, from 1: every [stepsPerDay] steps on the road
+  /// end one, as does a night's rest or a voyage.
+  final int day;
+
+  /// Steps taken on the road since the day began.
+  final int stepsToday;
+
+  /// The chapter the clock counts days in, and the day it began: the
+  /// longer a chapter takes, the stronger its enemies grow (see
+  /// [threatFor]).
+  final int clockChapter;
+  final int chapterStartDay;
+
+  /// Fights left on a hired sellsword's contract (see journey_rules.dart).
+  final int sellswordFights;
+
+  /// How much stronger enemies are in [chapter] for the days the party has
+  /// spent in it (see [threatFor]).
+  double threatIn(int chapter) =>
+      roadRulesApply(chapter) && clockChapter == chapter
+          ? threatFor(day - chapterStartDay)
+          : 0;
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -606,6 +647,13 @@ class PlayerSession {
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
     List<String>? readSceneKeys,
+    List<String>? seenEchoKeys,
+    int? provisions,
+    int? day,
+    int? stepsToday,
+    int? clockChapter,
+    int? chapterStartDay,
+    int? sellswordFights,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -687,6 +735,13 @@ class PlayerSession {
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
+      seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
+      provisions: provisions ?? this.provisions,
+      day: day ?? this.day,
+      stepsToday: stepsToday ?? this.stepsToday,
+      clockChapter: clockChapter ?? this.clockChapter,
+      chapterStartDay: chapterStartDay ?? this.chapterStartDay,
+      sellswordFights: sellswordFights ?? this.sellswordFights,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -774,6 +829,13 @@ class PlayerSession {
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
         'readSceneKeys': readSceneKeys,
+        'seenEchoKeys': seenEchoKeys,
+        'provisions': provisions,
+        'day': day,
+        'stepsToday': stepsToday,
+        'clockChapter': clockChapter,
+        'chapterStartDay': chapterStartDay,
+        'sellswordFights': sellswordFights,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -921,6 +983,15 @@ class PlayerSession {
       readSceneKeys:
           (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      seenEchoKeys:
+          (json['seenEchoKeys'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
+      day: (json['day'] as num?)?.toInt() ?? 1,
+      stepsToday: (json['stepsToday'] as num?)?.toInt() ?? 0,
+      clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
+      chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
+      sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -1958,9 +2029,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required int hpAfter,
     required int goldLost,
     int? manaAfter,
+    bool dropPotion = false,
   }) async {
     state = state.copyWith(
       gold: max(0, state.gold - goldLost),
+      potionCount: dropPotion ? max(0, state.potionCount - 1) : null,
       currentHealth: max(1, min(state.maxHealth, hpAfter)),
       mana: manaAfter ?? state.mana,
     );
@@ -2580,6 +2653,111 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> markSceneRead(String key) async {
     if (state.readSceneKeys.contains(key)) return;
     state = state.copyWith(readSceneKeys: [...state.readSceneKeys, key]);
+    await _persist();
+  }
+
+  // --- The road: echoes, rations, days and sellswords ---------------------
+
+  /// Remembers the echoes [keys] (see echoes.dart) as read.
+  Future<void> noteEchoes(Iterable<String> keys) async {
+    final fresh = [
+      for (final key in {...keys})
+        if (!state.seenEchoKeys.contains(key)) key,
+    ];
+    if (fresh.isEmpty) return;
+    state = state.copyWith(seenEchoKeys: [...state.seenEchoKeys, ...fresh]);
+    await _persist();
+  }
+
+  /// [session] with the clock counting [chapter]'s days, from today if it
+  /// was counting another's.
+  PlayerSession _clockedIn(PlayerSession session, int chapter) =>
+      session.clockChapter == chapter
+          ? session
+          : session.copyWith(
+              clockChapter: chapter, chapterStartDay: session.day);
+
+  /// One step on the road in [chapter]: a ration eaten (or, with none
+  /// left, hunger's bite, see [hungerDamage]) and a quarter of the day
+  /// gone. Chapter 1 has no town to buy from, so its roads cost nothing.
+  Future<RoadStep> takeRoadStep({required int chapter}) async {
+    if (!roadRulesApply(chapter)) return const RoadStep();
+    final session = _clockedIn(state, chapter);
+    final hungry = session.provisions <= 0;
+    final bite = hungry
+        ? hungerDamage(
+            health: session.currentHealth, maxHealth: session.maxHealth)
+        : 0;
+    var steps = session.stepsToday + 1;
+    var day = session.day;
+    final dayEnded = steps >= stepsPerDay;
+    if (dayEnded) {
+      day += 1;
+      steps = 0;
+    }
+    state = session.copyWith(
+      provisions: hungry ? 0 : session.provisions - 1,
+      currentHealth: session.currentHealth - bite,
+      day: day,
+      stepsToday: steps,
+    );
+    await _persist();
+    return RoadStep(
+      counted: true,
+      hungry: hungry,
+      hunger: bite,
+      dayEnded: dayEnded,
+      day: day,
+      provisionsLeft: state.provisions,
+    );
+  }
+
+  /// [days] pass in [chapter] (a voyage): the next day begins after them.
+  Future<void> passDays(int days, {required int chapter}) async {
+    if (!roadRulesApply(chapter) || days <= 0) return;
+    final session = _clockedIn(state, chapter);
+    state = session.copyWith(day: session.day + days, stepsToday: 0);
+    await _persist();
+  }
+
+  /// A night's rest in a town, a port or the camp: the whole party healed
+  /// (see [healPartyToFull]), and in [chapter] a day gone.
+  Future<void> restNight({required int chapter}) async {
+    await healPartyToFull();
+    await passDays(1, chapter: chapter);
+  }
+
+  /// Buys [count] rations at [price] each, as many as the pack holds (see
+  /// [provisionsMax]). False, and nothing bought, when the purse or the
+  /// pack falls short.
+  Future<bool> buyProvisions(int count, {required int price}) async {
+    final room = provisionsMax - state.provisions;
+    final cost = count * price;
+    if (count <= 0 || count > room || state.gold < cost) return false;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      provisions: state.provisions + count,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Hires a sellsword for [sellswordContractFights] fights at [price]. False when
+  /// one is already under contract or the purse falls short.
+  Future<bool> hireSellsword({required int price}) async {
+    if (state.sellswordFights > 0 || state.gold < price) return false;
+    state = state.copyWith(
+      gold: state.gold - price,
+      sellswordFights: sellswordContractFights,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// One fight of the sellsword's contract spent.
+  Future<void> spendSellswordFight() async {
+    if (state.sellswordFights <= 0) return;
+    state = state.copyWith(sellswordFights: state.sellswordFights - 1);
     await _persist();
   }
 

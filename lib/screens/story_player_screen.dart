@@ -14,6 +14,10 @@ import '../data/ally_acknowledgments.dart';
 import '../data/chapter_spine.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
+import '../data/echoes.dart';
+import '../data/journey_rules.dart';
+import '../data/recurring_encounters.dart';
+import '../data/road_events.dart';
 import '../data/encounter_text.dart';
 import '../data/map_themes.dart';
 import '../data/narration_clips.dart';
@@ -24,6 +28,7 @@ import '../data/quest_hints.dart';
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../data/turn_in_choices.dart';
+import '../data/scene_flow.dart';
 import '../data/sub_node_engine.dart';
 import '../data/ui_theme_palettes.dart';
 import '../gamedata/db_schema.dart';
@@ -44,6 +49,7 @@ import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/road_random_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/tts_provider.dart';
@@ -52,6 +58,9 @@ import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/road_panel.dart';
+import '../widgets/story_ship_battle.dart';
+import '../widgets/timed_choice_bar.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/companion_remark_bubble.dart';
@@ -196,6 +205,15 @@ class _StoryView extends ConsumerWidget {
     final french = language == AppLanguage.fr;
     final displayDescription =
         node == null ? '' : composeNarration(node, session, french: french);
+    // The same text less the lines an earlier choice earned: those come
+    // after it as echoes, with the choice that earned them.
+    final parts = node == null
+        ? (text: '', echoes: const <SceneEcho>[])
+        : composeNarrationParts(node, session, story, french: french);
+    // Plain scenes read on the way here open this one.
+    final preludes = ref.watch(pendingPreludeProvider);
+    // The echoes shown are remembered for the journal's What changed.
+    noteShownEchoes(ref, session, parts.echoes);
     final epilogue = node?.epilogueFor(session.alignmentLabel, french);
     final pendingAftermath = ref.watch(pendingAftermathProvider);
     final speakerLabel = speakerLabelFor(node?.speaker, french: french);
@@ -235,12 +253,21 @@ class _StoryView extends ConsumerWidget {
             line: remark.lineFor(remarkBook, french: french),
           ),
     ];
-    final checkOutcome = ref.watch(pendingCheckOutcomeProvider);
+    // What the road cost opens the scene with a roll's outcome.
+    final roadNote = ref.watch(pendingRoadNoteProvider);
+    final rolledOutcome = ref.watch(pendingCheckOutcomeProvider);
+    final outcomeLines = [
+      if (roadNote != null && roadNote.isNotEmpty) roadNote,
+      if (rolledOutcome != null && rolledOutcome.isNotEmpty) rolledOutcome,
+    ];
+    final checkOutcome =
+        outcomeLines.isEmpty ? null : outcomeLines.join('\n\n');
     // What opens the scene before its own text, read aloud with it.
     final opening = [
       if (pendingAftermath != null && pendingAftermath.isNotEmpty)
         pendingAftermath,
       if (checkOutcome != null && checkOutcome.isNotEmpty) checkOutcome,
+      for (final prelude in preludes) prelude.text,
       for (final remark in remarks) '${remark.speaker}: ${remark.line}',
     ];
     final pendingDiscovery = ref.watch(pendingDiscoveryProvider);
@@ -573,7 +600,10 @@ class _StoryView extends ConsumerWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (narrationFolded && pendingAftermath != null)
+                        if (narrationFolded &&
+                            (pendingAftermath != null ||
+                                preludes.isNotEmpty ||
+                                roadNote != null))
                           _FoldedNarration(
                             key: ValueKey('${node.id}_folded'),
                             label: tr(ref, 'hub_story_unfold'),
@@ -581,7 +611,14 @@ class _StoryView extends ConsumerWidget {
                             uiTheme: node.uiTheme,
                             aftermath: pendingAftermath,
                             aftermathHeading: tr(ref, 'aftermath_heading'),
-                            outcome: checkOutcome,
+                            // What was just done here reads under the
+                            // folded place, with a roll's outcome.
+                            outcome: [
+                              for (final prelude in preludes) prelude.text,
+                              if (checkOutcome != null &&
+                                  checkOutcome.isNotEmpty)
+                                checkOutcome,
+                            ].join('\n\n'),
                           )
                         else if (!narrationFolded)
                           Expanded(
@@ -655,7 +692,11 @@ class _StoryView extends ConsumerWidget {
                                                       .maxHeight,
                                                   child: Center(
                                                     child: _StoryText(
-                                                      text: displayDescription,
+                                                      text: parts.text,
+                                                      prelude: preludes,
+                                                      echoes: parts.echoes,
+                                                      echoCaption: tr(
+                                                          ref, 'echo_because'),
                                                       uiTheme: node.uiTheme,
                                                       placeLabel: _placeLabel(
                                                           ref, node.uiTheme),
@@ -689,7 +730,11 @@ class _StoryView extends ConsumerWidget {
                                                                 french),
                                                       ),
                                                     _StoryText(
-                                                      text: displayDescription,
+                                                      text: parts.text,
+                                                      prelude: preludes,
+                                                      echoes: parts.echoes,
+                                                      echoCaption: tr(
+                                                          ref, 'echo_because'),
                                                       uiTheme: node.uiTheme,
                                                       placeLabel: _placeLabel(
                                                           ref, node.uiTheme),
@@ -752,6 +797,20 @@ class _StoryView extends ConsumerWidget {
                             ),
                           ] else
                             const SizedBox(height: 16),
+                          // A timed scene's clock (see TimedChoiceBar).
+                          if (node.isTimed &&
+                              !playState.isInExcursion &&
+                              !readingScene &&
+                              ref.watch(appModeProvider) != AppMode.edit)
+                            TimedChoiceBar(
+                              key: ValueKey(
+                                  'timer_${node.id}_${playState.history.length}'),
+                              seconds: node.timeLimit!,
+                              active: ref.watch(homeTabIndexProvider) == 0,
+                              label: tr(ref, 'timed_choice_hint'),
+                              onTimeout: () => takeStoryChoice(
+                                  context, ref, node.timeoutChoiceOrNull!),
+                            ),
                           fillBelow(TutorialTarget(
                             id: 'story.choices',
                             // Capped here too: the scene fading out keeps the
@@ -1021,6 +1080,8 @@ Future<void> _selectChoice({
   // on the last choice; moving on retires both.
   ref.read(pendingAftermathProvider.notifier).state = null;
   ref.read(pendingCheckOutcomeProvider.notifier).state = null;
+  ref.read(pendingPreludeProvider.notifier).state = const [];
+  ref.read(pendingRoadNoteProvider.notifier).state = null;
   ref.read(pendingRemarksProvider.notifier).state = const [];
   var skipRewardEffects = false;
   // What the choice showed of the player, for the party to remark on.
@@ -1090,7 +1151,7 @@ Future<void> _selectChoice({
               .restart(StoryRepository.startNodeId);
         } else {
           _noteRemark(ref, shown: shown);
-          ref.read(storyPlayProvider.notifier).choose(failTarget);
+          await _arriveAt(ref, story, failTarget);
         }
         return;
       }
@@ -1171,10 +1232,24 @@ Future<void> _selectChoice({
         // story goes there and the choice's own effects and unlocks stay
         // the winner's. A permadeath loss never returns here (won is null).
         if (won == false && choice.hasLossBranch && !isExcursion) {
-          ref.read(storyPlayProvider.notifier).choose(choice.loseNextId!);
+          await _arriveAt(ref, story, choice.loseNextId!);
         }
         return;
       }
+    }
+  }
+
+  // A sea battle the story starts (see story_ship_battle.dart): won, the
+  // story goes on; lost, to its defeat scene. Edit Mode sails past it.
+  if (choice.triggersShipBattle && ref.read(appModeProvider) != AppMode.edit) {
+    if (!context.mounted) return;
+    final won = await runStoryShipBattle(context, ref, choice.shipBattleId!,
+        chapter: ref.read(reachedChapterProvider));
+    if (won != true) {
+      if (won == false && choice.hasLossBranch && !isExcursion) {
+        await _arriveAt(ref, story, choice.loseNextId!);
+      }
+      return;
     }
   }
 
@@ -1272,12 +1347,36 @@ Future<void> _selectChoice({
 
   if (isExcursion) {
     playNotifier.advanceExcursion(slippedPast: fightAvoided);
+    // Back on the story's road: a plain scene there is read through too.
+    if (!ref.read(storyPlayProvider).isInExcursion) {
+      await _readThrough(ref, story);
+    }
     return;
   }
 
   if (choice.isEnding) {
     playNotifier.restart(StoryRepository.startNodeId);
     return;
+  }
+
+  // Setting out from one place for another is a step on the road: a
+  // ration eaten and part of the day gone (see journey_rules.dart).
+  final historyBefore = ref.read(storyPlayProvider).history.length;
+  if (!choice.opensCharacterCreation &&
+      isRoadStep(currentNodeId, choice.nextId)) {
+    await walkRoadStep(ref);
+    // What waits on this road (see road_events.dart), known before the
+    // party set out, takes the place of a detour.
+    final event = await roadEventOn(ref, story,
+        fromNodeId: currentNodeId,
+        toNodeId: choice.nextId,
+        historyLength: historyBefore);
+    if (!context.mounted) return;
+    if (event != null) {
+      playNotifier.startExcursion(event, choice.nextId,
+          origin: choice.text, originFr: choice.textFr);
+      return;
+    }
   }
 
   // A choice that loops back onto its own node (a shop visit at the docks
@@ -1294,7 +1393,8 @@ Future<void> _selectChoice({
       !atRest) {
     // A crisis runs on from this scene into the next: whatever the road
     // held waits until it is over.
-    if (Random().nextDouble() < SubNodeEngine.detourChance) {
+    if (ref.read(roadRandomProvider)().nextDouble() <
+        SubNodeEngine.detourChance) {
       playNotifier.oweDetour();
     }
   }
@@ -1311,7 +1411,113 @@ Future<void> _selectChoice({
       return;
     }
   }
-  playNotifier.choose(choice.nextId);
+  await _arriveAt(ref, story, choice.nextId);
+}
+
+/// Remembers [echoes] as read once they are on screen (see
+/// PlayerSessionNotifier.noteEchoes), for the journal's What changed.
+void noteShownEchoes(
+    WidgetRef ref, PlayerSession session, List<SceneEcho> echoes) {
+  final fresh = [
+    for (final echo in echoes)
+      if (!session.seenEchoKeys.contains(echo.key)) echo.key,
+  ];
+  if (fresh.isEmpty) return;
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref.read(playerSessionProvider.notifier).noteEchoes(fresh);
+  });
+}
+
+/// The road event waiting between [fromNodeId] and [toNodeId] (see
+/// road_events.dart) as the detour it plays out as, or null for a quiet
+/// road. Edit Mode's roads hold nothing.
+Future<List<StoryNode>?> roadEventOn(
+  WidgetRef ref,
+  StoryData story, {
+  required String fromNodeId,
+  required String toNodeId,
+  required int historyLength,
+}) async {
+  if (ref.read(appModeProvider) == AppMode.edit) return null;
+  final chapter = ref.read(reachedChapterProvider);
+  final event = roadEventFor(
+    story: story,
+    fromNodeId: fromNodeId,
+    toNodeId: toNodeId,
+    historyLength: historyLength,
+    chapter: chapter,
+  );
+  if (event == null) return null;
+  final enemies = await loadedGameDb(ref, enemiesSchema);
+  return roadEventChain(
+    event,
+    chapter: chapter,
+    enemyPool: SubNodeEngine.filterEnemyPool(
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+    seed: stableHash('$fromNodeId>$toNodeId#$historyLength'),
+  );
+}
+
+/// One step on the road (see PlayerSessionNotifier.takeRoadStep), and
+/// what it cost for the next scene to open with: the day's end, hunger,
+/// rations running low. Edit Mode's roads cost nothing.
+Future<void> walkRoadStep(WidgetRef ref) async {
+  if (ref.read(appModeProvider) == AppMode.edit) return;
+  final step = await ref
+      .read(playerSessionProvider.notifier)
+      .takeRoadStep(chapter: ref.read(reachedChapterProvider));
+  if (!step.counted) return;
+  final note = [
+    if (step.dayEnded)
+      tr(ref, 'road_note_day').replaceAll('{day}', '${step.day}'),
+    if (step.hungry && step.hunger > 0)
+      tr(ref, 'road_note_hungry').replaceAll('{n}', '${step.hunger}')
+    else if (!step.hungry && step.provisionsLeft == 0)
+      tr(ref, 'road_note_last')
+    else if (!step.hungry && step.provisionsLeft <= 2)
+      tr(ref, 'road_note_low').replaceAll('{n}', '${step.provisionsLeft}'),
+  ].join(' ');
+  ref.read(pendingRoadNoteProvider.notifier).state = note.isEmpty ? null : note;
+}
+
+/// Moves the story to [nodeId], reading plain scenes straight through: a
+/// scene whose only way on just moves on (see scene_flow.dart) opens the
+/// scene after it instead of asking for a press of its lone button, its
+/// flags set on the way. Edit Mode stops at every scene.
+Future<void> _arriveAt(WidgetRef ref, StoryData story, String nodeId) async {
+  ref.read(storyPlayProvider.notifier).choose(nodeId);
+  await _readThrough(ref, story);
+}
+
+/// Reads plain scenes straight through from where the story stands (see
+/// [_arriveAt]).
+Future<void> _readThrough(WidgetRef ref, StoryData story) async {
+  final play = ref.read(storyPlayProvider.notifier);
+  if (ref.read(appModeProvider) == AppMode.edit) return;
+  final french = ref.read(appLanguageProvider) == AppLanguage.fr;
+  final preludes = <ScenePrelude>[];
+  for (var i = 0; i < maxPassThrough; i++) {
+    final session = ref.read(playerSessionProvider);
+    final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
+    if (node == null) break;
+    final way = passThroughChoiceOf(node, session.flags);
+    // A way on the party cannot take yet stays a stop, with its reason.
+    if (way == null || isStoryChoiceLocked(way, story, session)) break;
+    preludes.add(ScenePrelude(
+      nodeId: node.id,
+      text: composeNarration(node, session, french: french),
+      speaker: speakerLabelFor(node.speaker, french: french),
+    ));
+    if (way.flagsToAdd.isNotEmpty) {
+      await ref
+          .read(playerSessionProvider.notifier)
+          .applyChoiceEffects(flagsToAdd: way.flagsToAdd);
+    }
+    play.choose(way.nextId);
+  }
+  if (preludes.isNotEmpty) {
+    ref.read(pendingPreludeProvider.notifier).state = preludes;
+  }
 }
 
 /// What the road holds on the way on from [fromNodeId] in [chapter]: an
@@ -1332,6 +1538,7 @@ Future<List<StoryNode>?> rollRoadEncounter(
   final quests = await loadedGameDb(ref, questsSchema);
   final session = ref.read(playerSessionProvider);
   final playNotifier = ref.read(storyPlayProvider.notifier);
+  final dice = ref.read(roadRandomProvider);
   final resolvedTheme = ref.read(mapThemeProvider) ??
       mapThemeForUiTheme(story.nodeFor(fromNodeId)?.uiTheme);
   final alignmentEvent = maybeAlignmentEvent(
@@ -1340,12 +1547,22 @@ Future<List<StoryNode>?> rollRoadEncounter(
     completedQuestIds: session.completedQuestIds,
     enemies: enemies,
     chapter: chapter,
-    random: Random(),
+    random: dice(),
     enabled: ref.read(alignmentHuntersEnabledProvider),
   );
   if (alignmentEvent != null) return alignmentEvent;
+  // Now and then, someone met on an earlier road (see
+  // recurring_encounters.dart).
+  final familiar = maybeRecurringEncounter(
+    flags: session.flags.toSet(),
+    chapter: chapter,
+    random: dice(),
+    enemyPool: SubNodeEngine.filterEnemyPool(
+        enemies: enemies, unlockedEnemyIds: const [], chapter: chapter),
+  );
+  if (familiar != null) return familiar;
   return SubNodeEngine.maybeGenerate(
-    random: Random(),
+    random: dice(),
     triggerChance:
         playNotifier.takeOwedDetour() ? 1.0 : SubNodeEngine.detourChance,
     chapter: chapter,
@@ -1425,7 +1642,23 @@ void _noteFightAftermath(WidgetRef ref, bool french) {
 /// with every `{name}`/`{race}`/`{profession}` token filled in. Exposed
 /// so the narration tests can read a scene the way the screen does.
 String composeNarration(StoryNode node, PlayerSession session,
+        {required bool french}) =>
+    _composeNarration(node, session, french: french);
+
+/// A node's text as [composeNarration] gives it, less the lines earned by
+/// an earlier choice of [story], which come back apart as echoes, each
+/// with the choice that earned it (see echoes.dart).
+({String text, List<SceneEcho> echoes}) composeNarrationParts(
+    StoryNode node, PlayerSession session, StoryData story,
     {required bool french}) {
+  final echoes = <SceneEcho>[];
+  final text = _composeNarration(node, session,
+      french: french, story: story, echoesOut: echoes);
+  return (text: text, echoes: echoes);
+}
+
+String _composeNarration(StoryNode node, PlayerSession session,
+    {required bool french, StoryData? story, List<SceneEcho>? echoesOut}) {
   final buffer = StringBuffer(withAllyAcknowledgment(
     node.id,
     node.descriptionFor(french),
@@ -1433,9 +1666,20 @@ String composeNarration(StoryNode node, PlayerSession session,
     french: french,
   ));
   final progress = node.hubProgressLineFor(session.flags, french);
+  final echoed = <FlagCallback>[];
+  final callbacks = <String>[];
+  for (final callback in node.firedCallbacks(session.flags)) {
+    if (story != null &&
+        echoesOut != null &&
+        echoCause(story, callback.flag) != null) {
+      echoed.add(callback);
+    } else {
+      callbacks.add(callback.line.textFor(french));
+    }
+  }
   final extras = [
     if (progress != null) progress,
-    ...node.callbacksFor(session.flags, french),
+    ...callbacks,
     ...node.personaLinesFor(
       raceId: session.raceId,
       professionId: session.professionId,
@@ -1453,15 +1697,24 @@ String composeNarration(StoryNode node, PlayerSession session,
   String? capitalized(String? id) => id == null || id.isEmpty
       ? null
       : '${id[0].toUpperCase()}${id.substring(1)}';
-  return personalizeNarration(
-    buffer.toString(),
-    name: session.characterName,
-    raceId: session.raceId,
-    professionId: session.professionId,
-    companionName: capitalized(firstAlly),
-    lostCompanionName: capitalized(lastLost),
-    french: french,
-  );
+  String personal(String text) => personalizeNarration(
+        text,
+        name: session.characterName,
+        raceId: session.raceId,
+        professionId: session.professionId,
+        companionName: capitalized(firstAlly),
+        lostCompanionName: capitalized(lastLost),
+        french: french,
+      );
+  for (final callback in echoed) {
+    echoesOut!.add(SceneEcho(
+      nodeId: node.id,
+      flag: callback.flag,
+      line: personal(callback.line.textFor(french)),
+      cause: personal(echoCause(story!, callback.flag)!.textFor(french)),
+    ));
+  }
+  return personal(buffer.toString());
 }
 
 /// Presents a hub node as a place: a Rest option, then what can be done
@@ -1840,19 +2093,12 @@ class _HubSections extends ConsumerWidget {
             tooltip:
                 tr(ref, restsAtCamp ? 'rest_at_camp_button' : 'rest_button'),
             icon: const Icon(Icons.local_fire_department_outlined),
-            onPressed: () async {
-              await ref.read(playerSessionProvider.notifier).healPartyToFull();
-              if (!context.mounted) return;
-              showImmersiveNotice(
-                context,
-                icon: Icons.local_fire_department,
+            onPressed: () => restTheNight(context, ref,
                 message: tr(
                     ref,
                     restsAtCamp
                         ? 'party_rested_at_camp_message'
-                        : 'party_rested_message'),
-              );
-            },
+                        : 'party_rested_message')),
           ),
         ],
       ),
@@ -2685,6 +2931,9 @@ class _FoldedNarration extends StatelessWidget {
 class _StoryText extends StatelessWidget {
   const _StoryText({
     required this.text,
+    this.prelude = const [],
+    this.echoes = const [],
+    this.echoCaption = '',
     this.uiTheme,
     this.placeLabel,
     this.moodLabel,
@@ -2697,6 +2946,17 @@ class _StoryText extends StatelessWidget {
   });
 
   final String text;
+
+  /// Plain scenes read on the way here (see scene_flow.dart): they open
+  /// the page, the scene's own text after a small rule.
+  final List<ScenePrelude> prelude;
+
+  /// Lines an earlier choice earned (see echoes.dart), after the scene's
+  /// own text, each under the choice that earned it.
+  final List<SceneEcho> echoes;
+
+  /// "Because you chose “{choice}”".
+  final String echoCaption;
 
   /// A check's outcome in words (see check_outcomes.dart): the scene
   /// opens with it, after the aftermath, if any. (What the party says
@@ -2733,7 +2993,11 @@ class _StoryText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final header = storyHeaderFor(text);
+    // A chapter's title may come with a scene read on the way into it.
+    final header = storyHeaderFor(text) ??
+        prelude
+            .map((p) => storyHeaderFor(p.text))
+            .firstWhere((h) => h != null && h.isNotEmpty, orElse: () => null);
     final body = storyBodyFor(text);
     final colorScheme = Theme.of(context).colorScheme;
     final palette = uiThemePaletteFor(uiTheme);
@@ -2851,6 +3115,34 @@ class _StoryText extends StatelessWidget {
               ),
               const SizedBox(height: 14),
             ],
+            for (final scene in prelude) ...[
+              if (scene.speaker != null && scene.speaker!.isNotEmpty) ...[
+                Text(
+                  '— ${scene.speaker}',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        letterSpacing: 1.2,
+                        fontStyle: FontStyle.italic,
+                        color: accent.text.withValues(alpha: 0.85),
+                      ),
+                ),
+                const SizedBox(height: 8),
+              ],
+              Text.rich(
+                TextSpan(
+                    children:
+                        _highlightedSpans(storyBodyFor(scene.text), baseStyle)),
+                textAlign: TextAlign.start,
+              ),
+              const SizedBox(height: 14),
+              Center(
+                child: Text(
+                  '⁂',
+                  style: TextStyle(
+                      color: accent.text.withValues(alpha: 0.55), fontSize: 14),
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
             if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
               Text(
                 '— $speakerLabel',
@@ -2866,6 +3158,16 @@ class _StoryText extends StatelessWidget {
               TextSpan(children: _highlightedSpans(body, baseStyle)),
               textAlign: TextAlign.start,
             ),
+            for (final echo in echoes) ...[
+              const SizedBox(height: 14),
+              EchoLine(
+                key: ValueKey('echo_${echo.key}'),
+                echo: echo,
+                caption: echoCaption.replaceAll('{choice}', echo.cause),
+                colour: accent.text,
+                style: baseStyle,
+              ),
+            ],
             if (epilogue != null && epilogue!.isNotEmpty) ...[
               const SizedBox(height: 18),
               Center(
@@ -3219,4 +3521,57 @@ String? _moodLabel(WidgetRef ref, String? mood) {
   final key = 'mood_$mood';
   final label = tr(ref, key);
   return label == key ? null : label;
+}
+
+/// A line an earlier choice earned, under a small caption naming the
+/// choice ("Because you chose “Spare him”"), set off by a thread in the
+/// scene's colour so it reads as the story answering the player.
+class EchoLine extends StatelessWidget {
+  const EchoLine({
+    super.key,
+    required this.echo,
+    required this.caption,
+    required this.colour,
+    required this.style,
+  });
+
+  final SceneEcho echo;
+  final String caption;
+  final Color colour;
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+            left: BorderSide(color: colour.withValues(alpha: 0.6), width: 2)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.history, size: 14, color: colour),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    caption,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          letterSpacing: 0.4,
+                          color: colour,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(echo.line, style: style),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -74,6 +74,142 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'journey_kind_travel': {AppLanguage.en: 'Voyage', AppLanguage.fr: 'Voyage'},
   'journey_kind_rest': {AppLanguage.en: 'Rest', AppLanguage.fr: 'Repos'},
   'journey_kind_road': {AppLanguage.en: 'Road', AppLanguage.fr: 'Route'},
+  'echo_because': {
+    AppLanguage.en: 'Because you chose “{choice}”',
+    AppLanguage.fr: 'Parce que vous avez choisi « {choice} »',
+  },
+  'journal_story_tab': {AppLanguage.en: 'Scenes', AppLanguage.fr: 'Scènes'},
+  'journal_changed_title': {
+    AppLanguage.en: 'What changed',
+    AppLanguage.fr: 'Ce qui a changé',
+  },
+  'journal_changed_empty': {
+    AppLanguage.en:
+        'Nothing yet. What you choose comes back in later scenes, and is noted here.',
+    AppLanguage.fr:
+        'Rien encore. Vos choix reviennent dans des scènes plus loin, et sont notés ici.',
+  },
+  'journey_event_champion': {
+    AppLanguage.en:
+        'A champion holds this road: an Elite fight, a better chest.',
+    AppLanguage.fr:
+        'Un champion tient cette route : un combat d’Élite, un meilleur coffre.',
+  },
+  'journey_event_shrine': {
+    AppLanguage.en: 'A wayside shrine on this road: a place to heal.',
+    AppLanguage.fr: 'Un sanctuaire sur cette route : de quoi vous soigner.',
+  },
+  'journey_event_caravan': {
+    AppLanguage.en: 'The Wayfarer’s Caravan is on this road: rare goods.',
+    AppLanguage.fr:
+        'La Caravane du Voyageur est sur cette route : des marchandises rares.',
+  },
+  'timed_choice_hint': {
+    AppLanguage.en: 'Choose before time runs out',
+    AppLanguage.fr: 'Choisissez avant la fin du temps',
+  },
+  'road_title': {AppLanguage.en: 'The road', AppLanguage.fr: 'La route'},
+  'road_day_line': {
+    AppLanguage.en: 'Day {day} · {n} days in this chapter',
+    AppLanguage.fr: 'Jour {day} · {n} jours dans ce chapitre',
+  },
+  'road_threat_on': {
+    AppLanguage.en:
+        'The longer you linger, the more your enemies gather: they hit harder and last longer (+{p}%).',
+    AppLanguage.fr:
+        'Plus vous vous attardez, plus vos ennemis se rassemblent : ils frappent plus fort et tiennent plus longtemps (+{p} %).',
+  },
+  'road_threat_off': {
+    AppLanguage.en:
+        'After {n} days in a chapter, its enemies start to gather strength. A night’s rest or a voyage takes days.',
+    AppLanguage.fr:
+        'Après {n} jours dans un chapitre, ses ennemis commencent à se renforcer. Une nuit de repos ou un voyage prend des jours.',
+  },
+  'road_rations_line': {
+    AppLanguage.en: 'Rations: {n}/{max}',
+    AppLanguage.fr: 'Rations : {n}/{max}',
+  },
+  'road_rations_help': {
+    AppLanguage.en:
+        'You eat one on every road between two places. With none left, hunger costs health.',
+    AppLanguage.fr:
+        'Vous en mangez une sur chaque route entre deux lieux. Sans rien à manger, la faim vous coûte de la santé.',
+  },
+  'road_rations_label': {AppLanguage.en: 'Rations', AppLanguage.fr: 'Rations'},
+  'road_day_abbrev': {AppLanguage.en: 'Day', AppLanguage.fr: 'Jour'},
+  'road_day_label': {
+    AppLanguage.en: 'Day of the journey',
+    AppLanguage.fr: 'Jour du voyage',
+  },
+  'road_buy_one': {
+    AppLanguage.en: 'Buy 1 ({gold} gold)',
+    AppLanguage.fr: 'En acheter 1 ({gold} or)',
+  },
+  'road_fill_up': {
+    AppLanguage.en: 'Fill the pack ({gold} gold)',
+    AppLanguage.fr: 'Remplir le sac ({gold} or)',
+  },
+  'road_sellsword_line': {
+    AppLanguage.en: 'A sellsword',
+    AppLanguage.fr: 'Un mercenaire',
+  },
+  'road_sellsword_hired': {
+    AppLanguage.en: 'Sellsword under contract: {n} fights left',
+    AppLanguage.fr: 'Mercenaire sous contrat : encore {n} combats',
+  },
+  'road_sellsword_help': {
+    AppLanguage.en:
+        'Fights beside you for {n} fights and strikes the weakest enemy for {dmg} each round.',
+    AppLanguage.fr:
+        'Se bat à vos côtés pendant {n} combats et frappe l’ennemi le plus faible ({dmg} dégâts) à chaque tour.',
+  },
+  'road_hire_sellsword': {
+    AppLanguage.en: 'Hire ({gold} gold)',
+    AppLanguage.fr: 'Engager ({gold} or)',
+  },
+  'road_market_hint': {
+    AppLanguage.en:
+        'Rations and sellswords are found in towns, villages and at the camp.',
+    AppLanguage.fr:
+        'Rations et mercenaires se trouvent dans les villes, les villages et au campement.',
+  },
+  'road_note_day': {
+    AppLanguage.en: 'Night falls on the road. Day {day} begins.',
+    AppLanguage.fr: 'La nuit tombe sur la route. Le jour {day} commence.',
+  },
+  'road_note_hungry': {
+    AppLanguage.en: 'Nothing left to eat: hunger costs you {n} health.',
+    AppLanguage.fr:
+        'Plus rien à manger : la faim vous coûte {n} points de santé.',
+  },
+  'road_note_low': {
+    AppLanguage.en: 'Rations are running low ({n} left).',
+    AppLanguage.fr: 'Les rations s’épuisent (il en reste {n}).',
+  },
+  'road_note_last': {
+    AppLanguage.en:
+        'That was the last ration. More are sold in towns and at the camp.',
+    AppLanguage.fr:
+        'C’était la dernière ration. Il s’en vend en ville et au campement.',
+  },
+  'rest_new_day': {
+    AppLanguage.en: 'Day {day} begins.',
+    AppLanguage.fr: 'Le jour {day} commence.',
+  },
+  'retreat_potion_part': {
+    AppLanguage.en: ' and a potion',
+    AppLanguage.fr: ' et une potion',
+  },
+  'sellsword_strikes': {
+    AppLanguage.en: 'Your sellsword strikes {name} for {n}.',
+    AppLanguage.fr: 'Votre mercenaire frappe {name} : {n} dégâts.',
+  },
+  'threat_fight_note': {
+    AppLanguage.en:
+        'Your enemies have gathered strength while you lingered (+{p}%).',
+    AppLanguage.fr:
+        'Vos ennemis se sont renforcés pendant que vous vous attardiez (+{p} %).',
+  },
   'camp_party_section': {
     AppLanguage.en: 'Who comes along',
     AppLanguage.fr: 'Qui vous accompagne',
@@ -5300,9 +5436,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'retreat_confirm_body': {
     AppLanguage.en:
-        'You drop {gold} gold getting clear and keep the wounds you have. Nothing is won. A detour is left behind; a fight in the story waits where it was.',
+        'You drop {gold} gold{potion} getting clear and keep the wounds you have. Nothing is won. A detour is left behind; a fight in the story waits where it was.',
     AppLanguage.fr:
-        'Vous laissez tomber {gold} or en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné ; un combat de l’histoire vous attend là où il était.',
+        'Vous laissez tomber {gold} or{potion} en vous dégageant et gardez vos blessures. Rien n’est gagné. Un détour est abandonné ; un combat de l’histoire vous attend là où il était.',
   },
   'read_scroll_prefix': {
     AppLanguage.en: 'You read the',

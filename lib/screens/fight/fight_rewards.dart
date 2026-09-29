@@ -333,12 +333,16 @@ extension _FightRewards on _FightScreenState {
   Future<void> _retreat() async {
     final lang = ref.read(appLanguageProvider);
     final cost = retreatCostFor(ref.read(playerSessionProvider).gold);
+    // A potion goes too, when the pack holds one.
+    final dropsPotion = ref.read(playerSessionProvider).potionCount > 0;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(trFor(lang, 'retreat_confirm_title')),
-        content: Text(
-            trFor(lang, 'retreat_confirm_body').replaceAll('{gold}', '$cost')),
+        content: Text(trFor(lang, 'retreat_confirm_body')
+            .replaceAll('{gold}', '$cost')
+            .replaceAll('{potion}',
+                dropsPotion ? trFor(lang, 'retreat_potion_part') : '')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -359,6 +363,7 @@ extension _FightRewards on _FightScreenState {
       hpAfter: player.currentHealth,
       goldLost: cost,
       manaAfter: _mana,
+      dropPotion: dropsPotion,
     );
     for (final member in _party) {
       if (member.isPlayer) continue;

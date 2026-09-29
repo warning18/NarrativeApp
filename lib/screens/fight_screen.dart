@@ -24,6 +24,8 @@ import '../widgets/combat_vfx.dart';
 import '../widgets/item_stats.dart';
 import '../data/approval.dart';
 import '../data/chapter_loop.dart';
+import '../data/journey_rules.dart';
+import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../data/perks.dart';
 import '../data/contracts.dart' show ContractTally;
 import '../data/story_repository.dart';
@@ -193,6 +195,14 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// [_ensureEnemiesBuilt] and fixed for the rest of the fight. Always
   /// false for a multi-enemy pack (Elite and packs are never combined).
   bool _isElite = false;
+
+  /// How much stronger the chapter's enemies have grown while the party
+  /// lingered (see journey_rules.dart); bosses keep their tuning.
+  double _threat = 0;
+
+  /// What the hired sellsword deals each round (0: none hired, see
+  /// journey_rules.dart).
+  int _sellswordStrike = 0;
 
   /// Resolve and the camp's works, resolved once at party build (see
   /// party_bonus.dart).

@@ -24,6 +24,7 @@ class EncounterModifiers {
     this.lossContinues = false,
     this.isTest = false,
     this.forcedCondition,
+    this.forceElite = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -77,6 +78,10 @@ class EncounterModifiers {
   /// wrong is an ambush), instead of rolling one.
   final BattlefieldCondition? forcedCondition;
 
+  /// A lone enemy that is Elite for certain (a road event's champion, see
+  /// road_events.dart), instead of rolling for it.
+  final bool forceElite;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -90,7 +95,8 @@ class EncounterModifiers {
       !isZoneBoss &&
       !lossContinues &&
       !isTest &&
-      forcedCondition == null;
+      forcedCondition == null &&
+      !forceElite;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw).
@@ -109,6 +115,7 @@ class EncounterModifiers {
         lossContinues: lossContinues,
         isTest: isTest,
         forcedCondition: forcedCondition,
+        forceElite: forceElite,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -128,6 +135,13 @@ class EncounterModifiers {
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
+    if (choice.roadEvent == 'elite') {
+      return const EncounterModifiers(
+        forceElite: true,
+        chestTierFloor: ChestTier.silver,
+        rewardMultiplier: 1.25,
+      );
+    }
     if (choice.isHunterAmbush) {
       return const EncounterModifiers(
         chestTierFloor: ChestTier.silver,

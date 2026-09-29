@@ -523,6 +523,27 @@ extension _FightRounds on _FightScreenState {
       enemy.hitWeaknessThisRound = false;
     }
 
+    // The hired sellsword strikes the weakest enemy standing.
+    var sellswordWon = false;
+    if (_sellswordStrike > 0 && !playerDied) {
+      final standing = _enemies.where((e) => e.isAlive).toList()
+        ..sort((a, b) => a.currentHealth.compareTo(b.currentHealth));
+      if (standing.isNotEmpty) {
+        final target = standing.first;
+        final dealt = min(_sellswordStrike, target.currentHealth);
+        target.currentHealth -= dealt;
+        _fx(VfxStyle.slash, _enemyCardKey(target.key),
+            text: '-$dealt', textKind: VfxTextKind.hurt);
+        newEntries.add(_LogEntry(
+          trFor(lang, 'sellsword_strikes')
+              .replaceAll('{name}', target.displayName)
+              .replaceAll('{n}', '$dealt'),
+          _LogKind.playerDamage,
+        ));
+        sellswordWon = _enemies.every((e) => !e.isAlive);
+      }
+    }
+
     _update(() {
       _log.addAll(newEntries);
       _rollCount = 0;
@@ -545,6 +566,10 @@ extension _FightRounds on _FightScreenState {
 
     if (playerDied) {
       _finishFight(won: false);
+      return;
+    }
+    if (sellswordWon) {
+      _finishFight(won: true);
       return;
     }
 

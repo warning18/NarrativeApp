@@ -2840,7 +2840,7 @@
       {
         "text": "Climb out before the roof comes down",
         "text_fr": "Sortir avant que le toit ne s'effondre",
-        "next_id": "6001",
+        "next_id": "5006_chase",
         "healAmount": -10,
         "flagsToAdd": [
           "climbed_out_fast"
@@ -2849,11 +2849,83 @@
       {
         "text": "Search the loyalists' dead on the way up",
         "text_fr": "Fouiller les loyalistes morts en remontant",
-        "next_id": "6001",
+        "next_id": "5006_chase",
         "goldMod": 40,
         "alignmentMod": -1,
         "flagsToAdd": [
           "looted_loyalists"
+        ]
+      }
+    ]
+  },
+  "5006_chase": {
+    "id": "5006_chase",
+    "description": "They came after me before I had climbed ten steps: the loyalists who had not fled, and a few who had and thought better of it, lanterns swinging, the altar’s ash still smoking on their sleeves. The stair split three ways below the old drain. Behind me the roof was still deciding when to fall. In front of me there was no time to decide anything slowly.",
+    "description_fr": "Ils se lancèrent à ma poursuite avant que j’aie gravi dix marches : les loyalistes qui n’avaient pas fui, et quelques-uns qui avaient fui puis s’étaient ravisés, lanternes au poing, la cendre de l’autel fumant encore sur leurs manches. L’escalier se divisait en trois sous le vieil égout. Derrière moi, la voûte hésitait encore à tomber. Devant moi, il n’y avait pas le temps de rien décider lentement.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Sprint for the old drain",
+        "text_fr": "Foncer vers le vieil égout",
+        "next_id": "6001",
+        "checkAbility": "dexterity",
+        "checkDC": 14,
+        "failNextId": "5006_cornered",
+        "flagsToAdd": [
+          "chase_drain"
+        ]
+      },
+      {
+        "text": "Turn on the stair and fight them there",
+        "text_fr": "Faire volte-face et les combattre dans l’escalier",
+        "next_id": "6001",
+        "triggerEnemyIds": [
+          "cultist_acolyte",
+          "cultist_acolyte"
+        ],
+        "flagsToAdd": [
+          "chase_stair"
+        ]
+      },
+      {
+        "text": "Pull the old props and bring the roof down",
+        "text_fr": "Arracher les étais et faire tomber la voûte",
+        "next_id": "6001",
+        "checkAbility": "strength",
+        "checkDC": 15,
+        "failNextId": "5006_cornered",
+        "flagsToAdd": [
+          "chase_roof"
+        ]
+      }
+    ],
+    "time_limit": 20,
+    "timeout_choice": 1
+  },
+  "5006_cornered": {
+    "id": "5006_cornered",
+    "description": "It was not enough. They caught me where the passage narrowed, two of them with the ash-ink glowing on their arms and the rest close enough behind to hear. There was nowhere left to run to, so I stopped running.",
+    "description_fr": "Ce ne fut pas assez. Ils me rattrapèrent là où le passage se resserrait, deux d’entre eux, l’encre de cendre luisant sur leurs bras, et les autres assez près derrière pour entendre. Il n’y avait plus nulle part où courir, alors je cessai de courir.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight your way out",
+        "text_fr": "Se frayer un passage",
+        "next_id": "6001",
+        "triggerEnemyIds": [
+          "cultist_acolyte",
+          "bone_sexton"
+        ],
+        "flagsToAdd": [
+          "chase_cornered"
         ]
       }
     ]
@@ -2919,6 +2991,26 @@
         "flag": "looted_loyalists",
         "en": "The loyalists' purses were in my coat. They had not needed them where the roof had put them.",
         "fr": "Les bourses des loyalistes étaient dans mon manteau. Ils n'en avaient pas eu besoin là où le toit les avait mis."
+      },
+      {
+        "flag": "chase_drain",
+        "en": "I had come up through the old drain into the river silt, which is not a dignified way to leave a cathedral, but it is a way.",
+        "fr": "La remontée s’était faite par le vieil égout, dans la vase du fleuve, ce qui n’est pas une façon digne de quitter une cathédrale, mais c’en est une."
+      },
+      {
+        "flag": "chase_stair",
+        "en": "My sleeves were black to the elbow with the ash of the loyalists I had fought on the stair.",
+        "fr": "Mes manches étaient noires jusqu’au coude de la cendre des loyalistes combattus dans l’escalier."
+      },
+      {
+        "flag": "chase_roof",
+        "en": "Behind me the catacombs had come down on the loyalists, on the altar and on everything the Court had written there. I did not look back to check.",
+        "fr": "Derrière moi, les catacombes s’étaient effondrées sur les loyalistes, sur l’autel et sur tout ce que la Cour y avait écrit. Je ne me retournai pas pour vérifier."
+      },
+      {
+        "flag": "chase_cornered",
+        "en": "I came out bleeding from a fight I had tried to outrun, which is the worst kind there is.",
+        "fr": "Je sortis en saignant d’un combat que j’avais tenté de fuir, ce qui est la pire espèce qui soit."
       }
     ]
   },
@@ -2938,7 +3030,7 @@
       {
         "text": "Sail home to the camp at once",
         "text_fr": "Rentrer au camp par la mer, sans attendre",
-        "next_id": "6002_camp",
+        "next_id": "6002_siege",
         "flagsToAdd": [
           "sailed_home_at_once"
         ]
@@ -2946,7 +3038,7 @@
       {
         "text": "Read the page twice more before sailing",
         "text_fr": "Relire deux fois la page avant de prendre la mer",
-        "next_id": "6002_camp",
+        "next_id": "6002_siege",
         "healAmount": -5,
         "flagsToAdd": [
           "ledger_read_twice"
@@ -2963,6 +3055,132 @@
         "flag": "rested_first",
         "en": "I had slept an hour first, with the Shroud under my head, and dreamed of nothing at all. I did not trust the nothing.",
         "fr": "J'avais d'abord dormi une heure, le Linceul sous la tête, et rêvé de rien du tout. Je ne faisais pas confiance à ce rien."
+      }
+    ]
+  },
+  "6002_siege": {
+    "id": "6002_siege",
+    "description": "I heard the camp before I saw it: the storm bell we had hung on the wall, rung for something that was not a storm. The Court’s remnants had followed the ledger home, the ones who fled the altar and a few who had never been near it, and they had brought the Void’s hounds on leashes of grey thread. Torches along the palisade. Children passed hand to hand toward the boats. The Eel was still coming about when the first of them reached the gate.",
+    "description_fr": "J’entendis le camp avant de le voir : la cloche de tempête que nous avions pendue au mur, sonnée pour autre chose qu’une tempête. Les restes de la Cour avaient suivi le registre jusque chez nous, ceux qui avaient fui l’autel et quelques autres qui n’en avaient jamais approché, et ils avaient amené les chiens du Vide en laisse de fil gris. Des torches le long de la palissade. Des enfants passés de main en main vers les barques. L’Eel virait encore de bord quand les premiers atteignirent la porte.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Hold the palisade with the others",
+        "text_fr": "Tenir la palissade avec les autres",
+        "next_id": "6002_siege_2",
+        "triggerEnemyIds": [
+          "void_hound",
+          "cultist_acolyte"
+        ],
+        "flagsToAdd": [
+          "siege_held_wall"
+        ]
+      },
+      {
+        "text": "Light the beach fires to look like an army",
+        "text_fr": "Allumer les feux de plage comme une armée",
+        "next_id": "6002_siege_2",
+        "checkAbility": "charisma",
+        "checkDC": 15,
+        "failNextId": "6002_siege_breach",
+        "flagsToAdd": [
+          "siege_bluffed"
+        ]
+      },
+      {
+        "text": "Get the children to the boats first",
+        "text_fr": "Mettre d’abord les enfants dans les barques",
+        "next_id": "6002_siege_breach",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "siege_children_first"
+        ]
+      }
+    ],
+    "time_limit": 20,
+    "timeout_choice": 0
+  },
+  "6002_siege_2": {
+    "id": "6002_siege_2",
+    "description": "They came again at the turn of the tide, more of them, and this time the one who led them came too: a Court zealot with the ledger’s ink on both hands, walking behind the hounds as if the sand were a nave. The palisade had one more wave in it, perhaps. Perhaps not.",
+    "description_fr": "Ils revinrent au changement de marée, plus nombreux, et cette fois celui qui les menait vint aussi : un zélote de la Cour, l’encre du registre sur les deux mains, marchant derrière les chiens comme si le sable était une nef. La palissade tiendrait peut-être encore une vague. Peut-être pas.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Sally out and take their zealot",
+        "text_fr": "Sortir abattre leur zélote",
+        "next_id": "6002_siege_end",
+        "triggerEnemyId": "hollow_court_zealot",
+        "flagsToAdd": [
+          "siege_sallied"
+        ]
+      },
+      {
+        "text": "Hold the gate until dawn",
+        "text_fr": "Tenir la porte jusqu’à l’aube",
+        "next_id": "6002_siege_end",
+        "checkAbility": "constitution",
+        "checkDC": 14,
+        "challengeSuccessesNeeded": 3,
+        "challengeMaxFailures": 2,
+        "failNextId": "6002_siege_breach",
+        "flagsToAdd": [
+          "siege_gate_held"
+        ]
+      }
+    ],
+    "time_limit": 20,
+    "timeout_choice": 1
+  },
+  "6002_siege_breach": {
+    "id": "6002_siege_breach",
+    "description": "The palisade gave at the corner we had never finished. They came through the gap in a rush of grey and teeth, and for a long moment the camp was not a camp at all, only a beach with people on it and things that wanted them.",
+    "description_fr": "La palissade céda à l’angle que nous n’avions jamais achevé. Ils passèrent par la brèche dans une ruée de gris et de crocs, et pendant un long moment le camp ne fut plus un camp, seulement une plage avec des gens dessus et des choses qui les voulaient.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Stand in the breach",
+        "text_fr": "Tenir la brèche",
+        "next_id": "6002_siege_end",
+        "triggerEnemyIds": [
+          "void_hound",
+          "void_hound"
+        ],
+        "flagsToAdd": [
+          "siege_breached"
+        ]
+      }
+    ]
+  },
+  "6002_siege_end": {
+    "id": "6002_siege_end",
+    "description": "Dawn found the camp standing, mostly. We counted the living twice, and then a third time because nobody believed the second count. The hounds’ leashes lay on the sand where they had fallen, grey thread going slowly to nothing in the light.",
+    "description_fr": "L’aube trouva le camp debout, pour l’essentiel. Nous comptâmes deux fois les vivants, puis une troisième fois parce que personne ne croyait au deuxième compte. Les laisses des chiens gisaient sur le sable là où elles étaient tombées, fil gris qui s’effaçait lentement dans la lumière.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Walk the camp and count what is left",
+        "text_fr": "Faire le tour du camp et compter ce qui reste",
+        "next_id": "6002_camp",
+        "flagsToAdd": [
+          "siege_over"
+        ]
       }
     ]
   },
@@ -3035,6 +3253,41 @@
         "flag": "nell_at_camp",
         "en": "Nell had come down from the Kindly Hill with her needles and one bag, taken one look at the camp’s stores and started on them, and nothing in them had spoiled since. She said it was a trick of the hill’s. She would not say whose clock she was using.",
         "fr": "Nell était descendue de la Colline des Bienveillants avec ses aiguilles et un seul sac, avait jeté un regard aux réserves du camp et s’y était attelée, et plus rien n’y avait gâté depuis. Elle disait que c’était un tour de la colline. Elle refusait de dire à qui appartenait l’horloge dont elle se servait."
+      },
+      {
+        "flag": "siege_held_wall",
+        "en": "The palisade had held where I stood on it. I had not known, until that night, that I would stand on it.",
+        "fr": "La palissade avait tenu là où je m’y tenais. Je ne savais pas, avant cette nuit-là, que je m’y tiendrais."
+      },
+      {
+        "flag": "siege_bluffed",
+        "en": "Half the beach fires were still smoking. Someone had drawn a fierce face on the biggest woodpile, and the children would not let anyone take it down.",
+        "fr": "La moitié des feux de plage fumaient encore. Quelqu’un avait dessiné un visage féroce sur le plus gros tas de bois, et les enfants ne laissaient personne le démonter."
+      },
+      {
+        "flag": "siege_children_first",
+        "en": "The children had spent the night in the boats and came ashore at dawn asking whether we had won. I told them yes. It was nearly true.",
+        "fr": "Les enfants avaient passé la nuit dans les barques et revinrent à terre à l’aube en demandant si nous avions gagné. Je leur dis que oui. C’était presque vrai."
+      },
+      {
+        "flag": "siege_sallied",
+        "en": "The zealot’s ledger-ink had come off on my hands, and it would not wash out. Everyone said it would fade. Nobody said when.",
+        "fr": "L’encre du registre du zélote m’était restée sur les mains, et elle ne partait pas au lavage. Tout le monde disait qu’elle s’effacerait. Personne ne disait quand."
+      },
+      {
+        "flag": "siege_gate_held",
+        "en": "My arms remembered every blow on that gate. So did the gate: my handprint was burned into its bar.",
+        "fr": "Mes bras se souvenaient de chaque coup porté contre cette porte. La porte aussi : l’empreinte de ma main était brûlée dans sa barre."
+      },
+      {
+        "flag": "siege_breached",
+        "en": "There was a hole in the palisade where they had come through, and two new graves above the tideline.",
+        "fr": "Il y avait un trou dans la palissade là où ils étaient passés, et deux tombes neuves au-dessus de la laisse de mer."
+      },
+      {
+        "flag": "siege_over",
+        "en": "The children had a new name for the palisade after that night: the Dawn Wall. Nobody remembered who said it first.",
+        "fr": "Après cette nuit, les enfants donnèrent un nouveau nom à la palissade : le Mur de l’Aube. Personne ne se rappelait qui l’avait dit en premier."
       }
     ],
     "settlement": {
@@ -5748,6 +6001,28 @@
     ],
     "reqFlags": [
       "banner_five"
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "approach_unseen",
+        "en": "It had not seen me cross the sand. That, I think, was the first thing in a thousand years to surprise it.",
+        "fr": "Elle n’avait pas remarqué ma traversée du sable. Ce fut, je crois, la première chose en mille ans à la surprendre."
+      },
+      {
+        "flag": "approach_shrouded",
+        "en": "I had walked through its reflections wearing its own grey, and it had let me, the way you let a door you own open.",
+        "fr": "J’avais traversé ses reflets sous son propre gris, et elle m’avait laissé passer, comme on laisse s’ouvrir une porte qui vous appartient."
+      },
+      {
+        "flag": "approach_cut",
+        "en": "The road I had cut through its reflections was still closing behind me, borrowed faces folding back into the sand.",
+        "fr": "La route que j’avais taillée à travers ses reflets se refermait encore derrière moi, les visages empruntés se repliant dans le sable."
+      },
+      {
+        "flag": "approach_alarm",
+        "en": "Every reflection on the shore had watched me come, and every one of them was watching still.",
+        "fr": "Chaque reflet du rivage avait suivi mon approche, et tous regardaient encore."
+      }
     ]
   },
   "4999_standard": {
@@ -7614,6 +7889,16 @@
         "hideIfFlags": [
           "hub_7100_helmsman_later"
         ]
+      },
+      {
+        "text": "Drive off the Crusade’s last cutter",
+        "text_fr": "Chasser le dernier cotre de la Croisade",
+        "next_id": "7100_cutter",
+        "shipBattleId": "inquisition_cutter",
+        "loseNextId": "7100_cutter_lost",
+        "hideIfFlags": [
+          "hub_7100_cutter"
+        ]
       }
     ],
     "settlement": {
@@ -7788,6 +8073,46 @@
         "alignmentMod": -1,
         "flagsToAdd": [
           "hub_7100_helmsman_later"
+        ]
+      }
+    ]
+  },
+  "7100_cutter": {
+    "id": "7100_cutter",
+    "description": "The cutter went down off the Anchorage’s harbour wall of anchors, and the town came out to watch it go the way a town watches its last bad habit leave. The helmsman stood beside me on the mole with his hat in his hands. He did not say whether he was sorry.",
+    "description_fr": "Le cotre sombra au large du mur d’ancres du Mouillage, et la ville sortit le regarder partir comme une ville regarde s’en aller sa dernière mauvaise habitude. Le timonier se tenait à côté de moi sur le môle, son chapeau à la main. Il ne dit pas s’il le regrettait.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "hopeful",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the Anchorage",
+        "text_fr": "Retourner au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_cutter"
+        ]
+      }
+    ]
+  },
+  "7100_cutter_lost": {
+    "id": "7100_cutter_lost",
+    "description": "The cutter put two holes in the Eel below the waterline and was gone round the point before I could answer either of them. We limped in on the pumps. Nobody on the mole said anything, which was worse.",
+    "description_fr": "Le cotre fit deux trous dans la coque de l’Eel sous la ligne de flottaison et disparut derrière la pointe avant que je puisse répondre à l’un ou l’autre. Nous rentrâmes clopin-clopant, les pompes en marche. Personne sur le môle ne dit rien, ce qui était pire.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the Anchorage",
+        "text_fr": "Retourner au Mouillage",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_cutter"
         ]
       }
     ]
@@ -8080,7 +8405,7 @@
       {
         "text": "Sail for the Hollow Shore and into the tear",
         "text_fr": "Mettre le cap sur la Rive Creuse et entrer dans la déchirure",
-        "next_id": "7002_confront",
+        "next_id": "7002_approach",
         "mainQuest": true,
         "travelPlaceId": "7002",
         "showIfFlags": [
@@ -8133,6 +8458,92 @@
         "flag": "greyhithe_names_read",
         "en": "Greyhithe had sent a basket of its pale fish and, tucked under it, a name written out twelve times in a hand that was learning to write again.",
         "fr": "Grisegrève avait envoyé un panier de ses poissons pâles et, glissé dessous, un nom écrit douze fois d’une main qui réapprenait à écrire."
+      }
+    ]
+  },
+  "7002_approach": {
+    "id": "7002_approach",
+    "description": "The Hollow Shore was not empty. Along the waterline, where the tear’s light lay on the wet sand, the reflections stood in their hundreds, each wearing a face the Void had taken, each turned toward the tear as if waiting to be called in. Between the water and me there was a mile of them. None had turned its head my way yet.",
+    "description_fr": "La Rive Creuse n’était pas déserte. Le long de la ligne d’eau, là où la lumière de la déchirure s’étendait sur le sable mouillé, les reflets se tenaient par centaines, chacun portant un visage que le Vide avait pris, chacun tourné vers la déchirure comme s’il attendait qu’on l’appelle. Entre l’eau et moi, il y en avait sur une lieue. Aucun n’avait encore tourné la tête vers moi.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Slip between them without a sound",
+        "text_fr": "Se glisser entre eux sans un bruit",
+        "next_id": "7002_confront",
+        "checkAbility": "dexterity",
+        "checkDC": 15,
+        "challengeSuccessesNeeded": 3,
+        "challengeMaxFailures": 2,
+        "failNextId": "7002_alarm",
+        "flagsToAdd": [
+          "approach_unseen"
+        ],
+        "showIfFlags": [
+          "banner_five"
+        ]
+      },
+      {
+        "text": "Walk among them under the Shroud’s grey",
+        "text_fr": "Marcher parmi eux sous le gris du Linceul",
+        "next_id": "7002_confront",
+        "checkAbility": "wisdom",
+        "checkDC": 15,
+        "challengeSuccessesNeeded": 3,
+        "challengeMaxFailures": 2,
+        "failNextId": "7002_alarm",
+        "flagsToAdd": [
+          "approach_shrouded"
+        ],
+        "showIfFlags": [
+          "banner_five"
+        ]
+      },
+      {
+        "text": "Cut a road straight through them",
+        "text_fr": "Ouvrir une route droit à travers eux",
+        "next_id": "7002_confront",
+        "triggerEnemyIds": [
+          "hollow_reflection",
+          "hollow_reflection"
+        ],
+        "flagsToAdd": [
+          "approach_cut"
+        ],
+        "showIfFlags": [
+          "banner_five"
+        ]
+      }
+    ]
+  },
+  "7002_alarm": {
+    "id": "7002_alarm",
+    "description": "One of them turned. Then all of them did, a mile of borrowed faces coming round at once like a field of grass in the wind, and the nearest were already walking. Not running. They had never needed to run.",
+    "description_fr": "L’un d’eux se retourna. Puis tous, une lieue de visages empruntés pivotant d’un seul mouvement comme un champ d’herbe sous le vent, et les plus proches marchaient déjà. Sans courir. Ils n’avaient jamais eu besoin de courir.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight to the water’s edge",
+        "text_fr": "Se battre jusqu’au bord de l’eau",
+        "next_id": "7002_confront",
+        "triggerEnemyIds": [
+          "hollow_reflection",
+          "unmade_knight"
+        ],
+        "flagsToAdd": [
+          "approach_alarm"
+        ],
+        "showIfFlags": [
+          "banner_five"
+        ]
       }
     ]
   }

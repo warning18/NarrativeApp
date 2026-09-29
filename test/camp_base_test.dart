@@ -50,8 +50,10 @@ void main() {
     expect(court.nextId, '5003');
     // After the ledger, the party sails home; the Quarter's thread is the
     // fifth chapter's main quest.
+    // The Court's remnants besiege the camp on the way home (v1.176).
     expect(story.nodeFor('6002')!.choices.map((c) => c.nextId).toSet(),
-        {'6002_camp'});
+        {'6002_siege'});
+    expect(story.nodeFor('6002_siege_end')!.choices.single.nextId, '6002_camp');
     final thread = story.nodeFor('6002_camp')!.choices.single;
     expect(thread.mainQuest, isTrue);
     expect(thread.nextId, '6010_thread');

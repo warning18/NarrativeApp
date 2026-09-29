@@ -23,9 +23,14 @@ extension _FightSetup on _FightScreenState {
     final lang = ref.read(appLanguageProvider);
     final modifiers = widget.modifiers;
     _isElite = entries.length == 1 &&
-        isRandomDrawEnemy(entries.first.key) &&
-        modifiers.forcedAffixes.isEmpty &&
-        _random.nextDouble() < _eliteChance;
+        (modifiers.forceElite ||
+            (isRandomDrawEnemy(entries.first.key) &&
+                modifiers.forcedAffixes.isEmpty &&
+                _random.nextDouble() < _eliteChance));
+    final session = ref.read(playerSessionProvider);
+    _threat = modifiers.isTest || modifiers.isZoneBoss
+        ? 0
+        : session.threatIn(ref.read(reachedChapterProvider));
     _condition = modifiers.forcedCondition ??
         rollBattlefieldCondition(enemyCount: entries.length, random: _random);
 
@@ -112,6 +117,10 @@ extension _FightSetup on _FightScreenState {
     );
     maxHealth = max(1, (maxHealth * curve.health).round());
     damage = (damage * curve.damage).round();
+    if (_threat > 0 && !isBossEnemy(id, raw)) {
+      maxHealth = max(1, (maxHealth * (1 + _threat)).round());
+      damage = (damage * (1 + _threat)).round();
+    }
     if (_isElite) {
       maxHealth = (maxHealth * _eliteStatMultiplier).round();
       damage = (damage * _eliteStatMultiplier).round();
@@ -290,6 +299,14 @@ extension _FightSetup on _FightScreenState {
 
   void _startFight(Map<String, dynamic> skills, Map<String, dynamic> items) {
     final lang = ref.read(appLanguageProvider);
+    // A hired sellsword fights this one, a fight off the contract.
+    final session = ref.read(playerSessionProvider);
+    if (!widget.modifiers.isTest && session.sellswordFights > 0) {
+      _sellswordStrike = sellswordDamage(ref.read(reachedChapterProvider));
+      ref.read(playerSessionProvider.notifier).spendSellswordFight();
+    }
+    final threatened =
+        _threat > 0 && _enemies.any((e) => !isBossEnemy(e.enemyId, e.data));
     for (final enemy in _enemies) {
       _preRollMoveFor(enemy, skills);
     }
@@ -321,6 +338,13 @@ extension _FightSetup on _FightScreenState {
             (items[id] as Map<String, dynamic>?)?['itemName']?.toString() ?? id;
         _log.add(_LogEntry(
             '${trFor(lang, 'charm_used_prefix')} $name', _LogKind.playerHeal));
+      }
+      if (threatened) {
+        _log.add(_LogEntry(
+          trFor(lang, 'threat_fight_note')
+              .replaceAll('{p}', '${(_threat * 100).round()}'),
+          _LogKind.info,
+        ));
       }
       if (banter != null) _log.add(banter);
     });

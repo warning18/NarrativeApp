@@ -558,8 +558,13 @@ void main() {
       // The crossing sets out from the camp's last night, by the Hollow
       // Shore.
       final sail = nodes['7400']!.choices.firstWhere(
-          (c) => c.nextId == '7002_confront',
+          (c) => c.nextId == '7002_approach',
           orElse: () => fail('the last camp no longer leads to the crossing'));
+      expect(
+          nodes['7002_approach']!
+              .choices
+              .where((c) => c.nextId == '7002_confront'),
+          isNotEmpty);
       expect(sail.launchesZone, isFalse);
       expect(sail.travelPlaceId, '7002');
       expect(nodes['7002_crew']!.choices.single.nextId, '7002');

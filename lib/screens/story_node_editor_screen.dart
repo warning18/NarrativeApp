@@ -101,6 +101,8 @@ class _StoryNodeEditorScreenState extends ConsumerState<StoryNodeEditorScreen> {
       personaVariants: widget.node.personaVariants,
       hubProgress: widget.node.hubProgress,
       settlement: widget.node.settlement,
+      timeLimit: widget.node.timeLimit,
+      timeoutChoice: widget.node.timeoutChoice,
     );
     await saveStoryNode(ref, updated);
     if (!mounted) return;
@@ -463,6 +465,8 @@ class _ChoiceEditState {
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
         forcedCondition: _original.forcedCondition,
         approvalMods: _original.approvalMods,
+        roadEvent: _original.roadEvent,
+        shipBattleId: _original.shipBattleId,
       );
 }
 

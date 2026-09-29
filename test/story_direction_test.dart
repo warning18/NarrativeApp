@@ -201,7 +201,15 @@ void main() {
           isEmpty,
           reason: 'the crossing sets out from the camp');
       final sail = nodes['7400']!.choices.single;
-      expect(sail.nextId, '7002_confront');
+      // The shore is crossed first (v1.176): unseen, under the Shroud or
+      // cutting a road, and every way across reaches the Sovereign.
+      expect(sail.nextId, '7002_approach');
+      for (final id in ['7002_approach', '7002_alarm']) {
+        for (final choice in nodes[id]!.choices) {
+          expect(choice.nextId, '7002_confront', reason: choice.text);
+          expect(choice.showIfFlags, ['banner_five'], reason: choice.text);
+        }
+      }
       expect(sail.mainQuest, isTrue);
       expect(sail.travelPlaceId, '7002');
       expect(sail.showIfFlags, ['banner_five']);
@@ -431,9 +439,11 @@ void main() {
       // fate scenes (each open to one side of the alignment line, so exactly
       // one is ever available).
       expect(nodes['6010']!.settlement!.arrivalNodeId, '6010_gate');
+      // The siege at the camp comes first (v1.176), and ends there.
       for (final choice in nodes['6002']!.choices) {
-        expect(choice.nextId, '6002_camp', reason: choice.text);
+        expect(choice.nextId, '6002_siege', reason: choice.text);
       }
+      expect(nodes['6002_siege_end']!.choices.single.nextId, '6002_camp');
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');
       expect(through.hideIfFlags, contains('lysa_lost'));

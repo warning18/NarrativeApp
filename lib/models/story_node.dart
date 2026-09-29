@@ -35,6 +35,8 @@ class StoryChoice {
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
     this.approvalMods = const {},
+    this.roadEvent,
+    this.shipBattleId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -92,8 +94,21 @@ class StoryChoice {
       showIfFlags:
           (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      roadEvent: json['roadEvent'] as String?,
+      shipBattleId: json['shipBattleId'] as String?,
     );
   }
+
+  /// Set on a generated road event's choice (see road_events.dart): what
+  /// the event is ('elite', 'shrine', 'merchant'), for the fight's rules
+  /// and the map's mark. Never set on hand-authored story content.
+  final String? roadEvent;
+
+  /// A sea battle this choice starts (ship_battle.dart's enemy ship id):
+  /// won, the story goes on to [nextId]; lost, to [loseNextId].
+  final String? shipBattleId;
+
+  bool get triggersShipBattle => (shipBattleId ?? '').isNotEmpty;
 
   final String text;
   final String nextId;
@@ -303,6 +318,8 @@ class StoryChoice {
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
           'forcedCondition': forcedCondition,
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
+        if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
+        if (triggersShipBattle) 'shipBattleId': shipBattleId,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -362,6 +379,8 @@ class StoryNode {
     this.contextNote,
     this.contextNoteFr,
     this.settlement,
+    this.timeLimit,
+    this.timeoutChoice = 0,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -394,8 +413,24 @@ class StoryNode {
       personaVariants: _parseLines(json['persona_variants']),
       hubProgress: HubProgress.fromJson(json['hub_progress']),
       settlement: Settlement.fromJson(json['settlement']),
+      timeLimit: (json['time_limit'] as num?)?.toInt(),
+      timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
     );
   }
+
+  /// Seconds the player has to choose (a chase, a wave coming over the
+  /// wall), or null for all the time in the world. When they run out the
+  /// story takes the choice at [timeoutChoice] (an index into [choices]).
+  /// The clock only runs while the scene is on screen, and never in Edit
+  /// Mode (see TimedChoiceBar).
+  final int? timeLimit;
+  final int timeoutChoice;
+
+  bool get isTimed => (timeLimit ?? 0) > 0 && choices.isNotEmpty;
+
+  /// The choice the story takes when the clock runs out.
+  StoryChoice? get timeoutChoiceOrNull =>
+      !isTimed ? null : choices[timeoutChoice.clamp(0, choices.length - 1)];
 
   static List<FlagCallback> _parseCallbacks(Object? raw) {
     if (raw is! List) return const [];
@@ -548,14 +583,20 @@ class StoryNode {
   }
 
   /// The callback paragraphs the player's [flags] have earned, in order.
-  List<String> callbacksFor(Iterable<String> flags, bool french) {
+  List<String> callbacksFor(Iterable<String> flags, bool french) => [
+        for (final callback in firedCallbacks(flags))
+          callback.line.textFor(french),
+      ];
+
+  /// The callbacks the player's [flags] have earned, in order.
+  List<FlagCallback> firedCallbacks(Iterable<String> flags) {
     final held = flags.toSet();
     return [
       for (final callback in flagCallbacks)
         if (held.contains(callback.flag) &&
             !callback.unlessFlags.any(held.contains) &&
             callback.andFlags.every(held.contains))
-          callback.line.textFor(french),
+          callback,
     ];
   }
 
@@ -608,6 +649,8 @@ class StoryNode {
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,
         if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
         if (reqCharisma != 0) 'reqCharisma': reqCharisma,
+        if (isTimed) 'time_limit': timeLimit,
+        if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
         if (alignmentEpilogues.isNotEmpty)
           'alignment_epilogues': {
             for (final entry in alignmentEpilogues.entries)

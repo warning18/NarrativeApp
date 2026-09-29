@@ -288,7 +288,10 @@ final List<Landmark> worldMapLandmarks = [
         'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: your base, where every chapter opens, between every trip, until the last night before the tear.',
     blurbFr:
         'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la dernière nuit avant la déchirure.',
-    scenes: ['3001', '3001_camp', '4999_camp', '6002_camp', '7001', '7400'],
+    scenes: [
+      '3001', '3001_camp', '4999_camp', '6002_siege', '6002_siege_2', //
+      '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
+    ],
   ),
   const Landmark(
     id: 'quarter',
@@ -413,7 +416,10 @@ final List<Landmark> worldMapLandmarks = [
         'Inked inquisitors around a black altar and the Shroud’s twin. Their ledger of the taken has your parents on page two, and a dozen sleepers lie wrapped in the grey you need.',
     blurbFr:
         'Des inquisiteurs tatoués autour d’un autel noir et du jumeau du Linceul. Leur registre des disparus porte vos parents en page deux, et une douzaine de dormeurs gisent enveloppés du gris qu’il vous faut.',
-    scenes: ['5003', '5004', '5004b', '5004_altar', '5005'],
+    scenes: [
+      '5003', '5004', '5004b', '5004_altar', '5005', '5006_chase', //
+      '5006_cornered',
+    ],
     fights: ['hollow_court_zealot'],
   ),
   const Landmark(
@@ -492,7 +498,7 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman',
-      '7100_helmsman_later',
+      '7100_helmsman_later', '7100_cutter', '7100_cutter_lost',
     ],
     fights: ['inquisition_soldier', 'white_soldier'],
   ),
@@ -535,7 +541,8 @@ final List<Landmark> worldMapLandmarks = [
         'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
     scenes: [
       '7002', '7002_reflections', '7002_rest', '7002_pact', //
-      '7002_betrayal', '7002_crew', '7002_confront', '7002_price', '7003',
+      '7002_betrayal', '7002_crew', '7002_approach', '7002_alarm', //
+      '7002_confront', '7002_price', '7003',
       '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],
     fights: ['hollow_reflection', '@first_ally'],

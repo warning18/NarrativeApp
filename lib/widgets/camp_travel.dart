@@ -15,7 +15,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
-    show rollRoadEncounter, takeStoryChoice;
+    show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
 
@@ -98,8 +98,18 @@ Future<bool> moveParty(
     return true;
   }
   if (!context.mounted) return false;
-  return sailTo(context, ref,
+  // The days at sea pass on the journey's clock (see journey_rules.dart);
+  // read before the voyage, which may swap the screen this came from.
+  final here = currentPortIdFor(ports, session.currentPortId);
+  final measured = there == homePortId(ports) ? here : there;
+  final port = measured == null ? null : ports[measured];
+  final days = port is Map<String, dynamic> ? portVoyageLength(port) : 1;
+  final notifier = ref.read(playerSessionProvider.notifier);
+  final chapter = ref.read(reachedChapterProvider);
+  final arrived = await sailTo(context, ref,
       toPortId: there, toPort: ports[there] as Map<String, dynamic>);
+  if (arrived) await notifier.passDays(days, chapter: chapter);
+  return arrived;
 }
 
 /// Travels to [targetNodeId] ([destinationPortId] its port, null for the
@@ -120,6 +130,21 @@ Future<void> travelTo(
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
+    await walkRoadStep(ref);
+    if (!context.mounted) return;
+    // A road event on the way (see road_events.dart), else what the road
+    // may hold.
+    final from = ref.read(storyPlayProvider);
+    final story = await ref.read(storyDataProvider.future);
+    final event = await roadEventOn(ref, story,
+        fromNodeId: from.currentNodeId,
+        toNodeId: targetNodeId,
+        historyLength: from.history.length);
+    if (!context.mounted) return;
+    if (event != null) {
+      play.startExcursion(event, targetNodeId, origin: origin);
+      return;
+    }
     final chain = await rollRoadEncounter(ref,
         chapter: ref.read(reachedChapterProvider),
         fromNodeId: ref.read(storyPlayProvider).currentNodeId);

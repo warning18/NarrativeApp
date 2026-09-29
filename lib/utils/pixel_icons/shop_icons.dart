@@ -17,6 +17,7 @@ class ShopIcons {
     'sharpweave_den',
     'shieldwrights_hall',
     'smugglers_vault',
+    'wayfarer_caravan',
     'weaponsmith_forge',
   ];
 }
