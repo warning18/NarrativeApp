@@ -40,7 +40,7 @@ class EnemyIcons {
     'maren_turned',
     'masked_penitent',
     'plague_hound',
-    'purifier_hesk',
+    'purifier_vell',
     'rat_matriarch',
     'rime_bailiff',
     'sable_turned',

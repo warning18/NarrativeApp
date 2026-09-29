@@ -61,6 +61,23 @@
           "slums_looted"
         ]
       }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_beggar_good",
+        "en": "The old man it was named for had torn my loaf in two once, and told me I would come to a bad end, but a lucky one. I was running to his door now, and it was hanging open.",
+        "fr": "Le vieil homme qui lui avait donné son nom avait rompu mon pain en deux, autrefois, en me promettant une mauvaise fin, mais chanceuse. Je courais vers sa porte, et elle pendait, ouverte."
+      },
+      {
+        "flag": "origin_beggar_neutral",
+        "en": "The old man it was named for had caught my sleeve once, and I had pulled free. He had been dead for years; the door still had his name.",
+        "fr": "Le vieil homme qui lui avait donné son nom avait saisi ma manche, autrefois, et elle lui avait échappé. Il était mort depuis des années ; la porte portait encore son nom."
+      },
+      {
+        "flag": "origin_beggar_evil",
+        "en": "I had emptied the old man's cup once, at ten, while he held my sleeve. The tavern that bore his name had never once asked me to pay for that.",
+        "fr": "J'avais vidé la sébile du vieil homme, autrefois, à dix ans, pendant qu'il tenait ma manche. La taverne qui portait son nom ne m'avait jamais demandé de payer pour cela."
+      }
     ]
   },
   "151": {
@@ -164,6 +181,81 @@
         "flag": "slums_looted",
         "en": "The stall-keepers' coin sat heavy and unearned in my pocket. It would spend the same as any other.",
         "fr": "La monnaie des marchands pesait, lourde et imméritée, dans ma poche. Elle se dépenserait comme n'importe quelle autre."
+      },
+      {
+        "flag": "origin_mark_human_good",
+        "en": "The painted girl from the alley would be grown now, if she was anything. I hoped the Crusade had not found her first.",
+        "fr": "La petite fille peinte de la ruelle devait être grande à présent, si elle était encore quelque chose. J'espérai que la Croisade ne l'avait pas trouvée la première."
+      },
+      {
+        "flag": "origin_mark_human_neutral",
+        "en": "My mother had told me once that we had our own. Tonight I meant to find out what she had meant.",
+        "fr": "Ma mère m'avait dit un jour que nous avions le nôtre. Cette nuit, j'avais l'intention de savoir ce qu'elle voulait dire."
+      },
+      {
+        "flag": "origin_mark_human_evil",
+        "en": "I had worn a white ribbon once, for a year. The men who had given them out were burning my street.",
+        "fr": "J'avais porté un ruban blanc, autrefois, pendant un an. Les hommes qui les distribuaient brûlaient ma rue."
+      },
+      {
+        "flag": "origin_mark_elf_good",
+        "en": "The last time my paint had run, it had been for a tanner's boy under an awning. My grandmother had been prouder of that smear than of any sigil.",
+        "fr": "La dernière fois que ma peinture avait coulé, c'était pour un fils de tanneur sous un auvent. Ma grand-mère avait été plus fière de cette traînée que d'aucun sigil."
+      },
+      {
+        "flag": "origin_mark_elf_neutral",
+        "en": "I had kept my first sigil dry through a whole market's rain. Smoke, it turned out, was harder.",
+        "fr": "J'avais gardé mon premier sigil au sec sous toute la pluie d'un marché. La fumée, il s'avéra, était plus difficile."
+      },
+      {
+        "flag": "origin_mark_elf_evil",
+        "en": "I had shoved a boy out into the rain once to keep my paint perfect. Nobody was holding an awning over anyone tonight.",
+        "fr": "J'avais poussé un garçon sous la pluie, autrefois, pour garder ma peinture parfaite. Cette nuit, personne ne tenait d'auvent au-dessus de personne."
+      },
+      {
+        "flag": "origin_mark_dwarf_good",
+        "en": "The smith's boy had re-cut my first mark straight, years ago. I wondered if his forge was still standing, and knew it was not.",
+        "fr": "Le fils du forgeron avait retaillé droite ma première marque, des années plus tôt. Je me demandai si sa forge tenait encore debout, et je savais que non."
+      },
+      {
+        "flag": "origin_mark_dwarf_neutral",
+        "en": "My first mark was still crooked in a whetstone at the bottom of my pack. I had never been able to throw it away.",
+        "fr": "Ma première marque dormait encore de travers dans une pierre à aiguiser, au fond de mon sac. Je n'avais jamais pu la jeter."
+      },
+      {
+        "flag": "origin_mark_dwarf_evil",
+        "en": "I had once laughed a crying boy into the ground behind a forge. The forge was burning now, and nobody was laughing.",
+        "fr": "J'avais autrefois écrasé de rires un garçon en larmes derrière une forge. La forge brûlait, et personne ne riait."
+      },
+      {
+        "flag": "origin_mark_orc_good",
+        "en": "I had hidden a baby in a coal cellar once, with my hand over her mouth. Lysa was heavier, and quieter.",
+        "fr": "J'avais caché un bébé dans une cave à charbon, autrefois, la main sur sa bouche. Lysa était plus lourde, et plus silencieuse."
+      },
+      {
+        "flag": "origin_mark_orc_neutral",
+        "en": "I had watched an orphan-taker's boots through a crack once, and learned to wait. There was no time for waiting tonight.",
+        "fr": "J'avais regardé les bottes d'un preneur d'orphelins par une fente, autrefois, et appris à attendre. Cette nuit, il n'y avait pas de temps pour attendre."
+      },
+      {
+        "flag": "origin_mark_orc_evil",
+        "en": "I had pointed a Crusade man at a baby once, to save my own arm. The Crusade had come back for everyone else's.",
+        "fr": "J'avais désigné un bébé à un homme de la Croisade, autrefois, pour sauver mon propre bras. La Croisade était revenue pour les bras de tous les autres."
+      },
+      {
+        "flag": "origin_mark_voidkin_good",
+        "en": "The boy I had pulled out of the well had grown up to throw stones at other things. I hoped he had thrown some at the Crusade.",
+        "fr": "Le garçon que j'avais sorti du puits avait grandi pour jeter des pierres sur d'autres choses. J'espérai qu'il en avait jeté sur la Croisade."
+      },
+      {
+        "flag": "origin_mark_voidkin_neutral",
+        "en": "The street had kept its distance from me since the frozen well. Tonight, for once, the distance was useful.",
+        "fr": "La rue gardait ses distances avec moi depuis le puits gelé. Cette nuit, pour une fois, la distance servait."
+      },
+      {
+        "flag": "origin_mark_voidkin_evil",
+        "en": "I had let the cold down a well-rope once, at eight. It had not stayed there.",
+        "fr": "J'avais laissé le froid descendre la corde d'un puits, à huit ans. Il n'y était pas resté."
       }
     ]
   },
@@ -257,6 +349,23 @@
         "flagsToAdd": [
           "hound_left"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_sparrow_good",
+        "en": "It looked at me the way a sparrow had once looked up out of a gutter, and my hands remembered what they had done then before I did.",
+        "fr": "Il me regardait comme un moineau, autrefois, depuis le fond d'un caniveau, et mes mains se souvinrent de ce qu'elles avaient fait alors avant moi."
+      },
+      {
+        "flag": "origin_sparrow_neutral",
+        "en": "At six I had wrung a sparrow's neck because it was kinder. My hands remembered that too, and I made them wait.",
+        "fr": "À six ans, j'avais tordu le cou d'un moineau parce que c'était plus doux. Mes mains s'en souvenaient aussi, et je les fis attendre."
+      },
+      {
+        "flag": "origin_sparrow_evil",
+        "en": "At six I had sold a sparrow with a broken wing for a copper. Nobody here was offering one.",
+        "fr": "À six ans, j'avais vendu un moineau à l'aile brisée pour un sou. Ici, personne n'en offrait."
       }
     ]
   },
@@ -365,6 +474,23 @@
           "took_bundle"
         ]
       }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_board_good",
+        "en": "The last hand under that board before mine had been a starving girl's. I had sent her off with our bread and moved the Bundle two boards over.",
+        "fr": "La dernière main passée sous cette latte avant la mienne était celle d'une fille affamée. Je l'avais renvoyée avec notre pain, et j'avais déplacé le Balluchon de deux lattes."
+      },
+      {
+        "flag": "origin_board_neutral",
+        "en": "The last hand under that board before mine had been a thief's, and I had shown her the door. The Bundle had not moved since.",
+        "fr": "La dernière main passée sous cette latte avant la mienne était celle d'une voleuse, et je lui avais montré la porte. Le Balluchon n'avait plus bougé depuis."
+      },
+      {
+        "flag": "origin_board_evil",
+        "en": "The last hand under that board before mine had been a thief's. I had shouted for the watch, and had not gone to see what they did about it.",
+        "fr": "La dernière main passée sous cette latte avant la mienne était celle d'une voleuse. J'avais appelé le guet, sans aller voir ce qu'il en avait fait."
+      }
     ]
   },
   "400": {
@@ -417,6 +543,83 @@
           "surrendered",
           "told_them"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_calling_warrior_good",
+        "en": "At twelve I had stood between a drunk and the net-mender's daughter and taken two blows for it. I stood in front of Lysa the same way, and waited for the first.",
+        "fr": "À douze ans, j'avais fait rempart entre un ivrogne et la fille du ravaudeur, et encaissé deux coups. Je fis rempart devant Lysa de la même façon, et attendis le premier."
+      },
+      {
+        "flag": "origin_calling_warrior_neutral",
+        "en": "My back had been worth a copper a day on the docks. It would have to be worth more than that now.",
+        "fr": "Mon dos valait un sou par jour sur les quais. Il allait devoir valoir davantage."
+      },
+      {
+        "flag": "origin_calling_warrior_evil",
+        "en": "I had laughed along with a bigger man once, for a silver. These three were not paying.",
+        "fr": "J'avais ri avec un homme plus fort, autrefois, pour une pièce d'argent. Ces trois-là ne payaient pas."
+      },
+      {
+        "flag": "origin_calling_mage_good",
+        "en": "The candle on the table leaned toward me, as candles had since I was twelve. The chandler's apprentice had kept that secret; I hoped these three would not live to learn it.",
+        "fr": "La chandelle sur la table pencha vers moi, comme les chandelles le faisaient depuis mes douze ans. L'apprenti du chandelier avait gardé ce secret ; j'espérai que ces trois-là ne vivraient pas assez pour l'apprendre."
+      },
+      {
+        "flag": "origin_calling_mage_neutral",
+        "en": "Four years of practising in the dark, and the first time I would need it, it would be in front of three witnesses in masks.",
+        "fr": "Quatre ans d'exercice dans le noir, et la première fois que j'en aurais besoin, ce serait devant trois témoins masqués."
+      },
+      {
+        "flag": "origin_calling_mage_evil",
+        "en": "I had sold a chandler's apprentice to the Crusade's criers at twelve. It seemed the Crusade had come to collect the rest.",
+        "fr": "À douze ans, j'avais vendu l'apprenti d'un chandelier aux crieurs de la Croisade. La Croisade, semblait-il, venait chercher le reste."
+      },
+      {
+        "flag": "origin_calling_rogue_good",
+        "en": "I had learned to read a table before I sat at it. This one had three masks at it, and no seat for me.",
+        "fr": "J'avais appris à lire une table avant de m'y asseoir. Celle-ci comptait trois masques, et aucune place pour moi."
+      },
+      {
+        "flag": "origin_calling_rogue_neutral",
+        "en": "The only sure win was the game you did not play. They had not left me the choice.",
+        "fr": "La seule partie gagnée d'avance était celle qu'on ne jouait pas. Ils ne m'avaient pas laissé le choix."
+      },
+      {
+        "flag": "origin_calling_rogue_evil",
+        "en": "My hands had been quicker than honest men's eyes since I was twelve. These were not honest men, and they were not looking at my hands.",
+        "fr": "Mes mains allaient plus vite que les yeux des honnêtes gens depuis mes douze ans. Ceux-là n'avaient rien d'honnête, et ils ne regardaient pas mes mains."
+      },
+      {
+        "flag": "origin_calling_cleric_good",
+        "en": "At twelve I had taken a broom handle across the back so a sick woman could sleep under an altar. I put myself between Lysa and the door the same way.",
+        "fr": "À douze ans, j'avais reçu un manche de balai en travers du dos pour qu'une malade dorme sous un autel. Je me mis entre Lysa et la porte de la même façon."
+      },
+      {
+        "flag": "origin_calling_cleric_neutral",
+        "en": "A kind voice could carry most people out of a door, I had learned at twelve. Not these three.",
+        "fr": "Une voix douce pouvait faire passer presque n'importe qui par une porte, avais-je appris à douze ans. Pas ces trois-là."
+      },
+      {
+        "flag": "origin_calling_cleric_evil",
+        "en": "A full stomach quiets most things, I had learned at twelve. It did not quiet this.",
+        "fr": "Un ventre plein fait taire presque tout, avais-je appris à douze ans. Il ne fit pas taire ceci."
+      },
+      {
+        "flag": "origin_calling_ranger_good",
+        "en": "The marsh kept its own accounts, I had learned at twelve, and so, it seemed, did the Crusade.",
+        "fr": "Le marais tenait ses propres comptes, avais-je appris à douze ans, et la Croisade aussi, semblait-il."
+      },
+      {
+        "flag": "origin_calling_ranger_neutral",
+        "en": "I had learned to do the necessary thing cleanly. I looked for the necessary thing.",
+        "fr": "J'avais appris à faire proprement le nécessaire. Je cherchai le nécessaire."
+      },
+      {
+        "flag": "origin_calling_ranger_evil",
+        "en": "Four pelts were worth more than one; I had learned that at twelve. Three soldiers looked at me the way I had once looked at the reeds.",
+        "fr": "Quatre peaux valaient mieux qu'une ; je l'avais appris à douze ans. Trois soldats me regardaient comme j'avais autrefois regardé les roseaux."
       }
     ]
   },
@@ -496,7 +699,24 @@
         "en": "The thread in me sang, and for one terrible breath the Bundle and I were the same cloth.",
         "fr": "Le fil en moi chanta, et le temps d'un souffle terrible le Balluchon et moi fûmes la même étoffe."
       }
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "origin_lamp_good",
+        "en": "Old Hesk, who had made me carry his water for a whole summer over a blue lamp, and had talked about the sea the whole way.",
+        "fr": "Le vieux Hesk, qui m'avait fait porter son eau tout un été pour une lampe bleue, en parlant de la mer tout le long du chemin."
+      },
+      {
+        "flag": "origin_lamp_neutral",
+        "en": "Old Hesk, whose blue lamp I had broken at fourteen and never owned to. He would never know now, which was not the relief I had once imagined.",
+        "fr": "Le vieux Hesk, dont j'avais brisé la lampe bleue à quatorze ans sans jamais l'avouer. Il ne le saurait plus jamais, et ce n'était pas le soulagement que j'avais imaginé."
+      },
+      {
+        "flag": "origin_lamp_evil",
+        "en": "Old Hesk, who had once taken my word over the smith's boy's. I had meant to tell him the truth one day. It had never seemed urgent.",
+        "fr": "Le vieux Hesk, qui avait pris ma parole contre celle du fils du forgeron. J'avais toujours eu l'intention de lui dire la vérité, un jour. Cela n'avait jamais semblé pressé."
+      }
+    ]
   },
   "800": {
     "id": "800",
@@ -2821,6 +3041,23 @@
         "flagsToAdd": [
           "court_fled"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "origin_board_good",
+        "en": "I had waited up for them at sixteen with the lamp lit, the winter they went out and did not come back. I had not known I was still waiting.",
+        "fr": "À seize ans, je les avais attendus lampe allumée, l'hiver où ils étaient sortis sans revenir. J'ignorais que j'attendais encore."
+      },
+      {
+        "flag": "origin_board_neutral",
+        "en": "I had waited up for them at sixteen with the lamp lit, the winter they went out and did not come back. I had not known I was still waiting.",
+        "fr": "À seize ans, je les avais attendus lampe allumée, l'hiver où ils étaient sortis sans revenir. J'ignorais que j'attendais encore."
+      },
+      {
+        "flag": "origin_board_evil",
+        "en": "I had waited up for them at sixteen with the lamp lit, the winter they went out and did not come back. I had not known I was still waiting.",
+        "fr": "À seize ans, je les avais attendus lampe allumée, l'hiver où ils étaient sortis sans revenir. J'ignorais que j'attendais encore."
       }
     ]
   },
@@ -6240,6 +6477,21 @@
         "flag": "court_broken",
         "en": "The circle lay where it had stood, and the altar was mine at the price of them.",
         "fr": "Le cercle gisait là où il s'était tenu, et l'autel était à moi au prix de leurs vies."
+      },
+      {
+        "flag": "origin_lamp_good",
+        "en": "She had given me eggs all that summer I carried Hesk's water, and never once overcharged me for them.",
+        "fr": "Elle m'avait donné des œufs tout l'été où je portais l'eau de Hesk, sans jamais me les faire payer trop cher."
+      },
+      {
+        "flag": "origin_lamp_neutral",
+        "en": "She had never known who broke the blue lamp. There was nobody left but me who did.",
+        "fr": "Elle n'avait jamais su qui avait brisé la lampe bleue. Il ne restait que moi pour le savoir."
+      },
+      {
+        "flag": "origin_lamp_evil",
+        "en": "She had given me an egg once for my honesty. I still owed her for it.",
+        "fr": "Elle m'avait donné un œuf, un jour, pour mon honnêteté. Je lui devais encore."
       }
     ]
   },

@@ -10,6 +10,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:narrative_data_app/data/origin_stories.dart';
 import 'package:narrative_data_app/combat/combat_aftermath.dart';
 import 'package:narrative_data_app/data/ally_acknowledgments.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
@@ -416,6 +417,12 @@ void main() {
       // story_player_screen.dart's _resolveEnemyIds).
       'companion_turned',
       'legate_fought',
+      // Left by the formative memories at character creation
+      // (origin_stories.dart).
+      for (final memory in allOriginMemories) ...[
+        memory.flag,
+        for (final answer in memory.answers) memory.flagFor(answer),
+      ],
     };
     final nodes = {
       for (final entry in dag.entries)

@@ -2989,6 +2989,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  /// What the formative memories left (origin_stories.dart): their
+  /// [alignmentMod], a point in each ability of [abilities] per lesson, and
+  /// their [flags] for the story's echoes. Applied once, as creation ends.
+  Future<void> applyOriginMemories({
+    required int alignmentMod,
+    required Map<String, int> abilities,
+    required List<String> flags,
+  }) async {
+    int plus(String key, int value) => value + (abilities[key] ?? 0);
+    state = state.copyWith(
+      alignmentScore: state.alignmentScore + alignmentMod,
+      strength: plus('strength', state.strength),
+      dexterity: plus('dexterity', state.dexterity),
+      constitution: plus('constitution', state.constitution),
+      intelligence: plus('intelligence', state.intelligence),
+      wisdom: plus('wisdom', state.wisdom),
+      charisma: plus('charisma', state.charisma),
+      luck: plus('luck', state.luck),
+      perception: plus('perception', state.perception),
+      flags: <String>{...state.flags, ...flags}.toList(),
+    );
+    await _persist();
+  }
+
   /// Directly overwrites any subset of the player's stats — bypassing all
   /// normal game rules (gold/level requirements, max-health clamping,
   /// etc). Only intended for the Edit-mode stat editor, so QA/authoring

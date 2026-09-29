@@ -1,5 +1,6 @@
 import '../data/story_repository.dart';
 import '../models/story_node.dart';
+import 'origin_stories.dart';
 import 'scene_flow.dart';
 
 /// Echoes: a scene's lines that are there because of an earlier choice.
@@ -74,10 +75,23 @@ Map<String, StoryChoice> flagSetters(StoryData story) {
   return _setters[story] = setters;
 }
 
-/// The choice that set [flag] in [story], or null when no choice of the
-/// story does (a flag set by an expedition, a house, a quest).
+/// The choice that set [flag] in [story] -- or, for a formative memory's
+/// flag (origin_stories.dart), the answer given -- or null when nothing
+/// the player chose does (a flag set by an expedition, a house, a quest).
 StoryChoice? echoCause(StoryData story, String flag) =>
-    flagSetters(story)[flag];
+    flagSetters(story)[flag] ?? _originCause(flag);
+
+final Map<String, StoryChoice?> _originCauses = {};
+
+StoryChoice? _originCause(String flag) => _originCauses.putIfAbsent(flag, () {
+      final found = originAnswerForFlag(flag);
+      if (found == null) return null;
+      return StoryChoice(
+        text: found.answer.en,
+        textFr: found.answer.fr,
+        nextId: '',
+      );
+    });
 
 /// A saved echo (see [SceneEcho.key]) as the journal lists it: the scene,
 /// its line and the choice that earned it, in the player's language with

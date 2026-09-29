@@ -613,7 +613,7 @@ const Set<String> zoneBossEnemyIds = {
   'frost_kept_giant',
   // v1.179's escorts and deliveries.
   'brine_jack',
-  'purifier_hesk',
+  'purifier_vell',
   'knell_keeper',
   'rime_bailiff',
   'glass_shepherd',

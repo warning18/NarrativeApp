@@ -3916,9 +3916,9 @@
       "Jack la Saumure plante la perche de sa lanterne sur la route et regarde les chariots comme une mouette regarde un étal de vidage."
     ]
   },
-  "purifier_hesk": {
-    "enemyName": "Purifier Hesk",
-    "enemyName_fr": "Le Purificateur Hesk",
+  "purifier_vell": {
+    "enemyName": "Purifier Vell",
+    "enemyName_fr": "Le Purificateur Vell",
     "maxHealth": 190,
     "damage": 22,
     "guile": 5,
@@ -3973,8 +3973,8 @@
         "healthThreshold": 50,
         "name": "The Pyre Lit",
         "nameFr": "Le bûcher allumé",
-        "message": "Hesk sets his torches to the dry brush along the Wall. The air goes thick with smoke.",
-        "messageFr": "Hesk met le feu aux broussailles sèches le long du Mur. L’air s’épaissit de fumée.",
+        "message": "Vell sets his torches to the dry brush along the Wall. The air goes thick with smoke.",
+        "messageFr": "Vell met le feu aux broussailles sèches le long du Mur. L’air s’épaissit de fumée.",
         "damageMultiplier": 1.1,
         "healPercent": 0,
         "cleanse": false,
@@ -3997,10 +3997,10 @@
     "description": "An Inquisition purifier sent to burn the fever out of the Reckoning Wall, and the shacks along with it.",
     "description_fr": "Un purificateur de l’Inquisition envoyé pour chasser la fièvre du Mur du Jugement par le feu, et les baraques avec.",
     "encounterText": [
-      "Purifier Hesk lifts a torch in each hand and asks, very politely, what is in the chest."
+      "Purifier Vell lifts a torch in each hand and asks, very politely, what is in the chest."
     ],
     "encounterText_fr": [
-      "Le Purificateur Hesk lève une torche dans chaque main et demande, fort poliment, ce que contient le coffre."
+      "Le Purificateur Vell lève une torche dans chaque main et demande, fort poliment, ce que contient le coffre."
     ]
   },
   "knell_keeper": {

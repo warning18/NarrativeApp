@@ -2326,14 +2326,56 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Une vie avant celle-ci',
   },
   'origin_stories_intro': {
-    AppLanguage.en: 'Five moments from before the story. How you met each '
-        'one shapes who you are when it begins.',
-    AppLanguage.fr: "Cinq moments d'avant l'histoire. Votre façon de réagir "
-        'à chacun façonne la personne que vous êtes quand elle commence.',
+    AppLanguage.en: 'Six moments from before the story, from the age of six '
+        'to sixteen. Each answer leans who you are, and teaches you something '
+        'you will carry into it.',
+    AppLanguage.fr: "Six moments d'avant l'histoire, de six à seize ans. "
+        'Chaque réponse oriente la personne que vous êtes, et vous apprend '
+        "quelque chose que vous emporterez dans l'histoire.",
   },
   'origin_memory_progress': {
     AppLanguage.en: 'Memory {n} of {total}',
     AppLanguage.fr: 'Souvenir {n} sur {total}',
+  },
+  'origin_age_label': {
+    AppLanguage.en: 'Age {n}',
+    AppLanguage.fr: '{n} ans',
+  },
+  'origin_stage_childhood': {
+    AppLanguage.en: 'Childhood',
+    AppLanguage.fr: 'Enfance',
+  },
+  'origin_stage_youth': {
+    AppLanguage.en: 'Adolescence',
+    AppLanguage.fr: 'Adolescence',
+  },
+  'origin_teaches': {
+    AppLanguage.en: '+1 {ability}',
+    AppLanguage.fr: '+1 {ability}',
+  },
+  'origin_lean_good': {
+    AppLanguage.en: 'Leans Good (+{n})',
+    AppLanguage.fr: 'Penche vers le Bien (+{n})',
+  },
+  'origin_lean_evil': {
+    AppLanguage.en: 'Leans Evil (−{n})',
+    AppLanguage.fr: 'Penche vers le Mal (−{n})',
+  },
+  'origin_lean_neutral': {
+    AppLanguage.en: 'Leans neither way',
+    AppLanguage.fr: "Ne penche d'aucun côté",
+  },
+  'origin_next_memory': {
+    AppLanguage.en: 'Next memory',
+    AppLanguage.fr: 'Souvenir suivant',
+  },
+  'origin_to_summary': {
+    AppLanguage.en: 'See who you became',
+    AppLanguage.fr: 'Voir ce que ces années ont fait de vous',
+  },
+  'origin_choose_again': {
+    AppLanguage.en: 'Choose again',
+    AppLanguage.fr: 'Choisir autrement',
   },
   'origin_summary_title': {
     AppLanguage.en: 'Who You Are',
@@ -2345,6 +2387,29 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Ces souvenirs sont désormais les vôtres. À partir '
         "d'ici, c'est vous qui racontez l'histoire.",
   },
+  'origin_portrait_good': {
+    AppLanguage.en: 'The slums never managed to teach you to look away.',
+    AppLanguage.fr: "Les taudis n'ont jamais réussi à vous apprendre à "
+        'détourner les yeux.',
+  },
+  'origin_portrait_evil': {
+    AppLanguage.en: 'The slums taught you early, and you were a quick study.',
+    AppLanguage.fr: 'Les taudis ont fait votre éducation très tôt, et la leçon '
+        'a pris.',
+  },
+  'origin_portrait_neutral': {
+    AppLanguage.en: 'You learned to keep your head down and your eyes open.',
+    AppLanguage.fr: 'Vous avez appris à baisser la tête et à garder les yeux '
+        'ouverts.',
+  },
+  'origin_portrait_mixed': {
+    AppLanguage.en: 'You were whatever the day needed you to be.',
+    AppLanguage.fr: 'Vous avez été ce que chaque jour exigeait de vous.',
+  },
+  'origin_summary_lessons': {
+    AppLanguage.en: 'What it taught you',
+    AppLanguage.fr: 'Ce que cela vous a appris',
+  },
   'origin_summary_change_hint': {
     AppLanguage.en: 'Tap a memory to change your answer.',
     AppLanguage.fr: 'Touchez un souvenir pour changer votre réponse.',
@@ -2352,260 +2417,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'origin_starting_alignment': {
     AppLanguage.en: 'Starting alignment',
     AppLanguage.fr: 'Alignement de départ',
-  },
-  'origin_childhood_bird_title': {
-    AppLanguage.en: 'Childhood: The Injured Bird',
-    AppLanguage.fr: "Enfance : L'oiseau blessé",
-  },
-  'origin_childhood_bird_desc': {
-    AppLanguage.en:
-        'As a child, you stumbled upon a sparrow with a broken wing, thrashing '
-            'weakly in the grass.',
-    AppLanguage.fr:
-        "Enfant, vous tombez sur un moineau à l'aile brisée qui se débat "
-            "faiblement dans l'herbe.",
-  },
-  'origin_childhood_bird_good': {
-    AppLanguage.en: 'Cup it in your hands and nurse it back to health',
-    AppLanguage.fr: 'Le prendre dans vos mains et le soigner',
-  },
-  'origin_childhood_bird_evil': {
-    AppLanguage.en: 'Crush it beneath your heel and walk on',
-    AppLanguage.fr: "L'écraser sous votre talon et poursuivre votre chemin",
-  },
-  'origin_childhood_bird_neutral': {
-    AppLanguage.en: 'Leave it to nature and walk away',
-    AppLanguage.fr: 'Le laisser à son sort et vous en aller',
-  },
-  'origin_childhood_beggar_title': {
-    AppLanguage.en: "Childhood: The Beggar's Plea",
-    AppLanguage.fr: 'Enfance : La supplique du mendiant',
-  },
-  'origin_childhood_beggar_desc': {
-    AppLanguage.en:
-        'An old beggar outside the market grabs your sleeve, pleading for the '
-            'last piece of bread in your hand.',
-    AppLanguage.fr:
-        "Devant le marché, un vieux mendiant s'accroche à votre manche et "
-            'vous supplie de lui donner le dernier morceau de pain que vous '
-            'tenez.',
-  },
-  'origin_childhood_beggar_good': {
-    AppLanguage.en: 'Give him the bread, even hungry yourself',
-    AppLanguage.fr: 'Lui donner le pain, même le ventre vide',
-  },
-  'origin_childhood_beggar_evil': {
-    AppLanguage.en: 'Mock him and eat it in front of him',
-    AppLanguage.fr: 'Vous moquer de lui et le manger sous ses yeux',
-  },
-  'origin_childhood_beggar_neutral': {
-    AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
-  },
-  // Profession-flavored small variants of the beggar's-plea beat above —
-  // same shape and length, reworded to each profession's own world. Rogue
-  // gets a genuinely different scenario (a rigged card game) rather than a
-  // reskin, matching the "cheat in a game" example this was requested with.
-  'origin_childhood_beggar_warrior_title': {
-    AppLanguage.en: 'Childhood: The Wounded Veteran',
-    AppLanguage.fr: 'Enfance : Le vieux soldat',
-  },
-  'origin_childhood_beggar_warrior_desc': {
-    AppLanguage.en:
-        'An old soldier begging outside the training yard grabs your sleeve, '
-            'pleading for the last ration in your pack.',
-    AppLanguage.fr:
-        "Devant la cour d'entraînement, un vieux soldat s'accroche à "
-            'votre manche et vous supplie de lui donner la dernière ration de '
-            'votre sac.',
-  },
-  'origin_childhood_beggar_warrior_good': {
-    AppLanguage.en: 'Give him the ration, even hungry yourself',
-    AppLanguage.fr: 'Lui donner la ration, même le ventre vide',
-  },
-  'origin_childhood_beggar_warrior_evil': {
-    AppLanguage.en: 'Mock his weakness and eat it in front of him',
-    AppLanguage.fr: 'Vous moquer de sa faiblesse et la manger sous ses yeux',
-  },
-  'origin_childhood_beggar_warrior_neutral': {
-    AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
-  },
-  'origin_childhood_beggar_mage_title': {
-    AppLanguage.en: "Childhood: The Hedge-Mage's Plea",
-    AppLanguage.fr: 'Enfance : La supplique du sorcier des rues',
-  },
-  'origin_childhood_beggar_mage_desc': {
-    AppLanguage.en:
-        'An old hedge-mage outside the arcane bazaar grabs your sleeve, pleading '
-            'for the last warming charm in your hand.',
-    AppLanguage.fr:
-        "Devant le bazar arcanique, un vieux sorcier des rues s'accroche "
-            'à votre manche et vous supplie de lui donner le dernier charme '
-            'de chaleur que vous tenez.',
-  },
-  'origin_childhood_beggar_mage_good': {
-    AppLanguage.en: 'Give him the charm, even cold yourself',
-    AppLanguage.fr: 'Lui donner le charme, même si le froid vous mord',
-  },
-  'origin_childhood_beggar_mage_evil': {
-    AppLanguage.en: 'Mock him and use it yourself in front of him',
-    AppLanguage.fr: "Vous moquer de lui et l'utiliser sous ses yeux",
-  },
-  'origin_childhood_beggar_mage_neutral': {
-    AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
-  },
-  'origin_childhood_beggar_rogue_title': {
-    AppLanguage.en: 'Childhood: The Rigged Game',
-    AppLanguage.fr: 'Enfance : La partie truquée',
-  },
-  'origin_childhood_beggar_rogue_desc': {
-    AppLanguage.en:
-        'An old card-sharp in the back alley waves you over, offering a game you '
-            'can tell — even at your age — is rigged in your favor against the next mark.',
-    AppLanguage.fr: 'Dans la ruelle, un vieux tricheur vous fait signe et vous '
-        'propose une partie que vous devinez déjà — même à cet âge — '
-        'truquée en votre faveur contre le prochain pigeon.',
-  },
-  'origin_childhood_beggar_rogue_good': {
-    AppLanguage.en: 'Warn the next mark before he sits down to lose',
-    AppLanguage.fr:
-        "Prévenir le prochain pigeon avant qu'il ne s'assoie pour perdre",
-  },
-  'origin_childhood_beggar_rogue_evil': {
-    AppLanguage.en: 'Take the seat and let the game run as rigged',
-    AppLanguage.fr:
-        'Prendre place et laisser la partie truquée suivre son cours',
-  },
-  'origin_childhood_beggar_rogue_neutral': {
-    AppLanguage.en: 'Walk past without a word either way',
-    AppLanguage.fr:
-        "Passer votre chemin sans un mot, dans un sens comme dans l'autre",
-  },
-  'origin_childhood_beggar_cleric_title': {
-    AppLanguage.en: "Childhood: The Pilgrim's Plea",
-    AppLanguage.fr: 'Enfance : La supplique du pèlerin',
-  },
-  'origin_childhood_beggar_cleric_desc': {
-    AppLanguage.en:
-        'An old pilgrim outside the temple steps grabs your sleeve, pleading for '
-            'the last coin in your hand for the offering box.',
-    AppLanguage.fr:
-        "Au pied des marches du temple, un vieux pèlerin s'accroche à "
-            'votre manche et vous supplie de lui donner la dernière pièce que '
-            'vous tenez, pour le tronc des offrandes.',
-  },
-  'origin_childhood_beggar_cleric_good': {
-    AppLanguage.en: 'Give him the coin, even poor yourself',
-    AppLanguage.fr: "Lui donner la pièce, même s'il ne vous reste rien",
-  },
-  'origin_childhood_beggar_cleric_evil': {
-    AppLanguage.en: 'Mock his faith and pocket it in front of him',
-    AppLanguage.fr: "Vous moquer de sa foi et l'empocher sous ses yeux",
-  },
-  'origin_childhood_beggar_cleric_neutral': {
-    AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
-  },
-  'origin_childhood_beggar_ranger_title': {
-    AppLanguage.en: "Childhood: The Trapper's Plea",
-    AppLanguage.fr: 'Enfance : La supplique du trappeur',
-  },
-  'origin_childhood_beggar_ranger_desc': {
-    AppLanguage.en:
-        'An old trapper outside the hunting lodge grabs your sleeve, pleading for '
-            'the last strip of dried meat in your pack.',
-    AppLanguage.fr:
-        "Devant le pavillon de chasse, un vieux trappeur s'accroche à "
-            'votre manche et vous supplie de lui donner la dernière lanière '
-            'de viande séchée de votre sac.',
-  },
-  'origin_childhood_beggar_ranger_good': {
-    AppLanguage.en: 'Give him the meat, even hungry yourself',
-    AppLanguage.fr: 'Lui donner la viande, même le ventre vide',
-  },
-  'origin_childhood_beggar_ranger_evil': {
-    AppLanguage.en: 'Mock his hunger and eat it in front of him',
-    AppLanguage.fr: 'Vous moquer de sa faim et la manger sous ses yeux',
-  },
-  'origin_childhood_beggar_ranger_neutral': {
-    AppLanguage.en: 'Pull free and keep walking without a word',
-    AppLanguage.fr: 'Vous dégager et continuer votre chemin sans un mot',
-  },
-  'origin_teen_bully_title': {
-    AppLanguage.en: 'Teenage Years: The Bully',
-    AppLanguage.fr: 'Adolescence : La brute de la cour',
-  },
-  'origin_teen_bully_desc': {
-    AppLanguage.en:
-        'Behind the schoolyard, an older boy has a smaller kid pinned against '
-            'the wall, fists ready.',
-    AppLanguage.fr:
-        "Derrière la cour de l'école, un garçon plus âgé plaque un plus petit "
-            'contre le mur, poings levés.',
-  },
-  'origin_teen_bully_good': {
-    AppLanguage.en: 'Step in and stand between them',
-    AppLanguage.fr: 'Intervenir et vous placer entre eux',
-  },
-  'origin_teen_bully_evil': {
-    AppLanguage.en: 'Laugh and egg the bully on',
-    AppLanguage.fr: 'Rire et encourager la brute',
-  },
-  'origin_teen_bully_neutral': {
-    AppLanguage.en: 'Turn the corner and pretend you saw nothing',
-    AppLanguage.fr:
-        "Tourner au coin de la rue et faire comme si vous n'aviez rien vu",
-  },
-  'origin_teen_vase_title': {
-    AppLanguage.en: 'Teenage Years: The Broken Vase',
-    AppLanguage.fr: 'Adolescence : Le vase brisé',
-  },
-  'origin_teen_vase_desc': {
-    AppLanguage.en:
-        "Running through the market, you knock over a merchant's prized vase. "
-            'It shatters at your feet.',
-    AppLanguage.fr:
-        "En courant dans le marché, vous renversez le vase précieux d'un "
-            'marchand. Il se brise à vos pieds.',
-  },
-  'origin_teen_vase_good': {
-    AppLanguage.en: 'Confess and offer to work off the debt',
-    AppLanguage.fr: 'Avouer et proposer de rembourser en travaillant',
-  },
-  'origin_teen_vase_evil': {
-    AppLanguage.en: 'Point at another passerby and blame them',
-    AppLanguage.fr: 'Désigner un autre passant et l\'accuser',
-  },
-  'origin_teen_vase_neutral': {
-    AppLanguage.en: 'Slip into the crowd before anyone notices',
-    AppLanguage.fr:
-        "Vous fondre dans la foule avant que personne ne s'en aperçoive",
-  },
-  'origin_teen_thief_title': {
-    AppLanguage.en: 'Teenage Years: The Cornered Thief',
-    AppLanguage.fr: 'Adolescence : Le voleur acculé',
-  },
-  'origin_teen_thief_desc': {
-    AppLanguage.en:
-        'You catch a gaunt, starving thief mid-theft, rifling through your '
-            "family's stores.",
-    AppLanguage.fr:
-        'Vous surprenez un voleur famélique en train de fouiller les '
-            'provisions de votre famille.',
-  },
-  'origin_teen_thief_good': {
-    AppLanguage.en: 'Let them go, and press some food into their hands',
-    AppLanguage.fr: 'Le laisser partir, en lui glissant un peu de nourriture',
-  },
-  'origin_teen_thief_evil': {
-    AppLanguage.en: 'Hand them to the guards, knowing what awaits them',
-    AppLanguage.fr: "Le livrer aux gardes, en sachant ce qui l'attend",
-  },
-  'origin_teen_thief_neutral': {
-    AppLanguage.en: 'Report the theft plainly and let others decide',
-    AppLanguage.fr: 'Signaler le vol sans détour et laisser les autres décider',
   },
   'failed_to_load_races': {
     AppLanguage.en: 'Failed to load races',

@@ -8,6 +8,53 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.180.0+210]
+
+The memories before the story are rewritten. There are six of them now,
+from age six to sixteen, set in the slums where the story opens, and
+each answer stays with the character.
+
+### Changed
+- **Six memories instead of five, set in the story's world.** They are a
+  sparrow in the gutter (age 6), a memory of the character's race (8),
+  the blind beggar the Blind Beggar tavern is named after (10), the
+  first time the class showed (12), old Hesk's blue lamp next door (14),
+  and the loose board over the grey Bundle the winter the parents did
+  not come home (16).
+- **Race and class change what you remember.** A human is pulled out of
+  a Crusade feast-day line, an elf's first paint is wet in the rain, a
+  dwarf cuts a crooked first mark, an orc's first ink hides from an
+  orphan-taker, and voidkin freeze a well. A warrior hauls nets, a mage
+  makes a candle lean, a rogue shills at a rigged table, a cleric sweeps
+  a shrine and a ranger sets snares.
+- **Every answer teaches something (+1 to an ability).** The answers
+  show what they teach before you pick. Six answers add six points, and
+  no memory teaches the same ability twice. Alignment still leans +4,
+  −4 or 0.
+- **Each answer shows what came of it.** After you pick, the page tells
+  what happened and what it taught, and shows the lesson and the
+  alignment lean, before the next memory. You can choose again.
+- **Memories remember each other.** A later memory can open with a line
+  about an earlier answer. The blind man remembers the sparrow; the
+  thief under the board is his granddaughter. At fourteen, the street
+  has a name for you, depending on how you have leaned so far.
+- **A timeline of ages** at the top of the page, and a summary that
+  shows the character's name, a one-line portrait (kind, hard, careful
+  or changeable), every answer with its lesson, what the six taught in
+  all, and a gauge of the starting alignment.
+
+### Added
+- **The story remembers.** 48 new lines in the opening scenes and in
+  chapter 5 answer the memories. They appear at the Blind Beggar's door,
+  when the party flees with Lysa, at the hound in the wire, at the
+  floorboard, when the soldiers break in, when old Hesk dies, over the
+  ledger with the parents' names, and when Mother Hesk is found among
+  the sleepers. The journal credits each one to the memory's answer.
+
+### Fixed
+- **Two Hesks.** The chapter 3 delivery boss from 1.179 shared a name
+  with old Hesk next door. He is now Purifier Vell.
+
 ## [1.179.0+209]
 
 Two new kinds of expedition: escorts, paid for what arrives, and
