@@ -18,6 +18,7 @@ import '../providers/story_providers.dart';
 import '../providers/tab_badges_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../widgets/camp_travel.dart';
+import '../widgets/moments.dart';
 import '../widgets/immersive_notice.dart';
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
@@ -253,7 +254,18 @@ class _HomeShellState extends ConsumerState<HomeShell> {
           ),
         ],
       ),
-      body: IndexedStack(index: index, children: screens),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          IndexedStack(index: index, children: screens),
+          // The screen's edges throb red while the hero's health is low.
+          if (ref.watch(playerSessionProvider.select((s) =>
+              s.characterName.isNotEmpty &&
+              s.maxHealth > 0 &&
+              s.currentHealth * 10 <= s.maxHealth * 3)))
+            const LowHealthEdge(),
+        ],
+      ),
       bottomNavigationBar: TutorialTarget(
         id: 'home.nav',
         child: NavigationBar(

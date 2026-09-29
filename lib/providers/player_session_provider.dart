@@ -168,6 +168,8 @@ class PlayerSession {
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
     this.readSceneKeys = const [],
+    this.day = 1,
+    this.watch = 1,
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -320,6 +322,12 @@ class PlayerSession {
   /// `<nodeId>#<hash of the text>` (see sceneReadKey): coming back to one
   /// whose text hasn't changed opens straight onto the place.
   final List<String> readSceneKeys;
+
+  /// The world clock: the day of the journey, from 1, and the watch of it
+  /// (0 dawn, 1 day, 2 dusk, 3 night). Travel and voyages pass time; a
+  /// rest sleeps through to the next dawn (see passTime, restUntilDawn).
+  final int day;
+  final int watch;
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -606,6 +614,8 @@ class PlayerSession {
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
     List<String>? readSceneKeys,
+    int? day,
+    int? watch,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -687,6 +697,8 @@ class PlayerSession {
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
+      day: day ?? this.day,
+      watch: watch ?? this.watch,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -774,6 +786,8 @@ class PlayerSession {
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
         'readSceneKeys': readSceneKeys,
+        'day': day,
+        'watch': watch,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -921,6 +935,8 @@ class PlayerSession {
       readSceneKeys:
           (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      day: max(1, (json['day'] as num?)?.toInt() ?? 1),
+      watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -2399,6 +2415,23 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       ],
     );
     await _persist();
+  }
+
+  // --- The world clock ---------------------------------------------------
+
+  /// Moves the clock on by [watches] quarters of a day (a walk between
+  /// places is two, a day at sea four).
+  Future<void> passTime(int watches) async {
+    if (watches <= 0) return;
+    final total = state.watch + watches;
+    state = state.copyWith(day: state.day + total ~/ 4, watch: total % 4);
+    await _persist();
+  }
+
+  /// A night's rest: the party heals, and wakes at the next dawn.
+  Future<void> restUntilDawn() async {
+    state = state.copyWith(day: state.day + 1, watch: 0);
+    await healPartyToFull();
   }
 
   // --- Achievements -------------------------------------------------------

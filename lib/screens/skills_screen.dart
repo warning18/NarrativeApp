@@ -24,6 +24,8 @@ import '../widgets/detail_dialog.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/mana_meter.dart';
 import '../widgets/merge_skills_dialog.dart';
+import '../widgets/moments.dart';
+import '../theme/stitched_ink.dart';
 
 class SkillsScreen extends ConsumerStatefulWidget {
   const SkillsScreen({super.key, this.allyId});
@@ -909,6 +911,11 @@ void _learnWithNotice(BuildContext context, WidgetRef ref, String id,
   onUnlock(id);
   if (!context.mounted) return;
   final lang = ref.read(appLanguageProvider);
+  // Sparks where the skill was learned.
+  showBurst(context,
+      at: MediaQuery.sizeOf(context).center(Offset.zero),
+      colour: InkColors.of(context).ember,
+      count: 18);
   showImmersiveNotice(
     context,
     icon: Icons.auto_awesome,

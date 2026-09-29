@@ -17,6 +17,49 @@ JourneyWeather journeyWeatherFor(int chapter) => switch (chapter) {
       _ => JourneyWeather.none,
     };
 
+/// A chapter's weather over [size] at [t] seconds (ash, rain or snow),
+/// drawn from time alone: the Journey map, the Story tab and the sea use it.
+void paintJourneyWeather(Canvas canvas, Size size, double t,
+    JourneyWeather weather, Color weatherColour,
+    {int count = 26}) {
+  if (weather == JourneyWeather.none) return;
+  final paint = Paint()..color = weatherColour;
+  for (var k = 0; k < count; k++) {
+    final speed = switch (weather) {
+      JourneyWeather.rain => 1.6 + _weatherHash(k) * 0.6,
+      JourneyWeather.snow => 0.18 + _weatherHash(k) * 0.12,
+      _ => 0.12 + _weatherHash(k) * 0.1,
+    };
+    final phase =
+        (t * speed / (size.height / 400) + _weatherHash(k + 99)) % 1.0;
+    final drift = switch (weather) {
+      JourneyWeather.rain => -0.25,
+      JourneyWeather.snow => math.sin(t * 0.8 + k) * 0.04,
+      _ => -0.12,
+    };
+    final x = (_weatherHash(k + 7) + drift * phase) % 1.0 * size.width;
+    final y = phase * size.height;
+    final alpha = math.sin(math.pi * phase) * 0.8;
+    paint.color = weatherColour.withValues(alpha: alpha);
+    if (weather == JourneyWeather.rain) {
+      canvas.drawLine(
+          Offset(x, y),
+          Offset(x - 3, y + 10),
+          paint
+            ..strokeWidth = 1.2
+            ..strokeCap = StrokeCap.round);
+    } else {
+      canvas.drawCircle(
+          Offset(x, y), weather == JourneyWeather.snow ? 2 : 1.4, paint);
+    }
+  }
+}
+
+double _weatherHash(int n) {
+  final x = math.sin(n * 12.9898) * 43758.5453;
+  return x - x.floorToDouble();
+}
+
 /// One way on, as the effects see it.
 class JourneyFxStep {
   const JourneyFxStep({
@@ -121,39 +164,8 @@ class JourneyFxPainter extends CustomPainter {
     _rattle(canvas, t);
   }
 
-  void _weather(Canvas canvas, Size size, double t) {
-    if (weather == JourneyWeather.none) return;
-    final paint = Paint()..color = weatherColour;
-    const count = 26;
-    for (var k = 0; k < count; k++) {
-      final speed = switch (weather) {
-        JourneyWeather.rain => 1.6 + _hash(k) * 0.6,
-        JourneyWeather.snow => 0.18 + _hash(k) * 0.12,
-        _ => 0.12 + _hash(k) * 0.1,
-      };
-      final phase = (t * speed / (size.height / 400) + _hash(k + 99)) % 1.0;
-      final drift = switch (weather) {
-        JourneyWeather.rain => -0.25,
-        JourneyWeather.snow => math.sin(t * 0.8 + k) * 0.04,
-        _ => -0.12,
-      };
-      final x = (_hash(k + 7) + drift * phase) % 1.0 * size.width;
-      final y = phase * size.height;
-      final alpha = math.sin(math.pi * phase) * 0.8;
-      paint.color = weatherColour.withValues(alpha: alpha);
-      if (weather == JourneyWeather.rain) {
-        canvas.drawLine(
-            Offset(x, y),
-            Offset(x - 3, y + 10),
-            paint
-              ..strokeWidth = 1.2
-              ..strokeCap = StrokeCap.round);
-      } else {
-        canvas.drawCircle(
-            Offset(x, y), weather == JourneyWeather.snow ? 2 : 1.4, paint);
-      }
-    }
-  }
+  void _weather(Canvas canvas, Size size, double t) =>
+      paintJourneyWeather(canvas, size, t, weather, weatherColour);
 
   void _fogWisps(Canvas canvas, Size size, double t) {
     // Over the far rows of a town's steps, and the top of any map.

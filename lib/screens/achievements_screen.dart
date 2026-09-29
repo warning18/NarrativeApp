@@ -8,6 +8,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/moments.dart';
 
 class AchievementsScreen extends ConsumerWidget {
   const AchievementsScreen({super.key});
@@ -53,14 +54,14 @@ class AchievementsScreen extends ConsumerWidget {
                   return Card(
                     color: unlocked ? colorScheme.primaryContainer : null,
                     child: ListTile(
-                      leading: Icon(
-                        unlocked
-                            ? Icons.emoji_events
-                            : Icons.emoji_events_outlined,
-                        color: unlocked
-                            ? colorScheme.primary
-                            : colorScheme.outline,
-                      ),
+                      leading: unlocked
+                          ? BadgeRing(
+                              colour: colorScheme.primary,
+                              child: Icon(Icons.emoji_events,
+                                  color: colorScheme.primary),
+                            )
+                          : Icon(Icons.emoji_events_outlined,
+                              color: colorScheme.outline),
                       title: Text(
                         name,
                         style: unlocked

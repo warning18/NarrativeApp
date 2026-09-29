@@ -8,6 +8,35 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.178.0+208]
+
+### Added
+- **A world clock.** The days pass as the party goes (two watches for a
+  walk or an expedition, a whole day at sea) through dawn, daytime, dusk
+  and night; the top bar shows the day and a sun or moon for the watch,
+  and a rest now runs to the next dawn. The town on the cliff darkens at
+  dusk and fills with stars at night.
+- **A level gained** shows its medal over turning golden rays, the banner
+  rising in and the perk choices dealt like a card.
+- **A quest settled** is stamped with a wax seal; **every achievement**
+  earned (quests, the camp, the town, expeditions) slides down from the top
+  in its own toast.
+- **A new chapter** opens with its title card across the story.
+- **Moments across the game:**
+  - the chapter's ash, rain or snow drifts faintly behind the story text;
+  - a storm at sea rains and flashes behind its day, and every voyage day
+    and expedition event turns over like a card;
+  - the screen's edges throb red while the hero's health is low;
+  - coins fly from the purse when buying; sparks mark a skill learned;
+  - a skill set on a die's face snaps into place;
+  - a rest sends a green wave through the screen; a save presses a seal;
+  - devoted companions wear a beating heart in the camp's party list;
+  - the death screen bleeds in, title then last words;
+  - New Game+ starts with a crown of gold sparks;
+  - the Shroud drifts behind the main menu;
+  - earned badges turn a ring of light in the achievements list.
+- All of it rests with reduced motion, and none of it runs on a hidden tab.
+
 ## [1.177.0+207]
 
 ### Added

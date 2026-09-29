@@ -15,6 +15,7 @@ import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/moments.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/zone_card.dart';
@@ -117,8 +118,9 @@ class PortServices extends ConsumerWidget {
                 : () async {
                     await ref
                         .read(playerSessionProvider.notifier)
-                        .healPartyToFull();
+                        .restUntilDawn();
                     if (!context.mounted) return;
+                    showHealWave(context);
                     showImmersiveNotice(
                       context,
                       icon: Icons.local_fire_department,

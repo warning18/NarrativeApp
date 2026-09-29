@@ -185,6 +185,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    // The main menu's Shroud drifts for ever; still, it lets the test settle.
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));
@@ -292,6 +296,10 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
+    // The main menu's Shroud drifts for ever; still, it lets the test settle.
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
     await tester.pumpWidget(const ProviderScope(child: MyApp()));
     await _settle(tester);
     await tester.tap(find.byKey(const Key('menu_continue')));

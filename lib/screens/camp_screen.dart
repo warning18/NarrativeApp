@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,6 +26,7 @@ import '../providers/story_providers.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/moments.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
@@ -521,8 +524,9 @@ class _RestButton extends ConsumerWidget {
               : () async {
                   await ref
                       .read(playerSessionProvider.notifier)
-                      .healPartyToFull();
+                      .restUntilDawn();
                   if (!context.mounted) return;
+                  showHealWave(context);
                   showImmersiveNotice(
                     context,
                     icon: Icons.local_fire_department,
@@ -627,6 +631,15 @@ Future<void> _setAllyInParty(
   if (earned.isEmpty || !context.mounted) return;
   final achievements =
       ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
+  unawaited(announceAchievements(
+      context,
+      [
+        for (final id in earned)
+          (achievements[id] as Map<String, dynamic>?)?['achievementName']
+                  ?.toString() ??
+              id
+      ],
+      tr(ref, 'achievement_unlocked_prefix').toUpperCase()));
   showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,
@@ -714,8 +727,16 @@ class _AllyCard extends ConsumerWidget {
           children: [
             ListTile(
               leading: Icon(isActive ? Icons.shield : Icons.shield_outlined),
-              title:
-                  Text(companion?['companionName']?.toString() ?? companionId),
+              title: Row(children: [
+                Flexible(
+                    child: Text(companion?['companionName']?.toString() ??
+                        companionId)),
+                if (approvalTierFor(ally.approval) == ApprovalTier.devoted)
+                  const Padding(
+                    padding: EdgeInsets.only(left: 6),
+                    child: ApprovalHeart(),
+                  ),
+              ]),
               subtitle: Text(
                 '${race['raceName'] ?? raceId} '
                 '${profession['professionName'] ?? professionId} · '

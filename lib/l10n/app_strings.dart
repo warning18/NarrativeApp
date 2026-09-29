@@ -1915,6 +1915,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Expéditions',
   },
   'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'day_abbrev': {AppLanguage.en: 'D', AppLanguage.fr: 'J'},
+  'day_label': {AppLanguage.en: 'Day {n}', AppLanguage.fr: 'Jour {n}'},
+  'watch_0': {AppLanguage.en: 'Dawn', AppLanguage.fr: 'Aube'},
+  'watch_1': {AppLanguage.en: 'Daytime', AppLanguage.fr: 'Plein jour'},
+  'watch_2': {AppLanguage.en: 'Dusk', AppLanguage.fr: 'Crépuscule'},
+  'watch_3': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
   'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'hub_enter_button': {
     AppLanguage.en: 'Enter {place}',
