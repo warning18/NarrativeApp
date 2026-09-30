@@ -119,7 +119,10 @@ void main() {
         if (choice.isHiddenFor(container.read(playerSessionProvider).flags)) {
           continue;
         }
-        expect(find.text(choice.text), findsWidgets, reason: choice.text);
+        // A payment the purse can't make shows locked, its text followed
+        // by why (v1.189).
+        expect(find.textContaining(choice.text), findsWidgets,
+            reason: choice.text);
       }
     } else {
       expect(after.currentNodeId, taken.nextId);
