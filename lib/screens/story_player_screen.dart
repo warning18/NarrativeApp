@@ -52,6 +52,8 @@ import '../providers/voice_settings_provider.dart';
 import '../providers/walk_companion_provider.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/journey_fx.dart';
+import '../widgets/moments.dart';
 import '../widgets/detail_dialog.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/companion_remark_bubble.dart';
@@ -213,6 +215,20 @@ class _StoryView extends ConsumerWidget {
       if (prevId != nextId) {
         _stopAllNarration(ref);
       }
+    });
+
+    // A new chapter reached: its title card, a moment over the story.
+    ref.listen<int>(reachedChapterProvider, (previous, next) {
+      if (previous == null || next <= previous) return;
+      final loop = ref
+          .read(chapterLoopsProvider)
+          .where((l) => l.chapter == next)
+          .firstOrNull;
+      if (loop == null || loop.title.isEmpty) return;
+      showChapterCard(context,
+          number: loop.label.isEmpty ? '$next' : loop.label,
+          title: loop.title,
+          colour: InkColors.of(context).ember);
     });
 
     // Kept loaded for the party's reactions to a choice (see approval.dart),
@@ -1841,8 +1857,9 @@ class _HubSections extends ConsumerWidget {
                 tr(ref, restsAtCamp ? 'rest_at_camp_button' : 'rest_button'),
             icon: const Icon(Icons.local_fire_department_outlined),
             onPressed: () async {
-              await ref.read(playerSessionProvider.notifier).healPartyToFull();
+              await ref.read(playerSessionProvider.notifier).restUntilDawn();
               if (!context.mounted) return;
+              showHealWave(context);
               showImmersiveNotice(
                 context,
                 icon: Icons.local_fire_department,
@@ -2682,6 +2699,16 @@ class _FoldedNarration extends StatelessWidget {
 /// a leading `[CHAPTER N: TITLE]`-style header (if present) is pulled out
 /// and styled as a centered heading with a divider, and the body gets
 /// generous spacing, justified alignment, and a soft parchment-like card.
+class _StoryWeather extends ConsumerWidget {
+  const _StoryWeather();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final chapter = ref.watch(reachedChapterProvider);
+    return WeatherLayer(weather: journeyWeatherFor(chapter), strength: 0.3);
+  }
+}
+
 class _StoryText extends StatelessWidget {
   const _StoryText({
     required this.text,
@@ -2751,149 +2778,160 @@ class _StoryText extends StatelessWidget {
 
     // The page is sewn along a dashed thread in the colour of where the
     // story is; the prose sits on the bare page beside it.
-    return CustomPaint(
-      painter: StitchedEdgePainter(color: accent.border),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 4, 4, 4),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (placeLabel != null || moodLabel != null) ...[
-              Wrap(
-                spacing: 8,
-                runSpacing: 6,
-                children: [
-                  if (placeLabel != null)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        border: Border.all(color: accent.border),
-                      ),
-                      child: Text(
-                        placeLabel!.toUpperCase(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .labelSmall
-                            ?.copyWith(color: accent.text, letterSpacing: 1),
-                      ),
-                    ),
-                  if (moodLabel != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(
-                        moodLabel!.toUpperCase(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                            letterSpacing: 1),
-                      ),
-                    ),
+    // The chapter's weather drifts faintly behind the words.
+    return Stack(
+      children: [
+        const Positioned.fill(child: _StoryWeather()),
+        CustomPaint(
+          painter: StitchedEdgePainter(color: accent.border),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(18, 4, 4, 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (placeLabel != null || moodLabel != null) ...[
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      if (placeLabel != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(color: accent.border),
+                          ),
+                          child: Text(
+                            placeLabel!.toUpperCase(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                    color: accent.text, letterSpacing: 1),
+                          ),
+                        ),
+                      if (moodLabel != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Text(
+                            moodLabel!.toUpperCase(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                    letterSpacing: 1),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
                 ],
-              ),
-              const SizedBox(height: 14),
-            ],
-            if (header != null && header.isNotEmpty) ...[
-              Text(
-                header,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontFamily: InkFonts.display,
-                      letterSpacing: 0.5,
-                      height: 1.15,
-                      color: accent.text,
+                if (header != null && header.isNotEmpty) ...[
+                  Text(
+                    header,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontFamily: InkFonts.display,
+                          letterSpacing: 0.5,
+                          height: 1.15,
+                          color: accent.text,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Container(
+                      width: 56,
+                      height: 2,
+                      color: accent.text.withValues(alpha: 0.5),
                     ),
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: Container(
-                  width: 56,
-                  height: 2,
-                  color: accent.text.withValues(alpha: 0.5),
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
-            if (hasAftermath || hasOutcome) ...[
-              if (hasAftermath) ...[
-                Text(
-                  aftermathHeading.toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        letterSpacing: 1.5,
-                        color: accent.text.withValues(alpha: 0.8),
-                      ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  aftermath!,
-                  textAlign: TextAlign.start,
-                  style: baseStyle.copyWith(fontStyle: FontStyle.italic),
-                ),
-              ],
-              if (hasOutcome) ...[
-                if (hasAftermath) const SizedBox(height: 12),
-                Text(
-                  outcome!,
-                  textAlign: TextAlign.start,
-                  style: baseStyle.copyWith(fontStyle: FontStyle.italic),
-                ),
-              ],
-              const SizedBox(height: 14),
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 1,
-                  color: accent.text.withValues(alpha: 0.4),
-                ),
-              ),
-              const SizedBox(height: 14),
-            ],
-            if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
-              Text(
-                '— $speakerLabel',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      letterSpacing: 1.2,
-                      fontStyle: FontStyle.italic,
-                      color: accent.text.withValues(alpha: 0.85),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                if (hasAftermath || hasOutcome) ...[
+                  if (hasAftermath) ...[
+                    Text(
+                      aftermathHeading.toUpperCase(),
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            letterSpacing: 1.5,
+                            color: accent.text.withValues(alpha: 0.8),
+                          ),
                     ),
-              ),
-              const SizedBox(height: 8),
-            ],
-            Text.rich(
-              TextSpan(children: _highlightedSpans(body, baseStyle)),
-              textAlign: TextAlign.start,
+                    const SizedBox(height: 8),
+                    Text(
+                      aftermath!,
+                      textAlign: TextAlign.start,
+                      style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                  if (hasOutcome) ...[
+                    if (hasAftermath) const SizedBox(height: 12),
+                    Text(
+                      outcome!,
+                      textAlign: TextAlign.start,
+                      style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                    ),
+                  ],
+                  const SizedBox(height: 14),
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 1,
+                      color: accent.text.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                ],
+                if (speakerLabel != null && speakerLabel!.isNotEmpty) ...[
+                  Text(
+                    '— $speakerLabel',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          letterSpacing: 1.2,
+                          fontStyle: FontStyle.italic,
+                          color: accent.text.withValues(alpha: 0.85),
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                Text.rich(
+                  TextSpan(children: _highlightedSpans(body, baseStyle)),
+                  textAlign: TextAlign.start,
+                ),
+                if (epilogue != null && epilogue!.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 1,
+                      color: accent.text.withValues(alpha: 0.4),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    epilogueHeading.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          letterSpacing: 1.5,
+                          color: accent.text.withValues(alpha: 0.8),
+                        ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    epilogue!,
+                    textAlign: TextAlign.start,
+                    style: baseStyle.copyWith(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ],
             ),
-            if (epilogue != null && epilogue!.isNotEmpty) ...[
-              const SizedBox(height: 18),
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 1,
-                  color: accent.text.withValues(alpha: 0.4),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                epilogueHeading.toUpperCase(),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      letterSpacing: 1.5,
-                      color: accent.text.withValues(alpha: 0.8),
-                    ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                epilogue!,
-                textAlign: TextAlign.start,
-                style: baseStyle.copyWith(fontStyle: FontStyle.italic),
-              ),
-            ],
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -3029,6 +3067,10 @@ Future<void> _startNewGamePlus(BuildContext context, WidgetRef ref) async {
   await ref.read(playerSessionProvider.notifier).beginNewGamePlus();
   if (!context.mounted) return;
   ref.read(storyPlayProvider.notifier).restart(StoryRepository.startNodeId);
+  // A crown of gold sparks: the road begins again, harder.
+  final middle = MediaQuery.sizeOf(context).center(Offset.zero);
+  showBurst(context, at: middle, colour: const Color(0xFFD4A017), count: 28);
+  showQuestSeal(context, colour: const Color(0xFFB8860B));
   showImmersiveNotice(
     context,
     icon: Icons.replay_circle_filled_outlined,

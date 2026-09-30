@@ -92,6 +92,8 @@ Future<bool> moveParty(
   if (there == null) return true;
   if (isWalkFrom(destinationPortId,
       ports: ports, savedPortId: session.currentPortId)) {
+    // A walk between places takes half a day.
+    await ref.read(playerSessionProvider.notifier).passTime(2);
     if (walkNotice != null && context.mounted) {
       showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
     }

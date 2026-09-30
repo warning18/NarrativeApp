@@ -5,6 +5,7 @@ import '../combat/combat_aftermath.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/save_game_provider.dart';
+import '../widgets/moments.dart';
 
 /// Shown after a permadeath loss, once the player's session has already
 /// been reset (inventory cleared, story restarted to node 0). Purely a
@@ -65,29 +66,44 @@ class _DeathScreenState extends ConsumerState<DeathScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.dangerous,
-                      color: Colors.redAccent, size: 64),
-                  const SizedBox(height: 16),
-                  Text(
-                    tr(ref, 'you_died_title'),
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Colors.redAccent,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  // The dark falls first, then the title bleeds in and
+                  // the last words are written after it.
+                  const RiseIn(
+                    child: Icon(Icons.dangerous,
+                        color: Colors.redAccent, size: 64),
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    deathNarrationFor(
-                      killerName,
-                      french: ref.watch(appLanguageProvider) == AppLanguage.fr,
-                      seed: narrationSeed,
+                  RiseIn(
+                    delay: const Duration(milliseconds: 350),
+                    child: Text(
+                      tr(ref, 'you_died_title'),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        shadows: const [
+                          Shadow(color: Color(0xAAFF1744), blurRadius: 14),
+                        ],
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'serif',
-                      fontStyle: FontStyle.italic,
-                      height: 1.5,
+                  ),
+                  const SizedBox(height: 16),
+                  RiseIn(
+                    delay: const Duration(milliseconds: 800),
+                    child: Text(
+                      deathNarrationFor(
+                        killerName,
+                        french:
+                            ref.watch(appLanguageProvider) == AppLanguage.fr,
+                        seed: narrationSeed,
+                      ),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'serif',
+                        fontStyle: FontStyle.italic,
+                        height: 1.5,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),

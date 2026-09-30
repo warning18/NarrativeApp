@@ -10,7 +10,7 @@ import '../screens/dice_loadout_screen.dart';
 import '../screens/inventory_screen.dart';
 import '../screens/journal_screen.dart';
 import '../screens/level_up_screen.dart';
-import '../screens/skills_screen.dart';
+import '../screens/skills/skills_screen.dart';
 import '../screens/world_map_screen.dart';
 import 'guide_tour.dart';
 import 'tutorial_topics.dart';

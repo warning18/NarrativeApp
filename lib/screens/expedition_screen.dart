@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -28,6 +30,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
+import '../widgets/moments.dart';
 import 'fight_screen.dart';
 import 'shop_detail_screen.dart';
 
@@ -480,6 +483,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   Future<void> _completeZone() async {
     final notifier = ref.read(playerSessionProvider.notifier);
+    // An expedition takes half a day.
+    await notifier.passTime(2);
     final rewardGold = (widget.zone['rewardGold'] as num?)?.toInt() ?? 0;
     final rewardItemId = widget.zone['rewardItemId']?.toString() ?? '';
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
@@ -561,6 +566,19 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     }
 
     if (!mounted) return;
+    if (newAchievements.isNotEmpty) {
+      final achievements =
+          ref.read(localizedDbProvider(achievementsSchema)).value ?? const {};
+      unawaited(announceAchievements(
+          context,
+          [
+            for (final id in newAchievements)
+              (achievements[id] as Map<String, dynamic>?)?['achievementName']
+                      ?.toString() ??
+                  id
+          ],
+          trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
+    }
     setState(() {
       _phase = _ExpeditionPhase.completed;
       _summaryLines = lines;
@@ -621,8 +639,12 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: switch (_phase) {
-                _ExpeditionPhase.event => _buildEvent(context,
-                    shops: shops, enemies: enemies, lang: lang),
+                // Each event dealt like a card turning over.
+                _ExpeditionPhase.event => FlipIn(
+                    flipKey: _index,
+                    child: _buildEvent(context,
+                        shops: shops, enemies: enemies, lang: lang),
+                  ),
                 _ExpeditionPhase.completed => _buildSummary(
                     context,
                     icon: Icons.flag_circle,

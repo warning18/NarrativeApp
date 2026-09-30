@@ -8,6 +8,100 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.179.0+209]
+
+### Changed
+- **The Skills screen, simpler.** Three tabs with one job each:
+  - **Tree** to learn;
+  - **My skills** to raise tiers and craft;
+  - **Spells** for magic.
+
+  The List view, its two rows of filters and the compare mode are gone.
+- **One sheet per skill**, wherever it is tapped:
+  - its numbers at base and at each tier;
+  - the die faces it sits on, with a way to the dice;
+  - one button: Learn, or Raise tier. When greyed, it says how much
+    essence is missing and that essence comes with XP.
+
+  Compare and Craft are labelled links on it.
+- **State you can see on the tree:**
+  - a gold ring is known, with its tier in dots;
+  - a lit gold ring is ready to learn;
+  - grey with a lock comes later.
+
+  A skill's kind is a small mark in the corner. Every skill not yet
+  known shows its cost, and so does Mastery.
+- **The purse explains itself:** points "to learn skills, 1 per level";
+  essence "to raise a tier, earned with XP", with a bar to the next tier.
+  The rules paragraph is one line with a How it works link, and each
+  branch's description sits under its name.
+- **Spells** are compact rows, known first, then the ones still to find
+  and where their spellbooks are sold.
+- A companion's screen is their points and their class's list, each skill
+  learned right there.
+- The screen's 1,400-line file is split into six under
+  `lib/screens/skills/`. What each skill shows (status, cost, lock
+  reason, tier and its price) now comes from a view model with its own
+  unit tests.
+
+## [1.178.0+208]
+
+### Added
+- **A world clock.** The days pass as the party goes (two watches for a
+  walk or an expedition, a whole day at sea) through dawn, daytime, dusk
+  and night; the top bar shows the day and a sun or moon for the watch,
+  and a rest now runs to the next dawn. The town on the cliff darkens at
+  dusk and fills with stars at night.
+- **A level gained** shows its medal over turning golden rays, the banner
+  rising in and the perk choices dealt like a card.
+- **A quest settled** is stamped with a wax seal; **every achievement**
+  earned (quests, the camp, the town, expeditions) slides down from the top
+  in its own toast.
+- **A new chapter** opens with its title card across the story.
+- **Moments across the game:**
+  - the chapter's ash, rain or snow drifts faintly behind the story text;
+  - a storm at sea rains and flashes behind its day, and every voyage day
+    and expedition event turns over like a card;
+  - the screen's edges throb red while the hero's health is low;
+  - coins fly from the purse when buying; sparks mark a skill learned;
+  - a skill set on a die's face snaps into place;
+  - a rest sends a green wave through the screen; a save presses a seal;
+  - devoted companions wear a beating heart in the camp's party list;
+  - the death screen bleeds in, title then last words;
+  - New Game+ starts with a crown of gold sparks;
+  - the Shroud drifts behind the main menu;
+  - earned badges turn a ring of light in the achievements list.
+- All of it rests with reduced motion, and none of it runs on a hidden tab.
+
+## [1.177.0+207]
+
+### Added
+- **The Journey map moves.** Ten transitions:
+  - a new scene's words come out of the ink, top to bottom, and its ways
+    draw out from your mark one after the other, each step popping in at
+    the end of its road;
+  - a place the map hadn't shown is stamped under your mark, ink
+    spreading from it;
+  - the picked way flows with ink toward its step, which breathes a ring;
+  - walking leaves fading footprints and a puff of dust where it stops;
+  - opening the tab from another, the map unrolls on a gold rod;
+  - a new chapter burns its map open from your mark, an ember ring at
+    the edge;
+  - a scene on the road behind opens out of its own mark;
+  - a shut way's padlock rattles with a red flash;
+  - going into a fight, the map jolts and its edges run red.
+- **And ten effects that say what a step holds:** a fight's (or an
+  expedition's) heartbeat and embers, a shop's or a quest's glint, a
+  rest's fireflies, a roll's glimmer (and a die tumbling beside you on
+  the way to it), a voyage's ripples, the main quest's column of gold,
+  the Void seeping from an ending, fog drifting over a town's far ways,
+  each chapter's weather (ash over the Lower City, Alster and the Spire,
+  rain over the Hollow Court and the Hollow Shore, snow in the giants'
+  frost), and your mark glowing softly so the eye finds it.
+- The effects run only while the Journey tab is on screen, and not at
+  all with the phone's reduced-motion setting: the map is then drawn at
+  once, as before.
+
 ## [1.176.0+206]
 
 ### Added

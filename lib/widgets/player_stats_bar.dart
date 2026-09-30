@@ -36,6 +36,24 @@ class PlayerStatsBar extends ConsumerWidget {
           tooltip: tr(ref, 'level_abbrev'),
           tint: ink.gold,
         ),
+        // The world clock: the day, and a sun or a moon for the watch.
+        _PulseOnChange(
+          value: session.day * 4 + session.watch,
+          child: _Stat(
+            key: const Key('stats_clock'),
+            icon: switch (session.watch) {
+              0 => Icons.wb_twilight,
+              1 => Icons.wb_sunny_outlined,
+              2 => Icons.wb_twilight,
+              _ => Icons.nights_stay_outlined,
+            },
+            text: '${tr(ref, 'day_abbrev')}${session.day}',
+            tooltip:
+                '${tr(ref, 'day_label').replaceAll('{n}', '${session.day}')}'
+                ' · ${tr(ref, 'watch_${session.watch}')}',
+            tint: session.watch == 3 ? ink.voidColor : ink.ember,
+          ),
+        ),
         _PulseOnChange(
           value: session.currentHealth,
           child: _Stat(
@@ -104,6 +122,7 @@ class PlayerStatsBar extends ConsumerWidget {
 /// One number on [PlayerStatsBar]: an icon and its value.
 class _Stat extends StatelessWidget {
   const _Stat({
+    super.key,
     required this.icon,
     required this.text,
     required this.tooltip,

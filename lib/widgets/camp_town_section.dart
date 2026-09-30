@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,6 +12,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import 'cliff_town_view.dart';
 import 'immersive_notice.dart';
+import 'moments.dart';
 
 /// The camp's town and what can be built on it: the cliff town (see
 /// [CliffTownView]) over a tray of houses and town additions. Tapping a
@@ -107,6 +110,18 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
         ? ''
         : '\n${trFor(lang, 'achievement_unlocked_prefix')}: '
             '${newAchievements.map((id) => (widget.achievements[id] as Map<String, dynamic>?)?['achievementName']?.toString() ?? id).join(", ")}';
+    if (newAchievements.isNotEmpty) {
+      unawaited(announceAchievements(
+          context,
+          [
+            for (final id in newAchievements)
+              (widget.achievements[id]
+                          as Map<String, dynamic>?)?['achievementName']
+                      ?.toString() ??
+                  id
+          ],
+          trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
+    }
     showImmersiveNotice(
       context,
       icon: Icons.home,
@@ -353,14 +368,23 @@ class _CampTownSectionState extends ConsumerState<CampTownSection> {
             borderRadius: BorderRadius.circular(4),
             child: SizedBox(
               height: townHeight,
-              child: CliffTownView(
-                key: const Key('cliff_town'),
-                town: town,
-                preview: selectedAvailable ? previewFootprint : null,
-                previewLabel: _nameOf(selected),
-                highlightIndex: _lastBuilt,
-                harborAction: widget.harborAction,
-                scrollController: _scroll,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CliffTownView(
+                    key: const Key('cliff_town'),
+                    town: town,
+                    preview: selectedAvailable ? previewFootprint : null,
+                    previewLabel: _nameOf(selected),
+                    highlightIndex: _lastBuilt,
+                    harborAction: widget.harborAction,
+                    scrollController: _scroll,
+                  ),
+                  // The hour over the town (the world clock).
+                  WatchSky(
+                      watch: ref
+                          .watch(playerSessionProvider.select((s) => s.watch))),
+                ],
               ),
             ),
           ),

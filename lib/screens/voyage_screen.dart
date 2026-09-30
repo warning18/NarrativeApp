@@ -24,6 +24,7 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
+import '../widgets/moments.dart';
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -382,6 +383,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 
   Future<void> _advance() async {
     if (!mounted) return;
+    // Each sea event is a day at sea.
+    await ref.read(playerSessionProvider.notifier).passTime(4);
+    if (!mounted) return;
     if (_sail?.power == SailPower.hearth) {
       // Every day at sea under the hearth-mark heals the crew and mends
       // the hull a little.
@@ -593,8 +597,19 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                 ? EdgeInsets.zero
                 : const EdgeInsets.all(20),
             child: switch (_phase) {
-              _VoyagePhase.event => _buildEvent(context,
-                  fr: fr, enemyShips: enemyShips, parts: parts),
+              // A storm day rains and flashes behind its card.
+              _VoyagePhase.event => Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (_events![_index].kind == SeaEventKind.storm)
+                      const Positioned.fill(child: StormLayer()),
+                    FlipIn(
+                      flipKey: _index,
+                      child: _buildEvent(context,
+                          fr: fr, enemyShips: enemyShips, parts: parts),
+                    ),
+                  ],
+                ),
               _VoyagePhase.fight => _buildFight(
                   fr: fr,
                   companions: companions,

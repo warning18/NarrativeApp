@@ -21,6 +21,7 @@ import '../widgets/item_stats.dart';
 import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
+import '../widgets/moments.dart';
 
 enum _ShopSort { nameAsc, priceLow, priceHigh, stockLeft }
 
@@ -351,6 +352,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     widget.shopId, itemId, cost, stockLimit,
                                     item: item, stockKey: stockKey(itemId));
                             if (!context.mounted) return;
+                            _coinsOut(context);
                             showImmersiveNotice(
                               context,
                               icon: spell != null
@@ -566,6 +568,7 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                                         .notifier)
                                                     .buyDice(diceId, cost);
                                                 if (!context.mounted) return;
+                                                _coinsOut(context);
                                                 showImmersiveNotice(
                                                   context,
                                                   icon: Icons.casino,
@@ -605,4 +608,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
       ),
     );
   }
+}
+
+/// The price paid: coins flying from the screen's middle up to the purse
+/// in the top bar.
+void _coinsOut(BuildContext context) {
+  final size = MediaQuery.sizeOf(context);
+  showCoinFlight(context,
+      from: Offset(size.width - 48, MediaQuery.paddingOf(context).top + 24),
+      to: size.center(Offset.zero));
 }

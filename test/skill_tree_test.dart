@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/skill_tree.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
-import 'package:narrative_data_app/screens/skills_screen.dart';
+import 'package:narrative_data_app/screens/skills/skills_screen.dart';
 
 import 'player_session_provider_test.dart' show baseSession, notifierWith;
 
@@ -211,7 +211,7 @@ void main() {
     expect(rogue, isNot(contains('human_resolve')));
   });
 
-  testWidgets('the tree learns a skill, then the next; the list filters',
+  testWidgets('the tree learns a skill, then the next; My skills filters',
       (tester) async {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
@@ -258,14 +258,16 @@ void main() {
     Navigator.of(tester.element(find.textContaining('After').first)).pop();
     await _settle(tester);
 
-    // The list, healing only: no strike in it, and Bulwark Stance (next on
-    // its branch) ready to learn.
-    await tester.tap(find.text('List'));
+    // My skills, healing only: no strike in it, and Resolve (the human
+    // heritage's first, known) there.
+    await tester.tap(find.byKey(const Key('skills_tab_mine')));
     await _settle(tester);
-    await tester.tap(find.byKey(const Key('skill_filter__KindFilter.heal')));
+    await tester.ensureVisible(find.byKey(const Key('skill_filter_heal')));
     await _settle(tester);
-    expect(find.text('Power Strike'), findsNothing);
-    expect(find.byKey(const Key('learn_bulwark_stance')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('skill_filter_heal')));
+    await _settle(tester);
+    expect(find.byKey(const Key('skill_row_power_strike')), findsNothing);
+    expect(find.byKey(const Key('skill_row_human_resolve')), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
   });
 }
