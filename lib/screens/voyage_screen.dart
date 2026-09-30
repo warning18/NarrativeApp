@@ -15,6 +15,7 @@ import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
+import '../providers/chapter_loop_provider.dart' show chapterConditionProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -79,6 +80,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   /// ports'), the Eel's record and the parts catalogue, kept for the
   /// boarding fight and its prize.
   int _chapter = 1;
+
+  /// The chapter's weather (see chapter_conditions.dart).
+  double _stormShift = 0;
   Map<String, dynamic> _shipRecord = const {};
   Map<String, dynamic> _parts = const {};
   final List<String> _log = [];
@@ -102,6 +106,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       portChapter(widget.toPort),
     );
     _chapter = chapter;
+    _stormShift = ref.read(chapterConditionProvider)?.stormShift ?? 0;
     _parts = parts;
     _sail = installedSail(parts, session.shipPartIds);
     _sailStrength =
@@ -129,6 +134,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           enemyShips: enemyShips,
           chapter: chapter,
           knownWaters: _knownWaters,
+          stormShift: _stormShift,
         );
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
@@ -282,6 +288,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           chapter: _chapter,
           knownWaters: _knownWaters,
           alreadyRaided: _events!.any((e) => e.kind == SeaEventKind.raider),
+          stormShift: _stormShift,
         );
         if (_sail?.power == SailPower.flight) {
           extra = [

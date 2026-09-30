@@ -133,6 +133,22 @@ class SubNodeEngine {
   static bool detourAllowedBetween(String? fromMood, String? toMood) =>
       !(tenseMoods.contains(fromMood) && tenseMoods.contains(toMood));
 
+  /// The first chapter with detours. Chapter 1 is the flight from the
+  /// burning city: nobody stops at a stall, and nothing on the road waits
+  /// to be paid later either.
+  static const int firstDetourChapter = 2;
+
+  /// Whether the story may take a detour between scene [from] and scene
+  /// [to]: not in chapter 1, not into or out of a set piece
+  /// ([StoryNode.noDetour]), and not in the middle of a crisis (see
+  /// [detourAllowedBetween]).
+  static bool detourAllowedBetweenScenes(StoryNode? from, StoryNode? to,
+          {required int chapter}) =>
+      chapter >= firstDetourChapter &&
+      !(from?.noDetour ?? false) &&
+      !(to?.noDetour ?? false) &&
+      detourAllowedBetween(from?.mood, to?.mood);
+
   /// What ends a hunt's trail node id (see [isHuntTrail]).
   static const String huntTrailSuffix = '_trail';
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_conditions.dart';
 import '../data/journey_rules.dart';
+import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
@@ -48,7 +50,12 @@ class RoadPanel extends ConsumerWidget {
     final daysHere = session.clockChapter == chapter
         ? session.day - session.chapterStartDay
         : 0;
-    final price = provisionPrice(chapter);
+    // The chapter's condition (see chapter_conditions.dart): what the
+    // region is going through, and what it does to the road's numbers.
+    final condition = ref.watch(chapterConditionProvider);
+    final french = ref.watch(appLanguageProvider) == AppLanguage.fr;
+    final price =
+        conditionedPrice(provisionPrice(chapter), condition?.rationPrice ?? 1);
     final room = provisionsMax - session.provisions;
     final hire = sellswordPrice(chapter);
     final small = theme.textTheme.bodySmall?.copyWith(color: ink.ash);
@@ -71,6 +78,17 @@ class RoadPanel extends ConsumerWidget {
               style: theme.textTheme.labelSmall?.copyWith(
                   letterSpacing: 1.2, color: theme.colorScheme.primary)),
         ),
+        if (condition != null)
+          KeyedSubtree(
+            key: const ValueKey('road_condition_line'),
+            child: line(
+              Icons.flag_outlined,
+              tr(ref, 'condition_line')
+                  .replaceAll('{name}', condition.nameFor(french)),
+              condition.effectFor(french),
+              tint: ink.gold,
+            ),
+          ),
         line(
           Icons.wb_sunny_outlined,
           tr(ref, 'road_day_line')

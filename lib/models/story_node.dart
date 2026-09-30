@@ -29,6 +29,7 @@ class StoryChoice {
     this.showIfFlags = const [],
     this.launchZoneId,
     this.grantsBannerPieceId,
+    this.grantItemId,
     this.loseAllyId,
     this.mainQuest = false,
     this.travelPlaceId,
@@ -78,6 +79,7 @@ class StoryChoice {
       isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
       launchZoneId: json['launchZoneId'] as String?,
       grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
+      grantItemId: json['grantItemId'] as String?,
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       travelPlaceId: json['travelPlaceId'] as String?,
@@ -218,6 +220,11 @@ class StoryChoice {
   /// heirloom piece, and the spine's three dilemmas the rest.
   final String? grantsBannerPieceId;
 
+  /// An item this choice puts in the pack (items.json): what the party
+  /// picks up where there is no shop to buy it from, like the looted racks
+  /// on the docks in chapter 1.
+  final String? grantItemId;
+
   /// How companions in the party react to this choice beyond what its
   /// alignment and gold already say (see approval.dart): companion id -> a
   /// change in approval, `*` for everyone in the party.
@@ -310,6 +317,7 @@ class StoryChoice {
         if (launchesZone) 'launchZoneId': launchZoneId,
         if (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty)
           'grantsBannerPieceId': grantsBannerPieceId,
+        if (grantsItem) 'grantItemId': grantItemId,
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
@@ -352,8 +360,13 @@ class StoryChoice {
       flagsToAdd.isNotEmpty ||
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
+      grantsItem ||
       (loseAllyId != null && loseAllyId!.isNotEmpty) ||
       approvalMods.isNotEmpty;
+
+  /// Whether taking this choice puts an item in the pack (see
+  /// [grantItemId]).
+  bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
 }
 
 class StoryNode {
@@ -381,6 +394,7 @@ class StoryNode {
     this.settlement,
     this.timeLimit,
     this.timeoutChoice = 0,
+    this.noDetour = false,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -415,8 +429,15 @@ class StoryNode {
       settlement: Settlement.fromJson(json['settlement']),
       timeLimit: (json['time_limit'] as num?)?.toInt(),
       timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
+      noDetour: json['noDetour'] as bool? ?? false,
     );
   }
+
+  /// A set piece the road never interrupts (see
+  /// SubNodeEngine.detourAllowedBetween): no detour, road event or hunter
+  /// on the way into or out of it. What the road held waits for the next
+  /// scene at rest.
+  final bool noDetour;
 
   /// Seconds the player has to choose (a chase, a wave coming over the
   /// wall), or null for all the time in the world. When they run out the
@@ -651,6 +672,7 @@ class StoryNode {
         if (reqCharisma != 0) 'reqCharisma': reqCharisma,
         if (isTimed) 'time_limit': timeLimit,
         if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
+        if (noDetour) 'noDetour': noDetour,
         if (alignmentEpilogues.isNotEmpty)
           'alignment_epilogues': {
             for (final entry in alignmentEpilogues.entries)

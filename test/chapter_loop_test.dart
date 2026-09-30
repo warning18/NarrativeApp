@@ -280,17 +280,17 @@ void main() {
             unavailableAllyIds: met);
 
     test('a town says who can still join, a village nobody', () {
-      // Grosh asks for gold, which comes: he is on offer. Maren waits for
-      // Lysa to have lived.
-      expect(leads('3005'), ['grosh']);
-      expect(leads('3005', flags: const ['lysa_survived']),
-          containsAll(['maren', 'grosh']));
+      // Grosh asks for gold, which comes: he is on offer. Maren's
+      // confession no longer waits for Lysa to have lived (v1.181).
+      expect(leads('3005'), containsAll(['maren', 'grosh']));
       expect(leads('3100'), isEmpty);
     });
 
     test('once met, or once the scene is done, no more word', () {
-      expect(leads('3005', met: const ['grosh']), isEmpty);
-      expect(leads('3005', flags: const ['hub_3005_grosh']), isEmpty);
+      expect(leads('3005', met: const ['grosh']), ['maren']);
+      expect(leads('3005', met: const ['grosh', 'maren']), isEmpty);
+      expect(leads('3005', flags: const ['hub_3005_grosh', 'hub_3005_maren']),
+          isEmpty);
     });
 
     test('a companion the party\'s alignment rules out is not hinted', () {

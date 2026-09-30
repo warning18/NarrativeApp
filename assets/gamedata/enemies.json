@@ -6,7 +6,7 @@
     "guile": 0,
     "weakTo": [],
     "resists": [],
-    "xpReward": 15,
+    "xpReward": 30,
     "goldReward": 10,
     "lootTable": [
       {
@@ -250,7 +250,7 @@
     "guile": 0,
     "weakTo": [],
     "resists": [],
-    "xpReward": 28,
+    "xpReward": 40,
     "goldReward": 19,
     "lootTable": [
       {
@@ -932,8 +932,8 @@
   },
   "kroll_the_branded": {
     "enemyName": "Inquisitor Clement",
-    "maxHealth": 145,
-    "damage": 19,
+    "maxHealth": 115,
+    "damage": 15,
     "guile": 4,
     "weakTo": [],
     "resists": [
@@ -3099,8 +3099,8 @@
   },
   "white_soldier": {
     "enemyName": "White Soldier",
-    "maxHealth": 90,
-    "damage": 24,
+    "maxHealth": 80,
+    "damage": 19,
     "guile": 1,
     "weakTo": [
       "Fire"
@@ -3108,7 +3108,7 @@
     "resists": [
       "Ice"
     ],
-    "xpReward": 14,
+    "xpReward": 22,
     "goldReward": 9,
     "lootTable": [
       {

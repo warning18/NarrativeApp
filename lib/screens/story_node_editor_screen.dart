@@ -300,6 +300,8 @@ class _ChoiceEditState {
             TextEditingController(text: choice.questIDToProgress ?? ''),
         grantsBannerPieceIdController =
             TextEditingController(text: choice.grantsBannerPieceId ?? ''),
+        grantItemIdController =
+            TextEditingController(text: choice.grantItemId ?? ''),
         loseAllyIdController =
             TextEditingController(text: choice.loseAllyId ?? ''),
         lockedTextController =
@@ -350,6 +352,7 @@ class _ChoiceEditState {
   final TextEditingController launchZoneIdController;
   final TextEditingController questIDToProgressController;
   final TextEditingController grantsBannerPieceIdController;
+  final TextEditingController grantItemIdController;
   final TextEditingController loseAllyIdController;
   final TextEditingController lockedTextController;
   final TextEditingController lockedTextFrController;
@@ -383,6 +386,7 @@ class _ChoiceEditState {
     launchZoneIdController.dispose();
     questIDToProgressController.dispose();
     grantsBannerPieceIdController.dispose();
+    grantItemIdController.dispose();
     loseAllyIdController.dispose();
     lockedTextController.dispose();
     lockedTextFrController.dispose();
@@ -423,6 +427,9 @@ class _ChoiceEditState {
         grantsBannerPieceId: grantsBannerPieceIdController.text.trim().isEmpty
             ? null
             : grantsBannerPieceIdController.text.trim(),
+        grantItemId: grantItemIdController.text.trim().isEmpty
+            ? null
+            : grantItemIdController.text.trim(),
         loseAllyId: loseAllyIdController.text.trim().isEmpty
             ? null
             : loseAllyIdController.text.trim(),
@@ -618,6 +625,13 @@ class _ChoiceCardState extends State<_ChoiceCard> {
                   controller: state.grantsBannerPieceIdController,
                   decoration: InputDecoration(
                       labelText: t('grants_banner_piece_id'),
+                      border: const OutlineInputBorder()),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: state.grantItemIdController,
+                  decoration: InputDecoration(
+                      labelText: t('grant_item_id'),
                       border: const OutlineInputBorder()),
                 ),
                 const SizedBox(height: 8),

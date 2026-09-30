@@ -417,6 +417,9 @@ StoryNode? buildTemptationNode({
 /// the player's settings toggle. [rollsSinceAmbush] counts the rolls since
 /// the last ambush (see PlayerSession.alignmentRollsSinceAmbush): within
 /// [hunterCooldownRolls] of one, no hunter comes.
+/// The first chapter a hunter or a temptation can find the party in.
+const int firstHuntChapter = 2;
+
 List<StoryNode>? maybeAlignmentEvent({
   required int alignmentScore,
   required List<String> activeQuestIds,
@@ -427,7 +430,9 @@ List<StoryNode>? maybeAlignmentEvent({
   bool enabled = true,
   int rollsSinceAmbush = hunterCooldownRolls,
 }) {
-  if (!enabled) return null;
+  // Chapter 1 is the flight from the city: nobody has caught the scent
+  // yet, whatever the character's past.
+  if (!enabled || chapter < firstHuntChapter) return null;
   final side = huntedSideFor(
       alignmentScore: alignmentScore, activeQuestIds: activeQuestIds);
   if (side != null) {

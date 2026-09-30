@@ -101,11 +101,19 @@ void main() {
   });
 
   group('detour shops', () {
-    test('a chapter-1 detour never opens a later or a house shop', () {
+    test('chapter 1 has no shops; chapter 2 opens none of the later ones', () {
+      // Chapter 1 is the flight from the burning city (v1.181).
+      expect(
+          SubNodeEngine.filterShopPool(
+            shops: shops,
+            unlockedShopIds: const [],
+            chapter: 1,
+          ),
+          isEmpty);
       final pool = SubNodeEngine.filterShopPool(
         shops: shops,
         unlockedShopIds: const [],
-        chapter: 1,
+        chapter: 2,
       );
       expect(pool, isNot(contains('hammersmith_forge')));
       expect(pool, isNot(contains('arcane_academy')));
@@ -121,7 +129,10 @@ void main() {
         chapter: 9,
       );
       expect(pool, isNot(contains('hammersmith_forge')));
-      expect(pool, contains('last_lantern'));
+      // A shop that belongs to a place stays there (v1.181).
+      expect(pool, isNot(contains('last_lantern')));
+      expect(pool, isNot(contains('black_market_docks')));
+      expect(pool, contains('weaponsmith_forge'));
     });
   });
 

@@ -8,6 +8,112 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.181.0+211]
+
+Chapter 1 is a flight from a city under attack, and now plays like one.
+Each chapter after it rolls a condition, so two runs differ more. About
+twenty-five one-button scenes became real decisions, and the three
+companions most runs never met are easier to find.
+
+### Fixed
+- **No shops in chapter 1.** The docks no longer open an armory, a
+  shieldwright and a black market while the Rusty Eel weighs anchor.
+  Instead there is time to grab one thing: a blade from the looted
+  armory rack or a buckler from the overturned cart. The market in the
+  slums is abandoned mid-trade, with only a bandit still "doing
+  business", and the forge's back room is a cache, not a shop. These
+  shops now open at Smugglers' Wharf in chapter 2.
+- **Nothing on chapter 1's roads.** Random detours, hunters and
+  temptations no longer fire in chapter 1. This had allowed a shop stall
+  between surrendering and waking in the Black Hold, or a rest by a fire
+  right after killing Clement. Nothing is saved up for chapter 2 either.
+- **Set pieces aren't interrupted.** The Sovereign naming its price, the
+  crossings through the tear, the roof coming down on the Court, the
+  Cathedral burning and the evacuation of Alster no longer stop for a
+  detour or a road event.
+- **Shops that belong to a place stay there.** The Tide Cellar, the Blind
+  Beggar's stall, the Ossuary and the Last Lantern no longer turn up as
+  roadside stalls elsewhere.
+- **Story fixes across chapter 1 and beyond.**
+  - The heirloom quest pays out once the Bundle is out of Alster, not
+    while soldiers break the door.
+  - Vess joins after the escape, not inside chapter 1.
+  - The bridge toll is 100 gold; the smuggler takes coin (60 gold) as
+    well as stories.
+  - The Black Hold strips you to your shirt and gives your kit back.
+  - The alley is dark, not daylit.
+  - The Crusade had already reached the slums: it started at the Blind
+    Beggar.
+  - The bridge is held by slum toughs in Crusade colours.
+  - Chapter 2 names old Hesk as the man the Bundle killed.
+  - Lysa's fate is told the same way on every path.
+  - The Broken's Shroud no longer contradicts how it was found.
+  - Maren's confession no longer waits for Lysa to have lived.
+  - Mother Hesk is old Hesk's wife.
+  - Several French lines no longer give the narrator a gender.
+
+### Added
+- **Chapter conditions.** Chapters 2 to 6 each draw one of eight
+  conditions from the run's own seed, never the same one twice in a run.
+  Each one only appears where it fits: no weather at sea before the boat
+  sails, and no fair while Alster falls.
+  - **Quarantine:** shops cost a quarter more, rations half again.
+  - **Tide Fair:** shops cost a fifth less, and the roads are busier,
+    with the Caravan out more often.
+  - **Contested roads:** half again as many road events, mostly
+    champions.
+  - **Storm season / Fair winds:** more or fewer storms at sea.
+  - **A rival company / Bounty season:** expeditions pay a quarter less
+    or more.
+  - **Lean season:** rations cost double.
+  - The first town or village you reach in a chapter tells you its
+    condition. The road panel (tap your stats) keeps it in view, and
+    shops and expedition rewards show what it changed.
+- **Decisions where there was one button.** About twenty-five scenes
+  across the story now offer two or three choices, with checks, costs
+  and consequences that later scenes remember. Some examples:
+  - what you take from the ring of loot at the tear, which decides
+    whether Vess can find you later;
+  - lying past the Wardens;
+  - feeding the Rat Matriarch instead of fighting her;
+  - sharing Vane's tunnel with the refugees, or selling it;
+  - cutting Vane's purse on the way out;
+  - the bell rope into the Cathedral;
+  - absolving Maren or not;
+  - tearing your parents' page out of the ledger;
+  - how the dead are buried after the siege;
+  - diving for the Court's pay chest, or selling out the deserter;
+  - what to do with the Inquisitor who burned the Ashen Quarter;
+  - buying the chart-keeper's map;
+  - where Lysa belongs;
+  - hiring the Admiral's helmsman;
+  - the wreckers' false lamps;
+  - buying a blade from Tetsu;
+  - promises to the widow, to Nell, to the eldest and to Hathra.
+- **Scenes can hand you an item** (`grantItemId` on a story choice, shown
+  on the choice and in a notice), with an editor field for it.
+
+### Changed
+- **Chapter 1 balance.** Without detours or shops, players reached
+  Inquisitor Clement at a lower level and with less gear. To compensate,
+  chapter 1 fights give more experience (slum thug 30, street bandit 40,
+  White Soldier 22). The White Soldiers are a little weaker (80 health,
+  19 damage), and so is Clement (115 health, 15 damage).
+- **Rare companions are easier to meet.**
+  - **Sable** now works with anyone short of a saint (alignment up to
+    +15). Her marker can be won at the dockhands' table, lifted from
+    the card sharp's coat (Dexterity) or bought back (Charisma, 30
+    gold). A lost card game can be played again while she waits, so her
+    quest can always be finished. If you won her marker at cards before
+    meeting her, you simply hand it over.
+  - **Liora** is met on the wharf like the town's other people: talk
+    her down (Charisma), read what she is watching (Perception) or climb
+    to her (Dexterity). If she refuses, you can try again. Hunting the
+    captain with her is the chapter's exit.
+  - **Vess** finds you on the wharf in chapter 2 if you missed her in the
+    burning market: she follows the Bundle, which everyone carries out
+    of Alster. If the tear touched you, she says so.
+
 ## [1.180.0+210]
 
 The memories before the story are rewritten. There are six of them now,

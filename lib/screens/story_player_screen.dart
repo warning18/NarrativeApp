@@ -11,6 +11,7 @@ import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
 import '../data/approval.dart';
 import '../data/ally_acknowledgments.dart';
+import '../data/chapter_conditions.dart';
 import '../data/chapter_spine.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
@@ -1264,6 +1265,7 @@ Future<void> _selectChoice({
               flagsToAdd: choice.flagsToAdd,
               questIDToProgress: choice.questIDToProgress,
               bannerPieceId: choice.grantsBannerPieceId,
+              itemId: choice.grantItemId,
               loseAllyId: choice.loseAllyId,
               approvalMods: choice.approvalMods,
               companions:
@@ -1271,6 +1273,19 @@ Future<void> _selectChoice({
               // A detour's cache is loot, not greed.
               goldIsProfit: !isExcursion,
             );
+    // What the scene put in the pack (see StoryChoice.grantItemId).
+    if (choice.grantsItem && context.mounted) {
+      final items = ref.read(localizedDbProvider(itemsSchema)).value;
+      final name =
+          (items?[choice.grantItemId] as Map<String, dynamic>?)?['itemName']
+              ?.toString();
+      await showImmersiveNotice(
+        context,
+        icon: Icons.backpack_outlined,
+        message: tr(ref, 'item_picked_up')
+            .replaceAll('{item}', name ?? choice.grantItemId!),
+      );
+    }
     // How the party took it, before the story moves on.
     if (reactions.isNotEmpty && context.mounted) {
       await showApprovalReactions(context, ref, reactions);
@@ -1383,10 +1398,17 @@ Future<void> _selectChoice({
   // A choice that loops back onto its own node (a shop visit at the docks
   // hub, say) is a moment inside the same scene, not a step down the road
   // -- no excursion or alignment event rolls for it.
-  final chapter = chapterForNode(currentNodeId);
-  final atRest = SubNodeEngine.detourAllowedBetween(
-    story.nodeFor(currentNodeId)?.mood,
-    story.nodeFor(choice.nextId)?.mood,
+  // Chapter 1 is the flight from the city: its roads hold nothing, now or
+  // later (see SubNodeEngine.firstDetourChapter).
+  final spineChapter = chapterForNode(currentNodeId);
+  final chapter =
+      spineChapter != null && spineChapter >= SubNodeEngine.firstDetourChapter
+          ? spineChapter
+          : null;
+  final atRest = SubNodeEngine.detourAllowedBetweenScenes(
+    story.nodeFor(currentNodeId),
+    story.nodeFor(choice.nextId),
+    chapter: chapter ?? 0,
   );
   if (chapter != null &&
       !choice.opensCharacterCreation &&
@@ -1441,12 +1463,16 @@ Future<List<StoryNode>?> roadEventOn(
 }) async {
   if (ref.read(appModeProvider) == AppMode.edit) return null;
   final chapter = ref.read(reachedChapterProvider);
+  final condition = ref.read(chapterConditionProvider);
   final event = roadEventFor(
     story: story,
     fromNodeId: fromNodeId,
     toNodeId: toNodeId,
     historyLength: historyLength,
     chapter: chapter,
+    oddsFactor: condition?.roadEventOdds ?? 1,
+    championShare: condition?.championShare ?? 0.4,
+    shrineShare: condition?.shrineShare ?? 0.3,
   );
   if (event == null) return null;
   final enemies = await loadedGameDb(ref, enemiesSchema);
@@ -2304,6 +2330,20 @@ void _showSettlementArrival(
   final campFounded =
       ref.read(playerSessionProvider).flags.contains(campFoundedFlag);
   final bodyKey = campFounded ? 'arrival_town_away_body' : 'arrival_town_body';
+  // The first place reached in a chapter also says what the region is going
+  // through (see chapter_conditions.dart), once.
+  final chapter = ref.read(reachedChapterProvider);
+  final condition = ref.read(chapterConditionProvider);
+  final showCondition = condition != null &&
+      !ref
+          .read(playerSessionProvider)
+          .flags
+          .contains(conditionSeenFlag(chapter));
+  if (showCondition) {
+    ref
+        .read(playerSessionProvider.notifier)
+        .applyChoiceEffects(flagsToAdd: [conditionSeenFlag(chapter)]);
+  }
   showDialog<void>(
     context: context,
     builder: (dialogContext) {
@@ -2331,6 +2371,35 @@ void _showSettlementArrival(
               tr(ref, bodyKey).replaceAll('{place}', name),
               style: theme.textTheme.bodyMedium,
             ),
+            if (showCondition) ...[
+              const Divider(height: 24),
+              Row(
+                key: const ValueKey('arrival_condition'),
+                children: [
+                  Icon(Icons.flag_outlined,
+                      size: 20, color: theme.colorScheme.primary),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      tr(ref, 'condition_line')
+                          .replaceAll('{name}', condition.nameFor(french)),
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(condition.arrivalFor(french),
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontStyle: FontStyle.italic, height: 1.4)),
+              const SizedBox(height: 8),
+              Text(condition.effectFor(french),
+                  style: theme.textTheme.bodyMedium),
+              const SizedBox(height: 4),
+              Text(tr(ref, 'condition_where'),
+                  style: theme.textTheme.bodySmall
+                      ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            ],
           ],
         ),
         actions: [
@@ -2707,6 +2776,12 @@ class _ChoiceLabel extends ConsumerWidget {
         InkTag(
           label: '${tr(ref, 'alignment_label')} ${signed(choice.alignmentMod)}',
           color: ink.voidColor,
+        ),
+      if (choice.grantsItem)
+        InkTag(
+          label:
+              '+ ${(ref.watch(localizedDbProvider(itemsSchema)).value?[choice.grantItemId] as Map<String, dynamic>?)?['itemName'] ?? choice.grantItemId}',
+          color: ink.gold,
         ),
       if (workAhead)
         InkTag(label: tr(ref, 'choice_work_ahead'), color: ink.gold),

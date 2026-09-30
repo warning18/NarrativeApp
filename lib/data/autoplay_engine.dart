@@ -470,6 +470,7 @@ Future<AutoplayResult> autoplayToNode(
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
+        itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
       );
@@ -739,6 +740,7 @@ Future<AutoplayResult> _playTowardChapter(
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
+        itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
       );

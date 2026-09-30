@@ -22,8 +22,8 @@
   },
   "100": {
     "id": "100",
-    "description": "The invasion, they would tell you afterward, hadn't yet reached the slums — as though the slums were a place worth invading, as though anyone in a gilded helmet had ever glanced down at streets like these and seen anything but vermin to be managed later. Panic, unlike armies, needs no permission to advance, and it had beaten the Pale Crusade here by the better part of an hour. I ran for the Blind Beggar all the same, the one tavern in the district that had never once, in eleven years of my patronage, closed its doors before dawn. I found the door doing a passable impression of open, hanging from its last hinge like a drunk from a rafter. No music. No laughter. Only the tavern's own blood finding its way, unhurried, toward the gutter, as if it too had nowhere better to be tonight.",
-    "description_fr": "L'invasion, me dirait-on plus tard, n'avait pas encore atteint les bas-fonds — comme si les bas-fonds valaient la peine d'être envahis, comme si quiconque sous un casque doré avait jamais baissé les yeux sur des rues pareilles pour y voir autre chose que de la vermine à gérer plus tard. La panique, elle, n'a besoin de la permission de personne pour avancer, et elle avait devancé la Croisade Pâle d'une bonne heure. Je courus tout de même vers le Mendiant Aveugle, la seule taverne du quartier qui, en onze ans de fidèle clientèle, n'avait jamais une seule fois fermé ses portes avant l'aube. Je trouvai la porte donnant une imitation convaincante de l'ouverture, pendue à son dernier gond comme un ivrogne à une poutre. Pas de musique. Pas de rires. Rien que le propre sang de la taverne cherchant son chemin, sans se presser, vers le caniveau, comme s'il n'avait, lui non plus, rien de mieux à faire ce soir.",
+    "description": "The invasion, they would tell you afterward, hadn't yet reached the slums — as though the slums were a place worth invading, as though anyone in a gilded helmet had ever glanced down at streets like these and seen anything but vermin to be managed later. They were wrong by about an hour, and the Crusade had spent that hour at the Blind Beggar. Panic, unlike armies, needs no permission to advance, and it had the streets long before anyone saw a gilded helmet. I ran for the Blind Beggar all the same, the one tavern in the district that had never once, in eleven years of my patronage, closed its doors before dawn. I found the door doing a passable impression of open, hanging from its last hinge like a drunk from a rafter. No music. No laughter. Only the tavern's own blood finding its way, unhurried, toward the gutter, as if it too had nowhere better to be tonight.",
+    "description_fr": "L'invasion, me dirait-on plus tard, n'avait pas encore atteint les bas-fonds — comme si les bas-fonds valaient la peine d'être envahis, comme si quiconque sous un casque doré avait jamais baissé les yeux sur des rues pareilles pour y voir autre chose que de la vermine à gérer plus tard. Ils se trompaient d'une heure environ, et la Croisade avait passé cette heure au Mendiant Aveugle. La panique, elle, n'a besoin de la permission de personne pour avancer, et elle tenait les rues bien avant que quiconque aperçoive un casque doré. Je courus tout de même vers le Mendiant Aveugle, la seule taverne du quartier qui, en onze ans de fidèle clientèle, n'avait jamais une seule fois fermé ses portes avant l'aube. Je trouvai la porte donnant une imitation convaincante de l'ouverture, pendue à son dernier gond comme un ivrogne à une poutre. Pas de musique. Pas de rires. Rien que le propre sang de la taverne cherchant son chemin, sans se presser, vers le caniveau, comme s'il n'avait, lui non plus, rien de mieux à faire ce soir.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "desperate",
@@ -82,11 +82,11 @@
   },
   "151": {
     "id": "151",
-    "description": "A few stalls still operated despite the panic in the streets — a blacksmith hammering out blades with the grim focus of someone expecting demand to improve considerably, a shieldwright patching dented steel for customers who would need it again by morning. And a bandit eyeing the crowd with the frank, professional interest of one who considered the invasion less a catastrophe than a business opportunity.",
-    "description_fr": "Quelques étals fonctionnaient encore malgré la panique dans les rues — un forgeron martelant des lames avec la concentration sombre de qui s'attend à ce que la demande s'améliore considérablement, un fabricant de boucliers rafistolant de l'acier cabossé pour des clients qui en auraient de nouveau besoin d'ici le matin. Et un bandit observant la foule avec l'intérêt professionnel et franc de celui qui considère l'invasion moins comme une catastrophe que comme une occasion d'affaires.",
+    "description": "The market had emptied the way a lung empties: all at once, and without meaning to. Stalls stood abandoned mid-trade — an anvil still ticking as it cooled, a shieldwright's rack kicked over, coins trodden into the mud where somebody had decided they were not worth stopping for. Only one man was still doing business: a bandit going through what the owners had dropped, with the frank, professional interest of someone who considered the invasion less a catastrophe than an opportunity.",
+    "description_fr": "Le marché s'était vidé comme se vide un poumon : d'un seul coup, et sans le vouloir. Les étals étaient abandonnés en pleine vente — une enclume qui cliquetait encore en refroidissant, un râtelier de boucliers renversé d'un coup de pied, des pièces piétinées dans la boue là où quelqu'un avait jugé qu'elles ne valaient pas qu'on s'arrête. Un seul homme faisait encore des affaires : un bandit qui fouillait ce que les propriétaires avaient laissé tomber, avec l'intérêt franc et professionnel de qui voyait dans l'invasion moins une catastrophe qu'une occasion.",
     "context_taxonomy": {
       "ui_theme": "market",
-      "mood": "neutral",
+      "mood": "tense",
       "speaker": "Narrator"
     },
     "automations": {
@@ -105,8 +105,7 @@
         "next_id": "151_forge",
         "checkAbility": "constitution",
         "checkDC": 12,
-        "failNextId": "300",
-        "unlockShopId": "blind_beggar_stall"
+        "failNextId": "300"
       },
       {
         "text": "Approach the cloaked figure at the edge of the stalls",
@@ -261,8 +260,8 @@
   },
   "260": {
     "id": "260",
-    "description": "The bridge spanned a river in a genuine hurry to be elsewhere, its stones worn smooth by centuries of feet with better reasons to cross than mine tonight. A handful of soldiers had claimed it in the invasion's crude, efficient fashion — insignia stitched on with more enthusiasm than skill, weapons held ready in the manner of men who have recently discovered how easy killing is and are looking for an excuse to confirm it. They looked at me, and then at Lysa struggling weakly in my arms, with the frank suspicion of men who had learned not to trust anyone still capable of walking. A toll booth, hammered together from someone's dismantled market stall, sat astride the only way across. Lysa whimpered against my shoulder, stirring like a bad dream deciding whether to wake.",
-    "description_fr": "Le pont enjambait une rivière visiblement pressée d'être ailleurs, ses pierres polies par des siècles de pieds ayant de meilleures raisons de le traverser que les miennes ce soir-là. Une poignée de soldats se l'était appropriée selon la méthode grossière et efficace propre à l'invasion — insignes cousus avec plus d'enthousiasme que d'art, armes tenues prêtes à la manière d'hommes qui viennent de découvrir combien tuer est facile et cherchent une excuse pour le vérifier. Ils me regardèrent, puis regardèrent Lysa qui se débattait faiblement dans mes bras, avec la franche méfiance de ceux qui ont appris à ne plus faire confiance à quiconque tient encore debout. Une guérite de péage, clouée à la hâte à partir de l'étal démonté d'un marché, barrait l'unique passage. Lysa gémit contre mon épaule, s'agitant comme un mauvais rêve hésitant à se réveiller.",
+    "description": "The bridge spanned a river in a genuine hurry to be elsewhere, its stones worn smooth by centuries of feet with better reasons to cross than mine tonight. A handful of slum toughs had claimed it in the invasion's name — Crusade insignia stitched on with more enthusiasm than skill, weapons held ready in the manner of men who have recently discovered how easy killing is and are looking for an excuse to confirm it. They looked at me, and then at Lysa struggling weakly in my arms, with the frank suspicion of men who had learned not to trust anyone still capable of walking. A toll booth, hammered together from someone's dismantled market stall, sat astride the only way across. Lysa whimpered against my shoulder, stirring like a bad dream deciding whether to wake.",
+    "description_fr": "Le pont enjambait une rivière visiblement pressée d'être ailleurs, ses pierres polies par des siècles de pieds ayant de meilleures raisons de le traverser que les miennes ce soir-là. Une poignée de voyous des bas-quartiers se l'était appropriée au nom de l'invasion — insignes de la Croisade cousus avec plus d'enthousiasme que d'art, armes tenues prêtes à la manière d'hommes qui viennent de découvrir combien tuer est facile et cherchent une excuse pour le vérifier. Ils me regardèrent, puis regardèrent Lysa qui se débattait faiblement dans mes bras, avec la franche méfiance de ceux qui ont appris à ne plus faire confiance à quiconque tient encore debout. Une guérite de péage, clouée à la hâte à partir de l'étal démonté d'un marché, barrait l'unique passage. Lysa gémit contre mon épaule, s'agitant comme un mauvais rêve hésitant à se réveiller.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "tense",
@@ -273,11 +272,11 @@
     },
     "choices": [
       {
-        "text": "Pay the toll (50 gold)",
-        "text_fr": "Payer le péage (50 pièces d'or)",
+        "text": "Pay the toll (100 gold)",
+        "text_fr": "Payer le péage (100 pièces d'or)",
         "next_id": "261",
-        "lockedText": "Fifty gold. I had nowhere near it.",
-        "lockedText_fr": "Cinquante pièces d'or. J'en étais loin."
+        "lockedText": "A hundred gold. I did not have it.",
+        "lockedText_fr": "Cent pièces d'or. Je ne les avais pas."
       },
       {
         "text": "Refuse and fight",
@@ -293,8 +292,8 @@
   },
   "261": {
     "id": "261",
-    "description": "The guard counted my coin twice, unimpressed both times, as though fifty gold pieces were an insult he'd have to report to someone. He waved me through with a grunt that managed to convey both contempt and a certain professional satisfaction at having extracted money from someone who clearly needed every piece of it. Lysa barely stirred as we crossed, which I chose, for my own sanity, to read as sleep rather than the alternative.",
-    "description_fr": "Le garde compta ma bourse deux fois, peu impressionné les deux fois, comme si cinquante pièces d'or constituaient une insulte qu'il devrait signaler à quelqu'un. Il me fit signe de passer d'un grognement qui parvenait à transmettre à la fois le mépris et une certaine satisfaction professionnelle d'avoir soutiré de l'argent à un homme qui en avait manifestement grand besoin. Lysa bougea à peine tandis que nous traversions, ce que je choisis, pour ma propre santé mentale, d'interpréter comme du sommeil plutôt que l'alternative.",
+    "description": "The guard counted my coin twice, unimpressed both times, as though a hundred gold pieces were an insult he'd have to report to someone. He waved me through with a grunt that managed to convey both contempt and a certain professional satisfaction at having extracted money from someone who clearly needed every piece of it. Lysa barely stirred as we crossed, which I chose, for my own sanity, to read as sleep rather than the alternative.",
+    "description_fr": "Le garde compta ma bourse deux fois, peu impressionné les deux fois, comme si cent pièces d'or constituaient une insulte qu'il devrait signaler à quelqu'un. Il me fit signe de passer d'un grognement qui parvenait à transmettre à la fois le mépris et une certaine satisfaction professionnelle d'avoir soutiré de l'argent à un homme qui en avait manifestement grand besoin. Lysa bougea à peine tandis que nous traversions, ce que je choisis, pour ma propre santé mentale, d'interpréter comme du sommeil plutôt que l'alternative.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "neutral",
@@ -303,20 +302,20 @@
     "automations": {
       "script_trigger": "on_load_node_261"
     },
-    "reqGold": 50,
+    "reqGold": 100,
     "choices": [
       {
         "text": "Cross the bridge",
         "text_fr": "Traverser le pont",
         "next_id": "280",
-        "goldMod": -50
+        "goldMod": -100
       }
     ]
   },
   "270": {
     "id": "270",
-    "description": "The alley swallowed the daylight whole and, I suspected, had every intention of keeping it. Halfway down, something thrashed in a coil of razor wire strung low across the passage with the particular cruelty of a trap someone had made time for, even mid-invasion. It was a lean grey warhound, one ear reduced to ribbons, foam gathering at its jaws in a way that argued either rabies or several very bad days. Its handler lay face-down a few feet further on, throat opened with the kind of thoroughness that suggests the killer had opinions about the man beyond simply wanting him dead, one gauntleted hand still closed around a leash gone slack in every sense that mattered. The dog's eyes found mine and held there. It did not whimper. It did not growl. It only watched, with the particular patience of something that has learned starvation teaches better manners than any master ever could.",
-    "description_fr": "La ruelle avalait la lumière du jour tout entière et, je le soupçonnais, comptait bien la garder. À mi-chemin, quelque chose se débattait dans un rouleau de fil barbelé tendu bas en travers du passage, avec la cruauté particulière d'un piège auquel quelqu'un avait pris le temps de penser, même en pleine invasion. C'était un chien de guerre gris et efflanqué, une oreille réduite en lambeaux, de l'écume s'amassant à ses babines d'une façon qui suggérait la rage ou plusieurs très mauvaises journées. Son maître gisait face contre terre un peu plus loin, la gorge ouverte avec une minutie qui laissait penser que le tueur avait des opinions sur cet homme au-delà du simple désir de le voir mort, une main gantelée encore refermée sur une laisse relâchée dans tous les sens qui comptaient. Les yeux du chien trouvèrent les miens et s'y attardèrent. Il ne gémit pas. Il ne gronda pas. Il se contenta de regarder, avec cette patience particulière des êtres qui ont appris que la faim enseigne de meilleures manières qu'aucun maître ne le pourrait.",
+    "description": "The alley swallowed what light the fires threw and, I suspected, had every intention of keeping it. Halfway down, something thrashed in a coil of razor wire strung low across the passage with the particular cruelty of a trap someone had made time for, even mid-invasion. It was a lean grey warhound, one ear reduced to ribbons, foam gathering at its jaws in a way that argued either rabies or several very bad days. Its handler lay face-down a few feet further on, throat opened with the kind of thoroughness that suggests the killer had opinions about the man beyond simply wanting him dead, one gauntleted hand still closed around a leash gone slack in every sense that mattered. The dog's eyes found mine and held there. It did not whimper. It did not growl. It only watched, with the particular patience of something that has learned starvation teaches better manners than any master ever could.",
+    "description_fr": "La ruelle avalait la lumière que jetaient les incendies et, je le soupçonnais, comptait bien la garder. À mi-chemin, quelque chose se débattait dans un rouleau de fil barbelé tendu bas en travers du passage, avec la cruauté particulière d'un piège auquel quelqu'un avait pris le temps de penser, même en pleine invasion. C'était un chien de guerre gris et efflanqué, une oreille réduite en lambeaux, de l'écume s'amassant à ses babines d'une façon qui suggérait la rage ou plusieurs très mauvaises journées. Son maître gisait face contre terre un peu plus loin, la gorge ouverte avec une minutie qui laissait penser que le tueur avait des opinions sur cet homme au-delà du simple désir de le voir mort, une main gantelée encore refermée sur une laisse relâchée dans tous les sens qui comptaient. Les yeux du chien trouvèrent les miens et s'y attardèrent. Il ne gémit pas. Il ne gronda pas. Il se contenta de regarder, avec cette patience particulière des êtres qui ont appris que la faim enseigne de meilleures manières qu'aucun maître ne le pourrait.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "tense",
@@ -440,6 +439,23 @@
         "flagsToAdd": [
           "tear_touched"
         ]
+      },
+      {
+        "text": "Take only a healer's satchel from the ring",
+        "text_fr": "Ne prendre dans le cercle que la sacoche d'un guérisseur",
+        "next_id": "300",
+        "healAmount": 15,
+        "flagsToAdd": [
+          "tear_touched"
+        ]
+      },
+      {
+        "text": "Leave the ring untouched and go",
+        "text_fr": "Laisser le cercle intact et partir",
+        "next_id": "300",
+        "flagsToAdd": [
+          "tear_refused"
+        ]
       }
     ]
   },
@@ -490,6 +506,11 @@
         "flag": "origin_board_evil",
         "en": "The last hand under that board before mine had been a thief's. I had shouted for the watch, and had not gone to see what they did about it.",
         "fr": "La dernière main passée sous cette latte avant la mienne était celle d'une voleuse. J'avais appelé le guet, sans aller voir ce qu'il en avait fait."
+      },
+      {
+        "flag": "tear_refused",
+        "en": "The looters' ring lay behind me, untouched. Whatever had looked back through the tear, I had given it nothing to hold on to.",
+        "fr": "Le cercle des pillards était resté derrière moi, intact. Quoi qui m'eût regardé à travers la déchirure, je ne lui avais rien laissé à quoi s'accrocher."
       }
     ]
   },
@@ -720,8 +741,8 @@
   },
   "800": {
     "id": "800",
-    "description": "Captured, then. I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement. The wall vanished in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, naked, and free, and you can build quite a lot on that particular foundation.",
-    "description_fr": "La capture, donc. Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration. Le mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n'avais, sur l'instant, aucun besoin de connaître. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. On m'avait ôté mes chaînes, je n'avais plus rien sur le dos, et j'étais libre, et on peut bâtir bien des choses sur ce genre de fondation.",
+    "description": "Captured, then. I woke in the Black Hold, which is a name I did not choose and cannot in good conscience improve upon. They told me Lysa was dead. The Bundle was gone, taken off me while I was down by hands that had known, at a glance, exactly what it was. For three days a man in a porcelain mask peeled me apart with the patient, faintly bored thoroughness of a man doing accounting he'd rather not be doing, wanting to know everything about a Banner I had, by then, never even properly seen. I told him nothing, which cost me considerably, chiefly because it happened to be the truth, and truth, I have since learned, satisfies interrogators far less than a good lie would. On the fourth day, the world exploded, which I took, under the circumstances, as an improvement. The wall vanished in a cloud of brick-dust and fire: resistance fighters had breached the perimeter, men and women I did not know and did not, in the moment, need to. One of my torturer's assistants stumbled past me with a fist-sized piece of masonry lodged in his neck, wearing an expression of such profound professional surprise that I found, despite everything, something close to satisfaction in it. I was unshackled, stripped to my shirt, and free, and you can build quite a lot on that particular foundation.",
+    "description_fr": "La capture, donc. Je me réveillai dans la Geôle Noire, un nom que je n'ai pas choisi et que ma conscience ne saurait améliorer. On me dit que Lysa était morte. Le Balluchon avait disparu, pris sur moi pendant que j'étais à terre, par des mains qui avaient su, d'un coup d'œil, exactement ce qu'il était. Pendant trois jours, un homme au masque de porcelaine m'écorcha avec la minutie patiente et vaguement lassée d'un homme faisant une comptabilité qu'il préférerait ne pas faire, voulant tout savoir d'une Bannière que je n'avais, à cette date, jamais même correctement vue. Je ne lui dis rien, ce qui me coûta considérablement, principalement parce que c'était la vérité, et la vérité, je l'ai appris depuis, satisfait bien moins un interrogateur qu'un bon mensonge. Le quatrième jour, le monde explosa, ce que je pris, vu les circonstances, pour une amélioration. Le mur disparut dans un nuage de poussière de brique et de feu : des combattants de la résistance avaient percé le périmètre, des hommes et des femmes que je ne connaissais pas et n'avais, sur l'instant, aucun besoin de connaître. L'un des assistants de mon tortionnaire titubait devant moi, un morceau de maçonnerie gros comme un poing planté dans le cou, arborant une expression de surprise professionnelle si profonde que j'y trouvai, malgré tout, quelque chose proche de la satisfaction. On m'avait ôté mes chaînes, je n'avais plus qu'une chemise sur le dos, et j'étais libre, et on peut bâtir bien des choses sur ce genre de fondation.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -764,12 +785,12 @@
       {
         "flag": "unfurl_lost",
         "en": "I had fought. It had not been enough, and I would carry the proof of it in a scar from rib to hip for the rest of my life, but I had fought, and the men in the masks knew it.",
-        "fr": "Je m'étais battu. Cela n'avait pas suffi, et j'en porterais la preuve, une cicatrice de la côte à la hanche, jusqu'à la fin de mes jours, mais je m'étais battu, et les hommes aux masques le savaient."
+        "fr": "J'avais lutté. Cela n'avait pas suffi, et j'en porterais la preuve, une cicatrice de la côte à la hanche, jusqu'à la fin de mes jours, mais j'avais lutté, et les hommes aux masques le savaient."
       },
       {
         "flag": "surrendered",
         "en": "I had surrendered. On my knees, in my parents' house, and it had bought exactly nothing.",
-        "fr": "Je m'étais rendu. À genoux, dans la maison de mes parents, et cela n'avait rien acheté du tout."
+        "fr": "J'avais rendu les armes. À genoux, dans la maison de mes parents, et cela n'avait rien acheté du tout."
       },
       {
         "flag": "told_them",
@@ -780,8 +801,8 @@
   },
   "816": {
     "id": "816",
-    "description": "Freedom, I was quickly discovering, is a relative and somewhat overhyped condition when one possesses it stark naked and unarmed. The door was locked, and the chamber was, in the sort of irony my life had lately taken to favoring, generously stocked with instruments: sharp ones, purpose-built for a use I had personally sampled. A thin metal shim near the table, the sort of object I would have crossed the room to avoid an hour earlier, went into the lock with more hope than skill, and was rewarded with a click that felt like the finest sound I had ever heard. I took a rusty dagger from the dead guard, who no longer had a use for it. And on the torturer's table, among the instruments, sat the oilcloth Bundle they had taken off me: unopened, because it had burned the two men who tried, and left there like a coal nobody wanted to pick up. I picked it up. It knew my hand, and it was warm, and for the first time since the tavern I understood that it had never been the Inquisition's to take.",
-    "description_fr": "La liberté, je le découvrais vite, est une condition relative et quelque peu surestimée lorsqu'on la possède entièrement nu et désarmé. La porte était verrouillée, et la chambre était, dans le genre d'ironie que ma vie affectionnait ces temps-ci, généreusement pourvue d'instruments : des instruments tranchants, conçus pour un usage que j'avais personnellement expérimenté. Une fine tige métallique près de la table, le genre d'objet qu'une heure plus tôt j'aurais traversé la pièce pour éviter, entra dans la serrure avec plus d'espoir que de savoir-faire, et fut récompensée d'un déclic qui me parut le plus beau son que j'eusse jamais entendu. Je pris une dague rouillée sur le garde mort, qui n'en avait plus l'usage. Et sur la table du bourreau, parmi les instruments, reposait le Balluchon de toile huilée qu'ils m'avaient pris : jamais ouvert, parce qu'il avait brûlé les deux hommes qui avaient essayé, et laissé là comme une braise que personne ne voulait ramasser. Je le ramassai. Il connaissait ma main, et il était chaud, et pour la première fois depuis la taverne je compris qu'il n'avait jamais été à l'Inquisition de le prendre.",
+    "description": "Freedom, I was quickly discovering, is a relative and somewhat overhyped condition when one possesses it in a torn shirt and nothing else. The door was locked, and the chamber was, in the sort of irony my life had lately taken to favoring, generously stocked with instruments: sharp ones, purpose-built for a use I had personally sampled. A thin metal shim near the table, the sort of object I would have crossed the room to avoid an hour earlier, went into the lock with more hope than skill, and was rewarded with a click that felt like the finest sound I had ever heard. I took a rusty dagger from the dead guard, who no longer had a use for it. And on the torturer's table, among the instruments, sat the oilcloth Bundle they had taken off me: unopened, because it had burned the two men who tried, and left there like a coal nobody wanted to pick up. I picked it up. It knew my hand, and it was warm, and for the first time since the tavern I understood that it had never been the Inquisition's to take. Under the table, in a quartermaster's sack, was everything else they had taken off me, counted and labelled, as if they had meant to give it back.",
+    "description_fr": "La liberté, je le découvrais vite, est une condition relative et quelque peu surestimée lorsqu'on la possède en chemise déchirée et rien d'autre. La porte était verrouillée, et la chambre était, dans le genre d'ironie que ma vie affectionnait ces temps-ci, généreusement pourvue d'instruments : des instruments tranchants, conçus pour un usage que j'avais personnellement expérimenté. Une fine tige métallique près de la table, le genre d'objet qu'une heure plus tôt j'aurais traversé la pièce pour éviter, entra dans la serrure avec plus d'espoir que de savoir-faire, et fut récompensée d'un déclic qui me parut le plus beau son que j'eusse jamais entendu. Je pris une dague rouillée sur le garde mort, qui n'en avait plus l'usage. Et sur la table du bourreau, parmi les instruments, reposait le Balluchon de toile huilée qu'ils m'avaient pris : jamais ouvert, parce qu'il avait brûlé les deux hommes qui avaient essayé, et laissé là comme une braise que personne ne voulait ramasser. Je le ramassai. Il connaissait ma main, et il était chaud, et pour la première fois depuis la taverne je compris qu'il n'avait jamais été à l'Inquisition de le prendre. Sous la table, dans un sac d'intendance, se trouvait tout ce qu'ils m'avaient pris d'autre, compté et étiqueté, comme s'ils avaient eu l'intention de le rendre.",
     "context_taxonomy": {
       "ui_theme": "torture_chamber",
       "mood": "grim",
@@ -896,6 +917,17 @@
         "flagsToAdd": [
           "wardens_slain"
         ]
+      },
+      {
+        "text": "Shout that the resistance is already inside",
+        "text_fr": "Crier que la résistance est déjà à l’intérieur",
+        "next_id": "823",
+        "checkAbility": "charisma",
+        "checkDC": 13,
+        "failNextId": "822_lie_failed",
+        "flagsToAdd": [
+          "wardens_fooled"
+        ]
       }
     ]
   },
@@ -940,8 +972,13 @@
       },
       {
         "flag": "hound_wardens",
-        "en": "I had not known whether it still remembered its old handler's whistle. It came regardless, a grey blur taking the nearest Warden by the throat before he could shout; the second turned just in time to receive my dagger. The dog sat afterward, panting, waiting for whatever came next.",
-        "fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître. Il vint quand même, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu'il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s'assit ensuite, haletant, attendant ce qui viendrait."
+        "en": "I had not known whether it still remembered its old handler's whistle. It came in through the breach behind the resistance, a grey blur taking the nearest Warden by the throat before he could shout; the second turned just in time to receive my dagger. The dog sat afterward, panting, waiting for whatever came next.",
+        "fr": "Je ne savais pas s'il se souvenait encore du sifflement de son ancien maître. Il arriva par la brèche derrière la résistance, un éclair gris saisissant le Gardien le plus proche à la gorge avant qu'il ne puisse crier ; le second se retourna juste à temps pour recevoir ma dague. Le chien s'assit ensuite, haletant, attendant ce qui viendrait."
+      },
+      {
+        "flag": "wardens_fooled",
+        "en": "Behind me the two Wardens were still running the wrong way down the hall, toward a fight that was, to be fair, real enough.",
+        "fr": "Derrière moi, les deux Gardiens couraient encore dans le mauvais sens du couloir, vers un combat qui, pour être juste, était bien réel."
       }
     ]
   },
@@ -998,6 +1035,17 @@
         "flagsToAdd": [
           "matriarch_slain"
         ]
+      },
+      {
+        "text": "Throw her brood your rations and slip past",
+        "text_fr": "Jeter ses rations à sa progéniture et passer",
+        "next_id": "891",
+        "checkAbility": "wisdom",
+        "checkDC": 12,
+        "failNextId": "850_fed_failed",
+        "flagsToAdd": [
+          "matriarch_spared"
+        ]
       }
     ]
   },
@@ -1027,8 +1075,8 @@
   },
   "891": {
     "id": "891",
-    "description": "The Docks, at last, though \"at last\" is a phrase that had lost most of its comfort by this point in the proceedings. The Rusty Eel was weighing anchor with the unhurried confidence of a ship that had somewhere better to be and no particular loyalty to anyone still standing on the pier. A Smuggler watched the gangplank with the frank, appraising greed of a man who had long ago stopped pretending otherwise, which I found, on balance, rather more honest than most of the company I'd kept that week.",
-    "description_fr": "Les docks, enfin, bien que ce « enfin » eût perdu l'essentiel de son réconfort à ce stade des événements. Le « Rusty Eel » levait l'ancre avec l'assurance tranquille d'un navire ayant meilleur endroit où être et aucune loyauté particulière envers quiconque se tenait encore sur le quai. Un contrebandier surveillait la passerelle avec l'avidité franche et évaluatrice d'un homme ayant depuis longtemps cessé de prétendre le contraire, ce que je trouvai, tout compte fait, plus honnête que la plupart des fréquentations de ma semaine.",
+    "description": "The Docks, at last, though \"at last\" is a phrase that had lost most of its comfort by this point in the proceedings. The Rusty Eel was weighing anchor with the unhurried confidence of a ship that had somewhere better to be and no particular loyalty to anyone still standing on the pier. A Smuggler watched the gangplank with the frank, appraising greed of a man who had long ago stopped pretending otherwise, which I found, on balance, rather more honest than most of the company I'd kept lately. The armory on the quay had been looted to the walls, the shieldwright's cart lay on its side, and the bell on the Eel had started to ring: there was time to grab one thing, and not much else.",
+    "description_fr": "Les docks, enfin, bien que ce « enfin » eût perdu l'essentiel de son réconfort à ce stade des événements. Le « Rusty Eel » levait l'ancre avec l'assurance tranquille d'un navire ayant meilleur endroit où être et aucune loyauté particulière envers quiconque se tenait encore sur le quai. Un contrebandier surveillait la passerelle avec l'avidité franche et évaluatrice d'un homme ayant depuis longtemps cessé de prétendre le contraire, ce que je trouvai, tout compte fait, plus honnête que la plupart de mes fréquentations récentes. L'armurerie du quai avait été pillée jusqu'aux murs, la charrette du fabricant de boucliers gisait sur le flanc, et la cloche de l'Eel s'était mise à sonner : il y avait le temps d'attraper une chose, et guère plus.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "suspense",
@@ -1041,12 +1089,11 @@
       {
         "text": "Talk to the smuggler",
         "text_fr": "Parler au contrebandier",
-        "next_id": "895",
-        "unlockShopId": "black_market_docks"
+        "next_id": "895"
       },
       {
-        "text": "Patch yourself up",
-        "text_fr": "Se rafistoler",
+        "text": "Bind your wounds with sailcloth",
+        "text_fr": "Panser ses plaies avec de la toile à voile",
         "next_id": "891",
         "healAmount": 35,
         "hideIfFlags": [
@@ -1057,10 +1104,10 @@
         ]
       },
       {
-        "text": "Duck into the dockside armory",
-        "text_fr": "Passer par l'armurerie du quai",
+        "text": "Snatch a blade off the looted armory rack",
+        "text_fr": "Arracher une lame au râtelier pillé de l'armurerie",
         "next_id": "891",
-        "unlockShopId": "weaponsmith_forge",
+        "grantItemId": "sword_t1",
         "hideIfFlags": [
           "hub_891_armory"
         ],
@@ -1069,15 +1116,15 @@
         ]
       },
       {
-        "text": "Check the shieldwright's stall",
-        "text_fr": "Voir l'étal du fabricant de boucliers",
+        "text": "Pull a buckler from the shieldwright's overturned cart",
+        "text_fr": "Tirer une rondache de la charrette renversée du fabricant de boucliers",
         "next_id": "891",
-        "unlockShopId": "shieldwrights_hall",
+        "grantItemId": "shield_t1",
         "hideIfFlags": [
-          "hub_891_shieldwright"
+          "hub_891_armory"
         ],
         "flagsToAdd": [
-          "hub_891_shieldwright"
+          "hub_891_armory"
         ]
       },
       {
@@ -1099,8 +1146,8 @@
     "flag_callbacks": [
       {
         "flag": "river_jump",
-        "en": "The battlements had offered a Crusade archer a clear view of me and me a clear view of the river, and I had taken the only one of those that was mine to take. I came up the pier steps dripping, every wound of the last several bad days greeting the salt like an old friend.",
-        "fr": "Les remparts avaient offert à un archer de la Croisade une vue dégagée sur moi, et à moi une vue dégagée sur la rivière, et j'avais pris la seule des deux qui m'appartînt. Je remontai les marches du quai trempé, chaque blessure des derniers mauvais jours saluant le sel comme un vieil ami."
+        "en": "The battlements had offered a Crusade archer a clear view of me and me a clear view of the river, and I had taken the only one of those that was mine to take. I came up the pier steps dripping, every wound I had collected since the Crusade came greeting the salt like an old friend.",
+        "fr": "Les remparts avaient offert à un archer de la Croisade une vue dégagée sur moi, et à moi une vue dégagée sur la rivière, et j'avais pris la seule des deux qui m'appartînt. Je remontai les marches du quai trempé, chaque blessure récoltée depuis l'arrivée de la Croisade saluant le sel comme un vieil ami."
       },
       {
         "flag": "sewer_waded",
@@ -1144,8 +1191,8 @@
       },
       {
         "flag": "forge_cache_found",
-        "en": "The forge cache's weight in my pack was the one thing on this pier I had not stolen, and I was, absurdly, a little proud of it.",
-        "fr": "Le poids de la cache de la forge dans mon sac était la seule chose sur ce quai que je n'avais pas volée, et j'en tirais, absurdement, une petite fierté."
+        "en": "The forge cache's weight in my pack was the one thing in it I had not had to kill or lie for.",
+        "fr": "Le poids de la cache de la forge dans mon sac était la seule chose que j'y portais sans avoir dû tuer ou mentir pour elle."
       },
       {
         "flag": "torturers_tools",
@@ -1154,8 +1201,13 @@
       },
       {
         "flag": "hub_891_hound",
-        "en": "The hound had come out of the dock fog nosing at my hand as though it had never left, trotted ahead to distract a dockhand, and fallen back into step while I relieved a dropped purse of its previous owner's claim.",
-        "fr": "Le chien était sorti du brouillard du port en frottant son museau contre ma main comme s'il ne m'avait jamais quitté, avait trotté devant pour distraire un docker, et s'était recollé à mes talons pendant que je soulageais une bourse tombée de la prétention de son ancien propriétaire."
+        "en": "The hound had gone ahead into the dock fog and came back nosing at my hand, trotted off again to distract a dockhand, and fell back into step while I relieved a dropped purse of its previous owner's claim.",
+        "fr": "Le chien était parti devant dans le brouillard du port et revint frotter son museau contre ma main, repartit trotter pour distraire un docker, et se recolla à mes talons pendant que je soulageais une bourse tombée de la prétention de son ancien propriétaire."
+      },
+      {
+        "flag": "matriarch_spared",
+        "en": "Somewhere under the harbor a Rat Matriarch was finishing my supper, and I had left her sewer with nothing worse than the smell.",
+        "fr": "Quelque part sous le port, une Matriarche des rats finissait mon souper, et j'avais quitté son égout avec, pour tout dommage, l'odeur."
       }
     ],
     "persona_variants": {
@@ -1202,13 +1254,21 @@
         "next_id": "898",
         "lockedText": "I did not yet have the name to make a threat land.",
         "lockedText_fr": "Je n'avais pas encore le nom qu'il faut pour qu'une menace porte."
+      },
+      {
+        "text": "Pay for the passage (60 gold)",
+        "text_fr": "Payer la traversée (60 or)",
+        "next_id": "899_paid",
+        "goldMod": -60,
+        "lockedText": "Sixty gold. My purse did not stretch that far.",
+        "lockedText_fr": "Soixante pièces d'or. Ma bourse n'allait pas si loin."
       }
     ]
   },
   "896": {
     "id": "896",
-    "description": "I had no coin worth mentioning, but I had a story — Lysa, the tavern, the dead I had failed to save in numbers I was only beginning to properly count. Something in his weathered face cracked, briefly, the way stone cracks under frost: not dramatically, but permanently. \"Story's the one currency around here that's worth less than nothing,\" he muttered, in the tone of a man surprised to find himself accepting it regardless, \"but it's yours, so I suppose it'll do.\" He waved me aboard without another word, and did not meet my eyes again, which I took to be less an insult than a kindness he could not otherwise afford to show.",
-    "description_fr": "Je n'avais pas d'or qui vaille la peine d'être mentionné, mais j'avais une histoire — Lysa, la taverne, les morts que je n'avais su sauver, en un nombre que je commençais tout juste à compter correctement. Quelque chose se fissura, brièvement, sur son visage buriné, comme se fissure la pierre sous le gel : sans éclat, mais pour de bon. « Les histoires, ici, c'est la seule monnaie qui vaille moins que rien, marmonna-t-il, du ton d'un homme surpris de la voir accepter malgré tout, mais elle est à toi, alors je suppose qu'elle fera l'affaire. » Il me fit signe de monter à bord sans un mot de plus, et ne croisa plus mon regard, ce que je choisis de lire non comme une insulte mais comme une bonté qu'il ne pouvait, autrement, se permettre de montrer.",
+    "description": "I had coin, but not the kind a man like that takes for a berth on a burning night, so I gave him a story instead — Lysa, the tavern, the dead I had failed to save in numbers I was only beginning to properly count. Something in his weathered face cracked, briefly, the way stone cracks under frost: not dramatically, but permanently. \"Story's the one currency around here that's worth less than nothing,\" he muttered, in the tone of a man surprised to find himself accepting it regardless, \"but it's yours, so I suppose it'll do.\" He waved me aboard without another word, and did not meet my eyes again, which I took to be less an insult than a kindness he could not otherwise afford to show.",
+    "description_fr": "J'avais de l'or, mais pas de celui qu'un homme comme lui accepte pour une place à bord par une nuit d'incendie ; je lui donnai donc une histoire — Lysa, la taverne, les morts que je n'avais su sauver, en un nombre que je commençais tout juste à compter correctement. Quelque chose se fissura, brièvement, sur son visage buriné, comme se fissure la pierre sous le gel : sans éclat, mais pour de bon. « Les histoires, ici, c'est la seule monnaie qui vaille moins que rien, marmonna-t-il, du ton d'un homme surpris de la voir accepter malgré tout, mais elle est à toi, alors je suppose qu'elle fera l'affaire. » Il me fit signe de monter à bord sans un mot de plus, et ne croisa plus mon regard, ce que je choisis de lire non comme une insulte mais comme une bonté qu'il ne pouvait, autrement, se permettre de montrer.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1406,8 +1466,8 @@
   },
   "1001": {
     "id": "1001",
-    "description": "[ORIGIN: THE RAT] No one waited at the top of that chain, and I will not pretend the fact surprised me as much as it perhaps should have. I had nothing but what I could scrounge, steal, or talk my way into: quick hands and quicker feet, which I have found, on the whole, to be a more reliable inheritance than most families actually provide. And one thing I had not scrounged but stolen back, from the one table in the Black Hold nobody had dared clear. The Grey Shroud. What the Inquisition calls a Void Banner, or a piece of one, warm against my ribs under a stolen coat. Lysa had died for it. I had not yet decided whether that made it worth carrying or impossible to put down, and I suspected the distinction would not survive the road.",
-    "description_fr": "[ORIGINE : LE RAT] Personne ne m'attendait en haut de cette chaîne, et je ne prétendrai pas que cela m'ait causé autant de surprise que cela l'aurait peut-être dû. Je n'avais rien que ce que je pouvais récupérer, voler, ou obtenir en beau parleur : des mains rapides et des jambes plus rapides encore, ce qui constitue, somme toute, un héritage plus fiable que celui que fournissent la plupart des familles. Et une chose que je n'avais pas récupérée mais reprise, sur la seule table de la Geôle Noire que personne n'avait osé débarrasser. Le Linceul Gris. Ce que l'Inquisition appelle une Bannière du Néant, ou un morceau d'une, chaud contre mes côtes sous un manteau volé. Lysa était morte pour lui. Je n'avais pas encore décidé si cela le rendait digne d'être porté ou impossible à déposer, et je soupçonnais que la distinction ne survivrait pas à la route.",
+    "description": "[ORIGIN: THE RAT] No one waited at the top of that chain, and I will not pretend the fact surprised me as much as it perhaps should have. I had nothing but what I could scrounge, steal, or talk my way into: quick hands and quicker feet, which I have found, on the whole, to be a more reliable inheritance than most families actually provide. And one thing I had not scrounged but stolen back, from the one table in the Black Hold nobody had dared clear. The Grey Shroud. What the Inquisition calls a Void Banner, or a piece of one, warm against my ribs under a stolen coat. Lysa, they had told me, had died for it. I had not yet decided whether that made it worth carrying or impossible to put down, and I suspected the distinction would not survive the road.",
+    "description_fr": "[ORIGINE : LE RAT] Personne ne m'attendait en haut de cette chaîne, et je ne prétendrai pas que cela m'ait causé autant de surprise que cela l'aurait peut-être dû. Je n'avais rien que ce que je pouvais récupérer, voler, ou obtenir en beau parleur : des mains rapides et des jambes plus rapides encore, ce qui constitue, somme toute, un héritage plus fiable que celui que fournissent la plupart des familles. Et une chose que je n'avais pas récupérée mais reprise, sur la seule table de la Geôle Noire que personne n'avait osé débarrasser. Le Linceul Gris. Ce que l'Inquisition appelle une Bannière du Néant, ou un morceau d'une, chaud contre mes côtes sous un manteau volé. Lysa, m'avait-on dit, était morte pour lui. Je n'avais pas encore décidé si cela le rendait digne d'être porté ou impossible à déposer, et je soupçonnais que la distinction ne survivrait pas à la route.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "grim",
@@ -1430,8 +1490,8 @@
   },
   "1002": {
     "id": "1002",
-    "description": "[ORIGIN: THE BROKEN] No one waited at the top of that chain, and nothing had survived the climb with me except the parts of me too stubborn to know when to stop. What remained was scar tissue and a hatred that had, by then, matured past anger into something closer to a profession: considerable pain resistance, considerable endurance, a body slow and disfigured enough that strangers no longer met my eyes. And the Grey Shroud, which the man in the porcelain mask had wrapped around me on the third day to see what it would do, and which had done nothing to him and everything to me. It would not come off. It had burned itself into the scars and stayed: what the Inquisition calls a Void Banner, or a piece of one, worn the way the Broken wear everything: as a wound. I would find the rest of it. It had already taken everything else.",
-    "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attendait en haut de cette chaîne, et rien n'avait survécu à l'ascension avec moi, hormis les parties de moi trop têtues pour savoir s'arrêter. Ce qu'il restait, c'était de la cicatrice et une haine ayant, à ce stade, dépassé la colère pour devenir quelque chose de plus proche d'une profession : une résistance considérable à la douleur, une endurance considérable, un corps assez lent et défiguré pour que les inconnus n'osent plus croiser mon regard. Et le Linceul Gris, que l'homme au masque de porcelaine avait enroulé autour de moi le troisième jour pour voir ce qu'il ferait, et qui ne lui avait rien fait et m'avait tout fait. Il ne s'enlevait plus. Il s'était brûlé dans les cicatrices et y était resté : ce que l'Inquisition appelle une Bannière du Néant, ou un morceau d'une, porté comme les Brisés portent tout : comme une plaie. Je trouverais le reste. Il avait déjà pris tout le reste.",
+    "description": "[ORIGIN: THE BROKEN] No one waited at the top of that chain, and nothing had survived the climb with me except the parts of me too stubborn to know when to stop. What remained was scar tissue and a hatred that had, by then, matured past anger into something closer to a profession: considerable pain resistance, considerable endurance, a body slow and disfigured enough that strangers no longer met my eyes. And the Grey Shroud, which had burned the two men who tried to open it, and which, the first time I unwrapped it on the Eel's deck, went for my scars like water into a crack. It would not come off. It had burned itself into the scars and stayed: what the Inquisition calls a Void Banner, or a piece of one, worn the way the Broken wear everything: as a wound. I would find the rest of it. It had already taken everything else.",
+    "description_fr": "[ORIGINE : LE BRISÉ] Personne ne m'attendait en haut de cette chaîne, et rien n'avait survécu à l'ascension avec moi, hormis les parties de moi trop têtues pour savoir s'arrêter. Ce qu'il restait, c'était de la cicatrice et une haine ayant, à ce stade, dépassé la colère pour devenir quelque chose de plus proche d'une profession : une résistance considérable à la douleur, une endurance considérable, un corps assez lent et défiguré pour que les inconnus n'osent plus croiser mon regard. Et le Linceul Gris, qui avait brûlé les deux hommes qui avaient tenté de l'ouvrir, et qui, la première fois que je le dépliai sur le pont de l'Eel, se jeta sur mes cicatrices comme l'eau dans une fissure. Il ne s'enlevait plus. Il s'était brûlé dans les cicatrices et y était resté : ce que l'Inquisition appelle une Bannière du Néant, ou un morceau d'une, porté comme les Brisés portent tout : comme une plaie. Je trouverais le reste. Il avait déjà pris tout le reste.",
     "context_taxonomy": {
       "ui_theme": "origin_ending",
       "mood": "grim",
@@ -1471,13 +1531,21 @@
         "text_fr": "Attaquer",
         "next_id": "2005",
         "triggerEnemyId": "harbor_rat"
+      },
+      {
+        "text": "Batten the hatch and leave them the hold",
+        "text_fr": "Condamner l'écoutille et leur laisser la cale",
+        "next_id": "2005",
+        "flagsToAdd": [
+          "hold_sealed"
+        ]
       }
     ]
   },
   "2001": {
     "id": "2001",
-    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray cleared as the ship's rusted hull pulled away from docks still burning behind us with a stubbornness I found, at this distance, almost admirable. I stood on deck with everything that had happened in the last several days pressing on my chest like a debt collector who has decided to move in permanently. Ahead lay the Upper Tier — the last sanctuary the Crusade had not yet gotten around to burning, guarded by iron gates tall enough to insult anyone's ambitions and inquisitors zealous enough to make the gates themselves seem like an afterthought.",
-    "description_fr": "[CHAPITRE 2 : LES CENDRES D'ALSTER] Les embruns salés se dissipèrent tandis que la coque rouillée du navire s'éloignait de docks encore en flammes derrière nous, avec une obstination que je trouvai, à cette distance, presque admirable. Je me tenais sur le pont, tout ce qui m'était arrivé ces derniers jours pesant sur ma poitrine comme un créancier ayant décidé de s'y installer à demeure. Devant s'étendait le Palier Supérieur — le dernier sanctuaire que la Croisade n'avait pas encore trouvé le temps de brûler, gardé par des portes de fer assez hautes pour insulter toutes les ambitions, et des inquisiteurs assez zélés pour rendre les portes elles-mêmes presque secondaires.",
+    "description": "[CHAPTER 2: THE ASHES OF ALSTER] The salt spray cleared as the ship's rusted hull pulled away from docks still burning behind us with a stubbornness I found, at this distance, almost admirable. I stood on deck with everything that had happened since the Crusade came pressing on my chest like a debt collector who has decided to move in permanently. Ahead lay the Upper Tier — the last sanctuary the Crusade had not yet gotten around to burning, guarded by iron gates tall enough to insult anyone's ambitions and inquisitors zealous enough to make the gates themselves seem like an afterthought.",
+    "description_fr": "[CHAPITRE 2 : LES CENDRES D'ALSTER] Les embruns salés se dissipèrent tandis que la coque rouillée du navire s'éloignait de docks encore en flammes derrière nous, avec une obstination que je trouvai, à cette distance, presque admirable. Je me tenais sur le pont, tout ce qui m'était arrivé depuis l'arrivée de la Croisade pesant sur ma poitrine comme un créancier ayant décidé de s'y installer à demeure. Devant s'étendait le Palier Supérieur — le dernier sanctuaire que la Croisade n'avait pas encore trouvé le temps de brûler, gardé par des portes de fer assez hautes pour insulter toutes les ambitions, et des inquisiteurs assez zélés pour rendre les portes elles-mêmes presque secondaires.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "suspense",
@@ -1506,8 +1574,8 @@
       },
       {
         "flag": "keeper_dead",
-        "en": "The Beggar's keeper had hidden us in his cellar and come up the stairs at the wrong moment, and the Bundle had taken him with the soldiers. Lysa did not know yet. I had not decided when to tell her.",
-        "fr": "Le tenancier du Mendiant nous avait cachés dans sa cave et était monté au mauvais moment, et le Balluchon l'avait emporté avec les soldats. Lysa ne le savait pas encore. Je n'avais pas décidé quand le lui dire."
+        "en": "Old Hesk had come through the wall with a poker at the wrong moment, and the Bundle had taken him with the soldiers. Lysa had seen it. Neither of us had said his name since.",
+        "fr": "Le vieux Hesk était venu par le mur avec un tisonnier au mauvais moment, et le Balluchon l'avait emporté avec les soldats. Lysa l'avait vu. Ni elle ni moi n'avions prononcé son nom depuis."
       },
       {
         "flag": "smuggler_pitied",
@@ -1523,6 +1591,11 @@
         "flag": "smuggler_cowed",
         "en": "The smuggler kept to the far end of his own deck the whole crossing, and his purse, which had come aboard in my pocket, did not come up in conversation.",
         "fr": "Le contrebandier resta à l'autre bout de son propre pont toute la traversée, et sa bourse, montée à bord dans ma poche, ne fut pas évoquée."
+      },
+      {
+        "flag": "smuggler_paid",
+        "en": "The smuggler counted my coin twice during the crossing, and seemed happier each time.",
+        "fr": "Le contrebandier recompta mon or deux fois pendant la traversée, et parut plus content à chaque fois."
       }
     ]
   },
@@ -1548,6 +1621,13 @@
         "text": "Slip back aboard and hide in the cargo hold",
         "text_fr": "Remonter discrètement à bord et se cacher dans la cale",
         "next_id": "2020"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "hold_sealed",
+        "en": "The smuggler found his hold full of rats and his cargo eaten, and knew exactly whom to thank. He did not say so. He did not need to.",
+        "fr": "Le contrebandier trouva sa cale pleine de rats et sa cargaison dévorée, et sut exactement qui remercier. Il ne le dit pas. Il n’en avait pas besoin."
       }
     ]
   },
@@ -1602,6 +1682,17 @@
         "text_fr": "Continuer à travers les docks",
         "next_id": "2900",
         "triggerEnemyId": "harbor_rat"
+      },
+      {
+        "text": "Take the warehouse roofs above them",
+        "text_fr": "Passer par les toits des entrepôts, au-dessus d’eux",
+        "next_id": "2900",
+        "checkAbility": "dexterity",
+        "checkDC": 12,
+        "flagsToAdd": [
+          "roofs_taken"
+        ],
+        "failNextId": "2011_roof_fall"
       }
     ]
   },
@@ -1706,8 +1797,8 @@
         "text_fr": "Écouter une voleuse à propos d'une partie qui a mal tourné",
         "next_id": "2015_sable",
         "unlockQuestId": "q_ch2_sables_wager",
-        "lockedText": "She sized me up like a mark and decided I was not worth the risk.",
-        "lockedText_fr": "Elle me jaugea comme une proie et décida que je ne valais pas le risque.",
+        "lockedText": "She took one look at my honest face and decided I'd be bad for business.",
+        "lockedText_fr": "Elle jeta un coup d'œil à mon air honnête et décida que j'étais une mauvaise affaire.",
         "hideIfFlags": [
           "hub_2015_sable"
         ]
@@ -1740,6 +1831,47 @@
         ]
       },
       {
+        "text": "Buy back in at the barrel for Sable (10 gold)",
+        "text_fr": "Revenir au tonneau pour Sable (10 or)",
+        "next_id": "2015_cards_won",
+        "goldMod": -10,
+        "showIfFlags": [
+          "hub_2015_sable",
+          "hub_2015_cards"
+        ],
+        "hideIfFlags": [
+          "sable_marker_won"
+        ],
+        "checkAbility": "luck",
+        "checkDC": 12,
+        "challengeSuccessesNeeded": 3,
+        "challengeMaxFailures": 2,
+        "failNextId": "2015_cards_lost"
+      },
+      {
+        "text": "Hail the archer on the collapsed rooftop",
+        "text_fr": "Héler l'archère sur le toit effondré",
+        "next_id": "2015_liora",
+        "hideIfFlags": [
+          "hub_2015_liora"
+        ]
+      },
+      {
+        "text": "Face the cloaked figure trailing you",
+        "text_fr": "Faire face à la silhouette encapuchonnée qui suit",
+        "next_id": "2015_vess",
+        "showIfFlags": [
+          "void_banner_bearer"
+        ],
+        "hideIfFlags": [
+          "met_vess",
+          "hub_2015_vess"
+        ],
+        "flagsToAdd": [
+          "hub_2015_vess"
+        ]
+      },
+      {
         "text": "Bribe Vane with information",
         "text_fr": "Soudoyer Vane avec des informations",
         "next_id": "2030"
@@ -1763,11 +1895,12 @@
         "failNextId": "2011"
       },
       {
-        "text": "Hail the archer on the collapsed rooftop",
-        "text_fr": "Héler l'archère sur le toit effondré",
+        "text": "Follow Liora to the captain's raiding skiff",
+        "text_fr": "Suivre Liora jusqu'au skiff de pillage du capitaine",
         "next_id": "2010_liora",
-        "lockedText": "She had four clean shots at me. I kept my distance.",
-        "lockedText_fr": "Elle avait quatre tirs dégagés sur moi. Je gardai mes distances."
+        "showIfFlags": [
+          "liora_met"
+        ]
       }
     ],
     "flag_callbacks": [
@@ -1805,6 +1938,19 @@
         "flag": "bilge_swum",
         "en": "I came up the ladder soaked to the skin and smelling of the bilge. Nobody on the wharf looked twice, which told me something about the wharf.",
         "fr": "Je remontai l'échelle trempé jusqu'aux os et sentant la cale. Personne sur le quai ne me regarda deux fois, ce qui en disait long sur le quai."
+      },
+      {
+        "flag": "sable_marker_won",
+        "en": "Sable had her marker back, and had already found a new table to lose at, more slowly this time.",
+        "fr": "Sable avait récupéré sa reconnaissance de dette, et trouvé une nouvelle table où perdre, plus lentement cette fois.",
+        "andFlags": [
+          "hub_2015_sable"
+        ]
+      },
+      {
+        "flag": "sable_marker_lifted",
+        "en": "Across the wharf the card sharp was still patting his coat, looking for a piece of paper he could not name.",
+        "fr": "De l'autre côté du quai, le tricheur tâtait encore son manteau, à la recherche d'un bout de papier qu'il n'aurait su nommer."
       }
     ],
     "hub_progress": {
@@ -2021,8 +2167,8 @@
   },
   "2015_sable": {
     "id": "2015_sable",
-    "description": "She had the particular bitterness of someone who'd lost at a game she was certain she could beat, which I recognized, having lost at several games under that exact same certainty. I told her I'd think about her marker, which in my experience is the diplomatic way of saying yes without committing to a timeline. \"Think fast, then,\" she said, shuffling a deck she had not been holding a moment ago. \"Markers go bad, and so do I.\" Vane, unlike her, was not going anywhere.",
-    "description_fr": "Elle avait l'amertume particulière de quelqu'un qui avait perdu à un jeu qu'elle était certaine de pouvoir gagner, ce que je reconnus bien, ayant moi-même perdu à plusieurs jeux sous cette exacte même certitude. Je lui dis que je réfléchirais à son gage, ce qui, d'après mon expérience, est la manière diplomatique de dire oui sans s'engager sur un délai. « Réfléchissez vite, alors, dit-elle en battant un jeu de cartes qu'elle ne tenait pas une seconde plus tôt. Les gages s'abîment, et moi aussi. » Vane, contrairement à elle, n'allait nulle part.",
+    "description": "She had the particular bitterness of someone who'd lost at a game she was certain she could beat, which I recognized, having lost at several games under that exact same certainty. \"Sable,\" she said. \"The sharp at the dockhands' barrel took my marker off me last night, and a marker in the wrong hands is a leash.\" She nodded at a man in a good coat three tables down, who was counting coins with the care of someone who had not earned them. \"Get it back. I don't care how. Markers go bad, and so do I.\"",
+    "description_fr": "Elle avait l'amertume particulière de quelqu'un qui a perdu à un jeu qu'elle était certaine de pouvoir gagner, ce que je reconnus bien, ayant moi-même perdu à plusieurs jeux avec cette exacte même certitude. « Sable, dit-elle. Le tricheur du tonneau des dockers m'a pris ma reconnaissance de dette hier soir, et une reconnaissance de dette entre de mauvaises mains, c'est une laisse. » Elle désigna d'un signe de tête un homme au bon manteau, trois tables plus loin, qui comptait ses pièces avec le soin de quelqu'un qui ne les avait pas gagnées. « Récupérez-la. Peu m'importe comment. Les gages s'abîment, et moi aussi. »",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -2030,20 +2176,79 @@
     },
     "choices": [
       {
-        "text": "Head back toward the harbor master's post",
-        "text_fr": "Revenir vers le poste du capitaine du port",
+        "text": "Hand her the marker from the pot",
+        "text_fr": "Lui rendre la reconnaissance du pot",
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
+        ],
+        "showIfFlags": [
+          "sable_marker_won"
+        ]
+      },
+      {
+        "text": "Promise to win it back at the dockhands' table",
+        "text_fr": "Promettre de la regagner à la table des dockers",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ],
+        "hideIfFlags": [
+          "sable_marker_won"
+        ]
+      },
+      {
+        "text": "Lift it from his coat",
+        "text_fr": "La subtiliser dans son manteau",
+        "next_id": "2015_sable_lifted",
+        "checkAbility": "dexterity",
+        "checkDC": 13,
+        "failNextId": "2015_sable_caught",
+        "flagsToAdd": [
+          "sable_marker_won",
+          "sable_marker_lifted"
+        ],
+        "hideIfFlags": [
+          "sable_marker_won"
+        ]
+      },
+      {
+        "text": "Talk him into selling it back (30 gold)",
+        "text_fr": "Le convaincre de la revendre (30 or)",
+        "next_id": "2015_sable_bought",
+        "checkAbility": "charisma",
+        "checkDC": 12,
+        "failNextId": "2015_sable_talk_failed",
+        "goldMod": -30,
+        "flagsToAdd": [
+          "sable_marker_won"
+        ],
+        "hideIfFlags": [
+          "sable_marker_won"
         ]
       }
     ],
-    "reqAlignmentMax": -2
+    "reqAlignmentMax": 15,
+    "flag_callbacks": [
+      {
+        "flag": "sable_marker_won",
+        "en": "I already had it. The folded marker signed S had come to me with the pot at the dockhands' barrel, and when I held it up between two fingers she stopped talking. \"Well,\" she said at last. \"That saves us both a walk. I'm yours while it pays.\"",
+        "fr": "Je l'avais déjà. La reconnaissance pliée, signée S, m'était venue avec le pot au tonneau des dockers, et quand je la levai entre deux doigts, elle se tut. « Eh bien, dit-elle enfin. Voilà qui nous épargne une course. Je suis à vous tant que ça paie. »"
+      },
+      {
+        "flag": "hub_2015_cards",
+        "unlessFlags": [
+          "sable_marker_won"
+        ],
+        "en": "I had already sat at that barrel once, and lost. The sharp would remember my face, and my purse.",
+        "fr": "J'avais déjà joué à ce tonneau, et j'y avais perdu. Le tricheur se souviendrait de mon visage, et de ma bourse."
+      }
+    ]
   },
   "2020": {
     "id": "2020",
-    "description": "Cramped between crates of smuggled iron in a hiding place that flattered neither my dignity nor my knees, I waited out the harbor inspection with the patience one develops after several days of being given no other choice in the matter. Heavy boots stamped on the deck above, and the sound of the Inquisition's official seal — stamped, no doubt, onto some manifest that had cost someone considerable coin to falsify — echoed down through the wood like a verdict still being deliberated.",
-    "description_fr": "Coincé entre des caisses de fer de contrebande, dans une cachette flattant ni ma dignité ni mes genoux, j'attendis la fin de l'inspection portuaire avec cette patience particulière qu'on développe après plusieurs jours sans autre choix en la matière. Des bottes lourdes martelaient le pont au-dessus, et le bruit du sceau officiel de l'Inquisition — apposé, sans doute, sur quelque manifeste qu'il avait coûté fort cher à falsifier — résonnait à travers le bois comme un verdict encore en délibéré.",
+    "description": "Cramped between crates of smuggled iron in a hiding place that flattered neither my dignity nor my knees, I waited out the harbor inspection with the patience one develops when given no other choice in the matter. Heavy boots stamped on the deck above, and the sound of the Inquisition's official seal — stamped, no doubt, onto some manifest that had cost someone considerable coin to falsify — echoed down through the wood like a verdict still being deliberated.",
+    "description_fr": "Entre des caisses de fer de contrebande, dans une cachette qui ne flattait ni ma dignité ni mes genoux, j'attendis la fin de l'inspection portuaire avec cette patience particulière qu'on développe quand on n'a pas d'autre choix en la matière. Des bottes lourdes martelaient le pont au-dessus, et le bruit du sceau officiel de l'Inquisition — apposé, sans doute, sur quelque manifeste qu'il avait coûté fort cher à falsifier — résonnait à travers le bois comme un verdict encore en délibéré.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -2110,6 +2315,27 @@
         "flagsToAdd": [
           "vane_key"
         ]
+      },
+      {
+        "text": "Take the tunnel, and show the refugees the way in",
+        "text_fr": "Prendre le tunnel, et montrer l'entrée aux réfugiés",
+        "next_id": "2900",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "vane_key",
+          "tunnel_shared"
+        ]
+      },
+      {
+        "text": "Sell the tunnel to Vane's rival first (+40 gold)",
+        "text_fr": "Vendre d’abord le tunnel au rival de Vane (+40 or)",
+        "next_id": "2900",
+        "goldMod": 40,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "vane_key",
+          "vane_sold_out"
+        ]
       }
     ],
     "persona_variants": {
@@ -2144,6 +2370,14 @@
           "street_bandit",
           "street_bandit"
         ]
+      },
+      {
+        "text": "Drop the blade and pay for the insult (40 gold)",
+        "text_fr": "Lâcher la lame et payer l'affront (40 or)",
+        "next_id": "2040_paid",
+        "goldMod": -40,
+        "lockedText": "Forty gold. I did not have it, and Vane could tell.",
+        "lockedText_fr": "Quarante pièces d'or. Je ne les avais pas, et Vane le voyait."
       }
     ]
   },
@@ -2192,8 +2426,24 @@
         "flagsToAdd": [
           "vane_crossed"
         ]
+      },
+      {
+        "text": "Cut Vane's purse loose on the way through",
+        "text_fr": "Couper la bourse de Vane au passage",
+        "next_id": "2900",
+        "checkAbility": "dexterity",
+        "checkDC": 13,
+        "failNextId": "2070_cut_failed",
+        "goldMod": 45,
+        "alignmentMod": -1,
+        "healAmount": -10,
+        "flagsToAdd": [
+          "vane_crossed",
+          "vane_robbed"
+        ]
       }
-    ]
+    ],
+    "noDetour": true
   },
   "2900": {
     "id": "2900",
@@ -2294,8 +2544,44 @@
         "flag": "vane_crossed",
         "en": "Vane's cordon lay behind me in the state I had left it, and Vane would remember my face longer than I remembered his.",
         "fr": "Le cordon de Vane gisait derrière moi dans l'état où je l'avais laissé, et Vane se souviendrait de mon visage plus longtemps que moi du sien."
+      },
+      {
+        "flag": "roofs_taken",
+        "en": "I came down to the berths off a warehouse roof, which is a poor way to arrive anywhere and a good way to arrive unseen.",
+        "fr": "Je descendis vers les mouillages depuis le toit d'un entrepôt, piètre façon d'arriver quelque part, mais bonne façon d'arriver sans être vu de personne."
+      },
+      {
+        "flag": "tunnel_shared",
+        "en": "Behind me in the tunnel, forty refugees were learning Vane's secret one lantern at a time. He would be furious. He would also, I suspected, be a little proud.",
+        "fr": "Derrière moi, dans le tunnel, quarante réfugiés apprenaient le secret de Vane une lanterne à la fois. Il serait furieux. Il serait aussi, je le soupçonnais, un peu fier."
+      },
+      {
+        "flag": "vane_sold_out",
+        "en": "Vane's rival had paid well for a way under the cordon, and would use it before morning. Vane would find out who sold it. Not tonight.",
+        "fr": "Le rival de Vane avait bien payé un passage sous le cordon, et s’en servirait avant le matin. Vane finirait par savoir qui l’avait vendu. Pas cette nuit."
+      },
+      {
+        "flag": "vane_paid_off",
+        "en": "I had paid Vane for my own insolence, which is the most expensive thing I have ever bought, and walked to the berths at his men's pace.",
+        "fr": "J'avais payé Vane pour ma propre insolence, la chose la plus chère que j'aie jamais achetée, et marché jusqu'aux mouillages au pas de ses hommes."
+      },
+      {
+        "flag": "vane_robbed",
+        "en": "Vane's purse was heavy in my coat. He would want it back, and he would have to cross the sea to ask.",
+        "fr": "La bourse de Vane pesait dans mon manteau. Il voudrait la récupérer, et il lui faudrait traverser la mer pour la demander."
+      },
+      {
+        "flag": "crane_salvage_left",
+        "en": "Somewhere behind me two dockhands were splitting a crate of salvage that had fallen out of the sky, and arguing, I hoped, about how to thank it.",
+        "fr": "Quelque part derrière moi, deux dockers se partageaient une caisse de récupération tombée du ciel, et se disputaient, j’espérais, sur la façon de l’en remercier."
+      },
+      {
+        "flag": "roof_fallen",
+        "en": "I reached the berths limping, with rat bites on both hands and a gutter's worth of rust down my collar.",
+        "fr": "J'atteignis les mouillages en boitant, des morsures de rat aux deux mains et une gouttière de rouille dans le col."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "2900_boat_fixed": {
     "id": "2900_boat_fixed",
@@ -2343,7 +2629,8 @@
         "en": "Lysa came; that was never a question. She was already aboard, counting the children on the wharf against the space between the thwarts, and she did not look at me while she counted.",
         "fr": "Lysa venait ; cela n'avait jamais été une question. Elle était déjà à bord, comptant les enfants du quai contre l'espace entre les bancs, et elle ne me regarda pas pendant qu'elle comptait."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "2999": {
     "id": "2999",
@@ -2550,9 +2837,6 @@
         "unlockQuestId": "q_ch3_marens_penance",
         "hideIfFlags": [
           "hub_3005_maren"
-        ],
-        "showIfFlags": [
-          "lysa_survived"
         ]
       },
       {
@@ -2635,6 +2919,16 @@
         "flag": "ashen_ledger_decoded",
         "en": "The names I had pieced together from the ledger kept surfacing on doorposts and in chalk-marks as I walked, as if the quarter had been waiting for someone to read them aloud.",
         "fr": "Les noms que j'avais reconstitués à partir du registre resurgissaient sur les montants de porte et dans les marques à la craie, comme si le quartier avait attendu que quelqu'un les lise à voix haute."
+      },
+      {
+        "flag": "maren_absolved",
+        "en": "Maren had taken a corner of the relief tent and was working it as if the confession had lightened her hands.",
+        "fr": "Maren avait pris un coin de la tente de secours et y travaillait comme si la confession lui avait allégé les mains."
+      },
+      {
+        "flag": "maren_refused",
+        "en": "Maren did not look my way when I passed the relief tent. She was working harder than anyone in it.",
+        "fr": "Maren ne regarda pas de mon côté quand je passai devant la tente de secours. Elle y travaillait plus dur que quiconque."
       }
     ],
     "hub_progress": {
@@ -2829,6 +3123,26 @@
     },
     "choices": [
       {
+        "text": "Absolve her, as far as you are able",
+        "text_fr": "L’absoudre, autant que possible",
+        "next_id": "3005",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_3005_maren",
+          "maren_absolved"
+        ]
+      },
+      {
+        "text": "Tell her the dead don't forgive by proxy",
+        "text_fr": "Lui dire que les morts ne pardonnent pas par procuration",
+        "next_id": "3005",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_3005_maren",
+          "maren_refused"
+        ]
+      },
+      {
         "text": "Back out into the ash",
         "text_fr": "Ressortir dans la cendre",
         "next_id": "3005",
@@ -2836,9 +3150,6 @@
           "hub_3005_maren"
         ]
       }
-    ],
-    "reqFlags": [
-      "lysa_survived"
     ]
   },
   "3010": {
@@ -2861,6 +3172,17 @@
         "healAmount": -10,
         "flagsToAdd": [
           "dome_dropped"
+        ]
+      },
+      {
+        "text": "Wait for the bells and climb down the bell rope",
+        "text_fr": "Attendre les cloches et descendre par la corde",
+        "next_id": "3030",
+        "checkAbility": "dexterity",
+        "checkDC": 13,
+        "failNextId": "3010_rope_fail",
+        "flagsToAdd": [
+          "bell_rope"
         ]
       }
     ]
@@ -2909,6 +3231,18 @@
         "text_fr": "Se relever et combattre l'avant-garde",
         "next_id": "4999",
         "triggerEnemyId": "inquisition_high_warden"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "bell_rope",
+        "en": "The bells were still ringing when I reached the floor, and nobody below had thought to look up.",
+        "fr": "Les cloches sonnaient encore quand j'atteignis le sol, et personne en bas n'avait songé à lever les yeux."
+      },
+      {
+        "flag": "bell_rope_burned",
+        "en": "My palms still burned from the rope, and I held my blade as if it were hot.",
+        "fr": "Mes paumes brûlaient encore de la corde, et je tenais ma lame comme si elle était chaude."
       }
     ]
   },
@@ -2993,7 +3327,8 @@
         "en": "I had come in through the dome, and the glass of it was still in my coat.",
         "fr": "J'avais pris le chemin de la coupole, et son verre était encore dans mon manteau."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "5003": {
     "id": "5003",
@@ -3019,7 +3354,8 @@
         "next_id": "5004b",
         "triggerEnemyId": "hollow_court_zealot"
       }
-    ]
+    ],
+    "noDetour": true
   },
   "5004": {
     "id": "5004",
@@ -3059,7 +3395,8 @@
         "en": "I had waited up for them at sixteen with the lamp lit, the winter they went out and did not come back. I had not known I was still waiting.",
         "fr": "À seize ans, je les avais attendus lampe allumée, l'hiver où ils étaient sortis sans revenir. J'ignorais que j'attendais encore."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "5005": {
     "id": "5005",
@@ -3418,6 +3755,26 @@
         "flagsToAdd": [
           "siege_over"
         ]
+      },
+      {
+        "text": "Bury their dead beside ours",
+        "text_fr": "Enterrer leurs morts à côté des nôtres",
+        "next_id": "6002_camp",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "siege_over",
+          "siege_buried_all"
+        ]
+      },
+      {
+        "text": "Burn their dead where their friends can see",
+        "text_fr": "Brûler leurs morts à la vue des leurs",
+        "next_id": "6002_camp",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "siege_over",
+          "siege_burned_them"
+        ]
       }
     ]
   },
@@ -3525,6 +3882,16 @@
         "flag": "siege_over",
         "en": "The children had a new name for the palisade after that night: the Dawn Wall. Nobody remembered who said it first.",
         "fr": "Après cette nuit, les enfants donnèrent un nouveau nom à la palissade : le Mur de l’Aube. Personne ne se rappelait qui l’avait dit en premier."
+      },
+      {
+        "flag": "siege_buried_all",
+        "en": "We had buried their dead beside ours, in the same sand, and nobody had argued. From a distance the graves looked the same.",
+        "fr": "Nous avions enterré leurs morts à côté des nôtres, dans le même sable, et personne n'avait protesté. De loin, les tombes ne se distinguaient pas."
+      },
+      {
+        "flag": "siege_burned_them",
+        "en": "The smoke from their pyre had hung over the water all morning, where the next ship would see it. That had been the point.",
+        "fr": "La fumée de leur bûcher avait plané sur l'eau toute la matinée, là où le prochain navire la verrait. C'était tout l'intérêt."
       }
     ],
     "settlement": {
@@ -3563,6 +3930,14 @@
         "flagsToAdd": [
           "crew_sent_back"
         ]
+      }
+    ],
+    "noDetour": true,
+    "flag_callbacks": [
+      {
+        "flag": "chart_bought",
+        "en": "Her chart had the square down to the loose flagstones, and I stepped where she had drawn the dots.",
+        "fr": "Sa carte donnait la place jusqu'aux dalles descellées, et je marchai là où elle avait mis des points."
       }
     ]
   },
@@ -3614,7 +3989,8 @@
         "en": "The crew had gone back to the camp on my word. Whatever the Void showed me, it showed me alone.",
         "fr": "L'équipage était reparti vers le camp sur ma parole. Quoi que le Néant me montrât, il ne le montra qu'à moi."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "5004b": {
     "id": "5004b",
@@ -3635,6 +4011,15 @@
         "next_id": "5004_altar",
         "flagsToAdd": [
           "court_broken"
+        ]
+      },
+      {
+        "text": "Tear your parents' page out of the ledger first",
+        "text_fr": "Arracher d’abord du registre la page familiale",
+        "next_id": "5004_altar",
+        "flagsToAdd": [
+          "court_broken",
+          "parents_page_taken"
         ]
       }
     ]
@@ -3812,6 +4197,15 @@
         "text_fr": "Continuer à travers les Docks",
         "next_id": "2900",
         "goldMod": 35
+      },
+      {
+        "text": "Leave the salvage for the dockhands who lost their pay",
+        "text_fr": "Laisser la récupération aux dockers qui ont perdu leur paie",
+        "next_id": "2900",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "crane_salvage_left"
+        ]
       }
     ]
   },
@@ -3995,7 +4389,7 @@
         "text": "Move on",
         "text_fr": "Continuer",
         "next_id": "300",
-        "goldMod": 25,
+        "goldMod": 35,
         "flagsToAdd": [
           "forge_cache_found"
         ]
@@ -4004,18 +4398,17 @@
   },
   "2010_liora": {
     "id": "2010_liora",
-    "description": "She'd had at least four clean shots at me by the time I noticed her, which told me either she wasn't planning to take one or she was waiting to see if I'd earn it. I made my case from the ground, the way you do with someone who could end the conversation from forty feet up. Whatever I said landed better than I expected — she came down without lowering the bow first, which I took as roughly the elvish equivalent of a handshake.",
-    "description_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, ce qui signifiait soit qu'elle ne comptait pas en saisir un, soit qu'elle attendait de voir si je le méritais. Je plaidai ma cause depuis le sol, comme on le fait avec quelqu'un qui pourrait mettre fin à la conversation depuis douze mètres de haut. Ce que je dis porta mieux que je ne l'espérais — elle descendit sans baisser son arc au préalable, ce que je pris pour l'équivalent elfique approximatif d'une poignée de main.",
+    "description": "Liora took the roofs and I took the alleys, and we met where the raiding skiff lay tied under the old customs house, low in the water with other people's belongings. She put an arrow through the lantern before the captain had finished turning round. What light was left came from the burning oil on the water, and it was enough.",
+    "description_fr": "Liora prit les toits et moi les ruelles, et nous nous retrouvâmes là où le skiff de pillage était amarré sous l'ancienne douane, bas sur l'eau, chargé des biens d'autrui. Elle planta une flèche dans la lanterne avant que le capitaine ait fini de se retourner. La seule lumière qui restait venait de l'huile qui brûlait sur l'eau, et elle suffisait.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
       "speaker": "Narrator"
     },
-    "reqCharisma": 3,
     "choices": [
       {
-        "text": "Follow her to the captain's raiding skiff",
-        "text_fr": "La suivre jusqu'au skiff de pillage du capitaine",
+        "text": "Board the skiff",
+        "text_fr": "Monter à bord du skiff",
         "next_id": "2900",
         "unlockQuestId": "q_ch2_lioras_watch",
         "triggerEnemyId": "smuggler_captain"
@@ -4024,8 +4417,8 @@
   },
   "151_vess": {
     "id": "151_vess",
-    "description": "She didn't have a stall, or wares, or any of the ordinary reasons to be standing where she was standing, and the few people who passed gave her the specific wide berth you give something your instincts have flagged before your reason gets a vote. Up close, the reason became obvious enough — a thread of the same cold, patient wrongness the Tear had left in me, worn on her like a garment she'd long since stopped trying to take off. She looked at me the way you look at someone wearing your own coat.",
-    "description_fr": "Elle n'avait ni étal, ni marchandise, ni aucune des raisons ordinaires de se tenir là où elle se tenait, et les rares passants lui laissaient cette large marge particulière que l'on accorde à ce que l'instinct a signalé avant que la raison n'ait voix au chapitre. De près, la raison devenait assez évidente — un fil de cette même étrangeté froide et patiente que la Déchirure avait laissée en moi, qu'elle portait comme un vêtement qu'elle avait depuis longtemps cessé d'essayer d'ôter. Elle me regarda comme on regarde quelqu'un portant son propre manteau.",
+    "description": "She didn't have a stall, or wares, or any of the ordinary reasons to be standing where she was standing, and the few people who passed gave her the specific wide berth you give something your instincts have flagged before your reason gets a vote. Up close, the reason became obvious enough — a thread of the same cold, patient wrongness the Tear had left in me, worn on her like a garment she'd long since stopped trying to take off. She looked at me the way you look at someone wearing your own coat. \"Not here,\" she said, before I could ask anything. \"Get out of the city alive. I will find you on the other side.\" Then she was gone between the empty stalls.",
+    "description_fr": "Elle n'avait ni étal, ni marchandise, ni aucune des raisons ordinaires de se tenir là où elle se tenait, et les rares passants lui laissaient cette large marge particulière que l'on accorde à ce que l'instinct a signalé avant que la raison n'ait voix au chapitre. De près, la raison devenait assez évidente — un fil de cette même étrangeté froide et patiente que la Déchirure avait laissée en moi, qu'elle portait comme un vêtement qu'elle avait depuis longtemps cessé d'essayer d'ôter. Elle me regarda comme on regarde quelqu'un portant son propre manteau. « Pas ici, dit-elle avant que je puisse demander quoi que ce soit. Sortez de la ville en vie. Je vous retrouverai de l'autre côté. » Puis elle disparut entre les étals vides.",
     "context_taxonomy": {
       "ui_theme": "market",
       "mood": "creepy",
@@ -4039,7 +4432,10 @@
         "text": "Move on",
         "text_fr": "Continuer",
         "next_id": "300",
-        "unlockQuestId": "q_ch1_vess_in_the_dark"
+        "unlockQuestId": "q_ch1_vess_in_the_dark",
+        "flagsToAdd": [
+          "met_vess"
+        ]
       }
     ]
   },
@@ -4160,8 +4556,8 @@
   },
   "2015_cards_won": {
     "id": "2015_cards_won",
-    "description": "Three hands in, the dockhand's easy hospitality had curdled into something far less easy, and by the fourth he'd stopped pretending to enjoy the company. I left the barrel with my purse meaningfully heavier and a small, petty satisfaction I decided not to examine too closely.",
-    "description_fr": "Trois manches plus tard, l'hospitalité facile du docker avait tourné en quelque chose de nettement moins facile, et à la quatrième il avait cessé de feindre apprécier la compagnie. Je quittai le tonneau la bourse sensiblement plus lourde, avec une petite satisfaction mesquine que je préférai ne pas examiner de trop près.",
+    "description": "Three hands in, the dockhand's easy hospitality had curdled into something far less easy, and by the fourth he'd stopped pretending to enjoy the company. I left the barrel with my purse meaningfully heavier and a small, petty satisfaction I decided not to examine too closely. Among the coins in the pot was a folded marker signed with a single S. I kept it.",
+    "description_fr": "Trois manches plus tard, l'hospitalité facile du docker avait tourné en quelque chose de nettement moins facile, et à la quatrième il avait cessé de feindre apprécier la compagnie. Je quittai le tonneau la bourse sensiblement plus lourde, avec une petite satisfaction mesquine que je préférai ne pas examiner de trop près. Parmi les pièces du pot se trouvait une reconnaissance de dette pliée, signée d'un simple S. Je la gardai.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -4174,7 +4570,8 @@
         "next_id": "2015",
         "goldMod": 35,
         "flagsToAdd": [
-          "hub_2015_cards"
+          "hub_2015_cards",
+          "sable_marker_won"
         ]
       }
     ]
@@ -4245,6 +4642,17 @@
         "next_id": "3005",
         "flagsToAdd": [
           "hub_3005_lysa"
+        ]
+      },
+      {
+        "text": "Send her your purse with the message (30 gold)",
+        "text_fr": "Joindre la bourse au message (30 or)",
+        "next_id": "3005",
+        "goldMod": -30,
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_3005_lysa",
+          "lysa_sent_coin"
         ]
       }
     ]
@@ -4534,6 +4942,26 @@
         "flag": "warden_fallen",
         "en": "The deserters had heard the High Warden was dead before I had finished climbing down to tell them. The news had travelled the water faster than I had.",
         "fr": "Les déserteurs avaient appris la mort du Haut Gardien avant que j'aie fini de descendre le leur dire. La nouvelle avait voyagé sur l'eau plus vite que moi."
+      },
+      {
+        "flag": "archivist_promise",
+        "en": "The archivist had started a fresh page for her sister, and left the name blank until I came back.",
+        "fr": "L'archiviste avait commencé une page neuve pour sa sœur, et laissé le nom en blanc jusqu'à mon retour."
+      },
+      {
+        "flag": "archivist_notes",
+        "en": "Her notes on the Stair were in my pack, in a hand neater than mine.",
+        "fr": "Ses notes sur l'Escalier étaient dans mon sac, d'une écriture plus soignée que la mienne."
+      },
+      {
+        "flag": "pay_chest_raised",
+        "en": "The Court's pay chest dried on the cloister steps, and the cloister's poor had already learned which way I had come in.",
+        "fr": "Le coffre de solde de la Cour séchait sur les marches du cloître, et les pauvres du cloître avaient déjà appris par où j’étais entré."
+      },
+      {
+        "flag": "deserter_sold",
+        "en": "The deserter's cell was the one with the window. He did not look out of it.",
+        "fr": "La cellule du déserteur était celle qui avait une fenêtre. Il ne regardait pas dehors."
       }
     ],
     "hub_progress": {
@@ -4593,6 +5021,25 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_archivist"
+        ]
+      },
+      {
+        "text": "Promise to bring her sister's name back up",
+        "text_fr": "Lui promettre de remonter le nom de sa sœur",
+        "next_id": "5010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_5010_archivist",
+          "archivist_promise"
+        ]
+      },
+      {
+        "text": "Copy her notes on the Stair",
+        "text_fr": "Recopier ses notes sur l'Escalier",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_archivist",
+          "archivist_notes"
         ]
       }
     ]
@@ -4719,6 +5166,30 @@
         "next_id": "5010",
         "flagsToAdd": [
           "hub_5010_deserter"
+        ]
+      },
+      {
+        "text": "Dive for the Court's pay chest",
+        "text_fr": "Plonger chercher le coffre de solde de la Cour",
+        "next_id": "5010",
+        "checkAbility": "constitution",
+        "checkDC": 13,
+        "failNextId": "5010_deserter_dive_fail",
+        "goldMod": 80,
+        "flagsToAdd": [
+          "hub_5010_deserter",
+          "pay_chest_raised"
+        ]
+      },
+      {
+        "text": "Turn him in to the cloister for the bounty (+40 gold)",
+        "text_fr": "Le livrer au cloître pour la prime (+40 or)",
+        "next_id": "5010",
+        "goldMod": 40,
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_5010_deserter",
+          "deserter_sold"
         ]
       }
     ]
@@ -5089,6 +5560,21 @@
         "flagsToAdd": [
           "hub_6010_chartkeeper"
         ]
+      },
+      {
+        "text": "Buy a copy of her chart (40 gold)",
+        "text_fr": "Acheter une copie de sa carte (40 or)",
+        "next_id": "6010_chart_bought",
+        "goldMod": -40,
+        "lockedText": "Forty gold. I had spent it already, on worse things.",
+        "lockedText_fr": "Quarante pièces d'or. Je les avais déjà dépensées, pour pire."
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "parents_page_taken",
+        "en": "She noticed the torn stub at the second page and said nothing about it. I was grateful.",
+        "fr": "Elle remarqua le talon arraché à la deuxième page et n'en dit rien. Je lui en sus gré."
       }
     ]
   },
@@ -5104,16 +5590,34 @@
     "automations": {},
     "choices": [
       {
-        "text": "Back to the Quarter",
-        "text_fr": "Retour au Quartier",
+        "text": "Ask her to come back to the camp with you",
+        "text_fr": "Lui demander de revenir au camp",
         "next_id": "6010",
         "flagsToAdd": [
-          "hub_6010_lysa"
+          "hub_6010_lysa",
+          "lysa_to_camp"
+        ]
+      },
+      {
+        "text": "Tell her to stay where she's needed",
+        "text_fr": "Lui dire de rester là où on a besoin d’elle",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_lysa",
+          "lysa_stays_quarter"
         ]
       }
     ],
     "reqFlags": [
       "lysa_survived"
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_sent_coin",
+        "en": "She had spent my coin on bandages and bread, and showed me the accounts without being asked.",
+        "fr": "Elle avait dépensé mon or en bandages et en pain, et me montra les comptes sans qu'on le lui demande."
+      }
     ]
   },
   "6010_hounds": {
@@ -5154,6 +5658,26 @@
         "next_id": "6010",
         "flagsToAdd": [
           "hub_6010_confession"
+        ]
+      },
+      {
+        "text": "Take his blade: he carries water for the camp now",
+        "text_fr": "Prendre sa lame : désormais, il porte l’eau du camp",
+        "next_id": "6010",
+        "alignmentMod": 3,
+        "flagsToAdd": [
+          "hub_6010_confession",
+          "confession_spared"
+        ]
+      },
+      {
+        "text": "Pick up the blade and give him the answer he came for",
+        "text_fr": "Ramasser la lame et lui donner la réponse qu’il est venu chercher",
+        "next_id": "6010",
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_6010_confession",
+          "confession_executed"
         ]
       }
     ]
@@ -5349,6 +5873,26 @@
         "flag": "giants_names_read",
         "en": "A cart had come down to the coast from Highhearth, pulled by one giant and pushed by another, with nothing in it but a stone the size of a door. My name was cut into it, among theirs, in a giant’s hand. The camp did not know what to do with it. We set it by the fire.",
         "fr": "Une charrette était descendue de Haut-Âtre jusqu’à la côte, tirée par un géant et poussée par un autre, avec pour seul chargement une pierre de la taille d’une porte. Mon nom y était gravé, parmi les leurs, d’une main de géant. Le camp ne sut qu’en faire. Nous la posâmes près du feu."
+      },
+      {
+        "flag": "confession_spared",
+        "en": "The Inquisitor who burned the Ashen Quarter was hauling water for the wounded, and did not look up when I passed. That was how he preferred it.",
+        "fr": "L'Inquisiteur qui avait brûlé le Quartier des Cendres portait de l'eau pour les blessés, et ne leva pas les yeux à mon passage. C'était ainsi qu'il le préférait."
+      },
+      {
+        "flag": "confession_executed",
+        "en": "I had given the Inquisitor the answer he came for, on the frost of the Reliquary Quarter. Nobody at the camp asked me about it, which meant everyone knew.",
+        "fr": "J'avais donné à l'Inquisiteur la réponse qu'il était venu chercher, sur le givre du Quartier des Reliquaires. Personne au camp ne m'en parla, ce qui voulait dire que tout le monde savait."
+      },
+      {
+        "flag": "lysa_to_camp",
+        "en": "Lysa had turned the camp's sail-loft into an infirmary, and ran it like a ship.",
+        "fr": "Lysa avait transformé la voilerie du camp en infirmerie, et la dirigeait comme un navire."
+      },
+      {
+        "flag": "lysa_stays_quarter",
+        "en": "Word came from the Reliquary Quarter with every boat: Lysa's ward was still open, and still full.",
+        "fr": "Chaque bateau apportait des nouvelles du Quartier des Reliquaires : le dispensaire de Lysa était toujours ouvert, et toujours plein."
       }
     ],
     "settlement": {
@@ -5578,7 +6122,8 @@
         "en": "I had left {lost} on the sand for the legate's rowers, and had not watched what they did.",
         "fr": "J'avais laissé {lost} sur le sable aux rameurs du légat, et n'avais pas regardé ce qu'ils en faisaient."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "7004": {
     "id": "7004",
@@ -5686,7 +6231,8 @@
         "en": "The names I had cut from the throne's foot were in my pocket, in the ledger's own hand. Somebody would want them read.",
         "fr": "Les noms que j'avais arrachés au pied du trône étaient dans ma poche, de la main même du registre. Quelqu'un voudrait qu'on les lise."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "7005": {
     "id": "7005",
@@ -6260,7 +6806,8 @@
         "en": "Every reflection on the shore had watched me come, and every one of them was watching still.",
         "fr": "Chaque reflet du rivage avait suivi mon approche, et tous regardaient encore."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "4999_standard": {
     "id": "4999_standard",
@@ -6303,7 +6850,8 @@
         ],
         "grantsBannerPieceId": "warden_standard"
       }
-    ]
+    ],
+    "noDetour": true
   },
   "4999_camp": {
     "id": "4999_camp",
@@ -6437,8 +6985,8 @@
   },
   "5004_altar": {
     "id": "5004_altar",
-    "description": "The twin lay in its cradle of stone, and it was not alone in it. Wrapped in the grey, a dozen sleepers: the taken, the ledger's newest page, kept alive and asleep in the Shroud's cold the way the Court kept everything it meant to use later. I knew two of the faces: the smuggler from the pier at Alster, who had let me aboard the Eel one way or another, and Mother Hesk from next door to my parents’ hovel, who used to sell us eggs and overcharge us for them. The cloth was the only thing between them and whatever the Court had been making of them, and I needed the cloth. There is a kind of arithmetic that does not come out, however long you stand over it. I stood over it a long time.",
-    "description_fr": "Le jumeau reposait dans son berceau de pierre, et il n'y était pas seul. Enveloppés dans le gris, une douzaine de dormeurs : les disparus, la dernière page du registre, maintenus en vie et endormis dans le froid du Linceul comme la Cour gardait tout ce dont elle comptait se servir plus tard. Je connaissais deux des visages : le contrebandier de la jetée d’Alster, qui m’avait laissé monter à bord de l’Eel d’une façon ou d’une autre, et la mère Hesk, la voisine de la masure de mes parents, qui nous vendait des œufs et nous les faisait payer trop cher. L'étoffe était la seule chose entre eux et ce que la Cour avait entrepris de faire d'eux, et j'avais besoin de l'étoffe. Il existe une sorte d'arithmétique qui ne tombe jamais juste, si longtemps qu'on se penche dessus. Je me penchai longtemps.",
+    "description": "The twin lay in its cradle of stone, and it was not alone in it. Wrapped in the grey, a dozen sleepers: the taken, the ledger's newest page, kept alive and asleep in the Shroud's cold the way the Court kept everything it meant to use later. I knew two of the faces: the smuggler from the pier at Alster, who had let me aboard the Eel one way or another, and Mother Hesk, old Hesk’s wife from next door to my parents’ hovel, who used to sell us eggs and overcharge us for them. The cloth was the only thing between them and whatever the Court had been making of them, and I needed the cloth. There is a kind of arithmetic that does not come out, however long you stand over it. I stood over it a long time.",
+    "description_fr": "Le jumeau reposait dans son berceau de pierre, et il n'y était pas seul. Enveloppés dans le gris, une douzaine de dormeurs : les disparus, la dernière page du registre, maintenus en vie et endormis dans le froid du Linceul comme la Cour gardait tout ce dont elle comptait se servir plus tard. Je connaissais deux des visages : le contrebandier de la jetée d’Alster, qui m’avait laissé monter à bord de l’Eel d’une façon ou d’une autre, et la mère Hesk, la femme du vieux Hesk, notre voisine de la masure de mes parents, qui nous vendait des œufs et nous les faisait payer trop cher. L'étoffe était la seule chose entre eux et ce que la Cour avait entrepris de faire d'eux, et j'avais besoin de l'étoffe. Il existe une sorte d'arithmétique qui ne tombe jamais juste, si longtemps qu'on se penche dessus. Je me penchai longtemps.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -6493,7 +7041,8 @@
         "en": "She had given me an egg once for my honesty. I still owed her for it.",
         "fr": "Elle m'avait donné un œuf, un jour, pour mon honnêteté. Je lui devais encore."
       }
-    ]
+    ],
+    "noDetour": true
   },
   "6010_thread": {
     "id": "6010_thread",
@@ -6603,7 +7152,8 @@
           "camp_given"
         ]
       }
-    ]
+    ],
+    "noDetour": true
   },
   "7002_pact": {
     "id": "7002_pact",
@@ -6689,8 +7239,8 @@
   "6010_lysa_dead": {
     "id": "6010_lysa_dead",
     "reqAlignmentScore": 5,
-    "description": "The chapel had been a place for making penitents: a chair with straps, a porcelain mask on a hook, a bowl of the white paint the Inquisition uses for faces it means to keep. She was in the chair. They had tried to make her one of theirs, paint and porcelain and the Court's patient voice, and she had not taken; on the wall beside the chair, scratched twelve times with the pin of the mask, was my name. Not hers. Mine. I sat with her a long time. I did not say the things people say. I had surrendered her in a tavern cellar to buy my own skin, and she had spent whatever she had left down here spelling me out on a wall, and there is no sentence that goes on the far side of that.",
-    "description_fr": "La chapelle avait servi à fabriquer des pénitents : une chaise à sangles, un masque de porcelaine à un crochet, un bol de la peinture blanche dont l'Inquisition se sert pour les visages qu'elle compte garder. Elle était sur la chaise. Ils avaient essayé de faire d'elle l'une des leurs, peinture, porcelaine et la voix patiente de la Cour, et cela n'avait pas pris ; sur le mur près de la chaise, gravé douze fois avec l'épingle du masque, il y avait mon nom. Pas le sien. Le mien. Je restai longtemps avec elle. Je ne dis pas ce que les gens disent. Je l'avais livrée dans la cave d'une taverne pour sauver ma peau, et elle avait dépensé ce qui lui restait ici-bas à m'épeler sur un mur, et il n'existe pas de phrase qui aille de l'autre côté de cela.",
+    "description": "The chapel had been a place for making penitents: a chair with straps, a porcelain mask on a hook, a bowl of the white paint the Inquisition uses for faces it means to keep. She was in the chair. They had tried to make her one of theirs, paint and porcelain and the Court's patient voice, and she had not taken; on the wall beside the chair, scratched twelve times with the pin of the mask, was my name. Not hers. Mine. I sat with her a long time. I did not say the things people say. I had lost her in my parents' hovel, and she had spent whatever she had left down here spelling me out on a wall, and there is no sentence that goes on the far side of that.",
+    "description_fr": "La chapelle avait servi à fabriquer des pénitents : une chaise à sangles, un masque de porcelaine à un crochet, un bol de la peinture blanche dont l'Inquisition se sert pour les visages qu'elle compte garder. Elle était sur la chaise. Ils avaient essayé de faire d'elle l'une des leurs, peinture, porcelaine et la voix patiente de la Cour, et cela n'avait pas pris ; sur le mur près de la chaise, gravé douze fois avec l'épingle du masque, il y avait mon nom. Pas le sien. Le mien. Je restai longtemps avec elle. Je ne dis pas ce que les gens disent. Je l'avais perdue dans la masure de mes parents, et elle avait dépensé ce qui lui restait ici-bas à m'épeler sur un mur, et il n'existe pas de phrase qui aille de l'autre côté de cela.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -6705,6 +7255,18 @@
           "hub_6010_lysa_dead",
           "lysa_found_dead"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "surrendered",
+        "en": "I had knelt on that floor and let them take her. She would have remembered that too.",
+        "fr": "J'avais plié le genou sur ce sol et je les avais laissés la prendre. Elle s'en serait souvenue, elle aussi."
+      },
+      {
+        "flag": "unfurl_lost",
+        "en": "I had fought for her on that floor, and lost. I do not know if she knew that.",
+        "fr": "J'avais lutté pour elle sur ce sol, et perdu. Je ne sais pas si elle le savait."
       }
     ]
   },
@@ -6734,8 +7296,8 @@
   },
   "6010_masked_after": {
     "id": "6010_masked_after",
-    "description": "The mask came away in my hand when she fell, the strap cut by my own blade, and the paint underneath was cracked where she had been saying something through it for the whole of the fight. I knew the face before I had finished turning it toward the light. Lysa. I had surrendered her in a tavern cellar to buy my own skin, and the Inquisition had spent the year since teaching her my name so that she would have something to say when she found me. She had said it. I had not listened. The penitents did not come near. I carried her to the nearest chapel myself, and the frost took the shape of the door behind us, and I have not, since, been able to stand the sound of porcelain.",
-    "description_fr": "Le masque me resta dans la main quand elle tomba, la lanière tranchée par ma propre lame, et la peinture dessous était craquelée là où elle avait dit quelque chose à travers pendant tout le combat. Je reconnus le visage avant d'avoir fini de le tourner vers la lumière. Lysa. Je l'avais livrée dans la cave d'une taverne pour sauver ma peau, et l'Inquisition avait passé l'année à lui apprendre mon nom pour qu'elle ait quelque chose à dire en me trouvant. Elle l'avait dit. Je n'avais pas écouté. Les pénitents ne s'approchèrent pas. Je la portai moi-même jusqu'à la chapelle la plus proche, et le givre prit la forme de la porte derrière nous, et je n'ai plus, depuis, pu supporter le son de la porcelaine.",
+    "description": "The mask came away in my hand when she fell, the strap cut by my own blade, and the paint underneath was cracked where she had been saying something through it for the whole of the fight. I knew the face before I had finished turning it toward the light. Lysa. I had lost her in my parents' hovel, and the Inquisition had spent the year since teaching her my name so that she would have something to say when she found me. She had said it. I had not listened. The penitents did not come near. I carried her to the nearest chapel myself, and the frost took the shape of the door behind us, and I have not, since, been able to stand the sound of porcelain.",
+    "description_fr": "Le masque me resta dans la main quand elle tomba, la lanière tranchée par ma propre lame, et la peinture dessous était craquelée là où elle avait dit quelque chose à travers pendant tout le combat. Je reconnus le visage avant d'avoir fini de le tourner vers la lumière. Lysa. Je l'avais perdue dans la masure de mes parents, et l'Inquisition avait passé l'année à lui apprendre mon nom pour qu'elle ait quelque chose à dire en me trouvant. Elle l'avait dit. Je n'avais pas écouté. Les pénitents ne s'approchèrent pas. Je la portai moi-même jusqu'à la chapelle la plus proche, et le givre prit la forme de la porte derrière nous, et je n'ai plus, depuis, pu supporter le son de la porcelaine.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -6757,6 +7319,18 @@
         "flagsToAdd": [
           "lysa_left_masked"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "surrendered",
+        "en": "I had knelt on that floor and let them take her. She would have remembered that too.",
+        "fr": "J'avais plié le genou sur ce sol et je les avais laissés la prendre. Elle s'en serait souvenue, elle aussi."
+      },
+      {
+        "flag": "unfurl_lost",
+        "en": "I had fought for her on that floor, and lost. I do not know if she knew that.",
+        "fr": "J'avais lutté pour elle sur ce sol, et perdu. Je ne sais pas si elle le savait."
       }
     ]
   },
@@ -6842,7 +7416,14 @@
           "fr": "Les enfants des fours ne se cachaient plus quand je descendais dans le vallon. L’un d’eux s’était mis à marcher derrière moi, sans rien porter, comme si c’était un travail."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "widow_beam",
+        "en": "The widow had taken her husband's hammer down from the lintel and left it by the door, for whoever went up.",
+        "fr": "La veuve avait décroché le marteau de son mari du linteau et l'avait laissé près de la porte, pour qui monterait."
+      }
+    ]
   },
   "3100_tithe": {
     "id": "3100_tithe",
@@ -6923,6 +7504,15 @@
         "next_id": "3100",
         "flagsToAdd": [
           "hub_3100_widow"
+        ]
+      },
+      {
+        "text": "Promise to mend the third beam from the top",
+        "text_fr": "Promettre de réparer la troisième poutre en partant du haut",
+        "next_id": "3100",
+        "flagsToAdd": [
+          "hub_3100_widow",
+          "widow_beam"
         ]
       }
     ]
@@ -7061,7 +7651,14 @@
           "fr": "Les enfants d’Akagiri avaient cessé de demander à voir ma queue. Ils avaient décidé entre eux que je la gardais rentrée par politesse, et ils respectaient cela."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "tetsu_blade",
+        "en": "Tetsu's blade hung at my hip, and the bell-ringers nodded at it before they nodded at me.",
+        "fr": "La lame de Tetsu pendait à ma hanche, et les sonneurs de cloches la saluaient avant de me saluer."
+      }
+    ]
   },
   "3200_circle": {
     "id": "3200_circle",
@@ -7143,6 +7740,14 @@
         "flagsToAdd": [
           "hub_3200_smith"
         ]
+      },
+      {
+        "text": "Buy a blade from Tetsu's anvil (70 gold)",
+        "text_fr": "Acheter une lame sur l'enclume de Tetsu (70 or)",
+        "next_id": "3200_blade",
+        "goldMod": -70,
+        "lockedText": "Seventy gold. Tetsu did not haggle, and I could not pay.",
+        "lockedText_fr": "Soixante-dix pièces d'or. Tetsu ne marchandait pas, et je ne pouvais pas payer."
       }
     ]
   },
@@ -7280,7 +7885,19 @@
           "fr": "Les pilleurs avaient pris l’habitude de laisser une lampe allumée pour moi sur le sentier. Une honnête, placée là où j’en aurais besoin."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "lamps_smashed",
+        "en": "The point was dark tonight, and the rocks with it. The village watched me go the way you watch weather.",
+        "fr": "La pointe était noire cette nuit, et les rochers avec elle. Le village me regarda partir comme on regarde le temps qu’il fait."
+      },
+      {
+        "flag": "wreck_cut",
+        "en": "The headman had sent my cut up the cliff path in a fisherman's basket, with a nod and no name on it.",
+        "fr": "Le chef du village avait fait monter ma part par le sentier de la falaise, dans un panier de pêcheur, avec un signe de tête et aucun nom dessus."
+      }
+    ]
   },
   "5100_drowned": {
     "id": "5100_drowned",
@@ -7360,6 +7977,27 @@
         "next_id": "5100",
         "flagsToAdd": [
           "hub_5100_headman"
+        ]
+      },
+      {
+        "text": "Smash the false lamps on your way out",
+        "text_fr": "Briser les fausses lampes en repartant",
+        "next_id": "5100",
+        "alignmentMod": 2,
+        "flagsToAdd": [
+          "hub_5100_headman",
+          "lamps_smashed"
+        ]
+      },
+      {
+        "text": "Ask for a cut of the next wreck (+50 gold)",
+        "text_fr": "Demander une part du prochain naufrage (+50 or)",
+        "next_id": "5100",
+        "goldMod": 50,
+        "alignmentMod": -3,
+        "flagsToAdd": [
+          "hub_5100_headman",
+          "wreck_cut"
         ]
       }
     ]
@@ -7499,7 +8137,14 @@
           "fr": "La porte de la colline était là désormais, invitation ou non. Les Bienveillants disaient que c’était un grand compliment, de la voix de gens qui n’en faisaient pas souvent."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "nell_promise",
+        "en": "Nell had put the grey shawl away unfinished. She said there was no hurry now.",
+        "fr": "Nell avait rangé le châle gris inachevé. Elle disait que rien ne pressait, maintenant."
+      }
+    ]
   },
   "5200_barrows": {
     "id": "5200_barrows",
@@ -7580,6 +8225,16 @@
         "next_id": "5200",
         "flagsToAdd": [
           "hub_5200_nell"
+        ]
+      },
+      {
+        "text": "Promise her the rider won't reach the hill",
+        "text_fr": "Lui promettre que le cavalier n’atteindra pas la colline",
+        "next_id": "5200",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_5200_nell",
+          "nell_promise"
         ]
       }
     ]
@@ -7934,7 +8589,14 @@
           "fr": "Les géants avaient cessé de se pencher pour me parler. Ils me posaient désormais sur la table de la salle du conseil, ce qui mettait mes yeux à hauteur des leurs et était, disait Hathra, l’usage avec les hôtes de marque et les tout petits enfants."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "gorm_promise",
+        "en": "Hathra had set a second bowl at the moot-hall fire, for Gorm, and did not explain it to anyone.",
+        "fr": "Hathra avait posé un second bol près du feu de la salle du conseil, pour Gorm, et ne l'expliqua à personne."
+      }
+    ]
   },
   "6200_gate": {
     "id": "6200_gate",
@@ -8016,6 +8678,15 @@
         "next_id": "6200",
         "flagsToAdd": [
           "hub_6200_eldest"
+        ]
+      },
+      {
+        "text": "Promise to look for Gorm at the quarry",
+        "text_fr": "Promettre de chercher Gorm à la carrière",
+        "next_id": "6200",
+        "flagsToAdd": [
+          "hub_6200_eldest",
+          "gorm_promise"
         ]
       }
     ]
@@ -8294,6 +8965,18 @@
         "flagsToAdd": [
           "hub_7100_helmsman"
         ]
+      },
+      {
+        "text": "Tell him the Eel needs a helmsman",
+        "text_fr": "Lui dire que l'Eel a besoin d'un timonier",
+        "next_id": "7100",
+        "checkAbility": "charisma",
+        "checkDC": 13,
+        "flagsToAdd": [
+          "hub_7100_helmsman",
+          "helmsman_hired"
+        ],
+        "failNextId": "7100_helmsman_refused"
       }
     ]
   },
@@ -8448,7 +9131,14 @@
           "fr": "Une enfant grise avait pris l’habitude de me garder le premier poisson de la marée. Personne ne le lui avait dit. Personne ne le lui avait interdit."
         }
       ]
-    }
+    },
+    "flag_callbacks": [
+      {
+        "flag": "elder_promise",
+        "en": "The eldest had stopped asking strangers for her daughter's name. She was waiting for mine to bring it back.",
+        "fr": "L'aînée avait cessé de demander le nom de sa fille aux étrangers. Elle attendait que je le lui rapporte."
+      }
+    ]
   },
   "7200_nets": {
     "id": "7200_nets",
@@ -8507,6 +9197,15 @@
         "next_id": "7200",
         "flagsToAdd": [
           "hub_7200_elder"
+        ]
+      },
+      {
+        "text": "Promise to find her daughter's name in the ledger",
+        "text_fr": "Lui promettre de retrouver le nom de sa fille dans le registre",
+        "next_id": "7200",
+        "flagsToAdd": [
+          "hub_7200_elder",
+          "elder_promise"
         ]
       }
     ]
@@ -8641,6 +9340,11 @@
         "flag": "helmsman_farewell",
         "en": "Somewhere on the point the helmsman was watching. I had told him I would bring her colours down gently. I did not know yet whether that was a promise I could keep.",
         "fr": "Quelque part sur la pointe, le timonier regardait. Je lui avais dit que je descendrais ses couleurs doucement. Je ne savais pas encore si c’était une promesse que je pourrais tenir."
+      },
+      {
+        "flag": "helmsman_hired",
+        "en": "The Admiral's old helmsman had stood the Eel's wheel through the wrecks as if he had been waiting years to be asked. He had not drunk the whole way.",
+        "fr": "Le vieux timonier de l'Amiral avait tenu la barre de l'Eel à travers les épaves comme s'il avait attendu des années qu'on le lui demande. Il n'avait pas bu une goutte de tout le trajet."
       }
     ]
   },
@@ -8795,6 +9499,464 @@
         ],
         "showIfFlags": [
           "banner_five"
+        ]
+      }
+    ]
+  },
+  "2015_sable_lifted": {
+    "id": "2015_sable_lifted",
+    "description": "I bumped the man on my way past his table, apologized with real feeling, and was three stalls away before he reached for his purse and found it where he'd left it. He never reached for the marker. Sable unfolded it, read her own name on it, and put it away somewhere I didn't see. \"Clean,\" she said, with something close to respect. \"Fine. I'm yours while it pays.\"",
+    "description_fr": "Je bousculai l'homme en passant près de sa table, m'excusai avec une sincérité touchante, et me trouvais déjà trois étals plus loin quand il chercha sa bourse et la trouva à sa place. Il ne chercha jamais la reconnaissance de dette. Sable la déplia, y lut son propre nom, et la rangea quelque part où je ne vis rien. « Propre, dit-elle, avec quelque chose qui ressemblait à du respect. Bon. Je suis à vous tant que ça paie. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ]
+      }
+    ]
+  },
+  "2015_sable_caught": {
+    "id": "2015_sable_caught",
+    "description": "His hand closed on my wrist before mine had closed on anything. He was faster than he looked, and considerably less drunk. It cost me twenty gold and a good deal of dignity to walk away without the harbor watch hearing about it. Sable had watched the whole thing from across the wharf, and when I came back she was laughing. \"Cards, then,\" she said. \"The honest way. Heaven help us.\"",
+    "description_fr": "Sa main se referma sur mon poignet avant que la mienne se soit refermée sur quoi que ce soit. Il était plus rapide qu'il n'en avait l'air, et nettement moins ivre. Il m'en coûta vingt pièces d'or et une bonne part de ma dignité pour repartir sans que la garde du port en entende parler. Sable avait suivi toute la scène depuis l'autre bout du quai, et à mon retour elle riait. « Les cartes, alors, dit-elle. À la loyale. Que le ciel nous vienne en aide. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ],
+        "goldMod": -20
+      }
+    ]
+  },
+  "2015_sable_bought": {
+    "id": "2015_sable_bought",
+    "description": "I sat down across from him and talked about the weather, the Inquisition, the price of rope and, eventually, as if it had only just occurred to me, a piece of paper he had no real use for. Thirty gold changed hands. So did the marker. Sable read her own name on it and put it away. \"You paid,\" she said, faintly offended on my behalf. \"Nobody pays. Fine. I'm yours while it keeps paying.\"",
+    "description_fr": "Je m'assis en face de lui et parlai du temps, de l'Inquisition, du prix de la corde et, finalement, comme si l'idée venait de me traverser, d'un bout de papier dont il n'avait pas vraiment l'usage. Trente pièces d'or changèrent de main. La reconnaissance de dette aussi. Sable y lut son propre nom et la rangea. « Vous avez payé, dit-elle, vaguement vexée pour moi. Personne ne paie. Bon. Je suis à vous tant que ça continue de payer. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ]
+      }
+    ],
+    "reqGold": 30
+  },
+  "2015_sable_talk_failed": {
+    "id": "2015_sable_talk_failed",
+    "description": "He heard me out with the polite patience of a man who has already decided, then named a price that would have bought the barrel, the cards and the dockhands. Sable, listening from two tables away, shook her head at me very slightly. \"Cards, then,\" she said when I came back. \"The honest way. Heaven help us.\"",
+    "description_fr": "Il m'écouta avec la patience polie d'un homme qui a déjà décidé, puis annonça un prix qui aurait suffi à acheter le tonneau, les cartes et les dockers. Sable, qui écoutait à deux tables de là, secoua très légèrement la tête à mon intention. « Les cartes, alors, dit-elle à mon retour. À la loyale. Que le ciel nous vienne en aide. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Head back toward the harbor master's post",
+        "text_fr": "Revenir vers le poste du capitaine du port",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_sable"
+        ]
+      }
+    ]
+  },
+  "2015_liora": {
+    "id": "2015_liora",
+    "description": "She'd had at least four clean shots at me by the time I noticed her, crouched on the broken ridge of a roof with an arrow on the string. Either she wasn't planning to take one or she was waiting to see if I'd earn it. Below her, on the north pier, a man in a smuggler's oilskin was trying very hard not to look at the refugee boats.",
+    "description_fr": "Elle avait eu au moins quatre tirs francs sur moi avant que je ne la remarque, accroupie sur l'arête brisée d'un toit, une flèche encochée. Soit elle ne comptait pas tirer, soit elle attendait de voir si je le méritais. En contrebas, sur la jetée nord, un homme en ciré de contrebandier faisait de gros efforts pour ne pas regarder les bateaux de réfugiés.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Talk to her from the ground",
+        "text_fr": "Lui parler depuis le sol",
+        "next_id": "2015_liora_won",
+        "checkAbility": "charisma",
+        "checkDC": 11,
+        "failNextId": "2015_liora_refused"
+      },
+      {
+        "text": "Work out what she's watching",
+        "text_fr": "Comprendre ce qu'elle surveille",
+        "next_id": "2015_liora_won",
+        "checkAbility": "perception",
+        "checkDC": 11,
+        "failNextId": "2015_liora_refused"
+      },
+      {
+        "text": "Climb up to her roof",
+        "text_fr": "Grimper jusqu'à son toit",
+        "next_id": "2015_liora_won",
+        "checkAbility": "dexterity",
+        "checkDC": 12,
+        "failNextId": "2015_liora_refused"
+      },
+      {
+        "text": "Leave her to her rooftop",
+        "text_fr": "La laisser à son toit",
+        "next_id": "2015"
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "liora_refused",
+        "en": "She was still on her roof. \"Back again,\" she said, not quite a question.",
+        "fr": "Elle était toujours sur son toit. « Encore vous », dit-elle, sans que ce soit tout à fait une question."
+      }
+    ]
+  },
+  "2015_liora_won": {
+    "id": "2015_liora_won",
+    "description": "Whatever I did, it landed better than I expected. She came down without lowering the bow first, which I took as roughly the elvish equivalent of a handshake. \"Liora,\" she said. \"The captain running boats out of the north pier sells refugees a passage he never delivers. I have been counting his men for a week. Help me end him, and my bow is yours for as long as you are worth covering.\"",
+    "description_fr": "Quoi que j'aie fait, cela porta mieux que je ne l'espérais. Elle descendit sans baisser son arc au préalable, ce que je pris pour l'équivalent elfique approximatif d'une poignée de main. « Liora, dit-elle. Le capitaine qui fait partir des bateaux de la jetée nord vend aux réfugiés une traversée qu'il ne fait jamais. Je compte ses hommes depuis une semaine. Aidez-moi à en finir avec lui, et mon arc est à vous tant que vous vaudrez la peine qu'on vous couvre. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Agree to hunt the captain with her",
+        "text_fr": "Accepter de traquer le capitaine avec elle",
+        "next_id": "2015",
+        "unlockQuestId": "q_ch2_lioras_watch",
+        "flagsToAdd": [
+          "hub_2015_liora",
+          "liora_met"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "hub_2015_smuggler",
+        "en": "\"You already put one of his captains in the water,\" she added. \"He keeps another on the raiding skiff. That one is the one who matters.\"",
+        "fr": "« Vous avez déjà envoyé un de ses capitaines par le fond, ajouta-t-elle. Il en garde un autre sur le skiff de pillage. C'est celui-là qui compte. »"
+      }
+    ]
+  },
+  "2015_liora_refused": {
+    "id": "2015_liora_refused",
+    "description": "She heard me out, which was more than most people on that wharf would have done, and then shook her head. \"Not today,\" she said, and went back to watching the north pier as if I were no longer there. She did not move from the roof. I had the feeling she would still be there if I came back with something better.",
+    "description_fr": "Elle m'écouta jusqu'au bout, ce qui était plus que la plupart des gens de ce quai n'auraient fait, puis secoua la tête. « Pas aujourd'hui », dit-elle, et elle se remit à surveiller la jetée nord comme si je n'étais déjà plus là. Elle ne quitta pas son toit. J'eus le sentiment qu'elle y serait encore si je revenais avec quelque chose de mieux.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Leave her to her watch",
+        "text_fr": "La laisser à sa garde",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "liora_refused"
+        ]
+      }
+    ]
+  },
+  "2015_vess": {
+    "id": "2015_vess",
+    "description": "She had been two streets behind me since the harbor gate. When I finally stopped and waited, she stopped too, then came the rest of the way as if the distance had been a question and my waiting the answer. Up close I felt it before I saw it: a thread of the same cold, patient wrongness that hummed in the Bundle on my back, worn on her like a garment she had long since stopped trying to take off. \"You carry a piece of it,\" she said, looking at the Bundle and not at me. \"It remembers everyone who carries it. I would rather you heard what that means from me than from it.\"",
+    "description_fr": "Elle me suivait à deux rues de distance depuis la porte du port. Quand je m'arrêtai enfin pour l'attendre, elle s'arrêta aussi, puis franchit le reste de la distance comme si celle-ci avait été une question et mon attente la réponse. De près, je le sentis avant de le voir : un fil de cette même étrangeté froide et patiente qui bourdonnait dans le Balluchon sur mon dos, qu'elle portait comme un vêtement qu'elle avait depuis longtemps cessé d'essayer d'ôter. « Vous en portez un morceau, dit-elle en regardant le Balluchon et non moi. Il se souvient de tous ceux qui le portent. Je préfère que vous appreniez ce que cela signifie de ma bouche plutôt que de la sienne. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Hear her out",
+        "text_fr": "L'écouter",
+        "next_id": "2015",
+        "unlockQuestId": "q_ch1_vess_in_the_dark",
+        "flagsToAdd": [
+          "hub_2015_vess",
+          "met_vess"
+        ]
+      },
+      {
+        "text": "Send her away",
+        "text_fr": "La renvoyer",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_vess"
+        ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "void_marked",
+        "en": "\"And the Tear has had its hand on you already,\" she added, very quietly. \"I can see where.\"",
+        "fr": "« Et la Déchirure a déjà posé la main sur vous, ajouta-t-elle très bas. Je vois où. »"
+      },
+      {
+        "flag": "tear_touched",
+        "unlessFlags": [
+          "void_marked"
+        ],
+        "en": "\"You were at the Tear, too,\" she added. \"It remembers that as well.\"",
+        "fr": "« Vous étiez aussi à la Déchirure, ajouta-t-elle. Elle s'en souvient également. »"
+      }
+    ]
+  },
+  "899_paid": {
+    "id": "899_paid",
+    "description": "I emptied a good part of my purse into his palm. He weighed it without looking at it, the way men in his trade weigh everything, and stepped aside. \"Coin's coin,\" he said. \"Even tonight.\"",
+    "description_fr": "Je vidai une bonne partie de ma bourse dans sa paume. Il la soupesa sans la regarder, comme les hommes de son métier soupèsent tout, et s'écarta. « L'or, c'est l'or, dit-il. Même cette nuit. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "reqGold": 60,
+    "choices": [
+      {
+        "text": "Board the ship",
+        "text_fr": "Monter à bord",
+        "next_id": "960",
+        "flagsToAdd": [
+          "smuggler_paid"
+        ]
+      }
+    ]
+  },
+  "822_lie_failed": {
+    "id": "822_lie_failed",
+    "description": "The nearer one laughed. The resistance was inside, he agreed; that was rather the point of the two of them standing here.",
+    "description_fr": "Le plus proche éclata de rire. La résistance était à l'intérieur, convint-il ; c'était bien pour cela qu'ils se tenaient là, tous les deux.",
+    "context_taxonomy": {
+      "ui_theme": "torture_chamber",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight",
+        "text_fr": "Combattre",
+        "next_id": "823",
+        "triggerEnemyId": "inquisition_warden",
+        "flagsToAdd": [
+          "wardens_slain"
+        ]
+      }
+    ]
+  },
+  "850_fed_failed": {
+    "id": "850_fed_failed",
+    "description": "She let her brood eat the rations, and then she looked at me as if I were the next course.",
+    "description_fr": "Elle laissa sa progéniture manger les rations, puis me regarda comme si j’étais le plat suivant.",
+    "context_taxonomy": {
+      "ui_theme": "sewers",
+      "mood": "creepy",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Kill the Matriarch",
+        "text_fr": "Tuer la Matriarche",
+        "next_id": "891",
+        "triggerEnemyId": "rat_matriarch",
+        "flagsToAdd": [
+          "matriarch_slain"
+        ]
+      }
+    ]
+  },
+  "2040_paid": {
+    "id": "2040_paid",
+    "description": "Vane counted it twice, the second time for the benefit of his men, and lowered the crossbow. \"The berths are that way,\" he said. \"Walk, don't run. My men get excited.\"",
+    "description_fr": "Vane compta deux fois, la seconde pour l'édification de ses hommes, et abaissa son arbalète. « Les mouillages sont par là, dit-il. Marche, ne cours pas. Mes hommes s'excitent vite. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Walk to the berths",
+        "text_fr": "Marcher jusqu’aux mouillages",
+        "next_id": "2900",
+        "flagsToAdd": [
+          "vane_paid_off"
+        ]
+      }
+    ],
+    "reqGold": 40
+  },
+  "2070_cut_failed": {
+    "id": "2070_cut_failed",
+    "description": "His hand closed on my wrist and his other hand found my ribs. I left the purse where it was and some of myself on the boards.",
+    "description_fr": "Sa main se referma sur mon poignet et l’autre trouva mes côtes. Je laissai la bourse où elle était, et un peu de moi sur les planches.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Break through the cordon to the berths",
+        "text_fr": "Forcer le cordon jusqu'aux mouillages",
+        "next_id": "2900",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "vane_crossed"
+        ]
+      }
+    ],
+    "noDetour": true
+  },
+  "3010_rope_fail": {
+    "id": "3010_rope_fail",
+    "description": "The rope burned through my palms two floors short of the bottom, and the floor came up to meet me with the bells still ringing.",
+    "description_fr": "La corde me brûla les paumes deux étages avant le bas, et le sol vint à ma rencontre, les cloches sonnant toujours.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Get up before anyone looks",
+        "text_fr": "Se relever avant que quiconque regarde",
+        "next_id": "3030",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "bell_rope_burned"
+        ]
+      }
+    ]
+  },
+  "5010_deserter_dive_fail": {
+    "id": "5010_deserter_dive_fail",
+    "description": "The water was colder than the deserter had said and deeper than he knew. I came up without the chest and with a lungful of the Court.",
+    "description_fr": "L'eau était plus froide que ne l'avait dit le déserteur et plus profonde qu'il ne le savait. Je remontai sans le coffre, les poumons pleins de la Cour.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Return to the drowned cloister",
+        "text_fr": "Revenir au cloître noyé",
+        "next_id": "5010",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "hub_5010_deserter"
+        ]
+      }
+    ]
+  },
+  "6010_chart_bought": {
+    "id": "6010_chart_bought",
+    "description": "She copied it in the time it took me to count the coins, and blew on the ink as if it were soup. \"The square has loose flagstones,\" she said. \"Step where I drew the dots.\"",
+    "description_fr": "Elle la recopia le temps que je compte les pièces, et souffla sur l'encre comme sur une soupe. « La place a des dalles descellées, dit-elle. Marchez là où j'ai mis des points. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the Quarter",
+        "text_fr": "Retour au Quartier",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_chartkeeper",
+          "chart_bought"
+        ]
+      }
+    ],
+    "reqGold": 40
+  },
+  "3200_blade": {
+    "id": "3200_blade",
+    "description": "He sold me a blade he had made for no one in particular, and would not name the price until he had seen how I held it. \"The Horn-Taker's road is steep,\" he said. \"This will not get tired before you do.\"",
+    "description_fr": "Il me vendit une lame qu'il avait forgée pour personne en particulier, et refusa d'en dire le prix avant d'avoir vu comment je la tenais. « La route du Preneur de Cornes est raide, dit-il. Celle-ci ne se fatiguera pas avant vous. »",
+    "context_taxonomy": {
+      "ui_theme": "slums",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Back to the bells",
+        "text_fr": "Retour aux cloches",
+        "next_id": "3200",
+        "grantItemId": "sword_t2",
+        "flagsToAdd": [
+          "hub_3200_smith",
+          "tetsu_blade"
+        ]
+      }
+    ],
+    "reqGold": 70
+  },
+  "2011_roof_fall": {
+    "id": "2011_roof_fall",
+    "description": "A rotten gutter gave under my boot and put me down among them, which is the one place on those roofs I had been trying not to arrive.",
+    "description_fr": "Une gouttière pourrie céda sous ma botte et me déposa au milieu d'eux, le seul endroit de ces toits où j'avais tout fait pour ne pas arriver.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Fight your way out",
+        "text_fr": "Se frayer un passage",
+        "next_id": "2900",
+        "triggerEnemyId": "harbor_rat",
+        "flagsToAdd": [
+          "roof_fallen"
+        ]
+      }
+    ]
+  },
+  "7100_helmsman_refused": {
+    "id": "7100_helmsman_refused",
+    "description": "He looked at me for a long time over the cup, and then shook his head. \"She went down without me once,\" he said. \"I'll not give the sea a second try.\"",
+    "description_fr": "Il me regarda longtemps par-dessus sa tasse, puis secoua la tête. « Il a coulé sans moi une fois, dit-il. Je ne donnerai pas à la mer une seconde chance. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Leave him to his cup",
+        "text_fr": "Le laisser à sa tasse",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_helmsman"
         ]
       }
     ]

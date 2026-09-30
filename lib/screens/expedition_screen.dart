@@ -9,6 +9,7 @@ import '../combat/combat_engine.dart';
 import '../combat/encounter.dart';
 import '../data/ability_check.dart';
 import '../data/alignment_events.dart';
+import '../data/chapter_conditions.dart';
 import '../data/chapter_loop.dart';
 import '../data/check_outcomes.dart';
 import '../data/companion_remarks.dart';
@@ -21,7 +22,8 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
-import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
+import '../providers/chapter_loop_provider.dart'
+    show chapterConditionProvider, reachedChapterProvider;
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
@@ -644,6 +646,17 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
           kindLines.add(trFor(lang, 'delivery_late')
               .replaceAll('{n}', '${_daysUsed - _deadline}'));
         }
+    }
+    // The chapter's condition: a rival company takes the best contracts,
+    // a bounty season pays over the rate.
+    final condition = ref.read(chapterConditionProvider);
+    if (condition != null && condition.expeditionPay != 1 && rewardGold > 0) {
+      final before = rewardGold;
+      rewardGold = conditionedPrice(rewardGold, condition.expeditionPay);
+      final delta = rewardGold - before;
+      kindLines.add(trFor(lang, 'condition_pay_line')
+          .replaceAll('{name}', condition.nameFor(lang == AppLanguage.fr))
+          .replaceAll('{delta}', delta > 0 ? '+$delta' : '$delta'));
     }
     final rewardDiceId = widget.zone['rewardDiceId']?.toString() ?? '';
     final rewardAllyId = widget.zone['rewardAllyId']?.toString() ?? '';

@@ -45,13 +45,19 @@ int stableHash(String text) {
 /// in [chapter], [historyLength] scenes into the journey; null for a quiet
 /// road. Only a road between two places (see [isRoadStep]) holds one, from
 /// chapter 2, and never in the middle of a crisis (see
-/// SubNodeEngine.detourAllowedBetween).
+/// SubNodeEngine.detourAllowedBetween). The chapter's condition (see
+/// chapter_conditions.dart) may make events likelier ([oddsFactor]) and
+/// change their mix ([championShare], [shrineShare]; the rest are the
+/// caravan).
 RoadEventKind? roadEventFor({
   required StoryData story,
   required String fromNodeId,
   required String toNodeId,
   required int historyLength,
   required int chapter,
+  double oddsFactor = 1,
+  double championShare = 0.4,
+  double shrineShare = 0.3,
 }) {
   if (!roadRulesApply(chapter) || !isRoadStep(fromNodeId, toNodeId)) {
     return null;
@@ -59,14 +65,16 @@ RoadEventKind? roadEventFor({
   final from = story.nodeFor(fromNodeId);
   final to = story.nodeFor(toNodeId);
   if (from == null || to == null || isStoryEnding(to)) return null;
-  if (!SubNodeEngine.detourAllowedBetween(from.mood, to.mood)) return null;
+  if (!SubNodeEngine.detourAllowedBetweenScenes(from, to, chapter: chapter)) {
+    return null;
+  }
   // Two independent draws: whether the road holds anything, and what.
   final key = '$fromNodeId>$toNodeId#$historyLength#$chapter';
   double draw(String salt) => stableHash('$key$salt') / 0x100000000;
-  if (draw('?') >= roadEventChance) return null;
+  if (draw('?') >= roadEventChance * oddsFactor) return null;
   final roll = draw('!');
-  if (roll < 0.4) return RoadEventKind.champion;
-  if (roll < 0.7) return RoadEventKind.shrine;
+  if (roll < championShare) return RoadEventKind.champion;
+  if (roll < championShare + shrineShare) return RoadEventKind.shrine;
   return RoadEventKind.caravan;
 }
 

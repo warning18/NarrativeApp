@@ -33,6 +33,7 @@ bool isPlainGoOn(StoryChoice choice) =>
     !choice.travels &&
     !choice.opensCharacterCreation &&
     (choice.grantsBannerPieceId ?? '').isEmpty &&
+    !choice.grantsItem &&
     (choice.loseAllyId ?? '').isEmpty &&
     (choice.roadEvent ?? '').isEmpty &&
     !choice.triggersShipBattle;

@@ -125,6 +125,24 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Après {n} jours dans ce chapitre, ses ennemis commencent à se renforcer. Une nuit de repos ou un voyage prend des jours.',
   },
+  'condition_line': {
+    AppLanguage.en: 'This chapter: {name}',
+    AppLanguage.fr: 'Ce chapitre : {name}',
+  },
+  'condition_where': {
+    AppLanguage.en:
+        'It lasts the whole chapter. Tap your stats at the top of the screen to see it again, under The road.',
+    AppLanguage.fr:
+        'Cela dure tout le chapitre. Touchez vos statistiques en haut de l’écran pour le revoir, sous « La route ».',
+  },
+  'condition_shop_line': {
+    AppLanguage.en: '{name}: prices {p}%',
+    AppLanguage.fr: '{name} : prix {p} %',
+  },
+  'condition_pay_line': {
+    AppLanguage.en: '{name}: {delta} gold on the pay',
+    AppLanguage.fr: '{name} : {delta} or sur la paie',
+  },
   'road_rations_line': {
     AppLanguage.en: 'Rations: {n}/{max}',
     AppLanguage.fr: 'Rations : {n}/{max}',
@@ -2958,6 +2976,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'grants_banner_piece_id': {
     AppLanguage.en: 'Grants Shroud piece (id)',
     AppLanguage.fr: 'Accorde une pièce du Linceul (id)',
+  },
+  'grant_item_id': {
+    AppLanguage.en: 'Grants item (id)',
+    AppLanguage.fr: 'Accorde un objet (id)',
+  },
+  'item_picked_up': {
+    AppLanguage.en: 'Picked up: {item}',
+    AppLanguage.fr: 'Ramassé : {item}',
   },
   'lose_ally_id': {
     AppLanguage.en: 'Companion lost for good (id, or * for the first active)',

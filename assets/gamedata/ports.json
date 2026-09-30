@@ -33,7 +33,9 @@
     "shopIds": [
       "blind_beggar_stall",
       "weaponsmith_forge",
-      "apothecary_row"
+      "apothecary_row",
+      "shieldwrights_hall",
+      "black_market_docks"
     ],
     "voyageLength": 2,
     "isHome": false,

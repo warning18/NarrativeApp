@@ -170,7 +170,9 @@ void main() {
       expect(court.launchZoneId, 'z_drowned_stair');
       expect(court.nextId, '5003');
       expect(nodes['5004']!.choices.single.nextId, '5004_altar');
-      expect(nodes['5004b']!.choices.single.nextId, '5004_altar');
+      for (final choice in nodes['5004b']!.choices) {
+        expect(choice.nextId, '5004_altar');
+      }
       for (final choice in nodes['5004_altar']!.choices) {
         expect(choice.nextId, '5005');
       }
@@ -443,7 +445,9 @@ void main() {
       for (final choice in nodes['6002']!.choices) {
         expect(choice.nextId, '6002_siege', reason: choice.text);
       }
-      expect(nodes['6002_siege_end']!.choices.single.nextId, '6002_camp');
+      for (final choice in nodes['6002_siege_end']!.choices) {
+        expect(choice.nextId, '6002_camp');
+      }
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');
       expect(through.hideIfFlags, contains('lysa_lost'));

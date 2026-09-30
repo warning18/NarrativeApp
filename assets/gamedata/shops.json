@@ -2,7 +2,7 @@
   "blind_beggar_stall": {
     "shopID": "blind_beggar_stall",
     "shopName": "Blind Beggar Stall",
-    "shopDescription": "A makeshift stall selling salvaged goods.",
+    "shopDescription": "The Blind Beggar's cellar-boy got out with a barrow of the tavern's stores, and sells them off the wharf a bottle at a time.",
     "unlockLevel": 1,
     "buildCost": 0,
     "initialStock": [
@@ -20,10 +20,10 @@
       "potion_minor": 4,
       "sword_001": 1
     },
-    "minChapter": 1,
-    "detourEligible": true,
+    "minChapter": 2,
+    "detourEligible": false,
     "shopName_fr": "L’Étal du Mendiant Aveugle",
-    "shopDescription_fr": "Un étal de fortune où l’on vend des marchandises récupérées."
+    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s'est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille."
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -55,8 +55,8 @@
       "harborwatch_lantern": 1,
       "boots_tidewalker": 1
     },
-    "minChapter": 1,
-    "detourEligible": true,
+    "minChapter": 2,
+    "detourEligible": false,
     "shopName_fr": "La Cave aux Marées",
     "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
   },
@@ -104,7 +104,7 @@
       "harborwatch_cutlass": 1,
       "boots_worn_leather": 1
     },
-    "minChapter": 1,
+    "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Forge de l’Armurier",
     "shopDescription_fr": "Des lames et des lances fraîchement forgées s’alignent sur les râteliers, encore tièdes de l’enclume."
@@ -141,7 +141,7 @@
       "greaves_hide": 1,
       "greaves_studded": 1
     },
-    "minChapter": 1,
+    "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Halle des Boucliers",
     "shopDescription_fr": "Des rangées de boucliers, des rondaches fêlées aux égides étincelantes."
@@ -447,7 +447,7 @@
       "spellbook_arrow_volley": 1
     },
     "minChapter": 5,
-    "detourEligible": true,
+    "detourEligible": false,
     "shopName_fr": "Le Comptoir de l’Ossuaire",
     "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit."
   },
@@ -494,7 +494,7 @@
       "coat_last_watch": 1
     },
     "minChapter": 6,
-    "detourEligible": true,
+    "detourEligible": false,
     "shopName_fr": "La Dernière Lanterne",
     "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
   },

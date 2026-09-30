@@ -185,6 +185,7 @@ class PlayerSession {
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
+    this.runSeed = 0,
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -369,6 +370,10 @@ class PlayerSession {
   /// waits [hunterCooldownRolls] of them before the next (see
   /// alignment_events.dart).
   final int alignmentRollsSinceAmbush;
+
+  /// Rolled once per new game: picks each chapter's condition (see
+  /// chapter_conditions.dart). 0 on saves made before it existed.
+  final int runSeed;
 
   /// How much stronger enemies are in [chapter] for the days the party has
   /// spent in it (see [threatFor]).
@@ -670,6 +675,7 @@ class PlayerSession {
     int? chapterStartDay,
     int? sellswordFights,
     int? alignmentRollsSinceAmbush,
+    int? runSeed,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -760,6 +766,7 @@ class PlayerSession {
       sellswordFights: sellswordFights ?? this.sellswordFights,
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
+      runSeed: runSeed ?? this.runSeed,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -855,6 +862,7 @@ class PlayerSession {
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
+        'runSeed': runSeed,
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -1014,6 +1022,7 @@ class PlayerSession {
       alignmentRollsSinceAmbush:
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
+      runSeed: (json['runSeed'] as num?)?.toInt() ?? 0,
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -1390,6 +1399,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
+      runSeed: 1 + Random().nextInt(0x7ffffffe),
     );
     await _persist();
   }
@@ -1526,6 +1536,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
     String? bannerPieceId,
+    String? itemId,
     String? loseAllyId,
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
@@ -1587,6 +1598,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
+      inventoryItemIds: itemId == null || itemId.isEmpty
+          ? state.inventoryItemIds
+          : [...state.inventoryItemIds, itemId],
     );
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);

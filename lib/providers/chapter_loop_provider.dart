@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_conditions.dart';
 import '../data/chapter_loop.dart';
 import '../gamedata/db_schema.dart';
 import '../models/story_node.dart';
@@ -44,6 +45,20 @@ final reachedChapterProvider = Provider<int>((ref) {
     loops: ref.watch(chapterLoopsProvider),
     story: ref.watch(storyDataProvider).value,
   );
+});
+
+/// The condition of the chapter the party has reached (see
+/// chapter_conditions.dart), if it has one.
+final chapterConditionProvider = Provider<ChapterCondition?>((ref) {
+  final chapter = ref.watch(reachedChapterProvider);
+  final seed = ref.watch(playerSessionProvider.select((s) => conditionSeedFor(
+        runSeed: s.runSeed,
+        characterName: s.characterName,
+        raceId: s.raceId,
+        professionId: s.professionId,
+        cycle: s.newGamePlusCycle,
+      )));
+  return chapterConditionFor(seed: seed, chapter: chapter);
 });
 
 /// Where the open chapter stands: its activities done, its goal, and

@@ -237,6 +237,8 @@ const double knownWatersRaiderChance = 0.15;
 /// storm, a fifth a derelict, the rest calm water or a sighting.
 /// [alreadyRaided]: the days drawn continue a crossing that has met its
 /// raider already (a day added by sheltering), so known waters send none.
+/// [stormShift]: the chapter's weather (see chapter_conditions.dart) widens
+/// or narrows the storm band, at the expense of calm water.
 List<SeaEvent> buildVoyage({
   required Random random,
   required int length,
@@ -244,6 +246,7 @@ List<SeaEvent> buildVoyage({
   required int chapter,
   bool knownWaters = false,
   bool alreadyRaided = false,
+  double stormShift = 0,
 }) {
   final raiders = raiderPoolFor(enemyShips, chapter);
   final chance = knownWaters ? knownWatersRaiderChance : raiderChance;
@@ -259,9 +262,9 @@ List<SeaEvent> buildVoyage({
     if (roll < raiderChance) {
       raided = true;
       kind = SeaEventKind.raider;
-    } else if (roll < 0.55) {
+    } else if (roll < 0.55 + stormShift) {
       kind = SeaEventKind.storm;
-    } else if (roll < 0.75) {
+    } else if (roll < 0.75 + stormShift) {
       kind = SeaEventKind.derelict;
     } else if (roll < 0.9) {
       kind = SeaEventKind.calm;

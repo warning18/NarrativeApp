@@ -180,7 +180,7 @@ final List<Landmark> worldMapLandmarks = [
         'Three days under a porcelain mask, then the resistance blows the wall in. Recover the Bundle from the torturer’s table, get past the Wardens, and choose the battlements or the Corpse Chute.',
     blurbFr:
         'Trois jours sous un masque de porcelaine, puis la résistance fait sauter le mur. Reprenez le Balluchon sur la table du bourreau, passez les Gardiens, et choisissez les remparts ou la Goulotte aux Cadavres.',
-    scenes: ['800', '816', '820', '822', '823'],
+    scenes: ['800', '816', '820', '822', '822_lie_failed', '823'],
     fights: ['inquisition_warden'],
   ),
   const Landmark(
@@ -192,7 +192,7 @@ final List<Landmark> worldMapLandmarks = [
         'Waist-deep rot below the Corpse Chute, and a Rat Matriarch squatting in the main drainage pipe.',
     blurbFr:
         'De la pourriture jusqu’à la taille sous la Goulotte aux Cadavres, et une Matriarche des Rats tapie dans le collecteur principal.',
-    scenes: ['840', '850', '855'],
+    scenes: ['840', '850', '850_fed_failed', '855'],
     fights: ['rat_matriarch'],
   ),
   const Landmark(
@@ -205,7 +205,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'Le Rusty Eel lève l’ancre. Suppliez, marchandez ou menacez pour passer le contrebandier, puis affrontez l’Inquisiteur Clément, le Marqué, sur la chaîne d’ancre. La façon dont vous l’achevez, et ce vers quoi vous grimpez, fixe votre origine : Gardien, Rat ou Brisé.',
     scenes: [
-      '891', '895', '896', '897', '898', '960', '965', '965_mercy', //
+      '891', '895', '896', '897', '898', '899_paid', '960', '965', //
+      '965_mercy',
       '965_vengeance', '1000', '1001', '1002',
     ],
     fights: ['kroll_the_branded'],
@@ -228,16 +229,20 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Smugglers’ Wharf',
     nameFr: 'Le Quai des Contrebandiers',
     blurbEn:
-        'Chapter 2’s hub. Vane holds the gangplank to the Lower City; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, and Liora on the rooftop.',
+        'Chapter 2’s hub. Vane holds the gangplank to the Lower City; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, Liora on the rooftop, and Vess, who follows the Bundle.',
     blurbFr:
-        'Le carrefour du chapitre 2. Vane garde la passerelle vers la Ville Basse ; autour de lui, le marché regorge de travail : le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, et Liora sur le toit.',
+        'Le carrefour du chapitre 2. Vane garde la passerelle vers la Ville Basse ; autour de lui, le marché regorge de travail : le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
       '2001', '2000', '2005', '2010', '2010_crane', '2010_liora', '2011', //
       '2015', '2015_apothecary', '2015_bandits', '2015_bazaar', '2015_cards',
       '2015_cards_won', '2015_cards_lost', '2015_dockside', '2015_hound',
       '2015_informant', '2015_informant_trap', '2015_informant_exposed',
       '2015_informant_caught', '2015_kelda', '2015_rats', '2015_sable',
-      '2015_smuggler', '2020', '2021', '2030', '2040', '2050', '2070',
+      '2015_sable_lifted', '2015_sable_caught', '2015_sable_bought',
+      '2015_sable_talk_failed', '2015_liora', '2015_liora_won',
+      '2015_liora_refused', '2015_vess', '2015_smuggler', '2020', '2021',
+      '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
+      '2070_cut_failed',
     ],
     fights: [
       'harbor_rat', 'smuggler_captain', 'plague_hound', 'street_bandit', //
@@ -340,7 +345,7 @@ final List<Landmark> worldMapLandmarks = [
         'Le village des oni sur les terrasses au-dessus des sources chaudes, en haut de la Route des Exorcistes : des cloches à chaque avant-toit, un forgeron à la corne sciée, des brasseurs qui parient sur leurs invités, et le coffre de preuves du Preneur de Cornes.',
     scenes: [
       '3200', '3200_circle', '3200_brew', '3200_brew_failed', //
-      '3200_smith', '3200_smith_later', '3200_springs',
+      '3200_smith', '3200_smith_later', '3200_blade', '3200_springs',
     ],
     fights: ['inquisition_soldier', 'inquisition_auxiliary'],
   ),
@@ -354,7 +359,8 @@ final List<Landmark> worldMapLandmarks = [
     blurbFr:
         'La maison mère de l’Inquisition. Passez par les toits du cloître et à travers les vitraux, ou par la Salle des Archives, en soudoyant ou par la force. L’étendard blanc du Haut Gardien est gris en dessous : un morceau du Linceul.',
     scenes: [
-      '3002', '3010', '3020', '3030', '3040', '3050', '4999', //
+      '3002', '3010', '3010_rope_fail', '3020', '3030', '3040', '3050',
+      '4999', //
       '4999_standard',
     ],
     fights: ['inquisition_high_warden'],
@@ -400,6 +406,7 @@ final List<Landmark> worldMapLandmarks = [
         'Le carrefour du chapitre 4, dans une eau noire jusqu’aux genoux. L’ancienne archiviste de la Cour, un déserteur, un sapeur mordu par une goule et Tobin, le nain du chœur, avant l’Escalier Noyé.',
     scenes: [
       '5010', '5010_archivist', '5010_archivist_words', '5010_ghouls', //
+      '5010_deserter_dive_fail',
       '5010_sapper_thanks', '5010_warden', '5010_trade', '5010_span',
       '5010_span_failed', '5010_wisps', '5010_deserter',
       '5010_deserter_later', '5010_deserter_failed', '5010_tobin',
@@ -433,6 +440,7 @@ final List<Landmark> worldMapLandmarks = [
         'Du givre en plein été et des pénitents à la porte. La vérité du registre, la gardienne des cartes, la Dernière Lanterne, l’étal de Malrik, une confession à laquelle répondre, le sort de Lysa, et le quatrième morceau du Linceul dans le reliquaire d’une fillette.',
     scenes: [
       '6001', '6002', '6010_gate', '6010', '6010_chartkeeper', //
+      '6010_chart_bought',
       '6010_chartkeeper_words', '6010_lysa', '6010_lysa_later',
       '6010_lysa_dead', '6010_masked', '6010_masked_after', '6010_hounds',
       '6010_confession', '6010_confession_later', '6010_penitent',
@@ -497,7 +505,7 @@ final List<Landmark> worldMapLandmarks = [
         'Une ville bâtie avec les épaves de la Flotte Blanche par les croisés qui s’y sont échoués : un aumônier qui sait où gît le vaisseau amiral, une chandlerie, le mal gris, et une dernière compagnie encore en guerre.',
     scenes: [
       '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
-      '7100_sick', '7100_sick_failed', '7100_helmsman',
+      '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
       '7100_helmsman_later', '7100_cutter', '7100_cutter_lost',
     ],
     fights: ['inquisition_soldier', 'white_soldier'],

@@ -53,7 +53,11 @@ void main() {
     // The Court's remnants besiege the camp on the way home (v1.176).
     expect(story.nodeFor('6002')!.choices.map((c) => c.nextId).toSet(),
         {'6002_siege'});
-    expect(story.nodeFor('6002_siege_end')!.choices.single.nextId, '6002_camp');
+    // How the dead are laid out is the player's to choose (v1.181); every
+    // choice goes home.
+    for (final choice in story.nodeFor('6002_siege_end')!.choices) {
+      expect(choice.nextId, '6002_camp');
+    }
     final thread = story.nodeFor('6002_camp')!.choices.single;
     expect(thread.mainQuest, isTrue);
     expect(thread.nextId, '6010_thread');

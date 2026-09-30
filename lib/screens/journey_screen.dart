@@ -389,6 +389,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
     // What waits on each road is known before the party sets out (see
     // road_events.dart); Edit Mode's roads hold nothing.
     final chapter = ref.watch(reachedChapterProvider);
+    final condition = ref.watch(chapterConditionProvider);
     final eventsOn =
         !play.isInExcursion && ref.watch(appModeProvider) != AppMode.edit;
     final steps = [
@@ -435,6 +436,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView> {
                     toNodeId: choice.nextId,
                     historyLength: play.history.length,
                     chapter: chapter,
+                    oddsFactor: condition?.roadEventOdds ?? 1,
+                    championShare: condition?.championShare ?? 0.4,
+                    shrineShare: condition?.shrineShare ?? 0.3,
                   ),
           );
         }(),

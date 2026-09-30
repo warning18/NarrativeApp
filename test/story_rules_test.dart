@@ -33,6 +33,7 @@ bool _hasImpact(StoryChoice c) =>
     (c.unlockQuestId?.isNotEmpty ?? false) ||
     (c.questIDToProgress?.isNotEmpty ?? false) ||
     (c.grantsBannerPieceId?.isNotEmpty ?? false) ||
+    c.grantsItem ||
     (c.loseAllyId?.isNotEmpty ?? false) ||
     (c.launchZoneId?.isNotEmpty ?? false) ||
     // A camp's way into its chapter's main quest is the chapter's turn,
