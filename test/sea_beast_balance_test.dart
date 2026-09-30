@@ -102,8 +102,9 @@ class _Tally {
 
 /// Fights [battles] battles with the beast: [runAtOnce] turns tail from
 /// the first turn; otherwise the crew fights to the end, stopping its heart
-/// first, going for its fins with chain shot once it turns to flee, and
-/// loosing the harpoon before anything else.
+/// first, going for its fins with chain shot once it turns to flee,
+/// loosing the harpoon before anything else, and (v1.190) pushing a room
+/// when it pays (see [_push]).
 _Tally _meet(
   _Waters waters, {
   required List<String> parts,
@@ -142,6 +143,7 @@ _Tally _meet(
         }
       } else {
         _reach(b);
+        _push(b);
         _volley(b, rng);
       }
       if (b.over) break;
@@ -199,6 +201,30 @@ void _orders(ShipBattle b) {
       CrewOrder.grapple => false,
     };
     if (use) b.orderFromStation(c);
+  }
+}
+
+/// Pushes a room as the skilled captain of ship_battle_balance_test.dart
+/// does, never at a strain of 55% or more: the guns when a harpoon or a
+/// big gun is a step short of firing (a hunter's whole fight is landing
+/// the line), the bulwark when the blows coming add up to 14 or more, the
+/// hold with two leaks or more.
+void _push(ShipBattle b) {
+  bool worth(ShipRoom room) => b.canPush(room) && b.pushStrainChance(room) < 55;
+  final threat = b.enemy.weapons
+      .where((w) => readyNextTurn(w, b.enemy) && b.inRange(w))
+      .fold<int>(0, (sum, w) => sum + w.damage);
+  final gunShort = b.player.weapons.any((w) =>
+      !w.isReady &&
+      (w.damage >= 20 || w.tetherRounds > 0) &&
+      w.charge + 1 >= w.chargeTurns &&
+      b.inRange(w));
+  if (gunShort && worth(ShipRoom.guns)) {
+    b.pushRoom(ShipRoom.guns);
+  } else if (threat >= 14 && worth(ShipRoom.bulwark)) {
+    b.pushRoom(ShipRoom.bulwark);
+  } else if (b.player.leaks >= 2 && worth(ShipRoom.hold)) {
+    b.pushRoom(ShipRoom.hold);
   }
 }
 

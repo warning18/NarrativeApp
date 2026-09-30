@@ -2,8 +2,9 @@
 // she is fitted at three points of the game against every enemy ship,
 // under the battle before v1.153 (classic rules, a plain player) and the
 // battle now (every rule, a player who uses the tools: range,
-// aim, orders, quick orders, focused fire). The deck fights of a boarding
-// are a coin weighted to what the dice fights give at the rail.
+// aim, orders, quick orders, focused fire, and since v1.190 the enemy's
+// intents and a pushed room). The deck fights of a boarding are a coin
+// weighted to what the dice fights give at the rail.
 //
 // The new battle must stay winnable where the old one was, and not turn
 // into a walkover either: each pairing's win rate stays within a band of
@@ -124,7 +125,13 @@ BattleEnd _play({
     b.autoStation();
     if (tools) _orders(b);
     _maneuver(b, tools: tools);
-    // Fire every ready weapon at one room: focused fire.
+    if (tools) {
+      _meetBoarders(b);
+      _push(b);
+    }
+    // Fire every ready weapon at one room: focused fire. (Braced, the
+    // enemy takes half the hull: the skilled captain fires anyway, at its
+    // rooms, whose pips it loses as ever.)
     final room = _targetRoom(b);
     for (final w in List.of(b.player.weapons)) {
       if (b.over || !b.canFire(w)) continue;
@@ -195,9 +202,61 @@ void _orders(ShipBattle b) {
   }
 }
 
+/// What the enemy shows it will do, when the fog lets the player see it.
+ShipIntent? _seen(ShipBattle b) => b.intentVisible ? b.intent : null;
+
+/// Pushes a room when it pays (v1.190), never at a strain of 55% or more:
+/// the guns when a big gun is a step short of firing, the bulwark when
+/// the volley coming is 14 or more, the hold with two leaks or more.
+void _push(ShipBattle b) {
+  bool worth(ShipRoom room) => b.canPush(room) && b.pushStrainChance(room) < 55;
+  final seen = _seen(b);
+  final holding = seen == ShipIntent.mend || seen == ShipIntent.brace;
+  final threat = holding
+      ? 0
+      : b.enemy.weapons
+          .where((w) => readyNextTurn(w, b.enemy) && b.inRange(w))
+          .fold<int>(0, (sum, w) => sum + w.damage);
+  final bigGunShort = b.player.weapons.any((w) =>
+      !w.isReady &&
+      w.damage >= 20 &&
+      w.charge + 1 >= w.chargeTurns &&
+      b.inRange(w));
+  if (bigGunShort && worth(ShipRoom.guns)) {
+    b.pushRoom(ShipRoom.guns);
+  } else if (threat >= 14 && worth(ShipRoom.bulwark)) {
+    b.pushRoom(ShipRoom.bulwark);
+  } else if (b.player.leaks >= 2 && worth(ShipRoom.hold)) {
+    b.pushRoom(ShipRoom.hold);
+  }
+}
+
+/// Boarders massing at the rail: pull away from them unless the Eel means
+/// to board herself, else a hand to the hold to meet them.
+void _meetBoarders(ShipBattle b) {
+  if (_seen(b) != ShipIntent.board) return;
+  final farther = b.range.index < ShipRange.values.length - 1
+      ? ShipRange.values[b.range.index + 1]
+      : null;
+  final boarding = b.boarding.canBoard && !b.boardingSpent;
+  if (!boarding && farther != null && b.canMoveTo(farther)) {
+    b.maneuver(farther);
+    return;
+  }
+  if (b.stations.containsKey(ShipRoom.hold)) return;
+  for (final room in [ShipRoom.bulwark, ShipRoom.guns]) {
+    final hand = b.stations[room];
+    if (hand != null) {
+      b.station(hand, ShipRoom.hold);
+      return;
+    }
+  }
+}
+
 /// The range the player steers for: where a ready weapon reaches, and
 /// side by side when the enemy's rail is open to board. With [tools]: after
-/// a fleeing ship, and off a rammer's line until it has rammed.
+/// a fleeing ship, and off a rammer's line until it has rammed (or its
+/// ram shows coming).
 void _maneuver(ShipBattle b, {required bool tools}) {
   if (!b.rules.range) return;
   ShipRange? want;
@@ -224,9 +283,9 @@ void _maneuver(ShipBattle b, {required bool tools}) {
   } else if (tools && b.habit == EnemyHabit.flee && isFleeing(b.enemy)) {
     want = ShipRange.close;
   } else if (tools &&
-      b.habit == EnemyHabit.ram &&
-      !b.rammed &&
-      b.range == ShipRange.close) {
+      b.range == ShipRange.close &&
+      (_seen(b) == ShipIntent.ram ||
+          (b.habit == EnemyHabit.ram && !b.rammed))) {
     want = ShipRange.medium;
   }
   if (want == null || want == b.range) return;
