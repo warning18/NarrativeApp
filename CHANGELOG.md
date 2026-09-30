@@ -8,6 +8,44 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.191.0+222]
+
+Narration can be recorded a part at a time and kept in the game. This brings
+in PR #104 (built on v1.160), brought up to date with main.
+
+### Added
+- **Record narration** (Edit Mode). Open it from Settings → Read-Aloud Voice
+  → *Choose scenes to record…*.
+  - It lists the story's scenes by kind (main story, places, side scenes,
+    endings), by chapter (prologue to chapter 6) and by language.
+  - Each scene shows how many of its paragraphs are recorded.
+  - Tick scenes, or *Select all* for a filter, then record them in one go.
+    It shows the ElevenLabs character cost before starting and can be
+    stopped.
+  - Companions' asides and the callback, race, profession and hub lines
+    are included, or can be left out.
+- **Record this scene** (Edit Mode). A microphone button beside the node ID
+  on the story screen records the scene on screen: every paragraph it can be
+  read in, in the app's language, the fight aftermath line included. The
+  button lights up once the scene is recorded.
+- **Push recordings to GitHub** (Edit Mode), from Settings or the recording
+  page.
+  - Every recording on the device that the repository doesn't have yet goes
+    to a new `narration-…` branch in a single commit, under
+    `assets/narration/<en|fr>/`, each with its words in a `.txt` beside it.
+  - It uses the GitHub token from the GitHub sync settings.
+- **Recordings ship inside the app.** Once a pull request from that branch
+  is merged, the game plays those scenes from its own files, with no API
+  key, no recording and no download. Settings shows how many recordings
+  are on the device and how many ship with the app.
+- `docs/audio-asset-list.csv` and `.json`: the list of sounds the game could
+  use.
+
+### Changed
+- ElevenLabs recordings are now 64 kbit/s MP3, half the size of before and
+  still clear for a voice. That matters now that recordings ship in the
+  app.
+
 ## [1.190.0+221]
 
 The ship battle gets dynamics: the enemy shows what it will do, the Eel can

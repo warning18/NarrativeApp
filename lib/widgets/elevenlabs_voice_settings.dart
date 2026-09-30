@@ -4,10 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/narration_clips.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../providers/voice_settings_provider.dart';
+import '../screens/narration_recording_screen.dart';
+import 'narration_recording_dialogs.dart';
 
 /// The Settings controls for the recorded ElevenLabs voice: on/off, the
 /// API key (kept on this device only), the voice id, how much of the story
@@ -27,21 +30,21 @@ class _ElevenLabsVoiceSettingsSectionState
   late final TextEditingController _voiceController;
   bool _obscure = true;
 
-  /// Bumped to re-read the recorded count after recording or deleting.
-  int _countVersion = 0;
-
-  /// The recorded count and folder, read once per [_countVersion], voice
-  /// and language rather than on every rebuild.
+  /// The recorded counts (on this device, inside the app) and the folder,
+  /// read once per recordings change, voice and language rather than on
+  /// every rebuild.
   String? _statusKey;
-  Future<(int, String)>? _status;
+  Future<(int, int, String)>? _status;
 
-  Future<(int, String)> _statusFor(String voiceId, AppLanguage language) {
-    final key = '$_countVersion|$voiceId|${language.name}';
+  Future<(int, int, String)> _statusFor(
+      int version, String voiceId, AppLanguage language) {
+    final key = '$version|$voiceId|${language.name}';
     if (key != _statusKey || _status == null) {
       _statusKey = key;
       final recordings = ref.read(elevenLabsTtsProvider.notifier).recordings;
-      Future<(int, String)> read() async => (
+      Future<(int, int, String)> read() async => (
             await recordings.count(voiceId: voiceId, language: language),
+            await recordings.bundledCount(language),
             await recordings.folderPath(voiceId: voiceId, language: language),
           );
       _status = read();
@@ -83,94 +86,9 @@ class _ElevenLabsVoiceSettingsSectionState
 
   Future<void> _recordWholeStory() async {
     final language = ref.read(appLanguageProvider);
-    final voice = ref.read(elevenLabsVoiceSettingsProvider);
-    final notifier = ref.read(elevenLabsTtsProvider.notifier);
-    final pending = await notifier.missingFrom(await _script(language),
-        settings: voice, language: language);
+    final script = await _script(language);
     if (!mounted) return;
-    if (pending.missing.isEmpty) {
-      _snack(tr(ref, 'elevenlabs_record_nothing'));
-      return;
-    }
-    final go = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(tr(ref, 'elevenlabs_record_all_button')),
-        content: Text(tr(ref, 'elevenlabs_record_confirm_body')
-            .replaceAll('{count}', '${pending.missing.length}')
-            .replaceAll('{chars}', '${pending.characters}')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(tr(ref, 'cancel')),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(tr(ref, 'elevenlabs_record_button')),
-          ),
-        ],
-      ),
-    );
-    if (go != true || !mounted) return;
-
-    final progress = ValueNotifier<int>(0);
-    var cancelled = false;
-    final total = pending.missing.length;
-    final navigator = Navigator.of(context);
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      // Back works as Cancel: the dialog closes itself once the clip being
-      // recorded is saved.
-      builder: (context) => PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (_, __) => cancelled = true,
-        child: AlertDialog(
-          title: Text(tr(ref, 'elevenlabs_recording_title')),
-          content: ValueListenableBuilder<int>(
-            valueListenable: progress,
-            builder: (context, done, _) => Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                LinearProgressIndicator(
-                    value: total == 0 ? null : done / total),
-                const SizedBox(height: 12),
-                Text(tr(ref, 'elevenlabs_recording_progress')
-                    .replaceAll('{done}', '$done')
-                    .replaceAll('{total}', '$total')),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => cancelled = true,
-              child: Text(tr(ref, 'cancel')),
-            ),
-          ],
-        ),
-      ),
-    );
-    int? recorded;
-    Object? error;
-    try {
-      recorded = await notifier.recordAll(
-        pending.missing,
-        settings: voice,
-        language: language,
-        onProgress: (done, _) => progress.value = done,
-        cancelled: () => cancelled,
-      );
-    } catch (e) {
-      error = e;
-    }
-    navigator.pop();
-    progress.dispose();
-    if (!mounted) return;
-    setState(() => _countVersion++);
-    _snack(error != null
-        ? '${tr(ref, 'voice_error_prefix')}: $error'
-        : tr(ref, 'elevenlabs_record_done').replaceAll('{count}', '$recorded'));
+    await recordNarration(context, ref, {language: script});
   }
 
   Future<void> _deleteRecordings() async {
@@ -195,8 +113,8 @@ class _ElevenLabsVoiceSettingsSectionState
     final notifier = ref.read(elevenLabsTtsProvider.notifier);
     await notifier.stop();
     await notifier.recordings.deleteVoice(voice.voiceId);
+    ref.read(narrationRecordingsVersionProvider.notifier).state++;
     if (!mounted) return;
-    setState(() => _countVersion++);
     _snack(tr(ref, 'elevenlabs_deleted'));
   }
 
@@ -301,7 +219,7 @@ class _ElevenLabsVoiceSettingsSectionState
                   _voiceController.text =
                       ref.read(elevenLabsVoiceSettingsProvider).voiceId;
                   if (!mounted) return;
-                  setState(() => _countVersion++);
+                  setState(() {});
                 },
               ),
             ),
@@ -310,12 +228,13 @@ class _ElevenLabsVoiceSettingsSectionState
                   .read(elevenLabsVoiceSettingsProvider.notifier)
                   .setVoiceId(value);
               if (!mounted) return;
-              setState(() => _countVersion++);
+              setState(() {});
             },
           ),
           const SizedBox(height: 12),
-          FutureBuilder<(int, String)>(
-            future: _statusFor(voice.voiceId, language),
+          FutureBuilder<(int, int, String)>(
+            future: _statusFor(ref.watch(narrationRecordingsVersionProvider),
+                voice.voiceId, language),
             builder: (context, snapshot) {
               final data = snapshot.data;
               if (data == null) return const SizedBox.shrink();
@@ -323,8 +242,9 @@ class _ElevenLabsVoiceSettingsSectionState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(tr(ref, 'elevenlabs_recorded_count')
-                      .replaceAll('{count}', '${data.$1}')),
-                  SelectableText(data.$2, style: theme.textTheme.bodySmall),
+                      .replaceAll('{count}', '${data.$1}')
+                      .replaceAll('{bundled}', '${data.$2}')),
+                  SelectableText(data.$3, style: theme.textTheme.bodySmall),
                 ],
               );
             },
@@ -335,6 +255,21 @@ class _ElevenLabsVoiceSettingsSectionState
             icon: const Icon(Icons.mic_none),
             label: Text(tr(ref, 'elevenlabs_record_all_button')),
           ),
+          if (ref.watch(appModeProvider) == AppMode.edit) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const NarrationRecordingScreen())),
+              icon: const Icon(Icons.checklist),
+              label: Text(tr(ref, 'narration_recording_open_button')),
+            ),
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => pushNarrationRecordings(context, ref),
+              icon: const Icon(Icons.cloud_upload_outlined),
+              label: Text(tr(ref, 'elevenlabs_push_button')),
+            ),
+          ],
           const SizedBox(height: 8),
           OutlinedButton.icon(
             onPressed: _deleteRecordings,
