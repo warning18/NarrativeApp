@@ -1,4 +1,6 @@
 import '../models/story_node.dart';
+import 'echoes.dart';
+import 'journey_rules.dart';
 
 /// Scenes the story reads straight through.
 ///
@@ -8,7 +10,9 @@ import '../models/story_node.dart';
 /// scene through as soon as it is reached: its text opens the next scene
 /// (see [ScenePrelude]), its flags are set, and the party arrives at the
 /// scene after in one step. At most [maxPassThrough] such scenes are read
-/// together, so a page never runs on too long.
+/// together, so a page never runs on too long. A way on that crosses the
+/// map is a step on the road (a ration, a watch, what the road holds), so
+/// its scene is a stop.
 
 /// The most plain scenes folded into the one that follows them.
 const int maxPassThrough = 2;
@@ -41,7 +45,7 @@ bool isPlainGoOn(StoryChoice choice) =>
 /// The lone plain way on out of [node] for a party holding [flags], or
 /// null when [node] is a real stop: a place (town, camp, village), an
 /// ending, a timed scene, a scene with more than one way on (hidden ones aside) or whose
-/// one way on does more than move on.
+/// one way on does more than move on, or takes the road to another place.
 StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
@@ -49,18 +53,31 @@ StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags) {
   final ways = node.choices.where((c) => !c.isHiddenFor(held)).toList();
   if (ways.length != 1) return null;
   final way = ways.single;
-  return isPlainGoOn(way) ? way : null;
+  if (!isPlainGoOn(way) || isRoadStep(node.id, way.nextId)) return null;
+  return way;
 }
 
 /// A scene read on the way to the next one, shown above it.
 class ScenePrelude {
-  const ScenePrelude({required this.nodeId, required this.text, this.speaker});
+  const ScenePrelude({
+    required this.nodeId,
+    required this.body,
+    this.echoes = const [],
+    this.speaker,
+  });
 
   final String nodeId;
 
-  /// The scene as the player reads it (see composeNarration).
-  final String text;
+  /// The scene as the player reads it (see composeNarrationParts), less
+  /// the lines an earlier choice earned: those are its [echoes], each
+  /// shown with the choice that earned it.
+  final String body;
+  final List<SceneEcho> echoes;
 
   /// Who speaks in it, when it is not the narrator.
   final String? speaker;
+
+  /// The whole scene in one text, its echoes read inline (read aloud, and
+  /// wherever they aren't shown apart).
+  String get text => [body, for (final echo in echoes) echo.line].join('\n\n');
 }

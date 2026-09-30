@@ -184,7 +184,6 @@ class PlayerSession {
     this.provisions = provisionsStart,
     this.day = 1,
     this.watch = 1,
-    this.stepsToday = 0,
     this.clockChapter = 0,
     this.chapterStartDay = 1,
     this.sellswordFights = 0,
@@ -358,15 +357,12 @@ class PlayerSession {
   final int provisions;
 
   /// The world clock: the day of the journey, from 1, and the watch of it
-  /// (0 dawn, 1 day, 2 dusk, 3 night). A step on the road is a watch
-  /// ([stepsPerDay] steps end the day), a walk between places two, a
-  /// voyage its days at sea; a rest sleeps through to the next dawn (see
-  /// takeRoadStep, passTime, passDays, restUntilDawn).
+  /// (0 dawn, 1 day, 2 dusk, 3 night). A step on the road is a watch (four
+  /// from dawn end the day), a walk between places two, a voyage its days
+  /// at sea; a rest sleeps through to the next dawn (see takeRoadStep,
+  /// passTime, passDays, restUntilDawn).
   final int day;
   final int watch;
-
-  /// Steps taken on the road since the day began.
-  final int stepsToday;
 
   /// The chapter the clock counts days in, and the day it began: the
   /// longer a chapter takes, the stronger its enemies grow (see
@@ -695,7 +691,6 @@ class PlayerSession {
     int? provisions,
     int? day,
     int? watch,
-    int? stepsToday,
     int? clockChapter,
     int? chapterStartDay,
     int? sellswordFights,
@@ -789,7 +784,6 @@ class PlayerSession {
       provisions: provisions ?? this.provisions,
       day: day ?? this.day,
       watch: watch ?? this.watch,
-      stepsToday: stepsToday ?? this.stepsToday,
       clockChapter: clockChapter ?? this.clockChapter,
       chapterStartDay: chapterStartDay ?? this.chapterStartDay,
       sellswordFights: sellswordFights ?? this.sellswordFights,
@@ -890,7 +884,6 @@ class PlayerSession {
         'provisions': provisions,
         'day': day,
         'watch': watch,
-        'stepsToday': stepsToday,
         'clockChapter': clockChapter,
         'chapterStartDay': chapterStartDay,
         'sellswordFights': sellswordFights,
@@ -1054,7 +1047,6 @@ class PlayerSession {
       provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
       day: max(1, (json['day'] as num?)?.toInt() ?? 1),
       watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
-      stepsToday: (json['stepsToday'] as num?)?.toInt() ?? 0,
       clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
       chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
       sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
@@ -2704,22 +2696,26 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   // --- The world clock ---------------------------------------------------
 
-  /// Moves the clock on by [watches] quarters of a day (a walk between
-  /// places is two, an expedition two). In [chapter], the days it passes
-  /// count toward the chapter's threat (see [threatIn]).
+  /// Moves the clock on by [watches] quarters of a day (an expedition is
+  /// two, a day at sea four). In [chapter], the days it passes count
+  /// toward the chapter's threat (see [threatIn]).
   Future<void> passTime(int watches, {int? chapter}) async {
     if (watches <= 0) return;
     final session = chapter != null && roadRulesApply(chapter)
         ? _clockedIn(state, chapter)
         : state;
-    final total = session.watch + watches;
-    final days = total ~/ 4;
-    state = session.copyWith(
-      day: session.day + days,
-      watch: total % 4,
-      stepsToday: days > 0 ? 0 : null,
-    );
+    state = _later(session, watches);
     await _persist();
+  }
+
+  /// [session] with the clock [watches] on: past the night, the next day
+  /// begins at dawn.
+  static PlayerSession _later(PlayerSession session, int watches) {
+    final total = session.watch + watches;
+    return session.copyWith(
+      day: session.day + total ~/ watchesPerDay,
+      watch: total % watchesPerDay,
+    );
   }
 
   /// A night's rest: the party heals and wakes at the next dawn, a day on
@@ -2728,7 +2724,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final session = chapter != null && roadRulesApply(chapter)
         ? _clockedIn(state, chapter)
         : state;
-    state = session.copyWith(day: session.day + 1, watch: 0, stepsToday: 0);
+    state = session.copyWith(day: session.day + 1, watch: 0);
     await healPartyToFull();
   }
 
@@ -2942,9 +2938,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
               clockChapter: chapter, chapterStartDay: session.day);
 
   /// One step on the road in [chapter]: a ration eaten (or, with none
-  /// left, hunger's bite, see [hungerDamage]) and a quarter of the day
-  /// gone. Chapter 1 has no town to buy from, so its roads cost nothing.
-  Future<RoadStep> takeRoadStep({required int chapter}) async {
+  /// left, hunger's bite, see [hungerDamage]) and [watches] of the day
+  /// gone, a watch for a step (see [passTime]; a walk between places is
+  /// [walkWatches]). Chapter 1 has no town to buy from, so its roads cost
+  /// nothing.
+  Future<RoadStep> takeRoadStep({required int chapter, int watches = 1}) async {
     if (!roadRulesApply(chapter)) return const RoadStep();
     final session = _clockedIn(state, chapter);
     final hungry = session.provisions <= 0;
@@ -2952,39 +2950,40 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         ? hungerDamage(
             health: session.currentHealth, maxHealth: session.maxHealth)
         : 0;
-    var steps = session.stepsToday + 1;
-    var day = session.day;
-    final dayEnded = steps >= stepsPerDay;
-    if (dayEnded) {
-      day += 1;
-      steps = 0;
-    }
-    state = session.copyWith(
+    final later = _later(session, watches);
+    state = later.copyWith(
       provisions: hungry ? 0 : session.provisions - 1,
       currentHealth: session.currentHealth - bite,
-      day: day,
-      stepsToday: steps,
-      // A step is a watch; a new day begins at dawn.
-      watch: dayEnded ? 0 : min(3, session.watch + 1),
     );
     await _persist();
     return RoadStep(
       counted: true,
       hungry: hungry,
       hunger: bite,
-      dayEnded: dayEnded,
-      day: day,
+      dayEnded: later.day > session.day,
+      day: later.day,
       provisionsLeft: state.provisions,
     );
   }
 
-  /// [days] pass in [chapter] (a voyage, a day lost on an expedition): the
-  /// next day begins after them.
+  /// A day at sea in [chapter]: the whole day on the clock (see
+  /// [passTime]) and, where the road's rules apply, the crew's ration for
+  /// it, as a step on the road eats one (see [takeRoadStep]).
+  Future<RoadStep> passSeaDay({required int chapter}) async {
+    if (!roadRulesApply(chapter)) {
+      await passTime(watchesPerDay, chapter: chapter);
+      return const RoadStep();
+    }
+    return takeRoadStep(chapter: chapter, watches: watchesPerDay);
+  }
+
+  /// [days] pass in [chapter] (a day lost on an expedition): the same
+  /// watch of the day, [days] later.
   Future<void> passDays(int days, {required int chapter}) async {
     if (days <= 0) return;
     final session =
         roadRulesApply(chapter) ? _clockedIn(state, chapter) : state;
-    state = session.copyWith(day: session.day + days, stepsToday: 0);
+    state = session.copyWith(day: session.day + days);
     await _persist();
   }
 

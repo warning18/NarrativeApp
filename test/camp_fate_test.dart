@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/camp_fate.dart';
+import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -174,11 +175,11 @@ void main() {
     await notifier.loadSession(PlayerSession.fromJson({
       'raceId': 'human',
       'professionId': 'warrior',
-      'provisions': 10,
+      'provisions': provisionsMax - 2,
     }));
     expect(await notifier.adjustProvisions(5), 2);
-    expect(notifier.state.provisions, 12);
-    expect(await notifier.adjustProvisions(-20), -12);
+    expect(notifier.state.provisions, provisionsMax);
+    expect(await notifier.adjustProvisions(-20), -provisionsMax);
     expect(notifier.state.provisions, 0);
   });
 }

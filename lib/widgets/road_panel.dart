@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../data/chapter_conditions.dart';
 import '../data/journey_rules.dart';
@@ -13,29 +14,40 @@ import 'camp_fate_dialog.dart';
 import 'immersive_notice.dart';
 import 'moments.dart';
 
+/// A night's rest under way (see [restTheNight]): a second tap on Rest
+/// before it is over rests nothing.
+final _restingProvider = StateProvider<bool>((ref) => false);
+
 /// A night's rest in a town, a port or the camp (see
 /// PlayerSessionNotifier.restNight), said in a notice: [message], and from
 /// chapter 2 the day that begins. A night at the camp ([atCamp]) rolls the
 /// camp's fate die (see camp_fate_dialog.dart), which says it instead.
 Future<void> restTheNight(BuildContext context, WidgetRef ref,
     {required String message, bool atCamp = false}) async {
-  final chapter = ref.read(reachedChapterProvider);
-  await ref.read(playerSessionProvider.notifier).restNight(chapter: chapter);
-  if (!context.mounted) return;
-  showHealWave(context);
-  final day = ref.read(playerSessionProvider).day;
-  final line = roadRulesApply(chapter)
-      ? '$message ${tr(ref, 'rest_new_day').replaceAll('{day}', '$day')}'
-      : message;
-  if (atCamp) {
-    await showCampFateDie(context, ref, restedLine: line);
-    return;
+  final resting = ref.read(_restingProvider.notifier);
+  if (resting.state) return;
+  resting.state = true;
+  try {
+    final chapter = ref.read(reachedChapterProvider);
+    await ref.read(playerSessionProvider.notifier).restNight(chapter: chapter);
+    if (!context.mounted) return;
+    showHealWave(context);
+    final day = ref.read(playerSessionProvider).day;
+    final line = roadRulesApply(chapter)
+        ? '$message ${tr(ref, 'rest_new_day').replaceAll('{day}', '$day')}'
+        : message;
+    if (atCamp) {
+      await showCampFateDie(context, ref, restedLine: line);
+      return;
+    }
+    showImmersiveNotice(
+      context,
+      icon: Icons.local_fire_department,
+      message: line,
+    );
+  } finally {
+    resting.state = false;
   }
-  showImmersiveNotice(
-    context,
-    icon: Icons.local_fire_department,
-    message: line,
-  );
 }
 
 /// The road's state and its trade (see journey_rules.dart): the day and

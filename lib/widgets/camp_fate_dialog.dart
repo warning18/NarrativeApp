@@ -116,6 +116,9 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
   FateChoice? _chosen;
   List<ApprovalChange> _reactions = const [];
 
+  /// The night is being played out: a second tap on a choice does nothing.
+  bool _resolving = false;
+
   late final List<FateFace> _die = fateDieFor(widget.fateContext);
 
   @override
@@ -152,6 +155,8 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
   }
 
   Future<void> _resolve(FateChoice? choice) async {
+    if (_resolving) return;
+    setState(() => _resolving = true);
     final session = ref.read(playerSessionProvider);
     final chapter = widget.fateContext.chapter;
     final ability = widget.roll.face == FateFace.theft
@@ -388,92 +393,107 @@ class _CampFateDialogState extends ConsumerState<CampFateDialog> {
     final result = _resultText(lang);
     final effects = _effectLines(lang);
     final body = theme.textTheme.bodyLarge?.copyWith(height: 1.5);
-    return AlertDialog(
-      title: Row(
-        children: [
-          Icon(Icons.casino_outlined, color: theme.colorScheme.primary),
-          const SizedBox(width: 8),
-          Expanded(child: Text(trFor(lang, 'fate_title'))),
-        ],
-      ),
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
+    // Back neither skips the roll nor the night's choice: once the night
+    // is played out, it closes the die as its button does.
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _stage == _Stage.done) {
+          Navigator.of(context).pop(_reactions);
+        }
+      },
+      child: AlertDialog(
+        title: Row(
           children: [
-            if (widget.restedLine != null) ...[
-              Text(widget.restedLine!, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: 8),
-            ],
-            if (!showEvent) Text(trFor(lang, 'fate_intro'), style: body),
-            const SizedBox(height: 12),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (var i = 0; i < _die.length; i++) _faceTile(i, theme, lang),
-              ],
-            ),
-            if (!showEvent) ...[
-              const SizedBox(height: 8),
-              Text(trFor(lang, 'fate_hint'), style: theme.textTheme.labelSmall),
-            ],
-            if (showEvent) ...[
-              const SizedBox(height: 16),
-              Text(_eventText(lang), style: body),
-            ],
-            if (_stage == _Stage.landed && choices.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              for (final (i, choice) in choices.indexed)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: i == 0
-                      ? ElevatedButton(
-                          key: ValueKey('fate_choice_${choice.name}'),
-                          onPressed: fateChoiceOpen(choice, widget.fateContext)
-                              ? () => _resolve(choice)
-                              : null,
-                          child: Text(_choiceLabel(choice, lang)),
-                        )
-                      : OutlinedButton(
-                          key: ValueKey('fate_choice_${choice.name}'),
-                          onPressed: fateChoiceOpen(choice, widget.fateContext)
-                              ? () => _resolve(choice)
-                              : null,
-                          child: Text(_choiceLabel(choice, lang)),
-                        ),
-                ),
-            ],
-            if (result != null) ...[
-              const SizedBox(height: 12),
-              Text(result, style: body?.copyWith(fontStyle: FontStyle.italic)),
-            ],
-            if (effects.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              for (final line in effects)
-                Text(line,
-                    style: theme.textTheme.labelLarge
-                        ?.copyWith(color: theme.colorScheme.primary)),
-            ],
+            Icon(Icons.casino_outlined, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Expanded(child: Text(trFor(lang, 'fate_title'))),
           ],
         ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.restedLine != null) ...[
+                Text(widget.restedLine!, style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 8),
+              ],
+              if (!showEvent) Text(trFor(lang, 'fate_intro'), style: body),
+              const SizedBox(height: 12),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (var i = 0; i < _die.length; i++)
+                    _faceTile(i, theme, lang),
+                ],
+              ),
+              if (!showEvent) ...[
+                const SizedBox(height: 8),
+                Text(trFor(lang, 'fate_hint'),
+                    style: theme.textTheme.labelSmall),
+              ],
+              if (showEvent) ...[
+                const SizedBox(height: 16),
+                Text(_eventText(lang), style: body),
+              ],
+              if (_stage == _Stage.landed && choices.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                for (final (i, choice) in choices.indexed)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: i == 0
+                        ? ElevatedButton(
+                            key: ValueKey('fate_choice_${choice.name}'),
+                            onPressed: !_resolving &&
+                                    fateChoiceOpen(choice, widget.fateContext)
+                                ? () => _resolve(choice)
+                                : null,
+                            child: Text(_choiceLabel(choice, lang)),
+                          )
+                        : OutlinedButton(
+                            key: ValueKey('fate_choice_${choice.name}'),
+                            onPressed: !_resolving &&
+                                    fateChoiceOpen(choice, widget.fateContext)
+                                ? () => _resolve(choice)
+                                : null,
+                            child: Text(_choiceLabel(choice, lang)),
+                          ),
+                  ),
+              ],
+              if (result != null) ...[
+                const SizedBox(height: 12),
+                Text(result,
+                    style: body?.copyWith(fontStyle: FontStyle.italic)),
+              ],
+              if (effects.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                for (final line in effects)
+                  Text(line,
+                      style: theme.textTheme.labelLarge
+                          ?.copyWith(color: theme.colorScheme.primary)),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          if (_stage == _Stage.waiting)
+            FilledButton.icon(
+              key: const ValueKey('fate_roll_button'),
+              onPressed: _roll,
+              icon: const Icon(Icons.casino),
+              label: Text(trFor(lang, 'fate_roll_button')),
+            ),
+          if (_stage == _Stage.done)
+            FilledButton(
+              key: const ValueKey('fate_sleep_button'),
+              onPressed: () => Navigator.of(context).pop(_reactions),
+              child: Text(trFor(lang, 'fate_close_button')),
+            ),
+        ],
       ),
-      actions: [
-        if (_stage == _Stage.waiting)
-          FilledButton.icon(
-            key: const ValueKey('fate_roll_button'),
-            onPressed: _roll,
-            icon: const Icon(Icons.casino),
-            label: Text(trFor(lang, 'fate_roll_button')),
-          ),
-        if (_stage == _Stage.done)
-          FilledButton(
-            key: const ValueKey('fate_sleep_button'),
-            onPressed: () => Navigator.of(context).pop(_reactions),
-            child: Text(trFor(lang, 'fate_close_button')),
-          ),
-      ],
     );
   }
 }

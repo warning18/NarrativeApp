@@ -115,6 +115,10 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
   /// event.
   String? _kindNote;
 
+  /// The expedition's half day has passed on the world's clock (see
+  /// [_passItsTime]).
+  bool _timePassed = false;
+
   int get _deadline => deliveryDeadlineOf(widget.zone);
 
   int get _expeditionCount =>
@@ -565,6 +569,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     if (!mounted) return false;
     _kindNote = notes.isEmpty ? null : notes.join(' ');
     if (_kind == ExpeditionKind.escort && _cargo <= 0) {
+      await _passItsTime();
+      if (!mounted) return false;
       setState(() {
         _phase = _ExpeditionPhase.retreated;
         _summaryLines = [trFor(lang, 'escort_lost_message')];
@@ -614,10 +620,20 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     ];
   }
 
+  /// An expedition takes half a day, however it ends (cleared, a
+  /// retreat, a defeat, the load lost): it passes once, on the world's
+  /// clock (see journey_rules.dart).
+  Future<void> _passItsTime() async {
+    if (_timePassed) return;
+    _timePassed = true;
+    await ref
+        .read(playerSessionProvider.notifier)
+        .passTime(2, chapter: ref.read(reachedChapterProvider));
+  }
+
   Future<void> _completeZone() async {
     final notifier = ref.read(playerSessionProvider.notifier);
-    // An expedition takes half a day.
-    await notifier.passTime(2, chapter: ref.read(reachedChapterProvider));
+    await _passItsTime();
     final lang = ref.read(appLanguageProvider);
     final zoneGold = (widget.zone['rewardGold'] as num?)?.toInt() ?? 0;
     final zoneItemId = widget.zone['rewardItemId']?.toString() ?? '';
@@ -765,6 +781,8 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
 
   Future<void> _endAsRetreat({required bool defeated}) async {
     if (!mounted) return;
+    await _passItsTime();
+    if (!mounted) return;
     setState(() {
       _phase = _ExpeditionPhase.retreated;
       _summaryLines = [
@@ -810,39 +828,46 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
       child: CompanionRemarksTrigger(
         remarks: _remarks,
         ready: !_busy,
-        child: Scaffold(
-          appBar: AppBar(title: Text(zoneName)),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: switch (_phase) {
-                // Each event dealt like a card turning over.
-                _ExpeditionPhase.event => FlipIn(
-                    flipKey: _index,
-                    child: _buildEvent(context,
-                        shops: shops, enemies: enemies, lang: lang),
-                  ),
-                _ExpeditionPhase.completed => _buildSummary(
-                    context,
-                    icon: switch (_kind) {
-                      ExpeditionKind.escort => Icons.local_shipping,
-                      ExpeditionKind.delivery => Icons.markunread_mailbox,
-                      ExpeditionKind.clear => Icons.flag_circle,
-                    },
-                    title: trFor(
-                        lang,
-                        switch (_kind) {
-                          ExpeditionKind.escort => 'escort_done_title',
-                          ExpeditionKind.delivery => 'delivery_done_title',
-                          ExpeditionKind.clear => 'zone_cleared_prefix',
-                        }),
-                  ),
-                _ExpeditionPhase.retreated => _buildSummary(
-                    context,
-                    icon: Icons.directions_walk,
-                    title: trFor(lang, 'expedition_ended_title'),
-                  ),
-              },
+        // Backing out of an event is a retreat, and takes its time too.
+        child: PopScope(
+          canPop: _phase != _ExpeditionPhase.event,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop && !_busy) _endAsRetreat(defeated: false);
+          },
+          child: Scaffold(
+            appBar: AppBar(title: Text(zoneName)),
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: switch (_phase) {
+                  // Each event dealt like a card turning over.
+                  _ExpeditionPhase.event => FlipIn(
+                      flipKey: _index,
+                      child: _buildEvent(context,
+                          shops: shops, enemies: enemies, lang: lang),
+                    ),
+                  _ExpeditionPhase.completed => _buildSummary(
+                      context,
+                      icon: switch (_kind) {
+                        ExpeditionKind.escort => Icons.local_shipping,
+                        ExpeditionKind.delivery => Icons.markunread_mailbox,
+                        ExpeditionKind.clear => Icons.flag_circle,
+                      },
+                      title: trFor(
+                          lang,
+                          switch (_kind) {
+                            ExpeditionKind.escort => 'escort_done_title',
+                            ExpeditionKind.delivery => 'delivery_done_title',
+                            ExpeditionKind.clear => 'zone_cleared_prefix',
+                          }),
+                    ),
+                  _ExpeditionPhase.retreated => _buildSummary(
+                      context,
+                      icon: Icons.directions_walk,
+                      title: trFor(lang, 'expedition_ended_title'),
+                    ),
+                },
+              ),
             ),
           ),
         ),
@@ -857,6 +882,9 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
     required AppLanguage lang,
   }) {
     final node = _current!;
+    // A payment the purse can't make (a toll, a bribe, a guide's fee) is
+    // shut, and says why.
+    final gold = ref.watch(playerSessionProvider.select((s) => s.gold));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -944,10 +972,14 @@ class _ExpeditionScreenState extends ConsumerState<ExpeditionScreen> {
         // A temptation scene offers two answers; every other event has one.
         for (final choice in node.choices) ...[
           ElevatedButton(
-            onPressed: _busy
+            onPressed: _busy || !choice.affordableWith(gold)
                 ? null
                 : () => _resolveChoice(choice, shops: shops, enemies: enemies),
-            child: Text(_choiceLabel(choice)),
+            child: Text(choice.affordableWith(gold)
+                ? _choiceLabel(choice)
+                : trFor(lang, 'choice_gold_short_lock')
+                    .replaceAll('{choice}', _choiceLabel(choice))
+                    .replaceAll('{gold}', '$gold')),
           ),
           const SizedBox(height: 8),
         ],

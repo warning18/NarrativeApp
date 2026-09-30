@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/camp_state.dart';
 import '../data/chapter_loop.dart';
+import '../data/journey_rules.dart';
 import '../data/port_helpers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -77,30 +78,17 @@ String campRouteLabel(
       '{n}', '${portVoyageLength(ports[landing] as Map<String, dynamic>)}');
 }
 
-/// Moves the party to [destinationPortId] (null: the camp's shore): a
-/// voyage when the Eel must sail, a walk otherwise. True once it is there.
-/// A walk says so with [walkNotice]; a voyage plays out on its own screen.
-Future<bool> moveParty(
+/// Sails the party to [destinationPortId] (null: the camp's shore), a
+/// voyage played out on its own screen. True once it is there. (A walk is
+/// a step on the road, see [travelTo] and setOutOnMainQuest.)
+Future<bool> sailParty(
   BuildContext context,
   WidgetRef ref, {
   required String? destinationPortId,
-  String? walkNotice,
 }) async {
   final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-  final session = ref.read(playerSessionProvider);
   final there = destinationPortId ?? homePortId(ports);
   if (there == null) return true;
-  if (isWalkFrom(destinationPortId,
-      ports: ports, savedPortId: session.currentPortId)) {
-    // A walk between places takes half a day.
-    await ref
-        .read(playerSessionProvider.notifier)
-        .passTime(2, chapter: ref.read(reachedChapterProvider));
-    if (walkNotice != null && context.mounted) {
-      showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
-    }
-    return true;
-  }
   if (!context.mounted) return false;
   // The days at sea pass on the voyage screen, one a day as sailed.
   return sailTo(context, ref,
@@ -109,9 +97,10 @@ Future<bool> moveParty(
 
 /// Travels to [targetNodeId] ([destinationPortId] its port, null for the
 /// camp's shore): the voyage or the walk, then the story moves there. A
-/// walk may meet something on the road first (a detour or a raid, see
-/// [rollRoadEncounter]), which the story plays before arriving. [origin] is
-/// the road's name on a detour's card.
+/// walk between places is [walkWatches] of the day and a ration, and may
+/// meet something on the road first (a road event, a detour or a raid,
+/// see [rollRoadEncounter]), which the story plays before arriving.
+/// [origin] is the road's name on a detour's card.
 Future<void> travelTo(
   BuildContext context,
   WidgetRef ref, {
@@ -125,7 +114,7 @@ Future<void> travelTo(
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
-    await walkRoadStep(ref);
+    await walkRoadStep(ref, watches: walkWatches);
     if (!context.mounted) return;
     // A road event on the way (see road_events.dart), else what the road
     // may hold.
@@ -153,7 +142,7 @@ Future<void> travelTo(
     return;
   }
   final arrived =
-      await moveParty(context, ref, destinationPortId: destinationPortId);
+      await sailParty(context, ref, destinationPortId: destinationPortId);
   if (!arrived) return;
   play.choose(targetNodeId);
 }
@@ -195,26 +184,28 @@ Future<void> returnToCamp(BuildContext context, WidgetRef ref) async {
 
 /// Sets out from the camp on its chapter's main quest ([choice]): the trip
 /// to where it starts first (its `travelPlaceId`), then the choice itself,
-/// as the story would take it (its expedition, its fight, its scene).
+/// as the story would take it (its expedition, its fight, its scene). On
+/// foot, the trip is the choice's own walk between places, taken with it
+/// (see takeStoryChoice); by sea, the voyage lands the party there, with
+/// no road left to walk.
 Future<void> setOutOnMainQuest(
     BuildContext context, WidgetRef ref, StoryChoice choice) async {
+  var sailed = false;
   if (choice.travels) {
     final story = ref.read(storyDataProvider).value;
     final place = story?.nodeFor(choice.travelPlaceId!);
     final ports = ref.read(localizedDbProvider(portsSchema)).value ?? const {};
-    final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
-    final arrived = await moveParty(
-      context,
-      ref,
-      destinationPortId: destinationPortIdFor(place?.settlement, ports),
-      walkNotice: place?.settlement == null
-          ? null
-          : tr(ref, 'travel_walked_to')
-              .replaceAll('{place}', place!.settlement!.nameFor(fr)),
-    );
-    if (!arrived || !context.mounted) return;
+    final destinationPortId = destinationPortIdFor(place?.settlement, ports);
+    if (!isWalkFrom(destinationPortId,
+        ports: ports,
+        savedPortId: ref.read(playerSessionProvider).currentPortId)) {
+      final arrived =
+          await sailParty(context, ref, destinationPortId: destinationPortId);
+      if (!arrived || !context.mounted) return;
+      sailed = true;
+    }
   }
-  await takeStoryChoice(context, ref, choice);
+  await takeStoryChoice(context, ref, choice, travelled: sailed);
 }
 
 /// "Back to the camp", in a place once the camp stands: how far it is, and

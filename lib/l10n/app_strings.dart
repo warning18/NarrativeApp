@@ -149,9 +149,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'road_rations_help': {
     AppLanguage.en:
-        'You eat one on every road between two places. With none left, hunger costs health.',
+        'You eat one on every road between two places, and one for every day at sea. With none left, hunger costs health.',
     AppLanguage.fr:
-        'Vous en mangez une sur chaque route entre deux lieux. Sans rien à manger, la faim vous coûte de la santé.',
+        'Vous en mangez une sur chaque route entre deux lieux, et une par jour en mer. Sans rien à manger, la faim vous coûte de la santé.',
   },
   'road_rations_label': {AppLanguage.en: 'Rations', AppLanguage.fr: 'Rations'},
   'road_day_abbrev': {AppLanguage.en: 'Day', AppLanguage.fr: 'Jour'},
@@ -308,6 +308,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'main_quest_shut_lock': {
     AppLanguage.en: 'Not yet: the camp shows what this chapter still asks.',
     AppLanguage.fr: 'Pas encore : le camp indique ce que ce chapitre demande.',
+  },
+  'choice_gold_short_lock': {
+    AppLanguage.en: '{choice} · not enough gold ({gold} in the purse)',
+    AppLanguage.fr: '{choice} · pas assez d’or ({gold} dans la bourse)',
   },
   'chapter_progress': {
     AppLanguage.en: 'Explored: {done} of {goal}',

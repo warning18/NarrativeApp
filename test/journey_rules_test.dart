@@ -28,27 +28,33 @@ void main() {
     });
 
     test('enemies gather strength past the grace, up to a ceiling', () {
-      expect(threatFor(0, chapter: 3), 0);
-      expect(threatFor(threatGraceDays, chapter: 3), 0);
-      expect(threatFor(threatGraceDays + 1, chapter: 3),
+      expect(threatFor(0, chapter: 2), 0);
+      expect(threatFor(threatGraceDays, chapter: 2), 0);
+      expect(threatFor(threatGraceDays + 1, chapter: 2),
           closeTo(threatPerDay, 1e-9));
-      expect(threatFor(threatGraceDays + 4, chapter: 3),
+      expect(threatFor(threatGraceDays + 4, chapter: 2),
           closeTo(4 * threatPerDay, 1e-9));
-      expect(threatFor(1000, chapter: 3), threatMax);
+      expect(threatFor(1000, chapter: 2), threatMax);
     });
 
     test('the chapters crossed by sea have a longer grace', () {
       // A voyage takes days: a party that sails to each of an open
-      // chapter's places isn't lingering.
+      // chapter's places isn't lingering. The numbers are the v1.187
+      // simulator's, on the one world clock.
       expect(threatGraceDaysFor(2), threatGraceDays);
-      expect(threatGraceDaysFor(3), threatGraceDays);
+      expect(threatGraceDaysFor(3), 8);
+      expect(threatGraceDaysFor(4), 28);
+      expect(threatGraceDaysFor(5), 28);
+      expect(threatGraceDaysFor(6), 36);
       for (final chapter in [4, 5, 6]) {
-        expect(threatGraceDaysFor(chapter), greaterThanOrEqualTo(24));
-        expect(threatFor(20, chapter: chapter), 0);
+        expect(threatFor(24, chapter: chapter), 0);
         expect(threatFor(threatGraceDaysFor(chapter) + 2, chapter: chapter),
             closeTo(2 * threatPerDay, 1e-9));
       }
-      expect(threatGraceDaysFor(6), greaterThan(threatGraceDaysFor(5)));
+      // The ending is one crossing and the tear: longer than a chapter
+      // on foot, shorter than an open one.
+      expect(threatGraceDaysFor(7), greaterThan(threatGraceDays));
+      expect(threatGraceDaysFor(7), lessThan(threatGraceDaysFor(4)));
     });
 
     test('hunger bites a share of health, never the last point', () {
@@ -83,7 +89,7 @@ void main() {
       for (final key in [
         'provisions',
         'day',
-        'stepsToday',
+        'watch',
         'clockChapter',
         'chapterStartDay',
         'sellswordFights',
@@ -97,7 +103,7 @@ void main() {
       final session = PlayerSession.fromJson(const {
         'provisions': 3,
         'day': 9,
-        'stepsToday': 2,
+        'watch': 2,
         'clockChapter': 4,
         'chapterStartDay': 5,
         'sellswordFights': 2,
@@ -106,7 +112,7 @@ void main() {
       final back = PlayerSession.fromJson(session.toJson());
       expect(back.provisions, 3);
       expect(back.day, 9);
-      expect(back.stepsToday, 2);
+      expect(back.watch, 2);
       expect(back.clockChapter, 4);
       expect(back.chapterStartDay, 5);
       expect(back.sellswordFights, 2);
@@ -121,18 +127,76 @@ void main() {
       expect(notifier.state.day, 1);
     });
 
-    test('each step eats a ration, and every fourth ends the day', () async {
-      final notifier = await _notifier(const {});
-      for (var i = 1; i < stepsPerDay; i++) {
+    test('each step eats a ration and is a watch: four from dawn end the day',
+        () async {
+      final notifier = await _notifier(const {'watch': 0});
+      for (var i = 1; i < watchesPerDay; i++) {
         final step = await notifier.takeRoadStep(chapter: 2);
         expect(step.counted, isTrue);
         expect(step.dayEnded, isFalse);
+        expect(notifier.state.watch, i);
       }
       final last = await notifier.takeRoadStep(chapter: 2);
       expect(last.dayEnded, isTrue);
       expect(last.day, 2);
-      expect(notifier.state.provisions, provisionsStart - stepsPerDay);
-      expect(notifier.state.stepsToday, 0);
+      expect(notifier.state.watch, 0);
+      expect(notifier.state.provisions, provisionsStart - watchesPerDay);
+    });
+
+    test('the steps keep to the watch, whatever else passed the time',
+        () async {
+      // Two watches gone (an expedition) from dawn: dusk, and the second
+      // step after it ends the day.
+      final notifier = await _notifier(const {'watch': 0});
+      await notifier.passTime(2, chapter: 3);
+      expect((await notifier.takeRoadStep(chapter: 3)).dayEnded, isFalse);
+      expect(notifier.state.watch, 3);
+      final step = await notifier.takeRoadStep(chapter: 3);
+      expect(step.dayEnded, isTrue);
+      expect(notifier.state.day, 2);
+      expect(notifier.state.watch, 0);
+      // Days lost keep the hour; a rest wakes at dawn.
+      await notifier.takeRoadStep(chapter: 3);
+      await notifier.passDays(2, chapter: 3);
+      expect(notifier.state.day, 4);
+      expect(notifier.state.watch, 1);
+      await notifier.restNight(chapter: 3);
+      expect(notifier.state.day, 5);
+      expect(notifier.state.watch, 0);
+    });
+
+    test('a walk between places is two watches for one ration', () async {
+      final notifier = await _notifier(const {'watch': 0});
+      final out = await notifier.takeRoadStep(chapter: 3, watches: walkWatches);
+      expect(out.dayEnded, isFalse);
+      expect(notifier.state.watch, walkWatches);
+      final back =
+          await notifier.takeRoadStep(chapter: 3, watches: walkWatches);
+      expect(back.dayEnded, isTrue);
+      expect(notifier.state.day, 2);
+      expect(notifier.state.watch, 0);
+      expect(notifier.state.provisions, provisionsStart - 2);
+    });
+
+    test('a day at sea is a whole day and the crew’s ration', () async {
+      final notifier = await _notifier(const {'watch': 2, 'provisions': 1});
+      final first = await notifier.passSeaDay(chapter: 4);
+      expect(first.dayEnded, isTrue);
+      expect(first.hungry, isFalse);
+      expect(notifier.state.day, 2);
+      expect(notifier.state.watch, 2);
+      expect(notifier.state.provisions, 0);
+      // With the pack empty, the crew goes hungry.
+      final second = await notifier.passSeaDay(chapter: 4);
+      expect(second.hungry, isTrue);
+      expect(second.hunger, greaterThan(0));
+      expect(notifier.state.day, 3);
+      // Before the road's rules, the day passes all the same, and no
+      // ration goes.
+      final early = await _notifier(const {});
+      expect((await early.passSeaDay(chapter: 1)).counted, isFalse);
+      expect(early.state.day, 2);
+      expect(early.state.provisions, provisionsStart);
     });
 
     test('with no ration left, hunger costs health', () async {
@@ -167,12 +231,12 @@ void main() {
         'maxHealth': 100,
         'currentHealth': 30,
         'day': 4,
-        'stepsToday': 3,
+        'watch': 3,
       });
       await notifier.restNight(chapter: 3);
       expect(notifier.state.currentHealth, 100);
       expect(notifier.state.day, 5);
-      expect(notifier.state.stepsToday, 0);
+      expect(notifier.state.watch, 0);
       // In chapter 1 the day still turns (the world clock runs
       // everywhere), but no chapter's threat is counted for it.
       await notifier.restNight(chapter: 1);
@@ -182,7 +246,8 @@ void main() {
     });
 
     test('rations are bought up to what the pack holds', () async {
-      final notifier = await _notifier(const {'gold': 100, 'provisions': 10});
+      final notifier =
+          await _notifier({'gold': 100, 'provisions': provisionsMax - 2});
       expect(await notifier.buyProvisions(3, price: 10), isFalse);
       expect(await notifier.buyProvisions(2, price: 10), isTrue);
       expect(notifier.state.provisions, provisionsMax);

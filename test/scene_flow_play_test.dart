@@ -64,8 +64,12 @@ void main() {
         .setLanguage(AppLanguage.en));
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(PlayerSession.fromJson(
-            {'raceId': 'human', 'professionId': 'warrior'})));
+        .loadSession(PlayerSession.fromJson({
+          'raceId': 'human',
+          'professionId': 'warrior',
+          // The sixteenth year's memory: the floorboard.
+          'flags': ['origin_board_good'],
+        })));
     await tester.runAsync(
         () => container.read(appModeProvider.notifier).setMode(AppMode.inGame));
     await _settle(tester);
@@ -89,21 +93,27 @@ void main() {
     expect(find.byKey(const ValueKey('echo_5004_altar|court_fled')),
         findsOneWidget);
     expect(find.text('Because you chose “Confront them”'), findsOneWidget);
+    // So does the flight's own memory of the floorboard, read on the way.
+    expect(find.byKey(const ValueKey('echo_5004|origin_board_good')),
+        findsOneWidget);
+    expect(preludes.single.body, isNot(contains('I had waited up')));
     await _settle(tester);
-    expect(session().seenEchoKeys, contains('5004_altar|court_fled'));
+    expect(session().seenEchoKeys,
+        containsAll(['5004_altar|court_fled', '5004|origin_board_good']));
     expect(tester.takeException(), isNull);
 
-    // 2. The road from 2001 to the wharf eats the last ration.
+    // 2. The road from 2001 to the wharf eats the last ration, and is a
+    // watch of the day.
     play.jumpTo('2001');
     await _settle(tester);
     await tester.runAsync(() => container
         .read(playerSessionProvider.notifier)
-        .loadSession(session().copyWith(provisions: 1)));
+        .loadSession(session().copyWith(provisions: 1, watch: 0)));
     await _settle(tester);
     await tester.tap(find.text('Head toward the wharf'));
     await _settle(tester);
     expect(session().provisions, 0);
-    expect(session().stepsToday, 1);
+    expect(session().watch, 1);
     expect(container.read(pendingRoadNoteProvider),
         contains('That was the last ration'));
     expect(find.textContaining('That was the last ration'), findsWidgets);

@@ -599,9 +599,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         .add((hull: _player!.hull - _dayStartHull, gold: gold - _dayStartGold));
     // Each sea event is a day at sea, on the chapter's clock too (see
     // journey_rules.dart): a voyage's days are counted here, as sailed.
-    await ref
-        .read(playerSessionProvider.notifier)
-        .passTime(4, chapter: ref.read(reachedChapterProvider));
+    await _passTheDay();
     if (!mounted) return;
     if (_sail?.power == SailPower.hearth) {
       // Every day at sea under the hearth-mark heals the crew and mends
@@ -635,6 +633,19 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       _phase = _VoyagePhase.event;
       _busy = false;
     });
+  }
+
+  /// A day at sea gone (see PlayerSessionNotifier.passSeaDay): on the
+  /// chapter's clock, and a ration the crew eats, or hunger with none left.
+  Future<void> _passTheDay() async {
+    final day = await ref
+        .read(playerSessionProvider.notifier)
+        .passSeaDay(chapter: ref.read(reachedChapterProvider));
+    if (day.hungry && day.hunger > 0) {
+      _log.add(_t('road_note_hungry', n: day.hunger));
+    } else if (day.counted && day.provisionsLeft == 0) {
+      _log.add(_t('road_note_last'));
+    }
   }
 
   /// The party as the Eel's crew (see [buildShipCrew]).
@@ -699,6 +710,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     if (!mounted) return;
     if (lost) {
       await notifier.setShipHull(limpHomeHull(_player!.maxHull));
+      // The day of the fight counts, lost as it was.
+      await _passTheDay();
       if (!mounted) return;
       setState(() {
         _phase = _VoyagePhase.failed;
@@ -838,6 +851,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       return;
     }
     await notifier.setShipHull(limpHomeHull(_player!.maxHull));
+    // The day of the fight counts, lost as it was.
+    await _passTheDay();
     if (!mounted) return;
     setState(() {
       _phase = _VoyagePhase.failed;

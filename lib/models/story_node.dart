@@ -367,6 +367,11 @@ class StoryChoice {
   /// Whether taking this choice puts an item in the pack (see
   /// [grantItemId]).
   bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
+
+  /// Whether a purse of [gold] covers what this choice costs (a [goldMod]
+  /// below zero). A payment on the road (an offering, a toll, a fee) is
+  /// not made on credit; see the story's and the expedition's choices.
+  bool affordableWith(int gold) => goldMod >= 0 || gold >= -goldMod;
 }
 
 class StoryNode {
