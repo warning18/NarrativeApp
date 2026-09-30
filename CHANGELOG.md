@@ -8,6 +8,34 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.181.0+211]
+
+### Changed
+- **The Journey map follows the real map.** Standing in a place the world
+  chart knows, the map is that place up close, north up. Before, the ways
+  always went up the screen.
+  - **The ground** is drawn by what the place is:
+    - a town is what is left of its wall, with streets out of the square
+      and blocks between;
+    - a camp is tents round its fire;
+    - a site is broken stones;
+    - the sea is its own.
+
+    Each place is drawn from its own seed, so it looks the same every
+    visit.
+  - **The ways ring the party:** a fight, a shop or a talk in this place is
+    a spot round the square, reached by walking its street. A busy town's
+    spots fill an inner and an outer ring.
+  - **The ways out sit at the map's edge in their true direction:** the
+    Cove Camp south-west of the Ashen Quarter, Tern Row from the wharf.
+  - **Taking a way out zooms out** to the world chart (in the chosen chart
+    shape), and the party walks the road there. The map then opens on the
+    new place.
+  - The road behind now peeks in at the map's foot, and "You are here"
+    sits in a corner badge.
+  - A detour, on no place, keeps the road going up as before.
+- On a busy hub every way now inks in; the last ones used to stay hidden.
+
 ## [1.180.0+210]
 
 ### Changed

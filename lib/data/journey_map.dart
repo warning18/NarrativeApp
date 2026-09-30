@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:ui' show Offset, Size;
+
 import '../models/story_node.dart';
 import 'chapter_grid_layout.dart';
 
@@ -156,4 +159,98 @@ const int journeyPastLimit = 40;
     next = id;
   }
   return (steps: steps, reachesStart: true);
+}
+
+/// Where each way sits on the map of a place (v1.181), around the party
+/// at [here] in an [area]. A way that leaves for another place ([bearings]
+/// non-null: its true direction on the world chart, in radians, 0 east
+/// and clockwise, as the chart's y runs down) sits near the map's edge
+/// that way. The rest -- a fight, a shop, a talk in this place -- ring the
+/// party: an inner ring, then an outer one, spread evenly and kept clear
+/// of the ways out. Rings are ellipses, as the map is taller than wide.
+List<Offset> journeyPlaceLayout({
+  required Size area,
+  required Offset here,
+  required List<double?> bearings,
+  double margin = 34,
+  double footMargin = 86,
+  int innerCapacity = 6,
+}) {
+  final positions = List<Offset>.filled(bearings.length, here);
+  // The ways out: where their bearing meets the map's edge, just inside.
+  final exits = <double>[];
+  for (var i = 0; i < bearings.length; i++) {
+    final a = bearings[i];
+    if (a == null) continue;
+    exits.add(a);
+    positions[i] = _toEdge(here, a, area, margin, footMargin);
+  }
+  final local = [
+    for (var i = 0; i < bearings.length; i++)
+      if (bearings[i] == null) i
+  ];
+  if (local.isEmpty) return positions;
+  final inner = local.length <= innerCapacity + 1
+      ? local
+      : local.sublist(0, innerCapacity);
+  final outer = local.length <= innerCapacity + 1
+      ? const <int>[]
+      : local.sublist(innerCapacity);
+  final reachX = math.min(here.dx, area.width - here.dx) - margin;
+  // Below the party the marks need room for their names.
+  final reachY = math.min(here.dy - margin, area.height - here.dy - footMargin);
+  void ring(List<int> ids, double fraction, double turn) {
+    if (ids.isEmpty) return;
+    final angles = _spreadAngles(ids.length, exits, turn);
+    for (var k = 0; k < ids.length; k++) {
+      positions[ids[k]] = here +
+          Offset(math.cos(angles[k]) * reachX * fraction,
+              math.sin(angles[k]) * reachY * fraction);
+    }
+  }
+
+  ring(inner, outer.isEmpty ? 0.62 : 0.5, 0);
+  ring(outer, 0.95, math.pi / outer.length.clamp(1, 99));
+  return positions;
+}
+
+/// Where a ray from [from] at [angle] leaves [area] shrunk by [margin]
+/// ([footMargin] at the foot, where names go under the marks).
+Offset _toEdge(
+    Offset from, double angle, Size area, double margin, double footMargin) {
+  final dx = math.cos(angle), dy = math.sin(angle);
+  var t = double.infinity;
+  if (dx > 1e-6) t = math.min(t, (area.width - margin - from.dx) / dx);
+  if (dx < -1e-6) t = math.min(t, (margin - from.dx) / dx);
+  if (dy > 1e-6) t = math.min(t, (area.height - footMargin - from.dy) / dy);
+  if (dy < -1e-6) t = math.min(t, (margin - from.dy) / dy);
+  if (!t.isFinite || t < 0) t = 0;
+  return from + Offset(dx * t, dy * t);
+}
+
+/// [count] angles evenly round a circle from straight up (plus [turn]),
+/// each nudged off any of [avoid] (the ways out) it comes too near.
+List<double> _spreadAngles(int count, List<double> avoid, double turn) {
+  const clearance = 0.42;
+  final step = 2 * math.pi / count;
+  return [
+    for (var k = 0; k < count; k++)
+      () {
+        var a = -math.pi / 2 + turn + k * step;
+        for (final exit in avoid) {
+          final d = _angleBetween(a, exit);
+          if (d.abs() < clearance) {
+            a += (d >= 0 ? 1 : -1) * (clearance - d.abs()).clamp(0.0, step / 2);
+          }
+        }
+        return a;
+      }(),
+  ];
+}
+
+/// The signed turn from [b] to [a], in (-pi, pi].
+double _angleBetween(double a, double b) {
+  var d = (a - b) % (2 * math.pi);
+  if (d > math.pi) d -= 2 * math.pi;
+  return d;
 }
