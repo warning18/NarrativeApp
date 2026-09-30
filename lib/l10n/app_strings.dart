@@ -1921,6 +1921,166 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'watch_1': {AppLanguage.en: 'Daytime', AppLanguage.fr: 'Plein jour'},
   'watch_2': {AppLanguage.en: 'Dusk', AppLanguage.fr: 'Crépuscule'},
   'watch_3': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'skills_tab_tree': {
+    AppLanguage.en: 'Tree',
+    AppLanguage.fr: 'Arbre',
+  },
+  'skills_tab_mine': {
+    AppLanguage.en: 'My skills',
+    AppLanguage.fr: 'Mes compétences',
+  },
+  'skills_tab_spells': {
+    AppLanguage.en: 'Spells',
+    AppLanguage.fr: 'Sorts',
+  },
+  'purse_points_one': {
+    AppLanguage.en: '1 point',
+    AppLanguage.fr: '1 point',
+  },
+  'purse_points_many': {
+    AppLanguage.en: '{n} points',
+    AppLanguage.fr: '{n} points',
+  },
+  'purse_points_note': {
+    AppLanguage.en: 'to learn skills · 1 per level',
+    AppLanguage.fr: 'pour apprendre · 1 par niveau',
+  },
+  'purse_essence': {
+    AppLanguage.en: 'essence',
+    AppLanguage.fr: 'essence',
+  },
+  'purse_essence_note': {
+    AppLanguage.en: 'to raise a tier · earned with XP',
+    AppLanguage.fr: 'pour monter d\'un rang · gagnée avec l\'XP',
+  },
+  'skills_ready': {
+    AppLanguage.en: '{n} ready to learn',
+    AppLanguage.fr: '{n} à apprendre',
+  },
+  'skills_none_ready': {
+    AppLanguage.en: 'Nothing to learn right now',
+    AppLanguage.fr: 'Rien à apprendre pour l\'instant',
+  },
+  'skills_rules_short': {
+    AppLanguage.en: 'Learn top to bottom · deeper costs more · one Mastery',
+    AppLanguage.fr: 'De haut en bas · plus bas, plus cher · une seule Maîtrise',
+  },
+  'skills_how_it_works': {
+    AppLanguage.en: 'How it works',
+    AppLanguage.fr: 'Comment ça marche',
+  },
+  'cost_pt_one': {
+    AppLanguage.en: '1 pt',
+    AppLanguage.fr: '1 pt',
+  },
+  'cost_pt_many': {
+    AppLanguage.en: '{n} pts',
+    AppLanguage.fr: '{n} pts',
+  },
+  'mastery_cost_label': {
+    AppLanguage.en: 'Mastery · {n} pts',
+    AppLanguage.fr: 'Maîtrise · {n} pts',
+  },
+  'skill_step_of': {
+    AppLanguage.en: '{branch} · step {i} of {n}',
+    AppLanguage.fr: '{branch} · étape {i} sur {n}',
+  },
+  'skill_by_tier': {
+    AppLanguage.en: 'By tier',
+    AppLanguage.fr: 'Par rang',
+  },
+  'tier_base': {
+    AppLanguage.en: 'Base',
+    AppLanguage.fr: 'Base',
+  },
+  'skill_on_die_one': {
+    AppLanguage.en: 'On 1 face of {die}',
+    AppLanguage.fr: 'Sur 1 face de {die}',
+  },
+  'skill_on_die_many': {
+    AppLanguage.en: 'On {n} faces of {die}',
+    AppLanguage.fr: 'Sur {n} faces de {die}',
+  },
+  'skill_not_on_die': {
+    AppLanguage.en: 'Not on your die yet',
+    AppLanguage.fr: 'Pas encore sur votre dé',
+  },
+  'skill_dice_link': {
+    AppLanguage.en: 'Dice',
+    AppLanguage.fr: 'Dés',
+  },
+  'raise_tier_button': {
+    AppLanguage.en: 'Raise to tier {n} · {cost} essence',
+    AppLanguage.fr: 'Monter au rang {n} · {cost} essence',
+  },
+  'raise_tier_short': {
+    AppLanguage.en: '{n} more essence needed; it comes with XP.',
+    AppLanguage.fr: 'Encore {n} d\'essence ; elle vient avec l\'XP.',
+  },
+  'tier_max_label': {
+    AppLanguage.en: 'Highest tier',
+    AppLanguage.fr: 'Rang maximal',
+  },
+  'no_tiers_label': {
+    AppLanguage.en: 'no tiers',
+    AppLanguage.fr: 'sans rang',
+  },
+  'skill_no_tiers_note': {
+    AppLanguage.en: 'Everyone has this one: it has no tiers.',
+    AppLanguage.fr: 'Tout le monde l\'a : elle n\'a pas de rang.',
+  },
+  'compare_with': {
+    AppLanguage.en: 'Compare with…',
+    AppLanguage.fr: 'Comparer avec…',
+  },
+  'compare_pick_title': {
+    AppLanguage.en: 'Compare with',
+    AppLanguage.fr: 'Comparer avec',
+  },
+  'craft_link': {
+    AppLanguage.en: 'Craft…',
+    AppLanguage.fr: 'Fusionner…',
+  },
+  'craft_card_body': {
+    AppLanguage.en: 'Two skills you know make a new one.',
+    AppLanguage.fr: 'Deux compétences connues en font une nouvelle.',
+  },
+  'skills_group_other': {
+    AppLanguage.en: 'Other',
+    AppLanguage.fr: 'Autres',
+  },
+  'skills_reputation_section': {
+    AppLanguage.en: 'Earned by reputation',
+    AppLanguage.fr: 'Selon votre réputation',
+  },
+  'mine_empty': {
+    AppLanguage.en: 'Nothing here yet: learn skills in the Tree.',
+    AppLanguage.fr: 'Rien ici pour l\'instant : apprenez dans l\'Arbre.',
+  },
+  'spells_known': {
+    AppLanguage.en: 'Known',
+    AppLanguage.fr: 'Connus',
+  },
+  'spells_to_find': {
+    AppLanguage.en: 'To find',
+    AppLanguage.fr: 'À trouver',
+  },
+  'summary_damage': {
+    AppLanguage.en: '+{n} damage',
+    AppLanguage.fr: '+{n} dégâts',
+  },
+  'summary_heal': {
+    AppLanguage.en: 'heals {n}',
+    AppLanguage.fr: 'soigne {n}',
+  },
+  'summary_mana': {
+    AppLanguage.en: '+{n} mana',
+    AppLanguage.fr: '+{n} mana',
+  },
+  'fights_at_tier': {
+    AppLanguage.en: 'Fights at tier {n} (Mastery)',
+    AppLanguage.fr: 'Combat au rang {n} (Maîtrise)',
+  },
   'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'hub_enter_button': {
     AppLanguage.en: 'Enter {place}',
@@ -4902,29 +5062,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_skills_1': {
     AppLanguage.en:
-        'Skill points unlock new skills. Essence upgrades the ones you have.',
+        'Skill points learn new skills; you get one each level. Essence, earned with XP, raises the skills you know a tier.',
     AppLanguage.fr:
-        'Les points de compétence débloquent de nouvelles compétences. L’essence améliore celles que vous avez.',
+        'Les points de compétence apprennent de nouvelles compétences ; vous en gagnez un par niveau. L\'essence, gagnée avec l\'XP, fait monter d\'un rang celles que vous connaissez.',
   },
   'tut_skills_2': {
     AppLanguage.en:
-        'Each branch is learned from the top down. Learn a whole branch to master it; its skills then fight a tier higher. Tap a skill to see what it does.',
+        'Each branch is learned from the top down; a gold ring is known, a lit one is ready. Tap any skill to see what it does, learn it or raise it.',
     AppLanguage.fr:
-        "Chaque branche s'apprend de haut en bas. Apprenez toute une branche pour la maîtriser : ses compétences combattent alors un rang plus haut. Touchez une compétence pour voir ce qu'elle fait.",
+        'Chaque branche s\'apprend de haut en bas ; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu\'elle fait, l\'apprendre ou la monter.',
   },
   'tut_skills_5': {
     AppLanguage.en:
-        "See your class's skill tree, or every skill as a list with filters.",
+        'Tree to learn, My skills to raise tiers and craft, Spells for your magic.',
     AppLanguage.fr:
-        "Voyez l'arbre de compétences de votre classe, ou toutes les compétences en liste avec filtres.",
+        'Arbre pour apprendre, Mes compétences pour monter les rangs et fusionner, Sorts pour votre magie.',
   },
   'tut_skills_3': {
-    AppLanguage.en: 'Fuse two skills you know into a stronger one.',
-    AppLanguage.fr: 'Fusionnez deux compétences connues en une plus puissante.',
-  },
-  'tut_skills_4': {
-    AppLanguage.en: 'Compare two skills side by side.',
-    AppLanguage.fr: 'Comparez deux compétences côte à côte.',
+    AppLanguage.en:
+        'In My skills, raise tiers with essence, and fuse two skills you know into a new one.',
+    AppLanguage.fr:
+        'Dans Mes compétences, montez les rangs avec l\'essence et fusionnez deux compétences connues en une nouvelle.',
   },
   'tut_dice_1': {
     AppLanguage.en: 'Pick the die you want to set up.',

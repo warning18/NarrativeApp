@@ -41,7 +41,7 @@ import 'harbor_screen.dart';
 import 'inventory_screen.dart';
 import 'port_screen.dart';
 import 'shop_detail_screen.dart';
-import 'skills_screen.dart';
+import 'skills/skills_screen.dart';
 import 'story_player_screen.dart'
     show composeNarration, isStoryChoiceLocked, takeStoryChoice;
 

@@ -8,6 +8,42 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.179.0+209]
+
+### Changed
+- **The Skills screen, simpler.** Three tabs with one job each:
+  - **Tree** to learn;
+  - **My skills** to raise tiers and craft;
+  - **Spells** for magic.
+
+  The List view, its two rows of filters and the compare mode are gone.
+- **One sheet per skill**, wherever it is tapped:
+  - its numbers at base and at each tier;
+  - the die faces it sits on, with a way to the dice;
+  - one button: Learn, or Raise tier. When greyed, it says how much
+    essence is missing and that essence comes with XP.
+
+  Compare and Craft are labelled links on it.
+- **State you can see on the tree:**
+  - a gold ring is known, with its tier in dots;
+  - a lit gold ring is ready to learn;
+  - grey with a lock comes later.
+
+  A skill's kind is a small mark in the corner. Every skill not yet
+  known shows its cost, and so does Mastery.
+- **The purse explains itself:** points "to learn skills, 1 per level";
+  essence "to raise a tier, earned with XP", with a bar to the next tier.
+  The rules paragraph is one line with a How it works link, and each
+  branch's description sits under its name.
+- **Spells** are compact rows, known first, then the ones still to find
+  and where their spellbooks are sold.
+- A companion's screen is their points and their class's list, each skill
+  learned right there.
+- The screen's 1,400-line file is split into six under
+  `lib/screens/skills/`. What each skill shows (status, cost, lock
+  reason, tier and its price) now comes from a view model with its own
+  unit tests.
+
 ## [1.178.0+208]
 
 ### Added

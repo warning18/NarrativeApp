@@ -63,8 +63,7 @@ enum TutorialTopic {
     TutorialStep('tut_skills_1', target: 'skills.points'),
     TutorialStep('tut_skills_5', target: 'skills.views'),
     TutorialStep('tut_skills_2', target: 'skills.list'),
-    TutorialStep('tut_skills_3', target: 'skills.craft'),
-    TutorialStep('tut_skills_4', target: 'skills.compare', optional: true),
+    TutorialStep('tut_skills_3', target: 'skills.mine'),
   ]),
   dice(Icons.casino_outlined, steps: [
     TutorialStep('tut_dice_1', target: 'dice.choice', optional: true),
