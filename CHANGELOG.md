@@ -8,6 +8,25 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.185.1+216]
+
+The sea fight is moving to a top-down view on another branch, so the
+beasts' side-view art is taken out, and the version the app reports is
+fixed.
+
+### Fixed
+- **The version the app reports** (settings, main menu, and what the
+  in-app updater compares with a release) had stayed at 1.180.0 since
+  v1.181. An installed 1.181–1.185 build kept offering itself as an
+  update. A test now keeps it equal to `pubspec.yaml`.
+
+### Removed
+- The sea beasts' side-view pixel art and the Kraken arm's icon. Until
+  they have art of their own, a beast in battle borrows the ship sprite
+  nearest its size (the Void Barge's), and the Kraken arm shows the
+  Unstitched's icon. The beasts' rules, rooms, status line and text are
+  unchanged.
+
 ## [1.185.0+215]
 
 Great beasts now roam the open sea. The first time you meet one, you

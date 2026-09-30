@@ -57,9 +57,7 @@ void main() {
         for (final c in ShipCutaway.enemies) c.asset(battered: battered),
       ],
     };
-    // The Eel at three refits, four ships and three sea beasts, each whole
-    // and battered.
-    expect(paths, hasLength(20));
+    expect(paths, hasLength(14));
     for (final path in paths) {
       expect(File(path).existsSync(), isTrue, reason: path);
     }

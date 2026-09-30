@@ -3,7 +3,12 @@
 class EnemyIcons {
   EnemyIcons._();
 
-  static String pathFor(String enemyId) => 'assets/icons/enemies/$enemyId.png';
+  static String pathFor(String enemyId) =>
+      'assets/icons/enemies/${_borrowed[enemyId] ?? enemyId}.png';
+
+  /// Enemies drawn with another's icon until they have their own: the
+  /// Tide-Mother's arm (see sea_beasts.dart) as the Unstitched.
+  static const Map<String, String> _borrowed = {'kraken_arm': 'tear_spawn'};
 
   static const List<String> allIds = [
     'angel_judicator',

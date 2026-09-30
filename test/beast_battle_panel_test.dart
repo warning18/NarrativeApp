@@ -1,6 +1,7 @@
-// A sea beast in the battle panel (v1.185): its own sprite, its rooms named
-// for a body (fins, hide, jaws, heart), and what it is about to do shown
-// under its name.
+// A sea beast in the battle panel (v1.185): its rooms named for a body
+// (fins, hide, jaws, heart), and what it is about to do shown under its
+// name. It has no sprite of its own yet: it borrows the ship nearest its
+// size.
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,9 +14,9 @@ import 'package:narrative_data_app/combat/ship_battle.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 import 'package:narrative_data_app/screens/ship_battle_panel.dart';
 
-ShipState _ship({int hull = 100}) => ShipState(
+ShipState _ship({int hull = 100, int maxHull = 100}) => ShipState(
       hull: hull,
-      maxHull: 100,
+      maxHull: maxHull,
       layers: 0,
       rooms: {
         for (final room in ShipRoom.values) room: const RoomState(level: 2),
@@ -37,7 +38,8 @@ void main() {
         home: Scaffold(
           body: ShipBattlePanel(
             player: _ship(),
-            enemy: _ship(hull: 80),
+            // A beast's size: it borrows the void barge's sprite.
+            enemy: _ship(hull: 200, maxHull: 240),
             shipName: 'The Rusty Eel',
             enemyName: 'The Pale Leviathan',
             enemyShipId: 'pale_leviathan',
@@ -68,7 +70,7 @@ void main() {
     final sprite =
         tester.widget<Image>(find.byKey(const Key('ship_sprite_enemy')));
     expect((sprite.image as AssetImage).assetName,
-        'assets/visuals/ship_cutaways/pale_leviathan.png');
+        'assets/visuals/ship_cutaways/void_barge.png');
     for (final title in ['FINS', 'HIDE', 'JAWS', 'HEART']) {
       expect(find.text(title), findsOneWidget, reason: title);
     }
