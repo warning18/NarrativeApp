@@ -151,7 +151,7 @@
     "displayName_fr": "Barge du Vide",
     "description": "Slow, armored and hungry: two shield layers, three guns, and a void lance that ignores a bulwark altogether. Break its guns before its lance is charged, or lose the race. She comes alongside to board, again and again, shields or not.",
     "description_fr": "Lente, blindée et vorace : deux couches de bouclier, trois canons, et une lance du Néant qui ignore tout pavois. Brisez ses canons avant que la lance ne soit chargée, ou perdez la course. Elle vient bord à bord pour aborder, encore et encore, boucliers ou non.",
-    "maxHull": 140,
+    "maxHull": 150,
     "rooms": {
       "helm": 1,
       "guns": 2,
@@ -341,7 +341,7 @@
     "displayName_fr": "La Mère-des-Marées",
     "description": "The thing the drowned pray to: a kraken the size of an island, with arms enough to take a ship apart plank by plank and to send over the rail. Every fourth round it dives to drag at the keel, and it grows back what is cut from it. Hold it on the line or tear its fins, or it goes down to heal.",
     "description_fr": "Ce que prient les noyés : un kraken grand comme une île, avec assez de bras pour démonter un navire planche par planche et pour en envoyer par-dessus le bastingage. Toutes les quatre passes, il plonge tirer sur la quille, et il fait repousser ce qu'on lui tranche. Retenez-le à la ligne ou déchirez ses nageoires, ou il redescend guérir.",
-    "maxHull": 250,
+    "maxHull": 210,
     "rooms": {
       "helm": 1,
       "guns": 2,

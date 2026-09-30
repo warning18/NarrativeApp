@@ -4365,6 +4365,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The Eel outruns them',
     AppLanguage.fr: 'Le Rusty Eel les distance',
   },
+  'ship_log_beast_outran': {
+    AppLanguage.en: 'The Eel outruns {ship}',
+    AppLanguage.fr: 'Le Rusty Eel distance {ship}',
+  },
   'ship_log_outrun_failed': {
     AppLanguage.en: 'They catch the Eel and rake her: −{n} hull',
     AppLanguage.fr:
@@ -5762,7 +5766,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en:
         'Then end the turn and they answer. Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left.',
     AppLanguage.fr:
-        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque de la Rusty Eel cède, elle regagne tant bien que mal son port de départ.',
+        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ.',
   },
   'tut_shipBattle_6': {
     AppLanguage.en:
@@ -6538,8 +6542,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
   },
   'turn_seconds_bonus_label': {
-    AppLanguage.en: '+{n} s per battle turn',
-    AppLanguage.fr: '+{n} s par tour de bataille',
+    AppLanguage.en: '+{n} s per turn of a timed battle',
+    AppLanguage.fr: '+{n} s par tour de bataille chronométrée',
   },
   'ship_turn_timer_setting_title': {
     AppLanguage.en: 'Timed ship battles',
@@ -7621,8 +7625,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'De loin, virer de bord au lieu de tirer : trois tours et l\'Eel est hors d\'atteinte (un vent arrière compte double). Aucun canon ne tire pendant un tour de fuite.',
   },
   'ship_escape_label': {
-    AppLanguage.en: 'escape {n}/{of}',
-    AppLanguage.fr: 'fuite {n}/{of}',
+    AppLanguage.en: 'run: {n} to go',
+    AppLanguage.fr: 'fuite : encore {n}',
+  },
+  'ship_run_left_hint': {
+    AppLanguage.en: 'Turns of running still needed to get away: {n}.',
+    AppLanguage.fr: 'Tours de fuite encore nécessaires pour s\'échapper : {n}.',
+  },
+  'ship_run_warning': {
+    AppLanguage.en:
+        'Hull under 30%: get to long range and run for it while you can.',
+    AppLanguage.fr:
+        'Coque sous 30 % : gagnez la longue portée et prenez la fuite tant que vous le pouvez.',
   },
   'ship_log_running': {
     AppLanguage.en: 'The {ship} turns tail and runs ({n}/3)',
@@ -7630,7 +7644,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_fled': {
     AppLanguage.en: 'The {ship} runs clear and leaves the fight behind',
-    AppLanguage.fr: '{ship} prend le large et laisse le combat derrière elle',
+    AppLanguage.fr: '{ship} prend le large et laisse le combat derrière lui',
   },
   'ship_log_run_caught': {
     AppLanguage.en: 'The {ship} closes the gap: the run loses ground ({n}/3)',
@@ -7638,9 +7652,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_ship_run': {
     AppLanguage.en:
-        'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn.',
+        'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn: start before the hull runs low.',
     AppLanguage.fr:
-        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et elle est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour.',
+        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et il est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour : fuyez avant que la coque ne soit trop basse.',
   },
   'contract_sinkShips': {
     AppLanguage.en: 'Sink or take {n} ships at sea',
@@ -7765,9 +7779,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         '{ship} vire vers les fonds : retenez la bête maintenant, ou elle est perdue',
   },
+  'ship_log_beast_turns_back': {
+    AppLanguage.en: 'Its wounds closed, the {ship} turns back to the fight',
+    AppLanguage.fr: 'Ses plaies refermées, {ship} revient au combat',
+  },
   'beast_ship_log_enemy_repairs': {
-    AppLanguage.en: 'The {ship}\'s {room} knits closed',
-    AppLanguage.fr: '{room} de {ship} se ressoude',
+    AppLanguage.en: 'Flesh knits over the {ship}\'s {room}',
+    AppLanguage.fr: 'La chair se referme sur {room} de {ship}',
   },
   'beast_ship_log_enemy_fire_out': {
     AppLanguage.en:
@@ -7789,15 +7807,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'beast_ship_log_shot_absorbed': {
     AppLanguage.en: '{weapon} glances off the {ship}\'s hide',
     AppLanguage.fr: '{weapon} ricoche sur le cuir de {ship}',
-  },
-  'beast_ship_log_rigging_torn': {
-    AppLanguage.en: 'Chain shot tears the {ship}\'s fins',
-    AppLanguage.fr: 'Les boulets ramés déchirent les nageoires de {ship}',
-  },
-  'beast_ship_log_grape': {
-    AppLanguage.en: 'Grapeshot shreds the {ship}\'s gills: it mends slower',
-    AppLanguage.fr:
-        'La mitraille lacère les ouïes de {ship} : ses plaies se ferment moins vite',
   },
   'beast_ship_log_boarders': {
     AppLanguage.en: 'The {ship}\'s arms come over the rail into the hold!',
@@ -7833,9 +7842,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_beast_watched': {
     AppLanguage.en:
-        'Every eye aboard follows {ship} as it goes: now its ways are known.',
+        'Every eye aboard follows {ship} as it goes: a sign of where it lairs.',
     AppLanguage.fr:
-        'Chaque regard à bord suit {ship} qui s\'éloigne : ses habitudes sont connues désormais.',
+        'Chaque regard à bord suit {ship} qui s\'éloigne : un signe de son repaire.',
+  },
+  'ship_log_beast_sign_outran': {
+    AppLanguage.en:
+        'Looking back, the crew marks where it turned away: a sign of {ship}.',
+    AppLanguage.fr:
+        'En se retournant, l\'équipage note où la bête a renoncé : un signe de {ship}.',
   },
   'ship_log_beast_clues': {
     AppLanguage.en: 'Signs of {ship}: {n} of {of}',
@@ -7894,9 +7909,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beasts_hint': {
     AppLanguage.en:
-        'Every meeting survived, every beast let pass and some wrecks give a sign of where it lairs. With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
+        'Every fight with a beast seen through to the end and survived, every beast let pass or outrun, and some wrecks give a sign of where it lairs (a fight run from gives none). With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
     AppLanguage.fr:
-        'Chaque rencontre survécue, chaque bête laissée passer et certaines épaves donnent un signe de son repaire. Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
+        'Chaque combat contre une bête mené jusqu\'au bout et dont l\'Eel réchappe, chaque bête laissée passer ou distancée, et certaines épaves donnent un signe de son repaire (un combat qu\'on a fui n\'en donne aucun). Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
   },
   'beast_slain_label': {
     AppLanguage.en: 'Slain. Its trophy is at the shipwright\'s.',

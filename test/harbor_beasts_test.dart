@@ -1,6 +1,7 @@
 // The Harbor and the sea beasts (v1.185): the hunter's harpoon on sale
 // once a beast has been seen, fitted in place of a gun with the gun kept
-// in store, and a beast with enough signs to hunt.
+// in store, and a beast with enough signs to hunt, which sets out with
+// them.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/harbor_screen.dart';
+import 'package:narrative_data_app/screens/voyage_screen.dart';
 
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
   for (var i = 0; i < 40 && !done(); i++) {
@@ -86,5 +88,22 @@ void main() {
     expect(session.shipPartIds, ['ballista', 'hunters_harpoon']);
     expect(session.storedShipPartIds, ['harpoon_rack']);
     expect(session.gold, 500 - 180);
+
+    // The hunt sets out with its signs: they are spent once the beast is
+    // met, so a hunt cut short on its day out keeps them. (The swap's
+    // notice closes first.)
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('beast_hunt_brinejaw')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('beast_hunt_brinejaw')));
+    await _pumpUntil(
+        tester, () => find.byType(VoyageScreen).evaluate().isNotEmpty);
+    expect(find.byType(VoyageScreen), findsOneWidget);
+    expect(
+        container.read(playerSessionProvider).seaBeasts['brinejaw']!.clues, 3);
+    await tester.pumpWidget(const SizedBox());
+    await tester.pump(const Duration(seconds: 2));
   });
 }

@@ -324,6 +324,18 @@ void main() {
         expect(board.where((c) => seaContractKinds.contains(c.kind)),
             hasLength(1));
         expect(board.first.kind, ContractKind.hunt);
+        for (final c in board) {
+          // A fight at sea comes along on every crossing: the sea's
+          // contracts pay less than the land's, and take three ships.
+          final sea = seaContractKinds.contains(c.kind);
+          expect(
+              c.rewardGold,
+              sea
+                  ? (contractGoldFor(4) * seaContractPay).round()
+                  : contractGoldFor(4),
+              reason: c.kind.name);
+          if (c.kind == ContractKind.sinkShips) expect(c.required, 3);
+        }
       }
       final land = rollContracts(
           chapter: 4,
