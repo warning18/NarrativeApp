@@ -240,6 +240,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     if (!_placing) _startClock();
   }
 
+  /// Whole turns each order die has spun, one per order given.
+  final Map<String, int> _orderSpins = {};
+
   /// True while the crew are being placed before the first round.
   bool _placing = false;
 
@@ -257,6 +260,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final order = orderFor(member);
     if (order == null || _busy || _over || !_battle.orderWorks(member)) return;
     setState(() {
+      _orderSpins[member.id] = (_orderSpins[member.id] ?? 0) + 1;
       _battle.orderFromStation(member);
       _selectedCrewId = null;
       _playOrder(order);
@@ -777,6 +781,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   /// What a shot just did to a room, shown over it for a moment, keyed by
   /// the side (true for the Eel) and the room.
   final Map<(bool, ShipRoom), (String, int)> _flashes = {};
+
+  /// The hull a shot just took off each ship (true for the Eel), shown
+  /// by her hull bar for a moment.
+  final Map<bool, (int, int)> _hullPops = {};
   int _flashCount = 0;
   final Map<(bool, ShipRoom), Timer> _flashTimers = {};
 
@@ -917,9 +925,20 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             : '−${outcome.hullDamage}';
     final key = (onEel, outcome.room);
     final flash = (text, ++_flashCount);
+    if (outcome.landed && outcome.hullDamage > 0) {
+      final pop = (outcome.hullDamage, flash.$2);
+      _hullPops[onEel] = pop;
+      late final Timer timer;
+      timer = Timer(const Duration(milliseconds: 1600), () {
+        _fxTimers.remove(timer);
+        if (!mounted || _hullPops[onEel] != pop) return;
+        setState(() => _hullPops.remove(onEel));
+      });
+      _fxTimers.add(timer);
+    }
     _flashes[key] = flash;
     _flashTimers[key]?.cancel();
-    _flashTimers[key] = Timer(const Duration(milliseconds: 1200), () {
+    _flashTimers[key] = Timer(const Duration(milliseconds: 1450), () {
       _flashTimers.remove(key);
       if (!mounted || _flashes[key] != flash) return;
       setState(() => _flashes.remove(key));
@@ -1093,6 +1112,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                   ship: _battle.player,
                   evasion: _battle.playerEvasion,
                   color: ink.gold,
+                  eel: true,
                 ),
                 const SizedBox(height: 6),
                 if (_aimRoom != null)
@@ -1107,7 +1127,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                           message: hint,
                           child: Text(
                             '${trFor(lang, 'round_label')} ${_battle.turn} · '
-                            '${_battle.log.isEmpty ? hint : _battle.log.skip(max(0, _battle.log.length - 2)).map(_line).join('\n')}',
+                            '${_battle.log.isEmpty ? hint : _battle.log.reversed.take(2).map(_line).join('\n')}',
                             key: const Key('ship_log'),
                             style: theme.textTheme.labelSmall?.copyWith(
                                 color: _busy && !_over ? ink.blood : ink.ash),
@@ -1476,7 +1496,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     required int evasion,
     required Color color,
     EnemyHabit habit = EnemyHabit.none,
+    bool eel = false,
   }) {
+    final pop = _hullPops[eel];
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
@@ -1565,9 +1587,26 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
               ),
             ),
             const SizedBox(width: 8),
-            Text('${ship.hull}/${ship.maxHull}',
-                style: small?.copyWith(
-                    fontFeatures: const [FontFeature.tabularFigures()])),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Text('${ship.hull}/${ship.maxHull}',
+                    style: small?.copyWith(
+                        fontFeatures: const [FontFeature.tabularFigures()])),
+                // The hull a shot just took, rising off the count.
+                if (pop != null)
+                  Positioned(
+                    right: 0,
+                    top: -18,
+                    child: _Flash(
+                      key: ValueKey('hull_${pop.$2}'),
+                      text: '−${pop.$1}',
+                      color: eel ? ink.blood : ink.gold,
+                      size: 16,
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ],
@@ -2111,12 +2150,17 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
               Positioned.fill(child: content),
               if (flash != null)
                 Positioned(
-                  right: 0,
-                  top: -14,
-                  child: _Flash(
-                    key: ValueKey(flash.$2),
-                    text: flash.$1,
-                    color: isPlayer ? ink.blood : ink.gold,
+                  left: -30,
+                  right: -30,
+                  top: -26,
+                  child: Center(
+                    child: _Flash(
+                      key: ValueKey(flash.$2),
+                      text: flash.$1,
+                      color: isPlayer ? ink.blood : ink.gold,
+                      // A hit's number, big; a slip or a block, smaller.
+                      size: flash.$1.startsWith('−') ? 24 : 15,
+                    ),
                   ),
                 ),
             ],
@@ -2162,16 +2206,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   /// room.
   Widget _buildCrewSkills(AppLanguage lang) {
     final enemies = ref.read(localizedDbProvider(enemiesSchema)).value;
-    // What can be done now comes first; spent orders last.
-    int rank(ShipCrew c) => _battle.ordersUsed.contains(c.id)
-        ? 2
-        : _orderUsable(c, enemies)
-            ? 0
-            : 1;
+    // Each hand's die keeps its place, spent or not.
     final crew = [
       for (final c in _battle.crew)
         if (orderFor(c) != null) c
-    ]..sort((a, b) => rank(a).compareTo(rank(b)));
+    ];
     final chips = [
       for (final c in crew) _skillChip(lang, c, orderFor(c)!, enemies),
     ];
@@ -2181,86 +2220,165 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       child: Row(
         children: [
           for (final chip in chips)
-            Padding(padding: const EdgeInsets.only(right: 6), child: chip),
+            Padding(padding: const EdgeInsets.only(right: 8), child: chip),
         ],
       ),
     );
   }
 
+  /// One hand's order as a die, as the dice fight rolls its faces: a tap
+  /// gives it (the die spins, the hand goes to its room first if they
+  /// stand elsewhere); a hold tells what it does and from where. The
+  /// hand's initial sits in its corner, an arrow when giving it moves them.
   Widget _skillChip(AppLanguage lang, ShipCrew member, CrewOrder order,
       Map<String, dynamic>? enemies) {
-    final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final spent = _battle.ordersUsed.contains(member.id);
     final usable = _orderUsable(member, enemies);
     final fits = _battle.orderFitsStation(member);
-    final room = _battle.orderRoomFor(member);
-    final name = member.isPlayer ? trFor(lang, 'you_label') : member.name;
     final color = spent
         ? ink.ash
         : usable
             ? (fits ? ink.gold : ink.tide)
             : ink.ash;
-    final where = spent
-        ? trFor(lang, 'ship_order_spent')
-        : !widget.rules.orderStations || order == CrewOrder.allHands
-            ? trFor(lang, 'ship_order_anywhere')
-            : fits
-                ? trFor(lang, 'ship_order_here')
-                    .replaceAll('{room}', _roomName(lang, room!, enemy: false))
-                : trFor(lang, 'ship_order_go')
-                    .replaceAll('{room}', _roomName(lang, room!, enemy: false));
-    return Tooltip(
-      message: trFor(lang, 'ship_order_${order.name}_hint'),
-      child: Material(
-        color: Colors.black.withValues(alpha: 0.6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(color: color, width: usable ? 1.5 : 1),
-        ),
-        child: InkWell(
-          key: Key('ship_order_${order.name}'),
-          borderRadius: BorderRadius.circular(10),
-          onTap: usable ? () => _useOrder(member) : null,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _busy || _over
-                    ? _crewToken(member, size: 26)
-                    : _draggableToken(member, size: 26),
-                const SizedBox(width: 6),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(spent ? Icons.check : _orderIcon(order),
-                            size: 13, color: color),
-                        const SizedBox(width: 3),
-                        Text(
-                          trFor(lang, 'ship_order_${order.name}'),
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: spent ? ink.ash : Colors.white,
-                            decoration:
-                                spent ? TextDecoration.lineThrough : null,
-                          ),
-                        ),
-                      ],
+    const side = 42.0;
+    return Semantics(
+      button: true,
+      label: '${trFor(lang, 'ship_order_${order.name}')} · ${member.name}',
+      child: InkWell(
+        key: Key('ship_order_${order.name}'),
+        borderRadius: BorderRadius.circular(10),
+        onTap: usable ? () => _useOrder(member) : null,
+        onLongPress: () => _showOrderSheet(lang, member, order),
+        child: AnimatedRotation(
+          turns: (_orderSpins[member.id] ?? 0).toDouble(),
+          duration: const Duration(milliseconds: 550),
+          curve: Curves.easeOutBack,
+          child: Opacity(
+            opacity: usable || spent ? 1 : 0.55,
+            child: Container(
+              width: side,
+              height: side,
+              decoration: BoxDecoration(
+                color: spent
+                    ? Colors.black.withValues(alpha: 0.55)
+                    : Color.alphaBlend(color.withValues(alpha: 0.18),
+                        Colors.black.withValues(alpha: 0.7)),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: color, width: usable ? 2 : 1),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 3,
+                      offset: Offset(1, 2)),
+                ],
+              ),
+              child: Stack(
+                children: [
+                  Center(
+                    child: Icon(spent ? Icons.check : _orderIcon(order),
+                        size: 20, color: spent ? ink.ash : color),
+                  ),
+                  Positioned(
+                    left: 3,
+                    top: 2,
+                    child: Text(
+                      member.name.characters.first,
+                      style: TextStyle(
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                          color: spent ? ink.ash : Colors.white70),
                     ),
-                    Text('$name · $where',
-                        style: theme.textTheme.labelSmall
-                            ?.copyWith(color: color, fontSize: 10)),
-                  ],
-                ),
-              ],
+                  ),
+                  if (usable && !fits)
+                    Positioned(
+                      right: 2,
+                      bottom: 1,
+                      child:
+                          Icon(Icons.directions_walk, size: 10, color: color),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  /// A hold on an order die: what the order does, who gives it and from
+  /// which rooms, and where they stand now.
+  Future<void> _showOrderSheet(
+      AppLanguage lang, ShipCrew member, CrewOrder order) {
+    final ink = InkColors.of(context);
+    final spent = _battle.ordersUsed.contains(member.id);
+    final here = _battle.stationOf(member.id);
+    final rooms = !widget.rules.orderStations || order == CrewOrder.allHands
+        ? trFor(lang, 'ship_order_anywhere')
+        : orderRooms[order]!
+            .map((r) => _roomName(lang, r, enemy: false, suffix: '_title'))
+            .join(' / ');
+    final room = _battle.orderRoomFor(member);
+    final where = spent
+        ? trFor(lang, 'ship_order_spent')
+        : _battle.orderFitsStation(member) || room == null
+            ? null
+            : trFor(lang, 'ship_order_go')
+                .replaceAll('{room}', _roomName(lang, room, enemy: false));
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        return SafeArea(
+          child: Padding(
+            key: const Key('ship_order_sheet'),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(_orderIcon(order), color: ink.gold, size: 26),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(trFor(lang, 'ship_order_${order.name}'),
+                          style: const TextStyle(
+                              fontFamily: InkFonts.display, fontSize: 20)),
+                    ),
+                    _crewToken(member, size: 22),
+                    const SizedBox(width: 6),
+                    Text(member.isPlayer
+                        ? trFor(lang, 'you_label')
+                        : member.name),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(trFor(lang, 'ship_order_${order.name}_hint'),
+                    style: theme.textTheme.bodyMedium),
+                const SizedBox(height: 8),
+                Text(
+                  '${trFor(lang, 'ship_order_from_label')} $rooms'
+                  '${here == null ? '' : ' · ${trFor(lang, 'ship_order_now_label')} ${_roomName(lang, here, enemy: false, suffix: '_title')}'}',
+                  style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
+                ),
+                if (where != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                      '${member.isPlayer ? trFor(lang, 'you_label') : member.name} $where',
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: spent ? ink.ash : ink.tide)),
+                ],
+                const SizedBox(height: 6),
+                Text(trFor(lang, 'ship_order_once_label'),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -2601,12 +2719,16 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
 
   /// The Eel's guns as cards: the charge as a ring, gold when ready; the
   /// armed one picked out. Tap to arm, then tap a room of the enemy.
+  /// The Eel's weapons in one row, however many she carries (up to nine
+  /// on the biggest hulls): each a tile with its charge ring, damage and,
+  /// when there is room, its name. A tap arms it; a hold names it, its
+  /// shot and its state.
   Widget _buildPlayerWeapons(bool fr) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final lang = ref.watch(appLanguageProvider);
     final weapons = _battle.player.weapons;
-    Widget card(ShipWeapon w) {
+    Widget tile(ShipWeapon w, double width) {
       final armed = _armedWeaponId == w.id;
       final ready = _battle.inRange(w) && w.isReady;
       final state = !_battle.inRange(w)
@@ -2617,71 +2739,98 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                   ? trFor(lang, 'ship_weapon_ready_label')
                   : '${w.charge}/${w.chargeTurns}';
       final enabled = _battle.canFire(w) && !_busy && !_over;
-      return Material(
-        color: armed
-            ? ink.gold.withValues(alpha: 0.12)
-            : theme.colorScheme.surfaceContainer,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: BorderSide(
-              color: armed ? ink.gold : ink.seam, width: armed ? 2 : 1),
-        ),
-        child: InkWell(
-          key: Key('ship_weapon_${w.id}'),
-          borderRadius: BorderRadius.circular(10),
-          onTap: enabled
-              ? () => setState(() {
-                    _armedWeaponId = armed ? null : w.id;
-                    _selectedCrewId = null;
-                    _cancelAim();
-                  })
-              : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _ChargeRing(
-                  value: w.chargeTurns <= 0 ? 1 : w.charge / w.chargeTurns,
-                  color: ready ? ink.gold : ink.tide,
-                  track: ink.seam,
-                  size: 32,
-                  child: Icon(_weaponIcon(w),
-                      size: 15, color: ready ? ink.gold : ink.ash),
-                ),
-                const SizedBox(height: 3),
-                Text(w.nameFor(fr),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: ready ? null : ink.ash)),
-                // The shot is the weapon's own: its mark beside the damage,
-                // what it does in the tooltip.
-                Tooltip(
-                  message: trFor(lang, 'ship_ammo_${w.ammo.name}_hint'),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (w.ammo != ShipAmmo.round) ...[
-                        Icon(_ammoIcon(w.ammo),
-                            key: Key('ship_weapon_ammo_${w.id}'),
-                            size: 11,
-                            color: ready ? ink.ember : ink.ash),
-                        const SizedBox(width: 3),
-                      ],
-                      Flexible(
-                        child: Text(
-                          '${w.damage} · $state',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: ready ? ink.gold : ink.ash),
-                        ),
+      final roomy = width >= 76;
+      final ring = _ChargeRing(
+        value: w.chargeTurns <= 0 ? 1 : w.charge / w.chargeTurns,
+        color: ready ? ink.gold : ink.tide,
+        track: ink.seam,
+        size: 26,
+        child:
+            Icon(_weaponIcon(w), size: 13, color: ready ? ink.gold : ink.ash),
+      );
+      final damage = Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (w.ammo != ShipAmmo.round) ...[
+            Icon(_ammoIcon(w.ammo),
+                key: Key('ship_weapon_ammo_${w.id}'),
+                size: 10,
+                color: ready ? ink.ember : ink.ash),
+            const SizedBox(width: 2),
+          ],
+          Text('${w.damage}',
+              style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: ready ? ink.gold : ink.ash)),
+        ],
+      );
+      return Tooltip(
+        message: '${w.nameFor(fr)} · ${w.damage} · $state\n'
+            '${trFor(lang, 'ship_ammo_${w.ammo.name}_hint')}',
+        child: Material(
+          color: armed
+              ? ink.gold.withValues(alpha: 0.14)
+              : theme.colorScheme.surfaceContainer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+                color: armed ? ink.gold : ink.seam, width: armed ? 2 : 1),
+          ),
+          child: InkWell(
+            key: Key('ship_weapon_${w.id}'),
+            borderRadius: BorderRadius.circular(8),
+            onTap: enabled
+                ? () => setState(() {
+                      _armedWeaponId = armed ? null : w.id;
+                      _selectedCrewId = null;
+                      _cancelAim();
+                    })
+                : null,
+            child: SizedBox(
+              height: 48,
+              child: roomy
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Row(
+                        children: [
+                          ring,
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(w.nameFor(fr),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.labelMedium
+                                        ?.copyWith(
+                                            color: ready ? null : ink.ash)),
+                                Row(
+                                  children: [
+                                    damage,
+                                    Flexible(
+                                      child: Text(' · $state',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: theme.textTheme.labelSmall
+                                              ?.copyWith(
+                                                  color: ready
+                                                      ? ink.gold
+                                                      : ink.ash)),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-              ],
+                    )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ring, const SizedBox(height: 1), damage],
+                    ),
             ),
           ),
         ),
@@ -2690,13 +2839,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
 
     if (weapons.isEmpty) return const SizedBox.shrink();
     return LayoutBuilder(builder: (context, constraints) {
-      final perRow = min(weapons.length, 3);
-      final width = (constraints.maxWidth - 6 * (perRow - 1)) / perRow;
-      return Wrap(
-        spacing: 6,
-        runSpacing: 6,
+      const gap = 5.0;
+      final width =
+          (constraints.maxWidth - gap * (weapons.length - 1)) / weapons.length;
+      return Row(
         children: [
-          for (final w in weapons) SizedBox(width: width, child: card(w)),
+          for (final (i, w) in weapons.indexed) ...[
+            if (i > 0) const SizedBox(width: gap),
+            SizedBox(width: width, child: tile(w, width)),
+          ],
         ],
       );
     });
@@ -3040,29 +3191,39 @@ class _ChargeRing extends StatelessWidget {
 
 /// What a shot just did, rising off the room it hit and fading.
 class _Flash extends StatelessWidget {
-  const _Flash({super.key, required this.text, required this.color});
+  const _Flash(
+      {super.key, required this.text, required this.color, this.size = 15});
 
   final String text;
   final Color color;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return IgnorePointer(
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0, end: 1),
-        duration: const Duration(milliseconds: 1100),
+        duration: const Duration(milliseconds: 1400),
         builder: (context, t, child) => Opacity(
-          opacity: (1 - t * t).clamp(0.0, 1.0),
-          child: Transform.translate(offset: Offset(0, -10 * t), child: child),
+          opacity: (1 - t * t * t).clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(0, -14 * t),
+            // Pops in large, settles, then rises and fades.
+            child: Transform.scale(
+                scale: t < 0.15 ? 1.6 - 4 * t : 1.0, child: child),
+          ),
         ),
         child: Text(
           text,
           style: TextStyle(
             fontFamily: InkFonts.system,
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
+            fontSize: size,
+            fontWeight: FontWeight.w800,
             color: color,
-            shadows: const [Shadow(blurRadius: 3, color: Colors.black)],
+            shadows: const [
+              Shadow(blurRadius: 4, color: Colors.black),
+              Shadow(blurRadius: 1, color: Colors.black),
+            ],
           ),
         ),
       ),

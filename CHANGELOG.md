@@ -8,6 +8,24 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.188.0+219]
+
+### Changed
+- **Crew orders are dice.** Each hand's order sits under the sea as a
+  die, as the dice fight's faces do: a tap gives it (the die spins, the
+  hand goes to its room first when they stand elsewhere, a walking mark
+  says so); a hold opens what it does, the rooms it is given from and
+  where the hand stands. The dice keep their places, spent or not.
+- **Weapons in one row.** The Eel's weapons are compact tiles in a single
+  row, so up to nine fit without taking room from the sea: the charge
+  ring and damage, and the name when there is room; a hold names the
+  weapon, its shot and its state.
+- The dock's log line puts the newest line first.
+
+### Added
+- **Damage on a hit.** A landed shot's damage pops large over the room
+  it hit and beside the hull count of the ship it struck.
+
 ## [1.187.0+218]
 
 ### Added

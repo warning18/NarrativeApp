@@ -143,6 +143,17 @@ void main() {
     final brace =
         tester.widget<InkWell>(find.byKey(const Key('ship_order_brace')));
     expect(brace.onTap, isNull);
+    // Held, the die tells what the order does and from where.
+    await tester.longPress(find.byKey(const Key('ship_order_brace')));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('ship_order_sheet')), findsOneWidget);
+    expect(find.textContaining('Given from:'), findsOneWidget);
+    Navigator.of(tester.element(find.byKey(const Key('ship_order_sheet'))))
+        .pop();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
     // The crew sheet still moves hands.
     await tester.tap(find.byKey(const Key('ship_crew_button')));
     // The sea never settles: let the sheet slide.

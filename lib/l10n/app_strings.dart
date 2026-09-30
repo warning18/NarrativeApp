@@ -6454,6 +6454,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'from anywhere',
     AppLanguage.fr: 'depuis n’importe où',
   },
+  'ship_order_from_label': {
+    AppLanguage.en: 'Given from:',
+    AppLanguage.fr: 'Donné depuis :',
+  },
+  'ship_order_now_label': {
+    AppLanguage.en: 'now at:',
+    AppLanguage.fr: 'actuellement :',
+  },
+  'ship_order_once_label': {
+    AppLanguage.en: 'Once a battle. Tap the die to give it.',
+    AppLanguage.fr: 'Une fois par bataille. Touchez le dé pour le donner.',
+  },
   'ship_order_spent': {
     AppLanguage.en: 'given',
     AppLanguage.fr: 'donné',
@@ -6617,9 +6629,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_ship_orders': {
     AppLanguage.en:
-        'Each hand aboard can give one order a battle, from the right room: tap it under the sea and they go there and give it. Drag a hand onto a room to move them.',
+        'Each hand aboard can give one order a battle, from the right room: tap their die under the sea and they go there and give it; hold it to read it. Drag a hand onto a room to move them.',
     AppLanguage.fr:
-        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis le bon poste : touchez-le sous la mer, il s’y rend et le donne. Glissez un membre sur une salle pour le déplacer.',
+        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis le bon poste : touchez son dé sous la mer, il s’y rend et le donne ; maintenez-le pour le lire. Glissez un membre sur une salle pour le déplacer.',
   },
   'tip_ship_fire': {
     AppLanguage.en:
