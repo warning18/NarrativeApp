@@ -1,9 +1,13 @@
 import 'dart:math';
 
+import '../combat/sea_beasts.dart';
+
 /// What can happen on one day at sea between two ports. A voyage (see
 /// [buildVoyage]) is a short chain of these, drawn once when the Rusty
-/// Eel casts off; VoyageScreen walks them in order.
-enum SeaEventKind { calm, storm, raider, derelict, sighting }
+/// Eel casts off; VoyageScreen walks them in order. A sea beast's day
+/// ([beast], or [hunt] on a hunt the Harbor sent out) is laid in by the
+/// voyage itself (see sea_beasts.dart).
+enum SeaEventKind { calm, storm, raider, derelict, sighting, beast, hunt }
 
 class SeaEvent {
   const SeaEvent({
@@ -15,6 +19,7 @@ class SeaEvent {
     this.enemyShipId,
     this.gold = 0,
     this.hullDelta = 0,
+    this.omenBeastId,
   });
 
   final SeaEventKind kind;
@@ -23,8 +28,12 @@ class SeaEvent {
   final String choiceText;
   final String choiceTextFr;
 
-  /// A [SeaEventKind.raider] event's enemy_ships.json id.
+  /// A [SeaEventKind.raider] event's enemy_ships.json id (a beast's, on
+  /// a [SeaEventKind.beast] or [SeaEventKind.hunt] day).
   final String? enemyShipId;
+
+  /// The beast met tomorrow, whose omen shows today.
+  final String? omenBeastId;
 
   /// Gold found on a derelict.
   final int gold;
@@ -39,6 +48,19 @@ class SeaEvent {
 
   /// What the crew can do about it (v1.163), the usual answer first.
   List<SeaChoice> get choices => seaChoicesFor(kind);
+
+  /// This day with tomorrow's beast's omen on it.
+  SeaEvent withOmen(String beastId) => SeaEvent(
+        kind: kind,
+        description: description,
+        descriptionFr: descriptionFr,
+        choiceText: choiceText,
+        choiceTextFr: choiceTextFr,
+        enemyShipId: enemyShipId,
+        gold: gold,
+        hullDelta: hullDelta,
+        omenBeastId: beastId,
+      );
 }
 
 /// What the crew does with a day at sea (v1.163). Each event kind offers a
@@ -58,10 +80,14 @@ enum SeaAction {
   repair,
   rest,
   sailOn,
+
+  /// A beast: strike the sails and keep still, and hope it passes.
+  holdStill,
 }
 
 class SeaChoice {
-  const SeaChoice(this.action, this.text, this.textFr, {this.checkAbility});
+  const SeaChoice(this.action, this.text, this.textFr,
+      {this.checkAbility, this.dcBonus = 0});
 
   final SeaAction action;
   final String text;
@@ -70,6 +96,9 @@ class SeaChoice {
   /// The ability the choice rolls against [seaCheckDc] (see
   /// ability_check.dart), or null for a sure thing.
   final String? checkAbility;
+
+  /// Added to the DC (a beast is harder to outrun than a raider).
+  final int dcBonus;
 
   String textFor(bool fr) => fr && textFr.isNotEmpty ? textFr : text;
 }
@@ -109,6 +138,19 @@ List<SeaChoice> seaChoicesFor(SeaEventKind kind) => switch (kind) {
       SeaEventKind.sighting => const [
           SeaChoice(SeaAction.sailOn, 'Sail on', 'Poursuivre'),
         ],
+      SeaEventKind.beast => const [
+          SeaChoice(SeaAction.fight, 'Stand and fight', 'Lui tenir tête'),
+          SeaChoice(SeaAction.outrun, 'Crowd on sail and run',
+              'Forcer la voile et fuir',
+              checkAbility: 'dexterity', dcBonus: beastOutrunDcBonus),
+          SeaChoice(SeaAction.holdStill, 'Strike the sails and keep still',
+              'Amener les voiles et ne plus bouger',
+              checkAbility: 'wisdom'),
+        ],
+      SeaEventKind.hunt => const [
+          SeaChoice(
+              SeaAction.fight, 'Loose the harpoons', 'Lâcher les harpons'),
+        ],
     };
 
 /// The DC of a check at sea in [chapter] (the same as a detour's).
@@ -122,7 +164,8 @@ const int boardCheckDcBonus = 3;
 /// The DC [choice] rolls against in [chapter].
 int seaChoiceDc(SeaChoice choice, int chapter) =>
     seaCheckDc(chapter) +
-    (choice.action == SeaAction.board ? boardCheckDcBonus : 0);
+    (choice.action == SeaAction.board ? boardCheckDcBonus : 0) +
+    choice.dcBonus;
 
 /// What a raider takes to sheer off: twice what it would have paid out.
 int tributeFor(Map<String, dynamic>? ship) =>
@@ -210,14 +253,16 @@ const _sightingFr = [
 ];
 
 /// Enemy ships that may sail against the player at [chapter]
-/// (enemy_ships.json `minChapter`).
+/// (enemy_ships.json `minChapter`). A sea beast is never a raider: it is
+/// met on its own (see sea_beasts.dart).
 List<String> raiderPoolFor(Map<String, dynamic> enemyShips, int chapter) =>
     enemyShips.entries
         .where((e) =>
+            !isBeastRecord(e.value as Map<String, dynamic>?) &&
             (((e.value as Map<String, dynamic>)['minChapter'] as num?)
-                    ?.toInt() ??
-                1) <=
-            chapter)
+                        ?.toInt() ??
+                    1) <=
+                chapter)
         .map((e) => e.key)
         .toList()
       ..sort();
@@ -237,6 +282,8 @@ const double knownWatersRaiderChance = 0.15;
 /// storm, a fifth a derelict, the rest calm water or a sighting.
 /// [alreadyRaided]: the days drawn continue a crossing that has met its
 /// raider already (a day added by sheltering), so known waters send none.
+/// [stormShift]: the chapter's weather (see chapter_conditions.dart) widens
+/// or narrows the storm band, at the expense of calm water.
 List<SeaEvent> buildVoyage({
   required Random random,
   required int length,
@@ -244,6 +291,7 @@ List<SeaEvent> buildVoyage({
   required int chapter,
   bool knownWaters = false,
   bool alreadyRaided = false,
+  double stormShift = 0,
 }) {
   final raiders = raiderPoolFor(enemyShips, chapter);
   final chance = knownWaters ? knownWatersRaiderChance : raiderChance;
@@ -259,9 +307,9 @@ List<SeaEvent> buildVoyage({
     if (roll < raiderChance) {
       raided = true;
       kind = SeaEventKind.raider;
-    } else if (roll < 0.55) {
+    } else if (roll < 0.55 + stormShift) {
       kind = SeaEventKind.storm;
-    } else if (roll < 0.75) {
+    } else if (roll < 0.75 + stormShift) {
       kind = SeaEventKind.derelict;
     } else if (roll < 0.9) {
       kind = SeaEventKind.calm;
@@ -314,7 +362,45 @@ List<SeaEvent> buildVoyage({
           choiceText: 'Sail on',
           choiceTextFr: 'Poursuivre',
         ));
+      case SeaEventKind.beast:
+      case SeaEventKind.hunt:
+        // Never drawn: the voyage lays a beast's day in (see
+        // [beastDayFor]).
+        break;
     }
   }
   return events;
+}
+
+/// The day a beast's [record] is met: on a crossing ([hunt] false), its
+/// sighting; on a hunt, the signs that led the Eel to it.
+SeaEvent beastDayFor(String beastId, Map<String, dynamic> record,
+    {required bool hunt}) {
+  final spec = beastSpecOf(record);
+  final key = hunt ? 'hunt' : 'sighting';
+  return SeaEvent(
+    kind: hunt ? SeaEventKind.hunt : SeaEventKind.beast,
+    description: spec[key]?.toString() ?? '',
+    descriptionFr: spec['${key}_fr']?.toString() ?? '',
+    choiceText: hunt ? 'Loose the harpoons' : 'Stand and fight',
+    choiceTextFr: hunt ? 'Lâcher les harpons' : 'Lui tenir tête',
+    enemyShipId: beastId,
+  );
+}
+
+/// [events] with the beast [beastId] met on day [day] (in place of what
+/// was drawn), its omen on the day before.
+List<SeaEvent> withBeastDay(List<SeaEvent> events, int day, String beastId,
+    Map<String, dynamic> record) {
+  if (events.isEmpty) return [beastDayFor(beastId, record, hunt: false)];
+  final at = day.clamp(0, events.length - 1);
+  return [
+    for (var i = 0; i < events.length; i++)
+      if (i == at)
+        beastDayFor(beastId, record, hunt: false)
+      else if (i == at - 1)
+        events[i].withOmen(beastId)
+      else
+        events[i],
+  ];
 }

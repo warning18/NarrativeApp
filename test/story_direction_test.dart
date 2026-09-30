@@ -170,7 +170,9 @@ void main() {
       expect(court.launchZoneId, 'z_drowned_stair');
       expect(court.nextId, '5003');
       expect(nodes['5004']!.choices.single.nextId, '5004_altar');
-      expect(nodes['5004b']!.choices.single.nextId, '5004_altar');
+      for (final choice in nodes['5004b']!.choices) {
+        expect(choice.nextId, '5004_altar');
+      }
       for (final choice in nodes['5004_altar']!.choices) {
         expect(choice.nextId, '5005');
       }
@@ -201,7 +203,15 @@ void main() {
           isEmpty,
           reason: 'the crossing sets out from the camp');
       final sail = nodes['7400']!.choices.single;
-      expect(sail.nextId, '7002_confront');
+      // The shore is crossed first (v1.176): unseen, under the Shroud or
+      // cutting a road, and every way across reaches the Sovereign.
+      expect(sail.nextId, '7002_approach');
+      for (final id in ['7002_approach', '7002_alarm']) {
+        for (final choice in nodes[id]!.choices) {
+          expect(choice.nextId, '7002_confront', reason: choice.text);
+          expect(choice.showIfFlags, ['banner_five'], reason: choice.text);
+        }
+      }
       expect(sail.mainQuest, isTrue);
       expect(sail.travelPlaceId, '7002');
       expect(sail.showIfFlags, ['banner_five']);
@@ -431,8 +441,12 @@ void main() {
       // fate scenes (each open to one side of the alignment line, so exactly
       // one is ever available).
       expect(nodes['6010']!.settlement!.arrivalNodeId, '6010_gate');
+      // The siege at the camp comes first (v1.176), and ends there.
       for (final choice in nodes['6002']!.choices) {
-        expect(choice.nextId, '6002_camp', reason: choice.text);
+        expect(choice.nextId, '6002_siege', reason: choice.text);
+      }
+      for (final choice in nodes['6002_siege_end']!.choices) {
+        expect(choice.nextId, '6002_camp');
       }
       final gate = nodes['6010_gate']!;
       final through = gate.choices.singleWhere((c) => c.nextId == '6010');

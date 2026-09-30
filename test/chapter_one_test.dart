@@ -35,6 +35,7 @@ bool _hasImpact(StoryChoice c) =>
     (c.unlockQuestId?.isNotEmpty ?? false) ||
     (c.questIDToProgress?.isNotEmpty ?? false) ||
     (c.grantsBannerPieceId?.isNotEmpty ?? false) ||
+    c.grantsItem ||
     (c.loseAllyId?.isNotEmpty ?? false) ||
     (c.launchZoneId?.isNotEmpty ?? false) ||
     c.opensCharacterCreation;
@@ -73,8 +74,8 @@ void main() {
       if (node.hubProgress != null) node.hubProgress!.prefix,
   ];
 
-  test('chapter 1 has no padding: 36 scenes, all reachable', () {
-    expect(chapterOne.length, 36);
+  test('chapter 1 has no padding: 39 scenes, all reachable', () {
+    expect(chapterOne.length, 39);
     final targets = <String>{};
     for (final node in nodes.values) {
       for (final choice in node.choices) {

@@ -6,11 +6,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/chapter_grid_layout.dart';
+import '../data/echoes.dart';
 import '../data/encounter_text.dart';
 import '../data/journey_map.dart';
 import '../data/journey_relief.dart';
 import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/narration_tokens.dart';
+import '../data/road_events.dart';
 import '../data/story_repository.dart';
 import '../data/world_map.dart';
 import '../gamedata/db_schema.dart';
@@ -18,6 +20,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/story_node.dart';
 import '../providers/aftermath_provider.dart';
+import '../providers/app_mode_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/home_tab_provider.dart';
@@ -30,9 +33,15 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/journey_fx.dart';
 import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
+import '../widgets/timed_choice_bar.dart';
 import 'journal_screen.dart';
 import 'story_player_screen.dart'
-    show composeNarration, isStoryChoiceLocked, takeStoryChoice;
+    show
+        EchoLine,
+        composeNarrationParts,
+        isStoryChoiceLocked,
+        noteShownEchoes,
+        takeStoryChoice;
 
 /// The Journey tab's index among the play-mode tabs (after Story,
 /// Character, Camp and Other, so theirs stay as they were).
@@ -72,7 +81,8 @@ class _Step {
     required this.label,
     required this.locked,
     required this.leadsTo,
-    required this.onward,
+    required this.onwardKinds,
+    this.event,
     this.bearing,
     this.chartTarget,
   });
@@ -88,8 +98,12 @@ class _Step {
   /// The place the step reaches, when it is not where the party stands.
   final String? leadsTo;
 
-  /// How many ways on the step's own scene has (drawn as faint forks).
-  final int onward;
+  /// What the step's own scene offers next, glimpsed through the fog: the
+  /// kinds of its first few ways on.
+  final List<JourneyStepKind> onwardKinds;
+
+  /// What waits on the road to the step (see road_events.dart).
+  final RoadEventKind? event;
 
   /// For a way to another place: its true direction from here on the
   /// world chart (radians, 0 east, clockwise), and where it is there.
@@ -134,9 +148,13 @@ class _PastMark {
     required this.place,
     required this.newPlace,
     required this.way,
+    this.echoed = false,
   });
 
   final String nodeId;
+
+  /// The scene holds a line an earlier choice earned (see echoes.dart).
+  final bool echoed;
 
   /// Where it happened.
   final String? place;
@@ -165,6 +183,9 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
   String? _sceneKey;
   int? _selected;
   bool _busy = false;
+
+  /// A new scene's lone step is still to be picked for the player.
+  bool _autoPickPending = false;
   GlobalKey<_JourneyChartState> _chartKey = GlobalKey();
 
   /// The scene folded to its first lines (kept from scene to scene).
@@ -270,8 +291,10 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final node = story.nodeFor(mark.nodeId);
     if (node == null) return;
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;
-    final text =
-        composeNarration(node, ref.read(playerSessionProvider), french: french);
+    final parts = composeNarrationParts(
+        node, ref.read(playerSessionProvider), story,
+        french: french);
+    final text = parts.text;
     // The sheet grows out of the scene's mark on the road.
     final screen = MediaQuery.of(context).size;
     final alignment = Alignment(
@@ -322,6 +345,21 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                           fontSize: 15,
                           height: 1.45),
                     ),
+                    // What earlier choices changed there.
+                    for (final echo in parts.echoes) ...[
+                      const SizedBox(height: 10),
+                      EchoLine(
+                        echo: echo,
+                        caption: tr(ref, 'echo_because')
+                            .replaceAll('{choice}', echo.cause),
+                        colour: ink.gold,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                                fontFamily: InkFonts.prose,
+                                fontSize: 15,
+                                height: 1.45) ??
+                            const TextStyle(),
+                      ),
+                    ],
                     if (mark.way != null) ...[
                       const SizedBox(height: 12),
                       Text(
@@ -366,6 +404,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     if (newScene) {
       _sceneKey = sceneKey;
       _selected = null;
+      _autoPickPending = true;
       _chartKey = GlobalKey();
     }
 
@@ -404,6 +443,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
           child: _ScenePanel(
             key: ValueKey('journey_reading_$sceneKey'),
+            story: story,
             node: node,
             french: french,
             folded: false,
@@ -471,6 +511,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
         place: place,
         newPlace: place != null && placeKeyOf(id) != nearer,
         way: way,
+        echoed: story
+                .nodeFor(id)
+                ?.firedCallbacks(session.flags)
+                .any((c) => echoCause(story, c.flag) != null) ??
+            false,
       ));
     }
 
@@ -486,6 +531,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
     final mainQuestOpen =
         ref.watch(chapterProgressProvider)?.mainQuestOpen ?? true;
     final slots = journeySlots(choices.length);
+    // What waits on each road is known before the party sets out (see
+    // road_events.dart); Edit Mode's roads hold nothing.
+    final reached = ref.watch(reachedChapterProvider);
+    final condition = ref.watch(chapterConditionProvider);
+    final eventsOn =
+        !play.isInExcursion && ref.watch(appModeProvider) != AppMode.edit;
     final steps = [
       for (var i = 0; i < choices.length; i++)
         () {
@@ -514,9 +565,26 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             leadsTo: target != null && target.id != standing?.id
                 ? target.name(language)
                 : null,
-            onward: play.isInExcursion || choice.isEnding
-                ? 0
-                : story.nodeFor(choice.nextId)?.choices.length ?? 0,
+            onwardKinds: play.isInExcursion || choice.isEnding
+                ? const []
+                : <JourneyStepKind>{
+                    for (final next in story.nodeFor(choice.nextId)?.choices ??
+                        const <StoryChoice>[])
+                      if (!next.isHiddenFor(session.flags))
+                        journeyStepKindOf(next),
+                  }.take(3).toList(),
+            event: !eventsOn || locked || choice.isEnding
+                ? null
+                : roadEventFor(
+                    story: story,
+                    fromNodeId: play.currentNodeId,
+                    toNodeId: choice.nextId,
+                    historyLength: play.history.length,
+                    chapter: reached,
+                    oddsFactor: condition?.roadEventOdds ?? 1,
+                    championShare: condition?.championShare ?? 0.4,
+                    shrineShare: condition?.shrineShare ?? 0.3,
+                  ),
             bearing:
                 chartHere != null && target != null && target.id != standing?.id
                     ? (geography.of(target) - chartHere).direction
@@ -528,6 +596,11 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           );
         }(),
     ];
+    // A scene with one way on has its step picked already: one tap on Go.
+    if (_autoPickPending) {
+      _autoPickPending = false;
+      if (steps.length == 1 && !steps.single.locked) _selected = 0;
+    }
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
         : null;
@@ -577,6 +650,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               maxHeight: math.max(96, area.maxHeight * 0.32)),
                           child: _ScenePanel(
                             key: ValueKey('journey_scene_$sceneKey'),
+                            story: story,
                             node: node,
                             french: french,
                             folded: _sceneFolded,
@@ -663,6 +737,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                               ),
                       ),
                       if (!ended) ...[
+                        // A timed scene's clock (see TimedChoiceBar).
+                        if (node.isTimed &&
+                            !play.isInExcursion &&
+                            ref.watch(appModeProvider) != AppMode.edit)
+                          TimedChoiceBar(
+                            key: ValueKey(
+                                'journey_timer_${node.id}_${play.history.length}'),
+                            seconds: node.timeLimit!,
+                            active: !_busy &&
+                                ref.watch(homeTabIndexProvider) ==
+                                    journeyTabIndex,
+                            label: tr(ref, 'timed_choice_hint'),
+                            onTimeout: () {
+                              final way = node.timeoutChoiceOrNull!;
+                              final index = steps
+                                  .indexWhere((s) => identical(s.choice, way));
+                              if (index >= 0) _take(index, steps[index]);
+                            },
+                          ),
                         const SizedBox(height: 10),
                         TutorialTarget(
                           id: 'journey.pick',
@@ -696,6 +789,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 class _ScenePanel extends ConsumerWidget {
   const _ScenePanel({
     super.key,
+    required this.story,
     required this.node,
     required this.french,
     required this.folded,
@@ -705,6 +799,7 @@ class _ScenePanel extends ConsumerWidget {
     this.detour,
   });
 
+  final StoryData story;
   final StoryNode node;
   final bool french;
 
@@ -726,8 +821,14 @@ class _ScenePanel extends ConsumerWidget {
     final session = ref.watch(playerSessionProvider);
     final aftermath = ref.watch(pendingAftermathProvider);
     final outcome = ref.watch(pendingCheckOutcomeProvider);
+    final roadNote = ref.watch(pendingRoadNoteProvider);
+    // Plain scenes read on the way here open this one (see
+    // scene_flow.dart); lines an earlier choice earned close it.
+    final preludes = ref.watch(pendingPreludeProvider);
     final speaker = speakerLabelFor(node.speaker, french: french);
-    final text = composeNarration(node, session, french: french);
+    final parts = composeNarrationParts(node, session, story, french: french);
+    final text = parts.text;
+    if (!folded) noteShownEchoes(ref, session, parts.echoes);
     final prose = theme.textTheme.bodyLarge?.copyWith(
       fontFamily: InkFonts.prose,
       fontSize: reading ? 17 : 15,
@@ -750,9 +851,33 @@ class _ScenePanel extends ConsumerWidget {
           Text(aftermath, style: aside),
           const SizedBox(height: 8),
         ],
+        if (roadNote != null && roadNote.isNotEmpty) ...[
+          Text(roadNote, style: aside),
+          const SizedBox(height: 8),
+        ],
         if (outcome != null && outcome.isNotEmpty) ...[
           Text(outcome, style: aside),
           const SizedBox(height: 8),
+        ],
+        for (final prelude in preludes) ...[
+          if (prelude.speaker != null) ...[
+            Text(
+              prelude.speaker!.toUpperCase(),
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontFamily: InkFonts.system,
+                letterSpacing: 1.2,
+                color: ink.gold,
+              ),
+            ),
+            const SizedBox(height: 4),
+          ],
+          Text(prelude.text, style: prose),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Text('⁂', style: aside),
+            ),
+          ),
         ],
         if (speaker != null) ...[
           Text(
@@ -771,6 +896,16 @@ class _ScenePanel extends ConsumerWidget {
           animate: !reading && !MediaQuery.of(context).disableAnimations,
           child: Text(text, style: prose),
         ),
+        for (final echo in parts.echoes) ...[
+          const SizedBox(height: 10),
+          EchoLine(
+            key: ValueKey('journey_echo_${echo.key}'),
+            echo: echo,
+            caption: tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
+            colour: ink.gold,
+            style: prose ?? const TextStyle(),
+          ),
+        ],
       ],
     );
     return DecoratedBox(
@@ -792,6 +927,7 @@ class _ScenePanel extends ConsumerWidget {
                 child: Text(
                   [
                     if (detour != null && detour!.isNotEmpty) detour!,
+                    for (final prelude in preludes) prelude.text,
                     text,
                   ].join(' '),
                   maxLines: 2,
@@ -918,6 +1054,19 @@ class _EndedPanel extends ConsumerWidget {
     );
   }
 }
+
+/// A road event's badge on its step (see road_events.dart).
+IconData _eventIcon(RoadEventKind kind) => switch (kind) {
+      RoadEventKind.champion => Icons.military_tech,
+      RoadEventKind.shrine => Icons.spa_outlined,
+      RoadEventKind.caravan => Icons.storefront,
+    };
+
+Color _eventColour(RoadEventKind kind, InkColors ink) => switch (kind) {
+      RoadEventKind.champion => ink.blood,
+      RoadEventKind.shrine => ink.heal,
+      RoadEventKind.caravan => ink.gold,
+    };
 
 IconData _iconFor(JourneyStepKind kind) => switch (kind) {
       JourneyStepKind.ending => Icons.auto_stories_outlined,
@@ -1426,7 +1575,6 @@ class _JourneyChartState extends State<_JourneyChart>
                                     locked: steps[i].locked,
                                     selected:
                                         widget.selected == i || walking == i,
-                                    onward: steps[i].onward,
                                   ),
                               ],
                               past: pastPoints,
@@ -1816,6 +1964,23 @@ class _JourneyChartState extends State<_JourneyChart>
     );
   }
 
+  /// One of a step's ways on, a small mark above it in the fog.
+  Widget _glimpse(
+      int f, int count, JourneyStepKind kind, ChartPalette palette) {
+    final angle = count == 1 ? 0.0 : (f / (count - 1) - 0.5) * (math.pi / 2.2);
+    const size = 12.0;
+    final centre = Offset(
+      _stepRadius + math.sin(angle) * (_stepRadius + 10),
+      _stepRadius - math.cos(angle) * (_stepRadius + 10),
+    );
+    return Positioned(
+      left: centre.dx - size / 2,
+      top: centre.dy - size / 2,
+      child: Icon(_iconFor(kind),
+          size: size, color: palette.label.withValues(alpha: 0.75)),
+    );
+  }
+
   Widget _pastLabel(int i, Offset point, double width, TextStyle noteStyle,
       TextStyle placeStyle) {
     final mark = widget.past[i];
@@ -1859,6 +2024,11 @@ class _JourneyChartState extends State<_JourneyChart>
                         letterSpacing: 1.2,
                         color: palette.place.withValues(alpha: 0.8)),
                   ),
+                if (mark.echoed)
+                  Icon(Icons.history,
+                      key: ValueKey('journey_past_echo_$i'),
+                      size: 13,
+                      color: widget.ink.gold.withValues(alpha: 0.9)),
                 if (mark.way != null)
                   Text(
                     mark.way!,
@@ -1932,27 +2102,57 @@ class _JourneyChartState extends State<_JourneyChart>
                     duration: pop >= 1
                         ? const Duration(milliseconds: 160)
                         : Duration.zero,
-                    child: Container(
-                      width: _stepRadius * 2,
-                      height: _stepRadius * 2,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSelected ? colour : palette.land,
-                        border: Border.all(
-                          color: colour,
-                          width: isSelected ? 3 : 2,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: _stepRadius * 2,
+                          height: _stepRadius * 2,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: isSelected ? colour : palette.land,
+                            border: Border.all(
+                              color: colour,
+                              width: isSelected ? 3 : 2,
+                            ),
+                          ),
+                          child: Transform.rotate(
+                            angle: shake,
+                            child: Icon(
+                              step.locked
+                                  ? Icons.lock_outline
+                                  : _iconFor(step.kind),
+                              size: 20,
+                              color: isSelected ? palette.land : colour,
+                            ),
+                          ),
                         ),
-                      ),
-                      child: Transform.rotate(
-                        angle: shake,
-                        child: Icon(
-                          step.locked
-                              ? Icons.lock_outline
-                              : _iconFor(step.kind),
-                          size: 20,
-                          color: isSelected ? palette.land : colour,
-                        ),
-                      ),
+                        // What lies past the step, glimpsed through the
+                        // fog: the kinds of its own ways on.
+                        if (!step.locked && pop >= 1)
+                          for (var f = 0; f < step.onwardKinds.length; f++)
+                            _glimpse(f, step.onwardKinds.length,
+                                step.onwardKinds[f], palette),
+                        // What waits on the road there.
+                        if (step.event != null)
+                          Positioned(
+                            right: -6,
+                            bottom: -4,
+                            child: Container(
+                              key: ValueKey('journey_event_$i'),
+                              width: 18,
+                              height: 18,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: _eventColour(step.event!, widget.ink),
+                                border:
+                                    Border.all(color: palette.land, width: 1.5),
+                              ),
+                              child: Icon(_eventIcon(step.event!),
+                                  size: 11, color: palette.land),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -2169,7 +2369,6 @@ class _JourneyPainter extends CustomPainter {
         int row,
         bool locked,
         bool selected,
-        int onward,
       })> steps;
 
   /// The chapter's earlier scenes, the latest first.
@@ -2306,23 +2505,6 @@ class _JourneyPainter extends CustomPainter {
         canvas.drawPath(path, paint);
       } else {
         _dashed(canvas, path, paint, dash: 6, gap: 6);
-      }
-      // What lies past the step: a dot for each way on from it, at the
-      // edge of the fog.
-      if (!step.locked && step.onward > 0 && reveal >= 1) {
-        final forks = math.min(step.onward, 3);
-        final fog = Paint()..color = palette.label.withValues(alpha: 0.6);
-        for (var f = 0; f < forks; f++) {
-          final angle =
-              forks == 1 ? 0.0 : (f / (forks - 1) - 0.5) * (math.pi / 2.2);
-          canvas.drawCircle(
-            step.centre +
-                Offset(math.sin(angle) * (stepRadius + 9),
-                    -math.cos(angle) * (stepRadius + 9)),
-            2,
-            fog,
-          );
-        }
       }
     }
     // The road being walked, in the party's colour behind it.
@@ -2492,6 +2674,24 @@ class _StepDetail extends ConsumerWidget {
                           .replaceAll('{place}', step.leadsTo!),
                       style:
                           theme.textTheme.labelSmall?.copyWith(color: ink.ash),
+                    ),
+                  if (step.event != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Row(
+                        children: [
+                          Icon(_eventIcon(step.event!),
+                              size: 14, color: _eventColour(step.event!, ink)),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              tr(ref, 'journey_event_${step.event!.name}'),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                  color: _eventColour(step.event!, ink)),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   if (tags.isNotEmpty) ...[
                     const SizedBox(height: 6),

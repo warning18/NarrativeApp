@@ -127,6 +127,7 @@ class ShipWeapon {
     this.roomDamage = 1,
     this.charge = 0,
     this.ranges = const {ShipRange.close, ShipRange.medium, ShipRange.long},
+    this.tetherRounds = 0,
     this.ammo = ShipAmmo.round,
   });
 
@@ -146,6 +147,7 @@ class ShipWeapon {
       incendiary: part['setsFire'] == true,
       roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
       ranges: weaponRangesFrom(part['ranges']),
+      tetherRounds: max(0, (part['tetherRounds'] as num?)?.toInt() ?? 0),
       ammo: ammoFromName(part['ammo']),
     );
   }
@@ -186,6 +188,10 @@ class ShipWeapon {
   /// The ranges it reaches (a harpoon only close, a thrown pot not long).
   final Set<ShipRange> ranges;
 
+  /// Rounds a landed hit holds a sea beast on the line (see sea_beasts.dart):
+  /// no diving, no fleeing, no healing. 0 for a gun that holds nothing.
+  final int tetherRounds;
+
   /// The shot it fires.
   final ShipAmmo ammo;
 
@@ -206,6 +212,7 @@ class ShipWeapon {
         roomDamage: roomDamage,
         charge: value.clamp(0, chargeTurns),
         ranges: ranges,
+        tetherRounds: tetherRounds,
         ammo: ammo,
       );
 
@@ -223,6 +230,7 @@ class ShipWeapon {
         roomDamage: roomDamage,
         charge: charge,
         ranges: ranges,
+        tetherRounds: tetherRounds,
         ammo: shot,
       );
 }

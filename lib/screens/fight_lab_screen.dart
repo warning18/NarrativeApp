@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../combat/sea_beasts.dart';
 import '../combat/dice_faces.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
@@ -229,6 +230,9 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                         ship: ship, parts: parts, installedPartIds: installed)
                     : null,
                 habit: habitFromName(data['habit']?.toString()),
+                // A sea beast fights as one here too (see sea_beasts.dart).
+                beast:
+                    isBeastRecord(data) ? BeastProfile.fromRecord(data) : null,
                 waters: waters,
                 onFinished: (outcome) => Navigator.of(pageContext).pop(outcome),
               ),

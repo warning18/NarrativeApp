@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/combat/sea_beasts.dart';
 import 'package:narrative_data_app/combat/ship_battle.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 
@@ -557,7 +558,10 @@ void main() {
       for (final entry in ships.entries) {
         final record = entry.value as Map<String, dynamic>;
         final habit = habitFromName(record['habit']?.toString());
-        expect(habit, isNot(EnemyHabit.none), reason: entry.key);
+        // A sea beast's ways are its beast block (see sea_beasts.dart).
+        if (!isBeastRecord(record)) {
+          expect(habit, isNot(EnemyHabit.none), reason: entry.key);
+        }
         if (habit == EnemyHabit.boarder) {
           expect(boardingProfileFor(record).canBoard, isTrue);
         }

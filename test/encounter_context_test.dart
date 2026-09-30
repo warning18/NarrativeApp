@@ -14,6 +14,7 @@ import 'package:narrative_data_app/data/alignment_events.dart';
 import 'package:narrative_data_app/data/encounter_text.dart';
 import 'package:narrative_data_app/data/map_themes.dart';
 import 'package:narrative_data_app/data/sub_node_engine.dart';
+import 'package:narrative_data_app/models/story_node.dart';
 
 Map<String, dynamic> _loadJson(String path) {
   for (final p in [path, '../$path']) {
@@ -194,9 +195,30 @@ void main() {
           isFalse);
       expect(SubNodeEngine.detourAllowedBetween(mood('5005'), mood('6001')),
           isFalse);
-      // Leaving the market at rest for the hovel still passes a road.
+      // Bribing Vane on the wharf, at rest, still passes a road.
+      expect(SubNodeEngine.detourAllowedBetween(mood('2015'), mood('2030')),
+          isTrue);
+    });
+
+    test('chapter 1 and the set pieces take no detour (v1.181)', () {
+      final raw = _loadJson('assets/Cleaned_Narrative_DAG.json');
+      StoryNode scene(String id) =>
+          StoryNode.fromJson(id, raw[id] as Map<String, dynamic>);
+      // The flight from Alster: nothing on its roads, even at rest.
       expect(
-          SubNodeEngine.detourAllowedBetween(mood('151'), mood('300')), isTrue);
+          SubNodeEngine.detourAllowedBetweenScenes(scene('151'), scene('300'),
+              chapter: 1),
+          isFalse);
+      // The Sovereign names its price with nobody stopping at a stall.
+      expect(
+          SubNodeEngine.detourAllowedBetweenScenes(
+              scene('7002_confront'), scene('7002_price'),
+              chapter: 6),
+          isFalse);
+      expect(
+          SubNodeEngine.detourAllowedBetweenScenes(scene('2015'), scene('2030'),
+              chapter: 2),
+          isTrue);
     });
   });
 

@@ -9,6 +9,11 @@ import 'loot_box.dart';
 /// guaranteed Gold chest, or an alignment hunter's Silver floor. The
 /// default ([EncounterModifiers.none]) is every fight the game ran before
 /// these existed: affixes and the chest tier roll normally.
+/// A road champion's health over an ordinary Elite's (road_events.dart):
+/// with it, a champion lasts about half again as long as a story fight
+/// (the playthrough simulator, v1.177).
+const double championHealthMultiplier = 1.25;
+
 class EncounterModifiers {
   const EncounterModifiers({
     this.forcedAffixes = const [],
@@ -24,6 +29,7 @@ class EncounterModifiers {
     this.lossContinues = false,
     this.isTest = false,
     this.forcedCondition,
+    this.forceElite = false,
   });
 
   static const EncounterModifiers none = EncounterModifiers();
@@ -77,6 +83,10 @@ class EncounterModifiers {
   /// wrong is an ambush), instead of rolling one.
   final BattlefieldCondition? forcedCondition;
 
+  /// A lone enemy that is Elite for certain (a road event's champion, see
+  /// road_events.dart), instead of rolling for it.
+  final bool forceElite;
+
   bool get isDefault =>
       forcedAffixes.isEmpty &&
       namedEnemyName == null &&
@@ -90,7 +100,8 @@ class EncounterModifiers {
       !isZoneBoss &&
       !lossContinues &&
       !isTest &&
-      forcedCondition == null;
+      forcedCondition == null &&
+      !forceElite;
 
   /// The same modifiers stamped with a fight's chapter and/or zone-tier
   /// multiplier (an expedition applies its zone's to every draw).
@@ -109,6 +120,7 @@ class EncounterModifiers {
         lossContinues: lossContinues,
         isTest: isTest,
         forcedCondition: forcedCondition,
+        forceElite: forceElite,
       );
 
   /// A zone boss: never below a Gold chest, half again the reward, at the
@@ -128,6 +140,17 @@ class EncounterModifiers {
   /// The modifiers a generated story choice carries (see
   /// [StoryChoice.huntName] and friends); [none] for an ordinary choice.
   factory EncounterModifiers.fromChoice(StoryChoice choice) {
+    if (choice.roadEvent == 'elite') {
+      // A road's champion (road_events.dart): an Elite a quarter tougher
+      // still, and an ambush when the party failed to slip past it.
+      return EncounterModifiers(
+        forceElite: true,
+        chestTierFloor: ChestTier.silver,
+        rewardMultiplier: 1.25,
+        healthMultiplier: championHealthMultiplier,
+        forcedCondition: battlefieldConditionFromName(choice.forcedCondition),
+      );
+    }
     if (choice.isHunterAmbush) {
       return const EncounterModifiers(
         chestTierFloor: ChestTier.silver,

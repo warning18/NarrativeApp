@@ -2,7 +2,7 @@
   "blind_beggar_stall": {
     "shopID": "blind_beggar_stall",
     "shopName": "Blind Beggar Stall",
-    "shopDescription": "A makeshift stall selling salvaged goods.",
+    "shopDescription": "The Blind Beggar's cellar-boy got out with a barrow of the tavern's stores, and sells them off the wharf a bottle at a time.",
     "unlockLevel": 1,
     "buildCost": 0,
     "initialStock": [
@@ -20,10 +20,10 @@
       "potion_minor": 4,
       "sword_001": 1
     },
-    "minChapter": 1,
-    "detourEligible": true,
+    "minChapter": 2,
+    "detourEligible": false,
     "shopName_fr": "L’Étal du Mendiant Aveugle",
-    "shopDescription_fr": "Un étal de fortune où l’on vend des marchandises récupérées."
+    "shopDescription_fr": "Le garçon de cave du Mendiant Aveugle s'est enfui avec une brouette des réserves de la taverne, et les vend sur le quai, bouteille par bouteille."
   },
   "black_market_docks": {
     "shopID": "black_market_docks",
@@ -55,8 +55,8 @@
       "harborwatch_lantern": 1,
       "boots_tidewalker": 1
     },
-    "minChapter": 1,
-    "detourEligible": true,
+    "minChapter": 2,
+    "detourEligible": false,
     "shopName_fr": "La Cave aux Marées",
     "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
   },
@@ -87,7 +87,8 @@
     ],
     "diceStock": [
       "iron_die",
-      "berserker_die"
+      "berserker_die",
+      "headsman_die"
     ],
     "stockQuantities": {
       "sword_t1": 1,
@@ -104,7 +105,7 @@
       "harborwatch_cutlass": 1,
       "boots_worn_leather": 1
     },
-    "minChapter": 1,
+    "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Forge de l’Armurier",
     "shopDescription_fr": "Des lames et des lances fraîchement forgées s’alignent sur les râteliers, encore tièdes de l’enclume."
@@ -141,7 +142,7 @@
       "greaves_hide": 1,
       "greaves_studded": 1
     },
-    "minChapter": 1,
+    "minChapter": 2,
     "detourEligible": true,
     "shopName_fr": "La Halle des Boucliers",
     "shopDescription_fr": "Des rangées de boucliers, des rondaches fêlées aux égides étincelantes."
@@ -304,7 +305,8 @@
       "Weapon"
     ],
     "diceStock": [
-      "bulwark_die"
+      "bulwark_die",
+      "headsman_die"
     ],
     "stockQuantities": {
       "sword_t6": 1,
@@ -350,7 +352,8 @@
     ],
     "diceStock": [
       "sage_die",
-      "tempest_die"
+      "tempest_die",
+      "chorus_die"
     ],
     "stockQuantities": {
       "staff_t6": 1,
@@ -447,7 +450,7 @@
       "spellbook_arrow_volley": 1
     },
     "minChapter": 5,
-    "detourEligible": true,
+    "detourEligible": false,
     "shopName_fr": "Le Comptoir de l’Ossuaire",
     "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit."
   },
@@ -478,7 +481,8 @@
     "diceStock": [
       "pilgrim_die",
       "vigil_die",
-      "tearglass_die"
+      "tearglass_die",
+      "chorus_die"
     ],
     "stockQuantities": {
       "potion_major": 6,
@@ -494,7 +498,7 @@
       "coat_last_watch": 1
     },
     "minChapter": 6,
-    "detourEligible": true,
+    "detourEligible": false,
     "shopName_fr": "La Dernière Lanterne",
     "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
   },
@@ -519,7 +523,8 @@
       "Artifact"
     ],
     "diceStock": [
-      "tearglass_die"
+      "tearglass_die",
+      "greenwood_die"
     ],
     "stockQuantities": {
       "potion_major": 6,
@@ -534,5 +539,44 @@
     "detourEligible": false,
     "shopName_fr": "La Chandlerie des charpentiers d’épaves",
     "shopDescription_fr": "Ce que la mer a rendu au Mouillage Blanc et ce que ses charpentiers d’épaves en ont fait : des baumes dans des gourdes de pèlerins, des lames reforgées avec celles de la flotte."
+  },
+  "wayfarer_caravan": {
+    "shopID": "wayfarer_caravan",
+    "shopName": "Wayfarer's Caravan",
+    "shopDescription": "A mule train that never stops in one town for long: potions, charms and the odd rare piece bought off the last road.",
+    "unlockLevel": 1,
+    "buildCost": 0,
+    "initialStock": [
+      "potion_major",
+      "antidote",
+      "charm_iron_skin",
+      "charm_warding",
+      "tome_of_insight",
+      "cloak_frostward",
+      "plate_emberproof",
+      "warden_signet"
+    ],
+    "merchantSpecialties": [
+      "Potion",
+      "Charm"
+    ],
+    "diceStock": [
+      "gambler_die",
+      "greenwood_die"
+    ],
+    "stockQuantities": {
+      "potion_major": 2,
+      "antidote": 1,
+      "charm_iron_skin": 1,
+      "charm_warding": 1,
+      "tome_of_insight": 1,
+      "cloak_frostward": 1,
+      "plate_emberproof": 1,
+      "warden_signet": 1
+    },
+    "minChapter": 2,
+    "detourEligible": false,
+    "shopName_fr": "La Caravane du Voyageur",
+    "shopDescription_fr": "Un convoi de mules qui ne reste jamais longtemps dans une ville : potions, charmes et quelques pièces rares achetées sur la dernière route."
   }
 }

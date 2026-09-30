@@ -31,12 +31,13 @@
     "setsFire": false,
     "roomDamage": 2,
     "roomBonus": {},
-    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite, but their lines reach no farther than medium range.",
-    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent, mais leurs filins ne portent pas au-delà de la moyenne portée.",
+    "description": "Barbed harpoons on a rack, three turns to wind (two with a gunner). They go through a bulwark's layers and tear two pips off whatever room they bite, but their lines reach no farther than medium range. A sea beast they bite is held on the line for a round.",
+    "description_fr": "Des harpons barbelés sur râtelier, trois tours à armer (deux avec un canonnier). Ils traversent les couches d'un pavois et arrachent deux crans à la salle qu'ils mordent, mais leurs filins ne portent pas au-delà de la moyenne portée. Une bête marine qu'ils mordent reste tenue à la ligne une passe.",
     "ranges": [
       "close",
       "medium"
     ],
+    "tetherRounds": 1,
     "ammo": "round"
   },
   "fire_pots": {
@@ -295,5 +296,87 @@
     "setsFire": false,
     "roomDamage": 1,
     "roomBonus": {}
+  },
+  "hunters_harpoon": {
+    "partID": "hunters_harpoon",
+    "partName": "Hunter's Harpoon",
+    "partName_fr": "Harpon de chasseur",
+    "slotType": "Weapon",
+    "cost": 180,
+    "battleActionLabel": "Loose the harpoon",
+    "battleActionLabel_fr": "Lâcher le harpon",
+    "damageAmount": 12,
+    "chargeTurns": 2,
+    "piercesShield": true,
+    "setsFire": false,
+    "roomDamage": 1,
+    "roomBonus": {},
+    "description": "A whaler's harpoon gun on a swivel, its line paid out from a drum below. Light work against a ship, but it goes through any bulwark, and a sea beast it bites stays on the line for two rounds: no diving, no fleeing, no healing.",
+    "description_fr": "Un canon à harpon de baleinier sur pivot, sa ligne déroulée d'un tambour en dessous. Peu de chose contre un navire, mais il traverse tout pavois, et une bête marine qu'il mord reste à la ligne deux passes : ni plongée, ni fuite, ni guérison.",
+    "tetherRounds": 2,
+    "beastGear": true
+  },
+  "sharkskin_hull": {
+    "partID": "sharkskin_hull",
+    "partName": "Sharkskin Hull",
+    "partName_fr": "Coque en peau de requin",
+    "slotType": "Utility",
+    "cost": 0,
+    "battleActionLabel": "",
+    "battleActionLabel_fr": "",
+    "damageAmount": 0,
+    "chargeTurns": 0,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 0,
+    "roomBonus": {
+      "helm": 1,
+      "hold": 1
+    },
+    "description": "Old Brinejaw's hide, stretched and tarred over the Eel's hull below the waterline. She slips through the water as the shark did, and the hold stays dry.",
+    "description_fr": "La peau de Vieille Mâchoire, tendue et goudronnée sur la coque de l'Eel sous la ligne de flottaison. Elle glisse dans l'eau comme le requin, et la cale reste sèche.",
+    "trophyOf": "brinejaw"
+  },
+  "leviathan_bone_plating": {
+    "partID": "leviathan_bone_plating",
+    "partName": "Leviathan-Bone Plating",
+    "partName_fr": "Blindage en os de léviathan",
+    "slotType": "Shield",
+    "cost": 0,
+    "battleActionLabel": "",
+    "battleActionLabel_fr": "",
+    "damageAmount": 0,
+    "chargeTurns": 0,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 0,
+    "roomBonus": {
+      "bulwark": 2
+    },
+    "description": "Plates cut from the Pale Leviathan's ribs, bolted over the bulwark. Lighter than iron and harder: two more pips on the room, two more shield layers to hold.",
+    "description_fr": "Des plaques taillées dans les côtes du Léviathan pâle, boulonnées sur le pavois. Plus légères que le fer et plus dures : deux crans de plus pour la salle, deux couches de bouclier de plus à tenir.",
+    "trophyOf": "pale_leviathan"
+  },
+  "tide_mothers_beak": {
+    "partID": "tide_mothers_beak",
+    "partName": "The Tide-Mother's Beak",
+    "partName_fr": "Le Bec de la Mère-des-Marées",
+    "slotType": "Weapon",
+    "cost": 0,
+    "battleActionLabel": "Drive the beak",
+    "battleActionLabel_fr": "Enfoncer le bec",
+    "damageAmount": 26,
+    "chargeTurns": 3,
+    "piercesShield": true,
+    "setsFire": false,
+    "roomDamage": 3,
+    "roomBonus": {},
+    "description": "The kraken's beak set on a ram-arm at the bow, three turns to wind. It goes through any bulwark and tears three pips off the room it bites, but it reaches no farther than medium range.",
+    "description_fr": "Le bec du kraken monté sur un bras de bélier à la proue, trois tours à armer. Il traverse tout pavois et arrache trois crans à la salle qu'il mord, mais il ne porte pas au-delà de la moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
+    ],
+    "trophyOf": "tide_kraken"
   }
 }

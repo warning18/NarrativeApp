@@ -8,14 +8,683 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
-## [1.183.1+215]
+## [1.186.0+217]
+
+Brings the two lines of work together: this branch (v1.176 to v1.185.1)
+and main (v1.176 to v1.183.1 there, below marked "(main)"), which went
+apart after v1.175.
+
+### Changed
+- **One world clock.** Main's day and watch (dawn, day, dusk, night) and
+  this branch's road days are the same clock now. A step on the road is
+  a watch and four end the day; a walk between places is two watches, an
+  expedition two; a night's rest sleeps through to the next dawn, wherever
+  it is taken (camp, port, town), with the heal wave. Days at sea and days
+  lost on an expedition count once, toward the chapter's threat as well.
+- **Sea beasts in the sea fight from above.** A beast fights on main's
+  top-down sea: its rooms are named for a body (fins, hide, jaws, heart)
+  on the deck labels and tooltips, and what it is about to do (dive,
+  turn for the deep, held on the line, heal, the crew's edge) shows under
+  its name. It has no look of its own yet: it borrows the ship nearest its
+  size.
+- **Run for it on the new range buttons.** At long range the lower
+  button runs for it instead of pulling away; the range bracket counts
+  the escape.
+- **Each weapon carries its own shot (main) and the hunter's harpoon.**
+  The harpoon fires round shot and still holds a beast on the line.
+- **The Harbour's cards (main's layout).** Parts stay grouped by slot,
+  with this branch's swaps, stored parts, trophies and beasts on them.
+- **The Journey map (main's chart).** The fog's glimpses of what lies past
+  a step, the road events on steps, echoes in scenes and past marks, and
+  the timed scene's clock are all on main's chart.
+- **Icons drawn on this branch are out for now.** The five v1.176-v1.182
+  foes, the five dice-tampering moves, the beast's trophy and the road
+  caravan borrow the icon of the nearest of their kind (a Wrecker captain
+  the smuggler captain's, the trophy an elite's, and so on) until they
+  have art of their own.
+
+### Fixed (from the review of main's v1.178-v1.183.1)
+- **Ways out to the same place no longer sit on one spot** on the Journey
+  map: exits on (nearly) the same bearing, as when three choices lead to
+  the square, are fanned out along the edge, each one tappable.
+- **End turn stays on screen on a short phone.** Below 600 px the enemy's
+  bar and the sea scroll and the dock stays pinned under them.
+- **Tips no longer cover the enemy's rooms:** a tip shows above the dock,
+  off the sea.
+- **A still sea is no longer washed white in a squall.** With reduced
+  motion the lightning's beat never lands on the still frame.
+- **The range reads on a phone.** The ships are sized to the sea's height
+  as well as its width, a quarter of the water always left for the gap.
+- **The voyage's day strip scrolls** when shelters make it longer than the
+  screen.
+- **The enemy's guns point at the Eel,** not away from it.
+- **A storm's stake counts the void-marked sail,** as the loss itself does.
+- v1.183.0's balance note says a skilled player used to switch to chain
+  shot against the late void barge; the shot it switched to was grape
+  (the barge boards). The entry is kept as it shipped.
+
+## [1.185.1+216]
+
+The sea fight is moving to a top-down view on another branch, so the
+beasts' side-view art is taken out, and the version the app reports is
+fixed.
+
+### Fixed
+- **The version the app reports** (settings, main menu, and what the
+  in-app updater compares with a release) had stayed at 1.180.0 since
+  v1.181. An installed 1.181–1.185 build kept offering itself as an
+  update. A test now keeps it equal to `pubspec.yaml`.
+
+### Removed
+- The sea beasts' side-view pixel art and the Kraken arm's icon. Until
+  they have art of their own, a beast in battle borrows the ship sprite
+  nearest its size (the Void Barge's), and the Kraken arm shows the
+  Unstitched's icon. The beasts' rules, rooms, status line and text are
+  unchanged.
+
+## [1.185.0+215]
+
+Great beasts now roam the open sea. The first time you meet one, you
+should get away alive. Then you track it and hunt it down.
+
+### Added
+- **Three sea beasts**, each in its own waters:
+  - **The Brinejaw**, a scarred shark, on the chapter 3 and 4 crossings.
+  - **The Pale Leviathan**, a serpent-whale, on the chapter 5 crossings.
+  - **The Tide-Mother**, a kraken, on the chapter 6 crossings. Its arms
+    board the Eel and are fought on the dice.
+
+  A crossing through a beast's waters meets it about one time in four.
+  On the day before, an omen shows (fish gone, pale water, a tide
+  running the wrong way). When it comes, the crew can:
+  - fight it;
+  - crowd on sail and run (Dexterity, harder than against a raider; a
+    failed run costs hull);
+  - strike the sails and keep still (Wisdom). If it passes, it leaves a
+    sign of itself.
+- **Beasts fight differently from ships.** In battle:
+  - Their four rooms are fins, hide, jaws and heart.
+  - They heal every round while the heart beats.
+  - The Leviathan and the Tide-Mother dive every few rounds. That round
+    they don't attack; instead they breach under the keel for hull and
+    a leak.
+  - Badly hurt, a beast turns for the deep and is gone the next turn,
+    unless a harpoon holds it or its fins are torn.
+  - Nobody boards a beast, and it doesn't chase a ship that runs.
+  - The panel shows what the beast is about to do: on the line, dives
+    in n, turning for the deep, heals n a round. A tip explains it all
+    the first time.
+- **Wounds and signs.** A beast keeps the wounds it takes, up to half
+  its body. The crew gains a sign of its lair from every meeting
+  survived, every time it passes, some wrecks in its waters and shapes
+  seen under the keel. Every meeting also teaches the crew its ways:
+  it slips less.
+- **The hunt.** The Harbor has a new **Sea beasts** section listing the
+  beasts seen, their signs and their wounds. With three signs, and the
+  Eel moored at the camp, **Hunt** sends her out: a day at sea, then
+  the beast, on the crew's terms. The hunt spends the signs, and a
+  beast that gets away must be tracked again.
+- **The Hunter's Harpoon** goes on sale at the Harbor once a beast has
+  been seen. A hit holds a beast on the line for two rounds: no
+  healing, no diving, no fleeing. The Harpoon Rack now holds a beast
+  for one round.
+- **Trophies.** A slain beast pays gold and experience and gives a
+  trophy to sell. It also gives the Eel a part, fitted for free:
+  - Sharkskin Hull (helm and hold +1);
+  - Leviathan-Bone Plating (bulwark +2);
+  - The Tide-Mother's Beak (a heavy piercing weapon).
+- **A beast bounty.** While a beast is being tracked, the bounty
+  board's sea contract is often "Stand up to a sea beast and live",
+  paid double.
+
+### Changed
+- **Parts can be swapped at the Harbor.** A part can go on in place of
+  one already fitted. The part taken off waits in store and goes back
+  on for nothing. Each part card now shows its button under its text,
+  so long descriptions stay readable on a phone.
+- The Edit Mode fight lab fights beasts as beasts.
+
+### Balance
+A Monte Carlo test of every beast, with the Eel fitted as she is in its
+waters:
+- Running from a beast at once gets away every time.
+- Fighting the Brinejaw to the end at first sight wins about half the
+  time. Against the Leviathan and the Tide-Mother it sinks the Eel.
+- A prepared hunt, with the harpoon, one earlier meeting and heavy
+  wounds, wins 96% (Brinejaw), 68% (Leviathan) and 76% (Tide-Mother).
+  Most failed hunts end with the beast getting away, not with the Eel
+  sunk. Without the harpoon, those hunts mostly fail.
+
+## [1.184.0+214]
+
+The Eel can now run from a fight, and the camp's bounty board has work
+at sea.
+
+### Added
+- **Run for it.** At long range, with a hand at the helm (or the wind
+  behind her), the Eel can turn tail instead of firing. Three turns of
+  running and she is out of the fight; a tailwind counts double. No gun
+  fires in a turn she runs, and a gun fired first means no running that
+  turn. An enemy that closes the gap sets the run back a turn, and the
+  range bar shows how far the run has got. On a voyage she sails on as
+  she is, with no prize. The story's own sea fights must still be seen
+  through. A one-time tip explains it the first time it's possible.
+- **Sea bounties.** Once the Harbor stands, one of the board's three
+  contracts is the sea's:
+  - Sink or take two ships at sea.
+  - Take a ship by boarding her.
+  - Win a sea fight losing no more than a quarter of the hull.
+
+  They pay like the other contracts, and count on voyages and in the
+  story's sea fights alike.
+
+## [1.183.0+213]
+
+Every night rested at the camp now rolls the camp's fate die, so the camp
+gets small stories of its own between the chapter's errands.
+
+### Added
+- **The camp's fate die.** It rolls after a rest on the camp screen, or
+  after resting in a town once the camp stands, since that rest is spent
+  at the camp. The dialog shows the six faces, tumbles and lands, then
+  plays out the night:
+  - **Windfall:** a purse on the sand (40 gold plus 20 per chapter), or a
+    crate of rations when the pack is half empty or less.
+  - **Visitor:** someone at the fire, and a choice. The party's
+    companions react to it like any other deed.
+    - Hungry pilgrims: share two rations (+3 alignment), or send them
+      on (−1).
+    - A Crusade deserter: hide them (+2), or hand them over for a bounty
+      (20 gold per chapter, −3).
+    - An old storyteller: listen, and every companion in the party warms
+      to you a little.
+  - **Rumor:** a rider speaks of a place of the chapter not found yet,
+    and it appears on the map.
+  - **Quarrel:** two companions argue. Side with one (+2 for them, −2 for
+    the other), or try to make peace on a Charisma check (+1 each if it
+    works, −1 each if it doesn't).
+  - **Theft:** a Perception check catches the thief. If it fails, the
+    thief takes a tenth of the gold, at most 30 per chapter, or two
+    rations from an empty purse.
+  - **Quiet night:** nothing, and that is a gift too.
+- **No empty promises.** A face that can't happen tonight (no place left
+  to find, fewer than two companions in the party) shows as a quiet
+  night on the die.
+- **No rerolling a night.** Each night rolls from the run's seed and the
+  day, so reloading a save doesn't change what comes.
+
+### Balance
+- 40 simulated runs against the same runs without the die: about 14
+  rolls per run, +256 gold per run in all (next to about 11,000 at the
+  end), no hungry days, and no change to the win rate or to companions
+  leaving.
+
+## [1.182.0+212]
+
+The dice now have rules of their own. Faces carry keywords, the party's
+faces combine into combos, and companion pairs have duo techniques. The
+Hammersmith works dice face by face, some enemies tamper with the
+party's dice, and Luck turns a bad roll around.
+
+### Added
+- **Face keywords.** A face can carry one or more keywords, shown as a
+  small badge on the die, in the face sheet and on the dice loadout.
+  - **Cleave:** the strike also hits every other enemy standing for half.
+  - **Pierce:** the strike goes through Armored and through a guard.
+  - **Growth:** +1 each time the face is played in the same fight.
+  - **Echo:** plays the face played just before it this round. The first
+    in line repeats their own face from last round.
+  - **Pain:** double damage, paid with 8% of the roller's health. It
+    never drops the roller below 1.
+  - **Steady:** +2, and the die stays kept through rerolls.
+  - Twenty-two faces across the existing dice carry one. Examples: Steady on
+    the Iron, Stone, Bulwark and Vigil dice's guards, Pain on the
+    Berserker's and Grosh's big hits, Cleave on the Storm, Flame, Tempest
+    and Malrik dice, Growth on the Holy, Ossuary and Liora dice.
+  - Three new dice build around them:
+    - **Headsman Die** (Cleave, Pierce, Pain, Steady): the Weaponsmith's
+      and the Hammersmith's forges.
+    - **Greenwood Die** (Growth on four faces): the Wayfarer's Caravan
+      and the Wreck-Wrights' Chandlery.
+    - **Chorus Die** (Echo on four faces): the Arcane Academy and the
+      Last Lantern.
+- **Party combos.** When two or more party members act, their faces
+  combine. A chip over the dice tray shows the combo before you confirm.
+  - **Flank** (exactly two strikes): each hits 15% harder.
+  - **Volley** (three strikes or more): each hits 15% harder and catches
+    the other enemies for a quarter.
+  - **Shelter** (a guard and a heal): the heal also mends the rest of
+    the party for half.
+  - **Shield Wall** (two guards or more): everyone holds the biggest
+    block.
+  - **Wellspring** (two Mana faces or more): 2 more mana.
+- **Face smithing at the Hammersmith.** The Hammersmith's Forge has a
+  new dice button. It works on any face of the player's dice or a
+  companion's signature die. The work stays on the die, and on the dice
+  that New Game+ carries over.
+  - **Hone:** +2 to an Attack, Defend or Heal face, up to three times.
+    Costs 80, 160, then 240 gold, with one, two, then three iron ore.
+  - **Temper:** an element on an Attack face, for 150 gold and two iron
+    ore.
+  - **Inscribe:** a keyword on any face it fits, for 250 gold and a
+    trophy.
+  - **Recast:** turns an Attack, Defend or Heal face into another of the
+    three and keeps its number, for 120 gold.
+  - The trophy for an inscription is an Elite Mark or the new
+    **Champion's Trophy**, which every boss drops.
+- **Duo techniques.** Two companions of a pair, both at Friendly
+  approval or better, who both land a signature face in the same round,
+  add a joint move after the faces:
+  - Grosh and Kelda: a stunning blow.
+  - Sable and Malrik: a poisoned critical.
+  - Maren and Tobin: a party-wide heal that clears afflictions.
+  - Liora and Vess: a hit on every enemy.
+  - Vess and Sable: weakens and hurts every enemy.
+  - Kelda and Tobin: a guard for the whole party.
+  - Maren and Liora: mends the most wounded and shoots the target.
+  - Grosh and Malrik: a heavy blow that heals the two.
+- **Enemies that tamper with the dice**, from chapter 3 on:
+  - **Hex:** the party's best die of the next first roll is rolled
+    again. Cultist Acolytes, Grey Candles and Tormentors of the Pit.
+  - **Silence:** Skill faces land blank next round. A face with a skill
+    picked onto it falls back to its own type. Judicators of the Choir
+    and Hollow Court Inquisitors.
+  - **Curse:** one face of the target's die becomes a Pain strike for
+    the rest of the fight. Catacomb Ghouls, Bone Sextons and the
+    Unstitched.
+  - **Mirror:** the party's best hit of the round comes back, between
+    half and twice the enemy's own damage. Hollow Reflections, the Glass
+    Shepherd and the Sovereign.
+  - A telegraphed tamper shows its own icon and text. A pending Hex or
+    Silence shows as a chip over the fight.
+- **Luck nudges.** Every 3 points of the party's best Luck give a nudge
+  per fight, at most 3. Long-press a landed die and nudge it to its
+  opposite face; the new face is kept. The nudges left show over the
+  fight.
+
+### Balance
+- 40 simulated runs against v1.181:
+  - The win rate is unchanged (99%), and losses per run are 0.4 against
+    0.8.
+  - Story fights in chapters 3–6 are shorter (5.4 rounds against 7.1),
+    and allies are knocked out less often (8% of fights against 12%).
+  - At the first tuning (+30% combos, a Volley splashing half), story
+    fights fell to 4.6 rounds, so combos were cut to +15% and a quarter.
+  - Smithing takes about 3,100 gold per run, about 15 Hones in all.
+  - A run sees about 22 tamper moves and 57 nudges spent.
+- The Champion's Trophy sells for 60 gold, like the Elite Mark, so a
+  boss's trophy doesn't flood the early chapters with gold.
+
+## [1.181.0+211]
+
+Chapter 1 is a flight from a city under attack, and now plays like one.
+Each chapter after it rolls a condition, so two runs differ more. About
+twenty-five one-button scenes became real decisions, and the three
+companions most runs never met are easier to find.
+
+### Fixed
+- **No shops in chapter 1.** The docks no longer open an armory, a
+  shieldwright and a black market while the Rusty Eel weighs anchor.
+  Instead there is time to grab one thing: a blade from the looted
+  armory rack or a buckler from the overturned cart. The market in the
+  slums is abandoned mid-trade, with only a bandit still "doing
+  business", and the forge's back room is a cache, not a shop. These
+  shops now open at Smugglers' Wharf in chapter 2.
+- **Nothing on chapter 1's roads.** Random detours, hunters and
+  temptations no longer fire in chapter 1. This had allowed a shop stall
+  between surrendering and waking in the Black Hold, or a rest by a fire
+  right after killing Clement. Nothing is saved up for chapter 2 either.
+- **Set pieces aren't interrupted.** The Sovereign naming its price, the
+  crossings through the tear, the roof coming down on the Court, the
+  Cathedral burning and the evacuation of Alster no longer stop for a
+  detour or a road event.
+- **Shops that belong to a place stay there.** The Tide Cellar, the Blind
+  Beggar's stall, the Ossuary and the Last Lantern no longer turn up as
+  roadside stalls elsewhere.
+- **Story fixes across chapter 1 and beyond.**
+  - The heirloom quest pays out once the Bundle is out of Alster, not
+    while soldiers break the door.
+  - Vess joins after the escape, not inside chapter 1.
+  - The bridge toll is 100 gold; the smuggler takes coin (60 gold) as
+    well as stories.
+  - The Black Hold strips you to your shirt and gives your kit back.
+  - The alley is dark, not daylit.
+  - The Crusade had already reached the slums: it started at the Blind
+    Beggar.
+  - The bridge is held by slum toughs in Crusade colours.
+  - Chapter 2 names old Hesk as the man the Bundle killed.
+  - Lysa's fate is told the same way on every path.
+  - The Broken's Shroud no longer contradicts how it was found.
+  - Maren's confession no longer waits for Lysa to have lived.
+  - Mother Hesk is old Hesk's wife.
+  - Several French lines no longer give the narrator a gender.
+
+### Added
+- **Chapter conditions.** Chapters 2 to 6 each draw one of eight
+  conditions from the run's own seed, never the same one twice in a run.
+  Each one only appears where it fits: no weather at sea before the boat
+  sails, and no fair while Alster falls.
+  - **Quarantine:** shops cost a quarter more, rations half again.
+  - **Tide Fair:** shops cost a fifth less, and the roads are busier,
+    with the Caravan out more often.
+  - **Contested roads:** half again as many road events, mostly
+    champions.
+  - **Storm season / Fair winds:** more or fewer storms at sea.
+  - **A rival company / Bounty season:** expeditions pay a quarter less
+    or more.
+  - **Lean season:** rations cost double.
+  - The first town or village you reach in a chapter tells you its
+    condition. The road panel (tap your stats) keeps it in view, and
+    shops and expedition rewards show what it changed.
+- **Decisions where there was one button.** About twenty-five scenes
+  across the story now offer two or three choices, with checks, costs
+  and consequences that later scenes remember. Some examples:
+  - what you take from the ring of loot at the tear, which decides
+    whether Vess can find you later;
+  - lying past the Wardens;
+  - feeding the Rat Matriarch instead of fighting her;
+  - sharing Vane's tunnel with the refugees, or selling it;
+  - cutting Vane's purse on the way out;
+  - the bell rope into the Cathedral;
+  - absolving Maren or not;
+  - tearing your parents' page out of the ledger;
+  - how the dead are buried after the siege;
+  - diving for the Court's pay chest, or selling out the deserter;
+  - what to do with the Inquisitor who burned the Ashen Quarter;
+  - buying the chart-keeper's map;
+  - where Lysa belongs;
+  - hiring the Admiral's helmsman;
+  - the wreckers' false lamps;
+  - buying a blade from Tetsu;
+  - promises to the widow, to Nell, to the eldest and to Hathra.
+- **Scenes can hand you an item** (`grantItemId` on a story choice, shown
+  on the choice and in a notice), with an editor field for it.
+
+### Changed
+- **Chapter 1 balance.** Without detours or shops, players reached
+  Inquisitor Clement at a lower level and with less gear. To compensate,
+  chapter 1 fights give more experience (slum thug 30, street bandit 40,
+  White Soldier 22). The White Soldiers are a little weaker (80 health,
+  19 damage), and so is Clement (115 health, 15 damage).
+- **Rare companions are easier to meet.**
+  - **Sable** now works with anyone short of a saint (alignment up to
+    +15). Her marker can be won at the dockhands' table, lifted from
+    the card sharp's coat (Dexterity) or bought back (Charisma, 30
+    gold). A lost card game can be played again while she waits, so her
+    quest can always be finished. If you won her marker at cards before
+    meeting her, you simply hand it over.
+  - **Liora** is met on the wharf like the town's other people: talk
+    her down (Charisma), read what she is watching (Perception) or climb
+    to her (Dexterity). If she refuses, you can try again. Hunting the
+    captain with her is the chapter's exit.
+  - **Vess** finds you on the wharf in chapter 2 if you missed her in the
+    burning market: she follows the Bundle, which everyone carries out
+    of Alster. If the tear touched you, she says so.
+
+## [1.180.0+210]
+
+The memories before the story are rewritten. There are six of them now,
+from age six to sixteen, set in the slums where the story opens, and
+each answer stays with the character.
+
+### Changed
+- **Six memories instead of five, set in the story's world.** They are a
+  sparrow in the gutter (age 6), a memory of the character's race (8),
+  the blind beggar the Blind Beggar tavern is named after (10), the
+  first time the class showed (12), old Hesk's blue lamp next door (14),
+  and the loose board over the grey Bundle the winter the parents did
+  not come home (16).
+- **Race and class change what you remember.** A human is pulled out of
+  a Crusade feast-day line, an elf's first paint is wet in the rain, a
+  dwarf cuts a crooked first mark, an orc's first ink hides from an
+  orphan-taker, and voidkin freeze a well. A warrior hauls nets, a mage
+  makes a candle lean, a rogue shills at a rigged table, a cleric sweeps
+  a shrine and a ranger sets snares.
+- **Every answer teaches something (+1 to an ability).** The answers
+  show what they teach before you pick. Six answers add six points, and
+  no memory teaches the same ability twice. Alignment still leans +4,
+  −4 or 0.
+- **Each answer shows what came of it.** After you pick, the page tells
+  what happened and what it taught, and shows the lesson and the
+  alignment lean, before the next memory. You can choose again.
+- **Memories remember each other.** A later memory can open with a line
+  about an earlier answer. The blind man remembers the sparrow; the
+  thief under the board is his granddaughter. At fourteen, the street
+  has a name for you, depending on how you have leaned so far.
+- **A timeline of ages** at the top of the page, and a summary that
+  shows the character's name, a one-line portrait (kind, hard, careful
+  or changeable), every answer with its lesson, what the six taught in
+  all, and a gauge of the starting alignment.
+
+### Added
+- **The story remembers.** 48 new lines in the opening scenes and in
+  chapter 5 answer the memories. They appear at the Blind Beggar's door,
+  when the party flees with Lysa, at the hound in the wire, at the
+  floorboard, when the soldiers break in, when old Hesk dies, over the
+  ledger with the parents' names, and when Mother Hesk is found among
+  the sleepers. The journal credits each one to the memory's answer.
+
+### Fixed
+- **Two Hesks.** The chapter 3 delivery boss from 1.179 shared a name
+  with old Hesk next door. He is now Purifier Vell.
+
+## [1.179.0+209]
+
+Two new kinds of expedition: escorts, paid for what arrives, and
+deliveries, which race a deadline. There is one of them in each chapter
+from 2 to 6.
+
+### Added
+- **Escorts.** The wagons set out at 100% load. Each stage is a scene on
+  the road with a choice to make: an ambush (hold the line or slip past),
+  a broken axle, a ford in flood, a chain across the road with a toll,
+  thieves among the crates at night, mules that will not cross, and
+  stragglers asking for a place on a wagon. Fights, failed rolls and
+  kindness each cost some of the load. A safe choice costs a day instead,
+  and that day passes on the world's clock. The boss takes another 10%.
+  Pay is the zone's gold times the share that arrives. The zone's item
+  comes only with half the load or more, and losing all of it ends the
+  escort.
+- **Deliveries.** A parcel to carry by a deadline: 6 days for 4 stages.
+  Each stage takes a day. A safe detour or a failed roll costs another,
+  and a paid guide saves one. The scenes are a crossroads, a checkpoint,
+  pursuers, a rotten bridge, a shepherd who knows a shortcut, a storm,
+  and a stranger's letter to carry on the way. On time pays in full
+  with the item; late pays half without it.
+- The expedition screen shows the wagons' load or the days on the road
+  under the progress bar. After each choice it says what it cost (load,
+  a day, health). Zone cards carry an Escort or Delivery tag.
+- **Five expeditions, each with its own boss**, in English and French:
+  - *The Salt Road* (chapter 2, escort): Brine Jack.
+  - *Fever-Bark for the Wall* (chapter 3, delivery to the Reckoning
+    Wall): Purifier Hesk.
+  - *The Bell Road* (chapter 4, escort): the Knell-Keeper.
+  - *The Ember Run* (chapter 5, delivery to Rimewell): the Rime Bailiff.
+  - *The Lantern Train* (chapter 6, escort): the Glass Shepherd.
+
+### Balance (Python simulator, 60 runs)
+- The five bosses sit with their chapter's other zone bosses. Their
+  first fight is won 98–100% of the time in 6.8 to 12 rounds, against
+  5 to 17 for the others.
+- Escorts arrive with 70–80% of the load on average, never less than
+  25%. They pay 70–80% of the zone's gold and keep the item 95–100% of
+  the time.
+- Deliveries were first given 5 days (one to spare), and a careful party
+  arrived late more than half the time. With 6 days, they are on time
+  82–87% of the time.
+- An escort or delivery has about 0.3 fights before the boss, so its
+  stages are about choices rather than fights.
+
+## [1.178.0+208]
+
+Angels and demons come less often and finish what they start, and stalls
+met on the road stay on the road.
+
+### Changed
+- **Hunters are rarer and give the party a breather.** A hunter now comes
+  6% of the time at ±20 alignment (was 10%), plus 0.15% per point past
+  that (was 0.2%), up to 15% (was 22%). After an ambush, the next five
+  alignment rolls send no hunter. In the simulator, hunter fights fall
+  from 6.6 to 3.1 a run, from the most common random fight to about as
+  common as a champion. Temptations for a Neutral party are unchanged.
+- **Twelve ambush openings instead of four.** Angels and demons each
+  arrive six ways, in English and French.
+
+### Fixed
+- **A temptation quest's quarry always comes.** A party that struck the
+  demon's bargain and then grew Good met only demons, so the bargain's
+  angel never came and the quest could not be finished. While a
+  temptation quest is open, its side now hunts the party first, whatever
+  the alignment.
+- **Any of the Choir's or the Pit's soldiers counts.** "A Charge of Light"
+  needs any creature of the Pit and "A Bargain in Shadow" any soldier of
+  the Choir, including the stronger ones that come from chapter 3. Only
+  kills made after the quest is taken count. In the simulator, runs
+  ending with one of them still open fall from 10 in 200 to 4.
+- **The Wayfarer's Caravan moves on.** A stall met on the road was
+  recorded against the scene the party had just left. Back in that town
+  or at the camp, the Shops list opened it again. Stalls met on detours
+  and expeditions, and the caravan, are now marked as met on the road and
+  stay shut in the Shops list. A shop the story places in a town stays
+  open there, even after its stall was met on the road.
+- Expedition stalls no longer claim to be at the camp in the Shops list.
+
+## [1.177.0+207]
+
+The road's numbers, tuned with the playthrough simulator. The simulator
+now plays v1.176's rules. Over 200 playthroughs on two sets of seeds,
+compared with v1.175's rules on the same seeds, it showed where they
+missed.
+
+### Changed
+- **The threat waits longer in the chapters crossed by sea.** In chapters
+  4 to 6, most days pass at sea: about 25 to 33 days a chapter for a party
+  that sails to every place, against 1 to 5 days on the road and at rest.
+  With a 6-day grace, 41% of chapter 4's fights and 44% of chapter 6's
+  came under the threat, most at the full +30%. The party was punished
+  for going where the chapter sends it. The grace is now 24 days in
+  chapters 4 and 5 and 32 in chapter 6 (still 6 in chapters 2 and 3).
+  - About a sixth to a quarter of those chapters' fights come under the
+    threat now, at +2 to 3% on average: a party that does everything
+    meets it near the chapter's end, and one that lingers still reaches
+    +30%.
+  - The Road panel says how many days the current chapter allows.
+- **Champions are a real fight.** A champion was drawn from every enemy
+  up to the chapter, often an early one the party had long outgrown. It
+  took no longer than an ordinary detour fight (5.8 rounds, like a story
+  fight). A champion is now one of the chapter's own foes (first met in
+  this chapter or the one before), with a quarter more health. It now
+  takes about 8.3 rounds, and the simulated party still wins 99% of
+  first attempts.
+- **Familiar faces come back more often.** At a 25% chance, a
+  traveller's third meeting happened in only about a quarter of runs.
+  At 40%, Oswin's full story is seen in about 70% of runs, Wren's and
+  Mira's in about half. Detour fights barely change (1.4 to 1.3 a run).
+
+### Fixed
+- A party caught slipping past a champion is ambushed, as the failed
+  roll says. The ambush was lost when the fight began.
+
+### Checked and left as they are
+- **Rations.** Buying at markets, no simulated party ever went hungry.
+  The longest walk between two markets was three roads, and rations cost
+  about 270 gold a run. A party that never buys takes about 12 hungry
+  steps a run and wins as often.
+- **The sellsword.** Hired whenever the threat is up, it is paid about
+  1,500 gold a run and deals about a tenth of the enemies' health in the
+  fights it joins.
+- **Shrines, the caravan, detours.** Detour fights fell from 5.2 to 1.4 a
+  run and champions add 2.4, so fights per run stay about the same.
+  Losses per run are unchanged against v1.175, and the gold left at the
+  end falls by about 17%.
+
+## [1.176.0+206]
+
+Play with fewer taps, and a road worth planning: choices come back, days
+pass, travellers return, and the last chapters build to set pieces.
+
+### Added
+- **Choices come back, and say so.** When a later scene has a line that an
+  earlier choice earned, the line now says which choice it was
+  ("Because you chose …"). The journal has a new tab, **What changed**,
+  listing every such line the party has seen, newest first. On the Journey
+  map, a scene behind the party with such a line has a small history mark.
+  Tapping the scene shows the line again.
+- **A look ahead on the Journey map.** Small icons above each step show
+  what the next scene holds (a fight, a roll, a shop and so on). When a
+  scene has only one way on, the map picks it for you, so Go is a single
+  tap.
+- **Days, rations and a gathering threat (from chapter 2).** A road
+  between two places eats a ration, and every four roads end a day. The
+  pack holds 12 rations. You start with 10 and can buy more at any town or
+  camp market, at 4 gold plus 2 per chapter each. With none left, each
+  road costs 8% of your health. After six days in one chapter, its enemies
+  gather strength: +3% health and damage per day, up to +30% (bosses
+  excepted). A fight says so in its log. Resting passes a night; a voyage
+  passes its days. The status sheet has a new **Road** panel with the day,
+  the threat, your rations and buttons to buy them. Your rations and the
+  day also show in the stats bar.
+- **A sellsword for hire.** From the Road panel, hire a sellsword for
+  three fights (120 gold plus 80 per chapter). The sellsword strikes the
+  weakest enemy at the start of each of your rounds.
+- **Road events, visible before you set out.** From chapter 2, about a
+  third of the roads between two places hold something, marked on the
+  Journey step and named in its details:
+  - **A champion.** An Elite of the chapter's enemies, with at least a
+    silver chest and a quarter more reward. You can instead try a hard
+    Dexterity roll to slip past it; if it fails, the fight starts with an
+    ambush.
+  - **A wayside shrine.** Health back, and twice as much for an offering.
+  - **The Wayfarer's Caravan.** A roadside shop with its own stock.
+
+  What a road holds is fixed for that road at that point in the journey,
+  so you can choose your road by it. A road event replaces a detour on
+  that road.
+- **Familiar faces.** Three travellers are met again and again, three
+  times each over the chapters: Wren the mapmaker, Brother Oswin the
+  defrocked monk and Mira the treasure hunter. Each meeting is written
+  for what the party did at the last one. A kindness, a hard bargain or a
+  cold shoulder is paid back in kind, and one of them can come to blows.
+- **Set pieces in the last chapters.**
+  - **A chase out of the Court's catacombs,** against a 20-second clock.
+    If you wait too long, the party is caught and must fight its way out.
+    A failed roll corners the party, with the same result.
+  - **The siege of the camp,** in two timed waves. First, hold the
+    palisade in a fight, light the beach fires to bluff with a Charisma
+    roll, or get the children to the boats. Then, sally out against the
+    enemy's zealot, or hold the gate in a Constitution skill challenge. A
+    failed bluff, a lost gate or the children's escape means a fight in
+    the breach. Back at camp, the scene tells what the party did.
+  - **Crossing the Hollow Shore,** unseen by Dexterity or Wisdom skill
+    challenges, or by force. If you are spotted, an alarm scene follows.
+  - **A sea battle with the Crusade's last cutter** from the Anchorage.
+    It uses the full ship battle, with its gold, XP and prize. If you
+    lose, the ship limps home.
+- **Timed scenes.** A scene can carry a clock (`time_limit`, and
+  `timeout_choice` for the choice taken when time runs out). The clock
+  runs only while the scene is on screen, and not in Edit Mode. The node
+  editor keeps both fields.
+
+### Changed
+- **Fewer Continue presses.** A scene with a single plain way on is read
+  on the way to the next scene. It sits above the next scene's text, set
+  off by a ⁂, and the story no longer stops on it. At most two such scenes
+  are read in a row. Towns, timed scenes, endings and hub updates still
+  stop the story, and Edit Mode shows every scene as before.
+- **Fewer, shorter detours.** A road now has a 35% chance of a detour (was
+  70%). A detour lasts one or two scenes, or three or four when it carries
+  a quest (was up to seven). What waits on a road is now chosen in this
+  order: an alignment event, a familiar face (25%), then a detour.
+- **Retreat costs more.** Running from a fight now costs a fifth of your
+  gold (was 15%) and a potion, if you carry one.
+## [1.183.1+215] (main)
 
 ### Removed
 - **Coral in the shallows and fallen columns in the drowned waters.** The
   shallows keep their seagrass, rocks and reef fish; the drowned waters
   their weed, eels and fish.
 
-## [1.183.0+214]
+## [1.183.0+214] (main)
 
 ### Added
 - **Life under the water.** Each of the waters has its own bed and fish,
@@ -50,7 +719,7 @@ isn't reconstructable from git history alone.
     from 23% under the old rules). The balance test's upper band is now
     35 points.
 
-## [1.182.1+213]
+## [1.182.1+213] (main)
 
 ### Changed
 - **The sea fight is pared down to the mockup:** one enemy bar, small ships
@@ -72,7 +741,7 @@ isn't reconstructable from git history alone.
   - **The dock** starts with the Eel's bar. The weapons are ring tiles
     three across.
 
-## [1.182.0+212]
+## [1.182.0+212] (main)
 
 ### Changed
 - **The sea fight is seen from above.** The two ships lie broadside to
@@ -114,7 +783,7 @@ isn't reconstructable from git history alone.
   When the weather turns between rounds, the old weather fades out as
   the new one comes in, and a wave rolls under both ships.
 
-## [1.181.0+211]
+## [1.181.0+211] (main)
 
 ### Changed
 - **The Journey map follows the real map.** Standing in a place the world
@@ -142,7 +811,7 @@ isn't reconstructable from git history alone.
   - A detour, on no place, keeps the road going up as before.
 - On a busy hub every way now inks in; the last ones used to stay hidden.
 
-## [1.180.0+210]
+## [1.180.0+210] (main)
 
 ### Changed
 - **The camp puts the next step first.**
@@ -175,7 +844,7 @@ isn't reconstructable from git history alone.
     −12 hull · 35%"). No choice is highlighted as the one to take;
   - the log is labelled, and hull losses carry their minus sign.
 
-## [1.179.0+209]
+## [1.179.0+209] (main)
 
 ### Changed
 - **The Skills screen, simpler.** Three tabs with one job each:
@@ -211,7 +880,7 @@ isn't reconstructable from git history alone.
   reason, tier and its price) now comes from a view model with its own
   unit tests.
 
-## [1.178.0+208]
+## [1.178.0+208] (main)
 
 ### Added
 - **A world clock.** The days pass as the party goes (two watches for a
@@ -240,7 +909,7 @@ isn't reconstructable from git history alone.
   - earned badges turn a ring of light in the achievements list.
 - All of it rests with reduced motion, and none of it runs on a hidden tab.
 
-## [1.177.0+207]
+## [1.177.0+207] (main)
 
 ### Added
 - **The Journey map moves.** Ten transitions:
@@ -269,7 +938,7 @@ isn't reconstructable from git history alone.
   all with the phone's reduced-motion setting: the map is then drawn at
   once, as before.
 
-## [1.176.0+206]
+## [1.176.0+206] (main)
 
 ### Added
 - **The Journey tab has its tour.** The first time you open it, the guide

@@ -5,6 +5,7 @@ import '../data/chapter_grid_layout.dart';
 import '../data/port_helpers.dart';
 import '../data/quest_objectives.dart';
 import '../data/quest_tracking.dart';
+import '../data/road_events.dart' show caravanShopId;
 import '../data/settlements.dart';
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -736,7 +737,10 @@ class _ShopList extends ConsumerWidget {
         final shopName = shop['shopName']?.toString() ?? shopId;
         final discovered = session.unlockedShopIds.contains(shopId);
         final foundAt = session.shopUnlockNodeIds[shopId];
-        final onTriggerNode = foundAt == currentNodeId;
+        // The caravan is only ever met on the road, whatever an older save
+        // recorded for it.
+        final onRoad = foundAt == roadShopNodeId || shopId == caravanShopId;
+        final onTriggerNode = foundAt == currentNodeId && !onRoad;
         final accessible = isEditMode || (discovered && onTriggerNode);
         return Card(
           child: ListTile(
@@ -747,10 +751,12 @@ class _ShopList extends ConsumerWidget {
                   ? shop['shopDescription']?.toString() ?? ''
                   : !discovered
                       ? tr(ref, 'shop_undiscovered')
-                      // A camp house's shop was found by building it.
-                      : foundAt == null
-                          ? tr(ref, 'shop_at_camp')
-                          : tr(ref, 'shop_back_where_found'),
+                      : onRoad
+                          ? tr(ref, 'shop_met_on_road')
+                          // A camp house's shop was found by building it.
+                          : foundAt == null
+                              ? tr(ref, 'shop_at_camp')
+                              : tr(ref, 'shop_back_where_found'),
             ),
             trailing: accessible ? const Icon(Icons.chevron_right) : null,
             onTap: !accessible

@@ -29,12 +29,15 @@ class StoryChoice {
     this.showIfFlags = const [],
     this.launchZoneId,
     this.grantsBannerPieceId,
+    this.grantItemId,
     this.loseAllyId,
     this.mainQuest = false,
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
     this.approvalMods = const {},
+    this.roadEvent,
+    this.shipBattleId,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -76,6 +79,7 @@ class StoryChoice {
       isHunterAmbush: json['isHunterAmbush'] as bool? ?? false,
       launchZoneId: json['launchZoneId'] as String?,
       grantsBannerPieceId: json['grantsBannerPieceId'] as String?,
+      grantItemId: json['grantItemId'] as String?,
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
       travelPlaceId: json['travelPlaceId'] as String?,
@@ -92,8 +96,21 @@ class StoryChoice {
       showIfFlags:
           (json['showIfFlags'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      roadEvent: json['roadEvent'] as String?,
+      shipBattleId: json['shipBattleId'] as String?,
     );
   }
+
+  /// Set on a generated road event's choice (see road_events.dart): what
+  /// the event is ('elite', 'shrine', 'merchant'), for the fight's rules
+  /// and the map's mark. Never set on hand-authored story content.
+  final String? roadEvent;
+
+  /// A sea battle this choice starts (ship_battle.dart's enemy ship id):
+  /// won, the story goes on to [nextId]; lost, to [loseNextId].
+  final String? shipBattleId;
+
+  bool get triggersShipBattle => (shipBattleId ?? '').isNotEmpty;
 
   final String text;
   final String nextId;
@@ -203,6 +220,11 @@ class StoryChoice {
   /// heirloom piece, and the spine's three dilemmas the rest.
   final String? grantsBannerPieceId;
 
+  /// An item this choice puts in the pack (items.json): what the party
+  /// picks up where there is no shop to buy it from, like the looted racks
+  /// on the docks in chapter 1.
+  final String? grantItemId;
+
   /// How companions in the party react to this choice beyond what its
   /// alignment and gold already say (see approval.dart): companion id -> a
   /// change in approval, `*` for everyone in the party.
@@ -295,6 +317,7 @@ class StoryChoice {
         if (launchesZone) 'launchZoneId': launchZoneId,
         if (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty)
           'grantsBannerPieceId': grantsBannerPieceId,
+        if (grantsItem) 'grantItemId': grantItemId,
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
@@ -303,6 +326,8 @@ class StoryChoice {
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
           'forcedCondition': forcedCondition,
         if (approvalMods.isNotEmpty) 'approvalMods': approvalMods,
+        if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
+        if (triggersShipBattle) 'shipBattleId': shipBattleId,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
@@ -335,8 +360,13 @@ class StoryChoice {
       flagsToAdd.isNotEmpty ||
       (questIDToProgress != null && questIDToProgress!.isNotEmpty) ||
       (grantsBannerPieceId != null && grantsBannerPieceId!.isNotEmpty) ||
+      grantsItem ||
       (loseAllyId != null && loseAllyId!.isNotEmpty) ||
       approvalMods.isNotEmpty;
+
+  /// Whether taking this choice puts an item in the pack (see
+  /// [grantItemId]).
+  bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
 }
 
 class StoryNode {
@@ -362,6 +392,9 @@ class StoryNode {
     this.contextNote,
     this.contextNoteFr,
     this.settlement,
+    this.timeLimit,
+    this.timeoutChoice = 0,
+    this.noDetour = false,
   });
 
   factory StoryNode.fromJson(String id, Map<String, dynamic> json) {
@@ -394,8 +427,31 @@ class StoryNode {
       personaVariants: _parseLines(json['persona_variants']),
       hubProgress: HubProgress.fromJson(json['hub_progress']),
       settlement: Settlement.fromJson(json['settlement']),
+      timeLimit: (json['time_limit'] as num?)?.toInt(),
+      timeoutChoice: (json['timeout_choice'] as num?)?.toInt() ?? 0,
+      noDetour: json['noDetour'] as bool? ?? false,
     );
   }
+
+  /// A set piece the road never interrupts (see
+  /// SubNodeEngine.detourAllowedBetween): no detour, road event or hunter
+  /// on the way into or out of it. What the road held waits for the next
+  /// scene at rest.
+  final bool noDetour;
+
+  /// Seconds the player has to choose (a chase, a wave coming over the
+  /// wall), or null for all the time in the world. When they run out the
+  /// story takes the choice at [timeoutChoice] (an index into [choices]).
+  /// The clock only runs while the scene is on screen, and never in Edit
+  /// Mode (see TimedChoiceBar).
+  final int? timeLimit;
+  final int timeoutChoice;
+
+  bool get isTimed => (timeLimit ?? 0) > 0 && choices.isNotEmpty;
+
+  /// The choice the story takes when the clock runs out.
+  StoryChoice? get timeoutChoiceOrNull =>
+      !isTimed ? null : choices[timeoutChoice.clamp(0, choices.length - 1)];
 
   static List<FlagCallback> _parseCallbacks(Object? raw) {
     if (raw is! List) return const [];
@@ -548,14 +604,20 @@ class StoryNode {
   }
 
   /// The callback paragraphs the player's [flags] have earned, in order.
-  List<String> callbacksFor(Iterable<String> flags, bool french) {
+  List<String> callbacksFor(Iterable<String> flags, bool french) => [
+        for (final callback in firedCallbacks(flags))
+          callback.line.textFor(french),
+      ];
+
+  /// The callbacks the player's [flags] have earned, in order.
+  List<FlagCallback> firedCallbacks(Iterable<String> flags) {
     final held = flags.toSet();
     return [
       for (final callback in flagCallbacks)
         if (held.contains(callback.flag) &&
             !callback.unlessFlags.any(held.contains) &&
             callback.andFlags.every(held.contains))
-          callback.line.textFor(french),
+          callback,
     ];
   }
 
@@ -608,6 +670,9 @@ class StoryNode {
         if (reqAlignmentMax != null) 'reqAlignmentMax': reqAlignmentMax,
         if (reqFlags.isNotEmpty) 'reqFlags': reqFlags,
         if (reqCharisma != 0) 'reqCharisma': reqCharisma,
+        if (isTimed) 'time_limit': timeLimit,
+        if (isTimed && timeoutChoice != 0) 'timeout_choice': timeoutChoice,
+        if (noDetour) 'noDetour': noDetour,
         if (alignmentEpilogues.isNotEmpty)
           'alignment_epilogues': {
             for (final entry in alignmentEpilogues.entries)

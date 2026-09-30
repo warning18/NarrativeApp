@@ -49,7 +49,9 @@ JourneyStepKind journeyStepKindOf(StoryChoice choice) {
   if (choice.isEnding) return JourneyStepKind.ending;
   if (choice.mainQuest) return JourneyStepKind.mainQuest;
   if (choice.launchesZone) return JourneyStepKind.expedition;
-  if (choice.triggersCombat) return JourneyStepKind.fight;
+  if (choice.triggersCombat || choice.triggersShipBattle) {
+    return JourneyStepKind.fight;
+  }
   if (choice.hasSkillChallenge) return JourneyStepKind.challenge;
   if (choice.hasAbilityCheck) return JourneyStepKind.check;
   if ((choice.unlockShopId ?? '').isNotEmpty) return JourneyStepKind.shop;
@@ -165,7 +167,10 @@ const int journeyPastLimit = 40;
 /// at [here] in an [area]. A way that leaves for another place ([bearings]
 /// non-null: its true direction on the world chart, in radians, 0 east
 /// and clockwise, as the chart's y runs down) sits near the map's edge
-/// that way. The rest -- a fight, a shop, a talk in this place -- ring the
+/// that way; ways out on (nearly) the same bearing, as when several
+/// choices lead to the same place, are fanned out along the edge so each
+/// can be tapped (see [fanOutBearings]). The rest -- a fight, a shop, a
+/// talk in this place -- ring the
 /// party: an inner ring, then an outer one, spread evenly and kept clear
 /// of the ways out. Rings are ellipses, as the map is taller than wide.
 List<Offset> journeyPlaceLayout({
@@ -178,9 +183,10 @@ List<Offset> journeyPlaceLayout({
 }) {
   final positions = List<Offset>.filled(bearings.length, here);
   // The ways out: where their bearing meets the map's edge, just inside.
+  final fanned = fanOutBearings(bearings);
   final exits = <double>[];
-  for (var i = 0; i < bearings.length; i++) {
-    final a = bearings[i];
+  for (var i = 0; i < fanned.length; i++) {
+    final a = fanned[i];
     if (a == null) continue;
     exits.add(a);
     positions[i] = _toEdge(here, a, area, margin, footMargin);
@@ -213,6 +219,45 @@ List<Offset> journeyPlaceLayout({
   ring(outer, 0.95, math.pi / outer.length.clamp(1, 99));
   return positions;
 }
+
+/// [bearings] with the ones closer than [spread] radians to each other
+/// fanned out round their mean, [spread] apart, so no two ways out sit on
+/// one spot. Nulls (ways in this place) stay null; the order is kept.
+List<double?> fanOutBearings(List<double?> bearings, {double spread = 0.35}) {
+  final order = [
+    for (var i = 0; i < bearings.length; i++)
+      if (bearings[i] != null) i
+  ]..sort((a, b) => _norm(bearings[a]!).compareTo(_norm(bearings[b]!)));
+  final out = List<double?>.of(bearings);
+  var start = 0;
+  while (start < order.length) {
+    var end = start + 1;
+    while (end < order.length &&
+        _angleBetween(bearings[order[end]]!, bearings[order[end - 1]]!).abs() <
+            spread) {
+      end++;
+    }
+    final group = order.sublist(start, end);
+    if (group.length > 1) {
+      // The mean, measured from the group's first so a group across the
+      // turn of the circle is not split.
+      final first = bearings[group.first]!;
+      final mean = first +
+          group
+                  .map((i) => _angleBetween(bearings[i]!, first))
+                  .reduce((a, b) => a + b) /
+              group.length;
+      for (var k = 0; k < group.length; k++) {
+        out[group[k]] = mean + (k - (group.length - 1) / 2) * spread;
+      }
+    }
+    start = end;
+  }
+  return out;
+}
+
+/// [a] in [0, 2π).
+double _norm(double a) => a % (2 * math.pi);
 
 /// Where a ray from [from] at [angle] leaves [area] shrunk by [margin]
 /// ([footMargin] at the foot, where names go under the marks).

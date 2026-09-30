@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/expedition_kinds.dart';
 import '../data/zone_gating.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
@@ -57,6 +58,10 @@ class ZoneCard extends ConsumerWidget {
         ),
         if (zoneIsMain(zone))
           _ZoneChip(tr(ref, 'zone_main_label'), emphasized: true),
+        // An escort or a delivery says so: it plays differently.
+        if (expeditionKindOf(zone) case final kind
+            when kind != ExpeditionKind.clear)
+          _ZoneChip(tr(ref, 'expedition_kind_${kind.name}'), emphasized: true),
       ],
     );
     final facts = [

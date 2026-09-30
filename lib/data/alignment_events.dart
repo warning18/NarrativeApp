@@ -11,10 +11,18 @@ import '../models/story_node.dart';
 /// [maybeAlignmentEvent]) and drawn from enemies.json's own
 /// `hunterAlignment`/`hunterTier` fields, so a new hunter is a data row,
 /// not code.
-const double hunterBaseChance = 0.10;
-const double hunterChancePerAlignmentPoint = 0.002;
-const double hunterChanceCap = 0.22;
+///
+/// The odds (v1.178, measured with the playthrough simulator): a hunter
+/// every 3 or so fights' worth of road a run rather than 6 or 7, so the
+/// ambush stays an event and not the most common fight on the road.
+const double hunterBaseChance = 0.06;
+const double hunterChancePerAlignmentPoint = 0.0015;
+const double hunterChanceCap = 0.15;
 const double temptationChance = 0.10;
+
+/// Rolls after an ambush before the next one can come: the hunted get a
+/// breather (see [maybeAlignmentEvent]'s `rollsSinceAmbush`).
+const int hunterCooldownRolls = 5;
 
 /// Alignment magnitude at which the label stops being Neutral (mirrors
 /// PlayerSession.alignmentLabel's thresholds).
@@ -27,18 +35,18 @@ const String darkQuestId = 'q_temptation_dark';
 /// 'Good' hunters (demons) come for a Good character or one who took the
 /// angel's charge; 'Evil' hunters (angels) come for an Evil character or
 /// one who struck the demon's bargain. Null when nobody is hunting.
+///
+/// A temptation quest comes first: it can only be finished against its
+/// own quarry, so a character who struck the demon's bargain and has since
+/// grown Good still meets the angels it asked for.
 String? huntedSideFor({
   required int alignmentScore,
   required List<String> activeQuestIds,
 }) {
-  if (alignmentScore >= alignmentThreshold ||
-      activeQuestIds.contains(lightQuestId)) {
-    return 'Good';
-  }
-  if (alignmentScore <= -alignmentThreshold ||
-      activeQuestIds.contains(darkQuestId)) {
-    return 'Evil';
-  }
+  if (activeQuestIds.contains(lightQuestId)) return 'Good';
+  if (activeQuestIds.contains(darkQuestId)) return 'Evil';
+  if (alignmentScore >= alignmentThreshold) return 'Good';
+  if (alignmentScore <= -alignmentThreshold) return 'Evil';
   return null;
 }
 
@@ -74,6 +82,11 @@ List<String> hunterPoolFor({
 bool isHunterEnemy(Map<String, dynamic>? enemy) =>
     (enemy?['hunterAlignment']?.toString() ?? '').isNotEmpty;
 
+/// Whether [chain] (an alignment event, see [maybeAlignmentEvent]) is a
+/// hunter's ambush rather than a temptation.
+bool isHunterAmbushChain(List<StoryNode> chain) =>
+    chain.isNotEmpty && chain.first.choices.any((c) => c.isHunterAmbush);
+
 const List<String> _angelAmbushEn = [
   'The air goes white and still. A figure in burning armor descends the '
       'street as if it were a stair, and its eyes, when they find you, hold '
@@ -81,6 +94,18 @@ const List<String> _angelAmbushEn = [
   'Bells that no church is ringing. A shape of light steps out of the '
       'glare with a blade like a shard of noon, and speaks your name as a '
       'sentence already passed.',
+  'Every shadow on the road points the same way, at you. The light that '
+      'casts them has a face, and the face has been reading your deeds '
+      'aloud for some time.',
+  'A feather drifts down, white as salt, and where it touches the ground '
+      'the mud dries and cracks. The thing that shed it lands behind it, '
+      'wings folding like a verdict closing.',
+  'Rain stops in the air and hangs there. Between the drops walks a '
+      'soldier of the Choir, sword already drawn, and it does not ask your '
+      'name. It knows it.',
+  'The wayside shrine flares, too bright to look at. When your eyes clear '
+      'there is a sentinel standing where the saint was, and the saint is '
+      'not coming back.',
 ];
 const List<String> _angelAmbushFr = [
   "L'air devient blanc et immobile. Une silhouette en armure de flammes "
@@ -90,6 +115,18 @@ const List<String> _angelAmbushFr = [
   "Des cloches qu'aucune église ne fait sonner. Une forme de lumière sort "
       "de l'éblouissement, une lame comme un éclat de midi à la main, et "
       'prononce votre nom comme une sentence déjà rendue.',
+  'Toutes les ombres de la route pointent dans la même direction : vers '
+      'vous. La lumière qui les projette a un visage, et ce visage lit vos '
+      'actes à voix haute depuis un moment déjà.',
+  "Une plume descend, blanche comme le sel, et là où elle touche le sol la "
+      "boue sèche et se fend. La chose qui l'a perdue se pose derrière elle, "
+      'les ailes se refermant comme un verdict.',
+  "La pluie s'arrête en l'air et y reste suspendue. Entre les gouttes "
+      "avance un soldat du Chœur, l'épée déjà tirée, et il ne demande pas "
+      'votre nom. Il le connaît.',
+  "Le sanctuaire du bord de la route s'embrase, trop vif pour être regardé. "
+      "Quand votre vue revient, une sentinelle se tient là où était le "
+      "saint, et le saint ne reviendra pas.",
 ];
 const List<String> _demonAmbushEn = [
   'The shadows at the edge of the road peel up like burnt paper. Something '
@@ -98,6 +135,18 @@ const List<String> _demonAmbushEn = [
   'A smell of hot iron, then laughter from nowhere. The thing that steps '
       'out wears a face it clearly stole, and it has been waiting for you '
       'specifically.',
+  'A beggar by the road asks for a coin in a voice that is almost right. '
+      'When you look again the beggar has too many teeth, and is no longer '
+      'asking.',
+  'The milestone ahead has your name carved on it, freshly. Something '
+      'sits on top of it, swinging its heels, and applauds as you come '
+      'into view.',
+  'Every dog in the hamlet starts howling at once, then stops. In the '
+      'silence, a thing made of cinders and bad intentions climbs out of '
+      'the well and wipes its hands.',
+  'Your own shadow stretches ahead of you, then keeps going when you '
+      'stop. It turns around at the next bend, and it is not yours any '
+      'more.',
 ];
 const List<String> _demonAmbushFr = [
   'Les ombres au bord de la route se décollent comme du papier brûlé. '
@@ -107,6 +156,18 @@ const List<String> _demonAmbushFr = [
   'Une odeur de fer chaud, puis un rire venu de nulle part. La chose qui '
       "s'avance porte un visage manifestement volé, et c'est vous, "
       "précisément, qu'elle attendait.",
+  "Un mendiant au bord de la route réclame une pièce d'une voix presque "
+      'juste. Au second regard, le mendiant a trop de dents, et ne réclame '
+      'plus rien.',
+  'La borne devant vous porte votre nom, gravé de frais. Quelque chose est '
+      'assis dessus, les talons ballants, et applaudit en vous voyant '
+      'arriver.',
+  "Tous les chiens du hameau se mettent à hurler d'un coup, puis se "
+      "taisent. Dans le silence, une chose faite de cendres et de mauvaises "
+      "intentions sort du puits et s'essuie les mains.",
+  "Votre ombre s'allonge devant vous, puis continue quand vous vous "
+      "arrêtez. Au tournant suivant, elle se retourne, et ce n'est plus la "
+      'vôtre.',
 ];
 
 /// Why a hunter came, for the detour's context card: the side it serves
@@ -353,7 +414,12 @@ StoryNode? buildTemptationNode({
 /// Rolls this transition's alignment event, if any: a hunter ambush for a
 /// hunted character, a temptation for a Neutral one. Returns a one-node
 /// chain to play as an excursion, or null (the common case). [enabled] is
-/// the player's settings toggle.
+/// the player's settings toggle. [rollsSinceAmbush] counts the rolls since
+/// the last ambush (see PlayerSession.alignmentRollsSinceAmbush): within
+/// [hunterCooldownRolls] of one, no hunter comes.
+/// The first chapter a hunter or a temptation can find the party in.
+const int firstHuntChapter = 2;
+
 List<StoryNode>? maybeAlignmentEvent({
   required int alignmentScore,
   required List<String> activeQuestIds,
@@ -362,11 +428,15 @@ List<StoryNode>? maybeAlignmentEvent({
   required int chapter,
   required Random random,
   bool enabled = true,
+  int rollsSinceAmbush = hunterCooldownRolls,
 }) {
-  if (!enabled) return null;
+  // Chapter 1 is the flight from the city: nobody has caught the scent
+  // yet, whatever the character's past.
+  if (!enabled || chapter < firstHuntChapter) return null;
   final side = huntedSideFor(
       alignmentScore: alignmentScore, activeQuestIds: activeQuestIds);
   if (side != null) {
+    if (rollsSinceAmbush < hunterCooldownRolls) return null;
     if (random.nextDouble() >= hunterChanceFor(alignmentScore)) return null;
     final node = buildHunterAmbushNode(
         enemies: enemies, side: side, chapter: chapter, random: random);

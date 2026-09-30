@@ -58,6 +58,29 @@ void main() {
     }
   });
 
+  test('ways out to the same place fan out along the edge', () {
+    // Three choices leading to the square, one bearing (scene 270), and
+    // two a hair apart across the turn of the circle.
+    for (final bearings in [
+      <double?>[0.4, 0.4, 0.4, null],
+      <double?>[-0.05, 2 * math.pi - 0.02, null],
+    ]) {
+      final p = journeyPlaceLayout(area: area, here: here, bearings: bearings);
+      final exits = [
+        for (var i = 0; i < bearings.length; i++)
+          if (bearings[i] != null) p[i]
+      ];
+      for (var i = 0; i < exits.length; i++) {
+        for (var j = i + 1; j < exits.length; j++) {
+          expect((exits[i] - exits[j]).distance, greaterThan(30),
+              reason: '$bearings: $i and $j');
+        }
+      }
+    }
+    // Ways out far apart keep their true bearings.
+    expect(fanOutBearings([0, math.pi, null]), [0, math.pi, null]);
+  });
+
   test('what each place is drawn as', () {
     expect(placeKindOf('camp'), PlaceKind.camp);
     expect(placeKindOf('town'), PlaceKind.town);

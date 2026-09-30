@@ -272,8 +272,9 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
   /// Runs the rest of character creation once the player taps Continue on
   /// the character sheet: locks the character in with a name (race and
   /// profession are already permanent from [_confirmStart] on), then opens
-  /// the formative memories on their own page, applies the alignment they
-  /// add up to, and hands off to the story. Backing out of the first memory
+  /// the formative memories on their own page, applies what they add up
+  /// to (alignment, abilities, the flags the story echoes), and hands off
+  /// to the story. Backing out of the first memory
   /// returns here with nothing applied, so Continue simply starts again.
   Future<void> _handleContinue() async {
     final name = await showDialog<String>(
@@ -287,16 +288,20 @@ class _RaceProfessionScreenState extends ConsumerState<RaceProfessionScreen> {
     if (name == null || !mounted) return;
     await ref.read(playerSessionProvider.notifier).setCharacterName(name);
     if (!mounted) return;
-    final answers = await Navigator.of(context).push<List<OriginChoice>>(
+    final result = await Navigator.of(context).push<OriginResult>(
       MaterialPageRoute(
-        builder: (_) =>
-            OriginStoriesScreen(professionId: _selectedProfessionId),
+        builder: (_) => OriginStoriesScreen(
+          raceId: _selectedRaceId,
+          professionId: _selectedProfessionId,
+        ),
       ),
     );
-    if (answers == null || !mounted) return;
-    await ref
-        .read(playerSessionProvider.notifier)
-        .applyChoiceEffects(alignmentMod: originAlignmentTotal(answers));
+    if (result == null || !mounted) return;
+    await ref.read(playerSessionProvider.notifier).applyOriginMemories(
+          alignmentMod: result.alignment,
+          abilities: result.abilities,
+          flags: result.flags,
+        );
     if (!mounted) return;
     Navigator.of(context).pop(true);
   }

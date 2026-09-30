@@ -887,8 +887,9 @@ class SeaWeatherPainter extends CustomPainter {
               height: 1.5 + life * 5),
           ring);
     }
-    // Lightning on its own clock: a flash every few seconds.
-    final beat = t % 6.3;
+    // Lightning on its own clock: a flash every few seconds, half a beat
+    // in, so a still sea (reduced motion, t at 0) is never caught in one.
+    final beat = (t + 3.15) % 6.3;
     if (beat < 0.22) {
       final a = beat < 0.07 ? 0.34 : (0.22 - beat) / 0.15 * 0.18;
       canvas.drawRect(Offset.zero & size,
@@ -1116,7 +1117,9 @@ class TopShipPainter extends CustomPainter {
     final x0 = (size.width - len) / 2;
     final beam = band.height;
     final cy = band.center.dy;
-    final towards = facingDown != flip ? 1.0 : -1.0;
+    // The side toward the enemy, for the shields and the guns: down the
+    // screen when the ship faces down. The mirror only turns it end for
+    // end, so it has no say in this.
     final side = facingDown ? 1.0 : -1.0;
 
     _wake(canvas, x0, cy, beam);
@@ -1207,7 +1210,7 @@ class TopShipPainter extends CustomPainter {
 
     _helm(canvas, _roomOnDeck(ShipRoom.helm, size, band));
     _hatch(canvas, _roomOnDeck(ShipRoom.hold, size, band));
-    _guns(canvas, _roomOnDeck(ShipRoom.guns, size, band), cy, beam, towards);
+    _guns(canvas, _roomOnDeck(ShipRoom.guns, size, band), cy, beam, side);
     _bulwark(canvas, _roomOnDeck(ShipRoom.bulwark, size, band), cy, beam);
     if (look.sails) _sails(canvas, x0, len, cy, beam);
     if (look.glow != null) _runes(canvas, x0, len, cy, beam);

@@ -28,6 +28,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
+import '../widgets/road_panel.dart';
 import '../widgets/moments.dart';
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/immersive_notice.dart';
@@ -625,18 +626,8 @@ class _RestButton extends ConsumerWidget {
           style: _compact,
           onPressed: blocked
               ? null
-              : () async {
-                  await ref
-                      .read(playerSessionProvider.notifier)
-                      .restUntilDawn();
-                  if (!context.mounted) return;
-                  showHealWave(context);
-                  showImmersiveNotice(
-                    context,
-                    icon: Icons.local_fire_department,
-                    message: tr(ref, 'party_rested_message'),
-                  );
-                },
+              : () => restTheNight(context, ref,
+                  message: tr(ref, 'party_rested_message'), atCamp: true),
           icon: const Icon(Icons.local_fire_department_outlined, size: 18),
           label: Text(tr(ref, 'rest_button')),
         ),

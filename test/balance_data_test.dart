@@ -51,7 +51,7 @@ void main() {
         for (final e in skills.entries)
           if (isEnemyOnlySkill(e.value as Map<String, dynamic>)) e.key,
       };
-      expect(flagged, hasLength(18));
+      expect(flagged, hasLength(23));
       expect(flagged, contains('sovereign_unmaking'));
       // v1.162's enemy intents: guard, wind-ups, rallies, a heal.
       expect(
@@ -63,6 +63,12 @@ void main() {
             'rallying_cry',
             'pack_howl',
             'bind_wounds',
+            // v1.182's dice tampering.
+            'hex_of_ill_luck',
+            'edict_of_silence',
+            'rotting_mark',
+            'glass_reflection',
+            'shroud_reflection',
           ]));
       expect(flagged.intersection(usedByParty), isEmpty);
       for (final id in flagged) {
@@ -101,11 +107,19 @@ void main() {
   });
 
   group('detour shops', () {
-    test('a chapter-1 detour never opens a later or a house shop', () {
+    test('chapter 1 has no shops; chapter 2 opens none of the later ones', () {
+      // Chapter 1 is the flight from the burning city (v1.181).
+      expect(
+          SubNodeEngine.filterShopPool(
+            shops: shops,
+            unlockedShopIds: const [],
+            chapter: 1,
+          ),
+          isEmpty);
       final pool = SubNodeEngine.filterShopPool(
         shops: shops,
         unlockedShopIds: const [],
-        chapter: 1,
+        chapter: 2,
       );
       expect(pool, isNot(contains('hammersmith_forge')));
       expect(pool, isNot(contains('arcane_academy')));
@@ -121,7 +135,10 @@ void main() {
         chapter: 9,
       );
       expect(pool, isNot(contains('hammersmith_forge')));
-      expect(pool, contains('last_lantern'));
+      // A shop that belongs to a place stays there (v1.181).
+      expect(pool, isNot(contains('last_lantern')));
+      expect(pool, isNot(contains('black_market_docks')));
+      expect(pool, contains('weaponsmith_forge'));
     });
   });
 

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'sea_beasts.dart';
 import 'ship_combat.dart';
 import 'ship_combat.dart' as combat show endRound;
 
@@ -27,6 +28,16 @@ import 'ship_combat.dart' as combat show endRound;
 ///   drifting wreck.
 /// - Quick orders: a turn ended with half the clock left gives the Eel
 ///   a better chance to slip the volley that follows.
+/// - Run for it (v1.184): far off, with a hand at the helm, the Eel can
+///   turn tail instead of firing; [escapeNeeded] turns of it (a tailwind
+///   counts double) and she is away. A ship that closes the gap sets her
+///   back a turn.
+/// - Sea beasts (v1.185, see sea_beasts.dart): a [beast] heals every round
+///   its heart works, dives now and then to breach under the Eel, and
+///   turns for the deep when it is hurt. A harpoon that lands holds it on
+///   the line for a few rounds: no healing, no diving, no fleeing; so do
+///   fins knocked out. Nobody boards a beast, and it does not chase a
+///   ship that has turned tail.
 ///
 /// Deterministic given [random], so tests and the balance simulation can
 /// drive whole battles; the panel (ShipBattlePanel) drives one turn at a
@@ -242,6 +253,9 @@ const int boarderMaxTries = 2;
 /// A marksman's shots go for the crew.
 const double marksmanInjuryFactor = 1.5;
 
+/// Turns of running the Eel needs to get away (see ShipBattle.runForIt).
+const int escapeNeeded = 3;
+
 /// Which rules are on: all of them in play; [classic] is the battle before
 /// v1.153, for the balance simulation's comparison.
 class ShipBattleRules {
@@ -268,7 +282,9 @@ class ShipBattleRules {
   final bool flooding;
 }
 
-enum BattleEnd { won, lost, boarded, escaped }
+/// How a battle ended: [escaped] is the enemy getting away, [fled] the
+/// Eel.
+enum BattleEnd { won, lost, boarded, escaped, fled }
 
 /// Whose ship a log line is about.
 enum BattleSide { eel, enemy }
@@ -305,6 +321,8 @@ class ShipBattle {
     this.habit = EnemyHabit.none,
     this.rules = const ShipBattleRules(),
     this.windKnot = false,
+    this.canFlee = true,
+    this.beast,
   }) : crew = List.of(crew) {
     // Everyone starts somewhere useful: the player at the helm, the next
     // hand at the guns, the next at the bulwark, the last in the hold.
@@ -325,6 +343,12 @@ class ShipBattle {
 
   /// The Wind-Knot sail is aboard: a crosswind is a tailwind for the Eel.
   final bool windKnot;
+
+  /// The Eel may run for it (not in a fight the story must see through).
+  final bool canFlee;
+
+  /// The enemy is a sea beast, not a ship (see sea_beasts.dart).
+  final BeastProfile? beast;
 
   ShipState player;
   ShipState enemy;
@@ -359,6 +383,10 @@ class ShipBattle {
   bool grappled = false;
   bool quick = false;
 
+  /// The Eel ran this turn (no gun fires), or a gun fired (no running).
+  bool ran = false;
+  bool fired = false;
+
   /// Enemy room -> shots landed in it this turn (see [focusRoomDamage]).
   final Map<ShipRoom, int> focus = {};
 
@@ -375,7 +403,31 @@ class ShipBattle {
   bool enemyBoardingSpent = false;
   List<ShipWeapon> _volley = const [];
 
+  /// Turns of running so far (see [runForIt]).
+  int escape = 0;
+
+  /// Rounds a harpoon still holds the beast on the line (see
+  /// ShipWeapon.tetherRounds).
+  int tether = 0;
+
+  /// The beast went under this round (no volley; it breached instead).
+  bool dived = false;
+
+  /// The beast is hurt enough to turn for the deep: unless it is held, or
+  /// its fins are out, it is gone at its next turn.
+  bool beastTurning = false;
+
   bool get over => end != null;
+
+  bool get tethered => tether > 0;
+
+  /// Rounds until the beast dives next (0: this round), or null for one
+  /// that never does. A beast held on the line waits for the next time.
+  int? get roundsToDive {
+    final every = beast?.diveEvery ?? 0;
+    if (every <= 0) return null;
+    return (every - turn % every) % every;
+  }
 
   // --- Crew ---------------------------------------------------------------
 
@@ -450,6 +502,7 @@ class ShipBattle {
           weather: weather,
           eel: false,
           windKnot: windKnot,
+          bonus: -(beast?.edge ?? 0),
         );
 
   // --- Turn flow ----------------------------------------------------------
@@ -462,6 +515,8 @@ class ShipBattle {
     voidWard = false;
     grappled = false;
     quick = false;
+    ran = false;
+    fired = false;
     focus.clear();
     final result = crewTurn(player, stationsMap);
     player = result.ship;
@@ -519,7 +574,8 @@ class ShipBattle {
 
   bool inRange(ShipWeapon weapon) => !rules.range || weapon.reaches(range);
 
-  bool canFire(ShipWeapon weapon) => !over && weapon.isReady && inRange(weapon);
+  bool canFire(ShipWeapon weapon) =>
+      !over && !ran && weapon.isReady && inRange(weapon);
 
   /// What the weapon's shot, the room's focus and a pending critical do to a
   /// shot at [room].
@@ -553,6 +609,7 @@ class ShipBattle {
   ShotOutcome? fire(String weaponId, ShipRoom room, {AimResult? aim}) {
     final weapon = weaponById(weaponId);
     if (weapon == null || !canFire(weapon)) return null;
+    fired = true;
     player = player.withWeapon(weapon.fired());
     if (aim == AimResult.wide) {
       _add('ship_log_shot_wide', weapon: weapon);
@@ -573,6 +630,10 @@ class ShipBattle {
     if (outcome.landed && critical) _add('ship_log_critical');
     if (outcome.landed && focused) _add('ship_log_focus', room: room);
     _logShot(outcome, weapon, BattleSide.enemy);
+    if (outcome.landed && beast != null && weapon.tetherRounds > 0) {
+      tether = max(tether, weapon.tetherRounds);
+      _add('ship_log_tethered', side: BattleSide.enemy, n: tether);
+    }
     if (outcome.landed) {
       focus[room] = (focus[room] ?? 0) + 1;
       if (weapon.ammo == ShipAmmo.grape) {
@@ -610,6 +671,37 @@ class ShipBattle {
         side: BattleSide.eel, range: to);
   }
 
+  // --- Running -----------------------------------------------------------
+
+  /// True while the Eel can run for it this turn: far off, her helm
+  /// working with a hand at it (or the wind behind her), no gun fired.
+  bool get canRun =>
+      canFlee &&
+      rules.range &&
+      !over &&
+      !ran &&
+      !fired &&
+      range == ShipRange.long &&
+      !player.room(ShipRoom.helm).isDown &&
+      (helmsman != null || tailwindFor(weather, windKnot: windKnot));
+
+  /// Turns tail for the turn: every hand on the sheets, no gun fires. A
+  /// tailwind carries her two turns' worth; [escapeNeeded] and she is
+  /// away. The helm hand spends the turn on it unless the wind is behind.
+  void runForIt() {
+    if (!canRun) return;
+    final tailwind = tailwindFor(weather, windKnot: windKnot);
+    ran = true;
+    escape = min(escapeNeeded, escape + (tailwind ? 2 : 1));
+    if (!tailwind) busyRooms = {...busyRooms, ShipRoom.helm};
+    if (escape >= escapeNeeded) {
+      _add('ship_log_fled', side: BattleSide.eel);
+      _finish(BattleEnd.fled);
+      return;
+    }
+    _add('ship_log_running', side: BattleSide.eel, n: escape);
+  }
+
   // --- Orders -------------------------------------------------------------
 
   /// True when a weapon can fire this turn.
@@ -624,7 +716,8 @@ class ShipBattle {
     return switch (order) {
       CrewOrder.allHands => player.rooms.values.any((r) => r.damage > 0),
       CrewOrder.brace => !braced,
-      CrewOrder.grapple => boarding.canBoard && !boardingSpent && !grappled,
+      CrewOrder.grapple =>
+        beast == null && boarding.canBoard && !boardingSpent && !grappled,
       CrewOrder.bless => player.rooms.values.any((r) => r.onFire) ||
           crew.any((c) => c.health < c.maxHealth),
       CrewOrder.shoreUp => player.room(ShipRoom.bulwark).damage > 0 ||
@@ -683,6 +776,7 @@ class ShipBattle {
   /// side with the enemy's rail open.
   bool get canBoardThem =>
       !over &&
+      beast == null &&
       !boardingSpent &&
       boarding.canBoard &&
       (grappled ||
@@ -726,6 +820,12 @@ class ShipBattle {
     quick = quickOrders;
     if (quick) _add('ship_log_quick_orders', n: quickOrdersEvasion);
     final steers = !enemy.room(ShipRoom.helm).isDown;
+    dived = false;
+    if (beast != null && beastTurning && !tethered && steers) {
+      _add('ship_log_beast_escaped', side: BattleSide.enemy);
+      _finish(BattleEnd.escaped);
+      return;
+    }
     if (rules.habits &&
         rules.range &&
         habit == EnemyHabit.flee &&
@@ -748,7 +848,13 @@ class ShipBattle {
       _add('ship_log_enemy_repairs', side: BattleSide.enemy, room: room);
     }
     enemy = chargeWeapons(enemy);
-    if (rules.range && steers) {
+    if (beast != null && roundsToDive == 0 && !tethered && steers) {
+      _dive();
+      return;
+    }
+    // A beast does not give chase to a ship that has turned tail: it is
+    // its water she is leaving.
+    if (rules.range && steers && !(beast != null && escape > 0)) {
       final want =
           rules.habits ? preferredRange(habit, enemy) : ShipRange.medium;
       if (want != range && random.nextDouble() < enemySteerChance(enemy)) {
@@ -760,6 +866,10 @@ class ShipBattle {
             side: BattleSide.enemy,
             range: to);
         range = to;
+        if (escape > 0 && to != ShipRange.long) {
+          escape--;
+          _add('ship_log_run_caught', side: BattleSide.enemy, n: escape);
+        }
       }
     }
     if (rules.habits &&
@@ -783,6 +893,21 @@ class ShipBattle {
       for (final w in enemy.weapons)
         if (w.isReady && inRange(w)) w,
     ];
+  }
+
+  /// The beast goes under instead of attacking and comes up beneath the
+  /// Eel: hull through any shield (half of it braced), and a leak.
+  void _dive() {
+    dived = true;
+    _volley = const [];
+    _add('ship_log_beast_dives', side: BattleSide.enemy);
+    final damage = scaledDamage(beast!.breach, braced ? 0.5 : 1.0);
+    player = player.copyWith(
+      hull: max(0, player.hull - damage),
+      leaks: rules.flooding && damage > 0 ? player.leaks + 1 : player.leaks,
+    );
+    _add('ship_log_beast_breach', side: BattleSide.enemy, n: damage);
+    if (!player.isAfloat) _finish(BattleEnd.lost);
   }
 
   /// The enemy weapons that fire this round, in order (see [fireEnemy]).
@@ -901,6 +1026,7 @@ class ShipBattle {
       _finish(BattleEnd.won);
       return;
     }
+    _beastRound();
     if (grapeLeft > 0) grapeLeft--;
     _seaEvent();
     if (rules.weather) {
@@ -911,6 +1037,28 @@ class ShipBattle {
     }
     turn++;
     _beginPlayerTurn();
+  }
+
+  /// A beast at the end of the round: held on the line it heals nothing
+  /// (and the line gives a round); free, it heals while its heart works.
+  /// Hurt enough, it turns for the deep.
+  void _beastRound() {
+    final b = beast;
+    if (b == null) return;
+    if (tethered) {
+      tether--;
+      if (tether == 0) _add('ship_log_tether_slips', side: BattleSide.enemy);
+    } else if (b.regen > 0 &&
+        !enemy.room(ShipRoom.hold).isDown &&
+        enemy.hull < enemy.maxHull) {
+      final healed = min(b.regen, enemy.maxHull - enemy.hull);
+      enemy = enemy.copyWith(hull: enemy.hull + healed);
+      _add('ship_log_beast_heals', side: BattleSide.enemy, n: healed);
+    }
+    if (!beastTurning && enemy.hull <= enemy.maxHull * b.fleeShare) {
+      beastTurning = true;
+      _add('ship_log_beast_turning', side: BattleSide.enemy);
+    }
   }
 
   void _roundLines(
@@ -935,6 +1083,8 @@ class ShipBattle {
     if (random.nextDouble() >= seaEventChance) return;
     final kind =
         BattleSeaEvent.values[random.nextInt(BattleSeaEvent.values.length)];
+    // Nothing else in the water comes near a beast.
+    if (beast != null && kind == BattleSeaEvent.seaCreature) return;
     switch (kind) {
       case BattleSeaEvent.rogueWave:
         player = player.copyWith(layers: max(0, player.layers - 1));

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/echoes.dart';
 import '../data/journal.dart';
+import '../data/world_map.dart' show landmarkOfScene;
 import '../data/quest_tracking.dart';
 import '../data/narration_tokens.dart';
 import '../data/story_repository.dart';
@@ -9,6 +11,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 
@@ -27,7 +30,9 @@ String _chapterTitle(int chapter, AppLanguage lang) => chapter == 0
     : '${trFor(lang, 'chapter_label')} $chapter';
 
 /// The story so far, newest first and grouped by chapter: each scene's
-/// opening line and the choice that left it.
+/// opening line and the choice that left it. A second page, What changed,
+/// lists the echoes met on the way: a later scene's line with the earlier
+/// choice that earned it (see echoes.dart).
 class JournalScreen extends ConsumerWidget {
   const JournalScreen({super.key});
 
@@ -99,15 +104,102 @@ class JournalScreen extends ConsumerWidget {
 
     return TutorialTrigger(
       topic: TutorialTopic.journal,
-      child: Scaffold(
-        appBar: AppBar(title: Text(tr(ref, 'journal_title'))),
-        body: entries.isEmpty
-            ? Center(child: Text(tr(ref, 'journal_empty')))
-            : ListView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                children: children,
-              ),
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(tr(ref, 'journal_title')),
+            bottom: TabBar(tabs: [
+              Tab(text: tr(ref, 'journal_story_tab')),
+              Tab(
+                  key: const ValueKey('journal_changed_tab'),
+                  text: tr(ref, 'journal_changed_title')),
+            ]),
+          ),
+          body: TabBarView(children: [
+            entries.isEmpty
+                ? Center(child: Text(tr(ref, 'journal_empty')))
+                : ListView(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    children: children,
+                  ),
+            const _WhatChanged(),
+          ]),
+        ),
       ),
+    );
+  }
+}
+
+/// The echoes read so far, the latest first: where, the choice that
+/// earned each, and the line it earned.
+class _WhatChanged extends ConsumerWidget {
+  const _WhatChanged();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final story = ref.watch(storyDataProvider).value;
+    final session = ref.watch(playerSessionProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final french = lang == AppLanguage.fr;
+    final theme = Theme.of(context);
+    final echoes = story == null
+        ? const <({String nodeId, String line, String cause})>[]
+        : [
+            for (final key in session.seenEchoKeys.reversed)
+              if (echoForKey(story, key, french: french) case final echo?) echo,
+          ];
+    if (echoes.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Text(tr(ref, 'journal_changed_empty'),
+              textAlign: TextAlign.center),
+        ),
+      );
+    }
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+      children: [
+        for (final echo in echoes)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (landmarkOfScene(echo.nodeId) case final place?)
+                    Text(place.name(lang).toUpperCase(),
+                        style: theme.textTheme.labelSmall
+                            ?.copyWith(letterSpacing: 1.1)),
+                  const SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.history,
+                          size: 16, color: theme.colorScheme.primary),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          tr(ref, 'echo_because').replaceAll('{choice}',
+                              _personal(echo.cause, session, french)),
+                          style: theme.textTheme.labelLarge,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    _personal(echo.line, session, french),
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        fontFamily: InkFonts.prose),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

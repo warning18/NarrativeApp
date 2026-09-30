@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
+import '../combat/face_smithing.dart';
 import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
@@ -278,6 +279,11 @@ Future<void> _exploreChapterBeforeMainQuest(
         }
       case EnemyIntent.heal:
         enemyHealth = min(enemyMaxHealth, enemyHealth + heal);
+      // A Hex, Silence or Curse works on the fight screen's dice; this
+      // quick model rolls one die with no rerolls, so it costs the enemy
+      // its turn and nothing else.
+      case EnemyIntent.tamper:
+        break;
       case EnemyIntent.attack:
         playerHealth = max(
             0,
@@ -302,9 +308,12 @@ Future<bool> _simulateFight({
   bool forceWin = false,
 }) async {
   final session = ref.read(playerSessionProvider);
-  final diceFaces = (dice[session.equippedDiceId]?['faces'] as List?)
-          ?.cast<Map<String, dynamic>>() ??
-      const [];
+  // The die as the Hammersmith left it (see face_smithing.dart).
+  final diceFaces = smithedFaces(
+      (dice[session.equippedDiceId]?['faces'] as List?)
+              ?.cast<Map<String, dynamic>>() ??
+          const <Map<String, dynamic>>[],
+      session.diceUpgrades[session.equippedDiceId ?? '']);
   if (diceFaces.isEmpty && !forceWin) return false;
 
   final playerScalingBonus = equipmentScalingBonusFor(
@@ -470,6 +479,7 @@ Future<AutoplayResult> autoplayToNode(
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
+        itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
       );
@@ -739,6 +749,7 @@ Future<AutoplayResult> _playTowardChapter(
         healAmount: choice.healAmount,
         flagsToAdd: choice.flagsToAdd,
         bannerPieceId: choice.grantsBannerPieceId,
+        itemId: choice.grantItemId,
         questIDToProgress: choice.questIDToProgress,
         approvalMods: choice.approvalMods,
       );

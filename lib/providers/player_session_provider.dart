@@ -7,10 +7,16 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
+import '../combat/face_keywords.dart' show FaceKeyword;
+import '../combat/face_smithing.dart';
+import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
+import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/journey_rules.dart';
 import '../data/perks.dart';
+import '../data/quest_objectives.dart' show killTargetsOf;
 import '../models/ally_state.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
@@ -58,8 +64,9 @@ int partyCapacityFor(List<String> builtHouseIds, Map<String, dynamic> houses) {
 /// single run can recruit everyone.
 const int fullRosterCompanionCount = 6;
 
-/// The share of the purse a retreat costs (see [retreatCostFor]).
-const double retreatGoldShare = 0.15;
+/// The share of the purse a retreat costs (see [retreatCostFor]); a
+/// potion, when the pack holds one, is dropped too.
+const double retreatGoldShare = 0.2;
 
 /// The least a retreat costs, when the party has that much.
 const int retreatMinimumGold = 10;
@@ -122,6 +129,11 @@ String sceneReadKey(String nodeId, String text) {
   return '$nodeId#${hash.toRadixString(16)}';
 }
 
+/// [PlayerSession.shopUnlockNodeIds]' mark for a shop met on the road
+/// rather than found in a scene: it moved on, and is never browsable again
+/// from the Shops list.
+const String roadShopNodeId = '@road';
+
 class PlayerSession {
   const PlayerSession({
     required this.level,
@@ -168,8 +180,17 @@ class PlayerSession {
     this.seenQuestIds = const [],
     this.seenEnemyIds = const [],
     this.readSceneKeys = const [],
+    this.seenEchoKeys = const [],
+    this.provisions = provisionsStart,
     this.day = 1,
     this.watch = 1,
+    this.stepsToday = 0,
+    this.clockChapter = 0,
+    this.chapterStartDay = 1,
+    this.sellswordFights = 0,
+    this.alignmentRollsSinceAmbush = hunterCooldownRolls,
+    this.runSeed = 0,
+    this.diceUpgrades = const {},
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -184,6 +205,7 @@ class PlayerSession {
     this.bannerPiecesCollected = const [],
     this.shipHull = -1,
     this.shipPartIds = const ['ballista'],
+    this.storedShipPartIds = const [],
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
@@ -191,6 +213,7 @@ class PlayerSession {
     this.contracts = const [],
     this.contractsChapter = 0,
     this.contractBoards = 0,
+    this.seaBeasts = const {},
     this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -308,7 +331,9 @@ class PlayerSession {
   /// leaving it hides the shop again (it reappears if the player returns).
   /// Unlike [unlockedShopIds], entries here are never removed, so
   /// historical stats (e.g. the playthrough simulator) still see every shop
-  /// ever discovered.
+  /// ever discovered. A shop met on the road (a detour's stall, the
+  /// Wayfarer's Caravan) is [roadShopNodeId]: it was there only while the
+  /// party stood at it.
   final Map<String, String> shopUnlockNodeIds;
 
   /// Ids the player has already viewed in the Play tab, used to compute the
@@ -323,11 +348,55 @@ class PlayerSession {
   /// whose text hasn't changed opens straight onto the place.
   final List<String> readSceneKeys;
 
+  /// The echoes the player has read (see echoes.dart): a scene's line with
+  /// the earlier choice that earned it, as `<nodeId>|<flag>`. The journal's
+  /// "What changed" page lists them.
+  final List<String> seenEchoKeys;
+
+  /// Rations carried (see journey_rules.dart): one is eaten on each step
+  /// of the road from chapter 2 on; with none left the party goes hungry.
+  final int provisions;
+
   /// The world clock: the day of the journey, from 1, and the watch of it
-  /// (0 dawn, 1 day, 2 dusk, 3 night). Travel and voyages pass time; a
-  /// rest sleeps through to the next dawn (see passTime, restUntilDawn).
+  /// (0 dawn, 1 day, 2 dusk, 3 night). A step on the road is a watch
+  /// ([stepsPerDay] steps end the day), a walk between places two, a
+  /// voyage its days at sea; a rest sleeps through to the next dawn (see
+  /// takeRoadStep, passTime, passDays, restUntilDawn).
   final int day;
   final int watch;
+
+  /// Steps taken on the road since the day began.
+  final int stepsToday;
+
+  /// The chapter the clock counts days in, and the day it began: the
+  /// longer a chapter takes, the stronger its enemies grow (see
+  /// [threatFor]).
+  final int clockChapter;
+  final int chapterStartDay;
+
+  /// Fights left on a hired sellsword's contract (see journey_rules.dart).
+  final int sellswordFights;
+
+  /// Alignment events rolled since the last hunter's ambush: a hunter
+  /// waits [hunterCooldownRolls] of them before the next (see
+  /// alignment_events.dart).
+  final int alignmentRollsSinceAmbush;
+
+  /// Rolled once per new game: picks each chapter's condition (see
+  /// chapter_conditions.dart). 0 on saves made before it existed.
+  final int runSeed;
+
+  /// The Hammersmith's work on the party's dice (v1.182, see
+  /// face_smithing.dart): die id → face index → what was done to it. Kept
+  /// on the die, so a companion's signature die keeps it too.
+  final Map<String, DieUpgrades> diceUpgrades;
+
+  /// How much stronger enemies are in [chapter] for the days the party has
+  /// spent in it (see [threatFor]).
+  double threatIn(int chapter) =>
+      roadRulesApply(chapter) && clockChapter == chapter
+          ? threatFor(day - chapterStartDay, chapter: chapter)
+          : 0;
 
   /// Companions recruited through story quests — permanent for this save
   /// once earned, regardless of active/benched status (mirrors
@@ -399,6 +468,10 @@ class PlayerSession {
   /// with the ballista.
   final List<String> shipPartIds;
 
+  /// Parts bought (or won) and taken off the Eel to make room for another
+  /// (v1.185): they wait at the Harbor and go back on for nothing.
+  final List<String> storedShipPartIds;
+
   /// ports.json id the boat is moored at; empty means the home port.
   final String currentPortId;
 
@@ -435,6 +508,10 @@ class PlayerSession {
   final List<Contract> contracts;
   final int contractsChapter;
   final int contractBoards;
+
+  /// What the crew knows of each sea beast (enemy_ships.json id -> state):
+  /// seen, signs of it, the wounds it carries, slain (see sea_beasts.dart).
+  final Map<String, BeastState> seaBeasts;
 
   /// Defeats each boss has dealt the party this run (enemy id -> losses):
   /// Resolve reads it back as a stacking bonus against that boss (see
@@ -614,8 +691,17 @@ class PlayerSession {
     List<String>? seenQuestIds,
     List<String>? seenEnemyIds,
     List<String>? readSceneKeys,
+    List<String>? seenEchoKeys,
+    int? provisions,
     int? day,
     int? watch,
+    int? stepsToday,
+    int? clockChapter,
+    int? chapterStartDay,
+    int? sellswordFights,
+    int? alignmentRollsSinceAmbush,
+    int? runSeed,
+    Map<String, DieUpgrades>? diceUpgrades,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -630,6 +716,7 @@ class PlayerSession {
     List<String>? bannerPiecesCollected,
     int? shipHull,
     List<String>? shipPartIds,
+    List<String>? storedShipPartIds,
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
@@ -637,6 +724,7 @@ class PlayerSession {
     List<Contract>? contracts,
     int? contractsChapter,
     int? contractBoards,
+    Map<String, BeastState>? seaBeasts,
     Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -697,8 +785,18 @@ class PlayerSession {
       seenQuestIds: seenQuestIds ?? this.seenQuestIds,
       seenEnemyIds: seenEnemyIds ?? this.seenEnemyIds,
       readSceneKeys: readSceneKeys ?? this.readSceneKeys,
+      seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
+      provisions: provisions ?? this.provisions,
       day: day ?? this.day,
       watch: watch ?? this.watch,
+      stepsToday: stepsToday ?? this.stepsToday,
+      clockChapter: clockChapter ?? this.clockChapter,
+      chapterStartDay: chapterStartDay ?? this.chapterStartDay,
+      sellswordFights: sellswordFights ?? this.sellswordFights,
+      alignmentRollsSinceAmbush:
+          alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
+      runSeed: runSeed ?? this.runSeed,
+      diceUpgrades: diceUpgrades ?? this.diceUpgrades,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -713,6 +811,7 @@ class PlayerSession {
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
       shipHull: shipHull ?? this.shipHull,
       shipPartIds: shipPartIds ?? this.shipPartIds,
+      storedShipPartIds: storedShipPartIds ?? this.storedShipPartIds,
       currentPortId: currentPortId ?? this.currentPortId,
       visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
@@ -722,6 +821,7 @@ class PlayerSession {
       contracts: contracts ?? this.contracts,
       contractsChapter: contractsChapter ?? this.contractsChapter,
       contractBoards: contractBoards ?? this.contractBoards,
+      seaBeasts: seaBeasts ?? this.seaBeasts,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
@@ -786,8 +886,17 @@ class PlayerSession {
         'seenQuestIds': seenQuestIds,
         'seenEnemyIds': seenEnemyIds,
         'readSceneKeys': readSceneKeys,
+        'seenEchoKeys': seenEchoKeys,
+        'provisions': provisions,
         'day': day,
         'watch': watch,
+        'stepsToday': stepsToday,
+        'clockChapter': clockChapter,
+        'chapterStartDay': chapterStartDay,
+        'sellswordFights': sellswordFights,
+        'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
+        'runSeed': runSeed,
+        'diceUpgrades': diceUpgradesToJson(diceUpgrades),
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -801,6 +910,7 @@ class PlayerSession {
         'completedZoneIds': completedZoneIds,
         'shipHull': shipHull,
         'shipPartIds': shipPartIds,
+        'storedShipPartIds': storedShipPartIds,
         'currentPortId': currentPortId,
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
@@ -809,6 +919,9 @@ class PlayerSession {
         'contracts': [for (final c in contracts) c.toJson()],
         'contractsChapter': contractsChapter,
         'contractBoards': contractBoards,
+        'seaBeasts': {
+          for (final e in seaBeasts.entries) e.key: e.value.toJson(),
+        },
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
@@ -935,8 +1048,21 @@ class PlayerSession {
       readSceneKeys:
           (json['readSceneKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      seenEchoKeys:
+          (json['seenEchoKeys'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
       day: max(1, (json['day'] as num?)?.toInt() ?? 1),
       watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
+      stepsToday: (json['stepsToday'] as num?)?.toInt() ?? 0,
+      clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
+      chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
+      sellswordFights: (json['sellswordFights'] as num?)?.toInt() ?? 0,
+      alignmentRollsSinceAmbush:
+          (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
+              hunterCooldownRolls,
+      runSeed: (json['runSeed'] as num?)?.toInt() ?? 0,
+      diceUpgrades: parseDiceUpgrades(json['diceUpgrades']),
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -977,6 +1103,10 @@ class PlayerSession {
       shipPartIds:
           (json['shipPartIds'] as List?)?.map((e) => e.toString()).toList() ??
               const ['ballista'],
+      storedShipPartIds: (json['storedShipPartIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       currentPortId: json['currentPortId']?.toString() ?? '',
       visitedPortIds: (json['visitedPortIds'] as List?)
               ?.map((e) => e.toString())
@@ -997,6 +1127,12 @@ class PlayerSession {
           const [],
       contractsChapter: (json['contractsChapter'] as num?)?.toInt() ?? 0,
       contractBoards: (json['contractBoards'] as num?)?.toInt() ?? 0,
+      seaBeasts: {
+        for (final e in ((json['seaBeasts'] as Map?) ?? const {}).entries)
+          if (e.value is Map)
+            e.key.toString():
+                BeastState.fromJson(Map<String, dynamic>.from(e.value as Map)),
+      },
       questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
             (quest, kills) => MapEntry(
               quest.toString(),
@@ -1185,6 +1321,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       legacyGold: keepLegacy ? previous.legacyGold : 0,
       legacyDiceIds: keepLegacy ? previous.legacyDiceIds : const [],
       legacySpellIds: keepLegacy ? previous.legacySpellIds : const [],
+      diceUpgrades: keepLegacy
+          ? {
+              for (final id in previous.legacyDiceIds)
+                if (previous.diceUpgrades[id] != null)
+                  id: previous.diceUpgrades[id]!,
+            }
+          : const {},
     );
     await _persist();
   }
@@ -1313,6 +1456,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       mana: maxManaFor(intelligence: intelligence, wisdom: wisdom),
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
+      runSeed: 1 + Random().nextInt(0x7ffffffe),
+      // A New Game+ legacy die keeps the Hammersmith's work on it.
+      diceUpgrades: {
+        for (final id in legacyDice)
+          if (legacy.diceUpgrades[id] != null) id: legacy.diceUpgrades[id]!,
+      },
     );
     await _persist();
   }
@@ -1449,6 +1598,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     List<String> flagsToAdd = const [],
     String? questIDToProgress,
     String? bannerPieceId,
+    String? itemId,
     String? loseAllyId,
     Map<String, int> approvalMods = const {},
     Map<String, dynamic> companions = const {},
@@ -1472,11 +1622,19 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
     final newFlags = <String>{...state.flags, ...flagsToAdd}.toList();
     var newActiveQuests = state.activeQuestIds;
+    var newKillBaselines = state.questKillBaselines;
     if (questIDToProgress != null &&
         questIDToProgress.isNotEmpty &&
         !state.activeQuestIds.contains(questIDToProgress) &&
         !state.completedQuestIds.contains(questIDToProgress)) {
       newActiveQuests = [...state.activeQuestIds, questIDToProgress];
+      // Taken on in a scene, with no quest record at hand: every kill
+      // count is kept, so a bounty's `countFromAccept` still counts from
+      // now (as acceptQuest does with the record).
+      newKillBaselines = {
+        ...newKillBaselines,
+        questIDToProgress: Map<String, int>.of(state.enemyKillCounts),
+      };
     }
     final newTracked = questIDToProgress != null &&
             newActiveQuests.contains(questIDToProgress) &&
@@ -1499,8 +1657,12 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
           : (newHealthRaw < 1 ? 1 : newHealthRaw),
       flags: newFlags,
       activeQuestIds: newActiveQuests,
+      questKillBaselines: newKillBaselines,
       trackedQuestId: newTracked,
       bannerPiecesCollected: newBannerPieces,
+      inventoryItemIds: itemId == null || itemId.isEmpty
+          ? state.inventoryItemIds
+          : [...state.inventoryItemIds, itemId],
     );
     if (lostId != null) {
       loseAlly(lostId, persist: false, companions: companions);
@@ -1738,11 +1900,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     if (quest == null) return Map<String, int>.of(state.enemyKillCounts);
     return {
       for (final objective in (quest['objectives'] as List?) ?? const [])
-        if (objective is Map &&
+        if (objective is Map<String, dynamic> &&
             objective['type'] == 'Kill' &&
             objective['countFromAccept'] == true)
-          objective['targetEnemyID'].toString():
-              state.enemyKillCounts[objective['targetEnemyID'].toString()] ?? 0,
+          for (final id in killTargetsOf(objective))
+            id: state.enemyKillCounts[id] ?? 0,
     };
   }
 
@@ -1974,9 +2136,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     required int hpAfter,
     required int goldLost,
     int? manaAfter,
+    bool dropPotion = false,
   }) async {
     state = state.copyWith(
       gold: max(0, state.gold - goldLost),
+      potionCount: dropPotion ? max(0, state.potionCount - 1) : null,
       currentHealth: max(1, min(state.maxHealth, hpAfter)),
       mana: manaAfter ?? state.mana,
     );
@@ -2007,6 +2171,91 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
       inventoryItemIds: [...remaining, itemId],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Whether the pack and purse cover [cost] (see face_smithing.dart).
+  bool canPaySmithing(SmithingCost cost) {
+    int carried(String id) =>
+        state.inventoryItemIds.where((i) => i == id).length;
+    final trophies = trophyItemIds.fold<int>(0, (n, id) => n + carried(id));
+    return state.gold >= cost.gold &&
+        carried(ironOreId) >= cost.iron &&
+        trophies >= cost.trophies;
+  }
+
+  /// The Hammersmith works face [faceIndex] of die [dieId] (whose dice.json
+  /// faces are [faces]): [work] is paid for (gold, iron ore, a trophy --
+  /// an Elite Mark first) and kept on the die. A Temper takes [element], an
+  /// inscription [keyword], a Recast [recastType]. Returns false when the
+  /// work doesn't fit the face or can't be paid for.
+  Future<bool> smithFace({
+    required String dieId,
+    required int faceIndex,
+    required List<Map<String, dynamic>> faces,
+    required SmithingWork work,
+    String? element,
+    FaceKeyword? keyword,
+    String? recastType,
+  }) async {
+    if (faceIndex < 0 || faceIndex >= faces.length) return false;
+    final dieUpgrades =
+        state.diceUpgrades[dieId] ?? const <String, FaceUpgrade>{};
+    final current = dieUpgrades[faceIndex.toString()] ?? FaceUpgrade.none;
+    final face = faces[faceIndex];
+    if (!canSmith(work, face, current)) return false;
+    final FaceUpgrade next;
+    switch (work) {
+      case SmithingWork.hone:
+        next = current.copyWith(hones: current.hones + 1);
+      case SmithingWork.temper:
+        if (element == null || !temperElements.contains(element)) return false;
+        if (element == current.element) return false;
+        next = current.copyWith(element: element);
+      case SmithingWork.inscribe:
+        if (keyword == null ||
+            !inscribableKeywords(face, current).contains(keyword)) {
+          return false;
+        }
+        next = current.copyWith(keyword: keyword);
+      case SmithingWork.recast:
+        final baseType = face['type']?.toString() ?? '';
+        final from = current.recastType ?? baseType;
+        if (recastType == null ||
+            !smithableBasicTypes.contains(recastType) ||
+            recastType == from) {
+          return false;
+        }
+        // Back to what the die made it clears the Recast; a Temper only
+        // stays on an Attack face.
+        next = FaceUpgrade(
+          hones: current.hones,
+          element: recastType == 'Attack' ? current.element : null,
+          keyword: current.keyword,
+          recastType: recastType == baseType ? null : recastType,
+        );
+    }
+    final cost = smithingCostFor(work, current);
+    if (!canPaySmithing(cost)) return false;
+    final remaining = [...state.inventoryItemIds];
+    for (var i = 0; i < cost.iron; i++) {
+      remaining.remove(ironOreId);
+    }
+    var trophiesLeft = cost.trophies;
+    for (final id in trophyItemIds) {
+      while (trophiesLeft > 0 && remaining.remove(id)) {
+        trophiesLeft--;
+      }
+    }
+    state = state.copyWith(
+      gold: state.gold - cost.gold,
+      inventoryItemIds: remaining,
+      diceUpgrades: {
+        ...state.diceUpgrades,
+        dieId: {...dieUpgrades, faceIndex.toString(): next},
+      },
     );
     await _persist();
     return true;
@@ -2266,20 +2515,56 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Buys and fits a ship part; false (and nothing spent) if it is already
   /// aboard or unaffordable. Slot room is the caller's check (see
-  /// ship_combat.dart's canInstallPart).
+  /// ship_combat.dart's canInstallPart); [replacing] come off to make it,
+  /// and wait at the Harbor (see [storedShipPartIds]). A stored part goes
+  /// back on for nothing, whatever [cost] says.
   Future<bool> installShipPart(String partId, int cost,
       {List<String> replacing = const []}) async {
-    if (state.shipPartIds.contains(partId) || state.gold < cost) return false;
+    final stored = state.storedShipPartIds.contains(partId);
+    final price = stored ? 0 : cost;
+    if (state.shipPartIds.contains(partId) || state.gold < price) return false;
+    final removed = [
+      for (final id in state.shipPartIds)
+        if (replacing.contains(id)) id,
+    ];
     state = state.copyWith(
-      gold: state.gold - cost,
+      gold: state.gold - price,
       // Repainting the sail takes the old sigil off (see sail_powers.dart).
       shipPartIds: [
         ...state.shipPartIds.where((id) => !replacing.contains(id)),
         partId,
       ],
+      storedShipPartIds: [
+        for (final id in state.storedShipPartIds)
+          if (id != partId) id,
+        ...removed,
+      ],
     );
     await _persist();
     return true;
+  }
+
+  /// Writes what the crew knows of the sea beast [beastId] (see
+  /// sea_beasts.dart), from [update] of what they knew.
+  Future<void> updateSeaBeast(
+      String beastId, BeastState Function(BeastState beast) update) async {
+    state = state.copyWith(seaBeasts: {
+      ...state.seaBeasts,
+      beastId: update(state.seaBeasts[beastId] ?? const BeastState()),
+    });
+    await _persist();
+  }
+
+  /// Puts a part won at sea in the Harbor's store (no room aboard for it
+  /// now): it goes on later for nothing (see [installShipPart]).
+  Future<void> storeShipPart(String partId) async {
+    if (state.shipPartIds.contains(partId) ||
+        state.storedShipPartIds.contains(partId)) {
+      return;
+    }
+    state =
+        state.copyWith(storedShipPartIds: [...state.storedShipPartIds, partId]);
+    await _persist();
   }
 
   /// Pays [cost] to restore the hull to full; false if unaffordable.
@@ -2420,17 +2705,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   // --- The world clock ---------------------------------------------------
 
   /// Moves the clock on by [watches] quarters of a day (a walk between
-  /// places is two, a day at sea four).
-  Future<void> passTime(int watches) async {
+  /// places is two, an expedition two). In [chapter], the days it passes
+  /// count toward the chapter's threat (see [threatIn]).
+  Future<void> passTime(int watches, {int? chapter}) async {
     if (watches <= 0) return;
-    final total = state.watch + watches;
-    state = state.copyWith(day: state.day + total ~/ 4, watch: total % 4);
+    final session = chapter != null && roadRulesApply(chapter)
+        ? _clockedIn(state, chapter)
+        : state;
+    final total = session.watch + watches;
+    final days = total ~/ 4;
+    state = session.copyWith(
+      day: session.day + days,
+      watch: total % 4,
+      stepsToday: days > 0 ? 0 : null,
+    );
     await _persist();
   }
 
-  /// A night's rest: the party heals, and wakes at the next dawn.
-  Future<void> restUntilDawn() async {
-    state = state.copyWith(day: state.day + 1, watch: 0);
+  /// A night's rest: the party heals and wakes at the next dawn, a day on
+  /// ([chapter]'s, for its threat, see [threatIn]).
+  Future<void> restUntilDawn({int? chapter}) async {
+    final session = chapter != null && roadRulesApply(chapter)
+        ? _clockedIn(state, chapter)
+        : state;
+    state = session.copyWith(day: session.day + 1, watch: 0, stepsToday: 0);
     await healPartyToFull();
   }
 
@@ -2515,7 +2813,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       if (!newShops.contains(shopId)) {
         newShops = [...newShops, shopId];
       }
-      if (shopUnlockNodeId != null && shopUnlockNodeId.isNotEmpty) {
+      // Meeting a shop's stall on the road never takes it away from the
+      // scene where the story placed it.
+      final keepsItsPlace = shopUnlockNodeId == roadShopNodeId &&
+          newShopUnlockNodeIds.containsKey(shopId);
+      if (shopUnlockNodeId != null &&
+          shopUnlockNodeId.isNotEmpty &&
+          !keepsItsPlace) {
         newShopUnlockNodeIds = {
           ...newShopUnlockNodeIds,
           shopId: shopUnlockNodeId
@@ -2613,6 +2917,136 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> markSceneRead(String key) async {
     if (state.readSceneKeys.contains(key)) return;
     state = state.copyWith(readSceneKeys: [...state.readSceneKeys, key]);
+    await _persist();
+  }
+
+  // --- The road: echoes, rations, days and sellswords ---------------------
+
+  /// Remembers the echoes [keys] (see echoes.dart) as read.
+  Future<void> noteEchoes(Iterable<String> keys) async {
+    final fresh = [
+      for (final key in {...keys})
+        if (!state.seenEchoKeys.contains(key)) key,
+    ];
+    if (fresh.isEmpty) return;
+    state = state.copyWith(seenEchoKeys: [...state.seenEchoKeys, ...fresh]);
+    await _persist();
+  }
+
+  /// [session] with the clock counting [chapter]'s days, from today if it
+  /// was counting another's.
+  PlayerSession _clockedIn(PlayerSession session, int chapter) =>
+      session.clockChapter == chapter
+          ? session
+          : session.copyWith(
+              clockChapter: chapter, chapterStartDay: session.day);
+
+  /// One step on the road in [chapter]: a ration eaten (or, with none
+  /// left, hunger's bite, see [hungerDamage]) and a quarter of the day
+  /// gone. Chapter 1 has no town to buy from, so its roads cost nothing.
+  Future<RoadStep> takeRoadStep({required int chapter}) async {
+    if (!roadRulesApply(chapter)) return const RoadStep();
+    final session = _clockedIn(state, chapter);
+    final hungry = session.provisions <= 0;
+    final bite = hungry
+        ? hungerDamage(
+            health: session.currentHealth, maxHealth: session.maxHealth)
+        : 0;
+    var steps = session.stepsToday + 1;
+    var day = session.day;
+    final dayEnded = steps >= stepsPerDay;
+    if (dayEnded) {
+      day += 1;
+      steps = 0;
+    }
+    state = session.copyWith(
+      provisions: hungry ? 0 : session.provisions - 1,
+      currentHealth: session.currentHealth - bite,
+      day: day,
+      stepsToday: steps,
+      // A step is a watch; a new day begins at dawn.
+      watch: dayEnded ? 0 : min(3, session.watch + 1),
+    );
+    await _persist();
+    return RoadStep(
+      counted: true,
+      hungry: hungry,
+      hunger: bite,
+      dayEnded: dayEnded,
+      day: day,
+      provisionsLeft: state.provisions,
+    );
+  }
+
+  /// [days] pass in [chapter] (a voyage, a day lost on an expedition): the
+  /// next day begins after them.
+  Future<void> passDays(int days, {required int chapter}) async {
+    if (days <= 0) return;
+    final session =
+        roadRulesApply(chapter) ? _clockedIn(state, chapter) : state;
+    state = session.copyWith(day: session.day + days, stepsToday: 0);
+    await _persist();
+  }
+
+  /// A night's rest in a town, a port or the camp: the whole party healed
+  /// (see [healPartyToFull]), and in [chapter] a day gone (see
+  /// [restUntilDawn]).
+  Future<void> restNight({required int chapter}) =>
+      restUntilDawn(chapter: chapter);
+
+  /// Buys [count] rations at [price] each, as many as the pack holds (see
+  /// [provisionsMax]). False, and nothing bought, when the purse or the
+  /// pack falls short.
+  Future<bool> buyProvisions(int count, {required int price}) async {
+    final room = provisionsMax - state.provisions;
+    final cost = count * price;
+    if (count <= 0 || count > room || state.gold < cost) return false;
+    state = state.copyWith(
+      gold: state.gold - cost,
+      provisions: state.provisions + count,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// [delta] rations found or lost (the camp's fate die), the pack kept
+  /// between empty and [provisionsMax]. Returns the change made.
+  Future<int> adjustProvisions(int delta) async {
+    final next = (state.provisions + delta).clamp(0, provisionsMax);
+    final change = next - state.provisions;
+    if (change == 0) return 0;
+    state = state.copyWith(provisions: next);
+    await _persist();
+    return change;
+  }
+
+  /// Hires a sellsword for [sellswordContractFights] fights at [price]. False when
+  /// one is already under contract or the purse falls short.
+  Future<bool> hireSellsword({required int price}) async {
+    if (state.sellswordFights > 0 || state.gold < price) return false;
+    state = state.copyWith(
+      gold: state.gold - price,
+      sellswordFights: sellswordContractFights,
+    );
+    await _persist();
+    return true;
+  }
+
+  /// One fight of the sellsword's contract spent.
+  Future<void> spendSellswordFight() async {
+    if (state.sellswordFights <= 0) return;
+    state = state.copyWith(sellswordFights: state.sellswordFights - 1);
+    await _persist();
+  }
+
+  /// An alignment event was rolled (see maybeAlignmentEvent): [ambushed]
+  /// when it sent a hunter, which starts the hunters' cooldown over.
+  Future<void> noteAlignmentRoll({required bool ambushed}) async {
+    final next = ambushed
+        ? 0
+        : min(hunterCooldownRolls, state.alignmentRollsSinceAmbush + 1);
+    if (next == state.alignmentRollsSinceAmbush) return;
+    state = state.copyWith(alignmentRollsSinceAmbush: next);
     await _persist();
   }
 
@@ -2792,6 +3226,30 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       intelligence: newIntelligence,
       wisdom: newWisdom,
       perception: newPerception,
+    );
+    await _persist();
+  }
+
+  /// What the formative memories left (origin_stories.dart): their
+  /// [alignmentMod], a point in each ability of [abilities] per lesson, and
+  /// their [flags] for the story's echoes. Applied once, as creation ends.
+  Future<void> applyOriginMemories({
+    required int alignmentMod,
+    required Map<String, int> abilities,
+    required List<String> flags,
+  }) async {
+    int plus(String key, int value) => value + (abilities[key] ?? 0);
+    state = state.copyWith(
+      alignmentScore: state.alignmentScore + alignmentMod,
+      strength: plus('strength', state.strength),
+      dexterity: plus('dexterity', state.dexterity),
+      constitution: plus('constitution', state.constitution),
+      intelligence: plus('intelligence', state.intelligence),
+      wisdom: plus('wisdom', state.wisdom),
+      charisma: plus('charisma', state.charisma),
+      luck: plus('luck', state.luck),
+      perception: plus('perception', state.perception),
+      flags: <String>{...state.flags, ...flags}.toList(),
     );
     await _persist();
   }

@@ -14,6 +14,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:narrative_data_app/combat/sea_beasts.dart';
 import 'package:narrative_data_app/combat/ship_battle.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 
@@ -228,6 +229,8 @@ Map<String, Map<String, _Tally>> _run({
   for (final fitting in _fittings) {
     for (final entry in enemies.entries) {
       final record = entry.value as Map<String, dynamic>;
+      // A sea beast has its own balance (see sea_beast_balance_test.dart).
+      if (isBeastRecord(record)) continue;
       final tally = _Tally();
       for (var seed = 0; seed < battles; seed++) {
         final rng = Random(seed * 7919 + 17);
@@ -256,6 +259,8 @@ Map<String, Map<String, _Tally>> _run({
             tally.boarded++;
             tally.hull += 100 * b.player.hull ~/ b.player.maxHull;
           case BattleEnd.escaped:
+          // The simulated captain never runs; were it to, it's no win.
+          case BattleEnd.fled:
             tally.escaped++;
             tally.hull += 100 * b.player.hull ~/ b.player.maxHull;
           case BattleEnd.lost:

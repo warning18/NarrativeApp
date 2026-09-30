@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
+import '../data/chapter_conditions.dart';
 import '../data/shop_pricing.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -18,6 +19,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/dice_smithing_sheet.dart';
 import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
@@ -53,6 +55,10 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
         const <String, dynamic>{};
     final session = ref.watch(playerSessionProvider);
     final chapter = ref.watch(reachedChapterProvider);
+    // The chapter's condition may raise or lower every price (see
+    // chapter_conditions.dart).
+    final condition = ref.watch(chapterConditionProvider);
+    final priceFactor = condition?.shopPrice ?? 1.0;
     final lang = ref.watch(appLanguageProvider);
     final itemSets = parseItemSets(
         ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
@@ -87,6 +93,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                 icon: const Icon(Icons.hardware_outlined),
                 tooltip: tr(ref, 'forge_title'),
                 onPressed: () => showForgeSheet(context, shopId: widget.shopId),
+              ),
+            // The Hammersmith works the party's dice too (v1.182).
+            if (forges)
+              IconButton(
+                icon: const Icon(Icons.casino_outlined),
+                tooltip: tr(ref, 'smith_open_button'),
+                onPressed: () => showDiceSmithingSheet(context),
               ),
             IconButton(
               icon: const Icon(Icons.sell_outlined),
@@ -123,11 +136,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                   itemId;
 
               // Listed price, less the buyer's Charisma discount.
-              int costFor(String itemId) => shopPriceFor(
-                  ((items[itemId] as Map<String, dynamic>?)?['cost'] as num?)
-                          ?.toInt() ??
-                      0,
-                  session.charisma);
+              int costFor(String itemId) => conditionedPrice(
+                  shopPriceFor(
+                      ((items[itemId] as Map<String, dynamic>?)?['cost']
+                                  as num?)
+                              ?.toInt() ??
+                          0,
+                      session.charisma),
+                  priceFactor);
 
               final availableTypes = stock
                   .map((id) => (items[id] as Map<String, dynamic>?)?['itemType']
@@ -169,6 +185,38 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (condition != null && priceFactor != 1)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4),
+                              child: Row(
+                                key: const ValueKey('shop_condition_line'),
+                                children: [
+                                  Icon(
+                                    priceFactor > 1
+                                        ? Icons.trending_up
+                                        : Icons.trending_down,
+                                    size: 18,
+                                    color: priceFactor > 1
+                                        ? Theme.of(context).colorScheme.error
+                                        : Theme.of(context).colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      tr(ref, 'condition_shop_line')
+                                          .replaceAll(
+                                              '{name}',
+                                              condition.nameFor(
+                                                  lang == AppLanguage.fr))
+                                          .replaceAll('{p}',
+                                              percentChange(priceFactor)),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           Row(
                             children: [
                               Icon(
@@ -519,9 +567,11 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           ...diceStock.map((diceId) {
                             final theme = Theme.of(context);
                             final die = dice[diceId] as Map<String, dynamic>?;
-                            final cost = shopPriceFor(
-                                (die?['cost'] as num?)?.toInt() ?? 0,
-                                session.charisma);
+                            final cost = conditionedPrice(
+                                shopPriceFor(
+                                    (die?['cost'] as num?)?.toInt() ?? 0,
+                                    session.charisma),
+                                priceFactor);
                             final owned = session.ownedDiceIds.contains(diceId);
                             final canAfford = session.gold >= cost;
                             // A die made for another class or race is shown

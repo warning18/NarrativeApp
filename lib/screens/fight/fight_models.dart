@@ -165,7 +165,17 @@ class _PartyMember {
     this.luck = 0,
     this.perception = 0,
     this.gear = GearEffects.none,
+    this.dieFaces = const [],
+    this.approval = 0,
   });
+
+  /// This member's die as it rolls: its dice.json faces with the
+  /// Hammersmith's work on them (see face_smithing.dart).
+  final List<Map<String, dynamic>> dieFaces;
+
+  /// A companion's approval of the player (see approval.dart) -- what opens
+  /// their duo techniques; 0 for the player.
+  final int approval;
 
   final String id;
   final String displayName;

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/camp_state.dart';
 import '../data/contracts.dart';
 import '../data/sub_node_engine.dart';
 import '../gamedata/db_schema.dart';
@@ -54,6 +55,8 @@ class _BountyBoardState extends ConsumerState<BountyBoard> {
         huntPool: huntPool,
         random: Random(),
         boardNumber: session.contractBoards + 1,
+        sea: session.builtHouseIds.contains(harborHouseId),
+        beastTracked: session.seaBeasts.values.any((b) => b.tracked),
       ),
     );
     await ref
@@ -93,6 +96,10 @@ class _BountyBoardState extends ConsumerState<BountyBoard> {
         ContractKind.breaker => Icons.sync_problem,
         ContractKind.weakness => Icons.local_fire_department,
         ContractKind.marked => Icons.star,
+        ContractKind.sinkShips => Icons.sailing,
+        ContractKind.takeShip => Icons.anchor,
+        ContractKind.keelIntact => Icons.shield_outlined,
+        ContractKind.beastFought => Icons.set_meal,
       };
 
   @override

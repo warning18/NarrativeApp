@@ -57,7 +57,8 @@ class ShipCutaway {
   ];
 
   /// The enemy ship [id] (enemy_ships.json `shipName`) or, for one without
-  /// a sprite of its own, the one nearest its size.
+  /// a sprite of its own, the one nearest its size. The sea beasts (see
+  /// sea_beasts.dart) have no sprite of their own yet and borrow one.
   static ShipCutaway forEnemy(String? id, ShipState ship) {
     for (final c in enemies) {
       if (c.id == id) return c;

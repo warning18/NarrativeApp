@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/journey_rules.dart';
 import '../l10n/app_strings.dart';
 import '../providers/app_mode_provider.dart';
+import '../providers/chapter_loop_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../utils/game_icons.dart';
+import 'road_panel.dart';
 
 /// The party's vital numbers on one line: level, health, mana, gold and
 /// the open quests, sized down rather than scrolled when the screen is
@@ -26,6 +29,10 @@ class PlayerStatsBar extends ConsumerWidget {
     final ink = InkColors.of(context);
     final lowHealth = session.maxHealth > 0 &&
         session.currentHealth * 10 <= session.maxHealth * 3;
+    // From chapter 2 the road has its rules: rations and days.
+    final chapter = ref.watch(reachedChapterProvider);
+    final road = roadRulesApply(chapter);
+    final threat = road ? session.threatIn(chapter) : 0.0;
 
     final stats = Row(
       mainAxisSize: MainAxisSize.min,
@@ -82,6 +89,27 @@ class PlayerStatsBar extends ConsumerWidget {
             tint: ink.gold,
           ),
         ),
+        if (road) ...[
+          _PulseOnChange(
+            value: session.provisions,
+            child: _Stat(
+              icon: Icons.restaurant,
+              text: '${session.provisions}',
+              tooltip: tr(ref, 'road_rations_label'),
+              tint: ink.ash,
+              color: session.provisions == 0 ? scheme.error : null,
+            ),
+          ),
+          _PulseOnChange(
+            value: session.day,
+            child: _Stat(
+              icon: Icons.wb_sunny_outlined,
+              text: '${tr(ref, 'road_day_abbrev')} ${session.day}',
+              tooltip: tr(ref, 'road_day_label'),
+              tint: threat > 0 ? scheme.error : ink.gold,
+            ),
+          ),
+        ],
         if (session.activeQuestIds.isNotEmpty)
           _Stat(
             icon: Icons.assignment_outlined,
@@ -174,7 +202,12 @@ Future<void> showPlayerStatusSheet(BuildContext context) {
   return showModalBottomSheet<void>(
     context: context,
     showDragHandle: true,
-    builder: (_) => const _PlayerStatusSheet(),
+    isScrollControlled: true,
+    builder: (context) => ConstrainedBox(
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
+      child: const _PlayerStatusSheet(),
+    ),
   );
 }
 
@@ -214,6 +247,7 @@ class _PlayerStatusSheet extends ConsumerWidget {
             if (session.flags.isNotEmpty)
               row(Icons.flag, tr(ref, 'flags_count_label'),
                   '${session.flags.length}'),
+            const RoadPanel(),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),

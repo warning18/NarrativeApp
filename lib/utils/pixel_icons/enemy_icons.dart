@@ -3,13 +3,27 @@
 class EnemyIcons {
   EnemyIcons._();
 
-  static String pathFor(String enemyId) => 'assets/icons/enemies/$enemyId.png';
+  static String pathFor(String enemyId) =>
+      'assets/icons/enemies/${_borrowed[enemyId] ?? enemyId}.png';
+
+  /// Enemies drawn with another's icon until they have their own: the
+  /// Tide-Mother's arm (see sea_beasts.dart) as the Unstitched, and the
+  /// v1.176-v1.182 foes as the nearest of their kind.
+  static const Map<String, String> _borrowed = {
+    'kraken_arm': 'tear_spawn',
+    'brine_jack': 'smuggler_captain',
+    'glass_shepherd': 'hollow_reflection',
+    'knell_keeper': 'hollow_court_zealot',
+    'purifier_vell': 'inquisition_warden',
+    'rime_bailiff': 'bone_sexton',
+  };
 
   static const List<String> allIds = [
     'angel_judicator',
     'angel_sentinel',
     'bone_sexton',
     'bone_warden',
+    'brine_jack',
     'catacomb_ghoul',
     'cultist_acolyte',
     'demon_imp',
@@ -17,6 +31,7 @@ class EnemyIcons {
     'dock_overseer',
     'drowned_pilgrim',
     'frost_kept_giant',
+    'glass_shepherd',
     'grosh_turned',
     'harbor_rat',
     'hollow_court_inquisitor',
@@ -31,13 +46,17 @@ class EnemyIcons {
     'inquisition_warden',
     'iron_golem',
     'kelda_turned',
+    'knell_keeper',
+    'kraken_arm',
     'kroll_the_branded',
     'liora_turned',
     'malrik_turned',
     'maren_turned',
     'masked_penitent',
     'plague_hound',
+    'purifier_vell',
     'rat_matriarch',
+    'rime_bailiff',
     'sable_turned',
     'slum_thug',
     'smuggler_captain',

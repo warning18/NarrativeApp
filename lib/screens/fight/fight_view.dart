@@ -346,6 +346,23 @@ extension _FightView on _FightScreenState {
               ? tr(ref, 'momentum_ready_label')
               : '${tr(ref, 'momentum_label')} $_momentum/$_momentumNeeded',
         ),
+        // Luck nudges left (long-press a die to spend one).
+        if (_nudgesLeft > 0)
+          Tooltip(
+            message: tr(ref, 'nudge_hint'),
+            child: _telegraphChip(
+                Icons.swap_vert, '${tr(ref, 'nudges_label')} $_nudgesLeft'),
+          ),
+        if (_hexPending)
+          Tooltip(
+            message: tr(ref, 'tamper_hex_desc'),
+            child: _telegraphChip(Icons.auto_fix_off, tr(ref, 'tamper_hex')),
+          ),
+        if (_silenced || _silencePending)
+          Tooltip(
+            message: tr(ref, 'tamper_silence_desc'),
+            child: _telegraphChip(Icons.volume_off, tr(ref, 'tamper_silence')),
+          ),
       ],
     );
   }
@@ -362,8 +379,8 @@ extension _FightView on _FightScreenState {
         ((dice[m.equippedDiceId] as Map<String, dynamic>?)?['faces'] as List?)
                 ?.isNotEmpty ==
             true);
-    final previews =
-        _previewRoll(skills, items, ref.watch(appLanguageProvider));
+    final plan = _roundPlan(skills, items, ref.watch(appLanguageProvider));
+    final previews = plan.previews;
 
     final battle = AnimatedBuilder(
       animation: _shakeController,
@@ -383,7 +400,7 @@ extension _FightView on _FightScreenState {
           const SizedBox(height: 6),
           TutorialTarget(
             id: 'fight.dice',
-            child: _buildDiceTray(acting, dice, skills, items, previews),
+            child: _buildDiceTray(acting, dice, skills, items, plan),
           ),
           const SizedBox(height: 6),
           Expanded(
@@ -465,8 +482,9 @@ extension _FightView on _FightScreenState {
     Map<String, dynamic> dice,
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
-    Map<String, _FacePreview> previews,
+    _RoundPlan plan,
   ) {
+    final previews = plan.previews;
     final colorScheme = Theme.of(context).colorScheme;
     final canLock =
         _awaitingDecision && !_rolling && _rollCount < _maxRollsThisFight;
@@ -500,6 +518,8 @@ extension _FightView on _FightScreenState {
           ),
           if (_momentum >= _momentumNeeded && !_rolling)
             _buildSurgePicker(acting),
+          if (plan.combos.isNotEmpty || plan.duos.isNotEmpty)
+            _buildComboChips(plan),
           const SizedBox(height: 4),
           Text(
             tr(ref, hintKey),
@@ -511,6 +531,54 @@ extension _FightView on _FightScreenState {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
+        ],
+      ),
+    );
+  }
+
+  /// The party combos and duo techniques the dice on the table make (see
+  /// party_combos.dart and duo_techniques.dart): what confirming now adds.
+  Widget _buildComboChips(_RoundPlan plan) {
+    final lang = ref.watch(appLanguageProvider);
+    final french = lang == AppLanguage.fr;
+    final colorScheme = Theme.of(context).colorScheme;
+    Widget chip(IconData icon, String label, String tooltip, Color color) =>
+        Tooltip(
+          message: tooltip,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: color.withValues(alpha: 0.7)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 13, color: color),
+                const SizedBox(width: 3),
+                Text(label,
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: color)),
+              ],
+            ),
+          ),
+        );
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 6,
+        runSpacing: 4,
+        children: [
+          for (final combo in plan.combos)
+            chip(Icons.groups, trFor(lang, comboLabelKey(combo)),
+                trFor(lang, comboDescriptionKey(combo)), colorScheme.primary),
+          for (final duo in plan.duos)
+            chip(Icons.handshake, duo.nameFor(french),
+                duo.descriptionFor(french), Colors.deepPurple),
         ],
       ),
     );
@@ -600,10 +668,12 @@ extension _FightView on _FightScreenState {
         ? ''
         : (face.faceName.isEmpty ? face.type : face.faceName);
     return GestureDetector(
+      key: ValueKey('die_tile_${actor.id}'),
       onTap: face == null
           ? null
           : () {
-              if (canLock) {
+              // A Steady face stays put: the sheet says why.
+              if (canLock && !_steadyActorIds.contains(actor.id)) {
                 _update(() {
                   if (locked) {
                     _lockedActorIds.remove(actor.id);
@@ -645,7 +715,19 @@ extension _FightView on _FightScreenState {
                   Positioned(
                     top: 2,
                     right: 2,
-                    child: Icon(Icons.lock, size: 12, color: accent),
+                    child: Icon(
+                        _steadyActorIds.contains(actor.id)
+                            ? Icons.anchor
+                            : Icons.lock,
+                        size: 12,
+                        color: accent),
+                  ),
+                // The landed face's keywords (see face_keywords.dart).
+                if (face != null && !spinning && face.keywords.isNotEmpty)
+                  Positioned(
+                    top: 2,
+                    left: 2,
+                    child: FaceKeywordBadges(face.keywords, size: 11),
                   ),
               ],
             ),
@@ -832,19 +914,26 @@ extension _FightView on _FightScreenState {
             '${preview.lethal ? trFor(lang, 'preview_lethal_label') : '${max(0, target.currentHealth - preview.damage)} ${trFor(lang, 'hp_label')} ${trFor(lang, 'preview_left_suffix')}'}';
     final element = _elementFor(face, availableSkills);
     final dieId = actor.equippedDiceId;
-    final faces = dieId == null
-        ? const <Map<String, dynamic>>[]
-        : ((dice[dieId] as Map<String, dynamic>?)?['faces'] as List?)
-                ?.cast<Map<String, dynamic>>() ??
-            const <Map<String, dynamic>>[];
+    // The die as smithed at the Hammersmith.
+    final faces = actor.dieFaces;
     final accent = _accentFor(actor);
+    final onTable = _currentFaces[actor.id] == face;
+    final growth = face.hasKeyword(FaceKeyword.growth)
+        ? (_growthUses['${actor.id}:${face.faceIndex}'] ?? 0) * growthStep
+        : 0;
+    final cursed = _cursedFaces[actor.id]?.contains(face.faceIndex) ?? false;
+    final canNudge =
+        onTable && _awaitingDecision && !_rolling && _nudgesLeft > 0;
+    final nudgeTo = canNudge ? _nudgePreview(actor) : null;
     return showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
       builder: (sheetContext) {
         final theme = Theme.of(sheetContext);
+        // Scrolls: a face with keywords, a curse and a nudge to offer
+        // runs taller than a phone's sheet.
         return SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -916,6 +1005,50 @@ extension _FightView on _FightScreenState {
                     ],
                   ),
                 ],
+                // The face's keywords, in full (see face_keywords.dart).
+                for (final keyword in face.keywords) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(keyword.icon, size: 14, color: keyword.color),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${trFor(lang, keywordLabelKey(keyword))}: '
+                          '${trFor(lang, keywordDescriptionKey(keyword))}'
+                          '${keyword == FaceKeyword.growth && growth > 0 ? ' (+$growth)' : ''}',
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+                if (cursed) ...[
+                  const SizedBox(height: 4),
+                  Text(trFor(lang, 'cursed_face_note'),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: Colors.red.shade700)),
+                ],
+                if (_steadyActorIds.contains(actor.id) && onTable) ...[
+                  const SizedBox(height: 4),
+                  Text(trFor(lang, 'steady_kept_note'),
+                      style: theme.textTheme.bodySmall),
+                ],
+                // A Luck nudge turns the die to its opposite face.
+                if (nudgeTo != null) ...[
+                  const SizedBox(height: 10),
+                  FilledButton.tonalIcon(
+                    onPressed: () {
+                      Navigator.of(sheetContext).pop();
+                      _nudge(actor);
+                    },
+                    icon: const Icon(Icons.swap_vert, size: 18),
+                    label: Text(trFor(lang, 'nudge_button')
+                        .replaceAll('{face}', nudgeTo.faceName)
+                        .replaceAll('{n}', '$_nudgesLeft')),
+                  ),
+                ],
                 if (faces.isNotEmpty) ...[
                   const SizedBox(height: 14),
                   Text(trFor(lang, 'die_faces_label'),
@@ -953,19 +1086,15 @@ extension _FightView on _FightScreenState {
     _PartyMember actor,
     BuildContext sheetContext,
   ) {
-    final face = applyFaceAssignment(
-      DiceFaceResult(
-        faceIndex: index,
-        faceName: '',
-        type: raw['type']?.toString() ?? 'Empty',
-        value: (raw['value'] as num?)?.toInt() ?? 0,
-        linkedSkillID: raw['linkedSkillID']?.toString() ?? '',
-        element: raw['element']?.toString() ?? 'None',
-      ),
+    final assigned = applyFaceAssignment(
+      faceFromJson(raw, index).withFaceName(''),
       raw,
       actor.diceSkillAssignments[index.toString()],
       language: ref.read(appLanguageProvider),
     );
+    // A Curse shows on the face it fell on.
+    final cursed = _cursedFaces[actor.id]?.contains(index) ?? false;
+    final face = cursed ? cursedFace(assigned) : assigned;
     final colorScheme = Theme.of(sheetContext).colorScheme;
     return SizedBox(
       width: 60,
@@ -981,11 +1110,25 @@ extension _FightView on _FightScreenState {
                   .color
                   .withValues(alpha: isRolled ? 0.28 : 0.14),
               border: Border.all(
-                color: isRolled ? accent : colorScheme.outlineVariant,
-                width: isRolled ? 2 : 1,
+                color: cursed
+                    ? Colors.red.shade700
+                    : isRolled
+                        ? accent
+                        : colorScheme.outlineVariant,
+                width: isRolled || cursed ? 2 : 1,
               ),
             ),
-            child: Center(child: _buildFaceGlyph(face, size: 22)),
+            child: Stack(
+              children: [
+                Center(child: _buildFaceGlyph(face, size: 22)),
+                if (face.keywords.isNotEmpty)
+                  Positioned(
+                    top: 1,
+                    left: 1,
+                    child: FaceKeywordBadges(face.keywords, size: 9),
+                  ),
+              ],
+            ),
           ),
           const SizedBox(height: 2),
           Text(

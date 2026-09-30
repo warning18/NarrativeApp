@@ -57,7 +57,18 @@ extension _FightRewards on _FightScreenState {
       // guaranteed "that was worth it" payoff for the harder fight, on top
       // of the reward multiplier applied per enemy and the chest's own
       // Silver floor. Elite is solo-only, so this never double-applies.
-      final loot = <String>[if (_isElite) 'elite_trophy'];
+      // A boss -- a named duel, a phased boss, an expedition's -- leaves a
+      // Champion's Trophy, what the Hammersmith takes to inscribe a die
+      // face (see face_smithing.dart). A test fight leaves nothing.
+      final loot = <String>[
+        if (_isElite) 'elite_trophy',
+        if (!widget.modifiers.isTest)
+          for (final enemy in defeated)
+            if (!enemy.fled &&
+                (isBossEnemy(enemy.enemyId, enemy.data) ||
+                    zoneBossEnemyIds.contains(enemy.enemyId)))
+              bossTrophyId,
+      ];
       final session = ref.read(playerSessionProvider);
       final items =
           ref.read(localizedDbProvider(itemsSchema)).value ?? const {};
@@ -333,12 +344,16 @@ extension _FightRewards on _FightScreenState {
   Future<void> _retreat() async {
     final lang = ref.read(appLanguageProvider);
     final cost = retreatCostFor(ref.read(playerSessionProvider).gold);
+    // A potion goes too, when the pack holds one.
+    final dropsPotion = ref.read(playerSessionProvider).potionCount > 0;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: Text(trFor(lang, 'retreat_confirm_title')),
-        content: Text(
-            trFor(lang, 'retreat_confirm_body').replaceAll('{gold}', '$cost')),
+        content: Text(trFor(lang, 'retreat_confirm_body')
+            .replaceAll('{gold}', '$cost')
+            .replaceAll('{potion}',
+                dropsPotion ? trFor(lang, 'retreat_potion_part') : '')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext, false),
@@ -359,6 +374,7 @@ extension _FightRewards on _FightScreenState {
       hpAfter: player.currentHealth,
       goldLost: cost,
       manaAfter: _mana,
+      dropPotion: dropsPotion,
     );
     for (final member in _party) {
       if (member.isPlayer) continue;

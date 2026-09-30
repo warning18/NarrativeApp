@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/encounter.dart';
+import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../gamedata/db_schema.dart';
@@ -30,6 +31,8 @@ class ShipBattleOutcome {
     required this.log,
     this.boarded = false,
     this.escaped = false,
+    this.fled = false,
+    this.enemyHull = 0,
   });
 
   final bool won;
@@ -42,6 +45,12 @@ class ShipBattleOutcome {
 
   /// True when the enemy got away: no prize, and no loss either.
   final bool escaped;
+
+  /// True when the Eel ran for it and got away (see ShipBattle.runForIt).
+  final bool fled;
+
+  /// The enemy's hull at the end (a sea beast carries its wounds away).
+  final int enemyHull;
 }
 
 /// The room-by-room ship battle (see ship_battle.dart and
@@ -85,6 +94,8 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     this.windKnot = false,
     this.rules = const ShipBattleRules(),
     this.waters = SeaWaters.open,
+    this.canFlee = true,
+    this.beast,
   });
 
   final ShipState player;
@@ -131,6 +142,15 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
 
   /// The waters the fight is on, which set the sea's look.
   final SeaWaters waters;
+
+  /// The Eel may run for it (a story fight must be seen through).
+  final bool canFlee;
+
+  /// The enemy is a sea beast (see sea_beasts.dart): its rooms are fins,
+  /// jaws, hide and heart, and the battle shows what it is about to do.
+  /// It has no look of its own yet: it borrows the ship nearest its size
+  /// (see TopShipLook.forEnemy).
+  final BeastProfile? beast;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -206,6 +226,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       habit: widget.habit,
       rules: widget.rules,
       windKnot: widget.windKnot,
+      canFlee: widget.canFlee,
+      beast: widget.beast,
     );
     _armedWeaponId = _firstReadyWeaponId();
     _startClock();
@@ -245,10 +267,29 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
 
   bool get _over => _battle.over || _finished;
 
-  /// A log line in the player's language.
+  /// The name of [room] of the Eel or, with [enemy], of the enemy: a
+  /// beast's rooms are its fins, jaws, hide and heart. [suffix] picks the
+  /// word's form ('' in a sentence, '_title' on a tile, '_hint').
+  String _roomName(AppLanguage lang, ShipRoom room,
+          {required bool enemy, String suffix = ''}) =>
+      trFor(
+          lang,
+          widget.beast != null && enemy
+              ? 'beast_room_${room.name}$suffix'
+              : 'ship_room_${room.name}$suffix');
+
+  /// A log line in the player's language. A line about a beast is worded
+  /// for one where a beast has its own (`beast_` + the key): its crew
+  /// mends nothing, it bleeds where a ship takes on water.
   String _line(BattleLine line) {
     final lang = ref.read(appLanguageProvider);
-    var text = trFor(lang, line.key);
+    final aboutBeast = widget.beast != null &&
+        (line.side == BattleSide.enemy || line.key == 'ship_log_focus');
+    final beastKey = 'beast_${line.key}';
+    final key = aboutBeast && trFor(AppLanguage.en, beastKey) != beastKey
+        ? beastKey
+        : line.key;
+    var text = trFor(lang, key);
     final side = line.side;
     if (side != null) {
       text = text.replaceAll('{ship}',
@@ -260,7 +301,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     }
     final room = line.room;
     if (room != null) {
-      text = text.replaceAll('{room}', trFor(lang, 'ship_room_${room.name}'));
+      text =
+          text.replaceAll('{room}', _roomName(lang, room, enemy: aboutBeast));
     }
     final crew = line.crew;
     if (crew != null) text = text.replaceAll('{crew}', crew);
@@ -287,6 +329,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     if (!ref.read(tutorialAutoShowProvider)) return null;
     final b = _battle;
     final candidates = [
+      if (widget.beast != null) 'ship_beast',
+      if (widget.beast != null &&
+          b.player.weapons.any((w) => w.tetherRounds > 0))
+        'ship_tether',
       if (b.rules.range) 'ship_range',
       if (b.rules.habits && widget.habit != EnemyHabit.none)
         'ship_habit_${widget.habit.name}',
@@ -296,6 +342,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       if (b.player.rooms.values.any((r) => r.onFire)) 'ship_fire',
       if (b.player.leaks > 0) 'ship_leak',
       if (b.canBoardThem) 'ship_boarding',
+      if (b.canRun) 'ship_run',
       if (b.log.any((l) => l.key.startsWith('ship_event_'))) 'ship_sea',
     ];
     for (final id in candidates) {
@@ -554,6 +601,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       log: [for (final line in _battle.log) _line(line)],
       boarded: end == BattleEnd.boarded,
       escaped: end == BattleEnd.escaped,
+      fled: end == BattleEnd.fled,
+      enemyHull: _battle.enemy.hull,
     ));
   }
 
@@ -883,28 +932,59 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           child: LayoutBuilder(builder: (context, constraints) {
             final bar = Padding(
               padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
-              child: _shipBar(
-                name: widget.enemyName,
-                ship: _battle.enemy,
-                evasion: _battle.enemyEvasion,
-                color: ink.blood,
-                habit: widget.habit,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _shipBar(
+                    name: widget.enemyName,
+                    ship: _battle.enemy,
+                    evasion: _battle.enemyEvasion,
+                    color: ink.blood,
+                    habit: widget.habit,
+                  ),
+                  if (widget.beast != null) _buildBeastStatus(lang),
+                ],
               ),
             );
-            final dock = _buildDock(lang, fr, enemies, canBoard, hint);
+            // A tip sits above the dock, off the sea, so it never covers a
+            // room that has to be tapped.
+            final dock = Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (tip != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+                    child: _buildTip(tip, lang),
+                  ),
+                _buildDock(lang, fr, enemies, canBoard, hint),
+              ],
+            );
             final sea = Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: _buildBattlefield(lang, tip),
+                child: _buildBattlefield(lang),
               ),
             );
-            // A short screen scrolls, the sea at a fixed height; a tall one
-            // gives the sea all the room between the enemy and the dock.
-            if (constraints.maxHeight < 640) {
-              return ListView(
-                padding: EdgeInsets.zero,
-                children: [bar, SizedBox(height: 380, child: sea), dock],
+            // A tall screen gives the sea all the room between the enemy
+            // and the dock. On a short one the enemy's bar and the sea
+            // scroll, the sea at a fixed height, and the dock stays pinned
+            // below them, so End turn is always on screen.
+            if (constraints.maxHeight < 600) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      key: const Key('ship_sea_scroll'),
+                      padding: EdgeInsets.zero,
+                      children: [bar, SizedBox(height: 340, child: sea)],
+                    ),
+                  ),
+                  dock,
+                ],
               );
             }
             return Column(
@@ -1254,18 +1334,104 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
               : null,
         ),
         const SizedBox(height: 10),
-        button(
-          const Key('ship_pull_away'),
-          Icons.keyboard_double_arrow_down,
-          trFor(lang, 'ship_pull_away_button'),
-          canAct && farther != null && _battle.canMoveTo(farther)
-              ? () => setState(() {
-                    _battle.maneuver(farther);
-                    _rearm();
-                  })
-              : null,
-        ),
+        // At long range the Eel can run for it instead (see
+        // ShipBattle.runForIt).
+        if (farther == null && widget.canFlee)
+          button(
+            const Key('ship_run_button'),
+            Icons.directions_boat_filled_outlined,
+            '${trFor(lang, 'ship_run_button')}: '
+            '${trFor(lang, 'ship_run_hint')}',
+            canAct && _battle.canRun
+                ? () => setState(() {
+                      _battle.runForIt();
+                      _rearm();
+                      if (_battle.over) _finish();
+                    })
+                : null,
+          )
+        else
+          button(
+            const Key('ship_pull_away'),
+            Icons.keyboard_double_arrow_down,
+            trFor(lang, 'ship_pull_away_button'),
+            canAct && farther != null && _battle.canMoveTo(farther)
+                ? () => setState(() {
+                      _battle.maneuver(farther);
+                      _rearm();
+                    })
+                : null,
+          ),
       ],
+    );
+  }
+
+  /// What the beast is about to do, under its name: held on the line,
+  /// when it dives next, whether it is turning for the deep, what it heals
+  /// a round, and the crew's edge against it.
+  Widget _buildBeastStatus(AppLanguage lang) {
+    final beast = widget.beast!;
+    final b = _battle;
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final small = theme.textTheme.labelSmall;
+    Widget chip(IconData icon, String text, Color color, String key) => Row(
+          key: Key(key),
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 13, color: color),
+            const SizedBox(width: 3),
+            Text(text, style: small?.copyWith(color: color)),
+          ],
+        );
+    final dive = b.roundsToDive;
+    final heartDown = b.enemy.room(ShipRoom.hold).isDown;
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 2,
+        children: [
+          if (b.beastTurning)
+            chip(
+                Icons.keyboard_double_arrow_down,
+                trFor(lang, 'beast_status_turning'),
+                ink.blood,
+                'beast_turning'),
+          if (b.tethered)
+            chip(
+                Icons.link,
+                trFor(lang, 'beast_status_tethered')
+                    .replaceAll('{n}', '${b.tether}'),
+                ink.gold,
+                'beast_tethered'),
+          if (dive != null && !b.tethered)
+            chip(
+                Icons.waves,
+                dive == 0
+                    ? trFor(lang, 'beast_status_dives_now')
+                    : trFor(lang, 'beast_status_dives_in')
+                        .replaceAll('{n}', '$dive'),
+                dive == 0 ? ink.blood : ink.tide,
+                'beast_dive'),
+          if (beast.regen > 0)
+            chip(
+                heartDown ? Icons.heart_broken : Icons.favorite,
+                heartDown || b.tethered
+                    ? trFor(lang, 'beast_status_regen_stopped')
+                    : trFor(lang, 'beast_status_regen')
+                        .replaceAll('{n}', '${beast.regen}'),
+                heartDown || b.tethered ? ink.ash : ink.blood,
+                'beast_regen'),
+          if (beast.edge > 0)
+            chip(
+                Icons.visibility,
+                trFor(lang, 'beast_status_edge')
+                    .replaceAll('{n}', '${beast.edge}'),
+                ink.tide,
+                'beast_edge'),
+        ],
+      ),
     );
   }
 
@@ -1382,8 +1548,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   /// drifting over them. Each ship's rooms lie along her deck, helm at
   /// the stern to bulwark at the bow, and each is the tile that is
   /// tapped. On the water: the weather, the enemy's guns, the range with
-  /// the helm's maneuvers, the last of the log, and a tip when one is due.
-  Widget _buildBattlefield(AppLanguage lang, String? tip) {
+  /// the helm's maneuvers and the last of the log (a tip shows above the
+  /// dock, see build).
+  Widget _buildBattlefield(AppLanguage lang) {
     final weather = widget.rules.weather ? _battle.weather : SeaWeather.calm;
     if (_shownWeather != null && _shownWeather != weather) {
       // The weather turns: a wave rolls under both ships as it does.
@@ -1399,13 +1566,19 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
       final height = constraints.maxHeight;
-      final length = min(width * 0.64, 260.0);
-      final left = (width - length) / 2;
-      final enemyBox = topShipBoxHeight(length, enemyLook);
-      final eelBox = topShipBoxHeight(length, eelLook);
       const label = 14.0;
       const top = 40.0;
       const bottom = 50.0;
+      // The ships fit the sea's height as well as its width: a quarter of
+      // the open water is always left for the gap between them, so the
+      // range reads on a phone.
+      final byHeight = max(0.0, height - top - bottom - 2 * label) *
+          0.75 /
+          (topShipBoxHeight(1, enemyLook) + topShipBoxHeight(1, eelLook));
+      final length = min(min(width * 0.64, 260.0), byHeight);
+      final left = (width - length) / 2;
+      final enemyBox = topShipBoxHeight(length, enemyLook);
+      final eelBox = topShipBoxHeight(length, eelLook);
       final spare =
           max(0.0, height - top - bottom - enemyBox - eelBox - 2 * label);
       // The range is how much of the open water lies between them; the
@@ -1544,13 +1717,6 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                   bottom: 8,
                   child: _buildLog(context),
                 ),
-              if (tip != null)
-                Positioned(
-                  left: 8,
-                  right: 8,
-                  top: 40,
-                  child: _buildTip(tip, lang),
-                ),
             ],
           );
         },
@@ -1592,7 +1758,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             child: RotatedBox(
               quarterTurns: 3,
               child: Text(
-                trFor(lang, 'ship_range_${_battle.range.name}_title'),
+                _battle.escape > 0
+                    ? '${trFor(lang, 'ship_range_${_battle.range.name}_title')} · '
+                        '${trFor(lang, 'ship_escape_label').replaceAll('{n}', '${_battle.escape}').replaceAll('{of}', '$escapeNeeded')}'
+                    : trFor(lang, 'ship_range_${_battle.range.name}_title'),
                 key: const Key('ship_range_label'),
                 maxLines: 1,
                 overflow: TextOverflow.visible,
@@ -1626,7 +1795,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
               bottom: 0,
               child: Center(
                 child: Text(
-                  trFor(lang, 'ship_room_${room.name}_title').toUpperCase(),
+                  _roomName(lang, room, enemy: flip, suffix: '_title')
+                      .toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.fade,
                   softWrap: false,
@@ -1874,7 +2044,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     return Tooltip(
       message: railOpen
           ? trFor(lang, 'ship_room_bulwark_open_hint')
-          : trFor(lang, 'ship_room_${room.name}_hint'),
+          : _roomName(lang, room, enemy: !isPlayer, suffix: '_hint'),
       child: GestureDetector(
         key: Key('ship_room_${isPlayer ? 'eel' : 'enemy'}_${room.name}'),
         onTap: () {
@@ -2625,8 +2795,15 @@ String tidyShipLine(String text, AppLanguage lang) {
         .replaceAllMapped(_articleMidSentence,
             (m) => '${m.group(1)} ${m.group(2)!.toLowerCase()} ');
   }
-  return text.replaceAll('the The ', 'the ').replaceAll('The The ', 'The ');
+  return text
+      .replaceAll('the The ', 'the ')
+      .replaceAll('The The ', 'The ')
+      // "bear the marks of The Pale Leviathan": the name's article,
+      // mid-sentence.
+      .replaceAllMapped(_theMidSentence, (m) => '${m.group(1)} the ');
 }
+
+final RegExp _theMidSentence = RegExp(r"([a-z,;:]) The ");
 
 /// The color of damage that is coming but not dealt yet, the same blue
 /// the dice fight uses for its preview.

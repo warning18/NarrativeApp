@@ -719,6 +719,9 @@ SimFightOutcome simulateSimFight({
                   (other.damage * (1 + move.rallyPercent / 100)).round();
               other.rallies++;
             }
+          // The dice tampering (v1.182) isn't modelled here: the enemy
+          // spends its turn on it and nothing else changes.
+          case EnemyIntent.tamper:
           case EnemyIntent.attack:
             break;
         }

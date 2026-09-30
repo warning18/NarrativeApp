@@ -5,7 +5,18 @@ class SkillIcons {
 
   /// The asset path for a skill given its id, e.g.
   /// SkillIcons.pathFor("fireball") -> assets/icons/skills/fireball.png
-  static String pathFor(String skillId) => 'assets/icons/skills/$skillId.png';
+  static String pathFor(String skillId) =>
+      'assets/icons/skills/${_borrowed[skillId] ?? skillId}.png';
+
+  /// Skills drawn with another's icon until they have their own (the
+  /// v1.182 dice-tampering moves).
+  static const Map<String, String> _borrowed = {
+    'edict_of_silence': 'disorienting_pulse',
+    'glass_reflection': 'mage_mana_shield',
+    'hex_of_ill_luck': 'voidkin_entropy_touch',
+    'rotting_mark': 'plague_bite',
+    'shroud_reflection': 'celestial_ward',
+  };
 
   /// Every skill id with a generated icon -- checked at the call site so a
   /// future skill without a matching PNG falls back gracefully instead of
@@ -32,6 +43,7 @@ class SkillIcons {
     'dwarf_forgeheart',
     'dwarf_hammer_blow',
     'dwarf_stoneskin',
+    'edict_of_silence',
     'elf_arcane_focus',
     'elf_keen_eye',
     'elf_moonlight_step',
@@ -39,10 +51,12 @@ class SkillIcons {
     'fireball',
     'focus_mind',
     'frigid_grip',
+    'glass_reflection',
     'golem_meltdown',
     'guard_break',
     'heavy_attack',
     'heavy_windup',
+    'hex_of_ill_luck',
     'human_diplomacy',
     'human_quick_study',
     'human_resolve',
@@ -82,10 +96,12 @@ class SkillIcons {
     'rogue_quick_pockets',
     'rogue_shadow_clone',
     'rogue_smoke_bomb',
+    'rotting_mark',
     'ruthless_edge',
     'second_chance',
     'second_wind',
     'shadow_step',
+    'shroud_reflection',
     'sovereign_unmaking',
     'stalker_ambush',
     'steady_aim',

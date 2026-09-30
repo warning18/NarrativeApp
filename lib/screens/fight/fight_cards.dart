@@ -643,15 +643,24 @@ extension _FightCards on _FightScreenState {
               MoveCategory.guard => Icons.shield_outlined,
               MoveCategory.charge => Icons.hourglass_top,
               MoveCategory.rally => Icons.campaign,
+              MoveCategory.tamper => Icons.auto_fix_off,
+              MoveCategory.mirror => Icons.flip,
             };
-      // A heal, guard, wind-up or rally doesn't swing at anyone this turn.
-      final hitsParty =
+      // A heal, guard, wind-up or rally doesn't swing at anyone this turn;
+      // a Hex or a Silence falls on the whole party's dice, a Curse on the
+      // target's.
+      final swings =
           pending.release || pending.move.intent == EnemyIntent.attack;
+      final hitsParty = swings || pending.move.tamper == DiceTamper.curse;
+      final tamper = pending.move.tamper;
       final stanceLabel = switch (categoryFor(pending.move)) {
         MoveCategory.healSelf => tr(ref, 'telegraph_category_heal'),
         MoveCategory.guard => tr(ref, 'telegraph_category_guard'),
         MoveCategory.charge => tr(ref, 'telegraph_category_charge'),
         MoveCategory.rally => tr(ref, 'telegraph_category_rally'),
+        MoveCategory.tamper => tier == TelegraphTier.full && tamper != null
+            ? tr(ref, tamperLabelKey(tamper))
+            : tr(ref, 'telegraph_category_tamper'),
         _ => enemy.displayName,
       };
       content = Column(
@@ -662,7 +671,7 @@ extension _FightCards on _FightScreenState {
             children: [
               Icon(showCategory ? categoryIcon : Icons.visibility,
                   size: 12, color: colorScheme.onErrorContainer),
-              if (hitsParty && tier == TelegraphTier.full && hit != null) ...[
+              if (swings && tier == TelegraphTier.full && hit != null) ...[
                 const SizedBox(width: 2),
                 // What lands after armor, resist and block, then (dimmed)
                 // what the blow carries before them.
@@ -695,7 +704,7 @@ extension _FightCards on _FightScreenState {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               ),
-              if (hitsParty &&
+              if (swings &&
                   tier == TelegraphTier.full &&
                   pending.move.element != 'None')
                 Icon(elementIcon(pending.move.element),
@@ -771,6 +780,10 @@ extension _FightCards on _FightScreenState {
               MoveCategory.guard => 'telegraph_category_guard',
               MoveCategory.charge => 'telegraph_category_charge',
               MoveCategory.rally => 'telegraph_category_rally',
+              MoveCategory.tamper => pending.move.tamper != null
+                  ? tamperLabelKey(pending.move.tamper!)
+                  : 'telegraph_category_tamper',
+              MoveCategory.mirror => 'tamper_mirror',
             });
     final intentText = switch (tier) {
       TelegraphTier.none => trFor(lang, 'intent_unknown_desc'),
@@ -778,13 +791,15 @@ extension _FightCards on _FightScreenState {
         '${trFor(lang, 'intent_target_prefix')} $targetName.',
       TelegraphTier.category =>
         '${trFor(lang, 'intent_target_prefix')} $targetName ($categoryLabel).',
-      TelegraphTier.full => pending!.release ||
-              pending.move.intent == EnemyIntent.attack
-          ? '${trFor(lang, 'intent_target_prefix')} $targetName: '
-              '${pending.move.message} '
-              '(${pending.move.damage} ${trFor(lang, 'damage_word')}'
-              '${pending.move.element != 'None' ? ', ${elementLabel(pending.move.element, lang)}' : ''}).'
-          : '$categoryLabel: ${pending.move.message}',
+      TelegraphTier.full => pending!.move.tamper != null
+          ? '$categoryLabel: ${pending.move.message} '
+              '(${trFor(lang, tamperDescriptionKey(pending.move.tamper!))})'
+          : pending.release || pending.move.intent == EnemyIntent.attack
+              ? '${trFor(lang, 'intent_target_prefix')} $targetName: '
+                  '${pending.move.message} '
+                  '(${pending.move.damage} ${trFor(lang, 'damage_word')}'
+                  '${pending.move.element != 'None' ? ', ${elementLabel(pending.move.element, lang)}' : ''}).'
+              : '$categoryLabel: ${pending.move.message}',
     };
     final stateLines = <String>[
       if (enemy.staggered) trFor(lang, 'intent_staggered_label'),

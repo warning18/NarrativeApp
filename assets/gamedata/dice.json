@@ -121,7 +121,10 @@
         "value": 7,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
       },
       {
         "faceName": "Heavy Strike",
@@ -197,7 +200,10 @@
         "value": 0,
         "linkedSkillID": "mage_meteor",
         "weight": 0.3,
-        "element": "Fire"
+        "element": "Fire",
+        "keywords": [
+          "cleave"
+        ]
       },
       {
         "faceName": "Warm Embers",
@@ -317,7 +323,10 @@
         "value": 0,
         "linkedSkillID": "ranger_multi_shot",
         "weight": 0.3,
-        "element": "Wind"
+        "element": "Wind",
+        "keywords": [
+          "cleave"
+        ]
       },
       {
         "faceName": "Catch Your Breath",
@@ -361,7 +370,10 @@
         "value": 7,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "Earth"
+        "element": "Earth",
+        "keywords": [
+          "steady"
+        ]
       },
       {
         "faceName": "Hammer Blow",
@@ -413,7 +425,10 @@
         "value": 6,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "Void"
+        "element": "Void",
+        "keywords": [
+          "pierce"
+        ]
       },
       {
         "faceName": "Fade",
@@ -473,7 +488,10 @@
         "value": 14,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "Water"
+        "element": "Water",
+        "keywords": [
+          "growth"
+        ]
       },
       {
         "faceName": "Righteous Strike",
@@ -533,7 +551,10 @@
         "value": 6,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "pain"
+        ]
       },
       {
         "faceName": "Berserk Rage",
@@ -617,7 +638,10 @@
         "value": 5,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
       },
       {
         "faceName": "Mana Shield",
@@ -713,7 +737,10 @@
         "value": 6,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "growth"
+        ]
       },
       {
         "faceName": "Evasive Step",
@@ -773,7 +800,10 @@
         "value": 7,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "Void"
+        "element": "Void",
+        "keywords": [
+          "echo"
+        ]
       },
       {
         "faceName": "Frost Ward",
@@ -833,7 +863,10 @@
         "value": 7,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "pain"
+        ]
       },
       {
         "faceName": "Brace",
@@ -1023,7 +1056,10 @@
         "value": 6,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
       },
       {
         "faceName": "Holy Light",
@@ -1107,7 +1143,10 @@
         "value": 0,
         "linkedSkillID": "orc_savage_cleave",
         "weight": 0.4,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "cleave"
+        ]
       },
       {
         "faceName": "Bloodlust",
@@ -1141,7 +1180,10 @@
         "value": 5,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
       },
       {
         "faceName": "Lucky Strike",
@@ -1251,7 +1293,10 @@
         "value": 4,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "pierce"
+        ]
       },
       {
         "faceName": "Right Fang",
@@ -1259,7 +1304,10 @@
         "value": 4,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "growth"
+        ]
       },
       {
         "faceName": "Poison Blade",
@@ -1311,7 +1359,10 @@
         "value": 10,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
       },
       {
         "faceName": "Stone Footing",
@@ -1427,7 +1478,10 @@
         "value": 9,
         "linkedSkillID": "",
         "weight": 1.0,
-        "element": "Electricity"
+        "element": "Electricity",
+        "keywords": [
+          "cleave"
+        ]
       },
       {
         "faceName": "Adrenaline Surge",
@@ -1486,7 +1540,10 @@
         "value": 9,
         "linkedSkillID": "",
         "weight": 1.1,
-        "element": "Earth"
+        "element": "Earth",
+        "keywords": [
+          "growth"
+        ]
       },
       {
         "faceName": "Grave Guard",
@@ -1552,7 +1609,10 @@
         "value": 13,
         "linkedSkillID": "",
         "weight": 0.9,
-        "element": "None"
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
       },
       {
         "faceName": "Vigil Mend",
@@ -1610,7 +1670,10 @@
         "value": 9,
         "linkedSkillID": "",
         "weight": 1.2,
-        "element": "Void"
+        "element": "Void",
+        "keywords": [
+          "pierce"
+        ]
       },
       {
         "faceName": "Shard Veil",
@@ -1650,9 +1713,228 @@
         "value": 0,
         "linkedSkillID": "final_stand",
         "weight": 0.35,
-        "element": "Void"
+        "element": "Void",
+        "keywords": [
+          "pain"
+        ]
       }
     ],
     "diceName_fr": "Dé de verre-larme"
+  },
+  "headsman_die": {
+    "diceName": "headsman_die",
+    "diceName_fr": "Dé du bourreau",
+    "cost": 180,
+    "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Beheading Arc",
+        "type": "Attack",
+        "value": 9,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "cleave"
+        ]
+      },
+      {
+        "faceName": "Bloody Chop",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "pain"
+        ]
+      },
+      {
+        "faceName": "Heavy Blow",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None",
+        "keywords": [
+          "cleave"
+        ]
+      },
+      {
+        "faceName": "Braced Haft",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
+      },
+      {
+        "faceName": "Neck Strike",
+        "type": "Attack",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "pierce"
+        ]
+      },
+      {
+        "faceName": "Rest the Axe",
+        "type": "Heal",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ]
+  },
+  "greenwood_die": {
+    "diceName": "greenwood_die",
+    "diceName_fr": "Dé du bois vert",
+    "cost": 140,
+    "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Sapling Switch",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "growth"
+        ]
+      },
+      {
+        "faceName": "Bark Guard",
+        "type": "Defend",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "growth"
+        ]
+      },
+      {
+        "faceName": "Sap Salve",
+        "type": "Heal",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "growth"
+        ]
+      },
+      {
+        "faceName": "Thorn Lash",
+        "type": "Attack",
+        "value": 5,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "Earth",
+        "keywords": [
+          "growth"
+        ]
+      },
+      {
+        "faceName": "Heavy Blow",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None"
+      },
+      {
+        "faceName": "Deep Roots",
+        "type": "Mana",
+        "value": 1,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      }
+    ]
+  },
+  "chorus_die": {
+    "diceName": "chorus_die",
+    "diceName_fr": "Dé du chœur",
+    "cost": 160,
+    "numberOfFaces": 6,
+    "professions": [],
+    "races": [],
+    "faces": [
+      {
+        "faceName": "Answering Blow",
+        "type": "Attack",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
+      },
+      {
+        "faceName": "Answering Guard",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
+      },
+      {
+        "faceName": "Answering Balm",
+        "type": "Heal",
+        "value": 8,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
+      },
+      {
+        "faceName": "Lead Note",
+        "type": "Attack",
+        "value": 7,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None"
+      },
+      {
+        "faceName": "Held Note",
+        "type": "Defend",
+        "value": 6,
+        "linkedSkillID": "",
+        "weight": 1.0,
+        "element": "None",
+        "keywords": [
+          "steady"
+        ]
+      },
+      {
+        "faceName": "Refrain",
+        "type": "Skill",
+        "value": 0,
+        "linkedSkillID": "heavy_attack",
+        "weight": 0.6,
+        "element": "None",
+        "keywords": [
+          "echo"
+        ]
+      }
+    ]
   }
 }

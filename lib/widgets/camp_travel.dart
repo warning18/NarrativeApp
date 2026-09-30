@@ -15,7 +15,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../screens/story_player_screen.dart'
-    show rollRoadEncounter, takeStoryChoice;
+    show roadEventOn, rollRoadEncounter, takeStoryChoice, walkRoadStep;
 import 'immersive_notice.dart';
 import 'ship_widgets.dart';
 
@@ -93,13 +93,16 @@ Future<bool> moveParty(
   if (isWalkFrom(destinationPortId,
       ports: ports, savedPortId: session.currentPortId)) {
     // A walk between places takes half a day.
-    await ref.read(playerSessionProvider.notifier).passTime(2);
+    await ref
+        .read(playerSessionProvider.notifier)
+        .passTime(2, chapter: ref.read(reachedChapterProvider));
     if (walkNotice != null && context.mounted) {
       showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
     }
     return true;
   }
   if (!context.mounted) return false;
+  // The days at sea pass on the voyage screen, one a day as sailed.
   return sailTo(context, ref,
       toPortId: there, toPort: ports[there] as Map<String, dynamic>);
 }
@@ -122,6 +125,21 @@ Future<void> travelTo(
       ports: ports, savedPortId: ref.read(playerSessionProvider).currentPortId);
   final play = ref.read(storyPlayProvider.notifier);
   if (walk) {
+    await walkRoadStep(ref);
+    if (!context.mounted) return;
+    // A road event on the way (see road_events.dart), else what the road
+    // may hold.
+    final from = ref.read(storyPlayProvider);
+    final story = await ref.read(storyDataProvider.future);
+    final event = await roadEventOn(ref, story,
+        fromNodeId: from.currentNodeId,
+        toNodeId: targetNodeId,
+        historyLength: from.history.length);
+    if (!context.mounted) return;
+    if (event != null) {
+      play.startExcursion(event, targetNodeId, origin: origin);
+      return;
+    }
     final chain = await rollRoadEncounter(ref,
         chapter: ref.read(reachedChapterProvider),
         fromNodeId: ref.read(storyPlayProvider).currentNodeId);

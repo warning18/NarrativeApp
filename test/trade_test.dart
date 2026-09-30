@@ -117,7 +117,7 @@ void main() {
 
   group('retreat', () {
     test('costs a share of the purse, at least ten, never more than it', () {
-      expect(retreatCostFor(200), 30);
+      expect(retreatCostFor(200), 40);
       expect(retreatCostFor(40), 10);
       expect(retreatCostFor(6), 6);
       expect(retreatCostFor(0), 0);

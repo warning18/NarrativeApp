@@ -23,7 +23,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "q_retrieve_banner",
-    "npcDialogueText": "Clear the alley of thugs and I'll make it worth your while.",
+    "npcDialogueText": "Somebody has to take that booth off the bridge.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -41,7 +41,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "",
     "questName_fr": "Premier sang",
-    "npcDialogueText_fr": "Débarrassez la ruelle de ces voyous, et je vous revaudrai ça."
+    "npcDialogueText_fr": "Il faut bien que quelqu'un débarrasse le pont de ce péage."
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
@@ -52,15 +52,15 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Retrieve the Grey Shroud from the hovel",
+        "description": "Get the Grey Bundle out of the hovel, and out of Alster",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Lysa",
         "locationID": "hovel",
         "requiredAmount": 1,
-        "targetFlag": "took_bundle",
-        "description_fr": "Récupérer le Linceul Gris dans la masure",
+        "targetFlag": "void_banner_bearer",
+        "description_fr": "Sortir le Balluchon Gris de la masure, et d'Alster",
         "targetNPCName_fr": "Lysa"
       }
     ],
@@ -69,26 +69,26 @@
     "rewardItemID": "void_banner",
     "alignmentChange": 10,
     "nextQuestID": "",
-    "npcDialogueText": "They are coming for the bundle. You must secure it before the wardens breach.",
+    "npcDialogueText": "Whatever lies under the floorboard of your parents' hovel, the soldiers are going door to door for it. Get there first, and get it out of Alster.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
       {
-        "buttonText": "Secure the Shroud",
+        "buttonText": "Go for the Bundle",
         "goldModifier": 0,
         "alignmentModifier": 5,
         "flagToAdd": "has_void_banner",
         "nextEventID": "",
         "actionType": "Accept",
         "lockedText": "",
-        "buttonText_fr": "Mettre le Linceul en sûreté"
+        "buttonText_fr": "Aller chercher le Balluchon"
       }
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
     "grantsBannerPieceId": "",
     "questName_fr": "L’Héritage d’Alster",
-    "npcDialogueText_fr": "Ils viennent chercher le Balluchon. Mettez-le en sûreté avant que les Gardiens ne forcent l’entrée."
+    "npcDialogueText_fr": "Quoi qu'il y ait sous le plancher de la masure de vos parents, les soldats le cherchent porte à porte. Arrivez-y les premiers, et sortez-le d'Alster."
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -587,15 +587,16 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Win back the marker Sable lost to a dockside card sharp",
-        "type": "Fetch",
+        "description": "Get back the marker Sable lost to the card sharp at the dockhands' barrel",
+        "type": "Flag",
         "targetEnemyID": "",
-        "targetItemID": "dagger_t2",
+        "targetItemID": "",
         "targetNPCName": "Sable",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Récupérer la reconnaissance de dette que Sable a perdue face à un tricheur des quais",
-        "targetNPCName_fr": "Sable"
+        "description_fr": "Récupérer la reconnaissance de dette que Sable a perdue face au tricheur du tonneau des dockers",
+        "targetNPCName_fr": "Sable",
+        "targetFlag": "sable_marker_won"
       }
     ],
     "rewardGold": 35,
@@ -603,7 +604,7 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"I'm good at exactly two things,\" Sable says, not looking up from the dice she's still sore about, \"picking locks and picking the wrong table to sit down at. Get my marker back and I'm yours for as long as the arrangement keeps paying better than the alternative.\" Which is, I gather, the closest thing to loyalty she considers worth promising in writing.",
+    "npcDialogueText": "\"I'm good at exactly two things,\" Sable says, not looking up from the cards she's still sore about, \"picking locks and picking the wrong table to sit down at. Get my marker back and I'm yours for as long as the arrangement keeps paying better than the alternative.\" Which is, I gather, the closest thing to loyalty she considers worth promising in writing.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
@@ -621,7 +622,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "sable",
     "questName_fr": "Le Pari de Sable",
-    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des dés qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
+    "npcDialogueText_fr": "« Je suis douée pour exactement deux choses, dit Sable sans lever les yeux des cartes qui lui restent en travers de la gorge : crocheter les serrures, et choisir la mauvaise table où m’asseoir. Récupérez ma reconnaissance de dette et je suis à vous tant que l’arrangement paiera mieux que l’autre option. » Ce qui est, si je comprends bien, ce qui ressemble le plus à une loyauté qu’elle juge digne d’être promise par écrit."
   },
   "q_ch3_marens_penance": {
     "questID": "q_ch3_marens_penance",
@@ -873,15 +874,16 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Hear Vess out about what the Shroud left behind in her",
-        "type": "Talk",
+        "description": "Get clear of Alster; Vess will find you",
+        "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Vess",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Écouter Vess parler de ce que le Linceul a laissé en elle",
-        "targetNPCName_fr": "Vess"
+        "description_fr": "Quitter Alster ; Vess vous retrouvera",
+        "targetNPCName_fr": "Vess",
+        "targetFlag": "void_banner_bearer"
       }
     ],
     "rewardGold": 25,
@@ -889,11 +891,9 @@
     "rewardItemID": "",
     "alignmentChange": 0,
     "nextQuestID": "",
-    "npcDialogueText": "\"You're marked too,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you've worn the mark long enough yourself. \"Mine took longer to settle in. Yours is still deciding what it wants from you. I don't know that I can help with that, but I know what it costs to face it alone, and I'd rather not watch someone else find out the same way I did.\"",
+    "npcDialogueText": "\"It has noticed you,\" she says, before I have said anything at all, which is either an excellent guess or the kind of thing that stops being a guess once you've carried the mark long enough yourself. \"It took its time with me. With you it is still deciding what it wants. I don't know that I can help with that, but I know what it costs to face it alone, and I'd rather not watch someone else find out the same way I did.\"",
     "requiredGold": 0,
-    "requiredFlags": [
-      "void_marked"
-    ],
+    "requiredFlags": [],
     "questChoices": [
       {
         "buttonText": "Listen",
@@ -909,7 +909,7 @@
     "rewardDiceID": "",
     "rewardAllyId": "vess",
     "questName_fr": "Vess dans les ténèbres",
-    "npcDialogueText_fr": "« Vous portez la marque, vous aussi », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « La mienne a mis plus de temps à s’installer. La vôtre décide encore de ce qu’elle attend de vous. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
+    "npcDialogueText_fr": "« Elle a posé les yeux sur vous », dit-elle avant que j’aie dit quoi que ce soit, ce qui est soit une excellente intuition, soit le genre de chose qui cesse d’être une intuition quand on a soi-même porté la marque assez longtemps. « Avec moi, elle a pris son temps. Avec vous, elle décide encore de ce qu’elle attend. Je ne sais pas si je peux vous aider pour ça, mais je sais ce qu’il en coûte de l’affronter sans personne, et je préférerais ne pas regarder quelqu’un d’autre le découvrir de la même façon que moi. »"
   },
   "q_ch3_groshs_price": {
     "questID": "q_ch3_groshs_price",
@@ -1040,14 +1040,19 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down a Pit Wretch",
+        "description": "Put down a creature of the Pit",
         "type": "Kill",
         "targetEnemyID": "demon_imp",
+        "targetEnemyIDs": [
+          "demon_imp",
+          "demon_tormentor"
+        ],
+        "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre un Gueux de la Fosse"
+        "description_fr": "Abattre une créature de la Fosse"
       }
     ],
     "rewardGold": 60,
@@ -1084,14 +1089,19 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Put down a Sentinel of the Choir",
+        "description": "Put down a soldier of the Choir",
         "type": "Kill",
         "targetEnemyID": "angel_sentinel",
+        "targetEnemyIDs": [
+          "angel_sentinel",
+          "angel_judicator"
+        ],
+        "countFromAccept": true,
         "targetItemID": "",
         "targetNPCName": "",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Abattre une Sentinelle du Chœur"
+        "description_fr": "Abattre un soldat du Chœur"
       }
     ],
     "rewardGold": 90,

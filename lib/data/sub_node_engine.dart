@@ -22,8 +22,11 @@ import 'map_themes.dart';
 class SubNodeEngine {
   static int _counter = 0;
 
-  /// Odds a story transition takes a detour ([maybeGenerate]'s default).
-  static const double detourChance = 0.7;
+  /// Odds a story transition takes a detour ([maybeGenerate]'s default):
+  /// fewer and shorter since v1.176, so each counts (a road can also hold
+  /// a road event instead, see road_events.dart, and a familiar face, see
+  /// recurring_encounters.dart).
+  static const double detourChance = 0.35;
 
   /// Returns null when no excursion is rolled this time.
   static List<StoryNode>? maybeGenerate({
@@ -72,7 +75,7 @@ class SubNodeEngine {
     );
 
     final includeQuest = questPool.isNotEmpty && random.nextDouble() < 0.35;
-    final length = includeQuest ? 4 + random.nextInt(4) : 1 + random.nextInt(3);
+    final length = includeQuest ? 3 + random.nextInt(2) : 1 + random.nextInt(2);
     // A companion-recruit quest (rewardAllyId set) that's still eligible
     // this chapter is a second chance at a companion the player didn't
     // pick at their one-shot recruitment hub (e.g. node 2015's Kelda-vs-
@@ -129,6 +132,22 @@ class SubNodeEngine {
   /// StoryPlayNotifier.oweDetour).
   static bool detourAllowedBetween(String? fromMood, String? toMood) =>
       !(tenseMoods.contains(fromMood) && tenseMoods.contains(toMood));
+
+  /// The first chapter with detours. Chapter 1 is the flight from the
+  /// burning city: nobody stops at a stall, and nothing on the road waits
+  /// to be paid later either.
+  static const int firstDetourChapter = 2;
+
+  /// Whether the story may take a detour between scene [from] and scene
+  /// [to]: not in chapter 1, not into or out of a set piece
+  /// ([StoryNode.noDetour]), and not in the middle of a crisis (see
+  /// [detourAllowedBetween]).
+  static bool detourAllowedBetweenScenes(StoryNode? from, StoryNode? to,
+          {required int chapter}) =>
+      chapter >= firstDetourChapter &&
+      !(from?.noDetour ?? false) &&
+      !(to?.noDetour ?? false) &&
+      detourAllowedBetween(from?.mood, to?.mood);
 
   /// What ends a hunt's trail node id (see [isHuntTrail]).
   static const String huntTrailSuffix = '_trail';
