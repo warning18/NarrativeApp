@@ -239,10 +239,20 @@ void main() {
     await tester.ensureVisible(find.byKey(const Key('camp_tab_sea')));
     await tester.tap(find.byKey(const Key('camp_tab_sea')));
     await _settle(tester);
+    // The camp's list builds lazily: scroll it to the card.
+    final campList = find
+        .ancestor(
+            of: find.byKey(const Key('camp_tab_sea')),
+            matching: find.byType(Scrollable))
+        .first;
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('camp_harbor_locked')), 200,
+        scrollable: campList);
     expect(find.byKey(const Key('camp_harbor_locked')), findsOneWidget);
     await tester.runAsync(() => notifier.buildHouse(harborHouseId, 250));
     await _settle(tester);
-    await tester.ensureVisible(find.byKey(const Key('camp_harbor')));
+    await tester.scrollUntilVisible(find.byKey(const Key('camp_harbor')), 200,
+        scrollable: campList);
     await tester.tap(find.byKey(const Key('camp_harbor')));
     await _settle(tester);
     expect(find.byType(HarborScreen), findsOneWidget);
