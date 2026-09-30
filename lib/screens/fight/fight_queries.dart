@@ -138,8 +138,16 @@ extension _FightQueries on _FightScreenState {
   /// Weaken on the enemy, Frenzied when it is low, and a standing pack
   /// leader's boost to the rest of the pack.
   int _incomingDamage(_EnemyMember enemy, EnemyMoveResult move,
-      {required bool leaderStanding}) {
-    var damage = applyWeaken(move.damage, enemy.statusEffects);
+      {required bool leaderStanding, int? mirrorFrom}) {
+    // A Mirror sends back the party's best blow of the round (see
+    // dice_tamper.dart): the one landed, or while the dice are still on the
+    // table, the best they would land.
+    final base = move.tamper == DiceTamper.mirror
+        ? mirrorDamage(
+            bestPartyHit: mirrorFrom ?? _bestHitThisRound,
+            enemyDamage: enemy.damage)
+        : move.damage;
+    var damage = applyWeaken(base, enemy.statusEffects);
     if (enemy.hasAffix(EnemyAffix.frenzied) &&
         enemy.currentHealth < enemy.maxHealth * frenziedHealthThreshold) {
       damage = (damage * frenziedDamageMultiplier).round();
@@ -187,15 +195,18 @@ extension _FightQueries on _FightScreenState {
     if (target == null || target.isKnockedOut) return null;
     final leaderStanding =
         _enemies.any((e) => e.isAlive && e.hasAffix(EnemyAffix.packLeader));
-    final raw =
-        _incomingDamage(enemy, pending.move, leaderStanding: leaderStanding);
+    final previews = _awaitingDecision && !_rolling
+        ? _previewRoll(skills, items, ref.read(appLanguageProvider))
+        : const <String, _FacePreview>{};
+    final raw = _incomingDamage(enemy, pending.move,
+        leaderStanding: leaderStanding,
+        mirrorFrom: previews.isEmpty
+            ? null
+            : previews.values.fold<int>(0, (best, p) => max(best, p.damage)));
     var block = target.block;
-    if (_awaitingDecision && !_rolling) {
-      final planned =
-          _previewRoll(skills, items, ref.read(appLanguageProvider))[target.id];
-      if (planned != null) {
-        block = max(block, planned.block + (_spellBlock[target.id] ?? 0));
-      }
+    final planned = previews[target.id];
+    if (planned != null) {
+      block = max(block, planned.block + (_spellBlock[target.id] ?? 0));
     }
     final net = max(
         0, raw - block - _mitigationFor(target, pending.move.element, items));
@@ -237,53 +248,8 @@ extension _FightQueries on _FightScreenState {
     Map<String, dynamic> skills,
     Map<String, dynamic> items,
     AppLanguage lang,
-  ) {
-    final previews = <String, _FacePreview>{};
-    if (_rolling) return previews;
-    final surgeTo = _surgeRecipient();
-    for (final actor in _actingParty) {
-      final face = _currentFaces[actor.id];
-      if (face == null) continue;
-      final isStrike = face.type == 'Attack' || face.type == 'Skill';
-      final surge = actor.id == surgeTo;
-      final result = resolvePlayerFace(
-        face,
-        _availableSkillsFor(actor, skills),
-        _totalDamageFor(actor, face, skills, items),
-        language: lang,
-        activeEffects: actor.statusEffects,
-        wisdomHealBonus: actor.wisdom ~/ 2,
-        wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
-        forceCritical: surge,
-        alignmentLabel: _alignmentLabel,
-      );
-      final target = isStrike ? _strikeTargetFor(actor) : null;
-      final damage = target == null
-          ? result.damageDealt
-          : strikeDamageAfterAffixes(result.damageDealt, face.type,
-              armored: target.hasAffix(EnemyAffix.armored));
-      var healing = result.healingDone;
-      if (_condition == BattlefieldCondition.shrine && healing > 0) {
-        healing = (healing * shrineHealMultiplier).round();
-      }
-      var block = result.blockAmount;
-      if (block > 0 && _isTelegraphedTarget(actor)) {
-        block *= _telegraphBraceMultiplier;
-      }
-      if (_condition == BattlefieldCondition.highGround && block > 0) {
-        block = (block * highGroundBlockMultiplier).round();
-      }
-      previews[actor.id] = _FacePreview(
-        result: result,
-        target: target,
-        damage: damage,
-        healing: healing,
-        block: block,
-        surge: surge,
-      );
-    }
-    return previews;
-  }
+  ) =>
+      _roundPlan(skills, items, lang).previews;
 
   _EnemyMember? _enemyByKey(String key) {
     for (final enemy in _enemies) {

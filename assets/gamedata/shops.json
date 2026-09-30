@@ -87,7 +87,8 @@
     ],
     "diceStock": [
       "iron_die",
-      "berserker_die"
+      "berserker_die",
+      "headsman_die"
     ],
     "stockQuantities": {
       "sword_t1": 1,
@@ -304,7 +305,8 @@
       "Weapon"
     ],
     "diceStock": [
-      "bulwark_die"
+      "bulwark_die",
+      "headsman_die"
     ],
     "stockQuantities": {
       "sword_t6": 1,
@@ -350,7 +352,8 @@
     ],
     "diceStock": [
       "sage_die",
-      "tempest_die"
+      "tempest_die",
+      "chorus_die"
     ],
     "stockQuantities": {
       "staff_t6": 1,
@@ -478,7 +481,8 @@
     "diceStock": [
       "pilgrim_die",
       "vigil_die",
-      "tearglass_die"
+      "tearglass_die",
+      "chorus_die"
     ],
     "stockQuantities": {
       "potion_major": 6,
@@ -519,7 +523,8 @@
       "Artifact"
     ],
     "diceStock": [
-      "tearglass_die"
+      "tearglass_die",
+      "greenwood_die"
     ],
     "stockQuantities": {
       "potion_major": 6,
@@ -556,7 +561,8 @@
       "Charm"
     ],
     "diceStock": [
-      "gambler_die"
+      "gambler_die",
+      "greenwood_die"
     ],
     "stockQuantities": {
       "potion_major": 2,

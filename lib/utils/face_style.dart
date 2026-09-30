@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../combat/dice_faces.dart';
+import '../combat/face_keywords.dart';
 import '../combat/status_effect.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -149,6 +150,52 @@ class FaceColorLegend extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+      ],
+    );
+  }
+}
+
+/// A face keyword's icon and colour (v1.182, see face_keywords.dart): the
+/// small badge on a die tile, in the face sheet and on the loadout.
+extension FaceKeywordStyle on FaceKeyword {
+  IconData get icon => switch (this) {
+        FaceKeyword.cleave => Icons.call_split,
+        FaceKeyword.pierce => Icons.arrow_forward,
+        FaceKeyword.growth => Icons.trending_up,
+        FaceKeyword.echo => Icons.repeat,
+        FaceKeyword.pain => Icons.water_drop,
+        FaceKeyword.steady => Icons.anchor,
+      };
+
+  Color get color => switch (this) {
+        FaceKeyword.cleave => const Color(0xFFE65100),
+        FaceKeyword.pierce => const Color(0xFF6D4C41),
+        FaceKeyword.growth => const Color(0xFF2E7D32),
+        FaceKeyword.echo => const Color(0xFF6A1B9A),
+        FaceKeyword.pain => const Color(0xFFC62828),
+        FaceKeyword.steady => const Color(0xFF455A64),
+      };
+}
+
+/// A row of keyword badges, [size] each -- nothing for a face without one.
+class FaceKeywordBadges extends StatelessWidget {
+  const FaceKeywordBadges(this.keywords, {super.key, this.size = 11});
+
+  final Iterable<FaceKeyword> keywords;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    final list = keywords.toList();
+    if (list.isEmpty) return const SizedBox.shrink();
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final keyword in list)
+          Padding(
+            padding: const EdgeInsets.only(right: 1),
+            child: Icon(keyword.icon, size: size, color: keyword.color),
           ),
       ],
     );

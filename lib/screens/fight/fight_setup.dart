@@ -192,6 +192,9 @@ extension _FightSetup on _FightScreenState {
         ((dice[diceId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
             ?.cast<Map<String, dynamic>>() ??
         const [];
+    // The die as the Hammersmith left it (see face_smithing.dart).
+    List<Map<String, dynamic>> smithed(String? diceId) =>
+        smithedFaces(facesOf(diceId), session.diceUpgrades[diceId ?? '']);
     final playerDiceAssignments = limitedFaceAssignments(
         facesOf(_selectedDiceId),
         session.diceSkillAssignments[_selectedDiceId] ??
@@ -230,6 +233,7 @@ extension _FightSetup on _FightScreenState {
       perception: session.perception,
       gear:
           _perks.over(gearEffectsFor(session.equippedItemIds, items, itemSets)),
+      dieFaces: smithed(_selectedDiceId),
     );
 
     final activeAllies = <_PartyMember>[];
@@ -291,6 +295,8 @@ extension _FightSetup on _FightScreenState {
         luck: base.luck,
         perception: base.perception,
         gear: gearEffectsFor(allyState.equippedItemIds, items, itemSets),
+        dieFaces: smithed(companion['signatureDiceId']?.toString()),
+        approval: allyState.approval,
       ));
     }
 
@@ -311,6 +317,9 @@ extension _FightSetup on _FightScreenState {
       _preRollMoveFor(enemy, skills);
     }
     _applyArmedCharms(items);
+    // Luck nudges (v1.182): the party's luckiest member sets how many.
+    _nudgesLeft = nudgesForLuck(
+        _party.fold<int>(0, (best, m) => m.luck > best ? m.luck : best));
     final hpSuffix = _enemies.length == 1
         ? ' ${trFor(lang, 'has_label')} ${_enemies.first.maxHealth} ${trFor(lang, 'hp_label')}'
         : '';

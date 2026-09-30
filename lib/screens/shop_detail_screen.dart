@@ -19,6 +19,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/item_stats.dart';
+import '../widgets/dice_smithing_sheet.dart';
 import '../widgets/shop_trade_sheets.dart';
 import 'inventory_screen.dart' show requirementSummary;
 import '../widgets/player_stats_bar.dart';
@@ -91,6 +92,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                 icon: const Icon(Icons.hardware_outlined),
                 tooltip: tr(ref, 'forge_title'),
                 onPressed: () => showForgeSheet(context, shopId: widget.shopId),
+              ),
+            // The Hammersmith works the party's dice too (v1.182).
+            if (forges)
+              IconButton(
+                icon: const Icon(Icons.casino_outlined),
+                tooltip: tr(ref, 'smith_open_button'),
+                onPressed: () => showDiceSmithingSheet(context),
               ),
             IconButton(
               icon: const Icon(Icons.sell_outlined),

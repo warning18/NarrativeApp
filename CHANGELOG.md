@@ -8,6 +8,102 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.182.0+212]
+
+The dice now have rules of their own. Faces carry keywords, the party's
+faces combine into combos, and companion pairs have duo techniques. The
+Hammersmith works dice face by face, some enemies tamper with the
+party's dice, and Luck turns a bad roll around.
+
+### Added
+- **Face keywords.** A face can carry one or more keywords, shown as a
+  small badge on the die, in the face sheet and on the dice loadout.
+  - **Cleave:** the strike also hits every other enemy standing for half.
+  - **Pierce:** the strike goes through Armored and through a guard.
+  - **Growth:** +1 each time the face is played in the same fight.
+  - **Echo:** plays the face played just before it this round. The first
+    in line repeats their own face from last round.
+  - **Pain:** double damage, paid with 8% of the roller's health. It
+    never drops the roller below 1.
+  - **Steady:** +2, and the die stays kept through rerolls.
+  - Twenty-two faces across the existing dice carry one. Examples: Steady on
+    the Iron, Stone, Bulwark and Vigil dice's guards, Pain on the
+    Berserker's and Grosh's big hits, Cleave on the Storm, Flame, Tempest
+    and Malrik dice, Growth on the Holy, Ossuary and Liora dice.
+  - Three new dice build around them:
+    - **Headsman Die** (Cleave, Pierce, Pain, Steady): the Weaponsmith's
+      and the Hammersmith's forges.
+    - **Greenwood Die** (Growth on four faces): the Wayfarer's Caravan
+      and the Wreck-Wrights' Chandlery.
+    - **Chorus Die** (Echo on four faces): the Arcane Academy and the
+      Last Lantern.
+- **Party combos.** When two or more party members act, their faces
+  combine. A chip over the dice tray shows the combo before you confirm.
+  - **Flank** (exactly two strikes): each hits 15% harder.
+  - **Volley** (three strikes or more): each hits 15% harder and catches
+    the other enemies for a quarter.
+  - **Shelter** (a guard and a heal): the heal also mends the rest of
+    the party for half.
+  - **Shield Wall** (two guards or more): everyone holds the biggest
+    block.
+  - **Wellspring** (two Mana faces or more): 2 more mana.
+- **Face smithing at the Hammersmith.** The Hammersmith's Forge has a
+  new dice button. It works on any face of the player's dice or a
+  companion's signature die. The work stays on the die, and on the dice
+  that New Game+ carries over.
+  - **Hone:** +2 to an Attack, Defend or Heal face, up to three times.
+    Costs 80, 160, then 240 gold, with one, two, then three iron ore.
+  - **Temper:** an element on an Attack face, for 150 gold and two iron
+    ore.
+  - **Inscribe:** a keyword on any face it fits, for 250 gold and a
+    trophy.
+  - **Recast:** turns an Attack, Defend or Heal face into another of the
+    three and keeps its number, for 120 gold.
+  - The trophy for an inscription is an Elite Mark or the new
+    **Champion's Trophy**, which every boss drops.
+- **Duo techniques.** Two companions of a pair, both at Friendly
+  approval or better, who both land a signature face in the same round,
+  add a joint move after the faces:
+  - Grosh and Kelda: a stunning blow.
+  - Sable and Malrik: a poisoned critical.
+  - Maren and Tobin: a party-wide heal that clears afflictions.
+  - Liora and Vess: a hit on every enemy.
+  - Vess and Sable: weakens and hurts every enemy.
+  - Kelda and Tobin: a guard for the whole party.
+  - Maren and Liora: mends the most wounded and shoots the target.
+  - Grosh and Malrik: a heavy blow that heals the two.
+- **Enemies that tamper with the dice**, from chapter 3 on:
+  - **Hex:** the party's best die of the next first roll is rolled
+    again. Cultist Acolytes, Grey Candles and Tormentors of the Pit.
+  - **Silence:** Skill faces land blank next round. A face with a skill
+    picked onto it falls back to its own type. Judicators of the Choir
+    and Hollow Court Inquisitors.
+  - **Curse:** one face of the target's die becomes a Pain strike for
+    the rest of the fight. Catacomb Ghouls, Bone Sextons and the
+    Unstitched.
+  - **Mirror:** the party's best hit of the round comes back, between
+    half and twice the enemy's own damage. Hollow Reflections, the Glass
+    Shepherd and the Sovereign.
+  - A telegraphed tamper shows its own icon and text. A pending Hex or
+    Silence shows as a chip over the fight.
+- **Luck nudges.** Every 3 points of the party's best Luck give a nudge
+  per fight, at most 3. Long-press a landed die and nudge it to its
+  opposite face; the new face is kept. The nudges left show over the
+  fight.
+
+### Balance
+- 40 simulated runs against v1.181:
+  - The win rate is unchanged (99%), and losses per run are 0.4 against
+    0.8.
+  - Story fights in chapters 3–6 are shorter (5.4 rounds against 7.1),
+    and allies are knocked out less often (8% of fights against 12%).
+  - At the first tuning (+30% combos, a Volley splashing half), story
+    fights fell to 4.6 rounds, so combos were cut to +15% and a quarter.
+  - Smithing takes about 3,100 gold per run, about 15 Hones in all.
+  - A run sees about 22 tamper moves and 57 nudges spent.
+- The Champion's Trophy sells for 60 gold, like the Elite Mark, so a
+  boss's trophy doesn't flood the early chapters with gold.
+
 ## [1.181.0+211]
 
 Chapter 1 is a flight from a city under attack, and now plays like one.

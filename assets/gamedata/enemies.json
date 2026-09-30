@@ -353,6 +353,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "hex_of_ill_luck",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 3,
@@ -485,6 +496,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "hex_of_ill_luck",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 3,
@@ -1445,6 +1467,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 1
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 3,
@@ -1585,6 +1618,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 2
+      },
+      {
+        "skillID": "hex_of_ill_luck",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
       }
     ],
     "minChapter": 3,
@@ -1655,6 +1699,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "rotting_mark",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 4,
@@ -1832,6 +1887,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
       }
     ],
     "minChapter": 4,
@@ -1982,6 +2048,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "rotting_mark",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 5,
@@ -2242,6 +2319,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "glass_reflection",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 6,
@@ -2329,6 +2417,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "shroud_reflection",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 4
       }
     ],
     "minChapter": 6,
@@ -3199,6 +3298,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "rotting_mark",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
       }
     ],
     "minChapter": 4,
@@ -4249,6 +4359,17 @@
         "playerPatternThreshold": 0,
         "blockThreshold": 0,
         "priority": 0
+      },
+      {
+        "skillID": "glass_reflection",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 30,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
       }
     ],
     "minChapter": 6,

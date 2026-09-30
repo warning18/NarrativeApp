@@ -109,6 +109,27 @@ const List<String> enemyIntentOptions = [
   'guard',
   'charge',
   'rally',
+  'tamper',
+];
+
+/// What an enemy skill does to the party's dice (v1.182, see
+/// dice_tamper.dart); empty for none.
+const List<String> diceTamperOptions = [
+  '',
+  'hex',
+  'silence',
+  'curse',
+  'mirror'
+];
+
+/// The rule words a die face can carry (v1.182, see face_keywords.dart).
+const List<String> faceKeywordOptions = [
+  'cleave',
+  'pierce',
+  'growth',
+  'echo',
+  'pain',
+  'steady',
 ];
 
 const List<String> faceTypeOptions = [
@@ -493,9 +514,18 @@ final DbSchema skillsSchema = DbSchema(
     // attack, or a heal when the skill only heals). See enemy_intent.dart.
     FieldSchema(
       key: 'intent',
-      label: 'Enemy intent (attack / heal / guard / charge / rally)',
+      label: 'Enemy intent (attack / heal / guard / charge / rally / tamper)',
       type: FieldType.enumeration,
       enumOptions: enemyIntentOptions,
+    ),
+    // v1.182: what an enemy using this skill does to the party's dice (see
+    // dice_tamper.dart). Hex, Silence and Curse go with intent 'tamper';
+    // Mirror is an attack.
+    FieldSchema(
+      key: 'tamper',
+      label: 'Dice tamper (hex / silence / curse / mirror)',
+      type: FieldType.enumeration,
+      enumOptions: diceTamperOptions,
     ),
     FieldSchema(
         key: 'guardMultiplier',
@@ -884,7 +914,7 @@ final DbSchema diceSchema = DbSchema(
     FieldSchema(
       key: 'faces',
       label:
-          'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions}]',
+          'Faces [{faceName, type: $faceTypeOptions, value, linkedSkillID, weight, element: $elementOptions, keywords: $faceKeywordOptions}]',
       type: FieldType.json,
     ),
     visualAssetFieldSchema('dice'),

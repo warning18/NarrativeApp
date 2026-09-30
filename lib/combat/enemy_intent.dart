@@ -11,12 +11,14 @@ import '../l10n/app_strings.dart';
 /// - [charge]: it winds up; next turn the blow lands at double weight
 ///   unless the party breaks it first (see [chargeBroken]).
 /// - [rally]: it rouses itself and every packmate to hit harder.
+/// - [tamper] (v1.182): it lays a Hex, a Silence or a Curse on the party's
+///   dice (see [DiceTamper]).
 ///
 /// A skill says which with its `intent` field ('attack', 'heal', 'guard',
 /// 'charge', 'rally'). A skill with no `intent` that only heals (no damageMod, a
 /// healAmount) is a heal, so the player skills enemies borrow (Second
 /// Wind, Stoneskin, Revive Prayer) mend the enemy instead of hitting.
-enum EnemyIntent { attack, heal, guard, charge, rally }
+enum EnemyIntent { attack, heal, guard, charge, rally, tamper }
 
 EnemyIntent enemyIntentOf(Map<String, dynamic> skill) {
   switch (skill['intent']?.toString()) {
@@ -31,10 +33,38 @@ EnemyIntent enemyIntentOf(Map<String, dynamic> skill) {
       return EnemyIntent.charge;
     case 'rally':
       return EnemyIntent.rally;
+    case 'tamper':
+      return EnemyIntent.tamper;
   }
   final damageMod = (skill['damageMod'] as num?)?.toInt() ?? 0;
   final heal = (skill['healAmount'] as num?)?.toInt() ?? 0;
   return damageMod == 0 && heal > 0 ? EnemyIntent.heal : EnemyIntent.attack;
+}
+
+/// Enemies that tamper with the party's dice (v1.182). A skill's `tamper`
+/// field (skills.json) names what it does; like every enemy move it is
+/// telegraphed, so a party that reads it can play around it.
+///
+/// - [hex]: on the party's next round, the best die that lands is rolled
+///   again at once.
+/// - [silence]: on the party's next round, Skill faces land blank (a skill
+///   set on a basic face falls back to that face).
+/// - [curse]: one face of the target's die becomes a Pain face for the rest
+///   of the fight (see [cursedFace]).
+/// - [mirror]: an attack that hits back with the party's best blow of the
+///   round (see [mirrorDamage]).
+///
+/// Hex, Silence and Curse take the enemy's turn (EnemyIntent.tamper);
+/// Mirror is its attack.
+enum DiceTamper { hex, silence, curse, mirror }
+
+/// The tamper named [name] (skills.json spelling), or null.
+DiceTamper? diceTamperNamed(String? name) {
+  final lower = name?.trim().toLowerCase() ?? '';
+  for (final tamper in DiceTamper.values) {
+    if (tamper.name == lower) return tamper;
+  }
+  return null;
 }
 
 /// A charged blow lands at this multiple of the move's normal damage

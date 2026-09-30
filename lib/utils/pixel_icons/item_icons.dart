@@ -16,6 +16,7 @@ class ItemIcons {
     'boots_tearwalker',
     'boots_tidewalker',
     'boots_worn_leather',
+    'boss_trophy',
     'charm_fourth_roll',
     'charm_iron_skin',
     'charm_lucky_coin',

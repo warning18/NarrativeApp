@@ -2981,6 +2981,298 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Grants item (id)',
     AppLanguage.fr: 'Accorde un objet (id)',
   },
+  'keyword_cleave': {
+    AppLanguage.en: 'Cleave',
+    AppLanguage.fr: 'Fauche',
+  },
+  'keyword_cleave_desc': {
+    AppLanguage.en: 'the strike also hits every other enemy standing for half.',
+    AppLanguage.fr:
+        'le coup touche aussi chaque autre ennemi debout, pour moitié.',
+  },
+  'keyword_pierce': {
+    AppLanguage.en: 'Pierce',
+    AppLanguage.fr: 'Perce',
+  },
+  'keyword_pierce_desc': {
+    AppLanguage.en:
+        'the strike goes through a raised guard and an Armored hide.',
+    AppLanguage.fr: 'le coup traverse une garde levée et une peau Blindée.',
+  },
+  'keyword_growth': {
+    AppLanguage.en: 'Growth',
+    AppLanguage.fr: 'Croissance',
+  },
+  'keyword_growth_desc': {
+    AppLanguage.en: 'the face gains 1 each time it is used in this fight.',
+    AppLanguage.fr:
+        'la face gagne 1 à chaque fois qu\'elle sert dans ce combat.',
+  },
+  'keyword_echo': {
+    AppLanguage.en: 'Echo',
+    AppLanguage.fr: 'Écho',
+  },
+  'keyword_echo_desc': {
+    AppLanguage.en:
+        'the face does what the party member before it does this round (the first in line repeats last round).',
+    AppLanguage.fr:
+        'la face fait ce que fait le membre du groupe qui la précède ce round (le premier de la file répète le round précédent).',
+  },
+  'keyword_pain': {
+    AppLanguage.en: 'Pain',
+    AppLanguage.fr: 'Douleur',
+  },
+  'keyword_pain_desc': {
+    AppLanguage.en:
+        'the strike hits for double, and costs its roller 8% of their max health.',
+    AppLanguage.fr:
+        'le coup frappe double, et coûte à qui le lance 8 % de sa santé max.',
+  },
+  'keyword_steady': {
+    AppLanguage.en: 'Steady',
+    AppLanguage.fr: 'Stable',
+  },
+  'keyword_steady_desc': {
+    AppLanguage.en:
+        'the face can\'t be rerolled once it lands, and is worth 2 more.',
+    AppLanguage.fr:
+        'la face ne peut pas être relancée une fois tombée, et vaut 2 de plus.',
+  },
+  'combo_flank': {
+    AppLanguage.en: 'Flank',
+    AppLanguage.fr: 'Prise en tenaille',
+  },
+  'combo_flank_desc': {
+    AppLanguage.en: 'Two strikes: each hits 15% harder.',
+    AppLanguage.fr: 'Deux coups : chacun frappe 15 % plus fort.',
+  },
+  'combo_volley': {
+    AppLanguage.en: 'Volley',
+    AppLanguage.fr: 'Salve',
+  },
+  'combo_volley_desc': {
+    AppLanguage.en:
+        'Three strikes or more: each hits 15% harder and catches every other enemy for a quarter.',
+    AppLanguage.fr:
+        'Trois coups ou plus : chacun frappe 15 % plus fort et touche chaque autre ennemi pour un quart.',
+  },
+  'combo_shelter': {
+    AppLanguage.en: 'Shelter',
+    AppLanguage.fr: 'Abri',
+  },
+  'combo_shelter_desc': {
+    AppLanguage.en:
+        'A Guard and a Heal: the heal also mends the rest of the party for half.',
+    AppLanguage.fr:
+        'Une garde et un soin : le soin soigne aussi le reste du groupe pour moitié.',
+  },
+  'combo_shieldWall': {
+    AppLanguage.en: 'Shield Wall',
+    AppLanguage.fr: 'Mur de boucliers',
+  },
+  'combo_shieldWall_desc': {
+    AppLanguage.en:
+        'Two Guards or more: every party member holds the biggest guard.',
+    AppLanguage.fr:
+        'Deux gardes ou plus : chaque membre du groupe tient la plus grande garde.',
+  },
+  'combo_wellspring': {
+    AppLanguage.en: 'Wellspring',
+    AppLanguage.fr: 'Source vive',
+  },
+  'combo_wellspring_desc': {
+    AppLanguage.en: 'Two Mana faces or more: 2 more mana.',
+    AppLanguage.fr: 'Deux faces de mana ou plus : 2 de mana en plus.',
+  },
+  'shelter_heals': {
+    AppLanguage.en: 'Shelter: {name}\'s heal reaches the party (+{n} each).',
+    AppLanguage.fr: 'Abri : le soin de {name} atteint le groupe (+{n} chacun).',
+  },
+  'splash_hits': {
+    AppLanguage.en: '{name} is caught by the blow: {n} damage.',
+    AppLanguage.fr: '{name} est pris dans le coup : {n} dégâts.',
+  },
+  'pain_costs': {
+    AppLanguage.en: 'Pain: {name} loses {n} health.',
+    AppLanguage.fr: 'Douleur : {name} perd {n} de santé.',
+  },
+  'tamper_hex': {
+    AppLanguage.en: 'Hex',
+    AppLanguage.fr: 'Maléfice',
+  },
+  'tamper_hex_desc': {
+    AppLanguage.en:
+        'on the party\'s next roll, the best die that lands is rolled again at once.',
+    AppLanguage.fr:
+        'au prochain lancer du groupe, le meilleur dé tombé est aussitôt relancé.',
+  },
+  'tamper_silence': {
+    AppLanguage.en: 'Silence',
+    AppLanguage.fr: 'Silence',
+  },
+  'tamper_silence_desc': {
+    AppLanguage.en:
+        'next round, Skill faces land blank (a skill set on a basic face falls back to that face).',
+    AppLanguage.fr:
+        'au round suivant, les faces de compétence tombent vides (une compétence posée sur une face simple revient à cette face).',
+  },
+  'tamper_curse': {
+    AppLanguage.en: 'Curse',
+    AppLanguage.fr: 'Malédiction',
+  },
+  'tamper_curse_desc': {
+    AppLanguage.en:
+        'one face of the target\'s die becomes a Pain face for the rest of the fight.',
+    AppLanguage.fr:
+        'une face du dé de la cible devient une face de Douleur pour le reste du combat.',
+  },
+  'tamper_mirror': {
+    AppLanguage.en: 'Mirror',
+    AppLanguage.fr: 'Miroir',
+  },
+  'tamper_mirror_desc': {
+    AppLanguage.en: 'hits back with the party\'s best blow of the round.',
+    AppLanguage.fr: 'renvoie le meilleur coup du groupe de ce round.',
+  },
+  'telegraph_category_tamper': {
+    AppLanguage.en: 'Tampers with your dice',
+    AppLanguage.fr: 'Trafique vos dés',
+  },
+  'tamper_hex_laid': {
+    AppLanguage.en: 'Your best die will be rolled again on your next throw.',
+    AppLanguage.fr: 'Votre meilleur dé sera relancé à votre prochain lancer.',
+  },
+  'tamper_silence_laid': {
+    AppLanguage.en: 'Your Skill faces will land blank next round.',
+    AppLanguage.fr:
+        'Vos faces de compétence tomberont vides au prochain round.',
+  },
+  'tamper_curse_laid': {
+    AppLanguage.en:
+        '{name}\'s {face} face is cursed: it now strikes with Pain.',
+    AppLanguage.fr:
+        'La face {face} de {name} est maudite : elle frappe désormais avec Douleur.',
+  },
+  'tamper_hex_sprung': {
+    AppLanguage.en: 'Hex: {name}\'s {from} is rolled again: {to}.',
+    AppLanguage.fr: 'Maléfice : {from} de {name} est relancé : {to}.',
+  },
+  'silenced_face_label': {
+    AppLanguage.en: 'Silenced',
+    AppLanguage.fr: 'Réduite au silence',
+  },
+  'silence_round_note': {
+    AppLanguage.en: 'Silence: Skill faces land blank this round.',
+    AppLanguage.fr: 'Silence : les faces de compétence tombent vides ce round.',
+  },
+  'cursed_face_note': {
+    AppLanguage.en:
+        'Cursed: this face strikes with Pain for the rest of the fight.',
+    AppLanguage.fr:
+        'Maudite : cette face frappe avec Douleur pour le reste du combat.',
+  },
+  'steady_kept_note': {
+    AppLanguage.en: 'Steady: this face stays put through the rerolls.',
+    AppLanguage.fr: 'Stable : cette face reste en place pendant les relances.',
+  },
+  'nudges_label': {
+    AppLanguage.en: 'Nudges',
+    AppLanguage.fr: 'Coups de pouce',
+  },
+  'nudge_hint': {
+    AppLanguage.en:
+        'Luck: long-press a landed die to turn it to its opposite face.',
+    AppLanguage.fr:
+        'Chance : appui long sur un dé tombé pour le tourner sur sa face opposée.',
+  },
+  'nudge_button': {
+    AppLanguage.en: 'Nudge to {face} ({n} left)',
+    AppLanguage.fr: 'Pousser sur {face} (reste {n})',
+  },
+  'nudge_log': {
+    AppLanguage.en: 'Nudge: {name}\'s die turns from {from} to {to}.',
+    AppLanguage.fr: 'Coup de pouce : le dé de {name} passe de {from} à {to}.',
+  },
+  'smith_hone': {
+    AppLanguage.en: 'Hone',
+    AppLanguage.fr: 'Affûter',
+  },
+  'smith_hone_desc': {
+    AppLanguage.en:
+        '+2 to an Attack, Guard or Heal face (three times at most).',
+    AppLanguage.fr:
+        '+2 à une face d\'attaque, de garde ou de soin (trois fois au plus).',
+  },
+  'smith_temper': {
+    AppLanguage.en: 'Temper',
+    AppLanguage.fr: 'Tremper',
+  },
+  'smith_temper_desc': {
+    AppLanguage.en: 'Give an Attack face an element.',
+    AppLanguage.fr: 'Donner un élément à une face d\'attaque.',
+  },
+  'smith_inscribe': {
+    AppLanguage.en: 'Inscribe',
+    AppLanguage.fr: 'Graver',
+  },
+  'smith_inscribe_desc': {
+    AppLanguage.en:
+        'Carve a keyword into the face (one per face; a new one replaces it).',
+    AppLanguage.fr:
+        'Graver un mot-clé sur la face (un par face ; un nouveau le remplace).',
+  },
+  'smith_recast': {
+    AppLanguage.en: 'Recast',
+    AppLanguage.fr: 'Refondre',
+  },
+  'smith_recast_desc': {
+    AppLanguage.en:
+        'Turn an Attack, Guard or Heal face into another of the three, keeping its number.',
+    AppLanguage.fr:
+        'Changer une face d\'attaque, de garde ou de soin en une autre des trois, en gardant son nombre.',
+  },
+  'smith_title': {
+    AppLanguage.en: 'Dice smithing',
+    AppLanguage.fr: 'Forge des dés',
+  },
+  'smith_hint': {
+    AppLanguage.en:
+        'The work stays on the die: a companion\'s die keeps it too.',
+    AppLanguage.fr:
+        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi.',
+  },
+  'smith_open_button': {
+    AppLanguage.en: 'Smith dice',
+    AppLanguage.fr: 'Forger les dés',
+  },
+  'smith_pick_face': {
+    AppLanguage.en: 'Tap a face to work on it.',
+    AppLanguage.fr: 'Touchez une face pour la travailler.',
+  },
+  'smith_cost_label': {
+    AppLanguage.en: 'Cost',
+    AppLanguage.fr: 'Coût',
+  },
+  'smith_trophy_label': {
+    AppLanguage.en: 'trophy',
+    AppLanguage.fr: 'trophée',
+  },
+  'smith_done': {
+    AppLanguage.en: 'The Hammersmith worked the face: {work}.',
+    AppLanguage.fr: 'Le Maître-forgeron a travaillé la face : {work}.',
+  },
+  'smith_nothing': {
+    AppLanguage.en: 'Nothing more can be done to this face.',
+    AppLanguage.fr: 'Rien de plus ne peut être fait sur cette face.',
+  },
+  'smith_worked_label': {
+    AppLanguage.en: 'Worked',
+    AppLanguage.fr: 'Travaillée',
+  },
+  'die_keywords_label': {
+    AppLanguage.en: 'Keywords',
+    AppLanguage.fr: 'Mots-clés',
+  },
   'item_picked_up': {
     AppLanguage.en: 'Picked up: {item}',
     AppLanguage.fr: 'Ramassé : {item}',

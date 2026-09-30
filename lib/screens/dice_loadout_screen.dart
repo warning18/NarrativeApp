@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart';
+import '../combat/face_keywords.dart';
+import '../combat/face_smithing.dart';
 import '../data/skill_tree.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -98,9 +100,11 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       _selectedDiceId = diceIds.first;
     }
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
-    final faces =
+    // The die as the Hammersmith left it (see face_smithing.dart).
+    final faces = smithedFaces(
         (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ??
-            const [];
+            const [],
+        session.diceUpgrades[_selectedDiceId ?? '']);
     final assignments = ally != null
         ? ally.diceSkillAssignments
         : session.diceSkillAssignments[_selectedDiceId] ??
@@ -638,6 +642,16 @@ class _FaceSlot extends StatelessWidget {
                   Icon(kind.icon, size: 16, color: kind.color),
                   const SizedBox(width: 4),
                   Expanded(child: Text(name, style: textTheme.titleSmall)),
+                  // Its keywords (see face_keywords.dart), a tap on the
+                  // badge naming them.
+                  if (faceKeywordsOf(face).isNotEmpty)
+                    Tooltip(
+                      message: [
+                        for (final k in faceKeywordsOf(face))
+                          '${t(keywordLabelKey(k))}: ${t(keywordDescriptionKey(k))}',
+                      ].join('\n'),
+                      child: FaceKeywordBadges(faceKeywordsOf(face), size: 14),
+                    ),
                   if (locked)
                     Icon(Icons.lock_outline,
                         size: 16, color: colorScheme.outline)

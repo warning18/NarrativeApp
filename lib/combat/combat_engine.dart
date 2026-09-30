@@ -4,8 +4,10 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import 'status_effect.dart';
 import 'enemy_intent.dart';
+import 'face_keywords.dart';
 
 export 'enemy_intent.dart';
+export 'face_keywords.dart';
 
 /// Reads a skill or enemy-move record's `inflictsStatus`/`statusDuration`/
 /// `statusMagnitude` fields into a [StatusEffect], or null if the record
@@ -55,6 +57,7 @@ class DiceFaceResult {
     required this.linkedSkillID,
     required this.element,
     this.channeledFrom = '',
+    this.keywords = const {},
   });
 
   final int faceIndex;
@@ -70,38 +73,57 @@ class DiceFaceResult {
   /// and [value] keeps the basic face's number as its floor.
   final String channeledFrom;
 
+  /// The face's rule words (see face_keywords.dart): the die's own, one
+  /// inscribed at the Hammersmith, or a Curse laid on it in a fight.
+  final Set<FaceKeyword> keywords;
+
   bool get isChanneled => channeledFrom.isNotEmpty;
 
-  DiceFaceResult withLinkedSkillID(String linkedSkillID) => DiceFaceResult(
+  bool hasKeyword(FaceKeyword keyword) => keywords.contains(keyword);
+
+  DiceFaceResult _copy({
+    String? faceName,
+    String? type,
+    int? value,
+    String? linkedSkillID,
+    String? element,
+    String? channeledFrom,
+    Set<FaceKeyword>? keywords,
+  }) =>
+      DiceFaceResult(
         faceIndex: faceIndex,
-        faceName: faceName,
-        type: type,
-        value: value,
-        linkedSkillID: linkedSkillID,
-        element: element,
-        channeledFrom: channeledFrom,
+        faceName: faceName ?? this.faceName,
+        type: type ?? this.type,
+        value: value ?? this.value,
+        linkedSkillID: linkedSkillID ?? this.linkedSkillID,
+        element: element ?? this.element,
+        channeledFrom: channeledFrom ?? this.channeledFrom,
+        keywords: keywords ?? this.keywords,
       );
 
-  DiceFaceResult withFaceName(String faceName) => DiceFaceResult(
-        faceIndex: faceIndex,
-        faceName: faceName,
+  DiceFaceResult withLinkedSkillID(String linkedSkillID) =>
+      _copy(linkedSkillID: linkedSkillID);
+
+  DiceFaceResult withFaceName(String faceName) => _copy(faceName: faceName);
+
+  DiceFaceResult withValue(int value) => _copy(value: value);
+
+  DiceFaceResult withKeywords(Set<FaceKeyword> keywords) =>
+      _copy(keywords: keywords);
+
+  /// This face turned into a plain [type] face ('Attack', 'Defend',
+  /// 'Heal' or 'Empty') of [value]: what a Silence leaves of a skill, or a
+  /// Curse of a guard.
+  DiceFaceResult asBasic(String type, {int? value}) => _copy(
         type: type,
-        value: value,
-        linkedSkillID: linkedSkillID,
-        element: element,
-        channeledFrom: channeledFrom,
+        value: value ?? this.value,
+        linkedSkillID: '',
+        channeledFrom: '',
       );
 
   /// This basic face turned into [skillId], cast at channeled power.
-  DiceFaceResult channeling(String skillId) => DiceFaceResult(
-        faceIndex: faceIndex,
-        faceName: faceName,
-        type: 'Skill',
-        value: value,
-        linkedSkillID: skillId,
-        element: element,
-        channeledFrom: type,
-      );
+  DiceFaceResult channeling(String skillId) =>
+      _copy(type: 'Skill', linkedSkillID: skillId, channeledFrom: type);
 }
 
 DiceFaceResult rollDie(List<Map<String, dynamic>> faces, Random random) {
@@ -119,7 +141,12 @@ DiceFaceResult rollDie(List<Map<String, dynamic>> faces, Random random) {
   return _faceFromJson(faces.last, faces.length - 1);
 }
 
-DiceFaceResult _faceFromJson(Map<String, dynamic> face, int index) {
+DiceFaceResult _faceFromJson(Map<String, dynamic> face, int index) =>
+    faceFromJson(face, index);
+
+/// Face [index] of a die, as it lands: its dice.json record read into a
+/// [DiceFaceResult], keywords included.
+DiceFaceResult faceFromJson(Map<String, dynamic> face, int index) {
   return DiceFaceResult(
     faceIndex: index,
     faceName: face['faceName']?.toString() ?? '',
@@ -127,6 +154,7 @@ DiceFaceResult _faceFromJson(Map<String, dynamic> face, int index) {
     value: (face['value'] as num?)?.toInt() ?? 0,
     linkedSkillID: face['linkedSkillID']?.toString() ?? '',
     element: face['element']?.toString() ?? 'None',
+    keywords: faceKeywordsOf(face),
   );
 }
 
@@ -397,7 +425,13 @@ class EnemyMoveResult {
     this.guardAmount = 0,
     this.rallyPercent = 0,
     this.releaseMessage = '',
+    this.tamper,
   });
+
+  /// What the move does to the party's dice (v1.182), if anything: a Hex,
+  /// Silence or Curse (the enemy's whole turn, see [EnemyIntent.tamper]),
+  /// or a Mirror (an attack that hits back with the party's best blow).
+  final DiceTamper? tamper;
 
   /// What the move does to its target. For a [EnemyIntent.charge] it's the
   /// blow the wind-up will release next turn; for a heal, guard or rally
@@ -542,6 +576,7 @@ EnemyMoveResult resolveEnemyMove({
         rallyPercent: intent == EnemyIntent.rally
             ? (skill['rallyPercent'] as num?)?.toInt() ?? defaultRallyPercent
             : 0,
+        tamper: diceTamperNamed(skill['tamper']?.toString()),
         releaseMessage: intent == EnemyIntent.charge
             ? (language == AppLanguage.fr
                     ? skill['releaseMessage_fr']?.toString()
@@ -669,9 +704,24 @@ TelegraphTier telegraphTierFor(int perception, int guile) {
 /// scarier, more decision-relevant half of "roughly what it does"); a
 /// heal, guard, wind-up or rally reads as what it is (see [EnemyIntent]);
 /// everything else is a plain [attack].
-enum MoveCategory { attack, healSelf, statusDebuff, guard, charge, rally }
+enum MoveCategory {
+  attack,
+  healSelf,
+  statusDebuff,
+  guard,
+  charge,
+  rally,
+
+  /// A Hex, Silence or Curse on the party's dice (v1.182).
+  tamper,
+
+  /// A Mirror: the party's best blow of the round, sent back.
+  mirror,
+}
 
 MoveCategory categoryFor(EnemyMoveResult move) {
+  if (move.tamper == DiceTamper.mirror) return MoveCategory.mirror;
+  if (move.intent == EnemyIntent.tamper) return MoveCategory.tamper;
   if (move.inflictedStatus != null) return MoveCategory.statusDebuff;
   switch (move.intent) {
     case EnemyIntent.heal:
@@ -682,6 +732,8 @@ MoveCategory categoryFor(EnemyMoveResult move) {
       return MoveCategory.charge;
     case EnemyIntent.rally:
       return MoveCategory.rally;
+    case EnemyIntent.tamper:
+      return MoveCategory.tamper;
     case EnemyIntent.attack:
       break;
   }

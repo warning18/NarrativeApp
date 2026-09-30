@@ -9,6 +9,10 @@ import '../combat/combat_aftermath.dart';
 import '../combat/party_bonus.dart';
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
+import '../combat/dice_tamper.dart';
+import '../combat/duo_techniques.dart';
+import '../combat/face_smithing.dart';
+import '../combat/party_combos.dart';
 import '../combat/encounter.dart';
 import '../combat/enemy_affix.dart';
 import '../combat/gear_effects.dart';
@@ -54,6 +58,7 @@ import 'death_screen.dart';
 part 'fight/fight_actions.dart';
 part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
+part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
 part 'fight/fight_models.dart';
 part 'fight/fight_queries.dart';
@@ -355,6 +360,35 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// keep it or reroll — false before the first roll of a turn, and false
   /// again once a choice is confirmed (manually, or forced at the 3rd roll).
   bool _awaitingDecision = false;
+
+  // --- The dice's own rules (v1.182) -------------------------------------
+
+  /// Growth faces' uses this fight, by `member id:face index` (see
+  /// face_keywords.dart).
+  final Map<String, int> _growthUses = {};
+
+  /// The face each member played last round: what an Echo first in line
+  /// repeats.
+  final Map<String, DiceFaceResult> _lastPlayedFaces = {};
+
+  /// Members whose landed face is Steady this round: kept, and not to be
+  /// released.
+  final Set<String> _steadyActorIds = {};
+
+  /// Faces an enemy's Curse made Pain faces this fight, per member id.
+  final Map<String, Set<int>> _cursedFaces = {};
+
+  /// A Hex waiting on the party's next roll; a Silence over the party's
+  /// next round, and the one over this round (see dice_tamper.dart).
+  bool _hexPending = false;
+  bool _silencePending = false;
+  bool _silenced = false;
+
+  /// Luck nudges left this fight (see nudgesForLuck).
+  int _nudgesLeft = 0;
+
+  /// The biggest hit the party landed this round: what a Mirror sends back.
+  int _bestHitThisRound = 0;
 
   late final AnimationController _shakeController;
   late final AnimationController _rollController;

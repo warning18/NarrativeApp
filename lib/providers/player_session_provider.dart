@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
+import '../combat/face_keywords.dart' show FaceKeyword;
+import '../combat/face_smithing.dart';
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
@@ -186,6 +188,7 @@ class PlayerSession {
     this.sellswordFights = 0,
     this.alignmentRollsSinceAmbush = hunterCooldownRolls,
     this.runSeed = 0,
+    this.diceUpgrades = const {},
     this.recruitedAllies = const [],
     this.activeAllyIds = const [],
     this.lostAllyIds = const [],
@@ -374,6 +377,11 @@ class PlayerSession {
   /// Rolled once per new game: picks each chapter's condition (see
   /// chapter_conditions.dart). 0 on saves made before it existed.
   final int runSeed;
+
+  /// The Hammersmith's work on the party's dice (v1.182, see
+  /// face_smithing.dart): die id → face index → what was done to it. Kept
+  /// on the die, so a companion's signature die keeps it too.
+  final Map<String, DieUpgrades> diceUpgrades;
 
   /// How much stronger enemies are in [chapter] for the days the party has
   /// spent in it (see [threatFor]).
@@ -676,6 +684,7 @@ class PlayerSession {
     int? sellswordFights,
     int? alignmentRollsSinceAmbush,
     int? runSeed,
+    Map<String, DieUpgrades>? diceUpgrades,
     List<AllyState>? recruitedAllies,
     List<String>? activeAllyIds,
     List<String>? lostAllyIds,
@@ -767,6 +776,7 @@ class PlayerSession {
       alignmentRollsSinceAmbush:
           alignmentRollsSinceAmbush ?? this.alignmentRollsSinceAmbush,
       runSeed: runSeed ?? this.runSeed,
+      diceUpgrades: diceUpgrades ?? this.diceUpgrades,
       recruitedAllies: recruitedAllies ?? this.recruitedAllies,
       activeAllyIds: activeAllyIds ?? this.activeAllyIds,
       lostAllyIds: lostAllyIds ?? this.lostAllyIds,
@@ -863,6 +873,7 @@ class PlayerSession {
         'sellswordFights': sellswordFights,
         'alignmentRollsSinceAmbush': alignmentRollsSinceAmbush,
         'runSeed': runSeed,
+        'diceUpgrades': diceUpgradesToJson(diceUpgrades),
         'recruitedAllies': recruitedAllies.map((a) => a.toJson()).toList(),
         'activeAllyIds': activeAllyIds,
         'lostAllyIds': lostAllyIds,
@@ -1023,6 +1034,7 @@ class PlayerSession {
           (json['alignmentRollsSinceAmbush'] as num?)?.toInt() ??
               hunterCooldownRolls,
       runSeed: (json['runSeed'] as num?)?.toInt() ?? 0,
+      diceUpgrades: parseDiceUpgrades(json['diceUpgrades']),
       recruitedAllies: (json['recruitedAllies'] as List?)
               ?.map((e) => AllyState.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -1271,6 +1283,13 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       legacyGold: keepLegacy ? previous.legacyGold : 0,
       legacyDiceIds: keepLegacy ? previous.legacyDiceIds : const [],
       legacySpellIds: keepLegacy ? previous.legacySpellIds : const [],
+      diceUpgrades: keepLegacy
+          ? {
+              for (final id in previous.legacyDiceIds)
+                if (previous.diceUpgrades[id] != null)
+                  id: previous.diceUpgrades[id]!,
+            }
+          : const {},
     );
     await _persist();
   }
@@ -1400,6 +1419,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
       runSeed: 1 + Random().nextInt(0x7ffffffe),
+      // A New Game+ legacy die keeps the Hammersmith's work on it.
+      diceUpgrades: {
+        for (final id in legacyDice)
+          if (legacy.diceUpgrades[id] != null) id: legacy.diceUpgrades[id]!,
+      },
     );
     await _persist();
   }
@@ -2109,6 +2133,91 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     state = state.copyWith(
       gold: state.gold - ((item!['craftGold'] as num?)?.toInt() ?? 0),
       inventoryItemIds: [...remaining, itemId],
+    );
+    await _persist();
+    return true;
+  }
+
+  /// Whether the pack and purse cover [cost] (see face_smithing.dart).
+  bool canPaySmithing(SmithingCost cost) {
+    int carried(String id) =>
+        state.inventoryItemIds.where((i) => i == id).length;
+    final trophies = trophyItemIds.fold<int>(0, (n, id) => n + carried(id));
+    return state.gold >= cost.gold &&
+        carried(ironOreId) >= cost.iron &&
+        trophies >= cost.trophies;
+  }
+
+  /// The Hammersmith works face [faceIndex] of die [dieId] (whose dice.json
+  /// faces are [faces]): [work] is paid for (gold, iron ore, a trophy --
+  /// an Elite Mark first) and kept on the die. A Temper takes [element], an
+  /// inscription [keyword], a Recast [recastType]. Returns false when the
+  /// work doesn't fit the face or can't be paid for.
+  Future<bool> smithFace({
+    required String dieId,
+    required int faceIndex,
+    required List<Map<String, dynamic>> faces,
+    required SmithingWork work,
+    String? element,
+    FaceKeyword? keyword,
+    String? recastType,
+  }) async {
+    if (faceIndex < 0 || faceIndex >= faces.length) return false;
+    final dieUpgrades =
+        state.diceUpgrades[dieId] ?? const <String, FaceUpgrade>{};
+    final current = dieUpgrades[faceIndex.toString()] ?? FaceUpgrade.none;
+    final face = faces[faceIndex];
+    if (!canSmith(work, face, current)) return false;
+    final FaceUpgrade next;
+    switch (work) {
+      case SmithingWork.hone:
+        next = current.copyWith(hones: current.hones + 1);
+      case SmithingWork.temper:
+        if (element == null || !temperElements.contains(element)) return false;
+        if (element == current.element) return false;
+        next = current.copyWith(element: element);
+      case SmithingWork.inscribe:
+        if (keyword == null ||
+            !inscribableKeywords(face, current).contains(keyword)) {
+          return false;
+        }
+        next = current.copyWith(keyword: keyword);
+      case SmithingWork.recast:
+        final baseType = face['type']?.toString() ?? '';
+        final from = current.recastType ?? baseType;
+        if (recastType == null ||
+            !smithableBasicTypes.contains(recastType) ||
+            recastType == from) {
+          return false;
+        }
+        // Back to what the die made it clears the Recast; a Temper only
+        // stays on an Attack face.
+        next = FaceUpgrade(
+          hones: current.hones,
+          element: recastType == 'Attack' ? current.element : null,
+          keyword: current.keyword,
+          recastType: recastType == baseType ? null : recastType,
+        );
+    }
+    final cost = smithingCostFor(work, current);
+    if (!canPaySmithing(cost)) return false;
+    final remaining = [...state.inventoryItemIds];
+    for (var i = 0; i < cost.iron; i++) {
+      remaining.remove(ironOreId);
+    }
+    var trophiesLeft = cost.trophies;
+    for (final id in trophyItemIds) {
+      while (trophiesLeft > 0 && remaining.remove(id)) {
+        trophiesLeft--;
+      }
+    }
+    state = state.copyWith(
+      gold: state.gold - cost.gold,
+      inventoryItemIds: remaining,
+      diceUpgrades: {
+        ...state.diceUpgrades,
+        dieId: {...dieUpgrades, faceIndex.toString(): next},
+      },
     );
     await _persist();
     return true;

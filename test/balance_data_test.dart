@@ -51,7 +51,7 @@ void main() {
         for (final e in skills.entries)
           if (isEnemyOnlySkill(e.value as Map<String, dynamic>)) e.key,
       };
-      expect(flagged, hasLength(18));
+      expect(flagged, hasLength(23));
       expect(flagged, contains('sovereign_unmaking'));
       // v1.162's enemy intents: guard, wind-ups, rallies, a heal.
       expect(
@@ -63,6 +63,12 @@ void main() {
             'rallying_cry',
             'pack_howl',
             'bind_wounds',
+            // v1.182's dice tampering.
+            'hex_of_ill_luck',
+            'edict_of_silence',
+            'rotting_mark',
+            'glass_reflection',
+            'shroud_reflection',
           ]));
       expect(flagged.intersection(usedByParty), isEmpty);
       for (final id in flagged) {

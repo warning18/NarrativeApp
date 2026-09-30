@@ -30,21 +30,10 @@ extension _FightRounds on _FightScreenState {
         if (kept != null) rolled[actor.id] = kept;
         continue;
       }
-      final actorDice = actor.equippedDiceId != null
-          ? diceDb[actor.equippedDiceId] as Map<String, dynamic>?
-          : null;
-      final faces =
-          (actorDice?['faces'] as List?)?.cast<Map<String, dynamic>>() ??
-              const [];
+      // The die as smithed at the Hammersmith (see _ensurePartyBuilt).
+      final faces = actor.dieFaces;
       if (faces.isEmpty) continue;
-
-      final rawRoll = rollDie(faces, _random);
-      rolled[actor.id] = applyFaceAssignment(
-        rawRoll,
-        faces[rawRoll.faceIndex],
-        actor.diceSkillAssignments[rawRoll.faceIndex.toString()],
-        language: ref.read(appLanguageProvider),
-      );
+      rolled[actor.id] = _landedFace(actor, rollDie(faces, _random));
     }
     if (rolled.isEmpty) return;
 
@@ -60,9 +49,14 @@ extension _FightRounds on _FightScreenState {
       _currentFaces
         ..clear()
         ..addAll(rolled);
+      // A Steady face that just landed stays put (see face_keywords.dart).
+      _noteSteadyFaces(
+          rolled.keys.where((id) => !_lockedActorIds.contains(id)).toList());
       _awaitingDecision = !forced;
       _autoAssignTargets();
     });
+    // A Hex laid last round takes the best die of this first roll.
+    if (rollNumber == 1 && !forced) _springHex(skills, items);
 
     if (forced) {
       // No choice left — give the player a beat to see the 3rd faces land
@@ -183,14 +177,28 @@ extension _FightRounds on _FightScreenState {
     String? guardianId;
     var guardianBlock = 0;
     final surgeTo = _surgeRecipient();
+    // The faces as played (an Echo copies the one before it), each resolved
+    // with its own critical roll in party order, then what they add up to
+    // (see party_combos.dart).
+    final played = _playedFaces();
+    final results = <String, PlayerActionResult>{};
     for (final actor in _actingParty) {
-      final face = _currentFaces[actor.id];
+      final face = played[actor.id];
       if (face == null) continue;
-
-      final availableSkills = _availableSkillsFor(actor, skills);
-      final element = _elementFor(face, availableSkills);
-      final totalDamage = _totalDamageFor(actor, face, skills, items);
       final isStrike = face.type == 'Attack' || face.type == 'Skill';
+      results[actor.id] = _resolveFor(actor, face, skills, items, lang,
+          surge: isStrike && actor.id == surgeTo, rollCritical: true);
+    }
+    final combos = partyCombosFor([for (final r in results.values) _roleOf(r)]);
+    for (final actor in _actingParty) {
+      final face = played[actor.id];
+      final result = results[actor.id];
+      if (face == null || result == null) continue;
+
+      final availableSkills = _skillsForFace(actor, face, skills);
+      final element = _elementFor(face, availableSkills);
+      final isStrike = face.type == 'Attack' || face.type == 'Skill';
+      final pierce = face.hasKeyword(FaceKeyword.pierce);
       final fxDelay = fxIndex++ * _fxStagger;
       var dealt = 0;
       var drainedFx = 0;
@@ -202,21 +210,6 @@ extension _FightRounds on _FightScreenState {
         _momentum = 0;
         _surgeActorId = null;
       }
-      final result = resolvePlayerFace(
-        face,
-        availableSkills,
-        totalDamage,
-        language: lang,
-        activeEffects: actor.statusEffects,
-        wisdomHealBonus: actor.wisdom ~/ 2,
-        wisdomManaBonus: wisdomManaBonusFor(actor.wisdom),
-        luck: actor.luck +
-            (actor.isPlayer && _luckyCoinArmed ? _luckyCoinLuckBonus : 0),
-        random: _random,
-        forceCritical: surge,
-        alignmentLabel: _alignmentLabel,
-        critChanceBonus: actor.gear.critChance,
-      );
       var healing = result.healingDone;
       if (_condition == BattlefieldCondition.shrine && healing > 0) {
         healing = (healing * shrineHealMultiplier).round();
@@ -235,6 +228,12 @@ extension _FightRounds on _FightScreenState {
       // Any member's Mana face feeds the one shared pool.
       if (result.manaGained > 0) manaGained += result.manaGained;
       actor.currentHealth = min(actor.maxHealth, actor.currentHealth + healing);
+      // A Shelter passes part of every Heal to the rest of the party.
+      if (combos.contains(PartyCombo.shelter) &&
+          _roleOf(result) == FaceRole.heal &&
+          healing > 0) {
+        _shelterFrom(actor, healing, newEntries, lang);
+      }
       final braced = result.blockAmount > 0 && _isTelegraphedTarget(actor);
       var block = braced
           ? result.blockAmount * _telegraphBraceMultiplier
@@ -285,19 +284,27 @@ extension _FightRounds on _FightScreenState {
 
       if (target != null) {
         final armored = target.hasAffix(EnemyAffix.armored);
-        final damage = strikeDamageAfterAffixes(result.damageDealt, face.type,
-            armored: armored);
-        if (result.damageDealt > 0 && face.type == 'Attack' && armored) {
+        // A Flank or a Volley lands every strike harder.
+        final struck = comboDamage(result.damageDealt, combos);
+        final damage = pierce
+            ? struck
+            : strikeDamageAfterAffixes(struck, face.type, armored: armored);
+        if (result.damageDealt > 0 &&
+            face.type == 'Attack' &&
+            armored &&
+            !pierce) {
           newEntries.add(_LogEntry(
             '${target.displayName} ${trFor(lang, 'armored_absorbs_suffix')}',
             _LogKind.info,
           ));
         }
         final wasAlive = target.isAlive;
-        final landed =
-            _landHitOnEnemy(target, damage, element, newEntries, lang);
+        final landed = _landHitOnEnemy(
+            target, damage, element, newEntries, lang,
+            pierce: pierce);
         target.currentHealth = max(0, target.currentHealth - landed);
         dealt = landed;
+        _bestHitThisRound = max(_bestHitThisRound, landed);
         if (landed > 0) {
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = landed;
@@ -323,6 +330,20 @@ extension _FightRounds on _FightScreenState {
         if (element != 'None' && landed > 0) {
           target.elementsHitThisRound.add(element);
         }
+        // A Cleave, or any strike of a Volley, catches the rest of the pack
+        // (a Cleave for more).
+        final cleave = face.hasKeyword(FaceKeyword.cleave);
+        if (damage > 0 && (cleave || combos.contains(PartyCombo.volley))) {
+          _splashFrom(
+              actor,
+              target,
+              damage,
+              cleave ? cleaveSplashShare : volleySplashShare,
+              element,
+              pierce,
+              newEntries,
+              lang);
+        }
         final inflicted = result.inflictedStatus;
         if (inflicted != null) {
           target.statusEffects = applyStatusEffect(
@@ -332,6 +353,24 @@ extension _FightRounds on _FightScreenState {
           newEntries.add(_LogEntry(
             _statusInflictedMessage(inflicted, target.displayName, lang),
             _LogKind.info,
+          ));
+        }
+      }
+      // Pain: the strike hurt its roller too.
+      if (face.hasKeyword(FaceKeyword.pain) && result.damageDealt > 0) {
+        final cost = painCost(
+            maxHealth: actor.maxHealth, currentHealth: actor.currentHealth);
+        if (cost > 0) {
+          actor.currentHealth -= cost;
+          _fx(VfxStyle.drain, _memberCardKey(actor.id),
+              delayMs: fxDelay + 250,
+              text: '-$cost',
+              textKind: VfxTextKind.hurt);
+          newEntries.add(_LogEntry(
+            trFor(lang, 'pain_costs')
+                .replaceAll('{name}', actor.displayName)
+                .replaceAll('{n}', '$cost'),
+            _LogKind.enemyDamage,
           ));
         }
       }
@@ -349,6 +388,18 @@ extension _FightRounds on _FightScreenState {
         delayMs: fxDelay,
       );
     }
+
+    // A Growth face grows each time it's used; an Echo repeats the face
+    // played before it, so the round's faces are remembered.
+    for (final entry in played.entries) {
+      if (entry.value.hasKeyword(FaceKeyword.growth)) {
+        final key = '${entry.key}:${entry.value.faceIndex}';
+        _growthUses[key] = (_growthUses[key] ?? 0) + 1;
+      }
+      _lastPlayedFaces[entry.key] = entry.value;
+    }
+    manaGained += _applyAfterFaceCombos(combos, newEntries, lang);
+    _applyDuos(newEntries, lang);
 
     _guardianId =
         _party.where((m) => !m.isKnockedOut).length > 1 ? guardianId : null;
@@ -391,6 +442,7 @@ extension _FightRounds on _FightScreenState {
       _currentFaces.clear();
       _selectedTargets.clear();
       _lockedActorIds.clear();
+      _steadyActorIds.clear();
       _selectedActorId = null;
       if (lastDamagedEnemyKey != null) {
         _lastDamagedEnemyKey = lastDamagedEnemyKey;
@@ -446,6 +498,15 @@ extension _FightRounds on _FightScreenState {
     final newEntries = <_LogEntry>[];
     var playerDied = false;
     _roundsStarted++;
+    // A Silence laid in the enemies' turn hangs over this round's dice; the
+    // round's best hit (what a Mirror sends back) starts over.
+    _silenced = _silencePending;
+    _silencePending = false;
+    _bestHitThisRound = 0;
+    if (_silenced) {
+      newEntries.add(
+          _LogEntry(trFor(lang, 'silence_round_note'), _LogKind.enemyDamage));
+    }
 
     for (final member in _party) {
       if (member.isKnockedOut) continue;
@@ -550,6 +611,7 @@ extension _FightRounds on _FightScreenState {
       _currentFaces.clear();
       _selectedTargets.clear();
       _lockedActorIds.clear();
+      _steadyActorIds.clear();
       _spellBlock.clear();
       _guardianId = null;
       _selectedActorId = null;
@@ -637,7 +699,8 @@ extension _FightRounds on _FightScreenState {
   /// weakness/resistance on the enemy's card with a log line the first
   /// time.
   int _landHitOnEnemy(_EnemyMember enemy, int damage, String element,
-      List<_LogEntry> entries, AppLanguage lang) {
+      List<_LogEntry> entries, AppLanguage lang,
+      {bool pierce = false}) {
     if (damage <= 0) return damage;
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
@@ -654,7 +717,8 @@ extension _FightRounds on _FightScreenState {
         ));
       }
     }
-    if (enemy.guard > 0) {
+    // A Pierce goes straight through a raised guard (see face_keywords).
+    if (enemy.guard > 0 && !pierce) {
       final through = damageThroughGuard(landed, enemy.guard);
       final soaked = landed - through.damage;
       enemy.guard = through.guard;
@@ -699,9 +763,12 @@ extension _FightRounds on _FightScreenState {
   /// A turn [enemy] spends on something other than a swing: mending
   /// itself, raising its guard, winding up, or rallying its pack.
   void _resolveEnemyStance(
-      _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay) {
+      _EnemyMember enemy, EnemyMoveResult move, AppLanguage lang, int delay,
+      {required String targetId}) {
     final key = _enemyCardKey(enemy.key);
     switch (move.intent) {
+      case EnemyIntent.tamper:
+        _applyTamper(enemy, move, targetId, lang, delay);
       case EnemyIntent.heal:
         final amount = scaledEnemyHeal(move.healAmount,
             maxHealth: enemy.maxHealth, baseMaxHealth: enemy.baseMaxHealth);
@@ -939,7 +1006,8 @@ extension _FightRounds on _FightScreenState {
       final pending = enemy.pendingMove ?? _rollMoveAndTargetFor(enemy, skills);
       final move = pending.move;
       if (!pending.release && move.intent != EnemyIntent.attack) {
-        _resolveEnemyStance(enemy, move, lang, fxDelay);
+        _resolveEnemyStance(enemy, move, lang, fxDelay,
+            targetId: pending.targetId);
         enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
         continue;
       }
