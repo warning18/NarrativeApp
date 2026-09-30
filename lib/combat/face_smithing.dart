@@ -11,8 +11,8 @@ import 'face_keywords.dart';
 /// - [SmithingWork.inscribe]: a keyword (see face_keywords.dart), one per
 ///   face; inscribing another replaces it.
 /// - [SmithingWork.recast]: an Attack, Defend or Heal face turned into
-///   another of the three, its number kept (a Temper goes with the
-///   Attack).
+///   another of the three, its number kept up to the die's best face of
+///   the new type (see [recastValue]; a Temper goes with the Attack).
 enum SmithingWork { hone, temper, inscribe, recast }
 
 /// What a Hone adds, and how many a face takes.
@@ -22,7 +22,8 @@ const int maxHones = 3;
 /// The face types a Hone and a Recast work on.
 const List<String> smithableBasicTypes = ['Attack', 'Defend', 'Heal'];
 
-/// The elements a Temper can give an Attack face.
+/// The elements a Temper can give an Attack face, spelled as the rest of
+/// the game spells them (see elementFieldPrefixes).
 const List<String> temperElements = [
   'Fire',
   'Ice',
@@ -31,8 +32,13 @@ const List<String> temperElements = [
   'Earth',
   'Wind',
   'Water',
-  'Elec',
+  'Electricity',
 ];
+
+/// A Temper's element as a save may hold it: v1.182 to v1.186 sold
+/// Electricity as 'Elec', which nothing else in the game reads.
+String? _temperElementNamed(String? name) =>
+    name == 'Elec' ? 'Electricity' : name;
 
 /// The pack items the Hammersmith takes for the work: iron for a Hone and a
 /// Temper, a trophy (an Elite Mark, or a boss's Champion's Trophy) for an
@@ -91,16 +97,17 @@ class FaceUpgrade {
         if (recastType != null) 'recastType': recastType,
       };
 
-  factory FaceUpgrade.fromJson(Map<String, dynamic> json) => FaceUpgrade(
-        hones: ((json['hones'] as num?)?.toInt() ?? 0).clamp(0, maxHones),
-        element: temperElements.contains(json['element']?.toString())
-            ? json['element'].toString()
-            : null,
-        keyword: faceKeywordNamed(json['keyword']?.toString() ?? ''),
-        recastType: smithableBasicTypes.contains(json['recastType']?.toString())
-            ? json['recastType'].toString()
-            : null,
-      );
+  factory FaceUpgrade.fromJson(Map<String, dynamic> json) {
+    final element = _temperElementNamed(json['element']?.toString());
+    return FaceUpgrade(
+      hones: ((json['hones'] as num?)?.toInt() ?? 0).clamp(0, maxHones),
+      element: temperElements.contains(element) ? element : null,
+      keyword: faceKeywordNamed(json['keyword']?.toString() ?? ''),
+      recastType: smithableBasicTypes.contains(json['recastType']?.toString())
+          ? json['recastType'].toString()
+          : null,
+    );
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -118,11 +125,19 @@ class FaceUpgrade {
 /// assignments).
 typedef DieUpgrades = Map<String, FaceUpgrade>;
 
+/// Where the work on a die is kept in the session's `diceUpgrades`: under
+/// the die's id for one of the player's own dice, under `companion:die`
+/// for a companion's signature die. The Weaponsmith sells Kelda's Iron Die
+/// too (and Maren's and Sable's dice are sold elsewhere), so the player's
+/// copy and the companion's are worked apart.
+String dieUpgradesKey(String dieId, {String? companionId}) =>
+    companionId == null ? dieId : '$companionId:$dieId';
+
 /// [faces] (a die's dice.json faces) with [upgrades] worked in: a Recast
-/// face takes its new type, a Hone adds to its number, a Temper sets its
-/// element and an inscription joins its keywords. The records returned are
-/// new maps; [faces] is left as it was. A face the work doesn't fit (a
-/// dice.json change since) keeps what still fits.
+/// face takes its new type (and [recastValue]), a Hone adds to its number,
+/// a Temper sets its element and an inscription joins its keywords. The
+/// records returned are new maps; [faces] is left as it was. A face the
+/// work doesn't fit (a dice.json change since) keeps what still fits.
 List<Map<String, dynamic>> smithedFaces(
   List<Map<String, dynamic>> faces,
   DieUpgrades? upgrades,
@@ -130,17 +145,34 @@ List<Map<String, dynamic>> smithedFaces(
   if (upgrades == null || upgrades.isEmpty) return faces;
   return [
     for (var i = 0; i < faces.length; i++)
-      _smithedFace(faces[i], upgrades[i.toString()]),
+      _smithedFace(faces[i], upgrades[i.toString()], faces),
   ];
 }
 
-Map<String, dynamic> _smithedFace(
-    Map<String, dynamic> face, FaceUpgrade? upgrade) {
+/// The number a face of [value] keeps when recast to [type] on a die of
+/// [faces] (its dice.json records): its own, but never more than the die's
+/// best [type] face, so a Recast changes what a face does and not what it
+/// is worth (a Heal 18 or a Guard 13 was tuned as a heal or a guard, and
+/// is no Attack 18 or 13). A die with no [type] face keeps the number.
+int recastValue(int value, String type, List<Map<String, dynamic>> faces) {
+  int? best;
+  for (final face in faces) {
+    if (face['type'] != type) continue;
+    final number = (face['value'] as num?)?.toInt() ?? 0;
+    if (best == null || number > best) best = number;
+  }
+  return best == null || value < best ? value : best;
+}
+
+Map<String, dynamic> _smithedFace(Map<String, dynamic> face,
+    FaceUpgrade? upgrade, List<Map<String, dynamic>> dieFaces) {
   if (upgrade == null || upgrade.isEmpty) return face;
   final out = Map<String, dynamic>.from(face);
   final type = out['type']?.toString() ?? '';
   if (upgrade.recastType != null && smithableBasicTypes.contains(type)) {
     out['type'] = upgrade.recastType;
+    out['value'] = recastValue(
+        (out['value'] as num?)?.toInt() ?? 0, upgrade.recastType!, dieFaces);
     if (upgrade.recastType != 'Attack') out['element'] = 'None';
   }
   final newType = out['type']?.toString() ?? '';
@@ -208,12 +240,24 @@ bool canSmith(SmithingWork work, Map<String, dynamic> face,
     case SmithingWork.hone:
       return smithableBasicTypes.contains(type) && current.hones < maxHones;
     case SmithingWork.temper:
-      return type == 'Attack';
+      return type == 'Attack' && temperableElements(face, current).isNotEmpty;
     case SmithingWork.inscribe:
       return FaceKeyword.values.any((k) => keywordFitsFaceType(k, type));
     case SmithingWork.recast:
       return smithableBasicTypes.contains(baseType);
   }
+}
+
+/// The elements a Temper can give [face] worked as [current]: every one
+/// but the element the face strikes with already, its own (a Fire strike
+/// isn't paid for to strike with Fire) or a Temper's.
+List<String> temperableElements(Map<String, dynamic> face,
+    [FaceUpgrade current = FaceUpgrade.none]) {
+  final own = face['element']?.toString() ?? 'None';
+  return [
+    for (final element in temperElements)
+      if (element != own && element != current.element) element,
+  ];
 }
 
 /// The keywords that can be inscribed on [face] worked as [current]: those
@@ -240,7 +284,8 @@ String smithingWorkLabelKey(SmithingWork work) => 'smith_${work.name}';
 String smithingWorkDescriptionKey(SmithingWork work) =>
     'smith_${work.name}_desc';
 
-/// Parses the session's `diceUpgrades` (die id → face index → work).
+/// Parses the session's `diceUpgrades` (die key, see [dieUpgradesKey] →
+/// face index → work).
 Map<String, DieUpgrades> parseDiceUpgrades(Object? raw) {
   if (raw is! Map) return const {};
   final out = <String, DieUpgrades>{};

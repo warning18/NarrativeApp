@@ -171,6 +171,8 @@ extension _FightActions on _FightScreenState {
             power: spellPower(amount: damage, maxHealth: enemy.maxHealth));
         final wasAlive = enemy.isAlive;
         enemy.currentHealth = max(0, enemy.currentHealth - damage);
+        // A spell is one of the round's blows a Mirror can send back.
+        _bestHitThisRound = max(_bestHitThisRound, damage);
         if (damage > 0) {
           hitsLanded++;
           _lastDamagedEnemyKey = enemy.key;

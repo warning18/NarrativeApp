@@ -31,8 +31,8 @@ extension _FightCards on _FightScreenState {
     final colorScheme = Theme.of(context).colorScheme;
     final accent = _accentFor(member);
     final face = _currentFaces[member.id];
-    final isStrike =
-        face != null && (face.type == 'Attack' || face.type == 'Skill');
+    // What the member plays aims (an Echo plays the face it copies).
+    final isStrike = _strikerIds().contains(member.id);
     final canSelect = _enemies.length > 1 &&
         isStrike &&
         _awaitingDecision &&
@@ -381,11 +381,10 @@ extension _FightCards on _FightScreenState {
         !_rolling &&
         enemy.isAlive &&
         _selectedTargets.containsKey(selectedActor.id);
+    final strikers = _strikerIds();
     final aimingActors = <_PartyMember>[
       for (final actor in _actingParty)
-        if (_currentFaces[actor.id] != null &&
-            (_currentFaces[actor.id]!.type == 'Attack' ||
-                _currentFaces[actor.id]!.type == 'Skill') &&
+        if (strikers.contains(actor.id) &&
             (_enemies.length == 1
                 ? enemy.isAlive
                 : _selectedTargets[actor.id] == enemy.key))

@@ -117,6 +117,11 @@ void main() {
               isNot(keywordDescriptionKey(k)));
         }
       }
+      // Pierce names the Armored affix as an enemy's card does.
+      for (final lang in AppLanguage.values) {
+        expect(trFor(lang, keywordDescriptionKey(FaceKeyword.pierce)),
+            contains(trFor(lang, 'affix_armored')));
+      }
     });
   });
 
@@ -253,6 +258,18 @@ void main() {
       expect(back.type, 'Attack');
       expect(back.value, 7);
       expect(silencedFace(_face('Heal', 5)).type, 'Heal');
+      // A blank keeps none of the skill's keywords: a Steady blank would be
+      // kept through the rerolls, an Echo one would still echo.
+      final steady = silencedFace(_face('Skill', 0,
+          skill: 'warrior_shield_bash',
+          keywords: {FaceKeyword.steady, FaceKeyword.echo}));
+      expect(steady.type, 'Empty');
+      expect(steady.keywords, isEmpty);
+      expect(
+          silencedFace(_face('Attack', 7, keywords: {FaceKeyword.steady})
+                  .channeling('fireball'))
+              .keywords,
+          {FaceKeyword.steady});
     });
 
     test('a Mirror sends back the best blow, within bounds', () {
@@ -308,6 +325,30 @@ void main() {
       expect(moveWith('edict_of_silence').tamper, DiceTamper.silence);
     });
 
+    test('only a boss the story or a zone puts there leaves a trophy', () {
+      final enemies = _load('enemies.json');
+      final zones = _load('zones.json');
+      for (final zone in zones.values) {
+        final boss = (zone as Map)['bossEnemyId']?.toString() ?? '';
+        if (boss.isEmpty) continue;
+        expect(dropsBossTrophy(boss), isTrue, reason: boss);
+      }
+      for (final id in soloOnlyEnemyIds) {
+        expect(dropsBossTrophy(id), isTrue, reason: id);
+      }
+      // Phased, but drawn at random: a hunter, the Matriarch, the Penitent.
+      for (final id in [
+        'angel_judicator',
+        'demon_tormentor',
+        'rat_matriarch',
+        'inquisition_penitent',
+      ]) {
+        expect(isBossEnemy(id, enemies[id] as Map<String, dynamic>), isTrue);
+        expect(dropsBossTrophy(id), isFalse, reason: id);
+      }
+      expect(dropsBossTrophy('slum_thug'), isFalse);
+    });
+
     test('no tampering in chapters 1 and 2', () {
       final skills = _load('skills.json');
       final enemies = _load('enemies.json');
@@ -341,6 +382,21 @@ void main() {
       for (var i = 0; i < 6; i++) {
         expect(oppositeFaceIndex(oppositeFaceIndex(i, 6), 6), i);
       }
+    });
+
+    test('Luck says what it does in a fight', () {
+      expect(trFor(AppLanguage.en, 'luck_desc'),
+          allOf(contains('critical'), contains('nudge'), contains('3')));
+      expect(trFor(AppLanguage.fr, 'luck_desc'),
+          allOf(contains('critique'), contains('coup de pouce')));
+    });
+
+    test('the middle face of an odd die has nowhere to turn', () {
+      // The Vigil Die has seven faces: the fourth is its own opposite.
+      expect(nudgedFaceIndex(3, 7), isNull);
+      expect(nudgedFaceIndex(0, 7), 6);
+      expect(nudgedFaceIndex(2, 6), 3);
+      expect(nudgedFaceIndex(0, 1), isNull);
     });
   });
 }
