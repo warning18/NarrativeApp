@@ -822,6 +822,8 @@ class _StoryView extends ConsumerWidget {
                             TimedChoiceBar(
                               key: ValueKey(
                                   'timer_${node.id}_${playState.history.length}'),
+                              scene: timedSceneKey(
+                                  node.id, playState.history.length),
                               seconds: node.timeLimit!,
                               active: ref.watch(homeTabIndexProvider) == 0,
                               label: tr(ref, 'timed_choice_hint'),

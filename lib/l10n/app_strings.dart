@@ -154,10 +154,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Vous en mangez une sur chaque route entre deux lieux. Sans rien à manger, la faim vous coûte de la santé.',
   },
   'road_rations_label': {AppLanguage.en: 'Rations', AppLanguage.fr: 'Rations'},
-  'road_day_abbrev': {AppLanguage.en: 'Day', AppLanguage.fr: 'Jour'},
-  'road_day_label': {
-    AppLanguage.en: 'Day of the journey',
-    AppLanguage.fr: 'Jour du voyage',
+  'stats_threat': {
+    AppLanguage.en: 'Your enemies are gathering (+{p}%)',
+    AppLanguage.fr: 'Vos ennemis se rassemblent (+{p} %)',
   },
   'road_buy_one': {
     AppLanguage.en: 'Buy 1 ({gold} gold)',
@@ -385,7 +384,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
   'harbor_open_button': {
-    AppLanguage.en: 'Go to the harbor',
+    AppLanguage.en: 'Go to the Harbor',
     AppLanguage.fr: 'Aller au port',
   },
   'harbor_unlocks_note': {
@@ -2324,7 +2323,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Encore {n} étapes',
   },
   'harbour_not_built_title': {
-    AppLanguage.en: 'The Harbour: not built yet',
+    AppLanguage.en: 'The Harbor: not built yet',
     AppLanguage.fr: 'Le Port : pas encore bâti',
   },
   'harbour_not_built_body': {
@@ -5389,7 +5388,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Épreuves de compétence',
   },
   'tut_boat_title': {
-    AppLanguage.en: 'The harbour',
+    AppLanguage.en: 'The Harbor',
     AppLanguage.fr: 'Le port',
   },
   'tut_voyage_title': {
@@ -5476,9 +5475,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'Your mark, and one step ahead for every way on. Its icon and colour say what it holds: a fight, a roll, a shop, a rest. Below you, the road you have already walked this chapter.',
+        'Your mark, with a step round it for each thing to do here; the ways to other places sit at the edge, in their true direction. A step’s icon and colour say what it holds. The road behind you is below.',
     AppLanguage.fr:
-        'Votre repère, et une étape devant pour chaque chemin. Son icône et sa couleur disent ce qu’elle réserve : un combat, un jet, une boutique, un repos. Sous vous, la route déjà parcourue ce chapitre.',
+        'Votre repère, entouré d’une étape pour chaque chose à faire ici ; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
@@ -5500,7 +5499,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_5': {
     AppLanguage.en:
-        'Sea: the Rusty Eel, the harbour, and the chart. Sail to a port for its expeditions.',
+        'Sea: the Rusty Eel, the Harbor, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
         'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
@@ -5540,7 +5539,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_3': {
     AppLanguage.en:
-        'The harbour, once you build it. Your boat is refitted there.',
+        'The Harbor, once you build it. Your boat is refitted there.',
     AppLanguage.fr:
         'Le port, une fois construit. On y remet votre bateau en état.',
   },
