@@ -1437,6 +1437,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final session = ref.read(playerSessionProvider);
     return ShipBattlePanel(
       key: ValueKey('ship_battle_$_battleKey'),
+      placeCrew: true,
       player: _player!,
       enemy: _enemy!,
       shipName: trFor(lang, 'boat_title'),

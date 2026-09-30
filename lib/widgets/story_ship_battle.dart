@@ -73,6 +73,7 @@ Future<bool?> runStoryShipBattle(
             title: Text(enemyName),
           ),
           body: ShipBattlePanel(
+            placeCrew: true,
             player: buildPlayerShip(
               ship: ship,
               parts: parts,

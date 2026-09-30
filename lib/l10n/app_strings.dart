@@ -6442,6 +6442,46 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Bord à bord, leur bastingage ouvert : abordez et affrontez {crew} au bastingage (leur barre peut esquiver les grappins ; cela termine le tour).',
   },
+  'ship_order_here': {
+    AppLanguage.en: 'at the {room}',
+    AppLanguage.fr: 'au poste : {room}',
+  },
+  'ship_order_go': {
+    AppLanguage.en: 'goes to the {room}',
+    AppLanguage.fr: 'va au poste : {room}',
+  },
+  'ship_order_anywhere': {
+    AppLanguage.en: 'from anywhere',
+    AppLanguage.fr: 'depuis n’importe où',
+  },
+  'ship_order_spent': {
+    AppLanguage.en: 'given',
+    AppLanguage.fr: 'donné',
+  },
+  'ship_place_title': {
+    AppLanguage.en: 'Stations!',
+    AppLanguage.fr: 'À vos postes !',
+  },
+  'ship_place_intro': {
+    AppLanguage.en:
+        'The {ship} comes on. Set each hand where they will fight: an order is given from its own rooms.',
+    AppLanguage.fr:
+        '{ship} approche. Placez chacun là où il se battra : un ordre se donne depuis ses propres postes.',
+  },
+  'ship_place_hint': {
+    AppLanguage.en:
+        'Drag a hand onto a room, or tap them then the room. Gold: their order can be given from where they stand.',
+    AppLanguage.fr:
+        'Glissez un membre sur une salle, ou touchez-le puis la salle. En or : son ordre peut être donné d’où il se tient.',
+  },
+  'ship_place_skills': {
+    AppLanguage.en: 'By orders',
+    AppLanguage.fr: 'Selon les ordres',
+  },
+  'ship_place_start': {
+    AppLanguage.en: 'Battle!',
+    AppLanguage.fr: 'Au combat !',
+  },
   'ship_auto_station_button': {
     AppLanguage.en: 'Auto-station',
     AppLanguage.fr: 'Postes auto'
@@ -6577,9 +6617,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_ship_orders': {
     AppLanguage.en:
-        'Each hand aboard can give one order a battle, from the crew sheet: a brace, a blessing, a critical shot, and more.',
+        'Each hand aboard can give one order a battle, from the right room: tap it under the sea and they go there and give it. Drag a hand onto a room to move them.',
     AppLanguage.fr:
-        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis la fiche d’équipage : s’arc-bouter, bénir, un tir critique, et d’autres.',
+        'Chaque membre de l’équipage peut donner un ordre par bataille, depuis le bon poste : touchez-le sous la mer, il s’y rend et le donne. Glissez un membre sur une salle pour le déplacer.',
   },
   'tip_ship_fire': {
     AppLanguage.en:

@@ -232,6 +232,21 @@ const Map<String, CrewOrder> companionOrders = {
 CrewOrder? orderFor(ShipCrew crew) =>
     crew.isPlayer ? CrewOrder.allHands : companionOrders[crew.id];
 
+/// Where each order is given from: a hand stands in one of these rooms to
+/// give it (see [ShipBattleRules.orderStations]). The first is the room a
+/// hand is sent to when the order is tapped from elsewhere.
+const Map<CrewOrder, List<ShipRoom>> orderRooms = {
+  CrewOrder.allHands: ShipRoom.values,
+  CrewOrder.brace: [ShipRoom.bulwark, ShipRoom.hold],
+  CrewOrder.grapple: [ShipRoom.helm, ShipRoom.bulwark],
+  CrewOrder.bless: [ShipRoom.hold, ShipRoom.helm],
+  CrewOrder.shoreUp: [ShipRoom.bulwark, ShipRoom.hold],
+  CrewOrder.markHelm: [ShipRoom.guns, ShipRoom.helm],
+  CrewOrder.cutRigging: [ShipRoom.guns, ShipRoom.bulwark],
+  CrewOrder.eagleEye: [ShipRoom.guns, ShipRoom.helm],
+  CrewOrder.voidWard: [ShipRoom.helm, ShipRoom.bulwark],
+};
+
 /// Health Maren's blessing gives each crew member.
 const int blessHeal = 10;
 
@@ -265,6 +280,7 @@ class ShipBattleRules {
     this.seaEvents = true,
     this.habits = true,
     this.flooding = true,
+    this.orderStations = true,
   });
 
   static const classic = ShipBattleRules(
@@ -273,6 +289,7 @@ class ShipBattleRules {
     seaEvents: false,
     habits: false,
     flooding: false,
+    orderStations: false,
   );
 
   final bool range;
@@ -280,6 +297,9 @@ class ShipBattleRules {
   final bool seaEvents;
   final bool habits;
   final bool flooding;
+
+  /// A hand gives their order from its rooms only (see [orderRooms]).
+  final bool orderStations;
 }
 
 /// How a battle ended: [escaped] is the enemy getting away, [fled] the
@@ -710,7 +730,43 @@ class ShipBattle {
   /// True when [member]'s order can be given now and would do something.
   /// Liora's eagle eye and Malrik's mark wait for a turn a weapon can
   /// fire: spent on a silent turn they would do nothing.
-  bool canOrder(ShipCrew member) {
+  bool canOrder(ShipCrew member) =>
+      orderWorks(member) && orderFitsStation(member);
+
+  /// True when [member] stands where their order is given from (always,
+  /// without [ShipBattleRules.orderStations]).
+  bool orderFitsStation(ShipCrew member) {
+    final order = orderFor(member);
+    if (order == null || !rules.orderStations) return true;
+    return orderRooms[order]!.contains(stationOf(member.id));
+  }
+
+  /// The room [member] would go to to give their order: where they stand
+  /// if it fits, else the first of the order's rooms nobody else holds,
+  /// else its first room.
+  ShipRoom? orderRoomFor(ShipCrew member) {
+    final order = orderFor(member);
+    if (order == null) return null;
+    final here = stationOf(member.id);
+    final rooms = orderRooms[order]!;
+    if (here != null && rooms.contains(here)) return here;
+    for (final room in rooms) {
+      if (stations[room] == null) return room;
+    }
+    return rooms.first;
+  }
+
+  /// Sends [member] to their order's room if they stand elsewhere, then
+  /// gives the order: one tap for the player.
+  void orderFromStation(ShipCrew member) {
+    if (!orderWorks(member)) return;
+    if (!orderFitsStation(member)) station(member.id, orderRoomFor(member)!);
+    giveOrder(member);
+  }
+
+  /// True when [member]'s order would do something now, wherever they
+  /// stand: once a battle, and only when it has something to act on.
+  bool orderWorks(ShipCrew member) {
     final order = orderFor(member);
     if (order == null || over || ordersUsed.contains(member.id)) return false;
     return switch (order) {
