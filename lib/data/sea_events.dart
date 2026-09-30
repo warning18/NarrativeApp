@@ -388,6 +388,11 @@ SeaEvent beastDayFor(String beastId, Map<String, dynamic> record,
   );
 }
 
+/// The day a beast is met on a crossing of [length] days: never the first
+/// when there is one before it, so its omen always shows the day before.
+int beastDayIndex(Random random, int length) =>
+    length < 2 ? 0 : 1 + random.nextInt(length - 1);
+
 /// [events] with the beast [beastId] met on day [day] (in place of what
 /// was drawn), its omen on the day before.
 List<SeaEvent> withBeastDay(List<SeaEvent> events, int day, String beastId,

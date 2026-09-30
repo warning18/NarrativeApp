@@ -104,8 +104,9 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
   final String shipName;
   final String enemyName;
 
-  /// The enemy's id in enemy_ships.json (`shipName`), which picks its
-  /// sprite (see ShipCutaway.forEnemy).
+  /// The enemy's id in enemy_ships.json (its record's key, never the
+  /// French overlay's name), which picks its look (see
+  /// TopShipLook.forEnemy).
   final String? enemyShipId;
   final List<ShipCrew> crew;
 
@@ -937,6 +938,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       hint = hint.replaceAll(
           '{crew}', _boardingCrewLabel(_boardingCrew(enemies)!));
     }
+    // Low in the water with a way out: that comes before anything else.
+    final runWarning = widget.canFlee &&
+        !_over &&
+        _battle.player.hull < _battle.player.maxHull * runWarningShare;
+    if (runWarning) hint = trFor(lang, 'ship_run_warning');
     if (_busy && !_over) {
       hint = trFor(lang, 'ship_enemy_turn_label')
           .replaceAll('{ship}', widget.enemyName);
@@ -974,7 +980,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
                     child: _buildTip(tip, lang),
                   ),
-                _buildDock(lang, fr, enemies, canBoard, hint),
+                _buildDock(lang, fr, enemies, canBoard, hint, warn: runWarning),
               ],
             );
             final sea = Padding(
@@ -1034,7 +1040,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   /// clock, the hint (or the aim bar), the weapons, the shot, the crew and
   /// the end of the turn.
   Widget _buildDock(AppLanguage lang, bool fr, Map<String, dynamic>? enemies,
-      bool canBoard, String hint) {
+      bool canBoard, String hint,
+      {bool warn = false}) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final readyOrders =
@@ -1082,8 +1089,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                           message: hint,
                           child: Text(
                             '${trFor(lang, 'round_label')} ${_battle.turn} · $hint',
+                            key: const Key('ship_hint'),
                             style: theme.textTheme.labelSmall?.copyWith(
-                                color: _busy && !_over ? ink.blood : ink.ash),
+                                color: (_busy && !_over) || warn
+                                    ? ink.blood
+                                    : ink.ash),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -1357,7 +1367,8 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             const Key('ship_run_button'),
             Icons.directions_boat_filled_outlined,
             '${trFor(lang, 'ship_run_button')}: '
-            '${trFor(lang, 'ship_run_hint')}',
+            '${trFor(lang, 'ship_run_hint')} '
+            '${trFor(lang, 'ship_run_left_hint').replaceAll('{n}', '${escapeNeeded - _battle.escape}')}',
             canAct && _battle.canRun
                 ? () => setState(() {
                       _battle.runForIt();
@@ -1400,7 +1411,10 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
             Text(text, style: small?.copyWith(color: color)),
           ],
         );
-    final dive = b.roundsToDive;
+    // Held on the line, or its fins torn, it cannot dive.
+    final dive = b.tethered || b.enemy.room(ShipRoom.helm).isDown
+        ? null
+        : b.roundsToDive;
     final heartDown = b.enemy.room(ShipRoom.hold).isDown;
     return Padding(
       padding: const EdgeInsets.only(top: 2),
@@ -1421,7 +1435,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     .replaceAll('{n}', '${b.tether}'),
                 ink.gold,
                 'beast_tethered'),
-          if (dive != null && !b.tethered)
+          if (dive != null)
             chip(
                 Icons.waves,
                 dive == 0
@@ -1773,10 +1787,14 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           Center(
             child: RotatedBox(
               quarterTurns: 3,
+              // Far off, or with a run under way, the turns of running
+              // still needed to get away.
               child: Text(
-                _battle.escape > 0
+                widget.canFlee &&
+                        !_over &&
+                        (_battle.range == ShipRange.long || _battle.escape > 0)
                     ? '${trFor(lang, 'ship_range_${_battle.range.name}_title')} · '
-                        '${trFor(lang, 'ship_escape_label').replaceAll('{n}', '${_battle.escape}').replaceAll('{of}', '$escapeNeeded')}'
+                        '${trFor(lang, 'ship_escape_label').replaceAll('{n}', '${escapeNeeded - _battle.escape}')}'
                     : trFor(lang, 'ship_range_${_battle.range.name}_title'),
                 key: const Key('ship_range_label'),
                 maxLines: 1,
@@ -2037,24 +2055,38 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         );
     // The name is written by the ship (see _roomLabelRow) and the room's
     // state painted on its deck: the tile adds who mans it at the top and
-    // its pips and marks at the bottom.
+    // its pips and marks at the bottom. Each has half a tile at most: on a
+    // short one (the bow's bulwark on a phone's small sea) they shrink
+    // rather than spill.
     final content = Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (token != null) token,
-            if (focused)
-              Tooltip(
-                message: trFor(lang, 'ship_focus_hint'),
-                child:
-                    Icon(Icons.center_focus_strong, size: 13, color: ink.ember),
+        if (token != null || focused)
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.topLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (token != null) token,
+                  if (focused)
+                    Tooltip(
+                      message: trFor(lang, 'ship_focus_hint'),
+                      child: Icon(Icons.center_focus_strong,
+                          size: 13, color: ink.ember),
+                    ),
+                ],
               ),
-          ],
+            ),
+          ),
+        Flexible(
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FittedBox(fit: BoxFit.scaleDown, child: chip(status)),
+          ),
         ),
-        Align(alignment: Alignment.bottomRight, child: chip(status)),
       ],
     );
     return Tooltip(
@@ -2828,6 +2860,10 @@ const Color _previewColor = Color(0xFF42A5F5);
 /// Boarders met by a hand in the hold come over the rail at this share
 /// of their health.
 const double holdMannedBoarderHealth = 0.75;
+
+/// Below this share of her hull the dock tells the player to run for it:
+/// a run started lower often fails, the enemy closing as she turns.
+const double runWarningShare = 0.3;
 
 /// A room's own colour, from the Stitched Ink palette; darker on a light
 /// page so it still reads.

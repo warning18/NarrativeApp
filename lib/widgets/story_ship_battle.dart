@@ -85,7 +85,7 @@ Future<bool?> runStoryShipBattle(
             enemy: buildEnemyShip(data),
             shipName: trFor(lang, 'boat_title'),
             enemyName: enemyName,
-            enemyShipId: data['shipName']?.toString() ?? enemyShipId,
+            enemyShipId: enemyShipId,
             crew: crew(),
             foresight: sail?.power == SailPower.foresight,
             windKnot: sail?.power == SailPower.windknot,

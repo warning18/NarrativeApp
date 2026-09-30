@@ -397,11 +397,8 @@ class _BeastCard extends ConsumerWidget {
     final home = homePortId(ports);
     final port = home == null ? null : ports[home] as Map<String, dynamic>?;
     if (home == null || port == null) return;
-    // The signs are spent: the hunt goes where they led.
-    await ref
-        .read(playerSessionProvider.notifier)
-        .updateSeaBeast(beastId, (b) => b.copyWith(clues: 0));
-    if (!context.mounted) return;
+    // The hunt goes where the signs led; they are spent once the beast is
+    // met (see VoyageScreen), so a hunt cut short on its day out keeps them.
     final expedition = ref.read(expeditionActiveProvider.notifier);
     expedition.state = true;
     await Navigator.of(context).push<bool>(

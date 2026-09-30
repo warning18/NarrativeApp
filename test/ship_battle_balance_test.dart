@@ -74,6 +74,30 @@ final _fittings = [
     _crew('maren'),
     _crew('vess'),
   ]),
+  // The late Eel with the cheap Grape Swivel beside the ballista, and
+  // with the Tide-Mother's beak (a slain beast's trophy) beside the rack.
+  _Fitting('grape', const [
+    'ballista',
+    'grape_swivel',
+    'iron_plating',
+    'tar_sealed_hull'
+  ], [
+    _crew('player', player: true, dex: 4),
+    _crew('grosh', str: 6),
+    _crew('maren'),
+    _crew('vess'),
+  ]),
+  _Fitting('beak', const [
+    'harpoon_rack',
+    'tide_mothers_beak',
+    'iron_plating',
+    'tar_sealed_hull'
+  ], [
+    _crew('player', player: true, dex: 4),
+    _crew('grosh', str: 6),
+    _crew('maren'),
+    _crew('vess'),
+  ]),
 ];
 
 class _Tally {
@@ -310,7 +334,8 @@ void main() {
         // Since v1.183 the shot is the weapon's, not the player's pick: a
         // skilled captain no longer trades half her hull damage for chain
         // shot against a hard ship, so the late void barge falls more
-        // often (57% against 23%). Still a fight, not a walkover.
+        // often (55% against 23%, her hull raised from 140 to 150).
+        // Still a fight, not a walkover.
         expect(now, lessThanOrEqualTo(old + 0.35),
             reason: '$fitting vs $enemy: $now vs $old before');
       }
