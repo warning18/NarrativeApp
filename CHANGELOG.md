@@ -8,6 +8,13 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.183.1+215]
+
+### Removed
+- **Coral in the shallows and fallen columns in the drowned waters.** The
+  shallows keep their seagrass, rocks and reef fish; the drowned waters
+  their weed, eels and fish.
+
 ## [1.183.0+214]
 
 ### Added
@@ -15,7 +22,7 @@ isn't reconstructable from git history alone.
   drawn beneath the waves:
   - the open sea: schools of silver fish, a great shadow passing deep
     down, jellyfish;
-  - the shallows: coral heads, seagrass and rocks, bright reef fish;
+  - the shallows: seagrass and rocks, bright reef fish;
   - the drowned waters: fallen columns furred with weed, pale eels;
   - the abyss: black spires, glowing jellyfish, an angler's lure in the
     dark;

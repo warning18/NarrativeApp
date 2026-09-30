@@ -418,10 +418,10 @@ class SeaSurfacePainter extends CustomPainter {
 ///
 /// - The open sea: a school of silver fish, a great shadow passing deep
 ///   down, a jellyfish or two; no bottom to be seen.
-/// - The shallows: coral heads and seagrass on the sand, bright reef
-///   fish darting between them.
-/// - The drowned waters: fallen columns furred with weed, pale eels
-///   winding through them.
+/// - The shallows: seagrass and rocks on the sand, bright reef fish
+///   darting between them.
+/// - The drowned waters: weed swaying in the murk, pale eels winding
+///   through it.
 /// - The abyss: black spires, jellyfish glowing, an angler's lure bobbing
 ///   in the dark.
 /// - The ashen chop: grey rocks crusted with barnacles, dead weed, small
@@ -444,7 +444,6 @@ class SeaDepthsPainter extends CustomPainter {
         _school(canvas, size, const Color(0xFFD8E8EE), count: 7, seed: 12);
       case SeaWaters.shallows:
         _rocks(canvas, size, const Color(0xFF6E7F6A), 4, seed: 3);
-        _corals(canvas, size);
         _grass(canvas, size, const Color(0xFF4F9A5A), 9, seed: 4);
         for (final (i, colour) in const [
           Color(0xFFFF9F43),
@@ -457,7 +456,6 @@ class SeaDepthsPainter extends CustomPainter {
           _darter(canvas, size, colour, i);
         }
       case SeaWaters.drowned:
-        _columns(canvas, size, look);
         _grass(canvas, size, const Color(0xFF5E7D3E), 7, seed: 5);
         _eel(canvas, size, const Color(0xFFCFD8B8), 0);
         _eel(canvas, size, const Color(0xFFB7C49A), 1);
@@ -643,35 +641,6 @@ class SeaDepthsPainter extends CustomPainter {
     }
   }
 
-  /// Coral heads: branching, warm-coloured.
-  void _corals(Canvas canvas, Size size) {
-    const colours = [Color(0xFFE8765E), Color(0xFFF2A65A), Color(0xFFD65C8A)];
-    for (var i = 0; i < 5; i++) {
-      final c = Offset(
-          size.width *
-              (i.isEven
-                  ? 0.05 + 0.1 * _hash(i, 70)
-                  : 0.85 + 0.1 * _hash(i, 70)),
-          size.height * (0.12 + 0.8 * _hash(i, 71)));
-      final paint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round
-        ..strokeWidth = 3.5
-        ..color = colours[i % colours.length].withValues(alpha: 0.85);
-      void branch(Offset from, double angle, double len, int depth) {
-        final to = from + Offset(math.cos(angle), math.sin(angle)) * len;
-        canvas.drawLine(from, to, paint);
-        if (depth == 0) return;
-        branch(to, angle - 0.5, len * 0.7, depth - 1);
-        branch(to, angle + 0.5, len * 0.7, depth - 1);
-      }
-
-      branch(c, -math.pi / 2, 15, 3);
-      canvas.drawCircle(c, 4,
-          Paint()..color = colours[i % colours.length].withValues(alpha: 0.6));
-    }
-  }
-
   /// A pale eel winding through the ruins.
   void _eel(Canvas canvas, Size size, Color colour, int i) {
     final (head, dir) = _swim(size, i + 30, 12, salt: 7);
@@ -690,28 +659,6 @@ class SeaDepthsPainter extends CustomPainter {
           ..strokeCap = StrokeCap.round
           ..strokeWidth = 4.5
           ..color = colour.withValues(alpha: 0.7));
-  }
-
-  /// Fallen columns and blocks of the drowned town.
-  void _columns(Canvas canvas, Size size, SeaLook look) {
-    final stone = Paint()
-      ..color = const Color(0xFF6F7A64).withValues(alpha: 0.45);
-    final fur = Paint()..color = look.accent.withValues(alpha: 0.4);
-    for (var i = 0; i < 4; i++) {
-      final c = Offset(size.width * (i.isEven ? 0.08 : 0.9),
-          size.height * (0.15 + 0.22 * i));
-      canvas.save();
-      canvas.translate(c.dx, c.dy);
-      canvas.rotate(0.3 + i * 0.7);
-      canvas.drawRRect(
-          RRect.fromRectAndRadius(
-              const Rect.fromLTWH(-28, -6, 56, 12), const Radius.circular(3)),
-          stone);
-      for (var k = -24; k <= 24; k += 12) {
-        canvas.drawCircle(Offset(k.toDouble(), -6), 3, fur);
-      }
-      canvas.restore();
-    }
   }
 
   /// Black spires rising from the deep.
