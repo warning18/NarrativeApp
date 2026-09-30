@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.182.1+213]
+
+### Changed
+- **The sea fight is pared down to the mockup:** one enemy bar, small ships
+  on a sea that fills the screen, one dock.
+  - **Enemy bar:** the enemy's name, habit, shields and hull, in one bar
+    above the sea.
+  - **The sea** holds everything between the ships:
+    - the weather and the next in a chip at the top corner;
+    - the enemy's guns as small charge rings, with the room each one
+      aims at when the foresight sail shows it;
+    - the range bracket down the left edge;
+    - close in and pull away as two round buttons on the right, up
+      toward the enemy and down away from her;
+    - the last two lines of the log at the bottom.
+  - **The ships are smaller** (at most 260 px long). How far apart they
+    lie is how much of the sea's height the range takes.
+  - **Rooms** carry no frame until they matter: a target, a station to
+    move to, or the enemy's aim. The room's state is painted on the deck.
+  - **The dock** starts with the Eel's bar. The weapons are ring tiles
+    three across.
+
 ## [1.182.0+212]
 
 ### Changed
