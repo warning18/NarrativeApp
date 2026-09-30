@@ -8,6 +8,28 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.186.1+218]
+
+### Fixed
+- **Running from a boarding fight no longer blocks the sea battle.** The
+  dice fight's retreat left the sea fight waiting for a result that never
+  came, End turn and all. Now:
+  - Run from the fight on the enemy's deck: the boarding party falls back
+    to the Eel and cuts the grapples. No hull is lost (the retreat takes its
+    own gold), the boarding is spent for this battle, and the turn goes on.
+  - Run from boarders on the Eel's own deck: the deck is left to them, as
+    when they win it.
+- **A ship fires no more weapons than she has weapon slots.** The Eel has
+  2 weapon slots, 1 shield, 1 utility and 1 sail. The ship built for a
+  battle now only uses the parts her slots hold, so a surplus weapon stays
+  in the hold.
+- **The Fight Lab picks the ship's parts slot by slot** instead of fitting
+  every part at once (it armed the Eel with all 8 weapons). The "Pick the
+  ship's parts" switch starts from the boat as she is. Each slot type holds
+  only what she has room for, and picking one more replaces the oldest.
+- **The Fight Lab reports a sea battle the Eel ran from as "the Eel got
+  away"**, not as a loss.
+
 ## [1.186.0+217]
 
 Brings the two lines of work together: this branch (v1.176 to v1.185.1)
