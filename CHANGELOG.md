@@ -22,7 +22,7 @@ isn't reconstructable from git history alone.
   drawn beneath the waves:
   - the open sea: schools of silver fish, a great shadow passing deep
     down, jellyfish;
-  - the shallows: seagrass and rocks, bright reef fish;
+  - the shallows: coral heads, seagrass and rocks, bright reef fish;
   - the drowned waters: fallen columns furred with weed, pale eels;
   - the abyss: black spires, glowing jellyfish, an angler's lure in the
     dark;
