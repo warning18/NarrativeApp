@@ -1,5 +1,5 @@
 import 'dart:math' as math;
-import 'dart:ui' show Offset, Size;
+import 'dart:ui' show Offset, Rect, Size;
 
 import '../models/story_node.dart';
 import 'chapter_grid_layout.dart';
@@ -254,6 +254,83 @@ List<double?> fanOutBearings(List<double?> bearings, {double spread = 0.35}) {
     start = end;
   }
   return out;
+}
+
+/// Where each way's name goes on the map of a place (see
+/// [journeyPlaceLayout]), its marks at [centres], each [radius] round:
+/// under its mark if that leaves the other marks, the names placed before
+/// it and [avoid] (the party's mark) clear and stays on the map ([area]),
+/// else over it, else to its left or right. [labels] are the names' sizes,
+/// null for a mark shown without one. A name with no clear spot is left
+/// off, but for [keep]'s (the way picked, placed first), which takes the
+/// spot that covers least. Returns each name's box, null where left off.
+List<Rect?> journeyLabelSpots({
+  required Size area,
+  required List<Offset> centres,
+  required double radius,
+  required List<Size?> labels,
+  List<Rect> avoid = const [],
+  int? keep,
+  double gap = 4,
+  double margin = 4,
+}) {
+  final marks = [
+    for (final centre in centres)
+      Rect.fromCircle(center: centre, radius: radius + 2)
+  ];
+  final spots = List<Rect?>.filled(labels.length, null);
+  final placed = <Rect>[];
+  double overlap(Rect a, Rect b) {
+    final both = a.intersect(b);
+    return both.width > 0 && both.height > 0 ? both.width * both.height : 0;
+  }
+
+  // How much of [box] lies on another mark, name or [avoid], or off the
+  // map.
+  double covered(Rect box, int self) {
+    var sum = box.width * box.height - overlap(box, Offset.zero & area);
+    for (var j = 0; j < marks.length; j++) {
+      if (j != self) sum += overlap(box, marks[j]);
+    }
+    for (final other in [...avoid, ...placed]) {
+      sum += overlap(box, other);
+    }
+    return sum;
+  }
+
+  final first = keep != null && keep >= 0 && keep < labels.length ? keep : null;
+  for (final i in [
+    if (first != null) first,
+    for (var i = 0; i < labels.length; i++)
+      if (i != first) i
+  ]) {
+    final size = labels[i];
+    if (size == null || i >= centres.length) continue;
+    final c = centres[i];
+    final w = size.width, h = size.height;
+    final across = (c.dx - w / 2)
+        .clamp(margin, math.max(margin, area.width - w - margin))
+        .toDouble();
+    Rect? best;
+    var least = double.infinity;
+    for (final spot in [
+      Rect.fromLTWH(across, c.dy + radius + gap, w, h),
+      Rect.fromLTWH(across, c.dy - radius - gap - h, w, h),
+      Rect.fromLTWH(c.dx - radius - gap - w, c.dy - h / 2, w, h),
+      Rect.fromLTWH(c.dx + radius + gap, c.dy - h / 2, w, h),
+    ]) {
+      final cover = covered(spot, i);
+      if (cover < least) {
+        least = cover;
+        best = spot;
+      }
+      if (cover < 1) break;
+    }
+    if (best == null || (least >= 1 && i != keep)) continue;
+    spots[i] = best;
+    placed.add(best);
+  }
+  return spots;
 }
 
 /// [a] in [0, 2π).

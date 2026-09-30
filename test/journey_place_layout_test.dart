@@ -1,7 +1,7 @@
 // The Journey map on the real map (v1.181): in a place the ways ring the
 // party and the ways out sit at the edge in their true direction.
 import 'dart:math' as math;
-import 'dart:ui' show Offset, Size;
+import 'dart:ui' show Offset, Rect, Size;
 
 import 'package:flutter_test/flutter_test.dart';
 
@@ -79,6 +79,67 @@ void main() {
     }
     // Ways out far apart keep their true bearings.
     expect(fanOutBearings([0, math.pi, null]), [0, math.pi, null]);
+  });
+
+  test('a way\'s name never lies on another way\'s mark', () {
+    // Scene 270 on a 360-wide phone: three ways out to the square fanned
+    // into one corner, the party below them.
+    const map = Size(328, 220);
+    const party = Offset(164, 110);
+    final centres = journeyPlaceLayout(
+        area: map, here: party, bearings: [-0.4, -0.4, -0.4]);
+    const name = Size(112, 46);
+    final marks = [
+      for (final c in centres) Rect.fromCircle(center: c, radius: 22),
+    ];
+    final partyMark = Rect.fromCircle(center: party, radius: 26);
+    for (final keep in [null, 0, 1, 2]) {
+      final spots = journeyLabelSpots(
+        area: map,
+        centres: centres,
+        radius: 22,
+        labels: const [name, name, name],
+        avoid: [partyMark],
+        keep: keep,
+      );
+      final named = [
+        for (var i = 0; i < spots.length; i++)
+          if (spots[i] != null) i
+      ];
+      // The way picked is always named; the rest where they fit.
+      if (keep != null) expect(named, contains(keep));
+      expect(named.length, greaterThanOrEqualTo(2), reason: '$keep');
+      for (final i in named) {
+        final spot = spots[i]!;
+        if (i != keep) {
+          expect((Offset.zero & map).intersect(spot), spot, reason: '$i');
+          expect(spot.overlaps(partyMark), isFalse, reason: '$i');
+          for (var j = 0; j < marks.length; j++) {
+            if (j != i) {
+              expect(spot.overlaps(marks[j]), isFalse, reason: '$i on $j');
+            }
+          }
+        }
+        for (final other in named) {
+          if (other != i) {
+            expect(spot.overlaps(spots[other]!), isFalse,
+                reason: '$i and $other');
+          }
+        }
+      }
+    }
+    // With room, a name goes under its mark, centred.
+    final alone = journeyLabelSpots(
+        area: map, centres: const [party], radius: 22, labels: const [name]);
+    expect(alone.single!.topCenter, party + const Offset(0, 26));
+    // A mark shown without its name keeps none.
+    expect(
+        journeyLabelSpots(
+            area: map,
+            centres: const [party],
+            radius: 22,
+            labels: const [null]),
+        [null]);
   });
 
   test('what each place is drawn as', () {

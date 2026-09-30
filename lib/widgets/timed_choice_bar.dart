@@ -1,22 +1,31 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/timed_clock_provider.dart';
 import '../theme/stitched_ink.dart';
 
 /// The clock over a timed scene's choices (see StoryNode.timeLimit): a
 /// bar that empties over [seconds], reddening in its last third, with the
 /// seconds left. Runs only while [active] (the scene's tab on screen, no
-/// page over it); when it runs out, [onTimeout] is called once.
-class TimedChoiceBar extends StatefulWidget {
+/// page over it); when it runs out, [onTimeout] is called once. The time
+/// run is the [scene]'s, shared by every bar showing it (see
+/// timedSceneClockProvider): switching tabs or reading the scene full
+/// screen goes on from where the clock stood.
+class TimedChoiceBar extends ConsumerStatefulWidget {
   const TimedChoiceBar({
     super.key,
+    required this.scene,
     required this.seconds,
     required this.active,
     required this.onTimeout,
     required this.label,
   });
 
+  /// The scene the clock is for: its node and how far the story has come
+  /// (see timedSceneKey).
+  final String scene;
   final int seconds;
   final bool active;
   final VoidCallback onTimeout;
@@ -25,27 +34,44 @@ class TimedChoiceBar extends StatefulWidget {
   final String label;
 
   @override
-  State<TimedChoiceBar> createState() => _TimedChoiceBarState();
+  ConsumerState<TimedChoiceBar> createState() => _TimedChoiceBarState();
 }
 
-class _TimedChoiceBarState extends State<TimedChoiceBar>
+/// The scene a timed clock belongs to (see TimedChoiceBar.scene): node
+/// [nodeId] with the story [historyLength] scenes along.
+String timedSceneKey(String nodeId, int historyLength) =>
+    '${nodeId}_$historyLength';
+
+class _TimedChoiceBarState extends ConsumerState<TimedChoiceBar>
     with SingleTickerProviderStateMixin {
+  late final TimedSceneClock _shared = ref.read(timedSceneClockProvider);
+  late final Duration _limit = Duration(seconds: math.max(1, widget.seconds));
   late final AnimationController _clock;
-  bool _fired = false;
+
+  /// How much of the clock the scene has used, as the shared clock has it.
+  double get _spent => math.min(1,
+      _shared.elapsedOn(widget.scene).inMicroseconds / _limit.inMicroseconds);
 
   @override
   void initState() {
     super.initState();
-    _clock = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: math.max(1, widget.seconds)),
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed && !_fired) {
-          _fired = true;
+    _clock = AnimationController(vsync: this, duration: _limit, value: _spent)
+      ..addListener(() => _shared.run(widget.scene, _limit * _clock.value))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed &&
+            !_shared.ranOutOn(widget.scene)) {
+          _shared.runOut(widget.scene);
           widget.onTimeout();
         }
       });
-    if (widget.active) _clock.forward();
+    if (widget.active) _run();
+  }
+
+  /// Runs on from the shared clock, unless it has run out already.
+  void _run() {
+    if (_shared.ranOutOn(widget.scene)) return;
+    _clock.value = _spent;
+    _clock.forward();
   }
 
   @override
@@ -53,7 +79,7 @@ class _TimedChoiceBarState extends State<TimedChoiceBar>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.active == widget.active) return;
     if (widget.active) {
-      _clock.forward();
+      _run();
     } else {
       _clock.stop();
     }

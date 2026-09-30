@@ -504,13 +504,18 @@ class _ChapterCard extends ConsumerWidget {
               Icon(open ? Icons.flag : Icons.flag_outlined,
                   size: 16, color: ink.gold),
               const SizedBox(width: 6),
-              Text(
-                  (open
-                          ? tr(ref, 'main_quest_open_label')
-                          : tr(ref, 'next_main_quest_label'))
-                      .toUpperCase(),
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: ink.gold, letterSpacing: 1)),
+              // Longer in French: cut short rather than overflow.
+              Flexible(
+                child: Text(
+                    (open
+                            ? tr(ref, 'main_quest_open_label')
+                            : tr(ref, 'next_main_quest_label'))
+                        .toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelSmall
+                        ?.copyWith(color: ink.gold, letterSpacing: 1)),
+              ),
             ]),
             const SizedBox(height: 4),
             Text(progress.loop.mainQuestTitle,

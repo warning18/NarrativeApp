@@ -29,7 +29,8 @@ class PlayerStatsBar extends ConsumerWidget {
     final ink = InkColors.of(context);
     final lowHealth = session.maxHealth > 0 &&
         session.currentHealth * 10 <= session.maxHealth * 3;
-    // From chapter 2 the road has its rules: rations and days.
+    // From chapter 2 the road has its rules: rations, and the days that
+    // gather the chapter's enemies.
     final chapter = ref.watch(reachedChapterProvider);
     final road = roadRulesApply(chapter);
     final threat = road ? session.threatIn(chapter) : 0.0;
@@ -43,7 +44,9 @@ class PlayerStatsBar extends ConsumerWidget {
           tooltip: tr(ref, 'level_abbrev'),
           tint: ink.gold,
         ),
-        // The world clock: the day, and a sun or a moon for the watch.
+        // The world clock: the day, and a sun or a moon for the watch. From
+        // chapter 2 it is the road's day too, red once the chapter's
+        // enemies gather (see threatIn), and it says so.
         _PulseOnChange(
           value: session.day * 4 + session.watch,
           child: _Stat(
@@ -55,10 +58,15 @@ class PlayerStatsBar extends ConsumerWidget {
               _ => Icons.nights_stay_outlined,
             },
             text: '${tr(ref, 'day_abbrev')}${session.day}',
-            tooltip:
-                '${tr(ref, 'day_label').replaceAll('{n}', '${session.day}')}'
-                ' · ${tr(ref, 'watch_${session.watch}')}',
+            tooltip: [
+              '${tr(ref, 'day_label').replaceAll('{n}', '${session.day}')}'
+                  ' · ${tr(ref, 'watch_${session.watch}')}',
+              if (threat > 0)
+                tr(ref, 'stats_threat')
+                    .replaceAll('{p}', '${(threat * 100).round()}'),
+            ].join('\n'),
             tint: session.watch == 3 ? ink.voidColor : ink.ember,
+            color: threat > 0 ? scheme.error : null,
           ),
         ),
         _PulseOnChange(
@@ -89,7 +97,7 @@ class PlayerStatsBar extends ConsumerWidget {
             tint: ink.gold,
           ),
         ),
-        if (road) ...[
+        if (road)
           _PulseOnChange(
             value: session.provisions,
             child: _Stat(
@@ -100,16 +108,6 @@ class PlayerStatsBar extends ConsumerWidget {
               color: session.provisions == 0 ? scheme.error : null,
             ),
           ),
-          _PulseOnChange(
-            value: session.day,
-            child: _Stat(
-              icon: Icons.wb_sunny_outlined,
-              text: '${tr(ref, 'road_day_abbrev')} ${session.day}',
-              tooltip: tr(ref, 'road_day_label'),
-              tint: threat > 0 ? scheme.error : ink.gold,
-            ),
-          ),
-        ],
         if (session.activeQuestIds.isNotEmpty)
           _Stat(
             icon: Icons.assignment_outlined,
@@ -165,7 +163,8 @@ class _Stat extends StatelessWidget {
   /// The icon's colour: what the number means (HP red, mana blue...).
   final Color? tint;
 
-  /// Overrides both icon and number, for a warning (low health).
+  /// Overrides both icon and number, for a warning (low health, the
+  /// chapter's enemies gathering).
   final Color? color;
 
   @override
