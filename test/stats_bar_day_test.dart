@@ -69,14 +69,14 @@ void main() {
             matching: find.byType(Tooltip)))
         .message!;
 
-    // Eleven days into chapter 3, five past its grace: +15%.
+    // Eleven days into chapter 3, three past its grace of eight: +9%.
     await day(12, from: 1);
     expect(find.text('J12'), findsOneWidget);
     // Once: the road's own "Jour 12" is gone.
     expect(find.textContaining('Jour'), findsNothing);
     expect(clock().style?.color, scheme.error);
     expect(clockTip(), contains('Jour 12'));
-    expect(clockTip(), contains('Vos ennemis se rassemblent (+15 %)'));
+    expect(clockTip(), contains('Vos ennemis se rassemblent (+9 %)'));
     // The rations still show beside it.
     expect(find.byIcon(Icons.restaurant), findsOneWidget);
 
