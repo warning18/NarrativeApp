@@ -5,12 +5,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 
 import 'package:narrative_data_app/data/narration_clips.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/models/story_node.dart';
 import 'package:narrative_data_app/providers/elevenlabs_tts_provider.dart';
+import 'package:narrative_data_app/providers/github_push_provider.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/providers/voice_settings_provider.dart';
 import 'package:narrative_data_app/screens/story_player_screen.dart'
@@ -176,16 +181,135 @@ void main() {
     });
   });
 
+  group('scene categories', () {
+    final nodes = {
+      for (final entry
+          in _loadJson('assets/Cleaned_Narrative_DAG.json').entries)
+        entry.key:
+            StoryNode.fromJson(entry.key, entry.value as Map<String, dynamic>),
+    };
+
+    test('every kind of scene and every chapter has scenes', () {
+      final kinds = nodes.values.map(narrationCategoryOf).toSet();
+      expect(kinds, NarrationCategory.values.toSet());
+      final chapters = nodes.values.map(narrationChapterOf).toSet();
+      expect(chapters, containsAll([0, 1, 2, 3, 4, 5, 6]));
+    });
+
+    test('scenes are filed where they belong', () {
+      expect(narrationCategoryOf(nodes['7005']!), NarrationCategory.endings);
+      expect(narrationCategoryOf(nodes['100']!), NarrationCategory.mainStory);
+      expect(narrationCategoryOf(nodes['3100']!), NarrationCategory.places);
+      expect(narrationChapterOf(nodes['0']!), 0);
+      expect(narrationChapterOf(nodes['7005']!), 6);
+    });
+
+    test('a scene without its variations is just the scene', () {
+      final node = nodes['891']!;
+      String same(String text) => text;
+      final plain = nodeNarrationScript(node,
+          french: false, personalize: same, variations: false);
+      final full = nodeNarrationScript(node, french: false, personalize: same);
+      expect(
+          plain, narrationParagraphs(storyBodyFor(node.descriptionFor(false))));
+      expect(full, containsAll(plain));
+      expect(full.length, greaterThan(plain.length));
+      expect(narrationScript([node], french: false, personalize: same), full);
+    });
+  });
+
+  group('pushing recordings', () {
+    test('one commit on a new branch, only the files asked for', () async {
+      final posts = <String, List<Map<String, dynamic>>>{};
+      final client = MockClient((request) async {
+        final path = request.url.path;
+        if (request.method == 'GET') {
+          if (path.endsWith('/git/ref/heads/main')) {
+            return http.Response(
+                jsonEncode({
+                  'object': {'sha': 'base-commit'}
+                }),
+                200);
+          }
+          if (path.endsWith('/git/commits/base-commit')) {
+            return http.Response(
+                jsonEncode({
+                  'tree': {'sha': 'base-tree'}
+                }),
+                200);
+          }
+          if (path.endsWith('/git/trees/base-tree')) {
+            expect(request.url.queryParameters['recursive'], '1');
+            return http.Response(
+                jsonEncode({
+                  'tree': [
+                    {'path': 'assets/narration/en/old.mp3', 'type': 'blob'},
+                    {'path': 'assets/narration/en', 'type': 'tree'},
+                    {'path': 'lib/main.dart', 'type': 'blob'},
+                  ]
+                }),
+                200);
+          }
+        }
+        final body = jsonDecode(request.body) as Map<String, dynamic>;
+        final kind = path.split('/').last;
+        (posts[kind] ??= []).add(body);
+        final sha = '$kind-${posts[kind]!.length}';
+        return http.Response(jsonEncode({'sha': sha}), 201);
+      });
+
+      final inRepo = await http.runWithClient(
+          () => repositoryPathsUnder(token: 't', prefix: 'assets/narration/'),
+          () => client);
+      expect(inRepo, {'assets/narration/en/old.mp3'});
+
+      final progress = <int>[];
+      final result = await http.runWithClient(
+        () => pushFilesToGitHub(
+          token: 't',
+          branchName: 'narration-test',
+          message: 'Add clips',
+          files: [
+            GitBinaryFile(
+                path: 'assets/narration/en/a.mp3', read: () async => [1, 2]),
+            GitBinaryFile(
+                path: 'assets/narration/en/a.txt',
+                read: () async => utf8.encode('A.')),
+          ],
+          onProgress: (done, _) => progress.add(done),
+        ),
+        () => client,
+      );
+
+      expect(progress, [1, 2]);
+      expect(posts['blobs'], hasLength(2));
+      expect(posts['blobs']!.first['content'], base64Encode([1, 2]));
+      final tree = posts['trees']!.single;
+      expect(tree['base_tree'], 'base-tree');
+      expect([for (final e in tree['tree'] as List) (e as Map)['path']],
+          ['assets/narration/en/a.mp3', 'assets/narration/en/a.txt']);
+      final commit = posts['commits']!.single;
+      expect(commit['parents'], ['base-commit']);
+      expect(commit['tree'], 'trees-1');
+      expect(posts['refs']!.single,
+          {'ref': 'refs/heads/narration-test', 'sha': 'commits-1'});
+      expect(result.compareUrl, contains('main...narration-test'));
+    });
+  });
+
   group('recordings', () {
     late Directory root;
     late List<String> requested;
     late ElevenLabsTtsNotifier notifier;
+    late Set<String> bundled;
 
     setUp(() {
       root = Directory.systemTemp.createTempSync('narration_test');
       requested = [];
+      bundled = {};
       notifier = ElevenLabsTtsNotifier(
-        recordings: NarrationRecordings(root: () async => root),
+        recordings: NarrationRecordings(
+            root: () async => root, bundledAssets: () async => bundled),
         synthesize: ({
           required String text,
           required String apiKey,
@@ -271,9 +395,9 @@ void main() {
 
       await notifier
           .recordAll(['Recorded.'], settings: _voice, language: AppLanguage.en);
-      final file = await notifier.clipFor('Recorded.',
+      final clip = await notifier.clipFor('Recorded.',
           settings: noKey, language: AppLanguage.en);
-      expect(file.existsSync(), isTrue);
+      expect(File((clip as DeviceFileSource).path).existsSync(), isTrue);
     });
 
     test('a paragraph asked for twice at once is recorded once', () async {
@@ -282,8 +406,59 @@ void main() {
         notifier.clipFor('Twice.', settings: _voice, language: AppLanguage.en),
       ]);
       expect(requested, ['Twice.']);
-      expect(clips[0].path, clips[1].path);
-      expect(clips[0].existsSync(), isTrue);
+      final paths = [for (final c in clips) (c as DeviceFileSource).path];
+      expect(paths[0], paths[1]);
+      expect(File(paths[0]).existsSync(), isTrue);
+    });
+
+    test('a clip shipped inside the app plays with no key and no recording',
+        () async {
+      final id =
+          notifier.recordings.clipIdFor('Shipped.', voiceId: _voice.voiceId);
+      bundled.add(bundledNarrationPath(id, AppLanguage.fr));
+      expect(bundledNarrationPath(id, AppLanguage.fr),
+          'assets/narration/fr/$id.mp3');
+
+      final noKey = _voice.copyWith(clearApiKey: true);
+      final clip = await notifier.clipFor('Shipped.',
+          settings: noKey, language: AppLanguage.fr);
+      expect(clip, isA<AssetSource>());
+      expect((clip as AssetSource).path, 'narration/fr/$id.mp3');
+      expect(
+          await notifier.isRecorded(['Shipped.'],
+              settings: noKey, language: AppLanguage.fr),
+          isTrue);
+      // Not in English, and not in another voice.
+      expect(
+          await notifier.recordings.has('Shipped.',
+              voiceId: _voice.voiceId, language: AppLanguage.en),
+          isFalse);
+      expect(
+          await notifier.recordings
+              .has('Shipped.', voiceId: 'another', language: AppLanguage.fr),
+          isFalse);
+      expect(
+          await notifier.recordAll(['Shipped.'],
+              settings: _voice, language: AppLanguage.fr),
+          0);
+      expect(requested, isEmpty);
+      expect(await notifier.recordings.bundledCount(AppLanguage.fr), 1);
+      expect(await notifier.recordings.bundledCount(AppLanguage.en), 0);
+    });
+
+    test('the recordings made on this device are listed for pushing', () async {
+      await notifier
+          .recordAll(['One.'], settings: _voice, language: AppLanguage.en);
+      await notifier.recordAll(['Un.', 'Deux.'],
+          settings: _voice, language: AppLanguage.fr);
+      final clips = await notifier.recordings.localClips(_voice.voiceId);
+      expect(clips, hasLength(3));
+      expect(clips.where((c) => c.language == AppLanguage.fr), hasLength(2));
+      final one = clips.singleWhere((c) => c.language == AppLanguage.en);
+      expect(one.clipId,
+          notifier.recordings.clipIdFor('One.', voiceId: _voice.voiceId));
+      expect(one.text.readAsStringSync(), 'One.');
+      expect(await notifier.recordings.localClips('another'), isEmpty);
     });
 
     test('recording the whole story stops when cancelled', () async {

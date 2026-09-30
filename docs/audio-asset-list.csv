@@ -1,0 +1,905 @@
+id,type,bus,loop,category,subcategory,description,trigger,variations,priority,notes
+mus_menu_main,music_loop,Music,True,Music,Front end,Main menu / title theme,main_menu_screen,1,P1,
+mus_char_creation,music_loop,Music,True,Music,Front end,"Race & profession choice, origin story prompts (11)",race_profession_screen,1,P2,
+mus_death_permadeath,music_loop,Music,True,Music,Front end,Permadeath screen,DeathScreen,1,P2,
+mus_credits_ending,music_loop,Music,True,Music,Front end,End credits / recap,_EndingView,1,P2,
+mus_story_neutral,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""neutral"" (71 nodes)",story node context_taxonomy.mood == neutral,1,P1,"Understated, sparse bed; also the fallback for the 46 nodes without a mood"
+mus_story_grim,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""grim"" (27 nodes)",story node context_taxonomy.mood == grim,1,P1,
+mus_story_tense,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""tense"" (24 nodes)",story node context_taxonomy.mood == tense,1,P1,
+mus_story_action,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""action"" (17 nodes)",story node context_taxonomy.mood == action,1,P2,Non-combat urgency
+mus_story_creepy,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""creepy"" (9 nodes)",story node context_taxonomy.mood == creepy,1,P2,
+mus_story_suspense,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""suspense"" (5 nodes)",story node context_taxonomy.mood == suspense,1,P2,
+mus_story_desperate,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""desperate"" (2 nodes)",story node context_taxonomy.mood == desperate,1,P3,
+mus_story_triumphant,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""triumphant"" (2 nodes)",story node context_taxonomy.mood == triumphant,1,P2,
+mus_story_hopeful,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""hopeful"" (2 nodes)",story node context_taxonomy.mood == hopeful,1,P2,
+mus_story_reflective,music_loop,Music,True,Music,Story mood beds,"Story bed for mood ""reflective"" (1 nodes)",story node context_taxonomy.mood == reflective,1,P3,
+mus_chapter_layer_ch1,music_loop,Music,True,Music,Chapter signature layers,Chapter 1 signature layer over the mood beds: Prologue road,current chapter,1,P3,"Slums, bridge, hovel, sewers, torture chamber, market, docks: street-level, intimate"
+mus_chapter_layer_ch2,music_loop,Music,True,Music,Chapter signature layers,Chapter 2 signature layer over the mood beds: The Ashes of Alster,current chapter,1,P3,"Docks, smugglers: maritime, salt, rope"
+mus_chapter_layer_ch3,music_loop,Music,True,Music,Chapter signature layers,Chapter 3 signature layer over the mood beds: The Spire of Judgment,current chapter,1,P3,"Cathedral: Inquisition choir, organ, bells"
+mus_chapter_layer_ch4,music_loop,Music,True,Music,Chapter signature layers,Chapter 4 signature layer over the mood beds: The Hollow Court,current chapter,1,P3,"Catacombs, drowned cloister: water, stone, corrupted hymn"
+mus_chapter_layer_ch5,music_loop,Music,True,Music,Chapter signature layers,Chapter 5 signature layer over the mood beds: The Shroud's Truth,current chapter,1,P3,"The Tear in the open air: frost, candles, dread"
+mus_chapter_layer_ch6,music_loop,Music,True,Music,Chapter signature layers,Chapter 6 signature layer over the mood beds: The Hollow Shore,current chapter,1,P3,"Glass world, the White Fleet's grave: alien, vast, glassy"
+mus_chapter_layer_ch7,music_loop,Music,True,Music,Chapter signature layers,Chapter 7 signature layer over the mood beds: Beyond the Tear (ending),current chapter,1,P3,Final act: every motif resolved
+mus_camp,music_loop,Music,True,Music,Hubs & exploration,Cove Camp (home base),"Camp tab; camp nodes 3001_camp, 4999_camp, 6002_camp, 7001, 7400",1,P1,
+mus_camp_evolved,music_loop,Music,True,Music,Hubs & exploration,"Camp gets richer as houses are built (optional stems: forge, hall, shrine)",built house count,1,P3,
+mus_town,music_loop,Music,True,Music,Hubs & exploration,Town hub,settlement arrival (town),1,P2,
+mus_village,music_loop,Music,True,Music,Hubs & exploration,Village,settlement arrival (village),1,P3,
+mus_shop,music_loop,Music,True,Music,Hubs & exploration,Shop browsing (quiet),shop_detail_screen,1,P3,
+mus_world_map,music_loop,Music,True,Music,Hubs & exploration,World map / chart,world_map_screen,1,P2,
+mus_voyage,music_loop,Music,True,Music,Hubs & exploration,"At sea, sailing between ports",voyage_screen,1,P1,
+mus_voyage_storm,music_loop,Music,True,Music,Hubs & exploration,Storm day at sea,SeaEventKind.storm,1,P2,
+mus_expedition_ashen_streets,music_loop,Music,True,Music,Hubs & exploration,"Expedition exploration, map theme ashen_streets",expedition_screen,1,P2,
+mus_expedition_salt_roads,music_loop,Music,True,Music,Hubs & exploration,"Expedition exploration, map theme salt_roads",expedition_screen,1,P2,
+mus_expedition_hollow_reaches,music_loop,Music,True,Music,Hubs & exploration,"Expedition exploration, map theme hollow_reaches",expedition_screen,1,P2,
+mus_expedition_wilds_beyond,music_loop,Music,True,Music,Hubs & exploration,"Expedition exploration, map theme wilds_beyond",expedition_screen,1,P2,
+mus_journal,music_loop,Music,True,Music,Hubs & exploration,Journal / achievements / menus (can reuse camp),JournalScreen,1,P3,
+mus_combat_standard,music_loop,Music,True,Music,Combat,Normal fight,FightScreen,1,P1,
+mus_combat_pack,music_loop,Music,True,Music,Combat,Pack fight (2-3 enemies): variation or intensity layer,pack fight,1,P3,
+mus_combat_elite,music_loop,Music,True,Music,Combat,Elite enemy layer / intro,isElite,1,P3,
+mus_combat_boss_layerA,music_loop,Music,True,Music,Combat,"Boss fight, phase layer A (switches on phase change)",zone bosses / solo-only uniques; boss phase,1,P1,
+mus_combat_boss_layerB,music_loop,Music,True,Music,Combat,"Boss fight, phase layer B (switches on phase change)",zone bosses / solo-only uniques; boss phase,1,P1,
+mus_combat_boss_layerC,music_loop,Music,True,Music,Combat,"Boss fight, phase layer C (switches on phase change)",zone bosses / solo-only uniques; boss phase,1,P1,
+mus_combat_hunter_angel,music_loop,Music,True,Music,Combat,Angel hunters ambush an Evil player,"angel_sentinel, angel_judicator",1,P2,
+mus_combat_hunter_demon,music_loop,Music,True,Music,Combat,Demon hunters ambush a Good player,"demon_imp, demon_tormentor",1,P2,
+mus_combat_turned_companion,music_loop,Music,True,Music,Combat,Duel against a companion who turned,<ally>_turned,1,P2,"1 shared theme, or 8 variants"
+mus_combat_final,music_loop,Music,True,Music,Combat,Final boss: the Void Sovereign,void_sovereign,1,P1,Optionally a distinct cue for white_admiral
+mus_ship_battle,music_loop,Music,True,Music,Combat,"Naval battle (turn-based, 20 s clock)",ship_battle_panel,1,P1,
+mus_ship_battle_urgent,music_loop,Music,True,Music,Combat,Urgency layer: hull < 25% or clock <= 5 s,ship battle state,1,P3,
+mus_boarding_fight,music_loop,Music,True,Music,Combat,Boarding deck fight (dice fight on deck),boarding,1,P2,
+mus_skill_challenge,music_loop,Music,True,Music,Combat,d20 skill challenge (light tense pulse),SkillChallengeScreen,1,P3,
+stg_newgameplus,music_stinger,Music,False,Music stingers,Meta,New Game+ start,beginNewGamePlus,1,P3,
+stg_combat_start,music_stinger,Music,False,Music stingers,Combat,Fight begins,FightScreen start,1,P1,
+stg_boss_intro,music_stinger,Music,False,Music stingers,Combat,Boss reveal,boss fight start,1,P1,
+stg_ambush,music_stinger,Music,False,Music stingers,Combat,Ambush condition: enemies act first,BattlefieldCondition.ambush,1,P3,
+stg_boss_phase,music_stinger,Music,False,Music stingers,Combat,Boss changes phase,boss phase change,1,P1,
+stg_boss_phase_heal,music_stinger,Music,False,Music stingers,Combat,Boss phase: heals,phase_heals,1,P3,
+stg_boss_phase_cleanse,music_stinger,Music,False,Music stingers,Combat,Boss phase: cleanses,phase_cleansed,1,P3,
+stg_boss_phase_enrage,music_stinger,Music,False,Music stingers,Combat,Boss phase: enrages,phase_enraged,1,P3,
+stg_victory,music_stinger,Music,False,Music stingers,Combat,Win,_finishFight(won),1,P1,
+stg_victory_boss,music_stinger,Music,False,Music stingers,Combat,Boss win,_finishFight(won) vs boss,1,P2,
+stg_victory_flawless,music_stinger,Music,False,Music stingers,Combat,Flawless win,aftermath _flawless,1,P3,
+stg_defeat,music_stinger,Music,False,Music stingers,Combat,Fight lost (no permadeath),_finishFight(lost),1,P1,
+stg_retreat,music_stinger,Music,False,Music stingers,Combat,Fled the fight (costs gold),retreat,1,P2,
+stg_ship_victory,music_stinger,Music,False,Music stingers,Naval,Enemy ship sunk / beaten,BattleEnd.won,1,P1,
+stg_ship_sunk,music_stinger,Music,False,Music stingers,Naval,The Eel sinks,BattleEnd.lost,1,P1,
+stg_ship_boarded_lost,music_stinger,Music,False,Music stingers,Naval,Captured by boarders,BattleEnd.boarded,1,P2,
+stg_ship_enemy_escaped,music_stinger,Music,False,Music stingers,Naval,Enemy got away,BattleEnd.escaped,1,P2,
+stg_board_won,music_stinger,Music,False,Music stingers,Naval,Boarding won,ship_log_boarding_won,1,P2,
+stg_board_repelled,music_stinger,Music,False,Music stingers,Naval,Boarding repelled,ship_log_boarding_repelled / boarders_repelled,1,P2,
+stg_level_up,music_stinger,Music,False,Music stingers,Progression,Level up,showLevelUpDialog,1,P1,
+stg_quest_accepted,music_stinger,Music,False,Music stingers,Progression,Quest accepted,acceptQuestWithNotice,1,P1,
+stg_quest_ready,music_stinger,Music,False,Music stingers,Progression,"Quest goals met, ready to turn in",quest_ready_notice,1,P2,
+stg_quest_complete,music_stinger,Music,False,Music stingers,Progression,Quest complete,completeQuestWithNotice,1,P1,
+stg_main_quest_open,music_stinger,Music,False,Music stingers,Progression,Chapter's main quest unlocks,mainQuestOpen,1,P2,
+stg_achievement,music_stinger,Music,False,Music stingers,Progression,Achievement unlocked (7 in the game),achievement_unlocked,1,P2,
+stg_recruit,music_stinger,Music,False,Music stingers,Progression,Companion joins,recruitAlly,1,P2,
+stg_ally_lost,music_stinger,Music,False,Music stingers,Progression,Companion leaves for good or turns,loseAlly / @first_ally,1,P2,
+stg_discovery,music_stinger,Music,False,Music stingers,Progression,New shop/quest/place discovered,discovery modal,1,P2,
+stg_banner_piece,music_stinger,Music,False,Music stingers,Progression,Shroud banner piece found (6 pieces),grantsBannerPieceId,1,P2,
+stg_town_arrival,music_stinger,Music,False,Music stingers,World,Town arrival card,_showSettlementArrival (town),1,P2,
+stg_village_arrival,music_stinger,Music,False,Music stingers,World,Village arrival card,_showSettlementArrival (village),1,P2,
+stg_landfall,music_stinger,Music,False,Music stingers,World,Voyage arrives in port,arriveAtPort,1,P2,
+stg_zone_cleared,music_stinger,Music,False,Music stingers,World,Expedition zone completed,zone_cleared,1,P2,
+stg_alignment_good,music_stinger,Music,False,Music stingers,Story,Crossing into Good (score >= 20),new hook needed,1,P3,
+stg_alignment_evil,music_stinger,Music,False,Music stingers,Story,Crossing into Evil (score <= -20),new hook needed,1,P3,
+stg_alignment_neutral,music_stinger,Music,False,Music stingers,Story,Back to Neutral,new hook needed,1,P3,
+stg_temptation,music_stinger,Music,False,Music stingers,Story,A temptation scene opens (Neutral only),alignment temptation,1,P3,
+stg_epilogue_good,music_stinger,Music,False,Music stingers,Story,Good epilogue,alignment_epilogues.Good,1,P2,
+stg_epilogue_neutral,music_stinger,Music,False,Music stingers,Story,Neutral epilogue,alignment_epilogues.Neutral,1,P2,
+stg_epilogue_evil,music_stinger,Music,False,Music stingers,Story,Evil epilogue,alignment_epilogues.Evil,1,P2,
+stg_skill_mastery,music_stinger,Music,False,Music stingers,Progression,Skill branch mastered,masterBranch,1,P3,
+stg_skill_merge,music_stinger,Music,False,Music stingers,Progression,Legendary skill crafted,mergeSkills,1,P3,
+stg_house_built,music_stinger,Music,False,Music stingers,Camp,"Camp building finished (bigger for hearth_hall, banner_loft, shroud_shrine)",buildHouse,1,P2,
+stg_challenge_success,music_stinger,Music,False,Music stingers,Skill challenge,Skill challenge succeeded,skill_challenge_success_banner,1,P2,
+stg_challenge_fail,music_stinger,Music,False,Music stingers,Skill challenge,Skill challenge failed,skill_challenge_fail_banner,1,P2,
+stg_chapter_start_ch1,music_stinger,Music,False,Music stingers,Story,Chapter 1 title card,chapter start,1,P2,
+stg_chapter_start_ch2,music_stinger,Music,False,Music stingers,Story,Chapter 2 title card,chapter start,1,P2,
+stg_chapter_start_ch3,music_stinger,Music,False,Music stingers,Story,Chapter 3 title card,chapter start,1,P2,
+stg_chapter_start_ch4,music_stinger,Music,False,Music stingers,Story,Chapter 4 title card,chapter start,1,P2,
+stg_chapter_start_ch5,music_stinger,Music,False,Music stingers,Story,Chapter 5 title card,chapter start,1,P2,
+stg_chapter_start_ch6,music_stinger,Music,False,Music stingers,Story,Chapter 6 title card,chapter start,1,P2,
+stg_ending_7005,music_stinger,Music,False,Music stingers,Story,Ending 7005,story ending node 7005,1,P1,
+stg_ending_7005_seeker,music_stinger,Music,False,Music stingers,Story,Ending 7005_seeker,story ending node 7005_seeker,1,P1,
+stg_ending_7005_dawn,music_stinger,Music,False,Music stingers,Story,Ending 7005_dawn,story ending node 7005_dawn,1,P1,
+stg_ending_7005_crown,music_stinger,Music,False,Music stingers,Story,Ending 7005_crown,story ending node 7005_crown,1,P1,
+amb_docks,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""docks"" (62 nodes)",context_taxonomy.ui_theme == docks,1,P1,"Lapping water, creaking rope/planks, gulls, buoy bell, mooring chain"
+amb_cathedral,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""cathedral"" (32 nodes)",context_taxonomy.ui_theme == cathedral,1,P1,"Vast reverb, distant choir/hymn, candle flutter, stone footsteps"
+amb_slums,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""slums"" (19 nodes)",context_taxonomy.ui_theme == slums,1,P1,"Ash wind, broken shutters, distant dogs/coughing, cracked bell"
+amb_origin_ending,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""origin_ending"" (9 nodes)",context_taxonomy.ui_theme == origin_ending,1,P2,"Intimate, memory-like"
+amb_epilogue,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""epilogue"" (6 nodes)",context_taxonomy.ui_theme == epilogue,1,P2,"Calm aftermath, wind, sea"
+amb_catacombs,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""catacombs"" (5 nodes)",context_taxonomy.ui_theme == catacombs,1,P1,"Drips like a heartbeat, bones shifting, low moans"
+amb_torture_chamber,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""torture_chamber"" (5 nodes)",context_taxonomy.ui_theme == torture_chamber,1,P2,"Chains, brazier, muffled cries (tasteful)"
+amb_market,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""market"" (4 nodes)",context_taxonomy.ui_theme == market,1,P2,"Crowd walla, haggling, carts"
+amb_sewers,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""sewers"" (4 nodes)",context_taxonomy.ui_theme == sewers,1,P2,"Running water, rats, echo"
+amb_bridge,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""bridge"" (3 nodes)",context_taxonomy.ui_theme == bridge,1,P3,"Wind, river below, creaking"
+amb_hovel,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""hovel"" (3 nodes)",context_taxonomy.ui_theme == hovel,1,P3,"Room tone, fire crackle, rain on thatch"
+amb_prologue,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""prologue"" (1 nodes)",context_taxonomy.ui_theme == prologue,1,P3,
+amb_gate,ambience_loop,Ambience,True,Ambience,Story scene beds (ui_theme),"Scene bed ""gate"" (1 nodes)",context_taxonomy.ui_theme == gate,1,P3,"Slums gate: guards, wind"
+amb_theme_ashen_streets,ambience_loop,Ambience,True,Ambience,Expedition map themes,"ashenStreets bed: Burned-city wind, ash hiss",MapTheme.ashenStreets,1,P1,
+amb_theme_ashen_streets_os_bell_toll,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,ashenStreets random one-shot: bell toll,MapTheme.ashenStreets (random),3,P2,
+amb_theme_ashen_streets_os_rubble_shift,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,ashenStreets random one-shot: rubble shift,MapTheme.ashenStreets (random),3,P2,
+amb_theme_ashen_streets_os_cat,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,ashenStreets random one-shot: cat,MapTheme.ashenStreets (random),3,P2,
+amb_theme_ashen_streets_os_cultist_chant,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,ashenStreets random one-shot: cultist chant,MapTheme.ashenStreets (random),3,P2,
+amb_theme_ashen_streets_os_echo_steps,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,ashenStreets random one-shot: echo steps,MapTheme.ashenStreets (random),3,P2,
+amb_theme_salt_roads,ambience_loop,Ambience,True,Ambience,Expedition map themes,"saltRoads bed: Waves, tide",MapTheme.saltRoads,1,P1,Gulls must cut out before an enemy appears
+amb_theme_salt_roads_os_gulls,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,saltRoads random one-shot: gulls,MapTheme.saltRoads (random),3,P2,
+amb_theme_salt_roads_os_buoy_bell,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,saltRoads random one-shot: buoy bell,MapTheme.saltRoads (random),3,P2,
+amb_theme_salt_roads_os_mooring_chain,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,saltRoads random one-shot: mooring chain,MapTheme.saltRoads (random),3,P2,
+amb_theme_salt_roads_os_pier_groan,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,saltRoads random one-shot: pier groan,MapTheme.saltRoads (random),3,P2,
+amb_theme_hollow_reaches,ambience_loop,Ambience,True,Ambience,Expedition map themes,"hollowReaches bed: Black water, drips",MapTheme.hollowReaches,1,P1,
+amb_theme_hollow_reaches_os_candle_gutter,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: candle gutter,MapTheme.hollowReaches (random),3,P2,
+amb_theme_hollow_reaches_os_skitter,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: skitter,MapTheme.hollowReaches (random),3,P2,
+amb_theme_hollow_reaches_os_hymn,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: hymn,MapTheme.hollowReaches (random),3,P2,
+amb_theme_hollow_reaches_os_tremor,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: tremor,MapTheme.hollowReaches (random),3,P2,
+amb_theme_hollow_reaches_os_chapel_bell,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: chapel bell,MapTheme.hollowReaches (random),3,P2,
+amb_theme_hollow_reaches_os_wisps,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,hollowReaches random one-shot: wisps,MapTheme.hollowReaches (random),3,P2,
+amb_theme_wilds_beyond,ambience_loop,Ambience,True,Ambience,Expedition map themes,wildsBeyond bed: Tear hum and its reflected hum,MapTheme.wildsBeyond,1,P1,
+amb_theme_wilds_beyond_os_glass_chimes,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,wildsBeyond random one-shot: glass chimes,MapTheme.wildsBeyond (random),3,P2,
+amb_theme_wilds_beyond_os_wrong_light_hound,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,wildsBeyond random one-shot: wrong light hound,MapTheme.wildsBeyond (random),3,P2,
+amb_theme_wilds_beyond_os_sky_folding,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,wildsBeyond random one-shot: sky folding,MapTheme.wildsBeyond (random),3,P2,
+amb_theme_wilds_beyond_os_birdsong,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,wildsBeyond random one-shot: birdsong,MapTheme.wildsBeyond (random),3,P2,
+amb_theme_wilds_beyond_os_stream,ambience_oneshot,Ambience,False,Ambience,Expedition map themes,wildsBeyond random one-shot: stream,MapTheme.wildsBeyond (random),3,P2,
+amb_zone_fishermans_row_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_fishermans_row sweetener layer (ch2, over saltRoads): Net sheds, gutting tables",expedition z_fishermans_row,1,P2,
+amb_zone_fishermans_row_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_fishermans_row boss-approach layer (boss: dock_overseer),expedition z_fishermans_row boss node,1,P3,
+amb_zone_tanners_court_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_tanners_court sweetener layer (ch2, over saltRoads): Lime pits, drains",expedition z_tanners_court,1,P2,
+amb_zone_tanners_court_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_tanners_court boss-approach layer (boss: plague_hound),expedition z_tanners_court boss node,1,P3,
+amb_zone_lantern_docks_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_lantern_docks sweetener layer (ch2, over saltRoads): Lanterns, boathouse, a lantern going out",expedition z_lantern_docks,1,P2,
+amb_zone_lantern_docks_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_lantern_docks boss-approach layer (boss: smuggler_captain),expedition z_lantern_docks boss node,1,P3,
+amb_zone_cinder_row_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_cinder_row sweetener layer (ch3, over ashenStreets): Embers, a golem waking from ash",expedition z_cinder_row,1,P2,
+amb_zone_cinder_row_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_cinder_row boss-approach layer (boss: iron_golem),expedition z_cinder_row boss node,1,P3,
+amb_zone_scaffold_yards_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_scaffold_yards sweetener layer (ch3, over ashenStreets): Cold forges, creaking scaffolds, hymn",expedition z_scaffold_yards,1,P2,
+amb_zone_scaffold_yards_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_scaffold_yards boss-approach layer (boss: void_stalker),expedition z_scaffold_yards boss node,1,P3,
+amb_zone_ossuary_galleries_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_ossuary_galleries sweetener layer (ch4, over hollowReaches): Flooded bone galleries, sea cave",expedition z_ossuary_galleries,1,P2,
+amb_zone_ossuary_galleries_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_ossuary_galleries boss-approach layer (boss: bone_warden),expedition z_ossuary_galleries boss node,1,P3,
+amb_zone_drowned_stair_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_drowned_stair sweetener layer (ch4, over hollowReaches): Spiral stair in black water, candles",expedition z_drowned_stair,1,P2,
+amb_zone_drowned_stair_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_drowned_stair boss-approach layer (boss: hollow_court_inquisitor),expedition z_drowned_stair boss node,1,P3,
+amb_zone_dead_heart_approach_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_dead_heart_approach sweetener layer (ch5, over ashenStreets): Frost in summer, glass ground (boots ring)",expedition z_dead_heart_approach,1,P2,
+amb_zone_dead_heart_approach_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_dead_heart_approach boss-approach layer (boss: tear_spawn),expedition z_dead_heart_approach boss node,1,P3,
+amb_zone_shroud_vigil_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_shroud_vigil sweetener layer (ch5, over hollowReaches): Hundreds of candles, the Tear in the open air",expedition z_shroud_vigil,1,P2,
+amb_zone_shroud_vigil_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_shroud_vigil boss-approach layer (boss: void_archon),expedition z_shroud_vigil boss node,1,P3,
+amb_zone_beyond_the_tear_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_beyond_the_tear sweetener layer (ch6, over wildsBeyond): No sky, the Eel on not-water, a throne",expedition z_beyond_the_tear,1,P2,
+amb_zone_beyond_the_tear_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_beyond_the_tear boss-approach layer (boss: void_sovereign),expedition z_beyond_the_tear boss node,1,P3,
+amb_zone_glass_strand_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_glass_strand sweetener layer (ch6, over wildsBeyond): Humming glass sand, wreckage, dunes",expedition z_glass_strand,1,P2,
+amb_zone_glass_strand_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_glass_strand boss-approach layer (boss: strand_colossus),expedition z_glass_strand boss node,1,P3,
+amb_zone_white_fleet_grave_loop,ambience_loop,Ambience,True,Ambience,Zones,"Zone z_white_fleet_grave sweetener layer (ch6, over wildsBeyond): 40 hulls on glass, flags snapping, silence",expedition z_white_fleet_grave,1,P2,
+amb_zone_white_fleet_grave_boss_approach,ambience_loop,Ambience,True,Ambience,Zones,Zone z_white_fleet_grave boss-approach layer (boss: white_admiral),expedition z_white_fleet_grave boss node,1,P3,
+amb_camp_cove,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Night cove, moored ship with lantern: waves, fire, crew murmur",Camp,1,P1,
+amb_camp_house_keldas_hall,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once keldas_hall is built: forge-hall,house keldas_hall built,1,P3,
+amb_camp_house_barracks_annex,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Camp layer once barracks_annex is built: mess, bunks",house barracks_annex built,1,P3,
+amb_camp_house_harbor,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Camp layer once harbor is built: quay, shipwright",house harbor built,1,P3,
+amb_camp_house_hammersmith,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Camp layer once hammersmith is built: anvil, bellows",house hammersmith built,1,P3,
+amb_camp_house_academy,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once academy is built: page turns,house academy built,1,P3,
+amb_camp_house_sharpweave_den,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once sharpweave_den is built: quiet back room,house sharpweave_den built,1,P3,
+amb_camp_house_smugglers_cellar,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once smugglers_cellar is built: cellar,house smugglers_cellar built,1,P3,
+amb_camp_house_hearth_hall,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once hearth_hall is built: the great fire,house hearth_hall built,1,P3,
+amb_camp_house_banner_loft,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Camp layer once banner_loft is built: cloth, sewing",house banner_loft built,1,P3,
+amb_camp_house_shroud_shrine,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Camp layer once shroud_shrine is built: void glow hum,house shroud_shrine built,1,P3,
+amb_port_ashen_landing,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Port port_ashen_landing: Shingle, the hauled-up Eel",PortScreen port_ashen_landing,1,P2,
+amb_port_smugglers_wharf,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Port port_smugglers_wharf: Market, tanneries, lantern docks",PortScreen port_smugglers_wharf,1,P2,
+amb_port_drowned_stair,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Port port_drowned_stair: Flooded landing,PortScreen port_drowned_stair,1,P2,
+amb_port_black_reliquary,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Port port_black_reliquary: River gate, rusted chains",PortScreen port_black_reliquary,1,P2,
+amb_port_hollow_shore,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Port port_hollow_shore: Grey sand, the Tear like a door",PortScreen port_hollow_shore,1,P2,
+amb_town_smugglers_wharf,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Town bed: Smugglers' Wharf,settlement (town),1,P3,
+amb_town_ashen_quarter,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Town bed: The Ashen Quarter,settlement (town),1,P3,
+amb_town_drowned_cloister,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Town bed: The Drowned Cloister,settlement (town),1,P3,
+amb_town_reliquary_quarter,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Town bed: The Reliquary Quarter,settlement (town),1,P3,
+amb_town_white_anchorage,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Town bed: The White Anchorage,settlement (town),1,P3,
+amb_village_emberwick,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Village bed: emberwick (Kilns, slag heaps)",settlement (village),1,P3,
+amb_village_wracks_end,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Village bed: wracks_end (Hull-houses, false lamps)",settlement (village),1,P3,
+amb_village_rimewell,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Village bed: rimewell (Frost, a bell that counts the taken)",settlement (village),1,P3,
+amb_village_greyhithe,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Village bed: greyhithe (Grey-faced fishers),settlement (village),1,P3,
+amb_sea_calm,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Voyage bed: calm sea, hull under way",voyage,1,P1,
+amb_sea_open,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Voyage bed: open sea, rigging, wind",voyage,1,P1,
+amb_sea_storm,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Voyage bed: storm,SeaEventKind.storm,1,P1,
+amb_sea_weather_calm,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Ship-battle weather bed: calm (crossfade each round),SeaWeather.calm,1,P2,
+amb_sea_weather_tailwind,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Ship-battle weather bed: tailwind (crossfade each round),SeaWeather.tailwind,1,P2,
+amb_sea_weather_crosswind,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Ship-battle weather bed: crosswind (crossfade each round),SeaWeather.crosswind,1,P2,
+amb_sea_weather_squall,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Ship-battle weather bed: squall (crossfade each round),SeaWeather.squall,1,P2,
+amb_sea_weather_fog,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea",Ship-battle weather bed: fog (crossfade each round),SeaWeather.fog,1,P2,
+amb_world_map,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Parchment room tone, soft sea swell",world_map_screen,1,P3,
+amb_tear_drone,ambience_loop,Ambience,True,Ambience,"Camp, ports, sea","Tear drone rising near void places (reliquary, heart, shore)",map focus / scene on void place,1,P3,
+amb_combat_condition_dark,ambience_loop,Ambience,True,Ambience,Combat conditions,Tint for the Dark battlefield condition,BattlefieldCondition.dark,1,P3,
+amb_combat_condition_shrine,ambience_loop,Ambience,True,Ambience,Combat conditions,Tint for the Shrine battlefield condition,BattlefieldCondition.shrine,1,P3,
+amb_ship_fire_loop,ambience_loop,Ambience,True,Ambience,Naval,A room on fire,ship room burning,1,P1,
+amb_ship_flooding_loop,ambience_loop,Ambience,True,Ambience,Naval,Flooding from leaks,ship leaks > 0,1,P1,
+amb_walla_market,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: market,scene / hub,1,P3,
+amb_walla_docks,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: docks,scene / hub,1,P3,
+amb_walla_camp_crew,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: camp crew,scene / hub,1,P3,
+amb_walla_inquisition_sermon,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: inquisition sermon,scene / hub,1,P3,
+amb_walla_cult_chant,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: cult chant,scene / hub,1,P3,
+amb_walla_white_fleet_whispers,ambience_loop,Ambience,True,Ambience,Walla & crowd,Walla: white fleet whispers,scene / hub,1,P3,
+ui_tap,ui,UI,False,UI,Interface,Generic button / list item,,3,P1,
+ui_tap_soft,ui,UI,False,UI,Interface,Soft tap,,3,P1,
+ui_back,ui,UI,False,UI,Interface,Back,,2,P1,
+ui_close,ui,UI,False,UI,Interface,Dismiss,,2,P1,
+ui_tab_switch,ui,UI,False,UI,Interface,Bottom nav (Story / Character / Camp or Ship / Other),,2,P1,
+ui_toggle_on,ui,UI,False,UI,Interface,Settings switch on,,1,P2,
+ui_toggle_off,ui,UI,False,UI,Interface,Settings switch off,,1,P2,
+ui_slider_tick,ui,UI,False,UI,Interface,Volume and other sliders,,1,P3,
+ui_confirm,ui,UI,False,UI,Interface,"Confirm dialogs (new game, load, NG+, retreat)",,1,P1,
+ui_cancel,ui,UI,False,UI,Interface,Cancel dialog,,1,P1,
+ui_error,ui,UI,False,UI,Interface,"Error: can't afford, party full",,2,P1,
+ui_denied,ui,UI,False,UI,Interface,"Locked choice, shop locked by alignment",,2,P1,
+ui_notice_in,ui,UI,False,UI,Interface,Immersive notice card appears (29 call sites),,2,P1,
+ui_badge_ping,ui,UI,False,UI,Interface,"Nav badge appears (points, house affordable, quest ready)",,1,P2,
+ui_modal_open,ui,UI,False,UI,Interface,"Bottom sheet opens (pickers, trade, compare)",,1,P2,
+ui_modal_close,ui,UI,False,UI,Interface,Bottom sheet closes,,1,P2,
+ui_page_turn,ui,UI,False,UI,Interface,"Journal, bestiary, tutorials list",,3,P2,
+ui_drag_pick,ui,UI,False,UI,Interface,Dice loadout: pick up a skill,,1,P2,
+ui_drag_drop,ui,UI,False,UI,Interface,Dice loadout: drop on a face,,1,P2,
+ui_drag_invalid,ui,UI,False,UI,Interface,Dice loadout: invalid drop,,1,P2,
+ui_sort_filter,ui,UI,False,UI,Interface,Shop sort / filter,,1,P3,
+ui_save,ui,UI,False,UI,Interface,Save to slot,,1,P2,
+ui_load,ui,UI,False,UI,Interface,Load slot,,1,P2,
+ui_save_fail,ui,UI,False,UI,Interface,Save slot unreadable,,1,P2,
+ui_language_switch,ui,UI,False,UI,Interface,EN/FR switch,,1,P3,
+ui_text_type_tick,ui,UI,False,UI,Interface,Tutorial dog typewriter tick (every n chars),,3,P2,
+ui_highlight_spotlight,ui,UI,False,UI,Interface,Tutorial dims and spotlights a target,,1,P2,
+ui_zoom_in,ui,UI,False,UI,Interface,World map zoom in (280 ms),,1,P3,
+ui_zoom_out,ui,UI,False,UI,Interface,World map zoom out,,1,P3,
+ui_map_pin_select,ui,UI,False,UI,Interface,Tap a landmark (28 landmarks),,2,P3,
+ui_read_aloud_on,ui,UI,False,UI,Interface,Narration speaker button on,,1,P3,
+ui_read_aloud_off,ui,UI,False,UI,Interface,Narration speaker button off,,1,P3,
+ui_notice_gold,ui,UI,False,UI,Interface,Flavoured notice sound: gold,showImmersiveNotice (by icon),1,P3,
+ui_notice_quest,ui,UI,False,UI,Interface,Flavoured notice sound: quest,showImmersiveNotice (by icon),1,P3,
+ui_notice_trophy,ui,UI,False,UI,Interface,Flavoured notice sound: trophy,showImmersiveNotice (by icon),1,P3,
+ui_notice_hammer,ui,UI,False,UI,Interface,Flavoured notice sound: hammer,showImmersiveNotice (by icon),1,P3,
+ui_notice_map,ui,UI,False,UI,Interface,Flavoured notice sound: map,showImmersiveNotice (by icon),1,P3,
+sfx_story_advance,sfx,SFX,False,Story & narrative,Narrative,Node transition (soft whoosh / paper),every node,3,P1,
+sfx_story_choice_select,sfx,SFX,False,Story & narrative,Narrative,Pick a choice,_selectChoice,3,P1,
+sfx_story_choice_locked,sfx,SFX,False,Story & narrative,Narrative,Tap a locked choice (18),lockedText,1,P2,
+sfx_gold_gain_small,sfx,SFX,False,Story & narrative,Narrative,Gold gained (small),goldMod > 0,3,P1,
+sfx_gold_gain_large,sfx,SFX,False,Story & narrative,Narrative,Gold gained (large),goldMod > 0,2,P1,
+sfx_gold_loss,sfx,SFX,False,Story & narrative,Narrative,Gold lost,goldMod < 0,2,P1,
+sfx_heal_rest,sfx,SFX,False,Story & narrative,Narrative,Healed by a choice / rest,healAmount > 0,2,P2,
+sfx_wound,sfx,SFX,False,Story & narrative,Narrative,Wounded by a choice,healAmount < 0,2,P2,
+sfx_alignment_good,sfx,SFX,False,Story & narrative,Narrative,Bright shimmer (scales with amount),alignmentMod > 0,2,P2,
+sfx_alignment_evil,sfx,SFX,False,Story & narrative,Narrative,Dark shimmer (scales with amount),alignmentMod < 0,2,P2,
+sfx_ability_check_roll,sfx,SFX,False,Story & narrative,Narrative,d20 ability check roll (20 choices),checkAbility,3,P1,
+sfx_ability_check_success,sfx,SFX,False,Story & narrative,Narrative,Ability check success,ability_check_success,1,P1,
+sfx_ability_check_fail,sfx,SFX,False,Story & narrative,Narrative,Ability check fail,ability_check_fail,1,P1,
+sfx_discovery,sfx,SFX,False,Story & narrative,Narrative,Discovery modal (shop / quest unlocked),discovery modal,1,P2,
+sfx_flag_callback,sfx,SFX,False,Story & narrative,Narrative,"""The world remembers"" tick",flag_callbacks,1,P3,
+sfx_ally_aside,sfx,SFX,False,Story & narrative,Narrative,An ally interjects in a scene (26 nodes),ally_acknowledgments,1,P3,
+sfx_previously_recap,sfx,SFX,False,Story & narrative,Narrative,"""Previously..."" recap on resume",story restore,1,P3,
+sfx_trail_cold,sfx,SFX,False,Story & narrative,Narrative,Dead-end / error view,trail_cold,1,P3,
+sfx_npc_talk,sfx,SFX,False,Story & narrative,Narrative,"Open an NPC dialogue (lysa, old_harker, sister_ines)",talkToNpc,1,P3,
+sfx_temptation_beggar_cup,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: beggar cup,alignment temptation,1,P3,
+sfx_temptation_dropped_satchel,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: dropped satchel,alignment temptation,1,P3,
+sfx_temptation_drunk_purse,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: drunk purse,alignment temptation,1,P3,
+sfx_temptation_ledger,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: ledger,alignment temptation,1,P3,
+sfx_temptation_grey_soldier_armour,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: grey soldier armour,alignment temptation,1,P3,
+sfx_temptation_juggler_coins,sfx,SFX,False,Story & narrative,Temptation Foley,Temptation scene Foley: juggler coins,alignment temptation,1,P3,
+sfx_story_hook_<node>,sfx,SFX,False,Story & narrative,Scripted hooks,One-off scripted sounds for nodes carrying script_trigger on_load_node_<id>,script_trigger,1,P3,Up to 30 nodes; ids per node
+sfx_dice_shake,sfx,SFX,False,Dice,Rolling,Roll pressed (650 ms spin),_rollDice,3,P1,
+sfx_dice_tumble_wood,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, wood family",_rollDice,3,P1,"starter_die, pilgrim_die, huntsman_die, ossuary_die"
+sfx_dice_land_wood,sfx,SFX,False,Dice,Rolling,"Face lands, wood family (stagger per party member)",roll lands,4,P1,"starter_die, pilgrim_die, huntsman_die, ossuary_die"
+sfx_dice_tumble_iron,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, iron family",_rollDice,3,P2,"iron_die, bulwark_die, grosh_die, berserker_die"
+sfx_dice_land_iron,sfx,SFX,False,Dice,Rolling,"Face lands, iron family (stagger per party member)",roll lands,4,P2,"iron_die, bulwark_die, grosh_die, berserker_die"
+sfx_dice_tumble_stone,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, stone family",_rollDice,3,P2,"stone_die, tempest_die, storm_die"
+sfx_dice_land_stone,sfx,SFX,False,Dice,Rolling,"Face lands, stone family (stagger per party member)",roll lands,4,P2,"stone_die, tempest_die, storm_die"
+sfx_dice_tumble_arcane,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, arcane family",_rollDice,3,P2,"arcane_die, apprentice_die, sage_die, vess_die, frost_die, flame_die"
+sfx_dice_land_arcane,sfx,SFX,False,Dice,Rolling,"Face lands, arcane family (stagger per party member)",roll lands,4,P2,"arcane_die, apprentice_die, sage_die, vess_die, frost_die, flame_die"
+sfx_dice_tumble_holy,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, holy family",_rollDice,3,P2,"holy_die, tide_die, tobin_die, vigil_die"
+sfx_dice_land_holy,sfx,SFX,False,Dice,Rolling,"Face lands, holy family (stagger per party member)",roll lands,4,P2,"holy_die, tide_die, tobin_die, vigil_die"
+sfx_dice_tumble_shadow,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, shadow family",_rollDice,3,P2,"shadow_die, twinfang_die, malrik_die, liora_die, gambler_die"
+sfx_dice_land_shadow,sfx,SFX,False,Dice,Rolling,"Face lands, shadow family (stagger per party member)",roll lands,4,P2,"shadow_die, twinfang_die, malrik_die, liora_die, gambler_die"
+sfx_dice_tumble_void,sfx,SFX,False,Dice,Rolling,"Die tumble / spin, void family",_rollDice,3,P2,"void_die, tearglass_die"
+sfx_dice_land_void,sfx,SFX,False,Dice,Rolling,"Face lands, void family (stagger per party member)",roll lands,4,P2,"void_die, tearglass_die"
+sfx_dice_lock,sfx,SFX,False,Dice,Dice actions,Keep a die between rerolls,lock toggle,2,P1,
+sfx_dice_unlock,sfx,SFX,False,Dice,Dice actions,Release a kept die,lock toggle,2,P1,
+sfx_dice_reroll,sfx,SFX,False,Dice,Dice actions,"Reroll button (3 rolls, 4 with charm)",reroll,2,P1,
+sfx_dice_final_autoconfirm,sfx,SFX,False,Dice,Dice actions,Last roll forced (700 ms),final roll,1,P2,
+sfx_dice_confirm,sfx,SFX,False,Dice,Dice actions,Confirm the roll,_confirmRoll,1,P1,
+sfx_face_fizzle,sfx,SFX,False,Dice,Dice actions,Skill fizzles (unavailable),skill_fizzles,1,P2,
+sfx_face_channeled,sfx,SFX,False,Dice,Dice actions,"Skill on a basic face (0.7x, muffled)",channeled skill,1,P3,
+sfx_dice_buy,sfx,SFX,False,Dice,Dice actions,Buy a die,buyDice,1,P2,
+sfx_dice_equip,sfx,SFX,False,Dice,Dice actions,Equip a die,equipDice,1,P2,
+sfx_d20_roll,sfx,SFX,False,Dice,Dice actions,d20 roll (skill challenge / ability check),skill challenge round,3,P2,
+sfx_d20_nat20,sfx,SFX,False,Dice,Dice actions,Natural 20,isCriticalSuccess,1,P2,
+sfx_d20_nat1,sfx,SFX,False,Dice,Dice actions,Natural 1,isCriticalFail,1,P2,
+sfx_face_resolve_attack,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Attack,face type Attack,1,P2,
+sfx_face_resolve_defend,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Defend,face type Defend,1,P2,
+sfx_face_resolve_skill,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Skill,face type Skill,1,P2,
+sfx_face_resolve_heal,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Heal,face type Heal,1,P2,
+sfx_face_resolve_mana,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Mana,face type Mana,1,P2,
+sfx_face_resolve_empty,sfx,SFX,False,Dice,Face resolve,Face reveal accent: Empty,face type Empty,1,P2,
+sfx_fight_enter,sfx,SFX,False,On-foot combat,Flow & targeting,"""Enter battle"": weapon draw",Enter battle button,1,P1,
+sfx_elite_reveal,sfx,SFX,False,On-foot combat,Flow & targeting,Elite prefix on the enemy card,isElite,1,P3,
+sfx_affix_chip,sfx,SFX,False,On-foot combat,Flow & targeting,Affix chip on the enemy card,enemy affixes,1,P3,
+sfx_charm_arm,sfx,SFX,False,On-foot combat,Flow & targeting,Arm a charm before the fight,charm chip,1,P2,
+sfx_charm_consume,sfx,SFX,False,On-foot combat,Flow & targeting,Charm burned at fight start,charm consumed,1,P2,
+sfx_target_select,sfx,SFX,False,On-foot combat,Flow & targeting,Tap an enemy card,target pick,1,P1,
+sfx_turn_party,sfx,SFX,False,On-foot combat,Flow & targeting,Round handoff to the party,_startPartyRound,1,P2,
+sfx_turn_enemy,sfx,SFX,False,On-foot combat,Flow & targeting,Round handoff to the enemies,_takeEnemyTurn,1,P2,
+sfx_momentum_ready,sfx,SFX,False,On-foot combat,Flow & targeting,3 hits: next strike is a sure crit,momentum ready,1,P2,
+sfx_surge_pick,sfx,SFX,False,On-foot combat,Flow & targeting,Choose the crit striker,surge picker,1,P2,
+sfx_surge_release,sfx,SFX,False,On-foot combat,Flow & targeting,Surge consumed,surge consumed,1,P2,
+sfx_momentum_lost,sfx,SFX,False,On-foot combat,Flow & targeting,"Party took damage, momentum resets",momentum reset,1,P3,
+sfx_brace,sfx,SFX,False,On-foot combat,Flow & targeting,Defend face on a telegraphed target (x2 block),brace,1,P2,
+sfx_hp_lethal_warning,sfx,SFX,False,On-foot combat,Flow & targeting,Lethal preview / low-HP heartbeat,lethal chip,1,P3,
+sfx_screen_shake_hit,sfx,SFX,False,On-foot combat,Flow & targeting,Player hurt (with the 400 ms shake),_triggerShake,1,P1,
+sfx_condition_reveal_ambush,sfx,SFX,False,On-foot combat,Flow & targeting,Battlefield condition banner: ambush,BattlefieldCondition,1,P3,
+sfx_condition_reveal_dark,sfx,SFX,False,On-foot combat,Flow & targeting,Battlefield condition banner: dark,BattlefieldCondition,1,P3,
+sfx_condition_reveal_cramped,sfx,SFX,False,On-foot combat,Flow & targeting,Battlefield condition banner: cramped,BattlefieldCondition,1,P3,
+sfx_condition_reveal_high_ground,sfx,SFX,False,On-foot combat,Flow & targeting,Battlefield condition banner: high_ground,BattlefieldCondition,1,P3,
+sfx_condition_reveal_shrine,sfx,SFX,False,On-foot combat,Flow & targeting,Battlefield condition banner: shrine,BattlefieldCondition,1,P3,
+sfx_telegraph_attack,sfx,SFX,False,On-foot combat,Flow & targeting,Enemy intent revealed: attack,MoveCategory,1,P2,
+sfx_telegraph_heal_self,sfx,SFX,False,On-foot combat,Flow & targeting,Enemy intent revealed: heal_self,MoveCategory,1,P2,
+sfx_telegraph_status_debuff,sfx,SFX,False,On-foot combat,Flow & targeting,Enemy intent revealed: status_debuff,MoveCategory,1,P2,
+sfx_vfx_slash_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,slash: cast / whoosh. Blade swish + flesh/cloth hit,VfxStyle.slash,5,P1,Used by: 2 skills + default Attack face
+sfx_vfx_slash_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,slash: impact. Blade swish + flesh/cloth hit,VfxStyle.slash,5,P1,
+sfx_vfx_heavy_slash_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,heavy_slash: cast / whoosh. Big swing + crunch,VfxStyle.heavy_slash,3,P1,Used by: 6 skills
+sfx_vfx_heavy_slash_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,heavy_slash: impact. Big swing + crunch,VfxStyle.heavy_slash,3,P1,
+sfx_vfx_pierce_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,pierce: cast / whoosh. Thrust + puncture,VfxStyle.pierce,3,P1,Used by: 5 skills
+sfx_vfx_pierce_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,pierce: impact. Thrust + puncture,VfxStyle.pierce,3,P1,
+sfx_vfx_whirl_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,whirl: cast / whoosh. Spinning multi-swish,VfxStyle.whirl,3,P2,Used by: 2 skills
+sfx_vfx_whirl_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,whirl: impact. Spinning multi-swish,VfxStyle.whirl,3,P2,
+sfx_vfx_claw_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,claw: cast / whoosh. Rake + beast snarl,VfxStyle.claw,5,P1,Used by: 2 skills + every enemy plain attack
+sfx_vfx_claw_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,claw: impact. Rake + beast snarl,VfxStyle.claw,5,P1,
+sfx_vfx_impact_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,impact: cast / whoosh. Blunt thud,VfxStyle.impact,3,P1,Used by: 3 skills + Thorns
+sfx_vfx_impact_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,impact: impact. Blunt thud,VfxStyle.impact,3,P1,
+sfx_vfx_arrow_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"arrow: cast / whoosh. Bow loose, flight, thunk",VfxStyle.arrow,3,P1,Used by: 3 skills + 3 ranger spells
+sfx_vfx_arrow_travel,sfx,SFX,False,On-foot combat,Skill & spell VFX,arrow: projectile travel,VfxStyle.arrow (projectile),2,P1,
+sfx_vfx_arrow_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"arrow: impact. Bow loose, flight, thunk",VfxStyle.arrow,3,P1,
+sfx_vfx_volley_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"volley: cast / whoosh. Many arrows, rain of thunks",VfxStyle.volley,2,P2,Used by: 1 skill
+sfx_vfx_volley_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"volley: impact. Many arrows, rain of thunks",VfxStyle.volley,2,P2,
+sfx_vfx_bolt_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,bolt: cast / whoosh. Crackling arcane projectile,VfxStyle.bolt,3,P1,Used by: 1 skill + Arcane Bolt
+sfx_vfx_bolt_travel,sfx,SFX,False,On-foot combat,Skill & spell VFX,bolt: projectile travel,VfxStyle.bolt (projectile),2,P1,
+sfx_vfx_bolt_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,bolt: impact. Crackling arcane projectile,VfxStyle.bolt,3,P1,
+sfx_vfx_lightning_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,lightning: cast / whoosh. Strike + thunder crack,VfxStyle.lightning,2,P2,Used by: 2 skills
+sfx_vfx_lightning_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,lightning: impact. Strike + thunder crack,VfxStyle.lightning,2,P2,
+sfx_vfx_flame_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,flame: cast / whoosh. Whoosh + burn,VfxStyle.flame,3,P1,Used by: 6 skills
+sfx_vfx_flame_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,flame: impact. Whoosh + burn,VfxStyle.flame,3,P1,
+sfx_vfx_fireball_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"fireball: cast / whoosh. Launch, roar, explosion",VfxStyle.fireball,2,P1,Used by: 2 skills + Scroll of Fireball
+sfx_vfx_fireball_travel,sfx,SFX,False,On-foot combat,Skill & spell VFX,fireball: projectile travel,VfxStyle.fireball (projectile),2,P1,
+sfx_vfx_fireball_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"fireball: impact. Launch, roar, explosion",VfxStyle.fireball,2,P1,
+sfx_vfx_meteor_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,meteor: cast / whoosh. Descending roar + massive impact (1000 ms),VfxStyle.meteor,2,P2,Used by: 2 skills
+sfx_vfx_meteor_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,meteor: impact. Descending roar + massive impact (1000 ms),VfxStyle.meteor,2,P2,
+sfx_vfx_holy_fire_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,holy_fire: cast / whoosh. Choir-tinged flame,VfxStyle.holy_fire,2,P2,Used by: 2 skills
+sfx_vfx_holy_fire_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,holy_fire: impact. Choir-tinged flame,VfxStyle.holy_fire,2,P2,
+sfx_vfx_frost_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,frost: cast / whoosh. Ice crackle + shatter,VfxStyle.frost,2,P2,Used by: 2 skills
+sfx_vfx_frost_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,frost: impact. Ice crackle + shatter,VfxStyle.frost,2,P2,
+sfx_vfx_splash_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,splash: cast / whoosh. Water burst,VfxStyle.splash,2,P2,Used by: 1 skill + Antidote + Purge
+sfx_vfx_splash_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,splash: impact. Water burst,VfxStyle.splash,2,P2,
+sfx_vfx_poison_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"poison: cast / whoosh. Hiss, bubbling",VfxStyle.poison,3,P1,Used by: 3 skills + poison ticks
+sfx_vfx_poison_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"poison: impact. Hiss, bubbling",VfxStyle.poison,3,P1,
+sfx_vfx_smoke_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"smoke: cast / whoosh. Puff, cough",VfxStyle.smoke,2,P3,Used by: 1 skill
+sfx_vfx_smoke_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"smoke: impact. Puff, cough",VfxStyle.smoke,2,P3,
+sfx_vfx_wind_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,wind: cast / whoosh. Gust,VfxStyle.wind,2,P2,Used by: 1 skill
+sfx_vfx_wind_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,wind: impact. Gust,VfxStyle.wind,2,P2,
+sfx_vfx_quake_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,quake: cast / whoosh. Rumble + rock crack,VfxStyle.quake,2,P2,Used by: 3 skills
+sfx_vfx_quake_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,quake: impact. Rumble + rock crack,VfxStyle.quake,2,P2,
+sfx_vfx_void_rift_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"void_rift: cast / whoosh. Tear hum, reversed swell, glass (signature)",VfxStyle.void_rift,3,P1,Used by: 4 skills
+sfx_vfx_void_rift_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"void_rift: impact. Tear hum, reversed swell, glass (signature)",VfxStyle.void_rift,3,P1,
+sfx_vfx_drain_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"drain: cast / whoosh. Suck-in, heartbeat pull",VfxStyle.drain,2,P2,Used by: 3 skills + Lifesteal
+sfx_vfx_drain_travel,sfx,SFX,False,On-foot combat,Skill & spell VFX,drain: projectile travel,VfxStyle.drain (projectile),2,P2,
+sfx_vfx_drain_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"drain: impact. Suck-in, heartbeat pull",VfxStyle.drain,2,P2,
+sfx_vfx_shadow_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"shadow: cast / whoosh. Dark whoosh, whisper",VfxStyle.shadow,3,P1,Used by: 6 skills
+sfx_vfx_shadow_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"shadow: impact. Dark whoosh, whisper",VfxStyle.shadow,3,P1,
+sfx_vfx_radiance_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"radiance: cast / whoosh. Bright bloom, bell shimmer",VfxStyle.radiance,2,P2,Used by: 4 skills
+sfx_vfx_radiance_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"radiance: impact. Bright bloom, bell shimmer",VfxStyle.radiance,2,P2,
+sfx_vfx_heal_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,heal: cast / whoosh. Warm chime rise,VfxStyle.heal,3,P1,Used by: 8 skills + potions
+sfx_vfx_heal_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,heal: impact. Warm chime rise,VfxStyle.heal,3,P1,
+sfx_vfx_shield_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,"shield: cast / whoosh. Shield raise, metal ring",VfxStyle.shield,3,P1,Used by: 5 skills + Defend face + block
+sfx_vfx_shield_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,"shield: impact. Shield raise, metal ring",VfxStyle.shield,3,P1,
+sfx_vfx_stone_shield_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,stone_shield: cast / whoosh. Stone grind-up,VfxStyle.stone_shield,2,P2,Used by: 5 skills
+sfx_vfx_stone_shield_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,stone_shield: impact. Stone grind-up,VfxStyle.stone_shield,2,P2,
+sfx_vfx_mana_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,mana: cast / whoosh. Crystalline fill,VfxStyle.mana,3,P1,Used by: 2 skills + Mana face
+sfx_vfx_mana_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,mana: impact. Crystalline fill,VfxStyle.mana,3,P1,
+sfx_vfx_shout_cast,sfx,SFX,False,On-foot combat,Skill & spell VFX,shout: cast / whoosh. War cry,VfxStyle.shout,3,P2,Used by: 4 skills + 3 warrior spells
+sfx_vfx_shout_impact,sfx,SFX,False,On-foot combat,Skill & spell VFX,shout: impact. War cry,VfxStyle.shout,3,P2,
+sfx_vfx_stun,sfx,SFX,False,On-foot combat,System VFX,stun: Ringing-bell daze,VfxStyle.stun (system),3,P1,
+sfx_vfx_weaken,sfx,SFX,False,On-foot combat,System VFX,weaken: Deflating drone,VfxStyle.weaken (system),3,P1,
+sfx_vfx_crit,sfx,SFX,False,On-foot combat,System VFX,crit: Big accent layered over the hit,VfxStyle.crit (system),3,P1,
+sfx_vfx_miss,sfx,SFX,False,On-foot combat,System VFX,miss: Whiff,VfxStyle.miss (system),3,P1,
+sfx_vfx_phase,sfx,SFX,False,On-foot combat,System VFX,phase: Huge transformation swell (1000 ms),VfxStyle.phase (system),3,P1,
+sfx_element_tail_fire,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: fire,skill element Fire,2,P2,
+sfx_element_tail_wind,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: wind,skill element Wind,2,P2,
+sfx_element_tail_earth,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: earth,skill element Earth,2,P2,
+sfx_element_tail_water,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: water,skill element Water,2,P2,
+sfx_element_tail_electricity,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: electricity,skill element Electricity,2,P2,
+sfx_element_tail_void,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: void,skill element Void,2,P2,
+sfx_element_tail_ice,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: ice,skill element Ice,2,P2,
+sfx_element_tail_light,sfx,SFX,False,On-foot combat,Element sweeteners,Element tail layered on skills: light,skill element Light,2,P2,
+sfx_alignment_tail_good,sfx,SFX,False,On-foot combat,Element sweeteners,Bright shimmer tail for Good-aligned skills,skill alignment Good,2,P3,
+sfx_alignment_tail_evil,sfx,SFX,False,On-foot combat,Element sweeteners,Dark tail for Evil-aligned skills,skill alignment Evil,2,P3,
+sfx_hit_enemy_light,sfx,SFX,False,On-foot combat,Hits & outcomes,Enemy takes light damage,damage number (enemy),3,P1,
+sfx_hit_player_light,sfx,SFX,False,On-foot combat,Hits & outcomes,Party takes light damage,damage number (party),3,P1,
+sfx_hit_enemy_medium,sfx,SFX,False,On-foot combat,Hits & outcomes,Enemy takes medium damage,damage number (enemy),3,P1,
+sfx_hit_player_medium,sfx,SFX,False,On-foot combat,Hits & outcomes,Party takes medium damage,damage number (party),3,P1,
+sfx_hit_enemy_heavy,sfx,SFX,False,On-foot combat,Hits & outcomes,Enemy takes heavy damage,damage number (enemy),3,P1,
+sfx_hit_player_heavy,sfx,SFX,False,On-foot combat,Hits & outcomes,Party takes heavy damage,damage number (party),3,P1,
+sfx_crit,sfx,SFX,False,On-foot combat,Hits & outcomes,Crit accent + big burst,crit,3,P1,
+sfx_dodge,sfx,SFX,False,On-foot combat,Hits & outcomes,Dodge (5-30%),dodge,3,P1,
+sfx_block_full,sfx,SFX,False,On-foot combat,Hits & outcomes,"Fully blocked, ""0""",block,3,P1,
+sfx_armored_absorb,sfx,SFX,False,On-foot combat,Hits & outcomes,Armored affix: -4 on Attack faces,armored absorbs,2,P2,
+sfx_redirect,sfx,SFX,False,On-foot combat,Hits & outcomes,"Target already dead, blow moves on",redirected hit,1,P3,
+sfx_enemy_flee,sfx,SFX,False,On-foot combat,Hits & outcomes,Skittish enemy flees below 25%,Skittish flee,2,P2,
+sfx_ally_ko,sfx,SFX,False,On-foot combat,Hits & outcomes,Companion knocked out,ally KO,2,P1,
+sfx_player_death,sfx,SFX,False,On-foot combat,Hits & outcomes,Player falls,player death,1,P1,
+sfx_ally_revive,sfx,SFX,False,On-foot combat,Hits & outcomes,Allies back at 30% after a win,revive,1,P2,
+sfx_second_wind,sfx,SFX,False,On-foot combat,Hits & outcomes,Survive at 1 HP (gear),secondWind,1,P2,
+sfx_warding_block,sfx,SFX,False,On-foot combat,Hits & outcomes,Warding charm eats the first hit,charm_warding,1,P2,
+sfx_thorns,sfx,SFX,False,On-foot combat,Hits & outcomes,Thorns reflect,thorns,2,P2,
+sfx_lifesteal,sfx,SFX,False,On-foot combat,Hits & outcomes,Drain + heal,lifesteal,1,P2,
+sfx_mana_on_hit,sfx,SFX,False,On-foot combat,Hits & outcomes,Small mana tick,manaOnHit,1,P3,
+sfx_enemy_holds_back,sfx,SFX,False,On-foot combat,Hits & outcomes,Cramped condition: enemy waits,holds back,1,P3,
+sfx_status_poison_apply,sfx,SFX,False,On-foot combat,Status effects,Poison applied,status poison lands,2,P1,
+sfx_status_poison_tick,sfx,SFX,False,On-foot combat,Status effects,Poison damage each turn,poison tick,2,P1,
+sfx_status_stun_apply,sfx,SFX,False,On-foot combat,Status effects,Stun applied,status stun lands,2,P1,
+sfx_status_stun_skip,sfx,SFX,False,On-foot combat,Status effects,"""Skips turn""",stun skip,2,P1,
+sfx_status_weaken_apply,sfx,SFX,False,On-foot combat,Status effects,Weaken applied,status weaken lands,2,P1,
+sfx_status_refresh,sfx,SFX,False,On-foot combat,Status effects,Status reapplied (refreshes),status refresh,2,P3,
+sfx_status_cleanse,sfx,SFX,False,On-foot combat,Status effects,"Antidote, Purge or boss cleanse",cleanse,2,P1,
+sfx_potion_drink_minor,sfx,SFX,False,On-foot combat,Consumables & off-turn,Minor potion,consumePotion,2,P1,
+sfx_potion_drink_major,sfx,SFX,False,On-foot combat,Consumables & off-turn,Major potion,consumePotion,2,P1,
+sfx_antidote_drink,sfx,SFX,False,On-foot combat,Consumables & off-turn,Antidote,consumeAntidote,2,P1,
+sfx_scroll_unfurl,sfx,SFX,False,On-foot combat,Consumables & off-turn,Scroll of Fireball (then fireball),scroll_fireball,2,P2,
+sfx_spell_cast_generic,sfx,SFX,False,On-foot combat,Consumables & off-turn,"Mana spent, pre-cast",spell cast,2,P1,
+sfx_retreat,sfx,SFX,False,On-foot combat,Consumables & off-turn,"Flee the fight: footsteps, dropped coins",retreat,2,P2,
+vo_enemy_street_criminals_aggro,vo,VO,False,On-foot combat,Enemy vocals,street criminals family: aggro,enemy aggro,3,P2,"Human efforts, rough. Members: slum_thug, street_bandit, smuggler_captain, dock_overseer"
+vo_enemy_street_criminals_attack,vo,VO,False,On-foot combat,Enemy vocals,street criminals family: attack,enemy attack,3,P2,"Human efforts, rough. Members: slum_thug, street_bandit, smuggler_captain, dock_overseer"
+vo_enemy_street_criminals_hurt,vo,VO,False,On-foot combat,Enemy vocals,street criminals family: hurt,enemy hurt,3,P2,"Human efforts, rough. Members: slum_thug, street_bandit, smuggler_captain, dock_overseer"
+vo_enemy_street_criminals_death,vo,VO,False,On-foot combat,Enemy vocals,street criminals family: death,enemy death,3,P1,"Human efforts, rough. Members: slum_thug, street_bandit, smuggler_captain, dock_overseer"
+vo_enemy_inquisition_aggro,vo,VO,False,On-foot combat,Enemy vocals,inquisition family: aggro,enemy aggro,3,P2,"Armoured, disciplined; penitents muffled under masks. Members: inquisition_warden, _soldier, _auxiliary, _high_warden, kroll_the_branded, inquisition_penitent, masked_penitent, inquisition_legate, white_soldier, white_admiral"
+vo_enemy_inquisition_attack,vo,VO,False,On-foot combat,Enemy vocals,inquisition family: attack,enemy attack,3,P2,"Armoured, disciplined; penitents muffled under masks. Members: inquisition_warden, _soldier, _auxiliary, _high_warden, kroll_the_branded, inquisition_penitent, masked_penitent, inquisition_legate, white_soldier, white_admiral"
+vo_enemy_inquisition_hurt,vo,VO,False,On-foot combat,Enemy vocals,inquisition family: hurt,enemy hurt,3,P2,"Armoured, disciplined; penitents muffled under masks. Members: inquisition_warden, _soldier, _auxiliary, _high_warden, kroll_the_branded, inquisition_penitent, masked_penitent, inquisition_legate, white_soldier, white_admiral"
+vo_enemy_inquisition_death,vo,VO,False,On-foot combat,Enemy vocals,inquisition family: death,enemy death,3,P1,"Armoured, disciplined; penitents muffled under masks. Members: inquisition_warden, _soldier, _auxiliary, _high_warden, kroll_the_branded, inquisition_penitent, masked_penitent, inquisition_legate, white_soldier, white_admiral"
+vo_enemy_void_cult_aggro,vo,VO,False,On-foot combat,Enemy vocals,void cult family: aggro,enemy aggro,3,P2,"Chanting, fanatic; knight hollow and echoing. Members: cultist_acolyte, hollow_court_zealot, hollow_court_inquisitor, unmade_knight"
+vo_enemy_void_cult_attack,vo,VO,False,On-foot combat,Enemy vocals,void cult family: attack,enemy attack,3,P2,"Chanting, fanatic; knight hollow and echoing. Members: cultist_acolyte, hollow_court_zealot, hollow_court_inquisitor, unmade_knight"
+vo_enemy_void_cult_hurt,vo,VO,False,On-foot combat,Enemy vocals,void cult family: hurt,enemy hurt,3,P2,"Chanting, fanatic; knight hollow and echoing. Members: cultist_acolyte, hollow_court_zealot, hollow_court_inquisitor, unmade_knight"
+vo_enemy_void_cult_death,vo,VO,False,On-foot combat,Enemy vocals,void cult family: death,enemy death,3,P1,"Chanting, fanatic; knight hollow and echoing. Members: cultist_acolyte, hollow_court_zealot, hollow_court_inquisitor, unmade_knight"
+vo_enemy_beasts_aggro,vo,VO,False,On-foot combat,Enemy vocals,beasts family: aggro,enemy aggro,3,P2,"Squeaks, swarm; wet sick hound. Members: harbor_rat, rat_matriarch, plague_hound"
+vo_enemy_beasts_attack,vo,VO,False,On-foot combat,Enemy vocals,beasts family: attack,enemy attack,3,P2,"Squeaks, swarm; wet sick hound. Members: harbor_rat, rat_matriarch, plague_hound"
+vo_enemy_beasts_hurt,vo,VO,False,On-foot combat,Enemy vocals,beasts family: hurt,enemy hurt,3,P2,"Squeaks, swarm; wet sick hound. Members: harbor_rat, rat_matriarch, plague_hound"
+vo_enemy_beasts_death,vo,VO,False,On-foot combat,Enemy vocals,beasts family: death,enemy death,3,P1,"Squeaks, swarm; wet sick hound. Members: harbor_rat, rat_matriarch, plague_hound"
+vo_enemy_void_creatures_aggro,vo,VO,False,On-foot combat,Enemy vocals,void creatures family: aggro,enemy aggro,3,P2,"Non-human: glassy, reversed, the hum reflected. Members: void_wisp, void_stalker, void_manifestation, void_hound, tear_spawn, void_archon, void_sovereign, hollow_reflection"
+vo_enemy_void_creatures_attack,vo,VO,False,On-foot combat,Enemy vocals,void creatures family: attack,enemy attack,3,P2,"Non-human: glassy, reversed, the hum reflected. Members: void_wisp, void_stalker, void_manifestation, void_hound, tear_spawn, void_archon, void_sovereign, hollow_reflection"
+vo_enemy_void_creatures_hurt,vo,VO,False,On-foot combat,Enemy vocals,void creatures family: hurt,enemy hurt,3,P2,"Non-human: glassy, reversed, the hum reflected. Members: void_wisp, void_stalker, void_manifestation, void_hound, tear_spawn, void_archon, void_sovereign, hollow_reflection"
+vo_enemy_void_creatures_death,vo,VO,False,On-foot combat,Enemy vocals,void creatures family: death,enemy death,3,P1,"Non-human: glassy, reversed, the hum reflected. Members: void_wisp, void_stalker, void_manifestation, void_hound, tear_spawn, void_archon, void_sovereign, hollow_reflection"
+vo_enemy_undead_aggro,vo,VO,False,On-foot combat,Enemy vocals,undead family: aggro,enemy aggro,3,P2,"Bone rattle, drowned gurgle. Members: catacomb_ghoul, bone_warden, bone_sexton, drowned_pilgrim"
+vo_enemy_undead_attack,vo,VO,False,On-foot combat,Enemy vocals,undead family: attack,enemy attack,3,P2,"Bone rattle, drowned gurgle. Members: catacomb_ghoul, bone_warden, bone_sexton, drowned_pilgrim"
+vo_enemy_undead_hurt,vo,VO,False,On-foot combat,Enemy vocals,undead family: hurt,enemy hurt,3,P2,"Bone rattle, drowned gurgle. Members: catacomb_ghoul, bone_warden, bone_sexton, drowned_pilgrim"
+vo_enemy_undead_death,vo,VO,False,On-foot combat,Enemy vocals,undead family: death,enemy death,3,P1,"Bone rattle, drowned gurgle. Members: catacomb_ghoul, bone_warden, bone_sexton, drowned_pilgrim"
+vo_enemy_constructs_aggro,vo,VO,False,On-foot combat,Enemy vocals,constructs family: aggro,enemy aggro,3,P2,"Metal and stone grind. Members: iron_golem, strand_colossus"
+vo_enemy_constructs_attack,vo,VO,False,On-foot combat,Enemy vocals,constructs family: attack,enemy attack,3,P2,"Metal and stone grind. Members: iron_golem, strand_colossus"
+vo_enemy_constructs_hurt,vo,VO,False,On-foot combat,Enemy vocals,constructs family: hurt,enemy hurt,3,P2,"Metal and stone grind. Members: iron_golem, strand_colossus"
+vo_enemy_constructs_death,vo,VO,False,On-foot combat,Enemy vocals,constructs family: death,enemy death,3,P1,"Metal and stone grind. Members: iron_golem, strand_colossus"
+vo_enemy_celestial_choir_aggro,vo,VO,False,On-foot combat,Enemy vocals,celestial choir family: aggro,enemy aggro,3,P2,"Choral, piercing, beautiful and terrible. Members: angel_sentinel, angel_judicator"
+vo_enemy_celestial_choir_attack,vo,VO,False,On-foot combat,Enemy vocals,celestial choir family: attack,enemy attack,3,P2,"Choral, piercing, beautiful and terrible. Members: angel_sentinel, angel_judicator"
+vo_enemy_celestial_choir_hurt,vo,VO,False,On-foot combat,Enemy vocals,celestial choir family: hurt,enemy hurt,3,P2,"Choral, piercing, beautiful and terrible. Members: angel_sentinel, angel_judicator"
+vo_enemy_celestial_choir_death,vo,VO,False,On-foot combat,Enemy vocals,celestial choir family: death,enemy death,3,P1,"Choral, piercing, beautiful and terrible. Members: angel_sentinel, angel_judicator"
+vo_enemy_demonic_pit_aggro,vo,VO,False,On-foot combat,Enemy vocals,demonic pit family: aggro,enemy aggro,3,P2,"Chittering imp; guttural tormentor. Members: demon_imp, demon_tormentor"
+vo_enemy_demonic_pit_attack,vo,VO,False,On-foot combat,Enemy vocals,demonic pit family: attack,enemy attack,3,P2,"Chittering imp; guttural tormentor. Members: demon_imp, demon_tormentor"
+vo_enemy_demonic_pit_hurt,vo,VO,False,On-foot combat,Enemy vocals,demonic pit family: hurt,enemy hurt,3,P2,"Chittering imp; guttural tormentor. Members: demon_imp, demon_tormentor"
+vo_enemy_demonic_pit_death,vo,VO,False,On-foot combat,Enemy vocals,demonic pit family: death,enemy death,3,P1,"Chittering imp; guttural tormentor. Members: demon_imp, demon_tormentor"
+vo_boss_dock_overseer_intro,vo,VO,False,On-foot combat,Boss vocals,dock_overseer: intro,boss dock_overseer,2,P2,
+vo_boss_dock_overseer_phase_roar,vo,VO,False,On-foot combat,Boss vocals,dock_overseer: phase roar,boss dock_overseer,2,P2,
+vo_boss_dock_overseer_death,vo,VO,False,On-foot combat,Boss vocals,dock_overseer: death,boss dock_overseer,2,P2,
+vo_boss_plague_hound_intro,vo,VO,False,On-foot combat,Boss vocals,plague_hound: intro,boss plague_hound,2,P2,
+vo_boss_plague_hound_phase_roar,vo,VO,False,On-foot combat,Boss vocals,plague_hound: phase roar,boss plague_hound,2,P2,
+vo_boss_plague_hound_death,vo,VO,False,On-foot combat,Boss vocals,plague_hound: death,boss plague_hound,2,P2,
+vo_boss_smuggler_captain_intro,vo,VO,False,On-foot combat,Boss vocals,smuggler_captain: intro,boss smuggler_captain,2,P2,
+vo_boss_smuggler_captain_phase_roar,vo,VO,False,On-foot combat,Boss vocals,smuggler_captain: phase roar,boss smuggler_captain,2,P2,
+vo_boss_smuggler_captain_death,vo,VO,False,On-foot combat,Boss vocals,smuggler_captain: death,boss smuggler_captain,2,P2,
+vo_boss_iron_golem_intro,vo,VO,False,On-foot combat,Boss vocals,iron_golem: intro,boss iron_golem,2,P2,
+vo_boss_iron_golem_phase_roar,vo,VO,False,On-foot combat,Boss vocals,iron_golem: phase roar,boss iron_golem,2,P2,
+vo_boss_iron_golem_death,vo,VO,False,On-foot combat,Boss vocals,iron_golem: death,boss iron_golem,2,P2,
+vo_boss_bone_warden_intro,vo,VO,False,On-foot combat,Boss vocals,bone_warden: intro,boss bone_warden,2,P2,
+vo_boss_bone_warden_phase_roar,vo,VO,False,On-foot combat,Boss vocals,bone_warden: phase roar,boss bone_warden,2,P2,
+vo_boss_bone_warden_death,vo,VO,False,On-foot combat,Boss vocals,bone_warden: death,boss bone_warden,2,P2,
+vo_boss_tear_spawn_intro,vo,VO,False,On-foot combat,Boss vocals,tear_spawn: intro,boss tear_spawn,2,P2,
+vo_boss_tear_spawn_phase_roar,vo,VO,False,On-foot combat,Boss vocals,tear_spawn: phase roar,boss tear_spawn,2,P2,
+vo_boss_tear_spawn_death,vo,VO,False,On-foot combat,Boss vocals,tear_spawn: death,boss tear_spawn,2,P2,
+vo_boss_strand_colossus_intro,vo,VO,False,On-foot combat,Boss vocals,strand_colossus: intro,boss strand_colossus,2,P2,
+vo_boss_strand_colossus_phase_roar,vo,VO,False,On-foot combat,Boss vocals,strand_colossus: phase roar,boss strand_colossus,2,P2,
+vo_boss_strand_colossus_death,vo,VO,False,On-foot combat,Boss vocals,strand_colossus: death,boss strand_colossus,2,P2,
+vo_boss_void_stalker_intro,vo,VO,False,On-foot combat,Boss vocals,void_stalker: intro,boss void_stalker,2,P2,
+vo_boss_void_stalker_phase_roar,vo,VO,False,On-foot combat,Boss vocals,void_stalker: phase roar,boss void_stalker,2,P2,
+vo_boss_void_stalker_death,vo,VO,False,On-foot combat,Boss vocals,void_stalker: death,boss void_stalker,2,P2,
+vo_boss_hollow_court_inquisitor_intro,vo,VO,False,On-foot combat,Boss vocals,hollow_court_inquisitor: intro,boss hollow_court_inquisitor,2,P2,
+vo_boss_hollow_court_inquisitor_phase_roar,vo,VO,False,On-foot combat,Boss vocals,hollow_court_inquisitor: phase roar,boss hollow_court_inquisitor,2,P2,
+vo_boss_hollow_court_inquisitor_death,vo,VO,False,On-foot combat,Boss vocals,hollow_court_inquisitor: death,boss hollow_court_inquisitor,2,P2,
+vo_boss_void_archon_intro,vo,VO,False,On-foot combat,Boss vocals,void_archon: intro,boss void_archon,2,P2,
+vo_boss_void_archon_phase_roar,vo,VO,False,On-foot combat,Boss vocals,void_archon: phase roar,boss void_archon,2,P2,
+vo_boss_void_archon_death,vo,VO,False,On-foot combat,Boss vocals,void_archon: death,boss void_archon,2,P2,
+vo_boss_void_sovereign_intro,vo,VO,False,On-foot combat,Boss vocals,void_sovereign: intro,boss void_sovereign,2,P2,
+vo_boss_void_sovereign_phase_roar,vo,VO,False,On-foot combat,Boss vocals,void_sovereign: phase roar,boss void_sovereign,2,P2,
+vo_boss_void_sovereign_death,vo,VO,False,On-foot combat,Boss vocals,void_sovereign: death,boss void_sovereign,2,P2,
+vo_boss_white_admiral_intro,vo,VO,False,On-foot combat,Boss vocals,white_admiral: intro,boss white_admiral,2,P2,
+vo_boss_white_admiral_phase_roar,vo,VO,False,On-foot combat,Boss vocals,white_admiral: phase roar,boss white_admiral,2,P2,
+vo_boss_white_admiral_death,vo,VO,False,On-foot combat,Boss vocals,white_admiral: death,boss white_admiral,2,P2,
+sfx_enemy_skill_plague_bite,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: plague_bite,skill plague_bite,1,P2,
+sfx_enemy_skill_void_drain,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: void_drain,skill void_drain,1,P2,
+sfx_enemy_skill_disorienting_pulse,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: disorienting_pulse,skill disorienting_pulse,1,P2,
+sfx_enemy_skill_molten_backlash,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: molten_backlash,skill molten_backlash,1,P2,
+sfx_enemy_skill_matriarch_brood_call,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: matriarch_brood_call,skill matriarch_brood_call,1,P2,
+sfx_enemy_skill_golem_meltdown,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: golem_meltdown,skill golem_meltdown,1,P2,
+sfx_enemy_skill_warden_bone_storm,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: warden_bone_storm,skill warden_bone_storm,1,P2,
+sfx_enemy_skill_archon_eclipse,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: archon_eclipse,skill archon_eclipse,1,P2,
+sfx_enemy_skill_sovereign_unmaking,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: sovereign_unmaking,skill sovereign_unmaking,1,P2,
+sfx_enemy_skill_zealot_martyrdom,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: zealot_martyrdom,skill zealot_martyrdom,1,P2,
+sfx_enemy_skill_manifestation_many_faces,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: manifestation_many_faces,skill manifestation_many_faces,1,P2,
+sfx_enemy_skill_stalker_ambush,sfx,SFX,False,On-foot combat,Enemy signature skills,Bespoke enemy skill: stalker_ambush,skill stalker_ambush,1,P2,
+sfx_spell_arcane_bolt,sfx,SFX,False,On-foot combat,Spells (unique pass),"Mage spell arcane_bolt (optional unique pass; base style bolt, Electricity)",spell_arcane_bolt,1,P3,
+sfx_spell_frost_bind,sfx,SFX,False,On-foot combat,Spells (unique pass),Mage spell frost_bind (optional unique pass; base style frost + stun),spell_frost_bind,1,P3,
+sfx_spell_ember_wave,sfx,SFX,False,On-foot combat,Spells (unique pass),"Mage spell ember_wave (optional unique pass; base style flame, all enemies)",spell_ember_wave,1,P3,
+sfx_spell_mana_ward,sfx,SFX,False,On-foot combat,Spells (unique pass),"Mage spell mana_ward (optional unique pass; base style shield, party)",spell_mana_ward,1,P3,
+sfx_spell_mending_light,sfx,SFX,False,On-foot combat,Spells (unique pass),Cleric spell mending_light (optional unique pass; base style radiance),spell_mending_light,1,P3,
+sfx_spell_sanctified_ground,sfx,SFX,False,On-foot combat,Spells (unique pass),"Cleric spell sanctified_ground (optional unique pass; base style heal, party)",spell_sanctified_ground,1,P3,
+sfx_spell_smite_the_wicked,sfx,SFX,False,On-foot combat,Spells (unique pass),Cleric spell smite_the_wicked (optional unique pass; base style holy_fire),spell_smite_the_wicked,1,P3,
+sfx_spell_purge,sfx,SFX,False,On-foot combat,Spells (unique pass),"Cleric spell purge (optional unique pass; base style splash, cleanse)",spell_purge,1,P3,
+sfx_spell_venom_hex,sfx,SFX,False,On-foot combat,Spells (unique pass),Rogue spell venom_hex (optional unique pass; base style poison),spell_venom_hex,1,P3,
+sfx_spell_bleeding_cut,sfx,SFX,False,On-foot combat,Spells (unique pass),Rogue spell bleeding_cut (optional unique pass; base style poison),spell_bleeding_cut,1,P3,
+sfx_spell_smoke_veil,sfx,SFX,False,On-foot combat,Spells (unique pass),"Rogue spell smoke_veil (optional unique pass; base style shield, Wind)",spell_smoke_veil,1,P3,
+sfx_spell_hunters_mark,sfx,SFX,False,On-foot combat,Spells (unique pass),Ranger spell hunters_mark (optional unique pass; base style arrow + weaken),spell_hunters_mark,1,P3,
+sfx_spell_arrow_volley,sfx,SFX,False,On-foot combat,Spells (unique pass),"Ranger spell arrow_volley (optional unique pass; base style arrow, all enemies)",spell_arrow_volley,1,P3,
+sfx_spell_snare_shot,sfx,SFX,False,On-foot combat,Spells (unique pass),Ranger spell snare_shot (optional unique pass; base style arrow + stun),spell_snare_shot,1,P3,
+sfx_spell_war_shout,sfx,SFX,False,On-foot combat,Spells (unique pass),"Warrior spell war_shout (optional unique pass; base style shout, party block)",spell_war_shout,1,P3,
+sfx_spell_rally_the_line,sfx,SFX,False,On-foot combat,Spells (unique pass),"Warrior spell rally_the_line (optional unique pass; base style shout, party heal)",spell_rally_the_line,1,P3,
+sfx_spell_sundering_roar,sfx,SFX,False,On-foot combat,Spells (unique pass),"Warrior spell sundering_roar (optional unique pass; base style shout + weaken, all enemies)",spell_sundering_roar,1,P3,
+sfx_legendary_blazing_shadow,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: blazing_shadow,skill blazing_shadow,1,P2,
+sfx_legendary_unbreakable_will,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: unbreakable_will,skill unbreakable_will,1,P2,
+sfx_legendary_bastion_of_stone,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: bastion_of_stone,skill bastion_of_stone,1,P2,
+sfx_legendary_arcane_convergence,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: arcane_convergence,skill arcane_convergence,1,P2,
+sfx_legendary_venomous_ambush,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: venomous_ambush,skill venomous_ambush,1,P2,
+sfx_legendary_wrath_of_dawn,sfx,SFX,False,On-foot combat,Legendary merged skills,Legendary merged skill: wrath_of_dawn,skill wrath_of_dawn,1,P2,
+sfx_chest_appear_wooden,sfx,SFX,False,Loot & chest,Chest,wooden chest dialog opens,SpoilsChestDialog,1,P2,
+sfx_chest_shake_wooden,sfx,SFX,False,Loot & chest,Chest,wooden chest tapped: 550 ms shake,chest tap,1,P1,
+sfx_chest_open_wooden,sfx,SFX,False,Loot & chest,Chest,wooden chest lid opens,chest open,1,P1,wood creak
+sfx_chest_appear_iron,sfx,SFX,False,Loot & chest,Chest,iron chest dialog opens,SpoilsChestDialog,1,P2,
+sfx_chest_shake_iron,sfx,SFX,False,Loot & chest,Chest,iron chest tapped: 550 ms shake,chest tap,1,P2,
+sfx_chest_open_iron,sfx,SFX,False,Loot & chest,Chest,iron chest lid opens,chest open,1,P1,iron clank
+sfx_chest_appear_silver,sfx,SFX,False,Loot & chest,Chest,silver chest dialog opens,SpoilsChestDialog,1,P2,
+sfx_chest_shake_silver,sfx,SFX,False,Loot & chest,Chest,silver chest tapped: 550 ms shake,chest tap,1,P2,
+sfx_chest_open_silver,sfx,SFX,False,Loot & chest,Chest,silver chest lid opens,chest open,1,P1,silver ring
+sfx_chest_appear_gold,sfx,SFX,False,Loot & chest,Chest,gold chest dialog opens,SpoilsChestDialog,1,P2,
+sfx_chest_shake_gold,sfx,SFX,False,Loot & chest,Chest,gold chest tapped: 550 ms shake,chest tap,1,P2,
+sfx_chest_open_gold,sfx,SFX,False,Loot & chest,Chest,gold chest lid opens,chest open,1,P1,gold fanfare (big chest)
+sfx_chest_appear_void,sfx,SFX,False,Loot & chest,Chest,void chest dialog opens,SpoilsChestDialog,1,P2,
+sfx_chest_shake_void,sfx,SFX,False,Loot & chest,Chest,void chest tapped: 550 ms shake,chest tap,1,P2,
+sfx_chest_open_void,sfx,SFX,False,Loot & chest,Chest,void chest lid opens,chest open,1,P1,void tear-rip (big chest)
+sfx_fortune_roll,sfx,SFX,False,Loot & chest,Chest,Fortune-roll counter tallying up,fortune roll,1,P3,
+sfx_fortune_tick,sfx,SFX,False,Loot & chest,Chest,Fortune-roll tick per modifier,fortune modifiers,1,P3,
+sfx_loot_flip,sfx,SFX,False,Loot & chest,Loot,Flip a face-down slot (250 ms),slot flip,3,P1,
+sfx_loot_reveal_common,sfx,SFX,False,Loot & chest,Loot,common item revealed,slot revealed,1,P1,
+sfx_loot_reveal_uncommon,sfx,SFX,False,Loot & chest,Loot,uncommon item revealed,slot revealed,1,P1,
+sfx_loot_reveal_rare,sfx,SFX,False,Loot & chest,Loot,rare item revealed,slot revealed,1,P1,
+sfx_loot_gold_pouch,sfx,SFX,False,Loot & chest,Loot,Content sweetener: gold pouch,_SlotKind,1,P2,
+sfx_loot_consumable,sfx,SFX,False,Loot & chest,Loot,Content sweetener: consumable,_SlotKind,1,P2,
+sfx_loot_gear,sfx,SFX,False,Loot & chest,Loot,Content sweetener: gear,_SlotKind,1,P2,
+sfx_loot_charm,sfx,SFX,False,Loot & chest,Loot,Content sweetener: charm,_SlotKind,1,P2,
+sfx_loot_tome,sfx,SFX,False,Loot & chest,Loot,Content sweetener: tome,_SlotKind,1,P2,
+sfx_loot_reveal_all,sfx,SFX,False,Loot & chest,Loot,Reveal all,reveal all,1,P2,
+sfx_elite_trophy,sfx,SFX,False,Loot & chest,Loot,Guaranteed Elite trophy,elite_trophy,1,P3,
+sfx_challenge_begin,sfx,SFX,False,Skill challenge,Skill challenge,Begin,SkillChallengeScreen,1,P3,
+sfx_challenge_pip_success,sfx,SFX,False,Skill challenge,Skill challenge,Success pip,round success,1,P2,
+sfx_challenge_pip_fail,sfx,SFX,False,Skill challenge,Skill challenge,Failure pip,round fail,1,P2,
+sfx_ship_weapon_ballista_fire,sfx,SFX,False,Naval,Player ship actions,"Ballista (12 dmg, 1 turn)",fire weapon,3,P1,
+sfx_ship_weapon_harpoon_fire,sfx,SFX,False,Naval,Player ship actions,"Harpoon rack (pierces shields, close/medium)",fire weapon,3,P1,
+sfx_ship_weapon_firepots_fire,sfx,SFX,False,Naval,Player ship actions,"Fire pots (incendiary, close)",fire weapon,3,P1,
+sfx_ship_weapon_void_volley_fire,sfx,SFX,False,Naval,Player ship actions,Void-Mark sail weapon (pierces shields),fire weapon,2,P2,
+sfx_ship_weapon_charged,sfx,SFX,False,Naval,Player ship actions,Weapon ready,chargeWeapons,1,P2,
+sfx_ship_aim_sweep,sfx,SFX,False,Naval,Player ship actions,Aim minigame marker sweep,aim bar (loop),1,P1,
+sfx_ship_aim_stop,sfx,SFX,False,Naval,Player ship actions,Player stops the marker,aim stop,1,P1,
+sfx_ship_aim_perfect,sfx,SFX,False,Naval,Player ship actions,Perfect aim (crit),AimResult.perfect,1,P1,
+sfx_ship_aim_steady,sfx,SFX,False,Naval,Player ship actions,Steady aim,AimResult.steady,1,P1,
+sfx_ship_aim_wide,sfx,SFX,False,Naval,Player ship actions,Wide aim (miss),AimResult.wide,1,P1,
+sfx_ship_crew_move,sfx,SFX,False,Naval,Player ship actions,Station crew in a room,move crew,3,P2,
+sfx_ship_auto_station,sfx,SFX,False,Naval,Player ship actions,Auto-station,auto station,1,P3,
+sfx_ship_maneuver_close,sfx,SFX,False,Naval,Player ship actions,Helm closes range,ship_log_close_in,1,P2,
+sfx_ship_maneuver_pull_away,sfx,SFX,False,Naval,Player ship actions,Helm pulls away,ship_log_pull_away,1,P2,
+sfx_ship_end_turn,sfx,SFX,False,Naval,Player ship actions,End turn,End turn,1,P1,
+sfx_ship_quick_orders,sfx,SFX,False,Naval,Player ship actions,Turn ended with half the clock left,ship_log_quick_orders,1,P3,
+sfx_ship_clock_tick,sfx,SFX,False,Naval,Player ship actions,Turn clock tick,1 s tick,1,P1,
+sfx_ship_clock_tick_urgent,sfx,SFX,False,Naval,Player ship actions,Turn clock tick at <= 5 s,clock red,1,P1,
+sfx_ship_clock_time_up,sfx,SFX,False,Naval,Player ship actions,Time up,ship_log_time_up,1,P1,
+sfx_ship_focus,sfx,SFX,False,Naval,Player ship actions,Focus fire on the same room,ship_log_focus,1,P3,
+sfx_ship_ammo_round_select,sfx,SFX,False,Naval,Ammo,Select round shot,change ammo,1,P2,
+sfx_ship_ammo_round_flight,sfx,SFX,False,Naval,Ammo,round shot flight / impact character,ShipAmmo.round,2,P2,
+sfx_ship_ammo_chain_select,sfx,SFX,False,Naval,Ammo,Select chain shot,change ammo,1,P2,
+sfx_ship_ammo_chain_flight,sfx,SFX,False,Naval,Ammo,chain shot flight / impact character,ShipAmmo.chain,2,P2,
+sfx_ship_ammo_grape_select,sfx,SFX,False,Naval,Ammo,Select grape shot,change ammo,1,P2,
+sfx_ship_ammo_grape_flight,sfx,SFX,False,Naval,Ammo,grape shot flight / impact character,ShipAmmo.grape,2,P2,
+sfx_ship_ammo_heated_select,sfx,SFX,False,Naval,Ammo,Select heated shot,change ammo,1,P2,
+sfx_ship_ammo_heated_flight,sfx,SFX,False,Naval,Ammo,heated shot flight / impact character,ShipAmmo.heated,2,P2,
+sfx_ship_order_all_hands,sfx,SFX,False,Naval,Crew orders,"Crew order ""all_hands"" (Player): Bell, crew rush, hammers",CrewOrder.all_hands,1,P2,
+vo_player_order_all_hands,vo,VO,False,Naval,Crew orders,"Player bark for the ""all_hands"" order",CrewOrder.all_hands,1,P2,EN + FR
+sfx_ship_order_brace,sfx,SFX,False,Naval,Crew orders,"Crew order ""brace"" (Kelda): Timbers groan, everyone grabs on",CrewOrder.brace,1,P2,
+vo_kelda_order_brace,vo,VO,False,Naval,Crew orders,"Kelda bark for the ""brace"" order",CrewOrder.brace,1,P2,EN + FR
+sfx_ship_order_grapple,sfx,SFX,False,Naval,Crew orders,"Crew order ""grapple"" (Grosh): Hooks thrown, ships slam together",CrewOrder.grapple,1,P2,
+vo_grosh_order_grapple,vo,VO,False,Naval,Crew orders,"Grosh bark for the ""grapple"" order",CrewOrder.grapple,1,P2,EN + FR
+sfx_ship_order_bless,sfx,SFX,False,Naval,Crew orders,"Crew order ""bless"" (Maren): Prayer, fires hiss out",CrewOrder.bless,1,P2,
+vo_maren_order_bless,vo,VO,False,Naval,Crew orders,"Maren bark for the ""bless"" order",CrewOrder.bless,1,P2,EN + FR
+sfx_ship_order_shore_up,sfx,SFX,False,Naval,Crew orders,"Crew order ""shore_up"" (Tobin): Planks hammered, shield raised",CrewOrder.shore_up,1,P2,
+vo_tobin_order_shore_up,vo,VO,False,Naval,Crew orders,"Tobin bark for the ""shore_up"" order",CrewOrder.shore_up,1,P2,EN + FR
+sfx_ship_order_mark_helm,sfx,SFX,False,Naval,Crew orders,"Crew order ""mark_helm"" (Malrik): Crossbow twang, distant cry",CrewOrder.mark_helm,1,P2,
+vo_malrik_order_mark_helm,vo,VO,False,Naval,Crew orders,"Malrik bark for the ""mark_helm"" order",CrewOrder.mark_helm,1,P2,EN + FR
+sfx_ship_order_cut_rigging,sfx,SFX,False,Naval,Crew orders,"Crew order ""cut_rigging"" (Sable): Rope snaps, sails flap loose",CrewOrder.cut_rigging,1,P2,
+vo_sable_order_cut_rigging,vo,VO,False,Naval,Crew orders,"Sable bark for the ""cut_rigging"" order",CrewOrder.cut_rigging,1,P2,EN + FR
+sfx_ship_order_eagle_eye,sfx,SFX,False,Naval,Crew orders,"Crew order ""eagle_eye"" (Liora): Bowstring draw, held breath",CrewOrder.eagle_eye,1,P2,
+vo_liora_order_eagle_eye,vo,VO,False,Naval,Crew orders,"Liora bark for the ""eagle_eye"" order",CrewOrder.eagle_eye,1,P2,EN + FR
+sfx_ship_order_void_ward,sfx,SFX,False,Naval,Crew orders,"Crew order ""void_ward"" (Vess): Void hum, a shot turned aside",CrewOrder.void_ward,1,P2,
+vo_vess_order_void_ward,vo,VO,False,Naval,Crew orders,"Vess bark for the ""void_ward"" order",CrewOrder.void_ward,1,P2,EN + FR
+sfx_ship_shot_splash,sfx,SFX,False,Naval,"Hits, damage & weather",Dodged: miss into the water,ship_log_shot_dodged,3,P1,
+sfx_ship_shield_absorb,sfx,SFX,False,Naval,"Hits, damage & weather",Shield layer absorbs the shot,ship_log_shot_absorbed,3,P1,
+sfx_ship_hull_hit_light,sfx,SFX,False,Naval,"Hits, damage & weather",Hull damage (light): wood splinters,ship_log_shot_hits,3,P1,
+sfx_ship_hull_hit_heavy,sfx,SFX,False,Naval,"Hits, damage & weather",Hull damage (heavy),ship_log_shot_hits,3,P1,
+sfx_ship_crit,sfx,SFX,False,Naval,"Hits, damage & weather",Critical hit,ship_log_critical,2,P1,
+sfx_ship_room_down,sfx,SFX,False,Naval,"Hits, damage & weather",A room is disabled,ship_log_room_down,2,P2,
+sfx_ship_fire_start,sfx,SFX,False,Naval,"Hits, damage & weather",Fire starts,ship_log_fire_started,2,P1,
+sfx_ship_fire_out,sfx,SFX,False,Naval,"Hits, damage & weather",Fire put out,ship_log_fire_out,2,P1,
+sfx_ship_leak_start,sfx,SFX,False,Naval,"Hits, damage & weather",Holed below the waterline,ship_log_leak,2,P1,
+sfx_ship_leak_bailed,sfx,SFX,False,Naval,"Hits, damage & weather",Leak bailed,ship_log_leak_bailed,2,P1,
+sfx_ship_rigging_torn,sfx,SFX,False,Naval,"Hits, damage & weather",Chain shot tears rigging,ship_log_rigging_torn,2,P2,
+sfx_ship_grape_hit,sfx,SFX,False,Naval,"Hits, damage & weather",Grapeshot hits the crew,ship_log_grape,2,P2,
+sfx_ship_crew_hurt,sfx,SFX,False,Naval,"Hits, damage & weather",Crew in the hit room injured,ship_log_crew_hurt,3,P2,
+sfx_ship_rammed,sfx,SFX,False,Naval,"Hits, damage & weather",Iron-prow ram,ship_log_rammed,2,P1,
+sfx_ship_repair_room,sfx,SFX,False,Naval,"Hits, damage & weather",Room repaired at turn start,ship_log_room_repaired,2,P2,
+sfx_ship_hull_patch,sfx,SFX,False,Naval,"Hits, damage & weather",Hull patched,ship_log_hull_patched,2,P2,
+sfx_ship_shield_regen,sfx,SFX,False,Naval,"Hits, damage & weather",Shield layer regenerates,end of round (no log key),1,P2,
+sfx_ship_warded,sfx,SFX,False,Naval,"Hits, damage & weather",Void Ward turns a shot aside,ship_log_warded,1,P2,
+sfx_ship_low_hull_alarm,sfx,SFX,False,Naval,"Hits, damage & weather",Hull below 25%,hull bar red,1,P2,
+sfx_ship_aim_warning,sfx,SFX,False,Naval,"Hits, damage & weather",Incoming-aim warning (Kraken's Eye sail),foresight sail,1,P3,
+sfx_squall_quench,sfx,SFX,False,Naval,"Hits, damage & weather",Squall puts fires out,ship_log_squall_quench,1,P2,
+sfx_weather_forecast_change,sfx,SFX,False,Naval,"Hits, damage & weather",Next round's weather revealed,weather roll,1,P2,
+sfx_sea_rogue_wave,sfx,SFX,False,Naval,"Hits, damage & weather",Rogue wave: both ships lose a shield layer,ship_event_rogue_wave,1,P2,
+sfx_sea_creature_bite,sfx,SFX,False,Naval,"Hits, damage & weather",A leviathan bites the more damaged ship,ship_event_sea_creature,1,P2,
+sfx_sea_wreck_soak,sfx,SFX,False,Naval,"Hits, damage & weather",Drifting wreck soaks a shot,ship_event_wreck,1,P2,
+sfx_ship_enemy_fire_out,sfx,SFX,False,Naval,"Hits, damage & weather",Enemy puts a fire out,ship_log_enemy_fire_out,1,P3,
+sfx_ship_enemy_leak_plugged,sfx,SFX,False,Naval,"Hits, damage & weather",Enemy plugs a leak,ship_log_enemy_leak_plugged,1,P3,
+sfx_ship_enemy_repairs,sfx,SFX,False,Naval,"Hits, damage & weather",Enemy repairs,ship_log_enemy_repairs,1,P3,
+sfx_ship_enemy_escape,sfx,SFX,False,Naval,"Hits, damage & weather",Fleeing enemy gets away,ship_log_escaped,1,P2,
+sfx_ship_enemy_weapon_bow_chaser,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: bow chaser (volleys 350 ms apart),enemy volley,3,P1,
+sfx_ship_enemy_weapon_grapnel,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: grapnel (volleys 350 ms apart),enemy volley,3,P1,
+sfx_ship_enemy_weapon_ballista,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: ballista (volleys 350 ms apart),enemy volley,3,P1,
+sfx_ship_enemy_weapon_fire_arrows,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: fire arrows (volleys 350 ms apart),enemy volley,3,P1,
+sfx_ship_enemy_weapon_void_lance,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: void lance (volleys 350 ms apart),enemy volley,3,P1,
+sfx_ship_enemy_weapon_harpoon,sfx,SFX,False,Naval,Enemy ships,Enemy weapon: harpoon (volleys 350 ms apart),enemy volley,3,P1,
+amb_enemy_ship_raider_skiff,ambience_loop,Ambience,True,Naval,Enemy ships,"Enemy ship presence layer: raider_skiff (Oars, open boat; flees)",enemy ship raider_skiff,1,P3,
+amb_enemy_ship_corsair_brig,ambience_loop,Ambience,True,Naval,Enemy ships,Enemy ship presence layer: corsair_brig (Marksman),enemy ship corsair_brig,1,P3,
+amb_enemy_ship_inquisition_cutter,ambience_loop,Ambience,True,Naval,Enemy ships,Enemy ship presence layer: inquisition_cutter (Rams; hymn on deck?),enemy ship inquisition_cutter,1,P3,
+amb_enemy_ship_void_barge,ambience_loop,Ambience,True,Naval,Enemy ships,Enemy ship presence layer: void_barge (Boarder; void hum),enemy ship void_barge,1,P3,
+sfx_board_grapple_throw,sfx,SFX,False,Naval,Boarding,Grapple thrown,boarding,2,P1,
+sfx_board_grapple_slipped,sfx,SFX,False,Naval,Boarding,Grapple slips,ship_log_grapple_slipped,2,P1,
+sfx_board_start,sfx,SFX,False,Naval,Boarding,"Crews clash, bodies on deck",ship_log_boarding_start,2,P1,
+sfx_board_enemy_boarders,sfx,SFX,False,Naval,Boarding,Enemy boarders over the rail,ship_log_boarders,2,P1,
+sfx_voyage_cast_off,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,"Sail: anchor up, sail drops",sailTo,1,P1,
+sfx_voyage_day_advance,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,"""Day n / total"": ship's bell",voyage day,1,P2,
+sfx_voyage_beat_to_quarters,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Battle alarm drum / bell,raider event,1,P1,
+sfx_voyage_landfall,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,"Anchor drop, ""Go ashore""",arrived,1,P1,
+sfx_voyage_failed,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Limp back at 25% hull,failed,1,P2,
+sfx_ship_part_install,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Shipwright installs a part (12 parts),installShipPart,1,P2,
+sfx_ship_repair,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,"Paid hull repair: hammering, caulking",repairShip,1,P2,
+sfx_travel_walk,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Walk to a place on the same shore,travel walk,1,P2,
+sfx_map_traveller_step,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,World map replays a land leg (550 ms),map replay,1,P3,
+sfx_map_oar_stroke,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,World map replays a sea leg,map replay (atSea),1,P3,
+sfx_map_fog_reveal,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,A place revealed from the fog,map reveal,1,P3,
+sfx_expedition_start,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Expedition starts,launchZoneId,1,P2,
+sfx_expedition_event_draw,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Expedition event drawn,event draw,1,P2,
+sfx_expedition_midpoint,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Halfway beat,midpoint,1,P2,
+sfx_expedition_place_found,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,New place found,place_found_line,1,P2,
+sfx_expedition_boss_approach,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,"""Face <boss>""",boss node,1,P1,
+sfx_hunt_trail,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Hunt: trail node,hunt trail,1,P3,
+sfx_hunt_quarry,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Hunt: quarry revealed,hunt quarry,1,P3,
+sfx_alignment_ambush_angel,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Angel hunter ambush reveal,hunter ambush,1,P2,
+sfx_alignment_ambush_demon,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Demon hunter ambush reveal,hunter ambush,1,P2,
+sfx_expedition_retreat,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Expedition retreat,retreated,1,P2,
+sfx_expedition_defeated,sfx,SFX,False,"Voyage, travel & map",Voyage & travel,Expedition defeated,defeated,1,P2,
+sfx_voyage_event_storm,sfx,SFX,False,"Voyage, travel & map",Voyage events,"Voyage event card: storm (Thunder, green water over the bow)",SeaEventKind.storm,1,P1,
+sfx_voyage_event_calm,sfx,SFX,False,"Voyage, travel & map",Voyage events,"Voyage event card: calm (Gulls, glassy sea)",SeaEventKind.calm,1,P1,
+sfx_voyage_event_derelict,sfx,SFX,False,"Voyage, travel & map",Voyage events,"Voyage event card: derelict (Creaking wreck, salvage)",SeaEventKind.derelict,1,P1,
+sfx_voyage_event_sighting,sfx,SFX,False,"Voyage, travel & map",Voyage events,"Voyage event card: sighting (Something huge under the keel, a phantom coast)",SeaEventKind.sighting,1,P1,
+sfx_voyage_event_raider,sfx,SFX,False,"Voyage, travel & map",Voyage events,Voyage event card: raider (A grapnel thuds into the rail),SeaEventKind.raider,1,P1,
+sfx_sail_power_flight,sfx,SFX,False,"Voyage, travel & map",Sail powers,Sail sigil effect: Gull's Wing lift,SailPower.flight,1,P2,
+sfx_sail_power_foresight,sfx,SFX,False,"Voyage, travel & map",Sail powers,Sail sigil effect: Kraken's Eye vision,SailPower.foresight,1,P2,
+sfx_sail_power_hearth,sfx,SFX,False,"Voyage, travel & map",Sail powers,Sail sigil effect: Hearth-Mark heal,SailPower.hearth,1,P2,
+sfx_sail_power_windknot,sfx,SFX,False,"Voyage, travel & map",Sail powers,Sail sigil effect: Wind-Knot gust,SailPower.windknot,1,P2,
+sfx_sail_power_voidmark,sfx,SFX,False,"Voyage, travel & map",Sail powers,Sail sigil effect: Void-Mark calm,SailPower.voidmark,1,P2,
+sfx_shop_enter,sfx,SFX,False,"Economy, camp & progression",Shops,Shop opened (generic bell / door),shop_detail_screen,2,P2,
+sfx_shop_enter_blind_beggar_stall,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: blind_beggar_stall,shop blind_beggar_stall,1,P3,
+sfx_shop_enter_black_market_docks,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: black_market_docks,shop black_market_docks,1,P3,
+sfx_shop_enter_weaponsmith_forge,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: weaponsmith_forge,shop weaponsmith_forge,1,P3,
+sfx_shop_enter_shieldwrights_hall,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: shieldwrights_hall,shop shieldwrights_hall,1,P3,
+sfx_shop_enter_arcane_bazaar,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: arcane_bazaar,shop arcane_bazaar,1,P3,
+sfx_shop_enter_apothecary_row,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: apothecary_row,shop apothecary_row,1,P3,
+sfx_shop_enter_smugglers_vault,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: smugglers_vault,shop smugglers_vault,1,P3,
+sfx_shop_enter_hammersmith_forge,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: hammersmith_forge,shop hammersmith_forge,1,P3,
+sfx_shop_enter_arcane_academy,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: arcane_academy,shop arcane_academy,1,P3,
+sfx_shop_enter_sharpweave_den,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: sharpweave_den,shop sharpweave_den,1,P3,
+sfx_shop_enter_ossuary_relics,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: ossuary_relics,shop ossuary_relics,1,P3,
+sfx_shop_enter_last_lantern,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: last_lantern,shop last_lantern,1,P3,
+sfx_shop_enter_anchorage_chandlery,sfx,SFX,False,"Economy, camp & progression",Shops,Optional per-shop entry sound: anchorage_chandlery,shop anchorage_chandlery,1,P3,
+sfx_shop_buy,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Buy,buyItem,3,P1,
+sfx_shop_sell,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Sell,sellItem,3,P1,
+sfx_shop_cant_afford,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Can't afford,buy blocked,1,P1,
+sfx_shop_sold_out,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Sold out,sold_out,1,P1,
+sfx_craft_forge,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Hammersmith forging (4 iron recipes),craftItem,2,P2,
+sfx_spell_learned,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Spellbook learned,learnSpell,1,P2,
+sfx_tome_read,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Tome read,readTome,1,P2,
+sfx_unequip,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Unequip,unequipItem,2,P1,
+sfx_item_set_bonus,sfx,SFX,False,"Economy, camp & progression",Economy & progression,"Set bonus activates (Harborwatch, Hollow Court)",item set,1,P3,
+sfx_camp_rest,sfx,SFX,False,"Economy, camp & progression",Economy & progression,"Rest: party healed, fire crackle",healPartyToFull,1,P1,
+sfx_party_swap,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Bench / activate an ally,setAllyActive,2,P2,
+sfx_party_full,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Party at capacity,party_at_capacity,1,P2,
+sfx_xp_gain,sfx,SFX,False,"Economy, camp & progression",Economy & progression,XP tally,applyXp,1,P2,
+sfx_stat_point_spend,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Spend a stat point,spendStatPoint,2,P1,
+sfx_skill_unlock,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill unlocked,unlockSkill,1,P1,
+sfx_skill_upgrade,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill tier upgraded,upgradeSkillTier,1,P2,
+sfx_skill_merge,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skills merged,mergeSkills,1,P2,
+sfx_branch_mastery,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Branch mastered,masterBranch,1,P2,
+sfx_journal_open,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Journal opened,JournalScreen,1,P3,
+sfx_quest_track,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Quest followed,trackQuest,1,P3,
+sfx_equip_weapon,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: weapon,equipItem,2,P1,
+sfx_equip_armor_head,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: armor head,equipItem,2,P1,
+sfx_equip_armor_top,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: armor top,equipItem,2,P1,
+sfx_equip_armor_bottom,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: armor bottom,equipItem,2,P1,
+sfx_equip_armor_foot,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: armor foot,equipItem,2,P1,
+sfx_equip_artifact,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: artifact,equipItem,2,P1,
+sfx_equip_charm,sfx,SFX,False,"Economy, camp & progression",Equipment,Equip: charm,equipItem,2,P1,
+sfx_house_build_keldas_hall,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: keldas_hall,buildHouse,1,P2,
+sfx_house_build_barracks_annex,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: barracks_annex,buildHouse,1,P2,
+sfx_house_build_harbor,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: harbor,buildHouse,1,P2,
+sfx_house_build_hammersmith,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: hammersmith,buildHouse,1,P2,
+sfx_house_build_academy,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: academy,buildHouse,1,P2,
+sfx_house_build_sharpweave_den,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: sharpweave_den,buildHouse,1,P2,
+sfx_house_build_smugglers_cellar,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: smugglers_cellar,buildHouse,1,P2,
+sfx_house_build_hearth_hall,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: hearth_hall,buildHouse,1,P2,
+sfx_house_build_banner_loft,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: banner_loft,buildHouse,1,P2,
+sfx_house_build_shroud_shrine,sfx,SFX,False,"Economy, camp & progression",Camp building,Camp building complete: shroud_shrine,buildHouse,1,P2,
+sfx_town_addition_floor,sfx,SFX,False,"Economy, camp & progression",Camp building,Town addition built: floor,buildTownAddition,1,P2,
+sfx_town_addition_stair,sfx,SFX,False,"Economy, camp & progression",Camp building,Town addition built: stair,buildTownAddition,1,P2,
+sfx_town_addition_store,sfx,SFX,False,"Economy, camp & progression",Camp building,Town addition built: store,buildTownAddition,1,P2,
+sfx_town_addition_tower,sfx,SFX,False,"Economy, camp & progression",Camp building,Town addition built: tower,buildTownAddition,1,P2,
+sfx_skill_rarity_common,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill rarity accent: common,skill unlock,1,P3,
+sfx_skill_rarity_uncommon,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill rarity accent: uncommon,skill unlock,1,P3,
+sfx_skill_rarity_rare,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill rarity accent: rare,skill unlock,1,P3,
+sfx_skill_rarity_epic,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill rarity accent: epic,skill unlock,1,P3,
+sfx_skill_rarity_legendary,sfx,SFX,False,"Economy, camp & progression",Economy & progression,Skill rarity accent: legendary,skill unlock,1,P3,
+sfx_dog_step,sfx,SFX,False,Dog companion,Dog,"Paw steps (walk in 700 ms, out 2600 ms)",walking_companion_strip,6,P1,
+sfx_dog_sit,sfx,SFX,False,Dog companion,Dog,Sits down,sit,2,P2,
+sfx_dog_bark,sfx,SFX,False,Dog companion,Dog,Fight loop bark (6 frames at 900 ms),combat / fight node,5,P1,
+sfx_dog_growl,sfx,SFX,False,Dog companion,Dog,Pre-fight growl (node offers a fight),fight choice shown,2,P2,
+sfx_dog_pant,sfx,SFX,False,Dog companion,Dog,Idle pant,idle,2,P3,
+sfx_dog_whine,sfx,SFX,False,Dog companion,Dog,Whine,sad beat,2,P3,
+sfx_dog_happy,sfx,SFX,False,Dog companion,Dog,Happy yip,happy beat,2,P3,
+sfx_dog_transform,sfx,SFX,False,Dog companion,Dog,Alignment form change,alignment label change,1,P3,
+sfx_guide_appear,sfx,SFX,False,Dog companion,Dog,Tutorial guide appears (18 topics),guide_tour,1,P2,
+sfx_guide_next,sfx,SFX,False,Dog companion,Dog,Tutorial next step,guide next,1,P2,
+sfx_guide_skip,sfx,SFX,False,Dog companion,Dog,Tutorial skipped,guide skip,1,P2,
+sfx_dog_angel_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): step,dog angel form,3,P2,Paw steps with a soft wing flutter
+sfx_dog_angel_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): bark,dog angel form,3,P2,Bark with a chime tail
+sfx_dog_angel_shimmer,sfx,SFX,False,Dog companion,Dog alignment forms,Dog angel form (Good): shimmer,dog angel form,3,P2,Chime shimmer
+sfx_dog_demon_step,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): step,dog demon form,3,P2,Hoof-like clicks
+sfx_dog_demon_bark,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): bark,dog demon form,3,P2,Growling bark with reverb
+sfx_dog_demon_ember,sfx,SFX,False,Dog companion,Dog alignment forms,Dog demon form (Evil): ember,dog demon form,3,P2,Ember crackle
+vo_kelda_bark_crit,vo,VO,False,Voice-over,Companion barks,kelda: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_bark_dodge,vo,VO,False,Voice-over,Companion barks,kelda: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_bark_fight_start,vo,VO,False,Voice-over,Companion barks,kelda: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_bark_pack,vo,VO,False,Voice-over,Companion barks,kelda: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_bark_ko,vo,VO,False,Voice-over,Companion barks,kelda: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_bark_chest,vo,VO,False,Voice-over,Companion barks,kelda: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Dwarf warrior, gruff. EN + FR"
+vo_kelda_effort_attack,vo,VO,False,Voice-over,Companion efforts,kelda: attack effort (also used by kelda_turned),companion attack,3,P2,"Dwarf warrior, gruff"
+vo_kelda_effort_hurt,vo,VO,False,Voice-over,Companion efforts,kelda: hurt effort (also used by kelda_turned),companion hurt,3,P2,"Dwarf warrior, gruff"
+vo_kelda_effort_ko,vo,VO,False,Voice-over,Companion efforts,kelda: ko effort (also used by kelda_turned),companion ko,3,P2,"Dwarf warrior, gruff"
+vo_kelda_effort_revive,vo,VO,False,Voice-over,Companion efforts,kelda: revive effort (also used by kelda_turned),companion revive,3,P2,"Dwarf warrior, gruff"
+vo_kelda_recruit,vo,VO,False,Voice-over,Companion recruit,kelda: recruit line,recruitAlly,1,P2,EN + FR
+vo_kelda_asides,vo,VO,False,Voice-over,Companion scene asides,kelda: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_sable_bark_crit,vo,VO,False,Voice-over,Companion barks,sable: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_bark_dodge,vo,VO,False,Voice-over,Companion barks,sable: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_bark_fight_start,vo,VO,False,Voice-over,Companion barks,sable: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_bark_pack,vo,VO,False,Voice-over,Companion barks,sable: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_bark_ko,vo,VO,False,Voice-over,Companion barks,sable: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_bark_chest,vo,VO,False,Voice-over,Companion barks,sable: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Human rogue, wry thief. EN + FR"
+vo_sable_effort_attack,vo,VO,False,Voice-over,Companion efforts,sable: attack effort (also used by sable_turned),companion attack,3,P2,"Human rogue, wry thief"
+vo_sable_effort_hurt,vo,VO,False,Voice-over,Companion efforts,sable: hurt effort (also used by sable_turned),companion hurt,3,P2,"Human rogue, wry thief"
+vo_sable_effort_ko,vo,VO,False,Voice-over,Companion efforts,sable: ko effort (also used by sable_turned),companion ko,3,P2,"Human rogue, wry thief"
+vo_sable_effort_revive,vo,VO,False,Voice-over,Companion efforts,sable: revive effort (also used by sable_turned),companion revive,3,P2,"Human rogue, wry thief"
+vo_sable_recruit,vo,VO,False,Voice-over,Companion recruit,sable: recruit line,recruitAlly,1,P2,EN + FR
+vo_sable_asides,vo,VO,False,Voice-over,Companion scene asides,sable: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_maren_bark_crit,vo,VO,False,Voice-over,Companion barks,maren: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_bark_dodge,vo,VO,False,Voice-over,Companion barks,maren: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_bark_fight_start,vo,VO,False,Voice-over,Companion barks,maren: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_bark_pack,vo,VO,False,Voice-over,Companion barks,maren: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_bark_ko,vo,VO,False,Voice-over,Companion barks,maren: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_bark_chest,vo,VO,False,Voice-over,Companion barks,maren: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Human cleric, pious. EN + FR"
+vo_maren_effort_attack,vo,VO,False,Voice-over,Companion efforts,maren: attack effort (also used by maren_turned),companion attack,3,P2,"Human cleric, pious"
+vo_maren_effort_hurt,vo,VO,False,Voice-over,Companion efforts,maren: hurt effort (also used by maren_turned),companion hurt,3,P2,"Human cleric, pious"
+vo_maren_effort_ko,vo,VO,False,Voice-over,Companion efforts,maren: ko effort (also used by maren_turned),companion ko,3,P2,"Human cleric, pious"
+vo_maren_effort_revive,vo,VO,False,Voice-over,Companion efforts,maren: revive effort (also used by maren_turned),companion revive,3,P2,"Human cleric, pious"
+vo_maren_recruit,vo,VO,False,Voice-over,Companion recruit,maren: recruit line,recruitAlly,1,P2,EN + FR
+vo_maren_asides,vo,VO,False,Voice-over,Companion scene asides,maren: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_liora_bark_crit,vo,VO,False,Voice-over,Companion barks,liora: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_bark_dodge,vo,VO,False,Voice-over,Companion barks,liora: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_bark_fight_start,vo,VO,False,Voice-over,Companion barks,liora: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_bark_pack,vo,VO,False,Voice-over,Companion barks,liora: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_bark_ko,vo,VO,False,Voice-over,Companion barks,liora: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_bark_chest,vo,VO,False,Voice-over,Companion barks,liora: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Elf ranger, calm scout. EN + FR"
+vo_liora_effort_attack,vo,VO,False,Voice-over,Companion efforts,liora: attack effort (also used by liora_turned),companion attack,3,P2,"Elf ranger, calm scout"
+vo_liora_effort_hurt,vo,VO,False,Voice-over,Companion efforts,liora: hurt effort (also used by liora_turned),companion hurt,3,P2,"Elf ranger, calm scout"
+vo_liora_effort_ko,vo,VO,False,Voice-over,Companion efforts,liora: ko effort (also used by liora_turned),companion ko,3,P2,"Elf ranger, calm scout"
+vo_liora_effort_revive,vo,VO,False,Voice-over,Companion efforts,liora: revive effort (also used by liora_turned),companion revive,3,P2,"Elf ranger, calm scout"
+vo_liora_recruit,vo,VO,False,Voice-over,Companion recruit,liora: recruit line,recruitAlly,1,P2,EN + FR
+vo_liora_asides,vo,VO,False,Voice-over,Companion scene asides,liora: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_vess_bark_crit,vo,VO,False,Voice-over,Companion barks,vess: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_bark_dodge,vo,VO,False,Voice-over,Companion barks,vess: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_bark_fight_start,vo,VO,False,Voice-over,Companion barks,vess: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_bark_pack,vo,VO,False,Voice-over,Companion barks,vess: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_bark_ko,vo,VO,False,Voice-over,Companion barks,vess: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_bark_chest,vo,VO,False,Voice-over,Companion barks,vess: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Voidkin mage, cold (void-processed). EN + FR"
+vo_vess_effort_attack,vo,VO,False,Voice-over,Companion efforts,vess: attack effort (also used by vess_turned),companion attack,3,P2,"Voidkin mage, cold (void-processed)"
+vo_vess_effort_hurt,vo,VO,False,Voice-over,Companion efforts,vess: hurt effort (also used by vess_turned),companion hurt,3,P2,"Voidkin mage, cold (void-processed)"
+vo_vess_effort_ko,vo,VO,False,Voice-over,Companion efforts,vess: ko effort (also used by vess_turned),companion ko,3,P2,"Voidkin mage, cold (void-processed)"
+vo_vess_effort_revive,vo,VO,False,Voice-over,Companion efforts,vess: revive effort (also used by vess_turned),companion revive,3,P2,"Voidkin mage, cold (void-processed)"
+vo_vess_recruit,vo,VO,False,Voice-over,Companion recruit,vess: recruit line,recruitAlly,1,P2,EN + FR
+vo_vess_asides,vo,VO,False,Voice-over,Companion scene asides,vess: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_grosh_bark_crit,vo,VO,False,Voice-over,Companion barks,grosh: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_bark_dodge,vo,VO,False,Voice-over,Companion barks,grosh: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_bark_fight_start,vo,VO,False,Voice-over,Companion barks,grosh: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_bark_pack,vo,VO,False,Voice-over,Companion barks,grosh: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_bark_ko,vo,VO,False,Voice-over,Companion barks,grosh: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_bark_chest,vo,VO,False,Voice-over,Companion barks,grosh: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Orc warrior, shouts, third person. EN + FR"
+vo_grosh_effort_attack,vo,VO,False,Voice-over,Companion efforts,grosh: attack effort (also used by grosh_turned),companion attack,3,P2,"Orc warrior, shouts, third person"
+vo_grosh_effort_hurt,vo,VO,False,Voice-over,Companion efforts,grosh: hurt effort (also used by grosh_turned),companion hurt,3,P2,"Orc warrior, shouts, third person"
+vo_grosh_effort_ko,vo,VO,False,Voice-over,Companion efforts,grosh: ko effort (also used by grosh_turned),companion ko,3,P2,"Orc warrior, shouts, third person"
+vo_grosh_effort_revive,vo,VO,False,Voice-over,Companion efforts,grosh: revive effort (also used by grosh_turned),companion revive,3,P2,"Orc warrior, shouts, third person"
+vo_grosh_recruit,vo,VO,False,Voice-over,Companion recruit,grosh: recruit line,recruitAlly,1,P2,EN + FR
+vo_grosh_asides,vo,VO,False,Voice-over,Companion scene asides,grosh: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_tobin_bark_crit,vo,VO,False,Voice-over,Companion barks,tobin: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Dwarf cleric, gentle, Good only. EN + FR"
+vo_tobin_bark_dodge,vo,VO,False,Voice-over,Companion barks,tobin: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Dwarf cleric, gentle, Good only. EN + FR"
+vo_tobin_bark_fight_start,vo,VO,False,Voice-over,Companion barks,tobin: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Dwarf cleric, gentle, Good only. EN + FR"
+vo_tobin_bark_ko,vo,VO,False,Voice-over,Companion barks,tobin: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Dwarf cleric, gentle, Good only. EN + FR"
+vo_tobin_bark_chest,vo,VO,False,Voice-over,Companion barks,tobin: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Dwarf cleric, gentle, Good only. EN + FR"
+vo_tobin_effort_attack,vo,VO,False,Voice-over,Companion efforts,tobin: attack effort (also used by tobin_turned),companion attack,3,P2,"Dwarf cleric, gentle, Good only"
+vo_tobin_effort_hurt,vo,VO,False,Voice-over,Companion efforts,tobin: hurt effort (also used by tobin_turned),companion hurt,3,P2,"Dwarf cleric, gentle, Good only"
+vo_tobin_effort_ko,vo,VO,False,Voice-over,Companion efforts,tobin: ko effort (also used by tobin_turned),companion ko,3,P2,"Dwarf cleric, gentle, Good only"
+vo_tobin_effort_revive,vo,VO,False,Voice-over,Companion efforts,tobin: revive effort (also used by tobin_turned),companion revive,3,P2,"Dwarf cleric, gentle, Good only"
+vo_tobin_recruit,vo,VO,False,Voice-over,Companion recruit,tobin: recruit line,recruitAlly,1,P2,EN + FR
+vo_tobin_asides,vo,VO,False,Voice-over,Companion scene asides,tobin: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_malrik_bark_crit,vo,VO,False,Voice-over,Companion barks,malrik: crit bark (lines in companions.json),_BanterKind.crit (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_bark_dodge,vo,VO,False,Voice-over,Companion barks,malrik: dodge bark (lines in companions.json),_BanterKind.dodge (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_bark_fight_start,vo,VO,False,Voice-over,Companion barks,malrik: fight start bark (lines in companions.json),_BanterKind.fight_start (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_bark_pack,vo,VO,False,Voice-over,Companion barks,malrik: pack bark (lines in companions.json),_BanterKind.pack (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_bark_ko,vo,VO,False,Voice-over,Companion barks,malrik: ko bark (lines in companions.json),_BanterKind.ko (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_bark_chest,vo,VO,False,Voice-over,Companion barks,malrik: chest bark (lines in companions.json),_BanterKind.chest (35% chance),1,P2,"Orc rogue, mercenary, Evil only. EN + FR"
+vo_malrik_effort_attack,vo,VO,False,Voice-over,Companion efforts,malrik: attack effort (also used by malrik_turned),companion attack,3,P2,"Orc rogue, mercenary, Evil only"
+vo_malrik_effort_hurt,vo,VO,False,Voice-over,Companion efforts,malrik: hurt effort (also used by malrik_turned),companion hurt,3,P2,"Orc rogue, mercenary, Evil only"
+vo_malrik_effort_ko,vo,VO,False,Voice-over,Companion efforts,malrik: ko effort (also used by malrik_turned),companion ko,3,P2,"Orc rogue, mercenary, Evil only"
+vo_malrik_effort_revive,vo,VO,False,Voice-over,Companion efforts,malrik: revive effort (also used by malrik_turned),companion revive,3,P2,"Orc rogue, mercenary, Evil only"
+vo_malrik_recruit,vo,VO,False,Voice-over,Companion recruit,malrik: recruit line,recruitAlly,1,P2,EN + FR
+vo_malrik_asides,vo,VO,False,Voice-over,Companion scene asides,malrik: scene asides (lines in ally_acknowledgments.dart),ally aside,1,P3,Batch; about 74 lines per language in total
+vo_player_human_attack,vo,VO,False,Voice-over,Player efforts,Player (human): attack,player attack,3,P2,Male / female or neutral options if the design has them
+vo_player_human_hurt,vo,VO,False,Voice-over,Player efforts,Player (human): hurt,player hurt,3,P2,Male / female or neutral options if the design has them
+vo_player_human_death,vo,VO,False,Voice-over,Player efforts,Player (human): death,player death,3,P2,Male / female or neutral options if the design has them
+vo_player_human_heal,vo,VO,False,Voice-over,Player efforts,Player (human): heal,player heal,3,P2,Male / female or neutral options if the design has them
+vo_player_human_level_up,vo,VO,False,Voice-over,Player efforts,Player (human): level up,player level_up,3,P2,Male / female or neutral options if the design has them
+vo_player_elf_attack,vo,VO,False,Voice-over,Player efforts,Player (elf): attack,player attack,3,P2,Male / female or neutral options if the design has them
+vo_player_elf_hurt,vo,VO,False,Voice-over,Player efforts,Player (elf): hurt,player hurt,3,P2,Male / female or neutral options if the design has them
+vo_player_elf_death,vo,VO,False,Voice-over,Player efforts,Player (elf): death,player death,3,P2,Male / female or neutral options if the design has them
+vo_player_elf_heal,vo,VO,False,Voice-over,Player efforts,Player (elf): heal,player heal,3,P2,Male / female or neutral options if the design has them
+vo_player_elf_level_up,vo,VO,False,Voice-over,Player efforts,Player (elf): level up,player level_up,3,P2,Male / female or neutral options if the design has them
+vo_player_dwarf_attack,vo,VO,False,Voice-over,Player efforts,Player (dwarf): attack,player attack,3,P2,Male / female or neutral options if the design has them
+vo_player_dwarf_hurt,vo,VO,False,Voice-over,Player efforts,Player (dwarf): hurt,player hurt,3,P2,Male / female or neutral options if the design has them
+vo_player_dwarf_death,vo,VO,False,Voice-over,Player efforts,Player (dwarf): death,player death,3,P2,Male / female or neutral options if the design has them
+vo_player_dwarf_heal,vo,VO,False,Voice-over,Player efforts,Player (dwarf): heal,player heal,3,P2,Male / female or neutral options if the design has them
+vo_player_dwarf_level_up,vo,VO,False,Voice-over,Player efforts,Player (dwarf): level up,player level_up,3,P2,Male / female or neutral options if the design has them
+vo_player_orc_attack,vo,VO,False,Voice-over,Player efforts,Player (orc): attack,player attack,3,P2,Male / female or neutral options if the design has them
+vo_player_orc_hurt,vo,VO,False,Voice-over,Player efforts,Player (orc): hurt,player hurt,3,P2,Male / female or neutral options if the design has them
+vo_player_orc_death,vo,VO,False,Voice-over,Player efforts,Player (orc): death,player death,3,P2,Male / female or neutral options if the design has them
+vo_player_orc_heal,vo,VO,False,Voice-over,Player efforts,Player (orc): heal,player heal,3,P2,Male / female or neutral options if the design has them
+vo_player_orc_level_up,vo,VO,False,Voice-over,Player efforts,Player (orc): level up,player level_up,3,P2,Male / female or neutral options if the design has them
+vo_player_voidkin_attack,vo,VO,False,Voice-over,Player efforts,Player (voidkin): attack,player attack,3,P2,Male / female or neutral options if the design has them
+vo_player_voidkin_hurt,vo,VO,False,Voice-over,Player efforts,Player (voidkin): hurt,player hurt,3,P2,Male / female or neutral options if the design has them
+vo_player_voidkin_death,vo,VO,False,Voice-over,Player efforts,Player (voidkin): death,player death,3,P2,Male / female or neutral options if the design has them
+vo_player_voidkin_heal,vo,VO,False,Voice-over,Player efforts,Player (voidkin): heal,player heal,3,P2,Male / female or neutral options if the design has them
+vo_player_voidkin_level_up,vo,VO,False,Voice-over,Player efforts,Player (voidkin): level up,player level_up,3,P2,Male / female or neutral options if the design has them
+vo_narration,vo,VO,False,Voice-over,Narration,Story narration (151 of 200 nodes use the Narrator),read-aloud,1,P1,Recorded with ElevenLabs in the app (see assets/narration/); duck Music and Ambience -8 to -10 dB under it
+vo_speaker_archivist,vo,VO,False,Voice-over,Other speakers,Speaker voice: archivist,context_taxonomy.speaker,1,P3,
+vo_speaker_the_sovereign,vo,VO,False,Voice-over,Other speakers,Speaker voice: the sovereign,context_taxonomy.speaker,1,P3,Void speakers get the reflected/reversed Tear processing
+vo_speaker_vane,vo,VO,False,Voice-over,Other speakers,Speaker voice: vane,context_taxonomy.speaker,1,P3,
+vo_speaker_deserter,vo,VO,False,Voice-over,Other speakers,Speaker voice: deserter,context_taxonomy.speaker,1,P3,
+vo_speaker_chart_keeper,vo,VO,False,Voice-over,Other speakers,Speaker voice: chart keeper,context_taxonomy.speaker,1,P3,
+vo_speaker_penitent,vo,VO,False,Voice-over,Other speakers,Speaker voice: penitent,context_taxonomy.speaker,1,P3,
+vo_speaker_lantern_keeper,vo,VO,False,Voice-over,Other speakers,Speaker voice: lantern keeper,context_taxonomy.speaker,1,P3,
+vo_speaker_legate,vo,VO,False,Voice-over,Other speakers,Speaker voice: legate,context_taxonomy.speaker,1,P3,
