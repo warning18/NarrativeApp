@@ -8,6 +8,48 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.182.0+212]
+
+### Changed
+- **The sea fight is seen from above.** The two ships lie broadside to
+  broadside: the enemy at the top, the Eel below. The rules are the same;
+  what changed is how they read.
+  - **The rooms lie along the deck:** the helm at the stern, the hold's
+    hatch, the guns amidships and the bulwark at the bow. Each room is a
+    tap zone a thumb wide, showing its pips, crew, fire, leaks and the
+    enemy's aim. The rooms' names are written beside the ship in their
+    colours.
+  - **The range is the gap between the ships.** Closing in or pulling
+    away slides the Eel across the water, with a bracket down the side
+    naming the range.
+  - **Shields are arcs** on the side facing the enemy. The hold fills with
+    water as it leaks, a knocked-out room goes dark, and a ship below half
+    its hull is holed with torn sails. The wake grows with how quick the
+    ship is.
+  - **Each enemy has its own look from above:** the raider's short skiff,
+    the corsair's two black sails, the inquisition's white cutter and the
+    void barge's glowing runes, with no sails at all.
+- **The waters of the voyage set the sea.** Each port names its waters
+  (a new `waters` field in ports.json), and a fight on the way there is
+  fought on them:
+  - the open sea's long swells;
+  - the clear shallows over sand, with sandbars and rocks;
+  - the drowned waters' murk, kelp and rising bubbles;
+  - the abyss's black water, slow rings and violet motes;
+  - the ashen coast's grey chop under falling ash.
+
+  The Edit Mode test battle can pick the waters.
+- **The weather is drawn as particles over the sea.**
+  - A squall brings slanting rain, rings where it lands, whitecaps and
+    lightning.
+  - Fog banks drift across, thickest over the enemy.
+  - Wind tears streaks and spray across the water: with the Eel in a
+    tailwind, across her in a crosswind.
+  - A calm day glints, with gulls wheeling overhead.
+
+  When the weather turns between rounds, the old weather fades out as
+  the new one comes in, and a wave rolls under both ships.
+
 ## [1.181.0+211]
 
 ### Changed

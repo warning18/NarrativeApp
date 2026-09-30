@@ -26,6 +26,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
+import '../widgets/sea_battlefield.dart';
 import '../widgets/ship_widgets.dart' show HullBar, ShipAtSea;
 import 'ship_battle_panel.dart';
 
@@ -1112,6 +1113,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           : null,
       habit: habitFromName(_enemyData?['habit']?.toString()),
       windKnot: _sail?.power == SailPower.windknot,
+      waters: seaWatersFor(
+          name: widget.toPort['waters']?.toString(), portId: widget.toPortId),
     );
   }
 

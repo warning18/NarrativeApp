@@ -345,6 +345,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ship battle',
     AppLanguage.fr: 'Bataille navale',
   },
+  'fight_lab_waters': {
+    AppLanguage.en: 'Waters',
+    AppLanguage.fr: 'Eaux',
+  },
+  'sea_waters_open': {
+    AppLanguage.en: 'Open sea: long swells',
+    AppLanguage.fr: 'Haute mer : longue houle',
+  },
+  'sea_waters_shallows': {
+    AppLanguage.en: 'Shallows: clear water over sand',
+    AppLanguage.fr: 'Hauts-fonds : eau claire sur le sable',
+  },
+  'sea_waters_drowned': {
+    AppLanguage.en: 'Drowned waters: murk and kelp',
+    AppLanguage.fr: 'Eaux noyées : vase et varech',
+  },
+  'sea_waters_abyss': {
+    AppLanguage.en: 'The abyss: black water, void light',
+    AppLanguage.fr: 'L\'abîme : eau noire, lueurs du vide',
+  },
+  'sea_waters_ashen': {
+    AppLanguage.en: 'Ashen chop: grey waves, falling ash',
+    AppLanguage.fr: 'Clapot de cendre : vagues grises, cendre qui tombe',
+  },
   'fight_lab_enemy_ship': {
     AppLanguage.en: 'Enemy ship',
     AppLanguage.fr: 'Navire ennemi',

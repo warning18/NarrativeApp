@@ -138,7 +138,9 @@ void main() {
 
     // Kelda's order, from the crew sheet: brace. Spent once given.
     await tester.tap(find.byKey(const Key('ship_crew_button')));
-    await tester.pumpAndSettle();
+    // The sea never settles: let the sheet slide.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const Key('ship_crew_sheet')), findsOneWidget);
     await tester.tap(find.byKey(const Key('ship_order_brace')));
     await tester.pump();
@@ -151,7 +153,9 @@ void main() {
     await tester.pump();
     Navigator.of(tester.element(find.byKey(const Key('ship_crew_sheet'))))
         .pop();
-    await tester.pumpAndSettle();
+    // The sea never settles: let the sheet slide.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const Key('ship_crew_sheet')), findsNothing);
 
     // Hold an enemy room to take aim; the bar sweeps; fire.

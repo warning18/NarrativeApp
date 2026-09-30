@@ -2075,6 +2075,15 @@ final DbSchema portsSchema = DbSchema(
       type: FieldType.integer,
       defaultValue: 2,
     ),
+    // The waters a sea fight on the way here is fought on
+    // (sea_battlefield.dart SeaWaters): their colour, waves and drift.
+    FieldSchema(
+      key: 'waters',
+      label: 'Waters (sea fights on the way here)',
+      type: FieldType.enumeration,
+      enumOptions: const ['open', 'shallows', 'drowned', 'abyss', 'ashen'],
+      defaultValue: 'open',
+    ),
     FieldSchema(
       key: 'isHome',
       label: 'Home Port (the camp\'s own shore; exactly one)',
