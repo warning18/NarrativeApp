@@ -8,6 +8,72 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.190.0+221]
+
+The ship battle gets dynamics: the enemy shows what it will do, the Eel can
+push a room past its limit, and a long battle gets worse.
+
+### Added
+- **The enemy's next move.** It shows under the enemy's name: fire, close
+  in, pull away, ram, board, repair, brace or run. Fog hides it.
+- **Enemies change their minds** as the fight goes:
+  - a ship with its guns shot up comes alongside to board;
+  - a boarder that was thrown back stands off and shoots;
+  - a hurt raider waits for help before running.
+- **Answers to what you see:**
+  - Pull away from a ram and it misses; it can try again later.
+  - Pull away from boarders and they're left at the rail.
+  - A ship that repairs holds its fire, but its guns keep charging, so its
+    next volley is a full one.
+  - A braced ship takes half the hull from your shots, and holds its own
+    fire.
+- **Push a room past its limit**, once a turn, with the bolt button:
+  - the guns charge a step;
+  - the helm dodges more;
+  - the bulwark raises one more shield;
+  - the hold bails a leak and patches 8 hull.
+
+  Every push risks the room losing a pip or catching fire (30% the first
+  time, 20 more each time after; less with a hand in the room).
+
+### Changed
+- **The battle gets worse over time:**
+  - A fire nobody puts out spreads to the next room.
+  - Leaks make a ship heavy: each open leak costs 5% dodge.
+  - The weather follows a trend: squalls build out of crosswinds, and the
+    weather readout warns "Squall coming".
+  - From round 6 a second enemy sail may appear. A few rounds later its
+    guns join the fight at medium and long range, and the enemy stands off
+    so they can reach you.
+- The ship battle tutorial covers the enemy's next move and pushing a room.
+- The Board button takes the dock row's free width, so it fits beside Push
+  on a 360 px phone.
+
+### Balance
+The ship Monte Carlo, the skilled captain's win rate before and after (the
+bands against the classic battle hold):
+- Early Eel:
+  - raider 59 → 60%;
+  - corsair 46 → 49%;
+  - cutter 58 → 57%.
+- Mid Eel against the void barge: 61 → 66%.
+- Late Eel:
+  - against the void barge 55 → 53%;
+  - against the cutter 98 → 95%.
+- Grape-fitted Eel against the void barge: 93 → 83%.
+- A plain player, who ignores the new tools, still wins the early raider
+  61% of the time.
+
+The beast Monte Carlo:
+- First meetings stay ones to live through: at most 59% won with any gun.
+  The Leviathan and the Tide-Mother still sink the Eel 90% and 100% of the
+  time.
+- Running at once still always gets away.
+- A prepared hunt with the harpoon wins:
+  - Brinejaw 80% (60% on main before this);
+  - Leviathan 68%;
+  - Tide-Mother 78%, with three hands too.
+
 ## [1.189.0+220]
 
 Every finding of the v1.186 review, fixed (built on this branch as
@@ -150,10 +216,12 @@ main was merged in.
   - Carronade 39%;
   - fire pots 36%.
 - A prepared hunt with the harpoon wins:
-  - Brinejaw 92%;
+  - Brinejaw 92% on this branch, 60% once main's orders-from-rooms rule
+    came in with the merge (see v1.190.0);
   - Leviathan 81%;
   - Tide-Mother 91% (87% with three hands).
-- Without the harpoon, hunts win 21%, 0% and 0%.
+- Without the harpoon, hunts win 21%, 0% and 0% (Brinejaw 14% after the
+  merge).
 - Against raiders, the late Eel beats the void barge 55% of the time.
 
 ## [1.188.0+219]
