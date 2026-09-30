@@ -31,11 +31,12 @@ DiceFaceResult cursedFace(DiceFaceResult face) {
 }
 
 /// [face] under a Silence: a skill set on a basic face falls back to that
-/// face; a skill face of its own lands blank.
+/// face; a skill face of its own lands blank, its keywords gone with the
+/// skill (a Steady blank would be kept through the rerolls).
 DiceFaceResult silencedFace(DiceFaceResult face) {
   if (face.type != 'Skill') return face;
   if (face.isChanneled) return face.asBasic(face.channeledFrom);
-  return face.asBasic('Empty', value: 0);
+  return face.asBasic('Empty', value: 0).withKeywords(const {});
 }
 
 /// The face of a die a Curse picks: a random face that isn't already
@@ -51,7 +52,8 @@ int? curseTargetFace(int faceCount, Set<int> alreadyCursed, Random random) {
 
 /// The member whose die a Hex rolls again: the one whose landed face is
 /// worth the most, by [worth] (member id → what the face deals, heals,
-/// blocks and gives). Null when nothing landed.
+/// blocks and gives). Null when nothing landed. A Steady die, kept where
+/// it landed, isn't for the Hex to take: leave it out of [worth].
 String? hexVictim(Map<String, int> worth) {
   String? best;
   var bestWorth = -1;
@@ -77,6 +79,14 @@ int nudgesForLuck(int luck) => (luck ~/ luckPerNudge).clamp(0, maxNudges);
 /// 5, 3 and 4 on a six-sided die).
 int oppositeFaceIndex(int index, int faceCount) =>
     faceCount <= 0 ? index : (faceCount - 1 - index).clamp(0, faceCount - 1);
+
+/// The face a nudge turns face [index] of a [faceCount]-faced die to: its
+/// opposite, or null for the middle face of an odd die (4 of 7), which is
+/// its own opposite and has nowhere to turn.
+int? nudgedFaceIndex(int index, int faceCount) {
+  final opposite = oppositeFaceIndex(index, faceCount);
+  return opposite == index ? null : opposite;
+}
 
 /// The string keys of a tamper's name and rules line.
 String tamperLabelKey(DiceTamper tamper) => 'tamper_${tamper.name}';

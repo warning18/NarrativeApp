@@ -9,12 +9,20 @@ import 'world_map.dart';
 /// The first chapter the road's rules apply to.
 const int roadRulesFromChapter = 2;
 
-/// Provisions carried at most, and at the start.
-const int provisionsMax = 12;
-const int provisionsStart = 10;
+/// Provisions carried at most, and at the start. The crew eats one a day
+/// at sea too (v1.187), so a long crossing wants a full pack: in the
+/// simulator, a party that tops the pack up before it sails goes hungry
+/// now and then; one that never looks at it, often.
+const int provisionsMax = 8;
+const int provisionsStart = 8;
 
-/// Road steps in a day: every fourth step out on the road ends one.
-const int stepsPerDay = 4;
+/// Watches in a day (dawn, day, dusk, night). A step on the road is a
+/// watch, so four steps from dawn end the day.
+const int watchesPerDay = 4;
+
+/// Watches a walk between two places takes (the camp and its places, see
+/// camp_travel.dart): two steps' worth, for one ration.
+const int walkWatches = 2;
 
 /// With no provisions left, each step on the road costs this share of
 /// the character's maximum health (never the last point).
@@ -27,10 +35,18 @@ const int threatGraceDays = 6;
 /// The open chapters' grace: their places lie across the sea, and every
 /// voyage takes days, so a party that sails to each of them once would
 /// otherwise meet stronger enemies for going where the chapter sends it.
-/// Measured with the playthrough simulator (v1.177): a party that does
-/// everything a chapter holds spends about 28 days in chapters 4 and 5
-/// and 37 in chapter 6; past these, the lingering shows.
-const Map<int, int> _threatGraceByChapter = {4: 24, 5: 24, 6: 32};
+/// Measured with the playthrough simulator (v1.187, one world clock): a
+/// party that does everything a chapter holds spends about 8 days in
+/// chapter 3, 33 in chapters 4 and 5 and 43 in chapter 6; past these
+/// graces, the lingering shows. The ending (chapter 7) is one crossing
+/// of four days, the tear and a night or two at the camp.
+const Map<int, int> _threatGraceByChapter = {
+  3: 8,
+  4: 28,
+  5: 28,
+  6: 36,
+  7: 12,
+};
 
 /// Days [chapter] can take before its enemies start to gather strength.
 int threatGraceDaysFor(int chapter) =>

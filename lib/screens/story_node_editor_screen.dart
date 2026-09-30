@@ -468,6 +468,7 @@ class _ChoiceEditState {
         isHunterAmbush: _original.isHunterAmbush,
         showIfFlags: _original.showIfFlags,
         mainQuest: _original.mainQuest,
+        pays: _original.pays,
         travelPlaceId: _original.travelPlaceId,
         avoidFightOnSuccess: _original.avoidFightOnSuccess,
         forcedCondition: _original.forcedCondition,

@@ -126,7 +126,8 @@ class BeastState {
   /// Hull it has lost and not healed (at most [maxWoundShare] of it).
   final int wounds;
 
-  /// Battles fought with it.
+  /// Battles with it fought out and lived through (see [beastAfterBattle]):
+  /// each teaches the crew its ways.
   final int encounters;
   final bool slain;
 
@@ -164,6 +165,11 @@ const int cluesNeeded = 3;
 
 /// A crossing's odds of meeting a beast that roams its waters.
 const double beastEncounterChance = 0.25;
+
+/// The odds while a beast not yet seen roams these waters as the first it
+/// roams: it is first met there, not a chapter later. (The Brinejaw's
+/// chapter-3 waters are crossed only once or twice before chapter 4's.)
+const double firstWatersEncounterChance = 0.5;
 
 /// A beast never starts a battle below this share of its hull lost: what
 /// it cannot heal of its wounds, it has learned to carry.
@@ -203,23 +209,27 @@ int woundsAfter({required int maxHull, required int hullAtEnd}) =>
     max(0, min((maxHull * maxWoundShare).round(), maxHull - hullAtEnd));
 
 /// [state] after a battle the beast ended with [hullAtEnd] of [maxHull]
-/// ([slain]: it went down). Living through one is a sign of it.
+/// ([slain]: it went down). It keeps the wounds it took. A battle fought
+/// out and lived through is a sign of it and teaches the crew its ways;
+/// one the Eel ran from or sank in ([learned] false) teaches nothing.
 BeastState beastAfterBattle(
   BeastState state, {
   required int maxHull,
   required int hullAtEnd,
   required bool slain,
+  bool learned = true,
 }) =>
     state.copyWith(
       seen: true,
-      encounters: state.encounters + 1,
+      encounters: state.encounters + (learned ? 1 : 0),
       slain: slain || state.slain,
-      clues: slain ? 0 : state.clues + 1,
+      clues: slain ? 0 : state.clues + (learned ? 1 : 0),
       wounds: slain ? 0 : woundsAfter(maxHull: maxHull, hullAtEnd: hullAtEnd),
     );
 
 /// The beast met on a crossing at [chapter], or null: one that roams those
-/// waters and still lives, [beastEncounterChance] of the time.
+/// waters and still lives, [beastEncounterChance] of the time
+/// ([firstWatersEncounterChance] while one not yet seen roams them first).
 String? rollBeastEncounter({
   required Random random,
   required Map<String, dynamic> enemyShips,
@@ -232,9 +242,12 @@ String? rollBeastEncounter({
           beastWaters(enemyShips[id] as Map<String, dynamic>).contains(chapter))
         id,
   ];
-  if (roaming.isEmpty || random.nextDouble() >= beastEncounterChance) {
-    return null;
-  }
+  final firstLook = roaming.any((id) =>
+      !(beasts[id]?.seen ?? false) &&
+      beastWaters(enemyShips[id] as Map<String, dynamic>).reduce(min) ==
+          chapter);
+  final chance = firstLook ? firstWatersEncounterChance : beastEncounterChance;
+  if (roaming.isEmpty || random.nextDouble() >= chance) return null;
   return roaming[random.nextInt(roaming.length)];
 }
 

@@ -664,6 +664,14 @@ bool isRandomDrawEnemy(String enemyId) =>
     !storyOnlyEnemyIds.contains(enemyId) &&
     !zoneBossEnemyIds.contains(enemyId);
 
+/// Whether beating [enemyId] leaves a Champion's Trophy (see
+/// face_smithing.dart): a boss met where the story or a zone puts it, a
+/// story duel, a solo-only unique or a zone's own boss. An enemy with
+/// phases that can be drawn at random (a tier-2 hunter, the Rat Matriarch,
+/// the Penitent) fights like a boss but is none for this.
+bool dropsBossTrophy(String enemyId) =>
+    soloOnlyEnemyIds.contains(enemyId) || zoneBossEnemyIds.contains(enemyId);
+
 /// How much detail the party can currently see into an enemy's telegraphed
 /// next move -- a hard threshold on `effectivePerception`, not a percentage
 /// chance like [criticalChanceFor]/[dodgeChanceFor]: whether a telegraph is

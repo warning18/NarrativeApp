@@ -36,8 +36,10 @@ import 'ship_combat.dart' as combat show endRound;
 ///   its heart works, dives now and then to breach under the Eel, and
 ///   turns for the deep when it is hurt. A harpoon that lands holds it on
 ///   the line for a few rounds: no healing, no diving, no fleeing; so do
-///   fins knocked out. Nobody boards a beast, and it does not chase a
-///   ship that has turned tail.
+///   fins knocked out. Nobody boards a beast, and it does not chase the
+///   Eel in a turn she runs. It has no deck for grape to sweep, no
+///   rigging for chain to tear and nothing dry to burn: to a beast they
+///   are only light shot, and a heated ball or a fire pot only its hull.
 ///
 /// Deterministic given [random], so tests and the balance simulation can
 /// drive whole battles; the panel (ShipBattlePanel) drives one turn at a
@@ -601,6 +603,14 @@ class ShipBattle {
   /// shot at [room].
   ShotMods shotMods(ShipRoom room, {ShipWeapon? weapon, AimResult? aim}) {
     var mods = ammoMods(weapon?.ammo ?? ShipAmmo.round);
+    // A beast's fins are no rigging: chain tears nothing more off them;
+    // and the sea it swims in puts out any fire before it takes.
+    if (beast != null) {
+      if (mods.helmPips > 0) {
+        mods = ShotMods(damageFactor: mods.damageFactor, ignite: mods.ignite);
+      }
+      mods = mods.merge(const ShotMods(noFire: true));
+    }
     if (weather == SeaWeather.squall) {
       mods = mods.merge(const ShotMods(noFire: true));
     }
@@ -656,7 +666,8 @@ class ShipBattle {
     }
     if (outcome.landed) {
       focus[room] = (focus[room] ?? 0) + 1;
-      if (weapon.ammo == ShipAmmo.grape) {
+      // Grape sweeps a deck; a beast has no crew on one to cut down.
+      if (weapon.ammo == ShipAmmo.grape && beast == null) {
         grapeLeft = grapeRounds;
         _add('ship_log_grape', side: BattleSide.enemy);
       }
@@ -864,6 +875,16 @@ class ShipBattle {
         side: BattleSide.enemy, n: before - player.hull);
   }
 
+  /// The boarders ran from the dice fight on the enemy's deck (see
+  /// FightScreen's retreat, which takes its own toll of gold): they fall
+  /// back aboard the Eel and cut the grapples, the boarding spent for
+  /// this battle but no hull lost.
+  void boardingAbandoned() {
+    boardingSpent = true;
+    grappled = false;
+    _add('ship_log_boarding_abandoned', side: BattleSide.enemy);
+  }
+
   // --- The enemy's turn ---------------------------------------------------
 
   /// The enemy's turn up to its volley: a fleeing ship already far off
@@ -908,9 +929,9 @@ class ShipBattle {
       _dive();
       return;
     }
-    // A beast does not give chase to a ship that has turned tail: it is
-    // its water she is leaving.
-    if (rules.range && steers && !(beast != null && escape > 0)) {
+    // A beast does not give chase to a ship that is running: it is its
+    // water she is leaving. The turn she stays to fight, it comes on.
+    if (rules.range && steers && !(beast != null && ran)) {
       final want =
           rules.habits ? preferredRange(habit, enemy) : ShipRange.medium;
       if (want != range && random.nextDouble() < enemySteerChance(enemy)) {
@@ -1027,8 +1048,9 @@ class ShipBattle {
   /// not come; otherwise whether a hand in the hold meets the boarders.
   /// They need the ships side by side and the Eel's rail open, and try
   /// once; a boarder comes every few rounds alongside whatever the rail.
+  /// A beast that dived this round is under the keel, not at the rail.
   bool? enemyBoards() {
-    if (over || !boarding.canBoard) return null;
+    if (over || dived || !boarding.canBoard) return null;
     if (rules.range && range != ShipRange.close) return null;
     roundsAlongside++;
     final tries = enemyBoardTries + (enemyBoardingSpent ? 1 : 0);
@@ -1097,7 +1119,8 @@ class ShipBattle {
 
   /// A beast at the end of the round: held on the line it heals nothing
   /// (and the line gives a round); free, it heals while its heart works.
-  /// Hurt enough, it turns for the deep.
+  /// Hurt enough, it turns for the deep; healed past that (held there by
+  /// its torn fins), it turns back to the fight.
   void _beastRound() {
     final b = beast;
     if (b == null) return;
@@ -1111,10 +1134,12 @@ class ShipBattle {
       enemy = enemy.copyWith(hull: enemy.hull + healed);
       _add('ship_log_beast_heals', side: BattleSide.enemy, n: healed);
     }
-    if (!beastTurning && enemy.hull <= enemy.maxHull * b.fleeShare) {
-      beastTurning = true;
-      _add('ship_log_beast_turning', side: BattleSide.enemy);
+    final hurt = enemy.hull <= enemy.maxHull * b.fleeShare;
+    if (hurt != beastTurning) {
+      _add(hurt ? 'ship_log_beast_turning' : 'ship_log_beast_turns_back',
+          side: BattleSide.enemy);
     }
+    beastTurning = hurt;
   }
 
   void _roundLines(

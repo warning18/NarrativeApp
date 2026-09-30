@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/echoes.dart';
+import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/data/scene_flow.dart';
 import 'package:narrative_data_app/data/story_repository.dart';
 import 'package:narrative_data_app/models/story_node.dart';
@@ -107,6 +108,21 @@ void main() {
       expect(passThroughChoiceOf(node, const ['met']), isNull);
     });
 
+    test('a way on that takes the road to another place is a stop', () {
+      // The wharf's way to the berths is a step on the road: a ration, a
+      // watch and what the road holds, never a page turned.
+      final story = _story();
+      final paid = story.nodeFor('2040_paid')!;
+      expect(paid.choices.single.nextId, '2900');
+      expect(isPlainGoOn(paid.choices.single), isTrue);
+      expect(passThroughChoiceOf(paid, const []), isNull);
+      for (final node in story.nodes.values) {
+        final way = passThroughChoiceOf(node, const []);
+        if (way == null) continue;
+        expect(isRoadStep(node.id, way.nextId), isFalse, reason: node.id);
+      }
+    });
+
     test('the story has scenes to read straight through, none a stop', () {
       final story = _story();
       final through = [
@@ -164,6 +180,22 @@ void main() {
           composeNarrationParts(altar, session(const []), story, french: false)
               .echoes,
           isEmpty);
+    });
+
+    test('a scene read through keeps its echoes apart, and reads whole', () {
+      // 5004 (the Court's flight) is read on the way to the altar; its
+      // memory of the floorboard is an echo of the sixteenth year.
+      final flight = story.nodeFor('5004')!;
+      expect(passThroughChoiceOf(flight, const []), isNotNull);
+      final parts = composeNarrationParts(
+          flight, session(['origin_board_good']), story,
+          french: false);
+      expect(parts.echoes.single.flag, 'origin_board_good');
+      final prelude = ScenePrelude(
+          nodeId: flight.id, body: parts.text, echoes: parts.echoes);
+      expect(prelude.body, isNot(contains(parts.echoes.single.line)));
+      expect(prelude.text, contains(parts.echoes.single.line));
+      expect(prelude.text, startsWith(parts.text));
     });
 
     test('the journal finds a saved echo again', () {

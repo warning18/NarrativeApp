@@ -22,16 +22,23 @@ class _RoundPlan {
 /// the enemies' tampering and Luck nudges.
 extension _FightDiceRules on _FightScreenState {
   /// A rolled face of [actor]'s die as it lands this round: the player's
-  /// skill pick, then a Curse on the face, then a Silence over the round.
+  /// skill pick, then the fight's tampering (see [_tampered]).
   DiceFaceResult _landedFace(_PartyMember actor, DiceFaceResult rawRoll) {
     final lang = ref.read(appLanguageProvider);
     final faces = actor.dieFaces;
-    var face = applyFaceAssignment(
+    final face = applyFaceAssignment(
       rawRoll,
       rawRoll.faceIndex < faces.length ? faces[rawRoll.faceIndex] : null,
       actor.diceSkillAssignments[rawRoll.faceIndex.toString()],
       language: lang,
     );
+    return _tampered(actor, face, lang);
+  }
+
+  /// [face] of [actor]'s die under the enemies' tampering this round: a
+  /// Curse on the face, then a Silence over the round.
+  DiceFaceResult _tampered(
+      _PartyMember actor, DiceFaceResult face, AppLanguage lang) {
     if (_cursedFaces[actor.id]?.contains(face.faceIndex) ?? false) {
       face =
           cursedFace(face).withFaceName(rolledFaceName(cursedFace(face), lang));
@@ -61,9 +68,12 @@ extension _FightDiceRules on _FightScreenState {
 
   /// The faces the party plays this round, by member id in acting order:
   /// the landed faces, with an Echo copying the face played before it (the
-  /// first in line repeats what they played last round).
+  /// first in line repeats what they played last round). The copy plays
+  /// under this round's tampering like any face that lands now: a Silence
+  /// blanks a copied skill, a Curse on the Echo face makes it a Pain strike.
   Map<String, DiceFaceResult> _playedFaces() {
     final lang = ref.read(appLanguageProvider);
+    final echoTag = ' (${trFor(lang, 'keyword_echo')})';
     final played = <String, DiceFaceResult>{};
     DiceFaceResult? previous;
     for (final actor in _actingParty) {
@@ -72,16 +82,25 @@ extension _FightDiceRules on _FightScreenState {
       if (face.hasKeyword(FaceKeyword.echo)) {
         final source = previous ?? _lastPlayedFaces[actor.id];
         if (source != null) {
-          face = DiceFaceResult(
-            faceIndex: face.faceIndex,
-            faceName: '${source.faceName} (${trFor(lang, 'keyword_echo')})',
-            type: source.type,
-            value: source.value,
-            linkedSkillID: source.linkedSkillID,
-            element: source.element,
-            channeledFrom: source.channeledFrom,
-            keywords: {...source.keywords}..remove(FaceKeyword.echo),
-          );
+          // An echo of an echo is named once, not once a round.
+          final name = source.faceName.endsWith(echoTag)
+              ? source.faceName
+                  .substring(0, source.faceName.length - echoTag.length)
+              : source.faceName;
+          final copy = _tampered(
+              actor,
+              DiceFaceResult(
+                faceIndex: face.faceIndex,
+                faceName: name,
+                type: source.type,
+                value: source.value,
+                linkedSkillID: source.linkedSkillID,
+                element: source.element,
+                channeledFrom: source.channeledFrom,
+                keywords: {...source.keywords}..remove(FaceKeyword.echo),
+              ),
+              lang);
+          face = copy.withFaceName('${copy.faceName}$echoTag');
         }
       }
       played[actor.id] = face;
@@ -197,7 +216,7 @@ extension _FightDiceRules on _FightScreenState {
   ) {
     if (_rolling || _currentFaces.isEmpty) return _RoundPlan.empty;
     final played = _playedFaces();
-    final surgeTo = _surgeRecipient();
+    final surgeTo = _surgeRecipient(played);
     final results = <String, PlayerActionResult>{};
     for (final actor in _actingParty) {
       final face = played[actor.id];
@@ -491,7 +510,7 @@ extension _FightDiceRules on _FightScreenState {
   }
 
   /// A Hex laid last round rolls the best die of the party's first roll
-  /// again (see [hexVictim]).
+  /// again (see [hexVictim]); a Steady die holds where it landed.
   void _springHex(Map<String, dynamic> skills, Map<String, dynamic> items) {
     if (!_hexPending) return;
     _hexPending = false;
@@ -499,10 +518,11 @@ extension _FightDiceRules on _FightScreenState {
     final plan = _roundPlan(skills, items, lang);
     final victimId = hexVictim({
       for (final entry in plan.previews.entries)
-        entry.key: entry.value.damage +
-            entry.value.healing +
-            entry.value.block +
-            entry.value.result.manaGained,
+        if (!_steadyActorIds.contains(entry.key))
+          entry.key: entry.value.damage +
+              entry.value.healing +
+              entry.value.block +
+              entry.value.result.manaGained,
     });
     final victim = victimId == null ? null : _memberById(victimId);
     final before = victimId == null ? null : _currentFaces[victimId];
@@ -511,6 +531,8 @@ extension _FightDiceRules on _FightScreenState {
     _fx(VfxStyle.voidRift, _memberCardKey(victim.id), delayMs: 100);
     _update(() {
       _currentFaces[victim.id] = again;
+      // Rolled again, the die is kept only if it lands Steady now.
+      _lockedActorIds.remove(victim.id);
       _noteSteadyFaces([victim.id]);
       _autoAssignTargets();
       _log.add(_LogEntry(
@@ -524,13 +546,14 @@ extension _FightDiceRules on _FightScreenState {
   }
 
   /// A Luck nudge: [actor]'s landed die turns to its opposite face (see
-  /// oppositeFaceIndex) and is kept.
+  /// nudgedFaceIndex) and is kept.
   void _nudge(_PartyMember actor) {
     if (!_awaitingDecision || _rolling || _over || _nudgesLeft <= 0) return;
     final face = _currentFaces[actor.id];
     final faces = actor.dieFaces;
     if (face == null || faces.isEmpty) return;
-    final opposite = oppositeFaceIndex(face.faceIndex, faces.length);
+    final opposite = nudgedFaceIndex(face.faceIndex, faces.length);
+    if (opposite == null) return;
     final flipped = _landedFace(actor, faceFromJson(faces[opposite], opposite));
     final lang = ref.read(appLanguageProvider);
     _fx(VfxStyle.crit, _memberCardKey(actor.id));
@@ -551,12 +574,14 @@ extension _FightDiceRules on _FightScreenState {
   }
 
   /// The face opposite [actor]'s landed one, as it would land -- what a
-  /// nudge would give (shown before spending it).
+  /// nudge would give (shown before spending it). Null when there is none
+  /// to turn to (the middle face of an odd die).
   DiceFaceResult? _nudgePreview(_PartyMember actor) {
     final face = _currentFaces[actor.id];
     final faces = actor.dieFaces;
     if (face == null || faces.isEmpty) return null;
-    final opposite = oppositeFaceIndex(face.faceIndex, faces.length);
+    final opposite = nudgedFaceIndex(face.faceIndex, faces.length);
+    if (opposite == null) return null;
     return _landedFace(actor, faceFromJson(faces[opposite], opposite));
   }
 }

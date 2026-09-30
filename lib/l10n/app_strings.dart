@@ -149,15 +149,14 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'road_rations_help': {
     AppLanguage.en:
-        'You eat one on every road between two places. With none left, hunger costs health.',
+        'You eat one on every road between two places, and one for every day at sea. With none left, hunger costs health.',
     AppLanguage.fr:
-        'Vous en mangez une sur chaque route entre deux lieux. Sans rien à manger, la faim vous coûte de la santé.',
+        'Vous en mangez une sur chaque route entre deux lieux, et une par jour en mer. Sans rien à manger, la faim vous coûte de la santé.',
   },
   'road_rations_label': {AppLanguage.en: 'Rations', AppLanguage.fr: 'Rations'},
-  'road_day_abbrev': {AppLanguage.en: 'Day', AppLanguage.fr: 'Jour'},
-  'road_day_label': {
-    AppLanguage.en: 'Day of the journey',
-    AppLanguage.fr: 'Jour du voyage',
+  'stats_threat': {
+    AppLanguage.en: 'Your enemies are gathering (+{p}%)',
+    AppLanguage.fr: 'Vos ennemis se rassemblent (+{p} %)',
   },
   'road_buy_one': {
     AppLanguage.en: 'Buy 1 ({gold} gold)',
@@ -309,6 +308,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Not yet: the camp shows what this chapter still asks.',
     AppLanguage.fr: 'Pas encore : le camp indique ce que ce chapitre demande.',
   },
+  'choice_gold_short_lock': {
+    AppLanguage.en: '{choice} · not enough gold ({gold} in the purse)',
+    AppLanguage.fr: '{choice} · pas assez d’or ({gold} dans la bourse)',
+  },
   'chapter_progress': {
     AppLanguage.en: 'Explored: {done} of {goal}',
     AppLanguage.fr: 'Exploré : {done} sur {goal}',
@@ -385,7 +388,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'harbor_title': {AppLanguage.en: 'Harbor', AppLanguage.fr: 'Port'},
   'harbor_open_button': {
-    AppLanguage.en: 'Go to the harbor',
+    AppLanguage.en: 'Go to the Harbor',
     AppLanguage.fr: 'Aller au port',
   },
   'harbor_unlocks_note': {
@@ -528,8 +531,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Navire ennemi',
   },
   'fight_lab_all_parts': {
-    AppLanguage.en: 'Every ship part installed',
-    AppLanguage.fr: 'Toutes les pièces installées',
+    AppLanguage.en: 'Pick the ship\'s parts',
+    AppLanguage.fr: 'Choisir les pièces du bateau',
   },
   'fight_lab_all_parts_desc': {
     AppLanguage.en: 'Off: your boat as it is now',
@@ -554,6 +557,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fight_lab_ship_lost': {
     AppLanguage.en: 'Test battle lost',
     AppLanguage.fr: 'Bataille de test perdue',
+  },
+  'fight_lab_ship_fled': {
+    AppLanguage.en: 'Test battle over: the Eel got away',
+    AppLanguage.fr: 'Combat d\'essai terminé : l\'Eel s\'est échappé',
   },
   'fight_lab_ship_escaped': {
     AppLanguage.en: 'The enemy got away',
@@ -1340,9 +1347,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La quantité de dégâts que vous pouvez encaisser avant de tomber.',
   },
   'luck_desc': {
-    AppLanguage.en: 'Improves your odds of finding better loot after a fight.',
+    AppLanguage.en: 'Raises your chance of a critical hit, and your odds of '
+        'finding better loot after a fight. Every 3 points of the party\'s '
+        'best Luck also give a nudge per fight, up to 3: long-press a '
+        'landed die to turn it to its opposite face.',
     AppLanguage.fr:
-        'Améliore vos chances de trouver un meilleur butin après un combat.',
+        'Augmente vos chances de coup critique, et de trouver un meilleur '
+            'butin après un combat. Tous les 3 points de la meilleure Chance '
+            'du groupe donnent aussi un coup de pouce par combat, jusqu\'à '
+            '3 : un appui long sur un dé tombé le tourne sur sa face opposée.',
   },
   'charisma_desc': {
     AppLanguage.en: 'Opens persuasion-gated dialogue and story choices.',
@@ -2320,7 +2333,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Encore {n} étapes',
   },
   'harbour_not_built_title': {
-    AppLanguage.en: 'The Harbour: not built yet',
+    AppLanguage.en: 'The Harbor: not built yet',
     AppLanguage.fr: 'Le Port : pas encore bâti',
   },
   'harbour_not_built_body': {
@@ -3337,7 +3350,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'keyword_pierce_desc': {
     AppLanguage.en:
         'the strike goes through a raised guard and an Armored hide.',
-    AppLanguage.fr: 'le coup traverse une garde levée et une peau Blindée.',
+    AppLanguage.fr: 'le coup traverse une garde levée et une peau Cuirassée.',
   },
   'keyword_growth': {
     AppLanguage.en: 'Growth',
@@ -3442,9 +3455,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tamper_hex_desc': {
     AppLanguage.en:
-        'on the party\'s next roll, the best die that lands is rolled again at once.',
+        'on the party\'s next roll, the best die that lands is rolled again at once (a Steady face holds).',
     AppLanguage.fr:
-        'au prochain lancer du groupe, le meilleur dé tombé est aussitôt relancé.',
+        'au prochain lancer du groupe, le meilleur dé tombé est aussitôt relancé (une face Stable tient bon).',
   },
   'tamper_silence': {
     AppLanguage.en: 'Silence',
@@ -3567,9 +3580,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_recast_desc': {
     AppLanguage.en:
-        'Turn an Attack, Guard or Heal face into another of the three, keeping its number.',
+        'Turn an Attack, Guard or Heal face into another of the three. It keeps its number, up to the die\'s best face of the new kind.',
     AppLanguage.fr:
-        'Changer une face d\'attaque, de garde ou de soin en une autre des trois, en gardant son nombre.',
+        'Changer une face d\'attaque, de garde ou de soin en une autre des trois. Elle garde son nombre, sans dépasser la meilleure face de ce type sur le dé.',
   },
   'smith_title': {
     AppLanguage.en: 'Dice smithing',
@@ -3577,9 +3590,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_hint': {
     AppLanguage.en:
-        'The work stays on the die: a companion\'s die keeps it too.',
+        'The work stays on the die: a companion\'s die keeps it too, separately from your own copy of the same die.',
     AppLanguage.fr:
-        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi.',
+        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi, séparément de votre exemplaire du même dé.',
   },
   'smith_open_button': {
     AppLanguage.en: 'Smith dice',
@@ -4350,6 +4363,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_log_outran': {
     AppLanguage.en: 'The Eel outruns them',
     AppLanguage.fr: 'Le Rusty Eel les distance',
+  },
+  'ship_log_beast_outran': {
+    AppLanguage.en: 'The Eel outruns {ship}',
+    AppLanguage.fr: 'Le Rusty Eel distance {ship}',
   },
   'ship_log_outrun_failed': {
     AppLanguage.en: 'They catch the Eel and rake her: −{n} hull',
@@ -5385,7 +5402,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Épreuves de compétence',
   },
   'tut_boat_title': {
-    AppLanguage.en: 'The harbour',
+    AppLanguage.en: 'The Harbor',
     AppLanguage.fr: 'Le port',
   },
   'tut_voyage_title': {
@@ -5472,9 +5489,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_journey_3': {
     AppLanguage.en:
-        'Your mark, and one step ahead for every way on. Its icon and colour say what it holds: a fight, a roll, a shop, a rest. Below you, the road you have already walked this chapter.',
+        'Your mark, with a step round it for each thing to do here; the ways to other places sit at the edge, in their true direction. A step’s icon and colour say what it holds. The road behind you is below.',
     AppLanguage.fr:
-        'Votre repère, et une étape devant pour chaque chemin. Son icône et sa couleur disent ce qu’elle réserve : un combat, un jet, une boutique, un repos. Sous vous, la route déjà parcourue ce chapitre.',
+        'Votre repère, entouré d’une étape pour chaque chose à faire ici ; les chemins vers d’autres lieux sont au bord, dans leur vraie direction. L’icône et la couleur d’une étape disent ce qu’elle réserve. Plus bas, la route parcourue.',
   },
   'tut_journey_4': {
     AppLanguage.en:
@@ -5496,7 +5513,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_5': {
     AppLanguage.en:
-        'Sea: the Rusty Eel, the harbour, and the chart. Sail to a port for its expeditions.',
+        'Sea: the Rusty Eel, the Harbor, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
         'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
@@ -5536,7 +5553,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_3': {
     AppLanguage.en:
-        'The harbour, once you build it. Your boat is refitted there.',
+        'The Harbor, once you build it. Your boat is refitted there.',
     AppLanguage.fr:
         'Le port, une fois construit. On y remet votre bateau en état.',
   },
@@ -5740,15 +5757,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
-        'Close in or pull away, change each gun’s shot, and give each hand’s one order from the crew sheet. Side by side with their rail open, you can board them.',
+        'Close in or pull away, and give each hand’s one order from the crew sheet. Each gun fires the shot it was fitted with at the Harbor. Side by side with their rail open, you can board them.',
     AppLanguage.fr:
-        'Approchez ou éloignez-vous, changez la munition de chaque arme et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
+        'Approchez ou éloignez-vous, et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Chaque arme tire la munition avec laquelle le port l’a montée. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
   },
   'tut_shipBattle_5': {
     AppLanguage.en:
         'Then end the turn and they answer. Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left.',
     AppLanguage.fr:
-        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque de la Rusty Eel cède, elle regagne tant bien que mal son port de départ.',
+        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ.',
   },
   'tut_shipBattle_6': {
     AppLanguage.en:
@@ -6512,6 +6529,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Repoussés vers l\'Eel, -{n} de coque ; {ship} poursuit le combat',
   },
+  'ship_log_boarding_abandoned': {
+    AppLanguage.en:
+        'The boarding party falls back to the Eel and cuts the grapples; the {ship} fights on',
+    AppLanguage.fr:
+        'L\'équipe d\'abordage regagne l\'Eel et tranche les grappins ; {ship} poursuit le combat',
+  },
   'ship_log_grapple_slipped': {
     AppLanguage.en: 'The {ship} slips the grapples; the turn is lost',
     AppLanguage.fr: '{ship} esquive les grappins ; le tour est perdu',
@@ -6570,8 +6593,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Le temps est écoulé : {ship} retient son tir ; ses armes gardent leur charge.',
   },
   'turn_seconds_bonus_label': {
-    AppLanguage.en: '+{n} s per battle turn',
-    AppLanguage.fr: '+{n} s par tour de bataille',
+    AppLanguage.en: '+{n} s per turn of a timed battle',
+    AppLanguage.fr: '+{n} s par tour de bataille chronométrée',
   },
   'ship_turn_timer_setting_title': {
     AppLanguage.en: 'Timed ship battles',
@@ -7653,8 +7676,18 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'De loin, virer de bord au lieu de tirer : trois tours et l\'Eel est hors d\'atteinte (un vent arrière compte double). Aucun canon ne tire pendant un tour de fuite.',
   },
   'ship_escape_label': {
-    AppLanguage.en: 'escape {n}/{of}',
-    AppLanguage.fr: 'fuite {n}/{of}',
+    AppLanguage.en: 'run: {n} to go',
+    AppLanguage.fr: 'fuite : encore {n}',
+  },
+  'ship_run_left_hint': {
+    AppLanguage.en: 'Turns of running still needed to get away: {n}.',
+    AppLanguage.fr: 'Tours de fuite encore nécessaires pour s\'échapper : {n}.',
+  },
+  'ship_run_warning': {
+    AppLanguage.en:
+        'Hull under 30%: get to long range and run for it while you can.',
+    AppLanguage.fr:
+        'Coque sous 30 % : gagnez la longue portée et prenez la fuite tant que vous le pouvez.',
   },
   'ship_log_running': {
     AppLanguage.en: 'The {ship} turns tail and runs ({n}/3)',
@@ -7662,7 +7695,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_fled': {
     AppLanguage.en: 'The {ship} runs clear and leaves the fight behind',
-    AppLanguage.fr: '{ship} prend le large et laisse le combat derrière elle',
+    AppLanguage.fr: '{ship} prend le large et laisse le combat derrière lui',
   },
   'ship_log_run_caught': {
     AppLanguage.en: 'The {ship} closes the gap: the run loses ground ({n}/3)',
@@ -7670,9 +7703,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tip_ship_run': {
     AppLanguage.en:
-        'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn.',
+        'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn: start before the hull runs low.',
     AppLanguage.fr:
-        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et elle est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour.',
+        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et il est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour : fuyez avant que la coque ne soit trop basse.',
   },
   'contract_sinkShips': {
     AppLanguage.en: 'Sink or take {n} ships at sea',
@@ -7797,9 +7830,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         '{ship} vire vers les fonds : retenez la bête maintenant, ou elle est perdue',
   },
+  'ship_log_beast_turns_back': {
+    AppLanguage.en: 'Its wounds closed, the {ship} turns back to the fight',
+    AppLanguage.fr: 'Ses plaies refermées, {ship} revient au combat',
+  },
   'beast_ship_log_enemy_repairs': {
-    AppLanguage.en: 'The {ship}\'s {room} knits closed',
-    AppLanguage.fr: '{room} de {ship} se ressoude',
+    AppLanguage.en: 'Flesh knits over the {ship}\'s {room}',
+    AppLanguage.fr: 'La chair se referme sur {room} de {ship}',
   },
   'beast_ship_log_enemy_fire_out': {
     AppLanguage.en:
@@ -7821,15 +7858,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'beast_ship_log_shot_absorbed': {
     AppLanguage.en: '{weapon} glances off the {ship}\'s hide',
     AppLanguage.fr: '{weapon} ricoche sur le cuir de {ship}',
-  },
-  'beast_ship_log_rigging_torn': {
-    AppLanguage.en: 'Chain shot tears the {ship}\'s fins',
-    AppLanguage.fr: 'Les boulets ramés déchirent les nageoires de {ship}',
-  },
-  'beast_ship_log_grape': {
-    AppLanguage.en: 'Grapeshot shreds the {ship}\'s gills: it mends slower',
-    AppLanguage.fr:
-        'La mitraille lacère les ouïes de {ship} : ses plaies se ferment moins vite',
   },
   'beast_ship_log_boarders': {
     AppLanguage.en: 'The {ship}\'s arms come over the rail into the hold!',
@@ -7865,9 +7893,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'ship_log_beast_watched': {
     AppLanguage.en:
-        'Every eye aboard follows {ship} as it goes: now its ways are known.',
+        'Every eye aboard follows {ship} as it goes: a sign of where it lairs.',
     AppLanguage.fr:
-        'Chaque regard à bord suit {ship} qui s\'éloigne : ses habitudes sont connues désormais.',
+        'Chaque regard à bord suit {ship} qui s\'éloigne : un signe de son repaire.',
+  },
+  'ship_log_beast_sign_outran': {
+    AppLanguage.en:
+        'Looking back, the crew marks where it turned away: a sign of {ship}.',
+    AppLanguage.fr:
+        'En se retournant, l\'équipage note où la bête a renoncé : un signe de {ship}.',
   },
   'ship_log_beast_clues': {
     AppLanguage.en: 'Signs of {ship}: {n} of {of}',
@@ -7926,9 +7960,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'beasts_hint': {
     AppLanguage.en:
-        'Every meeting survived, every beast let pass and some wrecks give a sign of where it lairs. With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
+        'Every fight with a beast seen through to the end and survived, every beast let pass or outrun, and some wrecks give a sign of where it lairs (a fight run from gives none). With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
     AppLanguage.fr:
-        'Chaque rencontre survécue, chaque bête laissée passer et certaines épaves donnent un signe de son repaire. Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
+        'Chaque combat contre une bête mené jusqu\'au bout et dont l\'Eel réchappe, chaque bête laissée passer ou distancée, et certaines épaves donnent un signe de son repaire (un combat qu\'on a fui n\'en donne aucun). Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
   },
   'beast_slain_label': {
     AppLanguage.en: 'Slain. Its trophy is at the shipwright\'s.',

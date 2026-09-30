@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/camp_state.dart';
+import 'package:narrative_data_app/data/journey_rules.dart';
 import 'package:narrative_data_app/data/settlements.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/models/story_node.dart';
@@ -295,9 +296,19 @@ void main() {
     expect(find.byKey(const Key('place_companion_3005')), findsOneWidget);
 
     // Going there: the road may hold something first; the story plays it,
-    // then arrives.
+    // then arrives. A walk between places is two watches and a ration.
+    int clock() {
+      final session = container.read(playerSessionProvider);
+      return session.day * 4 + session.watch;
+    }
+
+    int rations() => container.read(playerSessionProvider).provisions;
+    var clockBefore = clock();
+    var rationsBefore = rations();
     await tester.tap(find.byKey(const Key('go_3005')));
     await _settle(tester);
+    expect(clock(), clockBefore + walkWatches);
+    expect(rations(), rationsBefore - 1);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3005');
       await _settle(tester);
@@ -401,8 +412,13 @@ void main() {
     expect(find.text('Quests completed: 2 of 2'), findsOneWidget);
     expect(mainQuest().onPressed, isNotNull);
     await tester.ensureVisible(find.byKey(const Key('main_quest_3002')));
+    // Setting out on foot is the same walk, taken once.
+    clockBefore = clock();
+    rationsBefore = rations();
     await tester.tap(find.byKey(const Key('main_quest_3002')));
     await _settle(tester);
+    expect(clock(), clockBefore + walkWatches);
+    expect(rations(), rationsBefore - 1);
     if (container.read(storyPlayProvider).isInExcursion) {
       play.jumpTo('3002');
       await _settle(tester);

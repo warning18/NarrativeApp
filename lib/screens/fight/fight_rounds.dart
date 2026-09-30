@@ -67,15 +67,16 @@ extension _FightRounds on _FightScreenState {
     }
   }
 
-  /// Aims every acting member's Attack/Skill face at the first living enemy
-  /// unless they already picked one still standing -- a roll is never
-  /// blocked on a pick; the enemy column is where a pick is changed. Also
-  /// keeps [_selectedActorId] on a member who has something to aim.
+  /// Aims every acting member whose played face strikes (see
+  /// [_strikerIds]) at the first living enemy unless they already picked
+  /// one still standing -- a roll is never blocked on a pick; the enemy
+  /// column is where a pick is changed. Also keeps [_selectedActorId] on a
+  /// member who has something to aim.
   void _autoAssignTargets() {
     if (_enemies.length <= 1) return;
+    final strikers = _strikerIds();
     for (final actor in _actingParty) {
-      final face = _currentFaces[actor.id];
-      if (face == null || !(face.type == 'Attack' || face.type == 'Skill')) {
+      if (!strikers.contains(actor.id)) {
         _selectedTargets.remove(actor.id);
         continue;
       }
@@ -119,21 +120,13 @@ extension _FightRounds on _FightScreenState {
     return weakest;
   }
 
-  /// True once every acting member currently showing an Attack/Skill face
-  /// has picked a target — always true for a solo fight (nothing to pick),
-  /// used to gate the Confirm button when `_enemies.length > 1` so a roll
-  /// can never resolve against an unset target.
+  /// True once every acting member whose played face strikes has picked a
+  /// target — always true for a solo fight (nothing to pick), used to gate
+  /// the Confirm button when `_enemies.length > 1` so a roll can never
+  /// resolve against an unset target.
   bool get _allTargetsPicked {
     if (_enemies.length <= 1) return true;
-    for (final actor in _actingParty) {
-      final face = _currentFaces[actor.id];
-      if (face == null) continue;
-      if ((face.type == 'Attack' || face.type == 'Skill') &&
-          !_selectedTargets.containsKey(actor.id)) {
-        return false;
-      }
-    }
-    return true;
+    return _strikerIds().every(_selectedTargets.containsKey);
   }
 
   /// Locks in every acting member's currently-shown rolled face and applies
@@ -150,14 +143,10 @@ extension _FightRounds on _FightScreenState {
     // possible there) -- picks the first living enemy so a roll can never
     // silently miss for lack of a target.
     if (_enemies.length > 1) {
-      for (final actor in _actingParty) {
-        final face = _currentFaces[actor.id];
-        if (face == null) continue;
-        if ((face.type == 'Attack' || face.type == 'Skill') &&
-            !_selectedTargets.containsKey(actor.id)) {
-          final fallback = _firstLivingEnemy() ?? _enemies.first;
-          _selectedTargets[actor.id] = fallback.key;
-        }
+      for (final id in _strikerIds()) {
+        if (_selectedTargets.containsKey(id)) continue;
+        final fallback = _firstLivingEnemy() ?? _enemies.first;
+        _selectedTargets[id] = fallback.key;
       }
     }
 
@@ -176,11 +165,11 @@ extension _FightRounds on _FightScreenState {
     // draws the enemies' attacks in a party fight (see _takeEnemyTurn).
     String? guardianId;
     var guardianBlock = 0;
-    final surgeTo = _surgeRecipient();
     // The faces as played (an Echo copies the one before it), each resolved
     // with its own critical roll in party order, then what they add up to
     // (see party_combos.dart).
     final played = _playedFaces();
+    final surgeTo = _surgeRecipient(played);
     final results = <String, PlayerActionResult>{};
     for (final actor in _actingParty) {
       final face = played[actor.id];
@@ -272,7 +261,8 @@ extension _FightRounds on _FightScreenState {
         final picked = key == null ? null : _enemyByKey(key);
         redirected = _enemies.length > 1 &&
             target != null &&
-            (picked == null || !picked.isAlive);
+            picked != null &&
+            !picked.isAlive;
       }
 
       if (redirected && target != null) {
@@ -584,26 +574,7 @@ extension _FightRounds on _FightScreenState {
       enemy.hitWeaknessThisRound = false;
     }
 
-    // The hired sellsword strikes the weakest enemy standing.
-    var sellswordWon = false;
-    if (_sellswordStrike > 0 && !playerDied) {
-      final standing = _enemies.where((e) => e.isAlive).toList()
-        ..sort((a, b) => a.currentHealth.compareTo(b.currentHealth));
-      if (standing.isNotEmpty) {
-        final target = standing.first;
-        final dealt = min(_sellswordStrike, target.currentHealth);
-        target.currentHealth -= dealt;
-        _fx(VfxStyle.slash, _enemyCardKey(target.key),
-            text: '-$dealt', textKind: VfxTextKind.hurt);
-        newEntries.add(_LogEntry(
-          trFor(lang, 'sellsword_strikes')
-              .replaceAll('{name}', target.displayName)
-              .replaceAll('{n}', '$dealt'),
-          _LogKind.playerDamage,
-        ));
-        sellswordWon = _enemies.every((e) => !e.isAlive);
-      }
-    }
+    final sellswordWon = !playerDied && _sellswordStrikes(newEntries, lang);
 
     _update(() {
       _log.addAll(newEntries);
@@ -638,6 +609,29 @@ extension _FightRounds on _FightScreenState {
     if (!canAct) {
       _takeEnemyTurn(skills, items);
     }
+  }
+
+  /// The hired sellsword strikes the weakest enemy standing, at the start
+  /// of each of the party's rounds: from [_startPartyRound], and from
+  /// [_startFight] for the first. Returns true when the blow ends the
+  /// fight.
+  bool _sellswordStrikes(List<_LogEntry> entries, AppLanguage lang) {
+    if (_sellswordStrike <= 0) return false;
+    final standing = _enemies.where((e) => e.isAlive).toList()
+      ..sort((a, b) => a.currentHealth.compareTo(b.currentHealth));
+    if (standing.isEmpty) return false;
+    final target = standing.first;
+    final dealt = min(_sellswordStrike, target.currentHealth);
+    target.currentHealth -= dealt;
+    _fx(VfxStyle.slash, _enemyCardKey(target.key),
+        text: '-$dealt', textKind: VfxTextKind.hurt);
+    entries.add(_LogEntry(
+      trFor(lang, 'sellsword_strikes')
+          .replaceAll('{name}', target.displayName)
+          .replaceAll('{n}', '$dealt'),
+      _LogKind.playerDamage,
+    ));
+    return _enemies.every((e) => !e.isAlive);
   }
 
   /// Pre-rolls and caches [enemy]'s move+target for its NEXT turn -- called

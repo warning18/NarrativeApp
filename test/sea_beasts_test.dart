@@ -63,6 +63,18 @@ ShipState _beast({int hull = 100, int helm = 2, int hold = 2}) => ShipState(
       ],
     );
 
+/// Every roll comes up 0: whatever can steer does, nothing slips a shot.
+class _Zero implements Random {
+  @override
+  double nextDouble() => 0;
+
+  @override
+  int nextInt(int max) => 0;
+
+  @override
+  bool nextBool() => false;
+}
+
 ShipBattle _battle(
   BeastProfile beast, {
   ShipState? enemy,
@@ -109,6 +121,10 @@ void main() {
       }
       expect(_parts['hunters_harpoon']['beastGear'], isTrue);
       expect(_parts['hunters_harpoon']['tetherRounds'], 2);
+      // Its line reaches no farther than the rack's: a beast is not kited
+      // from long range, out of reach of its arms and jaws.
+      expect(weaponRangesFrom(_parts['hunters_harpoon']['ranges']),
+          {ShipRange.close, ShipRange.medium});
     });
 
     test('the Tide-Mother\'s arms come over the rail only in her battle', () {
@@ -150,6 +166,16 @@ void main() {
       expect(met.copyWith(clues: 9).clues, cluesNeeded);
     });
 
+    test('a battle run from or sunk in teaches nothing; its wounds stay', () {
+      const known = BeastState(seen: true, clues: 1, encounters: 1);
+      final ran = beastAfterBattle(known,
+          maxHull: 200, hullAtEnd: 150, slain: false, learned: false);
+      expect(ran.clues, 1, reason: 'no sign');
+      expect(ran.encounters, 1, reason: 'no edge');
+      expect(ran.wounds, 50);
+      expect(ran.tracked, isTrue);
+    });
+
     test('the crew\'s edge grows with every meeting, more on a hunt', () {
       expect(beastEdge(const BeastState(), hunt: false), 0);
       expect(beastEdge(const BeastState(encounters: 1), hunt: true),
@@ -160,15 +186,42 @@ void main() {
 
     test('a beast crosses the Eel\'s path only in its own waters', () {
       var met = 0;
+      var metFirst = 0;
+      var brinejawFirst = 0;
+      var brinejawLater = 0;
       for (var seed = 0; seed < 2000; seed++) {
         final id = rollBeastEncounter(
             random: Random(seed),
             enemyShips: _ships,
             chapter: 5,
-            beasts: const {});
+            beasts: const {'pale_leviathan': BeastState(seen: true)});
         if (id != null) {
           met++;
           expect(id, 'pale_leviathan');
+        }
+        // Not seen yet: it shows itself more readily in the first waters
+        // it roams (the Brinejaw's chapter-3 waters, not its chapter 4).
+        if (rollBeastEncounter(
+                random: Random(seed),
+                enemyShips: _ships,
+                chapter: 5,
+                beasts: const {}) !=
+            null) {
+          metFirst++;
+        }
+        for (final (chapter, tally) in [(3, 0), (4, 1)]) {
+          if (rollBeastEncounter(
+                  random: Random(seed),
+                  enemyShips: _ships,
+                  chapter: chapter,
+                  beasts: const {}) ==
+              'brinejaw') {
+            if (tally == 0) {
+              brinejawFirst++;
+            } else {
+              brinejawLater++;
+            }
+          }
         }
         expect(
             rollBeastEncounter(
@@ -186,6 +239,9 @@ void main() {
             isNull);
       }
       expect(met / 2000, closeTo(beastEncounterChance, 0.04));
+      expect(metFirst / 2000, closeTo(firstWatersEncounterChance, 0.04));
+      expect(brinejawFirst / 2000, closeTo(firstWatersEncounterChance, 0.04));
+      expect(brinejawLater / 2000, closeTo(beastEncounterChance, 0.04));
       expect(
           trackedBeastIn(
               enemyShips: _ships,
@@ -218,6 +274,15 @@ void main() {
       final hunt = beastDayFor('brinejaw', record, hunt: true);
       expect(hunt.kind, SeaEventKind.hunt);
       expect([for (final c in hunt.choices) c.action], [SeaAction.fight]);
+      // Never the first day of a crossing that has one before it for its
+      // omen.
+      for (var seed = 0; seed < 60; seed++) {
+        for (final length in [2, 3, 4]) {
+          expect(beastDayIndex(Random(seed), length),
+              inInclusiveRange(1, length - 1));
+        }
+      }
+      expect(beastDayIndex(Random(1), 1), 0);
     });
   });
 
@@ -310,7 +375,7 @@ void main() {
           _hand('player', player: true),
           _hand('grosh'),
         ],
-        random: Random(2),
+        random: _Zero(),
         boarding: const BoardingProfile(crew: ['kraken_arm'], chance: 1),
         habit: EnemyHabit.boarder,
         beast: const BeastProfile(),
@@ -320,14 +385,93 @@ void main() {
       b.enemy = b.enemy.copyWith(layers: 0);
       expect(b.canBoardThem, isFalse);
       expect(b.canOrder(b.crew[1]), isFalse, reason: 'no grapple');
+      // The turn she runs, it lets her go.
       b.range = ShipRange.long;
-      b.escape = 1;
+      b.runForIt();
+      expect(b.escape, 1);
       b.startEnemyPhase();
       expect(b.range, ShipRange.long);
+      b.endRound();
+      // A turn she stays to fight, it comes on again, and the run loses
+      // the ground it made.
+      b.startEnemyPhase();
+      expect(b.range, ShipRange.medium);
+      expect(b.escape, 0);
+      expect(b.log.any((l) => l.key == 'ship_log_run_caught'), isTrue);
+    });
+
+    test('the round it dives, it breaches and sends nothing over the rail', () {
+      ShipBattle alongside(BeastProfile beast) => ShipBattle(
+            player: _eel(),
+            enemy: _beast(),
+            crew: [_hand('player', player: true), _hand('grosh')],
+            random: _Zero(),
+            boarding: const BoardingProfile(crew: ['kraken_arm'], chance: 1),
+            habit: EnemyHabit.boarder,
+            beast: beast,
+            rules: const ShipBattleRules(weather: false, seaEvents: false),
+          )
+            ..range = ShipRange.close
+            // Its third round alongside: a boarder's arms come over.
+            ..roundsAlongside = 2;
+      final diving = alongside(const BeastProfile(diveEvery: 1, breach: 5));
+      diving.startEnemyPhase();
+      expect(diving.dived, isTrue);
+      expect(diving.enemyBoards(), isNull);
+      expect(diving.log.any((l) => l.key == 'ship_log_boarders'), isFalse);
+      final surfaced = alongside(const BeastProfile());
+      surfaced.startEnemyPhase();
+      expect(surfaced.enemyBoards(), isNotNull);
+    });
+
+    test('healed past its share with its fins torn, it turns back', () {
+      final b = _battle(const BeastProfile(regen: 20, fleeShare: 0.5),
+          enemy: _beast(hull: 30, helm: 0));
+      b.startEnemyPhase();
+      b.endRound();
+      expect(b.beastTurning, isTrue);
+      b.startEnemyPhase();
+      expect(b.over, isFalse, reason: 'no fins to go with');
+      b.endRound();
+      expect(b.enemy.hull, 70);
+      expect(b.beastTurning, isFalse);
+      expect(b.log.last.key, 'ship_log_beast_turns_back');
+      // Its fins mended, it stays and fights: it is hurt no longer.
+      b.enemy = b.enemy.withRoom(ShipRoom.helm, const RoomState(level: 2));
+      b.startEnemyPhase();
+      expect(b.over, isFalse);
+    });
+
+    test('grape and chain are only light shot to a beast', () {
+      const parts = ['grape_swivel', 'chain_swivel'];
+      final b = _battle(const BeastProfile(), parts: parts);
+      final grape = b.weaponById('grape_swivel')!;
+      final chain = b.weaponById('chain_swivel')!;
+      final chainMods = b.shotMods(ShipRoom.guns, weapon: chain);
+      expect(chainMods.helmPips, 0, reason: 'no rigging to tear');
+      expect(chainMods.damageFactor, 0.5);
+      b.player = b.player.withWeapon(grape.withCharge(grape.chargeTurns));
+      b.helmMarked = true;
+      expect(b.fire(grape.id, ShipRoom.guns)!.landed, isTrue);
+      expect(b.grapeLeft, 0, reason: 'no deck to sweep');
+      // A ship's deck and rigging are another matter.
+      final ship = ShipBattle(
+        player: _eel(parts: parts),
+        enemy: _beast(),
+        crew: [_hand('player', player: true), _hand('kelda')],
+        random: Random(1),
+        rules: const ShipBattleRules(weather: false, seaEvents: false),
+      );
+      expect(ship.shotMods(ShipRoom.guns, weapon: chain).helmPips, 1);
+      ship.player = ship.player.withWeapon(grape.withCharge(grape.chargeTurns));
+      ship.helmMarked = true;
+      expect(ship.fire(grape.id, ShipRoom.guns)!.landed, isTrue);
+      expect(ship.grapeLeft, grapeRounds);
     });
   });
 
-  test('the beast\'s bounty goes up while one is tracked, and pays double', () {
+  test('the beast\'s bounty goes up while one is tracked, and pays half again',
+      () {
     var posted = 0;
     for (var seed = 0; seed < 200; seed++) {
       final plain = rollContracts(
@@ -347,7 +491,7 @@ void main() {
       for (final c in board) {
         if (c.kind != ContractKind.beastFought) continue;
         posted++;
-        expect(c.rewardGold, 2 * contractGoldFor(4));
+        expect(c.rewardGold, (contractGoldFor(4) * beastContractPay).round());
         expect(progressContract(c, const ContractTally(beastsFought: 1)).done,
             isTrue);
       }
@@ -447,6 +591,11 @@ void main() {
       'ship_log_beast_breach',
       'ship_log_beast_heals',
       'ship_log_beast_turning',
+      'ship_log_beast_turns_back',
+      'ship_log_beast_outran',
+      'ship_log_beast_sign_outran',
+      'ship_run_warning',
+      'ship_run_left_hint',
       'beast_ship_log_leak',
       'beast_ship_log_flooding',
       'beast_ship_log_shot_absorbed',

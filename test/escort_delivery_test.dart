@@ -1,5 +1,7 @@
 // Escorts and deliveries (v1.179) in play: the wagons' load and the days on
 // the road show under the progress bar, and each choice says what it cost.
+// A payment the purse can't make is shut, and an expedition left early
+// still takes its half day.
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
@@ -13,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/data/alignment_events.dart';
 import 'package:narrative_data_app/data/expedition_kinds.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
+import 'package:narrative_data_app/l10n/app_strings.dart';
 import 'package:narrative_data_app/main.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
 import 'package:narrative_data_app/screens/expedition_screen.dart';
@@ -122,6 +125,47 @@ void main() {
     expect(find.text('Wagons’ load 95%'), findsOneWidget);
     expect(find.text('The wagons lost 5% of their load (95% left).'),
         findsOneWidget);
+    expect(tester.takeException(), isNull);
+    navigator.pop();
+    await _settle(tester);
+
+    // An empty purse at the checkpoint or the shepherd's: the payment is
+    // shut and says why; the other ways stay open.
+    await tester.runAsync(() => container
+        .read(playerSessionProvider.notifier)
+        .loadSession(container.read(playerSessionProvider).copyWith(gold: 0)));
+    final paidSeed =
+        _seedOpeningOn(ExpeditionKind.delivery, {'checkpoint', 'guide'});
+    navigator.push(MaterialPageRoute<bool>(
+        builder: (_) => ExpeditionScreen(
+              zoneId: 'z_fever_bark',
+              zone: _zone('z_fever_bark'),
+              random: Random(paidSeed),
+            )));
+    await _settle(tester);
+    final shut = find.textContaining('not enough gold (0 in the purse)');
+    expect(shut, findsOneWidget);
+    ElevatedButton button(Finder label) => tester.widget<ElevatedButton>(
+        find.ancestor(of: label, matching: find.byType(ElevatedButton)));
+    expect(button(shut).onPressed, isNull);
+    final open = find.descendant(
+        of: find.byType(ElevatedButton),
+        matching: find.byWidgetPredicate(
+            (w) => w is Text && !(w.data ?? '').contains('gold')));
+    expect(button(open.first).onPressed, isNotNull);
+
+    // Backing out is a retreat, and the half day passes all the same.
+    int clock() {
+      final session = container.read(playerSessionProvider);
+      return session.day * 4 + session.watch;
+    }
+
+    final before = clock();
+    await tester.binding.handlePopRoute();
+    await _settle(tester);
+    expect(find.text(trFor(AppLanguage.en, 'expedition_retreat_message')),
+        findsOneWidget);
+    expect(clock(), before + 2);
     expect(tester.takeException(), isNull);
     await tester.pump(const Duration(seconds: 5));
   });

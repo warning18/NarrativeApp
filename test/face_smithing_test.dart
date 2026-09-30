@@ -3,6 +3,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/combat/combat_engine.dart'
+    show elementFieldPrefixes;
 import 'package:narrative_data_app/combat/face_keywords.dart';
 import 'package:narrative_data_app/combat/face_smithing.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
@@ -77,6 +79,49 @@ void main() {
       expect(inscribableKeywords(_die[1]),
           containsAll([FaceKeyword.steady, FaceKeyword.growth]));
       expect(inscribableKeywords(_die[1]), isNot(contains(FaceKeyword.cleave)));
+    });
+
+    test('a Temper gives an element the game knows, never the face\'s own', () {
+      for (final element in temperElements) {
+        expect(elementFieldPrefixes, contains(element));
+      }
+      // v1.182 to v1.186 sold Electricity as 'Elec'.
+      expect(FaceUpgrade.fromJson({'element': 'Elec'}).element, 'Electricity');
+      const fire = {'type': 'Attack', 'value': 6, 'element': 'Fire'};
+      expect(temperableElements(fire), isNot(contains('Fire')));
+      expect(temperableElements(fire), hasLength(temperElements.length - 1));
+      expect(temperableElements(_die[0], const FaceUpgrade(element: 'Ice')),
+          isNot(contains('Ice')));
+      expect(temperableElements(_die[0]), temperElements);
+    });
+
+    test('a Recast keeps the number up to the die\'s best of the new type', () {
+      // The Vigil Die's strike, guard and heal.
+      const vigil = [
+        {'type': 'Attack', 'value': 10, 'element': 'None'},
+        {
+          'type': 'Defend',
+          'value': 13,
+          'element': 'None',
+          'keywords': ['steady'],
+        },
+        {'type': 'Heal', 'value': 18, 'element': 'None'},
+      ];
+      final faces = smithedFaces(vigil, {
+        '0': const FaceUpgrade(recastType: 'Heal'),
+        '1': const FaceUpgrade(recastType: 'Attack'),
+        '2': const FaceUpgrade(recastType: 'Attack', hones: 1),
+      });
+      expect(faces[1]['type'], 'Attack');
+      expect(faces[1]['value'], 10, reason: 'no Attack 13');
+      expect(faces[2]['value'], 12, reason: 'an Attack 10, honed once');
+      expect(faces[0]['value'], 10, reason: 'below the best heal, kept');
+      // A die with no face of the new type keeps the number.
+      expect(
+          recastValue(7, 'Heal', const [
+            {'type': 'Attack', 'value': 7},
+          ]),
+          7);
     });
 
     test('a Hone costs more each time', () {
@@ -157,6 +202,109 @@ void main() {
               work: SmithingWork.inscribe,
               keyword: FaceKeyword.cleave),
           isFalse);
+    });
+
+    test('a Temper to the face\'s own element is neither offered nor paid',
+        () async {
+      final notifier = await _notifier(session(pack: [
+        'material_iron_ore',
+        'material_iron_ore',
+        'material_iron_ore'
+      ]));
+      const faces = [
+        {'type': 'Attack', 'value': 6, 'element': 'Fire'},
+      ];
+      expect(
+          await notifier.smithFace(
+              dieId: 'iron_die',
+              faceIndex: 0,
+              faces: faces,
+              work: SmithingWork.temper,
+              element: 'Fire'),
+          isFalse);
+      expect(notifier.state.gold, 1000);
+      expect(
+          await notifier.smithFace(
+              dieId: 'iron_die',
+              faceIndex: 0,
+              faces: faces,
+              work: SmithingWork.temper,
+              element: 'Electricity'),
+          isTrue);
+      expect(notifier.state.upgradesOfDie('iron_die')!['0']!.element,
+          'Electricity');
+    });
+
+    test('a companion\'s copy of a die is worked apart from the player\'s',
+        () async {
+      // The player owns an Iron Die, and so does Kelda.
+      final notifier = await _notifier(session(pack: ['material_iron_ore']));
+      expect(
+          await notifier.smithFace(
+              dieId: 'iron_die',
+              companionId: 'kelda',
+              faceIndex: 0,
+              faces: _die,
+              work: SmithingWork.hone),
+          isTrue);
+      expect(notifier.state.gold, 920);
+      expect(notifier.state.upgradesOfDie('iron_die'), isNull);
+      expect(
+          notifier.state.upgradesOfDie('iron_die', companionId: 'kelda')!['0'],
+          const FaceUpgrade(hones: 1));
+      final saved = PlayerSession.fromJson(notifier.state.toJson());
+      expect(saved.upgradesOfDie('iron_die', companionId: 'kelda')!['0'],
+          const FaceUpgrade(hones: 1));
+      expect(saved.upgradesOfDie('iron_die'), isNull);
+
+      // New Game+ carries the player's own work, not Kelda's.
+      await notifier.smithFace(
+          dieId: 'iron_die',
+          faceIndex: 1,
+          faces: _die,
+          work: SmithingWork.recast,
+          recastType: 'Attack');
+      await notifier.beginNewGamePlus();
+      await notifier.resetSession();
+      expect(notifier.state.diceUpgrades.keys, ['iron_die']);
+      expect(
+          notifier.state.upgradesOfDie('iron_die')!['1']!.recastType, 'Attack');
+    });
+
+    test('an older save\'s work stays on the player\'s own die', () async {
+      // Before, a companion's work was kept under the die's id alone.
+      final old = PlayerSession.fromJson({
+        ...session(pack: ['material_iron_ore']).toJson(),
+        'diceUpgrades': {
+          'iron_die': {
+            '0': {'hones': 1},
+          },
+          'grosh_die': {
+            '1': {'hones': 2},
+          },
+        },
+      });
+      expect(old.upgradesOfDie('iron_die')!['0']!.hones, 1);
+      expect(old.upgradesOfDie('iron_die', companionId: 'kelda'), isNull);
+      // A die the player doesn't own was the companion's...
+      expect(
+          old.upgradesOfDie('grosh_die', companionId: 'grosh')!['1']!.hones, 2);
+      // ...and the next work on it moves it under their key.
+      final notifier = await _notifier(old);
+      expect(
+          await notifier.smithFace(
+              dieId: 'grosh_die',
+              companionId: 'grosh',
+              faceIndex: 0,
+              faces: _die,
+              work: SmithingWork.hone),
+          isTrue);
+      expect(notifier.state.diceUpgrades, isNot(contains('grosh_die')));
+      expect(notifier.state.upgradesOfDie('grosh_die', companionId: 'grosh'), {
+        '0': const FaceUpgrade(hones: 1),
+        '1': const FaceUpgrade(hones: 2),
+      });
+      expect(notifier.state.upgradesOfDie('iron_die')!['0']!.hones, 1);
     });
 
     test('nothing is done without the means', () async {

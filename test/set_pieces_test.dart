@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/data/journey_map.dart';
@@ -137,13 +138,19 @@ void main() {
   testWidgets('the clock runs out once, and only while it is on screen',
       (tester) async {
     var outs = 0;
-    Widget bar({required bool active}) => MaterialApp(
-          home: Scaffold(
-            body: TimedChoiceBar(
-              seconds: 4,
-              active: active,
-              label: 'Choose',
-              onTimeout: () => outs++,
+    // Two bars for one scene, as the Story and Journey tabs have: [shown]
+    // is the one on screen, the other is taken down.
+    Widget bar({required bool active, String shown = 'story'}) => ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: TimedChoiceBar(
+                key: ValueKey(shown),
+                scene: timedSceneKey('6002_siege', 40),
+                seconds: 4,
+                active: active,
+                label: 'Choose',
+                onTimeout: () => outs++,
+              ),
             ),
           ),
         );
@@ -160,9 +167,22 @@ void main() {
     await tester.pumpWidget(bar(active: false));
     await tester.pump(const Duration(seconds: 10));
     expect(outs, 0);
+    // The scene's other bar (the Journey tab's, or one built again after
+    // reading full screen) goes on from there, not from the start.
+    await tester.pumpWidget(bar(active: true, shown: 'journey'));
+    await tester.pump();
+    expect(find.text('2s'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 1));
     await tester.pumpWidget(bar(active: true));
+    await tester.pump();
+    expect(find.text('1s'), findsOneWidget);
     await tester.pump(const Duration(seconds: 3));
     await tester.pump(const Duration(seconds: 3));
+    expect(outs, 1);
+    // Run out, it stays run out: no bar takes the way a second time.
+    await tester.pumpWidget(bar(active: true, shown: 'journey'));
+    await tester.pump(const Duration(seconds: 5));
+    expect(find.text('0s'), findsOneWidget);
     expect(outs, 1);
   });
 }

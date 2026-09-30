@@ -8,6 +8,154 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.189.0+220]
+
+Every finding of the v1.186 review, fixed (built on this branch as
+v1.187; main's own v1.187 and v1.188, the new crew orders and dock, come
+in with it).
+
+### Changed
+- **Rations matter.** The pack holds 8 rations (was 12) and you start
+  with 8. The crew eats one for every day at sea. With none left, hunger
+  costs health at sea too, as on the road. The camp sells rations before
+  you sail.
+- **Enemies gather strength later:** after 8 days in chapter 3, 28 in
+  chapters 4 and 5, 36 in chapter 6 and 12 in the ending.
+- **Storm season still has the odd calm day.**
+- **Sea pay.** Sea contracts pay three quarters of a land contract,
+  "sink or take" needs three ships, and the beast bounty pays half again
+  instead of double.
+- **Sea beasts.**
+  - Grape and chain are only light shot against a beast. A red-hot ball
+    or a fire pot is only its hull: the sea puts the fire out.
+  - The Hunter's Harpoon reaches no farther than medium range, so a
+    beast can't be kited from long range.
+  - The Tide-Mother is smaller (210 hull, was 250), so three hands can
+    hunt her.
+  - A beast you haven't met yet is more likely to cross the Eel's path in
+    its first waters (the Brinejaw on the chapter 3 crossing).
+- **The void barge is sturdier** (150 hull, was 140).
+- **Prices at the Harbor:**
+  - Fire Pots 140 gold (was 260).
+  - Hot-Shot Carronade 200 (was 180).
+  - Grape Swivel 170 (was 110): it is still the best gun against raiders.
+  - The Grape Swivel takes two turns to load.
+  - The Speaking Tube says it only helps in timed battles.
+- **Dice.** A Recast keeps its number only up to the die's best face of
+  the new kind, so a big heal or guard no longer turns into a huge
+  attack. The buttons show the number you'll get.
+
+### Fixed: the road and the clock
+- A walk between places takes half a day (two watches) and one ration,
+  whether you pick the place at the camp or set out on foot on the main
+  quest. The main quest's walk no longer counts twice.
+- The day and the road agree: each step on the road is a watch, and the
+  day ends when night does.
+- Sailing to a main quest lands you where it begins, with no extra
+  ration, watch, road event or detour.
+- A payment you can't afford is shown locked, "not enough gold", instead
+  of being given for free. This covers:
+  - on the road and on expeditions: a shrine offering, a toll, a bribe, a
+    guide's fee, a traveller's price;
+  - in the story: Sable's buy-in at the cards, the purse sent to Lysa,
+    the chart-keeper's fee, the headman's lamps and the Anchorage's
+    riggers.
+- Back no longer skips the camp's fate die or a choice it asks for. A
+  quick double tap no longer plays a choice, or a night's rest, twice.
+- Scenes read on the way to the next one show their "Because you chose…"
+  lines, in the Story and Journey tabs, and the journal's What changed
+  lists them.
+- The walk from the wharf to the berths is a real step on the road again.
+- An expedition takes its half day however it ends; backing out of one
+  counts as a retreat. A lost sea fight counts its day.
+
+### Fixed: dice fights
+- Tempering a face with Lightning works. The Temper sold an element the
+  game didn't recognise, so it gave no weakness bonus; faces tempered
+  before now strike with Lightning.
+- The Temper buttons show element names in your language, and never
+  offer a face its own element.
+- Kelda's Iron Die, Maren's Holy Die and Sable's Shadow Die are smithed
+  apart from your own copy of the same die. One payment no longer
+  upgrades both, and New Game+ carries only your own work.
+- An Echo that repeats last round's face obeys this round's Silence and
+  Curse, and its name no longer grows "(Echo) (Echo)…".
+- A silenced Skill face lands as a plain blank; a Steady one no longer
+  locks your die.
+- Against several enemies, an Echo that copies a strike can be aimed
+  like one. The log no longer says a blow was redirected when nobody had
+  fallen.
+- A hired sellsword strikes in the first round too.
+- A Hex no longer takes a Steady die, and a die it rolls again no longer
+  stays locked.
+- A Mirror also sends back a spell cast that round.
+- A Luck nudge is no longer offered, or spent, on a die's middle face.
+- Only real bosses drop a Champion's Trophy.
+- The Luck description mentions critical hits and nudges; the French
+  Pierce rule names the Cuirassé affix correctly.
+
+### Fixed: at sea
+- A sea beast lets you go only while you're running; turn back to fight
+  and it comes after you again.
+- The Tide-Mother can't breach under the Eel and send her arms over the
+  rail in the same round.
+- A beast held by torn fins that heals back turns back to the fight
+  instead of vanishing when its fins mend. No dive is shown while its
+  fins are torn.
+- A beast is always announced by its omen the day before.
+- Signs:
+  - A fight you run from gives no sign, no edge and no bounty.
+  - A lost fight gives none either, but the beast keeps its wounds.
+  - Outrunning a beast leaves a sign, as letting it pass does.
+- A hunt keeps its signs until you meet the beast, and it's fought in
+  the beast's own waters.
+- In French, beasts and ships keep their own look.
+- On a small phone the ship picture makes way for the day's text, and a
+  crowded room tile no longer spills over.
+- The range bracket and the run button show how many turns of running
+  are left. Below 30% hull you're told to run for it.
+
+### Fixed: the Journey tab and screens
+- A tap on a step always picks that step: only its round mark takes
+  taps, and each name sits where it covers no other step.
+- The Journey tab no longer gets stuck if you double-tap the scene while
+  the party walks.
+- A timed scene has one clock, carried between the Story and Journey tabs
+  and full-screen reading.
+- The map keeps its room on a small phone once a step is picked.
+- The day shows once in the top bar; the clock turns red while the
+  chapter's enemies gather.
+- The camp's chapter card header no longer overflows in French.
+
+### Fixed: text
+- French: the Eel is « il », and two story lines no longer give the
+  narrator a gender.
+- The Journey tour describes the new place map, and the ship battle
+  tutorial no longer asks to change each gun's shot.
+- "Harbor" is spelled the same way throughout the English text.
+
+### Balance
+The beast Monte Carlo, with the Eel fitted as she is in each beast's
+waters. These numbers replace the v1.185 ones, which went stale when
+main was merged in.
+- Running at once always gets away, even from the Brinejaw with the
+  chapter 3 Eel.
+- Fighting a first meeting to the end:
+  - Brinejaw: won 18%, the beast gets away 60%.
+  - Leviathan and Tide-Mother: they sink the Eel 91% and 100%.
+- Swivel and fire guns don't turn a first meeting into a win. Against
+  the Brinejaw:
+  - grape 62%;
+  - chain 60%;
+  - Carronade 39%;
+  - fire pots 36%.
+- A prepared hunt with the harpoon wins:
+  - Brinejaw 92%;
+  - Leviathan 81%;
+  - Tide-Mother 91% (87% with three hands).
+- Without the harpoon, hunts win 21%, 0% and 0%.
+- Against raiders, the late Eel beats the void barge 55% of the time.
+
 ## [1.188.0+219]
 
 ### Changed
@@ -50,6 +198,28 @@ isn't reconstructable from git history alone.
 - **A smaller dock.** End turn is a compact button at the corner, and
   the crew sheet an icon. The dock's line shows the last two lines of
   the battle, with the whole log a tap away.
+
+## [1.186.1+218]
+
+### Fixed
+- **Running from a boarding fight no longer blocks the sea battle.** The
+  dice fight's retreat left the sea fight waiting for a result that never
+  came, End turn and all. Now:
+  - Run from the fight on the enemy's deck: the boarding party falls back
+    to the Eel and cuts the grapples. No hull is lost (the retreat takes its
+    own gold), the boarding is spent for this battle, and the turn goes on.
+  - Run from boarders on the Eel's own deck: the deck is left to them, as
+    when they win it.
+- **A ship fires no more weapons than she has weapon slots.** The Eel has
+  2 weapon slots, 1 shield, 1 utility and 1 sail. The ship built for a
+  battle now only uses the parts her slots hold, so a surplus weapon stays
+  in the hold.
+- **The Fight Lab picks the ship's parts slot by slot** instead of fitting
+  every part at once (it armed the Eel with all 8 weapons). The "Pick the
+  ship's parts" switch starts from the boat as she is. Each slot type holds
+  only what she has room for, and picking one more replaces the oldest.
+- **The Fight Lab reports a sea battle the Eel ran from as "the Eel got
+  away"**, not as a loss.
 
 ## [1.186.0+217]
 

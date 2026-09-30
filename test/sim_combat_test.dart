@@ -1,7 +1,8 @@
 // Unit coverage for lib/data/sim_combat.dart -- the in-app playthrough
 // simulator's fight model: character creation mirrors startNewGame, Mana
 // faces feed the pool, the caster policy spends it, a loss refills it, a
-// shop visit buys gear, potions and the profession's spellbook.
+// shop visit buys gear, potions and the profession's spellbook, and a
+// Mirror sends back the round's best hit.
 
 import 'dart:convert';
 import 'dart:io';
@@ -279,6 +280,45 @@ void main() {
         }
       }
       expect(baseWins, greaterThanOrEqualTo(plusWins));
+    });
+
+    test('a Mirror sends back the round\'s best hit, not a plain blow', () {
+      // An enemy with a light blow that mirrors every turn, or never: a hero
+      // hitting harder than it takes more from the mirror, as on the fight
+      // screen (between half and twice the enemy's own damage).
+      Map<String, dynamic> enemy({required bool mirror}) => {
+            ...enemies['slum_thug'] as Map<String, dynamic>,
+            'maxHealth': 150,
+            'damage': 9,
+            'skillMoves': [
+              if (mirror)
+                {
+                  'skillID': 'glass_reflection',
+                  'condition': 'Always',
+                  'priority': 1,
+                },
+            ],
+          };
+      int healthLost({required bool mirror}) {
+        var lost = 0;
+        for (var seed = 0; seed < 30; seed++) {
+          final c = warrior();
+          final outcome = simulateSimFight(
+            character: c,
+            enemies: [MapEntry('slum_thug', enemy(mirror: mirror))],
+            chapter: 1,
+            skills: skills,
+            items: items,
+            random: Random(seed),
+          );
+          expect(outcome.won, isTrue);
+          lost += c.maxHealth - c.currentHealth;
+        }
+        return lost;
+      }
+
+      expect(
+          healthLost(mirror: true), greaterThan(2 * healthLost(mirror: false)));
     });
   });
 }

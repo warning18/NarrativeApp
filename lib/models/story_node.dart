@@ -32,6 +32,7 @@ class StoryChoice {
     this.grantItemId,
     this.loseAllyId,
     this.mainQuest = false,
+    this.pays = false,
     this.travelPlaceId,
     this.avoidFightOnSuccess = false,
     this.forcedCondition,
@@ -82,6 +83,7 @@ class StoryChoice {
       grantItemId: json['grantItemId'] as String?,
       loseAllyId: json['loseAllyId'] as String?,
       mainQuest: json['mainQuest'] as bool? ?? false,
+      pays: json['pays'] as bool? ?? false,
       travelPlaceId: json['travelPlaceId'] as String?,
       avoidFightOnSuccess: json['avoidFightOnSuccess'] as bool? ?? false,
       forcedCondition: json['forcedCondition'] as String?,
@@ -249,6 +251,12 @@ class StoryChoice {
   /// out" for the banner piece.
   final bool mainQuest;
 
+  /// The choice's [goldMod] is a price the story asks (a fee, a bribe, a
+  /// buy-in), not gold lost: it stays shut until the purse can make it,
+  /// as a payment on the road does (see [affordableWith]). The story's
+  /// other prices lock through the next scene's gold requirement.
+  final bool pays;
+
   /// A place (its story node id) the party travels to before this choice
   /// resolves: a walk, or a voyage to the place's landing (see
   /// camp_travel.dart). The main quest sets out this way from the camp.
@@ -321,6 +329,7 @@ class StoryChoice {
         if (loseAllyId != null && loseAllyId!.isNotEmpty)
           'loseAllyId': loseAllyId,
         if (mainQuest) 'mainQuest': mainQuest,
+        if (pays) 'pays': pays,
         if (travels) 'travelPlaceId': travelPlaceId,
         if (avoidFightOnSuccess) 'avoidFightOnSuccess': avoidFightOnSuccess,
         if (forcedCondition != null && forcedCondition!.isNotEmpty)
@@ -367,6 +376,11 @@ class StoryChoice {
   /// Whether taking this choice puts an item in the pack (see
   /// [grantItemId]).
   bool get grantsItem => grantItemId != null && grantItemId!.isNotEmpty;
+
+  /// Whether a purse of [gold] covers what this choice costs (a [goldMod]
+  /// below zero). A payment on the road (an offering, a toll, a fee) is
+  /// not made on credit; see the story's and the expedition's choices.
+  bool affordableWith(int gold) => goldMod >= 0 || gold >= -goldMod;
 }
 
 class StoryNode {

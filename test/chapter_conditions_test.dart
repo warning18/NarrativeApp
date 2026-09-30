@@ -170,7 +170,7 @@ void main() {
 
     test('storm season brings storms; fair winds keep them away', () {
       final ships = _json('assets/gamedata/enemy_ships.json');
-      int storms(double shift) {
+      int days(double shift, SeaEventKind kind) {
         var n = 0;
         for (var seed = 0; seed < 400; seed++) {
           n += buildVoyage(
@@ -179,17 +179,22 @@ void main() {
                   enemyShips: ships,
                   chapter: 4,
                   stormShift: shift)
-              .where((e) => e.kind == SeaEventKind.storm)
+              .where((e) => e.kind == kind)
               .length;
         }
         return n;
       }
 
-      final base = storms(0);
-      expect(storms(of(ChapterConditionId.stormSeason).stormShift),
-          greaterThan(base * 1.5));
-      expect(storms(of(ChapterConditionId.fairWinds).stormShift),
+      final storm = of(ChapterConditionId.stormSeason).stormShift;
+      final base = days(0, SeaEventKind.storm);
+      expect(days(storm, SeaEventKind.storm), greaterThan(base * 1.3));
+      expect(
+          days(of(ChapterConditionId.fairWinds).stormShift, SeaEventKind.storm),
           lessThan(base * 0.5));
+      // Storm season's calm days are rare, as it says, not gone.
+      final calm = days(0, SeaEventKind.calm);
+      expect(days(storm, SeaEventKind.calm), greaterThan(0));
+      expect(days(storm, SeaEventKind.calm), lessThan(calm * 0.5));
     });
   });
 }

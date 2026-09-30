@@ -293,7 +293,7 @@
   "261": {
     "id": "261",
     "description": "The guard counted my coin twice, unimpressed both times, as though a hundred gold pieces were an insult he'd have to report to someone. He waved me through with a grunt that managed to convey both contempt and a certain professional satisfaction at having extracted money from someone who clearly needed every piece of it. Lysa barely stirred as we crossed, which I chose, for my own sanity, to read as sleep rather than the alternative.",
-    "description_fr": "Le garde compta ma bourse deux fois, peu impressionné les deux fois, comme si cent pièces d'or constituaient une insulte qu'il devrait signaler à quelqu'un. Il me fit signe de passer d'un grognement qui parvenait à transmettre à la fois le mépris et une certaine satisfaction professionnelle d'avoir soutiré de l'argent à un homme qui en avait manifestement grand besoin. Lysa bougea à peine tandis que nous traversions, ce que je choisis, pour ma propre santé mentale, d'interpréter comme du sommeil plutôt que l'alternative.",
+    "description_fr": "Le garde compta ma bourse deux fois, peu impressionné les deux fois, comme si cent pièces d'or constituaient une insulte qu'il devrait signaler à quelqu'un. Il me fit signe de passer d'un grognement qui parvenait à transmettre à la fois le mépris et une certaine satisfaction professionnelle d'avoir soutiré de l'argent à quelqu'un qui en avait manifestement grand besoin. Lysa bougea à peine tandis que nous traversions, ce que je choisis, pour ma propre santé mentale, d'interpréter comme du sommeil plutôt que l'alternative.",
     "context_taxonomy": {
       "ui_theme": "bridge",
       "mood": "neutral",
@@ -1835,6 +1835,7 @@
         "text_fr": "Revenir au tonneau pour Sable (10 or)",
         "next_id": "2015_cards_won",
         "goldMod": -10,
+        "pays": true,
         "showIfFlags": [
           "hub_2015_sable",
           "hub_2015_cards"
@@ -4649,6 +4650,7 @@
         "text_fr": "Joindre la bourse au message (30 or)",
         "next_id": "3005",
         "goldMod": -30,
+        "pays": true,
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_3005_lysa",
@@ -4956,7 +4958,7 @@
       {
         "flag": "pay_chest_raised",
         "en": "The Court's pay chest dried on the cloister steps, and the cloister's poor had already learned which way I had come in.",
-        "fr": "Le coffre de solde de la Cour séchait sur les marches du cloître, et les pauvres du cloître avaient déjà appris par où j’étais entré."
+        "fr": "Le coffre de solde de la Cour séchait sur les marches du cloître, et les pauvres du cloître avaient déjà appris quel chemin j’avais pris pour entrer."
       },
       {
         "flag": "deserter_sold",
@@ -7071,6 +7073,7 @@
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
         "goldMod": -150,
+        "pays": true,
         "alignmentMod": 1,
         "flagsToAdd": [
           "chartkeeper_paid"
@@ -8017,6 +8020,7 @@
         "text_fr": "Le payer pour éteindre les fausses lampes à jamais",
         "next_id": "5100",
         "goldMod": -60,
+        "pays": true,
         "alignmentMod": 3,
         "flagsToAdd": [
           "hub_5100_headman_later",
@@ -9014,7 +9018,7 @@
   },
   "7100_cutter": {
     "id": "7100_cutter",
-    "description": "The cutter went down off the Anchorage’s harbour wall of anchors, and the town came out to watch it go the way a town watches its last bad habit leave. The helmsman stood beside me on the mole with his hat in his hands. He did not say whether he was sorry.",
+    "description": "The cutter went down off the Anchorage’s harbor wall of anchors, and the town came out to watch it go the way a town watches its last bad habit leave. The helmsman stood beside me on the mole with his hat in his hands. He did not say whether he was sorry.",
     "description_fr": "Le cotre sombra au large du mur d’ancres du Mouillage, et la ville sortit le regarder partir comme une ville regarde s’en aller sa dernière mauvaise habitude. Le timonier se tenait à côté de moi sur le môle, son chapeau à la main. Il ne dit pas s’il le regrettait.",
     "context_taxonomy": {
       "ui_theme": "docks",
@@ -9310,6 +9314,7 @@
         "text_fr": "Payer les gréeurs du Mouillage pour la descendre",
         "next_id": "7400",
         "goldMod": -150,
+        "pays": true,
         "alignmentMod": 1,
         "grantsBannerPieceId": "white_fleet_sail",
         "flagsToAdd": [

@@ -2,6 +2,9 @@
 // as she is fitted when each beast's waters open, meeting it the first time
 // (fighting to the end, or running at once) and hunting it later with the
 // Harbor's harpoon, the wounds of an earlier meeting and the crew's edge.
+// Also: the chapter-3 Eel (a ballista, two hands) meeting the Brinejaw in
+// its first waters, the cheap swivel guns against each beast, and the
+// Tide-Mother hunted by three hands instead of four.
 //
 // The first meeting is one to live through, not to win: running must
 // work, and staying to fight a Leviathan or a Tide-Mother must cost. The
@@ -44,6 +47,10 @@ final _lateCrew = [
   _crew('grosh', str: 6),
   _crew('maren'),
   _crew('kelda'),
+];
+final _earlyCrew = [
+  _crew('player', player: true, dex: 4),
+  _crew('kelda', str: 5),
 ];
 
 /// Where each beast is met: the fitting of those waters, the one a hunter
@@ -240,11 +247,25 @@ void _volley(ShipBattle b, Random rng) {
   }
 }
 
+/// The Brinejaw in its chapter-3 waters, met by the Eel as she is there.
+final _earlyWaters =
+    _Waters('brinejaw', const ['ballista'], const ['ballista'], _earlyCrew);
+
+/// The swivel guns, fitted beside the ballista (grape sweeps a deck, chain
+/// tears rigging: a beast has neither).
+const _swivels = ['grape_swivel', 'chain_swivel'];
+
+/// The fire guns, fitted the same way: the sea puts out any fire on a
+/// beast, so a red-hot ball or a pot of pitch is only its hull.
+const _fireGuns = ['hot_shot_carronade', 'fire_pots'];
+
 void main() {
   final first = <String, _Tally>{};
   final ran = <String, _Tally>{};
   final hunted = <String, _Tally>{};
   final huntedBare = <String, _Tally>{};
+  final swivel = <String, _Tally>{};
+  late _Tally earlyFought, earlyRan, threeHands;
 
   setUpAll(() {
     final out = StringBuffer();
@@ -270,7 +291,40 @@ void main() {
         ..writeln('  first meeting, ran     ${ran[w.beast]}')
         ..writeln('  hunt with the harpoon  ${hunted[w.beast]}')
         ..writeln('  hunt without it        ${huntedBare[w.beast]}');
+      for (final gun in [..._swivels, ..._fireGuns]) {
+        final t = swivel['${w.beast} $gun'] = _meet(
+            _Waters(w.beast, const [], const [], _lateCrew),
+            parts: ['ballista', gun, 'iron_plating', 'tar_sealed_hull'],
+            state: const BeastState(),
+            hunt: false);
+        out.writeln('  first meeting, $gun $t');
+      }
     }
+    earlyFought = _meet(_earlyWaters,
+        parts: const ['ballista'], state: const BeastState(), hunt: false);
+    earlyRan = _meet(_earlyWaters,
+        parts: const ['ballista'],
+        state: const BeastState(),
+        hunt: false,
+        runAtOnce: true);
+    final kraken = _waters.last;
+    final krakenHull = (_data('enemy_ships')['tide_kraken']
+        as Map<String, dynamic>)['maxHull'] as int;
+    threeHands = _meet(
+        _Waters(kraken.beast, kraken.fitting, kraken.hunting,
+            _lateCrew.take(3).toList()),
+        parts: kraken.hunting,
+        state: BeastState(
+            seen: true,
+            encounters: 1,
+            wounds: (krakenHull * maxWoundShare).round()),
+        hunt: true);
+    out
+      ..writeln('brinejaw, the chapter-3 Eel')
+      ..writeln('  first meeting, fought  $earlyFought')
+      ..writeln('  first meeting, ran     $earlyRan')
+      ..writeln('tide_kraken, three hands')
+      ..writeln('  hunt with the harpoon  $threeHands');
     // ignore: avoid_print
     print(out);
   });
@@ -280,6 +334,8 @@ void main() {
       expect(ran[w.beast]!.fledRate, greaterThanOrEqualTo(0.9),
           reason: w.beast);
     }
+    // The Eel of chapter 3 too, who meets the Brinejaw first.
+    expect(earlyRan.fledRate, greaterThanOrEqualTo(0.9));
   });
 
   test('the first meeting is one to live through, not to win', () {
@@ -288,6 +344,11 @@ void main() {
     }
     for (final id in ['pale_leviathan', 'tide_kraken']) {
       expect(first[id]!.lostRate, greaterThanOrEqualTo(0.5), reason: id);
+    }
+    // No swivel or fire gun makes it one to win: a beast has no deck for
+    // grape to sweep, no rigging for chain to tear, nothing dry to burn.
+    for (final entry in swivel.entries) {
+      expect(entry.value.winRate, lessThanOrEqualTo(0.65), reason: entry.key);
     }
   });
 
@@ -298,5 +359,7 @@ void main() {
       expect(hunt.winRate, greaterThan(huntedBare[w.beast]!.winRate),
           reason: '${w.beast}: the harpoon helps');
     }
+    // The Tide-Mother is not only for a full crew.
+    expect(threeHands.winRate, greaterThanOrEqualTo(0.5));
   });
 }

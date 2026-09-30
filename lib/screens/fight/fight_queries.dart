@@ -140,8 +140,8 @@ extension _FightQueries on _FightScreenState {
   int _incomingDamage(_EnemyMember enemy, EnemyMoveResult move,
       {required bool leaderStanding, int? mirrorFrom}) {
     // A Mirror sends back the party's best blow of the round (see
-    // dice_tamper.dart): the one landed, or while the dice are still on the
-    // table, the best they would land.
+    // dice_tamper.dart): the best landed, a spell's included, or while the
+    // dice are still on the table, the best they would land.
     final base = move.tamper == DiceTamper.mirror
         ? mirrorDamage(
             bestPartyHit: mirrorFrom ?? _bestHitThisRound,
@@ -202,7 +202,8 @@ extension _FightQueries on _FightScreenState {
         leaderStanding: leaderStanding,
         mirrorFrom: previews.isEmpty
             ? null
-            : previews.values.fold<int>(0, (best, p) => max(best, p.damage)));
+            : previews.values.fold<int>(
+                _bestHitThisRound, (best, p) => max(best, p.damage)));
     var block = target.block;
     final planned = previews[target.id];
     if (planned != null) {
@@ -213,29 +214,31 @@ extension _FightQueries on _FightScreenState {
     return (raw: raw, net: net);
   }
 
-  /// Who cashes in a ready momentum surge this round: the member the
-  /// player picked, when their face is a strike; otherwise the first
-  /// acting member on an Attack face, then on a Skill face -- an Attack
-  /// first, so the surge isn't spent on a skill face that only heals.
-  String? _surgeRecipient() {
-    if (_momentum < _momentumNeeded) return null;
-    bool isStrike(String id) {
-      final type = _currentFaces[id]?.type;
-      return type == 'Attack' || type == 'Skill';
-    }
+  /// The acting members whose face as played this round (see
+  /// [_playedFaces], [played] when already worked out) strikes: an Attack
+  /// or a Skill face. What a pack fight aims, and what a surge lands on.
+  Set<String> _strikerIds([Map<String, DiceFaceResult>? played]) => {
+        for (final entry in (played ?? _playedFaces()).entries)
+          if (entry.value.type == 'Attack' || entry.value.type == 'Skill')
+            entry.key,
+      };
 
-    final acting = _actingParty;
+  /// Who cashes in a ready momentum surge this round: the member the
+  /// player picked, when their played face is a strike; otherwise the
+  /// first acting member playing an Attack face, then a Skill face -- an
+  /// Attack first, so the surge isn't spent on a skill face that only
+  /// heals. [played] is [_playedFaces] when already worked out.
+  String? _surgeRecipient([Map<String, DiceFaceResult>? played]) {
+    if (_momentum < _momentumNeeded) return null;
+    final faces = played ?? _playedFaces();
+    final strikers = _strikerIds(faces);
     final picked = _surgeActorId;
-    if (picked != null &&
-        acting.any((a) => a.id == picked) &&
-        isStrike(picked)) {
-      return picked;
+    if (picked != null && strikers.contains(picked)) return picked;
+    for (final actor in _actingParty) {
+      if (faces[actor.id]?.type == 'Attack') return actor.id;
     }
-    for (final actor in acting) {
-      if (_currentFaces[actor.id]?.type == 'Attack') return actor.id;
-    }
-    for (final actor in acting) {
-      if (isStrike(actor.id)) return actor.id;
+    for (final actor in _actingParty) {
+      if (strikers.contains(actor.id)) return actor.id;
     }
     return null;
   }

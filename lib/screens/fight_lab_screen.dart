@@ -22,6 +22,7 @@ import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
 import '../widgets/sea_battlefield.dart';
+import '../widgets/ship_widgets.dart';
 import 'fight_screen.dart';
 import 'ship_battle_panel.dart';
 import 'vfx_gallery_screen.dart';
@@ -51,7 +52,10 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   bool _fullHealth = true;
   bool _keep = false;
   String? _shipId;
-  bool _allParts = false;
+
+  /// The Eel's parts picked for a test battle, within her slots (see
+  /// [_buildPartPicker]); null sails her as she is.
+  List<String>? _labParts;
   SeaWaters _waters = SeaWaters.open;
   bool _running = false;
 
@@ -168,7 +172,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         data['displayName']?.toString() ??
         shipId;
     final chapter = _chapter;
-    final allParts = _allParts;
+    final labParts = _labParts;
     final waters = _waters;
     // The clock setting is read once for the whole battle: wait for the
     // saved choice rather than the default.
@@ -182,14 +186,12 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             (ships.values.isEmpty
                 ? const <String, dynamic>{}
                 : ships.values.first as Map<String, dynamic>);
-        // Every part but the sails (one sail at a time): the sail stays
-        // the one the boat carries, and its power plays as on a voyage.
-        final installed = allParts
-            ? [
-                ...parts.keys.where((id) => !id.startsWith('sail_')),
-                ...session.shipPartIds.where((id) => id.startsWith('sail_')),
-              ]
-            : session.shipPartIds;
+        // The parts picked here, or the boat as she is; either way no more
+        // than her slots hold (see partsWithinSlots).
+        final installed = partsWithinSlots(
+            ship: ship,
+            parts: parts,
+            installedPartIds: labParts ?? session.shipPartIds);
         final sail = installedSail(parts, installed);
         List<ShipCrew> crew() => buildShipCrew(
               session: ref.read(playerSessionProvider),
@@ -243,11 +245,78 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
       },
       (outcome) => outcome == null
           ? 'fight_lab_ship_lost'
-          : outcome.escaped
-              ? 'fight_lab_ship_escaped'
-              : outcome.won
-                  ? 'fight_lab_ship_won'
-                  : 'fight_lab_ship_lost',
+          : outcome.fled
+              ? 'fight_lab_ship_fled'
+              : outcome.escaped
+                  ? 'fight_lab_ship_escaped'
+                  : outcome.won
+                      ? 'fight_lab_ship_won'
+                      : 'fight_lab_ship_lost',
+    );
+  }
+
+  /// The Eel's record in ships.json (the first ship, failing that).
+  Map<String, dynamic> _labShip() {
+    final ships = ref.read(localizedDbProvider(shipsSchema)).value ??
+        const <String, dynamic>{};
+    return ships['rusty_eel'] as Map<String, dynamic>? ??
+        (ships.values.isEmpty
+            ? const <String, dynamic>{}
+            : ships.values.first as Map<String, dynamic>);
+  }
+
+  /// The Eel's parts for a test battle, slot by slot: each slot type
+  /// holds only as many as she has slots for (two guns, one shield, one
+  /// fitting, one sail), and picking one more takes off the oldest.
+  Widget _buildPartPicker(bool fr) {
+    final parts = ref.watch(localizedDbProvider(shipPartsSchema)).value ??
+        const <String, dynamic>{};
+    final ship = _labShip();
+    final picked = _labParts!;
+    final theme = Theme.of(context);
+    String slotOf(String id) =>
+        (parts[id] as Map<String, dynamic>?)?['slotType']?.toString() ?? '';
+    return Column(
+      key: const Key('fight_lab_parts'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final slot in slotTypeOptions)
+          if (slotCapacity(ship, slot) > 0) ...[
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 4),
+              child: Text(
+                '${shipSlotLabel(ref, slot)} · '
+                '${tr(ref, 'slots_filled').replaceAll('{used}', '${picked.where((id) => slotOf(id) == slot).length}').replaceAll('{cap}', '${slotCapacity(ship, slot)}')}',
+                style: theme.textTheme.labelMedium,
+              ),
+            ),
+            Wrap(
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final id in parts.keys)
+                  if (slotOf(id) == slot)
+                    FilterChip(
+                      key: Key('fight_lab_part_$id'),
+                      label: Text(
+                          shipPartName(parts[id] as Map<String, dynamic>, fr)),
+                      selected: picked.contains(id),
+                      onSelected: (on) => setState(() {
+                        final next = List<String>.of(picked)..remove(id);
+                        if (on) {
+                          final same = next.where((p) => slotOf(p) == slot);
+                          if (same.length >= slotCapacity(ship, slot)) {
+                            next.remove(same.first);
+                          }
+                          next.add(id);
+                        }
+                        _labParts = next;
+                      }),
+                    ),
+              ],
+            ),
+          ],
+      ],
     );
   }
 
@@ -442,12 +511,26 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
             onChanged: (v) => setState(() => _waters = v ?? SeaWaters.open),
           ),
           SwitchListTile(
+            key: const Key('fight_lab_pick_parts'),
             contentPadding: EdgeInsets.zero,
             title: Text(tr(ref, 'fight_lab_all_parts')),
             subtitle: Text(tr(ref, 'fight_lab_all_parts_desc')),
-            value: _allParts,
-            onChanged: (v) => setState(() => _allParts = v),
+            value: _labParts != null,
+            onChanged: (v) => setState(() {
+              final ship = _labShip();
+              final parts =
+                  ref.read(localizedDbProvider(shipPartsSchema)).value ??
+                      const <String, dynamic>{};
+              _labParts = v
+                  ? partsWithinSlots(
+                      ship: ship,
+                      parts: parts,
+                      installedPartIds:
+                          ref.read(playerSessionProvider).shipPartIds)
+                  : null;
+            }),
           ),
+          if (_labParts != null) _buildPartPicker(fr),
           FilledButton.icon(
             key: const Key('fight_lab_start_ship'),
             onPressed:

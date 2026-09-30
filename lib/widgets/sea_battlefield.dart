@@ -1008,7 +1008,7 @@ class TopShipLook {
     voidBarge
   ];
 
-  /// The look of the enemy [id] (enemy_ships.json `shipName`) or, for one
+  /// The look of the enemy [id] (its enemy_ships.json key) or, for one
   /// without its own, the one nearest its size.
   static TopShipLook forEnemy(String? id, ShipState ship) {
     for (final look in enemies) {

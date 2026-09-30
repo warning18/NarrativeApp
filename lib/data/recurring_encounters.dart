@@ -80,7 +80,7 @@ final List<_Beat> _beats = [
     minChapter: 2,
     build: (flags, chapter, _) => _scene(
       'wren_1',
-      'A young woman sits on a milestone with a map spread over her knees, soaked through and running with ink. “Wren,” she says, before you can ask. “Apprentice to the harbour’s cartographer. Former apprentice, if I go back without this road.”',
+      'A young woman sits on a milestone with a map spread over her knees, soaked through and running with ink. “Wren,” she says, before you can ask. “Apprentice to the harbor’s cartographer. Former apprentice, if I go back without this road.”',
       'Une jeune femme est assise sur une borne, une carte étalée sur les genoux, trempée et dégoulinante d’encre. « Wren, dit-elle avant que vous ne demandiez. Apprentie du cartographe du port. Ancienne apprentie, si je rentre sans cette route. »',
       known: false,
       [

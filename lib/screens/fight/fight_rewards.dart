@@ -57,16 +57,17 @@ extension _FightRewards on _FightScreenState {
       // guaranteed "that was worth it" payoff for the harder fight, on top
       // of the reward multiplier applied per enemy and the chest's own
       // Silver floor. Elite is solo-only, so this never double-applies.
-      // A boss -- a named duel, a phased boss, an expedition's -- leaves a
-      // Champion's Trophy, what the Hammersmith takes to inscribe a die
-      // face (see face_smithing.dart). A test fight leaves nothing.
+      // A boss -- a story duel, a solo-only unique, a zone's own (see
+      // dropsBossTrophy), the one an expedition's boss fight is for --
+      // leaves a Champion's Trophy, what the Hammersmith takes to inscribe
+      // a die face (see face_smithing.dart). A test fight leaves nothing.
       final loot = <String>[
         if (_isElite) 'elite_trophy',
         if (!widget.modifiers.isTest)
           for (final enemy in defeated)
             if (!enemy.fled &&
-                (isBossEnemy(enemy.enemyId, enemy.data) ||
-                    zoneBossEnemyIds.contains(enemy.enemyId)))
+                (dropsBossTrophy(enemy.enemyId) ||
+                    (widget.modifiers.isZoneBoss && enemy == _enemies.first)))
               bossTrophyId,
       ];
       final session = ref.read(playerSessionProvider);

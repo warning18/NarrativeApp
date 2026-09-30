@@ -34,7 +34,7 @@ enum ContractKind {
   keelIntact,
 
   /// Stand up to a sea beast and live (v1.185): posted while one is being
-  /// tracked (see sea_beasts.dart), and paid double.
+  /// tracked (see sea_beasts.dart), and paid [beastContractPay] times.
   beastFought,
 }
 
@@ -48,6 +48,13 @@ const Set<ContractKind> seaContractKinds = {
 /// The most of her hull the Eel may lose in a fight that keeps her keel
 /// intact.
 const double intactHullShare = 0.25;
+
+/// A sea contract pays this share of a land one: a fight at sea comes
+/// along on every crossing, a pack or a marked foe has to be found.
+const double seaContractPay = 0.75;
+
+/// The beast's bounty pays this many times a land contract.
+const double beastContractPay = 1.5;
 
 class Contract {
   const Contract({
@@ -147,7 +154,8 @@ class ContractTally {
   final int shipsTaken;
   final int intactSeaWins;
 
-  /// Battles with a sea beast the Eel came out of afloat.
+  /// Battles with a sea beast fought out and come out of afloat (not one
+  /// the Eel ran from).
   final int beastsFought;
 }
 
@@ -232,12 +240,16 @@ List<Contract> rollContracts({
           ContractKind.breaker => 2,
           ContractKind.weakness => 4,
           ContractKind.marked => 1 + random.nextInt(2),
-          ContractKind.sinkShips => 2,
+          ContractKind.sinkShips => 3,
           ContractKind.takeShip => 1,
           ContractKind.keelIntact => 1,
           ContractKind.beastFought => 1,
         },
-        rewardGold: kind == ContractKind.beastFought ? 2 * gold : gold,
+        rewardGold: kind == ContractKind.beastFought
+            ? (gold * beastContractPay).round()
+            : seaContractKinds.contains(kind)
+                ? (gold * seaContractPay).round()
+                : gold,
         rewardEssence: essence,
       ),
   ];

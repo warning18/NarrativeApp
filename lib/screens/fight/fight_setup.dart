@@ -192,9 +192,12 @@ extension _FightSetup on _FightScreenState {
         ((dice[diceId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
             ?.cast<Map<String, dynamic>>() ??
         const [];
-    // The die as the Hammersmith left it (see face_smithing.dart).
-    List<Map<String, dynamic>> smithed(String? diceId) =>
-        smithedFaces(facesOf(diceId), session.diceUpgrades[diceId ?? '']);
+    // The die as the Hammersmith left it (see face_smithing.dart): the
+    // player's own, or a companion's signature die, worked apart even when
+    // the player owns the same die.
+    List<Map<String, dynamic>> smithed(String? diceId, {String? companionId}) =>
+        smithedFaces(facesOf(diceId),
+            session.upgradesOfDie(diceId, companionId: companionId));
     final playerDiceAssignments = limitedFaceAssignments(
         facesOf(_selectedDiceId),
         session.diceSkillAssignments[_selectedDiceId] ??
@@ -295,7 +298,8 @@ extension _FightSetup on _FightScreenState {
         luck: base.luck,
         perception: base.perception,
         gear: gearEffectsFor(allyState.equippedItemIds, items, itemSets),
-        dieFaces: smithed(companion['signatureDiceId']?.toString()),
+        dieFaces: smithed(companion['signatureDiceId']?.toString(),
+            companionId: companionId),
         approval: allyState.approval,
       ));
     }
@@ -363,7 +367,13 @@ extension _FightSetup on _FightScreenState {
       // that follows is the opening one, so nothing reads off them yet.
       _roundsStarted = 0;
       _takeEnemyTurn(skills, items);
+      return;
     }
+    // The party's first round starts here, and the sellsword with it.
+    final opening = <_LogEntry>[];
+    final sellswordWon = _sellswordStrikes(opening, lang);
+    if (opening.isNotEmpty) _update(() => _log.addAll(opening));
+    if (sellswordWon) _finishFight(won: true);
   }
 
   /// Burns every charm picked on the setup screen and arms its one-fight

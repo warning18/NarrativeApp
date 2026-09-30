@@ -70,7 +70,8 @@ class ChapterCondition {
   final double shrineShare;
 
   /// Widens (or narrows) a sea day's storm band, at the expense of calm
-  /// water (see buildVoyage).
+  /// water (see buildVoyage): the calm band is 0.15 wide, so a shift of
+  /// that much leaves no calm days at all.
   final double stormShift;
 
   /// Multiplies an expedition's pay.
@@ -150,7 +151,8 @@ const List<ChapterCondition> chapterConditions = [
         'et les pêcheurs ont tiré leurs barques sur les galets. Chaque '
         'traversée sera rude.',
     chapters: {3, 4, 5, 6},
-    stormShift: 0.15,
+    // Most of the calm band, not all of it: calm days stay, rarely.
+    stormShift: 0.1,
   ),
   ChapterCondition(
     id: ChapterConditionId.rivalCompany,

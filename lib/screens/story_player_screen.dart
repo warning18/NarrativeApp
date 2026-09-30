@@ -215,8 +215,12 @@ class _StoryView extends ConsumerWidget {
         : composeNarrationParts(node, session, story, french: french);
     // Plain scenes read on the way here open this one.
     final preludes = ref.watch(pendingPreludeProvider);
-    // The echoes shown are remembered for the journal's What changed.
-    noteShownEchoes(ref, session, parts.echoes);
+    // The echoes shown (theirs too) are remembered for the journal's What
+    // changed.
+    noteShownEchoes(ref, session, [
+      for (final prelude in preludes) ...prelude.echoes,
+      ...parts.echoes,
+    ]);
     final epilogue = node?.epilogueFor(session.alignmentLabel, french);
     final pendingAftermath = ref.watch(pendingAftermathProvider);
     final speakerLabel = speakerLabelFor(node?.speaker, french: french);
@@ -822,6 +826,8 @@ class _StoryView extends ConsumerWidget {
                             TimedChoiceBar(
                               key: ValueKey(
                                   'timer_${node.id}_${playState.history.length}'),
+                              scene: timedSceneKey(
+                                  node.id, playState.history.length),
                               seconds: node.timeLimit!,
                               active: ref.watch(homeTabIndexProvider) == 0,
                               label: tr(ref, 'timed_choice_hint'),
@@ -970,16 +976,51 @@ class _StoryView extends ConsumerWidget {
 /// requirements the player doesn't meet (shown disabled with its
 /// lockedText instead of being selectable).
 /// Whether [choice]'s road is still shut for [session] (its next scene
-/// asks for gold, alignment, flags or Charisma the character lacks).
+/// asks for gold, alignment, flags or Charisma the character lacks, or,
+/// on a detour ([isExcursion]), it costs more gold than the purse holds).
 bool isStoryChoiceLocked(
-        StoryChoice choice, StoryData story, PlayerSession session) =>
-    _isChoiceLocked(choice, story, session, false);
+        StoryChoice choice, StoryData story, PlayerSession session,
+        {bool isExcursion = false}) =>
+    _isChoiceLocked(choice, story, session, isExcursion);
+
+/// What a shut [choice] reads as instead of its text: why it is shut (see
+/// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for
+/// the chapter's goals).
+String? storyChoiceLockedText(
+  WidgetRef ref,
+  StoryChoice choice,
+  PlayerSession session, {
+  required bool isExcursion,
+  required bool french,
+  bool mainQuestShut = false,
+}) {
+  if (mainQuestShut) return tr(ref, 'main_quest_shut_lock');
+  if (_paymentShort(choice, session.gold, isExcursion)) {
+    return _goldShortText(ref, choice, session.gold, french: french);
+  }
+  return choice.lockedTextFor(french);
+}
+
+/// Whether [choice] is a payment (one on the road, or a story choice
+/// marked [StoryChoice.pays]) a purse of [gold] can't make.
+bool _paymentShort(StoryChoice choice, int gold, bool isExcursion) =>
+    (isExcursion || choice.pays) && !choice.affordableWith(gold);
+
+/// [choice], a payment a purse of [gold] can't make, as it reads shut.
+String _goldShortText(WidgetRef ref, StoryChoice choice, int gold,
+        {required bool french}) =>
+    tr(ref, 'choice_gold_short_lock')
+        .replaceAll('{choice}', choice.textFor(french))
+        .replaceAll('{gold}', '$gold');
 
 /// Takes [choice] from the scene the story is on, exactly as tapping it
 /// under the story would: its checks, fights, effects and the road after.
-/// The camp's way out uses it (see CampScreen).
+/// The camp's way out uses it (see CampScreen); [travelled]: the party has
+/// already sailed where the choice goes (see setOutOnMainQuest), and lands
+/// there with no road to walk.
 Future<void> takeStoryChoice(
-    BuildContext context, WidgetRef ref, StoryChoice choice) async {
+    BuildContext context, WidgetRef ref, StoryChoice choice,
+    {bool travelled = false}) async {
   final story = await ref.read(storyDataProvider.future);
   if (!context.mounted) return;
   final play = ref.read(storyPlayProvider);
@@ -992,6 +1033,7 @@ Future<void> takeStoryChoice(
     currentNodeId: play.currentNodeId,
     isExcursion: play.isInExcursion,
     french: ref.read(appLanguageProvider) == AppLanguage.fr,
+    travelled: travelled,
   );
 }
 
@@ -1001,8 +1043,13 @@ bool _isChoiceLocked(
   PlayerSession session,
   bool isExcursion,
 ) {
-  final targetNode =
-      (isExcursion || choice.isEnding) ? null : story.nodeFor(choice.nextId);
+  // A payment on the road (an offering, a toll, a fine) waits for a purse
+  // that holds it, and so does a story choice marked as one (a fee, a
+  // bribe, a buy-in). The story's other prices lock through the next
+  // scene's gold requirement; gold it takes away unmarked is a loss.
+  if (_paymentShort(choice, session.gold, isExcursion)) return true;
+  if (isExcursion) return false;
+  final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
   return targetNode != null &&
       targetNode.hasRequirements &&
       !session.meetsRequirements(
@@ -1082,7 +1129,8 @@ IconData _hubIconFor(StoryChoice choice) {
 /// [StoryChoice.nextId], or a restart on an ending). Shared by every widget
 /// that lets the player pick a choice — [_ChoiceButton]'s flat list and
 /// [_HubChoiceCard]'s categorized "village" cards alike — so both act on a
-/// chosen choice identically and never drift apart.
+/// chosen choice identically and never drift apart. [travelled]: see
+/// [takeStoryChoice].
 Future<void> _selectChoice({
   required BuildContext context,
   required WidgetRef ref,
@@ -1092,7 +1140,17 @@ Future<void> _selectChoice({
   required String currentNodeId,
   required bool isExcursion,
   required bool french,
+  bool travelled = false,
 }) async {
+  // A payment on the road the purse can't make stays shut, wherever the
+  // choice is offered: it says why and waits (see _isChoiceLocked).
+  final purse = ref.read(playerSessionProvider);
+  if (_paymentShort(choice, purse.gold, isExcursion)) {
+    showImmersiveNotice(context,
+        icon: Icons.lock_outline,
+        message: _goldShortText(ref, choice, purse.gold, french: french));
+    return;
+  }
   // The last fight's aftermath opened this scene, and a companion's remark
   // on the last choice; moving on retires both.
   ref.read(pendingAftermathProvider.notifier).state = null;
@@ -1391,12 +1449,21 @@ Future<void> _selectChoice({
     return;
   }
 
+  // Landed where the choice goes: the voyage was the way there, with its
+  // days and its sea, and no road after it.
+  if (travelled) {
+    await _arriveAt(ref, story, choice.nextId);
+    return;
+  }
+
   // Setting out from one place for another is a step on the road: a
-  // ration eaten and part of the day gone (see journey_rules.dart).
+  // ration eaten and part of the day gone (see journey_rules.dart). A
+  // choice that travels (the camp's main quest, on foot) is a walk
+  // between places, as the camp's own trips are.
   final historyBefore = ref.read(storyPlayProvider).history.length;
   if (!choice.opensCharacterCreation &&
-      isRoadStep(currentNodeId, choice.nextId)) {
-    await walkRoadStep(ref);
+      (choice.travels || isRoadStep(currentNodeId, choice.nextId))) {
+    await walkRoadStep(ref, watches: choice.travels ? walkWatches : 1);
     // What waits on this road (see road_events.dart), known before the
     // party set out, takes the place of a detour.
     final event = await roadEventOn(ref, story,
@@ -1500,14 +1567,14 @@ Future<List<StoryNode>?> roadEventOn(
   );
 }
 
-/// One step on the road (see PlayerSessionNotifier.takeRoadStep), and
-/// what it cost for the next scene to open with: the day's end, hunger,
-/// rations running low. Edit Mode's roads cost nothing.
-Future<void> walkRoadStep(WidgetRef ref) async {
+/// One step on the road (see PlayerSessionNotifier.takeRoadStep), of
+/// [watches] (a walk between places is [walkWatches]), and what it cost
+/// for the next scene to open with: the day's end, hunger, rations
+/// running low. Edit Mode's roads cost nothing.
+Future<void> walkRoadStep(WidgetRef ref, {int watches = 1}) async {
   if (ref.read(appModeProvider) == AppMode.edit) return;
-  final step = await ref
-      .read(playerSessionProvider.notifier)
-      .takeRoadStep(chapter: ref.read(reachedChapterProvider));
+  final step = await ref.read(playerSessionProvider.notifier).takeRoadStep(
+      chapter: ref.read(reachedChapterProvider), watches: watches);
   if (!step.counted) return;
   final note = [
     if (step.dayEnded)
@@ -1545,9 +1612,11 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     final way = passThroughChoiceOf(node, session.flags);
     // A way on the party cannot take yet stays a stop, with its reason.
     if (way == null || isStoryChoiceLocked(way, story, session)) break;
+    final parts = composeNarrationParts(node, session, story, french: french);
     preludes.add(ScenePrelude(
       nodeId: node.id,
-      text: composeNarration(node, session, french: french),
+      body: parts.text,
+      echoes: parts.echoes,
       speaker: speakerLabelFor(node.speaker, french: french),
     ));
     if (way.flagsToAdd.isNotEmpty) {
@@ -2456,11 +2525,12 @@ class _HubChoiceCard extends ConsumerWidget {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
     final locked =
         mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
-    final lockedLabel = mainQuestShut
-        ? tr(ref, 'main_quest_shut_lock')
-        : locked
-            ? choice.lockedTextFor(french)
-            : null;
+    final lockedLabel = locked
+        ? storyChoiceLockedText(ref, choice, session,
+            isExcursion: isExcursion,
+            french: french,
+            mainQuestShut: mainQuestShut)
+        : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);
@@ -2659,11 +2729,12 @@ class _ChoiceButton extends ConsumerWidget {
     final locked =
         mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
 
-    final lockedLabel = mainQuestShut
-        ? tr(ref, 'main_quest_shut_lock')
-        : locked
-            ? choice.lockedTextFor(french)
-            : null;
+    final lockedLabel = locked
+        ? storyChoiceLockedText(ref, choice, session,
+            isExcursion: isExcursion,
+            french: french,
+            mainQuestShut: mainQuestShut)
+        : null;
     final label = (lockedLabel?.isNotEmpty ?? false)
         ? lockedLabel!
         : choice.textFor(french);
@@ -3244,9 +3315,19 @@ class _StoryText extends StatelessWidget {
                   Text.rich(
                     TextSpan(
                         children: _highlightedSpans(
-                            storyBodyFor(scene.text), baseStyle)),
+                            storyBodyFor(scene.body), baseStyle)),
                     textAlign: TextAlign.start,
                   ),
+                  for (final echo in scene.echoes) ...[
+                    const SizedBox(height: 14),
+                    EchoLine(
+                      key: ValueKey('echo_${echo.key}'),
+                      echo: echo,
+                      caption: echoCaption.replaceAll('{choice}', echo.cause),
+                      colour: accent.text,
+                      style: baseStyle,
+                    ),
+                  ],
                   const SizedBox(height: 14),
                   Center(
                     child: Text(
