@@ -49,11 +49,27 @@ class ShipCutaway {
     ShipRoom.hold: Rect.fromLTRB(10, 60, 106, 75),
   });
 
+  /// The sea beasts (see sea_beasts.dart), their flank opened on four
+  /// chambers: fins at the tail, hide on the back, jaws at the head and
+  /// the heart below.
+  static const _beastRooms = {
+    ShipRoom.helm: Rect.fromLTRB(14, 40, 40, 56),
+    ShipRoom.bulwark: Rect.fromLTRB(42, 40, 68, 56),
+    ShipRoom.guns: Rect.fromLTRB(70, 40, 96, 56),
+    ShipRoom.hold: Rect.fromLTRB(26, 58, 94, 73),
+  };
+  static const brinejaw = ShipCutaway._('brinejaw', _beastRooms);
+  static const paleLeviathan = ShipCutaway._('pale_leviathan', _beastRooms);
+  static const tideKraken = ShipCutaway._('tide_kraken', _beastRooms);
+
   static const enemies = [
     raiderSkiff,
     corsairBrig,
     inquisitionCutter,
     voidBarge,
+    brinejaw,
+    paleLeviathan,
+    tideKraken,
   ];
 
   /// The enemy ship [id] (enemy_ships.json `shipName`) or, for one without

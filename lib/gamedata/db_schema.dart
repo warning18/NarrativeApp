@@ -1140,6 +1140,12 @@ final DbSchema enemyShipsSchema = DbSchema(
         label: 'Gold Reward',
         type: FieldType.integer,
         defaultValue: 0),
+    FieldSchema(
+      key: 'beast',
+      label:
+          'Sea Beast {waters: [chapters], regen, diveEvery, breach, fleeShare, trophyPartId, omen, sighting, hunt (+ _fr)}: a beast, never a raider (see sea_beasts.dart)',
+      type: FieldType.json,
+    ),
     visualAssetFieldSchema('enemy_ships'),
   ],
 );
@@ -1273,6 +1279,27 @@ final DbSchema shipPartsSchema = DbSchema(
       label: 'Turn Seconds Bonus (seconds this part adds to a battle turn)',
       type: FieldType.integer,
       defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'tetherRounds',
+      label:
+          'Tether Rounds (a weapon: rounds a landed hit holds a sea beast on the line)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(
+      key: 'beastGear',
+      label:
+          'Beast Gear (sold at the Harbor only once a sea beast has been seen)',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'trophyOf',
+      label:
+          'Trophy Of (enemy_ships.json beast id: fitted free once it is slain, hidden until then)',
+      type: FieldType.reference,
+      referenceSchemaId: 'enemy_ships',
     ),
     visualAssetFieldSchema('ship_parts'),
     FieldSchema(

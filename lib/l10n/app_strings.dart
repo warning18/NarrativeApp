@@ -7288,6 +7288,289 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Win a sea fight losing no more than a quarter of the hull',
     AppLanguage.fr:
         'Gagner un combat en mer sans perdre plus d\'un quart de la coque',
+  }, // --- Sea beasts (v1.185, see sea_beasts.dart) ---
+  'contract_beastFought': {
+    AppLanguage.en: 'Stand up to a sea beast and live',
+    AppLanguage.fr: 'Tenir tête à une bête marine et en revenir',
+  },
+  'beast_room_helm_title': {
+    AppLanguage.en: 'Fins',
+    AppLanguage.fr: 'Nageoires'
+  },
+  'beast_room_guns_title': {AppLanguage.en: 'Jaws', AppLanguage.fr: 'Gueule'},
+  'beast_room_bulwark_title': {AppLanguage.en: 'Hide', AppLanguage.fr: 'Cuir'},
+  'beast_room_hold_title': {AppLanguage.en: 'Heart', AppLanguage.fr: 'Cœur'},
+  'beast_room_helm': {AppLanguage.en: 'fins', AppLanguage.fr: 'les nageoires'},
+  'beast_room_guns': {AppLanguage.en: 'jaws', AppLanguage.fr: 'la gueule'},
+  'beast_room_bulwark': {AppLanguage.en: 'hide', AppLanguage.fr: 'le cuir'},
+  'beast_room_hold': {AppLanguage.en: 'heart', AppLanguage.fr: 'le cœur'},
+  'beast_room_helm_hint': {
+    AppLanguage.en:
+        'How it slips your shots and turns. With its fins torn it can neither dive nor flee.',
+    AppLanguage.fr:
+        'Ce qui lui fait esquiver vos tirs et virer. Nageoires déchirées, la bête ne peut ni plonger ni fuir.',
+  },
+  'beast_room_guns_hint': {
+    AppLanguage.en:
+        'Its bites and blows charge here. Knock the jaws out and it strikes at nothing.',
+    AppLanguage.fr:
+        'Ses morsures et ses coups se préparent ici. Gueule hors d\'état, la bête ne frappe plus rien.',
+  },
+  'beast_room_bulwark_hint': {
+    AppLanguage.en:
+        'One layer of hide per pip turns a shot that does not pierce, and cracks for it.',
+    AppLanguage.fr:
+        'Chaque cran de cuir arrête un tir qui ne perce pas, et se fend à chaque fois.',
+  },
+  'beast_room_hold_hint': {
+    AppLanguage.en:
+        'While the heart beats it heals every round. Stop it, or hold it on a harpoon line.',
+    AppLanguage.fr:
+        'Tant que le cœur bat, la bête guérit à chaque tour. Arrêtez ce cœur, ou tenez-la au bout d\'une ligne de harpon.',
+  },
+  'beast_status_turning': {
+    AppLanguage.en: 'Turning for the deep!',
+    AppLanguage.fr: 'Part vers les fonds !',
+  },
+  'beast_status_tethered': {
+    AppLanguage.en: 'On the line: {n}',
+    AppLanguage.fr: 'À la ligne : {n}',
+  },
+  'beast_status_dives_now': {
+    AppLanguage.en: 'Dives this turn!',
+    AppLanguage.fr: 'Plonge ce tour-ci !',
+  },
+  'beast_status_dives_in': {
+    AppLanguage.en: 'Dives in {n}',
+    AppLanguage.fr: 'Plonge dans {n}',
+  },
+  'beast_status_regen': {
+    AppLanguage.en: 'Heals {n} a round',
+    AppLanguage.fr: 'Guérit de {n} par tour',
+  },
+  'beast_status_regen_stopped': {
+    AppLanguage.en: 'Not healing',
+    AppLanguage.fr: 'Ne guérit plus',
+  },
+  'beast_status_edge': {
+    AppLanguage.en: 'Known ways: -{n}% slip',
+    AppLanguage.fr: 'Ruses connues : -{n} % d\'esquive',
+  },
+  'tip_ship_beast': {
+    AppLanguage.en:
+        'A sea beast, not a ship. It heals every round while its heart beats, some dive under the Eel, and when it is hurt it turns for the deep and is gone the next turn. Tear its fins or hold it on a harpoon line and it cannot go. Run for it if it is too much: its wounds stay with it for the next meeting.',
+    AppLanguage.fr:
+        'Une bête marine, pas un navire. Elle guérit à chaque tour tant que son cœur bat, certaines plongent sous l\'Eel, et blessée elle part vers les fonds et disparaît au tour suivant. Déchirez ses nageoires ou tenez-la au bout d\'une ligne de harpon et elle ne peut plus partir. Fuyez si c\'est trop : ses blessures la suivent jusqu\'à la prochaine rencontre.',
+  },
+  'tip_ship_tether': {
+    AppLanguage.en:
+        'A harpoon that bites holds the beast on the line for a few rounds: no healing, no diving, no fleeing while it holds.',
+    AppLanguage.fr:
+        'Un harpon qui mord tient la bête au bout de la ligne quelques tours : ni guérison, ni plongée, ni fuite tant qu\'il tient.',
+  },
+  'ship_log_tethered': {
+    AppLanguage.en: 'The harpoon bites: the {ship} is on the line ({n})',
+    AppLanguage.fr: 'Le harpon mord : {ship} est à la ligne ({n})',
+  },
+  'ship_log_tether_slips': {
+    AppLanguage.en: 'The line goes slack: the {ship} is free of it',
+    AppLanguage.fr: 'La ligne mollit : {ship} s\'en libère',
+  },
+  'ship_log_beast_escaped': {
+    AppLanguage.en: 'The {ship} sounds into the deep and is gone',
+    AppLanguage.fr: '{ship} sonde vers les fonds et disparaît',
+  },
+  'ship_log_beast_dives': {
+    AppLanguage.en: 'The {ship} dives under the Eel…',
+    AppLanguage.fr: '{ship} plonge sous l\'Eel…',
+  },
+  'ship_log_beast_breach': {
+    AppLanguage.en:
+        '…and breaches beneath her keel! -{n} hull, and the sea comes in',
+    AppLanguage.fr:
+        '…et jaillit sous sa quille ! -{n} de coque, et la mer entre',
+  },
+  'ship_log_beast_heals': {
+    AppLanguage.en: 'The {ship}\'s wounds close, +{n}',
+    AppLanguage.fr: 'Les plaies de {ship} se referment, +{n}',
+  },
+  'ship_log_beast_turning': {
+    AppLanguage.en: 'The {ship} turns for the deep: hold it now or lose it',
+    AppLanguage.fr:
+        '{ship} vire vers les fonds : retenez la bête maintenant, ou elle est perdue',
+  },
+  'beast_ship_log_enemy_repairs': {
+    AppLanguage.en: 'The {ship}\'s {room} knits closed',
+    AppLanguage.fr: '{room} de {ship} se ressoude',
+  },
+  'beast_ship_log_enemy_fire_out': {
+    AppLanguage.en:
+        'The {ship} rolls in the swell and the fire on its {room} dies',
+    AppLanguage.fr: '{ship} roule dans la houle et le feu sur {room} s\'éteint',
+  },
+  'beast_ship_log_enemy_leak_plugged': {
+    AppLanguage.en: 'A wound on the {ship} stops bleeding',
+    AppLanguage.fr: 'Une plaie de {ship} cesse de saigner',
+  },
+  'beast_ship_log_leak': {
+    AppLanguage.en: 'The {ship} is bleeding!',
+    AppLanguage.fr: '{ship} saigne !',
+  },
+  'beast_ship_log_flooding': {
+    AppLanguage.en: 'The {ship} bleeds, -{n}',
+    AppLanguage.fr: '{ship} saigne, -{n}',
+  },
+  'beast_ship_log_shot_absorbed': {
+    AppLanguage.en: '{weapon} glances off the {ship}\'s hide',
+    AppLanguage.fr: '{weapon} ricoche sur le cuir de {ship}',
+  },
+  'beast_ship_log_rigging_torn': {
+    AppLanguage.en: 'Chain shot tears the {ship}\'s fins',
+    AppLanguage.fr: 'Les boulets ramés déchirent les nageoires de {ship}',
+  },
+  'beast_ship_log_grape': {
+    AppLanguage.en: 'Grapeshot shreds the {ship}\'s gills: it mends slower',
+    AppLanguage.fr:
+        'La mitraille lacère les ouïes de {ship} : ses plaies se ferment moins vite',
+  },
+  'beast_ship_log_boarders': {
+    AppLanguage.en: 'The {ship}\'s arms come over the rail into the hold!',
+    AppLanguage.fr:
+        'Les bras de {ship} franchissent le bastingage jusqu\'à la cale !',
+  },
+  'sea_event_beast': {
+    AppLanguage.en: 'a sea beast',
+    AppLanguage.fr: 'une bête marine',
+  },
+  'sea_event_hunt': {
+    AppLanguage.en: 'the hunt',
+    AppLanguage.fr: 'la chasse',
+  },
+  'beast_wounds_line': {
+    AppLanguage.en: 'It still carries the wounds of the last meeting ({n}).',
+    AppLanguage.fr:
+        'La bête porte encore les blessures de la dernière rencontre ({n}).',
+  },
+  'beast_known_line': {
+    AppLanguage.en: 'The crew knows its ways: it slips {n}% less.',
+    AppLanguage.fr:
+        'L\'équipage connaît ses ruses : la bête esquive {n} % de moins.',
+  },
+  'ship_log_beast_sign_wreck': {
+    AppLanguage.en: 'The wreck\'s timbers bear the marks of {ship}.',
+    AppLanguage.fr: 'Les bordages de l\'épave portent les marques de {ship}.',
+  },
+  'ship_log_beast_sign_sighting': {
+    AppLanguage.en: 'The crew marks where it went down: a sign of {ship}.',
+    AppLanguage.fr:
+        'L\'équipage note où la chose a plongé : un signe de {ship}.',
+  },
+  'ship_log_beast_watched': {
+    AppLanguage.en:
+        'Every eye aboard follows {ship} as it goes: now its ways are known.',
+    AppLanguage.fr:
+        'Chaque regard à bord suit {ship} qui s\'éloigne : ses habitudes sont connues désormais.',
+  },
+  'ship_log_beast_clues': {
+    AppLanguage.en: 'Signs of {ship}: {n} of {of}',
+    AppLanguage.fr: 'Signes de {ship} : {n} sur {of}',
+  },
+  'ship_log_beast_hunt_ready': {
+    AppLanguage.en:
+        'Enough signs of {ship} to hunt it: the Harbor can send the Eel out.',
+    AppLanguage.fr:
+        'Assez de signes de {ship} pour partir en chasse : le Port peut envoyer l\'Eel.',
+  },
+  'ship_log_beast_passed': {
+    AppLanguage.en:
+        'Sails struck, nobody breathing: {ship} passes beneath the keel.',
+    AppLanguage.fr:
+        'Voiles amenées, personne ne respire : {ship} passe sous la quille.',
+  },
+  'ship_log_beast_noticed': {
+    AppLanguage.en: 'A rope creaks, and {ship} turns toward the sound.',
+    AppLanguage.fr: 'Un cordage grince, et {ship} se tourne vers le bruit.',
+  },
+  'ship_log_beast_caught': {
+    AppLanguage.en:
+        'It is faster than any sail: it rams the Eel\'s quarter, -{n} hull',
+    AppLanguage.fr:
+        'Aucune voile ne va plus vite : un coup de boutoir dans la hanche de l\'Eel, -{n} de coque',
+  },
+  'ship_log_beast_slain': {
+    AppLanguage.en: '{ship} goes still, and the sea around the Eel turns red.',
+    AppLanguage.fr: '{ship} ne bouge plus, et la mer rougit autour de l\'Eel.',
+  },
+  'ship_log_beast_got_away': {
+    AppLanguage.en: '{ship} gets away, carrying its wounds into the deep.',
+    AppLanguage.fr:
+        '{ship} s\'échappe et emporte ses blessures vers les fonds.',
+  },
+  'ship_log_trophy_fitted': {
+    AppLanguage.en: 'A trophy for the Eel: {weapon}, fitted at once.',
+    AppLanguage.fr: 'Un trophée pour l\'Eel : {weapon}, monté sur-le-champ.',
+  },
+  'ship_log_trophy_waiting': {
+    AppLanguage.en:
+        'A trophy for the Eel: {weapon}. No room aboard; it waits at the Harbor.',
+    AppLanguage.fr:
+        'Un trophée pour l\'Eel : {weapon}. Pas de place à bord ; il attend au Port.',
+  },
+  'beasts_section': {
+    AppLanguage.en: 'Sea beasts',
+    AppLanguage.fr: 'Bêtes marines',
+  },
+  'beasts_none_hint': {
+    AppLanguage.en:
+        'No beast has crossed the Eel\'s path yet. They roam the open water from the Ashen coast outward.',
+    AppLanguage.fr:
+        'Aucune bête n\'a encore croisé la route de l\'Eel. Elles rôdent en haute mer, de la côte des Cendres vers le large.',
+  },
+  'beasts_hint': {
+    AppLanguage.en:
+        'Every meeting survived, every beast let pass and some wrecks give a sign of where it lairs. With {of} signs the Eel can go out and hunt it: it carries its wounds, and the crew knows its ways.',
+    AppLanguage.fr:
+        'Chaque rencontre survécue, chaque bête laissée passer et certaines épaves donnent un signe de son repaire. Avec {of} signes, l\'Eel peut partir en chasse : la bête garde ses blessures, et l\'équipage connaît ses ruses.',
+  },
+  'beast_slain_label': {
+    AppLanguage.en: 'Slain. Its trophy is at the shipwright\'s.',
+    AppLanguage.fr: 'Bête abattue. Son trophée est chez le charpentier.',
+  },
+  'beast_signs_label': {
+    AppLanguage.en: 'Signs: {n} of {of}',
+    AppLanguage.fr: 'Signes : {n} sur {of}',
+  },
+  'beast_wounds_label': {
+    AppLanguage.en: 'Wounds it carries: {n}',
+    AppLanguage.fr: 'Blessures portées : {n}',
+  },
+  'beast_hunt_away_hint': {
+    AppLanguage.en: 'The Eel must be moored at the camp to set out.',
+    AppLanguage.fr: 'L\'Eel doit être amarré au camp pour partir.',
+  },
+  'beast_hunt_button': {
+    AppLanguage.en: 'Hunt',
+    AppLanguage.fr: 'Chasser',
+  },
+  'swap_title': {
+    AppLanguage.en: 'Fit {part} in place of',
+    AppLanguage.fr: 'Monter {part} à la place de',
+  },
+  'swap_button': {
+    AppLanguage.en: 'Swap',
+    AppLanguage.fr: 'Échanger',
+  },
+  'part_stored_note': {
+    AppLanguage.en: 'In store at the Harbor: it goes back on for nothing.',
+    AppLanguage.fr: 'En réserve au Port : il se remonte sans frais.',
+  },
+  'free_label': {
+    AppLanguage.en: 'free',
+    AppLanguage.fr: 'gratuit',
+  },
+  'tether_label': {
+    AppLanguage.en: 'holds a beast {n} rounds',
+    AppLanguage.fr: 'retient une bête {n} tours',
   },
 };
 

@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../combat/combat_engine.dart' show maxSkillTier, skillTierUpgradeCost;
 import '../combat/face_keywords.dart' show FaceKeyword;
 import '../combat/face_smithing.dart';
+import '../combat/sea_beasts.dart' show BeastState;
 import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
@@ -203,6 +204,7 @@ class PlayerSession {
     this.bannerPiecesCollected = const [],
     this.shipHull = -1,
     this.shipPartIds = const ['ballista'],
+    this.storedShipPartIds = const [],
     this.currentPortId = '',
     this.visitedPortIds = const [],
     this.enemyKillCounts = const {},
@@ -210,6 +212,7 @@ class PlayerSession {
     this.contracts = const [],
     this.contractsChapter = 0,
     this.contractBoards = 0,
+    this.seaBeasts = const {},
     this.bossDefeatCounts = const {},
     this.grandfatheredQuestIds = const [],
     this.talkedToNpcIds = const [],
@@ -460,6 +463,10 @@ class PlayerSession {
   /// with the ballista.
   final List<String> shipPartIds;
 
+  /// Parts bought (or won) and taken off the Eel to make room for another
+  /// (v1.185): they wait at the Harbor and go back on for nothing.
+  final List<String> storedShipPartIds;
+
   /// ports.json id the boat is moored at; empty means the home port.
   final String currentPortId;
 
@@ -496,6 +503,10 @@ class PlayerSession {
   final List<Contract> contracts;
   final int contractsChapter;
   final int contractBoards;
+
+  /// What the crew knows of each sea beast (enemy_ships.json id -> state):
+  /// seen, signs of it, the wounds it carries, slain (see sea_beasts.dart).
+  final Map<String, BeastState> seaBeasts;
 
   /// Defeats each boss has dealt the party this run (enemy id -> losses):
   /// Resolve reads it back as a stacking bonus against that boss (see
@@ -699,6 +710,7 @@ class PlayerSession {
     List<String>? bannerPiecesCollected,
     int? shipHull,
     List<String>? shipPartIds,
+    List<String>? storedShipPartIds,
     String? currentPortId,
     List<String>? visitedPortIds,
     Map<String, int>? enemyKillCounts,
@@ -706,6 +718,7 @@ class PlayerSession {
     List<Contract>? contracts,
     int? contractsChapter,
     int? contractBoards,
+    Map<String, BeastState>? seaBeasts,
     Map<String, int>? bossDefeatCounts,
     List<String>? grandfatheredQuestIds,
     List<String>? talkedToNpcIds,
@@ -791,6 +804,7 @@ class PlayerSession {
       completedZoneIds: completedZoneIds ?? this.completedZoneIds,
       shipHull: shipHull ?? this.shipHull,
       shipPartIds: shipPartIds ?? this.shipPartIds,
+      storedShipPartIds: storedShipPartIds ?? this.storedShipPartIds,
       currentPortId: currentPortId ?? this.currentPortId,
       visitedPortIds: visitedPortIds ?? this.visitedPortIds,
       bannerPiecesCollected:
@@ -800,6 +814,7 @@ class PlayerSession {
       contracts: contracts ?? this.contracts,
       contractsChapter: contractsChapter ?? this.contractsChapter,
       contractBoards: contractBoards ?? this.contractBoards,
+      seaBeasts: seaBeasts ?? this.seaBeasts,
       bossDefeatCounts: bossDefeatCounts ?? this.bossDefeatCounts,
       grandfatheredQuestIds:
           grandfatheredQuestIds ?? this.grandfatheredQuestIds,
@@ -887,6 +902,7 @@ class PlayerSession {
         'completedZoneIds': completedZoneIds,
         'shipHull': shipHull,
         'shipPartIds': shipPartIds,
+        'storedShipPartIds': storedShipPartIds,
         'currentPortId': currentPortId,
         'visitedPortIds': visitedPortIds,
         'bannerPiecesCollected': bannerPiecesCollected,
@@ -895,6 +911,9 @@ class PlayerSession {
         'contracts': [for (final c in contracts) c.toJson()],
         'contractsChapter': contractsChapter,
         'contractBoards': contractBoards,
+        'seaBeasts': {
+          for (final e in seaBeasts.entries) e.key: e.value.toJson(),
+        },
         'bossDefeatCounts': bossDefeatCounts,
         'grandfatheredQuestIds': grandfatheredQuestIds,
         'talkedToNpcIds': talkedToNpcIds,
@@ -1075,6 +1094,10 @@ class PlayerSession {
       shipPartIds:
           (json['shipPartIds'] as List?)?.map((e) => e.toString()).toList() ??
               const ['ballista'],
+      storedShipPartIds: (json['storedShipPartIds'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       currentPortId: json['currentPortId']?.toString() ?? '',
       visitedPortIds: (json['visitedPortIds'] as List?)
               ?.map((e) => e.toString())
@@ -1095,6 +1118,12 @@ class PlayerSession {
           const [],
       contractsChapter: (json['contractsChapter'] as num?)?.toInt() ?? 0,
       contractBoards: (json['contractBoards'] as num?)?.toInt() ?? 0,
+      seaBeasts: {
+        for (final e in ((json['seaBeasts'] as Map?) ?? const {}).entries)
+          if (e.value is Map)
+            e.key.toString():
+                BeastState.fromJson(Map<String, dynamic>.from(e.value as Map)),
+      },
       questKillBaselines: (json['questKillBaselines'] as Map?)?.map(
             (quest, kills) => MapEntry(
               quest.toString(),
@@ -2477,20 +2506,56 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
 
   /// Buys and fits a ship part; false (and nothing spent) if it is already
   /// aboard or unaffordable. Slot room is the caller's check (see
-  /// ship_combat.dart's canInstallPart).
+  /// ship_combat.dart's canInstallPart); [replacing] come off to make it,
+  /// and wait at the Harbor (see [storedShipPartIds]). A stored part goes
+  /// back on for nothing, whatever [cost] says.
   Future<bool> installShipPart(String partId, int cost,
       {List<String> replacing = const []}) async {
-    if (state.shipPartIds.contains(partId) || state.gold < cost) return false;
+    final stored = state.storedShipPartIds.contains(partId);
+    final price = stored ? 0 : cost;
+    if (state.shipPartIds.contains(partId) || state.gold < price) return false;
+    final removed = [
+      for (final id in state.shipPartIds)
+        if (replacing.contains(id)) id,
+    ];
     state = state.copyWith(
-      gold: state.gold - cost,
+      gold: state.gold - price,
       // Repainting the sail takes the old sigil off (see sail_powers.dart).
       shipPartIds: [
         ...state.shipPartIds.where((id) => !replacing.contains(id)),
         partId,
       ],
+      storedShipPartIds: [
+        for (final id in state.storedShipPartIds)
+          if (id != partId) id,
+        ...removed,
+      ],
     );
     await _persist();
     return true;
+  }
+
+  /// Writes what the crew knows of the sea beast [beastId] (see
+  /// sea_beasts.dart), from [update] of what they knew.
+  Future<void> updateSeaBeast(
+      String beastId, BeastState Function(BeastState beast) update) async {
+    state = state.copyWith(seaBeasts: {
+      ...state.seaBeasts,
+      beastId: update(state.seaBeasts[beastId] ?? const BeastState()),
+    });
+    await _persist();
+  }
+
+  /// Puts a part won at sea in the Harbor's store (no room aboard for it
+  /// now): it goes on later for nothing (see [installShipPart]).
+  Future<void> storeShipPart(String partId) async {
+    if (state.shipPartIds.contains(partId) ||
+        state.storedShipPartIds.contains(partId)) {
+      return;
+    }
+    state =
+        state.copyWith(storedShipPartIds: [...state.storedShipPartIds, partId]);
+    await _persist();
   }
 
   /// Pays [cost] to restore the hull to full; false if unaffordable.

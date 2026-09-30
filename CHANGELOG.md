@@ -8,6 +8,79 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.185.0+215]
+
+Great beasts now roam the open sea. The first time you meet one, you
+should get away alive. Then you track it and hunt it down.
+
+### Added
+- **Three sea beasts**, each in its own waters:
+  - **The Brinejaw**, a scarred shark, on the chapter 3 and 4 crossings.
+  - **The Pale Leviathan**, a serpent-whale, on the chapter 5 crossings.
+  - **The Tide-Mother**, a kraken, on the chapter 6 crossings. Its arms
+    board the Eel and are fought on the dice.
+
+  A crossing through a beast's waters meets it about one time in four.
+  On the day before, an omen shows (fish gone, pale water, a tide
+  running the wrong way). When it comes, the crew can:
+  - fight it;
+  - crowd on sail and run (Dexterity, harder than against a raider; a
+    failed run costs hull);
+  - strike the sails and keep still (Wisdom). If it passes, it leaves a
+    sign of itself.
+- **Beasts fight differently from ships.** In battle:
+  - Their four rooms are fins, hide, jaws and heart.
+  - They heal every round while the heart beats.
+  - The Leviathan and the Tide-Mother dive every few rounds. That round
+    they don't attack; instead they breach under the keel for hull and
+    a leak.
+  - Badly hurt, a beast turns for the deep and is gone the next turn,
+    unless a harpoon holds it or its fins are torn.
+  - Nobody boards a beast, and it doesn't chase a ship that runs.
+  - The panel shows what the beast is about to do: on the line, dives
+    in n, turning for the deep, heals n a round. A tip explains it all
+    the first time.
+- **Wounds and signs.** A beast keeps the wounds it takes, up to half
+  its body. The crew gains a sign of its lair from every meeting
+  survived, every time it passes, some wrecks in its waters and shapes
+  seen under the keel. Every meeting also teaches the crew its ways:
+  it slips less.
+- **The hunt.** The Harbor has a new **Sea beasts** section listing the
+  beasts seen, their signs and their wounds. With three signs, and the
+  Eel moored at the camp, **Hunt** sends her out: a day at sea, then
+  the beast, on the crew's terms. The hunt spends the signs, and a
+  beast that gets away must be tracked again.
+- **The Hunter's Harpoon** goes on sale at the Harbor once a beast has
+  been seen. A hit holds a beast on the line for two rounds: no
+  healing, no diving, no fleeing. The Harpoon Rack now holds a beast
+  for one round.
+- **Trophies.** A slain beast pays gold and experience and gives a
+  trophy to sell. It also gives the Eel a part, fitted for free:
+  - Sharkskin Hull (helm and hold +1);
+  - Leviathan-Bone Plating (bulwark +2);
+  - The Tide-Mother's Beak (a heavy piercing weapon).
+- **A beast bounty.** While a beast is being tracked, the bounty
+  board's sea contract is often "Stand up to a sea beast and live",
+  paid double.
+
+### Changed
+- **Parts can be swapped at the Harbor.** A part can go on in place of
+  one already fitted. The part taken off waits in store and goes back
+  on for nothing. Each part card now shows its button under its text,
+  so long descriptions stay readable on a phone.
+- The Edit Mode fight lab fights beasts as beasts.
+
+### Balance
+A Monte Carlo test of every beast, with the Eel fitted as she is in its
+waters:
+- Running from a beast at once gets away every time.
+- Fighting the Brinejaw to the end at first sight wins about half the
+  time. Against the Leviathan and the Tide-Mother it sinks the Eel.
+- A prepared hunt, with the harpoon, one earlier meeting and heavy
+  wounds, wins 96% (Brinejaw), 68% (Leviathan) and 76% (Tide-Mother).
+  Most failed hunts end with the beast getting away, not with the Eel
+  sunk. Without the harpoon, those hunts mostly fail.
+
 ## [1.184.0+214]
 
 The Eel can now run from a fight, and the camp's bounty board has work

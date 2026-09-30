@@ -34,6 +34,7 @@ class EnemyIcons {
     'iron_golem',
     'kelda_turned',
     'knell_keeper',
+    'kraken_arm',
     'kroll_the_branded',
     'liora_turned',
     'malrik_turned',

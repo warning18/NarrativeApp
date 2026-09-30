@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/combat_engine.dart';
+import '../combat/sea_beasts.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
@@ -39,18 +40,28 @@ enum _VoyagePhase { event, fight, arrived, failed }
 /// as crew. Landfall pops
 /// `true` and moors the boat at the new port; a sunk hull pops `false`,
 /// the Eel limping back to the port she left.
+///
+/// A sea beast (v1.185, see sea_beasts.dart) may cross the Eel's path in
+/// its own waters, its omen the day before: fight it, run, or keep still
+/// and let it pass. With [huntBeastId] the crossing is a hunt the Harbor
+/// sent out: a day at sea, then the beast, on the crew's terms.
 class VoyageScreen extends ConsumerStatefulWidget {
   const VoyageScreen({
     super.key,
     required this.fromPortId,
     required this.toPortId,
     required this.toPort,
+    this.huntBeastId,
     @visibleForTesting this.debugEvents,
   });
 
   final String fromPortId;
   final String toPortId;
   final Map<String, dynamic> toPort;
+
+  /// The beast this voyage hunts (enemy_ships.json id), or null for a
+  /// crossing.
+  final String? huntBeastId;
 
   /// The days at sea to sail instead of drawing them, for tests.
   final List<SeaEvent>? debugEvents;
@@ -93,6 +104,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   bool _knownWaters = false;
   Map<String, dynamic> _enemyShips = const {};
 
+  /// The beast being fought, and what it does beyond its weapons (null in
+  /// a raider fight).
+  String? _beastId;
+  BeastProfile? _beast;
+
   void _ensureStarted({
     required Map<String, dynamic> ships,
     required Map<String, dynamic> parts,
@@ -102,10 +118,16 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     if (_events != null) return;
     final session = ref.read(playerSessionProvider);
     final fromPort = ports[widget.fromPortId] as Map<String, dynamic>?;
-    final chapter = max(
-      fromPort == null ? 1 : portChapter(fromPort),
-      portChapter(widget.toPort),
-    );
+    final huntId = widget.huntBeastId;
+    final huntRecord =
+        huntId == null ? null : enemyShips[huntId] as Map<String, dynamic>?;
+    // A hunt goes out to the beast's own waters.
+    final chapter = huntRecord != null
+        ? beastWaters(huntRecord).first
+        : max(
+            fromPort == null ? 1 : portChapter(fromPort),
+            portChapter(widget.toPort),
+          );
     _chapter = chapter;
     _stormShift = ref.read(chapterConditionProvider)?.stormShift ?? 0;
     _parts = parts;
@@ -117,7 +139,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     var length = portVoyageLength(portIsHome(widget.toPort) && fromPort != null
         ? fromPort
         : widget.toPort);
-    if (_sail?.power == SailPower.windknot) {
+    if (_sail?.power == SailPower.windknot && huntRecord == null) {
       final shorter = windknotLength(length, _sailStrength);
       if (shorter < length) {
         _log.add(_t('ship_log_windknot', n: length - shorter));
@@ -129,19 +151,37 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         session.visitedPortIds.contains(widget.toPortId);
     _enemyShips = enemyShips;
     _events = widget.debugEvents ??
-        buildVoyage(
-          random: _random,
-          length: length,
-          enemyShips: enemyShips,
-          chapter: chapter,
-          knownWaters: _knownWaters,
-          stormShift: _stormShift,
-        );
+        [
+          ...buildVoyage(
+            random: _random,
+            // A hunt is a day out, then the beast.
+            length: huntRecord != null ? 1 : length,
+            enemyShips: enemyShips,
+            chapter: chapter,
+            knownWaters: _knownWaters,
+            stormShift: _stormShift,
+          ),
+          if (huntRecord != null) beastDayFor(huntId!, huntRecord, hunt: true),
+        ];
     if (_sail?.power == SailPower.flight) {
       final lifted = applyFlight(_events!);
       final skipped = _events!.length - lifted.length;
       if (skipped > 0) _log.add(_t('ship_log_lift', n: skipped));
       _events = lifted;
+    }
+    // A beast that roams these waters may cross the Eel's path (no sail
+    // lifts her over one).
+    if (widget.debugEvents == null && huntRecord == null) {
+      final beastId = rollBeastEncounter(
+        random: _random,
+        enemyShips: enemyShips,
+        chapter: chapter,
+        beasts: session.seaBeasts,
+      );
+      if (beastId != null) {
+        _events = withBeastDay(_events!, _random.nextInt(_events!.length),
+            beastId, enemyShips[beastId] as Map<String, dynamic>);
+      }
     }
     final shipId = ships.containsKey('rusty_eel')
         ? 'rusty_eel'
@@ -160,8 +200,13 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   }
 
   String _t(String key, {String? ship, int? n}) {
-    var text = trFor(ref.read(appLanguageProvider), key);
-    if (ship != null) text = text.replaceAll('{ship}', ship);
+    final lang = ref.read(appLanguageProvider);
+    var text = trFor(lang, key);
+    if (ship != null) {
+      // A name with its own article ("The Pale Leviathan", "La
+      // Mère-des-Marées") made to read right mid-sentence.
+      text = tidyShipLine(text.replaceAll('{ship}', ship), lang);
+    }
     if (n != null) text = text.replaceAll('{n}', '$n');
     return text;
   }
@@ -191,6 +236,100 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
               theme.textTheme.bodyMedium?.copyWith(fontStyle: FontStyle.italic),
         ),
     ];
+  }
+
+  /// True for a day that brings an enemy: a raider or a beast.
+  bool _meetsShip(SeaEvent event) =>
+      event.kind == SeaEventKind.raider ||
+      event.kind == SeaEventKind.beast ||
+      event.kind == SeaEventKind.hunt;
+
+  /// What the crew knows of the beast [beastId]: the wounds it still
+  /// carries and the edge they have on it.
+  List<Widget> _beastIntro(String beastId) {
+    final state = ref.read(playerSessionProvider).seaBeasts[beastId];
+    if (state == null || state.encounters == 0) return const [];
+    final lang = ref.read(appLanguageProvider);
+    final record = _enemyShips[beastId] as Map<String, dynamic>? ?? const {};
+    final maxHull = max(1, (record['maxHull'] as num?)?.toInt() ?? 1);
+    final wounds = maxHull - beastStartHull(maxHull, state);
+    return [
+      const SizedBox(height: 8),
+      Text(
+        [
+          if (wounds > 0)
+            trFor(lang, 'beast_wounds_line').replaceAll('{n}', '$wounds'),
+          trFor(lang, 'beast_known_line').replaceAll('{n}',
+              '${beastEdge(state, hunt: _events![_index].kind == SeaEventKind.hunt)}'),
+        ].join(' '),
+        key: const Key('beast_known'),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+    ];
+  }
+
+  /// Tomorrow's beast, felt today.
+  List<Widget> _omen(Map<String, dynamic> record) {
+    final text = beastSpecOf(record)['omen']?.toString() ?? '';
+    if (text.isEmpty) return const [];
+    final theme = Theme.of(context);
+    return [
+      const SizedBox(height: 12),
+      Row(
+        key: const Key('beast_omen'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.visibility_outlined,
+              size: 18, color: theme.colorScheme.tertiary),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(text,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: theme.colorScheme.tertiary)),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  String _beastName(String beastId, bool fr) {
+    final data = _enemyShips[beastId] as Map<String, dynamic>? ?? const {};
+    final name = data['displayName']?.toString() ?? beastId;
+    final nameFr = data['displayName_fr']?.toString() ?? '';
+    return fr && nameFr.isNotEmpty ? nameFr : name;
+  }
+
+  /// A sign of [beastId] found: the crew is one step nearer its lair. The
+  /// log says so, and how many signs the Harbor has now.
+  Future<void> _gainClue(String beastId, String logKey) async {
+    await ref.read(playerSessionProvider.notifier).updateSeaBeast(
+        beastId, (b) => b.copyWith(seen: true, clues: b.clues + 1));
+    final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
+    final name = _beastName(beastId, fr);
+    final clues =
+        ref.read(playerSessionProvider).seaBeasts[beastId]?.clues ?? 0;
+    _log.add(_t(logKey, ship: name));
+    _log.add(_cluesLine(name, clues));
+  }
+
+  String _cluesLine(String name, int clues) => clues >= cluesNeeded
+      ? _t('ship_log_beast_hunt_ready', ship: name)
+      : _t('ship_log_beast_clues', ship: name, n: clues)
+          .replaceAll('{of}', '$cluesNeeded');
+
+  /// A tracked beast's sign in these waters: marks on a wreck boarded
+  /// ([wreck], now and then) or a shape under the keel on a sighting.
+  Future<void> _beastSign({required bool wreck}) async {
+    final id = trackedBeastIn(
+      enemyShips: _enemyShips,
+      chapter: _chapter,
+      beasts: ref.read(playerSessionProvider).seaBeasts,
+    );
+    if (id == null) return;
+    if (wreck && _random.nextDouble() >= derelictClueChance) return;
+    await _gainClue(id,
+        wreck ? 'ship_log_beast_sign_wreck' : 'ship_log_beast_sign_sighting');
   }
 
   String _enemyName(bool fr) {
@@ -331,6 +470,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           final gold = (event.gold * boardGoldMultiplier).round();
           await notifier.applyChoiceEffects(goldMod: gold);
           _log.add(_t('ship_log_boarded', n: gold));
+          await _beastSign(wreck: true);
         } else {
           await _loseHull(boardFailHullLoss, 'ship_log_board_holed');
         }
@@ -340,7 +480,28 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _log.add(_t('ship_log_passed_by'));
         await _advance();
       case SeaAction.sailOn:
+        if (event.kind == SeaEventKind.sighting) {
+          await _beastSign(wreck: false);
+        }
         await _advance();
+      case SeaAction.holdStill:
+        // Sails struck, not a word aboard: the beast may pass beneath and
+        // leave the crew a long look at it.
+        final id = event.enemyShipId!;
+        if (_seaCheck(choice)) {
+          _log.add(_t('ship_log_beast_passed',
+              ship: _beastName(
+                  id, ref.read(appLanguageProvider) == AppLanguage.fr)));
+          await _gainClue(id, 'ship_log_beast_watched');
+          await _crewRemark(true, slipped: true);
+          await _advance();
+          return;
+        }
+        _log.add(_t('ship_log_beast_noticed',
+            ship: _beastName(
+                id, ref.read(appLanguageProvider) == AppLanguage.fr)));
+        await _crewRemark(false);
+        await _startRaiderFight(event, enemyShips, keepLog: true);
       case SeaAction.payOff:
         final tribute =
             tributeFor(enemyShips[event.enemyShipId] as Map<String, dynamic>?);
@@ -348,6 +509,11 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         _log.add(_t('ship_log_paid', n: tribute));
         await _advance();
       case SeaAction.outrun:
+        final beast = event.kind == SeaEventKind.beast;
+        if (beast) {
+          await notifier.updateSeaBeast(
+              event.enemyShipId!, (b) => b.copyWith(seen: true));
+        }
         if (_seaCheck(choice)) {
           _log.add(_t('ship_log_outran'));
           await _crewRemark(true, slipped: true);
@@ -356,7 +522,9 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         }
         // Caught: they rake the Eel as they close, then it's a fight. The
         // roll and the raking stay on the log, to say why the hull fell.
-        await _loseHull(outrunFailHullLoss, 'ship_log_outrun_failed');
+        // A beast rams her quarter.
+        await _loseHull(beast ? beastOutrunFailHullLoss : outrunFailHullLoss,
+            beast ? 'ship_log_beast_caught' : 'ship_log_outrun_failed');
         await _crewRemark(false);
         await _startRaiderFight(event, enemyShips, keepLog: true);
       case SeaAction.fight:
@@ -373,7 +541,25 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       return;
     }
     _enemyData = data;
-    _enemy = buildEnemyShip(data);
+    var enemy = buildEnemyShip(data);
+    _beastId = null;
+    _beast = null;
+    if (event.kind != SeaEventKind.raider && isBeastRecord(data)) {
+      // A beast carries the wounds of the last meeting, and the crew what
+      // they learned of it.
+      final id = event.enemyShipId!;
+      final state =
+          ref.read(playerSessionProvider).seaBeasts[id] ?? const BeastState();
+      enemy = enemy.copyWith(hull: beastStartHull(enemy.maxHull, state));
+      _beastId = id;
+      _beast = BeastProfile.fromRecord(data,
+          edge: beastEdge(state, hunt: event.kind == SeaEventKind.hunt));
+      await ref
+          .read(playerSessionProvider.notifier)
+          .updateSeaBeast(id, (b) => b.copyWith(seen: true));
+      if (!mounted) return;
+    }
+    _enemy = enemy;
     // The fight's own log starts clean, unless what led to it (a failed
     // run) has to stay to explain it.
     if (!keepLog) _log.clear();
@@ -439,7 +625,100 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         youLabel: trFor(ref.read(appLanguageProvider), 'you_label'),
       );
 
+  /// A beast battle's end: slain, it pays and leaves its trophy; alive,
+  /// it carries its wounds away and the crew one more sign of it.
+  Future<void> _onBeastFinished(ShipBattleOutcome outcome) async {
+    final id = _beastId!;
+    final notifier = ref.read(playerSessionProvider.notifier);
+    final fr = ref.read(appLanguageProvider) == AppLanguage.fr;
+    final name = _enemyName(fr);
+    final data = _enemyData ?? const <String, dynamic>{};
+    final maxHull = _enemy?.maxHull ?? 1;
+    _player = outcome.player;
+    _beastId = null;
+    _beast = null;
+    _log
+      ..clear()
+      ..addAll(outcome.log.length > 3
+          ? outcome.log.sublist(outcome.log.length - 3)
+          : outcome.log);
+    final slain = outcome.won;
+    final lost = !slain && !outcome.escaped && !outcome.fled;
+    await notifier.updateSeaBeast(
+        id,
+        (b) => beastAfterBattle(b,
+            maxHull: maxHull,
+            hullAtEnd: slain ? 0 : outcome.enemyHull,
+            slain: slain));
+    final gold = slain ? (data['goldReward'] as num?)?.toInt() ?? 0 : 0;
+    final xp = slain ? (data['xpReward'] as num?)?.toInt() ?? 0 : 0;
+    for (final member in outcome.crew) {
+      if (member.isPlayer) {
+        await notifier.applyCombatResult(
+          hpAfter: member.health,
+          goldGain: gold,
+          xpGain: xp,
+          // Standing up to a beast and living counts on the camp's board.
+          contractTally: lost
+              ? null
+              : ContractTally(beastsFought: 1, shipsBeaten: slain ? 1 : 0),
+        );
+      } else {
+        await notifier.applyAllyCombatResult(member.id, hpAfter: member.health);
+      }
+    }
+    if (!mounted) return;
+    if (lost) {
+      await notifier.setShipHull(limpHomeHull(_player!.maxHull));
+      if (!mounted) return;
+      setState(() {
+        _phase = _VoyagePhase.failed;
+        _busy = false;
+      });
+      return;
+    }
+    if (slain) {
+      await notifier.applyChoiceEffects(
+          itemId: beastTrophyItemId, flagsToAdd: ['beast_slain_$id']);
+      _log.add(_t('ship_log_beast_slain', ship: name));
+      // Its trophy goes on the Eel if there is room aboard; if not, it
+      // waits at the Harbor, fitted for nothing.
+      final partId = beastTrophyPartId(data);
+      final part =
+          partId == null ? null : _parts[partId] as Map<String, dynamic>?;
+      if (part != null) {
+        final partName =
+            fr && (part['partName_fr']?.toString() ?? '').isNotEmpty
+                ? part['partName_fr'].toString()
+                : part['partName']?.toString() ?? partId!;
+        final fits = canInstallPart(
+            ship: _shipRecord,
+            parts: _parts,
+            installedPartIds: ref.read(playerSessionProvider).shipPartIds,
+            partId: partId!);
+        final fitted = fits && await notifier.installShipPart(partId, 0);
+        if (!fitted) await notifier.storeShipPart(partId);
+        _log.add(
+            _t(fitted ? 'ship_log_trophy_fitted' : 'ship_log_trophy_waiting')
+                .replaceAll('{weapon}', partName));
+      }
+      _log.add('${_t('ship_fight_won_prefix')}: +$gold ${_t('gold_label')}');
+    } else {
+      _log.add(outcome.escaped
+          ? _t('ship_log_beast_got_away', ship: name)
+          : _t('ship_log_outran'));
+      _log.add(_cluesLine(
+          name, ref.read(playerSessionProvider).seaBeasts[id]?.clues ?? 0));
+    }
+    await notifier.setShipHull(_player!.hull);
+    await _advance();
+  }
+
   Future<void> _onBattleFinished(ShipBattleOutcome outcome) async {
+    if (_beastId != null) {
+      await _onBeastFinished(outcome);
+      return;
+    }
     final notifier = ref.read(playerSessionProvider.notifier);
     final enemyName =
         _enemyName(ref.read(appLanguageProvider) == AppLanguage.fr);
@@ -740,12 +1019,20 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                       ?.copyWith(height: 1.5),
                 ),
                 // A raider is named and described before the guns come
-                // out: who she is and what she wants from the Eel.
-                if (event.kind == SeaEventKind.raider &&
-                    enemyShips[event.enemyShipId] is Map<String, dynamic>)
+                // out: who she is and what she wants from the Eel. So is
+                // a beast, with what the crew knows of it.
+                if (_meetsShip(event) &&
+                    enemyShips[event.enemyShipId] is Map<String, dynamic>) ...[
                   ..._raiderIntro(
                       enemyShips[event.enemyShipId] as Map<String, dynamic>,
                       fr),
+                  if (event.kind != SeaEventKind.raider)
+                    ..._beastIntro(event.enemyShipId!),
+                ],
+                if (event.omenBeastId != null &&
+                    enemyShips[event.omenBeastId] is Map<String, dynamic>)
+                  ..._omen(
+                      enemyShips[event.omenBeastId] as Map<String, dynamic>),
                 if (_sail?.power == SailPower.foresight) ...[
                   const SizedBox(height: 12),
                   Text(
@@ -862,6 +1149,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           : null,
       habit: habitFromName(_enemyData?['habit']?.toString()),
       windKnot: _sail?.power == SailPower.windknot,
+      beast: _beast,
     );
   }
 

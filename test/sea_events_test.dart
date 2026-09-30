@@ -65,7 +65,13 @@ void main() {
         expect(event.kind, isNot(SeaEventKind.raider));
       }
     }
-    expect(kinds, containsAll(SeaEventKind.values));
+    // A beast's day is laid in by the voyage, never drawn (see
+    // withBeastDay).
+    expect(
+        kinds,
+        containsAll(SeaEventKind.values
+            .where((k) => k != SeaEventKind.beast && k != SeaEventKind.hunt)));
+    expect(kinds, isNot(contains(SeaEventKind.beast)));
   });
 
   test('storms cost hull, calm days mend it, derelicts pay in gold', () {
@@ -87,6 +93,9 @@ void main() {
           case SeaEventKind.sighting:
             expect(event.hullDelta, 0);
             expect(event.gold, 0);
+          case SeaEventKind.beast:
+          case SeaEventKind.hunt:
+            fail('a beast is never drawn');
         }
         expect(event.descriptionFor(true), isNotEmpty);
         expect(event.choiceTextFor(true), isNotEmpty);

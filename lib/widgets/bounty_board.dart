@@ -56,6 +56,7 @@ class _BountyBoardState extends ConsumerState<BountyBoard> {
         random: Random(),
         boardNumber: session.contractBoards + 1,
         sea: session.builtHouseIds.contains(harborHouseId),
+        beastTracked: session.seaBeasts.values.any((b) => b.tracked),
       ),
     );
     await ref
@@ -98,6 +99,7 @@ class _BountyBoardState extends ConsumerState<BountyBoard> {
         ContractKind.sinkShips => Icons.sailing,
         ContractKind.takeShip => Icons.anchor,
         ContractKind.keelIntact => Icons.shield_outlined,
+        ContractKind.beastFought => Icons.set_meal,
       };
 
   @override

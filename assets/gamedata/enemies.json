@@ -4398,5 +4398,46 @@
     "encounterText_fr": [
       "Le Berger de Verre tourne son visage vers les lanternes et, doucement, se met à compter."
     ]
+  },
+  "kraken_arm": {
+    "enemyName": "Kraken Arm",
+    "enemyName_fr": "Bras de kraken",
+    "maxHealth": 120,
+    "damage": 18,
+    "guile": 2,
+    "weakTo": [
+      "Fire"
+    ],
+    "resists": [
+      "Water"
+    ],
+    "xpReward": 45,
+    "goldReward": 0,
+    "lootTable": [],
+    "skillMoves": [
+      {
+        "skillID": "frigid_grip",
+        "condition": "Chance",
+        "requiredElement": "Ice",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 6,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "description": "One arm of the Tide-Mother, come over the rail on its own: grey-green, thick as a mast and lined with hooked cups. It does not need the rest of the kraken to know what to do with a deckhand.",
+    "description_fr": "Un bras de la Mère-des-Marées, passé seul par-dessus le bastingage : gris-vert, épais comme un mât et bordé de ventouses crochues. Il n'a pas besoin du reste du kraken pour savoir quoi faire d'un matelot.",
+    "encounterText": [
+      "An arm as thick as the mainmast slides over the rail, feeling along the deck for something to hold."
+    ],
+    "encounterText_fr": [
+      "Un bras épais comme le grand mât glisse par-dessus le bastingage et tâte le pont en quête de quelque chose à saisir."
+    ]
   }
 }

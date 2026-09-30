@@ -32,6 +32,10 @@ enum ContractKind {
 
   /// Win a sea fight losing at most [intactHullShare] of the hull.
   keelIntact,
+
+  /// Stand up to a sea beast and live (v1.185): posted while one is being
+  /// tracked (see sea_beasts.dart), and paid double.
+  beastFought,
 }
 
 /// The sea's contracts: posted once the Harbor stands (see [rollContracts]).
@@ -113,6 +117,7 @@ class ContractTally {
     this.shipsBeaten = 0,
     this.shipsTaken = 0,
     this.intactSeaWins = 0,
+    this.beastsFought = 0,
   });
 
   /// A won sea fight (see [seaTally]).
@@ -141,6 +146,9 @@ class ContractTally {
   final int shipsBeaten;
   final int shipsTaken;
   final int intactSeaWins;
+
+  /// Battles with a sea beast the Eel came out of afloat.
+  final int beastsFought;
 }
 
 /// [contract] after a won fight [tally].
@@ -157,6 +165,7 @@ Contract progressContract(Contract contract, ContractTally tally) {
     ContractKind.sinkShips => tally.shipsBeaten,
     ContractKind.takeShip => tally.shipsTaken,
     ContractKind.keelIntact => tally.intactSeaWins,
+    ContractKind.beastFought => tally.beastsFought,
   };
   return gained == 0
       ? contract
@@ -172,14 +181,16 @@ int contractEssenceFor(int chapter) => 100 * max(1, chapter);
 /// A fresh board of three contracts of different kinds at [chapter]. A hunt
 /// needs a common foe from [huntPool] (the chapter's pack-eligible random
 /// draws); without one, another kind takes its place. With [sea] (the
-/// Harbor stands), one contract is the sea's. [boardNumber] keeps the ids
-/// unique across boards.
+/// Harbor stands), one contract is the sea's; with [beastTracked] too (a
+/// sea beast seen and still out there), that one is often the beast's.
+/// [boardNumber] keeps the ids unique across boards.
 List<Contract> rollContracts({
   required int chapter,
   required List<String> huntPool,
   required Random random,
   required int boardNumber,
   bool sea = false,
+  bool beastTracked = false,
 }) {
   final kinds = [
     if (huntPool.isNotEmpty) ContractKind.hunt,
@@ -197,7 +208,11 @@ List<Contract> rollContracts({
   }
   // Once the Eel sails from the camp, the sea gets its own line.
   if (sea) {
-    final seaKinds = seaContractKinds.toList();
+    final seaKinds = [
+      ...seaContractKinds,
+      // As likely as the other three together.
+      if (beastTracked) ...List.filled(3, ContractKind.beastFought),
+    ];
     kinds.insert(1, seaKinds[random.nextInt(seaKinds.length)]);
   }
   final gold = contractGoldFor(chapter);
@@ -220,8 +235,9 @@ List<Contract> rollContracts({
           ContractKind.sinkShips => 2,
           ContractKind.takeShip => 1,
           ContractKind.keelIntact => 1,
+          ContractKind.beastFought => 1,
         },
-        rewardGold: gold,
+        rewardGold: kind == ContractKind.beastFought ? 2 * gold : gold,
         rewardEssence: essence,
       ),
   ];

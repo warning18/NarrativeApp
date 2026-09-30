@@ -205,5 +205,217 @@
     "prizeGold": 90,
     "shipName_fr": "Barge du Vide",
     "habit": "boarder"
+  },
+  "brinejaw": {
+    "shipName": "brinejaw",
+    "displayName": "The Brinejaw",
+    "displayName_fr": "Vieille Mâchoire",
+    "description": "A shark the length of a longship, grey as old rope and scarred white where harpoons have failed. It rams first and bites after, and it heals as it swims. Hurt it badly and it runs for deep water; a harpoon line or torn fins keep it from going.",
+    "description_fr": "Un requin long comme un drakkar, gris comme une vieille corde et zébré de blanc là où des harpons ont échoué. Il charge d'abord et mord ensuite, et il guérit en nageant. Blessé gravement, il file vers les grands fonds ; une ligne de harpon ou des nageoires déchirées l'en empêchent.",
+    "maxHull": 220,
+    "rooms": {
+      "helm": 2,
+      "guns": 2,
+      "bulwark": 1,
+      "hold": 2
+    },
+    "weapons": [
+      {
+        "weaponName": "Jaws",
+        "weaponName_fr": "Mâchoires",
+        "damage": 16,
+        "chargeTurns": 3,
+        "piercesShield": true,
+        "setsFire": false,
+        "roomDamage": 2,
+        "ranges": [
+          "close",
+          "medium"
+        ]
+      },
+      {
+        "weaponName": "Tail lash",
+        "weaponName_fr": "Coup de queue",
+        "damage": 6,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      }
+    ],
+    "xpReward": 150,
+    "goldReward": 160,
+    "minChapter": 3,
+    "crew": 1,
+    "boardingCrew": [],
+    "boardingChance": 0,
+    "prizePartId": "",
+    "prizeGold": 0,
+    "shipName_fr": "Vieille Mâchoire",
+    "habit": "ram",
+    "beast": {
+      "waters": [
+        3,
+        4
+      ],
+      "regen": 8,
+      "diveEvery": 0,
+      "breach": 0,
+      "fleeShare": 0.5,
+      "trophyPartId": "sharkskin_hull",
+      "omen": "The fish have gone. Not scattered: gone, as if the sea had been swept clean.",
+      "omen_fr": "Les poissons ont disparu. Pas dispersés : disparus, comme si l'on avait balayé la mer.",
+      "sighting": "A fin cuts the swell off the bow, taller than a man, and turns toward the Eel without hurry.",
+      "sighting_fr": "Un aileron fend la houle devant la proue, plus haut qu'un homme, et vire vers l'Eel sans se presser.",
+      "hunt": "Three signs led here: the torn nets, the wreck with a bite taken out of her, the blood off the point. The harpoons are laid out on deck when the fin comes.",
+      "hunt_fr": "Trois signes mènent ici : les filets déchirés, l'épave à laquelle il manque une bouchée, le sang au large de la pointe. Les harpons sont alignés sur le pont quand l'aileron paraît."
+    }
+  },
+  "pale_leviathan": {
+    "shipName": "pale_leviathan",
+    "displayName": "The Pale Leviathan",
+    "displayName_fr": "Le Léviathan pâle",
+    "description": "A serpent-whale as long as a wharf, white as a drowned thing and older than the charts. Every third round it sounds and comes up under the keel; it closes its wounds while its heart beats. A harpoon line keeps it from the deep.",
+    "description_fr": "Un serpent-baleine long comme un quai, blanc comme un noyé et plus vieux que les cartes. Toutes les trois passes, il sonde et remonte sous la quille ; il referme ses plaies tant que son cœur bat. Une ligne de harpon le tient loin des fonds.",
+    "maxHull": 240,
+    "rooms": {
+      "helm": 2,
+      "guns": 2,
+      "bulwark": 2,
+      "hold": 3
+    },
+    "weapons": [
+      {
+        "weaponName": "Maw",
+        "weaponName_fr": "Gueule",
+        "damage": 14,
+        "chargeTurns": 3,
+        "piercesShield": true,
+        "setsFire": false,
+        "roomDamage": 2,
+        "ranges": [
+          "close",
+          "medium"
+        ]
+      },
+      {
+        "weaponName": "Flukes",
+        "weaponName_fr": "Nageoire caudale",
+        "damage": 6,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1
+      }
+    ],
+    "xpReward": 220,
+    "goldReward": 230,
+    "minChapter": 5,
+    "crew": 1,
+    "boardingCrew": [],
+    "boardingChance": 0,
+    "prizePartId": "",
+    "prizeGold": 0,
+    "shipName_fr": "Le Léviathan pâle",
+    "habit": "none",
+    "beast": {
+      "waters": [
+        5
+      ],
+      "regen": 8,
+      "diveEvery": 3,
+      "breach": 14,
+      "fleeShare": 0.35,
+      "trophyPartId": "leviathan_bone_plating",
+      "omen": "At dusk the water turns milk-pale for a mile around the Eel, then clears, as if something had breathed out below.",
+      "omen_fr": "Au crépuscule, l'eau devient pâle comme du lait sur un mille autour de l'Eel, puis s'éclaircit, comme si quelque chose avait expiré en dessous.",
+      "sighting": "The sea rises in a long white back that does not end, and an eye the size of a cartwheel opens beside the rail.",
+      "sighting_fr": "La mer se soulève en un long dos blanc qui n'en finit pas, et un œil grand comme une roue de charrette s'ouvre près du bastingage.",
+      "hunt": "The signs agree: the pale water, the stranded whale bitten in two, the old fisher's chart. The Eel waits over the trench with the lines coiled, and it comes up to meet her.",
+      "hunt_fr": "Les signes concordent : l'eau pâle, la baleine échouée coupée en deux, la carte du vieux pêcheur. L'Eel attend au-dessus de la fosse, les lignes lovées, et il monte à sa rencontre."
+    }
+  },
+  "tide_kraken": {
+    "shipName": "tide_kraken",
+    "displayName": "The Tide-Mother",
+    "displayName_fr": "La Mère-des-Marées",
+    "description": "The thing the drowned pray to: a kraken the size of an island, with arms enough to take a ship apart plank by plank and to send over the rail. Every fourth round it dives to drag at the keel, and it grows back what is cut from it. Hold it on the line or tear its fins, or it goes down to heal.",
+    "description_fr": "Ce que prient les noyés : un kraken grand comme une île, avec assez de bras pour démonter un navire planche par planche et pour en envoyer par-dessus le bastingage. Toutes les quatre passes, il plonge tirer sur la quille, et il fait repousser ce qu'on lui tranche. Retenez-le à la ligne ou déchirez ses nageoires, ou il redescend guérir.",
+    "maxHull": 250,
+    "rooms": {
+      "helm": 1,
+      "guns": 2,
+      "bulwark": 2,
+      "hold": 3
+    },
+    "weapons": [
+      {
+        "weaponName": "Grasping arm",
+        "weaponName_fr": "Bras qui agrippe",
+        "damage": 6,
+        "chargeTurns": 1,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1,
+        "ranges": [
+          "close",
+          "medium"
+        ]
+      },
+      {
+        "weaponName": "Grasping arm",
+        "weaponName_fr": "Bras qui agrippe",
+        "damage": 6,
+        "chargeTurns": 2,
+        "piercesShield": false,
+        "setsFire": false,
+        "roomDamage": 1,
+        "ranges": [
+          "close",
+          "medium"
+        ]
+      },
+      {
+        "weaponName": "Beak",
+        "weaponName_fr": "Bec",
+        "damage": 14,
+        "chargeTurns": 3,
+        "piercesShield": true,
+        "setsFire": false,
+        "roomDamage": 2,
+        "ranges": [
+          "close"
+        ]
+      }
+    ],
+    "xpReward": 300,
+    "goldReward": 300,
+    "minChapter": 6,
+    "crew": 2,
+    "boardingCrew": [
+      "kraken_arm",
+      "kraken_arm"
+    ],
+    "boardingChance": 0.3,
+    "prizePartId": "",
+    "prizeGold": 0,
+    "shipName_fr": "La Mère-des-Marées",
+    "habit": "boarder",
+    "beast": {
+      "waters": [
+        6
+      ],
+      "regen": 8,
+      "diveEvery": 4,
+      "breach": 12,
+      "fleeShare": 0.25,
+      "trophyPartId": "tide_mothers_beak",
+      "omen": "The tide runs the wrong way all afternoon, and every rope aboard is wet though no spray comes over.",
+      "omen_fr": "La marée court à rebours tout l'après-midi, et chaque cordage à bord est mouillé sans qu'aucun embrun passe.",
+      "sighting": "The sea around the Eel goes still and dark, and the first arm comes over the rail before anyone sees the rest.",
+      "sighting_fr": "La mer autour de l'Eel devient immobile et sombre, et le premier bras passe le bastingage avant que quiconque ait vu le reste.",
+      "hunt": "The signs lead to the Weeping Deep: the dragged hulls, the ink on the tide, the song the fishers will not sing. The Eel drops anchor over it and the crew beats on the hull until it rises.",
+      "hunt_fr": "Les signes mènent à la Fosse qui Pleure : les coques traînées, l'encre sur la marée, le chant que les pêcheurs refusent de chanter. L'Eel jette l'ancre au-dessus et l'équipage frappe la coque jusqu'à ce qu'il remonte."
+    }
   }
 }

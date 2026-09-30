@@ -628,8 +628,10 @@ const Set<String> soloOnlyEnemyIds = {
 
 /// Enemies met only where the story puts them -- never a random draw and
 /// never in a random pack -- without being bosses: the hovel's three White
-/// Soldiers (400), tuned as a pack a first character can lose to.
-const Set<String> storyOnlyEnemyIds = {'white_soldier'};
+/// Soldiers (400), tuned as a pack a first character can lose to, and the
+/// Tide-Mother's arms, which come over the rail only in her battle (see
+/// sea_beasts.dart).
+const Set<String> storyOnlyEnemyIds = {'white_soldier', 'kraken_arm'};
 
 /// Each zone's own boss (zones.json `bossEnemyId`), met at the end of its
 /// expedition: never a random draw, never in a random pack and never
