@@ -995,11 +995,16 @@ String? storyChoiceLockedText(
   bool mainQuestShut = false,
 }) {
   if (mainQuestShut) return tr(ref, 'main_quest_shut_lock');
-  if (isExcursion && !choice.affordableWith(session.gold)) {
+  if (_paymentShort(choice, session.gold, isExcursion)) {
     return _goldShortText(ref, choice, session.gold, french: french);
   }
   return choice.lockedTextFor(french);
 }
+
+/// Whether [choice] is a payment (one on the road, or a story choice
+/// marked [StoryChoice.pays]) a purse of [gold] can't make.
+bool _paymentShort(StoryChoice choice, int gold, bool isExcursion) =>
+    (isExcursion || choice.pays) && !choice.affordableWith(gold);
 
 /// [choice], a payment a purse of [gold] can't make, as it reads shut.
 String _goldShortText(WidgetRef ref, StoryChoice choice, int gold,
@@ -1039,9 +1044,11 @@ bool _isChoiceLocked(
   bool isExcursion,
 ) {
   // A payment on the road (an offering, a toll, a fine) waits for a purse
-  // that holds it. The story's own prices lock through the next scene's
-  // gold requirement; the gold it takes away is a loss, not a payment.
-  if (isExcursion) return !choice.affordableWith(session.gold);
+  // that holds it, and so does a story choice marked as one (a fee, a
+  // bribe, a buy-in). The story's other prices lock through the next
+  // scene's gold requirement; gold it takes away unmarked is a loss.
+  if (_paymentShort(choice, session.gold, isExcursion)) return true;
+  if (isExcursion) return false;
   final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
   return targetNode != null &&
       targetNode.hasRequirements &&
@@ -1138,7 +1145,7 @@ Future<void> _selectChoice({
   // A payment on the road the purse can't make stays shut, wherever the
   // choice is offered: it says why and waits (see _isChoiceLocked).
   final purse = ref.read(playerSessionProvider);
-  if (isExcursion && !choice.affordableWith(purse.gold)) {
+  if (_paymentShort(choice, purse.gold, isExcursion)) {
     showImmersiveNotice(context,
         icon: Icons.lock_outline,
         message: _goldShortText(ref, choice, purse.gold, french: french));

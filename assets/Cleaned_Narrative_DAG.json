@@ -1835,6 +1835,7 @@
         "text_fr": "Revenir au tonneau pour Sable (10 or)",
         "next_id": "2015_cards_won",
         "goldMod": -10,
+        "pays": true,
         "showIfFlags": [
           "hub_2015_sable",
           "hub_2015_cards"
@@ -4649,6 +4650,7 @@
         "text_fr": "Joindre la bourse au message (30 or)",
         "next_id": "3005",
         "goldMod": -30,
+        "pays": true,
         "alignmentMod": 1,
         "flagsToAdd": [
           "hub_3005_lysa",
@@ -7071,6 +7073,7 @@
         "next_id": "6003",
         "launchZoneId": "z_shroud_vigil",
         "goldMod": -150,
+        "pays": true,
         "alignmentMod": 1,
         "flagsToAdd": [
           "chartkeeper_paid"
@@ -8017,6 +8020,7 @@
         "text_fr": "Le payer pour éteindre les fausses lampes à jamais",
         "next_id": "5100",
         "goldMod": -60,
+        "pays": true,
         "alignmentMod": 3,
         "flagsToAdd": [
           "hub_5100_headman_later",
@@ -9310,6 +9314,7 @@
         "text_fr": "Payer les gréeurs du Mouillage pour la descendre",
         "next_id": "7400",
         "goldMod": -150,
+        "pays": true,
         "alignmentMod": 1,
         "grantsBannerPieceId": "white_fleet_sail",
         "flagsToAdd": [

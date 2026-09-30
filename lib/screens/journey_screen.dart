@@ -41,6 +41,7 @@ import 'story_player_screen.dart'
         composeNarrationParts,
         isStoryChoiceLocked,
         noteShownEchoes,
+        storyChoiceLockedText,
         takeStoryChoice;
 
 /// The Journey tab's index among the play-mode tabs (after Story,
@@ -567,14 +568,17 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
           final choice = choices[i];
           final shut =
               choice.mainQuest && !play.isInExcursion && !mainQuestOpen;
+          // A detour's payment the purse can't make is shut here as under
+          // the story (see isStoryChoiceLocked), and says why.
           final locked = shut ||
-              (!play.isInExcursion &&
-                  isStoryChoiceLocked(choice, story, session));
-          final lockedText = shut
-              ? tr(ref, 'main_quest_shut_lock')
-              : locked
-                  ? choice.lockedTextFor(french)
-                  : null;
+              isStoryChoiceLocked(choice, story, session,
+                  isExcursion: play.isInExcursion);
+          final lockedText = locked
+              ? storyChoiceLockedText(ref, choice, session,
+                  isExcursion: play.isInExcursion,
+                  french: french,
+                  mainQuestShut: shut)
+              : null;
           final target = play.isInExcursion || choice.isEnding
               ? null
               : landmarkOfScene(choice.nextId);
@@ -876,7 +880,12 @@ class _ScenePanel extends ConsumerWidget {
     final speaker = speakerLabelFor(node.speaker, french: french);
     final parts = composeNarrationParts(node, session, story, french: french);
     final text = parts.text;
-    if (!folded) noteShownEchoes(ref, session, parts.echoes);
+    if (!folded) {
+      noteShownEchoes(ref, session, [
+        for (final prelude in preludes) ...prelude.echoes,
+        ...parts.echoes,
+      ]);
+    }
     final prose = theme.textTheme.bodyLarge?.copyWith(
       fontFamily: InkFonts.prose,
       fontSize: reading ? 17 : 15,
@@ -919,7 +928,18 @@ class _ScenePanel extends ConsumerWidget {
             ),
             const SizedBox(height: 4),
           ],
-          Text(prelude.text, style: prose),
+          Text(prelude.body, style: prose),
+          for (final echo in prelude.echoes) ...[
+            const SizedBox(height: 10),
+            EchoLine(
+              key: ValueKey('journey_prelude_echo_${echo.key}'),
+              echo: echo,
+              caption:
+                  tr(ref, 'echo_because').replaceAll('{choice}', echo.cause),
+              colour: ink.gold,
+              style: prose ?? const TextStyle(),
+            ),
+          ],
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),
