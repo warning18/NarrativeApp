@@ -83,11 +83,12 @@ void main() {
     ));
     await tester.pump();
 
+    // A weapon's tile names its state when held (its tooltip).
     String stateOf(String weaponId) => tester
-        .widgetList<Text>(find.descendant(
+        .widgetList<Tooltip>(find.ancestor(
             of: find.byKey(Key('ship_weapon_$weaponId')),
-            matching: find.byType(Text)))
-        .map((t) => t.data ?? '')
+            matching: find.byType(Tooltip)))
+        .map((t) => t.message ?? '')
         .join(' ');
 
     // Turn 1: close in, then end the turn.

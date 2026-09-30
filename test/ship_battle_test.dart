@@ -462,10 +462,40 @@ void main() {
           boarding: const BoardingProfile(crew: ['bandit'], chance: 0.3),
           rules: const ShipBattleRules(weather: false, seaEvents: false));
       expect(b.canBoardThem, isFalse);
-      b.giveOrder(grosh);
+      // He stands at the guns; the grapple is thrown from the helm or the
+      // bulwark, so one tap sends him there and throws it.
+      expect(b.stationOf('grosh'), ShipRoom.guns);
+      expect(b.canOrder(grosh), isFalse);
+      expect(b.orderWorks(grosh), isTrue);
+      b.orderFromStation(grosh);
+      expect(orderRooms[CrewOrder.grapple], contains(b.stationOf('grosh')));
       expect(b.range, ShipRange.close);
       expect(b.canBoardThem, isTrue);
       expect(b.throwGrapples(), isTrue);
+    });
+  });
+
+  group('orders from their rooms', () {
+    test(
+        'an order is given from its rooms; tapped elsewhere, the hand goes there',
+        () {
+      final kelda = _member('kelda');
+      final liora = _member('liora');
+      final b = _battle(
+          crew: [_you, kelda, liora],
+          rules: const ShipBattleRules(weather: false, seaEvents: false));
+      // You at the helm, Kelda at the guns, Liora at the bulwark.
+      expect(b.orderFitsStation(kelda), isFalse);
+      expect(b.orderRoomFor(kelda), ShipRoom.hold,
+          reason: 'the bulwark is held');
+      b.orderFromStation(kelda);
+      expect(b.stationOf('kelda'), ShipRoom.hold);
+      expect(b.braced, isTrue);
+      // The player's order works from anywhere.
+      expect(b.orderFitsStation(_you), isTrue);
+      // Classic rules: no rooms needed.
+      final classic = _battle(crew: [_you, kelda]);
+      expect(classic.orderFitsStation(kelda), isTrue);
     });
   });
 

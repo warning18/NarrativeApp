@@ -132,24 +132,38 @@ void main() {
     // No shot to pick: each weapon fires its own.
     expect(find.byKey(const Key('ship_ammo_chain')), findsNothing);
 
-    // Kelda's order, from the crew sheet: brace. Spent once given.
+    // Kelda's order, on the sea: brace, given from the hold or the
+    // bulwark. One tap sends her there and gives it; spent once given.
+    expect(find.byKey(const Key('ship_crew_skills')), findsOneWidget);
+    await tester.ensureVisible(find.byKey(const Key('ship_order_brace')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('ship_order_brace')));
+    await tester.pump();
+    expect(find.textContaining('Brace!'), findsWidgets);
+    final brace =
+        tester.widget<InkWell>(find.byKey(const Key('ship_order_brace')));
+    expect(brace.onTap, isNull);
+    // Held, the die tells what the order does and from where.
+    await tester.longPress(find.byKey(const Key('ship_order_brace')));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.byKey(const Key('ship_order_sheet')), findsOneWidget);
+    expect(find.textContaining('Given from:'), findsOneWidget);
+    Navigator.of(tester.element(find.byKey(const Key('ship_order_sheet'))))
+        .pop();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    // The crew sheet still moves hands.
     await tester.tap(find.byKey(const Key('ship_crew_button')));
     // The sea never settles: let the sheet slide.
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const Key('ship_crew_sheet')), findsOneWidget);
-    await tester.tap(find.byKey(const Key('ship_order_brace')));
-    await tester.pump();
-    expect(find.textContaining('Brace!'), findsWidgets);
-    final brace =
-        tester.widget<ActionChip>(find.byKey(const Key('ship_order_brace')));
-    expect(brace.onPressed, isNull);
-    // Kelda moves to the hold from the sheet.
     await tester.tap(find.byKey(const Key('ship_station_kelda_hold')));
     await tester.pump();
     Navigator.of(tester.element(find.byKey(const Key('ship_crew_sheet'))))
         .pop();
-    // The sea never settles: let the sheet slide.
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
     expect(find.byKey(const Key('ship_crew_sheet')), findsNothing);
@@ -165,5 +179,94 @@ void main() {
     expect(find.textContaining(RegExp(r'Ballista (hits|goes wide)|slips')),
         findsOneWidget);
     expect(outcome, isNull);
+  });
+
+  testWidgets('the crew are placed before the first round', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    ShipCrew hand(String id, {bool player = false}) => ShipCrew(
+          id: id,
+          name: id,
+          strength: 3,
+          dexterity: 3,
+          constitution: 3,
+          wisdom: 3,
+          health: 50,
+          maxHealth: 50,
+          isPlayer: player,
+        );
+    final player = ShipState(
+      hull: 100,
+      maxHull: 100,
+      layers: 0,
+      rooms: {for (final r in ShipRoom.values) r: const RoomState(level: 2)},
+      weapons: const [
+        ShipWeapon(
+            id: 'ballista',
+            name: 'Ballista',
+            nameFr: 'Baliste',
+            damage: 12,
+            chargeTurns: 1),
+      ],
+    );
+    await tester.pumpWidget(ProviderScope(
+      child: MaterialApp(
+        home: Scaffold(
+          body: ShipBattlePanel(
+            player: player,
+            enemy: buildEnemyShip(const {
+              'maxHull': 80,
+              'rooms': {'helm': 0, 'guns': 2, 'bulwark': 0, 'hold': 1},
+              'weapons': [
+                {'weaponName': 'Slow Gun', 'damage': 5, 'chargeTurns': 9},
+              ],
+            }),
+            shipName: 'The Rusty Eel',
+            enemyName: 'Raider',
+            crew: [hand('player', player: true), hand('kelda')],
+            foresight: false,
+            random: Random(4),
+            turnSeconds: 20,
+            placeCrew: true,
+            rules: const ShipBattleRules(seaEvents: false),
+            onFinished: (_) {},
+          ),
+        ),
+      ),
+    ));
+    await tester.pump();
+    expect(find.byKey(const Key('ship_placement')), findsOneWidget);
+    expect(find.byKey(const Key('ship_end_turn')), findsNothing);
+
+    // Tap Kelda, then the helm: she takes it.
+    await tester.tap(find.byKey(const Key('ship_place_kelda')));
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('ship_room_eel_helm')));
+    await tester.pump();
+    Finder at(String room) => find.descendant(
+        of: find.byKey(const Key('ship_place_kelda')),
+        matching: find.text(room));
+    expect(at('Helm'), findsOneWidget);
+
+    // Orders first: she goes where her brace is given.
+    await tester.tap(find.byKey(const Key('ship_place_skills')));
+    await tester.pump();
+    expect(at('Helm'), findsNothing);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('ship_place_kelda')),
+            matching: find.textContaining(RegExp('^(Bulwark|Hold)\$'))),
+        findsOneWidget);
+
+    // The clock does not run while placing; it starts with the battle.
+    await tester.pump(const Duration(seconds: 30));
+    expect(find.byKey(const Key('ship_placement')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('ship_start_battle')));
+    await tester.pump();
+    expect(find.byKey(const Key('ship_placement')), findsNothing);
+    expect(find.byKey(const Key('ship_end_turn')), findsOneWidget);
+    expect(find.byKey(const Key('ship_order_brace')), findsOneWidget);
   });
 }

@@ -8,6 +8,49 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.188.0+219]
+
+### Changed
+- **Crew orders are dice.** Each hand's order sits under the sea as a
+  die, as the dice fight's faces do: a tap gives it (the die spins, the
+  hand goes to its room first when they stand elsewhere, a walking mark
+  says so); a hold opens what it does, the rooms it is given from and
+  where the hand stands. The dice keep their places, spent or not.
+- **Weapons in one row.** The Eel's weapons are compact tiles in a single
+  row, so up to nine fit without taking room from the sea: the charge
+  ring and damage, and the name when there is room; a hold names the
+  weapon, its shot and its state.
+- The dock's log line puts the newest line first.
+
+### Added
+- **Damage on a hit.** A landed shot's damage pops large over the room
+  it hit and beside the hull count of the ship it struck.
+
+## [1.187.0+218]
+
+### Added
+- **Stations before the battle.** A sea fight (the voyage, the test
+  battle, a story's) opens on the Eel from above and her crew: drag a
+  hand onto a room, or tap them then the room. Each row shows the hand's
+  order and the rooms it is given from, in gold when they stand in one.
+  "By orders" sends each hand to their order's room, the wand places them
+  as before, and "Battle!" starts the first round. The turn clock waits.
+- **Orders from their rooms.** A hand gives their order from its own
+  rooms (Brace from the bulwark or the hold, Eagle eye from the guns or
+  the helm, and so on; All hands from anywhere).
+
+### Changed
+- **Crew orders on the sea.** The log strip under the Eel gives way to
+  the crew's orders, one chip each: the hand, the order, and where it is
+  given ("at the hold", "goes to the hold"). One tap sends the hand there
+  and gives it. What can be done now comes first; spent orders last.
+- **Drag a hand to move them.** A crew token on the Eel, or on an order
+  chip, drags onto any room. The crew sheet still moves hands and shows
+  each order, but no longer gives them.
+- **A smaller dock.** End turn is a compact button at the corner, and
+  the crew sheet an icon. The dock's line shows the last two lines of
+  the battle, with the whole log a tap away.
+
 ## [1.186.0+217]
 
 Brings the two lines of work together: this branch (v1.176 to v1.185.1)
