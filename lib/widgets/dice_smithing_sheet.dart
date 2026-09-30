@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/dice_faces.dart';
+import '../combat/enemy_intent.dart' show elementLabel;
 import '../combat/face_keywords.dart';
 import '../combat/face_smithing.dart';
 import '../gamedata/db_schema.dart';
@@ -79,11 +80,14 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
     final owner =
         owners.firstWhere((o) => o.id == _owner, orElse: () => owners.first);
     final dieId = owner.dieId;
+    // A companion's die is worked apart from the player's own copy of it.
+    final companionId = owner.id == 'player' ? null : owner.id;
     final rawFaces =
         ((dice[dieId ?? ''] as Map<String, dynamic>?)?['faces'] as List?)
                 ?.cast<Map<String, dynamic>>() ??
             const <Map<String, dynamic>>[];
-    final upgrades = session.diceUpgrades[dieId ?? ''] ?? const {};
+    final upgrades =
+        session.upgradesOfDie(dieId, companionId: companionId) ?? const {};
     final faces = smithedFaces(rawFaces, upgrades);
     final assignments = owner.id == 'player'
         ? session.diceSkillAssignments[dieId ?? ''] ?? const <String, String>{}
@@ -174,6 +178,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
                 const SizedBox(height: 16),
                 ..._workOptions(
                   dieId: dieId,
+                  companionId: companionId,
                   index: _faceIndex!,
                   rawFaces: rawFaces,
                   current: upgrades[_faceIndex.toString()] ?? FaceUpgrade.none,
@@ -261,6 +266,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
 
   List<Widget> _workOptions({
     required String dieId,
+    required String? companionId,
     required int index,
     required List<Map<String, dynamic>> rawFaces,
     required FaceUpgrade current,
@@ -281,6 +287,7 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
         {String? element, FaceKeyword? keyword, String? recastType}) async {
       final done = await notifier.smithFace(
         dieId: dieId,
+        companionId: companionId,
         faceIndex: index,
         faces: rawFaces,
         work: kind,
@@ -299,6 +306,10 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
 
     final baseType = face['type']?.toString() ?? '';
     final type = current.recastType ?? baseType;
+    // The number a Recast to [target] leaves on the face (see recastValue).
+    int recastNumber(String target) =>
+        recastValue((face['value'] as num?)?.toInt() ?? 0, target, rawFaces) +
+        current.hones * honeStep;
     final options = <Widget>[];
     for (final kind in SmithingWork.values) {
       if (!canSmith(kind, face, current)) continue;
@@ -314,13 +325,12 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
             ),
           ],
         SmithingWork.temper => [
-            for (final element in temperElements)
-              if (element != current.element)
-                (
-                  label: element,
-                  tip: null,
-                  onTap: () => work(SmithingWork.temper, element: element),
-                ),
+            for (final element in temperableElements(face, current))
+              (
+                label: elementLabel(element, lang),
+                tip: null,
+                onTap: () => work(SmithingWork.temper, element: element),
+              ),
           ],
         SmithingWork.inscribe => [
             for (final keyword in inscribableKeywords(face, current))
@@ -334,7 +344,8 @@ class _DiceSmithingSheetState extends ConsumerState<_DiceSmithingSheet> {
             for (final target in smithableBasicTypes)
               if (target != type)
                 (
-                  label: trFor(lang, basicFaceLabelKey(target)),
+                  label: '${trFor(lang, basicFaceLabelKey(target))} '
+                      '${recastNumber(target)}',
                   tip: null,
                   onTap: () => work(SmithingWork.recast, recastType: target),
                 ),

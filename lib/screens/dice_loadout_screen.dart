@@ -101,11 +101,12 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
       _selectedDiceId = diceIds.first;
     }
     final selectedDice = dice[_selectedDiceId] as Map<String, dynamic>;
-    // The die as the Hammersmith left it (see face_smithing.dart).
+    // The die as the Hammersmith left it (see face_smithing.dart), an
+    // ally's apart from the player's own copy of the same die.
     final faces = smithedFaces(
         (selectedDice['faces'] as List?)?.cast<Map<String, dynamic>>() ??
             const [],
-        session.diceUpgrades[_selectedDiceId ?? '']);
+        session.upgradesOfDie(_selectedDiceId, companionId: ally?.companionId));
     final assignments = ally != null
         ? ally.diceSkillAssignments
         : session.diceSkillAssignments[_selectedDiceId] ??

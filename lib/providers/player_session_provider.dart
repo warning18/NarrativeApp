@@ -387,9 +387,23 @@ class PlayerSession {
   final int runSeed;
 
   /// The Hammersmith's work on the party's dice (v1.182, see
-  /// face_smithing.dart): die id → face index → what was done to it. Kept
-  /// on the die, so a companion's signature die keeps it too.
+  /// face_smithing.dart): die key → face index → what was done to it. Kept
+  /// on the die it was done on: the player's own under the die's id, a
+  /// companion's signature die under their id too (see dieUpgradesKey and
+  /// [upgradesOfDie]).
   final Map<String, DieUpgrades> diceUpgrades;
+
+  /// The Hammersmith's work on die [dieId] as [companionId] has it (their
+  /// signature die), or as the player has it (no [companionId]). A save
+  /// from before the two were kept apart has a companion's work under the
+  /// die's id alone: it stays with the player's own copy of the die, and a
+  /// companion still finds it on a die the player doesn't own.
+  DieUpgrades? upgradesOfDie(String? dieId, {String? companionId}) {
+    if (dieId == null) return null;
+    if (companionId == null) return diceUpgrades[dieId];
+    return diceUpgrades[dieUpgradesKey(dieId, companionId: companionId)] ??
+        (ownedDiceIds.contains(dieId) ? null : diceUpgrades[dieId]);
+  }
 
   /// How much stronger enemies are in [chapter] for the days the party has
   /// spent in it (see [threatFor]).
@@ -1324,8 +1338,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       diceUpgrades: keepLegacy
           ? {
               for (final id in previous.legacyDiceIds)
-                if (previous.diceUpgrades[id] != null)
-                  id: previous.diceUpgrades[id]!,
+                if (previous.upgradesOfDie(id) != null)
+                  id: previous.upgradesOfDie(id)!,
             }
           : const {},
     );
@@ -1457,10 +1471,11 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       knownSpellIds: [...startingSpellIds, ...legacySpells],
       newGamePlusCycle: legacy.newGamePlusCycle,
       runSeed: 1 + Random().nextInt(0x7ffffffe),
-      // A New Game+ legacy die keeps the Hammersmith's work on it.
+      // A New Game+ legacy die keeps the Hammersmith's work on it: the
+      // player's own, not a companion's on their copy of the same die.
       diceUpgrades: {
         for (final id in legacyDice)
-          if (legacy.diceUpgrades[id] != null) id: legacy.diceUpgrades[id]!,
+          if (legacy.upgradesOfDie(id) != null) id: legacy.upgradesOfDie(id)!,
       },
     );
     await _persist();
@@ -2187,22 +2202,24 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// The Hammersmith works face [faceIndex] of die [dieId] (whose dice.json
-  /// faces are [faces]): [work] is paid for (gold, iron ore, a trophy --
-  /// an Elite Mark first) and kept on the die. A Temper takes [element], an
-  /// inscription [keyword], a Recast [recastType]. Returns false when the
-  /// work doesn't fit the face or can't be paid for.
+  /// faces are [faces]), the player's own or [companionId]'s signature die:
+  /// [work] is paid for (gold, iron ore, a trophy -- an Elite Mark first)
+  /// and kept on that die (see [PlayerSession.upgradesOfDie]). A Temper
+  /// takes [element], an inscription [keyword], a Recast [recastType].
+  /// Returns false when the work doesn't fit the face or can't be paid for.
   Future<bool> smithFace({
     required String dieId,
     required int faceIndex,
     required List<Map<String, dynamic>> faces,
     required SmithingWork work,
+    String? companionId,
     String? element,
     FaceKeyword? keyword,
     String? recastType,
   }) async {
     if (faceIndex < 0 || faceIndex >= faces.length) return false;
-    final dieUpgrades =
-        state.diceUpgrades[dieId] ?? const <String, FaceUpgrade>{};
+    final dieUpgrades = state.upgradesOfDie(dieId, companionId: companionId) ??
+        const <String, FaceUpgrade>{};
     final current = dieUpgrades[faceIndex.toString()] ?? FaceUpgrade.none;
     final face = faces[faceIndex];
     if (!canSmith(work, face, current)) return false;
@@ -2211,8 +2228,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       case SmithingWork.hone:
         next = current.copyWith(hones: current.hones + 1);
       case SmithingWork.temper:
-        if (element == null || !temperElements.contains(element)) return false;
-        if (element == current.element) return false;
+        if (element == null ||
+            !temperableElements(face, current).contains(element)) {
+          return false;
+        }
         next = current.copyWith(element: element);
       case SmithingWork.inscribe:
         if (keyword == null ||
@@ -2249,12 +2268,20 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         trophiesLeft--;
       }
     }
+    // A companion's work an older save kept under the die's id alone (on a
+    // die the player doesn't own) moves under their own key with this.
+    final movesOver =
+        companionId != null && !state.ownedDiceIds.contains(dieId);
     state = state.copyWith(
       gold: state.gold - cost.gold,
       inventoryItemIds: remaining,
       diceUpgrades: {
-        ...state.diceUpgrades,
-        dieId: {...dieUpgrades, faceIndex.toString(): next},
+        for (final entry in state.diceUpgrades.entries)
+          if (!movesOver || entry.key != dieId) entry.key: entry.value,
+        dieUpgradesKey(dieId, companionId: companionId): {
+          ...dieUpgrades,
+          faceIndex.toString(): next,
+        },
       },
     );
     await _persist();

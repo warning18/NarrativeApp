@@ -587,11 +587,10 @@ extension _FightView on _FightScreenState {
   /// With momentum full and more than one strike on the table, the player
   /// picks which one the guaranteed critical lands on.
   Widget _buildSurgePicker(List<_PartyMember> acting) {
+    final striking = _strikerIds();
     final strikers = [
       for (final actor in acting)
-        if (_currentFaces[actor.id]?.type == 'Attack' ||
-            _currentFaces[actor.id]?.type == 'Skill')
-          actor,
+        if (striking.contains(actor.id)) actor,
     ];
     if (strikers.length < 2) return const SizedBox.shrink();
     final recipient = _surgeRecipient();

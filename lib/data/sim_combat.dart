@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../combat/combat_engine.dart';
 import '../combat/dice_faces.dart';
+import '../combat/dice_tamper.dart';
 import '../combat/gear_effects.dart';
 import '../combat/spells.dart';
 import '../combat/status_effect.dart';
@@ -13,14 +14,23 @@ import '../models/ally_state.dart';
 /// with the same engine a live fight uses -- `rollDie`, `resolvePlayerFace`,
 /// `resolveEnemyMove`, the status effects, the chapter curve, pack
 /// multipliers, the mana pool, its Mana faces and the spells the
-/// profession starts with or buys. Deliberate simplifications, so the
-/// numbers read as "a solo player of this build" rather than a full party:
-/// no companions, no affixes or battlefield conditions, no crit/momentum
-/// beyond what the engine rolls, a die rerolled only on an empty face, and
-/// a shop visited once when the story unlocks it (best affordable gear per
-/// slot, two potions, the profession's own spellbook, the sage die for a
-/// caster). A lost fight refills health and mana like the app's own loss
-/// handling; a new chapter counts as a rest.
+/// profession starts with or buys, and a Mirror sending back the round's
+/// best hit. Deliberate simplifications, so the numbers read as "a solo
+/// player of this build" rather than a full party:
+/// - no companions, so no party combos or duo techniques;
+/// - no affixes, Elites or battlefield conditions;
+/// - no chapter threat on the enemies, and no sellsword;
+/// - none of the face keywords (Pain, Steady, Growth...), no Hex, Silence
+///   or Curse (the enemy spends its turn and nothing else changes), no
+///   Luck nudges and no Hammersmith work on the die;
+/// - no crit/momentum beyond what the engine rolls, and a die rerolled
+///   only on an empty face;
+/// - a shop visited once when the story unlocks it (best affordable gear
+///   per slot, two potions, the profession's own spellbook, the sage die
+///   for a caster).
+///
+/// A lost fight refills health and mana like the app's own loss handling;
+/// a new chapter counts as a rest.
 class SimCharacter {
   SimCharacter._({
     required this.raceId,
@@ -590,6 +600,9 @@ SimFightOutcome simulateSimFight({
 
     var block =
         _castSpellIfWorth(c, ens, items, random, casts, itemSets: itemSets);
+    // The round's best hit, what a Mirror sends back: the spell's so far
+    // (it hits each enemy once), then the die's.
+    var bestHit = ens.fold<int>(0, (best, e) => max(best, e.damageThisRound));
     advancePhases();
     if (allDead()) return finish(true);
 
@@ -624,6 +637,7 @@ SimFightOutcome simulateSimFight({
       if (target != null && result.damageDealt > 0) {
         final landed = target.takeHit(result.damageDealt, element);
         target.health = max(0, target.health - landed);
+        bestHit = max(bestHit, landed);
         if (element != 'None') target.elementsHit.add(element);
         final drained = gear.lifestealFor(landed);
         if (drained > 0) {
@@ -719,8 +733,8 @@ SimFightOutcome simulateSimFight({
                   (other.damage * (1 + move.rallyPercent / 100)).round();
               other.rallies++;
             }
-          // The dice tampering (v1.182) isn't modelled here: the enemy
-          // spends its turn on it and nothing else changes.
+          // A Hex, a Silence or a Curse (v1.182) isn't modelled here: the
+          // enemy spends its turn on it and nothing else changes.
           case EnemyIntent.tamper:
           case EnemyIntent.attack:
             break;
@@ -735,7 +749,12 @@ SimFightOutcome simulateSimFight({
                 scaledEnemyHeal(move.healAmount,
                     maxHealth: e.maxHealth, baseMaxHealth: baseMax));
       }
-      final moveDamage = applyWeaken(move.damage, e.statusEffects);
+      // A Mirror sends back the round's best hit, as on the fight screen.
+      final moveDamage = applyWeaken(
+          move.tamper == DiceTamper.mirror
+              ? mirrorDamage(bestPartyHit: bestHit, enemyDamage: e.damage)
+              : move.damage,
+          e.statusEffects);
       final dodged = random.nextDouble() * 100 <
           dodgeChanceFor(c.dexterity) + gear.dodgeChance;
       var taken = dodged

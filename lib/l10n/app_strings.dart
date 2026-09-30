@@ -1344,9 +1344,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'La quantité de dégâts que vous pouvez encaisser avant de tomber.',
   },
   'luck_desc': {
-    AppLanguage.en: 'Improves your odds of finding better loot after a fight.',
+    AppLanguage.en: 'Raises your chance of a critical hit, and your odds of '
+        'finding better loot after a fight. Every 3 points of the party\'s '
+        'best Luck also give a nudge per fight, up to 3: long-press a '
+        'landed die to turn it to its opposite face.',
     AppLanguage.fr:
-        'Améliore vos chances de trouver un meilleur butin après un combat.',
+        'Augmente vos chances de coup critique, et de trouver un meilleur '
+            'butin après un combat. Tous les 3 points de la meilleure Chance '
+            'du groupe donnent aussi un coup de pouce par combat, jusqu\'à '
+            '3 : un appui long sur un dé tombé le tourne sur sa face opposée.',
   },
   'charisma_desc': {
     AppLanguage.en: 'Opens persuasion-gated dialogue and story choices.',
@@ -3341,7 +3347,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'keyword_pierce_desc': {
     AppLanguage.en:
         'the strike goes through a raised guard and an Armored hide.',
-    AppLanguage.fr: 'le coup traverse une garde levée et une peau Blindée.',
+    AppLanguage.fr: 'le coup traverse une garde levée et une peau Cuirassée.',
   },
   'keyword_growth': {
     AppLanguage.en: 'Growth',
@@ -3446,9 +3452,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tamper_hex_desc': {
     AppLanguage.en:
-        'on the party\'s next roll, the best die that lands is rolled again at once.',
+        'on the party\'s next roll, the best die that lands is rolled again at once (a Steady face holds).',
     AppLanguage.fr:
-        'au prochain lancer du groupe, le meilleur dé tombé est aussitôt relancé.',
+        'au prochain lancer du groupe, le meilleur dé tombé est aussitôt relancé (une face Stable tient bon).',
   },
   'tamper_silence': {
     AppLanguage.en: 'Silence',
@@ -3571,9 +3577,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_recast_desc': {
     AppLanguage.en:
-        'Turn an Attack, Guard or Heal face into another of the three, keeping its number.',
+        'Turn an Attack, Guard or Heal face into another of the three. It keeps its number, up to the die\'s best face of the new kind.',
     AppLanguage.fr:
-        'Changer une face d\'attaque, de garde ou de soin en une autre des trois, en gardant son nombre.',
+        'Changer une face d\'attaque, de garde ou de soin en une autre des trois. Elle garde son nombre, sans dépasser la meilleure face de ce type sur le dé.',
   },
   'smith_title': {
     AppLanguage.en: 'Dice smithing',
@@ -3581,9 +3587,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'smith_hint': {
     AppLanguage.en:
-        'The work stays on the die: a companion\'s die keeps it too.',
+        'The work stays on the die: a companion\'s die keeps it too, separately from your own copy of the same die.',
     AppLanguage.fr:
-        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi.',
+        'Le travail reste sur le dé : le dé d\'un compagnon le garde aussi, séparément de votre exemplaire du même dé.',
   },
   'smith_open_button': {
     AppLanguage.en: 'Smith dice',
