@@ -5757,9 +5757,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
-        'Close in or pull away, change each gun’s shot, and give each hand’s one order from the crew sheet. Side by side with their rail open, you can board them.',
+        'Close in or pull away, and give each hand’s one order from the crew sheet. Each gun fires the shot it was fitted with at the Harbor. Side by side with their rail open, you can board them.',
     AppLanguage.fr:
-        'Approchez ou éloignez-vous, changez la munition de chaque arme et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
+        'Approchez ou éloignez-vous, et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Chaque arme tire la munition avec laquelle le port l’a montée. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
   },
   'tut_shipBattle_5': {
     AppLanguage.en:

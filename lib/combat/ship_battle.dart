@@ -37,8 +37,9 @@ import 'ship_combat.dart' as combat show endRound;
 ///   turns for the deep when it is hurt. A harpoon that lands holds it on
 ///   the line for a few rounds: no healing, no diving, no fleeing; so do
 ///   fins knocked out. Nobody boards a beast, and it does not chase the
-///   Eel in a turn she runs. It has no deck for grape to sweep and no
-///   rigging for chain to tear: to a beast they are only light shot.
+///   Eel in a turn she runs. It has no deck for grape to sweep, no
+///   rigging for chain to tear and nothing dry to burn: to a beast they
+///   are only light shot, and a heated ball or a fire pot only its hull.
 ///
 /// Deterministic given [random], so tests and the balance simulation can
 /// drive whole battles; the panel (ShipBattlePanel) drives one turn at a
@@ -582,9 +583,13 @@ class ShipBattle {
   /// shot at [room].
   ShotMods shotMods(ShipRoom room, {ShipWeapon? weapon, AimResult? aim}) {
     var mods = ammoMods(weapon?.ammo ?? ShipAmmo.round);
-    // A beast's fins are no rigging: chain tears nothing more off them.
-    if (beast != null && mods.helmPips > 0) {
-      mods = ShotMods(damageFactor: mods.damageFactor, ignite: mods.ignite);
+    // A beast's fins are no rigging: chain tears nothing more off them;
+    // and the sea it swims in puts out any fire before it takes.
+    if (beast != null) {
+      if (mods.helmPips > 0) {
+        mods = ShotMods(damageFactor: mods.damageFactor, ignite: mods.ignite);
+      }
+      mods = mods.merge(const ShotMods(noFire: true));
     }
     if (weather == SeaWeather.squall) {
       mods = mods.merge(const ShotMods(noFire: true));

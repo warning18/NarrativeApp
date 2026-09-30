@@ -254,6 +254,10 @@ final _earlyWaters =
 /// tears rigging: a beast has neither).
 const _swivels = ['grape_swivel', 'chain_swivel'];
 
+/// The fire guns, fitted the same way: the sea puts out any fire on a
+/// beast, so a red-hot ball or a pot of pitch is only its hull.
+const _fireGuns = ['hot_shot_carronade', 'fire_pots'];
+
 void main() {
   final first = <String, _Tally>{};
   final ran = <String, _Tally>{};
@@ -286,7 +290,7 @@ void main() {
         ..writeln('  first meeting, ran     ${ran[w.beast]}')
         ..writeln('  hunt with the harpoon  ${hunted[w.beast]}')
         ..writeln('  hunt without it        ${huntedBare[w.beast]}');
-      for (final gun in _swivels) {
+      for (final gun in [..._swivels, ..._fireGuns]) {
         final t = swivel['${w.beast} $gun'] = _meet(
             _Waters(w.beast, const [], const [], _lateCrew),
             parts: ['ballista', gun, 'iron_plating', 'tar_sealed_hull'],
@@ -340,8 +344,8 @@ void main() {
     for (final id in ['pale_leviathan', 'tide_kraken']) {
       expect(first[id]!.lostRate, greaterThanOrEqualTo(0.5), reason: id);
     }
-    // No cheap swivel gun makes it one to win: a beast has no deck for
-    // grape to sweep, no rigging for chain to tear.
+    // No swivel or fire gun makes it one to win: a beast has no deck for
+    // grape to sweep, no rigging for chain to tear, nothing dry to burn.
     for (final entry in swivel.entries) {
       expect(entry.value.winRate, lessThanOrEqualTo(0.65), reason: entry.key);
     }

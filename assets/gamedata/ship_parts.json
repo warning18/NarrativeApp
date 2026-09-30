@@ -54,8 +54,8 @@
     "setsFire": true,
     "roomDamage": 1,
     "roomBonus": {},
-    "description": "Clay pots of pitch, four turns to ready (three with a gunner), hurled by hand: the ships must lie close. The room they land in burns until someone fights the fire, and the hull with it.",
-    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec.",
+    "description": "Clay pots of pitch, four turns to ready (three with a gunner), hurled by hand: the ships must lie close. The room they land in burns until someone fights the fire, and the hull with it. A sea beast doesn't burn: the sea puts the fire out.",
+    "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec. Une bête marine ne brûle pas : la mer éteint le feu.",
     "ranges": [
       "close"
     ],
@@ -88,7 +88,7 @@
     "partName": "Grape Swivel",
     "partName_fr": "Pierrier à mitraille",
     "slotType": "Weapon",
-    "cost": 110,
+    "cost": 170,
     "battleActionLabel": "Fire grapeshot",
     "battleActionLabel_fr": "Tirer à mitraille",
     "damageAmount": 12,
@@ -120,8 +120,8 @@
     "roomDamage": 1,
     "roomBonus": {},
     "ammo": "heated",
-    "description": "A short, heavy gun with a brazier beside it for heating its balls red, three turns to load. A red-hot ball does three quarters of the hull a cold one would, but it sets the room it lands in burning. Close and medium range.",
-    "description_fr": "Un canon court et lourd, avec un brasero à côté pour chauffer ses boulets au rouge, trois tours à charger. Un boulet rouge fait les trois quarts des dégâts à la coque d'un boulet froid, mais il met le feu à la salle qu'il touche. Courte et moyenne portée.",
+    "description": "A short, heavy gun with a brazier beside it for heating its balls red, three turns to load. A red-hot ball does three quarters of the hull a cold one would, but it sets the room it lands in burning. A sea beast doesn't burn: the sea puts the fire out. Close and medium range.",
+    "description_fr": "Un canon court et lourd, avec un brasero à côté pour chauffer ses boulets au rouge, trois tours à charger. Un boulet rouge fait les trois quarts des dégâts à la coque d'un boulet froid, mais il met le feu à la salle qu'il touche. Une bête marine ne brûle pas : la mer éteint le feu. Courte et moyenne portée.",
     "ranges": [
       "close",
       "medium"
