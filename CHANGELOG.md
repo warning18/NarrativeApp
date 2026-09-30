@@ -8,6 +8,39 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.180.0+210]
+
+### Changed
+- **The camp puts the next step first.**
+  - One header: the camp, its chapter, the day and the hour, and the
+    purse.
+  - The main quest is a checklist: each place still to visit is a line
+    that leads to the Road, then how much of the chapter is explored and
+    its quests settled. The way in says how many steps are left.
+  - The camp's scene is a card until read ("Put it away"), then a chip
+    beside Rest that opens it again.
+- **The camp in four tabs:**
+  - **Road:** places, expeditions and the bounty board;
+  - **Town:** the cliff town and its shops;
+  - **Party;**
+  - **Sea:** the Rusty Eel, the harbour and the chart.
+
+  It replaces eight sections in one scroll.
+- **The harbour is always in view.** The Sea tab shows the Eel drawn on
+  the water, her hull (in the sea's colour, red when low), her named
+  shield, her slots and the repair. Until the harbour is built, a card
+  says what it gives and costs, and a tap goes to Town. Once built, it
+  opens the refit, where the shipwright's parts are grouped by slot
+  ("Weapons · 1 of 2 filled") with the Install button under each.
+- **A day at sea you can read:**
+  - the crossing as a strip of days, each behind her showing what it
+    cost or gave, today marked, the rest unknown;
+  - the Eel on the water beside what she meets, and one hull bar;
+  - every choice says what it wins or costs and, for a check, the bonus,
+    the DC and the odds ("Perception +1 vs DC 15 · win +80 gold · fail
+    −12 hull · 35%"). No choice is highlighted as the one to take;
+  - the log is labelled, and hull losses carry their minus sign.
+
 ## [1.179.0+209]
 
 ### Changed

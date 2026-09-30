@@ -2081,6 +2081,152 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Fights at tier {n} (Mastery)',
     AppLanguage.fr: 'Combat au rang {n} (Maîtrise)',
   },
+  'ship_shield_line': {
+    AppLanguage.en: 'Shield: blocks {n} hit(s) a fight, then recharges',
+    AppLanguage.fr: 'Bouclier : pare {n} coup(s) par combat, puis se recharge',
+  },
+  'shield_short_label': {
+    AppLanguage.en: 'Shield',
+    AppLanguage.fr: 'Bouclier',
+  },
+  'camp_tab_road': {
+    AppLanguage.en: 'Road',
+    AppLanguage.fr: 'Route',
+  },
+  'camp_tab_town': {
+    AppLanguage.en: 'Town',
+    AppLanguage.fr: 'Ville',
+  },
+  'camp_tab_party': {
+    AppLanguage.en: 'Party',
+    AppLanguage.fr: 'Groupe',
+  },
+  'camp_tab_sea': {
+    AppLanguage.en: 'Sea',
+    AppLanguage.fr: 'Mer',
+  },
+  'camp_scene_put_away': {
+    AppLanguage.en: 'Put it away',
+    AppLanguage.fr: 'Ranger',
+  },
+  'next_main_quest_label': {
+    AppLanguage.en: 'Next · main quest',
+    AppLanguage.fr: 'Ensuite · quête principale',
+  },
+  'main_quest_open_label': {
+    AppLanguage.en: 'Main quest · open',
+    AppLanguage.fr: 'Quête principale · ouverte',
+  },
+  'next_visit_place': {
+    AppLanguage.en: 'Visit {place}',
+    AppLanguage.fr: 'Visiter {place}',
+  },
+  'next_visit_place_sub': {
+    AppLanguage.en: 'on the Road, under Places',
+    AppLanguage.fr: 'sur la Route, parmi les Lieux',
+  },
+  'next_explore_sub': {
+    AppLanguage.en: 'places, expeditions and bounties count',
+    AppLanguage.fr: 'lieux, expéditions et primes comptent',
+  },
+  'steps_left_one': {
+    AppLanguage.en: '1 step left',
+    AppLanguage.fr: 'Encore 1 étape',
+  },
+  'steps_left_many': {
+    AppLanguage.en: '{n} steps left',
+    AppLanguage.fr: 'Encore {n} étapes',
+  },
+  'harbour_not_built_title': {
+    AppLanguage.en: 'The Harbour: not built yet',
+    AppLanguage.fr: 'Le Port : pas encore bâti',
+  },
+  'harbour_not_built_body': {
+    AppLanguage.en:
+        'Build it in Town ({cost} gold) to fit guns, plates and a sail to the Eel.',
+    AppLanguage.fr:
+        'Bâtissez-le en Ville ({cost} or) pour armer le Rusty Eel : canons, plaques, voile.',
+  },
+  'harbour_built_body': {
+    AppLanguage.en: 'Refit the Eel: parts for her slots.',
+    AppLanguage.fr: 'Radouber le Rusty Eel : des pièces pour ses emplacements.',
+  },
+  'tut_camp_0': {
+    AppLanguage.en:
+        'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
+    AppLanguage.fr:
+        'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+  },
+  'tut_camp_6': {
+    AppLanguage.en:
+        'Road: the places you know, expeditions from the shore, and the bounty board.',
+    AppLanguage.fr:
+        'Route : les lieux connus, les expéditions depuis la côte et le tableau des primes.',
+  },
+  'slots_filled': {
+    AppLanguage.en: '{used} of {cap} filled',
+    AppLanguage.fr: '{used} sur {cap} occupés',
+  },
+  'stake_safe_gold': {
+    AppLanguage.en: 'Safe · +{n} gold',
+    AppLanguage.fr: 'Sans risque · +{n} or',
+  },
+  'stake_board': {
+    AppLanguage.en: 'win +{gold} gold · fail −{hull} hull',
+    AppLanguage.fr: 'réussite +{gold} or · échec −{hull} coque',
+  },
+  'stake_nothing': {
+    AppLanguage.en: 'Nothing gained, nothing lost',
+    AppLanguage.fr: 'Rien de gagné, rien de perdu',
+  },
+  'stake_lose_hull': {
+    AppLanguage.en: 'Certain · −{n} hull',
+    AppLanguage.fr: 'Certain · −{n} coque',
+  },
+  'stake_push': {
+    AppLanguage.en: 'win: nothing lost · fail −{n} hull',
+    AppLanguage.fr: 'réussite : rien de perdu · échec −{n} coque',
+  },
+  'stake_shelter': {
+    AppLanguage.en: 'Safe · one more day at sea',
+    AppLanguage.fr: 'Sans risque · un jour de mer de plus',
+  },
+  'stake_repair': {
+    AppLanguage.en: 'Safe · +{n} hull',
+    AppLanguage.fr: 'Sans risque · +{n} coque',
+  },
+  'stake_rest': {
+    AppLanguage.en: 'Safe · +{n} health',
+    AppLanguage.fr: 'Sans risque · +{n} santé',
+  },
+  'stake_pay': {
+    AppLanguage.en: '−{n} gold · they sheer off',
+    AppLanguage.fr: '−{n} or · ils s\'éloignent',
+  },
+  'stake_outrun': {
+    AppLanguage.en: 'win: away clean · fail −{n} hull, then a fight',
+    AppLanguage.fr: 'réussite : on s\'échappe · échec −{n} coque, puis combat',
+  },
+  'stake_fight': {
+    AppLanguage.en: 'A sea fight: guns, crew and rooms',
+    AppLanguage.fr: 'Un combat naval : canons, équipage et salles',
+  },
+  'route_today': {
+    AppLanguage.en: 'today',
+    AppLanguage.fr: 'aujourd\'hui',
+  },
+  'route_day_quiet': {
+    AppLanguage.en: 'quiet',
+    AppLanguage.fr: 'calme',
+  },
+  'ships_log_title': {
+    AppLanguage.en: 'SHIP\'S LOG',
+    AppLanguage.fr: 'JOURNAL DE BORD',
+  },
+  'route_from_to': {
+    AppLanguage.en: 'From {from} to {to}',
+    AppLanguage.fr: 'De {from} à {to}',
+  },
   'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'hub_enter_button': {
     AppLanguage.en: 'Enter {place}',
@@ -3828,17 +3974,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Rusty Eel les distance',
   },
   'ship_log_outrun_failed': {
-    AppLanguage.en: 'They catch the Eel and rake her: {n} hull',
+    AppLanguage.en: 'They catch the Eel and rake her: −{n} hull',
     AppLanguage.fr:
-        'Ils rattrapent le Rusty Eel et le mitraillent : {n} points de coque',
+        'Ils rattrapent le Rusty Eel et le mitraillent : −{n} points de coque',
   },
   'ship_log_pushed_through': {
     AppLanguage.en: 'Through the storm with nothing lost',
     AppLanguage.fr: 'La tempête est passée sans rien perdre',
   },
   'ship_log_push_failed': {
-    AppLanguage.en: 'The storm punishes the gamble: {n} hull',
-    AppLanguage.fr: 'La tempête punit le pari : {n} points de coque',
+    AppLanguage.en: 'The storm punishes the gamble: −{n} hull',
+    AppLanguage.fr: 'La tempête punit le pari : −{n} points de coque',
   },
   'ship_log_sheltered': {
     AppLanguage.en: 'Sheltered in a cove; the crossing takes a day longer',
@@ -4972,9 +5118,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_5': {
     AppLanguage.en:
-        'Sail from here: pick a port on the chart. Each port has its own expeditions.',
+        'Sea: the Rusty Eel, the harbour, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
-        "Partez d'ici : choisissez un port sur la carte. Chaque port a ses propres expéditions.",
+        'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
   'tut_character_1': {
     AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
@@ -5000,9 +5146,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_1': {
     AppLanguage.en:
-        'Your cliff town. Every house you build climbs the cliff. Scroll inside it to see the top.',
+        'Town: your cliff town. Every house you build climbs the cliff, and its shops open here.',
     AppLanguage.fr:
-        'Votre ville sur la falaise. Chaque maison construite grimpe la falaise. Faites défiler pour voir le sommet.',
+        'Ville : votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
   },
   'tut_camp_2': {
     AppLanguage.en:
@@ -5018,9 +5164,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_4': {
     AppLanguage.en:
-        'Companions you recruit rest here. Choose who fights at your side.',
+        'Party: companions you recruit rest here. Choose who fights at your side.',
     AppLanguage.fr:
-        'Les compagnons recrutés se reposent ici. Choisissez qui combat à vos côtés.',
+        'Groupe : vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
   },
   'tut_other_1': {
     AppLanguage.en: 'Save your game here, or load another one.',

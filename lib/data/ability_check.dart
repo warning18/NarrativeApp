@@ -98,3 +98,8 @@ AbilityCheckResult rollAbilityCheck({
     dc: dc,
   );
 }
+
+/// The chance a d20 plus [modifier] meets [dc], from 0 to 1 (a check
+/// succeeds when the total reaches the DC; see [AbilityCheckResult]).
+double checkChance({required int modifier, required int dc}) =>
+    (21 - (dc - modifier)).clamp(0, 20) / 20;
