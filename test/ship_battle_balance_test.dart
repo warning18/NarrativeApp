@@ -174,7 +174,8 @@ void _orders(ShipBattle b) {
       .where((w) => readyNextTurn(w, b.enemy) && b.inRange(w))
       .fold<int>(0, (sum, w) => sum + w.damage);
   for (final c in List.of(b.crew)) {
-    if (!b.canOrder(c)) continue;
+    // A hand goes to their order's room to give it, as a player would.
+    if (!b.orderWorks(c)) continue;
     final use = switch (orderFor(c)!) {
       CrewOrder.allHands =>
         b.player.rooms.values.where((r) => r.damage > 0).length >= 2,
@@ -190,7 +191,7 @@ void _orders(ShipBattle b) {
         b.player.weapons.any((w) => b.canFire(w) && w.damage >= 20),
       CrewOrder.grapple => b.enemy.hull * 2 < b.enemy.maxHull,
     };
-    if (use) b.giveOrder(c);
+    if (use) b.orderFromStation(c);
   }
 }
 

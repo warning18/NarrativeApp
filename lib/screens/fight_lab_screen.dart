@@ -209,6 +209,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                 title: Text('${trFor(lang, 'fight_lab_title')} · $enemyName'),
               ),
               body: ShipBattlePanel(
+                placeCrew: true,
                 player: buildPlayerShip(
                   ship: ship,
                   parts: parts,
