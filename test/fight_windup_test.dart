@@ -24,11 +24,13 @@ Future<void> _settle(WidgetTester tester) async {
   }
 }
 
-/// Pumps until [done] holds (or ~12 s of real time pass): the enemy turn
+/// Pumps until [done] holds (or ~45 s of real time pass): the enemy turn
 /// waits on real async work before its own delay, so a busy machine needs
-/// longer than a fixed number of pumps.
+/// longer than a fixed number of pumps. CI runs the whole suite at once,
+/// and ~12 s was once not enough for the second enemy turn; the wait ends
+/// as soon as [done] holds, so a generous cap costs a passing run nothing.
 Future<void> _pumpUntil(WidgetTester tester, bool Function() done) async {
-  for (var i = 0; i < 40 && !done(); i++) {
+  for (var i = 0; i < 150 && !done(); i++) {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.pump(const Duration(milliseconds: 100));
