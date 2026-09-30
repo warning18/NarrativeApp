@@ -6200,12 +6200,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Touchez une salle pour tirer, ou maintenez-la pour viser : arrêtez le curseur au milieu pour un critique impossible à esquiver ; aux bords, le tir part à côté. Les réglages peuvent ralentir le curseur ou désactiver la visée.',
   },
-  'tip_ship_ammo': {
-    AppLanguage.en:
-        'Change the shot: chain tears their helm, grape cuts down their crew so they repair less, heated sets fires. Each does less hull than round shot.',
-    AppLanguage.fr:
-        'Changez de munition : le boulet ramé arrache leur barre, la mitraille fauche leur équipage pour qu’il répare moins, le boulet chauffé met le feu. Chacune fait moins de dégâts à la coque que le boulet rond.',
-  },
   'tip_ship_orders': {
     AppLanguage.en:
         'Each hand aboard can give one order a battle, from the crew sheet: a brace, a blessing, a critical shot, and more.',
@@ -6674,26 +6668,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_weapon_armed_label': {
     AppLanguage.en: 'armed',
     AppLanguage.fr: 'armée',
-  },
-  'ship_ammo_label': {
-    AppLanguage.en: 'Shot:',
-    AppLanguage.fr: 'Munition :',
-  },
-  'ship_ammo_round': {
-    AppLanguage.en: 'Round',
-    AppLanguage.fr: 'Boulet',
-  },
-  'ship_ammo_chain': {
-    AppLanguage.en: 'Chain',
-    AppLanguage.fr: 'Ramé',
-  },
-  'ship_ammo_grape': {
-    AppLanguage.en: 'Grape',
-    AppLanguage.fr: 'Mitraille',
-  },
-  'ship_ammo_heated': {
-    AppLanguage.en: 'Heated',
-    AppLanguage.fr: 'Rouge',
   },
   'ship_ammo_round_hint': {
     AppLanguage.en: 'Round shot: the weapon as it is.',

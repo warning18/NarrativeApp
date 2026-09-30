@@ -1,7 +1,7 @@
 // A Monte Carlo of whole ship battles on the real data: the Rusty Eel as
 // she is fitted at three points of the game against every enemy ship,
 // under the battle before v1.153 (classic rules, a plain player) and the
-// battle now (every rule, a player who uses the tools: range, shot,
+// battle now (every rule, a player who uses the tools: range,
 // aim, orders, quick orders, focused fire). The deck fights of a boarding
 // are a coin weighted to what the dice fights give at the rail.
 //
@@ -99,7 +99,6 @@ BattleEnd _play({
     b.autoStation();
     if (tools) _orders(b);
     _maneuver(b, tools: tools);
-    if (tools) b.ammo = _ammoFor(b);
     // Fire every ready weapon at one room: focused fire.
     final room = _targetRoom(b);
     for (final w in List.of(b.player.weapons)) {
@@ -209,16 +208,6 @@ void _maneuver(ShipBattle b, {required bool tools}) {
   if (b.canMoveTo(to)) b.maneuver(to);
 }
 
-ShipAmmo _ammoFor(ShipBattle b) {
-  final helm = b.enemy.room(ShipRoom.helm);
-  if ((b.habit == EnemyHabit.flee || b.habit == EnemyHabit.marksman) &&
-      !helm.isDown) {
-    return ShipAmmo.chain;
-  }
-  if (b.enemy.repairsPerRound >= 2 && b.grapeLeft == 0) return ShipAmmo.grape;
-  return ShipAmmo.round;
-}
-
 ShipRoom _targetRoom(ShipBattle b) {
   for (final room in [ShipRoom.guns, ShipRoom.helm, ShipRoom.bulwark]) {
     if (!b.enemy.room(room).isDown) return room;
@@ -313,7 +302,11 @@ void main() {
         final now = skilled[fitting]![enemy]!.winRate;
         expect(now, greaterThanOrEqualTo(old - 0.15),
             reason: '$fitting vs $enemy: $now vs $old before');
-        expect(now, lessThanOrEqualTo(old + 0.30),
+        // Since v1.183 the shot is the weapon's, not the player's pick: a
+        // skilled captain no longer trades half her hull damage for chain
+        // shot against a hard ship, so the late void barge falls more
+        // often (57% against 23%). Still a fight, not a walkover.
+        expect(now, lessThanOrEqualTo(old + 0.35),
             reason: '$fitting vs $enemy: $now vs $old before');
       }
     }

@@ -1231,6 +1231,16 @@ final DbSchema shipPartsSchema = DbSchema(
       label: 'Room Bonus {helm, guns, bulwark, hold}: pips this part adds',
       type: FieldType.json,
     ),
+    // The shot a weapon fires (ship_combat.dart ShipAmmo): it is the
+    // weapon's, not picked in battle.
+    FieldSchema(
+      key: 'ammo',
+      label: 'Shot (round, chain: tears the helm, grape: slows repairs, '
+          'heated: sets fire)',
+      type: FieldType.enumeration,
+      enumOptions: const ['round', 'chain', 'grape', 'heated'],
+      defaultValue: 'round',
+    ),
     FieldSchema(
       key: 'ranges',
       label:

@@ -292,7 +292,6 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         'ship_habit_${widget.habit.name}',
       if (b.rules.weather && b.weather != SeaWeather.calm) 'ship_weather',
       if (aimed != AimedShots.off && b.anyShotReady) 'ship_aim',
-      if (b.turn >= 2) 'ship_ammo',
       if (b.crew.any(b.canOrder)) 'ship_orders',
       if (b.player.rooms.values.any((r) => r.onFire)) 'ship_fire',
       if (b.player.leaks > 0) 'ship_leak',
@@ -418,7 +417,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final weaponId = _armedWeaponId;
     if (_busy || _over || weaponId == null) return;
     final weapon = _battle.weaponById(weaponId);
-    final ammo = _battle.ammo;
+    final ammo = weapon?.ammo ?? ShipAmmo.round;
     final logged = _battle.log.length;
     final outcome = _battle.fire(weaponId, room, aim: aim);
     if (outcome != null && weapon != null) {
@@ -1002,8 +1001,6 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                   ),
                 const SizedBox(height: 6),
                 _buildPlayerWeapons(fr),
-                const SizedBox(height: 6),
-                _buildAmmo(lang),
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -2105,12 +2102,31 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.labelMedium
                         ?.copyWith(color: ready ? null : ink.ash)),
-                Text(
-                  '${w.damage} · $state',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall
-                      ?.copyWith(color: ready ? ink.gold : ink.ash),
+                // The shot is the weapon's own: its mark beside the damage,
+                // what it does in the tooltip.
+                Tooltip(
+                  message: trFor(lang, 'ship_ammo_${w.ammo.name}_hint'),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (w.ammo != ShipAmmo.round) ...[
+                        Icon(_ammoIcon(w.ammo),
+                            key: Key('ship_weapon_ammo_${w.id}'),
+                            size: 11,
+                            color: ready ? ink.ember : ink.ash),
+                        const SizedBox(width: 3),
+                      ],
+                      Flexible(
+                        child: Text(
+                          '${w.damage} · $state',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.labelSmall
+                              ?.copyWith(color: ready ? ink.gold : ink.ash),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -2131,54 +2147,6 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         ],
       );
     });
-  }
-
-  /// The shot the guns are loaded with, kept until changed.
-  Widget _buildAmmo(AppLanguage lang) {
-    final theme = Theme.of(context);
-    final ink = InkColors.of(context);
-    // On a narrow phone the four shots need the label's room.
-    final narrow = MediaQuery.sizeOf(context).width < 380;
-    return Row(
-      children: [
-        if (!narrow) ...[
-          Text(trFor(lang, 'ship_ammo_label'),
-              style: theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
-          const SizedBox(width: 6),
-        ],
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (final ammo in ShipAmmo.values)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: Tooltip(
-                      message: trFor(lang, 'ship_ammo_${ammo.name}_hint'),
-                      child: ChoiceChip(
-                        key: Key('ship_ammo_${ammo.name}'),
-                        visualDensity: VisualDensity.compact,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        showCheckmark: false,
-                        labelPadding: const EdgeInsets.only(right: 2),
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        selected: _battle.ammo == ammo,
-                        avatar: Icon(_ammoIcon(ammo), size: 13),
-                        label: Text(trFor(lang, 'ship_ammo_${ammo.name}'),
-                            style: theme.textTheme.labelSmall),
-                        onSelected: _busy || _over
-                            ? null
-                            : (_) => setState(() => _battle.ammo = ammo),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
   }
 
   /// The crew, one card each: health, the station they hold (tap another

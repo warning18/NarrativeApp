@@ -129,12 +129,8 @@ void main() {
     expect(find.text('Close'), findsOneWidget);
     expect(find.textContaining('closes in'), findsOneWidget);
 
-    // Load chain shot.
-    await tester.tap(find.byKey(const Key('ship_ammo_chain')));
-    await tester.pump();
-    final chain =
-        tester.widget<ChoiceChip>(find.byKey(const Key('ship_ammo_chain')));
-    expect(chain.selected, isTrue);
+    // No shot to pick: each weapon fires its own.
+    expect(find.byKey(const Key('ship_ammo_chain')), findsNothing);
 
     // Kelda's order, from the crew sheet: brace. Spent once given.
     await tester.tap(find.byKey(const Key('ship_crew_button')));

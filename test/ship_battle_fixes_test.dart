@@ -105,12 +105,12 @@ void main() {
 
     test('knocking the helm out is logged, aimed at it or elsewhere', () {
       ShipBattle battle(Map<ShipRoom, int> levels) => ShipBattle(
-            player: _ship(weapons: const [_gun]),
+            player: _ship(weapons: [_gun.withAmmo(ShipAmmo.chain)]),
             enemy: _ship(levels: levels),
             crew: [_member('player', player: true)],
             random: Random(1),
             rules: ShipBattleRules.classic,
-          )..ammo = ShipAmmo.chain;
+          );
 
       bool helmDownLogged(ShipBattle b) => b.log
           .any((l) => l.key == 'ship_log_room_down' && l.room == ShipRoom.helm);

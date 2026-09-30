@@ -149,6 +149,8 @@ class SeaSurfacePainter extends CustomPainter {
     );
     final rough = weather == SeaWeather.squall ? 1.8 : 1.0;
     final drift = _windOf(weather).dx / 70;
+    // What lies under the water first, the surface's waves over it.
+    SeaDepthsPainter(waters: waters, t: t).paint(canvas, size);
     switch (waters) {
       case SeaWaters.open:
         _swells(canvas, size, look, rough, drift);
@@ -409,6 +411,355 @@ class SeaSurfacePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant SeaSurfacePainter old) =>
       old.t != t || old.waters != waters || old.weather != weather;
+}
+
+/// What lives under the water, seen through it: the bed's rocks and
+/// plants and the fish swimming over them, each of the waters its own.
+///
+/// - The open sea: a school of silver fish, a great shadow passing deep
+///   down, a jellyfish or two; no bottom to be seen.
+/// - The shallows: coral heads and seagrass on the sand, bright reef
+///   fish darting between them.
+/// - The drowned waters: fallen columns furred with weed, pale eels
+///   winding through them.
+/// - The abyss: black spires, jellyfish glowing, an angler's lure bobbing
+///   in the dark.
+/// - The ashen chop: grey rocks crusted with barnacles, dead weed, small
+///   dark fish.
+class SeaDepthsPainter extends CustomPainter {
+  const SeaDepthsPainter({required this.waters, required this.t});
+
+  final SeaWaters waters;
+  final double t;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final look = SeaLook.of(waters);
+    switch (waters) {
+      case SeaWaters.open:
+        _shadow(canvas, size, look);
+        _jellies(canvas, size, const Color(0xFFBFE3F0), 2, glow: false);
+        _school(canvas, size, const Color(0xFFB8D4DE), count: 9, seed: 1);
+        _school(canvas, size, const Color(0xFF9CC2CF), count: 6, seed: 2);
+        _school(canvas, size, const Color(0xFFD8E8EE), count: 7, seed: 12);
+      case SeaWaters.shallows:
+        _rocks(canvas, size, const Color(0xFF6E7F6A), 4, seed: 3);
+        _corals(canvas, size);
+        _grass(canvas, size, const Color(0xFF4F9A5A), 9, seed: 4);
+        for (final (i, colour) in const [
+          Color(0xFFFF9F43),
+          Color(0xFFFFD166),
+          Color(0xFF4CC9F0),
+          Color(0xFFFF6B8A),
+          Color(0xFFFFD166),
+          Color(0xFFFF9F43),
+        ].indexed) {
+          _darter(canvas, size, colour, i);
+        }
+      case SeaWaters.drowned:
+        _columns(canvas, size, look);
+        _grass(canvas, size, const Color(0xFF5E7D3E), 7, seed: 5);
+        _eel(canvas, size, const Color(0xFFCFD8B8), 0);
+        _eel(canvas, size, const Color(0xFFB7C49A), 1);
+        _school(canvas, size, const Color(0xFF8FA58A), count: 5, seed: 6);
+      case SeaWaters.abyss:
+        _spires(canvas, size);
+        _jellies(canvas, size, const Color(0xFFB48CFF), 3, glow: true);
+        _angler(canvas, size);
+        _school(canvas, size, const Color(0xFF6B4FB0), count: 5, seed: 14);
+      case SeaWaters.ashen:
+        _rocks(canvas, size, const Color(0xFF4A4F50), 6,
+            seed: 7, barnacles: true);
+        _grass(canvas, size, const Color(0xFF6B6A5E), 6, seed: 8);
+        _school(canvas, size, const Color(0xFF2C3133), count: 7, seed: 9);
+        _school(canvas, size, const Color(0xFF8C8A80), count: 5, seed: 13);
+    }
+  }
+
+  /// A fish [length] long at [at], heading [dir] (radians), its tail
+  /// beating with [t].
+  void _fish(Canvas canvas, Offset at, double dir, double length, Color colour,
+      {double alpha = 0.75, int phase = 0}) {
+    canvas.save();
+    canvas.translate(at.dx, at.dy);
+    canvas.rotate(dir);
+    final body = Paint()..color = colour.withValues(alpha: alpha);
+    canvas.drawOval(
+        Rect.fromCenter(
+            center: Offset.zero, width: length, height: length * 0.42),
+        body);
+    final beat = math.sin(t * 9 + phase) * length * 0.12;
+    canvas.drawPath(
+        Path()
+          ..moveTo(-length * 0.42, 0)
+          ..lineTo(-length * 0.75, -length * 0.24 + beat)
+          ..lineTo(-length * 0.75, length * 0.24 + beat)
+          ..close(),
+        body);
+    canvas.restore();
+  }
+
+  /// Where something swimming across the whole sea is at [t]: it crosses
+  /// at [speed], wrapping round, bobbing as it goes. Returns the place and
+  /// the heading.
+  (Offset, double) _swim(Size size, int i, double speed, {int salt = 0}) {
+    final span = size.width + 120;
+    final left = _hash(i, 40 + salt) < 0.5;
+    final run = (t * speed + _hash(i, 41 + salt) * span) % span - 60;
+    final x = left ? run : size.width - run;
+    final y = size.height * (0.08 + 0.84 * _hash(i, 42 + salt)) +
+        math.sin(t * 0.8 + i) * 10;
+    final dy = math.cos(t * 0.8 + i) * 0.1;
+    return (Offset(x, y), left ? dy : math.pi - dy);
+  }
+
+  /// A school: a handful of small fish swimming together.
+  void _school(Canvas canvas, Size size, Color colour,
+      {required int count, required int seed}) {
+    final (lead, dir) = _swim(size, seed, 22, salt: seed);
+    for (var k = 0; k < count; k++) {
+      final off = Offset(
+          -math.cos(dir) * (k % 3) * 11 + (_hash(k, seed) - 0.5) * 14,
+          (k ~/ 3 - 1) * 9 + (_hash(k, seed + 1) - 0.5) * 6);
+      _fish(canvas, lead + off, dir, 12, colour, alpha: 0.7, phase: k);
+    }
+  }
+
+  /// A bright reef fish darting: quick, then still, then quick.
+  void _darter(Canvas canvas, Size size, Color colour, int i) {
+    final (at, dir) = _swim(size, i + 20, 16 + 10 * _hash(i, 50), salt: 3);
+    _fish(canvas, at, dir, 17, colour, alpha: 0.9, phase: i);
+  }
+
+  /// A great shadow passing slowly far below.
+  void _shadow(Canvas canvas, Size size, SeaLook look) {
+    final span = size.width + 400;
+    final x = (t * 9) % span - 200;
+    final y = size.height * 0.55;
+    final paint = Paint()
+      ..color = Colors.black.withValues(alpha: 0.22)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    canvas.drawOval(
+        Rect.fromCenter(center: Offset(x, y), width: 150, height: 42), paint);
+    canvas.drawPath(
+        Path()
+          ..moveTo(x - 70, y)
+          ..lineTo(x - 108, y - 22 + math.sin(t) * 5)
+          ..lineTo(x - 108, y + 22 + math.sin(t) * 5)
+          ..close(),
+        paint);
+  }
+
+  /// Jellyfish pulsing upward, trailing their strands.
+  void _jellies(Canvas canvas, Size size, Color colour, int count,
+      {required bool glow}) {
+    for (var i = 0; i < count; i++) {
+      final life = (t * 0.03 + _hash(i, 60)) % 1;
+      final x =
+          size.width * (0.15 + 0.7 * _hash(i, 61)) + math.sin(t * 0.5 + i) * 12;
+      final y = size.height * (1.05 - 1.1 * life);
+      final pulse = 0.85 + 0.15 * math.sin(t * 3 + i);
+      final bell = Paint()
+        ..color = colour.withValues(alpha: glow ? 0.55 : 0.35)
+        ..maskFilter = glow ? const MaskFilter.blur(BlurStyle.normal, 3) : null;
+      canvas.drawArc(
+          Rect.fromCenter(center: Offset(x, y), width: 24 * pulse, height: 18),
+          math.pi,
+          math.pi,
+          true,
+          bell);
+      final strand = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = colour.withValues(alpha: 0.35);
+      for (var k = -1; k <= 1; k++) {
+        canvas.drawPath(
+            Path()
+              ..moveTo(x + k * 5, y)
+              ..quadraticBezierTo(x + k * 5 + math.sin(t * 2 + k) * 4, y + 10,
+                  x + k * 4, y + 20),
+            strand);
+      }
+    }
+  }
+
+  /// Rocks on the bed, some crusted white with barnacles.
+  void _rocks(Canvas canvas, Size size, Color colour, int count,
+      {required int seed, bool barnacles = false}) {
+    for (var i = 0; i < count; i++) {
+      final edge = i.isEven;
+      final x = edge
+          ? (i % 4 == 0 ? 0.04 : 0.96) * size.width
+          : _hash(i, seed) * size.width;
+      final y = size.height * (0.1 + 0.8 * _hash(i, seed + 1));
+      final w = 26 + 26 * _hash(i, seed + 2);
+      final h = w * (0.55 + 0.2 * _hash(i, seed + 3));
+      final rock = Paint()..color = colour.withValues(alpha: 0.7);
+      final r = Rect.fromCenter(center: Offset(x, y), width: w, height: h);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(r, Radius.circular(h * 0.45)), rock);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              r.deflate(h * 0.18).shift(Offset(-w * 0.08, -h * 0.1)),
+              Radius.circular(h * 0.3)),
+          Paint()..color = Colors.white.withValues(alpha: 0.06));
+      if (barnacles) {
+        final dot = Paint()..color = const Color(0xFFD9D4C7);
+        for (var k = 0; k < 5; k++) {
+          canvas.drawCircle(
+              Offset(r.left + r.width * _hash(k, i + seed),
+                  r.top + r.height * _hash(k, i + seed + 9)),
+              1.4,
+              dot);
+        }
+      }
+    }
+  }
+
+  /// Seagrass or weed in tufts, swaying.
+  void _grass(Canvas canvas, Size size, Color colour, int tufts,
+      {required int seed}) {
+    final blade = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2
+      ..color = colour.withValues(alpha: 0.7);
+    for (var i = 0; i < tufts; i++) {
+      final base = Offset(
+          size.width *
+              (i.isEven
+                  ? 0.02 + 0.12 * _hash(i, seed)
+                  : 0.86 + 0.12 * _hash(i, seed)),
+          size.height * (0.06 + 0.88 * _hash(i, seed + 1)));
+      for (var k = 0; k < 4; k++) {
+        final lean = (k - 1.5) * 4 + math.sin(t * 1.2 + i + k) * 4;
+        canvas.drawPath(
+            Path()
+              ..moveTo(base.dx + k * 2, base.dy)
+              ..quadraticBezierTo(base.dx + k * 2 + lean, base.dy - 9,
+                  base.dx + k * 2 + lean * 1.6, base.dy - 24 - 6 * _hash(k, i)),
+            blade);
+      }
+    }
+  }
+
+  /// Coral heads: branching, warm-coloured.
+  void _corals(Canvas canvas, Size size) {
+    const colours = [Color(0xFFE8765E), Color(0xFFF2A65A), Color(0xFFD65C8A)];
+    for (var i = 0; i < 5; i++) {
+      final c = Offset(
+          size.width *
+              (i.isEven
+                  ? 0.05 + 0.1 * _hash(i, 70)
+                  : 0.85 + 0.1 * _hash(i, 70)),
+          size.height * (0.12 + 0.8 * _hash(i, 71)));
+      final paint = Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 3.5
+        ..color = colours[i % colours.length].withValues(alpha: 0.85);
+      void branch(Offset from, double angle, double len, int depth) {
+        final to = from + Offset(math.cos(angle), math.sin(angle)) * len;
+        canvas.drawLine(from, to, paint);
+        if (depth == 0) return;
+        branch(to, angle - 0.5, len * 0.7, depth - 1);
+        branch(to, angle + 0.5, len * 0.7, depth - 1);
+      }
+
+      branch(c, -math.pi / 2, 15, 3);
+      canvas.drawCircle(c, 4,
+          Paint()..color = colours[i % colours.length].withValues(alpha: 0.6));
+    }
+  }
+
+  /// A pale eel winding through the ruins.
+  void _eel(Canvas canvas, Size size, Color colour, int i) {
+    final (head, dir) = _swim(size, i + 30, 12, salt: 7);
+    final back = Offset(-math.cos(dir), -math.sin(dir));
+    final side = Offset(-back.dy, back.dx);
+    final path = Path()..moveTo(head.dx, head.dy);
+    for (var k = 1; k <= 8; k++) {
+      final p =
+          head + back * (k * 8.0) + side * (math.sin(t * 4 - k * 0.8 + i) * 4);
+      path.lineTo(p.dx, p.dy);
+    }
+    canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = 4.5
+          ..color = colour.withValues(alpha: 0.7));
+  }
+
+  /// Fallen columns and blocks of the drowned town.
+  void _columns(Canvas canvas, Size size, SeaLook look) {
+    final stone = Paint()
+      ..color = const Color(0xFF6F7A64).withValues(alpha: 0.45);
+    final fur = Paint()..color = look.accent.withValues(alpha: 0.4);
+    for (var i = 0; i < 4; i++) {
+      final c = Offset(size.width * (i.isEven ? 0.08 : 0.9),
+          size.height * (0.15 + 0.22 * i));
+      canvas.save();
+      canvas.translate(c.dx, c.dy);
+      canvas.rotate(0.3 + i * 0.7);
+      canvas.drawRRect(
+          RRect.fromRectAndRadius(
+              const Rect.fromLTWH(-28, -6, 56, 12), const Radius.circular(3)),
+          stone);
+      for (var k = -24; k <= 24; k += 12) {
+        canvas.drawCircle(Offset(k.toDouble(), -6), 3, fur);
+      }
+      canvas.restore();
+    }
+  }
+
+  /// Black spires rising from the deep.
+  void _spires(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF05040A).withValues(alpha: 0.7);
+    final rim = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = const Color(0xFF9A6BFF).withValues(alpha: 0.25);
+    for (var i = 0; i < 5; i++) {
+      final x = size.width *
+          (i.isEven ? 0.03 + 0.08 * _hash(i, 80) : 0.88 + 0.08 * _hash(i, 80));
+      final y = size.height * (0.1 + 0.8 * _hash(i, 81));
+      final r = 10 + 10 * _hash(i, 82);
+      final path = Path();
+      for (var k = 0; k < 7; k++) {
+        final a = k * 2 * math.pi / 7;
+        final rr = r * (0.7 + 0.3 * _hash(k, i + 83));
+        final p = Offset(x + math.cos(a) * rr, y + math.sin(a) * rr);
+        k == 0 ? path.moveTo(p.dx, p.dy) : path.lineTo(p.dx, p.dy);
+      }
+      path.close();
+      canvas.drawPath(path, paint);
+      canvas.drawPath(path, rim);
+    }
+  }
+
+  /// An angler in the dark: a black body, its lure glowing.
+  void _angler(Canvas canvas, Size size) {
+    final (at, dir) = _swim(size, 90, 7, salt: 11);
+    _fish(canvas, at, dir, 34, const Color(0xFF1A1428), alpha: 0.95);
+    final lure = at +
+        Offset(math.cos(dir), math.sin(dir)) * 20 +
+        Offset(0, -8 + math.sin(t * 2) * 2);
+    canvas.drawCircle(
+        lure,
+        5,
+        Paint()
+          ..color = const Color(0xFFE8D6FF)
+              .withValues(alpha: 0.5 + 0.4 * math.sin(t * 3))
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4));
+    canvas.drawCircle(lure, 1.8, Paint()..color = const Color(0xFFF5EEFF));
+  }
+
+  @override
+  bool shouldRepaint(covariant SeaDepthsPainter old) =>
+      old.t != t || old.waters != waters;
 }
 
 /// What drifts over the ships: the weather's particles (rain and its

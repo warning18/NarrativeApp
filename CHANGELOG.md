@@ -8,6 +8,41 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.183.0+214]
+
+### Added
+- **Life under the water.** Each of the waters has its own bed and fish,
+  drawn beneath the waves:
+  - the open sea: schools of silver fish, a great shadow passing deep
+    down, jellyfish;
+  - the shallows: coral heads, seagrass and rocks, bright reef fish;
+  - the drowned waters: fallen columns furred with weed, pale eels;
+  - the abyss: black spires, glowing jellyfish, an angler's lure in the
+    dark;
+  - the ashen chop: grey rocks crusted with barnacles, dead weed, small
+    dark fish.
+- **Three weapons that fire their own shot:**
+
+  | Weapon | Shot | Damage | Turns to charge |
+  |---|---|---|---|
+  | Chain Swivel | chain | 14 | 2 |
+  | Grape Swivel | grape | 12 | 1 |
+  | Hot-Shot Carronade | heated | 24 | 3 |
+
+  All three reach close and medium range.
+
+### Changed
+- **The shot is the weapon's own.** The battle no longer has a shot picker.
+  Each weapon fires the shot set in its part: a new `ammo` field in
+  ship_parts.json (round, chain, grape or heated), which is an enumeration
+  in the editor. The shot's mark sits beside the weapon's damage in the
+  dock, and its tooltip says what the shot does. The tip about changing
+  shot is gone.
+  - Balance: since a skilled player no longer switches to chain shot
+    against a hard ship, the late void barge falls more often (57%, up
+    from 23% under the old rules). The balance test's upper band is now
+    35 points.
+
 ## [1.182.1+213]
 
 ### Changed
