@@ -2902,6 +2902,17 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     return true;
   }
 
+  /// [delta] rations found or lost (the camp's fate die), the pack kept
+  /// between empty and [provisionsMax]. Returns the change made.
+  Future<int> adjustProvisions(int delta) async {
+    final next = (state.provisions + delta).clamp(0, provisionsMax);
+    final change = next - state.provisions;
+    if (change == 0) return 0;
+    state = state.copyWith(provisions: next);
+    await _persist();
+    return change;
+  }
+
   /// Hires a sellsword for [sellswordContractFights] fights at [price]. False when
   /// one is already under contract or the purse falls short.
   Future<bool> hireSellsword({required int price}) async {

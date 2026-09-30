@@ -9,23 +9,30 @@ import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
+import 'camp_fate_dialog.dart';
 import 'immersive_notice.dart';
 
 /// A night's rest in a town, a port or the camp (see
 /// PlayerSessionNotifier.restNight), said in a notice: [message], and from
-/// chapter 2 the day that begins.
+/// chapter 2 the day that begins. A night at the camp ([atCamp]) rolls the
+/// camp's fate die (see camp_fate_dialog.dart), which says it instead.
 Future<void> restTheNight(BuildContext context, WidgetRef ref,
-    {required String message}) async {
+    {required String message, bool atCamp = false}) async {
   final chapter = ref.read(reachedChapterProvider);
   await ref.read(playerSessionProvider.notifier).restNight(chapter: chapter);
   if (!context.mounted) return;
   final day = ref.read(playerSessionProvider).day;
+  final line = roadRulesApply(chapter)
+      ? '$message ${tr(ref, 'rest_new_day').replaceAll('{day}', '$day')}'
+      : message;
+  if (atCamp) {
+    await showCampFateDie(context, ref, restedLine: line);
+    return;
+  }
   showImmersiveNotice(
     context,
     icon: Icons.local_fire_department,
-    message: roadRulesApply(chapter)
-        ? '$message ${tr(ref, 'rest_new_day').replaceAll('{day}', '$day')}'
-        : message,
+    message: line,
   );
 }
 

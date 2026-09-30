@@ -8,6 +8,47 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.183.0+213]
+
+Every night rested at the camp now rolls the camp's fate die, so the camp
+gets small stories of its own between the chapter's errands.
+
+### Added
+- **The camp's fate die.** It rolls after a rest on the camp screen, or
+  after resting in a town once the camp stands, since that rest is spent
+  at the camp. The dialog shows the six faces, tumbles and lands, then
+  plays out the night:
+  - **Windfall:** a purse on the sand (40 gold plus 20 per chapter), or a
+    crate of rations when the pack is half empty or less.
+  - **Visitor:** someone at the fire, and a choice. The party's
+    companions react to it like any other deed.
+    - Hungry pilgrims: share two rations (+3 alignment), or send them
+      on (−1).
+    - A Crusade deserter: hide them (+2), or hand them over for a bounty
+      (20 gold per chapter, −3).
+    - An old storyteller: listen, and every companion in the party warms
+      to you a little.
+  - **Rumor:** a rider speaks of a place of the chapter not found yet,
+    and it appears on the map.
+  - **Quarrel:** two companions argue. Side with one (+2 for them, −2 for
+    the other), or try to make peace on a Charisma check (+1 each if it
+    works, −1 each if it doesn't).
+  - **Theft:** a Perception check catches the thief. If it fails, the
+    thief takes a tenth of the gold, at most 30 per chapter, or two
+    rations from an empty purse.
+  - **Quiet night:** nothing, and that is a gift too.
+- **No empty promises.** A face that can't happen tonight (no place left
+  to find, fewer than two companions in the party) shows as a quiet
+  night on the die.
+- **No rerolling a night.** Each night rolls from the run's seed and the
+  day, so reloading a save doesn't change what comes.
+
+### Balance
+- 40 simulated runs against the same runs without the die: about 14
+  rolls per run, +256 gold per run in all (next to about 11,000 at the
+  end), no hungry days, and no change to the win rate or to companions
+  leaving.
+
 ## [1.182.0+212]
 
 The dice now have rules of their own. Faces carry keywords, the party's

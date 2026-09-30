@@ -2127,7 +2127,8 @@ class _HubSections extends ConsumerWidget {
                     ref,
                     restsAtCamp
                         ? 'party_rested_at_camp_message'
-                        : 'party_rested_message')),
+                        : 'party_rested_message'),
+                atCamp: restsAtCamp),
           ),
         ],
       ),

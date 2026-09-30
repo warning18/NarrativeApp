@@ -6976,6 +6976,274 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Press on',
     AppLanguage.fr: 'Continuer',
   },
+  'fate_title': {
+    AppLanguage.en: 'The fate die',
+    AppLanguage.fr: 'Le dé du destin',
+  },
+  'fate_intro': {
+    AppLanguage.en:
+        'The fire burns low. Before sleep, someone rolls the camp\'s old die, the one that decides the night.',
+    AppLanguage.fr:
+        'Le feu baisse. Avant de dormir, quelqu\'un lance le vieux dé du camp, celui qui décide de la nuit.',
+  },
+  'fate_roll_button': {
+    AppLanguage.en: 'Roll',
+    AppLanguage.fr: 'Lancer',
+  },
+  'fate_close_button': {
+    AppLanguage.en: 'Sleep',
+    AppLanguage.fr: 'Dormir',
+  },
+  'fate_hint': {
+    AppLanguage.en:
+        'Every rest at the camp rolls it. A face that cannot happen tonight shows a quiet night.',
+    AppLanguage.fr:
+        'Chaque repos au camp le lance. Une face qui ne peut pas arriver cette nuit montre une nuit calme.',
+  },
+  'fate_face_windfall': {
+    AppLanguage.en: 'Windfall',
+    AppLanguage.fr: 'Aubaine',
+  },
+  'fate_face_visitor': {
+    AppLanguage.en: 'Visitor',
+    AppLanguage.fr: 'Visite',
+  },
+  'fate_face_rumor': {
+    AppLanguage.en: 'Rumor',
+    AppLanguage.fr: 'Rumeur',
+  },
+  'fate_face_quarrel': {
+    AppLanguage.en: 'Quarrel',
+    AppLanguage.fr: 'Querelle',
+  },
+  'fate_face_theft': {
+    AppLanguage.en: 'Theft',
+    AppLanguage.fr: 'Vol',
+  },
+  'fate_face_quiet': {
+    AppLanguage.en: 'Quiet night',
+    AppLanguage.fr: 'Nuit calme',
+  },
+  'fate_windfall_gold': {
+    AppLanguage.en:
+        'Someone gathering firewood finds a purse half buried in the sand, and no one to claim it.',
+    AppLanguage.fr:
+        'En ramassant du bois, quelqu\'un trouve une bourse à moitié enfouie dans le sable, et personne pour la réclamer.',
+  },
+  'fate_windfall_rations': {
+    AppLanguage.en:
+        'A crate washes up on the shore with its seal still good: salt fish and hard bread.',
+    AppLanguage.fr:
+        'Une caisse s\'échoue sur la rive, le sceau intact : du poisson salé et du pain dur.',
+  },
+  'fate_visitor_pilgrims': {
+    AppLanguage.en:
+        'Three pilgrims come out of the dark, thin as their staffs. They ask for nothing, which is worse.',
+    AppLanguage.fr:
+        'Trois pèlerins sortent de l\'obscurité, maigres comme leurs bâtons. Ils ne demandent rien, et c\'est pire.',
+  },
+  'fate_visitor_deserter': {
+    AppLanguage.en:
+        'A young soldier in Crusade colours stumbles into the firelight, sword belt cut away. "They hang deserters."',
+    AppLanguage.fr:
+        'Un jeune soldat aux couleurs de la Croisade entre en titubant dans la lumière du feu, le baudrier tranché. « Ils pendent les déserteurs. »',
+  },
+  'fate_visitor_storyteller': {
+    AppLanguage.en:
+        'An old storyteller asks for a seat by the fire and offers a tale for it.',
+    AppLanguage.fr:
+        'Un vieux conteur demande une place près du feu et offre une histoire en échange.',
+  },
+  'fate_choice_shareRations': {
+    AppLanguage.en: 'Share our rations ({n} rations)',
+    AppLanguage.fr: 'Partager nos rations ({n} rations)',
+  },
+  'fate_choice_sendOn': {
+    AppLanguage.en: 'Send them on',
+    AppLanguage.fr: 'Les laisser repartir',
+  },
+  'fate_choice_hideDeserter': {
+    AppLanguage.en: 'Hide the deserter',
+    AppLanguage.fr: 'Cacher le déserteur',
+  },
+  'fate_choice_handOver': {
+    AppLanguage.en: 'Hand them over (+{n} gold)',
+    AppLanguage.fr: 'Le livrer (+{n} or)',
+  },
+  'fate_choice_listen': {
+    AppLanguage.en: 'Listen',
+    AppLanguage.fr: 'Écouter',
+  },
+  'fate_choice_sendAway': {
+    AppLanguage.en: 'Send the storyteller away',
+    AppLanguage.fr: 'Renvoyer le conteur',
+  },
+  'fate_choice_sideWithFirst': {
+    AppLanguage.en: 'Side with {name}',
+    AppLanguage.fr: 'Donner raison à {name}',
+  },
+  'fate_choice_sideWithSecond': {
+    AppLanguage.en: 'Side with {name}',
+    AppLanguage.fr: 'Donner raison à {name}',
+  },
+  'fate_choice_makePeace': {
+    AppLanguage.en: 'Make peace (Charisma, DC {dc})',
+    AppLanguage.fr: 'Ramener la paix (Charisme, DD {dc})',
+  },
+  'fate_result_shareRations': {
+    AppLanguage.en:
+        'They eat in silence and leave before dawn, lighter of step.',
+    AppLanguage.fr:
+        'Ils mangent en silence et repartent avant l\'aube, d\'un pas plus léger.',
+  },
+  'fate_result_sendOn': {
+    AppLanguage.en:
+        'They nod as if they had expected it, and walk on into the dark.',
+    AppLanguage.fr:
+        'Ils hochent la tête comme s\'ils s\'y attendaient, et repartent dans la nuit.',
+  },
+  'fate_result_hideDeserter': {
+    AppLanguage.en:
+        'At dawn a patrol passes the camp and finds nothing. The deserter is gone by noon, in a borrowed cloak.',
+    AppLanguage.fr:
+        'À l\'aube, une patrouille passe au camp et ne trouve rien. Le déserteur est parti avant midi, dans un manteau prêté.',
+  },
+  'fate_result_handOver': {
+    AppLanguage.en:
+        'The patrol pays in silver and does not look back. Neither does the deserter.',
+    AppLanguage.fr:
+        'La patrouille paie en argent et ne se retourne pas. Le déserteur non plus.',
+  },
+  'fate_result_listen': {
+    AppLanguage.en:
+        'The tale runs past midnight, and the whole camp laughs in the same places.',
+    AppLanguage.fr:
+        'L\'histoire dure jusqu\'après minuit, et tout le camp rit aux mêmes endroits.',
+  },
+  'fate_result_sendAway': {
+    AppLanguage.en: 'The storyteller shrugs and takes the tale elsewhere.',
+    AppLanguage.fr:
+        'Le conteur hausse les épaules et emporte son histoire ailleurs.',
+  },
+  'fate_rumor': {
+    AppLanguage.en:
+        'A rider stops to water a horse and talks of {place}. Before dawn, it is on your map.',
+    AppLanguage.fr:
+        'Un cavalier s\'arrête pour abreuver son cheval et parle de {place}. Avant l\'aube, l\'endroit est sur votre carte.',
+  },
+  'fate_quarrel': {
+    AppLanguage.en: '{a} and {b} are at it again, {topic}.',
+    AppLanguage.fr: '{a} et {b} se disputent encore, {topic}.',
+  },
+  'fate_quarrel_topic_0': {
+    AppLanguage.en: 'over the watch rota',
+    AppLanguage.fr: 'pour les tours de garde',
+  },
+  'fate_quarrel_topic_1': {
+    AppLanguage.en: 'over the last of the wine',
+    AppLanguage.fr: 'pour le fond de la dernière bouteille',
+  },
+  'fate_quarrel_topic_2': {
+    AppLanguage.en: 'about how the last fight went',
+    AppLanguage.fr: 'sur la façon dont le dernier combat a tourné',
+  },
+  'fate_quarrel_topic_3': {
+    AppLanguage.en: 'over whose turn it is to cook',
+    AppLanguage.fr: 'pour savoir à qui revient la cuisine',
+  },
+  'fate_result_side': {
+    AppLanguage.en: '{winner} nods. {loser} goes to sleep without a word.',
+    AppLanguage.fr:
+        '{winner} approuve d\'un signe de tête. {loser} va se coucher sans un mot.',
+  },
+  'fate_result_peace': {
+    AppLanguage.en:
+        'By the end, the two of them are laughing at the whole thing.',
+    AppLanguage.fr: 'À la fin, les deux en rient.',
+  },
+  'fate_result_no_peace': {
+    AppLanguage.en: 'Your words only give them something else to argue about.',
+    AppLanguage.fr: 'Vos mots ne leur donnent qu\'un autre sujet de dispute.',
+  },
+  'fate_theft': {
+    AppLanguage.en: 'Something moves among the packs in the dark.',
+    AppLanguage.fr: 'Quelque chose bouge parmi les sacs, dans le noir.',
+  },
+  'fate_theft_caught': {
+    AppLanguage.en:
+        'You catch a thin hand in the supplies and send its owner running, empty-handed.',
+    AppLanguage.fr:
+        'Vous surprenez une main maigre dans les provisions et faites fuir son propriétaire, les mains vides.',
+  },
+  'fate_theft_gold': {
+    AppLanguage.en:
+        'By morning the thief is long gone, and the gold with them.',
+    AppLanguage.fr: 'Au matin, le voleur est loin, et l\'or avec lui.',
+  },
+  'fate_theft_rations': {
+    AppLanguage.en:
+        'By morning the thief is long gone, and some rations with them.',
+    AppLanguage.fr: 'Au matin, le voleur est loin, et des rations avec lui.',
+  },
+  'fate_theft_nothing': {
+    AppLanguage.en:
+        'By morning the thief is gone, empty-handed: there was nothing left to take.',
+    AppLanguage.fr:
+        "Au matin, le voleur est reparti les mains vides : il n'y avait plus rien à prendre.",
+  },
+  'fate_check_line': {
+    AppLanguage.en: '{stat} {total} against {dc}.',
+    AppLanguage.fr: '{stat} {total} contre {dc}.',
+  },
+  'fate_quiet_0': {
+    AppLanguage.en:
+        'Nothing comes out of the dark tonight. The fire, the sea, and sleep.',
+    AppLanguage.fr:
+        'Rien ne sort de l\'obscurité cette nuit. Le feu, la mer, et le sommeil.',
+  },
+  'fate_quiet_1': {
+    AppLanguage.en: 'Someone hums an old song until the others join in, badly.',
+    AppLanguage.fr:
+        'Quelqu\'un fredonne une vieille chanson jusqu\'à ce que les autres s\'y mettent, mal.',
+  },
+  'fate_quiet_2': {
+    AppLanguage.en:
+        'The sky is clear. For one night, nobody talks about the Shroud.',
+    AppLanguage.fr:
+        'Le ciel est clair. Pour une nuit, personne ne parle du Linceul.',
+  },
+  'fate_gain_gold': {
+    AppLanguage.en: '+{n} gold',
+    AppLanguage.fr: '+{n} or',
+  },
+  'fate_lose_gold': {
+    AppLanguage.en: '−{n} gold',
+    AppLanguage.fr: '−{n} or',
+  },
+  'fate_gain_rations': {
+    AppLanguage.en: '+{n} rations',
+    AppLanguage.fr: '+{n} rations',
+  },
+  'fate_lose_rations': {
+    AppLanguage.en: '−{n} rations',
+    AppLanguage.fr: '−{n} rations',
+  },
+  'fate_alignment': {
+    AppLanguage.en: 'Alignment {n}',
+    AppLanguage.fr: 'Alignement {n}',
+  },
+  'fate_approval_up': {
+    AppLanguage.en: '{name} approves',
+    AppLanguage.fr: '{name} approuve',
+  },
+  'fate_approval_down': {
+    AppLanguage.en: '{name} disapproves',
+    AppLanguage.fr: '{name} désapprouve',
+  },
+  'fate_place_found': {
+    AppLanguage.en: 'New place: {place}',
+    AppLanguage.fr: 'Nouveau lieu : {place}',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

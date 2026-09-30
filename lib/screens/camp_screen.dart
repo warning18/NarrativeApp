@@ -520,7 +520,7 @@ class _RestButton extends ConsumerWidget {
           onPressed: blocked
               ? null
               : () => restTheNight(context, ref,
-                  message: tr(ref, 'party_rested_message')),
+                  message: tr(ref, 'party_rested_message'), atCamp: true),
           icon: const Icon(Icons.local_fire_department_outlined, size: 18),
           label: Text(tr(ref, 'rest_button')),
         ),
