@@ -309,4 +309,59 @@ void main() {
       });
     });
   });
+
+  group('the sea\'s contracts (v1.184)', () {
+    test('once the Harbor stands, one contract is the sea\'s', () {
+      for (var seed = 0; seed < 30; seed++) {
+        final board = rollContracts(
+          chapter: 4,
+          huntPool: const ['harbor_rat'],
+          random: Random(seed),
+          boardNumber: seed,
+          sea: true,
+        );
+        expect(board, hasLength(contractBoardSize));
+        expect(board.where((c) => seaContractKinds.contains(c.kind)),
+            hasLength(1));
+        expect(board.first.kind, ContractKind.hunt);
+      }
+      final land = rollContracts(
+          chapter: 4,
+          huntPool: const ['harbor_rat'],
+          random: Random(1),
+          boardNumber: 1);
+      expect(land.where((c) => seaContractKinds.contains(c.kind)), isEmpty);
+    });
+
+    test('a won sea fight counts', () {
+      const sink = Contract(
+          id: 's',
+          kind: ContractKind.sinkShips,
+          required: 2,
+          rewardGold: 1,
+          rewardEssence: 1);
+      const take = Contract(
+          id: 't',
+          kind: ContractKind.takeShip,
+          required: 1,
+          rewardGold: 1,
+          rewardEssence: 1);
+      const intact = Contract(
+          id: 'i',
+          kind: ContractKind.keelIntact,
+          required: 1,
+          rewardGold: 1,
+          rewardEssence: 1);
+      final sunk = ContractTally.sea(
+          boarded: false, hullBefore: 100, hullAfter: 60, maxHull: 100);
+      expect(progressContract(sink, sunk).progress, 1);
+      expect(progressContract(take, sunk).progress, 0);
+      expect(progressContract(intact, sunk).progress, 0,
+          reason: 'lost more than a quarter');
+      final taken = ContractTally.sea(
+          boarded: true, hullBefore: 100, hullAfter: 80, maxHull: 100);
+      expect(progressContract(take, taken).done, isTrue);
+      expect(progressContract(intact, taken).done, isTrue);
+    });
+  });
 }

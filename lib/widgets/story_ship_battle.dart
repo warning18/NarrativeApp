@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../data/contracts.dart';
 import '../data/sail_powers.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -99,6 +100,8 @@ Future<bool?> runStoryShipBattle(
                     installedPartIds: session.shipPartIds)
                 : null,
             habit: habitFromName(data['habit']?.toString()),
+            // The story sees this fight through.
+            canFlee: false,
             onFinished: (outcome) => Navigator.of(pageContext).pop(outcome),
           ),
         ),
@@ -114,7 +117,19 @@ Future<bool?> runStoryShipBattle(
   for (final member in outcome.crew) {
     if (member.isPlayer) {
       await notifier.applyCombatResult(
-          hpAfter: max(1, member.health), goldGain: gold, xpGain: xp);
+        hpAfter: max(1, member.health),
+        goldGain: gold,
+        xpGain: xp,
+        contractTally: outcome.won
+            ? ContractTally.sea(
+                boarded: outcome.boarded,
+                hullBefore: session.shipHull < 0
+                    ? outcome.player.maxHull
+                    : session.shipHull,
+                hullAfter: outcome.player.hull,
+                maxHull: outcome.player.maxHull)
+            : null,
+      );
     } else {
       await notifier.applyAllyCombatResult(member.id,
           hpAfter: max(1, member.health));

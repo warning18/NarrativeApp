@@ -29,6 +29,7 @@ class ShipBattleOutcome {
     required this.log,
     this.boarded = false,
     this.escaped = false,
+    this.fled = false,
   });
 
   final bool won;
@@ -41,6 +42,9 @@ class ShipBattleOutcome {
 
   /// True when the enemy got away: no prize, and no loss either.
   final bool escaped;
+
+  /// True when the Eel ran for it and got away (see ShipBattle.runForIt).
+  final bool fled;
 }
 
 /// The room-by-room ship battle (see ship_battle.dart and
@@ -81,6 +85,7 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
     this.habit = EnemyHabit.none,
     this.windKnot = false,
     this.rules = const ShipBattleRules(),
+    this.canFlee = true,
   });
 
   final ShipState player;
@@ -124,6 +129,9 @@ class ShipBattlePanel extends ConsumerStatefulWidget {
 
   /// Which battle rules are on (all of them in play).
   final ShipBattleRules rules;
+
+  /// The Eel may run for it (a story fight must be seen through).
+  final bool canFlee;
 
   @override
   ConsumerState<ShipBattlePanel> createState() => _ShipBattlePanelState();
@@ -185,6 +193,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       habit: widget.habit,
       rules: widget.rules,
       windKnot: widget.windKnot,
+      canFlee: widget.canFlee,
     );
     _armedWeaponId = _firstReadyWeaponId();
     _startClock();
@@ -264,6 +273,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       if (b.player.rooms.values.any((r) => r.onFire)) 'ship_fire',
       if (b.player.leaks > 0) 'ship_leak',
       if (b.canBoardThem) 'ship_boarding',
+      if (b.canRun) 'ship_run',
       if (b.log.any((l) => l.key.startsWith('ship_event_'))) 'ship_sea',
     ];
     for (final id in candidates) {
@@ -522,6 +532,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       log: [for (final line in _battle.log) _line(line)],
       boarded: end == BattleEnd.boarded,
       escaped: end == BattleEnd.escaped,
+      fled: end == BattleEnd.fled,
     ));
   }
 
@@ -1238,7 +1249,11 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              trFor(lang, 'ship_range_${range.name}_title'),
+                              _battle.escape > 0
+                                  ? '${trFor(lang, 'ship_range_${range.name}_title')} · '
+                                      '${trFor(lang, 'ship_escape_label').replaceAll('{n}', '${_battle.escape}').replaceAll('{of}', '$escapeNeeded')}'
+                                  : trFor(
+                                      lang, 'ship_range_${range.name}_title'),
                               key: const Key('ship_range_label'),
                               style: theme.textTheme.labelSmall
                                   ?.copyWith(color: ink.gold),
@@ -1247,20 +1262,38 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                         ),
                       ),
                     ),
-                    _maneuverButton(
-                      key: const Key('ship_pull_away'),
-                      icon: Icons.keyboard_double_arrow_right,
-                      label: trFor(lang, 'ship_pull_away_button'),
-                      onPressed: canAct &&
-                              farther != null &&
-                              _battle.canMoveTo(farther)
-                          ? () => setState(() {
-                                _battle.maneuver(farther);
-                                _rearm();
-                              })
-                          : null,
-                      trailing: true,
-                    ),
+                    if (farther == null && widget.canFlee)
+                      Tooltip(
+                        message: trFor(lang, 'ship_run_hint'),
+                        child: _maneuverButton(
+                          key: const Key('ship_run_button'),
+                          icon: Icons.directions_boat_filled_outlined,
+                          label: trFor(lang, 'ship_run_button'),
+                          onPressed: canAct && _battle.canRun
+                              ? () => setState(() {
+                                    _battle.runForIt();
+                                    _rearm();
+                                    if (_battle.over) _finish();
+                                  })
+                              : null,
+                          trailing: true,
+                        ),
+                      )
+                    else
+                      _maneuverButton(
+                        key: const Key('ship_pull_away'),
+                        icon: Icons.keyboard_double_arrow_right,
+                        label: trFor(lang, 'ship_pull_away_button'),
+                        onPressed: canAct &&
+                                farther != null &&
+                                _battle.canMoveTo(farther)
+                            ? () => setState(() {
+                                  _battle.maneuver(farther);
+                                  _rearm();
+                                })
+                            : null,
+                        trailing: true,
+                      ),
                   ],
                 ),
               ],

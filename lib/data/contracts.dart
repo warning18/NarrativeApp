@@ -23,7 +23,27 @@ enum ContractKind {
 
   /// Beat so many marked foes: an affix or an Elite.
   marked,
+
+  /// Sink or take so many ships at sea (v1.184).
+  sinkShips,
+
+  /// Take a ship by boarding her.
+  takeShip,
+
+  /// Win a sea fight losing at most [intactHullShare] of the hull.
+  keelIntact,
 }
+
+/// The sea's contracts: posted once the Harbor stands (see [rollContracts]).
+const Set<ContractKind> seaContractKinds = {
+  ContractKind.sinkShips,
+  ContractKind.takeShip,
+  ContractKind.keelIntact,
+};
+
+/// The most of her hull the Eel may lose in a fight that keeps her keel
+/// intact.
+const double intactHullShare = 0.25;
 
 class Contract {
   const Contract({
@@ -90,7 +110,24 @@ class ContractTally {
     this.chargesBroken = 0,
     this.weaknessHits = 0,
     this.markedBeaten = 0,
+    this.shipsBeaten = 0,
+    this.shipsTaken = 0,
+    this.intactSeaWins = 0,
   });
+
+  /// A won sea fight (see [seaTally]).
+  factory ContractTally.sea({
+    required bool boarded,
+    required int hullBefore,
+    required int hullAfter,
+    required int maxHull,
+  }) =>
+      ContractTally(
+        shipsBeaten: 1,
+        shipsTaken: boarded ? 1 : 0,
+        intactSeaWins:
+            hullBefore - hullAfter <= maxHull * intactHullShare ? 1 : 0,
+      );
 
   final List<String> defeatedEnemyIds;
   final bool pack;
@@ -98,6 +135,12 @@ class ContractTally {
   final int chargesBroken;
   final int weaknessHits;
   final int markedBeaten;
+
+  /// Ships sunk or taken, ships taken by boarding, and sea fights won
+  /// with the keel intact.
+  final int shipsBeaten;
+  final int shipsTaken;
+  final int intactSeaWins;
 }
 
 /// [contract] after a won fight [tally].
@@ -111,6 +154,9 @@ Contract progressContract(Contract contract, ContractTally tally) {
     ContractKind.breaker => tally.chargesBroken,
     ContractKind.weakness => tally.weaknessHits,
     ContractKind.marked => tally.markedBeaten,
+    ContractKind.sinkShips => tally.shipsBeaten,
+    ContractKind.takeShip => tally.shipsTaken,
+    ContractKind.keelIntact => tally.intactSeaWins,
   };
   return gained == 0
       ? contract
@@ -125,13 +171,15 @@ int contractEssenceFor(int chapter) => 100 * max(1, chapter);
 
 /// A fresh board of three contracts of different kinds at [chapter]. A hunt
 /// needs a common foe from [huntPool] (the chapter's pack-eligible random
-/// draws); without one, another kind takes its place. [boardNumber] keeps
-/// the ids unique across boards.
+/// draws); without one, another kind takes its place. With [sea] (the
+/// Harbor stands), one contract is the sea's. [boardNumber] keeps the ids
+/// unique across boards.
 List<Contract> rollContracts({
   required int chapter,
   required List<String> huntPool,
   required Random random,
   required int boardNumber,
+  bool sea = false,
 }) {
   final kinds = [
     if (huntPool.isNotEmpty) ContractKind.hunt,
@@ -146,6 +194,11 @@ List<Contract> rollContracts({
     kinds
       ..remove(ContractKind.hunt)
       ..insert(0, ContractKind.hunt);
+  }
+  // Once the Eel sails from the camp, the sea gets its own line.
+  if (sea) {
+    final seaKinds = seaContractKinds.toList();
+    kinds.insert(1, seaKinds[random.nextInt(seaKinds.length)]);
   }
   final gold = contractGoldFor(chapter);
   final essence = contractEssenceFor(chapter);
@@ -164,6 +217,9 @@ List<Contract> rollContracts({
           ContractKind.breaker => 2,
           ContractKind.weakness => 4,
           ContractKind.marked => 1 + random.nextInt(2),
+          ContractKind.sinkShips => 2,
+          ContractKind.takeShip => 1,
+          ContractKind.keelIntact => 1,
         },
         rewardGold: gold,
         rewardEssence: essence,

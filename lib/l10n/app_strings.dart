@@ -7244,6 +7244,51 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'New place: {place}',
     AppLanguage.fr: 'Nouveau lieu : {place}',
   },
+  'ship_run_button': {
+    AppLanguage.en: 'Run for it',
+    AppLanguage.fr: 'Prendre la fuite',
+  },
+  'ship_run_hint': {
+    AppLanguage.en:
+        'Far off, turn tail instead of firing: three turns of it and the Eel is away (a tailwind counts double). No gun fires in a turn you run.',
+    AppLanguage.fr:
+        'De loin, virer de bord au lieu de tirer : trois tours et l\'Eel est hors d\'atteinte (un vent arrière compte double). Aucun canon ne tire pendant un tour de fuite.',
+  },
+  'ship_escape_label': {
+    AppLanguage.en: 'escape {n}/{of}',
+    AppLanguage.fr: 'fuite {n}/{of}',
+  },
+  'ship_log_running': {
+    AppLanguage.en: 'The {ship} turns tail and runs ({n}/3)',
+    AppLanguage.fr: '{ship} vire de bord et fuit ({n}/3)',
+  },
+  'ship_log_fled': {
+    AppLanguage.en: 'The {ship} runs clear and leaves the fight behind',
+    AppLanguage.fr: '{ship} prend le large et laisse le combat derrière elle',
+  },
+  'ship_log_run_caught': {
+    AppLanguage.en: 'The {ship} closes the gap: the run loses ground ({n}/3)',
+    AppLanguage.fr: '{ship} réduit l\'écart : la fuite perd du terrain ({n}/3)',
+  },
+  'tip_ship_run': {
+    AppLanguage.en:
+        'At long range the Eel can run for it instead of firing. Three turns of running and she is away, two with the wind behind her. If the enemy closes the gap, the run loses a turn.',
+    AppLanguage.fr:
+        'À longue portée, l\'Eel peut prendre la fuite au lieu de tirer. Trois tours de fuite et elle est hors d\'atteinte, deux avec le vent arrière. Si l\'ennemi réduit l\'écart, la fuite perd un tour.',
+  },
+  'contract_sinkShips': {
+    AppLanguage.en: 'Sink or take {n} ships at sea',
+    AppLanguage.fr: 'Couler ou prendre {n} navires en mer',
+  },
+  'contract_takeShip': {
+    AppLanguage.en: 'Take a ship by boarding her',
+    AppLanguage.fr: 'Prendre un navire à l\'abordage',
+  },
+  'contract_keelIntact': {
+    AppLanguage.en: 'Win a sea fight losing no more than a quarter of the hull',
+    AppLanguage.fr:
+        'Gagner un combat en mer sans perdre plus d\'un quart de la coque',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

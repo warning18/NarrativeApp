@@ -8,6 +8,29 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.184.0+214]
+
+The Eel can now run from a fight, and the camp's bounty board has work
+at sea.
+
+### Added
+- **Run for it.** At long range, with a hand at the helm (or the wind
+  behind her), the Eel can turn tail instead of firing. Three turns of
+  running and she is out of the fight; a tailwind counts double. No gun
+  fires in a turn she runs, and a gun fired first means no running that
+  turn. An enemy that closes the gap sets the run back a turn, and the
+  range bar shows how far the run has got. On a voyage she sails on as
+  she is, with no prize. The story's own sea fights must still be seen
+  through. A one-time tip explains it the first time it's possible.
+- **Sea bounties.** Once the Harbor stands, one of the board's three
+  contracts is the sea's:
+  - Sink or take two ships at sea.
+  - Take a ship by boarding her.
+  - Win a sea fight losing no more than a quarter of the hull.
+
+  They pay like the other contracts, and count on voyages and in the
+  story's sea fights alike.
+
 ## [1.183.0+213]
 
 Every night rested at the camp now rolls the camp's fate die, so the camp

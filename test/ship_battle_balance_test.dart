@@ -267,6 +267,8 @@ Map<String, Map<String, _Tally>> _run({
             tally.boarded++;
             tally.hull += 100 * b.player.hull ~/ b.player.maxHull;
           case BattleEnd.escaped:
+          // The simulated captain never runs; were it to, it's no win.
+          case BattleEnd.fled:
             tally.escaped++;
             tally.hull += 100 * b.player.hull ~/ b.player.maxHull;
           case BattleEnd.lost:

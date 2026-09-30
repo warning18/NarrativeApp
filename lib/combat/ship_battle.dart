@@ -27,6 +27,10 @@ import 'ship_combat.dart' as combat show endRound;
 ///   drifting wreck.
 /// - Quick orders: a turn ended with half the clock left gives the Eel
 ///   a better chance to slip the volley that follows.
+/// - Run for it (v1.184): far off, with a hand at the helm, the Eel can
+///   turn tail instead of firing; [escapeNeeded] turns of it (a tailwind
+///   counts double) and she is away. A ship that closes the gap sets her
+///   back a turn.
 ///
 /// Deterministic given [random], so tests and the balance simulation can
 /// drive whole battles; the panel (ShipBattlePanel) drives one turn at a
@@ -256,6 +260,9 @@ const int boarderMaxTries = 2;
 /// A marksman's shots go for the crew.
 const double marksmanInjuryFactor = 1.5;
 
+/// Turns of running the Eel needs to get away (see ShipBattle.runForIt).
+const int escapeNeeded = 3;
+
 /// Which rules are on: all of them in play; [classic] is the battle before
 /// v1.153, for the balance simulation's comparison.
 class ShipBattleRules {
@@ -282,7 +289,9 @@ class ShipBattleRules {
   final bool flooding;
 }
 
-enum BattleEnd { won, lost, boarded, escaped }
+/// How a battle ended: [escaped] is the enemy getting away, [fled] the
+/// Eel.
+enum BattleEnd { won, lost, boarded, escaped, fled }
 
 /// Whose ship a log line is about.
 enum BattleSide { eel, enemy }
@@ -319,6 +328,7 @@ class ShipBattle {
     this.habit = EnemyHabit.none,
     this.rules = const ShipBattleRules(),
     this.windKnot = false,
+    this.canFlee = true,
   }) : crew = List.of(crew) {
     // Everyone starts somewhere useful: the player at the helm, the next
     // hand at the guns, the next at the bulwark, the last in the hold.
@@ -339,6 +349,9 @@ class ShipBattle {
 
   /// The Wind-Knot sail is aboard: a crosswind is a tailwind for the Eel.
   final bool windKnot;
+
+  /// The Eel may run for it (not in a fight the story must see through).
+  final bool canFlee;
 
   ShipState player;
   ShipState enemy;
@@ -374,6 +387,10 @@ class ShipBattle {
   bool grappled = false;
   bool quick = false;
 
+  /// The Eel ran this turn (no gun fires), or a gun fired (no running).
+  bool ran = false;
+  bool fired = false;
+
   /// Enemy room -> shots landed in it this turn (see [focusRoomDamage]).
   final Map<ShipRoom, int> focus = {};
 
@@ -389,6 +406,9 @@ class ShipBattle {
   bool boardingSpent = false;
   bool enemyBoardingSpent = false;
   List<ShipWeapon> _volley = const [];
+
+  /// Turns of running so far (see [runForIt]).
+  int escape = 0;
 
   bool get over => end != null;
 
@@ -477,6 +497,8 @@ class ShipBattle {
     voidWard = false;
     grappled = false;
     quick = false;
+    ran = false;
+    fired = false;
     focus.clear();
     final result = crewTurn(player, stationsMap);
     player = result.ship;
@@ -534,7 +556,8 @@ class ShipBattle {
 
   bool inRange(ShipWeapon weapon) => !rules.range || weapon.reaches(range);
 
-  bool canFire(ShipWeapon weapon) => !over && weapon.isReady && inRange(weapon);
+  bool canFire(ShipWeapon weapon) =>
+      !over && !ran && weapon.isReady && inRange(weapon);
 
   /// What the loaded shot, the room's focus and a pending critical do to a
   /// shot at [room].
@@ -565,6 +588,7 @@ class ShipBattle {
   ShotOutcome? fire(String weaponId, ShipRoom room, {AimResult? aim}) {
     final weapon = weaponById(weaponId);
     if (weapon == null || !canFire(weapon)) return null;
+    fired = true;
     player = player.withWeapon(weapon.fired());
     if (aim == AimResult.wide) {
       _add('ship_log_shot_wide', weapon: weapon);
@@ -620,6 +644,37 @@ class ShipBattle {
     }
     _add(closing ? 'ship_log_close_in' : 'ship_log_pull_away',
         side: BattleSide.eel, range: to);
+  }
+
+  // --- Running -----------------------------------------------------------
+
+  /// True while the Eel can run for it this turn: far off, her helm
+  /// working with a hand at it (or the wind behind her), no gun fired.
+  bool get canRun =>
+      canFlee &&
+      rules.range &&
+      !over &&
+      !ran &&
+      !fired &&
+      range == ShipRange.long &&
+      !player.room(ShipRoom.helm).isDown &&
+      (helmsman != null || tailwindFor(weather, windKnot: windKnot));
+
+  /// Turns tail for the turn: every hand on the sheets, no gun fires. A
+  /// tailwind carries her two turns' worth; [escapeNeeded] and she is
+  /// away. The helm hand spends the turn on it unless the wind is behind.
+  void runForIt() {
+    if (!canRun) return;
+    final tailwind = tailwindFor(weather, windKnot: windKnot);
+    ran = true;
+    escape = min(escapeNeeded, escape + (tailwind ? 2 : 1));
+    if (!tailwind) busyRooms = {...busyRooms, ShipRoom.helm};
+    if (escape >= escapeNeeded) {
+      _add('ship_log_fled', side: BattleSide.eel);
+      _finish(BattleEnd.fled);
+      return;
+    }
+    _add('ship_log_running', side: BattleSide.eel, n: escape);
   }
 
   // --- Orders -------------------------------------------------------------
@@ -772,6 +827,10 @@ class ShipBattle {
             side: BattleSide.enemy,
             range: to);
         range = to;
+        if (escape > 0 && to != ShipRange.long) {
+          escape--;
+          _add('ship_log_run_caught', side: BattleSide.enemy, n: escape);
+        }
       }
     }
     if (rules.habits &&

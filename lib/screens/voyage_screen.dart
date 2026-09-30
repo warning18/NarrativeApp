@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/combat_engine.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
+import '../data/contracts.dart';
 import '../data/port_helpers.dart';
 import '../data/ability_check.dart';
 import '../data/companion_remarks.dart';
@@ -442,6 +443,7 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final notifier = ref.read(playerSessionProvider.notifier);
     final enemyName =
         _enemyName(ref.read(appLanguageProvider) == AppLanguage.fr);
+    final before = _player;
     _player = outcome.player;
     _log
       ..clear()
@@ -487,12 +489,30 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     for (final member in outcome.crew) {
       if (member.isPlayer) {
         await notifier.applyCombatResult(
-            hpAfter: member.health, goldGain: gold, xpGain: xp);
+          hpAfter: member.health,
+          goldGain: gold,
+          xpGain: xp,
+          // A won sea fight counts on the camp's board (see contracts.dart).
+          contractTally: outcome.won
+              ? ContractTally.sea(
+                  boarded: outcome.boarded,
+                  hullBefore: before?.hull ?? outcome.player.hull,
+                  hullAfter: outcome.player.hull,
+                  maxHull: outcome.player.maxHull)
+              : null,
+        );
       } else {
         await notifier.applyAllyCombatResult(member.id, hpAfter: member.health);
       }
     }
     if (!mounted) return;
+    if (outcome.fled) {
+      // The Eel outran them: no prize, and she sails on as she is.
+      _log.add(_t('ship_log_outran'));
+      await notifier.setShipHull(_player!.hull);
+      await _advance();
+      return;
+    }
     if (outcome.escaped) {
       // The raider got away: nothing to take, and the Eel sails on as
       // she is.
