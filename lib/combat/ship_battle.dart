@@ -808,6 +808,16 @@ class ShipBattle {
         side: BattleSide.enemy, n: before - player.hull);
   }
 
+  /// The boarders ran from the dice fight on the enemy's deck (see
+  /// FightScreen's retreat, which takes its own toll of gold): they fall
+  /// back aboard the Eel and cut the grapples, the boarding spent for
+  /// this battle but no hull lost.
+  void boardingAbandoned() {
+    boardingSpent = true;
+    grappled = false;
+    _add('ship_log_boarding_abandoned', side: BattleSide.enemy);
+  }
+
   // --- The enemy's turn ---------------------------------------------------
 
   /// The enemy's turn up to its volley: a fleeing ship already far off

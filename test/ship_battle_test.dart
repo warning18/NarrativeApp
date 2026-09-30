@@ -467,6 +467,24 @@ void main() {
       expect(b.canBoardThem, isTrue);
       expect(b.throwGrapples(), isTrue);
     });
+
+    test('boarders who run from the deck fight cut loose, no hull lost', () {
+      final grosh = _member('grosh');
+      final b = _battle(
+          crew: [_you, grosh],
+          enemy: _ship(layers: 1, levels: const {ShipRoom.helm: 3}),
+          boarding: const BoardingProfile(crew: ['bandit'], chance: 0.3),
+          rules: const ShipBattleRules(weather: false, seaEvents: false));
+      b.giveOrder(grosh);
+      expect(b.throwGrapples(), isTrue);
+      final hull = b.player.hull;
+      b.boardingAbandoned();
+      expect(b.player.hull, hull);
+      expect(b.grappled, isFalse);
+      expect(b.canBoardThem, isFalse, reason: 'the try is spent');
+      expect(b.log.last.key, 'ship_log_boarding_abandoned');
+      expect(b.over, isFalse);
+    });
   });
 
   group('enemy habits', () {

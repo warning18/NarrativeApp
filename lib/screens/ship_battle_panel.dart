@@ -11,6 +11,7 @@ import '../combat/ship_combat.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
+import '../providers/aftermath_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -621,12 +622,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     return records;
   }
 
-  /// Fights the enemy's boarding crew on the dice. True on a win, false
-  /// on a loss, null when the fight ended the run (permadeath).
-  Future<bool?> _deckFight(Map<String, Map<String, dynamic>> records,
+  /// Fights the enemy's boarding crew on the dice: won, lost, or run
+  /// from (the fight's retreat); null when the fight ended the run
+  /// (permadeath).
+  Future<_DeckFight?> _deckFight(Map<String, Map<String, dynamic>> records,
       {double healthMultiplier = 1.0}) async {
     final ids = widget.boarding.crew;
     ref.read(combatActiveProvider.notifier).state = true;
+    final retreated = ref.read(lastFightRetreatedProvider.notifier);
+    retreated.state = false;
     final won = await Navigator.of(context).push<bool>(
       MaterialPageRoute(
         builder: (_) => FightScreen(
@@ -651,7 +655,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     // read it back rather than keep the panel's stale copy.
     final rebuilt = widget.buildCrew?.call();
     if (rebuilt != null) _battle.crew = rebuilt;
-    return won;
+    // A retreat pops the fight with no result; it is no end of the run.
+    if (won == null && retreated.state) {
+      retreated.state = false;
+      return _DeckFight.fled;
+    }
+    if (won == null) return null;
+    return won ? _DeckFight.won : _DeckFight.lost;
   }
 
   /// The boarding crew by name, duplicates counted: "Street Bandit x2, Harbor Rat".
@@ -697,15 +707,20 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       return;
     }
     setState(_battle.boardingStarted);
-    final won = await _deckFight(records);
-    if (!mounted || won == null) return;
-    if (won) {
+    final result = await _deckFight(records);
+    if (!mounted || result == null) return;
+    if (result == _DeckFight.won) {
       _battle.boardingWon();
       _finish();
       return;
     }
     setState(() {
-      _battle.boardingLost();
+      // Run from: back aboard, the grapples cut; lost: thrown back.
+      if (result == _DeckFight.fled) {
+        _battle.boardingAbandoned();
+      } else {
+        _battle.boardingLost();
+      }
       _busy = false;
     });
     await _endTurn();
@@ -721,12 +736,13 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     setState(() {});
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return false;
-    final won = await _deckFight(records,
+    final result = await _deckFight(records,
         healthMultiplier: holdManned ? holdMannedBoarderHealth : 1.0);
-    if (!mounted || won == null) return false;
-    if (won) {
+    if (!mounted || result == null) return false;
+    if (result == _DeckFight.won) {
       _battle.boardersRepelled();
     } else {
+      // Lost, or the deck left to them: they wreck the hold either way.
       _battle.boardersWon();
     }
     return true;
@@ -2875,3 +2891,6 @@ IconData _orderIcon(CrewOrder order) => switch (order) {
       CrewOrder.eagleEye => Icons.visibility,
       CrewOrder.voidWard => Icons.blur_on,
     };
+
+/// How a dice fight on a deck ended (see _ShipBattlePanelState._deckFight).
+enum _DeckFight { won, lost, fled }

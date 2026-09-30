@@ -542,6 +542,33 @@ void main() {
   });
 
   group('fitting', () {
+    test('a ship carries no more parts than her slots hold', () {
+      // Two gun slots: the third weapon stays in the hold.
+      final kept =
+          partsWithinSlots(ship: ship, parts: parts, installedPartIds: const [
+        'ballista',
+        'harpoon_rack',
+        'fire_pots',
+        'iron_plating',
+        'spare_canvas',
+      ]);
+      expect(
+          kept, ['ballista', 'harpoon_rack', 'iron_plating', 'spare_canvas']);
+      final eel = buildPlayerShip(
+          ship: ship,
+          parts: parts,
+          installedPartIds: const ['ballista', 'harpoon_rack', 'fire_pots'],
+          currentHull: -1);
+      expect(eel.weapons.map((w) => w.id), ['ballista', 'harpoon_rack']);
+      // A slot type the ship gives no count for is not limited.
+      expect(
+          partsWithinSlots(
+              ship: const {'weaponSlots': 1},
+              parts: parts,
+              installedPartIds: const ['ballista', 'iron_plating']),
+          ['ballista', 'iron_plating']);
+    });
+
     test('buildPlayerShip: -1 hull means full, parts add pips and weapons', () {
       final fresh = buildPlayerShip(
           ship: ship,

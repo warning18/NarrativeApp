@@ -528,8 +528,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Navire ennemi',
   },
   'fight_lab_all_parts': {
-    AppLanguage.en: 'Every ship part installed',
-    AppLanguage.fr: 'Toutes les pièces installées',
+    AppLanguage.en: 'Pick the ship\'s parts',
+    AppLanguage.fr: 'Choisir les pièces du bateau',
   },
   'fight_lab_all_parts_desc': {
     AppLanguage.en: 'Off: your boat as it is now',
@@ -554,6 +554,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'fight_lab_ship_lost': {
     AppLanguage.en: 'Test battle lost',
     AppLanguage.fr: 'Bataille de test perdue',
+  },
+  'fight_lab_ship_fled': {
+    AppLanguage.en: 'Test battle over: the Eel got away',
+    AppLanguage.fr: 'Combat d\'essai terminé : l\'Eel s\'est échappé',
   },
   'fight_lab_ship_escaped': {
     AppLanguage.en: 'The enemy got away',
@@ -6459,6 +6463,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Thrown back to the Eel, -{n} hull; the {ship} fights on',
     AppLanguage.fr:
         'Repoussés vers l\'Eel, -{n} de coque ; {ship} poursuit le combat',
+  },
+  'ship_log_boarding_abandoned': {
+    AppLanguage.en:
+        'The boarding party falls back to the Eel and cuts the grapples; the {ship} fights on',
+    AppLanguage.fr:
+        'L\'équipe d\'abordage regagne l\'Eel et tranche les grappins ; {ship} poursuit le combat',
   },
   'ship_log_grapple_slipped': {
     AppLanguage.en: 'The {ship} slips the grapples; the turn is lost',
