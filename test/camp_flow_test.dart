@@ -221,7 +221,10 @@ void main() {
     expect(find.text('Back at the fire'), findsOneWidget);
     expect(find.byKey(const Key('chapter_card')), findsOneWidget);
     expect(find.text('Explored: 0 of 8'), findsOneWidget);
-    expect(find.text('Visit The Ashen Quarter first.'), findsOneWidget);
+    // The main quest reads as a checklist: the place to visit is a line
+    // that leads to the Road, with the steps left under the way in.
+    expect(find.text('Visit The Ashen Quarter ›'), findsOneWidget);
+    expect(find.byKey(const Key('main_quest_steps_left')), findsOneWidget);
     expect(find.textContaining('No place found yet'), findsOneWidget);
     FilledButton mainQuest() => tester.widget<FilledButton>(
         find.byKey(const Key('main_quest_3002'), skipOffstage: false));
@@ -231,14 +234,33 @@ void main() {
     // Kelda's hall is not on offer before Kelda joins.
     expect(find.text("Kelda's Hall"), findsNothing);
 
-    // The harbor, once built, is one tap away.
+    // The harbour sits in the Sea tab: what it would give until built,
+    // then one tap away.
+    await tester.ensureVisible(find.byKey(const Key('camp_tab_sea')));
+    await tester.tap(find.byKey(const Key('camp_tab_sea')));
+    await _settle(tester);
+    // The camp's list builds lazily: scroll it to the card.
+    final campList = find
+        .ancestor(
+            of: find.byKey(const Key('camp_tab_sea')),
+            matching: find.byType(Scrollable))
+        .first;
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('camp_harbor_locked')), 200,
+        scrollable: campList);
+    expect(find.byKey(const Key('camp_harbor_locked')), findsOneWidget);
     await tester.runAsync(() => notifier.buildHouse(harborHouseId, 250));
     await _settle(tester);
+    await tester.scrollUntilVisible(find.byKey(const Key('camp_harbor')), 200,
+        scrollable: campList);
     await tester.tap(find.byKey(const Key('camp_harbor')));
     await _settle(tester);
     expect(find.byType(HarborScreen), findsOneWidget);
     expect(find.text('Shipwright'), findsOneWidget);
     await tester.pageBack();
+    await _settle(tester);
+    await tester.ensureVisible(find.byKey(const Key('camp_tab_road')));
+    await tester.tap(find.byKey(const Key('camp_tab_road')));
     await _settle(tester);
 
     // Sailed out to another port, the camp gives way to the ship until she

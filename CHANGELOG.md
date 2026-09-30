@@ -8,6 +8,173 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.183.1+215]
+
+### Removed
+- **Coral in the shallows and fallen columns in the drowned waters.** The
+  shallows keep their seagrass, rocks and reef fish; the drowned waters
+  their weed, eels and fish.
+
+## [1.183.0+214]
+
+### Added
+- **Life under the water.** Each of the waters has its own bed and fish,
+  drawn beneath the waves:
+  - the open sea: schools of silver fish, a great shadow passing deep
+    down, jellyfish;
+  - the shallows: coral heads, seagrass and rocks, bright reef fish;
+  - the drowned waters: fallen columns furred with weed, pale eels;
+  - the abyss: black spires, glowing jellyfish, an angler's lure in the
+    dark;
+  - the ashen chop: grey rocks crusted with barnacles, dead weed, small
+    dark fish.
+- **Three weapons that fire their own shot:**
+
+  | Weapon | Shot | Damage | Turns to charge |
+  |---|---|---|---|
+  | Chain Swivel | chain | 14 | 2 |
+  | Grape Swivel | grape | 12 | 1 |
+  | Hot-Shot Carronade | heated | 24 | 3 |
+
+  All three reach close and medium range.
+
+### Changed
+- **The shot is the weapon's own.** The battle no longer has a shot picker.
+  Each weapon fires the shot set in its part: a new `ammo` field in
+  ship_parts.json (round, chain, grape or heated), which is an enumeration
+  in the editor. The shot's mark sits beside the weapon's damage in the
+  dock, and its tooltip says what the shot does. The tip about changing
+  shot is gone.
+  - Balance: since a skilled player no longer switches to chain shot
+    against a hard ship, the late void barge falls more often (57%, up
+    from 23% under the old rules). The balance test's upper band is now
+    35 points.
+
+## [1.182.1+213]
+
+### Changed
+- **The sea fight is pared down to the mockup:** one enemy bar, small ships
+  on a sea that fills the screen, one dock.
+  - **Enemy bar:** the enemy's name, habit, shields and hull, in one bar
+    above the sea.
+  - **The sea** holds everything between the ships:
+    - the weather and the next in a chip at the top corner;
+    - the enemy's guns as small charge rings, with the room each one
+      aims at when the foresight sail shows it;
+    - the range bracket down the left edge;
+    - close in and pull away as two round buttons on the right, up
+      toward the enemy and down away from her;
+    - the last two lines of the log at the bottom.
+  - **The ships are smaller** (at most 260 px long). How far apart they
+    lie is how much of the sea's height the range takes.
+  - **Rooms** carry no frame until they matter: a target, a station to
+    move to, or the enemy's aim. The room's state is painted on the deck.
+  - **The dock** starts with the Eel's bar. The weapons are ring tiles
+    three across.
+
+## [1.182.0+212]
+
+### Changed
+- **The sea fight is seen from above.** The two ships lie broadside to
+  broadside: the enemy at the top, the Eel below. The rules are the same;
+  what changed is how they read.
+  - **The rooms lie along the deck:** the helm at the stern, the hold's
+    hatch, the guns amidships and the bulwark at the bow. Each room is a
+    tap zone a thumb wide, showing its pips, crew, fire, leaks and the
+    enemy's aim. The rooms' names are written beside the ship in their
+    colours.
+  - **The range is the gap between the ships.** Closing in or pulling
+    away slides the Eel across the water, with a bracket down the side
+    naming the range.
+  - **Shields are arcs** on the side facing the enemy. The hold fills with
+    water as it leaks, a knocked-out room goes dark, and a ship below half
+    its hull is holed with torn sails. The wake grows with how quick the
+    ship is.
+  - **Each enemy has its own look from above:** the raider's short skiff,
+    the corsair's two black sails, the inquisition's white cutter and the
+    void barge's glowing runes, with no sails at all.
+- **The waters of the voyage set the sea.** Each port names its waters
+  (a new `waters` field in ports.json), and a fight on the way there is
+  fought on them:
+  - the open sea's long swells;
+  - the clear shallows over sand, with sandbars and rocks;
+  - the drowned waters' murk, kelp and rising bubbles;
+  - the abyss's black water, slow rings and violet motes;
+  - the ashen coast's grey chop under falling ash.
+
+  The Edit Mode test battle can pick the waters.
+- **The weather is drawn as particles over the sea.**
+  - A squall brings slanting rain, rings where it lands, whitecaps and
+    lightning.
+  - Fog banks drift across, thickest over the enemy.
+  - Wind tears streaks and spray across the water: with the Eel in a
+    tailwind, across her in a crosswind.
+  - A calm day glints, with gulls wheeling overhead.
+
+  When the weather turns between rounds, the old weather fades out as
+  the new one comes in, and a wave rolls under both ships.
+
+## [1.181.0+211]
+
+### Changed
+- **The Journey map follows the real map.** Standing in a place the world
+  chart knows, the map is that place up close, north up. Before, the ways
+  always went up the screen.
+  - **The ground** is drawn by what the place is:
+    - a town is what is left of its wall, with streets out of the square
+      and blocks between;
+    - a camp is tents round its fire;
+    - a site is broken stones;
+    - the sea is its own.
+
+    Each place is drawn from its own seed, so it looks the same every
+    visit.
+  - **The ways ring the party:** a fight, a shop or a talk in this place is
+    a spot round the square, reached by walking its street. A busy town's
+    spots fill an inner and an outer ring.
+  - **The ways out sit at the map's edge in their true direction:** the
+    Cove Camp south-west of the Ashen Quarter, Tern Row from the wharf.
+  - **Taking a way out zooms out** to the world chart (in the chosen chart
+    shape), and the party walks the road there. The map then opens on the
+    new place.
+  - The road behind now peeks in at the map's foot, and "You are here"
+    sits in a corner badge.
+  - A detour, on no place, keeps the road going up as before.
+- On a busy hub every way now inks in; the last ones used to stay hidden.
+
+## [1.180.0+210]
+
+### Changed
+- **The camp puts the next step first.**
+  - One header: the camp, its chapter, the day and the hour, and the
+    purse.
+  - The main quest is a checklist: each place still to visit is a line
+    that leads to the Road, then how much of the chapter is explored and
+    its quests settled. The way in says how many steps are left.
+  - The camp's scene is a card until read ("Put it away"), then a chip
+    beside Rest that opens it again.
+- **The camp in four tabs:**
+  - **Road:** places, expeditions and the bounty board;
+  - **Town:** the cliff town and its shops;
+  - **Party;**
+  - **Sea:** the Rusty Eel, the harbour and the chart.
+
+  It replaces eight sections in one scroll.
+- **The harbour is always in view.** The Sea tab shows the Eel drawn on
+  the water, her hull (in the sea's colour, red when low), her named
+  shield, her slots and the repair. Until the harbour is built, a card
+  says what it gives and costs, and a tap goes to Town. Once built, it
+  opens the refit, where the shipwright's parts are grouped by slot
+  ("Weapons · 1 of 2 filled") with the Install button under each.
+- **A day at sea you can read:**
+  - the crossing as a strip of days, each behind her showing what it
+    cost or gave, today marked, the rest unknown;
+  - the Eel on the water beside what she meets, and one hull bar;
+  - every choice says what it wins or costs and, for a check, the bonus,
+    the DC and the odds ("Perception +1 vs DC 15 · win +80 gold · fail
+    −12 hull · 35%"). No choice is highlighted as the one to take;
+  - the log is labelled, and hull losses carry their minus sign.
+
 ## [1.179.0+209]
 
 ### Changed

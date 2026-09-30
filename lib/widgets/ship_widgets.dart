@@ -12,7 +12,9 @@ import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../screens/voyage_screen.dart';
+import '../theme/stitched_ink.dart';
 import 'immersive_notice.dart';
+import 'ship_cutaway.dart';
 
 /// The Rusty Eel's own record in ships.json.
 const String playerShipId = 'rusty_eel';
@@ -87,79 +89,104 @@ class ShipStatusCard extends ConsumerWidget {
       return names.isEmpty ? '—' : names.join(', ');
     }
 
+    final ink = InkColors.of(context);
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // The Eel herself, on the water.
+          ShipAtSea(ship: playerShip, borderRadius: 0),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Icon(Icons.sailing, size: 32),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(ship['shipName']?.toString() ?? playerShipId,
-                          style: theme.textTheme.titleMedium),
-                      if (currentPort != null)
-                        Text(
-                          '${tr(ref, 'boat_at_port_prefix')}: ${portNameFor(currentPort, fr)}',
-                          style: theme.textTheme.bodySmall,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: Text(ship['shipName']?.toString() ?? playerShipId,
+                          style: theme.textTheme.titleMedium
+                              ?.copyWith(fontFamily: InkFonts.display)),
+                    ),
+                    if (currentPort != null)
+                      Flexible(
+                        child: Text(
+                          '${tr(ref, 'boat_at_port_prefix')} ${portNameFor(currentPort, fr)}',
+                          textAlign: TextAlign.end,
+                          style: theme.textTheme.bodySmall
+                              ?.copyWith(color: ink.ash),
                         ),
-                    ],
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                HullBar(hull: playerShip.hull, maxHull: playerShip.maxHull),
+                if (playerShip.maxLayers > 0) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    tr(ref, 'ship_shield_line')
+                        .replaceAll('{n}', '${playerShip.maxLayers}'),
+                    style: theme.textTheme.bodySmall
+                        ?.copyWith(color: ink.voidColor),
                   ),
+                ],
+                const SizedBox(height: 8),
+                // What is fitted, slot by slot.
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final slot in slotTypeOptions)
+                      if (slotCapacity(ship, slot) > 0)
+                        Tooltip(
+                          message: installedNames(slot),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                  color: slotsUsed(parts, installed, slot) > 0
+                                      ? ink.tide
+                                      : ink.seam),
+                            ),
+                            child: Text(
+                              '${shipSlotLabel(ref, slot)} '
+                              '${slotsUsed(parts, installed, slot)}/${slotCapacity(ship, slot)}',
+                              style: theme.textTheme.labelSmall,
+                            ),
+                          ),
+                        ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                FilledButton.tonalIcon(
+                  key: const Key('ship_repair'),
+                  onPressed:
+                      (repairCost == 0 || session.gold < repairCost || busy)
+                          ? null
+                          : () async {
+                              final ok = await ref
+                                  .read(playerSessionProvider.notifier)
+                                  .repairShip(repairCost);
+                              if (!ok || !context.mounted) return;
+                              showImmersiveNotice(
+                                context,
+                                icon: Icons.build_outlined,
+                                message: tr(ref, 'ship_sound_label'),
+                              );
+                            },
+                  icon: const Icon(Icons.build_outlined),
+                  label: Text(repairCost == 0
+                      ? tr(ref, 'ship_sound_label')
+                      : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})'),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            LinearProgressIndicator(
-              value: playerShip.maxHull == 0
-                  ? 0
-                  : playerShip.hull / playerShip.maxHull,
-              minHeight: 8,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              '${tr(ref, 'hull_label')} ${playerShip.hull} / ${playerShip.maxHull} · '
-              '${[
-                for (final room in ShipRoom.values)
-                  '${tr(ref, 'ship_room_${room.name}_title')} ${playerShip.room(room).level}',
-              ].join(' · ')}',
-              style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
-            for (final slot in slotTypeOptions)
-              Text(
-                '${shipSlotLabel(ref, slot)} '
-                '${slotsUsed(parts, installed, slot)} / ${slotCapacity(ship, slot)}: '
-                '${installedNames(slot)}',
-                style: theme.textTheme.bodySmall,
-              ),
-            const SizedBox(height: 12),
-            FilledButton.tonalIcon(
-              key: const Key('ship_repair'),
-              onPressed: (repairCost == 0 || session.gold < repairCost || busy)
-                  ? null
-                  : () async {
-                      final ok = await ref
-                          .read(playerSessionProvider.notifier)
-                          .repairShip(repairCost);
-                      if (!ok || !context.mounted) return;
-                      showImmersiveNotice(
-                        context,
-                        icon: Icons.build_outlined,
-                        message: tr(ref, 'ship_sound_label'),
-                      );
-                    },
-              icon: const Icon(Icons.build_outlined),
-              label: Text(repairCost == 0
-                  ? tr(ref, 'ship_sound_label')
-                  : '${tr(ref, 'repair_ship_button')} ($repairCost ${tr(ref, 'gold_label')})'),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -292,6 +319,133 @@ class _PortCard extends ConsumerWidget {
               ? null
               : () => sailTo(context, ref, toPortId: portId, toPort: port),
           child: Text(tr(ref, 'sail_button')),
+        ),
+      ),
+    );
+  }
+}
+
+/// A hull bar in the sea's colour (days and other bars are gold), with
+/// its numbers.
+class HullBar extends ConsumerWidget {
+  const HullBar({super.key, required this.hull, required this.maxHull});
+
+  final int hull;
+  final int maxHull;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ink = InkColors.of(context);
+    final theme = Theme.of(context);
+    final low = maxHull > 0 && hull * 3 < maxHull;
+    return Row(
+      children: [
+        Text(tr(ref, 'hull_label'), style: theme.textTheme.labelMedium),
+        const SizedBox(width: 8),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              key: const Key('hull_bar'),
+              value: maxHull == 0 ? 0 : (hull / maxHull).clamp(0.0, 1.0),
+              minHeight: 8,
+              color: low ? ink.blood : ink.tide,
+              backgroundColor: ink.seam,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text('$hull / $maxHull', style: theme.textTheme.labelMedium),
+      ],
+    );
+  }
+}
+
+/// The Eel drawn on the water: her pixel cutaway (battered below half her
+/// hull, refitted by her rooms) on a band of sea, and [beside] -- what she
+/// meets -- to her right.
+class ShipAtSea extends StatelessWidget {
+  const ShipAtSea({
+    super.key,
+    required this.ship,
+    this.beside,
+    this.height = 112,
+    this.borderRadius = 10,
+  });
+
+  final ShipState ship;
+  final Widget? beside;
+  final double height;
+  final double borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    final cutaway = ShipCutaway.rustyEel;
+    final asset = cutaway.asset(
+        battered: ship.hull * 2 < ship.maxHull,
+        refit: ShipCutaway.refitOf(ship));
+    final shipHeight = height * 0.82;
+    final shipWidth = shipHeight *
+        ShipCutaway.spriteSize.width /
+        ShipCutaway.spriteSize.height;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: SizedBox(
+        key: const Key('ship_at_sea'),
+        height: height,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFF1C2A3E), Color(0xFF14212E)],
+            ),
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                height: height * 0.24,
+                child: const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF24596A), Color(0xFF1A3F4C)],
+                    ),
+                  ),
+                ),
+              ),
+              // Centred alone; to the left when she meets something.
+              Positioned(
+                left: beside == null ? 0 : 16,
+                right: beside == null ? 0 : null,
+                bottom: height * 0.06,
+                height: shipHeight,
+                child: Align(
+                  alignment: beside == null
+                      ? Alignment.bottomCenter
+                      : Alignment.bottomLeft,
+                  child: Image.asset(asset,
+                      width: shipWidth,
+                      height: shipHeight,
+                      filterQuality: FilterQuality.none,
+                      fit: BoxFit.contain),
+                ),
+              ),
+              if (beside == null)
+                const SizedBox.shrink()
+              else
+                Positioned(
+                  right: 20,
+                  top: 0,
+                  bottom: height * 0.14,
+                  child: Center(child: beside),
+                ),
+            ],
+          ),
         ),
       ),
     );

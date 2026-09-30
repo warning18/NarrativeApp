@@ -129,7 +129,8 @@ void main() {
           player: _ship(weapons: const [_gun]),
           enemy: _ship(levels: const {ShipRoom.helm: 0, ShipRoom.guns: 3}));
       b.weather = SeaWeather.squall;
-      b.ammo = ShipAmmo.heated;
+      b.player =
+          b.player.withWeapon(b.weaponById('gun')!.withAmmo(ShipAmmo.heated));
       final shot = b.fire('gun', ShipRoom.guns)!;
       expect(shot.landed, isTrue);
       expect(shot.fireStarted, isFalse);
@@ -254,6 +255,19 @@ void main() {
   });
 
   group('shot', () {
+    test('the shot is the weapon\'s own, read off its part', () {
+      final parts =
+          jsonDecode(File('assets/gamedata/ship_parts.json').readAsStringSync())
+              as Map<String, dynamic>;
+      ShipAmmo shotOf(String id) =>
+          ShipWeapon.fromPart(id, parts[id] as Map<String, dynamic>).ammo;
+      expect(shotOf('ballista'), ShipAmmo.round);
+      expect(shotOf('chain_swivel'), ShipAmmo.chain);
+      expect(shotOf('grape_swivel'), ShipAmmo.grape);
+      expect(shotOf('hot_shot_carronade'), ShipAmmo.heated);
+      expect(ammoFromName('nonsense'), ShipAmmo.round);
+    });
+
     test('chain tears the helm, grape and heated trade hull for effect', () {
       final target = _ship(
           levels: const {ShipRoom.helm: 3, ShipRoom.guns: 3, ShipRoom.hold: 2});
@@ -283,7 +297,8 @@ void main() {
           enemy: _ship(
               levels: const {ShipRoom.helm: 0, ShipRoom.guns: 3},
               weapons: const [_theirGun]));
-      b.ammo = ShipAmmo.grape;
+      b.player =
+          b.player.withWeapon(b.weaponById('gun')!.withAmmo(ShipAmmo.grape));
       b.fire('gun', ShipRoom.guns);
       expect(b.grapeLeft, grapeRounds);
       final damaged = b.enemy.room(ShipRoom.guns).damage;

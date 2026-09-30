@@ -42,8 +42,10 @@ enum TutorialTopic {
     TutorialStep('tut_character_4', target: 'character.pages'),
   ]),
   camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
+    TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
+    TutorialStep('tut_camp_6', target: 'camp.road'),
     TutorialStep('tut_camp_1', target: 'camp.town'),
-    TutorialStep('tut_camp_2', target: 'camp.tray'),
+    TutorialStep('tut_camp_2', target: 'camp.tray', optional: true),
     TutorialStep('tut_camp_3', target: 'camp.boat', optional: true),
     TutorialStep('tut_camp_4', target: 'camp.roster'),
     TutorialStep('tut_camp_5', target: 'camp.sail'),

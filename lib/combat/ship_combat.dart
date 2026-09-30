@@ -45,6 +45,28 @@ Set<ShipRange> weaponRangesFrom(Object? raw) {
   return ranges.isEmpty ? ShipRange.values.toSet() : ranges;
 }
 
+/// The shot a weapon fires: it is the weapon's (ship_parts.json `ammo`).
+enum ShipAmmo { round, chain, grape, heated }
+
+/// How an ammunition changes a shot: chain and grape do half the hull,
+/// chain also tears a pip off the helm, heated does three quarters and
+/// sets the room burning. Grape's toll on the enemy's crew is the
+/// battle's (see [grapeRounds]).
+ShotMods ammoMods(ShipAmmo ammo) => switch (ammo) {
+      ShipAmmo.round => const ShotMods(),
+      ShipAmmo.chain => const ShotMods(damageFactor: 0.5, helmPips: 1),
+      ShipAmmo.grape => const ShotMods(damageFactor: 0.5),
+      ShipAmmo.heated => const ShotMods(damageFactor: 0.75, ignite: true),
+    };
+
+/// [name] as a shot; anything else is round shot.
+ShipAmmo ammoFromName(Object? name) {
+  for (final ammo in ShipAmmo.values) {
+    if (ammo.name == name) return ammo;
+  }
+  return ShipAmmo.round;
+}
+
 /// Shield layers are capped here whatever the bulwark's level.
 const int maxShieldLayers = 3;
 
@@ -105,6 +127,7 @@ class ShipWeapon {
     this.roomDamage = 1,
     this.charge = 0,
     this.ranges = const {ShipRange.close, ShipRange.medium, ShipRange.long},
+    this.ammo = ShipAmmo.round,
   });
 
   /// A player weapon off its ship_parts.json record; [damageBonus] is the
@@ -123,6 +146,7 @@ class ShipWeapon {
       incendiary: part['setsFire'] == true,
       roomDamage: max(1, (part['roomDamage'] as num?)?.toInt() ?? 1),
       ranges: weaponRangesFrom(part['ranges']),
+      ammo: ammoFromName(part['ammo']),
     );
   }
 
@@ -138,6 +162,7 @@ class ShipWeapon {
         incendiary: raw['setsFire'] == true,
         roomDamage: max(1, (raw['roomDamage'] as num?)?.toInt() ?? 1),
         ranges: weaponRangesFrom(raw['ranges']),
+        ammo: ammoFromName(raw['ammo']),
       );
 
   final String id;
@@ -161,6 +186,9 @@ class ShipWeapon {
   /// The ranges it reaches (a harpoon only close, a thrown pot not long).
   final Set<ShipRange> ranges;
 
+  /// The shot it fires.
+  final ShipAmmo ammo;
+
   bool get isReady => charge >= chargeTurns;
 
   bool reaches(ShipRange range) => ranges.contains(range);
@@ -178,9 +206,25 @@ class ShipWeapon {
         roomDamage: roomDamage,
         charge: value.clamp(0, chargeTurns),
         ranges: ranges,
+        ammo: ammo,
       );
 
   ShipWeapon fired() => withCharge(0);
+
+  /// The same weapon firing [shot].
+  ShipWeapon withAmmo(ShipAmmo shot) => ShipWeapon(
+        id: id,
+        name: name,
+        nameFr: nameFr,
+        damage: damage,
+        chargeTurns: chargeTurns,
+        piercing: piercing,
+        incendiary: incendiary,
+        roomDamage: roomDamage,
+        charge: charge,
+        ranges: ranges,
+        ammo: shot,
+      );
 }
 
 /// One ship in a battle.

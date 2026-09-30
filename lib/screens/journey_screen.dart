@@ -9,7 +9,7 @@ import '../data/chapter_grid_layout.dart';
 import '../data/encounter_text.dart';
 import '../data/journey_map.dart';
 import '../data/journey_relief.dart';
-import '../data/map_charts.dart' show ChartPalette;
+import '../data/map_charts.dart' show ChartGeography, ChartPalette, chartOf;
 import '../data/narration_tokens.dart';
 import '../data/story_repository.dart';
 import '../data/world_map.dart';
@@ -28,6 +28,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/journey_fx.dart';
+import '../widgets/journey_place.dart';
 import '../widgets/player_stats_bar.dart';
 import 'journal_screen.dart';
 import 'story_player_screen.dart'
@@ -72,6 +73,8 @@ class _Step {
     required this.locked,
     required this.leadsTo,
     required this.onward,
+    this.bearing,
+    this.chartTarget,
   });
 
   final StoryChoice choice;
@@ -87,6 +90,40 @@ class _Step {
 
   /// How many ways on the step's own scene has (drawn as faint forks).
   final int onward;
+
+  /// For a way to another place: its true direction from here on the
+  /// world chart (radians, 0 east, clockwise), and where it is there.
+  final double? bearing;
+  final Offset? chartTarget;
+}
+
+/// The place the party stands in, as the map draws it up close (v1.181):
+/// what kind of place, its seed, and where it is on the world chart.
+class _PlaceView {
+  const _PlaceView({
+    required this.kind,
+    required this.seed,
+    required this.geography,
+    required this.chartHere,
+    required this.marks,
+  });
+
+  final PlaceKind kind;
+  final int seed;
+  final ChartGeography geography;
+  final Offset chartHere;
+
+  /// The places around on the chart, for the road between two of them.
+  final List<ChartMark> marks;
+}
+
+/// A seed from [text] that is the same on every run.
+int _stableSeed(String text) {
+  var hash = 0x811c9dc5;
+  for (final unit in text.codeUnits) {
+    hash = ((hash ^ unit) * 0x01000193) & 0x7fffffff;
+  }
+  return hash;
 }
 
 /// A scene passed earlier in the chapter, as the map draws it below the
@@ -150,6 +187,25 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
 
   /// Counts the times the tab is opened from another: the map unrolls.
   int _unroll = 0;
+
+  /// Each landmark's kind of place, from the settlements the story puts
+  /// there (a town's hub, a camp); read once per story.
+  Map<String, String>? _placeKinds;
+  StoryData? _placeKindsOf;
+
+  Map<String, String> _kindsFor(StoryData story) {
+    if (_placeKinds != null && identical(_placeKindsOf, story)) {
+      return _placeKinds!;
+    }
+    final kinds = <String, String>{};
+    for (final node in story.nodes.values) {
+      final settlement = node.settlement;
+      final landmark = settlement == null ? null : landmarkOfScene(node.id);
+      if (landmark != null) kinds[landmark.id] = settlement!.kind;
+    }
+    _placeKindsOf = story;
+    return _placeKinds = kinds;
+  }
 
   /// The jolt going into a fight: the map shakes and its edges run red.
   late final AnimationController _jolt = AnimationController(
@@ -418,6 +474,12 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
       ));
     }
 
+    // The place up close, when the party stands at one the world chart
+    // knows (not on a detour): where it is and what the ways out point at.
+    final geography = chartOf(ref.watch(mapShapeProvider));
+    final placeLandmark = play.isInExcursion ? null : standing;
+    final chartHere =
+        placeLandmark == null ? null : geography.of(placeLandmark);
     final choices =
         node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
     final ended = choices.isEmpty || isStoryEnding(node);
@@ -455,12 +517,40 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
             onward: play.isInExcursion || choice.isEnding
                 ? 0
                 : story.nodeFor(choice.nextId)?.choices.length ?? 0,
+            bearing:
+                chartHere != null && target != null && target.id != standing?.id
+                    ? (geography.of(target) - chartHere).direction
+                    : null,
+            chartTarget:
+                chartHere != null && target != null && target.id != standing?.id
+                    ? geography.of(target)
+                    : null,
           );
         }(),
     ];
     final selected = _selected != null && _selected! < steps.length
         ? steps[_selected!]
         : null;
+    final discovered =
+        discoveredLandmarkIds([...play.history, play.currentNodeId]);
+    final placeView = placeLandmark == null || chartHere == null
+        ? null
+        : _PlaceView(
+            kind: placeKindOf(_kindsFor(story)[placeLandmark.id],
+                atSea: placeLandmark.atSea),
+            seed: _stableSeed(placeLandmark.id),
+            geography: geography,
+            chartHere: chartHere,
+            marks: [
+              for (final landmark in worldMapLandmarks)
+                if ((landmark.chapter - placeLandmark.chapter).abs() <= 1)
+                  (
+                    at: geography.of(landmark),
+                    name: landmark.name(language),
+                    known: discovered.contains(landmark.id),
+                  ),
+            ],
+          );
 
     // The guide shows the tab around the first time it opens (see
     // TutorialTopic.journey), once there is a character to follow.
@@ -566,6 +656,7 @@ class _JourneyViewState extends ConsumerState<_JourneyView>
                                       burn: _burn,
                                       unroll: _unroll,
                                       weather: journeyWeatherFor(chapter),
+                                      place: placeView,
                                     ),
                                   ),
                                 ),
@@ -896,7 +987,13 @@ class _JourneyChart extends StatefulWidget {
     this.burn = false,
     this.unroll = 0,
     this.weather = JourneyWeather.none,
+    this.place,
   });
+
+  /// The place up close, when the party stands at one the world chart
+  /// knows: the ways ring the party and the ways out point where they
+  /// go. Null (a detour) keeps the road going up.
+  final _PlaceView? place;
 
   /// A place reached that the map hadn't shown: its name is stamped.
   final String? stamp;
@@ -959,6 +1056,34 @@ class _JourneyChartState extends State<_JourneyChart>
     vsync: this,
     duration: const Duration(milliseconds: 950),
   );
+
+  /// Out of a place and along the world chart to the next (v1.181).
+  late final AnimationController _flight = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1900),
+  );
+  int? _flying;
+
+  bool get _placeMode => widget.place != null;
+
+  /// A way's road: a street out of the square in a place, the road up
+  /// the map otherwise.
+  Path _road(Offset from, Offset to) =>
+      _placeMode ? placeStreet(from, to) : _roadPath(from, to);
+
+  /// Where a way's road leaves the party and reaches its mark.
+  (Offset, Offset) _roadEnds(Offset here, Offset centre, double width) {
+    if (!_placeMode) {
+      return (
+        _roadStart(here, centre, width),
+        centre.translate(0, _stepRadius)
+      );
+    }
+    final d = centre - here;
+    final unit = d.distance == 0 ? const Offset(0, -1) : d / d.distance;
+    return (here + unit * _hereRadius, centre - unit * _stepRadius);
+  }
+
   ScrollController? _scroll;
   double _openAt = 0;
   double? _viewport;
@@ -1058,18 +1183,22 @@ class _JourneyChartState extends State<_JourneyChart>
   double get _reveal =>
       !_animate || widget.burn ? 1 : (_clock.value / 1.0).clamp(0.0, 1.0);
 
-  /// Step [i]'s road drawn so far, and its mark's pop.
+  /// Step [i]'s road drawn so far, and its mark's pop. The ways follow one
+  /// another closer the more there are, so a busy town's last way is in
+  /// with the rest.
+  double get _stagger =>
+      math.min(0.08, 0.25 / math.max(1, widget.steps.length));
   double _roadReveal(int i) =>
-      ((_reveal - i * 0.08) / 0.55).clamp(0.0, 1.0).toDouble();
+      ((_reveal - i * _stagger) / 0.55).clamp(0.0, 1.0).toDouble();
   double _markReveal(int i) =>
-      ((_reveal - 0.4 - i * 0.08) / 0.35).clamp(0.0, 1.0).toDouble();
+      ((_reveal - 0.4 - i * _stagger) / 0.35).clamp(0.0, 1.0).toDouble();
 
   /// Walks the party's mark along the road to step [index], the map
   /// following it and coming back to where it opened; returns how far the
   /// party went (the step's place less its own).
   Future<Offset?> walkTo(int index) async {
     if (index >= _centres.length) return null;
-    _walkRoad = _roadPath(_here, _centres[index]).computeMetrics().first;
+    _walkRoad = _road(_here, _centres[index]).computeMetrics().first;
     _nextPrint = 0.07;
     _footprints.clear();
     _dust = null;
@@ -1082,6 +1211,15 @@ class _JourneyChartState extends State<_JourneyChart>
           duration: _walk.duration!, curve: Curves.easeInOut);
     }
     await _walk.forward(from: 0);
+    // A way out of the place: the map zooms out to the world chart and
+    // the party walks the road to where it leads.
+    final place = widget.place;
+    final target =
+        index < widget.steps.length ? widget.steps[index].chartTarget : null;
+    if (place != null && target != null && _animate && mounted) {
+      setState(() => _flying = index);
+      await _flight.forward(from: 0);
+    }
     return _centres[index] - _here;
   }
 
@@ -1089,7 +1227,11 @@ class _JourneyChartState extends State<_JourneyChart>
   void resetWalk() {
     if (!mounted) return;
     _walk.value = 0;
-    setState(() => _walking = null);
+    _flight.value = 0;
+    setState(() {
+      _walking = null;
+      _flying = null;
+    });
   }
 
   @override
@@ -1098,6 +1240,7 @@ class _JourneyChartState extends State<_JourneyChart>
     _clock.dispose();
     _phase.dispose();
     _walk.dispose();
+    _flight.dispose();
     _scroll?.dispose();
     super.dispose();
   }
@@ -1114,30 +1257,60 @@ class _JourneyChartState extends State<_JourneyChart>
           final width = box.maxWidth;
           final rowSizes = journeyRowSizes(steps.length);
           final rows = rowSizes.length;
-          final needed = _top + rows * _rowMin + _hereRadius * 2 + _hereBelow;
-          final present = math.max(box.maxHeight, needed);
-          final hereY = present - _hereBelow - _hereRadius;
-          final here = Offset(width / 2, hereY);
-          final rowGap = rows == 0
-              ? 0.0
-              : ((hereY - _top - _stepRadius) / rows).clamp(_rowMin, _rowMax);
-          Offset centreOf(_Step step) =>
-              Offset(step.slot.x * width, hereY - rowGap * (step.slot.row + 1));
-          final centres = [for (final step in steps) centreOf(step)];
+          late final double present;
+          late final Offset here;
+          late final List<Offset> centres;
+          late final List<Offset> pastPoints;
+          if (_placeMode) {
+            // In a place: the party in the middle, its ways round it and
+            // the ways out at the edge where they lead; the chapter
+            // behind below.
+            // A little short of the box, so the road behind peeks in at
+            // the foot and says there is more below.
+            present = math.max(
+                box.maxHeight - (widget.past.isEmpty ? 0 : 84),
+                steps.length > 7
+                    ? 400
+                    : steps.length > 3
+                        ? 300
+                        : 220);
+            here = Offset(width / 2, present / 2);
+            centres = journeyPlaceLayout(
+              area: Size(width, present),
+              here: here,
+              bearings: [for (final step in steps) step.bearing],
+            );
+            pastPoints = [
+              for (var i = 0; i < widget.past.length; i++)
+                Offset(width / 2 + math.sin((i + 1) * 1.25) * width * 0.12,
+                    present + 26 + i * _pastGap),
+            ];
+            _openAt = 0;
+          } else {
+            final needed = _top + rows * _rowMin + _hereRadius * 2 + _hereBelow;
+            present = math.max(box.maxHeight, needed);
+            final hereY = present - _hereBelow - _hereRadius;
+            here = Offset(width / 2, hereY);
+            final rowGap = rows == 0
+                ? 0.0
+                : ((hereY - _top - _stepRadius) / rows).clamp(_rowMin, _rowMax);
+            Offset centreOf(_Step step) => Offset(
+                step.slot.x * width, hereY - rowGap * (step.slot.row + 1));
+            centres = [for (final step in steps) centreOf(step)];
+            // The chapter behind, winding down the map.
+            pastPoints = [
+              for (var i = 0; i < widget.past.length; i++)
+                Offset(width / 2 + math.sin((i + 1) * 1.25) * width * 0.12,
+                    hereY + _hereRadius + 44 + i * _pastGap),
+            ];
+            _openAt = math.max(0, present - box.maxHeight);
+          }
           _here = here;
           _centres = centres;
-
-          // The chapter behind, winding down the map.
-          final pastPoints = [
-            for (var i = 0; i < widget.past.length; i++)
-              Offset(width / 2 + math.sin((i + 1) * 1.25) * width * 0.12,
-                  hereY + _hereRadius + 44 + i * _pastGap),
-          ];
           final bottom = pastPoints.isEmpty
               ? present
               : math.max(present, pastPoints.last.dy + 70);
           final height = bottom;
-          _openAt = math.max(0, present - box.maxHeight);
           _scroll ??= ScrollController(initialScrollOffset: _openAt);
           // A map made taller or shorter (the scene folded or opened)
           // opens on the party again.
@@ -1153,6 +1326,7 @@ class _JourneyChartState extends State<_JourneyChart>
           _viewport = box.maxHeight;
 
           double labelWidth(_Step step) {
+            if (_placeMode) return math.min(width * 0.34, 124);
             final n = rowSizes[step.slot.row];
             return n == 1
                 ? math.min(width * 0.7, 240)
@@ -1188,8 +1362,7 @@ class _JourneyChartState extends State<_JourneyChart>
                   Offset? traveller;
                   var camera = Offset.zero;
                   if (walking != null && walking < centres.length) {
-                    final road =
-                        _roadPath(here, centres[walking]).computeMetrics();
+                    final road = _road(here, centres[walking]).computeMetrics();
                     final metric = road.first;
                     Offset at(double f) =>
                         metric.getTangentForOffset(metric.length * f)!.position;
@@ -1206,9 +1379,9 @@ class _JourneyChartState extends State<_JourneyChart>
                       walking == null &&
                       widget.selected! < centres.length &&
                       !steps[widget.selected!].locked) {
-                    selectedRoad = _roadPath(
-                        _roadStart(here, centres[widget.selected!], width),
-                        centres[widget.selected!].translate(0, _stepRadius));
+                    final (from, to) =
+                        _roadEnds(here, centres[widget.selected!], width);
+                    selectedRoad = _road(from, to);
                   }
                   final burning = _animate && widget.burn && now < 1.4;
                   final burnT = (now / 1.3).clamp(0.0, 1.0);
@@ -1220,12 +1393,21 @@ class _JourneyChartState extends State<_JourneyChart>
                         Positioned.fill(
                           child: RepaintBoundary(
                             child: CustomPaint(
-                              painter: _ReliefPainter(
-                                palette: palette,
-                                here: here,
-                                shift: widget.terrainShift,
-                                seed: widget.terrainSeed,
-                              ),
+                              painter: widget.place == null
+                                  ? _ReliefPainter(
+                                      palette: palette,
+                                      here: here,
+                                      shift: widget.terrainShift,
+                                      seed: widget.terrainSeed,
+                                    )
+                                  : PlacePlanPainter(
+                                      kind: widget.place!.kind,
+                                      seed: widget.place!.seed,
+                                      here: here,
+                                      spots: centres,
+                                      palette: palette,
+                                      ember: widget.ink.ember,
+                                    ),
                             ),
                           ),
                         ),
@@ -1248,6 +1430,10 @@ class _JourneyChartState extends State<_JourneyChart>
                                   ),
                               ],
                               past: pastPoints,
+                              pastFrom: _placeMode
+                                  ? Offset(here.dx, present - 6)
+                                  : here,
+                              radial: _placeMode,
                               pastGoesOn: !widget.pastReachesStart,
                               walking: walking,
                               progress: t,
@@ -1350,31 +1536,49 @@ class _JourneyChartState extends State<_JourneyChart>
                         // Where the party stood, while it walks away.
                         _hereMark(here, faded: traveller != null),
                         Positioned(
-                          left: here.dx + _hereRadius + 10,
-                          width: math.max(0, width / 2 - _hereRadius - 16),
-                          top: here.dy - 18,
+                          left: _placeMode ? 8 : here.dx + _hereRadius + 10,
+                          width: _placeMode
+                              ? math.min(width * 0.5, 190)
+                              : math.max(0, width / 2 - _hereRadius - 16),
+                          top: _placeMode ? 8 : here.dy - 18,
                           child: Opacity(
                             opacity: traveller == null ? 1 : 1 - t,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.youAreHere.toUpperCase(),
-                                  style: noteStyle.copyWith(
-                                      fontSize: 10, letterSpacing: 1.2),
+                            child: DecoratedBox(
+                              // In a place, a badge in the corner: the
+                              // ways ring the mark itself.
+                              decoration: BoxDecoration(
+                                color: _placeMode
+                                    ? palette.land.withValues(alpha: 0.85)
+                                    : const Color(0x00000000),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Padding(
+                                padding: _placeMode
+                                    ? const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4)
+                                    : EdgeInsets.zero,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.youAreHere.toUpperCase(),
+                                      style: noteStyle.copyWith(
+                                          fontSize: 10, letterSpacing: 1.2),
+                                    ),
+                                    Text(
+                                      widget.hereName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontFamily: InkFonts.display,
+                                        fontSize: 16,
+                                        height: 1.1,
+                                        color: palette.place,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  widget.hereName,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontFamily: InkFonts.display,
-                                    fontSize: 16,
-                                    height: 1.1,
-                                    color: palette.place,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -1382,7 +1586,13 @@ class _JourneyChartState extends State<_JourneyChart>
                         for (var i = 0; i < steps.length; i++)
                           _stepMark(i, centres[i], labelWidth(steps[i]), width,
                               placeStyle, noteStyle,
-                              fading: walking != null && walking != i ? t : 0),
+                              fading: walking != null && walking != i ? t : 0,
+                              // A crowded place names only the way picked
+                              // and the ways out; the rest by their marks.
+                              label: !_placeMode ||
+                                  steps.length <= 5 ||
+                                  widget.selected == i ||
+                                  steps[i].leadsTo != null),
                         // The party, on the road.
                         if (traveller != null)
                           Positioned(
@@ -1424,7 +1634,7 @@ class _JourneyChartState extends State<_JourneyChart>
           );
           // Opened from another tab, the map unrolls down from the scene
           // on a gold rod.
-          return AnimatedBuilder(
+          final unrolled = AnimatedBuilder(
             animation: _phase,
             child: map,
             builder: (context, child) {
@@ -1459,6 +1669,38 @@ class _JourneyChartState extends State<_JourneyChart>
                 ],
               );
             },
+          );
+          final flying = _flying;
+          final place = widget.place;
+          if (flying == null ||
+              place == null ||
+              flying >= steps.length ||
+              steps[flying].chartTarget == null) {
+            return unrolled;
+          }
+          // On the road: the world chart, from here to where it leads.
+          return Stack(
+            children: [
+              unrolled,
+              Positioned.fill(
+                child: AnimatedBuilder(
+                  animation: _flight,
+                  builder: (context, _) => CustomPaint(
+                    key: const ValueKey('journey_flight'),
+                    painter: RegionFlightPainter(
+                      geography: place.geography,
+                      from: place.chartHere,
+                      to: steps[flying].chartTarget!,
+                      marks: place.marks,
+                      t: _flight.value,
+                      palette: palette,
+                      fromName: widget.hereName,
+                      toName: steps[flying].leadsTo ?? '',
+                    ),
+                  ),
+                ),
+              ),
+            ],
           );
         }),
       ),
@@ -1639,7 +1881,7 @@ class _JourneyChartState extends State<_JourneyChart>
 
   Widget _stepMark(int i, Offset centre, double w, double width,
       TextStyle placeStyle, TextStyle noteStyle,
-      {required double fading}) {
+      {required double fading, bool label = true}) {
     final step = widget.steps[i];
     final palette = widget.palette;
     final left =
@@ -1714,43 +1956,46 @@ class _JourneyChartState extends State<_JourneyChart>
                     ),
                   ),
                 ),
-                const SizedBox(height: 4),
+                if (label) const SizedBox(height: 4),
                 // A plaque under the words: the roads to the far steps
                 // pass beneath it.
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: palette.land.withValues(alpha: 0.88),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-                    child: Column(
-                      children: [
-                        Text(
-                          step.label,
-                          textAlign: TextAlign.center,
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                          style: placeStyle.copyWith(
-                            color: palette.place
-                                .withValues(alpha: step.locked ? 0.55 : 1),
-                            fontWeight:
-                                isSelected ? FontWeight.w500 : FontWeight.w400,
-                          ),
-                        ),
-                        if (step.leadsTo != null)
+                if (label)
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: palette.land.withValues(alpha: 0.88),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 3, vertical: 1),
+                      child: Column(
+                        children: [
                           Text(
-                            widget.leadsTo.replaceAll('{place}', step.leadsTo!),
+                            step.label,
                             textAlign: TextAlign.center,
-                            maxLines: 1,
+                            maxLines: 3,
                             overflow: TextOverflow.ellipsis,
-                            style: noteStyle,
+                            style: placeStyle.copyWith(
+                              color: palette.place
+                                  .withValues(alpha: step.locked ? 0.55 : 1),
+                              fontWeight: isSelected
+                                  ? FontWeight.w500
+                                  : FontWeight.w400,
+                            ),
                           ),
-                      ],
+                          if (step.leadsTo != null)
+                            Text(
+                              widget.leadsTo
+                                  .replaceAll('{place}', step.leadsTo!),
+                              textAlign: TextAlign.center,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: noteStyle,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -1900,7 +2145,15 @@ class _JourneyPainter extends CustomPainter {
     required this.walking,
     required this.progress,
     this.reveals = const [],
-  });
+    this.radial = false,
+    Offset? pastFrom,
+  }) : pastFrom = pastFrom ?? here;
+
+  /// In a place (v1.181): the ways run out of the square every way, as
+  /// streets, with no fog over the top; the chapter's road comes in from
+  /// [pastFrom], the map's foot.
+  final bool radial;
+  final Offset pastFrom;
 
   /// How much of each way's road has inked in (a new scene draws them out
   /// from the mark, one after the other); missing means all of it.
@@ -1933,20 +2186,26 @@ class _JourneyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // Fog over the far side of the map.
     final fogRect = Rect.fromLTWH(-400, -400, size.width + 800, 490);
-    canvas.drawRect(
-      fogRect,
-      Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [palette.fog, palette.fog, palette.fog.withValues(alpha: 0)],
-          stops: const [0, 0.82, 1],
-        ).createShader(fogRect),
-    );
+    if (!radial) {
+      canvas.drawRect(
+        fogRect,
+        Paint()
+          ..shader = LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              palette.fog,
+              palette.fog,
+              palette.fog.withValues(alpha: 0)
+            ],
+            stops: const [0, 0.82, 1],
+          ).createShader(fogRect),
+      );
+    }
 
     // The road walked: up from the chapter's first scene to the party,
     // through each scene passed, fading with distance.
-    final road = [here, ...past];
+    final road = [pastFrom, ...past];
     for (var i = 0; i < road.length - 1; i++) {
       final a = road[i], b = road[i + 1];
       final mid = (b.dy - a.dy) / 2;
@@ -2011,12 +2270,20 @@ class _JourneyPainter extends CustomPainter {
     // rows fade, so a town's many ways read as a fan rather than a knot.
     for (var s = 0; s < steps.length; s++) {
       final step = steps[s];
-      final lean = ((step.centre.dx - here.dx) / size.width * 1.6)
-          .clamp(-math.pi / 3, math.pi / 3);
-      final start = here +
-          Offset(math.sin(lean) * hereRadius, -math.cos(lean) * hereRadius);
-      final end = step.centre.translate(0, stepRadius);
-      var path = _roadPath(start, end);
+      late final Offset start, end;
+      if (radial) {
+        final d = step.centre - here;
+        final unit = d.distance == 0 ? const Offset(0, -1) : d / d.distance;
+        start = here + unit * hereRadius;
+        end = step.centre - unit * stepRadius;
+      } else {
+        final lean = ((step.centre.dx - here.dx) / size.width * 1.6)
+            .clamp(-math.pi / 3, math.pi / 3);
+        start = here +
+            Offset(math.sin(lean) * hereRadius, -math.cos(lean) * hereRadius);
+        end = step.centre.translate(0, stepRadius);
+      }
+      var path = radial ? placeStreet(start, end) : _roadPath(start, end);
       final reveal = s < reveals.length ? reveals[s] : 1.0;
       if (reveal <= 0) continue;
       if (reveal < 1) {
@@ -2033,7 +2300,8 @@ class _JourneyPainter extends CustomPainter {
             : step.locked
                 ? palette.label.withValues(alpha: 0.4 * fade)
                 : palette.ahead.withValues(
-                    alpha: (step.row == 0 ? 1 : 0.75 / step.row) * fade);
+                    alpha:
+                        (radial || step.row == 0 ? 1 : 0.75 / step.row) * fade);
       if (step.selected) {
         canvas.drawPath(path, paint);
       } else {
@@ -2059,7 +2327,9 @@ class _JourneyPainter extends CustomPainter {
     }
     // The road being walked, in the party's colour behind it.
     if (walking != null && walking! < steps.length && progress > 0) {
-      final road = _roadPath(here, steps[walking!].centre);
+      final road = radial
+          ? placeStreet(here, steps[walking!].centre)
+          : _roadPath(here, steps[walking!].centre);
       for (final metric in road.computeMetrics()) {
         canvas.drawPath(
           metric.extractPath(0, metric.length * progress),
@@ -2096,6 +2366,8 @@ class _JourneyPainter extends CustomPainter {
         for (var i = 0; i < reveals.length; i++) old.reveals[i] != reveals[i],
       ].any((changed) => changed) ||
       old.pastGoesOn != pastGoesOn ||
+      old.radial != radial ||
+      old.pastFrom != pastFrom ||
       old.past.length != past.length ||
       old.steps.length != steps.length ||
       [

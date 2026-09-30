@@ -8,6 +8,7 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/immersive_notice.dart';
@@ -48,20 +49,37 @@ class HarborScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           const ShipStatusCard(),
-          const Divider(height: 32),
+          const SizedBox(height: 16),
           Text(tr(ref, 'shipwright_section'),
               style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          for (final partId in partIds)
-            _PartCard(
-              partId: partId,
-              part: parts[partId] as Map<String, dynamic>,
-              ship: ship,
-              parts: parts,
-              installed: session.shipPartIds,
-              gold: session.gold,
-              fr: fr,
-            ),
+          // The shipwright's parts by the slot they fit, each slot saying
+          // how many of hers are filled.
+          for (final slot in slotTypeOptions)
+            if (partIds.any((id) =>
+                (parts[id] as Map<String, dynamic>)['slotType'] == slot)) ...[
+              Padding(
+                key: Key('harbour_slot_$slot'),
+                padding: const EdgeInsets.only(top: 14, bottom: 4),
+                child: Text(
+                  '${shipSlotLabel(ref, slot)} · '
+                          '${tr(ref, 'slots_filled').replaceAll('{used}', '${slotsUsed(parts, session.shipPartIds, slot)}').replaceAll('{cap}', '${slotCapacity(ship, slot)}')}'
+                      .toUpperCase(),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      letterSpacing: 1, color: InkColors.of(context).ash),
+                ),
+              ),
+              for (final partId in partIds)
+                if ((parts[partId] as Map<String, dynamic>)['slotType'] == slot)
+                  _PartCard(
+                    partId: partId,
+                    part: parts[partId] as Map<String, dynamic>,
+                    ship: ship,
+                    parts: parts,
+                    installed: session.shipPartIds,
+                    gold: session.gold,
+                    fr: fr,
+                  ),
+            ],
         ],
       );
     }
@@ -156,41 +174,69 @@ class _PartCard extends ConsumerWidget {
       if (matchesMedium) tr(ref, 'sail_medium_match_label'),
       if (replacing.isNotEmpty) tr(ref, 'sail_repaint_note'),
     ].where((line) => line.isNotEmpty).join('\n');
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
     return Card(
-      child: ListTile(
-        leading: Icon(
-            isInstalled
-                ? Icons.check_circle
-                : (slot == 'Sail'
-                    ? Icons.brush_outlined
-                    : Icons.handyman_outlined),
-            color: isInstalled ? Colors.green : null),
-        title: Text(shipPartName(part, fr)),
-        subtitle: Text(subtitle),
-        isThreeLine: true,
-        trailing: isInstalled
-            ? Text(tr(ref, 'installed_label'))
-            : !fits
-                ? Text(tr(ref, 'slot_full_label'))
-                : ElevatedButton(
-                    onPressed: gold < cost
-                        ? null
-                        : () async {
-                            final ok = await ref
-                                .read(playerSessionProvider.notifier)
-                                .installShipPart(partId, cost,
-                                    replacing: replacing);
-                            if (!ok || !context.mounted) return;
-                            showImmersiveNotice(
-                              context,
-                              icon: Icons.handyman_outlined,
-                              message:
-                                  '${tr(ref, 'installed_label')}: ${shipPartName(part, fr)}',
-                            );
-                          },
-                    child: Text(
-                        '${tr(ref, 'install_button')} ($cost ${tr(ref, 'gold_label')})'),
-                  ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(
+                    isInstalled
+                        ? Icons.check_circle
+                        : (slot == 'Sail'
+                            ? Icons.brush_outlined
+                            : Icons.handyman_outlined),
+                    size: 20,
+                    color: isInstalled ? ink.heal : ink.ash),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(shipPartName(part, fr),
+                      style: theme.textTheme.titleMedium),
+                ),
+                if (isInstalled)
+                  Text(tr(ref, 'installed_label'),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.heal))
+                else if (!fits)
+                  Text(tr(ref, 'slot_full_label'),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.ash)),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            if (!isInstalled && fits) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: gold < cost
+                      ? null
+                      : () async {
+                          final ok = await ref
+                              .read(playerSessionProvider.notifier)
+                              .installShipPart(partId, cost,
+                                  replacing: replacing);
+                          if (!ok || !context.mounted) return;
+                          showImmersiveNotice(
+                            context,
+                            icon: Icons.handyman_outlined,
+                            message:
+                                '${tr(ref, 'installed_label')}: ${shipPartName(part, fr)}',
+                          );
+                        },
+                  child: Text(
+                      '${tr(ref, 'install_button')} ($cost ${tr(ref, 'gold_label')})'),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

@@ -1231,6 +1231,16 @@ final DbSchema shipPartsSchema = DbSchema(
       label: 'Room Bonus {helm, guns, bulwark, hold}: pips this part adds',
       type: FieldType.json,
     ),
+    // The shot a weapon fires (ship_combat.dart ShipAmmo): it is the
+    // weapon's, not picked in battle.
+    FieldSchema(
+      key: 'ammo',
+      label: 'Shot (round, chain: tears the helm, grape: slows repairs, '
+          'heated: sets fire)',
+      type: FieldType.enumeration,
+      enumOptions: const ['round', 'chain', 'grape', 'heated'],
+      defaultValue: 'round',
+    ),
     FieldSchema(
       key: 'ranges',
       label:
@@ -2074,6 +2084,15 @@ final DbSchema portsSchema = DbSchema(
       label: 'Voyage Length (days at sea to reach it)',
       type: FieldType.integer,
       defaultValue: 2,
+    ),
+    // The waters a sea fight on the way here is fought on
+    // (sea_battlefield.dart SeaWaters): their colour, waves and drift.
+    FieldSchema(
+      key: 'waters',
+      label: 'Waters (sea fights on the way here)',
+      type: FieldType.enumeration,
+      enumOptions: const ['open', 'shallows', 'drowned', 'abyss', 'ashen'],
+      defaultValue: 'open',
     ),
     FieldSchema(
       key: 'isHome',

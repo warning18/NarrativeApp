@@ -20,11 +20,14 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/approval_notice.dart' show speakUpAbout;
 import '../widgets/companion_remark_bubble.dart';
 import '../widgets/moments.dart';
+import '../widgets/sea_battlefield.dart';
+import '../widgets/ship_widgets.dart' show HullBar, ShipAtSea;
 import 'ship_battle_panel.dart';
 
 enum _VoyagePhase { event, fight, arrived, failed }
@@ -84,6 +87,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   Map<String, dynamic> _parts = const {};
   final List<String> _log = [];
   bool _busy = false;
+
+  /// What each day behind her did to the hull and the purse, for the
+  /// route strip; and where the day in hand started.
+  final List<({int hull, int gold})> _dayResults = [];
+  int _dayStartHull = 0;
+  int _dayStartGold = 0;
 
   /// Kept from cast-off to draw the extra day a sheltered storm costs.
   bool _knownWaters = false;
@@ -151,6 +160,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           _sail?.power == SailPower.voidmark ? _sail!.partId : null,
       voidVolleyBonus: voidVolleyBonus(_sailStrength),
     );
+    _dayStartHull = _player!.hull;
+    _dayStartGold = session.gold;
   }
 
   String _t(String key, {String? ship, int? n}) {
@@ -383,6 +394,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
 
   Future<void> _advance() async {
     if (!mounted) return;
+    // The day's toll, for the strip.
+    final gold = ref.read(playerSessionProvider).gold;
+    _dayResults
+        .add((hull: _player!.hull - _dayStartHull, gold: gold - _dayStartGold));
     // Each sea event is a day at sea.
     await ref.read(playerSessionProvider.notifier).passTime(4);
     if (!mounted) return;
@@ -411,6 +426,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       });
       return;
     }
+    _dayStartHull = _player!.hull;
+    _dayStartGold = ref.read(playerSessionProvider).gold;
     setState(() {
       _index++;
       _phase = _VoyagePhase.event;
@@ -646,18 +663,16 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(name, style: theme.textTheme.titleSmall),
-        const SizedBox(height: 4),
-        LinearProgressIndicator(
-          value: ship.maxHull == 0 ? 0 : ship.hull / ship.maxHull,
-          minHeight: 8,
-        ),
-        const SizedBox(height: 2),
-        Text(
-          '${trFor(lang, 'hull_label')} ${ship.hull} / ${ship.maxHull} · '
-          '${trFor(lang, 'ship_layers_label')} ${ship.layers} / ${ship.maxLayers}',
-          style: theme.textTheme.bodySmall,
-        ),
+        HullBar(hull: ship.hull, maxHull: ship.maxHull),
+        if (ship.maxLayers > 0)
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              '${trFor(lang, 'shield_short_label')} ${ship.layers} / ${ship.maxLayers}',
+              style: theme.textTheme.labelSmall
+                  ?.copyWith(color: InkColors.of(context).voidColor),
+            ),
+          ),
       ],
     );
   }
@@ -671,6 +686,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(trFor(ref.read(appLanguageProvider), 'ships_log_title'),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: InkColors.of(context).ash, letterSpacing: 1)),
+            const SizedBox(height: 4),
             for (final line in lines)
               Text(line, style: Theme.of(context).textTheme.bodySmall),
           ],
@@ -698,34 +717,46 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     required Map<String, dynamic> parts,
   }) {
     final lang = ref.watch(appLanguageProvider);
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
     final event = _events![_index];
-    final total = _events!.length;
+    final (icon, colour) = _kindLook(event.kind, ink);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        LinearProgressIndicator(value: _index / total),
-        const SizedBox(height: 8),
-        Text(
-          '${trFor(lang, 'voyage_day_label')} ${_index + 1} / $total',
-          style: Theme.of(context).textTheme.labelMedium,
+        _buildRoute(context, fr: fr),
+        const SizedBox(height: 10),
+        // The Eel on the water, beside what she meets.
+        ShipAtSea(
+          ship: _player!,
+          height: 104,
+          beside: Icon(icon, size: 46, color: colour),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 8),
         TutorialTarget(
           id: 'voyage.hull',
           child: _buildShipBars(context, _player!, trFor(lang, 'boat_title')),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Row(children: [
+                  Icon(icon, size: 18, color: colour),
+                  const SizedBox(width: 6),
+                  Text(
+                    trFor(lang, 'sea_event_${event.kind.name}').toUpperCase(),
+                    key: const Key('sea_event_kind'),
+                    style: theme.textTheme.labelMedium
+                        ?.copyWith(color: colour, letterSpacing: 1),
+                  ),
+                ]),
+                const SizedBox(height: 4),
                 Text(
                   event.descriptionFor(fr),
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(height: 1.5),
+                  style: theme.textTheme.bodyLarge?.copyWith(height: 1.5),
                 ),
                 // A raider is named and described before the guns come
                 // out: who she is and what she wants from the Eel.
@@ -739,18 +770,17 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   Text(
                     '${trFor(lang, 'ship_log_foresight_prefix')}: '
                     '${_foresightPreview(lang)}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
+                    style: theme.textTheme.bodyMedium
                         ?.copyWith(fontStyle: FontStyle.italic),
                   ),
                 ],
+                const SizedBox(height: 12),
+                _buildLog(context),
               ],
             ),
           ),
         ),
-        _buildLog(context),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
         TutorialTarget(
           id: 'voyage.choices',
           child: Column(
@@ -758,14 +788,14 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
             children: [
               for (final (i, choice) in event.choices.indexed) ...[
                 if (i > 0) const SizedBox(height: 8),
-                _choiceButton(
+                _choiceCard(
                   key: Key('sea_choice_${choice.action.name}'),
-                  primary: i == 0,
                   onPressed: _busy || !_canAfford(event, choice, enemyShips)
                       ? null
                       : () =>
                           _resolveEvent(event, choice, enemyShips: enemyShips),
                   label: _choiceLabel(event, choice, enemyShips, fr),
+                  stake: _stakeFor(event, choice, enemyShips),
                 ),
               ],
             ],
@@ -773,6 +803,195 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
         ),
       ],
     );
+  }
+
+  /// A sea event's mark and colour.
+  (IconData, Color) _kindLook(SeaEventKind kind, InkColors ink) =>
+      switch (kind) {
+        SeaEventKind.calm => (Icons.waves, ink.heal),
+        SeaEventKind.storm => (Icons.thunderstorm_outlined, ink.blood),
+        SeaEventKind.raider => (Icons.sailing, ink.ember),
+        SeaEventKind.derelict => (Icons.sailing_outlined, ink.gold),
+        SeaEventKind.sighting => (Icons.visibility_outlined, ink.tide),
+      };
+
+  /// The crossing as a strip of days: where she left, each day behind her
+  /// with what it cost or gave, today, the days still to come, and the
+  /// port ahead.
+  Widget _buildRoute(BuildContext context, {required bool fr}) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final lang = ref.watch(appLanguageProvider);
+    final ports = ref.watch(localizedDbProvider(portsSchema)).value ?? const {};
+    final from = ports[widget.fromPortId] as Map<String, dynamic>?;
+    final total = _events!.length;
+    String result(({int hull, int gold}) r) {
+      final parts = [
+        if (r.hull != 0)
+          '${r.hull > 0 ? '+' : '−'}${r.hull.abs()} ${trFor(lang, 'hull_label').toLowerCase()}',
+        if (r.gold != 0)
+          '${r.gold > 0 ? '+' : '−'}${r.gold.abs()} ${trFor(lang, 'gold_label').toLowerCase()}',
+      ];
+      return parts.isEmpty ? trFor(lang, 'route_day_quiet') : parts.join('\n');
+    }
+
+    Widget end(IconData icon, Color colour) => Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Icon(icon, size: 18, color: colour),
+        );
+    Widget link(bool lit) => Expanded(
+          child: Container(
+            height: 2,
+            margin: const EdgeInsets.only(top: 12),
+            color: lit ? ink.gold : ink.seam,
+          ),
+        );
+    Widget day(int i) {
+      final e = _events![i];
+      final (icon, colour) = _kindLook(e.kind, ink);
+      final past = i < _index;
+      final now = i == _index;
+      final seen = past || now;
+      return SizedBox(
+        key: Key('route_day_$i'),
+        width: 50,
+        child: Column(children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: now ? ink.gold : ink.seam, width: now ? 2 : 1),
+            ),
+            child: Icon(seen ? icon : Icons.question_mark,
+                size: 14, color: seen ? colour : ink.ash),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            now
+                ? trFor(lang, 'route_today')
+                : past && i < _dayResults.length
+                    ? result(_dayResults[i])
+                    : '',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+                fontSize: 10, color: now ? ink.gold : ink.ash, height: 1.2),
+          ),
+        ]),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          [
+            if (from != null)
+              trFor(lang, 'route_from_to')
+                  .replaceAll('{from}', portNameFor(from, fr))
+                  .replaceAll('{to}', portNameFor(widget.toPort, fr)),
+            '${trFor(lang, 'voyage_day_label')} ${_index + 1} / $total',
+          ].join(' · '),
+          style: theme.textTheme.labelMedium?.copyWith(color: ink.ash),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            end(Icons.circle, ink.ash),
+            for (var i = 0; i < total; i++) ...[
+              link(i <= _index),
+              day(i),
+            ],
+            link(false),
+            end(Icons.anchor, ink.tide),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// What [choice] wins or costs, and its odds when it is a check.
+  ({String text, String? odds, bool safe}) _stakeFor(
+      SeaEvent event, SeaChoice choice, Map<String, dynamic> enemyShips) {
+    final lang = ref.read(appLanguageProvider);
+    final session = ref.read(playerSessionProvider);
+    String t(String key, [int? n]) {
+      final text = trFor(lang, key);
+      return n == null ? text : text.replaceAll('{n}', '$n');
+    }
+
+    final ability = choice.checkAbility;
+    String? odds;
+    String check = '';
+    if (ability != null) {
+      final modifier = abilityModifierFor(ability, session);
+      final dc = seaChoiceDc(choice, _chapter);
+      odds = '${(checkChance(modifier: modifier, dc: dc) * 100).round()}%';
+      check = '${trFor(lang, '${ability}_label')} '
+          '${modifier >= 0 ? '+' : '−'}${modifier.abs()} '
+          '${trFor(lang, 'vs_dc_label')} $dc · ';
+    }
+    final salvage = _sail?.power == SailPower.windknot
+        ? windknotSalvage(event.gold, _sailStrength)
+        : event.gold;
+    final storm = -event.hullDelta;
+    return switch (choice.action) {
+      SeaAction.salvage => (
+          text: t('stake_safe_gold', salvage),
+          odds: null,
+          safe: true
+        ),
+      SeaAction.board => (
+          text:
+              '$check${t('stake_board').replaceAll('{gold}', '${(event.gold * boardGoldMultiplier).round()}').replaceAll('{hull}', '$boardFailHullLoss')}',
+          odds: odds,
+          safe: false
+        ),
+      SeaAction.passBy || SeaAction.sailOn => (
+          text: t('stake_nothing'),
+          odds: null,
+          safe: true
+        ),
+      SeaAction.rideOut => (
+          text: t('stake_lose_hull', storm),
+          odds: null,
+          safe: false
+        ),
+      SeaAction.pushThrough => (
+          text: '$check${t('stake_push', storm * pushThroughFailMultiplier)}',
+          odds: odds,
+          safe: false
+        ),
+      SeaAction.shelter => (text: t('stake_shelter'), odds: null, safe: true),
+      SeaAction.repair => (
+          text: t('stake_repair',
+              min(event.hullDelta, _player!.maxHull - _player!.hull)),
+          odds: null,
+          safe: true
+        ),
+      SeaAction.rest => (
+          text: t(
+              'stake_rest', max(1, session.maxHealth * restHealPercent ~/ 100)),
+          odds: null,
+          safe: true
+        ),
+      SeaAction.payOff => (
+          text: t(
+              'stake_pay',
+              tributeFor(
+                  enemyShips[event.enemyShipId] as Map<String, dynamic>?)),
+          odds: null,
+          safe: true
+        ),
+      SeaAction.outrun => (
+          text: '$check${t('stake_outrun', outrunFailHullLoss)}',
+          odds: odds,
+          safe: false
+        ),
+      SeaAction.fight => (text: t('stake_fight'), odds: null, safe: false),
+    };
   }
 
   bool _canAfford(
@@ -790,22 +1009,66 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           tributeFor(enemyShips[event.enemyShipId] as Map<String, dynamic>?);
       return '$text (${trFor(lang, 'sea_choice_cost').replaceAll('{n}', '$tribute')})';
     }
-    final ability = choice.checkAbility;
-    return ability == null
-        ? text
-        : '$text (${trFor(lang, '${ability}_label')}, '
-            '${trFor(lang, 'vs_dc_label')} ${seaChoiceDc(choice, _chapter)})';
+    return text;
   }
 
-  Widget _choiceButton({
+  /// A choice as a card: what the crew does, then what it wins or costs
+  /// (and its odds, for a check). None is marked as the one to take.
+  Widget _choiceCard({
     required Key key,
-    required bool primary,
     required VoidCallback? onPressed,
     required String label,
-  }) =>
-      primary
-          ? ElevatedButton(key: key, onPressed: onPressed, child: Text(label))
-          : OutlinedButton(key: key, onPressed: onPressed, child: Text(label));
+    required ({String text, String? odds, bool safe}) stake,
+  }) {
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
+    final enabled = onPressed != null;
+    return OutlinedButton(
+      key: key,
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.fromLTRB(14, 10, 12, 10),
+        side: BorderSide(color: ink.seam),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: theme.textTheme.titleSmall),
+                const SizedBox(height: 2),
+                Text(
+                  stake.text,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                      color: !enabled
+                          ? ink.ash
+                          : stake.safe
+                              ? ink.heal
+                              : ink.ash),
+                ),
+              ],
+            ),
+          ),
+          if (stake.odds != null) ...[
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+              decoration: BoxDecoration(
+                color: ink.tide.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(stake.odds!,
+                  style:
+                      theme.textTheme.labelMedium?.copyWith(color: ink.tide)),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
 
   Widget _buildFight({
     required bool fr,
@@ -850,6 +1113,8 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
           : null,
       habit: habitFromName(_enemyData?['habit']?.toString()),
       windKnot: _sail?.power == SailPower.windknot,
+      waters: seaWatersFor(
+          name: widget.toPort['waters']?.toString(), portId: widget.toPortId),
     );
   }
 

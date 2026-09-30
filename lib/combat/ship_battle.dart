@@ -54,20 +54,6 @@ SeaWeather weatherFor(double roll) {
   return SeaWeather.calm;
 }
 
-/// The shot a gun is loaded with.
-enum ShipAmmo { round, chain, grape, heated }
-
-/// How an ammunition changes a shot: chain and grape do half the hull,
-/// chain also tears a pip off the helm, heated does three quarters and
-/// sets the room burning. Grape's toll on the enemy's crew is the
-/// battle's (see [grapeRounds]).
-ShotMods ammoMods(ShipAmmo ammo) => switch (ammo) {
-      ShipAmmo.round => const ShotMods(),
-      ShipAmmo.chain => const ShotMods(damageFactor: 0.5, helmPips: 1),
-      ShipAmmo.grape => const ShotMods(damageFactor: 0.5),
-      ShipAmmo.heated => const ShotMods(damageFactor: 0.75, ignite: true),
-    };
-
 /// What an enemy ship does beyond firing (enemy_ships.json `habit`).
 enum EnemyHabit { none, flee, marksman, ram, boarder }
 
@@ -359,7 +345,6 @@ class ShipBattle {
   ShipRange range = ShipRange.medium;
   SeaWeather weather = SeaWeather.calm;
   SeaWeather nextWeather = SeaWeather.calm;
-  ShipAmmo ammo = ShipAmmo.round;
 
   /// Crew ids whose order is given.
   final Set<String> ordersUsed = {};
@@ -536,10 +521,10 @@ class ShipBattle {
 
   bool canFire(ShipWeapon weapon) => !over && weapon.isReady && inRange(weapon);
 
-  /// What the loaded shot, the room's focus and a pending critical do to a
+  /// What the weapon's shot, the room's focus and a pending critical do to a
   /// shot at [room].
-  ShotMods shotMods(ShipRoom room, {AimResult? aim}) {
-    var mods = ammoMods(ammo);
+  ShotMods shotMods(ShipRoom room, {ShipWeapon? weapon, AimResult? aim}) {
+    var mods = ammoMods(weapon?.ammo ?? ShipAmmo.round);
     if (weather == SeaWeather.squall) {
       mods = mods.merge(const ShotMods(noFire: true));
     }
@@ -556,10 +541,13 @@ class ShipBattle {
     final weapon = weaponById(weaponId);
     if (weapon == null) return null;
     return previewShot(
-        target: enemy, weapon: weapon, room: room, mods: shotMods(room));
+        target: enemy,
+        weapon: weapon,
+        room: room,
+        mods: shotMods(room, weapon: weapon));
   }
 
-  /// Fires [weaponId] at [room] of the enemy with the loaded shot. [aim]
+  /// Fires [weaponId] at [room] of the enemy with its own shot. [aim]
   /// is where an aimed shot's marker stopped (null for a plain shot): a
   /// perfect aim is a critical, a wide one misses outright.
   ShotOutcome? fire(String weaponId, ShipRoom room, {AimResult? aim}) {
@@ -578,7 +566,7 @@ class ShipBattle {
       room: room,
       evasionPercent: enemyEvasion,
       roll: random.nextDouble(),
-      mods: shotMods(room, aim: aim),
+      mods: shotMods(room, weapon: weapon, aim: aim),
     );
     eagleEye = false;
     enemy = outcome.target;
@@ -587,7 +575,7 @@ class ShipBattle {
     _logShot(outcome, weapon, BattleSide.enemy);
     if (outcome.landed) {
       focus[room] = (focus[room] ?? 0) + 1;
-      if (ammo == ShipAmmo.grape) {
+      if (weapon.ammo == ShipAmmo.grape) {
         grapeLeft = grapeRounds;
         _add('ship_log_grape', side: BattleSide.enemy);
       }

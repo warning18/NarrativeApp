@@ -20,6 +20,7 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/story_providers.dart';
+import '../widgets/sea_battlefield.dart';
 import 'fight_screen.dart';
 import 'ship_battle_panel.dart';
 import 'vfx_gallery_screen.dart';
@@ -50,6 +51,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
   bool _keep = false;
   String? _shipId;
   bool _allParts = false;
+  SeaWaters _waters = SeaWaters.open;
   bool _running = false;
 
   @override
@@ -166,6 +168,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
         shipId;
     final chapter = _chapter;
     final allParts = _allParts;
+    final waters = _waters;
     // The clock setting is read once for the whole battle: wait for the
     // saved choice rather than the default.
     await ref.read(shipTurnTimerProvider.notifier).loaded;
@@ -226,6 +229,7 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
                         ship: ship, parts: parts, installedPartIds: installed)
                     : null,
                 habit: habitFromName(data['habit']?.toString()),
+                waters: waters,
                 onFinished: (outcome) => Navigator.of(pageContext).pop(outcome),
               ),
             ),
@@ -420,6 +424,18 @@ class _FightLabScreenState extends ConsumerState<FightLabScreen> {
               ],
               onChanged: (v) => setState(() => _shipId = v),
             ),
+          DropdownButtonFormField<SeaWaters>(
+            key: const Key('fight_lab_waters'),
+            initialValue: _waters,
+            isExpanded: true,
+            decoration: InputDecoration(labelText: tr(ref, 'fight_lab_waters')),
+            items: [
+              for (final w in SeaWaters.values)
+                DropdownMenuItem(
+                    value: w, child: Text(tr(ref, 'sea_waters_${w.name}'))),
+            ],
+            onChanged: (v) => setState(() => _waters = v ?? SeaWaters.open),
+          ),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(tr(ref, 'fight_lab_all_parts')),
