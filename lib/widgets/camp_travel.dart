@@ -92,24 +92,19 @@ Future<bool> moveParty(
   if (there == null) return true;
   if (isWalkFrom(destinationPortId,
       ports: ports, savedPortId: session.currentPortId)) {
+    // A walk between places takes half a day.
+    await ref
+        .read(playerSessionProvider.notifier)
+        .passTime(2, chapter: ref.read(reachedChapterProvider));
     if (walkNotice != null && context.mounted) {
       showImmersiveNotice(context, icon: Icons.hiking, message: walkNotice);
     }
     return true;
   }
   if (!context.mounted) return false;
-  // The days at sea pass on the journey's clock (see journey_rules.dart);
-  // read before the voyage, which may swap the screen this came from.
-  final here = currentPortIdFor(ports, session.currentPortId);
-  final measured = there == homePortId(ports) ? here : there;
-  final port = measured == null ? null : ports[measured];
-  final days = port is Map<String, dynamic> ? portVoyageLength(port) : 1;
-  final notifier = ref.read(playerSessionProvider.notifier);
-  final chapter = ref.read(reachedChapterProvider);
-  final arrived = await sailTo(context, ref,
+  // The days at sea pass on the voyage screen, one a day as sailed.
+  return sailTo(context, ref,
       toPortId: there, toPort: ports[there] as Map<String, dynamic>);
-  if (arrived) await notifier.passDays(days, chapter: chapter);
-  return arrived;
 }
 
 /// Travels to [targetNodeId] ([destinationPortId] its port, null for the

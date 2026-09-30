@@ -9,6 +9,7 @@ import '../providers/player_session_provider.dart';
 import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import 'immersive_notice.dart';
+import 'moments.dart';
 
 /// Opens the save slots, to save into one ([saving]) or load one. True
 /// once a slot has been loaded.
@@ -102,6 +103,8 @@ class SaveSlotsSheet extends ConsumerWidget {
           history: playState.history,
         );
     if (!context.mounted) return;
+    // A seal pressed on the page: the game is kept.
+    showQuestSeal(context, colour: const Color(0xFF3F6E8C));
     Navigator.pop(context);
     showImmersiveNotice(context,
         icon: Icons.save, message: trFor(lang, 'game_saved_message'));

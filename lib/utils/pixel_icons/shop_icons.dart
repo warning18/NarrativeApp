@@ -2,7 +2,14 @@
 class ShopIcons {
   ShopIcons._();
 
-  static String pathFor(String shopId) => 'assets/icons/shops/$shopId.png';
+  static String pathFor(String shopId) =>
+      'assets/icons/shops/${_borrowed[shopId] ?? shopId}.png';
+
+  /// Shops drawn with another's icon until they have their own: the road
+  /// caravan as the chandlery.
+  static const Map<String, String> _borrowed = {
+    'wayfarer_caravan': 'anchorage_chandlery'
+  };
 
   static const List<String> allIds = [
     'anchorage_chandlery',

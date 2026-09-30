@@ -11,6 +11,7 @@ import '../providers/player_session_provider.dart';
 import '../theme/stitched_ink.dart';
 import 'camp_fate_dialog.dart';
 import 'immersive_notice.dart';
+import 'moments.dart';
 
 /// A night's rest in a town, a port or the camp (see
 /// PlayerSessionNotifier.restNight), said in a notice: [message], and from
@@ -21,6 +22,7 @@ Future<void> restTheNight(BuildContext context, WidgetRef ref,
   final chapter = ref.read(reachedChapterProvider);
   await ref.read(playerSessionProvider.notifier).restNight(chapter: chapter);
   if (!context.mounted) return;
+  showHealWave(context);
   final day = ref.read(playerSessionProvider).day;
   final line = roadRulesApply(chapter)
       ? '$message ${tr(ref, 'rest_new_day').replaceAll('{day}', '$day')}'

@@ -64,6 +64,8 @@ void main() {
     ElevatedButton hunt(String id) =>
         tester.widget<ElevatedButton>(find.byKey(Key('beast_hunt_$id')));
     expect(hunt('brinejaw').onPressed, isNotNull);
+    await tester.scrollUntilVisible(
+        find.byKey(const Key('beast_hunt_pale_leviathan')), 200);
     expect(hunt('pale_leviathan').onPressed, isNull, reason: 'one sign of 3');
     expect(find.textContaining('40'), findsWidgets, reason: 'its wounds');
     // No trophy on offer before a beast is slain.

@@ -173,9 +173,12 @@ void main() {
       expect(notifier.state.currentHealth, 100);
       expect(notifier.state.day, 5);
       expect(notifier.state.stepsToday, 0);
-      // In chapter 1 the rest heals and the calendar stays.
+      // In chapter 1 the day still turns (the world clock runs
+      // everywhere), but no chapter's threat is counted for it.
       await notifier.restNight(chapter: 1);
-      expect(notifier.state.day, 5);
+      expect(notifier.state.day, 6);
+      expect(notifier.state.watch, 0);
+      expect(notifier.state.clockChapter, 3);
     });
 
     test('rations are bought up to what the pack holds', () async {

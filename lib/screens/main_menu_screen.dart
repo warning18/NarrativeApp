@@ -17,6 +17,7 @@ import '../providers/save_game_provider.dart';
 import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../widgets/save_slots_sheet.dart';
+import '../widgets/moments.dart';
 import 'home_shell.dart';
 import 'settings_screen.dart';
 
@@ -191,6 +192,8 @@ class _MainMenuScreenState extends ConsumerState<MainMenuScreen> {
         child: SafeArea(
           child: Stack(
             children: [
+              // The Shroud drifting behind the title.
+              const Positioned.fill(child: ShroudDrift()),
               Positioned(
                 top: 4,
                 right: 4,

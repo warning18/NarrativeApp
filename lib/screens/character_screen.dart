@@ -20,7 +20,7 @@ import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
 import 'level_up_screen.dart';
 import 'race_profession_screen.dart';
-import 'skills_screen.dart';
+import 'skills/skills_screen.dart';
 
 class CharacterScreen extends ConsumerWidget {
   const CharacterScreen({super.key, this.embedded = false});

@@ -14,7 +14,8 @@
     "roomDamage": 1,
     "roomBonus": {},
     "description": "A deck ballista that looses every turn: the reliable shot that breaks a bulwark's layers so the heavier guns can land.",
-    "description_fr": "Une baliste de pont qui décoche à chaque tour : le tir fiable qui brise les couches d'un pavois pour que les armes lourdes portent."
+    "description_fr": "Une baliste de pont qui décoche à chaque tour : le tir fiable qui brise les couches d'un pavois pour que les armes lourdes portent.",
+    "ammo": "round"
   },
   "harpoon_rack": {
     "partID": "harpoon_rack",
@@ -36,7 +37,8 @@
       "close",
       "medium"
     ],
-    "tetherRounds": 1
+    "tetherRounds": 1,
+    "ammo": "round"
   },
   "fire_pots": {
     "partID": "fire_pots",
@@ -56,6 +58,73 @@
     "description_fr": "Des pots d'argile pleins de poix, quatre tours à préparer (trois avec un canonnier), lancés à la main : les navires doivent être bord à bord. La salle qu'ils touchent brûle jusqu'à ce qu'on combatte le feu, et la coque avec.",
     "ranges": [
       "close"
+    ],
+    "ammo": "round"
+  },
+  "chain_swivel": {
+    "partID": "chain_swivel",
+    "partName": "Chain Swivel",
+    "partName_fr": "Pierrier à chaînes",
+    "slotType": "Weapon",
+    "cost": 120,
+    "battleActionLabel": "Fire chain shot",
+    "battleActionLabel_fr": "Tirer à chaînes",
+    "damageAmount": 14,
+    "chargeTurns": 2,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 1,
+    "roomBonus": {},
+    "ammo": "chain",
+    "description": "A swivel gun loaded with two balls on a chain, two turns to load. The chain does half the hull a ball would, but whatever it hits it also tears a pip off the helm, so a fleeing ship slows. Close and medium range.",
+    "description_fr": "Un pierrier chargé de deux boulets enchaînés, deux tours à charger. La chaîne fait moitié moins de dégâts à la coque qu'un boulet, mais où qu'elle frappe elle arrache aussi un cran à la barre : un navire qui fuit ralentit. Courte et moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
+    ]
+  },
+  "grape_swivel": {
+    "partID": "grape_swivel",
+    "partName": "Grape Swivel",
+    "partName_fr": "Pierrier à mitraille",
+    "slotType": "Weapon",
+    "cost": 110,
+    "battleActionLabel": "Fire grapeshot",
+    "battleActionLabel_fr": "Tirer à mitraille",
+    "damageAmount": 12,
+    "chargeTurns": 1,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 1,
+    "roomBonus": {},
+    "ammo": "grape",
+    "description": "A swivel gun loaded with a bag of musket balls, ready every turn. Grape does half the hull a ball would, but it sweeps the deck: for two rounds the enemy's crew mend one pip less. Close and medium range.",
+    "description_fr": "Un pierrier chargé d'un sac de balles, prêt à chaque tour. La mitraille fait moitié moins de dégâts à la coque qu'un boulet, mais elle balaie le pont : pendant deux rounds, l'équipage ennemi répare un cran de moins. Courte et moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
+    ]
+  },
+  "hot_shot_carronade": {
+    "partID": "hot_shot_carronade",
+    "partName": "Hot-Shot Carronade",
+    "partName_fr": "Caronade à boulets rouges",
+    "slotType": "Weapon",
+    "cost": 180,
+    "battleActionLabel": "Fire hot shot",
+    "battleActionLabel_fr": "Tirer à boulets rouges",
+    "damageAmount": 24,
+    "chargeTurns": 3,
+    "piercesShield": false,
+    "setsFire": false,
+    "roomDamage": 1,
+    "roomBonus": {},
+    "ammo": "heated",
+    "description": "A short, heavy gun with a brazier beside it for heating its balls red, three turns to load. A red-hot ball does three quarters of the hull a cold one would, but it sets the room it lands in burning. Close and medium range.",
+    "description_fr": "Un canon court et lourd, avec un brasero à côté pour chauffer ses boulets au rouge, trois tours à charger. Un boulet rouge fait les trois quarts des dégâts à la coque d'un boulet froid, mais il met le feu à la salle qu'il touche. Courte et moyenne portée.",
+    "ranges": [
+      "close",
+      "medium"
     ]
   },
   "iron_plating": {

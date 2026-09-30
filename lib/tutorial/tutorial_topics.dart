@@ -27,6 +27,14 @@ enum TutorialTopic {
     TutorialStep('tut_story_7', target: 'home.map'),
     TutorialStep('tut_story_8', target: 'home.nav'),
   ]),
+  // The Journey tab (home tab 4, see journeyTabIndex): the story on a map.
+  journey(Icons.alt_route, homeTab: 4, steps: [
+    TutorialStep('tut_journey_1'),
+    TutorialStep('tut_journey_2', target: 'journey.scene'),
+    TutorialStep('tut_journey_3', target: 'journey.chart', optional: true),
+    TutorialStep('tut_journey_4', target: 'journey.pick', optional: true),
+    TutorialStep('tut_journey_5', target: 'home.nav'),
+  ]),
   character(Icons.person_outline, homeTab: 1, steps: [
     TutorialStep('tut_character_1', target: 'character.header'),
     TutorialStep('tut_character_2', target: 'character.alignment'),
@@ -34,8 +42,10 @@ enum TutorialTopic {
     TutorialStep('tut_character_4', target: 'character.pages'),
   ]),
   camp(Icons.local_fire_department_outlined, homeTab: 2, steps: [
+    TutorialStep('tut_camp_0', target: 'camp.next', optional: true),
+    TutorialStep('tut_camp_6', target: 'camp.road'),
     TutorialStep('tut_camp_1', target: 'camp.town'),
-    TutorialStep('tut_camp_2', target: 'camp.tray'),
+    TutorialStep('tut_camp_2', target: 'camp.tray', optional: true),
     TutorialStep('tut_camp_3', target: 'camp.boat', optional: true),
     TutorialStep('tut_camp_4', target: 'camp.roster'),
     TutorialStep('tut_camp_5', target: 'camp.sail'),
@@ -55,8 +65,7 @@ enum TutorialTopic {
     TutorialStep('tut_skills_1', target: 'skills.points'),
     TutorialStep('tut_skills_5', target: 'skills.views'),
     TutorialStep('tut_skills_2', target: 'skills.list'),
-    TutorialStep('tut_skills_3', target: 'skills.craft'),
-    TutorialStep('tut_skills_4', target: 'skills.compare', optional: true),
+    TutorialStep('tut_skills_3', target: 'skills.mine'),
   ]),
   dice(Icons.casino_outlined, steps: [
     TutorialStep('tut_dice_1', target: 'dice.choice', optional: true),

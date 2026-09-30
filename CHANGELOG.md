@@ -8,6 +8,61 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.186.0+217]
+
+Brings the two lines of work together: this branch (v1.176 to v1.185.1)
+and main (v1.176 to v1.183.1 there, below marked "(main)"), which went
+apart after v1.175.
+
+### Changed
+- **One world clock.** Main's day and watch (dawn, day, dusk, night) and
+  this branch's road days are the same clock now. A step on the road is
+  a watch and four end the day; a walk between places is two watches, an
+  expedition two; a night's rest sleeps through to the next dawn, wherever
+  it is taken (camp, port, town), with the heal wave. Days at sea and days
+  lost on an expedition count once, toward the chapter's threat as well.
+- **Sea beasts in the sea fight from above.** A beast fights on main's
+  top-down sea: its rooms are named for a body (fins, hide, jaws, heart)
+  on the deck labels and tooltips, and what it is about to do (dive,
+  turn for the deep, held on the line, heal, the crew's edge) shows under
+  its name. It has no look of its own yet: it borrows the ship nearest its
+  size.
+- **Run for it on the new range buttons.** At long range the lower
+  button runs for it instead of pulling away; the range bracket counts
+  the escape.
+- **Each weapon carries its own shot (main) and the hunter's harpoon.**
+  The harpoon fires round shot and still holds a beast on the line.
+- **The Harbour's cards (main's layout).** Parts stay grouped by slot,
+  with this branch's swaps, stored parts, trophies and beasts on them.
+- **The Journey map (main's chart).** The fog's glimpses of what lies past
+  a step, the road events on steps, echoes in scenes and past marks, and
+  the timed scene's clock are all on main's chart.
+- **Icons drawn on this branch are out for now.** The five v1.176-v1.182
+  foes, the five dice-tampering moves, the beast's trophy and the road
+  caravan borrow the icon of the nearest of their kind (a Wrecker captain
+  the smuggler captain's, the trophy an elite's, and so on) until they
+  have art of their own.
+
+### Fixed (from the review of main's v1.178-v1.183.1)
+- **Ways out to the same place no longer sit on one spot** on the Journey
+  map: exits on (nearly) the same bearing, as when three choices lead to
+  the square, are fanned out along the edge, each one tappable.
+- **End turn stays on screen on a short phone.** Below 600 px the enemy's
+  bar and the sea scroll and the dock stays pinned under them.
+- **Tips no longer cover the enemy's rooms:** a tip shows above the dock,
+  off the sea.
+- **A still sea is no longer washed white in a squall.** With reduced
+  motion the lightning's beat never lands on the still frame.
+- **The range reads on a phone.** The ships are sized to the sea's height
+  as well as its width, a quarter of the water always left for the gap.
+- **The voyage's day strip scrolls** when shelters make it longer than the
+  screen.
+- **The enemy's guns point at the Eel,** not away from it.
+- **A storm's stake counts the void-marked sail,** as the loss itself does.
+- v1.183.0's balance note says a skilled player used to switch to chain
+  shot against the late void barge; the shot it switched to was grape
+  (the barge boards). The entry is kept as it shipped.
+
 ## [1.185.1+216]
 
 The sea fight is moving to a top-down view on another branch, so the
@@ -622,6 +677,276 @@ pass, travellers return, and the last chapters build to set pieces.
   order: an alignment event, a familiar face (25%), then a detour.
 - **Retreat costs more.** Running from a fight now costs a fifth of your
   gold (was 15%) and a potion, if you carry one.
+## [1.183.1+215] (main)
+
+### Removed
+- **Coral in the shallows and fallen columns in the drowned waters.** The
+  shallows keep their seagrass, rocks and reef fish; the drowned waters
+  their weed, eels and fish.
+
+## [1.183.0+214] (main)
+
+### Added
+- **Life under the water.** Each of the waters has its own bed and fish,
+  drawn beneath the waves:
+  - the open sea: schools of silver fish, a great shadow passing deep
+    down, jellyfish;
+  - the shallows: coral heads, seagrass and rocks, bright reef fish;
+  - the drowned waters: fallen columns furred with weed, pale eels;
+  - the abyss: black spires, glowing jellyfish, an angler's lure in the
+    dark;
+  - the ashen chop: grey rocks crusted with barnacles, dead weed, small
+    dark fish.
+- **Three weapons that fire their own shot:**
+
+  | Weapon | Shot | Damage | Turns to charge |
+  |---|---|---|---|
+  | Chain Swivel | chain | 14 | 2 |
+  | Grape Swivel | grape | 12 | 1 |
+  | Hot-Shot Carronade | heated | 24 | 3 |
+
+  All three reach close and medium range.
+
+### Changed
+- **The shot is the weapon's own.** The battle no longer has a shot picker.
+  Each weapon fires the shot set in its part: a new `ammo` field in
+  ship_parts.json (round, chain, grape or heated), which is an enumeration
+  in the editor. The shot's mark sits beside the weapon's damage in the
+  dock, and its tooltip says what the shot does. The tip about changing
+  shot is gone.
+  - Balance: since a skilled player no longer switches to chain shot
+    against a hard ship, the late void barge falls more often (57%, up
+    from 23% under the old rules). The balance test's upper band is now
+    35 points.
+
+## [1.182.1+213] (main)
+
+### Changed
+- **The sea fight is pared down to the mockup:** one enemy bar, small ships
+  on a sea that fills the screen, one dock.
+  - **Enemy bar:** the enemy's name, habit, shields and hull, in one bar
+    above the sea.
+  - **The sea** holds everything between the ships:
+    - the weather and the next in a chip at the top corner;
+    - the enemy's guns as small charge rings, with the room each one
+      aims at when the foresight sail shows it;
+    - the range bracket down the left edge;
+    - close in and pull away as two round buttons on the right, up
+      toward the enemy and down away from her;
+    - the last two lines of the log at the bottom.
+  - **The ships are smaller** (at most 260 px long). How far apart they
+    lie is how much of the sea's height the range takes.
+  - **Rooms** carry no frame until they matter: a target, a station to
+    move to, or the enemy's aim. The room's state is painted on the deck.
+  - **The dock** starts with the Eel's bar. The weapons are ring tiles
+    three across.
+
+## [1.182.0+212] (main)
+
+### Changed
+- **The sea fight is seen from above.** The two ships lie broadside to
+  broadside: the enemy at the top, the Eel below. The rules are the same;
+  what changed is how they read.
+  - **The rooms lie along the deck:** the helm at the stern, the hold's
+    hatch, the guns amidships and the bulwark at the bow. Each room is a
+    tap zone a thumb wide, showing its pips, crew, fire, leaks and the
+    enemy's aim. The rooms' names are written beside the ship in their
+    colours.
+  - **The range is the gap between the ships.** Closing in or pulling
+    away slides the Eel across the water, with a bracket down the side
+    naming the range.
+  - **Shields are arcs** on the side facing the enemy. The hold fills with
+    water as it leaks, a knocked-out room goes dark, and a ship below half
+    its hull is holed with torn sails. The wake grows with how quick the
+    ship is.
+  - **Each enemy has its own look from above:** the raider's short skiff,
+    the corsair's two black sails, the inquisition's white cutter and the
+    void barge's glowing runes, with no sails at all.
+- **The waters of the voyage set the sea.** Each port names its waters
+  (a new `waters` field in ports.json), and a fight on the way there is
+  fought on them:
+  - the open sea's long swells;
+  - the clear shallows over sand, with sandbars and rocks;
+  - the drowned waters' murk, kelp and rising bubbles;
+  - the abyss's black water, slow rings and violet motes;
+  - the ashen coast's grey chop under falling ash.
+
+  The Edit Mode test battle can pick the waters.
+- **The weather is drawn as particles over the sea.**
+  - A squall brings slanting rain, rings where it lands, whitecaps and
+    lightning.
+  - Fog banks drift across, thickest over the enemy.
+  - Wind tears streaks and spray across the water: with the Eel in a
+    tailwind, across her in a crosswind.
+  - A calm day glints, with gulls wheeling overhead.
+
+  When the weather turns between rounds, the old weather fades out as
+  the new one comes in, and a wave rolls under both ships.
+
+## [1.181.0+211] (main)
+
+### Changed
+- **The Journey map follows the real map.** Standing in a place the world
+  chart knows, the map is that place up close, north up. Before, the ways
+  always went up the screen.
+  - **The ground** is drawn by what the place is:
+    - a town is what is left of its wall, with streets out of the square
+      and blocks between;
+    - a camp is tents round its fire;
+    - a site is broken stones;
+    - the sea is its own.
+
+    Each place is drawn from its own seed, so it looks the same every
+    visit.
+  - **The ways ring the party:** a fight, a shop or a talk in this place is
+    a spot round the square, reached by walking its street. A busy town's
+    spots fill an inner and an outer ring.
+  - **The ways out sit at the map's edge in their true direction:** the
+    Cove Camp south-west of the Ashen Quarter, Tern Row from the wharf.
+  - **Taking a way out zooms out** to the world chart (in the chosen chart
+    shape), and the party walks the road there. The map then opens on the
+    new place.
+  - The road behind now peeks in at the map's foot, and "You are here"
+    sits in a corner badge.
+  - A detour, on no place, keeps the road going up as before.
+- On a busy hub every way now inks in; the last ones used to stay hidden.
+
+## [1.180.0+210] (main)
+
+### Changed
+- **The camp puts the next step first.**
+  - One header: the camp, its chapter, the day and the hour, and the
+    purse.
+  - The main quest is a checklist: each place still to visit is a line
+    that leads to the Road, then how much of the chapter is explored and
+    its quests settled. The way in says how many steps are left.
+  - The camp's scene is a card until read ("Put it away"), then a chip
+    beside Rest that opens it again.
+- **The camp in four tabs:**
+  - **Road:** places, expeditions and the bounty board;
+  - **Town:** the cliff town and its shops;
+  - **Party;**
+  - **Sea:** the Rusty Eel, the harbour and the chart.
+
+  It replaces eight sections in one scroll.
+- **The harbour is always in view.** The Sea tab shows the Eel drawn on
+  the water, her hull (in the sea's colour, red when low), her named
+  shield, her slots and the repair. Until the harbour is built, a card
+  says what it gives and costs, and a tap goes to Town. Once built, it
+  opens the refit, where the shipwright's parts are grouped by slot
+  ("Weapons · 1 of 2 filled") with the Install button under each.
+- **A day at sea you can read:**
+  - the crossing as a strip of days, each behind her showing what it
+    cost or gave, today marked, the rest unknown;
+  - the Eel on the water beside what she meets, and one hull bar;
+  - every choice says what it wins or costs and, for a check, the bonus,
+    the DC and the odds ("Perception +1 vs DC 15 · win +80 gold · fail
+    −12 hull · 35%"). No choice is highlighted as the one to take;
+  - the log is labelled, and hull losses carry their minus sign.
+
+## [1.179.0+209] (main)
+
+### Changed
+- **The Skills screen, simpler.** Three tabs with one job each:
+  - **Tree** to learn;
+  - **My skills** to raise tiers and craft;
+  - **Spells** for magic.
+
+  The List view, its two rows of filters and the compare mode are gone.
+- **One sheet per skill**, wherever it is tapped:
+  - its numbers at base and at each tier;
+  - the die faces it sits on, with a way to the dice;
+  - one button: Learn, or Raise tier. When greyed, it says how much
+    essence is missing and that essence comes with XP.
+
+  Compare and Craft are labelled links on it.
+- **State you can see on the tree:**
+  - a gold ring is known, with its tier in dots;
+  - a lit gold ring is ready to learn;
+  - grey with a lock comes later.
+
+  A skill's kind is a small mark in the corner. Every skill not yet
+  known shows its cost, and so does Mastery.
+- **The purse explains itself:** points "to learn skills, 1 per level";
+  essence "to raise a tier, earned with XP", with a bar to the next tier.
+  The rules paragraph is one line with a How it works link, and each
+  branch's description sits under its name.
+- **Spells** are compact rows, known first, then the ones still to find
+  and where their spellbooks are sold.
+- A companion's screen is their points and their class's list, each skill
+  learned right there.
+- The screen's 1,400-line file is split into six under
+  `lib/screens/skills/`. What each skill shows (status, cost, lock
+  reason, tier and its price) now comes from a view model with its own
+  unit tests.
+
+## [1.178.0+208] (main)
+
+### Added
+- **A world clock.** The days pass as the party goes (two watches for a
+  walk or an expedition, a whole day at sea) through dawn, daytime, dusk
+  and night; the top bar shows the day and a sun or moon for the watch,
+  and a rest now runs to the next dawn. The town on the cliff darkens at
+  dusk and fills with stars at night.
+- **A level gained** shows its medal over turning golden rays, the banner
+  rising in and the perk choices dealt like a card.
+- **A quest settled** is stamped with a wax seal; **every achievement**
+  earned (quests, the camp, the town, expeditions) slides down from the top
+  in its own toast.
+- **A new chapter** opens with its title card across the story.
+- **Moments across the game:**
+  - the chapter's ash, rain or snow drifts faintly behind the story text;
+  - a storm at sea rains and flashes behind its day, and every voyage day
+    and expedition event turns over like a card;
+  - the screen's edges throb red while the hero's health is low;
+  - coins fly from the purse when buying; sparks mark a skill learned;
+  - a skill set on a die's face snaps into place;
+  - a rest sends a green wave through the screen; a save presses a seal;
+  - devoted companions wear a beating heart in the camp's party list;
+  - the death screen bleeds in, title then last words;
+  - New Game+ starts with a crown of gold sparks;
+  - the Shroud drifts behind the main menu;
+  - earned badges turn a ring of light in the achievements list.
+- All of it rests with reduced motion, and none of it runs on a hidden tab.
+
+## [1.177.0+207] (main)
+
+### Added
+- **The Journey map moves.** Ten transitions:
+  - a new scene's words come out of the ink, top to bottom, and its ways
+    draw out from your mark one after the other, each step popping in at
+    the end of its road;
+  - a place the map hadn't shown is stamped under your mark, ink
+    spreading from it;
+  - the picked way flows with ink toward its step, which breathes a ring;
+  - walking leaves fading footprints and a puff of dust where it stops;
+  - opening the tab from another, the map unrolls on a gold rod;
+  - a new chapter burns its map open from your mark, an ember ring at
+    the edge;
+  - a scene on the road behind opens out of its own mark;
+  - a shut way's padlock rattles with a red flash;
+  - going into a fight, the map jolts and its edges run red.
+- **And ten effects that say what a step holds:** a fight's (or an
+  expedition's) heartbeat and embers, a shop's or a quest's glint, a
+  rest's fireflies, a roll's glimmer (and a die tumbling beside you on
+  the way to it), a voyage's ripples, the main quest's column of gold,
+  the Void seeping from an ending, fog drifting over a town's far ways,
+  each chapter's weather (ash over the Lower City, Alster and the Spire,
+  rain over the Hollow Court and the Hollow Shore, snow in the giants'
+  frost), and your mark glowing softly so the eye finds it.
+- The effects run only while the Journey tab is on screen, and not at
+  all with the phone's reduced-motion setting: the map is then drawn at
+  once, as before.
+
+## [1.176.0+206] (main)
+
+### Added
+- **The Journey tab has its tour.** The first time you open it, the guide
+  dog shows it around in five steps: what the Journey is, the scene you
+  are in (fold it, or double-tap to read it full screen), the map (your
+  mark, a step for every way on, what each step's colour means, the road
+  behind you), picking a step and Go, and the tab bar to switch back to
+  the Story. It is in the Tutorials list too, to replay any time.
 
 ## [1.175.0+205]
 

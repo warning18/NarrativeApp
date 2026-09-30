@@ -2,7 +2,12 @@
 class ItemIcons {
   ItemIcons._();
 
-  static String pathFor(String itemId) => 'assets/icons/items/$itemId.png';
+  static String pathFor(String itemId) =>
+      'assets/icons/items/${_borrowed[itemId] ?? itemId}.png';
+
+  /// Items drawn with another's icon until they have their own: a sea
+  /// beast's trophy as an elite's.
+  static const Map<String, String> _borrowed = {'boss_trophy': 'elite_trophy'};
 
   static const List<String> allIds = [
     'antidote',

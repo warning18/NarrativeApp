@@ -16,6 +16,7 @@ import '../tutorial/tutorial_topics.dart';
 import '../utils/face_style.dart';
 import '../utils/game_icons.dart';
 import '../widgets/detail_dialog.dart';
+import '../widgets/moments.dart';
 
 class DiceLoadoutScreen extends ConsumerStatefulWidget {
   const DiceLoadoutScreen({super.key, this.allyId});
@@ -235,42 +236,50 @@ class _DiceLoadoutScreenState extends ConsumerState<DiceLoadoutScreen> {
                                 .read(playerSessionProvider.notifier)
                                 .clearDiceFaceSkill(_selectedDiceId!, index);
                         final skillId = faceSkillId(face, assignedSkillId);
-                        return _FaceSlot(
-                          key: Key('face_slot_$index'),
-                          face: face,
-                          chance: totalWeight <= 0
-                              ? 0
-                              : ((face['weight'] as num?)?.toDouble() ?? 1.0) /
-                                  totalWeight,
-                          assignedSkillId: assignedSkillId,
-                          overLimitSkillId: overLimit ? pickedSkillId : null,
-                          language: language,
-                          locked: !open,
-                          restrictionElement: restriction,
-                          skills: skills,
-                          accepts: (id) => canSetSkillOnFace(
-                              id, index, faces, assignments, skills),
-                          onAccept: assign,
-                          onClear: pickedSkillId == null ? null : clear,
-                          onTap: open
-                              ? () => _pickSkill(
-                                    context,
-                                    face: face,
-                                    faceIndex: index,
-                                    faces: faces,
-                                    assignments: assignments,
-                                    skills: skills,
-                                    unlockedSkillIds: unlockedSkillIds,
-                                    restriction: restriction,
-                                    current: assignedSkillId,
-                                    onPick: assign,
-                                    onClear:
-                                        pickedSkillId == null ? null : clear,
-                                  )
-                              : skillId == null
-                                  ? null
-                                  : () => _showSkillDetail(context, skillId,
-                                      skills[skillId] as Map<String, dynamic>?),
+                        // A skill set on the face snaps into place.
+                        return SnapIn(
+                          snapKey: assignedSkillId ?? '',
+                          child: _FaceSlot(
+                            key: Key('face_slot_$index'),
+                            face: face,
+                            chance: totalWeight <= 0
+                                ? 0
+                                : ((face['weight'] as num?)?.toDouble() ??
+                                        1.0) /
+                                    totalWeight,
+                            assignedSkillId: assignedSkillId,
+                            overLimitSkillId: overLimit ? pickedSkillId : null,
+                            language: language,
+                            locked: !open,
+                            restrictionElement: restriction,
+                            skills: skills,
+                            accepts: (id) => canSetSkillOnFace(
+                                id, index, faces, assignments, skills),
+                            onAccept: assign,
+                            onClear: pickedSkillId == null ? null : clear,
+                            onTap: open
+                                ? () => _pickSkill(
+                                      context,
+                                      face: face,
+                                      faceIndex: index,
+                                      faces: faces,
+                                      assignments: assignments,
+                                      skills: skills,
+                                      unlockedSkillIds: unlockedSkillIds,
+                                      restriction: restriction,
+                                      current: assignedSkillId,
+                                      onPick: assign,
+                                      onClear:
+                                          pickedSkillId == null ? null : clear,
+                                    )
+                                : skillId == null
+                                    ? null
+                                    : () => _showSkillDetail(
+                                        context,
+                                        skillId,
+                                        skills[skillId]
+                                            as Map<String, dynamic>?),
+                          ),
                         );
                       }),
                   ],

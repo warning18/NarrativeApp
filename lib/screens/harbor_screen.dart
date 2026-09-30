@@ -11,6 +11,7 @@ import '../l10n/app_strings.dart';
 import '../providers/expedition_active_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
+import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../widgets/immersive_notice.dart';
@@ -85,21 +86,38 @@ class HarborScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         children: [
           const ShipStatusCard(),
-          const Divider(height: 32),
+          const SizedBox(height: 16),
           Text(tr(ref, 'shipwright_section'),
               style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
-          for (final partId in partIds)
-            _PartCard(
-              partId: partId,
-              part: parts[partId] as Map<String, dynamic>,
-              ship: ship,
-              parts: parts,
-              installed: session.shipPartIds,
-              stored: session.storedShipPartIds,
-              gold: session.gold,
-              fr: fr,
-            ),
+          // The shipwright's parts by the slot they fit, each slot saying
+          // how many of hers are filled.
+          for (final slot in slotTypeOptions)
+            if (partIds.any((id) =>
+                (parts[id] as Map<String, dynamic>)['slotType'] == slot)) ...[
+              Padding(
+                key: Key('harbour_slot_$slot'),
+                padding: const EdgeInsets.only(top: 14, bottom: 4),
+                child: Text(
+                  '${shipSlotLabel(ref, slot)} · '
+                          '${tr(ref, 'slots_filled').replaceAll('{used}', '${slotsUsed(parts, session.shipPartIds, slot)}').replaceAll('{cap}', '${slotCapacity(ship, slot)}')}'
+                      .toUpperCase(),
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      letterSpacing: 1, color: InkColors.of(context).ash),
+                ),
+              ),
+              for (final partId in partIds)
+                if ((parts[partId] as Map<String, dynamic>)['slotType'] == slot)
+                  _PartCard(
+                    partId: partId,
+                    part: parts[partId] as Map<String, dynamic>,
+                    ship: ship,
+                    parts: parts,
+                    installed: session.shipPartIds,
+                    stored: session.storedShipPartIds,
+                    gold: session.gold,
+                    fr: fr,
+                  ),
+            ],
           if (enemyShips != null) ...[
             const Divider(height: 32),
             Text(tr(ref, 'beasts_section'),
@@ -275,11 +293,11 @@ class _PartCard extends ConsumerWidget {
     ].where((line) => line.isNotEmpty).join('\n');
     final price =
         cost == 0 ? tr(ref, 'free_label') : '$cost ${tr(ref, 'gold_label')}';
-    // The price and the button sit under the text, so a long description
-    // keeps the card's width on a phone.
-    Widget action;
+    // The button sits under the text, so a long description keeps the
+    // card's width on a phone.
+    Widget? action;
     if (isInstalled) {
-      action = Text(tr(ref, 'installed_label'));
+      action = null;
     } else if (fits) {
       action = ElevatedButton(
         key: Key('install_$partId'),
@@ -299,27 +317,49 @@ class _PartCard extends ConsumerWidget {
               },
         child: Text('${tr(ref, 'swap_button')} ($price)'),
       );
-    } else {
-      action = Text(tr(ref, 'slot_full_label'));
     }
+    final theme = Theme.of(context);
+    final ink = InkColors.of(context);
     return Card(
-      child: ListTile(
-        leading: Icon(
-            isInstalled
-                ? Icons.check_circle
-                : trophy
-                    ? Icons.emoji_events_outlined
-                    : (slot == 'Sail'
-                        ? Icons.brush_outlined
-                        : Icons.handyman_outlined),
-            color: isInstalled ? Colors.green : null),
-        title: Text(shipPartName(part, fr)),
-        subtitle: Column(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(subtitle),
-            const SizedBox(height: 6),
-            Align(alignment: Alignment.centerRight, child: action),
+            Row(
+              children: [
+                Icon(
+                    isInstalled
+                        ? Icons.check_circle
+                        : trophy
+                            ? Icons.emoji_events_outlined
+                            : (slot == 'Sail'
+                                ? Icons.brush_outlined
+                                : Icons.handyman_outlined),
+                    size: 20,
+                    color: isInstalled ? ink.heal : ink.ash),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(shipPartName(part, fr),
+                      style: theme.textTheme.titleMedium),
+                ),
+                if (isInstalled)
+                  Text(tr(ref, 'installed_label'),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.heal))
+                else if (action == null)
+                  Text(tr(ref, 'slot_full_label'),
+                      style: theme.textTheme.labelMedium
+                          ?.copyWith(color: ink.ash)),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(color: ink.ash)),
+            if (action != null) ...[
+              const SizedBox(height: 8),
+              Align(alignment: Alignment.centerRight, child: action),
+            ],
           ],
         ),
       ),

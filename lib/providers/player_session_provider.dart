@@ -183,6 +183,7 @@ class PlayerSession {
     this.seenEchoKeys = const [],
     this.provisions = provisionsStart,
     this.day = 1,
+    this.watch = 1,
     this.stepsToday = 0,
     this.clockChapter = 0,
     this.chapterStartDay = 1,
@@ -356,9 +357,13 @@ class PlayerSession {
   /// of the road from chapter 2 on; with none left the party goes hungry.
   final int provisions;
 
-  /// The day of the journey, from 1: every [stepsPerDay] steps on the road
-  /// end one, as does a night's rest or a voyage.
+  /// The world clock: the day of the journey, from 1, and the watch of it
+  /// (0 dawn, 1 day, 2 dusk, 3 night). A step on the road is a watch
+  /// ([stepsPerDay] steps end the day), a walk between places two, a
+  /// voyage its days at sea; a rest sleeps through to the next dawn (see
+  /// takeRoadStep, passTime, passDays, restUntilDawn).
   final int day;
+  final int watch;
 
   /// Steps taken on the road since the day began.
   final int stepsToday;
@@ -689,6 +694,7 @@ class PlayerSession {
     List<String>? seenEchoKeys,
     int? provisions,
     int? day,
+    int? watch,
     int? stepsToday,
     int? clockChapter,
     int? chapterStartDay,
@@ -782,6 +788,7 @@ class PlayerSession {
       seenEchoKeys: seenEchoKeys ?? this.seenEchoKeys,
       provisions: provisions ?? this.provisions,
       day: day ?? this.day,
+      watch: watch ?? this.watch,
       stepsToday: stepsToday ?? this.stepsToday,
       clockChapter: clockChapter ?? this.clockChapter,
       chapterStartDay: chapterStartDay ?? this.chapterStartDay,
@@ -882,6 +889,7 @@ class PlayerSession {
         'seenEchoKeys': seenEchoKeys,
         'provisions': provisions,
         'day': day,
+        'watch': watch,
         'stepsToday': stepsToday,
         'clockChapter': clockChapter,
         'chapterStartDay': chapterStartDay,
@@ -1044,7 +1052,8 @@ class PlayerSession {
           (json['seenEchoKeys'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
       provisions: (json['provisions'] as num?)?.toInt() ?? provisionsStart,
-      day: (json['day'] as num?)?.toInt() ?? 1,
+      day: max(1, (json['day'] as num?)?.toInt() ?? 1),
+      watch: ((json['watch'] as num?)?.toInt() ?? 1).clamp(0, 3),
       stepsToday: (json['stepsToday'] as num?)?.toInt() ?? 0,
       clockChapter: (json['clockChapter'] as num?)?.toInt() ?? 0,
       chapterStartDay: (json['chapterStartDay'] as num?)?.toInt() ?? 1,
@@ -2693,6 +2702,36 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     await _persist();
   }
 
+  // --- The world clock ---------------------------------------------------
+
+  /// Moves the clock on by [watches] quarters of a day (a walk between
+  /// places is two, an expedition two). In [chapter], the days it passes
+  /// count toward the chapter's threat (see [threatIn]).
+  Future<void> passTime(int watches, {int? chapter}) async {
+    if (watches <= 0) return;
+    final session = chapter != null && roadRulesApply(chapter)
+        ? _clockedIn(state, chapter)
+        : state;
+    final total = session.watch + watches;
+    final days = total ~/ 4;
+    state = session.copyWith(
+      day: session.day + days,
+      watch: total % 4,
+      stepsToday: days > 0 ? 0 : null,
+    );
+    await _persist();
+  }
+
+  /// A night's rest: the party heals and wakes at the next dawn, a day on
+  /// ([chapter]'s, for its threat, see [threatIn]).
+  Future<void> restUntilDawn({int? chapter}) async {
+    final session = chapter != null && roadRulesApply(chapter)
+        ? _clockedIn(state, chapter)
+        : state;
+    state = session.copyWith(day: session.day + 1, watch: 0, stepsToday: 0);
+    await healPartyToFull();
+  }
+
   // --- Achievements -------------------------------------------------------
 
   /// Grants a single achievement outright — for milestones that are a
@@ -2925,6 +2964,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       currentHealth: session.currentHealth - bite,
       day: day,
       stepsToday: steps,
+      // A step is a watch; a new day begins at dawn.
+      watch: dayEnded ? 0 : min(3, session.watch + 1),
     );
     await _persist();
     return RoadStep(
@@ -2937,20 +2978,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     );
   }
 
-  /// [days] pass in [chapter] (a voyage): the next day begins after them.
+  /// [days] pass in [chapter] (a voyage, a day lost on an expedition): the
+  /// next day begins after them.
   Future<void> passDays(int days, {required int chapter}) async {
-    if (!roadRulesApply(chapter) || days <= 0) return;
-    final session = _clockedIn(state, chapter);
+    if (days <= 0) return;
+    final session =
+        roadRulesApply(chapter) ? _clockedIn(state, chapter) : state;
     state = session.copyWith(day: session.day + days, stepsToday: 0);
     await _persist();
   }
 
   /// A night's rest in a town, a port or the camp: the whole party healed
-  /// (see [healPartyToFull]), and in [chapter] a day gone.
-  Future<void> restNight({required int chapter}) async {
-    await healPartyToFull();
-    await passDays(1, chapter: chapter);
-  }
+  /// (see [healPartyToFull]), and in [chapter] a day gone (see
+  /// [restUntilDawn]).
+  Future<void> restNight({required int chapter}) =>
+      restUntilDawn(chapter: chapter);
 
   /// Buys [count] rations at [price] each, as many as the pack holds (see
   /// [provisionsMax]). False, and nothing bought, when the purse or the

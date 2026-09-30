@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +15,7 @@ import 'approval_notice.dart';
 import 'companion_remark_bubble.dart';
 import 'immersive_notice.dart';
 import 'level_up_dialog.dart';
+import 'moments.dart';
 import 'turn_in_choice_dialog.dart';
 
 /// Takes on [questId] (it becomes the followed quest when none is) and
@@ -166,6 +169,12 @@ Future<void> turnInQuest(
   // What the party says about how it was settled (see
   // companion_remarks.dart) comes after the notice, in speech bubbles.
   final remarks = speakUpAbout(ref, reactions: reactions, deed: deed);
+  // The quest sealed, and each achievement announced up top.
+  showQuestSeal(context);
+  if (achievementNames.isNotEmpty) {
+    unawaited(announceAchievements(context, achievementNames,
+        trFor(lang, 'achievement_unlocked_prefix').toUpperCase()));
+  }
   await showImmersiveNotice(
     context,
     icon: Icons.emoji_events_outlined,

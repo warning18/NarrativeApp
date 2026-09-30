@@ -14,6 +14,7 @@
     ],
     "shopIds": [],
     "voyageLength": 2,
+    "waters": "ashen",
     "isHome": true,
     "requiredFlags": []
   },
@@ -38,6 +39,7 @@
       "black_market_docks"
     ],
     "voyageLength": 2,
+    "waters": "shallows",
     "isHome": false,
     "requiredFlags": []
   },
@@ -58,6 +60,7 @@
       "ossuary_relics"
     ],
     "voyageLength": 3,
+    "waters": "drowned",
     "isHome": false,
     "requiredFlags": []
   },
@@ -78,6 +81,7 @@
       "last_lantern"
     ],
     "voyageLength": 3,
+    "waters": "abyss",
     "isHome": false,
     "requiredFlags": []
   },
@@ -98,6 +102,7 @@
       "anchorage_chandlery"
     ],
     "voyageLength": 4,
+    "waters": "open",
     "isHome": false,
     "requiredFlags": [
       "shroud_vigil_cleared"

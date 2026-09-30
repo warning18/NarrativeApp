@@ -1,7 +1,8 @@
-// The ship battle's pixel-art cutaways: every ship has its sprite, the
-// enemy's is picked by its id (or its size), the Eel's by her refit, a
-// ship below half its hull is drawn battered, and each room's tile sits
-// on its room inside the hull.
+// The ships in battle: every cutaway has its sprite (the Eel's in the
+// harbour and at sea), the enemy's look is picked by its id (or its
+// size), the Eel's by her refit, a ship below half its hull is drawn
+// battered, and in the battle seen from above each room's tile lies on
+// the deck, stern to bow.
 import 'dart:io';
 import 'dart:math';
 
@@ -13,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:narrative_data_app/combat/ship_battle.dart';
 import 'package:narrative_data_app/combat/ship_combat.dart';
 import 'package:narrative_data_app/screens/ship_battle_panel.dart';
+import 'package:narrative_data_app/widgets/sea_battlefield.dart';
 import 'package:narrative_data_app/widgets/ship_cutaway.dart';
 
 ShipState _eel({int level = 1}) => ShipState(
@@ -43,10 +45,8 @@ ShipState _enemy({int maxHull = 80, int? hull}) {
   return hull == null ? ship : ship.copyWith(hull: hull);
 }
 
-String _assetOf(WidgetTester tester, String key) {
-  final image = tester.widget<Image>(find.byKey(Key(key)));
-  return (image.image as AssetImage).assetName;
-}
+TopShipPainter _painterOf(WidgetTester tester, String key) =>
+    tester.widget<CustomPaint>(find.byKey(Key(key))).painter! as TopShipPainter;
 
 void main() {
   test('every sprite the battle can ask for is on disk', () {
@@ -135,25 +135,39 @@ void main() {
     ));
     await tester.pump();
 
-    expect(_assetOf(tester, 'ship_sprite_eel'),
-        'assets/visuals/ship_cutaways/rusty_eel_1.png');
-    // Below half its hull: battered.
-    expect(_assetOf(tester, 'ship_sprite_enemy'),
-        'assets/visuals/ship_cutaways/void_barge_battered.png');
+    // From above: the Eel's look by her refit, the enemy's by its id,
+    // battered below half its hull.
+    final eel = _painterOf(tester, 'ship_sprite_eel');
+    final enemy = _painterOf(tester, 'ship_sprite_enemy');
+    expect(eel.look.id, 'rusty_eel');
+    expect(eel.refit, 1);
+    expect(eel.battered, isFalse);
+    expect(enemy.look.id, 'void_barge');
+    expect(enemy.battered, isTrue);
 
     for (final side in ['eel', 'enemy']) {
       final hull = tester.getRect(find.byKey(Key('ship_hull_$side')));
-      final helm = tester.getRect(find.byKey(Key('ship_room_${side}_helm')));
-      final hold = tester.getRect(find.byKey(Key('ship_room_${side}_hold')));
-      expect(hull.contains(helm.center), isTrue, reason: side);
-      expect(hold.top, greaterThan(helm.bottom), reason: side);
-      // The Eel's helm is aft, on the left; the enemy faces her, so its
-      // helm is on the right.
-      if (side == 'eel') {
-        expect(helm.center.dx, lessThan(hull.center.dx));
-      } else {
-        expect(helm.center.dx, greaterThan(hull.center.dx));
+      final rooms = [
+        for (final room in ['helm', 'hold', 'guns', 'bulwark'])
+          tester.getRect(find.byKey(Key('ship_room_${side}_$room'))),
+      ];
+      for (final r in rooms) {
+        expect(hull.contains(r.center), isTrue, reason: side);
+      }
+      // Stern to bow along the deck: the Eel's bow is to the right; the
+      // enemy passes the other way, its bow to the left.
+      for (var i = 1; i < rooms.length; i++) {
+        if (side == 'eel') {
+          expect(rooms[i].center.dx, greaterThan(rooms[i - 1].center.dx));
+        } else {
+          expect(rooms[i].center.dx, lessThan(rooms[i - 1].center.dx));
+        }
       }
     }
+    // The enemy above, the Eel below.
+    expect(
+        tester.getRect(find.byKey(const Key('ship_hull_enemy'))).bottom,
+        lessThanOrEqualTo(
+            tester.getRect(find.byKey(const Key('ship_hull_eel'))).top));
   });
 }

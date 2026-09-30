@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import 'detail_dialog.dart';
+import 'moments.dart';
 import 'perk_picker.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
@@ -104,15 +105,7 @@ class _LevelUpDialog extends ConsumerWidget {
     );
   }
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final hasPoints = session.statPoints > 0;
-
-    return AlertDialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
-      contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      icon: Container(
+  static Widget _medal() => Container(
         width: 56,
         height: 56,
         decoration: const BoxDecoration(
@@ -128,11 +121,34 @@ class _LevelUpDialog extends ConsumerWidget {
           ],
         ),
         child: const Icon(Icons.military_tech, size: 32, color: Colors.white),
+      );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final session = ref.watch(playerSessionProvider);
+    final hasPoints = session.statPoints > 0;
+
+    return AlertDialog(
+      insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      // The medal over turning rays, then the banner and the choices dealt.
+      icon: Center(
+        child: SizedBox(
+          width: 110,
+          height: 90,
+          child: Stack(alignment: Alignment.center, children: [
+            const Positioned.fill(child: RayBurst()),
+            _medal(),
+          ]),
+        ),
       ),
-      title: Text(
-        '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel',
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
+      title: RiseIn(
+        delay: const Duration(milliseconds: 120),
+        child: Text(
+          '${tr(ref, 'level_up')}! ${tr(ref, 'level_field_label')} $newLevel',
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: _gold, fontWeight: FontWeight.bold),
+        ),
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -140,7 +156,7 @@ class _LevelUpDialog extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // A perk to choose for the new level (see perks.dart).
-            const PerkPicker(),
+            const FlipIn(flipKey: 'perks', child: PerkPicker()),
             Text(
               '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
               style: Theme.of(context)

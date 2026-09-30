@@ -5,7 +5,18 @@ class SkillIcons {
 
   /// The asset path for a skill given its id, e.g.
   /// SkillIcons.pathFor("fireball") -> assets/icons/skills/fireball.png
-  static String pathFor(String skillId) => 'assets/icons/skills/$skillId.png';
+  static String pathFor(String skillId) =>
+      'assets/icons/skills/${_borrowed[skillId] ?? skillId}.png';
+
+  /// Skills drawn with another's icon until they have their own (the
+  /// v1.182 dice-tampering moves).
+  static const Map<String, String> _borrowed = {
+    'edict_of_silence': 'disorienting_pulse',
+    'glass_reflection': 'mage_mana_shield',
+    'hex_of_ill_luck': 'voidkin_entropy_touch',
+    'rotting_mark': 'plague_bite',
+    'shroud_reflection': 'celestial_ward',
+  };
 
   /// Every skill id with a generated icon -- checked at the call site so a
   /// future skill without a matching PNG falls back gracefully instead of

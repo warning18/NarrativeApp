@@ -212,11 +212,10 @@ void _reach(ShipBattle b) {
 void _volley(ShipBattle b, Random rng) {
   final fins = b.enemy.room(ShipRoom.helm);
   ShipRoom room;
+  // Each weapon fires its own shot (ship_parts.json `ammo`).
   if (b.beastTurning && !b.tethered && !fins.isDown) {
     room = ShipRoom.helm;
-    b.ammo = ShipAmmo.chain;
   } else {
-    b.ammo = ShipAmmo.round;
     room = [
       ShipRoom.hold,
       ShipRoom.guns,

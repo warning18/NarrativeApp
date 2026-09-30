@@ -499,6 +499,30 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ship battle',
     AppLanguage.fr: 'Bataille navale',
   },
+  'fight_lab_waters': {
+    AppLanguage.en: 'Waters',
+    AppLanguage.fr: 'Eaux',
+  },
+  'sea_waters_open': {
+    AppLanguage.en: 'Open sea: long swells',
+    AppLanguage.fr: 'Haute mer : longue houle',
+  },
+  'sea_waters_shallows': {
+    AppLanguage.en: 'Shallows: clear water over sand',
+    AppLanguage.fr: 'Hauts-fonds : eau claire sur le sable',
+  },
+  'sea_waters_drowned': {
+    AppLanguage.en: 'Drowned waters: murk and kelp',
+    AppLanguage.fr: 'Eaux noyées : vase et varech',
+  },
+  'sea_waters_abyss': {
+    AppLanguage.en: 'The abyss: black water, void light',
+    AppLanguage.fr: 'L\'abîme : eau noire, lueurs du vide',
+  },
+  'sea_waters_ashen': {
+    AppLanguage.en: 'Ashen chop: grey waves, falling ash',
+    AppLanguage.fr: 'Clapot de cendre : vagues grises, cendre qui tombe',
+  },
   'fight_lab_enemy_ship': {
     AppLanguage.en: 'Enemy ship',
     AppLanguage.fr: 'Navire ennemi',
@@ -2073,6 +2097,322 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Expéditions',
   },
   'hub_onward_section': {AppLanguage.en: 'Onward', AppLanguage.fr: 'Plus loin'},
+  'day_abbrev': {AppLanguage.en: 'D', AppLanguage.fr: 'J'},
+  'day_label': {AppLanguage.en: 'Day {n}', AppLanguage.fr: 'Jour {n}'},
+  'watch_0': {AppLanguage.en: 'Dawn', AppLanguage.fr: 'Aube'},
+  'watch_1': {AppLanguage.en: 'Daytime', AppLanguage.fr: 'Plein jour'},
+  'watch_2': {AppLanguage.en: 'Dusk', AppLanguage.fr: 'Crépuscule'},
+  'watch_3': {AppLanguage.en: 'Night', AppLanguage.fr: 'Nuit'},
+  'skills_tab_tree': {
+    AppLanguage.en: 'Tree',
+    AppLanguage.fr: 'Arbre',
+  },
+  'skills_tab_mine': {
+    AppLanguage.en: 'My skills',
+    AppLanguage.fr: 'Mes compétences',
+  },
+  'skills_tab_spells': {
+    AppLanguage.en: 'Spells',
+    AppLanguage.fr: 'Sorts',
+  },
+  'purse_points_one': {
+    AppLanguage.en: '1 point',
+    AppLanguage.fr: '1 point',
+  },
+  'purse_points_many': {
+    AppLanguage.en: '{n} points',
+    AppLanguage.fr: '{n} points',
+  },
+  'purse_points_note': {
+    AppLanguage.en: 'to learn skills · 1 per level',
+    AppLanguage.fr: 'pour apprendre · 1 par niveau',
+  },
+  'purse_essence': {
+    AppLanguage.en: 'essence',
+    AppLanguage.fr: 'essence',
+  },
+  'purse_essence_note': {
+    AppLanguage.en: 'to raise a tier · earned with XP',
+    AppLanguage.fr: 'pour monter d\'un rang · gagnée avec l\'XP',
+  },
+  'skills_ready': {
+    AppLanguage.en: '{n} ready to learn',
+    AppLanguage.fr: '{n} à apprendre',
+  },
+  'skills_none_ready': {
+    AppLanguage.en: 'Nothing to learn right now',
+    AppLanguage.fr: 'Rien à apprendre pour l\'instant',
+  },
+  'skills_rules_short': {
+    AppLanguage.en: 'Learn top to bottom · deeper costs more · one Mastery',
+    AppLanguage.fr: 'De haut en bas · plus bas, plus cher · une seule Maîtrise',
+  },
+  'skills_how_it_works': {
+    AppLanguage.en: 'How it works',
+    AppLanguage.fr: 'Comment ça marche',
+  },
+  'cost_pt_one': {
+    AppLanguage.en: '1 pt',
+    AppLanguage.fr: '1 pt',
+  },
+  'cost_pt_many': {
+    AppLanguage.en: '{n} pts',
+    AppLanguage.fr: '{n} pts',
+  },
+  'mastery_cost_label': {
+    AppLanguage.en: 'Mastery · {n} pts',
+    AppLanguage.fr: 'Maîtrise · {n} pts',
+  },
+  'skill_step_of': {
+    AppLanguage.en: '{branch} · step {i} of {n}',
+    AppLanguage.fr: '{branch} · étape {i} sur {n}',
+  },
+  'skill_by_tier': {
+    AppLanguage.en: 'By tier',
+    AppLanguage.fr: 'Par rang',
+  },
+  'tier_base': {
+    AppLanguage.en: 'Base',
+    AppLanguage.fr: 'Base',
+  },
+  'skill_on_die_one': {
+    AppLanguage.en: 'On 1 face of {die}',
+    AppLanguage.fr: 'Sur 1 face de {die}',
+  },
+  'skill_on_die_many': {
+    AppLanguage.en: 'On {n} faces of {die}',
+    AppLanguage.fr: 'Sur {n} faces de {die}',
+  },
+  'skill_not_on_die': {
+    AppLanguage.en: 'Not on your die yet',
+    AppLanguage.fr: 'Pas encore sur votre dé',
+  },
+  'skill_dice_link': {
+    AppLanguage.en: 'Dice',
+    AppLanguage.fr: 'Dés',
+  },
+  'raise_tier_button': {
+    AppLanguage.en: 'Raise to tier {n} · {cost} essence',
+    AppLanguage.fr: 'Monter au rang {n} · {cost} essence',
+  },
+  'raise_tier_short': {
+    AppLanguage.en: '{n} more essence needed; it comes with XP.',
+    AppLanguage.fr: 'Encore {n} d\'essence ; elle vient avec l\'XP.',
+  },
+  'tier_max_label': {
+    AppLanguage.en: 'Highest tier',
+    AppLanguage.fr: 'Rang maximal',
+  },
+  'no_tiers_label': {
+    AppLanguage.en: 'no tiers',
+    AppLanguage.fr: 'sans rang',
+  },
+  'skill_no_tiers_note': {
+    AppLanguage.en: 'Everyone has this one: it has no tiers.',
+    AppLanguage.fr: 'Tout le monde l\'a : elle n\'a pas de rang.',
+  },
+  'compare_with': {
+    AppLanguage.en: 'Compare with…',
+    AppLanguage.fr: 'Comparer avec…',
+  },
+  'compare_pick_title': {
+    AppLanguage.en: 'Compare with',
+    AppLanguage.fr: 'Comparer avec',
+  },
+  'craft_link': {
+    AppLanguage.en: 'Craft…',
+    AppLanguage.fr: 'Fusionner…',
+  },
+  'craft_card_body': {
+    AppLanguage.en: 'Two skills you know make a new one.',
+    AppLanguage.fr: 'Deux compétences connues en font une nouvelle.',
+  },
+  'skills_group_other': {
+    AppLanguage.en: 'Other',
+    AppLanguage.fr: 'Autres',
+  },
+  'skills_reputation_section': {
+    AppLanguage.en: 'Earned by reputation',
+    AppLanguage.fr: 'Selon votre réputation',
+  },
+  'mine_empty': {
+    AppLanguage.en: 'Nothing here yet: learn skills in the Tree.',
+    AppLanguage.fr: 'Rien ici pour l\'instant : apprenez dans l\'Arbre.',
+  },
+  'spells_known': {
+    AppLanguage.en: 'Known',
+    AppLanguage.fr: 'Connus',
+  },
+  'spells_to_find': {
+    AppLanguage.en: 'To find',
+    AppLanguage.fr: 'À trouver',
+  },
+  'summary_damage': {
+    AppLanguage.en: '+{n} damage',
+    AppLanguage.fr: '+{n} dégâts',
+  },
+  'summary_heal': {
+    AppLanguage.en: 'heals {n}',
+    AppLanguage.fr: 'soigne {n}',
+  },
+  'summary_mana': {
+    AppLanguage.en: '+{n} mana',
+    AppLanguage.fr: '+{n} mana',
+  },
+  'fights_at_tier': {
+    AppLanguage.en: 'Fights at tier {n} (Mastery)',
+    AppLanguage.fr: 'Combat au rang {n} (Maîtrise)',
+  },
+  'ship_shield_line': {
+    AppLanguage.en: 'Shield: blocks {n} hit(s) a fight, then recharges',
+    AppLanguage.fr: 'Bouclier : pare {n} coup(s) par combat, puis se recharge',
+  },
+  'shield_short_label': {
+    AppLanguage.en: 'Shield',
+    AppLanguage.fr: 'Bouclier',
+  },
+  'camp_tab_road': {
+    AppLanguage.en: 'Road',
+    AppLanguage.fr: 'Route',
+  },
+  'camp_tab_town': {
+    AppLanguage.en: 'Town',
+    AppLanguage.fr: 'Ville',
+  },
+  'camp_tab_party': {
+    AppLanguage.en: 'Party',
+    AppLanguage.fr: 'Groupe',
+  },
+  'camp_tab_sea': {
+    AppLanguage.en: 'Sea',
+    AppLanguage.fr: 'Mer',
+  },
+  'camp_scene_put_away': {
+    AppLanguage.en: 'Put it away',
+    AppLanguage.fr: 'Ranger',
+  },
+  'next_main_quest_label': {
+    AppLanguage.en: 'Next · main quest',
+    AppLanguage.fr: 'Ensuite · quête principale',
+  },
+  'main_quest_open_label': {
+    AppLanguage.en: 'Main quest · open',
+    AppLanguage.fr: 'Quête principale · ouverte',
+  },
+  'next_visit_place': {
+    AppLanguage.en: 'Visit {place}',
+    AppLanguage.fr: 'Visiter {place}',
+  },
+  'next_visit_place_sub': {
+    AppLanguage.en: 'on the Road, under Places',
+    AppLanguage.fr: 'sur la Route, parmi les Lieux',
+  },
+  'next_explore_sub': {
+    AppLanguage.en: 'places, expeditions and bounties count',
+    AppLanguage.fr: 'lieux, expéditions et primes comptent',
+  },
+  'steps_left_one': {
+    AppLanguage.en: '1 step left',
+    AppLanguage.fr: 'Encore 1 étape',
+  },
+  'steps_left_many': {
+    AppLanguage.en: '{n} steps left',
+    AppLanguage.fr: 'Encore {n} étapes',
+  },
+  'harbour_not_built_title': {
+    AppLanguage.en: 'The Harbour: not built yet',
+    AppLanguage.fr: 'Le Port : pas encore bâti',
+  },
+  'harbour_not_built_body': {
+    AppLanguage.en:
+        'Build it in Town ({cost} gold) to fit guns, plates and a sail to the Eel.',
+    AppLanguage.fr:
+        'Bâtissez-le en Ville ({cost} or) pour armer le Rusty Eel : canons, plaques, voile.',
+  },
+  'harbour_built_body': {
+    AppLanguage.en: 'Refit the Eel: parts for her slots.',
+    AppLanguage.fr: 'Radouber le Rusty Eel : des pièces pour ses emplacements.',
+  },
+  'tut_camp_0': {
+    AppLanguage.en:
+        'Next: what the chapter\'s main quest still needs. Tap a place to find it on the Road.',
+    AppLanguage.fr:
+        'Ensuite : ce qu\'il manque à la quête principale du chapitre. Touchez un lieu pour le trouver sur la Route.',
+  },
+  'tut_camp_6': {
+    AppLanguage.en:
+        'Road: the places you know, expeditions from the shore, and the bounty board.',
+    AppLanguage.fr:
+        'Route : les lieux connus, les expéditions depuis la côte et le tableau des primes.',
+  },
+  'slots_filled': {
+    AppLanguage.en: '{used} of {cap} filled',
+    AppLanguage.fr: '{used} sur {cap} occupés',
+  },
+  'stake_safe_gold': {
+    AppLanguage.en: 'Safe · +{n} gold',
+    AppLanguage.fr: 'Sans risque · +{n} or',
+  },
+  'stake_board': {
+    AppLanguage.en: 'win +{gold} gold · fail −{hull} hull',
+    AppLanguage.fr: 'réussite +{gold} or · échec −{hull} coque',
+  },
+  'stake_nothing': {
+    AppLanguage.en: 'Nothing gained, nothing lost',
+    AppLanguage.fr: 'Rien de gagné, rien de perdu',
+  },
+  'stake_lose_hull': {
+    AppLanguage.en: 'Certain · −{n} hull',
+    AppLanguage.fr: 'Certain · −{n} coque',
+  },
+  'stake_push': {
+    AppLanguage.en: 'win: nothing lost · fail −{n} hull',
+    AppLanguage.fr: 'réussite : rien de perdu · échec −{n} coque',
+  },
+  'stake_shelter': {
+    AppLanguage.en: 'Safe · one more day at sea',
+    AppLanguage.fr: 'Sans risque · un jour de mer de plus',
+  },
+  'stake_repair': {
+    AppLanguage.en: 'Safe · +{n} hull',
+    AppLanguage.fr: 'Sans risque · +{n} coque',
+  },
+  'stake_rest': {
+    AppLanguage.en: 'Safe · +{n} health',
+    AppLanguage.fr: 'Sans risque · +{n} santé',
+  },
+  'stake_pay': {
+    AppLanguage.en: '−{n} gold · they sheer off',
+    AppLanguage.fr: '−{n} or · ils s\'éloignent',
+  },
+  'stake_outrun': {
+    AppLanguage.en: 'win: away clean · fail −{n} hull, then a fight',
+    AppLanguage.fr: 'réussite : on s\'échappe · échec −{n} coque, puis combat',
+  },
+  'stake_hold_still': {
+    AppLanguage.en: 'win: it passes, a sign of it · fail: a fight',
+    AppLanguage.fr: 'réussite : elle passe, un signe d\'elle · échec : combat',
+  },
+  'stake_fight': {
+    AppLanguage.en: 'A sea fight: guns, crew and rooms',
+    AppLanguage.fr: 'Un combat naval : canons, équipage et salles',
+  },
+  'route_today': {
+    AppLanguage.en: 'today',
+    AppLanguage.fr: 'aujourd\'hui',
+  },
+  'route_day_quiet': {
+    AppLanguage.en: 'quiet',
+    AppLanguage.fr: 'calme',
+  },
+  'ships_log_title': {
+    AppLanguage.en: 'SHIP\'S LOG',
+    AppLanguage.fr: 'JOURNAL DE BORD',
+  },
+  'route_from_to': {
+    AppLanguage.en: 'From {from} to {to}',
+    AppLanguage.fr: 'De {from} à {to}',
+  },
   'hub_tab_all': {AppLanguage.en: 'All', AppLanguage.fr: 'Tout'},
   'hub_enter_button': {
     AppLanguage.en: 'Enter {place}',
@@ -4012,17 +4352,17 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Le Rusty Eel les distance',
   },
   'ship_log_outrun_failed': {
-    AppLanguage.en: 'They catch the Eel and rake her: {n} hull',
+    AppLanguage.en: 'They catch the Eel and rake her: −{n} hull',
     AppLanguage.fr:
-        'Ils rattrapent le Rusty Eel et le mitraillent : {n} points de coque',
+        'Ils rattrapent le Rusty Eel et le mitraillent : −{n} points de coque',
   },
   'ship_log_pushed_through': {
     AppLanguage.en: 'Through the storm with nothing lost',
     AppLanguage.fr: 'La tempête est passée sans rien perdre',
   },
   'ship_log_push_failed': {
-    AppLanguage.en: 'The storm punishes the gamble: {n} hull',
-    AppLanguage.fr: 'La tempête punit le pari : {n} points de coque',
+    AppLanguage.en: 'The storm punishes the gamble: −{n} hull',
+    AppLanguage.fr: 'La tempête punit le pari : −{n} points de coque',
   },
   'ship_log_sheltered': {
     AppLanguage.en: 'Sheltered in a cove; the crossing takes a day longer',
@@ -5114,6 +5454,40 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'The map shows every place the story has reached.',
     AppLanguage.fr: "La carte montre chaque lieu atteint par l'histoire.",
   },
+  'tut_journey_title': {
+    AppLanguage.en: 'The Journey',
+    AppLanguage.fr: 'Le Parcours',
+  },
+  'tut_journey_1': {
+    AppLanguage.en:
+        'This is the Journey: the same story as the Story tab, told on a map, so you can see where each way leads before you take it.',
+    AppLanguage.fr:
+        "Voici le Parcours : la même histoire que dans l'onglet Histoire, racontée sur une carte, pour voir où mène chaque chemin avant de le prendre.",
+  },
+  'tut_journey_2': {
+    AppLanguage.en:
+        'The scene you are in. Fold it to give the map more room, or double-tap it to read it full screen.',
+    AppLanguage.fr:
+        'La scène où vous êtes. Repliez-la pour laisser plus de place à la carte, ou touchez-la deux fois pour la lire en plein écran.',
+  },
+  'tut_journey_3': {
+    AppLanguage.en:
+        'Your mark, and one step ahead for every way on. Its icon and colour say what it holds: a fight, a roll, a shop, a rest. Below you, the road you have already walked this chapter.',
+    AppLanguage.fr:
+        'Votre repère, et une étape devant pour chaque chemin. Son icône et sa couleur disent ce qu’elle réserve : un combat, un jet, une boutique, un repos. Sous vous, la route déjà parcourue ce chapitre.',
+  },
+  'tut_journey_4': {
+    AppLanguage.en:
+        'Tap a step to see what it costs or brings. Go, or a second tap on the step, walks the party there.',
+    AppLanguage.fr:
+        'Touchez une étape pour voir ce qu’elle coûte ou rapporte. « Partir », ou un second toucher sur l’étape, y mène le groupe.',
+  },
+  'tut_journey_5': {
+    AppLanguage.en:
+        'Story and Journey are two views of the same tale: switch between them whenever you like.',
+    AppLanguage.fr:
+        'Histoire et Parcours sont deux vues du même récit : passez de l’une à l’autre quand vous voulez.',
+  },
   'tut_story_8': {
     AppLanguage.en:
         'Your character, your camp and everything else live down here. A dot means something is waiting for you.',
@@ -5122,9 +5496,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_5': {
     AppLanguage.en:
-        'Sail from here: pick a port on the chart. Each port has its own expeditions.',
+        'Sea: the Rusty Eel, the harbour, and the chart. Sail to a port for its expeditions.',
     AppLanguage.fr:
-        "Partez d'ici : choisissez un port sur la carte. Chaque port a ses propres expéditions.",
+        'Mer : le Rusty Eel, le port et la carte. Faites voile vers un port pour ses expéditions.',
   },
   'tut_character_1': {
     AppLanguage.en: 'This is you: level and experience, health, mana and gold.',
@@ -5150,9 +5524,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_1': {
     AppLanguage.en:
-        'Your cliff town. Every house you build climbs the cliff. Scroll inside it to see the top.',
+        'Town: your cliff town. Every house you build climbs the cliff, and its shops open here.',
     AppLanguage.fr:
-        'Votre ville sur la falaise. Chaque maison construite grimpe la falaise. Faites défiler pour voir le sommet.',
+        'Ville : votre ville sur la falaise. Chaque maison bâtie grimpe la falaise, et ses boutiques ouvrent ici.',
   },
   'tut_camp_2': {
     AppLanguage.en:
@@ -5168,9 +5542,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_camp_4': {
     AppLanguage.en:
-        'Companions you recruit rest here. Choose who fights at your side.',
+        'Party: companions you recruit rest here. Choose who fights at your side.',
     AppLanguage.fr:
-        'Les compagnons recrutés se reposent ici. Choisissez qui combat à vos côtés.',
+        'Groupe : vos compagnons se reposent ici. Choisissez qui combat à vos côtés.',
   },
   'tut_other_1': {
     AppLanguage.en: 'Save your game here, or load another one.',
@@ -5212,29 +5586,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_skills_1': {
     AppLanguage.en:
-        'Skill points unlock new skills. Essence upgrades the ones you have.',
+        'Skill points learn new skills; you get one each level. Essence, earned with XP, raises the skills you know a tier.',
     AppLanguage.fr:
-        'Les points de compétence débloquent de nouvelles compétences. L’essence améliore celles que vous avez.',
+        'Les points de compétence apprennent de nouvelles compétences ; vous en gagnez un par niveau. L\'essence, gagnée avec l\'XP, fait monter d\'un rang celles que vous connaissez.',
   },
   'tut_skills_2': {
     AppLanguage.en:
-        'Each branch is learned from the top down. Learn a whole branch to master it; its skills then fight a tier higher. Tap a skill to see what it does.',
+        'Each branch is learned from the top down; a gold ring is known, a lit one is ready. Tap any skill to see what it does, learn it or raise it.',
     AppLanguage.fr:
-        "Chaque branche s'apprend de haut en bas. Apprenez toute une branche pour la maîtriser : ses compétences combattent alors un rang plus haut. Touchez une compétence pour voir ce qu'elle fait.",
+        'Chaque branche s\'apprend de haut en bas ; un anneau doré est acquis, un anneau lumineux est prêt. Touchez une compétence pour voir ce qu\'elle fait, l\'apprendre ou la monter.',
   },
   'tut_skills_5': {
     AppLanguage.en:
-        "See your class's skill tree, or every skill as a list with filters.",
+        'Tree to learn, My skills to raise tiers and craft, Spells for your magic.',
     AppLanguage.fr:
-        "Voyez l'arbre de compétences de votre classe, ou toutes les compétences en liste avec filtres.",
+        'Arbre pour apprendre, Mes compétences pour monter les rangs et fusionner, Sorts pour votre magie.',
   },
   'tut_skills_3': {
-    AppLanguage.en: 'Fuse two skills you know into a stronger one.',
-    AppLanguage.fr: 'Fusionnez deux compétences connues en une plus puissante.',
-  },
-  'tut_skills_4': {
-    AppLanguage.en: 'Compare two skills side by side.',
-    AppLanguage.fr: 'Comparez deux compétences côte à côte.',
+    AppLanguage.en:
+        'In My skills, raise tiers with essence, and fuse two skills you know into a new one.',
+    AppLanguage.fr:
+        'Dans Mes compétences, montez les rangs avec l\'essence et fusionnez deux compétences connues en une nouvelle.',
   },
   'tut_dice_1': {
     AppLanguage.en: 'Pick the die you want to set up.',
@@ -6203,12 +6575,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         'Touchez une salle pour tirer, ou maintenez-la pour viser : arrêtez le curseur au milieu pour un critique impossible à esquiver ; aux bords, le tir part à côté. Les réglages peuvent ralentir le curseur ou désactiver la visée.',
   },
-  'tip_ship_ammo': {
-    AppLanguage.en:
-        'Change the shot: chain tears their helm, grape cuts down their crew so they repair less, heated sets fires. Each does less hull than round shot.',
-    AppLanguage.fr:
-        'Changez de munition : le boulet ramé arrache leur barre, la mitraille fauche leur équipage pour qu’il répare moins, le boulet chauffé met le feu. Chacune fait moins de dégâts à la coque que le boulet rond.',
-  },
   'tip_ship_orders': {
     AppLanguage.en:
         'Each hand aboard can give one order a battle, from the crew sheet: a brace, a blessing, a critical shot, and more.',
@@ -6677,26 +7043,6 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'ship_weapon_armed_label': {
     AppLanguage.en: 'armed',
     AppLanguage.fr: 'armée',
-  },
-  'ship_ammo_label': {
-    AppLanguage.en: 'Shot:',
-    AppLanguage.fr: 'Munition :',
-  },
-  'ship_ammo_round': {
-    AppLanguage.en: 'Round',
-    AppLanguage.fr: 'Boulet',
-  },
-  'ship_ammo_chain': {
-    AppLanguage.en: 'Chain',
-    AppLanguage.fr: 'Ramé',
-  },
-  'ship_ammo_grape': {
-    AppLanguage.en: 'Grape',
-    AppLanguage.fr: 'Mitraille',
-  },
-  'ship_ammo_heated': {
-    AppLanguage.en: 'Heated',
-    AppLanguage.fr: 'Rouge',
   },
   'ship_ammo_round_hint': {
     AppLanguage.en: 'Round shot: the weapon as it is.',

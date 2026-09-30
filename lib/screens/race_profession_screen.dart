@@ -18,7 +18,7 @@ import 'origin_stories_screen.dart';
 
 /// Formats a skill id like "human_resolve" into "Human Resolve" — skills
 /// have no separate display-name field, only an id (matches how
-/// skills_screen.dart shows them).
+/// skills/skills_screen.dart shows them).
 String _formatSkillName(String id) => id
     .split('_')
     .where((w) => w.isNotEmpty)
