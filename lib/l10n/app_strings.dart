@@ -5757,21 +5757,21 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_shipBattle_4': {
     AppLanguage.en:
-        'Close in or pull away, and give each hand’s one order from the crew sheet. Each gun fires the shot it was fitted with at the Harbor. Side by side with their rail open, you can board them.',
+        'Close in or pull away, and give each hand’s one order. Each gun fires the shot it was fitted with at the Harbor. Side by side with their rail open, you can board them.',
     AppLanguage.fr:
-        'Approchez ou éloignez-vous, et donnez l’ordre unique de chaque personne depuis la fiche d’équipage. Chaque arme tire la munition avec laquelle le port l’a montée. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
+        'Approchez ou éloignez-vous, et donnez l’ordre unique de chaque personne. Chaque arme tire la munition avec laquelle le port l’a montée. Bord à bord, leur bastingage ouvert, vous pouvez les aborder.',
   },
   'tut_shipBattle_5': {
     AppLanguage.en:
-        'Then end the turn and they answer. Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left.',
+        'Under its name the enemy shows its next move, unless the fog hides it. Once a turn, the bolt pushes one of your rooms past its limit, at a risk to that room. Then end the turn and they answer.',
     AppLanguage.fr:
-        'Terminez ensuite le tour, et l’ennemi répond. Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ.',
+        'Sous son nom, l’ennemi montre son prochain coup, sauf si le brouillard le cache. Une fois par tour, l’éclair force une de vos salles au-delà de ses limites, au risque de l’abîmer. Terminez ensuite le tour, et l’ennemi répond.',
   },
   'tut_shipBattle_6': {
     AppLanguage.en:
-        'The detailed tips are back: they will show again, one at a time, in your next ship battle.',
+        'Sink them or take their deck to win; if the Rusty Eel’s hull gives out, she limps back to the port she left. The detailed tips will show again, one at a time, in your next ship battle.',
     AppLanguage.fr:
-        'Les conseils détaillés sont de retour : ils s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
+        'Coulez-le ou prenez son pont pour gagner ; si la coque du Rusty Eel cède, il regagne tant bien que mal son port de départ. Les conseils détaillés s’afficheront de nouveau, un par un, lors de votre prochaine bataille navale.',
   },
   'tut_expedition_1': {
     AppLanguage.en:
@@ -8003,6 +8003,305 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'tether_label': {
     AppLanguage.en: 'holds a beast {n} rounds',
     AppLanguage.fr: 'retient une bête {n} tours',
+  },
+  // --- v1.190: the enemy's intents -----------------------------------------
+  'ship_intent_volley': {
+    AppLanguage.en: 'Aiming a volley',
+    AppLanguage.fr: 'Prépare une bordée',
+  },
+  'ship_intent_volley_hint': {
+    AppLanguage.en:
+        'Every gun it has ready and in reach fires this round. Keep a shield up, or brace.',
+    AppLanguage.fr:
+        'Toutes ses pièces prêtes et à portée tirent ce tour-ci. Gardez un bouclier levé, ou préparez-vous à encaisser.',
+  },
+  'ship_intent_closeIn': {
+    AppLanguage.en: 'Closing in',
+    AppLanguage.fr: 'Se rapproche',
+  },
+  'ship_intent_closeIn_hint': {
+    AppLanguage.en:
+        'It steers one range closer, then fires. Pull away to keep your distance.',
+    AppLanguage.fr:
+        'L\'ennemi se rapproche d\'une portée, puis tire. Éloignez-vous pour garder la distance.',
+  },
+  'ship_intent_pullAway': {
+    AppLanguage.en: 'Pulling away',
+    AppLanguage.fr: 'S\'éloigne',
+  },
+  'ship_intent_pullAway_hint': {
+    AppLanguage.en:
+        'It steers one range farther off, then fires. Close in to stay on it.',
+    AppLanguage.fr:
+        'L\'ennemi s\'éloigne d\'une portée, puis tire. Rapprochez-vous pour ne pas le lâcher.',
+  },
+  'ship_intent_ram': {
+    AppLanguage.en: 'Coming about to ram',
+    AppLanguage.fr: 'Vire pour éperonner',
+  },
+  'ship_intent_ram_hint': {
+    AppLanguage.en:
+        'Side by side, it drives its prow into you: hull through any shield, and a leak. Pull away before it comes, or brace.',
+    AppLanguage.fr:
+        'Bord à bord, l\'ennemi vous enfonce sa proue : de la coque malgré les boucliers, et une voie d\'eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
+  },
+  'ship_intent_board': {
+    AppLanguage.en: 'Crew massing at the rail',
+    AppLanguage.fr: 'L\'équipage se masse au bastingage',
+  },
+  'ship_intent_board_hint': {
+    AppLanguage.en:
+        'After its volley its crew comes over your rail if the rail is open. Keep a shield up, pull away, or put a hand in the hold.',
+    AppLanguage.fr:
+        'Après sa bordée, son équipage passe votre bastingage s\'il est ouvert. Gardez un bouclier levé, éloignez-vous, ou postez quelqu\'un dans la cale.',
+  },
+  'ship_intent_mend': {
+    AppLanguage.en: 'All hands to the pumps',
+    AppLanguage.fr: 'Tout le monde aux pompes',
+  },
+  'ship_intent_mend_hint': {
+    AppLanguage.en:
+        'Its crew mends instead of fighting: its guns hold fire this round and come back charged. Hit it hard now.',
+    AppLanguage.fr:
+        'Son équipage répare au lieu de se battre : ses pièces se taisent ce tour-ci et reviennent chargées. Frappez fort maintenant.',
+  },
+  'ship_intent_brace': {
+    AppLanguage.en: 'Braced for your volley',
+    AppLanguage.fr: 'Paré à encaisser votre bordée',
+  },
+  'ship_intent_brace_hint': {
+    AppLanguage.en:
+        'This turn your shots take half the hull they would (its rooms as ever), and it holds its own fire. Repair, push a room or manoeuvre, or aim at its rooms.',
+    AppLanguage.fr:
+        'Ce tour-ci, vos tirs ne lui prennent que la moitié de la coque (ses salles, elles, comme d\'habitude), et l\'ennemi retient son feu. Réparez, forcez une salle ou manœuvrez, ou visez ses salles.',
+  },
+  'ship_intent_flee': {
+    AppLanguage.en: 'Making sail to run',
+    AppLanguage.fr: 'Hisse les voiles pour fuir',
+  },
+  'ship_intent_flee_hint': {
+    AppLanguage.en:
+        'It runs for it: one range farther off, and gone if it is already far. Close in to keep it.',
+    AppLanguage.fr:
+        'L\'ennemi prend la fuite : une portée plus loin, et hors de vue s\'il est déjà loin. Rapprochez-vous pour le retenir.',
+  },
+  'ship_intent_dive': {
+    AppLanguage.en: 'Going under',
+    AppLanguage.fr: 'Plonge',
+  },
+  'ship_intent_dive_hint': {
+    AppLanguage.en:
+        'It goes under and comes up beneath you: hull through any shield, and a leak. Brace.',
+    AppLanguage.fr:
+        'La bête plonge et remonte sous vous : de la coque malgré les boucliers, et une voie d\'eau. Préparez-vous à encaisser.',
+  },
+  'beast_ship_intent_volley': {
+    AppLanguage.en: 'About to strike',
+    AppLanguage.fr: 'S\'apprête à frapper',
+  },
+  'beast_ship_intent_volley_hint': {
+    AppLanguage.en:
+        'Every blow it has ready and in reach lands this round. Keep a shield up, or brace.',
+    AppLanguage.fr:
+        'Tous ses coups prêts et à portée tombent ce tour-ci. Gardez un bouclier levé, ou préparez-vous à encaisser.',
+  },
+  'beast_ship_intent_flee': {
+    AppLanguage.en: 'Turning for the deep',
+    AppLanguage.fr: 'Part vers les fonds',
+  },
+  'beast_ship_intent_flee_hint': {
+    AppLanguage.en:
+        'It is gone at its next turn unless a harpoon holds it or its fins are torn.',
+    AppLanguage.fr:
+        'La bête disparaît à son prochain tour, sauf si un harpon la retient ou si ses nageoires sont déchirées.',
+  },
+  'beast_ship_intent_ram': {
+    AppLanguage.en: 'Coming to ram',
+    AppLanguage.fr: 'Fonce pour éperonner',
+  },
+  'beast_ship_intent_ram_hint': {
+    AppLanguage.en:
+        'Side by side, it drives into you: hull through any shield, and a leak. Pull away before it comes, or brace.',
+    AppLanguage.fr:
+        'Bord à bord, la bête vous percute : de la coque malgré les boucliers, et une voie d\'eau. Éloignez-vous avant, ou préparez-vous à encaisser.',
+  },
+  'ship_intent_hidden': {
+    AppLanguage.en: 'Hidden by the fog',
+    AppLanguage.fr: 'Caché par le brouillard',
+  },
+  'ship_intent_hidden_hint': {
+    AppLanguage.en: 'The fog hides what the enemy means to do next.',
+    AppLanguage.fr: 'Le brouillard cache ce que l\'ennemi prépare.',
+  },
+  'tip_ship_intent': {
+    AppLanguage.en:
+        'Read the enemy: its next move shows under its name. The fog hides it.',
+    AppLanguage.fr:
+        'Lisez l\'ennemi : son prochain coup s\'affiche sous son nom. Le brouillard le cache.',
+  },
+  'ship_log_intent_helm_slow': {
+    AppLanguage.en: 'The {ship}\'s helm is slow to answer',
+    AppLanguage.fr: 'La barre de {ship} répond mal',
+  },
+  'ship_log_intent_ram_missed': {
+    AppLanguage.en: 'The {ship}\'s prow cuts empty water',
+    AppLanguage.fr: 'La proue de {ship} ne fend que l\'eau',
+  },
+  'ship_log_intent_board_foiled': {
+    AppLanguage.en:
+        'The {ship}\'s boarders are left at the rail: too far to jump',
+    AppLanguage.fr:
+        'Les abordeurs de {ship} restent au bastingage : trop loin pour sauter',
+  },
+  'ship_log_intent_board_held': {
+    AppLanguage.en: 'The {ship}\'s boarders hang back: your rail holds',
+    AppLanguage.fr: 'Les abordeurs de {ship} hésitent : votre bastingage tient',
+  },
+  'ship_log_intent_mend': {
+    AppLanguage.en:
+        'Every hand aboard the {ship} runs to the pumps and the fires',
+    AppLanguage.fr: 'Tout l\'équipage de {ship} court aux pompes et aux feux',
+  },
+  'ship_log_intent_brace': {
+    AppLanguage.en: 'The {ship} braces for your volley: half the hull',
+    AppLanguage.fr:
+        '{ship} encaisse votre bordée : la moitié seulement de la coque',
+  },
+  // --- v1.190: push a room past its limit ----------------------------------
+  'ship_push_button': {
+    AppLanguage.en: 'Push a room',
+    AppLanguage.fr: 'Forcer une salle',
+  },
+  'ship_push_title': {
+    AppLanguage.en: 'Push a room past its limit',
+    AppLanguage.fr: 'Forcer une salle au-delà de ses limites',
+  },
+  'ship_push_once_label': {
+    AppLanguage.en:
+        'Once a turn. Every push makes the next one likelier to strain.',
+    AppLanguage.fr:
+        'Une fois par tour. Chaque salle forcée rend la suivante plus risquée.',
+  },
+  'ship_push_guns_hint': {
+    AppLanguage.en: 'Push the guns: every gun a step closer to firing.',
+    AppLanguage.fr: 'Forcer les canons : chaque pièce gagne un cran.',
+  },
+  'ship_push_helm_hint': {
+    AppLanguage.en: 'Push the helm: harder to hit this round.',
+    AppLanguage.fr: 'Forcer la barre : plus dur à toucher ce tour-ci.',
+  },
+  'ship_push_bulwark_hint': {
+    AppLanguage.en: 'Push the bulwark: one more shield layer now.',
+    AppLanguage.fr:
+        'Forcer le pavois : une couche de bouclier de plus tout de suite.',
+  },
+  'ship_push_hold_hint': {
+    AppLanguage.en: 'Push the hold: bail a leak and patch {n} hull.',
+    AppLanguage.fr:
+        'Forcer la cale : écoper une voie d\'eau et colmater {n} de coque.',
+  },
+  'ship_push_strain_label': {
+    AppLanguage.en: 'Strain {n}%',
+    AppLanguage.fr: 'Tension {n} %',
+  },
+  'ship_push_strain_hint': {
+    AppLanguage.en: 'Strain {n}%: the room may lose a pip, or catch fire.',
+    AppLanguage.fr:
+        'Tension {n} % : la salle peut perdre un cran, ou prendre feu.',
+  },
+  'ship_push_flash': {
+    AppLanguage.en: 'Pushed',
+    AppLanguage.fr: 'À fond',
+  },
+  'ship_push_strain_flash': {
+    AppLanguage.en: 'Strain!',
+    AppLanguage.fr: 'Tension !',
+  },
+  'tip_ship_push': {
+    AppLanguage.en:
+        'Once a turn, the bolt pushes one of the Eel\'s rooms past its limit: the guns charge, the helm slips, the bulwark shields, the hold patches. Each push risks the room, more every time.',
+    AppLanguage.fr:
+        'Une fois par tour, l\'éclair force une salle de l\'Eel au-delà de ses limites : les canons chargent, la barre esquive, le pavois protège, la cale colmate. Chaque fois, la salle risque davantage de céder.',
+  },
+  'ship_log_push_guns': {
+    AppLanguage.en: 'Guns pushed past their limit: every gun a step closer',
+    AppLanguage.fr: 'Canons forcés : chaque pièce gagne un cran',
+  },
+  'ship_log_push_helm': {
+    AppLanguage.en: 'Helm pushed past its limit: +{n}% evasion this round',
+    AppLanguage.fr: 'Barre forcée : +{n} % d\'esquive ce tour-ci',
+  },
+  'ship_log_push_bulwark': {
+    AppLanguage.en: 'Bulwark pushed past its limit: one more shield layer',
+    AppLanguage.fr: 'Pavois forcé : une couche de bouclier de plus',
+  },
+  'ship_log_push_hold': {
+    AppLanguage.en:
+        'Hold pushed past its limit: the pumps and the patches, +{n}',
+    AppLanguage.fr: 'Cale forcée : les pompes et les rustines, +{n}',
+  },
+  'ship_log_push_strain': {
+    AppLanguage.en: 'The strain tells: a pip lost in the {room}',
+    AppLanguage.fr: 'La tension se paie : un cran perdu pour {room}',
+  },
+  'ship_log_push_strain_fire': {
+    AppLanguage.en:
+        'The strain tells: a pip lost in the {room}, and it catches fire!',
+    AppLanguage.fr:
+        'La tension se paie : un cran perdu pour {room}, et le feu y prend !',
+  },
+  // --- v1.190: the battle gets worse over time ------------------------------
+  'ship_log_fire_spreads': {
+    AppLanguage.en: 'The fire spreads to the {ship}\'s {room}!',
+    AppLanguage.fr: 'Le feu gagne {room} de {ship} !',
+  },
+  'ship_heavy_label': {
+    AppLanguage.en: '−{n}%',
+    AppLanguage.fr: '−{n} %',
+  },
+  'ship_heavy_hint': {
+    AppLanguage.en:
+        'Heavy with water: −{n}%. Each open leak costs this ship evasion until it is bailed.',
+    AppLanguage.fr:
+        'De l\'eau à bord : −{n} %. Chaque voie d\'eau ouverte coûte de l\'esquive à ce navire jusqu\'à ce qu\'on l\'écope.',
+  },
+  'ship_weather_squall_coming': {
+    AppLanguage.en: 'Squall coming',
+    AppLanguage.fr: 'Grain en approche',
+  },
+  'ship_weather_squall_coming_hint': {
+    AppLanguage.en:
+        'A squall builds out of the crosswind: next round the rain puts every fire out and starts none.',
+    AppLanguage.fr:
+        'Un grain se forme dans le vent de travers : au prochain tour, la pluie éteint tous les feux et n\'en allume aucun.',
+  },
+  'ship_sail_coming_label': {
+    AppLanguage.en: 'Sail on the horizon: {n}',
+    AppLanguage.fr: 'Voile à l\'horizon : {n}',
+  },
+  'ship_sail_coming_hint': {
+    AppLanguage.en:
+        'A friend of theirs: in {n} rounds its guns join the fight, at medium and long range. Finish this before it comes, or fight side by side.',
+    AppLanguage.fr:
+        'Un renfort de l\'ennemi : dans {n} tours, ses canons entrent dans la bataille, à moyenne et longue portée. Finissez-en avant, ou battez-vous bord à bord.',
+  },
+  'ship_consort_label': {
+    AppLanguage.en: 'Consort',
+    AppLanguage.fr: 'Renfort',
+  },
+  'ship_consort_hint': {
+    AppLanguage.en:
+        'Its friend has come up: its guns fire at medium and long range. Side by side, only the ship itself can reach you.',
+    AppLanguage.fr:
+        'Son renfort est arrivé : ses canons tirent à moyenne et longue portée. Bord à bord, seul le navire lui-même vous atteint.',
+  },
+  'ship_log_sail_sighted': {
+    AppLanguage.en: 'A sail on the horizon, flying the {ship}\'s colours',
+    AppLanguage.fr: 'Une voile à l\'horizon, aux couleurs de {ship}',
+  },
+  'ship_log_sail_arrives': {
+    AppLanguage.en: 'The {ship}\'s consort comes up and runs out her guns',
+    AppLanguage.fr: 'Le renfort de {ship} arrive et met ses canons en batterie',
   },
 };
 

@@ -59,14 +59,17 @@ class ShipBattleOutcome {
 /// ships broadside to broadside on the waters of the voyage, four rooms
 /// along each deck, the gap between them the range, the weather drifting
 /// over them. The enemy's name, hull and weapons with their charge sit
-/// above the sea; the Eel's below it, then the weather (and the next
+/// above the sea, and under its name what it means to do next (its
+/// intent, which the fog hides) and any friend's sail on the horizon;
+/// the Eel's below it, then the weather (and the next
 /// round's), the range and the helm's maneuvers, and the log; the shot
 /// loaded, her crew at their stations and their orders, and the enemy's
 /// aim marked on her rooms when a foresight sail is aboard and the fog
 /// allows. A turn: crew work and weapons charge; the player fires each
 /// ready weapon at a room of the enemy's ship (tap the weapon, then the
 /// room, or hold the room to take aim), moves the crew (tap a member, then
-/// a room), may close in or pull away, may give an order, then ends the
+/// a room), may close in or pull away, may give an order, may push one
+/// room past its limit (the bolt in the dock), then ends the
 /// turn; the enemy fires back, fires burn, leaks flood and bulwarks come
 /// back. Ships side by side with the enemy's rail open can be boarded
 /// and the enemy's crew fought on the dice (a win takes the ship); the
@@ -279,6 +282,153 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     });
   }
 
+  // --- Push (v1.190) --------------------------------------------------------
+
+  /// True when a room can be pushed now: the player's turn, once a turn.
+  bool get _canPushNow => !_busy && !_over && _battle.canPushAny;
+
+  /// Pushes [room] past its limit (see ShipBattle.pushRoom): the room
+  /// flashes what it did, or the strain it took.
+  void _push(ShipRoom room) {
+    if (_busy || _over || !_battle.canPush(room)) return;
+    final lang = ref.read(appLanguageProvider);
+    final logged = _battle.log.length;
+    setState(() {
+      _battle.pushRoom(room);
+      final keys = {for (final l in _battle.log.sublist(logged)) l.key};
+      final strained = keys.contains('ship_log_push_strain') ||
+          keys.contains('ship_log_push_strain_fire');
+      _flashText(true, room,
+          trFor(lang, strained ? 'ship_push_strain_flash' : 'ship_push_flash'));
+      if (!_still) {
+        _fx.play(
+            room == ShipRoom.bulwark ? ShipFxKind.shield : ShipFxKind.sparkles,
+            _roomKeys[(true, room)]!);
+        if (keys.contains('ship_log_push_strain_fire')) {
+          _fx.play(ShipFxKind.ignite, _roomKeys[(true, room)]!, delay: 0.2);
+        } else if (strained) {
+          _fx.play(ShipFxKind.splinters, _roomKeys[(true, room)]!, delay: 0.2);
+        }
+      }
+      // A gun the push brought to readiness is ready to fire.
+      _rearm();
+      _armedWeaponId ??= _firstReadyWeaponId();
+    });
+  }
+
+  /// The four rooms of the Eel to push, each with what it does and the
+  /// strain it risks; a tap pushes and closes the sheet.
+  Future<void> _openPushSheet() {
+    final lang = ref.read(appLanguageProvider);
+    return showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        final theme = Theme.of(sheetContext);
+        final ink = InkColors.of(sheetContext);
+        Widget row(ShipRoom room) {
+          final can = _battle.canPush(room);
+          final strain = _battle.pushStrainChance(room);
+          final risky = strain >= 50;
+          final color = _roomColor(sheetContext, room);
+          return Opacity(
+            opacity: can ? 1 : 0.45,
+            child: InkWell(
+              key: Key('ship_push_${room.name}'),
+              borderRadius: BorderRadius.circular(8),
+              onTap: can
+                  ? () {
+                      Navigator.of(sheetContext).pop();
+                      _push(room);
+                    }
+                  : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 34,
+                      height: 34,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: color.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: color),
+                      ),
+                      child: Icon(_roomIcon(room), size: 18, color: color),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(trFor(lang, 'ship_room_${room.name}_title'),
+                              style: theme.textTheme.titleSmall),
+                          Text(
+                            trFor(lang, 'ship_push_${room.name}_hint')
+                                .replaceAll('{n}', '$pushHullPatch'),
+                            style: theme.textTheme.bodySmall
+                                ?.copyWith(color: ink.ash),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Tooltip(
+                      message: trFor(lang, 'ship_push_strain_hint')
+                          .replaceAll('{n}', '$strain'),
+                      child: Text(
+                        trFor(lang, 'ship_push_strain_label')
+                            .replaceAll('{n}', '$strain'),
+                        key: Key('ship_push_strain_${room.name}'),
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: risky ? ink.blood : ink.ash,
+                          fontWeight: risky ? FontWeight.bold : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+
+        return SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.8),
+            child: ListView(
+              key: const Key('ship_push_sheet'),
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.bolt, color: ink.ember, size: 24),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(trFor(lang, 'ship_push_title'),
+                          style: const TextStyle(
+                              fontFamily: InkFonts.display, fontSize: 20)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(trFor(lang, 'ship_push_once_label'),
+                    style:
+                        theme.textTheme.labelSmall?.copyWith(color: ink.ash)),
+                const SizedBox(height: 6),
+                for (final room in ShipRoom.values) row(room),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -367,9 +517,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
   /// The first rule of the battle on screen now that the player has not
   /// had explained yet (see [TutorialSettings.hasSeenTip]): the range and
   /// the enemy's habit at once, the weather when it turns, aimed shots
-  /// with the first ready gun, shot from the second turn, orders, fire,
-  /// a leak, an open rail, the sea's surprises. One at a time; none when
-  /// tutorials are off.
+  /// with the first ready gun, the enemy's intent the first time it shows
+  /// more than a volley, the push, orders, fire, a leak, an open rail, the
+  /// sea's surprises. One at a time; none when tutorials are off.
   String? _pendingTip(TutorialSettings tutorial, AimedShots aimed) {
     if (!tutorial.loaded || !tutorial.enabled || _over) return null;
     if (!ref.read(tutorialAutoShowProvider)) return null;
@@ -384,6 +534,12 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
         'ship_habit_${widget.habit.name}',
       if (b.rules.weather && b.weather != SeaWeather.calm) 'ship_weather',
       if (aimed != AimedShots.off && b.anyShotReady) 'ship_aim',
+      if (b.rules.intents &&
+          b.intentVisible &&
+          b.intent != ShipIntent.volley &&
+          !_busy)
+        'ship_intent',
+      if (b.rules.push && b.canPushAny && !_busy) 'ship_push',
       if (b.crew.any(b.canOrder)) 'ship_orders',
       if (b.player.rooms.values.any((r) => r.onFire)) 'ship_fire',
       if (b.player.leaks > 0) 'ship_leak',
@@ -877,6 +1033,16 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           _fx.shot(_roomKeys[(false, ShipRoom.bulwark)]!,
               _roomKeys[(true, ShipRoom.bulwark)]!, ShipShotKind.chain,
               arrival: const [ShipFxKind.ring]);
+        case 'ship_log_fire_spreads':
+          final room = line.room;
+          if (room != null) {
+            _fx.play(ShipFxKind.ignite,
+                _roomKeys[(line.side == BattleSide.eel, room)]!);
+          }
+        case 'ship_log_intent_ram_missed':
+          _fx.play(ShipFxKind.splash, _seaKey);
+        case 'ship_log_sail_arrives':
+          _fx.play(ShipFxKind.wave, _seaKey);
       }
     }
   }
@@ -953,6 +1119,14 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       });
       _fxTimers.add(timer);
     }
+    _showFlash(key, flash);
+  }
+
+  /// A few words rising off a room of the Eel ([onEel]) or the enemy.
+  void _flashText(bool onEel, ShipRoom room, String text) =>
+      _showFlash((onEel, room), (text, ++_flashCount));
+
+  void _showFlash((bool, ShipRoom) key, (String, int) flash) {
     _flashes[key] = flash;
     _flashTimers[key]?.cancel();
     _flashTimers[key] = Timer(const Duration(milliseconds: 1450), () {
@@ -1025,7 +1199,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                     color: ink.blood,
                     habit: widget.habit,
                   ),
-                  if (widget.beast != null) _buildBeastStatus(lang),
+                  _buildEnemyStatus(lang),
                 ],
               ),
             );
@@ -1195,9 +1369,24 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                       icon: const Icon(Icons.groups_2_outlined, size: 20),
                     ),
                     const SizedBox(width: 8),
-                    if (canBoard)
-                      Flexible(
+                    // Push a room past its limit, once a turn.
+                    if (widget.rules.push) ...[
+                      IconButton.outlined(
+                        key: const Key('ship_push_button'),
+                        tooltip: trFor(lang, 'ship_push_button'),
+                        onPressed: _canPushNow ? _openPushSheet : null,
+                        icon: Icon(Icons.bolt,
+                            size: 20, color: _canPushNow ? ink.ember : null),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    // Boarding takes what room the row has left (a
+                    // phone's is narrow); else End turn keeps to the
+                    // corner.
+                    if (canBoard) ...[
+                      Expanded(
                         child: OutlinedButton.icon(
+                          key: const Key('ship_board_button'),
                           style: OutlinedButton.styleFrom(
                               minimumSize: const Size(0, 44),
                               padding:
@@ -1208,7 +1397,9 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                               overflow: TextOverflow.ellipsis),
                         ),
                       ),
-                    const Spacer(),
+                      const SizedBox(width: 8),
+                    ] else
+                      const Spacer(),
                     // End turn: compact, at the thumb's corner.
                     FilledButton.icon(
                       key: const Key('ship_end_turn'),
@@ -1332,11 +1523,15 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
       );
 
   /// This round's weather and the next, in a chip in the sea's corner;
-  /// a wreck adrift beside it.
+  /// a wreck adrift beside it. A squall building for the next round is
+  /// called out in words (the weather keeps a trend since v1.190: it
+  /// builds out of a crosswind).
   Widget _weatherChip(AppLanguage lang) {
     final theme = Theme.of(context);
     final ink = InkColors.of(context);
     final small = theme.textTheme.labelSmall;
+    final squallComing = _battle.nextWeather == SeaWeather.squall &&
+        _battle.weather != SeaWeather.squall;
     return Tooltip(
       message: trFor(lang, 'ship_weather_${_battle.weather.name}_hint'),
       child: _seaChip(Row(
@@ -1348,13 +1543,30 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
           Text(trFor(lang, 'ship_weather_${_battle.weather.name}'),
               style: small?.copyWith(color: Colors.white)),
           const SizedBox(width: 6),
-          Text('${trFor(lang, 'ship_weather_next_label')} ',
-              style: small?.copyWith(color: ink.ash)),
-          Tooltip(
-            message: trFor(lang, 'ship_weather_${_battle.nextWeather.name}'),
-            child: Icon(_weatherIcon(_battle.nextWeather),
-                size: 13, color: ink.ash),
-          ),
+          if (squallComing)
+            Tooltip(
+              message: trFor(lang, 'ship_weather_squall_coming_hint'),
+              child: Row(
+                key: const Key('ship_squall_coming'),
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${trFor(lang, 'ship_weather_squall_coming')} ',
+                      style: small?.copyWith(
+                          color: ink.ember, fontWeight: FontWeight.bold)),
+                  Icon(_weatherIcon(SeaWeather.squall),
+                      size: 13, color: ink.ember),
+                ],
+              ),
+            )
+          else ...[
+            Text('${trFor(lang, 'ship_weather_next_label')} ',
+                style: small?.copyWith(color: ink.ash)),
+            Tooltip(
+              message: trFor(lang, 'ship_weather_${_battle.nextWeather.name}'),
+              child: Icon(_weatherIcon(_battle.nextWeather),
+                  size: 13, color: ink.ash),
+            ),
+          ],
           if (_battle.wreck) ...[
             const SizedBox(width: 6),
             Tooltip(
@@ -1449,76 +1661,167 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     );
   }
 
-  /// What the beast is about to do, under its name: held on the line,
-  /// when it dives next, whether it is turning for the deep, what it heals
-  /// a round, and the crew's edge against it.
-  Widget _buildBeastStatus(AppLanguage lang) {
-    final beast = widget.beast!;
+  /// What the enemy is about to do and what is coming its way, in a line
+  /// under its name: its intent (see [_intentChip]), a friend's sail on
+  /// the horizon or its consort come up, and for a beast what it shows
+  /// besides (see [_beastChips]).
+  Widget _buildEnemyStatus(AppLanguage lang) {
     final b = _battle;
-    final theme = Theme.of(context);
     final ink = InkColors.of(context);
-    final small = theme.textTheme.labelSmall;
-    Widget chip(IconData icon, String text, Color color, String key) => Row(
-          key: Key(key),
+    final chips = <Widget>[
+      if (widget.rules.intents && !_over) _intentChip(lang),
+      if (b.sailIn > 0)
+        _statusChip(
+          Icons.sailing,
+          trFor(lang, 'ship_sail_coming_label')
+              .replaceAll('{n}', '${b.sailIn}'),
+          ink.ember,
+          'ship_sail_coming',
+          tooltip: trFor(lang, 'ship_sail_coming_hint')
+              .replaceAll('{n}', '${b.sailIn}'),
+        ),
+      if (b.consortArrived)
+        _statusChip(Icons.sailing, trFor(lang, 'ship_consort_label'), ink.blood,
+            'ship_consort',
+            tooltip: trFor(lang, 'ship_consort_hint')),
+      if (widget.beast != null) ..._beastChips(lang),
+    ];
+    if (chips.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 3),
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: chips,
+      ),
+    );
+  }
+
+  /// One small mark in the enemy's status line: an icon and a few words.
+  Widget _statusChip(IconData icon, String text, Color color, String key,
+      {String? tooltip}) {
+    final small = Theme.of(context).textTheme.labelSmall;
+    final chip = Row(
+      key: Key(key),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 13, color: color),
+        const SizedBox(width: 3),
+        Flexible(
+          child: Text(text,
+              style: small?.copyWith(color: color),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis),
+        ),
+      ],
+    );
+    return tooltip == null ? chip : Tooltip(message: tooltip, child: chip);
+  }
+
+  /// What the enemy shows it will do in its next phase (see ShipIntent),
+  /// picked out in a pill under its name: an icon, a few words, and on a
+  /// hold what it means and how to answer it. The fog hides it. A beast's
+  /// is worded for a beast where it has its own words.
+  Widget _intentChip(AppLanguage lang) {
+    final ink = InkColors.of(context);
+    final small = Theme.of(context).textTheme.labelSmall;
+    final seen = _battle.intentVisible;
+    final intent = _battle.intent;
+    String words(String key) {
+      final beastKey = 'beast_$key';
+      return trFor(
+          lang,
+          widget.beast != null && trFor(AppLanguage.en, beastKey) != beastKey
+              ? beastKey
+              : key);
+    }
+
+    final label = seen
+        ? words('ship_intent_${intent.name}')
+        : trFor(lang, 'ship_intent_hidden');
+    final hint = seen
+        ? words('ship_intent_${intent.name}_hint')
+        : trFor(lang, 'ship_intent_hidden_hint');
+    final color = seen ? _intentColor(ink, intent) : ink.ash;
+    return Tooltip(
+      message: hint,
+      child: Container(
+        key: const Key('ship_enemy_intent'),
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color),
+        ),
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 13, color: color),
+            Icon(seen ? _intentIcon(intent) : Icons.question_mark,
+                size: 12, color: color),
             const SizedBox(width: 3),
-            Text(text, style: small?.copyWith(color: color)),
+            Flexible(
+              child: Text(
+                label,
+                style: small?.copyWith(color: color),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
-        );
+        ),
+      ),
+    );
+  }
+
+  /// What the beast is about to do, in the status line under its name:
+  /// held on the line, when it dives next, whether it is turning for the
+  /// deep, what it heals a round, and the crew's edge against it.
+  List<Widget> _beastChips(AppLanguage lang) {
+    final beast = widget.beast!;
+    final b = _battle;
+    final ink = InkColors.of(context);
     // Held on the line, or its fins torn, it cannot dive.
     final dive = b.tethered || b.enemy.room(ShipRoom.helm).isDown
         ? null
         : b.roundsToDive;
     final heartDown = b.enemy.room(ShipRoom.hold).isDown;
-    return Padding(
-      padding: const EdgeInsets.only(top: 2),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 2,
-        children: [
-          if (b.beastTurning)
-            chip(
-                Icons.keyboard_double_arrow_down,
-                trFor(lang, 'beast_status_turning'),
-                ink.blood,
-                'beast_turning'),
-          if (b.tethered)
-            chip(
-                Icons.link,
-                trFor(lang, 'beast_status_tethered')
-                    .replaceAll('{n}', '${b.tether}'),
-                ink.gold,
-                'beast_tethered'),
-          if (dive != null)
-            chip(
-                Icons.waves,
-                dive == 0
-                    ? trFor(lang, 'beast_status_dives_now')
-                    : trFor(lang, 'beast_status_dives_in')
-                        .replaceAll('{n}', '$dive'),
-                dive == 0 ? ink.blood : ink.tide,
-                'beast_dive'),
-          if (beast.regen > 0)
-            chip(
-                heartDown ? Icons.heart_broken : Icons.favorite,
-                heartDown || b.tethered
-                    ? trFor(lang, 'beast_status_regen_stopped')
-                    : trFor(lang, 'beast_status_regen')
-                        .replaceAll('{n}', '${beast.regen}'),
-                heartDown || b.tethered ? ink.ash : ink.blood,
-                'beast_regen'),
-          if (beast.edge > 0)
-            chip(
-                Icons.visibility,
-                trFor(lang, 'beast_status_edge')
-                    .replaceAll('{n}', '${beast.edge}'),
-                ink.tide,
-                'beast_edge'),
-        ],
-      ),
-    );
+    return [
+      if (b.beastTurning)
+        _statusChip(Icons.keyboard_double_arrow_down,
+            trFor(lang, 'beast_status_turning'), ink.blood, 'beast_turning'),
+      if (b.tethered)
+        _statusChip(
+            Icons.link,
+            trFor(lang, 'beast_status_tethered')
+                .replaceAll('{n}', '${b.tether}'),
+            ink.gold,
+            'beast_tethered'),
+      if (dive != null)
+        _statusChip(
+            Icons.waves,
+            dive == 0
+                ? trFor(lang, 'beast_status_dives_now')
+                : trFor(lang, 'beast_status_dives_in')
+                    .replaceAll('{n}', '$dive'),
+            dive == 0 ? ink.blood : ink.tide,
+            'beast_dive'),
+      if (beast.regen > 0)
+        _statusChip(
+            heartDown ? Icons.heart_broken : Icons.favorite,
+            heartDown || b.tethered
+                ? trFor(lang, 'beast_status_regen_stopped')
+                : trFor(lang, 'beast_status_regen')
+                    .replaceAll('{n}', '${beast.regen}'),
+            heartDown || b.tethered ? ink.ash : ink.blood,
+            'beast_regen'),
+      if (beast.edge > 0)
+        _statusChip(
+            Icons.visibility,
+            trFor(lang, 'beast_status_edge').replaceAll('{n}', '${beast.edge}'),
+            ink.tide,
+            'beast_edge'),
+    ];
   }
 
   /// A ship on one line and a bar: her name, the enemy's habit, her
@@ -1539,6 +1842,7 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
     final showHabit = widget.rules.habits && habit != EnemyHabit.none;
     final steel = _roomColor(context, ShipRoom.bulwark);
     final small = theme.textTheme.labelSmall;
+    final heavy = _battle.heavyEvasion(ship);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -1591,8 +1895,23 @@ class _ShipBattlePanelState extends ConsumerState<ShipBattlePanel>
                 color: steel,
               ),
             const SizedBox(width: 6),
+            // Heavy with water: each open leak costs evasion (v1.190).
+            if (heavy > 0) ...[
+              Icon(Icons.water_drop,
+                  key: Key('ship_heavy_${eel ? 'eel' : 'enemy'}'),
+                  size: 11,
+                  color: ink.blood),
+              Text(
+                trFor(lang, 'ship_heavy_label').replaceAll('{n}', '$heavy'),
+                style: small?.copyWith(color: ink.blood),
+              ),
+              const SizedBox(width: 4),
+            ],
             Tooltip(
-              message: trFor(lang, 'ship_evasion_hint'),
+              message: heavy > 0
+                  ? '${trFor(lang, 'ship_evasion_hint')}\n'
+                      '${trFor(lang, 'ship_heavy_hint').replaceAll('{n}', '$heavy')}'
+                  : trFor(lang, 'ship_evasion_hint'),
               child: Text(
                 trFor(lang, 'ship_slips_label').replaceAll('{n}', '$evasion'),
                 style: small?.copyWith(color: ink.tide),
@@ -3368,6 +3687,37 @@ IconData _ammoIcon(ShipAmmo ammo) => switch (ammo) {
       ShipAmmo.chain => Icons.link,
       ShipAmmo.grape => Icons.grain,
       ShipAmmo.heated => Icons.local_fire_department_outlined,
+    };
+
+/// A room's mark in the push sheet: what the room does.
+IconData _roomIcon(ShipRoom room) => switch (room) {
+      ShipRoom.helm => Icons.explore_outlined,
+      ShipRoom.guns => Icons.gps_fixed,
+      ShipRoom.bulwark => Icons.shield_outlined,
+      ShipRoom.hold => Icons.handyman_outlined,
+    };
+
+/// An intent's mark (see ShipIntent): the enemy stands above the Eel on
+/// the sea, so closing in points down at her and pulling away up.
+IconData _intentIcon(ShipIntent intent) => switch (intent) {
+      ShipIntent.volley => Icons.gps_fixed,
+      ShipIntent.closeIn => Icons.south,
+      ShipIntent.pullAway => Icons.north,
+      ShipIntent.ram => Icons.keyboard_double_arrow_down,
+      ShipIntent.board => Icons.sports_kabaddi,
+      ShipIntent.mend => Icons.build,
+      ShipIntent.brace => Icons.shield,
+      ShipIntent.flee => Icons.sailing,
+      ShipIntent.dive => Icons.water,
+    };
+
+/// Red for what will hurt, the tide's blue for an opening, gold for a
+/// move to answer with the helm.
+Color _intentColor(InkColors ink, ShipIntent intent) => switch (intent) {
+      ShipIntent.volley => ink.ember,
+      ShipIntent.ram || ShipIntent.board || ShipIntent.dive => ink.blood,
+      ShipIntent.mend || ShipIntent.brace => ink.tide,
+      ShipIntent.closeIn || ShipIntent.pullAway || ShipIntent.flee => ink.gold,
     };
 
 IconData _habitIcon(EnemyHabit habit) => switch (habit) {

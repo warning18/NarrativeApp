@@ -649,14 +649,16 @@ const List<ShipRoom> enemyRepairPriority = [
   ShipRoom.hold,
 ];
 
-/// [penalty] actions are lost to a crew cut down by grapeshot. A fire is
-/// fought first, then a leak plugged, then a pip mended.
-EnemyMaintenance enemyMaintenance(ShipState ship, {int penalty = 0}) {
+/// [penalty] actions are lost to a crew cut down by grapeshot; [extra] are
+/// gained by one with every hand at the pumps (see ShipIntent.mend). A
+/// fire is fought first, then a leak plugged, then a pip mended.
+EnemyMaintenance enemyMaintenance(ShipState ship,
+    {int penalty = 0, int extra = 0}) {
   var next = ship;
   final firesOut = <ShipRoom>[];
   final repaired = <ShipRoom>[];
   var plugged = 0;
-  final actions = max(0, max(1, ship.repairsPerRound) - penalty);
+  final actions = max(0, max(1, ship.repairsPerRound) + extra - penalty);
   for (var action = 0; action < actions; action++) {
     ShipRoom? burning;
     for (final room in enemyRepairPriority) {

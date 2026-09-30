@@ -541,7 +541,10 @@ void main() {
           player: _ship(layers: 1, weapons: const [_gun]),
           enemy: _ship(levels: const {ShipRoom.helm: 1}),
           habit: EnemyHabit.ram,
-          rules: const ShipBattleRules(weather: false, seaEvents: false));
+          // Without intents: it rams whenever it lies alongside (see
+          // ship_dynamics_test.dart for a ram it declares).
+          rules: const ShipBattleRules(
+              weather: false, seaEvents: false, intents: false));
       b.range = ShipRange.close;
       b.startEnemyPhase();
       expect(b.player.hull, 100 - ramHullDamage);
@@ -573,7 +576,8 @@ void main() {
           player: _ship(layers: 1, weapons: const [_gun]),
           habit: EnemyHabit.boarder,
           boarding: const BoardingProfile(crew: ['wisp'], chance: 0),
-          rules: const ShipBattleRules(weather: false, seaEvents: false));
+          rules: const ShipBattleRules(
+              weather: false, seaEvents: false, intents: false));
       // Two rounds apart count for nothing, even on the battle's third.
       expect(b.enemyBoards(), isNull);
       expect(b.enemyBoards(), isNull);
@@ -592,7 +596,8 @@ void main() {
       final b = _battle(
           player: _ship(levels: const {ShipRoom.bulwark: 0}),
           boarding: const BoardingProfile(crew: ['bandit'], chance: 1),
-          rules: const ShipBattleRules(weather: false, seaEvents: false));
+          rules: const ShipBattleRules(
+              weather: false, seaEvents: false, intents: false));
       expect(bulwarkOpen(b.player), isTrue);
       expect(b.enemyBoards(), isNull, reason: 'medium range');
       b.range = ShipRange.close;
