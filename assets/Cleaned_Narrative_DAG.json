@@ -214,8 +214,8 @@
   },
   "110": {
     "id": "110",
-    "description": "The back room had emptied the way a purse empties at the end of a bad night: all at once, and mostly into other people's pockets. The coin was still everywhere — on the felt, in the sawdust, behind the bars of the cage — and every pile of it was guarded by whoever had got up first. One of the white masks had come in through the hole in the wall and was standing over the owner's strongbox as if it had always been his. Smoke lay along the floor. Somewhere above us the roof was making up its mind. Nobody was coming to bind anyone's wounds tonight, and I did not intend to ask: each table would be one more fight, and each table paid in advance.",
-    "description_fr": "La salle du fond s’était vidée comme se vide une bourse au bout d’une mauvaise nuit : d’un coup, et surtout dans les poches des autres. L’argent était encore partout — sur le tapis, dans la sciure, derrière les barreaux de la cage — et chaque tas était gardé par le premier qui s’était relevé. L’un des masques blancs était entré par le trou du mur et se tenait au-dessus du coffre du patron comme s’il lui avait toujours appartenu. La fumée traînait sur le plancher. Quelque part au-dessus de nous, le toit hésitait encore. Personne ne viendrait panser les plaies de qui que ce soit cette nuit, et je n’avais pas l’intention de le demander : chaque table serait un combat de plus, et chaque table payait d’avance.",
+    "description": "The back room had emptied the way a purse empties at the end of a bad night: all at once, and mostly into other people's pockets. The coin was still everywhere — on the felt, in the sawdust, behind the bars of the cage — and every pile of it was guarded by whoever had got up first. Two of the white masks had come in through the hole in the wall and were standing over the owner's strongbox as if it had always been theirs. Smoke lay along the floor. Somewhere above us the roof was making up its mind. Nobody was coming to bind anyone's wounds tonight, and I did not intend to ask: each table would be one more fight, and each table paid in advance.",
+    "description_fr": "La salle du fond s’était vidée comme se vide une bourse au bout d’une mauvaise nuit : d’un coup, et surtout dans les poches des autres. L’argent était encore partout — sur le tapis, dans la sciure, derrière les barreaux de la cage — et chaque tas était gardé par le premier qui s’était relevé. Deux des masques blancs étaient entrés par le trou du mur et se tenaient au-dessus du coffre du patron comme s’il leur avait toujours appartenu. La fumée traînait sur le plancher. Quelque part au-dessus de nous, le toit hésitait encore. Personne ne viendrait panser les plaies de qui que ce soit cette nuit, et je n’avais pas l’intention de le demander : chaque table serait un combat de plus, et chaque table payait d’avance.",
     "context_taxonomy": {
       "ui_theme": "slums",
       "mood": "tense",
@@ -259,7 +259,7 @@
         "noHeal": true,
         "loseNextId": "115",
         "triggerEnemyIds": [
-          "slum_thug",
+          "street_bandit",
           "slum_thug"
         ]
       },
@@ -280,7 +280,10 @@
         ],
         "noHeal": true,
         "loseNextId": "115",
-        "triggerEnemyId": "white_soldier"
+        "triggerEnemyIds": [
+          "white_soldier",
+          "white_soldier"
+        ]
       },
       {
         "text": "Out before the roof goes",

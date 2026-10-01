@@ -4550,8 +4550,8 @@
   },
   "wreck_scavenger": {
     "enemyName": "Wreck Scavenger",
-    "maxHealth": 72,
-    "damage": 11,
+    "maxHealth": 85,
+    "damage": 12,
     "guile": 1,
     "weakTo": [],
     "resists": [],
@@ -4597,8 +4597,8 @@
   },
   "aurel_vane": {
     "enemyName": "Inquisitor-General Aurel Vane",
-    "maxHealth": 140,
-    "damage": 15,
+    "maxHealth": 165,
+    "damage": 18,
     "guile": 5,
     "weakTo": [],
     "resists": [
