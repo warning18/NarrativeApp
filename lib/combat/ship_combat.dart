@@ -791,7 +791,8 @@ const Map<String, String> _slotCountKeys = {
 /// [partsWithinSlots]), its weapons from those that fire, layers full; a
 /// stored hull of -1 (a fresh save, or just repaired) means full.
 /// [voidVolleyBonus] is the painted sail's extra on its own volley, if
-/// that sail is aboard.
+/// that sail is aboard. [hullPercent] and [gunPercent] are the character's
+/// sea signs (see signs.dart): a sturdier hull, harder-hitting guns.
 ShipState buildPlayerShip({
   required Map<String, dynamic> ship,
   required Map<String, dynamic> parts,
@@ -799,8 +800,13 @@ ShipState buildPlayerShip({
   required int currentHull,
   String? voidVolleyPartId,
   int voidVolleyBonus = 0,
+  int hullPercent = 0,
+  int gunPercent = 0,
 }) {
-  final maxHull = max(1, (ship['baseMaxHull'] as num?)?.toInt() ?? 100);
+  int lifted(int value, int percent) =>
+      percent == 0 ? value : (value * (100 + percent) / 100).round();
+  final maxHull = max(
+      1, lifted((ship['baseMaxHull'] as num?)?.toInt() ?? 100, hullPercent));
   final rooms = _roomsFrom(ship['rooms']);
   final weapons = <ShipWeapon>[];
   for (final id in partsWithinSlots(
@@ -817,9 +823,11 @@ ShipState buildPlayerShip({
             level: current.level + ((entry.value as num?)?.toInt() ?? 0));
       }
     }
-    if (((part['damageAmount'] as num?)?.toInt() ?? 0) > 0) {
+    final damage = (part['damageAmount'] as num?)?.toInt() ?? 0;
+    if (damage > 0) {
+      final volley = damage + (id == voidVolleyPartId ? voidVolleyBonus : 0);
       weapons.add(ShipWeapon.fromPart(id, part,
-          damageBonus: id == voidVolleyPartId ? voidVolleyBonus : 0));
+          damageBonus: lifted(volley, gunPercent) - damage));
     }
   }
   final hull = currentHull < 0 ? maxHull : min(maxHull, max(0, currentHull));

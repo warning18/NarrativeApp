@@ -7,6 +7,7 @@ import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
 import '../data/sail_powers.dart';
+import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -37,6 +38,7 @@ Future<bool?> runStoryShipBattle(
   final races = await loadedGameDb(ref, racesSchema);
   final professions = await loadedGameDb(ref, professionsSchema);
   final gameConfig = await ref.read(gameConfigProvider.future);
+  final signsDb = await loadedGameDb(ref, signsSchema);
   await ref.read(shipTurnTimerProvider.notifier).loaded;
   final data = enemyShips[enemyShipId] as Map<String, dynamic>?;
   if (data == null || !context.mounted) return null;
@@ -51,6 +53,9 @@ Future<bool?> runStoryShipBattle(
           ? const <String, dynamic>{}
           : ships.values.first as Map<String, dynamic>);
   final sail = installedSail(parts, session.shipPartIds);
+  // The character's sea signs (see signs.dart).
+  final signs = signEffectsFor(session.heldSigns, parseSigns(signsDb),
+      alignment: session.alignmentScore);
   final strength = sail == null ? 1 : sailStrength(sail.medium, session.raceId);
   List<ShipCrew> crew() => buildShipCrew(
         session: ref.read(playerSessionProvider),
@@ -82,6 +87,8 @@ Future<bool?> runStoryShipBattle(
               voidVolleyPartId:
                   sail?.power == SailPower.voidmark ? sail!.partId : null,
               voidVolleyBonus: voidVolleyBonus(strength),
+              hullPercent: signs.shipHullPercent,
+              gunPercent: signs.shipGunPercent,
             ),
             enemy: buildEnemyShip(data),
             shipName: trFor(lang, 'boat_title'),

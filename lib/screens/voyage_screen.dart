@@ -13,6 +13,7 @@ import '../data/ability_check.dart';
 import '../data/companion_remarks.dart';
 import '../data/sea_events.dart';
 import '../data/sail_powers.dart';
+import '../data/signs.dart' show SignEffects;
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
@@ -24,6 +25,7 @@ import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/remark_provider.dart';
+import '../providers/signs_provider.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
@@ -119,6 +121,10 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
   int _dayStartHull = 0;
   int _dayStartGold = 0;
 
+  /// The character's signs (see signs.dart), read at cast-off: a sturdier
+  /// hull, harder guns, bad days that pass her by.
+  SignEffects _signs = SignEffects.none;
+
   /// Kept from cast-off to draw the extra day a sheltered storm costs.
   bool _knownWaters = false;
   Map<String, dynamic> _enemyShips = const {};
@@ -199,6 +205,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       if (skipped > 0) _log.add(_t('ship_log_lift', n: skipped));
       _events = lifted;
     }
+    // A calm sign lets some of the bad days pass her by (a hunt goes
+    // looking for its trouble).
+    _signs = ref.read(signEffectsProvider);
+    if (widget.debugEvents == null && huntRecord == null) {
+      _events = _calmed(_events!);
+    }
     // A beast that roams these waters may cross the Eel's path (no sail
     // lifts her over one).
     if (widget.debugEvents == null && huntRecord == null) {
@@ -229,9 +241,19 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
       voidVolleyPartId:
           _sail?.power == SailPower.voidmark ? _sail!.partId : null,
       voidVolleyBonus: voidVolleyBonus(_sailStrength),
+      hullPercent: _signs.shipHullPercent,
+      gunPercent: _signs.shipGunPercent,
     );
     _dayStartHull = _player!.hull;
     _dayStartGold = session.gold;
+  }
+
+  /// [events] with the days a calm sign lets pass (see applyVoyageCalm),
+  /// and a line in the log for them.
+  List<SeaEvent> _calmed(List<SeaEvent> events) {
+    final calm = applyVoyageCalm(events, _signs.voyageCalm, _random);
+    if (calm.calmed > 0) _log.add(_t('ship_log_calm_sign', n: calm.calmed));
+    return calm.events;
   }
 
   String _t(String key, {String? ship, int? n}) {
@@ -477,6 +499,15 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
                   day.kind != SeaEventKind.raider)
                 day,
           ];
+        } else if (_signs.voyageCalm > 0) {
+          // The calm sign's odds hold for the extra day too; a day that
+          // passes is no day at all.
+          final calm = applyVoyageCalm(extra, _signs.voyageCalm, _random,
+              keepOne: false);
+          if (calm.calmed > 0) {
+            _log.add(_t('ship_log_calm_sign', n: calm.calmed));
+          }
+          extra = calm.events;
         }
         _events = [
           ..._events!.take(_index + 1),
@@ -913,9 +944,12 @@ class _VoyageScreenState extends ConsumerState<VoyageScreen> {
     final races = ref.watch(localizedDbProvider(racesSchema)).value;
     final professions = ref.watch(localizedDbProvider(professionsSchema)).value;
     final gameConfig = ref.watch(gameConfigProvider).value;
+    // The character's sea signs (see signs.dart) are read at cast-off.
+    final signs = ref.watch(gameDbProvider(signsSchema)).value;
     final title =
         '${trFor(lang, 'voyage_title')}: ${portNameFor(widget.toPort, fr)}';
     if (ships == null ||
+        signs == null ||
         parts == null ||
         enemyShips == null ||
         ports == null ||
