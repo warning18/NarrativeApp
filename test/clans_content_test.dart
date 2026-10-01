@@ -315,6 +315,7 @@ void main() {
         'story',
         'edit',
         'sworn_cap',
+        'event',
       ])
         'standing_cause_$cause',
     ];

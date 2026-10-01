@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/factions.dart';
 import '../data/offers.dart' show OfferSource;
+import '../data/politics_events.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -14,6 +15,7 @@ import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/signs_provider.dart';
 import '../widgets/clan_widgets.dart';
 import '../widgets/offer_dialog.dart';
@@ -23,10 +25,14 @@ import '../widgets/sign_widgets.dart';
 /// top bar's scales: four tabs.
 /// - **Standing:** a card per faction (the clans, the tribes, the Choir and
 ///   the Pit) with a slider to set it and squares to mark the sub-clans,
-///   the Choir-Pit alignment with the vows and pacts held, and a reset.
+///   the Choir-Pit alignment with the vows and pacts held, and a reset;
+///   the lost clan (the Open Hand, v1.195) with its remembrance stage to
+///   set and its banner.
 /// - **Politics:** the clans' relations table, as it stands or as it stood
-///   at an earlier chapter, and the coast's history.
-/// - **Evolution:** each clan's standing over the log, then the log.
+///   at an earlier chapter, the politics events (v1.195: fired or not, and
+///   "Fire now"), and the coast's history.
+/// - **Evolution:** each clan's standing over the log, then the log (the
+///   events' news among it, under `event:<id>`).
 /// - **Intrigues:** the eight plots, the stage each has reached, and their
 ///   outcomes.
 class ClansPoliticsScreen extends ConsumerWidget {
@@ -105,6 +111,11 @@ class _StandingTab extends ConsumerWidget {
           _sectionLabel(context, tr(ref, 'clans_tribes_label')),
           for (final faction in data.tribes)
             FactionStandingCard(faction: faction, editable: true),
+        ],
+        if (data.lost.isNotEmpty) ...[
+          _sectionLabel(context, tr(ref, 'patron_kind_lost')),
+          for (final faction in data.lost)
+            LostClanCard(faction: faction, editable: true),
         ],
         _sectionLabel(context, tr(ref, 'clans_alignment_title')),
         const _OtherworldPanel(),
@@ -351,6 +362,8 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
         Text(tr(ref, 'clans_matrix_hint'),
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+        _sectionLabel(context, tr(ref, 'clans_events_title')),
+        const _EventsList(),
         _sectionLabel(context, tr(ref, 'clans_history_title')),
         for (final event in data.relations.history)
           _HistoryRow(event: event, language: lang),
@@ -630,10 +643,14 @@ class _EvolutionTab extends ConsumerWidget {
     // An offer's cause names its gift (see offers.dart's offerCause).
     final tables = ref.watch(offerTablesProvider);
     final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
-    String? describe(String kind, String detail) => kind == 'offer'
-        ? offerGiftLabel(detail,
-            tables: tables, localizedItems: items, lang: lang)
-        : null;
+    final events = ref.watch(politicsEventsProvider);
+    String? describe(String kind, String detail) => switch (kind) {
+          'offer' => offerGiftLabel(detail,
+              tables: tables, localizedItems: items, lang: lang),
+          // An event's line names it (v1.195).
+          'event' => eventCauseName(detail, events, lang),
+          _ => null,
+        };
 
     return ListView(
       key: const Key('clans_evolution_list'),
@@ -694,7 +711,7 @@ class _EvolutionTab extends ConsumerWidget {
                 '${lang == AppLanguage.fr ? '\u00a0:' : ':'} '
                 '${data.relations.stepInfo(e.from)?.nameFor(lang) ?? e.from} → '
                 '${data.relations.stepInfo(e.to)?.nameFor(lang) ?? e.to} · '
-                '${standingCauseLabel(e.cause, lang)} · '
+                '${standingCauseLabel(e.cause, lang, describe: describe)} · '
                 '${trFor(lang, 'clans_log_when').replaceAll('{c}', '${e.chapter}').replaceAll('{d}', '${e.day}')}',
                 style: theme.textTheme.bodySmall,
               ),
@@ -790,8 +807,108 @@ class _LogTile extends StatelessWidget {
                 ),
             ],
           ),
+          // An event's news (v1.195).
+          if (entry.noteFor(lang).isNotEmpty)
+            Text(
+              entry.noteFor(lang),
+              style: theme.textTheme.bodySmall
+                  ?.copyWith(fontStyle: FontStyle.italic),
+            ),
         ],
       ),
+    );
+  }
+}
+
+/// The politics events (v1.195, see politics_events.dart): each with when
+/// it fires by itself, whether it has fired (when, and the variant it
+/// took), and "Fire now".
+class _EventsList extends ConsumerWidget {
+  const _EventsList();
+
+  String _trigger(PoliticsEvent event, AppLanguage lang) {
+    if (event.triggers.isEmpty) return trFor(lang, 'clans_event_by_story');
+    String one(EventTrigger t) => [
+          if (t.chapter != null)
+            trFor(lang, 'clans_event_trigger_chapter')
+                .replaceAll('{n}', '${t.chapter}'),
+          if (t.day != null)
+            trFor(lang, 'clans_event_trigger_day')
+                .replaceAll('{n}', '${t.day}'),
+          for (final f in t.flags)
+            trFor(lang, 'clans_event_trigger_flag').replaceAll('{f}', f),
+        ].join(', ');
+    return event.triggers.map(one).join(' ${trFor(lang, 'clans_event_or')} ');
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final events = ref.watch(politicsEventsProvider);
+    final politics = ref.watch(politicsProvider);
+    final lang = ref.watch(appLanguageProvider);
+    final theme = Theme.of(context);
+    if (events.isEmpty) {
+      return Text(tr(ref, 'clans_events_none'),
+          style: theme.textTheme.bodySmall);
+    }
+    return Column(
+      key: const Key('clans_events_list'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final event in events.values)
+          Card(
+            key: Key('politics_event_${event.id}'),
+            margin: const EdgeInsets.symmetric(vertical: 3),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 6, 4, 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(event.nameFor(lang),
+                            style: theme.textTheme.titleSmall),
+                        Text(
+                          _trigger(event, lang),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: theme.colorScheme.onSurfaceVariant),
+                        ),
+                        Text(
+                          switch (politics.firedEvents[event.id]) {
+                            final fired? => trFor(lang, 'clans_event_fired')
+                                .replaceAll('{c}', '${fired.chapter}')
+                                .replaceAll('{d}', '${fired.day}')
+                                .replaceAll('{v}', '${fired.variant + 1}'),
+                            null => trFor(lang, 'clans_event_waiting'),
+                          },
+                          key: Key('politics_event_state_${event.id}'),
+                          style: theme.textTheme.labelSmall?.copyWith(
+                              color: politics.hasFired(event.id)
+                                  ? standingTierTextColor(
+                                      context, StandingTier.sworn)
+                                  : null,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    key: Key('politics_event_fire_${event.id}'),
+                    onPressed: () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      final done = trFor(lang, 'clans_event_fired_notice')
+                          .replaceAll('{name}', event.nameFor(lang));
+                      await fireCoastEventNow(ref, event.id);
+                      messenger.showSnackBar(SnackBar(content: Text(done)));
+                    },
+                    child: Text(trFor(lang, 'clans_event_fire_now')),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

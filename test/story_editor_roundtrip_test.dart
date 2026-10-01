@@ -46,4 +46,40 @@ void main() {
     });
     expect(debugEditorRoundTrip(choice).toJson(), choice.toJson());
   });
+
+  test('a choice\'s politics and a scene\'s on entry come back as they were',
+      () {
+    const politics = {
+      'standing': {'vigil': 5, 'dominion': -5},
+      'marks': {'inquisition': 'foe'},
+      'relations': [
+        {'a': 'mire', 'b': 'penitents', 'steps': 1},
+      ],
+      'offerFrom': 'penitents',
+      'intrigue': {'id': 'hooded_lantern', 'outcome': 1},
+      'remembrance': 3,
+      'event': 'lantern_bearer_dies',
+      'hidden': true,
+      'aLaterKey': [1, 2],
+    };
+    final choice = StoryChoice.fromJson(
+        const {'text': 'Raise it', 'next_id': 'x', 'politics': politics});
+    final saved = debugEditorRoundTrip(choice);
+    expect(saved.toJson(), choice.toJson());
+    expect(saved.toJson()['politics'], politics);
+
+    final node = StoryNode.fromJson('n', const {
+      'description': 'd',
+      'noDetour': true,
+      'politicsOnEnter': {'remembrance': 2},
+      'choices': [],
+    });
+    final text = politicsEditorText(node.politicsOnEnter);
+    expect(politicsFromEditorText(text, null)!.toJson(), {'remembrance': 2});
+    // Not JSON: kept as it was; emptied: none.
+    expect(politicsFromEditorText('{oops', node.politicsOnEnter),
+        same(node.politicsOnEnter));
+    expect(politicsFromEditorText('  ', node.politicsOnEnter), isNull);
+    expect(politicsEditorText(null), isEmpty);
+  });
 }

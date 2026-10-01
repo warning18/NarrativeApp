@@ -35,6 +35,7 @@ import '../widgets/immersive_notice.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/camp_town_section.dart';
 import '../widgets/bounty_board.dart';
+import '../widgets/coast_news.dart';
 import '../widgets/camp_travel.dart';
 import '../widgets/quest_tracker.dart';
 import '../widgets/ship_widgets.dart';
@@ -345,6 +346,9 @@ class CampScreen extends ConsumerWidget {
             _RestButton(blocked: busy),
             if (campNode != null && sceneRead)
               _SceneChip(title: tr(ref, 'camp_scene_title'), text: sceneText),
+            // What the clans did meanwhile (v1.195): the news from the
+            // coast not read yet, a tap away.
+            if (campNode != null) const CoastNewsChip(),
           ],
         ),
         // The followed quest stays in view.

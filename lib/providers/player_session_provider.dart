@@ -19,10 +19,13 @@ import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/journey_rules.dart';
 import '../data/offers.dart';
 import '../data/perks.dart';
+import '../data/politics_events.dart';
+import '../data/politics_events.dart' as coast show applyStoryPolitics;
 import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../models/ally_state.dart';
+import '../models/story_politics.dart';
 
 const String _playerSessionPrefsKey = 'player_session';
 
@@ -1369,6 +1372,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// over the real save.
   final Completer<void> _loaded = Completer<void>();
 
+  /// Whether the saved session has been read (see [_loaded]): until then
+  /// the state is a placeholder nothing should act on.
+  bool get isLoaded => _loaded.isCompleted;
+
   /// Whether the save on disk could not be read this launch; it was kept
   /// under [unreadableSessionBackupPrefsKey] and a fresh session started.
   bool loadFailed = false;
@@ -2078,7 +2085,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
         politics: next.politics,
         data: tables.data,
         chapter: _politicsChapter(null),
-        day: next.day);
+        day: next.day,
+        flags: next.flags);
     next = next.copyWith(
       politics: politics.politics,
       alignmentScore: next.alignmentScore + politics.alignment,
@@ -2182,7 +2190,8 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// [session] with the titles its politics earn or take away (see
   /// titlesEarned), and the one worn kept, or the first good one gained.
   PlayerSession _withTitles(PlayerSession session, ClanData data) {
-    final titles = titlesEarned(session.heldTitleIds, session.politics, data);
+    final titles = titlesEarned(session.heldTitleIds, session.politics, data,
+        flags: session.flags);
     final active = activeTitleAfter(
         session.activeTitleId, titles.held, titles.gained, data);
     if (titles.gained.isEmpty &&
@@ -2319,6 +2328,187 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> resetPolitics({ClanData? data}) async {
     final reset = state.copyWith(politics: PoliticsState.empty);
     state = data == null ? reset : _withTitles(reset, data);
+    await _persist();
+  }
+
+  // --- Politics in motion (v1.195, see politics_events.dart) --------------
+
+  /// What a story choice's or an intrigue's outcome does to a companion:
+  /// this much approval for `disapproves` (and back for `approves`).
+  static const int intrigueApprovalShift = 5;
+
+  /// The world the politics rules read now: [data], [events], the chapter
+  /// (see [_politicsChapter]) and the story's day.
+  CoastWorld _coastWorld(
+          ClanData data, Map<String, PoliticsEvent> events, int? chapter) =>
+      CoastWorld(
+        data: data,
+        events: events,
+        chapter: _politicsChapter(chapter),
+        day: state.day,
+        chapterDay: max(1, state.day - state.chapterStartDay + 1),
+      );
+
+  /// Takes [change] into the session: the politics and flags after it,
+  /// the offers it brought (each with its faction guaranteed a place), the
+  /// companions an intrigue moved (one who `leaves` walks out for good,
+  /// one who `disapproves` thinks less of the character), the titles it
+  /// gave (worn when none is) and those standing and remembrance earn.
+  void _takeCoastChange(CoastChange change, ClanData data,
+      {Map<String, dynamic> companions = const {}}) {
+    var next = state.copyWith(
+      politics: change.politics,
+      flags: change.flags,
+      pendingOffers: [
+        ...state.pendingOffers,
+        for (final o in change.offers)
+          OfferTicket(
+              source: OfferSource.story,
+              detail: o.cause,
+              factionId: o.factionId),
+      ],
+    );
+    for (final id in change.titles) {
+      if (next.heldTitleIds.contains(id)) continue;
+      next = next.copyWith(
+        heldTitleIds: [...next.heldTitleIds, id],
+        activeTitleId:
+            next.activeTitleId.isEmpty && !(data.titles[id]?.negative ?? false)
+                ? id
+                : next.activeTitleId,
+      );
+    }
+    state = next;
+    for (final turn in change.companions) {
+      if (!state.recruitedAllies
+          .any((a) => a.companionId == turn.companionId)) {
+        continue;
+      }
+      switch (turn.change) {
+        case 'leaves':
+        case 'lost':
+          _removeAlly(turn.companionId, lost: false, companions: companions);
+        case 'disapproves':
+        case 'approves':
+          final by = turn.change == 'approves'
+              ? intrigueApprovalShift
+              : -intrigueApprovalShift;
+          state = state.copyWith(recruitedAllies: [
+            for (final a in state.recruitedAllies)
+              a.companionId == turn.companionId
+                  ? a.copyWith(approval: approvalAfter(a.approval, by))
+                  : a,
+          ]);
+      }
+    }
+    state = _withTitles(state, data);
+  }
+
+  /// A story choice's or a scene's [politics] (see applyStoryPolitics),
+  /// logged under `story:<nodeId>` on [chapter] (the chapter reached) and
+  /// today. Applied once under [key] (see choicePoliticsKey,
+  /// enterPoliticsKey): taken again, or the scene entered again, nothing
+  /// happens. [events] for its `event`, [companions] (companions.json)
+  /// for a companion an outcome takes.
+  Future<CoastChange> applyStoryPolitics(
+    StoryPolitics politics, {
+    required String nodeId,
+    required ClanData data,
+    String key = '',
+    Map<String, PoliticsEvent> events = const {},
+    Map<String, dynamic> companions = const {},
+    int? chapter,
+  }) async {
+    final change = coast.applyStoryPolitics(politics,
+        cause: 'story:$nodeId',
+        key: key,
+        politics: state.politics,
+        flags: state.flags,
+        world: _coastWorld(data, events, chapter));
+    if (!change.applied) return change;
+    _takeCoastChange(change, data, companions: companions);
+    await _persist();
+    return change;
+  }
+
+  /// Fires every politics event whose time has come on [chapter] (the
+  /// chapter reached) and today (see runDueEvents): on a chapter change
+  /// and a day's tick. Returns what changed; its news are the events'
+  /// "News from the coast".
+  Future<CoastChange> runPoliticsEvents({
+    required ClanData data,
+    required Map<String, PoliticsEvent> events,
+    Map<String, dynamic> companions = const {},
+    int? chapter,
+  }) async {
+    final change = runDueEvents(
+        politics: state.politics,
+        flags: state.flags,
+        world: _coastWorld(data, events, chapter));
+    if (!change.applied) return change;
+    _takeCoastChange(change, data, companions: companions);
+    await _persist();
+    return change;
+  }
+
+  /// Edit Mode's "Fire now": politics event [eventId] fires at once, even
+  /// one that has fired before.
+  Future<CoastChange> firePoliticsEvent(
+    String eventId, {
+    required ClanData data,
+    required Map<String, PoliticsEvent> events,
+    Map<String, dynamic> companions = const {},
+    int? chapter,
+  }) async {
+    final change = fireEvent(eventId,
+        politics: state.politics,
+        flags: state.flags,
+        world: _coastWorld(data, events, chapter),
+        force: true);
+    if (!change.applied) return change;
+    _takeCoastChange(change, data, companions: companions);
+    await _persist();
+    return change;
+  }
+
+  /// The camp has shown the news from the coast: none is waiting.
+  Future<void> markCoastNewsRead() async {
+    if (state.politics.unreadNews.isEmpty) return;
+    state = state.copyWith(
+      politics: state.politics.copyWith(news: [
+        for (final n in state.politics.news) n.read ? n : n.markedRead(),
+      ]),
+    );
+    await _persist();
+  }
+
+  /// Edit Mode: the Open Hand's remembrance set to [stage] (0..6): its
+  /// flags up to it held, those past it dropped; the titles it earns come
+  /// with it ([data]), and stay.
+  Future<void> setOpenHandStage(int stage, {required ClanData data}) async {
+    final keep = openHandFlagsUpTo(stage);
+    final flags = [
+      for (final f in state.flags)
+        if (!f.startsWith('open_hand_') || keep.contains(f)) f,
+      for (final f in keep)
+        if (!state.flags.contains(f)) f,
+    ];
+    state = _withTitles(state.copyWith(flags: flags), data);
+    await _persist();
+  }
+
+  /// Edit Mode: story flag [flag] held or not ([held]); the titles it
+  /// earns come with it ([data]).
+  Future<void> setStoryFlag(String flag, bool held,
+      {required ClanData data}) async {
+    if (flag.isEmpty || state.flags.contains(flag) == held) return;
+    final flags = held
+        ? [...state.flags, flag]
+        : [
+            for (final f in state.flags)
+              if (f != flag) f,
+          ];
+    state = _withTitles(state.copyWith(flags: flags), data);
     await _persist();
   }
 

@@ -75,6 +75,9 @@ IconData patronIconFor(String name) => switch (name) {
       'nights_stay' => Icons.nights_stay,
       'cloud' => Icons.cloud,
       'ac_unit' => Icons.ac_unit,
+      'back_hand' => Icons.back_hand,
+      'front_hand' => Icons.front_hand,
+      'pan_tool' => Icons.pan_tool,
       _ => Icons.draw_outlined,
     };
 
