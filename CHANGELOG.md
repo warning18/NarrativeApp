@@ -51,8 +51,8 @@ the clans' standing, and the coast changes whether you are there or not.
   Inquisition's raids, the Order and the Inquisition quarrelling, the
   Throne going to the claimant you backed, the Dominion splitting if the
   truth was told, and who comes to the last battle. News shows on the
-  chapter card, as a "News (n)" chip at camp, and in a "News" tab in the
-  journal.
+  chapter card (three lines each), as a "News (n)" chip at camp, and in
+  full in a "News" tab in the journal.
 - **Two intrigues in the story, from Clue to Choice:**
   - **The Hooded Lantern:** the Inquisition isn't closing the tear; it
     wants your blood for the rite. It ends in the flagship's log, which
@@ -60,8 +60,9 @@ the clans' standing, and the coast changes whether you are there or not.
   - **The Dying Lantern-Bearer:** envoys from three claimants, a sealed
     vote, a knife meant for Tallis, and the Admiralty's vote for you to
     cast. You back Morrow, Vane or Tallis, and the Throne follows.
-- **Edit Mode:** the Politics tab lists every event with "Fire now", and
-  the Evolution log names each event that moved the clans.
+- **Edit Mode:** the Politics tab lists every event with "Fire now", after
+  the coast's history, and the Evolution log names each event that moved
+  the clans.
 
 ### Changed
 - The 12 new scenes are on the world map, each in its place's list.

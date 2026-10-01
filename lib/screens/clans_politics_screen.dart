@@ -362,11 +362,11 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
         Text(tr(ref, 'clans_matrix_hint'),
             style: theme.textTheme.labelSmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
-        _sectionLabel(context, tr(ref, 'clans_events_title')),
-        const _EventsList(),
         _sectionLabel(context, tr(ref, 'clans_history_title')),
         for (final event in data.relations.history)
           _HistoryRow(event: event, language: lang),
+        _sectionLabel(context, tr(ref, 'clans_events_title')),
+        const _EventsList(),
       ],
     );
   }

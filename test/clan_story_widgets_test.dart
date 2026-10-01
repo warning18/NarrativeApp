@@ -322,13 +322,16 @@ void main() {
         find.byKey(const Key('politics_event_fire_wharf_raid')), 200,
         scrollable: list);
     expect(find.byKey(const Key('clans_events_list')), findsOneWidget);
-    expect(find.text('The Inquisition raids the Wharf'), findsOneWidget);
+    expect(find.text('The Wharf raided again'), findsOneWidget);
     expect(
         tester
             .widget<Text>(
                 find.byKey(const Key('politics_event_state_wharf_raid')))
             .data,
         'Not yet');
+    await tester
+        .ensureVisible(find.byKey(const Key('politics_event_fire_wharf_raid')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('politics_event_fire_wharf_raid')));
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 100)));
@@ -349,7 +352,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('clans_tab_evolution')));
     await tester.pumpAndSettle();
-    expect(find.text('News from the coast · The Inquisition raids the Wharf'),
+    expect(find.text('News from the coast · The Wharf raided again'),
         findsWidgets);
     expect(find.text(politics.news.single.text), findsOneWidget);
     expect(tester.takeException(), isNull);

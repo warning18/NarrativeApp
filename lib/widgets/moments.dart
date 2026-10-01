@@ -491,9 +491,13 @@ class _ChapterCardState extends State<ChapterCard>
                                 for (final line in widget.news)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 6),
+                                    // Three lines at most: the journal
+                                    // keeps the whole of it.
                                     child: Text(
                                       line,
                                       textAlign: TextAlign.center,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
                                       style: theme.textTheme.bodySmall
                                           ?.copyWith(
                                               fontFamily: InkFonts.prose,

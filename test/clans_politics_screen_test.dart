@@ -204,6 +204,8 @@ void main() {
         scrollable: find.descendant(
             of: find.byKey(const Key('clans_standing_list')),
             matching: find.byType(Scrollable)));
+    await tester.ensureVisible(find.byKey(const Key('clans_reset')));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('clans_reset')));
     await _settle(tester);
     expect(politics().isEmpty, isTrue);

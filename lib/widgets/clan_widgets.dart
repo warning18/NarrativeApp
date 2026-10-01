@@ -384,13 +384,17 @@ class LostClanCard extends ConsumerWidget {
                       style: theme.textTheme.titleSmall),
                 ),
                 const SizedBox(width: 6),
-                Text(
-                  remembranceLabel(stage, lang),
-                  key: Key('lost_clan_stage_${faction.id}'),
-                  style: theme.textTheme.labelLarge?.copyWith(
-                      color:
-                          stage > 0 ? gold : theme.colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w700),
+                Flexible(
+                  child: Text(
+                    remembranceLabel(stage, lang),
+                    key: Key('lost_clan_stage_${faction.id}'),
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                        color: stage > 0
+                            ? gold
+                            : theme.colorScheme.onSurfaceVariant,
+                        fontWeight: FontWeight.w700),
+                  ),
                 ),
               ],
             ),
