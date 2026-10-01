@@ -1491,13 +1491,17 @@ class _JourneyChartState extends State<_JourneyChart>
             // behind below.
             // A little short of the box, so the road behind peeks in at
             // the foot and says there is more below.
+            // A crowded place (a busy hub's twenty ways) gets a taller
+            // map, so the outer ring has room for every mark.
             present = math.max(
                 box.maxHeight - (widget.past.isEmpty ? 0 : 84),
-                steps.length > 7
-                    ? 400
-                    : steps.length > 3
-                        ? 300
-                        : 220);
+                steps.length > 16
+                    ? 560
+                    : steps.length > 7
+                        ? 400
+                        : steps.length > 3
+                            ? 300
+                            : 220);
             here = Offset(width / 2, present / 2);
             centres = journeyPlaceLayout(
               area: Size(width, present),
