@@ -2199,7 +2199,15 @@
         "triggerEnemyId": "inquisition_soldier",
         "flagsToAdd": [
           "hub_2015_kelda"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "compact": 5
+          },
+          "marks": {
+            "scaffolders": "friend"
+          }
+        }
       }
     ],
     "reqAlignmentScore": 2
@@ -2223,7 +2231,15 @@
         ],
         "showIfFlags": [
           "sable_marker_won"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "whisper_ledger": "friend"
+          }
+        }
       },
       {
         "text": "Promise to win it back at the dockhands' table",
@@ -2650,7 +2666,12 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "refugees_aboard"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 10
+          }
+        }
       },
       {
         "text": "Take the twenty who can fight, leave the rest",
@@ -2669,7 +2690,12 @@
         "goldMod": 60,
         "flagsToAdd": [
           "sailed_alone"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": -10
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -3206,7 +3232,15 @@
         "flagsToAdd": [
           "hub_3005_maren",
           "maren_absolved"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          },
+          "marks": {
+            "ember_sisters": "friend"
+          }
+        }
       },
       {
         "text": "Tell her the dead don't forgive by proxy",
@@ -3216,7 +3250,12 @@
         "flagsToAdd": [
           "hub_3005_maren",
           "maren_refused"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": -5
+          }
+        }
       },
       {
         "text": "Back out into the ash",
@@ -4460,7 +4499,13 @@
         "unlockQuestId": "q_ch2_terns_toll",
         "flagsToAdd": [
           "hub_2015_ternrow"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 5,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -4483,7 +4528,12 @@
         "flagsToAdd": [
           "hub_2015_ternrow",
           "tern_row_spared"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 10
+          }
+        }
       }
     ]
   },
@@ -4569,7 +4619,15 @@
         "unlockQuestId": "q_ch1_vess_in_the_dark",
         "flagsToAdd": [
           "met_vess"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "stitchers": "friend"
+          }
+        }
       }
     ]
   },
@@ -4591,7 +4649,15 @@
         "unlockQuestId": "q_ch3_groshs_price",
         "flagsToAdd": [
           "hub_3005_grosh"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "last_watch": "friend"
+          }
+        }
       }
     ]
   },
@@ -4639,7 +4705,13 @@
         "unlockQuestId": "q_ch3_reckoning_wall",
         "flagsToAdd": [
           "hub_3005_wall"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "dominion": -10
+          }
+        }
       }
     ]
   },
@@ -4662,7 +4734,13 @@
         "flagsToAdd": [
           "hub_3005_wall",
           "reckoning_wall_saved"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -5774,7 +5852,12 @@
         "flagsToAdd": [
           "hub_6010_lysa",
           "lysa_stays_quarter"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       }
     ],
     "reqFlags": [
@@ -5836,7 +5919,12 @@
         "flagsToAdd": [
           "hub_6010_confession",
           "confession_spared"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       },
       {
         "text": "Pick up the blade and give him the answer he came for",
@@ -5846,7 +5934,13 @@
         "flagsToAdd": [
           "hub_6010_confession",
           "confession_executed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": -10,
+            "dominion": 5
+          }
+        }
       }
     ]
   },
@@ -6844,7 +6938,15 @@
         "unlockQuestId": "q_ch4_tobins_vigil",
         "flagsToAdd": [
           "hub_5010_tobin"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "wickwardens": "friend"
+          }
+        }
       }
     ],
     "persona_variants": {
@@ -6876,7 +6978,15 @@
         "unlockQuestId": "q_ch5_malriks_cut",
         "flagsToAdd": [
           "hub_6010_malrik"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "brig_born": "friend"
+          }
+        }
       }
     ],
     "persona_variants": {
@@ -7169,7 +7279,16 @@
         "flagsToAdd": [
           "standard_cut_living"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "compact": 5
+          },
+          "marks": {
+            "order": "foe"
+          }
+        }
       },
       {
         "text": "Wait for him to die while the Cathedral burns",
@@ -7180,7 +7299,13 @@
         "flagsToAdd": [
           "standard_waited"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "compact": 5
+          }
+        }
       },
       {
         "text": "Give him the mercy of the blade first, then take it",
@@ -7190,7 +7315,14 @@
         "flagsToAdd": [
           "standard_mercy"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -5,
+            "compact": 5,
+            "penitents": 5
+          }
+        }
       }
     ],
     "noDetour": true
@@ -7347,7 +7479,10 @@
         ],
         "grantsBannerPieceId": "moon_shard_shroud",
         "politics": {
-          "remembrance": 4
+          "remembrance": 4,
+          "standing": {
+            "penitents": 5
+          }
         }
       },
       {
@@ -7361,7 +7496,10 @@
         ],
         "grantsBannerPieceId": "moon_shard_shroud",
         "politics": {
-          "remembrance": 4
+          "remembrance": 4,
+          "standing": {
+            "penitents": -5
+          }
         }
       }
     ],
@@ -7561,7 +7699,17 @@
           "inquisition_pact"
         ],
         "alignmentMod": -5,
-        "goldMod": 300
+        "goldMod": 300,
+        "politics": {
+          "standing": {
+            "dominion": 20,
+            "vigil": -15,
+            "penitents": -15
+          },
+          "marks": {
+            "inquisition": "friend"
+          }
+        }
       },
       {
         "text": "Refuse it, and send the white sail back with its offer",
@@ -7570,7 +7718,14 @@
         "flagsToAdd": [
           "pact_refused"
         ],
-        "alignmentMod": 2
+        "alignmentMod": 2,
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "vigil": 5,
+            "penitents": 5
+          }
+        }
       }
     ]
   },
@@ -7606,6 +7761,11 @@
         ],
         "approvalMods": {
           "*": 2
+        },
+        "politics": {
+          "standing": {
+            "penitents": 5
+          }
         }
       },
       {
@@ -7618,6 +7778,11 @@
         ],
         "approvalMods": {
           "*": -2
+        },
+        "politics": {
+          "standing": {
+            "dominion": 5
+          }
         }
       }
     ]
@@ -7676,7 +7841,13 @@
           "hub_6010_masked",
           "lysa_fallen"
         ],
-        "alignmentMod": -3
+        "alignmentMod": -3,
+        "politics": {
+          "marks": {
+            "inquisition": "foe"
+          },
+          "hidden": true
+        }
       }
     ]
   },
@@ -7829,7 +8000,13 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_3100_tithe"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "compact": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -8064,7 +8241,13 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_3200_circle"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "oni": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -8381,7 +8564,15 @@
         "flagsToAdd": [
           "hub_5100_headman",
           "lamps_smashed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "wickwardens": "friend"
+          }
+        }
       },
       {
         "text": "Ask for a cut of the next wreck (+50 gold)",
@@ -8392,7 +8583,12 @@
         "flagsToAdd": [
           "hub_5100_headman",
           "wreck_cut"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          }
+        }
       }
     ]
   },
@@ -9112,7 +9308,12 @@
         "flagsToAdd": [
           "hub_6200_eldest_later",
           "giants_names_read"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "giants": 10
+          }
+        }
       },
       {
         "text": "Tell her he looked like he was reading",
@@ -9416,7 +9617,15 @@
         "flagsToAdd": [
           "hub_7100_helmsman_later",
           "helmsman_farewell"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
       },
       {
         "text": "Ask him the flagship’s soundings instead",
@@ -9721,7 +9930,12 @@
         "flagsToAdd": [
           "banner_five",
           "sail_climbed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": -5
+          }
+        }
       },
       {
         "text": "Pay the Anchorage’s riggers to bring it down",
@@ -9734,7 +9948,15 @@
         "flagsToAdd": [
           "banner_five",
           "sail_bought"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
       },
       {
         "text": "Burn the flagship and take it from the ashes",
@@ -9746,7 +9968,16 @@
         "flagsToAdd": [
           "banner_five",
           "flagship_burned"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "penitents": 5
+          },
+          "marks": {
+            "admiralty": "foe"
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -9972,7 +10203,15 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "whisper_ledger": "friend"
+          }
+        }
       }
     ]
   },
@@ -10104,7 +10343,15 @@
         "flagsToAdd": [
           "hub_2015_liora",
           "liora_met"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "mire": 5
+          },
+          "marks": {
+            "moss_choir": "friend"
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -10153,7 +10400,15 @@
         "flagsToAdd": [
           "hub_2015_vess",
           "met_vess"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "stitchers": "friend"
+          }
+        }
       },
       {
         "text": "Send her away",
