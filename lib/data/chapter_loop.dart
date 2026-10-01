@@ -280,7 +280,9 @@ bool mainQuestOpen({
 /// or leads into a scene that does. A companion the party's alignment, its
 /// story so far or its Charisma rules out is left out, and so is one
 /// already met ([unavailableAllyIds]: recruited or lost); one that only
-/// asks for gold is not, since gold comes.
+/// asks for gold is not, since gold comes. [gateOpen] (v1.196) says
+/// whether a choice's politics gate lets it be taken: one shut leads
+/// nowhere yet.
 List<String> placeCompanionLeads(
   StoryNode place,
   StoryData story,
@@ -289,6 +291,7 @@ List<String> placeCompanionLeads(
   required int alignmentScore,
   required int charisma,
   required Iterable<String> unavailableAllyIds,
+  bool Function(StoryChoice choice)? gateOpen,
 }) {
   final held = flags.toSet();
   final gone = unavailableAllyIds.toSet();
@@ -310,6 +313,7 @@ List<String> placeCompanionLeads(
   final leads = <String>[];
   for (final choice in place.choices) {
     if (choice.isHiddenFor(held)) continue;
+    if (gateOpen != null && !gateOpen(choice)) continue;
     final target = story.nodeFor(choice.nextId);
     if (!open(target)) continue;
     final questIds = [

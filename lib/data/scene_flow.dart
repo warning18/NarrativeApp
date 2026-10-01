@@ -46,11 +46,17 @@ bool isPlainGoOn(StoryChoice choice) =>
 /// null when [node] is a real stop: a place (town, camp, village), an
 /// ending, a timed scene, a scene with more than one way on (hidden ones aside) or whose
 /// one way on does more than move on, or takes the road to another place.
-StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags) {
+///
+/// [hidden] says which choices are out of sight (v1.196: a politics gate
+/// that fails, see choiceHiddenFor); by default, those [flags] hide.
+StoryChoice? passThroughChoiceOf(StoryNode node, Iterable<String> flags,
+    {bool Function(StoryChoice choice)? hidden}) {
   if (node.settlement != null || isStoryEnding(node)) return null;
   if (node.hubProgress != null || node.isTimed) return null;
   final held = flags.toSet();
-  final ways = node.choices.where((c) => !c.isHiddenFor(held)).toList();
+  final ways = node.choices
+      .where((c) => !(hidden?.call(c) ?? c.isHiddenFor(held)))
+      .toList();
   if (ways.length != 1) return null;
   final way = ways.single;
   if (!isPlainGoOn(way) || isRoadStep(node.id, way.nextId)) return null;

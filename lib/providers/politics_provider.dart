@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/factions.dart';
 import '../data/politics_events.dart';
 import '../gamedata/db_schema.dart';
-import '../models/story_politics.dart';
+import '../models/story_node.dart';
 import 'chapter_loop_provider.dart';
 import 'clans_provider.dart';
 import 'game_db_providers.dart';
@@ -28,6 +28,27 @@ Future<Map<String, PoliticsEvent>> loadPoliticsEvents(WidgetRef ref) async =>
 
 Future<Map<String, dynamic>> _companions(WidgetRef ref) =>
     ref.read(gameDbProvider(companionsSchema).notifier).whenLoaded();
+
+/// The coast a choice's politics gate is read in now (v1.196, see
+/// choicePoliticsGate): the clan data and the chapter reached.
+final coastGateWorldProvider = Provider<CoastWorld>((ref) => CoastWorld(
+      data: ref.watch(clanDataProvider),
+      chapter: ref.watch(reachedChapterProvider),
+    ));
+
+/// How [choice] stands behind its politics gate for [session] in [world]
+/// (see choicePoliticsGate).
+ChoiceGate choiceGateFor(
+        StoryChoice choice, PlayerSession session, CoastWorld world) =>
+    choicePoliticsGate(choice,
+        politics: session.politics, flags: session.flags, world: world);
+
+/// Whether [choice] is out of sight for [session]: its flags hide it, or
+/// its politics gate fails and it has no locked text to show instead.
+bool choiceHiddenFor(
+        StoryChoice choice, PlayerSession session, CoastWorld world) =>
+    choice.isHiddenFor(session.flags) ||
+    choiceGateFor(choice, session, world) == ChoiceGate.hidden;
 
 /// Applies a story choice's or a scene's [politics] now, once under [key]
 /// (see choicePoliticsKey, enterPoliticsKey), logged under

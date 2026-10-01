@@ -446,8 +446,12 @@ class _StoryView extends ConsumerWidget {
     // off the node's full authored choice count, not the remaining one, so
     // it doesn't snap back to a flat list as the last activities are used.
     final isHubNode = _isHubNode(node);
-    final visibleChoices =
-        node.choices.where((c) => !c.isHiddenFor(session.flags)).toList();
+    // A choice whose politics gate fails (v1.196) is hidden too, unless
+    // it has a locked text to show instead.
+    final gateWorld = ref.watch(coastGateWorldProvider);
+    final visibleChoices = node.choices
+        .where((c) => !choiceHiddenFor(c, session, gateWorld))
+        .toList();
     // On a hub, a finished activity stays on the list, greyed and ticked,
     // so the place reads as a checklist rather than shrinking.
     final doneChoices = isHubNode
@@ -828,7 +832,8 @@ class _StoryView extends ConsumerWidget {
                                     (c) =>
                                         c.triggersCombat &&
                                         !_isChoiceLocked(c, story, session,
-                                            playState.isInExcursion),
+                                            playState.isInExcursion,
+                                            world: gateWorld),
                                   ),
                                 ),
                               ),
@@ -1010,11 +1015,13 @@ class _StoryView extends ConsumerWidget {
 /// lockedText instead of being selectable).
 /// Whether [choice]'s road is still shut for [session] (its next scene
 /// asks for gold, alignment, flags or Charisma the character lacks, or,
-/// on a detour ([isExcursion]), it costs more gold than the purse holds).
+/// on a detour ([isExcursion]), it costs more gold than the purse holds;
+/// with [world], v1.196, its politics gate fails and it shows its locked
+/// text).
 bool isStoryChoiceLocked(
         StoryChoice choice, StoryData story, PlayerSession session,
-        {bool isExcursion = false}) =>
-    _isChoiceLocked(choice, story, session, isExcursion);
+        {bool isExcursion = false, CoastWorld? world}) =>
+    _isChoiceLocked(choice, story, session, isExcursion, world: world);
 
 /// What a shut [choice] reads as instead of its text: why it is shut (see
 /// [isStoryChoiceLocked]; [mainQuestShut]: a camp's main quest waiting for
@@ -1074,14 +1081,21 @@ bool _isChoiceLocked(
   StoryChoice choice,
   StoryData story,
   PlayerSession session,
-  bool isExcursion,
-) {
+  bool isExcursion, {
+  CoastWorld? world,
+}) {
   // A payment on the road (an offering, a toll, a fine) waits for a purse
   // that holds it, and so does a story choice marked as one (a fee, a
   // bribe, a buy-in). The story's other prices lock through the next
   // scene's gold requirement; gold it takes away unmarked is a loss.
   if (_paymentShort(choice, session.gold, isExcursion)) return true;
   if (isExcursion) return false;
+  // A politics gate that fails, on a choice with a locked text to show
+  // (v1.196); one without is hidden (see choiceHiddenFor).
+  if (world != null &&
+      choiceGateFor(choice, session, world) == ChoiceGate.locked) {
+    return true;
+  }
   final targetNode = choice.isEnding ? null : story.nodeFor(choice.nextId);
   return targetNode != null &&
       targetNode.hasRequirements &&
@@ -1657,9 +1671,14 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
     final session = ref.read(playerSessionProvider);
     final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
     if (node == null) break;
-    final way = passThroughChoiceOf(node, session.flags);
+    final gateWorld = ref.read(coastGateWorldProvider);
+    final way = passThroughChoiceOf(node, session.flags,
+        hidden: (c) => choiceHiddenFor(c, session, gateWorld));
     // A way on the party cannot take yet stays a stop, with its reason.
-    if (way == null || isStoryChoiceLocked(way, story, session)) break;
+    if (way == null ||
+        isStoryChoiceLocked(way, story, session, world: gateWorld)) {
+      break;
+    }
     final parts = composeNarrationParts(node, session, story, french: french);
     preludes.add(ScenePrelude(
       nodeId: node.id,
@@ -2609,8 +2628,9 @@ class _HubChoiceCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
-    final locked =
-        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final locked = mainQuestShut ||
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider));
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
             isExcursion: isExcursion,
@@ -2822,8 +2842,9 @@ class _ChoiceButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mainQuestShut = _mainQuestShut(ref, choice, isExcursion);
-    final locked =
-        mainQuestShut || _isChoiceLocked(choice, story, session, isExcursion);
+    final locked = mainQuestShut ||
+        _isChoiceLocked(choice, story, session, isExcursion,
+            world: ref.watch(coastGateWorldProvider));
 
     final lockedLabel = locked
         ? storyChoiceLockedText(ref, choice, session,
