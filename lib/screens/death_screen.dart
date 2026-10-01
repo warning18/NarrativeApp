@@ -18,6 +18,7 @@ class DeathScreen extends ConsumerStatefulWidget {
     required this.xpEarned,
     required this.nodesVisited,
     required this.skillsLost,
+    this.signsLost = 0,
     this.killerName = '',
     this.narrationSeed = 0,
   });
@@ -32,6 +33,10 @@ class DeathScreen extends ConsumerStatefulWidget {
 
   /// How many unlocked skills the reset wiped back to class basics.
   final int skillsLost;
+
+  /// How many signs the life carried (see signs.dart): a death takes them
+  /// all, and the patrons keep only their favour.
+  final int signsLost;
 
   @override
   ConsumerState<DeathScreen> createState() => _DeathScreenState();
@@ -137,6 +142,11 @@ class _DeathScreenState extends ConsumerState<DeathScreen> {
                             label: tr(ref, 'skills_reset_label'),
                             value: '$skillsLost',
                           ),
+                          if (widget.signsLost > 0)
+                            _StatLine(
+                              label: tr(ref, 'signs_lost_label'),
+                              value: '${widget.signsLost}',
+                            ),
                         ],
                       ),
                     ),
