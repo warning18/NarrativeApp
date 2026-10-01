@@ -6725,7 +6725,7 @@
       {
         "flag": "throne_winner_mire",
         "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais m’avaient tenu, et je les avais tenues. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
@@ -6906,7 +6906,7 @@
       {
         "flag": "throne_winner_mire",
         "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais m’avaient tenu, et je les avais tenues. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
@@ -7058,7 +7058,7 @@
       {
         "flag": "throne_winner_mire",
         "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais m’avaient tenu, et je les avais tenues. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
@@ -7230,7 +7230,7 @@
       {
         "flag": "throne_winner_mire",
         "en": "For one season the Mire Courts had held their court on the Lantern Hall’s floor, and the fen’s terms had held me, and I had kept them. The needle took the season back. But on the night before the invasion, in a house in the reeds that nobody outside the fen has ever been told the way to, someone painted a heron on the back of a child’s hand, said my name, and said that the fen would hold me to it.",
-        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais m’avaient tenu, et je les avais tenues. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
+        "fr": "Pendant une saison, les Cours du Marais avaient tenu leur cour sur le sol de la Salle de la Lanterne, et les conditions du marais me tenaient, et je les tenais. L’aiguille reprit la saison. Mais la veille de l’invasion, dans une maison des roseaux dont personne hors du marais n’a jamais su le chemin, quelqu’un peignit un héron sur le dos de la main d’une enfant, dit mon nom, et dit que le marais m’y tiendrait."
       },
       {
         "flag": "throne_winner_crows",
@@ -12331,6 +12331,41 @@
     ],
     "flag_callbacks": [
       {
+        "flag": "claim_dominion",
+        "en": "On the walls, the Houses’ people looked at the Dominion’s own gonfalon flying from a smuggler’s boat and did not know whether they were meant to cheer.",
+        "fr": "Sur les murs, les gens des Maisons regardèrent le gonfanon du Dominion lui-même flotter sur un bateau de contrebandier, et ne surent pas s’ils étaient censés acclamer."
+      },
+      {
+        "flag": "claim_vigil",
+        "en": "The open eye at the Eel’s yard looked back at the walls, and the walls, for once, looked away first.",
+        "fr": "L’œil ouvert à la vergue de l’Eel regarda les murs, et les murs, pour une fois, détournèrent les yeux les premiers."
+      },
+      {
+        "flag": "claim_compact",
+        "en": "The Compact’s iron plaque caught the sun at the Eel’s stern, and up on the Anvil Gate an old smith’s mark caught it back.",
+        "fr": "La plaque de fer du Pacte accrocha le soleil à la poupe de l’Eel, et là-haut, sur la porte de l’Enclume, la marque d’un vieux forgeron le lui renvoya."
+      },
+      {
+        "flag": "claim_mire",
+        "en": "The heron at the masthead had the harbour’s gulls in an uproar, and the Inquisition’s lookouts in another.",
+        "fr": "Le héron en tête de mât mit en émoi les mouettes du port, et les guetteurs de l’Inquisition dans un autre émoi encore."
+      },
+      {
+        "flag": "claim_crows",
+        "en": "The black pennant had three rings on its halyard, and every chain-master in Candlehold knew what three rings cost.",
+        "fr": "Le fanion noir portait trois anneaux à sa drisse, et chaque maître de chaîne de Candlehold savait ce que coûtent trois anneaux."
+      },
+      {
+        "flag": "claim_penitents",
+        "en": "The burnt lantern at the Eel’s bow drew a crowd on the quays, and the crowd went quiet when it had read the names.",
+        "fr": "La lanterne brûlée à la proue de l’Eel attira la foule sur les quais, et la foule se tut quand elle eut lu les noms."
+      },
+      {
+        "flag": "claim_open_hand",
+        "en": "The grey hand at the bow had stopped the harbour’s work: people stood on the quays and looked at it as if they had dreamed it once.",
+        "fr": "La main grise à la proue avait arrêté le travail du port : des gens se tenaient sur les quais et la regardaient comme s’ils l’avaient rêvée un jour."
+      },
+      {
         "flag": "lantern_bearer_dead",
         "en": "Black cloth still hung from the First Lantern’s iron, a year’s mourning crowded into one season. The bells had stopped. The arguing, I was told at the quay, had not.",
         "fr": "Un drap noir pendait encore au fer de la Première Lanterne, une année de deuil tassée en une saison. Les cloches s’étaient tues. Les disputes, me dit-on sur le quai, non."
@@ -16711,12 +16746,12 @@
       {
         "flag": "crowned_open",
         "en": "The Host had heard how I was crowned, and the camp had made up its mind about me accordingly: someone on the Throne you could bring a complaint to.",
-        "fr": "L’Ost avait appris comment on m’avait couronné, et le camp s’était fait une idée de moi en conséquence : quelqu’un sur le Trône à qui l’on pouvait porter une plainte."
+        "fr": "L’Ost avait appris comment on m’avait donné la couronne, et le camp s’était fait une idée de moi en conséquence : quelqu’un sur le Trône à qui l’on pouvait porter une plainte."
       },
       {
         "flag": "crowned_iron",
         "en": "The Host had heard how I was crowned. The camp was quieter around me than it had been, and stood up when I passed.",
-        "fr": "L’Ost avait appris comment on m’avait couronné. Le camp se taisait davantage autour de moi qu’avant, et se levait sur mon passage."
+        "fr": "L’Ost avait appris comment on m’avait donné la couronne. Le camp se taisait davantage autour de moi qu’avant, et se levait sur mon passage."
       },
       {
         "flag": "rival_spared",
