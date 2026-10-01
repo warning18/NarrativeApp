@@ -6,12 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../combat/ship_battle.dart';
 import '../combat/ship_combat.dart';
 import '../data/contracts.dart';
+import '../data/offers.dart' show clanEffectsFor;
 import '../data/sail_powers.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/combat_active_provider.dart';
+import '../providers/clans_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/game_config_provider.dart';
 import '../providers/game_db_providers.dart';
@@ -39,6 +41,7 @@ Future<bool?> runStoryShipBattle(
   final professions = await loadedGameDb(ref, professionsSchema);
   final gameConfig = await ref.read(gameConfigProvider.future);
   final signsDb = await loadedGameDb(ref, signsSchema);
+  final clans = await loadClanData(ref);
   await ref.read(shipTurnTimerProvider.notifier).loaded;
   final data = enemyShips[enemyShipId] as Map<String, dynamic>?;
   if (data == null || !context.mounted) return null;
@@ -53,9 +56,17 @@ Future<bool?> runStoryShipBattle(
           ? const <String, dynamic>{}
           : ships.values.first as Map<String, dynamic>);
   final sail = installedSail(parts, session.shipPartIds);
-  // The character's sea signs (see signs.dart).
+  // The character's sea signs (see signs.dart), the title worn and the
+  // Sworn boon with them (see offers.dart).
   final signs = signEffectsFor(session.heldSigns, parseSigns(signsDb),
-      alignment: session.alignmentScore);
+      alignment: session.alignmentScore,
+      extra: clanEffectsFor(
+        activeTitleId: session.activeTitleId,
+        heldTitleIds: session.heldTitleIds,
+        swornBoonIds: session.swornBoonIds,
+        swornFactionId: session.politics.swornFactionId,
+        data: clans,
+      ));
   final strength = sail == null ? 1 : sailStrength(sail.medium, session.raceId);
   List<ShipCrew> crew() => buildShipCrew(
         session: ref.read(playerSessionProvider),

@@ -1,12 +1,16 @@
 // What the Skills screen shows, worked out once and away from the widgets:
-// every skill the character can see, where it stands (known, ready to
-// learn, waiting on the one before it, out of reach), what it costs in
-// points, its tier and what raising it costs in essence. The tree, the
+// every skill the character can see, where it stands (known, next on its
+// branch, waiting on the one before it, out of reach), which clans offer
+// it (v1.194: the player learns no skill with points, see offers.dart; a
+// companion still does, one point each), its tier and what raising it
+// costs in essence. The tree, the
 // My skills list and the skill sheet all read the same entries, so they
 // never disagree, and the rules are unit-tested here (see
 // test/skills_view_model_test.dart).
 
 import '../../combat/combat_engine.dart';
+import '../../data/factions.dart';
+import '../../data/offers.dart' show sponsorsOfSkill;
 import '../../data/skill_tree.dart';
 import '../../providers/player_session_provider.dart';
 import '../../utils/face_style.dart';
@@ -16,8 +20,9 @@ enum SkillStatus {
   /// Known: learned, or everyone's from the start.
   known,
 
-  /// Can be learned now with points (maybe not yet afforded: see
-  /// [SkillEntry.affordable]).
+  /// Next on its branch: a companion learns it with a point (maybe not yet
+  /// afforded: see [SkillEntry.affordable]); for the player, the clans
+  /// sponsoring it may offer it (see [SkillEntry.sponsors]).
   ready,
 
   /// The skill before it on its branch comes first ([SkillEntry.after]),
@@ -39,6 +44,7 @@ class SkillEntry {
     this.tier = 0,
     this.fightTier = 0,
     this.tierable = false,
+    this.sponsors = const [],
   });
 
   final String id;
@@ -68,6 +74,10 @@ class SkillEntry {
   /// basic strike everyone has has no tiers).
   final bool tierable;
 
+  /// The factions that offer it (the player's tree: the clans sponsoring
+  /// its branch, see offers.dart), in the data's order.
+  final List<String> sponsors;
+
   FaceKind get kind => skillKind(record);
   bool get known => status == SkillStatus.known;
   bool get readyNow => status == SkillStatus.ready && affordable;
@@ -92,11 +102,13 @@ class SkillsModel {
   });
 
   /// The player's: their tree (class branches and heritage), the
-  /// reputation skills their class may take, and everything they know.
+  /// reputation skills their class may take, and everything they know;
+  /// [clans] names who offers each skill not yet known.
   factory SkillsModel.forPlayer({
     required PlayerSession session,
     required Map<String, dynamic> skills,
     required Map<String, dynamic> trees,
+    ClanData clans = ClanData.empty,
   }) {
     final branches = skillBranchesFor(trees,
         raceId: session.raceId, professionId: session.professionId);
@@ -127,13 +139,21 @@ class SkillsModel {
         record: record,
         status: status,
         cost: cost,
-        affordable: session.skillPoints >= cost,
+        // The player learns with no points: the clans offer.
+        affordable: false,
         branch: branch,
         index: index,
         after: after,
         tier: session.skillTiers[id] ?? 0,
         fightTier: tiers[id] ?? 0,
         tierable: session.unlockedSkillIds.contains(id),
+        sponsors: known.contains(id)
+            ? const []
+            : sponsorsOfSkill(id,
+                data: clans,
+                skillTrees: trees,
+                raceId: session.raceId,
+                professionId: session.professionId),
       );
     }
 
@@ -170,7 +190,7 @@ class SkillsModel {
     }
     return SkillsModel._(
       isPlayer: true,
-      skillPoints: session.skillPoints,
+      skillPoints: 0,
       essence: session.skillEssence,
       branches: branches,
       masteredBranchId: session.masteredBranchId,
@@ -259,11 +279,12 @@ class SkillsModel {
   int knownOn(SkillBranch branch) =>
       branch.skillIds.where((id) => entries[id]?.known ?? false).length;
 
-  /// Whether [branch] can be mastered now.
+  /// Whether [branch] can be mastered now (with essence, see
+  /// branchMasteryEssenceCost).
   bool canMaster(SkillBranch branch) => canMasterBranch(branch,
       known: knownIds.toSet(),
       masteredBranchId: masteredBranchId,
-      skillPoints: skillPoints);
+      essence: essence);
 
   bool isComplete(SkillBranch branch) =>
       branchComplete(branch, knownIds.toSet());

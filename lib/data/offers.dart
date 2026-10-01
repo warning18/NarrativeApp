@@ -343,6 +343,26 @@ List<OfferTicket> migratedOffers({
 
 // --- Drawing an offer -------------------------------------------------------
 
+/// The gamedata an offer is drawn from and applied with: the clans, the
+/// signs, and skills.json, skill_trees.json, items.json and spells.json.
+class OfferTables {
+  const OfferTables({
+    required this.data,
+    this.signs = const {},
+    this.skills = const {},
+    this.skillTrees = const {},
+    this.items = const {},
+    this.spells = const {},
+  });
+
+  final ClanData data;
+  final Map<String, SignDef> signs;
+  final Map<String, dynamic> skills;
+  final Map<String, dynamic> skillTrees;
+  final Map<String, dynamic> items;
+  final Map<String, SpellSpec> spells;
+}
+
 /// Everything a draw reads about the character and the world. The tables
 /// are the gamedata files as maps (skills.json, skill_trees.json,
 /// items.json); the rest is the session's.

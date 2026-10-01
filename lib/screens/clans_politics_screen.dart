@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/factions.dart';
+import '../data/offers.dart' show OfferSource;
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
@@ -11,9 +12,11 @@ import '../l10n/app_strings.dart';
 import '../providers/chapter_loop_provider.dart';
 import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
+import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import '../widgets/clan_widgets.dart';
+import '../widgets/offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
 
 /// Edit Mode's "Clans & Politics" (v1.193, see factions.dart), from the
@@ -108,19 +111,47 @@ class _StandingTab extends ConsumerWidget {
         for (final faction in data.otherworld)
           FactionStandingCard(faction: faction, editable: true),
         const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: OutlinedButton.icon(
-            key: const Key('clans_reset'),
-            icon: const Icon(Icons.restart_alt),
-            label: Text(tr(ref, 'reset')),
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              final done = tr(ref, 'clans_reset_done');
-              await ref.read(playerSessionProvider.notifier).resetPolitics();
-              messenger.showSnackBar(SnackBar(content: Text(done)));
-            },
-          ),
+        // Edit Mode: an offer from the clans now, or one more waiting (see
+        // offers.dart), and the coast as the story opens.
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            OutlinedButton.icon(
+              key: const Key('clans_offer_now'),
+              icon: const Icon(Icons.diversity_3),
+              label: Text(tr(ref, 'debug_offer_now')),
+              onPressed: () async {
+                await ref
+                    .read(playerSessionProvider.notifier)
+                    .grantOffer(OfferSource.edit);
+                if (context.mounted) {
+                  await showOfferIfWaiting(context, ref, sayWhenNone: true);
+                }
+              },
+            ),
+            OutlinedButton.icon(
+              key: const Key('clans_offer_plus'),
+              icon: const Icon(Icons.add),
+              label: Text(tr(ref, 'debug_offer_plus')),
+              onPressed: () => ref
+                  .read(playerSessionProvider.notifier)
+                  .grantOffer(OfferSource.edit),
+            ),
+            OutlinedButton.icon(
+              key: const Key('clans_reset'),
+              icon: const Icon(Icons.restart_alt),
+              label: Text(tr(ref, 'reset')),
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final done = tr(ref, 'clans_reset_done');
+                await ref
+                    .read(playerSessionProvider.notifier)
+                    .resetPolitics(data: ref.read(clanDataProvider));
+                messenger.showSnackBar(SnackBar(content: Text(done)));
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -596,6 +627,13 @@ class _EvolutionTab extends ConsumerWidget {
     ];
     String name(String id) => data.faction(id)?.nameFor(lang) ?? id;
     String sub(String id) => data.subclan(id)?.nameFor(lang) ?? id;
+    // An offer's cause names its gift (see offers.dart's offerCause).
+    final tables = ref.watch(offerTablesProvider);
+    final items = ref.watch(localizedDbProvider(itemsSchema)).value ?? const {};
+    String? describe(String kind, String detail) => kind == 'offer'
+        ? offerGiftLabel(detail,
+            tables: tables, localizedItems: items, lang: lang)
+        : null;
 
     return ListView(
       key: const Key('clans_evolution_list'),
@@ -644,6 +682,7 @@ class _EvolutionTab extends ConsumerWidget {
             language: lang,
             factionName: name,
             subclanName: sub,
+            describe: describe,
           ),
         if (politics.relationsLog.isNotEmpty) ...[
           _sectionLabel(context, tr(ref, 'clans_relations_log_title')),
@@ -674,12 +713,16 @@ class _LogTile extends StatelessWidget {
     required this.language,
     required this.factionName,
     required this.subclanName,
+    this.describe,
   });
 
   final StandingLogEntry entry;
   final AppLanguage language;
   final String Function(String id) factionName;
   final String Function(String id) subclanName;
+
+  /// Names a cause's detail (an offer's gift), see standingCauseLabel.
+  final String? Function(String kind, String detail)? describe;
 
   @override
   Widget build(BuildContext context) {
@@ -702,7 +745,8 @@ class _LogTile extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(standingCauseLabel(entry.cause, lang),
+                child: Text(
+                    standingCauseLabel(entry.cause, lang, describe: describe),
                     style: theme.textTheme.bodyMedium),
               ),
               Text(

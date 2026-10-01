@@ -6,7 +6,6 @@ import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
-import 'sign_offer_dialog.dart';
 
 /// A faction's icon (factions.json `icon`, see patronIconNames): a
 /// Material icon, since factions have no image of their own.
@@ -209,8 +208,9 @@ class SignEffectText extends StatelessWidget {
   }
 }
 
-/// The Character tab's Signs: the offer waiting, if any, Titan's Blood,
-/// then the held signs by slot and the passives. A tap on a sign while
+/// The Character tab's Signs: Titan's Blood, then the held signs by slot
+/// and the passives (signs now come in the clans' offers, see
+/// offer_dialog.dart). A tap on a sign while
 /// blood waits raises it.
 class SignsSection extends ConsumerWidget {
   const SignsSection({super.key});
@@ -368,19 +368,6 @@ class SignsSection extends ConsumerWidget {
             style: theme.textTheme.bodySmall
                 ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
           ),
-        if (session.pendingSignPicks > 0) ...[
-          const SizedBox(height: 8),
-          FilledButton.tonalIcon(
-            key: const Key('sign_open_offer'),
-            icon: const Icon(Icons.draw_outlined),
-            onPressed: () =>
-                showSignOfferIfWaiting(context, ref, sayWhenNone: true),
-            label: Text(
-              '${tr(ref, 'sign_open_offer_button')} · '
-              '${tr(ref, 'sign_pending').replaceAll('{n}', '${session.pendingSignPicks}')}',
-            ),
-          ),
-        ],
         const SizedBox(height: 4),
         if (held.isEmpty)
           Text(tr(ref, 'signs_none'),

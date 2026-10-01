@@ -5,21 +5,20 @@ import '../l10n/app_strings.dart';
 import '../providers/player_session_provider.dart';
 import 'detail_dialog.dart';
 import 'moments.dart';
-import 'perk_picker.dart';
-import 'sign_offer_dialog.dart';
+import 'offer_dialog.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
 /// spend their new stat point(s) immediately, right in the modal, or close
 /// it and distribute them later from the Level Up screen — either way the
-/// points aren't lost. An odd level brings a sign to choose (see
-/// signs.dart): its offer follows once this closes.
+/// points aren't lost. Each level brings an offer from the clans (see
+/// offers.dart): it follows once this closes.
 Future<void> showLevelUpDialog(BuildContext context, WidgetRef ref,
     {required int newLevel}) async {
   await showDialog<void>(
     context: context,
     builder: (context) => _LevelUpDialog(newLevel: newLevel),
   );
-  if (context.mounted) await showSignOfferIfWaiting(context, ref);
+  if (context.mounted) await showOfferIfWaiting(context, ref);
 }
 
 class _LevelUpDialog extends ConsumerWidget {
@@ -158,8 +157,29 @@ class _LevelUpDialog extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // A perk to choose for the new level (see perks.dart).
-            const FlipIn(flipKey: 'perks', child: PerkPicker()),
+            // The clans come once this closes (see offers.dart).
+            if (session.pendingOffers.isNotEmpty)
+              FlipIn(
+                flipKey: 'offers',
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: [
+                      Icon(Icons.diversity_3,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.primary),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          tr(ref, 'level_up_offer_note'),
+                          key: const Key('level_up_offer_note'),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             Text(
               '${tr(ref, 'stat_points_available')}: ${session.statPoints}',
               style: Theme.of(context)

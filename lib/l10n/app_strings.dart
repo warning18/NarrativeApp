@@ -1618,9 +1618,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'skill_list_view': {AppLanguage.en: 'List', AppLanguage.fr: 'Liste'},
   'skill_tree_intro': {
     AppLanguage.en:
-        'Each branch is learned from the top down, and the deeper the dearer: 1, 1, 2, then 3 points. Learn a whole branch of your class to master it: its skills then fight a tier higher. There are points for about two branches and one mastery, so choose your path.',
+        'Skills are no longer bought with points: the clans offer them. Each branch is sponsored by a clan, and a clan offers a branch’s skills from the top down, deeper as it trusts you more: the first at Unknown, the second at Known, the third at Trusted, the fourth at Sworn. Learn a whole branch of your class to master it with essence: its skills then fight a tier higher.',
     AppLanguage.fr:
-        'Chaque branche s’apprend de haut en bas, et plus on descend, plus c’est cher : 1, 1, 2, puis 3 points. Apprenez toute une branche de votre classe pour la maîtriser : ses compétences combattent alors un rang au-dessus. Les points suffisent pour environ deux branches et une maîtrise : choisissez votre voie.',
+        'Les compétences ne s’achètent plus avec des points\u00a0: les clans les offrent. Chaque branche est parrainée par un clan, qui en offre les compétences de haut en bas, plus profondes à mesure qu’il vous fait confiance\u00a0: la première à l’Anonymat, la deuxième à l’Estime, la troisième à la Confiance, la quatrième au Serment. Apprenez toute une branche de votre classe pour la maîtriser avec de l’essence\u00a0: ses compétences combattent alors un rang au-dessus.',
   },
   'skill_tree_mastered': {
     AppLanguage.en:
@@ -1663,9 +1663,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'mastery_body': {
     AppLanguage.en:
-        'Every skill of this branch fights one tier higher. It costs {cost} skill points once the whole branch is learned, and only one branch can ever be mastered.',
+        'Every skill of this branch fights one tier higher. It costs {cost} essence once the whole branch is learned, and only one branch can ever be mastered.',
     AppLanguage.fr:
-        'Chaque compétence de cette branche combat un rang au-dessus. Elle coûte {cost} points de compétence une fois toute la branche apprise, et une seule branche peut être maîtrisée.',
+        'Chaque compétence de cette branche combat un rang au-dessus. Elle coûte {cost}\u00a0d’essence une fois toute la branche apprise, et une seule branche peut être maîtrisée.',
   },
   'mastery_done': {
     AppLanguage.en: 'Mastered.',
@@ -1680,8 +1680,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Apprenez d’abord toutes les compétences de cette branche.',
   },
   'mastery_button': {
-    AppLanguage.en: 'Master this branch ({cost} points)',
-    AppLanguage.fr: 'Maîtriser cette branche ({cost} points)',
+    AppLanguage.en: 'Master this branch ({cost} essence)',
+    AppLanguage.fr: 'Maîtriser cette branche ({cost}\u00a0d’essence)',
   },
   'mastery_gained': {
     AppLanguage.en: 'Mastered: {branch}',
@@ -2183,8 +2183,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Lu sur-le-champ : un point de caractéristique.',
   },
   'tome_skill_point_desc': {
-    AppLanguage.en: 'Read on the spot: one skill point.',
-    AppLanguage.fr: 'Lu sur-le-champ : un point de compétence.',
+    AppLanguage.en: 'Read on the spot: the clans come to you with an offer.',
+    AppLanguage.fr:
+        'Lu sur-le-champ\u00a0: les clans viennent à vous avec une offre.',
   },
   'loot_use_now_title': {
     AppLanguage.en: 'Use your spoils now',
@@ -2300,8 +2301,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Rien à apprendre pour l\'instant',
   },
   'skills_rules_short': {
-    AppLanguage.en: 'Learn top to bottom · deeper costs more · one Mastery',
-    AppLanguage.fr: 'De haut en bas · plus bas, plus cher · une seule Maîtrise',
+    AppLanguage.en:
+        'The clans offer skills · deeper with standing · one Mastery',
+    AppLanguage.fr:
+        'Les clans offrent les compétences · plus profondes avec la réputation · une seule Maîtrise',
   },
   'skills_how_it_works': {
     AppLanguage.en: 'How it works',
@@ -2316,8 +2319,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: '{n} pts',
   },
   'mastery_cost_label': {
-    AppLanguage.en: 'Mastery · {n} pts',
-    AppLanguage.fr: 'Maîtrise · {n} pts',
+    AppLanguage.en: 'Mastery · {n} essence',
+    AppLanguage.fr: 'Maîtrise · {n}\u00a0d’essence',
   },
   'skill_step_of': {
     AppLanguage.en: '{branch} · step {i} of {n}',
@@ -4388,9 +4391,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Rang {n}/{max}',
   },
   'perks_none': {
-    AppLanguage.en: 'No perks yet. Every second level brings one to choose.',
+    AppLanguage.en:
+        'No perks yet. The Wayfarer brings them in the clans’ offers.',
     AppLanguage.fr:
-        'Aucun atout pour l’instant. Un niveau sur deux en apporte un à choisir.',
+        'Aucun atout pour l’instant. Le Voyageur en apporte dans les offres des clans.',
   },
   'perk_steadyHands': {
     AppLanguage.en: 'Steady Hands',
@@ -8825,8 +8829,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Vos Signes\u00a0: le groupe récupère {n}\u00a0% de sa santé.',
   },
   'sign_log_offer': {
-    AppLanguage.en: 'A patron takes notice: a sign waits for you.',
-    AppLanguage.fr: 'Un protecteur vous remarque\u00a0: un Signe vous attend.',
+    AppLanguage.en: 'A boss beaten: the clans come to you with an offer.',
+    AppLanguage.fr:
+        'Un boss vaincu\u00a0: les clans viennent à vous avec une offre.',
   },
   'sign_log_titan_blood': {
     AppLanguage.en: 'A drop of Titan’s Blood!',
@@ -9135,6 +9140,250 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'clans_none': {
     AppLanguage.en: 'No clan data yet.',
     AppLanguage.fr: 'Pas encore de données de clans.',
+  },
+  'offer_title': {
+    AppLanguage.en: 'The clans come to you',
+    AppLanguage.fr: 'Les clans viennent à vous',
+  },
+  'offer_hint': {
+    AppLanguage.en: 'Take one gift: the one you take is a side chosen.',
+    AppLanguage.fr:
+        'Prenez un don\u00a0: celui que vous prenez est un camp choisi.',
+  },
+  'offer_pending': {
+    AppLanguage.en: '{n} waiting',
+    AppLanguage.fr: '{n}\u00a0en attente',
+  },
+  'offer_take_button': {
+    AppLanguage.en: 'Take this gift',
+    AppLanguage.fr: 'Prendre ce don',
+  },
+  'offer_later_button': {
+    AppLanguage.en: 'Later',
+    AppLanguage.fr: 'Plus tard',
+  },
+  'offer_confirm_title': {
+    AppLanguage.en: 'Take {gift}?',
+    AppLanguage.fr: 'Prendre {gift}\u00a0?',
+  },
+  'offer_confirm_from': {
+    AppLanguage.en: 'Offered by: {who}',
+    AppLanguage.fr: 'Offert par\u00a0: {who}',
+  },
+  'offer_confirm_accept': {
+    AppLanguage.en: 'Accept',
+    AppLanguage.fr: 'Accepter',
+  },
+  'offer_confirm_back': {
+    AppLanguage.en: 'Back',
+    AppLanguage.fr: 'Retour',
+  },
+  'offer_no_standing': {
+    AppLanguage.en: 'No faction: standing doesn’t move.',
+    AppLanguage.fr: 'Sans faction\u00a0: la réputation ne bouge pas.',
+  },
+  'offer_alignment_nudge': {
+    AppLanguage.en: 'alignment {n}',
+    AppLanguage.fr: 'alignement {n}',
+  },
+  'offer_none_to_come': {
+    AppLanguage.en: 'Nobody can come to you yet.',
+    AppLanguage.fr: 'Personne ne peut encore venir à vous.',
+  },
+  'offer_source_level': {
+    AppLanguage.en: 'A level reached',
+    AppLanguage.fr: 'Un niveau atteint',
+  },
+  'offer_source_boss': {
+    AppLanguage.en: 'A boss beaten',
+    AppLanguage.fr: 'Un boss vaincu',
+  },
+  'offer_source_chapter': {
+    AppLanguage.en: 'Chapter {n} begins',
+    AppLanguage.fr: 'Le chapitre {n} commence',
+  },
+  'offer_source_tome': {
+    AppLanguage.en: 'A Tome of Mastery read',
+    AppLanguage.fr: 'Un Tome de maîtrise lu',
+  },
+  'offer_source_quest': {
+    AppLanguage.en: 'A quest step',
+    AppLanguage.fr: 'Une étape de quête',
+  },
+  'offer_source_intrigue': {
+    AppLanguage.en: 'An intrigue comes to a head',
+    AppLanguage.fr: 'Une intrigue se dénoue',
+  },
+  'offer_source_start': {
+    AppLanguage.en: 'Your first steps',
+    AppLanguage.fr: 'Vos premiers pas',
+  },
+  'offer_source_migrated': {
+    AppLanguage.en: 'From the points you had not spent',
+    AppLanguage.fr: 'Des points que vous n’aviez pas dépensés',
+  },
+  'offer_source_edit': {
+    AppLanguage.en: 'Edit Mode',
+    AppLanguage.fr: 'Mode Édition',
+  },
+  'offer_gift_skill': {
+    AppLanguage.en: 'Skill',
+    AppLanguage.fr: 'Compétence',
+  },
+  'offer_gift_sign': {
+    AppLanguage.en: 'Sign',
+    AppLanguage.fr: 'Signe',
+  },
+  'offer_gift_object': {
+    AppLanguage.en: 'Object',
+    AppLanguage.fr: 'Objet',
+  },
+  'offer_gift_title': {
+    AppLanguage.en: 'Title',
+    AppLanguage.fr: 'Titre',
+  },
+  'offer_gift_sworn': {
+    AppLanguage.en: 'Sworn boon',
+    AppLanguage.fr: 'Don du serment',
+  },
+  'offer_gift_perk': {
+    AppLanguage.en: 'Perk',
+    AppLanguage.fr: 'Atout',
+  },
+  'offer_sworn_note': {
+    AppLanguage.en:
+        'Given once, to the one sworn to them. It holds while you stay sworn.',
+    AppLanguage.fr:
+        'Donné une seule fois, à qui leur est juré. Il tient tant que vous le restez.',
+  },
+  'offer_wayfarer_name': {
+    AppLanguage.en: 'The Wayfarer',
+    AppLanguage.fr: 'Le Voyageur',
+  },
+  'offer_wayfarer_intro': {
+    AppLanguage.en: 'A traveller with no banner falls in step beside you.',
+    AppLanguage.fr: 'Un voyageur sans bannière se met à marcher à votre pas.',
+  },
+  'offer_wayfarer_greeting_0': {
+    AppLanguage.en: 'No banner, no price. Take what helps.',
+    AppLanguage.fr: 'Ni bannière ni prix. Prenez ce qui vous aide.',
+  },
+  'offer_wayfarer_greeting_1': {
+    AppLanguage.en: 'The road teaches what the clans won’t.',
+    AppLanguage.fr: 'La route enseigne ce que les clans taisent.',
+  },
+  'offer_wayfarer_greeting_2': {
+    AppLanguage.en: 'I owe nobody on this coast. Neither do you, for this.',
+    AppLanguage.fr:
+        'Je ne dois rien à personne sur cette côte. Vous non plus, pour ceci.',
+  },
+  'offer_wayfarer_greeting_3': {
+    AppLanguage.en: 'A small thing, freely given.',
+    AppLanguage.fr: 'Une petite chose, donnée sans condition.',
+  },
+  'offers_section': {
+    AppLanguage.en: 'Offers',
+    AppLanguage.fr: 'Offres',
+  },
+  'offers_none': {
+    AppLanguage.en:
+        'No offer waiting. Each level, boss beaten, chapter and Tome of Mastery brings one.',
+    AppLanguage.fr:
+        'Aucune offre en attente. Chaque niveau, boss vaincu, chapitre et Tome de maîtrise en apporte une.',
+  },
+  'offer_open_button': {
+    AppLanguage.en: 'Choose a gift',
+    AppLanguage.fr: 'Choisir un don',
+  },
+  'offer_chapter_note': {
+    AppLanguage.en: 'The clans come to you: an offer waits.',
+    AppLanguage.fr: 'Les clans viennent à vous\u00a0: une offre vous attend.',
+  },
+  'offer_count_label': {
+    AppLanguage.en: 'offer(s)',
+    AppLanguage.fr: 'offre(s)',
+  },
+  'offer_bonus_label': {
+    AppLanguage.en: 'Offer',
+    AppLanguage.fr: 'Offre',
+  },
+  'offers_waiting_label': {
+    AppLanguage.en: 'Offers waiting',
+    AppLanguage.fr: 'Offres en attente',
+  },
+  'level_up_offer_note': {
+    AppLanguage.en: 'The clans come to you once this closes: an offer waits.',
+    AppLanguage.fr:
+        'Les clans viennent à vous une fois ceci fermé\u00a0: une offre vous attend.',
+  },
+  'purse_offers_note': {
+    AppLanguage.en: 'skills come in the clans’ offers',
+    AppLanguage.fr: 'les compétences viennent des offres des clans',
+  },
+  'skill_offered_by': {
+    AppLanguage.en: 'Offered by {clan}',
+    AppLanguage.fr: 'Offert par {clan}',
+  },
+  'skill_no_sponsor': {
+    AppLanguage.en: 'No clan offers it.',
+    AppLanguage.fr: 'Aucun clan ne l’offre.',
+  },
+  'skill_offers_note': {
+    AppLanguage.en:
+        'A clan offers its branch’s skills one by one, deeper as it trusts you more.',
+    AppLanguage.fr:
+        'Un clan offre les compétences de sa branche une à une, plus profondes à mesure qu’il vous fait confiance.',
+  },
+  'titles_section': {
+    AppLanguage.en: 'Titles',
+    AppLanguage.fr: 'Titres',
+  },
+  'titles_none': {
+    AppLanguage.en:
+        'No title yet. The clans give them, and standing earns them.',
+    AppLanguage.fr:
+        'Aucun titre pour l’instant. Les clans en donnent, et la réputation en vaut.',
+  },
+  'title_wear': {
+    AppLanguage.en: 'Wear',
+    AppLanguage.fr: 'Porter',
+  },
+  'title_worn': {
+    AppLanguage.en: 'Worn',
+    AppLanguage.fr: 'Porté',
+  },
+  'title_bad_note': {
+    AppLanguage.en: 'A brand: it counts, worn or not.',
+    AppLanguage.fr: 'Une marque\u00a0: elle compte, portée ou non.',
+  },
+  'debug_offer_now': {
+    AppLanguage.en: 'Offer now',
+    AppLanguage.fr: 'Offre maintenant',
+  },
+  'debug_offer_plus': {
+    AppLanguage.en: '+1 offer',
+    AppLanguage.fr: '+1\u00a0offre',
+  },
+  'sign_log_writ': {
+    AppLanguage.en: 'The Lantern’s Writ cancels the blow.',
+    AppLanguage.fr: 'Le Mandat de la Lanterne annule le coup.',
+  },
+  'sign_log_edge': {
+    AppLanguage.en: 'loses its guard to the Compact edge.',
+    AppLanguage.fr: 'perd sa garde sous le fil du Pacte.',
+  },
+  'sign_log_ember': {
+    AppLanguage.en: 'The Ember face lifts the curse.',
+    AppLanguage.fr: 'La face Braise lève la malédiction.',
+  },
+  'sign_log_crows': {
+    AppLanguage.en: 'The Crow’s Price: {n} gold stolen.',
+    AppLanguage.fr:
+        'Le Prix de la Corneille\u00a0: {n}\u00a0pièces d’or volées.',
+  },
+  'intent_then_label': {
+    AppLanguage.en: 'Then:',
+    AppLanguage.fr: 'Ensuite\u00a0:',
   },
   'shop_faction_line': {
     AppLanguage.en: '{name}: {tier}, prices {p}%',

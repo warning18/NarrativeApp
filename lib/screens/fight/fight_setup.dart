@@ -171,6 +171,7 @@ extension _FightSetup on _FightScreenState {
     Map<String, dynamic> skillTrees,
     Map<String, dynamic> skills,
     Map<String, dynamic> signsDb,
+    List<SignEffect> clanEffects,
   ) {
     if (_partyBuilt) return;
     _partyBuilt = true;
@@ -179,10 +180,21 @@ extension _FightSetup on _FightScreenState {
     // rest as the fight goes.
     _perks = session.perkEffects;
     // Signs (see signs.dart): what the held ones add up to at the
-    // alignment the party walks in with.
+    // alignment the party walks in with, with the title worn and the
+    // Sworn boon (see offers.dart's clanEffectsFor).
     _signDefs = parseSigns(signsDb);
     _signs = signEffectsFor(session.heldSigns, _signDefs,
-        alignment: session.alignmentScore);
+        alignment: session.alignmentScore, extra: clanEffects);
+    _writCharges = _signs.writFace;
+    _edgeCharges = _signs.compactEdge;
+    _emberCharges = _signs.emberFace;
+    _crowsHits = 0;
+    // Open Eyes: the tear's things cannot surprise the party.
+    if (_signs.intentLookahead > 0 &&
+        _condition == BattlefieldCondition.ambush &&
+        _enemies.any((e) => enemyResistances(e.data).contains('Void'))) {
+      _condition = null;
+    }
     if (_signs.maxMana > 0) {
       final full = _mana >= _maxMana;
       _maxMana += _signs.maxMana;

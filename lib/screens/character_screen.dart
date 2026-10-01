@@ -14,10 +14,12 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
+import '../data/offers.dart' show OfferSource;
 import '../widgets/clan_widgets.dart';
-import '../widgets/perk_picker.dart';
-import '../widgets/sign_offer_dialog.dart';
+import '../widgets/offer_dialog.dart';
+import '../widgets/perk_list.dart';
 import '../widgets/sign_widgets.dart';
+import '../widgets/title_widgets.dart';
 import '../widgets/mana_meter.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
@@ -249,6 +251,17 @@ class _CharacterHeader extends ConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: theme.textTheme.headlineSmall),
+                        // The title worn (see offers.dart's titles).
+                        if (activeTitleName(ref) case final title
+                            when title.isNotEmpty)
+                          Text(
+                            title,
+                            key: const Key('character_title'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                                color: ink.gold, fontStyle: FontStyle.italic),
+                          ),
                         Text(subtitle,
                             style: theme.textTheme.bodyMedium
                                 ?.copyWith(color: ink.ash)),
@@ -300,43 +313,45 @@ class _CharacterHeader extends ConsumerWidget {
           id: 'character.alignment',
           child: _AlignmentBar(score: session.alignmentScore),
         ),
-        // Stat points are spent on Level Up, skill points on Skills: a
-        // button for each kind waiting.
-        for (final (count, labelKey, key, screen) in [
-          (
-            session.statPoints,
-            'level_up',
-            'character_level_up',
-            const LevelUpScreen() as Widget
-          ),
-          (
-            session.skillPoints,
-            'skills',
-            'character_skills',
-            const SkillsScreen() as Widget
-          ),
-        ])
-          if (count > 0) ...[
-            const SizedBox(height: 10),
-            FilledButton(
-              key: Key(key),
-              style: FilledButton.styleFrom(
-                  minimumSize: const Size.fromHeight(48)),
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => screen),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Text(
-                          '$count ${tr(ref, key == 'character_skills' ? 'skill_points_label' : 'stat_points_label')}')),
-                  Text(tr(ref, labelKey)),
-                ],
-              ),
+        // Stat points are spent on Level Up: a button while some wait.
+        if (session.statPoints > 0) ...[
+          const SizedBox(height: 10),
+          FilledButton(
+            key: const Key('character_level_up'),
+            style:
+                FilledButton.styleFrom(minimumSize: const Size.fromHeight(48)),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const LevelUpScreen()),
             ),
-          ],
-        // Level-up perks (see perks.dart): the choice waiting, if any,
-        // then the ones taken.
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                        '${session.statPoints} ${tr(ref, 'stat_points_label')}')),
+                Text(tr(ref, 'level_up')),
+              ],
+            ),
+          ),
+        ],
+        // The clans' offers (see offers.dart): the one waiting, if any.
+        const SizedBox(height: 14),
+        const Card(
+          key: Key('character_offers'),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: OffersPanel(),
+          ),
+        ),
+        // Titles (see offers.dart): the ones held, and the one worn.
+        const SizedBox(height: 14),
+        const Card(
+          key: Key('character_titles'),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: TitlesSection(),
+          ),
+        ),
+        // Perk ranks (see perks.dart): the Wayfarer's gifts.
         const SizedBox(height: 14),
         Card(
           key: const Key('character_perks'),
@@ -348,7 +363,6 @@ class _CharacterHeader extends ConsumerWidget {
                 Text(tr(ref, 'perk_section'),
                     style: Theme.of(context).textTheme.titleSmall),
                 const SizedBox(height: 8),
-                const PerkPicker(),
                 const PerkList(),
               ],
             ),
@@ -624,7 +638,6 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
       'antidoteCount': TextEditingController(text: '${session.antidoteCount}'),
       'mana': TextEditingController(text: '${session.mana}'),
       'statPoints': TextEditingController(text: '${session.statPoints}'),
-      'skillPoints': TextEditingController(text: '${session.skillPoints}'),
     };
   }
 
@@ -674,7 +687,6 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
           antidoteCount: parse('antidoteCount'),
           mana: parse('mana'),
           statPoints: parse('statPoints'),
-          skillPoints: parse('skillPoints'),
         );
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(tr(ref, 'stats_updated_message'))),
@@ -723,7 +735,6 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
                 _field('antidoteCount', 'antidote_count_label'),
                 _field('mana', 'mana_label'),
                 _field('statPoints', 'stat_points_label'),
-                _field('skillPoints', 'skill_points_label'),
               ],
             ),
             const SizedBox(height: 12),
@@ -735,20 +746,26 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
                   onPressed: _apply,
                   child: Text(tr(ref, 'apply_button')),
                 ),
-                // Signs (see signs.dart), to test an offer or a raise
-                // without playing to the next odd level or hunt.
+                // Offers (see offers.dart), to test one without playing to
+                // the next level: one now, or one more waiting.
                 OutlinedButton(
-                  key: const Key('debug_offer_sign'),
+                  key: const Key('debug_offer_now'),
                   onPressed: () async {
                     await ref
                         .read(playerSessionProvider.notifier)
-                        .grantSignPicks(1);
+                        .grantOffer(OfferSource.edit);
                     if (context.mounted) {
-                      await showSignOfferIfWaiting(context, ref,
-                          sayWhenNone: true);
+                      await showOfferIfWaiting(context, ref, sayWhenNone: true);
                     }
                   },
-                  child: Text(tr(ref, 'debug_offer_sign')),
+                  child: Text(tr(ref, 'debug_offer_now')),
+                ),
+                OutlinedButton(
+                  key: const Key('debug_offer_plus'),
+                  onPressed: () => ref
+                      .read(playerSessionProvider.notifier)
+                      .grantOffer(OfferSource.edit),
+                  child: Text(tr(ref, 'debug_offer_plus')),
                 ),
                 OutlinedButton(
                   key: const Key('debug_titan_blood'),

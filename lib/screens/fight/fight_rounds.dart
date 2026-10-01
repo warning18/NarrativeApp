@@ -305,7 +305,7 @@ extension _FightRounds on _FightScreenState {
         final wasAlive = target.isAlive;
         final landed = _landHitOnEnemy(
             target, damage, element, newEntries, lang,
-            pierce: pierce);
+            pierce: pierce, edge: actor.isPlayer);
         target.currentHealth = max(0, target.currentHealth - landed);
         dealt = landed;
         _bestHitThisRound = max(_bestHitThisRound, landed);
@@ -313,6 +313,8 @@ extension _FightRounds on _FightScreenState {
           lastDamagedEnemyKey = target.key;
           lastEnemyDamage = landed;
           hitsLanded++;
+          // The Crow's Price steals on each hit the player lands.
+          if (actor.isPlayer) _crowsHits++;
           // Lifesteal (a Bloodthorn Blade, the full Hollow Court set) and
           // mana on hit (a Siphon Wand) pay out per landed hit.
           final drained = actor.gear.lifestealFor(landed);
@@ -348,7 +350,11 @@ extension _FightRounds on _FightScreenState {
               newEntries,
               lang);
         }
-        final inflicted = result.inflictedStatus;
+        final rawInflicted = result.inflictedStatus;
+        // The Fen's Terms: a poison the player inflicts runs longer.
+        final inflicted = rawInflicted != null && actor.isPlayer
+            ? _signs.playerInflicted(rawInflicted)
+            : rawInflicted;
         if (inflicted != null) {
           target.statusEffects = applyStatusEffect(
             target.statusEffects,
@@ -689,6 +695,14 @@ extension _FightRounds on _FightScreenState {
     }
     if (enemy.hasReactiveMoves) {
       enemy.pendingMove = null;
+      enemy.nextMove = null;
+      return;
+    }
+    // Open Eyes: the move after is rolled too, and comes next.
+    if (_signs.intentLookahead > 0) {
+      enemy.pendingMove =
+          enemy.nextMove ?? _rollMoveAndTargetFor(enemy, skills);
+      enemy.nextMove = _rollMoveAndTargetFor(enemy, skills);
       return;
     }
     enemy.pendingMove = _rollMoveAndTargetFor(enemy, skills);
@@ -715,9 +729,12 @@ extension _FightRounds on _FightScreenState {
   /// through, notes it towards breaking a wind-up, and reveals the
   /// weakness/resistance on the enemy's card with a log line the first
   /// time.
+  ///
+  /// [edge]: the player's own strike, which a Compact edge (see signs.dart's
+  /// compactEdge) breaks a raised guard with, outright, while it lasts.
   int _landHitOnEnemy(_EnemyMember enemy, int damage, String element,
       List<_LogEntry> entries, AppLanguage lang,
-      {bool pierce = false}) {
+      {bool pierce = false, bool edge = false}) {
     if (damage <= 0) return damage;
     final multiplier = elementMultiplierFor(enemy.data, element);
     var landed = damageAfterElement(damage, enemy.data, element);
@@ -733,6 +750,15 @@ extension _FightRounds on _FightScreenState {
           _LogKind.info,
         ));
       }
+    }
+    // The Compact edge breaks the whole guard before the blow lands.
+    if (enemy.guard > 0 && !pierce && edge && _edgeCharges > 0) {
+      _edgeCharges--;
+      enemy.guard = 0;
+      entries.add(_LogEntry(
+        '${enemy.displayName} ${trFor(lang, 'sign_log_edge')}',
+        _LogKind.playerDamage,
+      ));
     }
     // A Pierce goes straight through a raised guard (see face_keywords).
     if (enemy.guard > 0 && !pierce) {
@@ -885,6 +911,7 @@ extension _FightRounds on _FightScreenState {
         ));
       }
       if (entered) {
+        enemy.nextMove = null;
         _preRollMoveFor(enemy, skills);
         _fx(VfxStyle.phase, _enemyCardKey(enemy.key), delayMs: 300, big: true);
       }
@@ -1060,6 +1087,20 @@ extension _FightRounds on _FightScreenState {
         }
       }
 
+      // The Lantern's Writ: the first blows aimed at the player each
+      // fight are cancelled before they land -- no damage, no status.
+      if (target.isPlayer && _writCharges > 0) {
+        _writCharges--;
+        _fx(VfxStyle.radiance, _memberCardKey(target.id), delayMs: fxDelay);
+        _update(() {
+          _log.add(_LogEntry(
+            '${move.message} ${trFor(lang, 'sign_log_writ')}',
+            _LogKind.playerBlock,
+          ));
+          enemy.statusEffects = tickStatusEffects(enemy.statusEffects);
+        });
+        continue;
+      }
       final mitigation = _mitigationFor(target, move.element, items);
       // A dodge evades the hit outright -- no damage, no status effect --
       // rather than just softening it further on top of block/armor/resist.
@@ -1303,8 +1344,8 @@ extension _FightRounds on _FightScreenState {
       List<_LogEntry> entries, AppLanguage lang) {
     for (final chance in chances) {
       if (!enemy.isAlive || !chance.rolls(_random)) continue;
-      enemy.statusEffects =
-          applyStatusEffect(enemy.statusEffects, chance.status);
+      enemy.statusEffects = applyStatusEffect(
+          enemy.statusEffects, _signs.playerInflicted(chance.status));
       _fx(styleForStatus(chance.status.type), _enemyCardKey(enemy.key),
           delayMs: 350);
       entries.add(_LogEntry(
