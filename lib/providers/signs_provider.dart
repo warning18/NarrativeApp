@@ -1,17 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/factions.dart';
 import '../data/signs.dart';
 import '../gamedata/db_schema.dart';
+import 'clans_provider.dart';
 import 'game_db_providers.dart';
 import 'player_session_provider.dart';
 
-/// patrons.json and signs.json, parsed (see signs.dart), loaded the way
-/// every gamedata table is: the asset, or the Data tab's edited copy. Read
-/// raw, not French-overlaid: a patron and a sign pick their language
-/// themselves (nameFor, greetingsFor...), and the session's notifier
-/// needs the same records whatever the language.
-final patronsProvider = Provider<Map<String, Patron>>((ref) =>
-    parsePatrons(ref.watch(gameDbProvider(patronsSchema)).value ?? const {}));
+/// The patrons are the factions (factions.json, see clans_provider.dart),
+/// and signs.json, parsed (see signs.dart), loaded the way every gamedata
+/// table is: the asset, or the Data tab's edited copy. Read raw, not
+/// French-overlaid: a patron and a sign pick their language themselves
+/// (nameFor, greetingsFor...), and the session's notifier needs the same
+/// records whatever the language.
+final patronsProvider = Provider<Map<String, Patron>>(
+    (ref) => patronsFromFactions(ref.watch(factionsProvider)));
 
 final signDefsProvider = Provider<Map<String, SignDef>>((ref) =>
     parseSigns(ref.watch(gameDbProvider(signsSchema)).value ?? const {}));

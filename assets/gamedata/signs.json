@@ -1,7 +1,7 @@
 {
   "standard_strike_rank_and_file": {
     "id": "standard_strike_rank_and_file",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "strike",
     "name": "Rank and File",
     "name_fr": "Rang serré",
@@ -22,7 +22,7 @@
   },
   "standard_guard_held_line": {
     "id": "standard_guard_held_line",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "guard",
     "name": "Held Line",
     "name_fr": "Ligne tenue",
@@ -39,7 +39,7 @@
   },
   "standard_mend_field_colours": {
     "id": "standard_mend_field_colours",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "mend",
     "name": "Field Colours",
     "name_fr": "Couleurs de campagne",
@@ -56,7 +56,7 @@
   },
   "standard_spell_herald_cord": {
     "id": "standard_spell_herald_cord",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "spell",
     "name": "Herald’s Cord",
     "name_fr": "Cordon du héraut",
@@ -73,7 +73,7 @@
   },
   "standard_passive_muster_knot": {
     "id": "standard_passive_muster_knot",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "passive",
     "name": "Muster Knot",
     "name_fr": "Nœud de rassemblement",
@@ -90,7 +90,7 @@
   },
   "standard_passive_company_colours": {
     "id": "standard_passive_company_colours",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "passive",
     "name": "Company Colours",
     "name_fr": "Couleurs de la compagnie",
@@ -107,7 +107,7 @@
   },
   "standard_passive_rallying_pennant": {
     "id": "standard_passive_rallying_pennant",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "passive",
     "name": "Rallying Pennant",
     "name_fr": "Fanion de ralliement",
@@ -128,7 +128,7 @@
   },
   "painted_strike_gale": {
     "id": "painted_strike_gale",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "strike",
     "name": "Gale Sigil",
     "name_fr": "Sigil de bourrasque",
@@ -146,7 +146,7 @@
   },
   "painted_guard_glare": {
     "id": "painted_guard_glare",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "guard",
     "name": "Glare Sigil",
     "name_fr": "Sigil d’éblouissement",
@@ -166,7 +166,7 @@
   },
   "painted_mend_fresh_coat": {
     "id": "painted_mend_fresh_coat",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "mend",
     "name": "Fresh Coat",
     "name_fr": "Couche fraîche",
@@ -183,7 +183,7 @@
   },
   "painted_spell_noon_mark": {
     "id": "painted_spell_noon_mark",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "spell",
     "name": "Noon Mark",
     "name_fr": "Marque de midi",
@@ -203,7 +203,7 @@
   },
   "painted_passive_hawk_eye": {
     "id": "painted_passive_hawk_eye",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "passive",
     "name": "Hawk’s Eye",
     "name_fr": "Œil d’épervier",
@@ -220,7 +220,7 @@
   },
   "painted_passive_barkfoot": {
     "id": "painted_passive_barkfoot",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "passive",
     "name": "Barkfoot",
     "name_fr": "Pied d’écorce",
@@ -237,7 +237,7 @@
   },
   "painted_passive_first_light": {
     "id": "painted_passive_first_light",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "passive",
     "name": "First Light",
     "name_fr": "Première lueur",
@@ -254,7 +254,7 @@
   },
   "stonemarked_strike_chisel": {
     "id": "stonemarked_strike_chisel",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "strike",
     "name": "Chisel Mark",
     "name_fr": "Marque du ciseau",
@@ -276,7 +276,7 @@
   },
   "stonemarked_guard_spiked_boss": {
     "id": "stonemarked_guard_spiked_boss",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "guard",
     "name": "Spiked Boss",
     "name_fr": "Umbo à pointes",
@@ -297,7 +297,7 @@
   },
   "stonemarked_mend_mortar": {
     "id": "stonemarked_mend_mortar",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "mend",
     "name": "Mortar Mark",
     "name_fr": "Marque de mortier",
@@ -314,7 +314,7 @@
   },
   "stonemarked_spell_weight": {
     "id": "stonemarked_spell_weight",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "spell",
     "name": "Rune of Weight",
     "name_fr": "Rune de poids",
@@ -331,7 +331,7 @@
   },
   "stonemarked_passive_iron_mark": {
     "id": "stonemarked_passive_iron_mark",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "passive",
     "name": "Iron Mark",
     "name_fr": "Marque de fer",
@@ -348,7 +348,7 @@
   },
   "stonemarked_passive_thorn_mark": {
     "id": "stonemarked_passive_thorn_mark",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "passive",
     "name": "Thorn Mark",
     "name_fr": "Marque d’épine",
@@ -365,7 +365,7 @@
   },
   "stonemarked_passive_keystone": {
     "id": "stonemarked_passive_keystone",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "passive",
     "name": "Keystone",
     "name_fr": "Clef de voûte",
@@ -383,7 +383,7 @@
   },
   "inked_strike_ember": {
     "id": "inked_strike_ember",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "strike",
     "name": "Ember Knuckles",
     "name_fr": "Poings de braise",
@@ -408,7 +408,7 @@
   },
   "inked_guard_knitted_scar": {
     "id": "inked_guard_knitted_scar",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "guard",
     "name": "Knitted Scar",
     "name_fr": "Cicatrice ravaudée",
@@ -425,7 +425,7 @@
   },
   "inked_mend_red_ink": {
     "id": "inked_mend_red_ink",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "mend",
     "name": "Red Ink",
     "name_fr": "Encre rouge",
@@ -442,7 +442,7 @@
   },
   "inked_spell_adder_line": {
     "id": "inked_spell_adder_line",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "spell",
     "name": "Adder Line",
     "name_fr": "Ligne de vipère",
@@ -462,7 +462,7 @@
   },
   "inked_passive_thirsting_mouth": {
     "id": "inked_passive_thirsting_mouth",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "passive",
     "name": "Thirsting Mouth",
     "name_fr": "Bouche assoiffée",
@@ -479,7 +479,7 @@
   },
   "inked_passive_bulls_neck": {
     "id": "inked_passive_bulls_neck",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "passive",
     "name": "Bull’s Neck",
     "name_fr": "Nuque de taureau",
@@ -497,7 +497,7 @@
   },
   "inked_passive_under_the_scar": {
     "id": "inked_passive_under_the_scar",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "passive",
     "name": "Under the Scar",
     "name_fr": "Sous la cicatrice",
@@ -514,7 +514,7 @@
   },
   "lettered_strike_spark_letter": {
     "id": "lettered_strike_spark_letter",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "strike",
     "name": "Spark Letter",
     "name_fr": "Lettre d’étincelle",
@@ -532,7 +532,7 @@
   },
   "lettered_guard_warding_line": {
     "id": "lettered_guard_warding_line",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "guard",
     "name": "Warding Line",
     "name_fr": "Ligne de garde",
@@ -549,7 +549,7 @@
   },
   "lettered_mend_counter_charm": {
     "id": "lettered_mend_counter_charm",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "mend",
     "name": "Counter-Charm",
     "name_fr": "Contre-charme",
@@ -570,7 +570,7 @@
   },
   "lettered_spell_opening_line": {
     "id": "lettered_spell_opening_line",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "spell",
     "name": "Opening Line",
     "name_fr": "Première ligne",
@@ -591,7 +591,7 @@
   },
   "lettered_passive_crowded_margins": {
     "id": "lettered_passive_crowded_margins",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "passive",
     "name": "Crowded Margins",
     "name_fr": "Marges pleines",
@@ -608,7 +608,7 @@
   },
   "lettered_passive_waiting_quill": {
     "id": "lettered_passive_waiting_quill",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "passive",
     "name": "Waiting Quill",
     "name_fr": "Plume en attente",
@@ -625,7 +625,7 @@
   },
   "lettered_passive_night_reading": {
     "id": "lettered_passive_night_reading",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "passive",
     "name": "Night Reading",
     "name_fr": "Lecture de nuit",
@@ -635,6 +635,150 @@
       {
         "kind": "xpPercent",
         "value": 10
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_strike_new_moon_spear": {
+    "id": "vigil_strike_new_moon_spear",
+    "patron": "vigil",
+    "slot": "strike",
+    "name": "New-Moon Spear",
+    "name_fr": "Lance de nouvelle lune",
+    "flavour": "A Last Watch spearhead kept all night beside the candle; it carries a little of the flame over the wall.",
+    "flavour_fr": "Un fer de lance de la Dernière Veille, gardé toute la nuit près de la chandelle ; il emporte un peu de la flamme par-dessus le mur.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "pierce"
+      },
+      {
+        "kind": "strikeElement",
+        "element": "Light",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_guard_dry_stone": {
+    "id": "vigil_guard_dry_stone",
+    "patron": "vigil",
+    "slot": "guard",
+    "name": "Dry-Stone Course",
+    "name_fr": "Assise de pierre sèche",
+    "flavour": "No mortar, only weight and patience: the wall stands because every stone leans on the next.",
+    "flavour_fr": "Pas de mortier, seulement du poids et de la patience : le mur tient parce que chaque pierre s’appuie sur la suivante.",
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 6
+      },
+      {
+        "kind": "guardFlat",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_mend_sewn_shut": {
+    "id": "vigil_mend_sewn_shut",
+    "patron": "vigil",
+    "slot": "mend",
+    "name": "Sewn Shut",
+    "name_fr": "Point serré",
+    "flavour": "A Stitcher’s grey thread: what it closes, it closes for good.",
+    "flavour_fr": "Le fil gris des Porte-Aiguilles : ce qu’il ferme, il le ferme pour de bon.",
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 6
+      },
+      {
+        "kind": "mendShield",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_spell_void_silk": {
+    "id": "vigil_spell_void_silk",
+    "patron": "vigil",
+    "slot": "spell",
+    "name": "Void-Silk",
+    "name_fr": "Soie du Néant",
+    "flavour": "Silk from the Glass Strand, threaded through the words: it draws the strength out of whatever it binds.",
+    "flavour_fr": "De la soie de la Grève de Verre, passée entre les mots : elle tire la force de tout ce qu’elle lie.",
+    "effects": [
+      {
+        "kind": "spellStatus",
+        "status": "weaken",
+        "chance": 12,
+        "duration": 2,
+        "magnitude": 15
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_white_thread_eye": {
+    "id": "vigil_passive_white_thread_eye",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "White-Thread Eye",
+    "name_fr": "Œil de fil blanc",
+    "flavour": "The eye of the grey cloth, stitched on your sleeve: it reads a blow before the arm moves.",
+    "flavour_fr": "L’œil de la toile grise, cousu sur votre manche : il lit le coup avant que le bras ne bouge.",
+    "effects": [
+      {
+        "kind": "stat",
+        "stat": "perception",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_last_stone": {
+    "id": "vigil_passive_last_stone",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "The Last Stone",
+    "name_fr": "La Dernière Pierre",
+    "flavour": "A stone you set in the wall yourself, with your name chalked on its hidden side.",
+    "flavour_fr": "Une pierre que vous avez posée vous-même dans le mur, votre nom écrit à la craie sur sa face cachée.",
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_thirty_eight_years": {
+    "id": "vigil_passive_thirty_eight_years",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "Thirty-Eight Years",
+    "name_fr": "Trente-huit ans",
+    "flavour": "Thirty-eight years of new moons, and the watch has learned to strike first at whatever comes over the wall.",
+    "flavour_fr": "Trente-huit ans de nouvelles lunes, et la garde a appris à frapper la première tout ce qui franchit le mur.",
+    "effects": [
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 6
+      },
+      {
+        "kind": "critChance",
+        "value": 2
       }
     ],
     "requiresPatrons": [],
@@ -1070,7 +1214,7 @@
   },
   "inked_spell_burning_script": {
     "id": "inked_spell_burning_script",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "spell",
     "name": "Burning Script",
     "name_fr": "Écriture ardente",
@@ -1090,14 +1234,14 @@
       }
     ],
     "requiresPatrons": [
-      "inked",
-      "lettered"
+      "crows",
+      "penitents"
     ],
     "pact": null
   },
   "stonemarked_strike_masons_swing": {
     "id": "stonemarked_strike_masons_swing",
-    "patron": "stonemarked",
+    "patron": "compact",
     "slot": "strike",
     "name": "Mason’s Swing",
     "name_fr": "Volée du maçon",
@@ -1115,14 +1259,14 @@
       }
     ],
     "requiresPatrons": [
-      "stonemarked",
+      "compact",
       "giants"
     ],
     "pact": null
   },
   "standard_passive_shield_wall": {
     "id": "standard_passive_shield_wall",
-    "patron": "standard",
+    "patron": "dominion",
     "slot": "passive",
     "name": "Shield Wall",
     "name_fr": "Mur de boucliers",
@@ -1139,14 +1283,14 @@
       }
     ],
     "requiresPatrons": [
-      "standard",
-      "stonemarked"
+      "dominion",
+      "compact"
     ],
     "pact": null
   },
   "inked_passive_blood_bell": {
     "id": "inked_passive_blood_bell",
-    "patron": "inked",
+    "patron": "crows",
     "slot": "passive",
     "name": "Blood Bell",
     "name_fr": "Cloche de sang",
@@ -1163,14 +1307,14 @@
       }
     ],
     "requiresPatrons": [
-      "inked",
+      "crows",
       "oni"
     ],
     "pact": null
   },
   "lettered_spell_call_and_response": {
     "id": "lettered_spell_call_and_response",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "spell",
     "name": "Call and Response",
     "name_fr": "Chant alterné",
@@ -1187,14 +1331,14 @@
       }
     ],
     "requiresPatrons": [
-      "lettered",
+      "penitents",
       "tidekin"
     ],
     "pact": null
   },
   "painted_passive_foxglove": {
     "id": "painted_passive_foxglove",
-    "patron": "painted",
+    "patron": "mire",
     "slot": "passive",
     "name": "Foxglove Sigil",
     "name_fr": "Sigil de digitale",
@@ -1212,14 +1356,14 @@
       }
     ],
     "requiresPatrons": [
-      "painted",
+      "mire",
       "kindly"
     ],
     "pact": null
   },
   "lettered_strike_frost_word": {
     "id": "lettered_strike_frost_word",
-    "patron": "lettered",
+    "patron": "penitents",
     "slot": "strike",
     "name": "Frost Word",
     "name_fr": "Mot de givre",
@@ -1240,7 +1384,7 @@
       }
     ],
     "requiresPatrons": [
-      "lettered",
+      "penitents",
       "giants"
     ],
     "pact": null
@@ -1269,7 +1413,7 @@
     ],
     "requiresPatrons": [
       "choir",
-      "painted"
+      "mire"
     ],
     "pact": null
   },
@@ -1293,7 +1437,7 @@
     ],
     "requiresPatrons": [
       "pit",
-      "inked"
+      "crows"
     ],
     "pact": {
       "curse": "goldPercentLoss",

@@ -274,7 +274,7 @@ void main() {
               'spells',
               'item_sets',
               'zones',
-              if (signs) ...['patrons', 'signs'],
+              if (signs) ...['factions', 'signs'],
             ])
               name: _gamedata('$name.json'),
           },

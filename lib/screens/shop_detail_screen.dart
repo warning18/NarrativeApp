@@ -5,12 +5,14 @@ import '../combat/gear_effects.dart';
 import '../combat/dice_faces.dart';
 import '../combat/spells.dart';
 import '../data/chapter_conditions.dart';
+import '../data/factions.dart';
 import '../data/shop_pricing.dart';
 import '../gamedata/db_schema.dart';
 import '../l10n/app_locale.dart';
 import '../l10n/app_strings.dart';
 import '../models/ally_state.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/clans_provider.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/player_session_provider.dart';
 import '../tutorial/guide_tour.dart';
@@ -60,6 +62,14 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
     final condition = ref.watch(chapterConditionProvider);
     final priceFactor = condition?.shopPrice ?? 1.0;
     final lang = ref.watch(appLanguageProvider);
+    // A faction's shop prices by the character's standing with them, and
+    // won't trade with someone it hunts (v1.193).
+    final clans = ref.watch(clanDataProvider);
+    final faction = clans.faction(shopFactionId(widget.shop));
+    final tier = faction == null
+        ? null
+        : ref.watch(politicsProvider).tierOf(faction.id, clans);
+    final refuses = shopRefusesTrade(tier);
     final itemSets = parseItemSets(
         ref.watch(localizedDbProvider(itemSetsSchema)).value ?? {});
     final stock = (widget.shop['initialStock'] as List?)
@@ -88,24 +98,25 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
           title: Text(widget.shop['shopName']?.toString() ?? widget.shopId),
           actions: [
             const GoldBadge(),
-            if (forges)
+            if (forges && !refuses)
               IconButton(
                 icon: const Icon(Icons.hardware_outlined),
                 tooltip: tr(ref, 'forge_title'),
                 onPressed: () => showForgeSheet(context, shopId: widget.shopId),
               ),
             // The Hammersmith works the party's dice too (v1.182).
-            if (forges)
+            if (forges && !refuses)
               IconButton(
                 icon: const Icon(Icons.casino_outlined),
                 tooltip: tr(ref, 'smith_open_button'),
                 onPressed: () => showDiceSmithingSheet(context),
               ),
-            IconButton(
-              icon: const Icon(Icons.sell_outlined),
-              tooltip: tr(ref, 'sell_title'),
-              onPressed: () => showSellSheet(context, shopId: widget.shopId),
-            ),
+            if (!refuses)
+              IconButton(
+                icon: const Icon(Icons.sell_outlined),
+                tooltip: tr(ref, 'sell_title'),
+                onPressed: () => showSellSheet(context, shopId: widget.shopId),
+              ),
           ],
         ),
         body: itemsAsync.when(
@@ -135,14 +146,18 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       ?.toString() ??
                   itemId;
 
-              // Listed price, less the buyer's Charisma discount.
+              // Listed price, less the buyer's Charisma discount, at the
+              // faction's rate.
               int costFor(String itemId) => conditionedPrice(
-                  shopPriceFor(
-                      ((items[itemId] as Map<String, dynamic>?)?['cost']
-                                  as num?)
-                              ?.toInt() ??
-                          0,
-                      session.charisma),
+                  factionPriceFor(
+                          shopPriceFor(
+                              ((items[itemId] as Map<String, dynamic>?)?['cost']
+                                          as num?)
+                                      ?.toInt() ??
+                                  0,
+                              session.charisma),
+                          tier) ??
+                      0,
                   priceFactor);
 
               final availableTypes = stock
@@ -185,6 +200,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (faction != null && tier != null)
+                            _FactionPriceLine(
+                                faction: faction, tier: tier, language: lang),
                           if (condition != null && priceFactor != 1)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 4),
@@ -391,7 +409,8 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                           final wearing =
                               session.equippedItemIds.contains(itemId);
                           final set = setForItem(itemId, item, itemSets);
-                          final canBuy = canAfford && !soldOut && !spellLocked;
+                          final canBuy =
+                              canAfford && !soldOut && !spellLocked && !refuses;
 
                           Future<void> buy() async {
                             await ref
@@ -568,9 +587,13 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                             final theme = Theme.of(context);
                             final die = dice[diceId] as Map<String, dynamic>?;
                             final cost = conditionedPrice(
-                                shopPriceFor(
-                                    (die?['cost'] as num?)?.toInt() ?? 0,
-                                    session.charisma),
+                                factionPriceFor(
+                                        shopPriceFor(
+                                            (die?['cost'] as num?)?.toInt() ??
+                                                0,
+                                            session.charisma),
+                                        tier) ??
+                                    0,
                                 priceFactor);
                             final owned = session.ownedDiceIds.contains(diceId);
                             final canAfford = session.gold >= cost;
@@ -610,7 +633,9 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
                                     ? const Icon(Icons.check_circle,
                                         color: Colors.green)
                                     : ElevatedButton(
-                                        onPressed: !canAfford || !usable
+                                        onPressed: !canAfford ||
+                                                !usable ||
+                                                refuses
                                             ? null
                                             : () async {
                                                 await ref
@@ -655,6 +680,65 @@ class _ShopDetailScreenState extends ConsumerState<ShopDetailScreen> {
             child: Text(tr(ref, 'continue_button')),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The shop's faction and what the character's standing with them does to
+/// its prices (v1.193), in the tier's colour: dearer, cheaper, fair, or
+/// no trade at all.
+class _FactionPriceLine extends StatelessWidget {
+  const _FactionPriceLine({
+    required this.faction,
+    required this.tier,
+    required this.language,
+  });
+
+  final Faction faction;
+  final StandingTier tier;
+  final AppLanguage language;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final factor = tierPriceFactor(tier);
+    final tierWord = trFor(language, standingTierKey(tier));
+    final key = factor == null
+        ? 'shop_faction_refuses'
+        : factor == 1
+            ? 'shop_faction_fair'
+            : 'shop_faction_line';
+    final text = trFor(language, key)
+        .replaceAll('{name}', faction.nameFor(language))
+        .replaceAll('{tier}', tierWord)
+        .replaceAll('{p}', factor == null ? '' : percentChange(factor));
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        key: const ValueKey('shop_faction_line'),
+        children: [
+          Icon(
+            factor == null
+                ? Icons.block
+                : factor > 1
+                    ? Icons.trending_up
+                    : factor < 1
+                        ? Icons.trending_down
+                        : Icons.balance,
+            size: 18,
+            color: Color(tierColor(tier)),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(
+                  color: factor == null ? theme.colorScheme.error : null,
+                  fontWeight: factor == null ? FontWeight.w600 : null),
+            ),
+          ),
+        ],
       ),
     );
   }

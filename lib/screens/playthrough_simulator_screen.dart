@@ -764,7 +764,7 @@ _SimResult _simulate(
     gameConfig: gameConfig,
     itemSets: parseItemSets(table('item_sets')),
     zones: table('zones'),
-    patrons: parsePatrons(table('patrons')),
+    patrons: parsePatrons(table('factions')),
     signs: parseSigns(table('signs')),
   );
   final random = Random(seed);
@@ -1201,7 +1201,7 @@ class _PlaythroughSimulatorScreenState
       gameConfig: await ref.read(gameConfigProvider.future),
       itemSets: parseItemSets(await load(itemSetsSchema)),
       zones: await load(zonesSchema),
-      patrons: parsePatrons(await load(patronsSchema)),
+      patrons: parsePatrons(await load(factionsSchema)),
       signs: parseSigns(await load(signsSchema)),
     );
     final french = ref.read(appLanguageProvider) == AppLanguage.fr;

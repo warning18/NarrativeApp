@@ -57,6 +57,7 @@
     },
     "minChapter": 2,
     "detourEligible": false,
+    "faction": "crows",
     "shopName_fr": "La Cave aux Marées",
     "shopDescription_fr": "Sous la jetée rouillée, à l’abri des regards, du matériel de contrebande change de mains."
   },
@@ -273,6 +274,7 @@
     },
     "minChapter": 3,
     "detourEligible": false,
+    "faction": "crows",
     "shopName_fr": "Le Coffre des Contrebandiers",
     "shopDescription_fr": "Une réserve cachée d’acier de contrebande, un cran au-dessus de tout ce que les forges du port oseraient avouer vendre, et une relique que personne n’ose avouer posséder."
   },
@@ -329,6 +331,7 @@
     },
     "minChapter": 3,
     "detourEligible": false,
+    "faction": "compact",
     "shopName_fr": "La Forge du Maître-forgeron",
     "shopDescription_fr": "Là où l’Armurier envoie les lames et les boucliers trop lourds pour être achevés par un autre qu’un vrai maître-forgeron."
   },
@@ -398,6 +401,7 @@
     },
     "minChapter": 3,
     "detourEligible": false,
+    "faction": "crows",
     "shopName_fr": "La Maison des Aiguilles",
     "shopDescription_fr": "Ni enseigne, ni étal — juste une porte qui s’ouvre si vous savez déjà qu’elle est là, et derrière elle les plus fines lames de la ville."
   },
@@ -451,6 +455,7 @@
     },
     "minChapter": 5,
     "detourEligible": false,
+    "faction": "penitents",
     "shopName_fr": "Le Comptoir de l’Ossuaire",
     "shopDescription_fr": "Reliques, onguents et acier de seconde main, étalés sur une étagère de crânes par un déserteur qui ne demande plus d’où vient quoi que ce soit."
   },
@@ -499,6 +504,7 @@
     },
     "minChapter": 6,
     "detourEligible": false,
+    "faction": "vigil",
     "shopName_fr": "La Dernière Lanterne",
     "shopDescription_fr": "Le dernier étal encore éclairé du Quartier des Reliquaires, qui vend tout ce qui pourrait garder un corps en vie une rue plus près de la déchirure."
   },

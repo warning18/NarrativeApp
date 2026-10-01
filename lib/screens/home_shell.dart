@@ -23,6 +23,7 @@ import '../widgets/immersive_notice.dart';
 import 'ai_generator_screen.dart';
 import 'camp_screen.dart';
 import 'character_screen.dart';
+import 'clans_politics_screen.dart';
 import 'game_data_home_screen.dart';
 import 'journey_screen.dart';
 import 'play_screen.dart';
@@ -232,6 +233,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               ),
             ),
           ),
+          // Edit Mode's Clans & Politics (v1.193): standing, relations,
+          // their history and the intrigues.
+          if (isEditMode)
+            IconButton(
+              key: const Key('home_clans_politics'),
+              icon: const Icon(Icons.balance),
+              tooltip: tr(ref, 'clans_title'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ClansPoliticsScreen()),
+              ),
+            ),
           IconButton(
             icon: Text(language == AppLanguage.fr ? '🇫🇷' : '🇬🇧'),
             tooltip: tr(ref, 'language'),
