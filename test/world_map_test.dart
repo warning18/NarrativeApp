@@ -210,8 +210,9 @@ void main() {
     expect(find.descendant(of: panel, matching: find.text('Smugglers’ Wharf')),
         findsOneWidget);
     expect(find.text('You are here'), findsOneWidget);
-    // 42 with the old sign-painter who names the Open Hand (v1.195).
-    expect(find.text('Scenes read: 3 / 42'), findsOneWidget);
+    // 42 with the old sign-painter who names the Open Hand (v1.195); 46
+    // with the three Houses' favours and the door that was turned (v1.196).
+    expect(find.text('Scenes read: 3 / 46'), findsOneWidget);
     // The rat was beaten; the rest are still unknown.
     expect(find.text('Harbor Rat'), findsOneWidget);
     expect(find.text('???'), findsNWidgets(4));

@@ -256,6 +256,8 @@ final List<Landmark> worldMapLandmarks = [
       '2021',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
+      '2015_house_drowned_debt', '2015_house_keyholders',
+      '2015_house_keyholders_turned', '2015_house_salt_ledger',
     ],
     fights: [
       'harbor_rat', 'smuggler_captain', 'plague_hound', 'street_bandit', //
@@ -327,10 +329,17 @@ final List<Landmark> worldMapLandmarks = [
       '3005_maren', '3005_archive', '3005_archive_failed', '3005_ledger',
       '3005_ledger_failed', '3005_grosh', '3005_wall', '3005_wall_argued',
       '3005_wall_fight', '3005_lysa', '3005_envoys',
+      '3005_house_tribunal',
+      '3005_clan_vigil_1',
+      '3005_clan_vigil_1_breach',
+      '3005_clan_vigil_1_dawn',
+      '3005_clan_compact_1',
+      '3005_clan_compact_1_lit',
     ],
     fights: [
       'cultist_acolyte', 'void_wisp', 'void_stalker', 'iron_golem', //
       'inquisition_auxiliary',
+      'inquisition_soldier',
     ],
   ),
   const Landmark(
@@ -345,8 +354,14 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '3100', '3100_tithe', '3100_kiln', '3100_kiln_failed', //
       '3100_widow', '3100_widow_later', '3100_bread',
+      '3100_house_cantors', '3100_house_emberwives', '3100_house_anvil_deaf',
+      '3100_house_anvil_deaf_failed',
     ],
-    fights: ['inquisition_auxiliary'],
+    fights: [
+      'inquisition_auxiliary',
+      'void_wisp',
+      'street_bandit',
+    ],
   ),
   const Landmark(
     id: 'akagiri',
@@ -360,8 +375,13 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '3200', '3200_circle', '3200_brew', '3200_brew_failed', //
       '3200_smith', '3200_smith_later', '3200_blade', '3200_springs',
+      '3200_house_road_exorcists', '3200_clan_penitents_1',
     ],
-    fights: ['inquisition_soldier', 'inquisition_auxiliary'],
+    fights: [
+      'inquisition_soldier',
+      'inquisition_auxiliary',
+      'void_wisp',
+    ],
   ),
   const Landmark(
     id: 'spire',
@@ -391,6 +411,15 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '5100', '5100_drowned', '5100_salvage', '5100_salvage_failed', //
       '5100_headman', '5100_headman_later', '5100_nets', '5100_vote',
+      '5100_house_tar_hands',
+      '5100_house_fishbasket_line',
+      '5100_house_fishbasket_line_drawn',
+      '5100_clan_dominion_1',
+      '5100_clan_dominion_1_lit',
+      '5100_clan_dominion_1_out',
+      '5100_clan_crows_1',
+      '5100_clan_crows_1_seen',
+      '5100_clan_crows_1_lost',
     ],
     fights: ['drowned_pilgrim'],
   ),
@@ -406,6 +435,12 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '5200', '5200_barrows', '5200_riddles', '5200_riddles_failed', //
       '5200_nell', '5200_nell_later', '5200_sleep',
+      '5200_house_barkbleeders',
+      '5200_house_barkbleeders_bled',
+      '5200_house_returned',
+      '5200_clan_mire_1',
+      '5200_clan_mire_1_edge',
+      '5200_clan_mire_1_answered',
     ],
     fights: ['bone_sexton', 'catacomb_ghoul'],
   ),
@@ -425,6 +460,12 @@ final List<Landmark> worldMapLandmarks = [
       '5010_span_failed', '5010_wisps', '5010_deserter',
       '5010_deserter_later', '5010_deserter_failed', '5010_tobin',
       '5010_tobin_hymn', '5010_letter',
+      '5010_house_candlebearers',
+      '5010_house_herons_wake',
+      '5010_house_herons_wake_broken',
+      '5010_clan_crows_2',
+      '5010_clan_crows_2_found',
+      '5010_clan_crows_2_failed',
     ],
     fights: ['catacomb_ghoul', 'bone_warden', 'void_wisp'],
   ),
@@ -461,9 +502,17 @@ final List<Landmark> worldMapLandmarks = [
       '6010_lantern', '6010_lantern_keeper', '6010_spawn', '6010_frost',
       '6010_frost_failed', '6010_malrik', '6010_thread', '6010_record',
       '6010_wickwarden',
+      '6010_house_reliquary',
+      '6010_house_reliquary_thieves',
+      '6010_house_reliquary_thieves_searched',
+      '6010_clan_dominion_2',
+      '6010_clan_compact_3',
+      '6010_clan_compact_3_seen',
+      '6010_clan_compact_3_hammer',
     ],
     fights: [
       'void_hound', 'inquisition_penitent', 'tear_spawn', 'masked_penitent', //
+      'inquisition_soldier',
     ],
   ),
   const Landmark(
@@ -478,8 +527,24 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '6100', '6100_bell', '6100_bell_failed', '6100_road', //
       '6100_keeper', '6100_keeper_later', '6100_bread', '6100_knife',
+      '6100_house_scorched_choir',
+      '6100_house_scorched_choir_failed',
+      '6100_clan_vigil_2',
+      '6100_clan_vigil_2_after',
+      '6100_clan_mire_2',
+      '6100_clan_mire_2_found',
+      '6100_clan_mire_2_fourth',
+      '6100_clan_penitents_2',
+      '6100_clan_penitents_2_heard',
+      '6100_clan_penitents_2_broken',
     ],
-    fights: ['void_hound', 'drowned_pilgrim'],
+    fights: [
+      'void_hound',
+      'drowned_pilgrim',
+      'void_stalker',
+      'inquisition_penitent',
+      'inquisition_soldier',
+    ],
   ),
   const Landmark(
     id: 'highhearth',
@@ -493,6 +558,8 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '6200', '6200_gate', '6200_birth', '6200_birth_failed', //
       '6200_eldest', '6200_eldest_later', '6200_hearth',
+      '6200_house_quarrymen', '6200_clan_compact_2',
+      '6200_clan_compact_2_refused',
     ],
     fights: ['void_hound', 'void_hound'],
   ),
@@ -522,8 +589,18 @@ final List<Landmark> worldMapLandmarks = [
       '7100', '7100_chaplain', '7100_chandlery', '7100_company', //
       '7100_sick', '7100_sick_failed', '7100_helmsman', '7100_helmsman_refused',
       '7100_helmsman_later', '7100_cutter', '7100_cutter_lost', '7100_log',
+      '7100_house_order',
+      '7100_clan_dominion_3',
+      '7100_clan_crows_3',
+      '7100_clan_penitents_3',
+      '7100_clan_penitents_3_bolt',
+      '7100_clan_penitents_3_through',
     ],
-    fights: ['inquisition_soldier', 'white_soldier'],
+    fights: [
+      'inquisition_soldier',
+      'white_soldier',
+      'unmade_knight',
+    ],
   ),
   const Landmark(
     id: 'greyhithe',
@@ -537,6 +614,11 @@ final List<Landmark> worldMapLandmarks = [
     scenes: [
       '7200', '7200_nets', '7200_reflection', '7200_elder', //
       '7200_elder_later', '7200_tide', '7200_tide_failed',
+      '7200_house_spire_fallen',
+      '7200_clan_vigil_3',
+      '7200_clan_vigil_3_changed',
+      '7200_clan_vigil_3_sworn',
+      '7200_clan_mire_3',
     ],
     fights: ['hollow_reflection'],
   ),
