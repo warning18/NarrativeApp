@@ -53,12 +53,17 @@ void main() {
   final story = File('assets/Cleaned_Narrative_DAG.json').readAsStringSync();
   final nodes = (jsonDecode(story) as Map<String, dynamic>).keys.toSet();
 
-  test('twelve patrons and 73 signs, nine of them duos', () {
-    expect(patrons, hasLength(12));
-    expect(signs, hasLength(73));
+  test('thirteen patrons and 79 signs, nine of them duos', () {
+    expect(patrons, hasLength(13));
+    expect(signs, hasLength(79));
     expect(signs.values.where((s) => s.isDuo), hasLength(9));
+    // The Open Hand (v1.195), the dead clan: six signs drawn by your own
+    // hand, and no clan among the six.
+    expect(signs.values.where((s) => s.patronId == 'open_hand'), hasLength(6));
     expect(
-        patrons.values.where((p) => p.kind == PatronKind.clan), hasLength(6));
+        patrons.values
+            .where((p) => p.kind == PatronKind.clan && p.id != 'open_hand'),
+        hasLength(6));
     expect(
         patrons.values.where((p) => p.kind == PatronKind.tribe), hasLength(4));
     expect(patrons[choirPatronId]!.minAlignment, 10);
@@ -89,9 +94,11 @@ void main() {
     }
     expect(
         patrons.values
-            .where((p) => p.kind != PatronKind.tribe)
+            .where((p) => p.kind != PatronKind.tribe && p.id != 'open_hand')
             .every((p) => p.unlockFlag.isEmpty),
         isTrue);
+    // The Open Hand offers once the blood has answered, on the Spire.
+    expect(patrons['open_hand']!.unlockFlag, 'open_hand_3');
   });
 
   test('every sign is whole: known effects on the right slot', () {
