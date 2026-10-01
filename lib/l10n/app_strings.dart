@@ -5750,9 +5750,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'tut_skills_1': {
     AppLanguage.en:
-        'Skill points learn new skills; you get one each level. Essence, earned with XP, raises the skills you know a tier.',
+        'The clans offer your skills: each branch is sponsored by one, deeper as it trusts you more. Essence, earned with XP, raises the skills you know a tier, and masters a whole branch.',
     AppLanguage.fr:
-        'Les points de compétence apprennent de nouvelles compétences ; vous en gagnez un par niveau. L\'essence, gagnée avec l\'XP, fait monter d\'un rang celles que vous connaissez.',
+        'Les clans vous offrent vos compétences\u00a0: chaque branche est parrainée par l’un d’eux, plus profonde à mesure qu’il vous fait confiance. L’essence, gagnée avec l’XP, fait monter d’un rang celles que vous connaissez, et maîtrise une branche entière.',
   },
   'tut_skills_2': {
     AppLanguage.en:
@@ -8456,9 +8456,9 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'signs_section': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
   'signs_none': {
     AppLanguage.en:
-        'No signs yet. Every odd level and every boss beaten brings one to choose.',
+        'No signs yet. The clans, the tribes, the Choir and the Pit bring them in their offers.',
     AppLanguage.fr:
-        'Aucun Signe pour l’instant. Chaque niveau impair et chaque boss vaincu en apportent un à choisir.',
+        'Aucun Signe pour l’instant. Les clans, les tribus, le Chœur et la Fosse en apportent dans leurs offres.',
   },
   'sign_pending': {
     AppLanguage.en: '{n} sign(s) to choose',
@@ -8867,24 +8867,27 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Closed to you this life',
     AppLanguage.fr: 'Fermé pour vous dans cette vie',
   },
-  'tut_signs_title': {AppLanguage.en: 'Signs', AppLanguage.fr: 'Signes'},
+  'tut_signs_title': {
+    AppLanguage.en: 'Offers from the clans',
+    AppLanguage.fr: 'Les offres des clans',
+  },
   'tut_signs_1': {
     AppLanguage.en:
-        'A patron offers you a sign: a power drawn on you for this life. Each offer shows three; take one.',
+        'At each level, boss and chapter, three suitors from different factions come to you, each with one gift: a skill, a sign, an object or a title. Take one.',
     AppLanguage.fr:
-        'Un protecteur vous offre un Signe\u00a0: un pouvoir dessiné sur vous pour cette vie. Chaque offre en montre trois\u00a0; prenez-en un.',
+        'À chaque niveau, boss et chapitre, trois prétendants de factions différentes viennent à vous, chacun avec un don\u00a0: une compétence, un Signe, un objet ou un titre. Prenez-en un.',
   },
   'tut_signs_2': {
     AppLanguage.en:
-        'Strike, guard, mend and spell signs hold one each: a new one replaces the old and keeps its level. Passives have no limit.',
+        'Each card says what its gift does and the standing it moves: the faction you take rises, its allies a little, and its rivals hold it against you.',
     AppLanguage.fr:
-        'Les Signes de frappe, de garde, de soin et de sort en tiennent un chacun\u00a0: un nouveau remplace l’ancien et garde son niveau. Les passifs n’ont pas de limite.',
+        'Chaque carte dit ce que fait son don et la réputation qu’il déplace\u00a0: la faction choisie monte, ses alliés un peu, et ses rivaux vous en tiennent rigueur.',
   },
   'tut_signs_3': {
     AppLanguage.en:
-        'Rarer signs are stronger, and Titan’s Blood raises one a level. Death takes them all; the patrons remember your favour.',
+        'Signs hold one each in strike, guard, mend and spell; rarer ones are stronger, and Titan’s Blood raises one a level. Death takes them all; the patrons remember your favour.',
     AppLanguage.fr:
-        'Les Signes plus rares sont plus forts, et le Sang de Titan en élève un d’un niveau. La mort les emporte tous\u00a0; les protecteurs se souviennent de votre faveur.',
+        'Les Signes de frappe, de garde, de soin et de sort en tiennent un chacun\u00a0; les plus rares sont plus forts, et le Sang de Titan en élève un d’un niveau. La mort les emporte tous\u00a0; les protecteurs se souviennent de votre faveur.',
   },
   'debug_offer_sign': {
     AppLanguage.en: 'Offer a sign now',
@@ -9183,8 +9186,8 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Sans faction\u00a0: la réputation ne bouge pas.',
   },
   'offer_alignment_nudge': {
-    AppLanguage.en: 'alignment {n}',
-    AppLanguage.fr: 'alignement {n}',
+    AppLanguage.en: 'alignment\u00a0{n}',
+    AppLanguage.fr: 'alignement\u00a0{n}',
   },
   'offer_none_to_come': {
     AppLanguage.en: 'Nobody can come to you yet.',

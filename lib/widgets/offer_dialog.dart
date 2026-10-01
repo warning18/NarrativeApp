@@ -12,6 +12,8 @@ import '../l10n/app_strings.dart';
 import '../providers/game_db_providers.dart';
 import '../providers/offers_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../tutorial/guide_tour.dart';
+import '../tutorial/tutorial_topics.dart';
 import 'item_stats.dart';
 import 'sign_widgets.dart';
 
@@ -155,7 +157,8 @@ List<({String text, double delta})> standingPreviewParts(
   return [
     for (final e in deltas)
       (
-        text: '${formatStandingDelta(e.value, language: lang)} '
+        // A no-break space: "+6 Compact" never splits across lines.
+        text: '${formatStandingDelta(e.value, language: lang)}\u00a0'
             '${data.faction(e.key)?.shortFor(lang) ?? e.key}',
         delta: e.value,
       ),
@@ -272,91 +275,102 @@ class _OfferDialogState extends ConsumerState<OfferDialog> {
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-            color: theme.colorScheme.surfaceContainerHighest,
-            child: Row(
-              children: [
-                Icon(Icons.diversity_3, color: theme.colorScheme.primary),
-                const SizedBox(width: 10),
-                Expanded(
+      // The first offer's tour (the topic Signs had, see tutorial_topics).
+      child: TutorialTrigger(
+        topic: TutorialTopic.signs,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TutorialTarget(
+              id: 'signs.patron',
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+                color: theme.colorScheme.surfaceContainerHighest,
+                child: Row(
+                  children: [
+                    Icon(Icons.diversity_3, color: theme.colorScheme.primary),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            trFor(lang, 'offer_title'),
+                            key: const Key('offer_title'),
+                            style: theme.textTheme.titleMedium
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            waiting > 1
+                                ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
+                                : source,
+                            style: theme.textTheme.labelMedium?.copyWith(
+                                color: theme.colorScheme.onSurfaceVariant),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Flexible(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
+                child: TutorialTarget(
+                  id: 'signs.cards',
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        trFor(lang, 'offer_title'),
-                        key: const Key('offer_title'),
-                        style: theme.textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        waiting > 1
-                            ? '$source · ${trFor(lang, 'offer_pending').replaceAll('{n}', '$waiting')}'
-                            : source,
+                        trFor(lang, 'offer_hint'),
                         style: theme.textTheme.labelMedium?.copyWith(
                             color: theme.colorScheme.onSurfaceVariant),
                       ),
+                      const SizedBox(height: 6),
+                      for (final suitor in offer.suitors)
+                        SuitorCard(
+                          key: Key('offer_suitor_${suitor.factionId}'),
+                          suitor: suitor,
+                          ticket: ticket,
+                          tables: widget.tables,
+                          selected: _selected == suitor.factionId,
+                          onTap: _busy
+                              ? null
+                              : () =>
+                                  setState(() => _selected = suitor.factionId),
+                        ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-          Flexible(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+              // Side by side when they fit, stacked on a narrow phone.
+              child: OverflowBar(
+                alignment: MainAxisAlignment.spaceBetween,
+                overflowAlignment: OverflowBarAlignment.end,
+                spacing: 8,
                 children: [
-                  Text(
-                    trFor(lang, 'offer_hint'),
-                    style: theme.textTheme.labelMedium
-                        ?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                  TextButton(
+                    onPressed:
+                        _busy ? null : () => Navigator.of(context).maybePop(),
+                    child: Text(trFor(lang, 'offer_later_button')),
                   ),
-                  const SizedBox(height: 6),
-                  for (final suitor in offer.suitors)
-                    SuitorCard(
-                      key: Key('offer_suitor_${suitor.factionId}'),
-                      suitor: suitor,
-                      ticket: ticket,
-                      tables: widget.tables,
-                      selected: _selected == suitor.factionId,
-                      onTap: _busy
-                          ? null
-                          : () => setState(() => _selected = suitor.factionId),
-                    ),
+                  FilledButton(
+                    key: const Key('offer_take_button'),
+                    style: FilledButton.styleFrom(backgroundColor: accent),
+                    onPressed:
+                        selected == null || _busy ? null : () => _take(offer),
+                    child: Text(trFor(lang, 'offer_take_button')),
+                  ),
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
-            // Side by side when they fit, stacked on a narrow phone.
-            child: OverflowBar(
-              alignment: MainAxisAlignment.spaceBetween,
-              overflowAlignment: OverflowBarAlignment.end,
-              spacing: 8,
-              children: [
-                TextButton(
-                  onPressed:
-                      _busy ? null : () => Navigator.of(context).maybePop(),
-                  child: Text(trFor(lang, 'offer_later_button')),
-                ),
-                FilledButton(
-                  key: const Key('offer_take_button'),
-                  style: FilledButton.styleFrom(backgroundColor: accent),
-                  onPressed:
-                      selected == null || _busy ? null : () => _take(offer),
-                  child: Text(trFor(lang, 'offer_take_button')),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

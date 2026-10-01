@@ -147,11 +147,13 @@ void main() {
     expect(find.text('Perk'), findsOneWidget);
     expect(find.text('Keen Eye'), findsOneWidget);
     // The politics of the pick, by the relations as they stand.
-    expect(find.text('+6 Compact · +1.5 Vigil · +1.5 Mire · −3 Penitents'),
+    expect(
+        find.text('+6\u00a0Compact · +1.5\u00a0Vigil · +1.5\u00a0Mire · '
+            '−3\u00a0Penitents'),
         findsOneWidget);
     expect(
-        find.text('+6 Penitents · +1.5 Vigil · −3 Dominion · −3 Compact · '
-            '−3 Mire · alignment +1'),
+        find.text('+6\u00a0Penitents · +1.5\u00a0Vigil · −3\u00a0Dominion · '
+            '−3\u00a0Compact · −3\u00a0Mire · alignment\u00a0+1'),
         findsOneWidget);
     expect(find.text('No faction: standing doesn’t move.'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
@@ -220,7 +222,9 @@ void main() {
     expect(find.text('Atout'), findsOneWidget);
     expect(find.text('Œil perçant'), findsOneWidget);
     expect(find.text('Remplace : Poings de braise'), findsOneWidget);
-    expect(find.text('+6 Pacte · +1,5 Veille · +1,5 Marais · −3 Pénitents'),
+    expect(
+        find.text('+6\u00a0Pacte · +1,5\u00a0Veille · +1,5\u00a0Marais · '
+            '−3\u00a0Pénitents'),
         findsOneWidget);
     expect(find.text('Sans faction : la réputation ne bouge pas.'),
         findsOneWidget);
