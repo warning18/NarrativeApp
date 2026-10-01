@@ -155,7 +155,8 @@ extension _FightQueries on _FightScreenState {
     if (leaderStanding && !enemy.hasAffix(EnemyAffix.packLeader)) {
       damage = (damage * packLeaderAllyDamageMultiplier).round();
     }
-    return damage;
+    // A pact's curse, while it runs (see signs.dart).
+    return _signs.enemyDamage(damage);
   }
 
   /// How much of a hit of [element] [target]'s armor soaks: base armor,

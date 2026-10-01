@@ -9,9 +9,8 @@ extension _FightActions on _FightScreenState {
     ref.read(playerSessionProvider.notifier).consumePotion();
     final lang = ref.read(appLanguageProvider);
     final heal = _condition == BattlefieldCondition.shrine
-        ? ((_potionHealAmount + _perks.potionBonus) * shrineHealMultiplier)
-            .round()
-        : _potionHealAmount + _perks.potionBonus;
+        ? ((_potionHealAmount + _potionBonus) * shrineHealMultiplier).round()
+        : _potionHealAmount + _potionBonus;
     _potionUsed = true;
     _fx(VfxStyle.heal, _memberCardKey(player.id),
         text: '+$heal', textKind: VfxTextKind.heal);
@@ -71,7 +70,7 @@ extension _FightActions on _FightScreenState {
         alignedBonus.damageBonus +
         player.gear.attackDamage +
         _elementalDamageBonus(spell.element, player.equippedItemIds, items);
-    return spellAmountFor(
+    final amount = spellAmountFor(
       spell,
       intelligence: player.intelligence,
       wisdom: player.wisdom,
@@ -79,7 +78,19 @@ extension _FightActions on _FightScreenState {
       level: _playerLevel,
       casterDamage: casterDamage,
     );
+    // A spell sign lifts what spells deal and heal (not their block).
+    return spell.effect == SpellEffectKind.damage ||
+            spell.effect == SpellEffectKind.heal
+        ? _signs.spellAmount(amount)
+        : amount;
   }
+
+  /// What [spell] costs the player now: its mana, less a spell sign's
+  /// saving (never under 1).
+  int _spellCost(SpellSpec spell) => _signs.spellCost(spell.manaCost);
+
+  /// What a potion heals on top of its own: a perk's and a sign's.
+  int get _potionBonus => _perks.potionBonus + _signs.potionBonus;
 
   /// Casts [spell] right now, like drinking a potion: picks its target(s)
   /// (a sheet when there's a real choice), applies the effect, spends the
@@ -91,7 +102,7 @@ extension _FightActions on _FightScreenState {
     Map<String, dynamic> items, {
     String? scrollItemId,
   }) async {
-    if (_over || _rolling || !_started || _mana < spell.manaCost) return;
+    if (_over || _rolling || !_started || _mana < _spellCost(spell)) return;
     if (scrollItemId != null &&
         !ref
             .read(playerSessionProvider)
@@ -137,7 +148,7 @@ extension _FightActions on _FightScreenState {
             ? '${trFor(lang, 'read_scroll_prefix')} ${spell.nameFor(lang)}. '
                 '${spell.battleMessageFor(lang)}'
             : '${trFor(lang, 'cast_prefix')} ${spell.nameFor(lang)} '
-                '(-${spell.manaCost} ${trFor(lang, 'mana_label')}). '
+                '(-${_spellCost(spell)} ${trFor(lang, 'mana_label')}). '
                 '${spell.battleMessageFor(lang)}',
         _LogKind.mana,
       ),
@@ -197,6 +208,8 @@ extension _FightActions on _FightScreenState {
           _LogKind.info,
         ));
       }
+      // A spell sign's status, on every enemy the spell reaches.
+      _rollSignStatuses(_signs.spellStatuses, enemy, entries, lang);
     }
     for (final member in memberTargets) {
       final fxDelay = spellFx++ * 120;
@@ -262,11 +275,12 @@ extension _FightActions on _FightScreenState {
       }
     }
     _noteSkittishFlights(entries, lang);
+    _feedSignKills(entries, lang);
 
     if (scrollItemId != null) {
       ref.read(playerSessionProvider.notifier).consumeItem(scrollItemId);
     } else {
-      _mana -= spell.manaCost;
+      _mana -= _spellCost(spell);
       ref.read(playerSessionProvider.notifier).setMana(_mana);
     }
     _update(() {

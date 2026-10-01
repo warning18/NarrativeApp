@@ -6,17 +6,20 @@ import '../providers/player_session_provider.dart';
 import 'detail_dialog.dart';
 import 'moments.dart';
 import 'perk_picker.dart';
+import 'sign_offer_dialog.dart';
 
 /// Shown right after a fight that leveled the character up. Lets the player
 /// spend their new stat point(s) immediately, right in the modal, or close
 /// it and distribute them later from the Level Up screen — either way the
-/// points aren't lost.
+/// points aren't lost. An odd level brings a sign to choose (see
+/// signs.dart): its offer follows once this closes.
 Future<void> showLevelUpDialog(BuildContext context, WidgetRef ref,
-    {required int newLevel}) {
-  return showDialog<void>(
+    {required int newLevel}) async {
+  await showDialog<void>(
     context: context,
     builder: (context) => _LevelUpDialog(newLevel: newLevel),
   );
+  if (context.mounted) await showSignOfferIfWaiting(context, ref);
 }
 
 class _LevelUpDialog extends ConsumerWidget {

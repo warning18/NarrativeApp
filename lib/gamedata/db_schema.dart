@@ -1,5 +1,7 @@
 import '../combat/skill_vfx.dart';
 import '../data/companion_remarks.dart' show remarkTriggerOptions;
+import '../data/signs.dart'
+    show PatronKind, SignEffectKind, SignSlot, patronIconNames;
 import 'field_schema.dart';
 
 class DbSchema {
@@ -2369,6 +2371,142 @@ final DbSchema companionRemarksSchema = DbSchema(
   ],
 );
 
+/// The factions that offer signs (see lib/data/signs.dart). Their names
+/// are placeholders from the story review, so everything shown is here.
+final DbSchema patronsSchema = DbSchema(
+  id: 'patrons',
+  label: 'Patrons',
+  assetPath: 'assets/gamedata/patrons.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Patron ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'kind',
+      label: 'Kind',
+      type: FieldType.enumeration,
+      enumOptions: [for (final k in PatronKind.values) k.name],
+      help: 'clan: at most three give signs in one life. tribe: extra, '
+          'offers half as often. otherworld: the Choir and the Pit, who '
+          'shut each other out for the life.',
+    ),
+    FieldSchema(
+      key: 'color',
+      label: 'Color',
+      type: FieldType.text,
+      help: 'A hex color, #RRGGBB.',
+    ),
+    FieldSchema(
+      key: 'icon',
+      label: 'Icon',
+      type: FieldType.enumeration,
+      enumOptions: patronIconNames,
+      help: 'A Material icon, drawn in code: patrons have no image.',
+    ),
+    FieldSchema(
+      key: 'intro',
+      label: 'Intro (their first offer)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
+        key: 'intro_fr', label: 'Intro (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'greetings',
+      label: 'Greetings',
+      type: FieldType.stringList,
+      help: 'One is said with each offer after the first.',
+    ),
+    FieldSchema(
+      key: 'greetings_fr',
+      label: 'Greetings (FR)',
+      type: FieldType.stringList,
+      help: '« vous » to the player; in the same order as the English.',
+    ),
+    FieldSchema(
+      key: 'unlockFlag',
+      label: 'Unlock flag',
+      type: FieldType.text,
+      help: 'A story flag that must be set before they offer; empty for '
+          'always.',
+    ),
+    FieldSchema(
+      key: 'minAlignment',
+      label: 'Lowest alignment score',
+      type: FieldType.text,
+      help: 'They offer only at this score or above; empty for no limit.',
+    ),
+    FieldSchema(
+      key: 'maxAlignment',
+      label: 'Highest alignment score',
+      type: FieldType.text,
+      help: 'They offer only at this score or below; empty for no limit.',
+    ),
+  ],
+);
+
+/// The signs patrons offer, three at a time (see lib/data/signs.dart).
+final DbSchema signsSchema = DbSchema(
+  id: 'signs',
+  label: 'Signs',
+  assetPath: 'assets/gamedata/signs.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Sign ID', type: FieldType.text),
+    FieldSchema(
+      key: 'patron',
+      label: 'Patron',
+      type: FieldType.reference,
+      referenceSchemaId: 'patrons',
+    ),
+    FieldSchema(
+      key: 'slot',
+      label: 'Slot',
+      type: FieldType.enumeration,
+      enumOptions: [for (final s in SignSlot.values) s.name],
+      help: 'strike, guard, mend and spell: one held at a time each (a new '
+          'one replaces it). passive: any number.',
+    ),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'flavour', label: 'Flavour', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'flavour_fr',
+        label: 'Flavour (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'effects',
+      label: 'Effects [{kind, value, ...}]',
+      type: FieldType.json,
+      help: 'Each {"kind": ..., "value": N}; the text shown is written from '
+          'these. strikeElement adds "element"; strikeStatus, guardStatus '
+          'and spellStatus take "status" (poison, weaken, stun), "chance", '
+          '"duration", "magnitude"; strikeKeyword takes "keyword" (cleave, '
+          'pierce, growth, pain, steady); mendCleanse\'s value is how many '
+          'afflictions it lifts; stat takes "stat" (luck...). Kinds: '
+          '${SignEffectKind.values.map((k) => k.name).join(', ')}.',
+    ),
+    FieldSchema(
+      key: 'requiresPatrons',
+      label: 'Duo: both patrons',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'patrons',
+      help: 'A duo sign is offered only once a sign of each is held.',
+    ),
+    FieldSchema(
+      key: 'pact',
+      label: 'Pact (the Pit)',
+      type: FieldType.json,
+      help: '{"curse": "enemyDamagePercent" | "startHealthPercentLoss" | '
+          '"goldPercentLoss", "value": N, "fights": 3}: the curse holds '
+          'for that many fights, then the gift. Empty for none.',
+    ),
+  ],
+);
+
 final List<DbSchema> gameDbSchemas = [
   itemsSchema,
   itemSetsSchema,
@@ -2395,4 +2533,6 @@ final List<DbSchema> gameDbSchemas = [
   chaptersSchema,
   npcsSchema,
   spellsSchema,
+  patronsSchema,
+  signsSchema,
 ];

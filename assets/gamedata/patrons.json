@@ -1,0 +1,277 @@
+{
+  "standard": {
+    "id": "standard",
+    "name": "The Standard",
+    "name_fr": "L’Étendard",
+    "kind": "clan",
+    "color": "#3F74C8",
+    "icon": "flag",
+    "intro": "Drawers of the Standard sew their power into cloth, and carry it where everyone can see.",
+    "intro_fr": "À l’Étendard, on coud le pouvoir dans la toile, et on le porte là où tout le monde peut le voir.",
+    "greetings": [
+      "Stand under the cloth. We’ll tie you in.",
+      "A banner is only thread until someone bleeds under it.",
+      "The company has room for one more knot.",
+      "Hold the pole a moment. Feel how many hands have."
+    ],
+    "greetings_fr": [
+      "Mettez-vous sous la toile. On vous y nouera.",
+      "Une bannière n’est que du fil tant que personne n’a saigné dessous.",
+      "La compagnie a de la place pour un nœud de plus.",
+      "Tenez la hampe un instant. Sentez combien de mains l’ont tenue."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "painted": {
+    "id": "painted",
+    "name": "The Painted",
+    "name_fr": "Les Peints",
+    "kind": "clan",
+    "color": "#2E9E62",
+    "icon": "brush",
+    "intro": "The Painted carry their sigils on skin and bark, and renew them by hand.",
+    "intro_fr": "Les Peints portent leurs sigils sur la peau et l’écorce, et les renouvellent à la main.",
+    "greetings": [
+      "Hold still. The first coat is the one that counts.",
+      "Your skin takes colour well. That is rarer than you think.",
+      "The brush is wet. Choose before it dries.",
+      "We ground this pigment from something very old. Don’t ask."
+    ],
+    "greetings_fr": [
+      "Ne bougez pas. C’est la première couche qui compte.",
+      "Votre peau prend bien la couleur. C’est plus rare qu’on ne croit.",
+      "Le pinceau est humide. Choisissez avant qu’il sèche.",
+      "Ce pigment, nous l’avons broyé dans quelque chose de très ancien. Ne demandez pas."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "stonemarked": {
+    "id": "stonemarked",
+    "name": "The Stone-marked",
+    "name_fr": "Les Marqués",
+    "kind": "clan",
+    "color": "#8C7B6B",
+    "icon": "landscape",
+    "intro": "The Stone-marked cut their power into steel and stone, and it does not wash off.",
+    "intro_fr": "Les Marqués taillent leur pouvoir dans l’acier et la pierre, et il ne s’efface pas.",
+    "greetings": [
+      "Hold out the buckle. This will take a while.",
+      "A mark cut true outlasts the one who wears it.",
+      "The chisel is sharp. Pick where it bites.",
+      "Stone forgets nothing. Neither do we."
+    ],
+    "greetings_fr": [
+      "Tendez la boucle. Ce sera long.",
+      "Une marque bien taillée survit à qui la porte.",
+      "Le ciseau est affûté. Choisissez où il mord.",
+      "La pierre n’oublie rien. Nous non plus."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "inked": {
+    "id": "inked",
+    "name": "The Inked",
+    "name_fr": "Les Encrés",
+    "kind": "clan",
+    "color": "#C8404C",
+    "icon": "water_drop",
+    "intro": "Drawers of the Inked carry their power under the skin.",
+    "intro_fr": "Chez les Encrés, le pouvoir se porte sous la peau.",
+    "greetings": [
+      "Needle’s hot. Sit down.",
+      "It hurts. That’s how you know it took.",
+      "Ash, water, and a little of the old red. Which one?",
+      "You’ve room left on that arm."
+    ],
+    "greetings_fr": [
+      "L’aiguille est chaude. Asseyez-vous.",
+      "Ça fait mal. C’est comme ça qu’on sait que ça a pris.",
+      "De la cendre, de l’eau, et un peu du vieux rouge. Que prenez-vous ?",
+      "Il vous reste de la place sur ce bras."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "lettered": {
+    "id": "lettered",
+    "name": "The Lettered",
+    "name_fr": "Les Lettrés",
+    "kind": "clan",
+    "color": "#7862D2",
+    "icon": "history_edu",
+    "intro": "The Lettered write their power down, and read it back when it is needed.",
+    "intro_fr": "Les Lettrés mettent leur pouvoir par écrit, et le relisent quand il le faut.",
+    "greetings": [
+      "Three drafts. One of them is yours.",
+      "Mind the ink. It is older than the page.",
+      "Every word costs something. We keep the accounts.",
+      "Read it once aloud, and never the same way twice."
+    ],
+    "greetings_fr": [
+      "Trois brouillons. L’un d’eux est le vôtre.",
+      "Attention à l’encre : elle est plus vieille que la page.",
+      "Chaque mot coûte quelque chose. Nous tenons les comptes.",
+      "Lisez-le une fois à voix haute, et jamais deux fois de la même façon."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "giants": {
+    "id": "giants",
+    "name": "The giants of Highhearth",
+    "name_fr": "Les géants de Haut-Âtre",
+    "kind": "tribe",
+    "color": "#6F8796",
+    "icon": "fitness_center",
+    "intro": "The last giants of Highhearth cut a sign the way they cut stone: once, and for good.",
+    "intro_fr": "Les derniers géants de Haut-Âtre taillent un signe comme ils taillent la pierre : une fois, et pour de bon.",
+    "greetings": [
+      "Up on the table. That is the custom with guests.",
+      "Giants remember everything. We will remember this.",
+      "Your name, then. We will cut it where it lasts.",
+      "Hold still. A hammer this size does not miss twice."
+    ],
+    "greetings_fr": [
+      "Sur la table. C’est l’usage, avec qui vient de loin.",
+      "Les géants se souviennent de tout. Nous nous souviendrons de ceci.",
+      "Votre nom, alors. Nous le taillerons là où il durera.",
+      "Ne bougez pas. Une masse de cette taille ne manque pas deux fois."
+    ],
+    "unlockFlag": "found_6200",
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "oni": {
+    "id": "oni",
+    "name": "The oni",
+    "name_fr": "Les oni",
+    "kind": "tribe",
+    "color": "#D9661F",
+    "icon": "local_fire_department",
+    "intro": "The oni of Akagiri keep the exorcists’ bells, and a red that rises with the blood.",
+    "intro_fr": "Les oni d’Akagiri gardent les cloches des exorcistes, et un rouge qui monte avec le sang.",
+    "greetings": [
+      "No tail? Pity. Sit down anyway.",
+      "The bells rang when you came up the road.",
+      "Anger is a fire. We only teach you where to put it.",
+      "Cup for cup, and then you choose."
+    ],
+    "greetings_fr": [
+      "Pas de queue ? Dommage. Asseyez-vous quand même.",
+      "Les cloches ont sonné à votre arrivée sur la route.",
+      "La colère est un feu. Nous vous apprenons seulement où la mettre.",
+      "Coupe pour coupe, et ensuite vous choisissez."
+    ],
+    "unlockFlag": "found_3200",
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "tidekin": {
+    "id": "tidekin",
+    "name": "The Tide-Kin",
+    "name_fr": "Les Gens de la Marée",
+    "kind": "tribe",
+    "color": "#1C8FA0",
+    "icon": "sailing",
+    "intro": "The Tide-Kin came up the coast one drowned island at a time, and draw what the sea taught them.",
+    "intro_fr": "Les Gens de la Marée ont remonté la côte une île engloutie après l’autre, et dessinent ce que la mer leur a appris.",
+    "greetings": [
+      "We call, you answer. That is how it holds.",
+      "For the lanterns, then.",
+      "The sea gives back less than it takes. We draw the difference.",
+      "Salt in the ink. It keeps better."
+    ],
+    "greetings_fr": [
+      "Nous appelons, vous répondez. C’est ainsi que cela tient.",
+      "Pour les lanternes, alors.",
+      "La mer rend moins qu’elle ne prend. Nous dessinons la différence.",
+      "Du sel dans l’encre. Elle tient mieux."
+    ],
+    "unlockFlag": "hub_2015_ternrow",
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "kindly": {
+    "id": "kindly",
+    "name": "The Kindly Ones",
+    "name_fr": "Les Bienveillants",
+    "kind": "tribe",
+    "color": "#869A2A",
+    "icon": "spa",
+    "intro": "The Kindly Ones keep the oldest treaty on the coast, and every bargain to the minute.",
+    "intro_fr": "Les Bienveillants tiennent le plus vieux traité de la côte, et chaque marché à la minute près.",
+    "greetings": [
+      "You had an invitation. Do sit.",
+      "The clock by the door is running. Choose kindly.",
+      "No food, we promise. Only a small drawing.",
+      "We will write you a receipt."
+    ],
+    "greetings_fr": [
+      "Vous aviez une invitation. Asseyez-vous donc.",
+      "L’horloge près de la porte tourne. Choisissez avec bienveillance.",
+      "Pas de nourriture, c’est promis. Juste un petit dessin.",
+      "Nous vous ferons un reçu."
+    ],
+    "unlockFlag": "found_5200",
+    "minAlignment": null,
+    "maxAlignment": null
+  },
+  "choir": {
+    "id": "choir",
+    "name": "The Choir",
+    "name_fr": "Le Chœur",
+    "kind": "otherworld",
+    "color": "#AD8A10",
+    "icon": "light_mode",
+    "intro": "The Choir gives nothing away. It accepts vows, and holds you to them.",
+    "intro_fr": "Le Chœur ne donne rien. Il reçoit des vœux, et vous y tient.",
+    "greetings": [
+      "Your ledger is known to us. Kneel or stand; it is the same.",
+      "Swear, and you will be heard.",
+      "A vow is a light. Do not let it go out.",
+      "We weigh what you carry. Choose what else to carry."
+    ],
+    "greetings_fr": [
+      "Votre registre nous est connu. À genoux ou debout ; c’est égal.",
+      "Jurez, et l’on vous entendra.",
+      "Un vœu est une lumière. Ne la laissez pas s’éteindre.",
+      "Nous pesons ce que vous portez. Choisissez ce que vous porterez encore."
+    ],
+    "unlockFlag": null,
+    "minAlignment": 10,
+    "maxAlignment": null
+  },
+  "pit": {
+    "id": "pit",
+    "name": "The Pit",
+    "name_fr": "La Fosse",
+    "kind": "otherworld",
+    "color": "#A94BB4",
+    "icon": "dark_mode",
+    "intro": "The Pit draws nothing itself. It writes clauses, with a pen that is always wet.",
+    "intro_fr": "La Fosse ne dessine rien elle-même. Elle rédige des clauses, d’une plume toujours humide.",
+    "greetings": [
+      "Sign here. And here. The small print is only small.",
+      "Nothing is free. Everything is cheap, at first.",
+      "The good ones always taste of regret. You taste of hunger.",
+      "A little suffering first. Then it is yours for good."
+    ],
+    "greetings_fr": [
+      "Signez ici. Et là. Les petits caractères ne sont que petits.",
+      "Rien n’est gratuit. Tout est bon marché, au début.",
+      "Les justes ont toujours un goût de regret. Vous, vous avez un goût de faim.",
+      "Un peu de souffrance d’abord. Ensuite, c’est à vous pour de bon."
+    ],
+    "unlockFlag": null,
+    "minAlignment": null,
+    "maxAlignment": -10
+  }
+}

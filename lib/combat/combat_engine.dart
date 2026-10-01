@@ -111,6 +111,9 @@ class DiceFaceResult {
   DiceFaceResult withKeywords(Set<FaceKeyword> keywords) =>
       _copy(keywords: keywords);
 
+  /// This face striking with [element] (a strike sign's, see signs.dart).
+  DiceFaceResult withElement(String element) => _copy(element: element);
+
   /// This face turned into a plain [type] face ('Attack', 'Defend',
   /// 'Heal' or 'Empty') of [value]: what a Silence leaves of a skill, or a
   /// Curse of a guard.

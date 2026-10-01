@@ -15,6 +15,8 @@ import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
 import '../widgets/perk_picker.dart';
+import '../widgets/sign_offer_dialog.dart';
+import '../widgets/sign_widgets.dart';
 import '../widgets/mana_meter.dart';
 import 'dice_loadout_screen.dart';
 import 'inventory_screen.dart';
@@ -349,6 +351,15 @@ class _CharacterHeader extends ConsumerWidget {
                 const PerkList(),
               ],
             ),
+          ),
+        ),
+        // Signs (see signs.dart): the patrons' boons for this life.
+        const SizedBox(height: 14),
+        const Card(
+          key: Key('character_signs'),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: SignsSection(),
           ),
         ),
         const SizedBox(height: 14),
@@ -705,12 +716,37 @@ class _DebugStatsEditorState extends ConsumerState<_DebugStatsEditor> {
               ],
             ),
             const SizedBox(height: 12),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ElevatedButton(
-                onPressed: _apply,
-                child: Text(tr(ref, 'apply_button')),
-              ),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ElevatedButton(
+                  onPressed: _apply,
+                  child: Text(tr(ref, 'apply_button')),
+                ),
+                // Signs (see signs.dart), to test an offer or a raise
+                // without playing to the next odd level or hunt.
+                OutlinedButton(
+                  key: const Key('debug_offer_sign'),
+                  onPressed: () async {
+                    await ref
+                        .read(playerSessionProvider.notifier)
+                        .grantSignPicks(1);
+                    if (context.mounted) {
+                      await showSignOfferIfWaiting(context, ref,
+                          sayWhenNone: true);
+                    }
+                  },
+                  child: Text(tr(ref, 'debug_offer_sign')),
+                ),
+                OutlinedButton(
+                  key: const Key('debug_titan_blood'),
+                  onPressed: () => ref
+                      .read(playerSessionProvider.notifier)
+                      .grantTitanBlood(1),
+                  child: Text(tr(ref, 'debug_titan_blood')),
+                ),
+              ],
             ),
           ],
         ),
