@@ -1,0 +1,161 @@
+{
+  "hooded_lantern": {
+    "id": "hooded_lantern",
+    "name": "The Hooded Lantern",
+    "name_fr": "La Lanterne voilée",
+    "premise": "The Inquisition is not closing the tear.",
+    "premise_fr": "L’Inquisition ne referme pas la déchirure.",
+    "factions": [
+      "dominion",
+      "vigil",
+      "penitents"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": "1–2",
+        "text": "A paid informant.",
+        "text_fr": "A paid informant."
+      },
+      {
+        "stage": "Hook",
+        "chapter": "3",
+        "text": "A whisper at the trial.",
+        "text_fr": "A whisper at the trial."
+      },
+      {
+        "stage": "Turn",
+        "chapter": "4",
+        "text": "A letter.",
+        "text_fr": "A letter."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": "5",
+        "text": "The rite.",
+        "text_fr": "The rite."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": "6",
+        "text": "The proof.",
+        "text_fr": "The proof."
+      },
+      {
+        "stage": "Choice",
+        "chapter": "7",
+        "text": "Expose or keep.",
+        "text_fr": "Expose or keep."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Expose",
+        "name_fr": "Dénoncer",
+        "effects": [
+          {
+            "faction": "vigil",
+            "delta": 25
+          },
+          {
+            "faction": "penitents",
+            "delta": 15
+          }
+        ]
+      },
+      {
+        "name": "Keep",
+        "name_fr": "Garder",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 20
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "faction": "vigil",
+            "delta": -30
+          }
+        ]
+      }
+    ]
+  },
+  "double_ledger": {
+    "id": "double_ledger",
+    "name": "The Double Ledger",
+    "name_fr": "Le Double Registre",
+    "premise": "A Keyholder is selling Crow routes.",
+    "premise_fr": "Un Porte-Clés vend les routes des Corneilles.",
+    "factions": [
+      "crows",
+      "dominion"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": "1–2",
+        "text": "A route sold.",
+        "text_fr": "A route sold."
+      },
+      {
+        "stage": "Hook",
+        "chapter": "3",
+        "text": "The leak.",
+        "text_fr": "The leak."
+      },
+      {
+        "stage": "Turn",
+        "chapter": "4",
+        "text": "The cut.",
+        "text_fr": "The cut."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": "5",
+        "text": "The rising.",
+        "text_fr": "The rising."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": "6",
+        "text": "The Vault.",
+        "text_fr": "The Vault."
+      },
+      {
+        "stage": "Choice",
+        "chapter": "7",
+        "text": "Who paid.",
+        "text_fr": "Who paid."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Loyal",
+        "name_fr": "Loyauté",
+        "effects": [
+          {
+            "faction": "crows",
+            "delta": 25
+          }
+        ]
+      },
+      {
+        "name": "Sell them out",
+        "name_fr": "Les vendre",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 15
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1518,6 +1518,15 @@ final DbSchema shopsSchema = DbSchema(
       type: FieldType.multiEnum,
       enumOptions: itemTypeOptions,
     ),
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+      help: 'The faction the shop belongs to, if any: its prices follow '
+          'the character\'s standing with them (+40% Hostile ... -25% '
+          'Sworn), and it won\'t trade with someone it hunts.',
+    ),
     visualAssetFieldSchema('shops'),
   ],
 );
@@ -2371,26 +2380,50 @@ final DbSchema companionRemarksSchema = DbSchema(
   ],
 );
 
-/// The factions that offer signs (see lib/data/signs.dart). Their names
-/// are placeholders from the story review, so everything shown is here.
-final DbSchema patronsSchema = DbSchema(
-  id: 'patrons',
-  label: 'Patrons',
-  assetPath: 'assets/gamedata/patrons.json',
+/// The factions (see lib/data/factions.dart): the Lantern Dominion and the
+/// five clans, the Choir and the Pit, and the tribes. Every one of them
+/// offers signs (see lib/data/signs.dart) and keeps the character's
+/// standing.
+final DbSchema factionsSchema = DbSchema(
+  id: 'factions',
+  label: 'Factions',
+  assetPath: 'assets/gamedata/factions.json',
   primaryKeyField: 'id',
   titleField: 'name',
   fields: [
-    FieldSchema(key: 'id', label: 'Patron ID', type: FieldType.text),
-    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
-    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'id', label: 'Faction ID', type: FieldType.text),
     FieldSchema(
       key: 'kind',
       label: 'Kind',
       type: FieldType.enumeration,
       enumOptions: [for (final k in PatronKind.values) k.name],
-      help: 'clan: at most three give signs in one life. tribe: extra, '
-          'offers half as often. otherworld: the Choir and the Pit, who '
-          'shut each other out for the life.',
+      help: 'clan: the Dominion and the five clans, with sub-clans and a '
+          'place in the relations table. tribe: met on the way, offers half '
+          'as often. otherworld: the Choir and the Pit, who shut each other '
+          'out for the life.',
+    ),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'motto', label: 'Motto', type: FieldType.text),
+    FieldSchema(key: 'motto_fr', label: 'Motto (FR)', type: FieldType.text),
+    FieldSchema(
+      key: 'intro',
+      label: 'Intro (the first time they come)',
+      type: FieldType.multilineText,
+    ),
+    FieldSchema(
+        key: 'intro_fr', label: 'Intro (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'greetings',
+      label: 'Greetings',
+      type: FieldType.stringList,
+      help: 'One is said each time after the first.',
+    ),
+    FieldSchema(
+      key: 'greetings_fr',
+      label: 'Greetings (FR)',
+      type: FieldType.stringList,
+      help: '« vous » to the player; in the same order as the English.',
     ),
     FieldSchema(
       key: 'color',
@@ -2403,26 +2436,47 @@ final DbSchema patronsSchema = DbSchema(
       label: 'Icon',
       type: FieldType.enumeration,
       enumOptions: patronIconNames,
-      help: 'A Material icon, drawn in code: patrons have no image.',
+      help: 'A Material icon, drawn in code: factions have no image.',
     ),
     FieldSchema(
-      key: 'intro',
-      label: 'Intro (their first offer)',
-      type: FieldType.multilineText,
+      key: 'lean',
+      label: 'Alignment lean (-1, 0 or 1)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'How accepting their gift nudges the alignment.',
     ),
     FieldSchema(
-        key: 'intro_fr', label: 'Intro (FR)', type: FieldType.multilineText),
-    FieldSchema(
-      key: 'greetings',
-      label: 'Greetings',
-      type: FieldType.stringList,
-      help: 'One is said with each offer after the first.',
+      key: 'startStanding',
+      label: 'Starting standing (-100 to 100)',
+      type: FieldType.integer,
+      defaultValue: 0,
+      help: 'Where the character stands with them when the story opens.',
     ),
     FieldSchema(
-      key: 'greetings_fr',
-      label: 'Greetings (FR)',
-      type: FieldType.stringList,
-      help: '« vous » to the player; in the same order as the English.',
+      key: 'subclans',
+      label: 'Sub-clans',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'subclans',
+    ),
+    FieldSchema(
+      key: 'sponsors',
+      label: 'Skill branches they sponsor',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'skillTrees',
+    ),
+    FieldSchema(
+      key: 'objects',
+      label: 'Objects [{itemId, minTier}]',
+      type: FieldType.json,
+      help: 'Items they may give, each from a standing tier (hunted, '
+          'hostile, wary, unknown, known, trusted, sworn).',
+    ),
+    FieldSchema(
+      key: 'sworn',
+      label: 'Sworn boon {name, name_fr, effects}',
+      type: FieldType.json,
+      help: 'Given once to the one faction the character is sworn to. '
+          'Effects are written as signs\' effects.',
     ),
     FieldSchema(
       key: 'unlockFlag',
@@ -2446,7 +2500,161 @@ final DbSchema patronsSchema = DbSchema(
   ],
 );
 
-/// The signs patrons offer, three at a time (see lib/data/signs.dart).
+/// The clans' sub-clans: the Dominion's eight Houses and the others' (see
+/// lib/data/factions.dart). Each keeps a mark on the character.
+final DbSchema subclansSchema = DbSchema(
+  id: 'subclans',
+  label: 'Sub-clans',
+  assetPath: 'assets/gamedata/subclans.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Sub-clan ID', type: FieldType.text),
+    FieldSchema(
+      key: 'clan',
+      label: 'Clan',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+    ),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'line', label: 'Who they are', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'line_fr',
+        label: 'Who they are (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'color',
+      label: 'Color',
+      type: FieldType.text,
+      help: 'A hex color, #RRGGBB: their mark on the clan\'s banner.',
+    ),
+    FieldSchema(
+      key: 'lean',
+      label: 'Alignment lean (-1, 0 or 1)',
+      type: FieldType.integer,
+      defaultValue: 0,
+    ),
+    FieldSchema(key: 'favour', label: 'Favour', type: FieldType.text),
+    FieldSchema(key: 'favour_fr', label: 'Favour (FR)', type: FieldType.text),
+  ],
+);
+
+/// How the clans stand with each other (see lib/data/factions.dart): not
+/// records but three lists -- the seven steps, the pairs as the story
+/// opens, and the coast's history. Edited as JSON.
+final DbSchema relationsSchema = DbSchema(
+  id: 'relations',
+  label: 'Clan relations',
+  assetPath: 'assets/gamedata/relations.json',
+  primaryKeyField: 'id',
+  fields: [
+    FieldSchema(
+      key: 'steps',
+      label: 'Steps [{step, name, name_fr, color}]',
+      type: FieldType.json,
+      help: 'The seven steps, 1 Blood feud to 7 Allies. 6 and 7 make '
+          'allies, 1 to 3 rivals.',
+    ),
+    FieldSchema(
+      key: 'pairs',
+      label: 'Pairs [{a, b, step, reason, reason_fr}]',
+      type: FieldType.json,
+    ),
+    FieldSchema(
+      key: 'history',
+      label: 'History [{year, year_fr, name, name_fr, text, text_fr}]',
+      type: FieldType.json,
+    ),
+  ],
+);
+
+/// Titles the character can wear (see lib/data/factions.dart).
+final DbSchema titlesSchema = DbSchema(
+  id: 'titles',
+  label: 'Titles',
+  assetPath: 'assets/gamedata/titles.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Title ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(key: 'line', label: 'Line', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'line_fr', label: 'Line (FR)', type: FieldType.multilineText),
+    FieldSchema(
+      key: 'faction',
+      label: 'Faction',
+      type: FieldType.reference,
+      referenceSchemaId: 'factions',
+    ),
+    FieldSchema(
+      key: 'source',
+      label: 'Source',
+      type: FieldType.text,
+      help: 'offer, tier:known, tier:trusted, tier:sworn, '
+          'mark:foe:<sub-clan>, quest or intrigue.',
+    ),
+    FieldSchema(
+      key: 'negative',
+      label: 'A bad name',
+      type: FieldType.boolean,
+      defaultValue: false,
+    ),
+    FieldSchema(
+      key: 'effects',
+      label: 'Effects [{kind, value, ...}]',
+      type: FieldType.json,
+      help: 'Written as signs\' effects.',
+    ),
+  ],
+);
+
+/// The eight intrigues (see lib/data/factions.dart): shown in Edit Mode's
+/// Clans & Politics screen; no scene plays them yet.
+final DbSchema intriguesSchema = DbSchema(
+  id: 'intrigues',
+  label: 'Intrigues',
+  assetPath: 'assets/gamedata/intrigues.json',
+  primaryKeyField: 'id',
+  titleField: 'name',
+  fields: [
+    FieldSchema(key: 'id', label: 'Intrigue ID', type: FieldType.text),
+    FieldSchema(key: 'name', label: 'Name', type: FieldType.text),
+    FieldSchema(key: 'name_fr', label: 'Name (FR)', type: FieldType.text),
+    FieldSchema(
+        key: 'premise', label: 'Premise', type: FieldType.multilineText),
+    FieldSchema(
+        key: 'premise_fr',
+        label: 'Premise (FR)',
+        type: FieldType.multilineText),
+    FieldSchema(
+      key: 'factions',
+      label: 'Factions involved',
+      type: FieldType.referenceList,
+      referenceSchemaId: 'factions',
+    ),
+    FieldSchema(
+      key: 'stages',
+      label: 'Stages [{stage, chapter, text, text_fr}]',
+      type: FieldType.json,
+      help: 'Six: Clue, Hook, Turn, Reveal, Crisis, Choice. The story '
+          'marks the one reached with the flag intrigue_<id>_stage_<n>.',
+    ),
+    FieldSchema(
+      key: 'outcomes',
+      label: 'Outcomes [{name, name_fr, effects}]',
+      type: FieldType.json,
+      help: 'effects: [{"faction": "vigil", "delta": 25}, {"subclan": '
+          '"inquisition", "mark": "foe"}, {"note": "...", "note_fr": '
+          '"..."}].',
+    ),
+  ],
+);
+
+/// The signs the factions offer, three at a time (see lib/data/signs.dart).
 final DbSchema signsSchema = DbSchema(
   id: 'signs',
   label: 'Signs',
@@ -2457,9 +2665,9 @@ final DbSchema signsSchema = DbSchema(
     FieldSchema(key: 'id', label: 'Sign ID', type: FieldType.text),
     FieldSchema(
       key: 'patron',
-      label: 'Patron',
+      label: 'Faction',
       type: FieldType.reference,
-      referenceSchemaId: 'patrons',
+      referenceSchemaId: 'factions',
     ),
     FieldSchema(
       key: 'slot',
@@ -2491,9 +2699,9 @@ final DbSchema signsSchema = DbSchema(
     ),
     FieldSchema(
       key: 'requiresPatrons',
-      label: 'Duo: both patrons',
+      label: 'Duo: both factions',
       type: FieldType.referenceList,
-      referenceSchemaId: 'patrons',
+      referenceSchemaId: 'factions',
       help: 'A duo sign is offered only once a sign of each is held.',
     ),
     FieldSchema(
@@ -2533,6 +2741,10 @@ final List<DbSchema> gameDbSchemas = [
   chaptersSchema,
   npcsSchema,
   spellsSchema,
-  patronsSchema,
+  factionsSchema,
+  subclansSchema,
+  relationsSchema,
+  titlesSchema,
+  intriguesSchema,
   signsSchema,
 ];

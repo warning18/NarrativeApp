@@ -160,8 +160,16 @@ IconData gameDbIcon(String schemaId) {
       return Icons.work;
     case 'companion_remarks':
       return Icons.record_voice_over;
-    case 'patrons':
+    case 'factions':
       return Icons.groups_2_outlined;
+    case 'subclans':
+      return Icons.diversity_2_outlined;
+    case 'relations':
+      return Icons.balance;
+    case 'titles':
+      return Icons.military_tech_outlined;
+    case 'intrigues':
+      return Icons.theater_comedy_outlined;
     case 'signs':
       return Icons.draw_outlined;
     default:

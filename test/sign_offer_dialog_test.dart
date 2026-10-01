@@ -3,21 +3,31 @@
 // what it replaces, a duo's badge and a pact's price; a card taken, the
 // next offer drawn, and "Later" keeping it for another time -- and, in
 // French, the Character tab's signs with Titan's Blood spent, and the
-// Patrons codex.
+// Clans codex (the Patrons' until v1.193: the patrons are the factions).
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:narrative_data_app/data/factions.dart';
 import 'package:narrative_data_app/data/signs.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/providers/game_db_providers.dart';
 import 'package:narrative_data_app/providers/player_session_provider.dart';
+import 'package:narrative_data_app/widgets/clan_widgets.dart';
 import 'package:narrative_data_app/widgets/sign_offer_dialog.dart';
 import 'package:narrative_data_app/widgets/sign_widgets.dart';
 
 import 'player_session_provider_test.dart' show baseSession;
+
+/// The shipped factions: the names and words the dialog shows.
+final Map<String, Faction> _factions = parseFactions(
+    jsonDecode(File('assets/gamedata/factions.json').readAsStringSync())
+        as Map<String, dynamic>);
 
 void main() {
   testWidgets('the offer shows its cards, takes one and keeps the next',
@@ -32,7 +42,9 @@ void main() {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.runAsync(() async {
-      await container.read(gameDbProvider(patronsSchema).notifier).whenLoaded();
+      await container
+          .read(gameDbProvider(factionsSchema).notifier)
+          .whenLoaded();
       await container.read(gameDbProvider(signsSchema).notifier).whenLoaded();
     });
     await tester.runAsync(() => notifier.loadSession(baseSession().copyWith(
@@ -42,10 +54,10 @@ void main() {
             HeldSign(signId: 'lettered_passive_night_reading'),
             HeldSign(signId: 'pit_passive_red_thirst'),
           ],
-          signPatronsThisLife: const ['painted', 'lettered', pitPatronId],
+          signPatronsThisLife: const ['mire', 'penitents', pitPatronId],
           pendingSignPicks: 2,
           signOffer: const SignOffer(
-            patronId: 'inked',
+            patronId: 'crows',
             firstMeeting: true,
             cards: [
               SignCard(signId: 'inked_strike_ember', rarity: SignRarity.rare),
@@ -78,10 +90,10 @@ void main() {
     await tester.runAsync(() => Future<void>.delayed(Duration.zero));
     await tester.pumpAndSettle();
 
-    // The patron, and their first words.
-    expect(find.text('The Inked'), findsOneWidget);
-    expect(find.text('Drawers of the Inked carry their power under the skin.'),
-        findsOneWidget);
+    // The faction, and their first words.
+    final crows = _factions['crows']!;
+    expect(find.text(crows.nameFor(AppLanguage.en)), findsOneWidget);
+    expect(find.text(crows.introFor(AppLanguage.en)), findsOneWidget);
     // Three cards, each with its numbers.
     expect(find.text('Ember Knuckles'), findsOneWidget);
     expect(find.text('Burning Script'), findsOneWidget);
@@ -112,7 +124,7 @@ void main() {
     expect(ember.rarity, SignRarity.rare);
     expect(session.heldSigns.map((h) => h.signId),
         isNot(contains('painted_strike_gale')));
-    expect(session.patronFavour, {'inked': 1});
+    expect(session.patronFavour, {'crows': 1});
     expect(session.pendingSignPicks, 1);
     // The next offer is on the table, and the dialog with it.
     final next = session.signOffer;
@@ -142,7 +154,9 @@ void main() {
     await tester.runAsync(
         () => Future<void>.delayed(const Duration(milliseconds: 200)));
     await tester.runAsync(() async {
-      await container.read(gameDbProvider(patronsSchema).notifier).whenLoaded();
+      await container
+          .read(gameDbProvider(factionsSchema).notifier)
+          .whenLoaded();
       await container.read(gameDbProvider(signsSchema).notifier).whenLoaded();
     });
     await tester.runAsync(() => notifier.loadSession(baseSession().copyWith(
@@ -154,9 +168,9 @@ void main() {
           ],
           titanBlood: 1,
           pendingSignPicks: 1,
-          patronFavour: const {'inked': 4, choirPatronId: 1},
-          patronsMet: const ['inked', choirPatronId],
-          signPatronsThisLife: const ['inked', pitPatronId],
+          patronFavour: const {'crows': 4, choirPatronId: 1},
+          patronsMet: const ['crows', choirPatronId],
+          signPatronsThisLife: const ['crows', pitPatronId],
         )));
 
     await tester.pumpWidget(UncontrolledProviderScope(
@@ -164,7 +178,7 @@ void main() {
       child: const MaterialApp(
         home: Scaffold(
           body: SingleChildScrollView(
-            child: Column(children: [SignsSection(), PatronsCodex()]),
+            child: Column(children: [SignsSection(), ClansCodex()]),
           ),
         ),
       ),
@@ -181,8 +195,9 @@ void main() {
     expect(find.text('Silencieux\u00a0: votre alignement est sous 0.'),
         findsOneWidget);
     expect(find.textContaining('les 2\u00a0prochains combats'), findsOneWidget);
-    // The codex: the patrons met, their favour, and the Choir closed off.
-    expect(find.text('Les Encrés'), findsOneWidget);
+    // The codex: the factions met, their favour, and the Choir closed off.
+    expect(
+        find.text(_factions['crows']!.nameFor(AppLanguage.fr)), findsOneWidget);
     expect(find.text('Clan · Faveur 4 · niveau 1'), findsOneWidget);
     expect(find.text('Fermé pour vous dans cette vie'), findsOneWidget);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');

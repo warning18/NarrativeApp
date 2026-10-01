@@ -22,7 +22,7 @@ Future<void> showSignOfferIfWaiting(BuildContext context, WidgetRef ref,
     {bool sayWhenNone = false}) async {
   if (ref.read(playerSessionProvider).pendingSignPicks <= 0) return;
   final patrons = parsePatrons(
-      await ref.read(gameDbProvider(patronsSchema).notifier).whenLoaded());
+      await ref.read(gameDbProvider(factionsSchema).notifier).whenLoaded());
   final signs = parseSigns(
       await ref.read(gameDbProvider(signsSchema).notifier).whenLoaded());
   final offer = await ref

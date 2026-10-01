@@ -1,0 +1,251 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "name": "Blood feud",
+      "name_fr": "Querelle de sang",
+      "color": "#5A0F0F"
+    },
+    {
+      "step": 2,
+      "name": "War",
+      "name_fr": "Guerre",
+      "color": "#8A1A1A"
+    },
+    {
+      "step": 3,
+      "name": "Hostile",
+      "name_fr": "Hostile",
+      "color": "#D9544D"
+    },
+    {
+      "step": 4,
+      "name": "Tense",
+      "name_fr": "Tendu",
+      "color": "#E0762B"
+    },
+    {
+      "step": 5,
+      "name": "Wary",
+      "name_fr": "Méfiant",
+      "color": "#C9A227"
+    },
+    {
+      "step": 6,
+      "name": "Trade",
+      "name_fr": "Commerce",
+      "color": "#4FB0B0"
+    },
+    {
+      "step": 7,
+      "name": "Allies",
+      "name_fr": "Alliés",
+      "color": "#7DBE6A"
+    }
+  ],
+  "pairs": [
+    {
+      "a": "dominion",
+      "b": "vigil",
+      "step": 3,
+      "reason": "The Edict of the Marked",
+      "reason_fr": "L’Édit des Marqués"
+    },
+    {
+      "a": "compact",
+      "b": "dominion",
+      "step": 4,
+      "reason": "The broken Charter",
+      "reason_fr": "La Charte brisée"
+    },
+    {
+      "a": "dominion",
+      "b": "mire",
+      "step": 4,
+      "reason": "The unpaid Green Tithe",
+      "reason_fr": "La Dîme verte impayée"
+    },
+    {
+      "a": "crows",
+      "b": "dominion",
+      "step": 6,
+      "reason": "The Ledger pays; the Inquisition snuffs",
+      "reason_fr": "Le Registre paie, l’Inquisition étouffe"
+    },
+    {
+      "a": "dominion",
+      "b": "penitents",
+      "step": 2,
+      "reason": "Heretics and deserters",
+      "reason_fr": "Hérétiques et déserteurs"
+    },
+    {
+      "a": "compact",
+      "b": "vigil",
+      "step": 6,
+      "reason": "Both refused the Spire",
+      "reason_fr": "Tous deux ont refusé la Flèche"
+    },
+    {
+      "a": "mire",
+      "b": "vigil",
+      "step": 5,
+      "reason": "Who the Returned are",
+      "reason_fr": "Qui sont les Revenus"
+    },
+    {
+      "a": "crows",
+      "b": "vigil",
+      "step": 3,
+      "reason": "They sell tear-relics",
+      "reason_fr": "Ils vendent des reliques de la déchirure"
+    },
+    {
+      "a": "penitents",
+      "b": "vigil",
+      "step": 7,
+      "reason": "They share the dead",
+      "reason_fr": "Ils partagent leurs morts"
+    },
+    {
+      "a": "compact",
+      "b": "mire",
+      "step": 6,
+      "reason": "Tools for fever-bark",
+      "reason_fr": "Des outils contre de l’écorce-fièvre"
+    },
+    {
+      "a": "compact",
+      "b": "crows",
+      "step": 5,
+      "reason": "Coin for steel, no questions",
+      "reason_fr": "De l’or contre de l’acier, sans questions"
+    },
+    {
+      "a": "compact",
+      "b": "penitents",
+      "step": 3,
+      "reason": "Compact steel on the Spire",
+      "reason_fr": "L’acier du Pacte sur la Flèche"
+    },
+    {
+      "a": "crows",
+      "b": "mire",
+      "step": 5,
+      "reason": "Poisons sold twice",
+      "reason_fr": "Des poisons vendus deux fois"
+    },
+    {
+      "a": "mire",
+      "b": "penitents",
+      "step": 1,
+      "reason": "Reedholm",
+      "reason_fr": "Roseholm"
+    },
+    {
+      "a": "crows",
+      "b": "penitents",
+      "step": 4,
+      "reason": "Penitents pay nothing",
+      "reason_fr": "Les Pénitents ne paient rien"
+    }
+  ],
+  "history": [
+    {
+      "year": "600 BT",
+      "year_fr": "600 av. D.",
+      "name": "The Long Night",
+      "name_fr": "La Longue Nuit",
+      "text": "The Long Night.",
+      "text_fr": "La Longue Nuit."
+    },
+    {
+      "year": "212 BT",
+      "year_fr": "212 av. D.",
+      "name": "The Charter of Anvils",
+      "name_fr": "La Charte des Enclumes",
+      "text": "The Charter of Anvils.",
+      "text_fr": "La Charte des Enclumes."
+    },
+    {
+      "year": "90 BT",
+      "year_fr": "90 av. D.",
+      "name": "The Green Tithe",
+      "name_fr": "La Dîme verte",
+      "text": "The Green Tithe.",
+      "text_fr": "La Dîme verte."
+    },
+    {
+      "year": "Year 0",
+      "year_fr": "An 0",
+      "name": "The Tear",
+      "name_fr": "La Déchirure",
+      "text": "The Tear.",
+      "text_fr": "La Déchirure."
+    },
+    {
+      "year": "1 AT",
+      "year_fr": "1 ap. D.",
+      "name": "The Crusade",
+      "name_fr": "La Croisade",
+      "text": "The Crusade.",
+      "text_fr": "La Croisade."
+    },
+    {
+      "year": "2 AT",
+      "year_fr": "2 ap. D.",
+      "name": "The Oath of Open Eyes",
+      "name_fr": "Le Serment des Yeux ouverts",
+      "text": "The Oath of Open Eyes.",
+      "text_fr": "Le Serment des Yeux ouverts."
+    },
+    {
+      "year": "4 AT",
+      "year_fr": "4 ap. D.",
+      "name": "The Edict of the Marked",
+      "name_fr": "L’Édit des Marqués",
+      "text": "The Edict of the Marked.",
+      "text_fr": "L’Édit des Marqués."
+    },
+    {
+      "year": "6 AT",
+      "year_fr": "6 ap. D.",
+      "name": "The Wharf Bargain",
+      "name_fr": "Le Marché du Quai",
+      "text": "The Wharf Bargain.",
+      "text_fr": "Le Marché du Quai."
+    },
+    {
+      "year": "19 AT",
+      "year_fr": "19 ap. D.",
+      "name": "The Spire of Judgment",
+      "name_fr": "La Flèche du Jugement",
+      "text": "The Spire of Judgment.",
+      "text_fr": "La Flèche du Jugement."
+    },
+    {
+      "year": "21 AT",
+      "year_fr": "21 ap. D.",
+      "name": "Reedholm Burns",
+      "name_fr": "Roseholm brûle",
+      "text": "Reedholm Burns.",
+      "text_fr": "Roseholm brûle."
+    },
+    {
+      "year": "27 AT",
+      "year_fr": "27 ap. D.",
+      "name": "The Snuffing",
+      "name_fr": "L’Étouffement",
+      "text": "The Snuffing.",
+      "text_fr": "L’Étouffement."
+    },
+    {
+      "year": "40 AT",
+      "year_fr": "40 ap. D.",
+      "name": "Now",
+      "name_fr": "Aujourd’hui",
+      "text": "Now.",
+      "text_fr": "Aujourd’hui."
+    }
+  ]
+}

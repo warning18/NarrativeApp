@@ -306,30 +306,20 @@ void main() {
       expect(dark, isNot(contains(choirPatronId)));
     });
 
-    test('three clans a life, then only those three', () {
+    test('no cap on clans a life (v1.193): a fourth still comes', () {
       const life = ['red', 'blue', 'green'];
-      expect(
-          closedThisLife(_patrons['gold']!,
-              patronsThisLife: life, patrons: _patrons),
-          isTrue);
-      expect(
-          closedThisLife(_patrons['red']!,
-              patronsThisLife: life, patrons: _patrons),
-          isFalse);
-      expect(
-          closedThisLife(_patrons['tribe']!,
-              patronsThisLife: life, patrons: _patrons),
-          isFalse,
-          reason: 'tribes come on top');
-      for (var seed = 0; seed < 300; seed++) {
+      for (final id in ['gold', 'red', 'tribe']) {
         expect(
-            _offer(
-                    flags: const ['met_tribe'],
-                    patronsThisLife: life,
-                    seed: seed)!
-                .patronId,
-            isNot('gold'));
+            closedThisLife(_patrons[id]!,
+                patronsThisLife: life, patrons: _patrons),
+            isFalse,
+            reason: id);
       }
+      final met = {
+        for (var seed = 0; seed < 300; seed++)
+          _offer(patronsThisLife: life, seed: seed)!.patronId,
+      };
+      expect(met, contains('gold'));
     });
 
     test('the Choir and the Pit shut each other out for the life', () {

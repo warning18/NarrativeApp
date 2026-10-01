@@ -1,0 +1,45 @@
+{
+  "friend_of_the_wall": {
+    "id": "friend_of_the_wall",
+    "name": "Friend of the Wall",
+    "name_fr": "Amitié du Mur",
+    "line": "The Vigil knows your face.",
+    "line_fr": "La Veille connaît votre visage.",
+    "faction": "vigil",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      }
+    ]
+  },
+  "the_marked": {
+    "id": "the_marked",
+    "name": "the Marked",
+    "name_fr": "la Marque",
+    "line": "The Inquisition hunts you.",
+    "line_fr": "L’Inquisition vous traque.",
+    "faction": "dominion",
+    "source": "mark:foe:inquisition",
+    "negative": true,
+    "effects": []
+  },
+  "keyholder": {
+    "id": "keyholder",
+    "name": "Keyholder",
+    "name_fr": "Porte-Clé",
+    "line": "A key of your own.",
+    "line_fr": "Une clé à vous.",
+    "faction": "crows",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": 10
+      }
+    ]
+  }
+}

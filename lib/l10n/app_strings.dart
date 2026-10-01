@@ -8811,12 +8811,12 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Signes perdus',
   },
   'patrons_section': {
-    AppLanguage.en: 'Patrons',
-    AppLanguage.fr: 'Protecteurs',
+    AppLanguage.en: 'Clans',
+    AppLanguage.fr: 'Clans',
   },
   'patrons_none_met': {
-    AppLanguage.en: 'No patron has offered you a sign yet.',
-    AppLanguage.fr: 'Aucun protecteur ne vous a encore offert de Signe.',
+    AppLanguage.en: 'No one has offered you a sign yet.',
+    AppLanguage.fr: 'Personne ne vous a encore offert de Signe.',
   },
   'patron_favour': {
     AppLanguage.en: 'Favour {n} · level {l}',
@@ -8858,6 +8858,240 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'debug_titan_blood': {
     AppLanguage.en: '+1 Titan’s Blood',
     AppLanguage.fr: '+1 Sang de Titan',
+  }, // Clans (v1.193): standing, marks, relations and the Edit Mode screen.
+  'standing_tier_hunted': {
+    AppLanguage.en: 'Hunted',
+    AppLanguage.fr: 'Traque',
+  },
+  'standing_tier_hostile': {
+    AppLanguage.en: 'Hostile',
+    AppLanguage.fr: 'Hostilité',
+  },
+  'standing_tier_wary': {AppLanguage.en: 'Wary', AppLanguage.fr: 'Méfiance'},
+  'standing_tier_unknown': {
+    AppLanguage.en: 'Unknown',
+    AppLanguage.fr: 'Anonymat',
+  },
+  'standing_tier_known': {AppLanguage.en: 'Known', AppLanguage.fr: 'Estime'},
+  'standing_tier_trusted': {
+    AppLanguage.en: 'Trusted',
+    AppLanguage.fr: 'Confiance',
+  },
+  'standing_tier_sworn': {AppLanguage.en: 'Sworn', AppLanguage.fr: 'Serment'},
+  'subclan_mark_none': {
+    AppLanguage.en: 'No mark',
+    AppLanguage.fr: 'Aucune marque',
+  },
+  'subclan_mark_friend': {
+    AppLanguage.en: 'Friend',
+    AppLanguage.fr: 'Amitié',
+  },
+  'subclan_mark_foe': {AppLanguage.en: 'Foe', AppLanguage.fr: 'Inimitié'},
+  'standing_cause_offer': {
+    AppLanguage.en: 'Offer accepted',
+    AppLanguage.fr: 'Offre acceptée',
+  },
+  'standing_cause_quest': {AppLanguage.en: 'Quest', AppLanguage.fr: 'Quête'},
+  'standing_cause_chapter': {
+    AppLanguage.en: 'Chapter’s end',
+    AppLanguage.fr: 'Fin de chapitre',
+  },
+  'standing_cause_favour': {
+    AppLanguage.en: 'Favour',
+    AppLanguage.fr: 'Service rendu',
+  },
+  'standing_cause_intrigue': {
+    AppLanguage.en: 'Intrigue',
+    AppLanguage.fr: 'Intrigue',
+  },
+  'standing_cause_sea': {AppLanguage.en: 'Sea', AppLanguage.fr: 'Mer'},
+  'standing_cause_story': {
+    AppLanguage.en: 'Story',
+    AppLanguage.fr: 'Histoire',
+  },
+  'standing_cause_boss': {
+    AppLanguage.en: 'Boss beaten',
+    AppLanguage.fr: 'Boss vaincu',
+  },
+  'standing_cause_level': {
+    AppLanguage.en: 'Level up',
+    AppLanguage.fr: 'Niveau gagné',
+  },
+  'standing_cause_edit': {
+    AppLanguage.en: 'Edit Mode',
+    AppLanguage.fr: 'Mode édition',
+  },
+  'standing_cause_sworn_cap': {
+    AppLanguage.en: 'The banner’s limit',
+    AppLanguage.fr: 'Limite du serment',
+  },
+  'intrigue_stage_clue': {AppLanguage.en: 'Clue', AppLanguage.fr: 'Indice'},
+  'intrigue_stage_hook': {AppLanguage.en: 'Hook', AppLanguage.fr: 'Accroche'},
+  'intrigue_stage_turn': {AppLanguage.en: 'Turn', AppLanguage.fr: 'Tournant'},
+  'intrigue_stage_reveal': {
+    AppLanguage.en: 'Reveal',
+    AppLanguage.fr: 'Révélation',
+  },
+  'intrigue_stage_crisis': {
+    AppLanguage.en: 'Crisis',
+    AppLanguage.fr: 'Crise',
+  },
+  'intrigue_stage_choice': {
+    AppLanguage.en: 'Choice',
+    AppLanguage.fr: 'Choix',
+  },
+  'clans_title': {
+    AppLanguage.en: 'Clans & Politics',
+    AppLanguage.fr: 'Clans et politique',
+  },
+  'clans_tab_standing': {
+    AppLanguage.en: 'Standing',
+    AppLanguage.fr: 'Réputation',
+  },
+  'clans_tab_politics': {
+    AppLanguage.en: 'Politics',
+    AppLanguage.fr: 'Politique',
+  },
+  'clans_tab_evolution': {
+    AppLanguage.en: 'Evolution',
+    AppLanguage.fr: 'Évolution',
+  },
+  'clans_tab_intrigues': {
+    AppLanguage.en: 'Intrigues',
+    AppLanguage.fr: 'Intrigues',
+  },
+  'clans_section': {AppLanguage.en: 'Clans', AppLanguage.fr: 'Clans'},
+  'clans_section_hint': {
+    AppLanguage.en: 'Where you stand with the coast.',
+    AppLanguage.fr: 'Où vous en êtes avec la côte.',
+  },
+  'clans_tribes_label': {AppLanguage.en: 'Tribes', AppLanguage.fr: 'Tribus'},
+  'clans_sworn_marker': {
+    AppLanguage.en: 'Sworn: their banner hangs in your Loft',
+    AppLanguage.fr: 'Serment : leur bannière pend dans votre grenier',
+  },
+  'clans_edit_hint': {
+    AppLanguage.en:
+        'Slide to set a standing (no ripple); tap a sub-clan’s square to change its mark.',
+    AppLanguage.fr:
+        'Faites glisser pour fixer une réputation (sans contrecoup) ; touchez le carré d’un sous-clan pour changer sa marque.',
+  },
+  'clans_reset_done': {
+    AppLanguage.en: 'The coast stands as the story opens.',
+    AppLanguage.fr: 'La côte est telle qu’au début de l’histoire.',
+  },
+  'clans_alignment_title': {
+    AppLanguage.en: 'The Choir and the Pit',
+    AppLanguage.fr: 'Le Chœur et la Fosse',
+  },
+  'clans_vows_state': {
+    AppLanguage.en: 'Vows held: {n} · silent: {s}',
+    AppLanguage.fr: 'Vœux tenus : {n} · silencieux : {s}',
+  },
+  'clans_pacts_state': {
+    AppLanguage.en: 'Pacts held: {n} · still binding: {r}',
+    AppLanguage.fr: 'Pactes tenus : {n} · encore actifs : {r}',
+  },
+  'clans_otherworld_claim': {
+    AppLanguage.en: 'This life is {name}’s: the other will not come.',
+    AppLanguage.fr: 'Cette vie revient à {name} : l’autre ne viendra pas.',
+  },
+  'clans_otherworld_open': {
+    AppLanguage.en: 'Neither has claimed this life.',
+    AppLanguage.fr: 'Aucun des deux n’a réclamé cette vie.',
+  },
+  'clans_matrix_hint': {
+    AppLanguage.en: 'Tap a cell for the reason.',
+    AppLanguage.fr: 'Touchez une case pour en connaître la raison.',
+  },
+  'clans_chapter_label': {
+    AppLanguage.en: 'Relations in chapter {n}',
+    AppLanguage.fr: 'Les relations au chapitre {n}',
+  },
+  'clans_chapter_now': {
+    AppLanguage.en: 'Relations now',
+    AppLanguage.fr: 'Les relations aujourd’hui',
+  },
+  'clans_history_title': {
+    AppLanguage.en: 'Six hundred years in one line',
+    AppLanguage.fr: 'Six cents ans en une ligne',
+  },
+  'clans_pair_title': {
+    AppLanguage.en: '{a} and {b}',
+    AppLanguage.fr: '{a} et {b}',
+  },
+  'clans_pair_moved': {
+    AppLanguage.en: 'Chapter {c}, day {d}: {from} → {to} ({cause})',
+    AppLanguage.fr: 'Chapitre {c}, jour {d} : {from} → {to} ({cause})',
+  },
+  'clans_shift_down': {
+    AppLanguage.en: 'One step worse',
+    AppLanguage.fr: 'Un cran plus bas',
+  },
+  'clans_shift_up': {
+    AppLanguage.en: 'One step better',
+    AppLanguage.fr: 'Un cran plus haut',
+  },
+  'clans_evolution_empty': {
+    AppLanguage.en: 'Nothing has moved yet.',
+    AppLanguage.fr: 'Rien n’a encore bougé.',
+  },
+  'clans_log_title': {
+    AppLanguage.en: 'The log, newest first',
+    AppLanguage.fr: 'Le journal, du plus récent au plus ancien',
+  },
+  'clans_log_when': {
+    AppLanguage.en: 'Ch. {c} · day {d}',
+    AppLanguage.fr: 'Ch. {c} · jour {d}',
+  },
+  'clans_log_swore': {
+    AppLanguage.en: 'Sworn to {name}',
+    AppLanguage.fr: 'Serment prêté à {name}',
+  },
+  'clans_log_released': {
+    AppLanguage.en: 'No longer sworn to {name}',
+    AppLanguage.fr: 'Serment rompu avec {name}',
+  },
+  'clans_relations_log_title': {
+    AppLanguage.en: 'Relations that moved',
+    AppLanguage.fr: 'Relations qui ont changé',
+  },
+  'clans_intrigue_not_started': {
+    AppLanguage.en: 'Not started',
+    AppLanguage.fr: 'Pas commencée',
+  },
+  'clans_intrigue_stage': {
+    AppLanguage.en: 'Stage {n} of 6: {stage}',
+    AppLanguage.fr: 'Étape {n} sur 6 : {stage}',
+  },
+  'clans_intrigue_outcomes': {
+    AppLanguage.en: 'Outcomes',
+    AppLanguage.fr: 'Issues',
+  },
+  'clans_intrigue_chosen': {
+    AppLanguage.en: 'Chosen',
+    AppLanguage.fr: 'Choisie',
+  },
+  'clans_intrigue_chapter': {
+    AppLanguage.en: 'Ch. {c}',
+    AppLanguage.fr: 'Ch. {c}',
+  },
+  'clans_none': {
+    AppLanguage.en: 'No clan data yet.',
+    AppLanguage.fr: 'Pas encore de données de clans.',
+  },
+  'shop_faction_line': {
+    AppLanguage.en: '{name}: {tier}, prices {p}%',
+    AppLanguage.fr: '{name} : {tier}, prix {p} %',
+  },
+  'shop_faction_fair': {
+    AppLanguage.en: '{name}: {tier}, fair prices',
+    AppLanguage.fr: '{name} : {tier}, prix justes',
+  },
+  'shop_faction_refuses': {
+    AppLanguage.en: '{name}: {tier}. This shop will not trade with you.',
+    AppLanguage.fr:
+        '{name} : {tier}. Cette boutique refuse de commercer avec vous.',
   },
 };
 
