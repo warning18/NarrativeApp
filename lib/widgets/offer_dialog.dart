@@ -49,10 +49,11 @@ Future<void> showOfferIfWaiting(BuildContext context, WidgetRef ref,
 
 /// The suitor's name as the card says it: "The Emberwives of the Cinder
 /// Compact" for a clan's voice, the faction's name for the others, "The
-/// Wayfarer".
+/// Wayfarer", and "Your own hand" for the lost clan (v1.195).
 String suitorName(Suitor suitor, ClanData data, AppLanguage lang) {
   if (suitor.isWayfarer) return trFor(lang, 'offer_wayfarer_name');
   final faction = data.faction(suitor.factionId);
+  if (faction?.isLost ?? false) return trFor(lang, 'offer_own_hand_name');
   final voice = data.subclan(suitor.subclanId);
   if (faction == null) return suitor.factionId;
   if (voice == null) return faction.nameFor(lang);
@@ -66,6 +67,9 @@ String suitorGreeting(Suitor suitor, ClanData data, AppLanguage lang) {
         ? trFor(lang, 'offer_wayfarer_intro')
         : trFor(lang,
             'offer_wayfarer_greeting_${suitor.greetingIndex % _wayfarerGreetings}');
+  }
+  if (data.faction(suitor.factionId)?.isLost ?? false) {
+    return trFor(lang, 'offer_own_hand_greeting');
   }
   final patron = data.faction(suitor.factionId)?.patron;
   if (patron == null) return '';
@@ -137,6 +141,7 @@ List<({String text, double delta})> standingPreviewParts(
   required PoliticsState politics,
   required ClanData data,
   required AppLanguage lang,
+  Iterable<String> flags = const [],
 }) {
   final order = data.factions.keys.toList();
   int rank(String id) {
@@ -144,7 +149,8 @@ List<({String text, double delta})> standingPreviewParts(
     return i < 0 ? order.length : i;
   }
 
-  final deltas = suitorPreview(suitor, ticket, politics: politics, data: data)
+  final deltas = suitorPreview(suitor, ticket,
+          politics: politics, data: data, flags: flags)
       .entries
       .toList()
     ..sort((a, b) {
@@ -414,9 +420,13 @@ class SuitorCard extends ConsumerWidget {
     final gift = suitor.gift;
     final greeting = suitorGreeting(suitor, data, lang);
     final preview = standingPreviewParts(suitor, ticket,
-        politics: session.politics, data: data, lang: lang);
+        politics: session.politics,
+        data: data,
+        lang: lang,
+        flags: session.flags);
     final nudge = alignmentNudgeOf(suitor, tables);
-    final tier = faction == null
+    // A lost clan has no standing to show (v1.195).
+    final tier = faction == null || faction.isLost
         ? null
         : session.politics.tierOf(suitor.factionId, data);
     const good = Color(0xFF3E9B57);
