@@ -542,6 +542,9 @@ class _ChoiceEditState {
         approvalMods: _original.approvalMods,
         roadEvent: _original.roadEvent,
         shipBattleId: _original.shipBattleId,
+        noHeal: _original.noHeal,
+        tutorialFight: _original.tutorialFight,
+        luckyDieReveal: _original.luckyDieReveal,
         politics:
             politicsFromEditorText(politicsController.text, _original.politics),
       );

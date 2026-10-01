@@ -44,6 +44,9 @@ class StoryChoice {
     this.roadEvent,
     this.shipBattleId,
     this.politics,
+    this.noHeal = false,
+    this.tutorialFight = false,
+    this.luckyDieReveal = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -106,8 +109,27 @@ class StoryChoice {
       roadEvent: json['roadEvent'] as String?,
       shipBattleId: json['shipBattleId'] as String?,
       politics: StoryPolitics.tryParse(json['politics']),
+      noHeal: json['noHeal'] as bool? ?? false,
+      tutorialFight: json['tutorialFight'] as bool? ?? false,
+      luckyDieReveal: json['luckyDieReveal'] as bool? ?? false,
     );
   }
+
+  /// The fight this choice starts is a link in a chain with no healing
+  /// between its fights (v1.196, chapter 1's casino): a level-up does not
+  /// refill health, a potion picked in the spoils chest is kept rather
+  /// than drunk, and a lost fight leaves the wounds where they are instead
+  /// of the usual full heal.
+  final bool noHeal;
+
+  /// The fight this choice starts is a lesson (v1.196, chapter 1's first
+  /// fight): never Elite, no affixes, no battlefield condition, no threat.
+  final bool tutorialFight;
+
+  /// The first fight's lucky die (v1.196): the enemy lands the first blow,
+  /// the player's old bone die rolls loose and strikes back with a sign,
+  /// and only then does the fight's tour explain the dice.
+  final bool luckyDieReveal;
 
   /// What taking this choice does to the coast (v1.195, see
   /// story_politics.dart): standing, marks, relations, an offer, an
@@ -352,6 +374,9 @@ class StoryChoice {
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,
         if (politics != null) 'politics': politics!.toJson(),
+        if (noHeal) 'noHeal': noHeal,
+        if (tutorialFight) 'tutorialFight': tutorialFight,
+        if (luckyDieReveal) 'luckyDieReveal': luckyDieReveal,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
