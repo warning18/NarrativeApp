@@ -212,13 +212,19 @@ void main() {
 
   test('titles: real factions and sources, known effects', () {
     expect(data.titles.length, greaterThanOrEqualTo(30));
-    final source = RegExp(
-        r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|mark:foe:[a-z_]+)$');
+    final source =
+        RegExp(r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|'
+            r'mark:foe:[a-z_]+|throne:[a-z_]+)$');
     for (final t in data.titles.values) {
       final id = t.id;
       expect(titlesDb[id]['id'], id);
       expect(data.factions, contains(t.factionId), reason: id);
       expect(source.hasMatch(t.source), isTrue, reason: '$id: ${t.source}');
+      // A throne title (v1.196) is its own faction's crown.
+      if (t.source.startsWith('throne:')) {
+        expect(t.source, 'throne:${t.factionId}', reason: id);
+        expect(id, 'throne_${t.factionId}', reason: id);
+      }
       if (t.source.startsWith('mark:foe:')) {
         expect(data.subclans, contains(t.source.substring('mark:foe:'.length)),
             reason: id);
@@ -233,6 +239,12 @@ void main() {
     for (final clan in clanIds) {
       expect(data.titlesFor(factionId: clan, source: 'tier:sworn'), isNotEmpty,
           reason: clan);
+    }
+    // Every faction that can win the Lantern Throne has its crown.
+    for (final winner in [...clanIds, 'open_hand']) {
+      expect(data.titlesFor(factionId: winner, source: 'throne:$winner'),
+          hasLength(1),
+          reason: winner);
     }
   });
 

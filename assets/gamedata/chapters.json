@@ -71,20 +71,36 @@
     "mainQuestHint": "The fifth piece went down with the White Fleet off the Hollow Shore. Someone on that shore knows where the flagship lies; find them first.",
     "mainQuestHint_fr": "La cinquième pièce a sombré avec la Flotte Blanche au large de la Rive Creuse. Quelqu'un, sur ce rivage, sait où gît le vaisseau amiral ; trouvez-le d'abord."
   },
-  "ending": {
-    "chapterID": "ending",
+  "ch7": {
+    "chapterID": "ch7",
     "chapter": 7,
-    "label": "The End",
-    "label_fr": "Le Dénouement",
-    "title": "Beyond the Tear",
-    "title_fr": "Au-delà de la déchirure",
+    "label": "Chapter 7",
+    "label_fr": "Chapitre 7",
+    "title": "The Lantern Throne",
+    "title_fr": "Le Trône de la Lanterne",
     "campNodeId": "7400",
     "activityGoal": 0,
     "questGoal": 0,
     "mainQuestNeedsPlaceIds": [],
-    "mainQuestTitle": "Into the Tear",
-    "mainQuestTitle_fr": "Dans la déchirure",
-    "mainQuestHint": "",
-    "mainQuestHint_fr": ""
+    "mainQuestTitle": "Take the Lantern Throne",
+    "mainQuestTitle_fr": "Prendre le Trône de la Lanterne",
+    "mainQuestHint": "Candlehold lies across the sea, on the First Lantern’s cliff, and whoever holds its Lantern Hall holds the Throne. Settle what you owe on the Hollow Shore first: the legate’s pact, the Admiralty’s vote, the grey hand.",
+    "mainQuestHint_fr": "Candlehold se trouve de l’autre côté de la mer, sur la falaise de la Première Lanterne, et qui tient sa Salle de la Lanterne tient le Trône. Réglez d’abord ce que vous devez sur la Rive Creuse : le pacte du légat, la voix de l’Amirauté, la main grise."
+  },
+  "ending": {
+    "chapterID": "ending",
+    "chapter": 8,
+    "label": "Chapter 8",
+    "label_fr": "Chapitre 8",
+    "title": "Beyond the Tear",
+    "title_fr": "Au-delà de la déchirure",
+    "campNodeId": "7800",
+    "activityGoal": 0,
+    "questGoal": 0,
+    "mainQuestNeedsPlaceIds": [],
+    "mainQuestTitle": "Lead the Host into the Tear",
+    "mainQuestTitle_fr": "Mener l’Ost jusqu’à la déchirure",
+    "mainQuestHint": "The tear has answered your crowning: a Herald walks the Hollow Shore, and the Sovereign waits beyond it. Muster the Host at the cove, hear its council, and lead it across.",
+    "mainQuestHint_fr": "La déchirure a répondu à votre couronnement : un Héraut arpente la Rive Creuse, et le Souverain attend au-delà. Rassemblez l’Ost dans la crique, écoutez son conseil, et menez-le de l’autre côté."
   }
 }

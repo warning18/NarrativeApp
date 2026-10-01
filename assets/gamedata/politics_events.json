@@ -361,13 +361,115 @@
   },
   "the_throne_filled": {
     "id": "the_throne_filled",
-    "name": "The Lantern Throne is filled",
-    "name_fr": "Le Trône de la Lanterne est pourvu",
-    "trigger": {
-      "chapter": 7
-    },
+    "name": "The Dominion's succession",
+    "name_fr": "La succession du Dominion",
     "once": true,
     "variants": [
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion",
+            "throne_backed_vane"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_morrow",
+            "dominion_hand_vane",
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "The Houses would not wait for a Lantern-Bearer the Conclave had not finished naming. Grand Master Morrow has taken the Lantern Hall with the Order’s knights and refuses your claim; Aurel Vane and the Inquisition have come over to it, and call themselves your Hand.",
+        "news_fr": "Les Maisons n’ont pas voulu attendre un Porte-Lanterne que le Conclave n’avait pas fini de nommer. Le Grand Maître Morrow a pris la Salle de la Lanterne avec les chevaliers de l’Ordre et refuse votre prétention ; Aurel Vane et l’Inquisition s’y sont ralliés, et se disent votre Main."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion",
+            "throne_backed_morrow"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_vane",
+            "dominion_hand_morrow",
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Grand Master Morrow brought the Order over to you the night the Admiralty’s vote was read, and stands at your side as your Hand.",
+        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Le Grand Maître Morrow vous a rallié l’Ordre le soir où l’on a lu la voix de l’Amirauté, et se tient à vos côtés en Main."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion",
+            "throne_backed_tallis"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_vane",
+            "dominion_hand_tallis",
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "Aurel Vane has shut himself in the Lantern Hall with the Inquisition and refuses your claim. Maud Tallis came down to the quay with one lamp and set it at your feet: your Hand, she says, while the lamps stay lit.",
+        "news_fr": "Aurel Vane s’est enfermé dans la Salle de la Lanterne avec l’Inquisition et refuse votre prétention. Maud Tallis est descendue sur le quai avec une seule lampe et l’a posée à vos pieds : votre Main, dit-elle, tant que les lampes resteront allumées."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion",
+            "inquisition_pact"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_morrow",
+            "dominion_hand_vane",
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "The Inquisition has kept the legate’s bargain: Aurel Vane comes over to your claim as your Hand. Grand Master Morrow has taken the Lantern Hall to stop it.",
+        "news_fr": "L’Inquisition a tenu le marché du légat : Aurel Vane se rallie à votre prétention et devient votre Main. Le Grand Maître Morrow a pris la Salle de la Lanterne pour l’en empêcher."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion",
+            "intrigue_hooded_lantern_outcome_0"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_morrow",
+            "throne_morrow",
+            "throne_filled"
+          ]
+        },
+        "news": "With the Admiral’s page read in every Order chapel, Grand Master Morrow has taken the Lantern Hall, and will give it to no claimant the Inquisition ever touched, yours included.",
+        "news_fr": "La page de l’Amiral lue dans chaque chapelle de l’Ordre, le Grand Maître Morrow a pris la Salle de la Lanterne, et ne la cédera à aucune prétention que l’Inquisition ait jamais touchée, la vôtre comprise."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "claim_dominion"
+          ]
+        },
+        "effects": {
+          "flags": [
+            "dominion_leader_vane",
+            "throne_vane",
+            "throne_filled"
+          ]
+        },
+        "news": "Aurel Vane has taken the Lantern Hall with the Inquisition behind him and refuses the claim the Houses were naming you to. The Conclave sits on the cliff outside his door, waiting to see who opens it.",
+        "news_fr": "Aurel Vane a pris la Salle de la Lanterne, l’Inquisition derrière lui, et refuse la prétention que les Maisons vous reconnaissaient. Le Conclave siège sur la falaise devant sa porte, à attendre de voir qui l’ouvrira."
+      },
       {
         "conditions": {
           "flags": [
@@ -393,12 +495,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_vane",
             "throne_vane",
             "throne_filled"
           ]
         },
-        "news": "Aurel Vane sits the Lantern Throne, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic, wherever they are found.",
-        "news_fr": "Aurel Vane siège sur le Trône de la Lanterne, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace, où qu’on le trouve."
+        "news": "Aurel Vane sits the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is an inquisition now. His first decree names anyone who draws a heretic; his second shuts Candlehold’s gates against your banner.",
+        "news_fr": "Aurel Vane siège sur le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion est désormais une inquisition. Son premier décret déclare hérétique quiconque trace ; le second ferme les portes de Candlehold à votre bannière."
       },
       {
         "conditions": {
@@ -415,12 +518,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_morrow",
             "throne_morrow",
             "throne_filled"
           ]
         },
-        "news": "Grand Master Morrow takes the Lantern Throne, and the Dominion is a crusade again: every Order ship on the coast flies the sword-and-lantern, and the Vigil has been asked, for once, to the war council.",
-        "news_fr": "Le Grand Maître Morrow prend le Trône de la Lanterne, et le Dominion redevient une croisade : chaque navire de l’Ordre sur la côte arbore l’épée-lanterne, et la Veille, pour une fois, a été conviée au conseil de guerre."
+        "news": "Grand Master Morrow takes the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is a crusade again. He has asked the Vigil, for once, to his war council, and shut Candlehold’s gates against your banner.",
+        "news_fr": "Le Grand Maître Morrow prend le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion redevient une croisade. Il a convié la Veille, pour une fois, à son conseil de guerre, et fermé les portes de Candlehold à votre bannière."
       },
       {
         "conditions": {
@@ -442,12 +546,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_tallis",
             "throne_tallis",
             "throne_filled"
           ]
         },
-        "news": "Maud Tallis, Eldest of the Wickwardens, takes the Lantern Throne, and the Dominion is a church again. Her first act was to open the cliff-light chapels to anyone the Inquisition hunts, drawers among them.",
-        "news_fr": "Maud Tallis, Aînée des Garde-Mèches, prend le Trône de la Lanterne, et le Dominion redevient une Église. Son premier geste a été d’ouvrir les chapelles des feux de falaise à quiconque l’Inquisition traque, y compris ceux qui tracent."
+        "news": "Maud Tallis, Eldest of the Wickwardens, takes the Lantern Throne on the Admiralty’s vote you cast, and the Dominion is a church again. She has opened the cliff-light chapels to the hunted, and shut Candlehold’s gates against your banner.",
+        "news_fr": "Maud Tallis, Aînée des Garde-Mèches, prend le Trône de la Lanterne grâce à la voix de l’Amirauté que vous avez donnée, et le Dominion redevient une Église. Elle a ouvert les chapelles des feux de falaise aux traqués, et fermé les portes de Candlehold à votre bannière."
       },
       {
         "conditions": {
@@ -474,12 +579,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_vane",
             "throne_vane",
             "throne_filled"
           ]
         },
-        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Aurel Vane. The Dominion is an inquisition now, and its first decree names anyone who draws a heretic.",
-        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne à Aurel Vane. Le Dominion est désormais une inquisition, et son premier décret déclare hérétique quiconque trace."
+        "news": "With the Inquisition’s writ carried up and down the coast, the Houses gave the Lantern Throne to Aurel Vane. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Avec le mandat de l’Inquisition porté d’un bout à l’autre de la côte, les Maisons ont donné le Trône de la Lanterne à Aurel Vane. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -506,12 +612,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_vane",
             "throne_vane",
             "throne_filled"
           ]
         },
-        "news": "The Houses gave the Lantern Throne to Aurel Vane, who had spent the most and remembered every coin. The Dominion is an inquisition now.",
-        "news_fr": "Les Maisons ont donné le Trône de la Lanterne à Aurel Vane, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition."
+        "news": "The Houses gave the Lantern Throne to Aurel Vane, who had spent the most and remembered every coin. The Dominion is an inquisition now, and its gates are shut against your banner.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne à Aurel Vane, qui avait le plus dépensé et se souvenait de chaque pièce. Le Dominion est désormais une inquisition, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -528,12 +635,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_morrow",
             "throne_morrow",
             "throne_filled"
           ]
         },
-        "news": "With the Order turned against the Inquisition, the Houses gave the Lantern Throne to Grand Master Morrow. The Dominion is a crusade again.",
-        "news_fr": "L’Ordre retourné contre l’Inquisition, les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow. Le Dominion redevient une croisade."
+        "news": "With the Order turned against the Inquisition, the Houses gave the Lantern Throne to Grand Master Morrow. The Dominion is a crusade again, and its gates are shut against your banner.",
+        "news_fr": "L’Ordre retourné contre l’Inquisition, les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow. Le Dominion redevient une croisade, et ses portes sont fermées à votre bannière."
       },
       {
         "conditions": {
@@ -550,12 +658,13 @@
             }
           ],
           "flags": [
+            "dominion_leader_morrow",
             "throne_morrow",
             "throne_filled"
           ]
         },
-        "news": "The Houses gave the Lantern Throne to Grand Master Morrow, whose knights had held the coast when nobody else would. The Dominion is a crusade again.",
-        "news_fr": "Les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow, dont les chevaliers avaient tenu la côte quand personne d’autre ne le voulait. Le Dominion redevient une croisade."
+        "news": "The Houses gave the Lantern Throne to Grand Master Morrow, whose knights had held the coast when nobody else would. The Dominion is a crusade again, and its gates are shut against your banner.",
+        "news_fr": "Les Maisons ont donné le Trône de la Lanterne au Grand Maître Morrow, dont les chevaliers avaient tenu la côte quand personne d’autre ne le voulait. Le Dominion redevient une croisade, et ses portes sont fermées à votre bannière."
       },
       {
         "effects": {
@@ -572,68 +681,154 @@
             }
           ],
           "flags": [
+            "dominion_leader_tallis",
             "throne_tallis",
             "throne_filled"
           ]
         },
-        "news": "The Houses could not agree, and gave the Lantern Throne to the one claimant none of them feared: Maud Tallis, Eldest of the Wickwardens. The Dominion is a church again, for now.",
-        "news_fr": "Les Maisons n’ont pas su s’entendre, et ont donné le Trône de la Lanterne à la seule prétendante qu’aucune ne craignait : Maud Tallis, Aînée des Garde-Mèches. Le Dominion redevient une Église, pour l’instant."
+        "news": "The Houses could not agree, and gave the Lantern Throne to the one claimant none of them feared: Maud Tallis, Eldest of the Wickwardens. The Dominion is a church again, for now, and its gates are shut against your banner.",
+        "news_fr": "Les Maisons n’ont pas su s’entendre, et ont donné le Trône de la Lanterne à la seule prétendante qu’aucune ne craignait : Maud Tallis, Aînée des Garde-Mèches. Le Dominion redevient une Église, pour l’instant, et ses portes sont fermées à votre bannière."
       }
     ]
   },
   "the_last_battle": {
     "id": "the_last_battle",
-    "name": "The clans gather",
-    "name_fr": "Les clans se rassemblent",
+    "name": "The Host gathers",
+    "name_fr": "L’Ost se rassemble",
     "trigger": {
-      "chapter": 7
+      "chapter": 8
     },
     "once": true,
     "variants": [
       {
         "conditions": {
           "flags": [
-            "intrigue_hooded_lantern_outcome_0"
+            "throne_winner_dominion"
           ]
         },
         "effects": {},
-        "news": "The Order’s ships have come round the point to stand off the Hollow Shore, and their guns are run out toward the Inquisition’s cutters, not toward the Eel.",
-        "news_fr": "Les navires de l’Ordre ont doublé la pointe pour croiser au large de la Rive Creuse, et leurs canons sont pointés vers les cotres de l’Inquisition, pas vers l’Eel."
+        "news": "Every House of the Dominion has sent its ships to the cove under the new Lantern-Bearer’s writ, and the clans have sent theirs behind them, because they knelt at Candlehold and have not yet decided whether they meant it.",
+        "news_fr": "Chaque Maison du Dominion a envoyé ses navires à la crique sous le mandat du nouveau Porte-Lanterne, et les clans ont envoyé les leurs derrière, parce qu’ils se sont agenouillés à Candlehold et n’ont pas encore décidé s’ils le pensaient."
       },
       {
         "conditions": {
           "flags": [
-            "intrigue_hooded_lantern_outcome_1"
+            "throne_winner_vigil",
+            "host_penitents"
           ]
         },
         "effects": {},
-        "news": "Inquisition cutters ride off the Hollow Shore under a writ with the Eel’s name on it. They are there as her escort, they say. Nobody believes it, the Inquisition least of all.",
-        "news_fr": "Des cotres de l’Inquisition croisent au large de la Rive Creuse sous un mandat qui porte le nom de l’Eel. Ils sont là pour l’escorter, disent-ils. Personne n’y croit, l’Inquisition moins que quiconque."
+        "news": "The Vigil has left a hundred spears on its wall and sent every other one to the cove, and the Penitents walk in front of them, as they always have: the Throne of Open Eyes is mustering.",
+        "news_fr": "La Veille a laissé cent lances sur son mur et envoyé toutes les autres à la crique, et les Pénitents marchent devant elles, comme toujours : le Trône aux yeux ouverts rassemble son Ost."
       },
       {
         "conditions": {
-          "standingAtMost": {
-            "dominion": -61
-          }
+          "flags": [
+            "throne_winner_vigil"
+          ]
         },
         "effects": {},
-        "news": "Every Dominion ship on the coast is making for the Hollow Shore, and they are not coming to help.",
-        "news_fr": "Tous les navires du Dominion sur la côte font route vers la Rive Creuse, et ce n’est pas pour aider."
+        "news": "The Vigil has left a hundred spears on its wall and sent every other one to the cove under the Throne’s open eye. Whoever else comes will find them already watching.",
+        "news_fr": "La Veille a laissé cent lances sur son mur et envoyé toutes les autres à la crique sous l’œil ouvert du Trône. Qui viendra d’autre les trouvera déjà en train de guetter."
       },
       {
         "conditions": {
-          "standingAtLeast": {
-            "vigil": 26
-          }
+          "flags": [
+            "throne_winner_compact",
+            "host_mire"
+          ]
         },
         "effects": {},
-        "news": "The Vigil has sent spears down to the Hollow Shore. Whatever comes back out of the tear will find them waiting.",
-        "news_fr": "La Veille a envoyé des lances jusqu’à la Rive Creuse. Quoi qui ressorte de la déchirure, il les trouvera qui l’attendent."
+        "news": "The Compact’s barges are coming down the coast with their forges lit, and the Mire Courts’ fever-bark with them: the Throne’s smiths and the fen’s healers, mustering together as they have traded for a hundred years.",
+        "news_fr": "Les péniches du Pacte descendent la côte, forges allumées, et l’écorce à fièvre des Cours du Marais avec elles : les forgerons du Trône et les guérisseurs du marais, rassemblés comme ils commercent depuis cent ans."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_compact"
+          ]
+        },
+        "effects": {},
+        "news": "The Compact’s barges are coming down the coast with their forges lit, to a muster nobody had to give them a reason for.",
+        "news_fr": "Les péniches du Pacte descendent la côte, forges allumées, vers une revue pour laquelle personne n’a eu à leur donner de raison."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_mire",
+            "host_compact"
+          ]
+        },
+        "effects": {},
+        "news": "The Mire Courts have come out of the fen to muster, and the Compact’s smiths with them, carrying tools for the fen’s fever-bark as they always have.",
+        "news_fr": "Les Cours du Marais sont sorties du marais pour la revue, et les forgerons du Pacte avec elles, portant des outils pour l’écorce à fièvre comme toujours."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_mire"
+          ]
+        },
+        "effects": {},
+        "news": "The Mire Courts have come out of the fen to muster on the coast, along every ditch at once, and nobody saw them leave.",
+        "news_fr": "Les Cours du Marais sont sorties du marais pour la revue sur la côte, par tous les fossés à la fois, et personne ne les a vues partir."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_crows",
+            "host_compact"
+          ]
+        },
+        "effects": {},
+        "news": "A Crow squadron is mustering in the cove with three rings on every halyard and Compact steel in every hold, paid for, for once, in advance.",
+        "news_fr": "Une escadre des Corneilles se rassemble dans la crique, trois anneaux à chaque drisse et de l’acier du Pacte dans chaque cale, payé, pour une fois, d’avance."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_crows"
+          ]
+        },
+        "effects": {},
+        "news": "A Crow squadron is mustering in the cove with three rings on every halyard. Its captains say the war will be paid for. They say it twice.",
+        "news_fr": "Une escadre des Corneilles se rassemble dans la crique, trois anneaux à chaque drisse. Ses capitaines disent que la guerre sera payée. Ils le disent deux fois."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_penitents",
+            "host_vigil"
+          ]
+        },
+        "effects": {},
+        "news": "The Penitents are walking to the cove from every village on the Exorcists’ Road, and the Vigil’s spears beside them: they share the dead, and now a Throne.",
+        "news_fr": "Les Pénitents marchent vers la crique depuis chaque village de la Route des Exorcistes, et les lances de la Veille à leurs côtés : ils partagent leurs morts, et désormais un Trône."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_penitents"
+          ]
+        },
+        "effects": {},
+        "news": "The Penitents are walking to the cove from every village on the Exorcists’ Road, unarmed and singing the names, to the muster of the Burnt Crown.",
+        "news_fr": "Les Pénitents marchent vers la crique depuis chaque village de la Route des Exorcistes, sans armes et chantant les noms, vers la revue de la Couronne brûlée."
+      },
+      {
+        "conditions": {
+          "flags": [
+            "throne_winner_open_hand"
+          ]
+        },
+        "effects": {},
+        "news": "All along the coast, people who have hidden their hands for forty-nine years are walking to the cove to stand under the grey hand, and some of the clans are walking with them.",
+        "news_fr": "Tout le long de la côte, des gens qui cachent leurs mains depuis quarante-neuf ans marchent vers la crique pour se tenir sous la main grise, et certains clans marchent avec eux."
       },
       {
         "effects": {},
-        "news": "The clans are watching the Hollow Shore from a distance, as they have watched everything for forty years, and waiting to see who comes out of the tear.",
-        "news_fr": "Les clans observent la Rive Creuse de loin, comme ils observent tout depuis quarante ans, et attendent de voir qui sortira de la déchirure."
+        "news": "The Throne is mustering a Host on the coast to face the tear, and the clans are watching from a distance, as they have watched everything for forty years, to see who comes.",
+        "news_fr": "Le Trône rassemble un Ost sur la côte pour faire face à la déchirure, et les clans regardent de loin, comme ils regardent tout depuis quarante ans, pour voir qui viendra."
       }
     ]
   },

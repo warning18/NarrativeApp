@@ -16,6 +16,12 @@ class EnemyIcons {
     'knell_keeper': 'hollow_court_zealot',
     'purifier_vell': 'inquisition_warden',
     'rime_bailiff': 'bone_sexton',
+    // v1.196's chapter 7-8 bosses: the three claimants to the Lantern
+    // Throne and the Tear-Herald.
+    'claimant_vane': 'hollow_court_inquisitor',
+    'claimant_morrow': 'inquisition_high_warden',
+    'claimant_tallis': 'angel_sentinel',
+    'tear_herald': 'void_archon',
   };
 
   static const List<String> allIds = [
@@ -25,6 +31,9 @@ class EnemyIcons {
     'bone_warden',
     'brine_jack',
     'catacomb_ghoul',
+    'claimant_morrow',
+    'claimant_tallis',
+    'claimant_vane',
     'cultist_acolyte',
     'demon_imp',
     'demon_tormentor',
@@ -63,6 +72,7 @@ class EnemyIcons {
     'strand_colossus',
     'street_bandit',
     'tear_spawn',
+    'tear_herald',
     'teind_rider',
     'tobin_turned',
     'unmade_knight',

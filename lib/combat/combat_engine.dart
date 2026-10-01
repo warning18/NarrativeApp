@@ -627,6 +627,13 @@ const Set<String> soloOnlyEnemyIds = {
   'malrik_turned',
   'inquisition_legate',
   'masked_penitent',
+  // The war for the Lantern Throne and the last battle (v1.196): the three
+  // claimants' last stands at Candlehold, and the Tear-Herald on the
+  // Hollow Shore.
+  'claimant_vane',
+  'claimant_morrow',
+  'claimant_tallis',
+  'tear_herald',
 };
 
 /// Enemies met only where the story puts them -- never a random draw and

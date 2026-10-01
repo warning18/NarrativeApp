@@ -54,6 +54,18 @@ const List<MapChapter> mapChapters = [
       Color(0xFF6D3FA0)),
   MapChapter(6, 'Chapter 6: The Hollow Shore', 'Chapitre 6 : La Rive Creuse',
       Color(0xFFE9E6DF), Color(0xFF3B3743)),
+  MapChapter(
+      7,
+      'Chapter 7: The Lantern Throne',
+      'Chapitre 7 : Le Trône de la Lanterne',
+      Color(0xFFF2C14E),
+      Color(0xFF8F6B10)),
+  MapChapter(
+      8,
+      'Chapter 8: Beyond the Tear',
+      'Chapitre 8 : Au-delà de la déchirure',
+      Color(0xFFD9544D),
+      Color(0xFF8A1A1A)),
 ];
 
 MapChapter mapChapter(int number) =>
@@ -291,12 +303,13 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Cove Camp',
     nameFr: 'Le camp de la crique',
     blurbEn:
-        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: your base, where every chapter opens, between every trip, until the last night before the tear.',
+        'Landfall after twenty days. In a cove hidden from the Spire the survivors start building without anyone deciding to: your base, where every chapter opens, between every trip, until the night the Host of the Lantern Throne musters on its shingle for the tear.',
     blurbFr:
-        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la dernière nuit avant la déchirure.',
+        'La terre, après vingt jours. Dans une crique cachée de la Flèche, les survivants se mettent à bâtir sans que personne l’ait décidé : votre base, où chaque chapitre commence, entre chaque voyage, jusqu’à la nuit où l’Ost du Trône de la Lanterne se rassemble sur ses galets avant la déchirure.',
     scenes: [
       '3001', '3001_camp', '4999_camp', '6002_siege', '6002_siege_2', //
       '6002_siege_breach', '6002_siege_end', '6002_camp', '7001', '7400',
+      '7800', '7800_council', '7800_lines',
     ],
   ),
   const Landmark(
@@ -546,17 +559,51 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Hollow Shore',
     nameFr: 'La Rive Creuse',
     blurbEn:
-        'Grey sand drawn out of the dead heart, and the tear now a door. Reflections on the sand, the legate’s pact, the Sovereign’s price and its sixth piece, four endings (the city, the seeker, the dawn, or the crown), and the night the whole Banner turns back.',
+        'Grey sand drawn out of the dead heart, and the tear now a door. Reflections on the sand, the legate’s pact, the Admiralty’s vote and the grey hand; then, past the Host’s battle, the Sovereign’s price and its sixth piece, four endings (the city, the seeker, the dawn, or the crown), and the night the whole Banner turns back.',
     blurbFr:
-        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
+        'Un sable gris tiré du cœur mort, et la déchirure devenue porte. Des reflets sur le sable, le pacte du légat, la voix de l’Amirauté et la main grise ; puis, après la bataille de l’Ost, le prix du Souverain et sa sixième pièce, quatre fins (la ville, le chercheur, l’aube ou la couronne), et la nuit où la Bannière entière revient en arrière.',
     scenes: [
       '7002', '7002_reflections', '7002_rest', '7002_pact', //
-      '7002_betrayal', '7002_crew', '7002_approach', '7002_alarm', //
+      '7002_betrayal', '7002_crew', //
       '7002_orders', '7002_throne', '7002_banner', //
       '7002_confront', '7002_price', '7003',
       '7004', '7005', '7005_seeker', '7005_dawn', '7005_crown',
     ],
     fights: ['hollow_reflection', '@first_ally'],
+  ),
+  const Landmark(
+    id: 'candlehold',
+    chapter: 7,
+    big: true,
+    nameEn: 'Candlehold',
+    nameFr: 'Candlehold',
+    blurbEn:
+        'The Dominion’s capital across the sea, a city grown around one lamp on the First Lantern’s cliff. Raise a banner at its gate, find a way in under it, face whoever holds the Lantern Hall, and be crowned on the Lantern Throne.',
+    blurbFr:
+        'La capitale du Dominion de l’autre côté de la mer, une ville poussée autour d’une seule lampe sur la falaise de la Première Lanterne. Levez une bannière à sa porte, trouvez un chemin sous elle, affrontez qui tient la Salle de la Lanterne, et recevez la couronne sur le Trône de la Lanterne.',
+    scenes: [
+      '7500', '7510_dominion', '7510_vigil', '7510_compact', '7510_mire', //
+      '7510_crows', '7510_penitents', '7510_open_hand', '7510_seen',
+      '7520_vane', '7520_morrow', '7520_tallis', '7590_dominion', //
+      '7590_vigil', '7590_compact', '7590_mire', '7590_crows',
+      '7590_penitents', '7590_open_hand',
+    ],
+    fights: [
+      'inquisition_soldier', 'inquisition_auxiliary', 'white_soldier', //
+      'claimant_vane', 'claimant_morrow', 'claimant_tallis',
+    ],
+  ),
+  const Landmark(
+    id: 'battle',
+    chapter: 8,
+    nameEn: 'The Battle of the Hollow Shore',
+    nameFr: 'La bataille de la Rive Creuse',
+    blurbEn:
+        'Where the Host of the Lantern Throne came ashore to meet the tear’s answer to the crowning: the Tear-Herald, wearing every face the tear has taken, and a mile of reflections drawn up behind it, with only the last mile left to cross alone.',
+    blurbFr:
+        'Là où l’Ost du Trône de la Lanterne débarqua pour affronter la réponse de la déchirure au couronnement : le Héraut de la Déchirure, qui porte tous les visages qu’elle a pris, et une lieue de reflets rangés derrière lui, avec la dernière lieue à traverser sans personne.',
+    scenes: ['7810', '7002_approach', '7002_alarm'],
+    fights: ['tear_herald', 'hollow_reflection', 'unmade_knight'],
   ),
 ];
 
