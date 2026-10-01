@@ -478,9 +478,9 @@ void main() {
 
   group('the 1.118 regressions stay fixed', () {
     test(
-        'Vane\'s tunnel leads to the berths and the harbor\'s end knows '
+        'Vane\'s tunnel leads to the yards and the harbor\'s end knows '
         'its own state', () {
-      expect(nodes['2030']!.description, contains('old berths'));
+      expect(nodes['2030']!.description, contains("ship-breakers' yards"));
       expect(nodes['2030']!.description, isNot(contains('checkpoint')));
       final hub = nodes['2900']!;
       expect(hub.description, isNot(contains('would need a hull')));
@@ -571,7 +571,7 @@ void main() {
     test('the prologue and the first scenes say so', () {
       expect(
           nodes['0']!.description, contains('power is not held; it is worn'));
-      for (final id in ['250', '450', '3001', '7003']) {
+      for (final id in ['250', '470', '3001', '7003']) {
         final variants = nodes[id]!.personaVariants;
         expect(variants.keys.where((k) => k.startsWith('race:')).length,
             greaterThanOrEqualTo(2),

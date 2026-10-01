@@ -65,7 +65,7 @@ void main() {
     expect(find.byType(JourneyScreen), findsOneWidget);
     expect(tester.takeException(), isNull);
 
-    // Both ways on from the ship are steps on the map.
+    // Both ways on from the gate are steps on the map.
     final node = container.read(storyDataProvider).value!.nodeFor('2005')!;
     for (final choice in node.choices) {
       expect(find.text(choice.text), findsOneWidget, reason: choice.text);
@@ -75,13 +75,15 @@ void main() {
     // The scene before, on the road below the party, and what happened
     // there a tap away.
     expect(find.byKey(const ValueKey('journey_past_0')), findsOneWidget);
-    expect(find.text('Head toward the wharf'), findsOneWidget);
+    expect(find.text('Join the queue at the landward gate'), findsOneWidget);
     await tester.tap(find.byKey(const ValueKey('journey_past_0')));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Head toward the wharf'), findsOneWidget);
+    expect(find.text('Way taken: Join the queue at the landward gate'),
+        findsOneWidget);
     await tester.tapAt(const Offset(200, 40));
     await tester.pump(const Duration(milliseconds: 400));
-    expect(find.text('Way taken: Head toward the wharf'), findsNothing);
+    expect(find.text('Way taken: Join the queue at the landward gate'),
+        findsNothing);
 
     // A double-tap reads the scene full screen; the map button (or
     // another double-tap) brings the map back.
@@ -108,7 +110,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 400));
     expect(find.byKey(const ValueKey('journey_traveller')), findsOneWidget);
     expect(container.read(storyPlayProvider).currentNodeId, '2005');
-    await tester.pump(const Duration(milliseconds: 700));
+    // Through the gate into the town is a walk between two places.
+    for (var i = 0; i < 8; i++) {
+      await tester.pump(const Duration(milliseconds: 500));
+    }
     await _settle(tester);
     // The road there may hold a detour first, which the map then shows.
     final after = container.read(storyPlayProvider);

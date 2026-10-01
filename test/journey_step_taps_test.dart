@@ -141,12 +141,12 @@ void main() {
     final gold = container.read(playerSessionProvider).gold;
     await tapMark(0);
     await tapMark(0);
-    // The walk out of the alley, then the road to the square.
+    // The walk out of the alley, then the road home.
     for (var i = 0; i < 8; i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
     await _settle(tester);
-    expect(container.read(storyPlayProvider).currentNodeId, '280');
+    expect(container.read(storyPlayProvider).currentNodeId, '300');
     expect(container.read(playerSessionProvider).flags,
         contains('companion_hound'));
     expect(container.read(playerSessionProvider).gold, gold);

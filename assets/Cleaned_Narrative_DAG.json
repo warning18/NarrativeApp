@@ -1,8 +1,8 @@
 {
   "0": {
     "id": "0",
-    "description": "Every story worth telling, I have come to learn, insists on lying about where it begins — and this one is no exception, though it will at least have the decency to ask first. Before the noise, before the masks in the street, before the blood that would not stay where blood is supposed to stay, there is only a single question, patient as a creditor: who were you, before all this? I have asked it of myself at a good many card tables since, rolling an old bone die between finger and thumb the way other people tell their beads. The die has never answered. It has, now and then, done something worse.",
-    "description_fr": "Toute histoire digne d’être racontée, j’ai fini par l’apprendre, ment sur l’endroit où elle commence — et celle-ci ne fait pas exception, bien qu’elle ait au moins la décence de le demander d’abord. Avant le vacarme, avant les masques dans la rue, avant le sang qui refusait obstinément de rester là où le sang est censé rester, il n’y a qu’une seule question, patiente comme un créancier : qui étiez-vous, avant tout cela ? Je me la suis posée à bien des tables de jeu depuis, en roulant un vieux dé d’os entre le pouce et l’index comme d’autres égrènent un chapelet. Le dé n’a jamais répondu. Il lui est arrivé, de loin en loin, de faire pire.",
+    "description": "Every story worth telling, I have come to learn, insists on lying about where it begins — and this one is no exception, though it will at least have the decency to ask first. Before the noise, before the masks in the street, before the blood that would not stay where blood is supposed to stay, there is only a single question, patient as a creditor: who were you, before all this? I have asked it of myself at a good many card tables since, rolling an old bone die between finger and thumb the way other people tell their beads. The die has never answered. It has, now and then, done something worse. You should know, before we begin, that in this world power is not held; it is worn. The Inquisition sews its saints into white standards and paints its faces onto porcelain. The painted folk of the old forests carry their sigils on skin and bark. The stone-marked cut theirs into steel and wall. The inked carry it under scar tissue, where it cannot be taken. And there are those the tear marked without asking, who carry a power nobody sewed, painted, cut or inked, and who are welcome nowhere for it.",
+    "description_fr": "Toute histoire digne d’être racontée, j’ai fini par l’apprendre, ment sur l’endroit où elle commence — et celle-ci ne fait pas exception, bien qu’elle ait au moins la décence de le demander d’abord. Avant le vacarme, avant les masques dans la rue, avant le sang qui refusait obstinément de rester là où le sang est censé rester, il n’y a qu’une seule question, patiente comme un créancier : qui étiez-vous, avant tout cela ? Je me la suis posée à bien des tables de jeu depuis, en roulant un vieux dé d’os entre le pouce et l’index comme d’autres égrènent un chapelet. Le dé n’a jamais répondu. Il lui est arrivé, de loin en loin, de faire pire. Il faut que vous sachiez, avant de commencer, que dans ce monde le pouvoir ne se tient pas ; il se porte. L’Inquisition coud ses saints dans des étendards blancs et peint ses visages sur la porcelaine. Le peuple peint des vieilles forêts porte ses sigils sur la peau et l’écorce. Les marqués de pierre taillent les leurs dans l’acier et le mur. Les encrés le portent sous la cicatrice, là où on ne peut le prendre. Et il y a ceux que la déchirure a marqués sans demander, qui portent un pouvoir que nul n’a cousu, peint, taillé ni encré, et que nul n’accueille pour cela.",
     "context_taxonomy": {
       "ui_theme": "prologue",
       "mood": "neutral",
@@ -857,8 +857,6 @@
         "text": "Watch from across the street",
         "text_fr": "Observer depuis l’autre côté de la rue",
         "next_id": "400",
-        "checkAbility": "perception",
-        "checkDC": 11,
         "flagsToAdd": [
           "saw_sketch"
         ]
@@ -867,8 +865,6 @@
         "text": "Slip round to the back",
         "text_fr": "Se glisser par l’arrière",
         "next_id": "400",
-        "checkAbility": "dexterity",
-        "checkDC": 12,
         "flagsToAdd": [
           "back_way"
         ]
@@ -1223,7 +1219,29 @@
         "en": "The torturer's instruments clinked in my pack like a set of teeth. Somebody would pay for them, and I would not ask what for.",
         "fr": "Les instruments du bourreau cliquetaient dans mon sac comme une rangée de dents. Quelqu’un les paierait, et je ne demanderais pas pour quoi faire."
       }
-    ]
+    ],
+    "persona_variants": {
+      "race:human": {
+        "en": "It lay across my hands the way a banner lies in the hand it was sewn for, and I did not like at all how well it fitted.",
+        "fr": "Elle reposait sur mes mains comme une bannière repose dans la main pour laquelle on l’a cousue, et je n’aimai pas du tout qu’elle m’aille si bien."
+      },
+      "race:elf": {
+        "en": "Where it touched my arms the paint prickled, and every {sigil} I owned went pale, as if something had breathed on it.",
+        "fr": "Là où elle touchait mes bras, la peinture picota, et chaque {sigil} que je possédais pâlit, comme si quelque chose avait soufflé dessus."
+      },
+      "race:dwarf": {
+        "en": "Every {sigil} I carried hummed like struck iron when I lifted it, and the buckle at my belt went warm.",
+        "fr": "Chaque {sigil} que je portais vibra comme du fer frappé quand je la soulevai, et la boucle de ma ceinture tiédit."
+      },
+      "race:orc": {
+        "en": "The {sigil} under my scars itched as it had not itched since the day it went in, and for a breath I could not have said which of us, the cloth or I, was the older.",
+        "fr": "L’{sigil} sous mes cicatrices me démangea comme jamais depuis le jour où on l’y avait mise, et le temps d’un souffle je n’aurais su dire qui, de l’étoffe ou de moi, avait le plus d’âge."
+      },
+      "race:voidkin": {
+        "en": "The thread in me went taut, and for one breath the cloth and I were the same weave.",
+        "fr": "Le fil en moi se tendit, et le temps d’un souffle, l’étoffe et moi fûmes du même tissage."
+      }
+    }
   },
   "800": {
     "id": "800",
@@ -1812,8 +1830,7 @@
         "text": "Fight the fire with the crew",
         "text_fr": "Combattre le feu avec l’équipage",
         "next_id": "965",
-        "checkAbility": "strength",
-        "checkDC": 12,
+        "healAmount": -10,
         "alignmentMod": 1,
         "flagsToAdd": [
           "fire_fought"
@@ -2267,7 +2284,7 @@
           "wreck_scavenger",
           "wreck_scavenger"
         ],
-        "forcedCondition": "ambush",
+        "failNextId": "1140_spotted",
         "flagsToAdd": [
           "looters_slipped"
         ]
@@ -2297,6 +2314,44 @@
         "flag": "offering_left",
         "en": "I had left a coin among the beads. It was the first thing I had given away since the Beggar.",
         "fr": "J’avais laissé une pièce parmi les perles. C’était la première chose que je donnais depuis le Mendiant."
+      }
+    ]
+  },
+  "1140_spotted": {
+    "id": "1140_spotted",
+    "description": "I had got halfway round their camp when one of the boots by the fire turned out to have a man still in it. He had been asleep. He was not any more, and he shouted, and the camp came up out of its blankets with knives already in hand. There was no slipping anywhere now.",
+    "description_fr": "J’avais fait la moitié du tour de leur camp quand l’une des bottes près du feu se révéla contenir encore un homme. Il dormait. Il ne dormait plus, et il cria, et le camp jaillit de ses couvertures, couteaux déjà en main. Il n’était plus question de se faufiler nulle part.",
+    "context_taxonomy": {
+      "ui_theme": "desert",
+      "mood": "action",
+      "speaker": "Narrator"
+    },
+    "automations": {
+      "script_trigger": "on_load_node_1140_spotted"
+    },
+    "choices": [
+      {
+        "text": "Fight them off",
+        "text_fr": "Les repousser",
+        "next_id": "1200",
+        "triggerEnemyIds": [
+          "wreck_scavenger",
+          "wreck_scavenger"
+        ],
+        "forcedCondition": "ambush",
+        "goldMod": 20,
+        "flagsToAdd": [
+          "looters_fought"
+        ]
+      },
+      {
+        "text": "Run, and leave them the dark",
+        "text_fr": "Fuir, et leur laisser le noir",
+        "next_id": "1200",
+        "healAmount": -20,
+        "flagsToAdd": [
+          "looters_avoided"
+        ]
       }
     ]
   },

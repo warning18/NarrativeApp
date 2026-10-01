@@ -205,7 +205,7 @@ final List<Landmark> worldMapLandmarks = [
         'A stone face as big as a house, half buried in the dunes, with a sign on its brow like the one on your die. Water seeps from under its jaw, and the wreck’s looters camp in its shadow.',
     blurbFr:
         'Un visage de pierre grand comme une maison, à demi enfoui dans les dunes, un signe au front pareil à celui de votre dé. De l’eau suinte sous sa mâchoire, et les pilleurs de l’épave campent dans son ombre.',
-    scenes: ['1120', '1125', '1130', '1140'],
+    scenes: ['1120', '1125', '1130', '1140', '1140_spotted'],
     fights: ['wreck_scavenger', 'wreck_scavenger'],
   ),
   const Landmark(
@@ -584,8 +584,7 @@ Set<String> discoveredLandmarkIds(Iterable<String> visited) {
   };
 }
 
-/// The landmark a scene happens at. A scene shared by two places (the
-/// arrival under the Upper Tier, the burning harbour at the berths) belongs
+/// The landmark a scene happens at. A scene shared by two places belongs
 /// to the later one on the road.
 Landmark? landmarkOfScene(String nodeId) {
   Landmark? found;
