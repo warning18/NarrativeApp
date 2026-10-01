@@ -148,8 +148,7 @@ void main() {
           (c) => c.hideIfFlags.contains(lateMarker),
           orElse: () => fail('${entry.key} has no follow-up'));
       expect(later.showIfFlags, contains(zone['rewardFlag']));
-      expect(placeActivityMarkers(place).length, activities,
-          reason: entry.key);
+      expect(placeActivityMarkers(place).length, activities, reason: entry.key);
     }
   });
 
