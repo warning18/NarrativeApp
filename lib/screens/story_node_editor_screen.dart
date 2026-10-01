@@ -534,6 +534,8 @@ class _ChoiceEditState {
         chestFloor: _original.chestFloor,
         isHunterAmbush: _original.isHunterAmbush,
         showIfFlags: _original.showIfFlags,
+        politicsIf: _original.politicsIf,
+        hostFight: _original.hostFight,
         mainQuest: _original.mainQuest,
         pays: _original.pays,
         travelPlaceId: _original.travelPlaceId,

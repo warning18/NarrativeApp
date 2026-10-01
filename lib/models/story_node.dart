@@ -44,6 +44,8 @@ class StoryChoice {
     this.roadEvent,
     this.shipBattleId,
     this.politics,
+    this.politicsIf = const {},
+    this.hostFight = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -106,8 +108,22 @@ class StoryChoice {
       roadEvent: json['roadEvent'] as String?,
       shipBattleId: json['shipBattleId'] as String?,
       politics: StoryPolitics.tryParse(json['politics']),
+      politicsIf: json['politicsIf'] is Map
+          ? Map<String, dynamic>.from(json['politicsIf'] as Map)
+          : const {},
+      hostFight: json['hostFight'] as bool? ?? false,
     );
   }
+
+  /// The coast this choice waits for (v1.196): conditions on standing,
+  /// marks, relations, the claim and the throne, in politics_events.json's
+  /// condition shape. Kept as written; empty when there is no gate.
+  final Map<String, dynamic> politicsIf;
+
+  /// Whether the fight this choice starts is one of the last battles
+  /// (v1.196), where the Host the character mustered fights beside the
+  /// party.
+  final bool hostFight;
 
   /// What taking this choice does to the coast (v1.195, see
   /// story_politics.dart): standing, marks, relations, an offer, an
@@ -352,6 +368,8 @@ class StoryChoice {
         if (roadEvent != null && roadEvent!.isNotEmpty) 'roadEvent': roadEvent,
         if (triggersShipBattle) 'shipBattleId': shipBattleId,
         if (politics != null) 'politics': politics!.toJson(),
+        if (politicsIf.isNotEmpty) 'politicsIf': politicsIf,
+        if (hostFight) 'hostFight': hostFight,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]
