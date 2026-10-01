@@ -1,0 +1,759 @@
+{
+  "hooded_lantern": {
+    "id": "hooded_lantern",
+    "name": "The Hooded Lantern",
+    "name_fr": "La Lanterne encapuchonnée",
+    "premise": "The Inquisition is not closing the tear. It is gathering the Shroud’s pieces to open it wider: a door only the Lantern may use.",
+    "premise_fr": "L’Inquisition ne referme pas la déchirure. Elle rassemble les pièces du Linceul pour l’ouvrir plus grand : une porte que seule la Lanterne pourra franchir.",
+    "factions": [
+      "dominion",
+      "vigil",
+      "penitents"
+    ],
+    "subclans": [
+      "inquisition",
+      "reliquary",
+      "order"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A Harbor informant is paid in Inquisition silver for anything the tide brings in from the tear.",
+        "text_fr": "Au port, un indicateur est payé en argent de l’Inquisition pour tout ce que la marée rapporte de la déchirure."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "At the Spire trial, a condemned voidkin whispers: “They are not closing it.”",
+        "text_fr": "Au procès de la Flèche, un enfant du Néant condamné murmure : « Ils ne la referment pas. »"
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "An Inquisitor’s letter in the Hollow Court shows the pieces go to the Reliquary, not the fire.",
+        "text_fr": "Dans la Cour Creuse, la lettre d’un inquisiteur montre que les pièces vont au Reliquaire, pas au feu."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The Inquisition wants the Fourth Piece for a rite that widens the tear.",
+        "text_fr": "L’Inquisition veut la Quatrième Pièce pour un rite qui élargit la déchirure."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "In the White Fleet’s grave, proof that the rite was tried once before.",
+        "text_fr": "Dans le tombeau de la Flotte Blanche, la preuve que le rite a déjà été tenté une fois."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "Expose it and the Order turns on the Inquisition, or keep it and carry the Inquisition’s writ.",
+        "text_fr": "Le révéler, et l’Ordre se retourne contre l’Inquisition ; ou le taire, et porter le mandat de l’Inquisition."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Expose",
+        "name_fr": "Révéler",
+        "effects": [
+          {
+            "note": "The Dominion splits: the Order turns on the Inquisition.",
+            "note_fr": "Le Dominion se divise : l’Ordre se retourne contre l’Inquisition."
+          },
+          {
+            "faction": "vigil",
+            "delta": 25
+          },
+          {
+            "faction": "penitents",
+            "delta": 15
+          }
+        ]
+      },
+      {
+        "name": "Keep",
+        "name_fr": "Taire",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 20
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "faction": "vigil",
+            "delta": -30
+          },
+          {
+            "companion": "vess",
+            "change": "leaves"
+          }
+        ]
+      }
+    ]
+  },
+  "dying_lantern_bearer": {
+    "id": "dying_lantern_bearer",
+    "name": "The Dying Lantern-Bearer",
+    "name_fr": "Le Porte-Lanterne mourant",
+    "premise": "The Lantern-Bearer has not been seen in a year, and three Houses each want the Throne.",
+    "premise_fr": "Le Porte-Lanterne n’a pas été vu depuis un an, et trois Maisons veulent chacune le Trône.",
+    "factions": [
+      "dominion"
+    ],
+    "subclans": [
+      "inquisition",
+      "order",
+      "wickwardens",
+      "tribunal",
+      "admiralty"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A ship brings word that the Lantern-Bearer is failing.",
+        "text_fr": "Un navire apporte la nouvelle : le Porte-Lanterne décline."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "Inquisitor-General Aurel Vane, Grand Master Hesk Morrow and Eldest Wickwarden Maud Tallis each send an envoy to camp, with gifts.",
+        "text_fr": "L’Inquisiteur général Aurel Vane, le Grand Maître Hesk Morrow et l’Aînée des Garde-Mèches Maud Tallis envoient chacun un émissaire au campement, avec des présents."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "The Tribunal asks you to carry a sealed vote to Candlehold’s envoy.",
+        "text_fr": "Le Tribunal vous demande de porter un vote scellé à l’émissaire de Candlehold."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "One candidate tries to have another killed on the coast, and you find the knife.",
+        "text_fr": "L’un des prétendants tente de faire assassiner un autre sur la côte, et c’est vous qui trouvez le couteau."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The Admiralty’s vote hangs on what you bring back from the Fleet’s grave.",
+        "text_fr": "Le vote de l’Amirauté dépend de ce que vous rapporterez du tombeau de la Flotte."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "Whoever you backed takes the Throne, and decides who meets you at the tear.",
+        "text_fr": "La personne que vous avez soutenue prend le Trône, et décide de qui vous attendra à la déchirure."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Morrow: a crusade",
+        "name_fr": "Morrow : une croisade",
+        "effects": [
+          {
+            "note": "Hesk Morrow takes the Throne: the Dominion at the end is a crusade.",
+            "note_fr": "Hesk Morrow prend le Trône : à la fin, le Dominion est une croisade."
+          },
+          {
+            "subclan": "order",
+            "mark": "friend"
+          },
+          {
+            "title": "kingmaker"
+          }
+        ]
+      },
+      {
+        "name": "Vane: an inquisition",
+        "name_fr": "Vane : une inquisition",
+        "effects": [
+          {
+            "note": "Aurel Vane takes the Throne: the Dominion at the end is an inquisition.",
+            "note_fr": "Aurel Vane prend le Trône : à la fin, le Dominion est une inquisition."
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "title": "kingmaker"
+          }
+        ]
+      },
+      {
+        "name": "Tallis: a church",
+        "name_fr": "Tallis : une Église",
+        "effects": [
+          {
+            "note": "Maud Tallis takes the Throne: the Dominion at the end is a church.",
+            "note_fr": "Maud Tallis prend le Trône : à la fin, le Dominion est une Église."
+          },
+          {
+            "subclan": "wickwardens",
+            "mark": "friend"
+          },
+          {
+            "title": "kingmaker"
+          }
+        ]
+      }
+    ]
+  },
+  "broken_charter": {
+    "id": "broken_charter",
+    "name": "The Broken Charter",
+    "name_fr": "La Charte brisée",
+    "premise": "The Tribunal wants its forges back, and is buying the Compact one trade at a time.",
+    "premise_fr": "Le Tribunal veut récupérer ses forges, et achète le Pacte un métier après l’autre.",
+    "factions": [
+      "compact",
+      "dominion"
+    ],
+    "subclans": [
+      "tribunal",
+      "inquisition",
+      "scaffolders",
+      "emberwives",
+      "anvil_deaf"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "Compact blades turn up in Inquisition hands. Who sold them?",
+        "text_fr": "Des lames du Pacte apparaissent entre les mains de l’Inquisition. Qui les a vendues ?"
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "On the Spire, the Tribunal offers the Scaffolders gold to rebuild the gallows.",
+        "text_fr": "Sur la Flèche, le Tribunal offre de l’or aux Échafaudeurs pour rebâtir les gibets."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "The Emberwives stop the coal, and no forge in the Row lights.",
+        "text_fr": "Les Charbonnières arrêtent le charbon, et plus aucune forge de la Rue ne s’allume."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The Anvil-Deaf vote in signs, and ask you to witness.",
+        "text_fr": "Les Sourds de l’Enclume votent par signes, et vous demandent d’en être témoin."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The Charter is signed again, or burned for good.",
+        "text_fr": "La Charte est signée de nouveau, ou brûlée pour de bon."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "A restored Charter arms the Dominion; a burned one arms whoever the Compact chooses.",
+        "text_fr": "Une Charte restaurée arme le Dominion ; une Charte brûlée arme qui le Pacte choisira."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Restored",
+        "name_fr": "Restaurée",
+        "effects": [
+          {
+            "note": "The Compact splits, and the restored Charter arms the Dominion.",
+            "note_fr": "Le Pacte se divise, et la Charte restaurée arme le Dominion."
+          },
+          {
+            "faction": "dominion",
+            "delta": 15
+          },
+          {
+            "companion": "kelda",
+            "change": "disapproves"
+          }
+        ]
+      },
+      {
+        "name": "Burned",
+        "name_fr": "Brûlée",
+        "effects": [
+          {
+            "faction": "compact",
+            "delta": 25
+          },
+          {
+            "subclan": "tribunal",
+            "mark": "foe"
+          },
+          {
+            "note": "The Compact forges for you, if asked well.",
+            "note_fr": "Le Pacte forge pour vous, si vous savez demander."
+          },
+          {
+            "title": "charter_burner"
+          }
+        ]
+      }
+    ]
+  },
+  "double_ledger": {
+    "id": "double_ledger",
+    "name": "The Double Ledger",
+    "name_fr": "Le Double Registre",
+    "premise": "A Keyholder is selling Crow routes to the Inquisition, and Inquisition lists to the Crows.",
+    "premise_fr": "Un Porte-Clefs vend les routes des Corneilles à l’Inquisition, et les listes de l’Inquisition aux Corneilles.",
+    "factions": [
+      "crows",
+      "dominion"
+    ],
+    "subclans": [
+      "keyholders",
+      "whisper_ledger",
+      "drowned_debt",
+      "inquisition"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A Crow sells you a route, and an Inquisition cutter is waiting on it.",
+        "text_fr": "Une Corneille vous vend une route, et un cotre de l’Inquisition vous y attend."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "The Whisper Ledger decides you are the leak.",
+        "text_fr": "Le Registre des Murmures décide que la fuite, c’est vous."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "The Keyholder is found, and offers you a cut.",
+        "text_fr": "Le Porte-Clefs est démasqué, et vous propose une part."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The Drowned Debt rise against the Keyholders.",
+        "text_fr": "La Dette Noyée se soulève contre les Porte-Clefs."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "Pick the Crows’ new master, or let the Vault burn.",
+        "text_fr": "Choisir le nouveau maître des Corneilles, ou laisser brûler le Coffre."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "The Crows remember who paid: their brigs sail to the last battle, on one side or the other.",
+        "text_fr": "Les Corneilles se souviennent de qui a payé : leurs bricks rejoindront la dernière bataille, d’un côté ou de l’autre."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Loyal",
+        "name_fr": "Loyauté",
+        "effects": [
+          {
+            "faction": "crows",
+            "delta": 25
+          },
+          {
+            "note": "A Crow squadron sails with you at the end.",
+            "note_fr": "Une escadre des Corneilles vous accompagne à la fin."
+          }
+        ]
+      },
+      {
+        "name": "Sell them out",
+        "name_fr": "Les vendre",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 15
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "friend"
+          },
+          {
+            "note": "Crow brigs hunt the Eel.",
+            "note_fr": "Les bricks des Corneilles traquent l’Eel."
+          }
+        ]
+      }
+    ]
+  },
+  "the_returned": {
+    "id": "the_returned",
+    "name": "The Returned",
+    "name_fr": "Les Rendus",
+    "premise": "The children the fen gives back can see through the Shroud. Everyone wants them.",
+    "premise_fr": "Les enfants que le marais rend voient à travers le Linceul. Tout le monde les veut.",
+    "factions": [
+      "mire",
+      "dominion",
+      "vigil"
+    ],
+    "subclans": [
+      "returned",
+      "inquisition"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A child in Fisherman’s Row speaks a language no one taught her.",
+        "text_fr": "Dans l’Allée des Pêcheurs, une enfant parle une langue que personne ne lui a apprise."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "Inquisitors take Returned children to the Spire.",
+        "text_fr": "Des inquisiteurs emmènent des enfants rendus à la Flèche."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "The Vigil believes the Returned are the key to the tear.",
+        "text_fr": "La Veille croit que les Rendus sont la clef de la déchirure."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The Shroud’s Truth: the Returned are what the tear sends back, pieces of the other side.",
+        "text_fr": "La Vérité du Linceul : les Rendus sont ce que la déchirure renvoie, des morceaux de l’autre côté."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The Courts ask you to hide the children aboard the Eel.",
+        "text_fr": "Les Cours vous demandent de cacher les enfants à bord de l’Eel."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "A Returned child can lead you through the tear, if one is still free.",
+        "text_fr": "Un enfant rendu peut vous guider à travers la déchirure, s’il en reste un de libre."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Hide them",
+        "name_fr": "Les cacher",
+        "effects": [
+          {
+            "faction": "mire",
+            "delta": 30
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "foe"
+          },
+          {
+            "title": "safe_harbour"
+          }
+        ]
+      },
+      {
+        "name": "Hand them over",
+        "name_fr": "Les livrer",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 20
+          },
+          {
+            "faction": "mire",
+            "delta": -40
+          },
+          {
+            "companion": "liora",
+            "change": "leaves"
+          }
+        ]
+      }
+    ]
+  },
+  "admiraltys_silence": {
+    "id": "admiraltys_silence",
+    "name": "The Admiralty’s Silence",
+    "name_fr": "Le Silence de l’Amirauté",
+    "premise": "The White Fleet did not sink by accident. It sailed into the tear on the Reliquary’s orders, to carry a relic through.",
+    "premise_fr": "La Flotte Blanche n’a pas sombré par accident. Elle est entrée dans la déchirure sur ordre du Reliquaire, pour faire passer une relique de l’autre côté.",
+    "factions": [
+      "dominion",
+      "penitents",
+      "crows"
+    ],
+    "subclans": [
+      "admiralty",
+      "reliquary",
+      "wickwardens",
+      "tar_hands"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A drunk White Fleet survivor at the Harbor says: “It wasn’t a storm.”",
+        "text_fr": "Au port, un survivant ivre de la Flotte Blanche affirme : « Ce n’était pas une tempête. »"
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "The Admiralty’s logbook is missing from the Spire’s archive.",
+        "text_fr": "Le journal de bord de l’Amirauté a disparu des archives de la Flèche."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "A Tar-Hand refitted one Fleet ship the night before it sailed, to carry a reliquary.",
+        "text_fr": "Une Main-de-Goudron a radoubé un navire de la Flotte la veille de son départ, pour qu’il emporte un reliquaire."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The Fleet sailed into the tear on purpose.",
+        "text_fr": "La Flotte est entrée délibérément dans la déchirure."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The White Fleet’s Grave, where the relic still lies in the flagship.",
+        "text_fr": "Le Tombeau de la Flotte Blanche, où la relique repose encore dans le vaisseau amiral."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "Bring the relic up, or sink it where no one will find it.",
+        "text_fr": "Remonter la relique, ou la couler là où personne ne la trouvera."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Bring it up",
+        "name_fr": "La remonter",
+        "effects": [
+          {
+            "subclan": "reliquary",
+            "mark": "friend"
+          },
+          {
+            "faction": "dominion",
+            "delta": 10
+          },
+          {
+            "faction": "penitents",
+            "delta": -20
+          }
+        ]
+      },
+      {
+        "name": "Sink it",
+        "name_fr": "La couler",
+        "effects": [
+          {
+            "faction": "penitents",
+            "delta": 20
+          },
+          {
+            "subclan": "admiralty",
+            "mark": "foe"
+          },
+          {
+            "note": "The Wickwardens bless the Eel.",
+            "note_fr": "Les Garde-Mèches bénissent l’Eel."
+          }
+        ]
+      }
+    ]
+  },
+  "relic_road": {
+    "id": "relic_road",
+    "name": "The Relic Road",
+    "name_fr": "La Route des Reliques",
+    "premise": "The Penitents mean to steal the Fourth Piece of the Shroud from the Black Reliquary before the Inquisition’s rite, and break it.",
+    "premise_fr": "Les Pénitents comptent voler la Quatrième Pièce du Linceul au Reliquaire Noir avant le rite de l’Inquisition, et la briser.",
+    "factions": [
+      "penitents",
+      "dominion"
+    ],
+    "subclans": [
+      "reliquary_thieves",
+      "reliquary",
+      "inquisition"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "A Penitent asks you to carry a wrapped bundle, no questions asked.",
+        "text_fr": "Un Pénitent vous demande de porter un ballot emmailloté, sans poser de questions."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "The Reliquary Thieves break a relic in the Spire’s own chapel.",
+        "text_fr": "Les Voleurs de Reliques brisent une relique dans la chapelle même de la Flèche."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "They need a ship: the Eel.",
+        "text_fr": "Il leur faut un navire : l’Eel."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "The heist is set for the night of the Fourth Piece.",
+        "text_fr": "Le coup est prévu pour la nuit de la Quatrième Pièce."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "The heist, or the betrayal.",
+        "text_fr": "Le coup, ou la trahison."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "A broken piece can be used by no one, you included.",
+        "text_fr": "Une pièce brisée ne peut servir à personne, pas même à vous."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Help",
+        "name_fr": "Aider",
+        "effects": [
+          {
+            "faction": "penitents",
+            "delta": 30
+          },
+          {
+            "subclan": "inquisition",
+            "mark": "foe"
+          },
+          {
+            "note": "The Fourth Piece is gone from the ending.",
+            "note_fr": "La Quatrième Pièce disparaît du dénouement."
+          }
+        ]
+      },
+      {
+        "name": "Betray",
+        "name_fr": "Trahir",
+        "effects": [
+          {
+            "faction": "dominion",
+            "delta": 20
+          },
+          {
+            "faction": "penitents",
+            "delta": -50
+          },
+          {
+            "companion": "maren",
+            "change": "leaves"
+          }
+        ]
+      }
+    ]
+  },
+  "unwatched_hour": {
+    "id": "unwatched_hour",
+    "name": "The Unwatched Hour",
+    "name_fr": "L’Heure sans veille",
+    "premise": "Someone on the Vigil’s wall lets things through on the new moon: a Stitcher, sewing a door, not closing one.",
+    "premise_fr": "Sur le mur de la Veille, quelqu’un laisse passer des choses à la nouvelle lune : une Porte-Aiguilles, qui coud une porte au lieu d’en fermer une.",
+    "factions": [
+      "vigil",
+      "dominion"
+    ],
+    "subclans": [
+      "stitchers",
+      "inquisition"
+    ],
+    "stages": [
+      {
+        "stage": "Clue",
+        "chapter": 1,
+        "text": "Something from the tear is seen on the Salt Road on a new moon.",
+        "text_fr": "Une chose venue de la déchirure est aperçue sur la Route du Sel, une nuit de nouvelle lune."
+      },
+      {
+        "stage": "Hook",
+        "chapter": 3,
+        "text": "The Vigil’s count of the dead is wrong by one.",
+        "text_fr": "Le compte des morts de la Veille est faux d’une unité."
+      },
+      {
+        "stage": "Turn",
+        "chapter": 4,
+        "text": "A Stitcher is sewing a door, not a wound.",
+        "text_fr": "Une Porte-Aiguilles coud une porte, pas une plaie."
+      },
+      {
+        "stage": "Reveal",
+        "chapter": 5,
+        "text": "She bargains with what lives beyond the tear, to save her tear-marked kin from the Inquisition.",
+        "text_fr": "Elle marchande avec ce qui vit au-delà de la déchirure, pour sauver de l’Inquisition les siens, marqués de la déchirure."
+      },
+      {
+        "stage": "Crisis",
+        "chapter": 6,
+        "text": "What she let through follows the Eel to sea.",
+        "text_fr": "Ce qu’elle a laissé passer suit l’Eel jusqu’en mer."
+      },
+      {
+        "stage": "Choice",
+        "chapter": 7,
+        "text": "The door she sewed is a way beyond the tear, and it can be closed behind you.",
+        "text_fr": "La porte qu’elle a cousue mène au-delà de la déchirure, et peut se refermer derrière vous."
+      }
+    ],
+    "outcomes": [
+      {
+        "name": "Keep her secret",
+        "name_fr": "Garder son secret",
+        "effects": [
+          {
+            "note": "A second way through the tear at the end.",
+            "note_fr": "Un second passage à travers la déchirure, à la fin."
+          },
+          {
+            "faction": "vigil",
+            "delta": -20,
+            "condition": "if found out",
+            "condition_fr": "si le secret est découvert"
+          }
+        ]
+      },
+      {
+        "name": "Turn her in",
+        "name_fr": "La dénoncer",
+        "effects": [
+          {
+            "faction": "vigil",
+            "delta": 20
+          },
+          {
+            "subclan": "stitchers",
+            "mark": "foe"
+          },
+          {
+            "companion": "vess",
+            "change": "leaves"
+          }
+        ]
+      }
+    ]
+  }
+}

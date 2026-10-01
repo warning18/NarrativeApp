@@ -1,0 +1,251 @@
+{
+  "steps": [
+    {
+      "step": 1,
+      "name": "Blood feud",
+      "name_fr": "Vendetta",
+      "color": "#5A0F0F"
+    },
+    {
+      "step": 2,
+      "name": "War",
+      "name_fr": "Guerre",
+      "color": "#8A1A1A"
+    },
+    {
+      "step": 3,
+      "name": "Hostile",
+      "name_fr": "Hostilité",
+      "color": "#D9544D"
+    },
+    {
+      "step": 4,
+      "name": "Tense",
+      "name_fr": "Tension",
+      "color": "#E0762B"
+    },
+    {
+      "step": 5,
+      "name": "Wary",
+      "name_fr": "Méfiance",
+      "color": "#D8B451"
+    },
+    {
+      "step": 6,
+      "name": "Trade",
+      "name_fr": "Commerce",
+      "color": "#9CC25A"
+    },
+    {
+      "step": 7,
+      "name": "Allies",
+      "name_fr": "Alliance",
+      "color": "#5DB05A"
+    }
+  ],
+  "pairs": [
+    {
+      "a": "dominion",
+      "b": "vigil",
+      "step": 3,
+      "reason": "The Edict of the Marked: the Inquisition calls every one of them tear-marked.",
+      "reason_fr": "L’Édit des Marqués : l’Inquisition les dit tous marqués de la déchirure."
+    },
+    {
+      "a": "dominion",
+      "b": "compact",
+      "step": 4,
+      "reason": "The broken Charter: the Row forged for the Dominion for two hundred years, then broke its hammers.",
+      "reason_fr": "La Charte brisée : la Rue a forgé pour le Dominion pendant deux cents ans, puis a brisé ses marteaux."
+    },
+    {
+      "a": "dominion",
+      "b": "mire",
+      "step": 3,
+      "reason": "The unpaid Green Tithe, and an Inquisition that hunts the Returned.",
+      "reason_fr": "La Dîme verte impayée, et une Inquisition qui traque les Rendus."
+    },
+    {
+      "a": "dominion",
+      "b": "crows",
+      "step": 6,
+      "reason": "Secret allies: the Salt Ledger pays the Crows; the Inquisition snuffs them.",
+      "reason_fr": "Alliance secrète : le Registre du Sel paie les Corneilles ; l’Inquisition les éteint."
+    },
+    {
+      "a": "dominion",
+      "b": "penitents",
+      "step": 2,
+      "reason": "Heretics and deserters, to the Dominion; to the Penitents, a debt to undo.",
+      "reason_fr": "Des hérétiques et des déserteurs, pour le Dominion ; pour les Pénitents, une dette à défaire."
+    },
+    {
+      "a": "vigil",
+      "b": "compact",
+      "step": 6,
+      "reason": "Respect: both refused the Spire.",
+      "reason_fr": "Respect : tous deux ont refusé la Flèche."
+    },
+    {
+      "a": "vigil",
+      "b": "mire",
+      "step": 5,
+      "reason": "Wary: who, or what, the Returned are.",
+      "reason_fr": "Méfiance : qui, ou quoi, sont les Rendus."
+    },
+    {
+      "a": "vigil",
+      "b": "crows",
+      "step": 3,
+      "reason": "Contempt: the Crows sell tear-relics.",
+      "reason_fr": "Mépris : les Corneilles vendent des reliques de la déchirure."
+    },
+    {
+      "a": "vigil",
+      "b": "penitents",
+      "step": 7,
+      "reason": "Allies: they share the dead.",
+      "reason_fr": "Alliance : ils partagent leurs morts."
+    },
+    {
+      "a": "compact",
+      "b": "mire",
+      "step": 6,
+      "reason": "Trade: tools for fever-bark.",
+      "reason_fr": "Commerce : des outils contre de l’écorce à fièvre."
+    },
+    {
+      "a": "compact",
+      "b": "crows",
+      "step": 5,
+      "reason": "Business: coin for steel, no questions.",
+      "reason_fr": "Affaires : de l’or contre de l’acier, sans questions."
+    },
+    {
+      "a": "compact",
+      "b": "penitents",
+      "step": 3,
+      "reason": "Compact steel on the Spire: many Penitents wore it there.",
+      "reason_fr": "L’acier du Pacte sur la Flèche : bien des Pénitents le portaient ce jour-là."
+    },
+    {
+      "a": "mire",
+      "b": "crows",
+      "step": 5,
+      "reason": "Wary trade: poisons sold twice.",
+      "reason_fr": "Commerce méfiant : des poisons vendus deux fois."
+    },
+    {
+      "a": "mire",
+      "b": "penitents",
+      "step": 1,
+      "reason": "Reedholm: the Mire has not forgiven them.",
+      "reason_fr": "Reedholm : le Marais ne leur a pas pardonné."
+    },
+    {
+      "a": "crows",
+      "b": "penitents",
+      "step": 5,
+      "reason": "Indifferent: Penitents pay nothing.",
+      "reason_fr": "Indifférence : les Pénitents ne paient rien."
+    }
+  ],
+  "history": [
+    {
+      "year": "600 BT",
+      "year_fr": "600 av. D.",
+      "name": "The Long Night",
+      "name_fr": "La Longue Nuit",
+      "text": "A Wickwarden keeps the First Lantern lit on a sea-cliff. Candlehold grows around it, and the Dominion begins.",
+      "text_fr": "Un Garde-Mèches maintient la Première Lanterne allumée au sommet d’une falaise. Candlehold grandit autour d’elle, et ainsi commence le Dominion."
+    },
+    {
+      "year": "212 BT",
+      "year_fr": "212 av. D.",
+      "name": "The Charter of Anvils",
+      "name_fr": "La Charte des Enclumes",
+      "text": "Cinder Row swears its forges to the Dominion, and keeps its own law in return.",
+      "text_fr": "La Rue des Braises lie ses forges au Dominion par serment, et garde en échange sa propre loi."
+    },
+    {
+      "year": "90 BT",
+      "year_fr": "90 av. D.",
+      "name": "The Green Tithe",
+      "name_fr": "La Dîme verte",
+      "text": "The Dominion leaves the Changeling Fen alone for a tithe of fever-bark. The fen families swear nothing.",
+      "text_fr": "Le Dominion laisse le Marais des Changelins en paix contre une dîme d’écorce à fièvre. Les familles du marais ne jurent rien."
+    },
+    {
+      "year": "Year 0",
+      "year_fr": "An 0",
+      "name": "The Tear",
+      "name_fr": "La Déchirure",
+      "text": "The Shroud opens over the coast. The White Fleet, forty ships, goes down, and the Wickwardens’ cliff lights bring the few survivors home.",
+      "text_fr": "Le Linceul s’ouvre au-dessus de la côte. La Flotte Blanche, quarante navires, sombre, et les feux de falaise des Garde-Mèches ramènent les rares survivants."
+    },
+    {
+      "year": "1 AT",
+      "year_fr": "1 apr. D.",
+      "name": "The Crusade",
+      "name_fr": "La Croisade",
+      "text": "The Lantern-Bearer declares the Crusade, and the Order of the Vigilant Flame lands at Ashen Landing.",
+      "text_fr": "Le Porte-Lanterne proclame la Croisade, et l’Ordre de la Flamme vigilante débarque au Débarcadère des Cendres."
+    },
+    {
+      "year": "2 AT",
+      "year_fr": "2 apr. D.",
+      "name": "The Oath of Open Eyes",
+      "name_fr": "Le Serment des Yeux ouverts",
+      "text": "The Crusade’s wounded and tear-touched swear to watch the tear, and the Grey Vigil is born.",
+      "text_fr": "Les blessés de la Croisade et ceux que la déchirure a touchés jurent de la surveiller, et la Veille Grise naît."
+    },
+    {
+      "year": "4 AT",
+      "year_fr": "4 apr. D.",
+      "name": "The Edict of the Marked",
+      "name_fr": "L’Édit des Marqués",
+      "text": "The Inquisition declares the voidkin tear-marked. The Vigil takes them in, and the Dominion never forgives it.",
+      "text_fr": "L’Inquisition déclare les enfants du Néant marqués de la déchirure. La Veille les recueille, et le Dominion ne le lui pardonne jamais."
+    },
+    {
+      "year": "6 AT",
+      "year_fr": "6 apr. D.",
+      "name": "The Wharf Bargain",
+      "name_fr": "Le Marché du Quai",
+      "text": "The Salt Crows run the Crusade’s supplies. The Salt Ledger pays them, and the Throne denies it.",
+      "text_fr": "Les Corneilles de Sel convoient les vivres de la Croisade. Le Registre du Sel les paie, et le Trône le nie."
+    },
+    {
+      "year": "19 AT",
+      "year_fr": "19 apr. D.",
+      "name": "The Spire of Judgment",
+      "name_fr": "La Flèche du Jugement",
+      "text": "The Tribunal hangs four hundred from Compact-built scaffolds. The Compact breaks its hammers and the Charter, and the first Penitents desert.",
+      "text_fr": "Le Tribunal pend quatre cents personnes à des échafauds bâtis par le Pacte. Le Pacte brise ses marteaux et la Charte, et les premiers Pénitents désertent."
+    },
+    {
+      "year": "21 AT",
+      "year_fr": "21 apr. D.",
+      "name": "Reedholm Burns",
+      "name_fr": "Reedholm brûle",
+      "text": "Exorcists, Penitents to be, burn a fen village. The Mire Courts close the fen and stop the Green Tithe.",
+      "text_fr": "Des exorcistes, futurs Pénitents, brûlent un village du marais. Les Cours du Marais ferment le marais et cessent de payer la Dîme verte."
+    },
+    {
+      "year": "27 AT",
+      "year_fr": "27 apr. D.",
+      "name": "The Snuffing",
+      "name_fr": "L’Extinction des feux",
+      "text": "The Inquisition puts out the lights of three Crow houses at the Wharf. The Crows go under, and raise their prices.",
+      "text_fr": "L’Inquisition éteint les lumières de trois maisons des Corneilles sur le Quai. Les Corneilles passent dans l’ombre, et montent leurs prix."
+    },
+    {
+      "year": "33 AT",
+      "year_fr": "33 apr. D.",
+      "name": "The Wall",
+      "name_fr": "Le Mur",
+      "text": "The Vigil finishes its wall. For the first time, a new moon passes with nothing through.",
+      "text_fr": "La Veille achève son mur. Pour la première fois, une nouvelle lune passe sans que rien ne le franchisse."
+    }
+  ]
+}

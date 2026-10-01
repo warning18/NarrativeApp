@@ -27,7 +27,7 @@ import '../utils/game_icons.dart';
 import '../widgets/player_stats_bar.dart';
 import '../widgets/quest_turn_in.dart';
 import '../widgets/save_slots_sheet.dart';
-import '../widgets/sign_widgets.dart';
+import '../widgets/clan_widgets.dart';
 import 'achievements_screen.dart';
 import 'ship_screen.dart';
 import 'camp_screen.dart';
@@ -345,11 +345,12 @@ class PlayScreen extends ConsumerWidget {
                       Text('${tr(ref, 'failed_to_load_npcs')}: $error'),
                 ),
               ),
-              // The patrons met so far (see signs.dart), with their favour.
+              // The clans and others met so far (see factions.dart), with
+              // the standing and the signs' favour.
               const Divider(height: 24),
               _CollapsibleSection(
                 title: tr(ref, 'patrons_section'),
-                child: const PatronsCodex(),
+                child: const ClansCodex(),
               ),
             ],
           ),

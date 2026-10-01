@@ -14,6 +14,8 @@ import '../combat/spells.dart' show maxManaFor, spellbookSpellIdFor;
 import '../data/alignment_events.dart' show hunterCooldownRolls;
 import '../data/approval.dart';
 import '../data/contracts.dart';
+import '../data/factions.dart';
+import '../data/factions.dart' as clan_rules show setSubclanMark, shiftRelation;
 import '../data/journey_rules.dart';
 import '../data/perks.dart';
 import '../data/quest_objectives.dart' show killTargetsOf;
@@ -205,6 +207,7 @@ class PlayerSession {
     this.patronFavour = const {},
     this.signPatronsThisLife = const [],
     this.patronsMet = const [],
+    this.politics = PoliticsState.empty,
     this.builtHouseIds = const [],
     this.townOrder = const [],
     this.unlockedAchievementIds = const [],
@@ -462,12 +465,19 @@ class PlayerSession {
   /// and New Game+ like a legacy (see favourLevelFor).
   final Map<String, int> patronFavour;
 
-  /// The patrons that gave a sign this life, in order: at most three clans
-  /// among them, and the Choir or the Pit, not both (see patronOpen).
+  /// The patrons that gave a sign this life, in order: the Choir or the
+  /// Pit among them, not both (see patronOpen).
   final List<String> signPatronsThisLife;
 
   /// Every patron that has offered a sign, ever: the codex lists them.
   final List<String> patronsMet;
+
+  /// Where the character stands with the coast (v1.193, see factions.dart):
+  /// standing with each faction, the sub-clans' marks, the faction sworn
+  /// to, how the clans stand with each other, and the logs of it all.
+  /// The world starts over with a new game, a permadeath and a New Game+;
+  /// favour with the patrons ([patronFavour]) is another thing, and stays.
+  final PoliticsState politics;
 
   /// Houses built at camp — mirrors [unlockedShopIds]. Gates which specific
   /// companions can join the active party (a companion's own
@@ -758,6 +768,7 @@ class PlayerSession {
     Map<String, int>? patronFavour,
     List<String>? signPatronsThisLife,
     List<String>? patronsMet,
+    PoliticsState? politics,
     List<String>? builtHouseIds,
     List<String>? townOrder,
     List<String>? unlockedAchievementIds,
@@ -859,6 +870,7 @@ class PlayerSession {
       patronFavour: patronFavour ?? this.patronFavour,
       signPatronsThisLife: signPatronsThisLife ?? this.signPatronsThisLife,
       patronsMet: patronsMet ?? this.patronsMet,
+      politics: politics ?? this.politics,
       builtHouseIds: builtHouseIds ?? this.builtHouseIds,
       townOrder: townOrder ?? this.townOrder,
       unlockedAchievementIds:
@@ -965,6 +977,7 @@ class PlayerSession {
         'patronFavour': patronFavour,
         'signPatronsThisLife': signPatronsThisLife,
         'patronsMet': patronsMet,
+        'politics': politics.toJson(),
         'builtHouseIds': builtHouseIds,
         'townOrder': townOrder,
         'unlockedAchievementIds': unlockedAchievementIds,
@@ -1165,6 +1178,8 @@ class PlayerSession {
       patronsMet:
           (json['patronsMet'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
+      // Saves from before the clans stand where every faction starts.
+      politics: PoliticsState.fromJson(json['politics']),
       builtHouseIds:
           (json['builtHouseIds'] as List?)?.map((e) => e.toString()).toList() ??
               const [],
@@ -2036,6 +2051,91 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   Future<void> grantTitanBlood(int count) async {
     if (count <= 0) return;
     state = state.copyWith(titanBlood: state.titanBlood + count);
+    await _persist();
+  }
+
+  // --- Clans: standing, marks and relations (v1.193, see factions.dart) ---
+
+  /// The chapter a clan change is logged under: [chapter] (pass the
+  /// reached chapter, reachedChapterProvider), else the one the world
+  /// clock counts, at least 1.
+  int _politicsChapter(int? chapter) => chapter ?? max(1, state.clockChapter);
+
+  /// Moves standing with [factionId] by [delta] for [cause] (see
+  /// applyStandingChange: the ripple to its allies and rivals, the Sworn
+  /// banner, the clamps), logged on [chapter] and today. Returns what
+  /// moved, faction by faction.
+  Future<StandingResult> changeStanding(
+    String factionId,
+    num delta, {
+    required ClanData data,
+    required String cause,
+    int? chapter,
+  }) async {
+    final result = applyStandingChange(state.politics, factionId, delta, cause,
+        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    if (!result.changed) return result;
+    state = state.copyWith(politics: result.state);
+    await _persist();
+    return result;
+  }
+
+  /// [subclanId] marks the character [mark] (friend, none or foe), for
+  /// [cause], logged (see setSubclanMark). False when it already did.
+  Future<bool> setSubclanMark(
+    String subclanId,
+    SubclanMark mark, {
+    required ClanData data,
+    required String cause,
+    int? chapter,
+  }) async {
+    final result = clan_rules.setSubclanMark(
+        state.politics, subclanId, mark, cause,
+        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    if (!result.changed) return false;
+    state = state.copyWith(politics: result.state);
+    await _persist();
+    return true;
+  }
+
+  /// [a] and [b] move [steps] along the relations scale for [cause]
+  /// (see shiftRelation), logged and kept as [chapter]'s snapshot. False
+  /// when the pair couldn't move further.
+  Future<bool> shiftRelation(
+    String a,
+    String b,
+    int steps, {
+    required ClanData data,
+    required String cause,
+    int? chapter,
+  }) async {
+    final result = clan_rules.shiftRelation(state.politics, a, b, steps, cause,
+        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    if (!result.changed) return false;
+    state = state.copyWith(politics: result.state);
+    await _persist();
+    return true;
+  }
+
+  /// Edit Mode: standing with [factionId] set to [value], no ripple (see
+  /// setStandingValue), logged as an edit.
+  Future<void> setStandingForEdit(
+    String factionId,
+    num value, {
+    required ClanData data,
+    int? chapter,
+  }) async {
+    final result = setStandingValue(state.politics, factionId, value, 'edit',
+        data: data, chapter: _politicsChapter(chapter), day: state.day);
+    if (!result.changed) return;
+    state = state.copyWith(politics: result.state);
+    await _persist();
+  }
+
+  /// Edit Mode: the coast as the story opens -- every standing back to its
+  /// start, no marks, no faction sworn, the relations and logs cleared.
+  Future<void> resetPolitics() async {
+    state = state.copyWith(politics: PoliticsState.empty);
     await _persist();
   }
 
@@ -3776,8 +3876,9 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   /// Permadeath: clears the player's inventory and equipped items, and
   /// resets the skill build back to class basics — a roguelike run starts
   /// over each life. The signs go with it (held signs, the picks and offer
-  /// waiting, Titan's Blood, the clans and the Choir or Pit of this life);
-  /// favour with the patrons stays. Keeps level, XP, gold, stats, dice (as items) and
+  /// waiting, Titan's Blood, the Choir or Pit of this life); favour with
+  /// the patrons stays. The world starts over too: standing, marks,
+  /// relations and their logs (see [PlayerSession.politics]). Keeps level, XP, gold, stats, dice (as items) and
   /// story flags/quests intact; only the *skill build itself* (unlocked
   /// skills, tier upgrades, skill essence, and unspent skill points) is
   /// wiped, back to exactly what [startNewGame] would grant: the race and
@@ -3825,6 +3926,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
       clearSignOffer: true,
       titanBlood: 0,
       signPatronsThisLife: const [],
+      politics: PoliticsState.empty,
     );
     await _persist();
     return result;

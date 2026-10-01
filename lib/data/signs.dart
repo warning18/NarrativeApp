@@ -15,14 +15,15 @@ import '../l10n/app_strings.dart';
 /// the patrons stays, like a New Game+ legacy).
 ///
 /// Everything here is pure and takes a [Random], like perks.dart: the
-/// patrons and signs come from assets/gamedata/patrons.json and signs.json
-/// (see [parsePatrons], [parseSigns]); the session keeps what is held (see
-/// [HeldSign]) and the offer waiting (see [SignOffer]); a fight reads the
-/// sum of it all as one [SignEffects].
+/// patrons are the factions of assets/gamedata/factions.json (v1.193, see
+/// factions.dart) and the signs come from signs.json (see [parsePatrons],
+/// [parseSigns]); the session keeps what is held (see [HeldSign]) and the
+/// offer waiting (see [SignOffer]); a fight reads the sum of it all as one
+/// [SignEffects].
 
-/// A patron's place in the world: one of the five clans (at most
-/// [maxClansPerLife] a life), a tribe met on the way, or the Choir or the
-/// Pit, who shut each other out.
+/// A patron's place in the world: one of the clans (the Lantern Dominion
+/// and the five clans of the coast), a tribe met on the way, or the Choir
+/// or the Pit, who shut each other out.
 enum PatronKind { clan, tribe, otherworld }
 
 /// Where a sign sits: one sign at most on each of the four face slots, as
@@ -71,10 +72,6 @@ const int signOfferSize = 3;
 /// Odds an eligible duo sign takes one of an offer's places.
 const double duoOfferChance = 0.35;
 
-/// Clans that may give signs in one life: once this many have, only they
-/// offer until the life ends.
-const int maxClansPerLife = 3;
-
 /// Odds an offer comes from a patron that already gave a sign this life
 /// (when one can still offer), rather than from a new one.
 const double returningPatronChance = 0.6;
@@ -108,7 +105,7 @@ const double signLowHealthShare = 0.35;
 /// does).
 const double eliteTitanBloodChance = 0.25;
 
-/// The Material icons a patron may name in patrons.json `icon` (see
+/// The Material icons a faction may name in factions.json `icon` (see
 /// patronIconFor in sign_widgets.dart): no image is drawn for a patron.
 const List<String> patronIconNames = [
   'flag',
@@ -151,6 +148,31 @@ const List<String> patronIconNames = [
   'castle',
   'music_note',
   'notifications',
+  'flare',
+  'key',
+  'vpn_key',
+  'lock',
+  'gavel',
+  'balance',
+  'lightbulb',
+  'emoji_objects',
+  'forest',
+  'grass',
+  'water',
+  'construction',
+  'handyman',
+  'healing',
+  'favorite',
+  'handshake',
+  'paid',
+  'remove_red_eye',
+  'psychology',
+  'flag_circle',
+  'local_police',
+  'security',
+  'nights_stay',
+  'cloud',
+  'ac_unit',
 ];
 
 /// Keywords a strike sign may lend the Attack faces: those that make sense
@@ -427,8 +449,9 @@ int parsePatronColor(Object? raw) {
   return text.length <= 6 ? 0xFF000000 | value : value;
 }
 
-/// A faction that offers signs (patrons.json). The names are the story's
-/// placeholders, so everything shown comes from the data.
+/// A faction as Signs sees it (factions.json, see factions.dart): who
+/// offers, in what colour and words, and when they may. Everything shown
+/// comes from the data.
 class Patron {
   const Patron({
     required this.id,
@@ -591,10 +614,11 @@ class SignDef {
   }
 }
 
-/// patrons.json parsed, by id.
+/// factions.json parsed as patrons, by id: every record (a key starting
+/// with `_` is a note, not a faction).
 Map<String, Patron> parsePatrons(Map<String, dynamic> db) => {
       for (final entry in db.entries)
-        if (entry.value is Map)
+        if (entry.value is Map && !entry.key.startsWith('_'))
           entry.key: Patron.fromJson(
               entry.key, (entry.value as Map).cast<String, dynamic>()),
     };
@@ -796,15 +820,6 @@ SignRarity rollSignRarity({
   return duo && drawn == SignRarity.common ? SignRarity.rare : drawn;
 }
 
-/// The clans among [patronsThisLife] (the patrons that gave a sign this
-/// life, in order).
-List<String> clansThisLife(
-        List<String> patronsThisLife, Map<String, Patron> patrons) =>
-    [
-      for (final id in patronsThisLife)
-        if (patrons[id]?.kind == PatronKind.clan) id,
-    ];
-
 /// The Choir or the Pit, whichever gave a sign this life first: the other
 /// no longer offers until the life ends. Null while neither has.
 String? otherworldClaimOf(
@@ -814,9 +829,8 @@ String? otherworldClaimOf(
         .firstOrNull;
 
 /// Whether [patron] may offer at all this life: the story lets them (see
-/// [Patron.reachable]), and they aren't closed off -- a fourth clan once
-/// three have given signs, or the Choir once the Pit has (and the other
-/// way round).
+/// [Patron.reachable]), and they aren't closed off -- the Choir once the
+/// Pit has given a sign (and the other way round).
 bool patronOpen(
   Patron patron, {
   required Iterable<String> flags,
@@ -827,20 +841,19 @@ bool patronOpen(
     patron.reachable(flags: flags, alignment: alignment) &&
     !closedThisLife(patron, patronsThisLife: patronsThisLife, patrons: patrons);
 
-/// Whether this life has shut [patron] out: three other clans have given
-/// signs, or the other of the Choir and the Pit has. A tribe never is.
+/// Whether this life has shut [patron] out: the other of the Choir and
+/// the Pit has given a sign. A clan or a tribe never is (v1.193: the clans
+/// are no longer three a life; standing decides who comes).
 bool closedThisLife(
   Patron patron, {
   required List<String> patronsThisLife,
   required Map<String, Patron> patrons,
 }) {
   switch (patron.kind) {
-    case PatronKind.clan:
-      final clans = clansThisLife(patronsThisLife, patrons);
-      return clans.length >= maxClansPerLife && !clans.contains(patron.id);
     case PatronKind.otherworld:
       final claim = otherworldClaimOf(patronsThisLife, patrons);
       return claim != null && claim != patron.id;
+    case PatronKind.clan:
     case PatronKind.tribe:
       return false;
   }

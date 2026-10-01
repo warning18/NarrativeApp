@@ -84,7 +84,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
           if (_search.isNotEmpty) {
             final query = _search.toLowerCase();
             keys = keys.where((key) {
-              final record = records[key] as Map<String, dynamic>;
+              final record = _recordOf(records[key]);
               final title = schema.titleField != null
                   ? record[schema.titleField]?.toString() ?? ''
                   : '';
@@ -95,7 +95,7 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
           final filterField = _filterField;
           if (filterField != null && _filterValue != null) {
             keys = keys.where((key) {
-              final record = records[key] as Map<String, dynamic>;
+              final record = _recordOf(records[key]);
               return record[filterField.key]?.toString() == _filterValue;
             }).toList();
           }
@@ -201,7 +201,23 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
                             );
                           }
                           final key = keys[index - (issues.isEmpty ? 0 : 1)];
-                          final record = records[key] as Map<String, dynamic>;
+                          final value = records[key];
+                          // Not a record: a list (relations.json's steps,
+                          // pairs and history) or a note (factions.json's
+                          // _newKinds), edited as JSON.
+                          if (value is! Map) {
+                            return ListTile(
+                              key: Key('db_raw_$key'),
+                              title: Text(key),
+                              subtitle: Text(value is List
+                                  ? 'JSON · ${value.length} entries'
+                                  : 'JSON'),
+                              trailing: const Icon(Icons.data_object),
+                              onTap: () =>
+                                  _editRawEntry(context, records, key, value),
+                            );
+                          }
+                          final record = _recordOf(value);
                           final subtitleValue = schema.titleField != null
                               ? record[schema.titleField]?.toString() ?? ''
                               : '';
@@ -314,6 +330,56 @@ class _GameDbListScreenState extends ConsumerState<GameDbListScreen> {
     );
     if (confirmed == true) {
       await ref.read(gameDbProvider(schema).notifier).resetToDefaults();
+    }
+  }
+
+  static Map<String, dynamic> _recordOf(Object? value) =>
+      value is Map ? value.cast<String, dynamic>() : const {};
+
+  /// Edits an entry that is no record ([value]: a list, a note) as JSON.
+  Future<void> _editRawEntry(BuildContext context, Map<String, dynamic> records,
+      String key, Object? value) async {
+    final controller = TextEditingController(
+        text: const JsonEncoder.withIndent('  ').convert(value));
+    final edited = await showDialog<Object?>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text('$key (JSON)'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: TextField(
+            controller: controller,
+            minLines: 8,
+            maxLines: 16,
+            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+            decoration: const InputDecoration(border: OutlineInputBorder()),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              try {
+                Navigator.pop(dialogContext, [json.decode(controller.text)]);
+              } catch (_) {
+                ScaffoldMessenger.of(dialogContext).showSnackBar(
+                  const SnackBar(content: Text('Invalid JSON.')),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (edited is List && edited.isNotEmpty) {
+      await ref
+          .read(gameDbProvider(schema).notifier)
+          .replaceAll({...records, key: edited.first});
     }
   }
 

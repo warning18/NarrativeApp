@@ -8,8 +8,8 @@ import '../providers/player_session_provider.dart';
 import '../providers/signs_provider.dart';
 import 'sign_offer_dialog.dart';
 
-/// A patron's icon (patrons.json `icon`, see patronIconNames): a Material
-/// icon, since patrons have no image of their own.
+/// A faction's icon (factions.json `icon`, see patronIconNames): a
+/// Material icon, since factions have no image of their own.
 IconData patronIconFor(String name) => switch (name) {
       'flag' => Icons.flag,
       'brush' => Icons.brush,
@@ -51,6 +51,31 @@ IconData patronIconFor(String name) => switch (name) {
       'castle' => Icons.castle,
       'music_note' => Icons.music_note,
       'notifications' => Icons.notifications,
+      'flare' => Icons.flare,
+      'key' => Icons.key,
+      'vpn_key' => Icons.vpn_key,
+      'lock' => Icons.lock,
+      'gavel' => Icons.gavel,
+      'balance' => Icons.balance,
+      'lightbulb' => Icons.lightbulb,
+      'emoji_objects' => Icons.emoji_objects,
+      'forest' => Icons.forest,
+      'grass' => Icons.grass,
+      'water' => Icons.water,
+      'construction' => Icons.construction,
+      'handyman' => Icons.handyman,
+      'healing' => Icons.healing,
+      'favorite' => Icons.favorite,
+      'handshake' => Icons.handshake,
+      'paid' => Icons.paid,
+      'remove_red_eye' => Icons.remove_red_eye,
+      'psychology' => Icons.psychology,
+      'flag_circle' => Icons.flag_circle,
+      'local_police' => Icons.local_police,
+      'security' => Icons.security,
+      'nights_stay' => Icons.nights_stay,
+      'cloud' => Icons.cloud,
+      'ac_unit' => Icons.ac_unit,
       _ => Icons.draw_outlined,
     };
 
@@ -375,77 +400,6 @@ class SignsSection extends ConsumerWidget {
           label(tr(ref, 'sign_passives_label')),
           for (final h in bySlot[SignSlot.passive]!) tile(h),
         ],
-      ],
-    );
-  }
-}
-
-/// The codex's Patrons: those met so far (see PlayerSession.patronsMet)
-/// with their favour, and whether this life has closed them off.
-class PatronsCodex extends ConsumerWidget {
-  const PatronsCodex({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final session = ref.watch(playerSessionProvider);
-    final patrons = ref.watch(patronsProvider);
-    final lang = ref.watch(appLanguageProvider);
-    final theme = Theme.of(context);
-    final met = [
-      for (final id in session.patronsMet)
-        if (patrons[id] != null) patrons[id]!,
-    ]..sort((a, b) => a.kind.index != b.kind.index
-        ? a.kind.index.compareTo(b.kind.index)
-        : a.nameFor(lang).compareTo(b.nameFor(lang)));
-    if (met.isEmpty) {
-      return Text(tr(ref, 'patrons_none_met'),
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: theme.colorScheme.onSurfaceVariant));
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        for (final patron in met)
-          Padding(
-            key: Key('patron_codex_${patron.id}'),
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                PatronEmblem(patron: patron, size: 36),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(patron.nameFor(lang),
-                          style: theme.textTheme.titleSmall),
-                      Text(
-                        '${tr(ref, 'patron_kind_${patron.kind.name}')} · '
-                        '${tr(ref, 'patron_favour').replaceAll('{n}', '${session.patronFavour[patron.id] ?? 0}').replaceAll('{l}', '${favourLevelFor(session.patronFavour[patron.id] ?? 0)}')}',
-                        style: theme.textTheme.labelSmall?.copyWith(
-                            color: theme.colorScheme.onSurfaceVariant),
-                      ),
-                      if (patron.introFor(lang).isNotEmpty)
-                        Text(
-                          patron.introFor(lang),
-                          style: theme.textTheme.bodySmall
-                              ?.copyWith(fontStyle: FontStyle.italic),
-                        ),
-                      if (closedThisLife(patron,
-                          patronsThisLife: session.signPatronsThisLife,
-                          patrons: patrons))
-                        Text(
-                          tr(ref, 'patron_closed_life'),
-                          style: theme.textTheme.labelSmall
-                              ?.copyWith(color: theme.colorScheme.error),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
       ],
     );
   }
