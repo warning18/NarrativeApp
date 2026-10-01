@@ -51,12 +51,15 @@ String pledgedFlag(String factionId) => 'pledged_$factionId';
 String throneWinnerFlag(String factionId) => 'throne_winner_$factionId';
 const String onThroneFlag = 'on_throne';
 
-/// The muster's flags: one per contingent, and the Houses and everyone
-/// who came counted up (`host_houses_1` .. `host_houses_<n>`: a scene asks
-/// for "at least n").
+/// The muster's flags: one per contingent, and how many Houses and how
+/// many in all came, each the one exact count (`host_houses_3`: three
+/// Houses), the Houses' counted up to [maxHostHousesFlag].
 String hostFlag(String factionId) => 'host_$factionId';
 String hostHousesFlag(int n) => 'host_houses_$n';
 String hostSizeFlag(int n) => 'host_size_$n';
+
+/// The most Houses a flag counts: more read as this many.
+const int maxHostHousesFlag = 20;
 
 /// The source of the title the coronation gives (titles.json `source`).
 String throneTitleSource(String factionId) => 'throne:$factionId';
@@ -255,11 +258,13 @@ List<SignEffect> hostEffects(Host host, ClanData data) => [
       ...houseEffects(host.houses.length),
     ];
 
-/// The flags a muster of [host] sets (see [hostFlag]).
+/// The flags a muster of [host] sets (see [hostFlag]): no count flag for
+/// none.
 List<String> hostFlagsFor(Host host) => [
       for (final id in host.contingents) hostFlag(id),
-      for (var n = 1; n <= host.houses.length; n++) hostHousesFlag(n),
-      for (var n = 1; n <= host.size; n++) hostSizeFlag(n),
+      if (host.houses.isNotEmpty)
+        hostHousesFlag(min(host.houses.length, maxHostHousesFlag)),
+      if (host.size > 0) hostSizeFlag(host.size),
     ];
 
 /// Whether [flag] is one a muster sets (a muster again replaces them).

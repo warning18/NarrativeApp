@@ -38,19 +38,22 @@ const int threatGraceDays = 6;
 /// Measured with the playthrough simulator (v1.187, one world clock): a
 /// party that does everything a chapter holds spends about 8 days in
 /// chapter 3, 33 in chapters 4 and 5 and 43 in chapter 6; past these
-/// graces, the lingering shows. The ending (chapter 7) is one crossing
-/// of four days, the tear and a night or two at the camp.
+/// graces, the lingering shows. The last two chapters (v1.196) are short:
+/// the Lantern Throne (7) is one crossing to Candlehold and the war for
+/// it, Beyond the Tear (8) the muster at the cove, the battle and the
+/// tear.
 const Map<int, int> _threatGraceByChapter = {
   3: 8,
   4: 28,
   5: 28,
   6: 36,
   7: 12,
+  8: 12,
 };
 
 /// Days [chapter] can take before its enemies start to gather strength. A
-/// chapter past the table (v1.196: the Lantern Throne and Beyond the Tear
-/// after the ending's 7) is as short as the last one in it.
+/// chapter past the table (one added to chapters.json after these) is as
+/// short as the last one in it.
 int threatGraceDaysFor(int chapter) {
   final own = _threatGraceByChapter[chapter];
   if (own != null) return own;

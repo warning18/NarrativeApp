@@ -295,11 +295,13 @@ void main() {
             'host_mire',
             'host_giants',
             'host_choir',
-            'host_houses_1',
             'host_houses_3',
             'host_size_7',
           ]));
+      // The counts are exact: one paragraph a count.
+      expect(change.flags, isNot(contains('host_houses_1')));
       expect(change.flags, isNot(contains('host_houses_4')));
+      expect(change.flags, isNot(contains('host_size_6')));
       expect(change.flags, isNot(contains('host_dominion')));
       // A second muster replaces the first one's flags.
       final again = _apply({'muster': true},
@@ -307,6 +309,74 @@ void main() {
               .copyWith(appliedKeys: const [], pledged: const ['dominion']),
           flags: change.flags);
       expect(again.flags, isNot(contains('host_choir')));
+      // More Houses than the story counts read as the most it does.
+      expect(hostFlagsFor(Host(houses: [for (var i = 0; i < 25; i++) 'h$i'])),
+          containsAll(['host_houses_20', 'host_size_25']));
+      expect(hostFlagsFor(Host.none), isEmpty);
+    });
+
+    test('a scene muster then fires its event, which reads the Host', () {
+      // 7800's way: {"muster": true, "event": "the_last_battle"}.
+      final events = parsePoliticsEvents({
+        'the_last_battle': {
+          'variants': [
+            {
+              'conditions': {
+                'flags': ['host_vigil']
+              },
+              'effects': {
+                'flags': ['vigil_came']
+              },
+              'news': 'The Vigil came.',
+            },
+            {
+              'effects': {
+                'flags': ['nobody_came']
+              }
+            },
+          ],
+        },
+      });
+      final politics = _standing({'vigil': 40});
+      final change = applyStoryPolitics(
+          StoryPolitics.tryParse({'muster': true, 'event': 'the_last_battle'})!,
+          cause: 'story:7800',
+          politics: politics,
+          flags: const [],
+          world: CoastWorld(data: _data, chapter: 8, events: events));
+      expect(change.flags, containsAll(['host_vigil', 'vigil_came']));
+      expect(change.flags, isNot(contains('nobody_came')));
+    });
+
+    test(
+        'flags the story set too change nothing; a claim still drops '
+        'the last one\'s', () {
+      // 7500 sets claim_<id> by flagsToAdd beside its claim.
+      final first = _apply({'claim': 'vigil'},
+          flags: const ['claim_vigil', 'throne_winner_vigil']);
+      expect(first.flags.where((f) => f == 'claim_vigil'), hasLength(1));
+      final second = _apply({
+        'claim': 'compact',
+        'flags': ['claim_compact']
+      }, politics: first.politics, flags: first.flags);
+      expect(
+          second.flags.where((f) => f.startsWith('claim_')), ['claim_compact']);
+      final crowned = _apply({
+        'throneWinner': 'compact',
+        'flags': ['throne_winner_compact', 'on_throne']
+      }, politics: second.politics, flags: second.flags);
+      expect(crowned.flags.where((f) => f.startsWith('throne_winner_')),
+          ['throne_winner_compact']);
+      expect(crowned.flags.where((f) => f == 'on_throne'), hasLength(1));
+      // A late claim alone is politics enough.
+      expect(StoryPolitics.tryParse({'claim': 'open_hand'}), isNotNull);
+      expect(
+          StoryChoice.fromJson({
+            'text': 'Raise the grey hand',
+            'next_id': '7510_open_hand',
+            'politics': {'claim': 'open_hand'},
+          }).hasPolitics,
+          isTrue);
     });
   });
 

@@ -96,6 +96,32 @@ void main() {
     expect(storyChapterOf('7590_vigil'), 7);
   });
 
+  test('a scene off the spine takes the chapter of the beat leading to it', () {
+    // 7300 (chapter 6's beat) leads to two scenes with no number, then a
+    // place; 5005 (chapter 4's) reaches the second as well.
+    StoryNode scene(String id, List<String> next) => StoryNode.fromJson(id, {
+          'description': id,
+          'choices': [
+            for (final n in next) {'text': 'On', 'next_id': n},
+          ],
+        });
+    final led = StoryData({
+      '5005': scene('5005', ['side_shared']),
+      '7300': scene('7300', ['side_road']),
+      'side_road': scene('side_road', ['side_shared', '7400']),
+      'side_shared': scene('side_shared', ['7400']),
+      '7400': _camp('7400', 7),
+      'side_after_camp': scene('side_after_camp', const []),
+    });
+    expect(storyChapterOf('side_road', led), 6);
+    expect(storyChapterOf('side_shared', led), 4, reason: 'the earliest');
+    expect(spineLedChapters(led), isNot(contains('7400')),
+        reason: 'a place keeps its own');
+    expect(storyChapterOf('side_after_camp', led), 1,
+        reason: 'no beat leads there: its id says');
+    expect(storyChapterOf('side_road'), 1, reason: 'no story, no road');
+  });
+
   test('a chapter past the threat\'s table is as short as the last', () {
     expect(threatGraceDaysFor(8), threatGraceDaysFor(7));
     expect(threatGraceDaysFor(12), threatGraceDaysFor(7));
