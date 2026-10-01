@@ -14,6 +14,7 @@ import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
 import '../utils/game_icons.dart';
+import '../widgets/clan_widgets.dart';
 import '../widgets/perk_picker.dart';
 import '../widgets/sign_offer_dialog.dart';
 import '../widgets/sign_widgets.dart';
@@ -360,6 +361,16 @@ class _CharacterHeader extends ConsumerWidget {
           child: Padding(
             padding: EdgeInsets.all(12),
             child: SignsSection(),
+          ),
+        ),
+        // Clans (see factions.dart): where the character stands with the
+        // coast.
+        const SizedBox(height: 14),
+        const Card(
+          key: Key('character_clans'),
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: ClansSection(),
           ),
         ),
         const SizedBox(height: 14),

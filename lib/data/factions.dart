@@ -261,6 +261,8 @@ class SwornBoon {
 class Faction {
   const Faction({
     required this.patron,
+    this.nameOf = '',
+    this.nameOfFr = '',
     this.motto = '',
     this.mottoFr = '',
     this.lean = 0,
@@ -272,6 +274,11 @@ class Faction {
   });
 
   final Patron patron;
+
+  /// The name after a sub-clan's: "of the Grey Vigil", « de la Veille
+  /// Grise » (see [nameOfFor]).
+  final String nameOf;
+  final String nameOfFr;
   final String motto;
   final String mottoFr;
 
@@ -300,6 +307,14 @@ class Faction {
   String get unlockFlag => patron.unlockFlag;
 
   String nameFor(AppLanguage language) => patron.nameFor(language);
+
+  /// "of the Grey Vigil" in [language], for "The Candlebearers of the Grey
+  /// Vigil"; the bare name when the data has none.
+  String nameOfFor(AppLanguage language) {
+    final own = _pick(language, nameOf, nameOfFr);
+    return own.isNotEmpty ? own : nameFor(language);
+  }
+
   String mottoFor(AppLanguage language) => _pick(language, motto, mottoFr);
   String introFor(AppLanguage language) => patron.introFor(language);
   List<String> greetingsFor(AppLanguage language) =>
@@ -307,6 +322,8 @@ class Faction {
 
   factory Faction.fromJson(String id, Map<String, dynamic> json) => Faction(
         patron: Patron.fromJson(id, json),
+        nameOf: _text(json['nameOf']),
+        nameOfFr: _text(json['nameOf_fr']),
         motto: _text(json['motto']),
         mottoFr: _text(json['motto_fr']),
         lean: _int(json['lean']).clamp(-1, 1),
@@ -610,14 +627,21 @@ class IntrigueStage {
 }
 
 /// One thing an intrigue's outcome does: moves standing with a faction
-/// ([factionId], [delta]), marks a sub-clan ([subclanId], [mark]), or
-/// something only told ([note]).
+/// ([factionId], [delta], perhaps only on a [condition]), marks a
+/// sub-clan ([subclanId], [mark]), moves a companion ([companionId],
+/// [change]: leaves, disapproves...), gives a title ([titleId]), or
+/// something only told ([note]). Shown only, for now.
 class IntrigueEffect {
   const IntrigueEffect({
     this.factionId = '',
     this.delta = 0,
+    this.condition = '',
+    this.conditionFr = '',
     this.subclanId = '',
     this.mark,
+    this.companionId = '',
+    this.change = '',
+    this.titleId = '',
     this.note = '',
     this.noteFr = '',
     this.raw = const {},
@@ -625,19 +649,31 @@ class IntrigueEffect {
 
   final String factionId;
   final int delta;
+  final String condition;
+  final String conditionFr;
   final String subclanId;
   final SubclanMark? mark;
+  final String companionId;
+  final String change;
+  final String titleId;
   final String note;
   final String noteFr;
   final Map<String, dynamic> raw;
 
   String noteFor(AppLanguage language) => _pick(language, note, noteFr);
+  String conditionFor(AppLanguage language) =>
+      _pick(language, condition, conditionFr);
 
   factory IntrigueEffect.fromJson(Map<String, dynamic> json) => IntrigueEffect(
         factionId: _text(json['faction']).trim(),
         delta: _int(json['delta']),
+        condition: _text(json['condition']),
+        conditionFr: _text(json['condition_fr']),
         subclanId: _text(json['subclan']).trim(),
         mark: subclanMarkNamed(json['mark']?.toString()),
+        companionId: _text(json['companion']).trim(),
+        change: _text(json['change']).trim(),
+        titleId: _text(json['title']).trim(),
         note: _text(json['note'] ?? json['text']),
         noteFr: _text(json['note_fr'] ?? json['text_fr']),
         raw: json,
@@ -686,6 +722,7 @@ class Intrigue {
     this.premise = '',
     this.premiseFr = '',
     this.factionIds = const [],
+    this.subclanIds = const [],
     this.stages = const [],
     this.outcomes = const [],
   });
@@ -696,6 +733,7 @@ class Intrigue {
   final String premise;
   final String premiseFr;
   final List<String> factionIds;
+  final List<String> subclanIds;
   final List<IntrigueStage> stages;
   final List<IntrigueOutcome> outcomes;
 
@@ -710,6 +748,7 @@ class Intrigue {
         premise: _text(json['premise']),
         premiseFr: _text(json['premise_fr']),
         factionIds: _strings(json['factions']),
+        subclanIds: _strings(json['subclans']),
         stages: [
           for (final s in (json['stages'] as List?) ?? const [])
             if (s is Map) IntrigueStage.fromJson(s.cast<String, dynamic>()),
@@ -1615,7 +1654,7 @@ List<Map<String, double>> standingHistory(
 String formatStanding(num value) {
   final n = value.round();
   if (n > 0) return '+$n';
-  if (n < 0) return '−${-n}';
+  if (n < 0) return '\u2212${-n}';
   return '0';
 }
 
@@ -1628,7 +1667,7 @@ String formatStandingDelta(num delta, {AppLanguage? language}) {
       : rounded.abs().toStringAsFixed(1);
   if (language == AppLanguage.fr) digits = digits.replaceAll('.', ',');
   if (rounded > 0) return '+$digits';
-  if (rounded < 0) return '−$digits';
+  if (rounded < 0) return '\u2212$digits';
   return '0';
 }
 

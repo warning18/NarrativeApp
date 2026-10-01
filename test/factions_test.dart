@@ -281,11 +281,11 @@ void main() {
 
     test('numbers read the way the screens show them', () {
       expect(formatStanding(31), '+31');
-      expect(formatStanding(-14.2), '−14');
+      expect(formatStanding(-14.2), '\u221214');
       expect(formatStanding(0.4), '0');
       expect(formatStandingDelta(1.5), '+1.5');
       expect(formatStandingDelta(1.5, language: AppLanguage.fr), '+1,5');
-      expect(formatStandingDelta(-3), '−3');
+      expect(formatStandingDelta(-3), '\u22123');
     });
   });
 

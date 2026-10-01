@@ -640,6 +640,150 @@
     "requiresPatrons": [],
     "pact": null
   },
+  "vigil_strike_new_moon_spear": {
+    "id": "vigil_strike_new_moon_spear",
+    "patron": "vigil",
+    "slot": "strike",
+    "name": "New-Moon Spear",
+    "name_fr": "Lance de nouvelle lune",
+    "flavour": "A Last Watch spearhead kept all night beside the candle; it carries a little of the flame over the wall.",
+    "flavour_fr": "Un fer de lance de la Dernière Veille, gardé toute la nuit près de la chandelle ; il emporte un peu de la flamme par-dessus le mur.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "pierce"
+      },
+      {
+        "kind": "strikeElement",
+        "element": "Light",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_guard_dry_stone": {
+    "id": "vigil_guard_dry_stone",
+    "patron": "vigil",
+    "slot": "guard",
+    "name": "Dry-Stone Course",
+    "name_fr": "Assise de pierre sèche",
+    "flavour": "No mortar, only weight and patience: the wall stands because every stone leans on the next.",
+    "flavour_fr": "Pas de mortier, seulement du poids et de la patience : le mur tient parce que chaque pierre s’appuie sur la suivante.",
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 6
+      },
+      {
+        "kind": "guardFlat",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_mend_sewn_shut": {
+    "id": "vigil_mend_sewn_shut",
+    "patron": "vigil",
+    "slot": "mend",
+    "name": "Sewn Shut",
+    "name_fr": "Point serré",
+    "flavour": "A Stitcher’s grey thread: what it closes, it closes for good.",
+    "flavour_fr": "Le fil gris des Porte-Aiguilles : ce qu’il ferme, il le ferme pour de bon.",
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 6
+      },
+      {
+        "kind": "mendShield",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_spell_void_silk": {
+    "id": "vigil_spell_void_silk",
+    "patron": "vigil",
+    "slot": "spell",
+    "name": "Void-Silk",
+    "name_fr": "Soie du Néant",
+    "flavour": "Silk from the Glass Strand, threaded through the words: it draws the strength out of whatever it binds.",
+    "flavour_fr": "De la soie de la Grève de Verre, passée entre les mots : elle tire la force de tout ce qu’elle lie.",
+    "effects": [
+      {
+        "kind": "spellStatus",
+        "status": "weaken",
+        "chance": 12,
+        "duration": 2,
+        "magnitude": 15
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_white_thread_eye": {
+    "id": "vigil_passive_white_thread_eye",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "White-Thread Eye",
+    "name_fr": "Œil de fil blanc",
+    "flavour": "The eye of the grey cloth, stitched on your sleeve: it reads a blow before the arm moves.",
+    "flavour_fr": "L’œil de la toile grise, cousu sur votre manche : il lit le coup avant que le bras ne bouge.",
+    "effects": [
+      {
+        "kind": "stat",
+        "stat": "perception",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_last_stone": {
+    "id": "vigil_passive_last_stone",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "The Last Stone",
+    "name_fr": "La Dernière Pierre",
+    "flavour": "A stone you set in the wall yourself, with your name chalked on its hidden side.",
+    "flavour_fr": "Une pierre que vous avez posée vous-même dans le mur, votre nom écrit à la craie sur sa face cachée.",
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "vigil_passive_thirty_eight_years": {
+    "id": "vigil_passive_thirty_eight_years",
+    "patron": "vigil",
+    "slot": "passive",
+    "name": "Thirty-Eight Years",
+    "name_fr": "Trente-huit ans",
+    "flavour": "Thirty-eight years of new moons, and the watch has learned to strike first at whatever comes over the wall.",
+    "flavour_fr": "Trente-huit ans de nouvelles lunes, et la garde a appris à frapper la première tout ce qui franchit le mur.",
+    "effects": [
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 6
+      },
+      {
+        "kind": "critChance",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
   "giants_strike_quarry_hammer": {
     "id": "giants_strike_quarry_hammer",
     "patron": "giants",

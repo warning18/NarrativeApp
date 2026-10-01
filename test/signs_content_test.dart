@@ -1,7 +1,7 @@
-// Signs (v1.192), the content: the shipped patrons.json and signs.json
-// parse, every effect is one the fight knows and sits on a sign of the
-// right slot, every line reads in both languages, and every patron can be
-// met.
+// Signs (v1.192), the content: the shipped factions.json (the patrons
+// since v1.193) and signs.json parse, every effect is one the fight knows
+// and sits on a sign of the right slot, every line reads in both
+// languages, and every patron can be met.
 import 'dart:convert';
 import 'dart:io';
 
@@ -46,19 +46,19 @@ const Map<SignSlot, Set<SignEffectKind>> _slotKinds = {
 };
 
 void main() {
-  final patronsDb = _json('assets/gamedata/patrons.json');
+  final patronsDb = _json('assets/gamedata/factions.json');
   final signsDb = _json('assets/gamedata/signs.json');
   final patrons = parsePatrons(patronsDb);
   final signs = parseSigns(signsDb);
   final story = File('assets/Cleaned_Narrative_DAG.json').readAsStringSync();
   final nodes = (jsonDecode(story) as Map<String, dynamic>).keys.toSet();
 
-  test('eleven patrons and 66 signs, nine of them duos', () {
-    expect(patrons, hasLength(11));
-    expect(signs, hasLength(66));
+  test('twelve patrons and 73 signs, nine of them duos', () {
+    expect(patrons, hasLength(12));
+    expect(signs, hasLength(73));
     expect(signs.values.where((s) => s.isDuo), hasLength(9));
     expect(
-        patrons.values.where((p) => p.kind == PatronKind.clan), hasLength(5));
+        patrons.values.where((p) => p.kind == PatronKind.clan), hasLength(6));
     expect(
         patrons.values.where((p) => p.kind == PatronKind.tribe), hasLength(4));
     expect(patrons[choirPatronId]!.minAlignment, 10);

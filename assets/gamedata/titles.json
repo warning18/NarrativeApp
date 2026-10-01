@@ -1,12 +1,146 @@
 {
+  "cliff_light": {
+    "id": "cliff_light",
+    "name": "Cliff Light",
+    "name_fr": "Feu de falaise",
+    "line": "You relit a cliff lamp in a storm, and a ship came home by it.",
+    "line_fr": "Vous avez rallumé un feu de falaise dans la tempête, et un navire est rentré grâce à lui.",
+    "faction": "dominion",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "voyageCalm",
+        "value": 15
+      }
+    ]
+  },
+  "witness_of_the_spire": {
+    "id": "witness_of_the_spire",
+    "name": "Witness of the Spire",
+    "name_fr": "Témoin de la Flèche",
+    "line": "You sat on a Tribunal hearing and spoke, and the clerks wrote your name down.",
+    "line_fr": "Vous avez siégé à une audience du Tribunal et pris la parole, et les greffiers ont noté votre nom.",
+    "faction": "dominion",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 2,
+        "stat": "charisma"
+      }
+    ]
+  },
+  "under_the_lantern": {
+    "id": "under_the_lantern",
+    "name": "Under the Lantern",
+    "name_fr": "Sous la Lanterne",
+    "line": "Dominion guards no longer search the Eel every time she docks.",
+    "line_fr": "Les gardes du Dominion ne fouillent plus l’Eel chaque fois qu’il accoste.",
+    "faction": "dominion",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 2
+      }
+    ]
+  },
+  "gold_thread": {
+    "id": "gold_thread",
+    "name": "Gold Thread",
+    "name_fr": "Fil d’or",
+    "line": "Your name is sewn into a House’s tongue, in the same gold thread as the flame.",
+    "line_fr": "Votre nom est cousu sur la flamme d’une Maison, du même fil d’or que la Lanterne.",
+    "faction": "dominion",
+    "source": "tier:trusted",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "allyDamagePercent",
+        "value": 4
+      }
+    ]
+  },
+  "ninth_tongue": {
+    "id": "ninth_tongue",
+    "name": "The Ninth Tongue",
+    "name_fr": "La Neuvième Flamme",
+    "line": "The gonfalon has eight tongues, one for each House, and now a ninth, for you.",
+    "line_fr": "Le gonfanon a huit flammes, une par Maison, et désormais une neuvième, pour vous.",
+    "faction": "dominion",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 2
+      },
+      {
+        "kind": "startMomentum",
+        "value": 1
+      }
+    ]
+  },
   "friend_of_the_wall": {
     "id": "friend_of_the_wall",
     "name": "Friend of the Wall",
-    "name_fr": "Amitié du Mur",
-    "line": "The Vigil knows your face.",
-    "line_fr": "La Veille connaît votre visage.",
+    "name_fr": "Camarade du Mur",
+    "line": "You stood a new-moon watch and did not look away.",
+    "line_fr": "Vous avez monté une garde de nouvelle lune sans détourner le regard.",
     "faction": "vigil",
     "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 2,
+        "stat": "perception"
+      }
+    ]
+  },
+  "candle_and_tally": {
+    "id": "candle_and_tally",
+    "name": "Candle and Tally",
+    "name_fr": "Chandelle et Registre",
+    "line": "You walked the Ossuary Galleries at night, and the count came out right.",
+    "line_fr": "Vous avez parcouru de nuit les Galeries de l’Ossuaire, et le compte est tombé juste.",
+    "faction": "vigil",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "killHeal",
+        "value": 3
+      }
+    ]
+  },
+  "new_moon_watch": {
+    "id": "new_moon_watch",
+    "name": "New-Moon Watch",
+    "name_fr": "Garde de nouvelle lune",
+    "line": "The Vigil has put your name on the new-moon rota.",
+    "line_fr": "La Veille a inscrit votre nom au tour de garde de la nouvelle lune.",
+    "faction": "vigil",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "firstRoundDamagePercent",
+        "value": 12
+      }
+    ]
+  },
+  "grey_cloth": {
+    "id": "grey_cloth",
+    "name": "Grey Cloth",
+    "name_fr": "Toile grise",
+    "line": "A strip of the Vigil’s unwashed war-cloth, tied at your shoulder.",
+    "line_fr": "Une bande de la toile de guerre de la Veille, jamais lavée, nouée à votre épaule.",
+    "faction": "vigil",
+    "source": "tier:trusted",
     "negative": false,
     "effects": [
       {
@@ -15,30 +149,483 @@
       }
     ]
   },
-  "the_marked": {
-    "id": "the_marked",
-    "name": "the Marked",
-    "name_fr": "la Marque",
-    "line": "The Inquisition hunts you.",
-    "line_fr": "L’Inquisition vous traque.",
-    "faction": "dominion",
-    "source": "mark:foe:inquisition",
-    "negative": true,
-    "effects": []
+  "witness_of_the_tear": {
+    "id": "witness_of_the_tear",
+    "name": "Witness of the Tear",
+    "name_fr": "Témoin de la Déchirure",
+    "line": "You looked into the tear and told the Vigil what you saw.",
+    "line_fr": "Vous avez regardé dans la déchirure et raconté à la Veille ce que vous y avez vu.",
+    "faction": "vigil",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      },
+      {
+        "kind": "stat",
+        "value": 1,
+        "stat": "perception"
+      }
+    ]
+  },
+  "coal_guard": {
+    "id": "coal_guard",
+    "name": "Coal-Guard",
+    "name_fr": "Garde du charbon",
+    "line": "You brought an Emberwife’s cart down the Ember Run without losing a sack.",
+    "line_fr": "Vous avez mené la charrette d’une Charbonnière le long de la Course des Braises sans perdre un sac.",
+    "faction": "compact",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "guardFlat",
+        "value": 2
+      }
+    ]
+  },
+  "gallows_breaker": {
+    "id": "gallows_breaker",
+    "name": "Gallows-Breaker",
+    "name_fr": "Brise-Gibet",
+    "line": "You helped the Scaffolders take down one of the gallows they built.",
+    "line_fr": "Vous avez aidé les Échafaudeurs à abattre l’un des gibets qu’ils avaient bâtis.",
+    "faction": "compact",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 2,
+        "stat": "strength"
+      }
+    ]
+  },
+  "friend_of_the_row": {
+    "id": "friend_of_the_row",
+    "name": "Friend of the Row",
+    "name_fr": "Camarade de la Rue",
+    "line": "Cinder Row nods when you pass. For Cinder Row, that is a great deal.",
+    "line_fr": "La Rue des Braises vous salue d’un signe de tête. Pour la Rue des Braises, c’est beaucoup.",
+    "faction": "compact",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "thorns",
+        "value": 2
+      }
+    ]
+  },
+  "asked_well": {
+    "id": "asked_well",
+    "name": "Asked Well",
+    "name_fr": "Bien demandé",
+    "line": "You gave the Anvil-Deaf a true reason, and they forged for it.",
+    "line_fr": "Vous avez donné aux Sourds de l’Enclume une vraie raison, et ils ont forgé pour elle.",
+    "faction": "compact",
+    "source": "tier:trusted",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 12
+      }
+    ]
+  },
+  "unbroken_hammer": {
+    "id": "unbroken_hammer",
+    "name": "Unbroken Hammer",
+    "name_fr": "Marteau intact",
+    "line": "You brought the Row’s master hammer back from the Spire’s vault.",
+    "line_fr": "Vous avez rapporté le marteau maître de la Rue depuis la chambre forte de la Flèche.",
+    "faction": "compact",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "armor",
+        "value": 1
+      },
+      {
+        "kind": "guardFlat",
+        "value": 1
+      }
+    ]
+  },
+  "terms_kept": {
+    "id": "terms_kept",
+    "name": "Terms Kept",
+    "name_fr": "Parole tenue",
+    "line": "You crossed the fen on a guide’s terms and kept every one.",
+    "line_fr": "Vous avez traversé le marais aux conditions d’un guide, et les avez toutes respectées.",
+    "faction": "mire",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      }
+    ]
+  },
+  "bark_friend": {
+    "id": "bark_friend",
+    "name": "Bark-Friend",
+    "name_fr": "Camarade de l’écorce",
+    "line": "You tapped a fever tree and left it living.",
+    "line_fr": "Vous avez saigné un arbre à fièvre sans le tuer.",
+    "faction": "mire",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "potionBonus",
+        "value": 10
+      }
+    ]
+  },
+  "reed_walker": {
+    "id": "reed_walker",
+    "name": "Reed-Walker",
+    "name_fr": "Passe-Roseaux",
+    "line": "The fen paths have stopped moving under your feet.",
+    "line_fr": "Les sentiers du marais ne bougent plus sous vos pieds.",
+    "faction": "mire",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "strikeStatus",
+        "status": "poison",
+        "chance": 12,
+        "duration": 2,
+        "magnitude": 2
+      }
+    ]
+  },
+  "feast_mask": {
+    "id": "feast_mask",
+    "name": "Feast Mask",
+    "name_fr": "Masque de fête",
+    "line": "The Returned gave you a mask for the feast, and you may wear it.",
+    "line_fr": "Les Rendus vous ont donné un masque pour la fête, et vous avez le droit de le porter.",
+    "faction": "mire",
+    "source": "tier:trusted",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 12
+      }
+    ]
+  },
+  "seat_in_the_reeds": {
+    "id": "seat_in_the_reeds",
+    "name": "A Seat in the Reeds",
+    "name_fr": "Un siège dans les roseaux",
+    "line": "You struck a bargain at a court in the reeds, and the fen holds you to it.",
+    "line_fr": "Vous avez conclu un marché devant une cour des roseaux, et le marais vous y tient.",
+    "faction": "mire",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "lifestealPercent",
+        "value": 2
+      },
+      {
+        "kind": "dodgeChance",
+        "value": 1
+      }
+    ]
+  },
+  "paid_in_full": {
+    "id": "paid_in_full",
+    "name": "Paid in Full",
+    "name_fr": "Dette réglée",
+    "line": "You bought out a branded debtor’s chain, and the Wharf noticed.",
+    "line_fr": "Vous avez racheté la chaîne d’un débiteur marqué, et le Quai l’a remarqué.",
+    "faction": "crows",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": 10
+      }
+    ]
+  },
+  "letter_opener": {
+    "id": "letter_opener",
+    "name": "Letter-Opener",
+    "name_fr": "Ouvre-Lettres",
+    "line": "You steamed open a Tribunal letter and sealed it again, and nobody knows but the Crows.",
+    "line_fr": "Vous avez ouvert une lettre du Tribunal à la vapeur et l’avez rescellée, et personne ne le sait, sauf les Corneilles.",
+    "faction": "crows",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "critChance",
+        "value": 3
+      }
+    ]
+  },
+  "good_for_it": {
+    "id": "good_for_it",
+    "name": "Good for It",
+    "name_fr": "Solvable",
+    "line": "The Crows will sell to you on credit. Mind the interest.",
+    "line_fr": "Les Corneilles vous vendent à crédit. Attention aux intérêts.",
+    "faction": "crows",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 2,
+        "stat": "luck"
+      }
+    ]
+  },
+  "two_rings": {
+    "id": "two_rings",
+    "name": "Two Rings",
+    "name_fr": "Deux anneaux",
+    "line": "Two rings on the Eel’s halyard: among the Crows, that is a mate’s rank.",
+    "line_fr": "Deux anneaux sur la drisse de l’Eel : chez les Corneilles, c’est le rang d’un second.",
+    "faction": "crows",
+    "source": "tier:trusted",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "shipHullPercent",
+        "value": 10
+      }
+    ]
   },
   "keyholder": {
     "id": "keyholder",
     "name": "Keyholder",
-    "name_fr": "Porte-Clé",
-    "line": "A key of your own.",
-    "line_fr": "Une clé à vous.",
+    "name_fr": "Porte-Clefs",
+    "line": "You carry one key to one door, and no one else knows which.",
+    "line_fr": "Vous portez une clef pour une porte, et personne d’autre ne sait laquelle.",
     "faction": "crows",
     "source": "tier:sworn",
     "negative": false,
     "effects": [
       {
         "kind": "goldPercent",
-        "value": 10
+        "value": 5
+      },
+      {
+        "kind": "critChance",
+        "value": 2
+      }
+    ]
+  },
+  "name_bringer": {
+    "id": "name_bringer",
+    "name": "Name-Bringer",
+    "name_fr": "Porte-Nom",
+    "line": "You brought the Scorched Choir a name the Spire hanged, and they sang it.",
+    "line_fr": "Vous avez apporté au Chœur Calciné le nom d’un pendu de la Flèche, et il l’a chanté.",
+    "faction": "penitents",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      }
+    ]
+  },
+  "honest_exorcist": {
+    "id": "honest_exorcist",
+    "name": "Honest Exorcist",
+    "name_fr": "Exorciste honnête",
+    "line": "You drove a thing out of a fisherman without fire.",
+    "line_fr": "Vous avez chassé une chose d’un pêcheur sans recourir au feu.",
+    "faction": "penitents",
+    "source": "offer",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": 9
+      }
+    ]
+  },
+  "road_dust": {
+    "id": "road_dust",
+    "name": "Road Dust",
+    "name_fr": "Poussière de la Route",
+    "line": "The Penitents let you walk with them on the Exorcists’ Road.",
+    "line_fr": "Les Pénitents vous laissent marcher avec eux sur la Route des Exorcistes.",
+    "faction": "penitents",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "afterFightHealPercent",
+        "value": 5
+      }
+    ]
+  },
+  "relic_breaker": {
+    "id": "relic_breaker",
+    "name": "Relic-Breaker",
+    "name_fr": "Brise-Relique",
+    "line": "You carried a stolen relic to the Ashen Quarter and watched it broken.",
+    "line_fr": "Vous avez porté une relique volée jusqu’au Quartier des Cendres, et l’avez vue brisée.",
+    "faction": "penitents",
+    "source": "tier:trusted",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "spellCostLess",
+        "value": 1
+      }
+    ]
+  },
+  "before_the_procession": {
+    "id": "before_the_procession",
+    "name": "Before the Procession",
+    "name_fr": "En tête du cortège",
+    "line": "You led the procession through an Inquisition blockade with no weapon drawn.",
+    "line_fr": "Vous avez mené le cortège à travers un barrage de l’Inquisition sans tirer d’arme.",
+    "faction": "penitents",
+    "source": "tier:sworn",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "mendParty",
+        "value": 9
+      }
+    ]
+  },
+  "vow_keeper": {
+    "id": "vow_keeper",
+    "name": "Vow-Keeper",
+    "name_fr": "Garde-Vœu",
+    "line": "The Choir has heard your vow, and is listening for the next.",
+    "line_fr": "Le Chœur a entendu votre vœu, et guette le suivant.",
+    "faction": "choir",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "guardHeal",
+        "value": 2
+      }
+    ]
+  },
+  "signatory": {
+    "id": "signatory",
+    "name": "Signatory",
+    "name_fr": "Signataire",
+    "line": "Your name is at the foot of a clause. The Pit keeps a copy.",
+    "line_fr": "Votre nom figure au bas d’une clause. La Fosse en garde une copie.",
+    "faction": "pit",
+    "source": "tier:known",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "killHeal",
+        "value": 3
+      }
+    ]
+  },
+  "the_marked": {
+    "id": "the_marked",
+    "name": "The Marked",
+    "name_fr": "Sous la Marque",
+    "line": "The Inquisition counts you a foe. Its cutters hunt the Eel, whatever the Dominion thinks of you.",
+    "line_fr": "L’Inquisition vous compte parmi ses ennemis. Ses cotres traquent l’Eel, quoi qu’en pense le Dominion.",
+    "faction": "dominion",
+    "source": "mark:foe:inquisition",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "goldPercent",
+        "value": -10
+      }
+    ]
+  },
+  "the_challenged": {
+    "id": "the_challenged",
+    "name": "The Challenged",
+    "name_fr": "Gant jeté",
+    "line": "The Order of the Vigilant Flame has thrown down its gauntlet, and its knights will call you out on any road.",
+    "line_fr": "L’Ordre de la Flamme vigilante vous a jeté le gant, et ses chevaliers vous défieront sur toutes les routes.",
+    "faction": "dominion",
+    "source": "mark:foe:order",
+    "negative": true,
+    "effects": [
+      {
+        "kind": "maxHealth",
+        "value": -5
+      }
+    ]
+  },
+  "kingmaker": {
+    "id": "kingmaker",
+    "name": "Kingmaker",
+    "name_fr": "Main qui couronne",
+    "line": "The one you backed sits on the Lantern Throne, and remembers it.",
+    "line_fr": "La personne que vous avez soutenue siège sur le Trône de la Lanterne, et s’en souvient.",
+    "faction": "dominion",
+    "source": "intrigue",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "stat",
+        "value": 1,
+        "stat": "charisma"
+      },
+      {
+        "kind": "startMomentum",
+        "value": 1
+      }
+    ]
+  },
+  "charter_burner": {
+    "id": "charter_burner",
+    "name": "Charter-Burner",
+    "name_fr": "Brûle-Charte",
+    "line": "You watched the Charter of Anvils burn, and the Compact forges for you if you ask well.",
+    "line_fr": "Vous avez regardé brûler la Charte des Enclumes, et le Pacte forge pour vous si vous savez demander.",
+    "faction": "compact",
+    "source": "intrigue",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "strikeElement",
+        "value": 2,
+        "element": "Fire"
+      }
+    ]
+  },
+  "safe_harbour": {
+    "id": "safe_harbour",
+    "name": "Safe Harbour",
+    "name_fr": "Port sûr",
+    "line": "You hid the Returned children aboard the Eel, and the Inquisition never found them.",
+    "line_fr": "Vous avez caché les enfants rendus à bord de l’Eel, et l’Inquisition ne les a jamais trouvés.",
+    "faction": "mire",
+    "source": "intrigue",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "partyMaxHealthPercent",
+        "value": 2
       }
     ]
   }

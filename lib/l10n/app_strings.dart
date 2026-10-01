@@ -8968,13 +8968,13 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   'clans_tribes_label': {AppLanguage.en: 'Tribes', AppLanguage.fr: 'Tribus'},
   'clans_sworn_marker': {
     AppLanguage.en: 'Sworn: their banner hangs in your Loft',
-    AppLanguage.fr: 'Serment : leur bannière pend dans votre grenier',
+    AppLanguage.fr: 'Serment\u00a0: leur bannière pend dans votre grenier',
   },
   'clans_edit_hint': {
     AppLanguage.en:
         'Slide to set a standing (no ripple); tap a sub-clan’s square to change its mark.',
     AppLanguage.fr:
-        'Faites glisser pour fixer une réputation (sans contrecoup) ; touchez le carré d’un sous-clan pour changer sa marque.',
+        'Faites glisser pour fixer une réputation (sans contrecoup)\u00a0; touchez le carré d’un sous-clan pour changer sa marque.',
   },
   'clans_reset_done': {
     AppLanguage.en: 'The coast stands as the story opens.',
@@ -8986,15 +8986,15 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_vows_state': {
     AppLanguage.en: 'Vows held: {n} · silent: {s}',
-    AppLanguage.fr: 'Vœux tenus : {n} · silencieux : {s}',
+    AppLanguage.fr: 'Vœux tenus\u00a0: {n} · silencieux\u00a0: {s}',
   },
   'clans_pacts_state': {
     AppLanguage.en: 'Pacts held: {n} · still binding: {r}',
-    AppLanguage.fr: 'Pactes tenus : {n} · encore actifs : {r}',
+    AppLanguage.fr: 'Pactes tenus\u00a0: {n} · encore actifs\u00a0: {r}',
   },
   'clans_otherworld_claim': {
     AppLanguage.en: 'This life is {name}’s: the other will not come.',
-    AppLanguage.fr: 'Cette vie revient à {name} : l’autre ne viendra pas.',
+    AppLanguage.fr: 'Cette vie revient à {name}\u00a0: l’autre ne viendra pas.',
   },
   'clans_otherworld_open': {
     AppLanguage.en: 'Neither has claimed this life.',
@@ -9022,7 +9022,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_pair_moved': {
     AppLanguage.en: 'Chapter {c}, day {d}: {from} → {to} ({cause})',
-    AppLanguage.fr: 'Chapitre {c}, jour {d} : {from} → {to} ({cause})',
+    AppLanguage.fr: 'Chapitre {c}, jour {d}\u00a0: {from} → {to} ({cause})',
   },
   'clans_shift_down': {
     AppLanguage.en: 'One step worse',
@@ -9062,7 +9062,7 @@ const Map<String, Map<AppLanguage, String>> _strings = {
   },
   'clans_intrigue_stage': {
     AppLanguage.en: 'Stage {n} of 6: {stage}',
-    AppLanguage.fr: 'Étape {n} sur 6 : {stage}',
+    AppLanguage.fr: 'Étape {n} sur 6\u00a0: {stage}',
   },
   'clans_intrigue_outcomes': {
     AppLanguage.en: 'Outcomes',
@@ -9076,22 +9076,38 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.en: 'Ch. {c}',
     AppLanguage.fr: 'Ch. {c}',
   },
+  'intrigue_companion_leaves': {
+    AppLanguage.en: '{name} leaves',
+    AppLanguage.fr: '{name} quitte le groupe',
+  },
+  'intrigue_companion_disapproves': {
+    AppLanguage.en: '{name} disapproves',
+    AppLanguage.fr: '{name} désapprouve',
+  },
+  'intrigue_companion_approves': {
+    AppLanguage.en: '{name} approves',
+    AppLanguage.fr: '{name} approuve',
+  },
+  'intrigue_title_effect': {
+    AppLanguage.en: 'Title: {name}',
+    AppLanguage.fr: 'Titre\u00a0: {name}',
+  },
   'clans_none': {
     AppLanguage.en: 'No clan data yet.',
     AppLanguage.fr: 'Pas encore de données de clans.',
   },
   'shop_faction_line': {
     AppLanguage.en: '{name}: {tier}, prices {p}%',
-    AppLanguage.fr: '{name} : {tier}, prix {p} %',
+    AppLanguage.fr: '{name}\u00a0: {tier}, prix {p}\u00a0%',
   },
   'shop_faction_fair': {
     AppLanguage.en: '{name}: {tier}, fair prices',
-    AppLanguage.fr: '{name} : {tier}, prix justes',
+    AppLanguage.fr: '{name}\u00a0: {tier}, prix justes',
   },
   'shop_faction_refuses': {
     AppLanguage.en: '{name}: {tier}. This shop will not trade with you.',
     AppLanguage.fr:
-        '{name} : {tier}. Cette boutique refuse de commercer avec vous.',
+        '{name}\u00a0: {tier}. Cette boutique refuse de commercer avec vous.',
   },
 };
 
