@@ -732,6 +732,38 @@
     "minAlignment": null,
     "maxAlignment": null
   },
+  "open_hand": {
+    "id": "open_hand",
+    "kind": "lost",
+    "name": "The Open Hand",
+    "name_fr": "La Main Ouverte",
+    "nameOf": "of the Open Hand",
+    "nameOf_fr": "de la Main Ouverte",
+    "short": "Open Hand",
+    "short_fr": "Main Ouverte",
+    "motto": "What is drawn, holds.",
+    "motto_fr": "Ce qui est tracé tient.",
+    "intro": "No clan offers this; your own hand does. The Open Hand drew with the old blood and held the Seal whole on this coast for centuries, until the Dominion burned them and struck their name from every record.",
+    "intro_fr": "Aucun clan ne vous offre ceci : c’est votre propre main. La Main Ouverte traçait avec le sang ancien et a tenu le Sceau entier sur cette côte pendant des siècles, jusqu’à ce que le Dominion la brûle et raye son nom de tous les registres.",
+    "greetings": [
+      "What is drawn, holds.",
+      "The grey is warm under your fingers. Draw while it is.",
+      "No clan asks anything of you here. Only the line.",
+      "Your hand knows this one already. Let it."
+    ],
+    "greetings_fr": [
+      "Ce qui est tracé tient.",
+      "Le gris est tiède sous vos doigts. Tracez tant qu’il l’est.",
+      "Aucun clan ne vous demande rien, ici. Seulement le trait.",
+      "Votre main connaît déjà celui-ci. Laissez-la faire."
+    ],
+    "color": "#B4AC9C",
+    "icon": "brush",
+    "lean": 1,
+    "unlockFlag": "open_hand_3",
+    "minAlignment": null,
+    "maxAlignment": null
+  },
   "_newKinds": [
     {
       "kind": "writFace",
