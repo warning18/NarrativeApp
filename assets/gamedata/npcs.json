@@ -3,8 +3,8 @@
     "npcID": "lysa",
     "npcName": "Lysa",
     "chapter": 3,
-    "description": "The woman you dragged out of a burning tavern back when this whole business started. From Chapter Three she keeps the camp's sick alive, alive herself against odds you didn't much like at the time.",
-    "description_fr": "La femme que vous avez tirée d'une taverne en flammes quand toute cette histoire a commencé. À partir du chapitre trois, elle garde en vie les malades du camp, vivante elle-même contre des probabilités qui ne vous plaisaient guère à l'époque.",
+    "description": "Your younger sister, dragged out of your house by the Inquisitor-General the night Alster fell, if you won her back. From Chapter Three she keeps the camp's sick alive, alive herself against odds you didn't much like at the time.",
+    "description_fr": "Votre petite sœur, que l’Inquisiteur général traîna hors de votre maison la nuit où Alster tomba, si vous l’avez reprise. À partir du chapitre trois, elle garde en vie les malades du camp, vivante elle-même contre des probabilités qui ne vous plaisaient guère à l’époque.",
     "requiredFlag": "lysa_survived",
     "dialogueLines": [
       "\"You're still breathing. Good — I wasn't in the mood to burn a second set of clothes.\"",

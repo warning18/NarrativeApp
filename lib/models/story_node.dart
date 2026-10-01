@@ -46,6 +46,9 @@ class StoryChoice {
     this.politics,
     this.politicsIf = const {},
     this.hostFight = false,
+    this.noHeal = false,
+    this.tutorialFight = false,
+    this.luckyDieReveal = false,
   });
 
   factory StoryChoice.fromJson(Map<String, dynamic> json) {
@@ -112,6 +115,9 @@ class StoryChoice {
           ? Map<String, dynamic>.from(json['politicsIf'] as Map)
           : const {},
       hostFight: json['hostFight'] as bool? ?? false,
+      noHeal: json['noHeal'] as bool? ?? false,
+      tutorialFight: json['tutorialFight'] as bool? ?? false,
+      luckyDieReveal: json['luckyDieReveal'] as bool? ?? false,
     );
   }
 
@@ -124,6 +130,22 @@ class StoryChoice {
   /// (v1.196), where the Host the character mustered fights beside the
   /// party.
   final bool hostFight;
+
+  /// The fight this choice starts is a link in a chain with no healing
+  /// between its fights (v1.196, chapter 1's casino): a level-up does not
+  /// refill health, a potion picked in the spoils chest is kept rather
+  /// than drunk, and a lost fight leaves the wounds where they are instead
+  /// of the usual full heal.
+  final bool noHeal;
+
+  /// The fight this choice starts is a lesson (v1.196, chapter 1's first
+  /// fight): never Elite, no affixes, no battlefield condition, no threat.
+  final bool tutorialFight;
+
+  /// The first fight's lucky die (v1.196): the enemy lands the first blow,
+  /// the player's old bone die rolls loose and strikes back with a sign,
+  /// and only then does the fight's tour explain the dice.
+  final bool luckyDieReveal;
 
   /// What taking this choice does to the coast (v1.195, see
   /// story_politics.dart): standing, marks, relations, an offer, an
@@ -370,6 +392,9 @@ class StoryChoice {
         if (politics != null) 'politics': politics!.toJson(),
         if (politicsIf.isNotEmpty) 'politicsIf': politicsIf,
         if (hostFight) 'hostFight': hostFight,
+        if (noHeal) 'noHeal': noHeal,
+        if (tutorialFight) 'tutorialFight': tutorialFight,
+        if (luckyDieReveal) 'luckyDieReveal': luckyDieReveal,
       };
 
   /// Every enemy id this choice triggers combat against -- [triggerEnemyIds]

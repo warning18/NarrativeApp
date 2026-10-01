@@ -440,6 +440,8 @@ extension _FightView on _FightScreenState {
     // fight's tour plays the first time a battle is on screen.
     return TutorialTrigger(
       topic: TutorialTopic.fight,
+      // The first fight's tour waits for the lucky die to strike.
+      ready: !widget.modifiers.luckyDieReveal || _luckyDieTourReady,
       child: Stack(
         children: [
           Positioned.fill(child: battle),

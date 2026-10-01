@@ -45,14 +45,14 @@
   },
   "q_retrieve_banner": {
     "questID": "q_retrieve_banner",
-    "questName": "The Heirloom of Alster",
+    "questName": "The Family Heirloom",
     "chapter": 1,
     "category": "Main",
     "difficulty": "2",
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Get the Grey Bundle out of the hovel, and out of Alster",
+        "description": "Find what your mother hid under the house, and get it out of Alster",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
@@ -60,7 +60,7 @@
         "locationID": "hovel",
         "requiredAmount": 1,
         "targetFlag": "void_banner_bearer",
-        "description_fr": "Sortir le Balluchon Gris de la masure, et d'Alster",
+        "description_fr": "Trouver ce que votre mère a caché sous la maison, et le sortir d’Alster",
         "targetNPCName_fr": "Lysa"
       }
     ],
@@ -69,26 +69,26 @@
     "rewardItemID": "void_banner",
     "alignmentChange": 10,
     "nextQuestID": "",
-    "npcDialogueText": "Whatever lies under the floorboard of your parents' hovel, the soldiers are going door to door for it. Get there first, and get it out of Alster.",
+    "npcDialogueText": "Whatever your mother hid under the house, the Inquisition is tearing the street apart for it. Get there first, find Lysa, and get out of Alster with whatever you find.",
     "requiredGold": 0,
     "requiredFlags": [],
     "questChoices": [
       {
-        "buttonText": "Go for the Bundle",
+        "buttonText": "Go home",
         "goldModifier": 0,
         "alignmentModifier": 5,
         "flagToAdd": "has_void_banner",
         "nextEventID": "",
         "actionType": "Accept",
         "lockedText": "",
-        "buttonText_fr": "Aller chercher le Balluchon"
+        "buttonText_fr": "Rentrer à la maison"
       }
     ],
     "rewardDiceID": "",
     "rewardAllyId": "",
     "grantsBannerPieceId": "",
-    "questName_fr": "L’Héritage d’Alster",
-    "npcDialogueText_fr": "Quoi qu'il y ait sous le plancher de la masure de vos parents, les soldats le cherchent porte à porte. Arrivez-y les premiers, et sortez-le d'Alster."
+    "questName_fr": "L’Héritage de la famille",
+    "npcDialogueText_fr": "Quoi que votre mère ait caché sous la maison, l’Inquisition met la rue en pièces pour le trouver. Arrivez-y avant elle, trouvez Lysa, et quittez Alster avec ce que vous aurez trouvé."
   },
   "q_ch2_dockside_debts": {
     "questID": "q_ch2_dockside_debts",
@@ -874,14 +874,14 @@
     "requiredAlignment": "Neutral",
     "objectives": [
       {
-        "description": "Get clear of Alster; Vess will find you",
+        "description": "Get to the sea alive; Vess will find you",
         "type": "Flag",
         "targetEnemyID": "",
         "targetItemID": "",
         "targetNPCName": "Vess",
         "locationID": "",
         "requiredAmount": 1,
-        "description_fr": "Quitter Alster ; Vess vous retrouvera",
+        "description_fr": "Rejoindre la mer en vie ; Vess vous retrouvera",
         "targetNPCName_fr": "Vess",
         "targetFlag": "void_banner_bearer"
       }

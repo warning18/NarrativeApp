@@ -23,8 +23,8 @@
     "portName": "Smugglers' Wharf",
     "portName_fr": "Le Quai des Contrebandiers",
     "chapter": 2,
-    "description": "The Lower City's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
-    "description_fr": "Le marché du port de la Ville Basse, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
+    "description": "Saltmouth's harbor market, still trading under the Inquisition's nose: three honest stalls, a great many dishonest ones, and the net-sheds, tanneries and lantern-lit docks that stretch along the tide line.",
+    "description_fr": "Le marché du port de Bouche-de-Sel, qui commerce toujours sous le nez de l'Inquisition : trois étals honnêtes, un grand nombre qui ne le sont pas, et les hangars à filets, les tanneries et les docks éclairés à la lanterne qui s'étirent le long de la marée.",
     "zoneIds": [
       "z_fishermans_row",
       "z_tanners_court",

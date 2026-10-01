@@ -4098,6 +4098,7 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     int bossOffers = 0,
     int titanBlood = 0,
     bool pactFight = false,
+    bool keepWounds = false,
   }) async {
     final leveled = _applyXp(xpGain);
 
@@ -4139,7 +4140,10 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
     final clampedHp = hpAfter < 0
         ? 0
         : (hpAfter > leveled.maxHealth ? leveled.maxHealth : hpAfter);
-    final newHealth = leveled.leveledUp ? leveled.maxHealth : clampedHp;
+    // A level-up refills health, except in a chain with no healing
+    // between its fights (see EncounterModifiers.keepWounds).
+    final newHealth =
+        leveled.leveledUp && !keepWounds ? leveled.maxHealth : clampedHp;
 
     final newAllies = leveled.leveledUp
         ? _healAndGrowAlliesOnLevelUp(leveled.levelsGained)

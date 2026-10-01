@@ -3045,6 +3045,22 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr: 'Vous subissez'
   },
   'takes_damage_word': {AppLanguage.en: 'takes', AppLanguage.fr: 'subit'},
+  // The story's first fight (see fight_lucky_die.dart).
+  'lucky_die_opening_blow': {
+    AppLanguage.en: '{enemy} strikes first: you take {n} damage.',
+    AppLanguage.fr:
+        '{enemy} frappe le premier\u00a0: vous subissez {n}\u00a0dégâts.',
+  },
+  'lucky_die_reveal': {
+    AppLanguage.en:
+        'Your old bone die jars loose from your coat, rolls across the floor and comes up six. A sign you have never seen flares on its face and strikes {enemy} for {n} damage.',
+    AppLanguage.fr:
+        'Votre vieux dé d’os s’échappe de votre manteau, roule sur le plancher et s’arrête sur le six. Un signe que vous n’avez jamais vu s’allume sur sa face et frappe {enemy}\u00a0: {n}\u00a0dégâts.',
+  },
+  'lucky_die_roll_it': {
+    AppLanguage.en: 'The die is back in your hand, warm. Roll it.',
+    AppLanguage.fr: 'Le dé est de nouveau dans votre main, tiède. Lancez-le.',
+  },
   'damage_word': {AppLanguage.en: 'damage', AppLanguage.fr: 'dégâts'},
   'is_knocked_out_suffix': {
     AppLanguage.en: 'is knocked out!',
@@ -5809,8 +5825,10 @@ const Map<String, Map<AppLanguage, String>> _strings = {
         'Touchez +1 point pour améliorer ce que vous utilisez le plus. Maintenez une ligne pour savoir à quoi elle sert.',
   },
   'tut_fight_1': {
-    AppLanguage.en: "A fight! Here's how dice combat works.",
-    AppLanguage.fr: 'Un combat ! Voici comment marche le combat aux dés.',
+    AppLanguage.en:
+        "A fight! Your die decides it. Here's how dice combat works.",
+    AppLanguage.fr:
+        'Un combat\u00a0! Votre dé en décide. Voici comment marche le combat aux dés.',
   },
   'tut_fight_2': {
     AppLanguage.en:

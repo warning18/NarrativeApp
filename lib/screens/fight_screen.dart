@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -64,6 +65,7 @@ part 'fight/fight_cards.dart';
 part 'fight/fight_controls.dart';
 part 'fight/fight_dice_rules.dart';
 part 'fight/fight_effects.dart';
+part 'fight/fight_lucky_die.dart';
 part 'fight/fight_models.dart';
 part 'fight/fight_queries.dart';
 part 'fight/fight_rewards.dart';
@@ -281,6 +283,12 @@ class _FightScreenState extends ConsumerState<FightScreen>
   bool _rolling = false;
 
   bool _partyBuilt = false;
+
+  /// The first fight's lucky die (see fight_lucky_die.dart): whether the
+  /// fight's tour may play yet, and the timer that lets it, a moment after
+  /// the die has struck.
+  bool _luckyDieTourReady = false;
+  Timer? _luckyDieTourTimer;
   List<_PartyMember> _party = [];
 
   /// This fight's one-off circumstance, if any -- see
@@ -458,6 +466,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
   @override
   void dispose() {
+    _luckyDieTourTimer?.cancel();
     _shakeController.dispose();
     _vfx.removeImpactListener(_onVfxImpact);
     _vfx.dispose();

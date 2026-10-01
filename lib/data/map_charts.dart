@@ -9,12 +9,15 @@ import 'world_map.dart';
 /// ([worldMapWidth] x [worldMapHeight]).
 ///
 /// - [MapShape.continental]: one land wrapped round an inland sea; Alster
-///   on the west arm, the Ashen Coast on the east, the Hollow Shore on the
-///   northern cape.
-/// - [MapShape.archipelago]: Alster is an island; the crossing is open
-///   sea between the isles of the later chapters.
-/// - [MapShape.delta]: Alster sits upstream on a great river whose mouths
-///   fan into the sea; the later chapters lie on the far shore.
+///   on the west arm, the Waste across the north and Saltmouth on the
+///   inland sea's north shore, the Ashen Coast on the east, the Hollow
+///   Shore on the northern cape.
+/// - [MapShape.archipelago]: Alster is an island, the Waste and Saltmouth
+///   another; the crossing is open sea between the isles of the later
+///   chapters.
+/// - [MapShape.delta]: Alster sits upstream on a great river; the Waste
+///   runs south of it down to Saltmouth at the river's mouths; the later
+///   chapters lie on the far shore.
 enum MapShape { continental, archipelago, delta }
 
 /// One region's name on the chart, shown once the story reaches
@@ -81,16 +84,17 @@ const _continental = ChartGeography(
     'beggar': Offset(26, 140),
     'bridge': Offset(48, 124),
     'alley': Offset(30, 114),
-    'square': Offset(68, 98),
-    'market': Offset(80, 122),
     'hovel': Offset(14, 86),
     'hold': Offset(30, 60),
     'sewers': Offset(60, 70),
     'docks': Offset(96, 96),
-    'tern': Offset(100, 70),
-    'wharf': Offset(94, 44),
-    'upper': Offset(66, 26),
-    'berths': Offset(122, 40),
+    'crash': Offset(48, 30),
+    'sleeper': Offset(78, 18),
+    'wells': Offset(102, 12),
+    'upper': Offset(124, 14),
+    'tern': Offset(160, 14),
+    'wharf': Offset(144, 18),
+    'berths': Offset(116, 28),
     'storm': Offset(136, 104),
     'camp': Offset(168, 140),
     'quarter': Offset(200, 94),
@@ -136,6 +140,8 @@ const _continental = ChartGeography(
   ],
   labels: [
     ChartLabel('ALSTER', 'ALSTER', 18, 150, 1),
+    ChartLabel('THE WASTE', 'LA DÉSOLATION', 28, 14, 1),
+    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 120, 44, 2),
     ChartLabel('the Narrow Sea', 'la Mer Étroite', 118, 160, 2, sea: true),
     ChartLabel('THE ASHEN COAST', 'LA CÔTE CENDRÉE', 172, 44, 3),
     ChartLabel('THE HOLLOW CAPE', 'LE CAP CREUX', 120, 6, 6),
@@ -147,16 +153,17 @@ const _archipelago = ChartGeography(
     'beggar': Offset(32, 130),
     'bridge': Offset(58, 124),
     'alley': Offset(40, 110),
-    'square': Offset(60, 96),
-    'market': Offset(80, 114),
     'hovel': Offset(22, 84),
     'hold': Offset(42, 64),
     'sewers': Offset(64, 78),
     'docks': Offset(92, 100),
+    'crash': Offset(114, 24),
+    'sleeper': Offset(136, 14),
+    'wells': Offset(158, 22),
+    'upper': Offset(150, 42),
     'tern': Offset(112, 72),
     'wharf': Offset(118, 50),
-    'upper': Offset(58, 42),
-    'berths': Offset(138, 36),
+    'berths': Offset(130, 38),
     'storm': Offset(150, 100),
     'camp': Offset(184, 106),
     'quarter': Offset(206, 86),
@@ -185,12 +192,17 @@ const _archipelago = ChartGeography(
       Offset(100, 96), Offset(94, 126), Offset(70, 146), Offset(36, 150),
       Offset(12, 128), Offset(8, 94),
     ],
-    // Tern Row and the wharf.
+    // The Waste, and Saltmouth where it meets the sea.
     [
       Offset(102, 62),
-      Offset(112, 42),
-      Offset(128, 44),
-      Offset(128, 62),
+      Offset(104, 36),
+      Offset(110, 16),
+      Offset(130, 6),
+      Offset(160, 8),
+      Offset(170, 24),
+      Offset(164, 46),
+      Offset(140, 56),
+      Offset(128, 64),
       Offset(118, 82),
       Offset(104, 80),
     ],
@@ -248,6 +260,8 @@ const _archipelago = ChartGeography(
   ],
   labels: [
     ChartLabel('ALSTER', 'ALSTER', 20, 164, 1),
+    ChartLabel('THE WASTE', 'LA DÉSOLATION', 96, 6, 1),
+    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 132, 90, 2),
     ChartLabel('the Grey Water', 'l’Eau Grise', 118, 124, 2, sea: true),
     ChartLabel('THE ASHEN ISLE', 'L’ÎLE CENDRÉE', 136, 84, 3),
     ChartLabel('THE HOLLOW ISLES', 'LES ÎLES CREUSES', 88, 166, 4),
@@ -260,16 +274,17 @@ const _delta = ChartGeography(
     'beggar': Offset(24, 84),
     'bridge': Offset(54, 52),
     'alley': Offset(44, 70),
-    'square': Offset(62, 42),
-    'market': Offset(62, 96),
     'hovel': Offset(14, 56),
     'hold': Offset(34, 18),
     'sewers': Offset(84, 52),
     'docks': Offset(96, 96),
+    'crash': Offset(30, 118),
+    'sleeper': Offset(54, 134),
+    'wells': Offset(80, 150),
+    'upper': Offset(104, 140),
     'tern': Offset(122, 84),
     'wharf': Offset(124, 122),
-    'upper': Offset(112, 40),
-    'berths': Offset(176, 166),
+    'berths': Offset(146, 146),
     'storm': Offset(204, 152),
     'camp': Offset(196, 114),
     'quarter': Offset(214, 88),
@@ -321,7 +336,9 @@ const _delta = ChartGeography(
     [Offset(146, 128), Offset(176, 120), Offset(216, 122)],
   ],
   labels: [
-    ChartLabel('ALSTER', 'ALSTER', 10, 140, 1),
+    ChartLabel('ALSTER', 'ALSTER', 8, 104, 1),
+    ChartLabel('THE WASTE', 'LA DÉSOLATION', 20, 166, 1),
+    ChartLabel('SALTMOUTH', 'BOUCHE-DE-SEL', 98, 112, 2),
     ChartLabel('the Mouths', 'les Bouches', 112, 158, 2, sea: true),
     ChartLabel('the Grey Bay', 'la Baie Grise', 178, 170, 2, sea: true),
     ChartLabel('THE ASHEN BANK', 'LA RIVE CENDRÉE', 150, 30, 3),

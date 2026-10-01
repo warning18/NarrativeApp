@@ -32,12 +32,8 @@ class MapChapter {
 const List<MapChapter> mapChapters = [
   MapChapter(
       1, 'Chapter 1', 'Chapitre 1', Color(0xFFE0762B), Color(0xFFB5531A)),
-  MapChapter(
-      2,
-      'Chapter 2: The Ashes of Alster',
-      'Chapitre 2 : Les Cendres d’Alster',
-      Color(0xFF3F9C9C),
-      Color(0xFF1F6F6F)),
+  MapChapter(2, 'Chapter 2: Saltmouth', 'Chapitre 2 : Bouche-de-Sel',
+      Color(0xFF3F9C9C), Color(0xFF1F6F6F)),
   MapChapter(
       3,
       'Chapter 3: The Spire of Judgment',
@@ -120,10 +116,14 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Blind Beggar',
     nameFr: 'Le Mendiant Aveugle',
     blurbEn:
-        'Where it starts. The prologue asks who you were; then the slum tavern you ran to is already gutted, the barkeep dead, and Lysa hiding in the cellar. Two roads out: the exposed bridge or the dark alley.',
+        'Where it starts. The prologue asks who you were; then a card game in the Blind Beggar’s back room ends when the wall comes in. Take back what the tables took, dig out the people under the fallen gallery, or take your stake and run: every way out begins with a fight, and with the old bone die you carry for luck.',
     blurbFr:
-        'Là où tout commence. Le prologue demande qui vous étiez ; puis la taverne des bas-quartiers vers laquelle vous avez fui est déjà éventrée, le tavernier mort, et Lysa cachée dans la cave. Deux routes pour sortir : le pont à découvert ou la ruelle obscure.',
-    scenes: ['0', '100', '250'],
+        'Là où tout commence. Le prologue demande qui vous étiez ; puis une partie de cartes dans l’arrière-salle du Mendiant Aveugle s’achève quand le mur entre. Reprendre aux tables ce qu’elles ont pris, dégager les gens pris sous la galerie, ou reprendre votre mise et fuir : chaque sortie commence par un combat, et par le vieux dé d’os que vous portez pour la chance.',
+    scenes: ['0', '100', '105', '106', '110', '115', '120', '125', '250'],
+    fights: [
+      'den_bouncer', 'den_looter', 'sore_loser', 'street_bandit', //
+      'slum_thug', 'white_soldier',
+    ],
   ),
   const Landmark(
     id: 'alley',
@@ -131,9 +131,9 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Weaver’s Alley',
     nameFr: 'La Ruelle du Tisserand',
     blurbEn:
-        'The slow, dark road. A starving warhound is caught in razor wire beside its murdered handler. Cut it free, strip the handler, or leave them both.',
+        'The slow, dark road home. A starving warhound is caught in razor wire beside its murdered handler, an Inquisition dog-handler. Cut it free, strip the handler, or leave them both.',
     blurbFr:
-        'La route lente et obscure. Un chien de guerre affamé est pris dans des barbelés, à côté de son maître assassiné. Le libérer, dépouiller le maître, ou les laisser tous les deux.',
+        'La route lente et obscure vers la maison. Un chien de guerre affamé est pris dans des barbelés, à côté de son maître assassiné, un maître-chien de l’Inquisition. Le libérer, dépouiller le maître, ou les laisser tous les deux.',
     scenes: ['270'],
   ),
   const Landmark(
@@ -142,46 +142,23 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Stone Bridge',
     nameFr: 'Le Pont de Pierre',
     blurbEn:
-        'The fast, exposed road. Invasion soldiers have built a toll booth out of a market stall. Pay 50 gold or fight your way across.',
+        'The quick, watched road home. Slum toughs with Inquisition armbands have built a toll booth out of a market stall. Pay 30 gold or fight your way across.',
     blurbFr:
-        'La route rapide et exposée. Des soldats de l’invasion ont fait d’un étal de marché un poste de péage. Payer 50 pièces d’or ou passer en force.',
+        'La route rapide et surveillée vers la maison. Des durs des bas-quartiers à brassard de l’Inquisition ont fait d’un étal de marché un poste de péage. Payer 30 pièces d’or ou passer en force.',
     scenes: ['260', '261'],
     fights: ['slum_thug'],
   ),
   const Landmark(
-    id: 'square',
-    chapter: 1,
-    nameEn: 'The Scorched Square',
-    nameFr: 'La Place calcinée',
-    blurbEn:
-        'A tear no wider than a coin slot hangs a hand above the cobbles. Touch it and something vast looks back; the looters’ dropped goods lie in a ring around it.',
-    blurbFr:
-        'Une déchirure pas plus large qu’une fente de tirelire flotte à une main au-dessus des pavés. Touchez-la et quelque chose d’immense vous regarde en retour ; le butin abandonné des pillards gît en cercle autour d’elle.',
-    scenes: ['280', '281', '281_scarred'],
-  ),
-  const Landmark(
-    id: 'market',
-    chapter: 1,
-    nameEn: 'The last stalls',
-    nameFr: 'Les derniers étals',
-    blurbEn:
-        'A blacksmith, a shieldwright and a bandit working the panic. The forge’s back room hides a cache, and Vess, marked by the tear like you, waits at the edge of the stalls.',
-    blurbFr:
-        'Un forgeron, un fabricant de boucliers et un bandit qui profite de la panique. L’arrière-boutique de la forge cache une réserve, et Vess, marquée par la déchirure comme vous, attend au bout des étals.',
-    scenes: ['151', '151_forge', '151_vess'],
-    fights: ['street_bandit'],
-  ),
-  const Landmark(
     id: 'hovel',
     chapter: 1,
-    nameEn: 'Your parents’ hovel',
-    nameFr: 'La masure de vos parents',
+    nameEn: 'Your family’s house',
+    nameFr: 'La maison de famille',
     blurbEn:
-        'The Grey Bundle waits under the floorboard, warm as a living thing. Three White Soldiers break the door. Unfurl it and win, or lose or surrender and wake in the Black Hold.',
+        'Inquisitors are tearing the house apart, looking for something. A ball from the white ships folds the wall, and the Inquisitor-General Aurel Vane walks out of the dust holding Lysa by one wrist: charge him, run, or kneel. When the searchers have gone, the ball has found what they could not: a trapdoor, and a cloth as big as a cape.',
     blurbFr:
-        'Le Balluchon Gris attend sous le plancher, tiède comme une chose vivante. Trois Soldats Blancs enfoncent la porte. Déployez-le et gagnez ; perdez ou rendez-vous, et vous vous réveillerez dans la Geôle Noire.',
-    scenes: ['300', '400', '400_lost', '450'],
-    fights: ['white_soldier', 'white_soldier', 'white_soldier'],
+        'Des inquisiteurs mettent la maison sens dessus dessous : ils cherchent quelque chose. Un boulet des navires blancs plie le mur, et l’Inquisiteur général Aurel Vane sort de la poussière en tenant Lysa par un poignet : le charger, fuir, ou s’agenouiller. Quand les fouilleurs sont partis, le boulet a trouvé ce qu’ils cherchaient en vain : une trappe, et une étoffe grande comme une cape.',
+    scenes: ['300', '400', '400_lost', '450', '470'],
+    fights: ['aurel_vane'],
   ),
   const Landmark(
     id: 'hold',
@@ -189,9 +166,9 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'The Black Hold',
     nameFr: 'La Geôle Noire',
     blurbEn:
-        'Three days under a porcelain mask, then the resistance blows the wall in. Recover the Bundle from the torturer’s table, get past the Wardens, and choose the battlements or the Corpse Chute.',
+        'Three days of Brother Clement’s questions about a cloth you have never seen, then the resistance blows the wall in. On his table, a drawing of the cloth and your family’s name. Get past the Wardens, and choose the battlements or the Corpse Chute.',
     blurbFr:
-        'Trois jours sous un masque de porcelaine, puis la résistance fait sauter le mur. Reprenez le Balluchon sur la table du bourreau, passez les Gardiens, et choisissez les remparts ou la Goulotte aux Cadavres.',
+        'Trois jours de questions de frère Clément sur une étoffe que vous n’avez jamais vue, puis la résistance fait sauter le mur. Sur sa table, un dessin de l’étoffe et le nom de votre famille. Passez les Gardiens, et choisissez les remparts ou la Goulotte aux Cadavres.',
     scenes: ['800', '816', '820', '822', '822_lie_failed', '823'],
     fights: ['inquisition_warden'],
   ),
@@ -210,18 +187,61 @@ final List<Landmark> worldMapLandmarks = [
   const Landmark(
     id: 'docks',
     chapter: 1,
-    nameEn: 'Alster docks',
-    nameFr: 'Les docks d’Alster',
+    nameEn: 'Alster’s high quay',
+    nameFr: 'Le haut quai d’Alster',
     blurbEn:
-        'The Rusty Eel weighs anchor. Plead, bargain or threaten your way past the smuggler, then face Inquisitor Clement, the Branded, on the anchor chain. How you finish him, and what you climb toward, sets your origin: Guardian, Rat or Broken.',
+        'Vessels that should not float, their painted sails shining as the crews wet them. Talk your way aboard the Lark, pass as crew, or climb her line as she lifts; then the sign on her sail carries you up through the guns.',
     blurbFr:
-        'Le Rusty Eel lève l’ancre. Suppliez, marchandez ou menacez pour passer le contrebandier, puis affrontez l’Inquisiteur Clément, le Marqué, sur la chaîne d’ancre. La façon dont vous l’achevez, et ce vers quoi vous grimpez, fixe votre origine : Gardien, Rat ou Brisé.',
+        'Des vaisseaux qui ne devraient pas flotter, leurs voiles peintes brillant à mesure que les équipages les mouillent. Négociez votre place à bord de l’Alouette, faites-vous passer pour l’équipage, ou grimpez à son amarre au décollage ; puis le signe de sa voile vous emporte à travers les canons.',
     scenes: [
-      '891', '895', '896', '897', '898', '899_paid', '960', '965', //
-      '965_mercy',
-      '965_vengeance', '1000', '1001', '1002',
+      '891', '895', '896_failed', '897_failed', '898_failed', '960', //
     ],
-    fights: ['kroll_the_branded'],
+  ),
+  const Landmark(
+    id: 'crash',
+    chapter: 1,
+    nameEn: 'The wreck of the Lark',
+    nameFr: 'L’épave de l’Alouette',
+    blurbEn:
+        'The first storm snuffed the sign on the sail, and the Lark fell into the Waste. Her crew are dead, her cargo looted, and a tear in the world hangs over the sand.',
+    blurbFr:
+        'La première tempête a éteint le signe de la voile, et l’Alouette est tombée dans la Désolation. Son équipage est mort, sa cargaison pillée, et une déchirure du monde pend au-dessus du sable.',
+    scenes: ['965', '1100', '1101', '1101_scarred'],
+  ),
+  const Landmark(
+    id: 'sleeper',
+    chapter: 1,
+    nameEn: 'The sleeper’s face',
+    nameFr: 'Le visage du dormeur',
+    blurbEn:
+        'A stone face as big as a house, half buried in the dunes, with a sign on its brow like the one on your die. Water seeps from under its jaw, and the wreck’s looters camp in its shadow.',
+    blurbFr:
+        'Un visage de pierre grand comme une maison, à demi enfoui dans les dunes, un signe au front pareil à celui de votre dé. De l’eau suinte sous sa mâchoire, et les pilleurs de l’épave campent dans son ombre.',
+    scenes: ['1120', '1125', '1130', '1140', '1140_spotted'],
+    fights: ['wreck_scavenger', 'wreck_scavenger'],
+  ),
+  const Landmark(
+    id: 'wells',
+    chapter: 1,
+    nameEn: 'The White Wells',
+    nameFr: 'Les Puits blancs',
+    blurbEn:
+        'An oasis of white clay huts round a green pool, a salt caravan and a few merchants. Rest, and hear of a city to the south where the Waste meets the sea. Who walks south with you sets your origin: Guardian, Rat or Broken.',
+    blurbFr:
+        'Une oasis de cases d’argile blanche autour d’une mare verte, une caravane de sel et quelques marchands. Reposez-vous, et entendez parler d’une ville au sud, là où la Désolation rejoint la mer. Qui marche vers le sud avec vous fixe votre origine : Gardien, Rat ou Brisé.',
+    scenes: ['1200', '1210', '1000', '1001', '1002'],
+  ),
+  const Landmark(
+    id: 'upper',
+    chapter: 2,
+    nameEn: 'Saltmouth’s landward gate',
+    nameFr: 'La porte de la terre de Bouche-de-Sel',
+    blurbEn:
+        'Where the Waste comes down to the sea: white walls on a headland, a stone giant to its knees in the harbor mouth, and the Inquisition searching every caravan at the gate. Go in with the caravan, or hidden in a salt wagon.',
+    blurbFr:
+        'Là où la Désolation descend jusqu’à la mer : des murs blancs sur un promontoire, un géant de pierre dans l’eau jusqu’aux genoux à l’entrée du port, et l’Inquisition qui fouille chaque caravane à la porte. Entrer avec la caravane, ou caché dans un chariot de sel.',
+    scenes: ['2001', '2000', '2005', '2020'],
+    fights: ['harbor_rat'],
   ),
   const Landmark(
     id: 'tern',
@@ -241,18 +261,18 @@ final List<Landmark> worldMapLandmarks = [
     nameEn: 'Smugglers’ Wharf',
     nameFr: 'Le Quai des Contrebandiers',
     blurbEn:
-        'Chapter 2’s hub. Vane holds the gangplank to the Lower City; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, Liora on the rooftop, and Vess, who follows the Bundle.',
+        'Chapter 2’s hub, Saltmouth’s harbor quarter. A quartermaster called Vane, no kin to the Inquisitor-General, holds the gate to the shipyards; the market around him is full of work: the Bazaar, Apothecary Row, bounties, card games, a false informant, Kelda at the gate, Sable’s marker, Liora on the rooftop, and Vess, who follows the Bundle.',
     blurbFr:
-        'Le carrefour du chapitre 2. Vane garde la passerelle vers la Ville Basse ; autour de lui, le marché regorge de travail : le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
+        'Le carrefour du chapitre 2, le quartier du port de Bouche-de-Sel. Un intendant nommé Vane, sans lien avec l’Inquisiteur général, garde la porte des chantiers navals ; autour de lui, le marché regorge de travail : le Bazar, la rue des Apothicaires, des primes, des parties de cartes, un faux informateur, Kelda à la porte, la reconnaissance de dette de Sable, Liora sur le toit, et Vess, qui suit le Balluchon.',
     scenes: [
-      '2001', '2000', '2005', '2010', '2010_crane', '2010_liora', '2011', //
+      '2010', '2010_crane', '2010_liora', '2011', //
       '2015', '2015_apothecary', '2015_bandits', '2015_bazaar', '2015_cards',
       '2015_cards_won', '2015_cards_lost', '2015_dockside', '2015_hound',
       '2015_informant', '2015_informant_trap', '2015_informant_exposed',
       '2015_informant_caught', '2015_kelda', '2015_rats', '2015_sable',
       '2015_sable_lifted', '2015_sable_caught', '2015_sable_bought',
       '2015_sable_talk_failed', '2015_liora', '2015_liora_won',
-      '2015_liora_refused', '2015_vess', '2015_drawer', '2015_smuggler', '2020',
+      '2015_liora_refused', '2015_vess', '2015_drawer', '2015_smuggler',
       '2021',
       '2011_roof_fall', '2030', '2040', '2040_paid', '2050', '2070',
       '2070_cut_failed',
@@ -265,26 +285,14 @@ final List<Landmark> worldMapLandmarks = [
     ],
   ),
   const Landmark(
-    id: 'upper',
-    chapter: 2,
-    nameEn: 'The Upper Tier',
-    nameFr: 'Le Palier Supérieur',
-    blurbEn:
-        'The last sanctuary behind iron gates. By the chapter’s end the Crusade holds them and the Tier burns behind its own walls.',
-    blurbFr:
-        'Le dernier sanctuaire derrière des grilles de fer. À la fin du chapitre, la Croisade les tient et le Palier brûle derrière ses propres murs.',
-    scenes: ['2001', '2900'],
-  ),
-  const Landmark(
     id: 'berths',
     chapter: 2,
-    atSea: true,
-    nameEn: 'The old berths',
-    nameFr: 'Les anciens mouillages',
+    nameEn: 'The ship-breaker’s yard',
+    nameFr: 'Le chantier des démolisseurs',
     blurbEn:
-        'The Eel is the last hull that floats, holed below the waterline. Patch the hull and mend the sail, then decide who sails: everyone, the twenty who can fight, or no one.',
+        'The one hull the yard will sell a stranger: the Rusty Eel, holed and torn. Buy her or work off her price, patch the hull and mend the sail, then decide who sails: everyone, the twenty who can fight, or no one.',
     blurbFr:
-        'L’Eel est la dernière coque qui flotte, percée sous la ligne de flottaison. Colmatez la coque, réparez la voile, puis décidez qui embarque : tout le monde, les vingt qui savent se battre, ou personne.',
+        'La seule coque que le chantier accepte de vendre à un inconnu : le Rusty Eel, troué et déchiré. Achetez-le ou payez-le de votre travail, colmatez la coque et réparez la voile, puis décidez qui embarque : tout le monde, les vingt qui savent se battre, ou personne.',
     scenes: ['2900', '2900_boat_fixed'],
   ),
   const Landmark(
@@ -705,8 +713,7 @@ Set<String> discoveredLandmarkIds(Iterable<String> visited) {
   };
 }
 
-/// The landmark a scene happens at. A scene shared by two places (the
-/// arrival under the Upper Tier, the burning harbour at the berths) belongs
+/// The landmark a scene happens at. A scene shared by two places belongs
 /// to the later one on the road.
 Landmark? landmarkOfScene(String nodeId) {
   Landmark? found;

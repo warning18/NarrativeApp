@@ -204,9 +204,10 @@ void main() {
       final raw = _loadJson('assets/Cleaned_Narrative_DAG.json');
       StoryNode scene(String id) =>
           StoryNode.fromJson(id, raw[id] as Map<String, dynamic>);
-      // The flight from Alster: nothing on its roads, even at rest.
+      // The flight from Alster: nothing on its roads, even at rest at
+      // the White Wells.
       expect(
-          SubNodeEngine.detourAllowedBetweenScenes(scene('151'), scene('300'),
+          SubNodeEngine.detourAllowedBetweenScenes(scene('1200'), scene('1000'),
               chapter: 1),
           isFalse);
       // The Sovereign names its price with nobody stopping at a stall.
