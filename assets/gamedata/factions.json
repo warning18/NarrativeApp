@@ -758,7 +758,7 @@
       "Votre main connaît déjà celui-ci. Laissez-la faire."
     ],
     "color": "#B4AC9C",
-    "icon": "brush",
+    "icon": "front_hand",
     "lean": 1,
     "unlockFlag": "open_hand_3",
     "minAlignment": null,
