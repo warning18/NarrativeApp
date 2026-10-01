@@ -461,8 +461,8 @@
   },
   "300": {
     "id": "300",
-    "description": "My parents' hovel had been reduced to a smoking husk, one wall caved inward in the defeated posture of a building that had given up arguing. But the floorboard I wanted was precisely where I'd left it years ago, as though the house had at least kept faith with me on that one small point. Underneath: the Grey Bundle, wrapped in oilcloth and warm to the touch in a way oilcloth has absolutely no business being, warm the way a living thing is warm, or the way a lie is warm right before you realize it's a lie. I did not remember my hands shaking like this the last time I'd held it. I suspected they had good reason to shake now.",
-    "description_fr": "La masure de mes parents avait été réduite à une carcasse fumante, un mur effondré vers l'intérieur dans la posture vaincue d'un bâtiment ayant cessé d'argumenter. Mais la latte de plancher que je cherchais était exactement où je l'avais laissée des années plus tôt, comme si la maison avait au moins tenu parole sur ce point précis. Dessous : le Balluchon Gris, enveloppé de toile cirée et chaud au toucher d'une façon qu'une toile cirée n'a absolument aucun droit d'être, chaud comme l'est une chose vivante, ou comme est chaud un mensonge juste avant qu'on ne réalise que c'en est un. Je ne me souvenais pas que mes mains eussent tremblé ainsi la dernière fois que je l'avais tenu. Je soupçonnais qu'elles avaient à présent de bonnes raisons de trembler.",
+    "description": "My parents' hovel had been reduced to a smoking husk, one wall caved inward in the defeated posture of a building that had given up arguing. But the floorboard I wanted was precisely where I'd left it years ago, as though the house had at least kept faith with me on that one small point. Underneath: the Grey Bundle, wrapped in oilcloth and warm to the touch in a way oilcloth has absolutely no business being, warm the way a living thing is warm, or the way a lie is warm right before you realize it's a lie. I did not remember my hands shaking like this the last time I'd held it. I suspected they had good reason to shake now. A corner of the oilcloth had worn through in its years under the floor, and in the gap the grey showed, and on the grey, for the first time I had ever troubled to look, a figure. It was very large, larger than the cloth had any business holding, and it stood with both arms raised over its head and both hands open, palms out, the way a child draws someone waving from a long way off. Nobody had stitched it. Nobody had painted it. It was simply there, the way a bruise is there, and it was warmer under my thumb than the rest. Somewhere in my coat my dice had gone warm as well, which I decided, for the sake of my nerves, not to think about.",
+    "description_fr": "La masure de mes parents avait été réduite à une carcasse fumante, un mur effondré vers l'intérieur dans la posture vaincue d'un bâtiment ayant cessé d'argumenter. Mais la latte de plancher que je cherchais était exactement où je l'avais laissée des années plus tôt, comme si la maison avait au moins tenu parole sur ce point précis. Dessous : le Balluchon Gris, enveloppé de toile cirée et chaud au toucher d'une façon qu'une toile cirée n'a absolument aucun droit d'être, chaud comme l'est une chose vivante, ou comme est chaud un mensonge juste avant qu'on ne réalise que c'en est un. Je ne me souvenais pas que mes mains eussent tremblé ainsi la dernière fois que je l'avais tenu. Je soupçonnais qu'elles avaient à présent de bonnes raisons de trembler. Un coin de la toile cirée s'était usé pendant ses années sous le plancher, et par la brèche paraissait le gris, et sur le gris, pour la première fois que je prenais la peine de regarder, une silhouette. Elle était immense, plus grande que l'étoffe n'avait le droit d'en contenir, et se tenait les deux bras levés au-dessus de la tête, les deux mains ouvertes, paumes en avant, comme un enfant dessine quelqu'un qui fait signe de très loin. Personne ne l'avait brodée. Personne ne l'avait peinte. Elle était là, simplement, comme est là une ecchymose, et plus chaude sous mon pouce que le reste. Quelque part dans mon manteau, mes dés s'étaient réchauffés eux aussi, ce à quoi je décidai, pour le bien de mes nerfs, de ne pas penser.",
     "context_taxonomy": {
       "ui_theme": "hovel",
       "mood": "tense",
@@ -477,8 +477,12 @@
         "text_fr": "Prendre le Balluchon et partir",
         "next_id": "400",
         "flagsToAdd": [
-          "took_bundle"
-        ]
+          "took_bundle",
+          "open_hand_1"
+        ],
+        "politics": {
+          "remembrance": 1
+        }
       },
       {
         "text": "Dig through the wreck for anything else first",
@@ -487,8 +491,12 @@
         "goldMod": 15,
         "healAmount": -10,
         "flagsToAdd": [
-          "took_bundle"
-        ]
+          "took_bundle",
+          "open_hand_1"
+        ],
+        "politics": {
+          "remembrance": 1
+        }
       }
     ],
     "flag_callbacks": [
@@ -736,6 +744,11 @@
         "flag": "origin_lamp_evil",
         "en": "Old Hesk, who had once taken my word over the smith's boy's. I had meant to tell him the truth one day. It had never seemed urgent.",
         "fr": "Le vieux Hesk, qui avait pris ma parole contre celle du fils du forgeron. J'avais toujours eu l'intention de lui dire la vérité, un jour. Cela n'avait jamais semblé pressé."
+      },
+      {
+        "flag": "open_hand_1",
+        "en": "For one breath, before the wall went, the figure on the grey stood up off the cloth, as tall as the house, arms raised and hands open, and the soldiers looked up at it the way men look up at a wave.",
+        "fr": "Le temps d'un souffle, avant que le mur ne cède, la silhouette du gris se dressa hors de l'étoffe, haute comme la maison, bras levés et mains ouvertes, et les soldats la regardèrent comme on regarde venir une vague."
       }
     ]
   },
@@ -796,6 +809,11 @@
         "flag": "told_them",
         "en": "What I had told them in the hovel bought me nothing. They took her anyway, and then they took their time with me.",
         "fr": "Ce que je leur avais dit dans la masure ne m'acheta rien. Ils la prirent quand même, puis ils prirent leur temps avec moi."
+      },
+      {
+        "flag": "open_hand_1",
+        "en": "He wanted the hands most of all. How many fingers. Whether the palms were open or shut. I had seen them once, for the length of a breath, under a broken floor, and found that I would not give him even that.",
+        "fr": "Il voulait surtout les mains. Combien de doigts. Si les paumes étaient ouvertes ou fermées. Je les avais vues une fois, le temps d'un souffle, sous un plancher brisé, et je découvris que je ne lui en donnerais pas même cela."
       }
     ]
   },
@@ -1601,8 +1619,8 @@
   },
   "2005": {
     "id": "2005",
-    "description": "The gangway creaked underfoot in a manner that suggested it had opinions about my weight, opinions I chose not to dignify with a response. The ruined pier offered two ways deeper into the harbor district, neither one advertising itself as the wiser.",
-    "description_fr": "La passerelle craqua sous mes pas d'une manière suggérant qu'elle avait des opinions sur mon poids, des opinions que je choisis de ne pas honorer d'une réponse. La jetée en ruine offrait deux voies vers les profondeurs du quartier du port, aucune des deux ne se présentant comme la plus sage.",
+    "description": "The gangway creaked underfoot in a manner that suggested it had opinions about my weight, opinions I chose not to dignify with a response. Two berths along, a Dominion courier was tying up with her lantern hooded in black crape, and a crier on her deck was telling the empty quay what the crape meant: the Lantern-Bearer was failing, and the faithful were asked to pray. Nobody on the quay looked up. They had prayers of their own to be getting on with. The ruined pier offered two ways deeper into the harbor district, neither one advertising itself as the wiser.",
+    "description_fr": "La passerelle craqua sous mes pas d'une manière suggérant qu'elle avait des opinions sur mon poids, des opinions que je choisis de ne pas honorer d'une réponse. Deux postes plus loin, un navire courrier du Dominion s'amarrait, sa lanterne voilée de crêpe noir, et un crieur, sur son pont, expliquait au quai désert ce que signifiait ce crêpe : le Porte-Lanterne déclinait, et l'on priait les fidèles de prier. Personne sur le quai ne leva les yeux. Chacun avait ses propres prières en cours. La jetée en ruine offrait deux voies vers les profondeurs du quartier du port, aucune des deux ne se présentant comme la plus sage.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -1615,12 +1633,24 @@
       {
         "text": "Disembark at the Smuggler's Wharf",
         "text_fr": "Débarquer au Quai des Contrebandiers",
-        "next_id": "2010"
+        "next_id": "2010",
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 1
+          }
+        }
       },
       {
         "text": "Slip back aboard and hide in the cargo hold",
         "text_fr": "Remonter discrètement à bord et se cacher dans la cale",
-        "next_id": "2020"
+        "next_id": "2020",
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 1
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -1870,6 +1900,14 @@
         ],
         "flagsToAdd": [
           "hub_2015_vess"
+        ]
+      },
+      {
+        "text": "Answer the old sign-painter staring at your back",
+        "text_fr": "Répondre au vieux peintre qui fixe votre dos",
+        "next_id": "2015_drawer",
+        "hideIfFlags": [
+          "hub_2015_drawer"
         ]
       },
       {
@@ -2161,7 +2199,15 @@
         "triggerEnemyId": "inquisition_soldier",
         "flagsToAdd": [
           "hub_2015_kelda"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "compact": 5
+          },
+          "marks": {
+            "scaffolders": "friend"
+          }
+        }
       }
     ],
     "reqAlignmentScore": 2
@@ -2185,7 +2231,15 @@
         ],
         "showIfFlags": [
           "sable_marker_won"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "whisper_ledger": "friend"
+          }
+        }
       },
       {
         "text": "Promise to win it back at the dockhands' table",
@@ -2580,6 +2634,16 @@
         "flag": "roof_fallen",
         "en": "I reached the berths limping, with rat bites on both hands and a gutter's worth of rust down my collar.",
         "fr": "J'atteignis les mouillages en boitant, des morsures de rat aux deux mains et une gouttière de rouille dans le col."
+      },
+      {
+        "flag": "drawer_talked",
+        "en": "There were more white masks on the quay than there had been the day before, and they were asking the dockhands about a hand. The old sign-painter, it seemed, had found someone who paid better than silence.",
+        "fr": "Il y avait sur le quai plus de masques blancs que la veille, et ils interrogeaient les dockers au sujet d'une main. Le vieux peintre d'enseignes, semblait-il, avait trouvé quelqu'un qui payait mieux que le silence."
+      },
+      {
+        "flag": "crows_warned",
+        "en": "The Crows’ crates had gone off the wharf in the night, every one of them, and a Crow I had never met nodded to me on the quay as if there were a debt between us. I suppose there was.",
+        "fr": "Les caisses des Corneilles avaient quitté le quai dans la nuit, toutes jusqu'à la dernière, et une Corneille que je n'avais jamais vue me salua d'un signe de tête, sur le quai, comme si une dette nous liait. Je suppose que c'était le cas."
       }
     ],
     "noDetour": true
@@ -2602,7 +2666,12 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "refugees_aboard"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 10
+          }
+        }
       },
       {
         "text": "Take the twenty who can fight, leave the rest",
@@ -2621,7 +2690,12 @@
         "goldMod": 60,
         "flagsToAdd": [
           "sailed_alone"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": -10
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -2729,8 +2803,8 @@
   },
   "3002": {
     "id": "3002",
-    "description": "Past the Spire's outer gate, the inner doors sealed behind me with a resonant clang that continued echoing well past the point where any respectable clang ought to have had the courtesy to die. Incense smoke drifted down from somewhere above, thick enough to taste and, I suspected, thick enough to be doing some of its work quite deliberately. Two passages led deeper into the Spire, and I studied them both the way anyone studies anything after learning, at considerable personal cost, that not every door bothers to forgive a wrong guess.",
-    "description_fr": "Passé la porte extérieure de la Flèche, les portes intérieures se refermèrent derrière moi dans un vacarme résonnant qui continua de retentir bien après le moment où tout vacarme respectable aurait dû avoir la courtoisie de s'éteindre. Une fumée d'encens descendait d'en haut, assez dense pour se goûter et, je le soupçonnais, assez dense pour accomplir délibérément une partie de son office. Deux passages menaient plus profondément dans la Flèche, et je les étudiai tous deux comme on étudie toute chose après avoir appris, à ses propres et considérables dépens, que toutes les portes ne prennent pas la peine de pardonner un mauvais choix.",
+    "description": "Past the Spire's outer gate, the inner doors sealed behind me with a resonant clang that continued echoing well past the point where any respectable clang ought to have had the courtesy to die. Incense smoke drifted down from somewhere above, thick enough to taste and, I suspected, thick enough to be doing some of its work quite deliberately. Through an arch on my left the Tribunal was at work: a voidkin in chains being read his sentence by a clerk who did not look up. They marched him past me on the way to the gallery. He saw the grey on my back before he saw my face, and as he passed he said, very low, as if handing me something he had carried a long way: \"They are not closing it.\" Two passages led deeper into the Spire, and I studied them both the way anyone studies anything after learning, at considerable personal cost, that not every door bothers to forgive a wrong guess.",
+    "description_fr": "Passé la porte extérieure de la Flèche, les portes intérieures se refermèrent derrière moi dans un vacarme résonnant qui continua de retentir bien après le moment où tout vacarme respectable aurait dû avoir la courtoisie de s'éteindre. Une fumée d'encens descendait d'en haut, assez dense pour se goûter et, je le soupçonnais, assez dense pour accomplir délibérément une partie de son office. Par une arche, sur ma gauche, on voyait le Tribunal à l'ouvrage : un enfant du Néant enchaîné, à qui un greffier lisait sa sentence sans lever les yeux. On le fit passer devant moi pour le mener à la tribune. Il vit le gris sur mon dos avant de voir mon visage, et en passant il dit, très bas, comme on remet une chose portée depuis très loin : « Ils ne la referment pas. » Deux passages menaient plus profondément dans la Flèche, et je les étudiai tous deux comme on étudie toute chose après avoir appris, à ses propres et considérables dépens, que toutes les portes ne prennent pas la peine de pardonner un mauvais choix.",
     "context_taxonomy": {
       "ui_theme": "cathedral",
       "mood": "tense",
@@ -2743,12 +2817,31 @@
       {
         "text": "Infiltrate the Cathedral via the high cloisters",
         "text_fr": "Infiltrer la cathédrale par les hauts cloîtres",
-        "next_id": "3010"
+        "next_id": "3010",
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 2
+          }
+        }
       },
       {
         "text": "Walk openly through the Hall of Records",
         "text_fr": "Traverser ouvertement la Salle des Archives",
-        "next_id": "3020"
+        "next_id": "3020",
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 2
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "met_vess",
+        "en": "Vess would have wanted his name. I did not get it, and I have been sorry since.",
+        "fr": "Vess aurait voulu son nom. Je ne le sus pas, et je l'ai regretté depuis."
       }
     ]
   },
@@ -2880,6 +2973,14 @@
         "next_id": "3005_wall",
         "hideIfFlags": [
           "hub_3005_wall"
+        ]
+      },
+      {
+        "text": "Hear the three envoys waiting at the Quarter’s gate",
+        "text_fr": "Écouter les trois émissaires qui attendent à la porte du Quartier",
+        "next_id": "3005_envoys",
+        "hideIfFlags": [
+          "hub_3005_envoys"
         ]
       },
       {
@@ -3131,7 +3232,15 @@
         "flagsToAdd": [
           "hub_3005_maren",
           "maren_absolved"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          },
+          "marks": {
+            "ember_sisters": "friend"
+          }
+        }
       },
       {
         "text": "Tell her the dead don't forgive by proxy",
@@ -3141,7 +3250,12 @@
         "flagsToAdd": [
           "hub_3005_maren",
           "maren_refused"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": -5
+          }
+        }
       },
       {
         "text": "Back out into the ash",
@@ -3230,7 +3344,7 @@
       {
         "text": "Stand and fight the vanguard",
         "text_fr": "Se relever et combattre l'avant-garde",
-        "next_id": "4999",
+        "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
       }
     ],
@@ -3263,7 +3377,7 @@
       {
         "text": "Bluff past the guard with the signet, then fight",
         "text_fr": "Bluffer le garde avec le sceau, puis se battre",
-        "next_id": "4999",
+        "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
       }
     ],
@@ -3285,7 +3399,7 @@
       {
         "text": "Fight past the vanguard to the sanctum",
         "text_fr": "Se frayer un chemin à travers l'avant-garde jusqu'au sanctuaire",
-        "next_id": "4999",
+        "next_id": "4999_drawn",
         "triggerEnemyId": "inquisition_high_warden"
       }
     ]
@@ -3327,6 +3441,16 @@
         "flag": "dome_dropped",
         "en": "I had come in through the dome, and the glass of it was still in my coat.",
         "fr": "J'avais pris le chemin de la coupole, et son verre était encore dans mon manteau."
+      },
+      {
+        "flag": "open_hand_shown",
+        "en": "The condemned in the gallery had seen the hand burn. By morning, I would learn, the story was being told all over the Ashen Quarter, and not by the Inquisition.",
+        "fr": "Les condamnés de la tribune avaient vu la main brûler. Au matin, je l'apprendrais, l'histoire se racontait dans tout le Quartier des Cendres, et ce n'était pas l'Inquisition qui la racontait."
+      },
+      {
+        "flag": "open_hand_hidden",
+        "en": "I had put the drawing out with my own palm, and the palm would carry the shape of it for a week: a blister in the form of a hand. Nobody in the gallery could swear to what they had seen. I could.",
+        "fr": "J'avais éteint le dessin de ma propre paume, et la paume en garderait la forme une semaine : une cloque en forme de main. Personne dans la tribune ne pouvait jurer de ce qu'il avait vu. Moi, si."
       }
     ],
     "noDetour": true
@@ -3360,8 +3484,8 @@
   },
   "5004": {
     "id": "5004",
-    "description": "They broke before I had even properly drawn a weapon, robes and shadow scattering down side passages like smoke fleeing a fist that has just closed — which left me, briefly, with nothing to fight and everything, suddenly, to read. What they abandoned was worse than any fight I might have won: a ledger, bound in something that had once, unmistakably, been skin, cataloguing every soul the Hollow Court had ever taken with the tidy dispassion of a merchant's inventory. I found my parents' names on the second page. I had already known, in the way one knows most unbearable things well before agreeing to admit it. Seeing it written, in someone else's careful hand, was an altogether different, and considerably less forgivable, species of knowing.",
-    "description_fr": "Ils se dispersèrent avant même que j'eusse proprement dégainé, robes et ombres fuyant par les passages latéraux comme fuit la fumée d'un poing qui vient de se refermer — ce qui me laissa, brièvement, sans rien à combattre et, soudain, tout à lire. Ce qu'ils abandonnaient était pire qu'aucun combat que j'eusse pu remporter : un registre, relié dans quelque chose ayant été, sans erreur possible, de la peau, cataloguant chaque âme que la Cour Creuse avait jamais prise avec le détachement méthodique d'un inventaire de marchand. Je trouvai le nom de mes parents à la deuxième page. Je le savais déjà, de cette façon dont on connaît la plupart des choses insupportables bien avant de consentir à l'admettre. Le voir écrit, de la main appliquée d'un autre, était une tout autre espèce de savoir, et nettement moins pardonnable.",
+    "description": "They broke before I had even properly drawn a weapon, robes and shadow scattering down side passages like smoke fleeing a fist that has just closed — which left me, briefly, with nothing to fight and everything, suddenly, to read. What they abandoned was worse than any fight I might have won: a ledger, bound in something that had once, unmistakably, been skin, cataloguing every soul the Hollow Court had ever taken with the tidy dispassion of a merchant's inventory. I found my parents' names on the second page. I had already known, in the way one knows most unbearable things well before agreeing to admit it. Seeing it written, in someone else's careful hand, was an altogether different, and considerably less forgivable, species of knowing. The first page was older than the book it had been sewn into, a leaf out of some other ledger in a hand long dead, and it held one name only: a clan’s, struck through so many times that the pen had gone through the vellum. Under all that striking-through it still read, if you knew what you were looking for, the Open Hand. Beneath it, in the same hand, two words — the Unmaking — and a date nine years before the first night. Beneath that, added later in a hurried one: survivors, children, given to the Wickwardens; not recovered. In the margin someone had drawn, very small, as if in apology, a hand. Open.",
+    "description_fr": "Ils se dispersèrent avant même que j'eusse proprement dégainé, robes et ombres fuyant par les passages latéraux comme fuit la fumée d'un poing qui vient de se refermer — ce qui me laissa, brièvement, sans rien à combattre et, soudain, tout à lire. Ce qu'ils abandonnaient était pire qu'aucun combat que j'eusse pu remporter : un registre, relié dans quelque chose ayant été, sans erreur possible, de la peau, cataloguant chaque âme que la Cour Creuse avait jamais prise avec le détachement méthodique d'un inventaire de marchand. Je trouvai le nom de mes parents à la deuxième page. Je le savais déjà, de cette façon dont on connaît la plupart des choses insupportables bien avant de consentir à l'admettre. Le voir écrit, de la main appliquée d'un autre, était une tout autre espèce de savoir, et nettement moins pardonnable. La première page était plus ancienne que le livre où on l'avait cousue, un feuillet tiré de quelque autre registre, d'une main morte depuis longtemps, et elle ne portait qu'un nom : celui d'un clan, barré tant de fois que la plume avait traversé le vélin. Sous toutes ces ratures, on lisait encore, pour peu qu'on sache quoi chercher, la Main Ouverte. Dessous, de la même main, trois mots — la Défaite du Sceau — et une date antérieure de neuf ans à la première nuit. Plus bas, ajouté plus tard d'une main pressée : survivants, enfants, confiés aux Garde-Mèches ; non retrouvés. Dans la marge, quelqu'un avait tracé, tout petit, comme pour s'excuser, une main. Ouverte.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "grim",
@@ -3395,6 +3519,11 @@
         "flag": "origin_board_evil",
         "en": "I had waited up for them at sixteen with the lamp lit, the winter they went out and did not come back. I had not known I was still waiting.",
         "fr": "À seize ans, je les avais attendus lampe allumée, l'hiver où ils étaient sortis sans revenir. J'ignorais que j'attendais encore."
+      },
+      {
+        "flag": "open_hand_2",
+        "en": "An old sign-painter on the wharf at Alster had said those three words to me once, white to the lips, before he asked me to forget them.",
+        "fr": "Un vieux peintre d'enseignes, sur le quai d'Alster, m'avait dit ces trois mots une fois, blanc jusqu'aux lèvres, avant de me demander de les oublier."
       }
     ],
     "noDetour": true
@@ -3939,6 +4068,11 @@
         "flag": "chart_bought",
         "en": "Her chart had the square down to the loose flagstones, and I stepped where she had drawn the dots.",
         "fr": "Sa carte donnait la place jusqu'aux dalles descellées, et je marchai là où elle avait mis des points."
+      },
+      {
+        "flag": "open_hand_5",
+        "en": "I had read the Reliquary’s roll. The thing in front of me was not weather and never had been: it was a wound, and I knew whose hand had made it, and on which night.",
+        "fr": "J'avais lu le rouleau du Reliquaire. Ce que j'avais devant moi n'était pas une intempérie et ne l'avait jamais été : c'était une blessure, et je savais quelle main l'avait faite, et quelle nuit."
       }
     ]
   },
@@ -3995,8 +4129,8 @@
   },
   "5004b": {
     "id": "5004b",
-    "description": "Whatever quiet understanding the circle had been hoping for died with the first one I put down, along with any interest the rest had in finishing their ritual on schedule. It was not, in the end, a long fight — conviction has never once stopped a blade, whatever the pamphlets claim, and these were more devoted than they were dangerous. It left the chamber considerably quieter, and me considerably more tired, but standing among the wreckage of their altar I found exactly what they had been so eager to protect. A ledger, bound in something that had once, unmistakably, been skin, cataloguing every soul the Hollow Court had ever taken with the tidy dispassion of a merchant's inventory. I found my parents' names on the second page. I had already known, in the way one knows most unbearable things well before agreeing to admit it. Seeing it written, in someone else's careful hand, was an altogether different, and considerably less forgivable, species of knowing.",
-    "description_fr": "Quel que fût l’accord tacite que le cercle avait espéré, il mourut avec le premier que j’abattis, emportant avec lui tout intérêt du reste à achever son rituel dans les temps. Ce ne fut, en définitive, pas un long combat — la conviction n’a jamais arrêté une lame, quoi qu’en disent les tracts, et ceux-ci étaient plus dévots que dangereux. Cela laissa la chambre nettement plus silencieuse, et ma fatigue nettement plus lourde, mais debout parmi les décombres de leur autel, je trouvai exactement ce qu’ils avaient tant tenu à protéger. Un registre, relié dans quelque chose ayant été, sans erreur possible, de la peau, cataloguant chaque âme que la Cour Creuse avait jamais prise avec le détachement méthodique d’un inventaire de marchand. Je trouvai le nom de mes parents à la deuxième page. Je le savais déjà, de cette façon dont on connaît la plupart des choses insupportables bien avant de consentir à l’admettre. Le voir écrit, de la main appliquée d’un autre, était une tout autre espèce de savoir, et nettement moins pardonnable.",
+    "description": "Whatever quiet understanding the circle had been hoping for died with the first one I put down, along with any interest the rest had in finishing their ritual on schedule. It was not, in the end, a long fight — conviction has never once stopped a blade, whatever the pamphlets claim, and these were more devoted than they were dangerous. It left the chamber considerably quieter, and me considerably more tired, but standing among the wreckage of their altar I found exactly what they had been so eager to protect. A ledger, bound in something that had once, unmistakably, been skin, cataloguing every soul the Hollow Court had ever taken with the tidy dispassion of a merchant's inventory. I found my parents' names on the second page. I had already known, in the way one knows most unbearable things well before agreeing to admit it. Seeing it written, in someone else's careful hand, was an altogether different, and considerably less forgivable, species of knowing. The first page was older than the book it had been sewn into, a leaf out of some other ledger in a hand long dead, and it held one name only: a clan’s, struck through so many times that the pen had gone through the vellum. Under all that striking-through it still read, if you knew what you were looking for, the Open Hand. Beneath it, in the same hand, two words — the Unmaking — and a date nine years before the first night. Beneath that, added later in a hurried one: survivors, children, given to the Wickwardens; not recovered. In the margin someone had drawn, very small, as if in apology, a hand. Open.",
+    "description_fr": "Quel que fût l’accord tacite que le cercle avait espéré, il mourut avec le premier que j’abattis, emportant avec lui tout intérêt du reste à achever son rituel dans les temps. Ce ne fut, en définitive, pas un long combat — la conviction n’a jamais arrêté une lame, quoi qu’en disent les tracts, et ceux-ci étaient plus dévots que dangereux. Cela laissa la chambre nettement plus silencieuse, et ma fatigue nettement plus lourde, mais debout parmi les décombres de leur autel, je trouvai exactement ce qu’ils avaient tant tenu à protéger. Un registre, relié dans quelque chose ayant été, sans erreur possible, de la peau, cataloguant chaque âme que la Cour Creuse avait jamais prise avec le détachement méthodique d’un inventaire de marchand. Je trouvai le nom de mes parents à la deuxième page. Je le savais déjà, de cette façon dont on connaît la plupart des choses insupportables bien avant de consentir à l’admettre. Le voir écrit, de la main appliquée d’un autre, était une tout autre espèce de savoir, et nettement moins pardonnable. La première page était plus ancienne que le livre où on l’avait cousue, un feuillet tiré de quelque autre registre, d’une main morte depuis longtemps, et elle ne portait qu’un nom : celui d’un clan, barré tant de fois que la plume avait traversé le vélin. Sous toutes ces ratures, on lisait encore, pour peu qu’on sache quoi chercher, la Main Ouverte. Dessous, de la même main, trois mots — la Défaite du Sceau — et une date antérieure de neuf ans à la première nuit. Plus bas, ajouté plus tard d’une main pressée : survivants, enfants, confiés aux Garde-Mèches ; non retrouvés. Dans la marge, quelqu’un avait tracé, tout petit, comme pour s’excuser, une main. Ouverte.",
     "context_taxonomy": {
       "ui_theme": "catacombs",
       "mood": "action",
@@ -4022,6 +4156,13 @@
           "court_broken",
           "parents_page_taken"
         ]
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "open_hand_2",
+        "en": "An old sign-painter on the wharf at Alster had said those three words to me once, white to the lips, before he asked me to forget them.",
+        "fr": "Un vieux peintre d’enseignes, sur le quai d’Alster, m’avait dit ces trois mots une fois, blanc jusqu’aux lèvres, avant de me demander de les oublier."
       }
     ]
   },
@@ -4237,8 +4378,8 @@
   },
   "2015_informant_trap": {
     "id": "2015_informant_trap",
-    "description": "The warehouse the informant had pointed me to had opinions of its own about visitors. Three men peeled out of the shadows the moment I said the warden's name aloud, moving with the unhurried confidence of people who'd been told exactly when to expect me. The informant, it turned out, had been selling more than gossip.",
-    "description_fr": "L'entrepôt que l'informateur m'avait indiqué avait ses propres idées sur les visiteurs. Trois hommes se détachèrent de l'ombre à l'instant où je prononçai le nom du gardien, avec l'assurance tranquille de gens à qui l'on avait dit exactement quand m'attendre. L'informateur, semblait-il, vendait plus que des ragots.",
+    "description": "The warehouse the informant had pointed me to had opinions of its own about visitors. Three men peeled out of the shadows the moment I said the warden's name aloud, moving with the unhurried confidence of people who'd been told exactly when to expect me. The informant, it turned out, had been selling more than gossip. Their purses, when I came to them, would be full of new Inquisition silver, the hooded lantern still sharp on every coin: the going rate on this wharf, a dockhand told me afterward, for anything the tide brought in from the tear. Someone had decided that tonight the tide was me.",
+    "description_fr": "L'entrepôt que l'informateur m'avait indiqué avait ses propres idées sur les visiteurs. Trois hommes se détachèrent de l'ombre à l'instant où je prononçai le nom du gardien, avec l'assurance tranquille de gens à qui l'on avait dit exactement quand m'attendre. L'informateur, semblait-il, vendait plus que des ragots. Leurs bourses, quand j'y viendrais, seraient pleines d'argent neuf de l'Inquisition, la lanterne encapuchonnée encore nette sur chaque pièce : le tarif, sur ce quai, m'apprit plus tard un docker, de tout ce que la marée rapportait de la déchirure. Quelqu'un avait décidé que ce soir, la marée, c'était moi.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "tense",
@@ -4257,14 +4398,20 @@
         ],
         "flagsToAdd": [
           "hub_2015_informant"
-        ]
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 1
+          }
+        }
       }
     ]
   },
   "2015_informant_exposed": {
     "id": "2015_informant_exposed",
-    "description": "He held up under about four seconds of direct questioning, which was roughly four seconds longer than I'd expected. The warden story was real enough — but so was the ambush he'd arranged for whoever went looking, and my not walking into it blind clearly wasn't part of his plan. He paid rather more for my discretion than he'd meant to.",
-    "description_fr": "Il tint bon pendant environ quatre secondes d'interrogatoire direct, soit à peu près quatre secondes de plus que je ne l'attendais. L'histoire du gardien était bien réelle — tout comme l'embuscade qu'il avait montée pour quiconque irait voir, et le fait que je n'y marche pas les yeux fermés ne faisait manifestement pas partie de son plan. Il paya ma discrétion bien plus cher qu'il ne l'avait prévu.",
+    "description": "He held up under about four seconds of direct questioning, which was roughly four seconds longer than I'd expected. The warden story was real enough — but so was the ambush he'd arranged for whoever went looking, and my not walking into it blind clearly wasn't part of his plan. He paid rather more for my discretion than he'd meant to. He paid in new Inquisition silver, the hooded lantern still sharp on every coin, and when I asked where a wharf rat came by so much of it he told me, because by then he was telling me everything: the Inquisition paid by the piece for anything the tide brought in from the tear. Bones, glass, cloth. Grey cloth paid best of all, he said, and he looked at my back while he said it.",
+    "description_fr": "Il tint bon pendant environ quatre secondes d'interrogatoire direct, soit à peu près quatre secondes de plus que je ne l'attendais. L'histoire du gardien était bien réelle — tout comme l'embuscade qu'il avait montée pour quiconque irait voir, et le fait que je n'y marche pas les yeux fermés ne faisait manifestement pas partie de son plan. Il paya ma discrétion bien plus cher qu'il ne l'avait prévu. Il paya en argent neuf de l'Inquisition, la lanterne encapuchonnée encore nette sur chaque pièce, et quand je lui demandai où un rat de quai trouvait tant d'argent, il me le dit, parce qu'à ce stade il me disait tout : l'Inquisition payait à la pièce tout ce que la marée rapportait de la déchirure. Des os, du verre, de l'étoffe. L'étoffe grise payait mieux que tout, dit-il, et il regarda mon dos en le disant.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -4279,7 +4426,32 @@
         "unlockQuestId": "q_ch2_informants_tip",
         "flagsToAdd": [
           "hub_2015_informant"
-        ]
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 1
+          }
+        }
+      },
+      {
+        "text": "Give his name to the Crows instead of his coin",
+        "text_fr": "Donner son nom aux Corneilles plutôt que prendre son argent",
+        "next_id": "2015",
+        "unlockQuestId": "q_ch2_informants_tip",
+        "flagsToAdd": [
+          "hub_2015_informant",
+          "crows_warned"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 1
+          },
+          "standing": {
+            "crows": 5
+          }
+        }
       }
     ]
   },
@@ -4327,7 +4499,13 @@
         "unlockQuestId": "q_ch2_terns_toll",
         "flagsToAdd": [
           "hub_2015_ternrow"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 5,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -4350,7 +4528,12 @@
         "flagsToAdd": [
           "hub_2015_ternrow",
           "tern_row_spared"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "tidekin": 10
+          }
+        }
       }
     ]
   },
@@ -4436,7 +4619,15 @@
         "unlockQuestId": "q_ch1_vess_in_the_dark",
         "flagsToAdd": [
           "met_vess"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "stitchers": "friend"
+          }
+        }
       }
     ]
   },
@@ -4458,7 +4649,15 @@
         "unlockQuestId": "q_ch3_groshs_price",
         "flagsToAdd": [
           "hub_3005_grosh"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "last_watch": "friend"
+          }
+        }
       }
     ]
   },
@@ -4506,7 +4705,13 @@
         "unlockQuestId": "q_ch3_reckoning_wall",
         "flagsToAdd": [
           "hub_3005_wall"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "dominion": -10
+          }
+        }
       }
     ]
   },
@@ -4529,7 +4734,13 @@
         "flagsToAdd": [
           "hub_3005_wall",
           "reckoning_wall_saved"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -4899,6 +5110,14 @@
         ],
         "hideIfFlags": [
           "hub_5010_deserter_later"
+        ]
+      },
+      {
+        "text": "Open the oilskin the drowned courier carried",
+        "text_fr": "Ouvrir la toile cirée du messager noyé",
+        "next_id": "5010_letter",
+        "hideIfFlags": [
+          "hub_5010_letter"
         ]
       },
       {
@@ -5335,6 +5554,14 @@
         ]
       },
       {
+        "text": "Break the seal on the Reliquary’s own archive",
+        "text_fr": "Briser le sceau des archives du Reliquaire",
+        "next_id": "6010_record",
+        "hideIfFlags": [
+          "hub_6010_record"
+        ]
+      },
+      {
         "text": "Follow the chalk to the chapel with the name",
         "text_fr": "Suivre la craie jusqu'à la chapelle au nom gravé",
         "next_id": "6010_lysa_dead",
@@ -5449,6 +5676,18 @@
         ]
       },
       {
+        "text": "Show the lantern-keeper the ledger’s first page",
+        "text_fr": "Montrer à la gardienne de la lanterne la première page du registre",
+        "next_id": "6010_wickwarden",
+        "showIfFlags": [
+          "hub_6010_lantern_keeper",
+          "open_hand_4"
+        ],
+        "hideIfFlags": [
+          "hub_6010_wickwarden"
+        ]
+      },
+      {
         "text": "Hunt the unstitched thing in the chapel",
         "text_fr": "Traquer la chose décousue nichée dans la chapelle",
         "next_id": "6010_spawn",
@@ -5501,6 +5740,11 @@
         "flag": "keeper_lantern_carried",
         "en": "I had carried the road-keeper’s lantern in through the frost. Nobody in the Quarter knew her daughter’s name. I kept asking.",
         "fr": "J’avais porté la lanterne de la gardienne à travers le givre. Personne au Quartier ne connaissait le nom de sa fille. Je continuais de demander."
+      },
+      {
+        "flag": "letter_copied",
+        "en": "The Penitents in the Quarter had my copy of the courier’s letter nailed to a chapel door, and the Inquisition had not yet dared to take it down.",
+        "fr": "Les Pénitents du Quartier avaient cloué ma copie de la lettre du messager sur une porte de chapelle, et l'Inquisition n'avait pas encore osé l'arracher."
       }
     ],
     "hub_progress": {
@@ -5608,7 +5852,12 @@
         "flagsToAdd": [
           "hub_6010_lysa",
           "lysa_stays_quarter"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       }
     ],
     "reqFlags": [
@@ -5670,7 +5919,12 @@
         "flagsToAdd": [
           "hub_6010_confession",
           "confession_spared"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": 10
+          }
+        }
       },
       {
         "text": "Pick up the blade and give him the answer he came for",
@@ -5680,7 +5934,13 @@
         "flagsToAdd": [
           "hub_6010_confession",
           "confession_executed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "penitents": -10,
+            "dominion": 5
+          }
+        }
       }
     ]
   },
@@ -5895,6 +6155,11 @@
         "flag": "lysa_stays_quarter",
         "en": "Word came from the Reliquary Quarter with every boat: Lysa's ward was still open, and still full.",
         "fr": "Chaque bateau apportait des nouvelles du Quartier des Reliquaires : le dispensaire de Lysa était toujours ouvert, et toujours plein."
+      },
+      {
+        "flag": "truth_told",
+        "en": "Copies of the Reliquary’s roll had gone out with every boat from the Quarter. The camp had heard it read aloud twice before I was home, and argued about it once, at length, over the fire.",
+        "fr": "Des copies du rouleau du Reliquaire étaient parties avec chaque bateau du Quartier. Le camp l'avait entendu lire à voix haute deux fois avant mon retour, et en avait débattu une fois, longuement, autour du feu."
       }
     ],
     "settlement": {
@@ -5949,6 +6214,40 @@
         "lockedText_fr": "La voile blanche vira avant d'atteindre le rivage."
       },
       {
+        "text": "Decide who reads the Admiral’s log",
+        "text_fr": "Décider qui lira le journal de l’Amiral",
+        "next_id": "7002_orders",
+        "showIfFlags": [
+          "fleet_log_read"
+        ],
+        "hideIfFlags": [
+          "hub_7002_orders"
+        ]
+      },
+      {
+        "text": "Cast the Admiralty’s vote for the Lantern Throne",
+        "text_fr": "Donner la voix de l’Amirauté pour le Trône de la Lanterne",
+        "next_id": "7002_throne",
+        "showIfFlags": [
+          "admiralty_vote"
+        ],
+        "hideIfFlags": [
+          "throne_backed",
+          "throne_filled"
+        ]
+      },
+      {
+        "text": "Raise the grey hand over the shore",
+        "text_fr": "Lever la main grise sur le rivage",
+        "next_id": "7002_banner",
+        "showIfFlags": [
+          "open_hand_3"
+        ],
+        "hideIfFlags": [
+          "hub_7002_banner"
+        ]
+      },
+      {
         "text": "Gather the crew before the crossing",
         "text_fr": "Rassembler l'équipage avant la traversée",
         "next_id": "7002_crew",
@@ -5977,6 +6276,77 @@
         "flag": "house_shroud_shrine",
         "en": "Whatever the Shroud had learned in the shrine we built for it from the Dead Heart's stone, it was humming it now.",
         "fr": "Quoi que le Linceul eût appris dans le sanctuaire que nous lui avions bâti avec la pierre du Cœur Mort, il le fredonnait à présent."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "The grey hand stood on its spar above the tide line, arms raised, and the reflections on the sand would not walk in its shadow.",
+        "fr": "La main grise se dressait sur son espar au-dessus de la laisse de mer, bras levés, et les reflets du sable refusaient de marcher dans son ombre."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "The grey hand was rolled on my back, where it had always been. The reflections watched it anyway.",
+        "fr": "La main grise restait roulée sur mon dos, où elle avait toujours été. Les reflets la regardaient quand même."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "Under the spar, by the second morning, stood a spear of the Last Watch: an orc who had walked down off the Vigil’s wall without leave, and meant to walk back up it the same way.",
+        "fr": "Sous l'espar, au deuxième matin, se tenait une lance de la Dernière Veille : une orque descendue du mur de la Veille sans permission, et bien décidée à y remonter de la même façon.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent had come with a burnt-out lantern and a cloth of names, and had stitched mine to the end of it.",
+        "fr": "Un Pénitent était venu avec une lanterne éteinte et une étoffe couverte de noms, et y avait cousu le mien, tout au bout.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "Two Compact smiths had pushed a forge on a handcart all the way to the shore and asked me, as their law requires, why. I told them. They lit it.",
+        "fr": "Deux forgerons du Pacte avaient poussé une forge sur une charrette à bras jusqu'au rivage et m'avaient demandé, comme leur loi l'exige, pourquoi. Je le leur dis. Ils l'allumèrent.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A Heron’s Wake guide sat under the spar with a feast mask in her lap, and told anyone who asked that the fen had sent her and would hold her to it.",
+        "fr": "Une guide du Sillage du Héron était assise sous l'espar, un masque de fête sur les genoux, et répondait à qui le demandait que le marais l'avait envoyée et l'y tiendrait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay off the point with three rings on her halyard, and her captain swore she was only waiting for the tide.",
+        "fr": "Un brick des Corneilles mouillait au large de la pointe, trois anneaux à sa drisse, et son capitaine jurait que le brick n'attendait que la marée.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "And a Wickwarden had come with one lamp and set it at the foot of the spar, which in her House is how you swear.",
+        "fr": "Et une Garde-Mèche était venue avec une seule lampe, qu'elle avait posée au pied de l'espar, ce qui, dans sa Maison, revient à prêter serment.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_raised",
+        "en": "Nobody had come to stand under it yet. I stood under it myself, which was, I suppose, what the hand had been for all along.",
+        "fr": "Personne n'était encore venu se tenir dessous. Je m'y tins moi-même, ce qui était, je suppose, ce à quoi la main avait toujours servi.",
+        "unlessFlags": [
+          "banner_stood_vigil",
+          "banner_stood_penitents",
+          "banner_stood_compact",
+          "banner_stood_mire",
+          "banner_stood_crows",
+          "banner_stood_dominion"
+        ]
       }
     ],
     "settlement": {
@@ -6232,6 +6602,46 @@
         "flag": "names_recovered",
         "en": "The names I had cut from the throne's foot were in my pocket, in the ledger's own hand. Somebody would want them read.",
         "fr": "Les noms que j'avais arrachés au pied du trône étaient dans ma poche, de la main même du registre. Quelqu'un voudrait qu'on les lise."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "The grey hand still stood on its spar above the tide line where I had raised it, and the people under it had not moved.",
+        "fr": "La main grise se dressait toujours sur son espar au-dessus de la laisse de mer, là où je l'avais levée, et ceux qui se tenaient dessous n'avaient pas bougé."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "The grey hand was still furled on my back. Through the cloth, very faintly, I could feel the figure’s palms, open.",
+        "fr": "La main grise était toujours roulée sur mon dos. À travers l'étoffe, très faiblement, je sentais les paumes de la silhouette, ouvertes."
+      },
+      {
+        "flag": "truth_kept",
+        "en": "The Reliquary’s roll was still in my coat, read by nobody but me. Whatever I chose, I would be choosing it with that in my pocket.",
+        "fr": "Le rouleau du Reliquaire était toujours dans mon manteau, lu par personne d'autre que moi. Quoi que je choisisse, je le choisirais avec cela en poche."
+      },
+      {
+        "flag": "throne_backed_vane",
+        "en": "Off the shore, under the Throne’s new colours, Aurel Vane’s cutters were waiting to see what I carried out of the tear. They had brought chains in my size.",
+        "fr": "Au large, sous les nouvelles couleurs du Trône, les cotres d'Aurel Vane attendaient de voir ce que je rapporterais de la déchirure. Ils avaient apporté des chaînes à ma taille."
+      },
+      {
+        "flag": "throne_backed_morrow",
+        "en": "The Order’s ships stood off the shore under Morrow’s sword-and-lantern, and his knights were on the sand with their swords drawn toward the tear, not toward me.",
+        "fr": "Les navires de l'Ordre croisaient au large sous l'épée-lanterne de Morrow, et ses chevaliers étaient sur le sable, l'épée tirée vers la déchirure, et non vers moi."
+      },
+      {
+        "flag": "throne_backed_tallis",
+        "en": "Where I would come out, a line of Wickwarden lamps had been set in the sand all the way down to the water, and nobody stood behind them with a sword.",
+        "fr": "Là où je ressortirais, une rangée de lampes des Garde-Mèches avait été plantée dans le sable jusqu'à l'eau, et personne ne se tenait derrière elles avec une épée."
+      },
+      {
+        "flag": "lantern_exposed",
+        "en": "Somewhere along the coast the Order and the Inquisition were at each other’s throats over a page I had sent, and neither had a ship to spare for me.",
+        "fr": "Quelque part le long de la côte, l'Ordre et l'Inquisition s'entre-déchiraient pour une page que j'avais envoyée, et ni l'un ni l'autre n'avait de navire à me consacrer."
+      },
+      {
+        "flag": "lantern_kept",
+        "en": "The Inquisition’s writ was in my coat beside the Shroud. It opened every port from here to Candlehold, and I had begun to notice what it closed.",
+        "fr": "Le mandat de l'Inquisition était dans mon manteau, à côté du Linceul. Il ouvrait tous les ports d'ici à Candlehold, et je commençais à remarquer ce qu'il fermait."
       }
     ],
     "noDetour": true
@@ -6311,6 +6721,74 @@
         "unlessFlags": [
           "camp_given"
         ]
+      },
+      {
+        "flag": "banner_raised",
+        "en": "It was the hand’s last drawing, I understand now: the one thing the Seal could do once it was whole, drawn long ago by the clan that made it. The figure on the heirloom held its arms up the whole way back through the needle, not in surrender but the way a drawer lifts the brush off the last line. What is drawn, holds. The city I raised the second time flew a grey flag with an open hand on it from its first roof, and no clerk anywhere struck it from a record.",
+        "fr": "C’était le dernier dessin de la main, je le comprends à présent : la seule chose que le Sceau savait faire une fois entier, tracée il y a longtemps par le clan qui l’avait fait. La silhouette de l’héritage garda les bras levés tout le long du retour par le chas de l’aiguille, non pour se rendre, mais comme on lève le pinceau au dernier trait. Ce qui est tracé tient. La ville que je bâtis la seconde fois fit flotter dès son premier toit un drapeau gris marqué d’une main ouverte, et aucun greffier nulle part ne le raya d’aucun registre."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The Reliquary’s roll went back through the needle with everything else. I had it by heart, and this time I would not wait for the fourth piece to read it aloud.",
+        "fr": "Le rouleau du Reliquaire repassa par le chas avec tout le reste. Je le savais par cœur, et cette fois je n’attendrais pas la quatrième pièce pour le lire à voix haute."
+      },
+      {
+        "flag": "truth_kept",
+        "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
+        "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6363,6 +6841,74 @@
         "flag": "camp_given",
         "en": "There was no camp to leave. The coast had its ashes back, and I had the Eel, and the ledger's list of other tears.",
         "fr": "Il n'y avait plus de camp à quitter. La côte avait retrouvé ses cendres, et moi j'avais l'Eel, et la liste des autres déchirures du registre."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "It was the hand’s last drawing, I understand now, and it went the long way round, as I did. I sailed with the grey hand at the Eel’s masthead, and in every port that remembered nothing, somebody still looked up at it a moment too long, as if they knew it from a dream.",
+        "fr": "C’était le dernier dessin de la main, je le comprends à présent, et il prit le long chemin, comme moi. Je naviguai avec la main grise en tête de mât de l’Eel, et dans chaque port qui ne se souvenait de rien, quelqu’un la regardait encore un instant de trop, comme s’il la connaissait d’un rêve."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The Reliquary’s roll went back through the needle with everything else. I had it by heart, and this time I would not wait for the fourth piece to read it aloud.",
+        "fr": "Le rouleau du Reliquaire repassa par le chas avec tout le reste. Je le savais par cœur, et cette fois je n’attendrais pas la quatrième pièce pour le lire à voix haute."
+      },
+      {
+        "flag": "truth_kept",
+        "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
+        "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6432,6 +6978,74 @@
         "flag": "camp_given",
         "en": "The cove was ash where the camp had been. The ones who had fled it were waiting on the shingle anyway, and we began again with what the tide had left.",
         "fr": "La crique n'était que cendre là où le camp s'était dressé. Ceux qui l'avaient fui attendaient pourtant sur les galets, et nous recommençâmes avec ce que la marée avait laissé."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "It was the hand’s last drawing, and I had raised the hand before I made it. When the needle went back through the night, the figure on the grey went with it, arms raised, hands open, the way the Open Hand had drawn it first: not to keep a door, but to let go of one.",
+        "fr": "C’était le dernier dessin de la main, et j’avais levé la main avant de le faire. Quand l’aiguille repassa à travers la nuit, la silhouette du gris l’accompagna, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée d’abord : non pour garder une porte, mais pour en lâcher une."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The Reliquary’s roll went back through the needle with everything else. I had it by heart, and this time I would not wait for the fourth piece to read it aloud.",
+        "fr": "Le rouleau du Reliquaire repassa par le chas avec tout le reste. Je le savais par cœur, et cette fois je n’attendrais pas la quatrième pièce pour le lire à voix haute."
+      },
+      {
+        "flag": "truth_kept",
+        "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
+        "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6488,6 +7102,74 @@
         "flag": "lysa_fallen",
         "en": "The first penitent to kneel wore a porcelain mask. I had it taken off her before she was allowed to stay.",
         "fr": "La première pénitente à s'agenouiller portait un masque de porcelaine. Je le lui fis retirer avant qu'elle soit autorisée à rester."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "It was the hand’s last drawing, and it did not ask the crown’s leave. I had raised the grey hand on the Hollow Shore and then set a crown above it. The Open Hand, I think, had seen kings before, and outlasted them.",
+        "fr": "C’était le dernier dessin de la main, et il ne demanda pas la permission de la couronne. J’avais levé la main grise sur la Rive Creuse, puis posé une couronne au-dessus. La Main Ouverte, je crois, avait déjà vu des rois, et leur avait survécu."
+      },
+      {
+        "flag": "banner_furled",
+        "en": "I had kept the hand furled to the end. At the end it unfurled itself, and I saw the figure’s palms open on the night as the night went back through the needle: the Open Hand’s last drawing, made whether anyone raised it or not.",
+        "fr": "J’avais gardé la main roulée jusqu’au bout. Au bout, elle se déroula d’elle-même, et je vis les paumes de la silhouette s’ouvrir sur la nuit tandis que la nuit repassait par le chas de l’aiguille : le dernier dessin de la Main Ouverte, tracé que quelqu’un l’ait levée ou non."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The Reliquary’s roll went back through the needle with everything else. I had it by heart, and this time I would not wait for the fourth piece to read it aloud.",
+        "fr": "Le rouleau du Reliquaire repassa par le chas avec tout le reste. Je le savais par cœur, et cette fois je n’attendrais pas la quatrième pièce pour le lire à voix haute."
+      },
+      {
+        "flag": "truth_kept",
+        "en": "I had kept the Reliquary’s roll to myself, and it went back through the needle read by nobody but me. I had it by heart. I had not yet decided whom it was for.",
+        "fr": "J’avais gardé pour moi le rouleau du Reliquaire, et il repassa par le chas sans avoir été lu par personne d’autre. Je le savais par cœur. Je n’avais pas encore décidé pour qui."
+      },
+      {
+        "flag": "banner_stood_vigil",
+        "en": "On the night before the invasion, an orc in grey was keeping a watch at the Blind Beggar’s door that nobody had asked her to keep. I did not know her. She nodded to me as if she knew me.",
+        "fr": "La nuit d’avant l’invasion, une orque vêtue de gris montait à la porte du Mendiant Aveugle une garde que personne ne lui avait demandée. Je ne la connaissais pas. Elle me salua d’un signe de tête, comme si elle me connaissait.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_penitents",
+        "en": "A Penitent sat in the Beggar’s corner with a burnt-out lantern on the table, mending a cloth of names, and was gone before I could ask whose they were.",
+        "fr": "Un Pénitent était assis dans un coin du Mendiant, une lanterne éteinte sur la table, à raccommoder une étoffe couverte de noms, et il était parti avant que je puisse demander à qui ils étaient.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_compact",
+        "en": "A dwarf smith with a broken hammer through her belt drank alone at the Beggar’s bar, and paid for my cup without a word.",
+        "fr": "Une naine forgeronne, un marteau brisé passé à la ceinture, buvait seule au comptoir du Mendiant, et paya mon verre sans un mot.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_mire",
+        "en": "A woman in a heron mask came in out of the rain, looked at me for a long moment, laughed, and went out again.",
+        "fr": "Une femme au masque de héron entra, ruisselante de pluie, me regarda longuement, rit, et ressortit.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_crows",
+        "en": "A Crow brig lay at Alster’s quay that night with three rings on her halyard and nothing in her hold, and her captain was in no hurry at all to sail.",
+        "fr": "Un brick des Corneilles était à quai à Alster, cette nuit-là, trois anneaux à sa drisse et rien dans sa cale, et son capitaine n’était pas du tout pressé de partir.",
+        "andFlags": [
+          "banner_raised"
+        ]
+      },
+      {
+        "flag": "banner_stood_dominion",
+        "en": "A Wickwarden was lighting the lamps along Tallow Street one by one, as if she expected someone home.",
+        "fr": "Une Garde-Mèche allumait une à une les lampes de la rue du Suif, comme si elle attendait le retour de quelqu’un.",
+        "andFlags": [
+          "banner_raised"
+        ]
       }
     ]
   },
@@ -6509,7 +7191,15 @@
         "unlockQuestId": "q_ch4_tobins_vigil",
         "flagsToAdd": [
           "hub_5010_tobin"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "wickwardens": "friend"
+          }
+        }
       }
     ],
     "persona_variants": {
@@ -6541,7 +7231,15 @@
         "unlockQuestId": "q_ch5_malriks_cut",
         "flagsToAdd": [
           "hub_6010_malrik"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "brig_born": "friend"
+          }
+        }
       }
     ],
     "persona_variants": {
@@ -6807,6 +7505,11 @@
         "flag": "approach_alarm",
         "en": "Every reflection on the shore had watched me come, and every one of them was watching still.",
         "fr": "Chaque reflet du rivage avait suivi mon approche, et tous regardaient encore."
+      },
+      {
+        "flag": "banner_raised",
+        "en": "It knew the hand. It had known it longer than it had known my name, and for the first time its certainty had a crack in it.",
+        "fr": "Elle connaissait la main. Elle la connaissait depuis plus longtemps que mon nom, et pour la première fois sa certitude se fêlait."
       }
     ],
     "noDetour": true
@@ -6829,7 +7532,16 @@
         "flagsToAdd": [
           "standard_cut_living"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "compact": 5
+          },
+          "marks": {
+            "order": "foe"
+          }
+        }
       },
       {
         "text": "Wait for him to die while the Cathedral burns",
@@ -6840,7 +7552,13 @@
         "flagsToAdd": [
           "standard_waited"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "compact": 5
+          }
+        }
       },
       {
         "text": "Give him the mercy of the blade first, then take it",
@@ -6850,7 +7568,14 @@
         "flagsToAdd": [
           "standard_mercy"
         ],
-        "grantsBannerPieceId": "warden_standard"
+        "grantsBannerPieceId": "warden_standard",
+        "politics": {
+          "standing": {
+            "dominion": -5,
+            "compact": 5,
+            "penitents": 5
+          }
+        }
       }
     ],
     "noDetour": true
@@ -7002,9 +7727,16 @@
         "alignmentMod": 2,
         "healAmount": -20,
         "flagsToAdd": [
-          "court_woken"
+          "court_woken",
+          "open_hand_4"
         ],
-        "grantsBannerPieceId": "moon_shard_shroud"
+        "grantsBannerPieceId": "moon_shard_shroud",
+        "politics": {
+          "remembrance": 4,
+          "standing": {
+            "penitents": 5
+          }
+        }
       },
       {
         "text": "Cut the Shroud free without waking them",
@@ -7012,9 +7744,16 @@
         "next_id": "5005",
         "alignmentMod": -3,
         "flagsToAdd": [
-          "court_never_woke"
+          "court_never_woke",
+          "open_hand_4"
         ],
-        "grantsBannerPieceId": "moon_shard_shroud"
+        "grantsBannerPieceId": "moon_shard_shroud",
+        "politics": {
+          "remembrance": 4,
+          "standing": {
+            "penitents": -5
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -7048,8 +7787,8 @@
   },
   "6010_thread": {
     "id": "6010_thread",
-    "description": "The ledger's endpaper named the fourth piece as plainly as the others: sewn into a reliquary in the chart-keeper's chapel, around the bones of a girl taken the first night, by an order that had believed grey cloth on holy bones would keep the tear from growing. It had not. The chart-keeper stood by the reliquary with her hand on it and did not ask me not to. The penitent stood at the door with his blade hilt-first and asked to be the one. Whatever I did next, someone in that chapel was going to lose the last of what they had kept.",
-    "description_fr": "La page de garde du registre nommait la quatrième pièce aussi clairement que les autres : cousue dans un reliquaire de la chapelle de la gardienne des cartes, autour des os d'une fillette prise la première nuit, par un ordre qui avait cru que du gris sur des os saints empêcherait la déchirure de grandir. Cela n'avait rien empêché. La gardienne des cartes se tenait près du reliquaire, la main dessus, et ne me demanda pas de m'abstenir. Le pénitent se tenait à la porte, la lame poignée en avant, et demanda à être celui qui le ferait. Quoi que je fasse ensuite, quelqu'un dans cette chapelle allait perdre le dernier de ce qu'il avait gardé.",
+    "description": "The ledger's endpaper named the fourth piece as plainly as the others: sewn into a reliquary in the chart-keeper's chapel, around the bones of a girl taken the first night, by an order that had believed grey cloth on holy bones would keep the tear from growing. It had not. Someone had been here before me, and lately: there was a fresh seal on the lid, a hooded lantern pressed into the wax, and under it an Inquisition requisition in a clerk’s tidy hand. The fourth piece was to be held for the Inquisitor-General’s rite, the one that would widen the tear into a door for the Lantern alone, and carried to Candlehold with the other pieces, and with the blood, when the blood was found. Under that was a short list: the blood it needed. My name was on it. The chart-keeper stood by the reliquary with her hand on it and did not ask me not to. The penitent stood at the door with his blade hilt-first and asked to be the one. Whatever I did next, someone in that chapel was going to lose the last of what they had kept.",
+    "description_fr": "La page de garde du registre nommait la quatrième pièce aussi clairement que les autres : cousue dans un reliquaire de la chapelle de la gardienne des cartes, autour des os d'une fillette prise la première nuit, par un ordre qui avait cru que du gris sur des os saints empêcherait la déchirure de grandir. Cela n'avait rien empêché. Quelqu'un était passé avant moi, et récemment : il y avait un sceau frais sur le couvercle, une lanterne encapuchonnée pressée dans la cire, et dessous une réquisition de l'Inquisition, d'une main de greffier bien appliquée. La quatrième pièce devait être gardée pour le rite de l'Inquisiteur général, celui qui élargirait la déchirure en une porte pour la seule Lanterne, puis portée à Candlehold avec les autres pièces, et avec le sang, quand on aurait trouvé le sang. Dessous venait une courte liste : le sang qu'il fallait. Mon nom y figurait. La gardienne des cartes se tenait près du reliquaire, la main dessus, et ne me demanda pas de m'abstenir. Le pénitent se tenait à la porte, la lame poignée en avant, et demanda à être celui qui le ferait. Quoi que je fasse ensuite, quelqu'un dans cette chapelle allait perdre le dernier de ce qu'il avait gardé.",
     "context_taxonomy": {
       "ui_theme": "epilogue",
       "mood": "grim",
@@ -7065,7 +7804,13 @@
         "flagsToAdd": [
           "reliquary_opened"
         ],
-        "grantsBannerPieceId": "reliquary_thread"
+        "grantsBannerPieceId": "reliquary_thread",
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 4
+          }
+        }
       },
       {
         "text": "Pay the chart-keeper to cut it out (150 gold)",
@@ -7078,7 +7823,13 @@
         "flagsToAdd": [
           "chartkeeper_paid"
         ],
-        "grantsBannerPieceId": "reliquary_thread"
+        "grantsBannerPieceId": "reliquary_thread",
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 4
+          }
+        }
       },
       {
         "text": "Give the penitent the seal to break",
@@ -7090,7 +7841,30 @@
         "flagsToAdd": [
           "penitent_seal"
         ],
-        "grantsBannerPieceId": "reliquary_thread"
+        "grantsBannerPieceId": "reliquary_thread",
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 4
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "lysa_lost",
+        "en": "The girl from the Blind Beggar’s cellar was on the requisition’s list too, with a note against her name in the same hand: held at the Quarter; the rite has not taken. I understood then what Lysa had been kept for.",
+        "fr": "La fille de la cave du Mendiant Aveugle figurait aussi sur la liste de la réquisition, avec une note en regard, de la même main : retenue au Quartier ; le rite n'a pas pris. Je compris alors pour quoi on avait gardé Lysa."
+      },
+      {
+        "flag": "lysa_survived",
+        "en": "The girl from the Blind Beggar’s cellar was on the requisition’s list too. Against her name the clerk had written: at large, with the cloth. Lysa was somewhere in the Quarter’s wards, changing dressings, with no idea that she was anybody’s blood but her own.",
+        "fr": "La fille de la cave du Mendiant Aveugle figurait aussi sur la liste de la réquisition. En regard de son nom, le greffier avait écrit : en fuite, avec l'étoffe. Lysa était quelque part dans les dispensaires du Quartier, à changer des pansements, sans se douter qu'elle était le sang de qui que ce soit d'autre qu'elle-même."
+      },
+      {
+        "flag": "open_hand_5",
+        "en": "I had read the Reliquary’s roll. I knew what the pieces would not do without that blood, and what the coast had paid the last time someone tried.",
+        "fr": "J'avais lu le rouleau du Reliquaire. Je savais ce que les pièces refuseraient de faire sans ce sang, et ce que la côte avait payé la dernière fois qu'on avait essayé."
       }
     ]
   },
@@ -7178,7 +7952,17 @@
           "inquisition_pact"
         ],
         "alignmentMod": -5,
-        "goldMod": 300
+        "goldMod": 300,
+        "politics": {
+          "standing": {
+            "dominion": 20,
+            "vigil": -15,
+            "penitents": -15
+          },
+          "marks": {
+            "inquisition": "friend"
+          }
+        }
       },
       {
         "text": "Refuse it, and send the white sail back with its offer",
@@ -7187,7 +7971,14 @@
         "flagsToAdd": [
           "pact_refused"
         ],
-        "alignmentMod": 2
+        "alignmentMod": 2,
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "vigil": 5,
+            "penitents": 5
+          }
+        }
       }
     ]
   },
@@ -7223,6 +8014,11 @@
         ],
         "approvalMods": {
           "*": 2
+        },
+        "politics": {
+          "standing": {
+            "penitents": 5
+          }
         }
       },
       {
@@ -7235,6 +8031,11 @@
         ],
         "approvalMods": {
           "*": -2
+        },
+        "politics": {
+          "standing": {
+            "dominion": 5
+          }
         }
       }
     ]
@@ -7293,7 +8094,13 @@
           "hub_6010_masked",
           "lysa_fallen"
         ],
-        "alignmentMod": -3
+        "alignmentMod": -3,
+        "politics": {
+          "marks": {
+            "inquisition": "foe"
+          },
+          "hidden": true
+        }
       }
     ]
   },
@@ -7446,7 +8253,13 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_3100_tithe"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "compact": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -7681,7 +8494,13 @@
         "alignmentMod": 2,
         "flagsToAdd": [
           "hub_3200_circle"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "oni": 10,
+            "dominion": -5
+          }
+        }
       }
     ]
   },
@@ -7860,6 +8679,14 @@
         ]
       },
       {
+        "text": "Hear out the Tribunal clerk waiting for a boat",
+        "text_fr": "Écouter le greffier du Tribunal qui attend un bateau",
+        "next_id": "5100_vote",
+        "hideIfFlags": [
+          "hub_5100_vote"
+        ]
+      },
+      {
         "text": "Mend nets with the weed-cutters",
         "text_fr": "Raccommoder les filets avec les coupeurs de varech",
         "next_id": "5100_nets",
@@ -7990,7 +8817,15 @@
         "flagsToAdd": [
           "hub_5100_headman",
           "lamps_smashed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "wickwardens": "friend"
+          }
+        }
       },
       {
         "text": "Ask for a cut of the next wreck (+50 gold)",
@@ -8001,7 +8836,12 @@
         "flagsToAdd": [
           "hub_5100_headman",
           "wreck_cut"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          }
+        }
       }
     ]
   },
@@ -8345,6 +9185,14 @@
         ],
         "hideIfFlags": [
           "hub_6100_keeper_later"
+        ]
+      },
+      {
+        "text": "Look at the frozen pilgrim by the milestone",
+        "text_fr": "Examiner le pèlerin gelé près de la borne",
+        "next_id": "6100_knife",
+        "hideIfFlags": [
+          "hub_6100_knife"
         ]
       },
       {
@@ -8713,7 +9561,12 @@
         "flagsToAdd": [
           "hub_6200_eldest_later",
           "giants_names_read"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "giants": 10
+          }
+        }
       },
       {
         "text": "Tell her he looked like he was reading",
@@ -8762,6 +9615,14 @@
         "next_id": "7100_chaplain",
         "hideIfFlags": [
           "hub_7100_chaplain"
+        ]
+      },
+      {
+        "text": "Read the log kept in the stern-chapel",
+        "text_fr": "Lire le journal de bord gardé dans la chapelle de poupe",
+        "next_id": "7100_log",
+        "hideIfFlags": [
+          "hub_7100_log"
         ]
       },
       {
@@ -8851,8 +9712,8 @@
   },
   "7100_chaplain": {
     "id": "7100_chaplain",
-    "description": "The fleet’s chaplain had been a zealot once and was something quieter now, which he did not have a word for yet. He knew where the flagship lay: off the point, on the glass, with the Admiral still on her quarterdeck, and her colours still flying. “He sailed under the grey,” he said. “We all did. We were told it was white.” He drew me the way on a scrap of sailcloth, and would not take coin for it.",
-    "description_fr": "L’aumônier de la flotte avait été un zélote autrefois et était à présent quelque chose de plus calme, qu’il n’avait pas encore de mot pour nommer. Il savait où gisait le vaisseau amiral : au large de la pointe, sur le verre, l’Amiral toujours sur sa dunette, et ses couleurs toujours au mât. « Il naviguait sous le gris, dit-il. Nous tous. On nous disait que c’était blanc. » Il me traça le chemin sur un bout de toile à voile, et refusa d’être payé.",
+    "description": "The fleet’s chaplain had been a zealot once and was something quieter now, which he did not have a word for yet. He knew where the flagship lay: off the point, on the glass, with the Admiral still on her quarterdeck, and her colours still flying. “He sailed under the grey,” he said. “We all did. We were told it was white.” He drew me the way on a scrap of sailcloth, and would not take coin for it. Then he told me the other thing. The Admiralty still had a vote for the Lantern Throne, and on this shore he was all of the Admiralty there was. He had meant to cast it out of obedience, or out of grief, and could no longer tell which was which. “You have seen more of this coast than I have,” he said. “Cast it for me, before the tear takes the question out of all our hands.” He put the Admiralty’s seal in my hand with the sailcloth.",
+    "description_fr": "L’aumônier de la flotte avait été un zélote autrefois et était à présent quelque chose de plus calme, qu’il n’avait pas encore de mot pour nommer. Il savait où gisait le vaisseau amiral : au large de la pointe, sur le verre, l’Amiral toujours sur sa dunette, et ses couleurs toujours au mât. « Il naviguait sous le gris, dit-il. Nous tous. On nous disait que c’était blanc. » Il me traça le chemin sur un bout de toile à voile, et refusa d’être payé. Puis il me dit l’autre chose. L’Amirauté avait encore une voix pour le Trône de la Lanterne, et sur ce rivage, toute l’Amirauté, c’était lui. Il avait voulu la donner par obéissance, ou par chagrin, et ne savait plus distinguer l’un de l’autre. « Vous avez vu plus de cette côte que moi, dit-il. Votez à ma place, avant que la déchirure ne nous enlève la question des mains. » Il me mit le sceau de l’Amirauté dans la main, avec la toile.",
     "context_taxonomy": {
       "ui_theme": "docks",
       "mood": "neutral",
@@ -8865,8 +9726,15 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_chaplain",
-          "flagship_charted"
-        ]
+          "flagship_charted",
+          "admiralty_vote"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 5
+          }
+        }
       }
     ]
   },
@@ -9002,7 +9870,15 @@
         "flagsToAdd": [
           "hub_7100_helmsman_later",
           "helmsman_farewell"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
       },
       {
         "text": "Ask him the flagship’s soundings instead",
@@ -9307,7 +10183,12 @@
         "flagsToAdd": [
           "banner_five",
           "sail_climbed"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": -5
+          }
+        }
       },
       {
         "text": "Pay the Anchorage’s riggers to bring it down",
@@ -9320,7 +10201,15 @@
         "flagsToAdd": [
           "banner_five",
           "sail_bought"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": 5
+          },
+          "marks": {
+            "admiralty": "friend"
+          }
+        }
       },
       {
         "text": "Burn the flagship and take it from the ashes",
@@ -9332,7 +10221,16 @@
         "flagsToAdd": [
           "banner_five",
           "flagship_burned"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "dominion": -10,
+            "penitents": 5
+          },
+          "marks": {
+            "admiralty": "foe"
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -9350,6 +10248,11 @@
         "flag": "helmsman_hired",
         "en": "The Admiral's old helmsman had stood the Eel's wheel through the wrecks as if he had been waiting years to be asked. He had not drunk the whole way.",
         "fr": "Le vieux timonier de l'Amiral avait tenu la barre de l'Eel à travers les épaves comme s'il avait attendu des années qu'on le lui demande. Il n'avait pas bu une goutte de tout le trajet."
+      },
+      {
+        "flag": "fleet_log_read",
+        "en": "I knew what the colours had been for now. The Admiral had not been sailing home.",
+        "fr": "Je savais désormais à quoi avaient servi ces couleurs. L’Amiral ne rentrait pas chez lui."
       }
     ]
   },
@@ -9419,6 +10322,28 @@
         "flag": "greyhithe_names_read",
         "en": "Greyhithe had sent a basket of its pale fish and, tucked under it, a name written out twelve times in a hand that was learning to write again.",
         "fr": "Grisegrève avait envoyé un panier de ses poissons pâles et, glissé dessous, un nom écrit douze fois d’une main qui réapprenait à écrire."
+      },
+      {
+        "flag": "open_hand_4",
+        "en": "The grey hand had never yet been raised. If it ever was going to be, the Hollow Shore was the last place left to do it.",
+        "fr": "La main grise n’avait encore jamais été levée. Si elle devait l’être un jour, la Rive Creuse était le dernier endroit pour le faire.",
+        "unlessFlags": [
+          "open_hand_6"
+        ]
+      },
+      {
+        "flag": "banner_raised",
+        "en": "Somebody had brought the spar back from the Hollow Shore with the grey hand still on it, and stood it by the fire. Nobody sat with their back to it.",
+        "fr": "Quelqu’un avait rapporté l’espar de la Rive Creuse, la main grise toujours dessus, et l’avait planté près du feu. Personne ne s’assit en lui tournant le dos."
+      },
+      {
+        "flag": "admiralty_vote",
+        "en": "The Admiralty’s seal was still in my coat, its vote uncast. The Hollow Shore was the last place I could cast it from.",
+        "fr": "Le sceau de l’Amirauté était toujours dans mon manteau, sa voix encore à donner. La Rive Creuse était le dernier endroit d’où je pouvais la donner.",
+        "unlessFlags": [
+          "throne_backed",
+          "throne_filled"
+        ]
       }
     ]
   },
@@ -9479,6 +10404,13 @@
           "banner_five"
         ]
       }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "banner_raised",
+        "en": "The grey hand went before us on its spar, and the reflections drew back from it the way the sea draws back before a wave.",
+        "fr": "La main grise nous précédait sur son espar, et les reflets reculaient devant elle comme la mer recule avant une vague."
+      }
     ]
   },
   "7002_alarm": {
@@ -9524,7 +10456,15 @@
         "next_id": "2015",
         "flagsToAdd": [
           "hub_2015_sable"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "crows": 5
+          },
+          "marks": {
+            "whisper_ledger": "friend"
+          }
+        }
       }
     ]
   },
@@ -9656,7 +10596,15 @@
         "flagsToAdd": [
           "hub_2015_liora",
           "liora_met"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "mire": 5
+          },
+          "marks": {
+            "moss_choir": "friend"
+          }
+        }
       }
     ],
     "flag_callbacks": [
@@ -9705,7 +10653,15 @@
         "flagsToAdd": [
           "hub_2015_vess",
           "met_vess"
-        ]
+        ],
+        "politics": {
+          "standing": {
+            "vigil": 5
+          },
+          "marks": {
+            "stitchers": "friend"
+          }
+        }
       },
       {
         "text": "Send her away",
@@ -9962,6 +10918,724 @@
         "next_id": "7100",
         "flagsToAdd": [
           "hub_7100_helmsman"
+        ]
+      }
+    ]
+  },
+  "2015_drawer": {
+    "id": "2015_drawer",
+    "description": "He painted luck onto doors for a living — a fish over a fishmonger’s, a key over a locksmith’s, small signs that worked about as often as luck does — and he had been following my back down the stalls for some time with a brush still wet in his hand. When I turned, he did not pretend otherwise. The Bundle’s wrapping had slipped on the crossing; one corner of the grey showed, and on the corner, one raised hand. He looked at it the way a man looks at a name on a gravestone he had been told was empty, and the colour went out of him down to the lips. \"Nobody draws a hand like that any more,\" he said, very low. \"Nobody’s allowed to.\" I asked him who had, once. He looked over one shoulder before he answered, and then over the other. \"The Open Hand,\" he said, and then, as if the words had cost him a tooth: \"There. I never said it, and you never heard it. Cover that up.\"",
+    "description_fr": "Il peignait la chance sur les portes pour gagner sa vie — un poisson au-dessus d’un poissonnier, une clef au-dessus d’un serrurier, de petits signes qui marchaient à peu près aussi souvent que la chance — et il suivait mon dos le long des étals depuis un moment, un pinceau encore humide à la main. Quand je me retournai, il ne fit pas semblant du contraire. L’enveloppe du Balluchon avait glissé pendant la traversée ; un coin du gris paraissait, et sur ce coin, une main levée. Il la regarda comme on regarde un nom sur une tombe qu’on croyait vide, et la couleur le quitta jusqu’aux lèvres. « Plus personne ne trace une main comme ça, dit-il très bas. Plus personne n’en a le droit. » Je lui demandai qui l’avait fait, autrefois. Il regarda par-dessus une épaule avant de répondre, puis par-dessus l’autre. « La Main Ouverte », dit-il, puis, comme si ces mots lui avaient coûté une dent : « Voilà. Je ne l’ai jamais dit, et vous ne l’avez jamais entendu. Couvrez-moi ça. »",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Buy his silence (20 gold)",
+        "text_fr": "Acheter son silence (20 or)",
+        "next_id": "2015",
+        "goldMod": -20,
+        "pays": true,
+        "flagsToAdd": [
+          "hub_2015_drawer",
+          "open_hand_2"
+        ],
+        "politics": {
+          "remembrance": 2
+        }
+      },
+      {
+        "text": "Let him go; he has more to lose than you",
+        "text_fr": "Le laisser partir ; il a plus à perdre que vous",
+        "next_id": "2015",
+        "flagsToAdd": [
+          "hub_2015_drawer",
+          "open_hand_2",
+          "drawer_talked"
+        ],
+        "politics": {
+          "remembrance": 2,
+          "standing": {
+            "dominion": -5
+          },
+          "hidden": true
+        }
+      }
+    ]
+  },
+  "4999_drawn": {
+    "id": "4999_drawn",
+    "description": "He went down on one knee on the sanctum step, not beaten yet and knowing that he would be, and the white standard on his back moved. There was no wind. It moved toward me, the way a face turns toward a fire, and against my own back the Bundle answered it: warm, then hot, then something that was not heat at all. My hand came up without asking me. I watched it draw, in the air between us, in the ash still falling from the dome, a shape nobody had ever taught me and that I knew the way I know my own name: a figure, arms raised, hands open. The lines held. They hung in the air burning a colour I have no word for, and the vanguard behind the Warden stopped as if they had walked into a wall, which, I suppose, they had. Up in the gallery, behind the rail where the Spire chains its condemned to hear its sermons, a dozen faces had turned toward that light: voidkin, most of them, and a few with the burnt-out lanterns of the Ashen Penitents still hung round their necks. The one who had whispered to me in the hall was among them. The Warden looked at the drawing, and then at me, and for the first time all night he was afraid.",
+    "description_fr": "Il mit un genou à terre sur la marche du sanctuaire, pas encore vaincu et sachant qu’il le serait, et l’étendard blanc sur son dos bougea. Il n’y avait pas de vent. Il bougea vers moi, comme un visage se tourne vers un feu, et contre mon propre dos le Balluchon lui répondit : tiède, puis brûlant, puis quelque chose qui n’était plus du tout de la chaleur. Ma main se leva sans me demander mon avis. Je la regardai tracer, dans l’air entre nous, dans la cendre qui tombait encore du dôme, une forme que personne ne m’avait jamais apprise et que je connaissais comme je connais mon nom : une silhouette, bras levés, mains ouvertes. Les traits tinrent. Ils restèrent suspendus dans l’air, brûlant d’une couleur pour laquelle je n’ai pas de mot, et l’avant-garde derrière le Gardien s’arrêta net, comme si elle avait heurté un mur, ce qui était, je suppose, le cas. Là-haut, dans la tribune, derrière la balustrade où la Flèche enchaîne ses condamnés pour qu’ils entendent ses sermons, une douzaine de visages s’étaient tournés vers cette lumière : des enfants du Néant pour la plupart, et quelques-uns qui portaient encore au cou la lanterne éteinte des Pénitents de Cendre. Celui qui m’avait parlé tout bas dans la salle était parmi eux. Le Gardien regarda le dessin, puis moi, et pour la première fois de la nuit il eut peur.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Let it burn where they can all see it",
+        "text_fr": "Le laisser brûler, à la vue de tous",
+        "next_id": "4999",
+        "flagsToAdd": [
+          "open_hand_3",
+          "open_hand_shown"
+        ],
+        "politics": {
+          "remembrance": 3,
+          "marks": {
+            "inquisition": "foe"
+          },
+          "standing": {
+            "penitents": 10,
+            "vigil": 10
+          },
+          "offerFrom": "open_hand"
+        }
+      },
+      {
+        "text": "Smother it before anyone can swear to it",
+        "text_fr": "L’étouffer avant que quiconque puisse en jurer",
+        "next_id": "4999",
+        "healAmount": -10,
+        "flagsToAdd": [
+          "open_hand_3",
+          "open_hand_hidden"
+        ],
+        "politics": {
+          "remembrance": 3,
+          "offerFrom": "open_hand"
+        }
+      }
+    ],
+    "noDetour": true
+  },
+  "6010_wickwarden": {
+    "id": "6010_wickwarden",
+    "description": "She read the first page the way you read a letter you have been expecting for fifty years, and then she turned her lamp down to a bead, which I learned later is how a Wickwarden bows. \"It means us,\" she said. \"The Wickwardens. When the Reliquary burned the Hand, our Eldest of the day took the children out through the cliff lights in fish baskets, and we lost them again inside a generation. Children do not stay hidden. They grow up, and marry, and forget what they are. We have been looking for the line ever since. So has the Inquisition, and it has better lamps.\" She looked at the grey on my back, and then at my hands. \"We are not much of a House any more. But there is a Wickwarden lamp lit for you in every chapel that still has one, if you will have it.\"",
+    "description_fr": "Elle lut la première page comme on lit une lettre attendue depuis cinquante ans, puis baissa sa lampe jusqu’à n’en laisser qu’une perle, ce qui est, je l’appris plus tard, la façon dont s’inclinent les Garde-Mèches. « C’est de nous qu’elle parle, dit-elle. Des Garde-Mèches. Quand le Reliquaire a brûlé la Main, notre Aînée d’alors a fait sortir les enfants par les feux de falaise, dans des paniers à poissons, et nous les avons reperdus en moins d’une génération. Les enfants ne restent pas cachés. Ils grandissent, se marient et oublient ce qu’ils sont. Nous cherchons la lignée depuis. L’Inquisition aussi, et elle a de meilleures lampes. » Elle regarda le gris sur mon dos, puis mes mains. « Nous ne sommes plus grand-chose, comme Maison. Mais une lampe des Garde-Mèches brûle pour vous dans chaque chapelle qui en a encore une, si vous en voulez. »",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Lantern-keeper"
+    },
+    "choices": [
+      {
+        "text": "Take the lamp, and the Wickwardens with it",
+        "text_fr": "Accepter la lampe, et les Garde-Mèches avec",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_wickwarden",
+          "wickwarden_lamp"
+        ],
+        "politics": {
+          "marks": {
+            "wickwardens": "friend"
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Tell her the line will light its own lamps",
+        "text_fr": "Lui dire que la lignée allumera ses propres lampes",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_wickwarden"
+        ]
+      }
+    ]
+  },
+  "6010_record": {
+    "id": "6010_record",
+    "description": "The Reliquary keeps accounts of everything, and it had kept them of this too, in a muniment room under the oldest chapel, behind a seal with a skull burning where the lantern’s flame should be. Nothing had got in for fifty years. Two rolls lay apart from the rest in a box of black wood. The first was headed the Unmaking. The Seal, it said, had been taken whole from the clan that drew it and had kept it on this coast for centuries; the clan had been burned to the last grown hand and its name struck from every record, as of a clan that never was; and the Seal had been cut into six and painted white, so that no hand but the Reliquary’s could hold it. The first Inquisitor had not sewn it. He had cut it. The Court’s ledger had copied the lie, as everyone had. The second roll was dated the first night, and headed the Rite. The Reliquary had brought every piece it held to the shore, all but the one that had gone out through the cliff lights with the children, and tried to open a door with them: a door for the Lantern alone. The pieces would not answer. They wanted the blood of the hand that drew them, and the Reliquary had burned that blood nine years before. The coast tore instead, and the tear kept a piece for its trouble. Across the foot of the roll, in fresh ink and a hand I would come to know, someone had added: The line survives. Find it. — A. V.",
+    "description_fr": "Le Reliquaire tient des comptes de tout, et il en avait tenu de cela aussi, dans une salle des chartes sous la plus ancienne chapelle, derrière un sceau où brûlait un crâne à la place de la flamme. Rien n’y était entré depuis cinquante ans. Deux rouleaux reposaient à l’écart des autres, dans une boîte de bois noir. Le premier s’intitulait la Défaite du Sceau. Le Sceau, disait-il, avait été pris entier au clan qui l’avait tracé et le gardait sur cette côte depuis des siècles ; le clan avait été brûlé jusqu’à la dernière main adulte et son nom rayé de tous les registres, comme celui d’un clan qui n’a jamais été ; et le Sceau avait été coupé en six et peint en blanc, pour qu’aucune main que celle du Reliquaire ne puisse le tenir. Ce n’était pas le premier Inquisiteur qui l’avait cousu. Il l’avait coupé. Le registre de la Cour avait recopié le mensonge, comme tout le monde. Le second rouleau était daté de la première nuit et s’intitulait le Rite. Le Reliquaire avait porté sur le rivage toutes les pièces qu’il détenait, toutes sauf celle qui était partie avec les enfants par les feux de falaise, et tenté d’ouvrir avec elles une porte : une porte pour la seule Lanterne. Les pièces n’avaient pas répondu. Elles voulaient le sang de la main qui les avait tracées, et ce sang, le Reliquaire l’avait brûlé neuf ans plus tôt. La côte s’était déchirée à la place, et la déchirure avait gardé une pièce pour sa peine. Au pied du rouleau, d’une encre fraîche et d’une écriture que j’apprendrais à connaître, quelqu’un avait ajouté : La lignée survit. Trouvez-la. — A. V.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Tell the coast: a copy on every boat that sails",
+        "text_fr": "Le dire à la côte : une copie sur chaque bateau qui part",
+        "next_id": "6010",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6010_record",
+          "open_hand_5",
+          "truth_told"
+        ],
+        "politics": {
+          "remembrance": 5,
+          "marks": {
+            "reliquary": "foe"
+          },
+          "event": "the_truth_told"
+        }
+      },
+      {
+        "text": "Keep it. A truth this size is a weapon",
+        "text_fr": "Le garder. Une vérité de cette taille est une arme",
+        "next_id": "6010",
+        "flagsToAdd": [
+          "hub_6010_record",
+          "open_hand_5",
+          "truth_kept"
+        ],
+        "politics": {
+          "remembrance": 5
+        }
+      }
+    ]
+  },
+  "7002_banner": {
+    "id": "7002_banner",
+    "description": "The heirloom had never been a flag; I knew that now. It was the one piece the Reliquary had never cut down to a saint’s size, and the figure on it was still whole, arms raised, hands open, the way the Open Hand had drawn it to hold a coast together. A clan that never was, the records said. I was what was left of it. I could raise it here, on a spar driven into the grey sand with the tear across the water, and let the coast see who came to stand under it. The Inquisition would see it too. By the next tide every Inquisitor from here to Candlehold would know that the hand was up again, and whose blood had raised it. Or I could leave it furled on my back, where it had been since my parents’ floor, and go into the tear as nobody in particular.",
+    "description_fr": "L’héritage n’avait jamais été un drapeau ; je le savais à présent. C’était la seule pièce que le Reliquaire n’avait jamais ramenée à la taille d’un saint, et la silhouette y était encore entière, bras levés, mains ouvertes, telle que la Main Ouverte l’avait tracée pour tenir une côte d’un seul tenant. Un clan qui n’a jamais été, disaient les registres. J’étais ce qu’il en restait. Je pouvais lever la main grise ici, sur un espar planté dans le sable gris, la déchirure de l’autre côté de l’eau, et laisser la côte voir qui viendrait se tenir dessous. L’Inquisition le verrait aussi. À la marée suivante, chaque inquisiteur d’ici à Candlehold saurait que la main était de nouveau levée, et quel sang l’avait levée. Ou je pouvais la garder roulée sur mon dos, où elle était depuis le plancher de mes parents, et entrer dans la déchirure sans être personne en particulier.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "reflective",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Raise it, and see who comes to stand under it",
+        "text_fr": "La lever, et voir qui viendra se tenir dessous",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "hub_7002_banner",
+          "open_hand_6",
+          "banner_raised"
+        ],
+        "politics": {
+          "remembrance": 6,
+          "marks": {
+            "inquisition": "foe"
+          },
+          "offerFrom": "open_hand",
+          "event": "the_hand_hunted"
+        }
+      },
+      {
+        "text": "Keep it furled; the tear is not a muster",
+        "text_fr": "La garder roulée ; la déchirure n’est pas une revue",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "hub_7002_banner",
+          "open_hand_6",
+          "banner_furled"
+        ],
+        "politics": {
+          "remembrance": 6
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "wickwarden_lamp",
+        "en": "Somewhere behind me, in every chapel that still had one, a Wickwarden lamp was already burning for the hand.",
+        "fr": "Quelque part derrière moi, dans chaque chapelle qui en avait encore une, une lampe des Garde-Mèches brûlait déjà pour la main."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The coast knew now whose crime the tear had been. Raised, the hand would not be a rumour any more; it would be an answer.",
+        "fr": "La côte savait désormais de qui la déchirure était le crime. Levée, la main ne serait plus une rumeur ; elle serait une réponse."
+      },
+      {
+        "flag": "open_hand_hidden",
+        "en": "I had smothered my first drawing on the Spire floor so that nobody could swear to it. This would be the opposite of that.",
+        "fr": "J’avais étouffé mon premier dessin sur le sol de la Flèche pour que personne ne puisse en jurer. Ce serait tout le contraire."
+      },
+      {
+        "flag": "open_hand_shown",
+        "en": "The condemned in the Spire’s gallery had seen the hand burn once. Some of them, I had heard, had walked all the way to this shore.",
+        "fr": "Les condamnés de la tribune de la Flèche avaient déjà vu la main brûler une fois. Certains, avais-je entendu dire, avaient marché jusqu’à ce rivage."
+      }
+    ]
+  },
+  "5010_letter": {
+    "id": "5010_letter",
+    "description": "The black water gave up a courier on my second day in the Cloister, the way it gave up everything sooner or later, and the deserters fished him out with a boathook and went through his pockets with the professional sorrow of people who had once been fished out themselves. They left the oilskin for me. Inside was a letter on Inquisition paper, from an Inquisitor I would never meet to the Court’s keeper of the Stair, and it was brief, as orders are: whatever pieces of the grey the Court brought up were to go to the Reliquary, sealed, and not to the fire. Whatever the Spire told the faithful about burning what the tear left behind, the Inquisition did not burn the Shroud. It collected it.",
+    "description_fr": "L’eau noire rendit un messager au deuxième jour de mon séjour au Cloître, comme elle finissait par tout rendre, et les déserteurs le repêchèrent à la gaffe et lui firent les poches avec la tristesse professionnelle de gens qu’on avait un jour repêchés eux-mêmes. Ils me laissèrent la toile cirée. Dedans, il y avait une lettre sur papier de l’Inquisition, d’un inquisiteur que je ne rencontrerais jamais au gardien de l’Escalier de la Cour, et elle était brève, comme le sont les ordres : toutes les pièces du gris que la Cour remonterait iraient au Reliquaire, scellées, et non au feu. Quoi que la Flèche racontât aux fidèles sur ce qu’on brûle de ce que laisse la déchirure, l’Inquisition ne brûlait pas le Linceul. Elle le collectionnait.",
+    "context_taxonomy": {
+      "ui_theme": "catacombs",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Copy it out for the Penitents’ runners",
+        "text_fr": "En faire une copie pour les coureurs des Pénitents",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_letter",
+          "letter_copied"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 3
+          },
+          "standing": {
+            "penitents": 5,
+            "dominion": -5
+          }
+        }
+      },
+      {
+        "text": "Seal it again and give it back to the water",
+        "text_fr": "Le resceller et le rendre à l’eau",
+        "next_id": "5010",
+        "flagsToAdd": [
+          "hub_5010_letter"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 3
+          }
+        }
+      }
+    ]
+  },
+  "7100_log": {
+    "id": "7100_log",
+    "description": "The Anchorage’s chapel had been the flagship’s stern, and her log was still in it, under the altar that had been the Admiral’s chart table. Nobody had read it since; the Anchorage preferred to pray over it. I read it. The last orders were not the Admiral’s. They came from the Black Reliquary, under its seal, and they were plain: sail the grey sail into the tear with the fleet behind it, and finish what the Reliquary had begun on the first night. Draw the door wide. The Admiral had written his acknowledgment under them in a steady hand, and under that, three days later, in a hand that was not steady at all: It will not answer. It wants a blood we have not got. The Lantern keep the fleet. The rite had been tried before. It had cost a coast the first time, and forty ships the second.",
+    "description_fr": "La chapelle du Mouillage avait été la poupe du vaisseau amiral, et son journal de bord y était encore, sous l’autel qui avait été la table à cartes de l’Amiral. Personne ne l’avait lu depuis ; le Mouillage préférait prier dessus. Je le lus. Les derniers ordres n’étaient pas de l’Amiral. Ils venaient du Reliquaire Noir, sous son sceau, et ils étaient clairs : mener la voile grise dans la déchirure, la flotte derrière elle, et achever ce que le Reliquaire avait commencé la première nuit. Ouvrir la porte en grand. L’Amiral avait écrit dessous son accusé de réception d’une main ferme, et dessous encore, trois jours plus tard, d’une main qui ne l’était plus du tout : Elle ne répond pas. Elle veut un sang que nous n’avons pas. Que la Lanterne garde la flotte. Le rite avait déjà été tenté. Il avait coûté une côte la première fois, et quarante navires la deuxième.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Take the log out under your coat",
+        "text_fr": "Emporter le journal sous votre manteau",
+        "next_id": "7100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_7100_log",
+          "fleet_log_read",
+          "fleet_log_taken"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 5
+          }
+        }
+      },
+      {
+        "text": "Copy the last page and leave the altar be",
+        "text_fr": "Recopier la dernière page et laisser l’autel en paix",
+        "next_id": "7100",
+        "flagsToAdd": [
+          "hub_7100_log",
+          "fleet_log_read"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "stage": 5
+          }
+        }
+      }
+    ]
+  },
+  "7002_orders": {
+    "id": "7002_orders",
+    "description": "The Admiral’s last page was in my coat, and it was, as far as I could tell, the only thing on this coast that could break the Dominion in two. The Order had buried a third of its knights fighting a tear the Reliquary had made, and did not know it. Shown that page, the Grand Master’s knights would turn on the Inquisition before the ink was dry. Or I could sell it back. The Inquisition had a legate somewhere off this shore and very deep pockets, and a writ under its seal would open every port from here to Candlehold. I sat on the grey sand with the page on my knee and tried to decide what I owed a fleet that had sailed to burn my city.",
+    "description_fr": "La dernière page de l’Amiral était dans mon manteau, et c’était, autant que je pouvais en juger, la seule chose sur cette côte capable de briser le Dominion en deux. L’Ordre avait enterré un tiers de ses chevaliers à combattre une déchirure que le Reliquaire avait faite, et il l’ignorait. Qu’on montre cette page aux chevaliers du Grand Maître, et ils se retourneraient contre l’Inquisition avant que l’encre ne sèche. Ou bien je pouvais la revendre. L’Inquisition avait un légat quelque part au large de ce rivage, et les poches très profondes, et un mandat sous son sceau ouvrirait tous les ports d’ici à Candlehold. Je m’assis sur le sable gris, la page sur le genou, et tâchai de décider ce que je devais à une flotte qui avait fait voile pour brûler ma ville.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Send it to the Order’s knights at the Anchorage",
+        "text_fr": "L’envoyer aux chevaliers de l’Ordre, au Mouillage",
+        "next_id": "7002",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_7002_orders",
+          "lantern_exposed"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "outcome": 0
+          }
+        }
+      },
+      {
+        "text": "Sell it to the legate, and carry the writ",
+        "text_fr": "La vendre au légat, et porter le mandat",
+        "next_id": "7002",
+        "goldMod": 150,
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "hub_7002_orders",
+          "lantern_kept"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "hooded_lantern",
+            "outcome": 1
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "fleet_log_taken",
+        "en": "It was not even a copy. The log itself was under my coat, and the stern-chapel had a gap under its altar.",
+        "fr": "Ce n’était même pas une copie. Le journal lui-même était sous mon manteau, et la chapelle de poupe avait un vide sous son autel."
+      },
+      {
+        "flag": "truth_told",
+        "en": "The coast had already heard the Reliquary’s roll read aloud, at my say-so. This page would only make it louder.",
+        "fr": "La côte avait déjà entendu lire le rouleau du Reliquaire, parce que je l’avais voulu. Cette page ne ferait que hausser la voix."
+      }
+    ]
+  },
+  "3005_envoys": {
+    "id": "3005_envoys",
+    "description": "They had come looking for me, which was new. Three envoys sat in a row on a fallen beam at the Quarter’s gate, each pretending the other two were not there. The first wore the Order’s sword-and-lantern and the face of a man who had buried friends on this coast: Grand Master Morrow sent his regards, and a whetstone. The second was a Wickwarden with a lamp in her lap: the Eldest, Maud Tallis, sent oil for my wounds and asked for nothing at all, which I distrusted most. The third was an Inquisitor, young, gentle-voiced, with the hooded lantern at his collar: Aurel Vane, the Inquisitor-General, sent a purse, and his interest. Vane. A common name on this coast, it seemed, and never yet on anyone I could stand. The Lantern-Bearer was dying, the three of them agreed, if on nothing else, and when the Throne was empty their masters would remember who had stood where. The Inquisitor’s eyes went to the grey on my back twice while he talked, and the second time he forgot to smile.",
+    "description_fr": "Ils étaient venus me chercher, ce qui était nouveau. Trois émissaires étaient assis en rang sur une poutre tombée à la porte du Quartier, chacun faisant semblant que les deux autres n’étaient pas là. Le premier portait l’épée-lanterne de l’Ordre et le visage d’un homme qui avait enterré des amis sur cette côte : le Grand Maître Morrow m’envoyait ses salutations, et une pierre à aiguiser. La deuxième était une Garde-Mèche, une lampe sur les genoux : l’Aînée, Maud Tallis, m’envoyait de l’huile pour mes plaies et ne demandait rien du tout, ce dont je me méfiai le plus. Le troisième était un inquisiteur, jeune, à la voix douce, la lanterne encapuchonnée au col : Aurel Vane, l’Inquisiteur général, m’envoyait une bourse, et son intérêt. Vane. Un nom courant sur cette côte, semblait-il, et jamais encore porté par quelqu’un que je puisse souffrir. Le Porte-Lanterne se mourait, en convenaient-ils tous trois, à défaut d’autre chose, et quand le Trône serait vide, leurs maîtres se souviendraient de qui s’était tenu où. Les yeux de l’inquisiteur se posèrent deux fois sur le gris de mon dos pendant qu’il parlait, et la seconde fois, il oublia de sourire.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Take Vane’s purse (+40 gold)",
+        "text_fr": "Prendre la bourse de Vane (+40 or)",
+        "next_id": "3005",
+        "goldMod": 40,
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_3005_envoys",
+          "envoy_gift_vane"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Take Morrow’s whetstone",
+        "text_fr": "Prendre la pierre à aiguiser de Morrow",
+        "next_id": "3005",
+        "flagsToAdd": [
+          "hub_3005_envoys",
+          "envoy_gift_morrow"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Take Tallis’s oil for your wounds",
+        "text_fr": "Prendre l’huile de Tallis pour vos plaies",
+        "next_id": "3005",
+        "healAmount": 30,
+        "flagsToAdd": [
+          "hub_3005_envoys",
+          "envoy_gift_tallis"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 2
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Send all three home with their gifts",
+        "text_fr": "Renvoyer les trois avec leurs présents",
+        "next_id": "3005",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_3005_envoys",
+          "envoys_refused"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 2
+          }
+        }
+      }
+    ]
+  },
+  "5100_vote": {
+    "id": "5100_vote",
+    "description": "The Tribunal had lost its Spire but not its seal. Its last clerk on this coast had walked to Wrack’s End with the seal in his sleeve and a letter in his coat, and had been waiting a week for anyone who would row him out to the ship riding off the point: Candlehold’s envoy, who would not come in past the false lamps, and could hardly be blamed. The letter was the Tribunal’s vote for the Lantern Throne, sealed against the day the Throne fell empty. \"The Lantern-Bearer is dying,\" the clerk said, \"and the Tribunal votes as one or not at all. Somebody has to carry it out there. The wreckers will not, and I cannot swim.\" He held it out to me with both hands, the way you hold out something that might go off.",
+    "description_fr": "Le Tribunal avait perdu sa Flèche, mais pas son sceau. Son dernier greffier sur cette côte était venu à pied jusqu’à Bout-du-Varech, le sceau dans la manche et une lettre dans son manteau, et attendait depuis une semaine quiconque voudrait bien le mener à la rame jusqu’au navire mouillé au large de la pointe : celui de l’émissaire de Candlehold, qui refusait d’entrer en deçà des fausses lampes, et on pouvait difficilement l’en blâmer. La lettre était le vote du Tribunal pour le Trône de la Lanterne, scellé en prévision du jour où le Trône serait vide. « Le Porte-Lanterne se meurt, dit le greffier, et le Tribunal vote d’une seule voix ou pas du tout. Il faut que quelqu’un porte ceci là-bas. Les pilleurs refusent, et je ne sais pas nager. » Il me la tendit à deux mains, comme on tend une chose qui pourrait exploser.",
+    "context_taxonomy": {
+      "ui_theme": "docks",
+      "mood": "neutral",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Row the vote out to the envoy, seal unbroken",
+        "text_fr": "Porter le vote à l’émissaire, sceau intact",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_vote",
+          "vote_carried"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 3
+          },
+          "standing": {
+            "dominion": 10
+          }
+        }
+      },
+      {
+        "text": "Steam it open first, then row it out",
+        "text_fr": "L’ouvrir à la vapeur d’abord, puis le porter",
+        "next_id": "5100",
+        "alignmentMod": -1,
+        "flagsToAdd": [
+          "hub_5100_vote",
+          "vote_carried",
+          "vote_read"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 3
+          },
+          "standing": {
+            "dominion": 5,
+            "crows": 5
+          }
+        }
+      },
+      {
+        "text": "Refuse: the Tribunal hanged four hundred",
+        "text_fr": "Refuser : le Tribunal a pendu quatre cents personnes",
+        "next_id": "5100",
+        "flagsToAdd": [
+          "hub_5100_vote",
+          "vote_refused"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 3
+          },
+          "standing": {
+            "compact": 5,
+            "penitents": 5,
+            "dominion": -5
+          }
+        }
+      }
+    ]
+  },
+  "6100_knife": {
+    "id": "6100_knife",
+    "description": "He had frozen sitting up, in a pilgrim’s grey, with his back to the milestone and his eyes on the road from the coast, the way a man sits who is waiting for someone in particular. Rimewell had left him there because the ground was too hard to dig and nobody knew his name. The road-keeper knew who he had been waiting for, though. The Eldest Wickwarden walked the pilgrims’ road to the Reliquary every year, on foot, with one lamp, and she was on it now. Under his coat he had a knife. The hilt bore the Order’s lantern on a sword, plain as a signature. But I had drawn once, on the Spire, and I knew now how a sign sits on a thing: this one sat on top of another. Under the Order’s mark, scraped out and painted over, was a lantern with a hood on it. Someone had wanted Maud Tallis dead on this road, and the Grand Master hanged for it.",
+    "description_fr": "Il avait gelé assis, en gris de pèlerin, le dos contre la borne et les yeux sur la route de la côte, comme s’assied un homme qui attend quelqu’un en particulier. Puits-de-Givre l’avait laissé là parce que le sol était trop dur pour creuser et que personne ne savait son nom. La gardienne de la route savait qui il attendait, en revanche. L’Aînée des Garde-Mèches remontait chaque année la route des pèlerins jusqu’au Reliquaire, à pied, avec une seule lampe, et elle était en chemin. Sous son manteau, il avait un couteau. La garde portait la lanterne sur une épée de l’Ordre, nette comme une signature. Mais j’avais tracé une fois, sur la Flèche, et je savais désormais comment un signe repose sur une chose : celui-ci reposait sur un autre. Sous la marque de l’Ordre, grattée et repeinte, il y avait une lanterne encapuchonnée. Quelqu’un avait voulu Maud Tallis morte sur cette route, et le Grand Maître pendu pour cela.",
+    "context_taxonomy": {
+      "ui_theme": "cathedral",
+      "mood": "grim",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "Carry the knife to Tallis on the road",
+        "text_fr": "Porter le couteau à Tallis, sur la route",
+        "next_id": "6100",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "hub_6100_knife",
+          "knife_to_tallis"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 4
+          },
+          "standing": {
+            "dominion": 5
+          }
+        }
+      },
+      {
+        "text": "Keep the knife; it will be worth more later",
+        "text_fr": "Garder le couteau ; il vaudra plus cher plus tard",
+        "next_id": "6100",
+        "flagsToAdd": [
+          "hub_6100_knife",
+          "knife_kept"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "stage": 4
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "vote_read",
+        "en": "I had read the Tribunal’s vote by steam at Wrack’s End. It had been cast for Vane.",
+        "fr": "J’avais lu à la vapeur le vote du Tribunal, à Bout-du-Varech. Il était pour Vane."
+      }
+    ]
+  },
+  "7002_throne": {
+    "id": "7002_throne",
+    "description": "I laid the three of them out on the sand in my head, the way you lay out cards you already know. The Inquisitor-General, who wanted the tear for a door and my blood for its key. The Grand Master, who wanted it shut with a sword and had lost a third of his Order trying. The Eldest Wickwarden, who wanted the dying stopped and had nothing to stop it with but lamps. The Lantern-Bearer was dead and the Houses were counting their votes like coins; the Admiralty’s was in my hand, and the chaplain had told me it would tip the count. Whoever I chose would be waiting on the far side of all this, with the whole Dominion behind them, to meet me.",
+    "description_fr": "J’étalai les trois sur le sable, dans ma tête, comme on étale des cartes qu’on connaît déjà. L’Inquisiteur général, qui voulait la déchirure pour en faire une porte, et mon sang pour en faire la clef. Le Grand Maître, qui voulait la refermer à l’épée et avait perdu un tiers de son Ordre à essayer. L’Aînée des Garde-Mèches, qui voulait qu’on cesse de mourir et n’avait pour l’empêcher que des lampes. Le Porte-Lanterne était mort et les Maisons comptaient leurs voix comme des pièces ; celle de l’Amirauté était dans ma main, et l’aumônier m’avait dit qu’elle ferait pencher le compte. Qui que je choisisse m’attendrait de l’autre côté de tout cela, tout le Dominion derrière soi, pour m’accueillir.",
+    "context_taxonomy": {
+      "ui_theme": "epilogue",
+      "mood": "tense",
+      "speaker": "Narrator"
+    },
+    "choices": [
+      {
+        "text": "For Grand Master Morrow: a crusade",
+        "text_fr": "Pour le Grand Maître Morrow : une croisade",
+        "next_id": "7002",
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_morrow"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 0
+          },
+          "standing": {
+            "dominion": 10,
+            "vigil": 5
+          }
+        }
+      },
+      {
+        "text": "For Inquisitor-General Vane: an inquisition",
+        "text_fr": "Pour l’Inquisiteur général Vane : une inquisition",
+        "next_id": "7002",
+        "alignmentMod": -2,
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_vane"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 1
+          },
+          "standing": {
+            "dominion": 15,
+            "vigil": -10,
+            "penitents": -10
+          }
+        }
+      },
+      {
+        "text": "For Eldest Wickwarden Tallis: a church",
+        "text_fr": "Pour l’Aînée des Garde-Mèches Tallis : une Église",
+        "next_id": "7002",
+        "alignmentMod": 1,
+        "flagsToAdd": [
+          "throne_backed",
+          "throne_backed_tallis"
+        ],
+        "politics": {
+          "intrigue": {
+            "id": "dying_lantern_bearer",
+            "outcome": 2
+          },
+          "standing": {
+            "dominion": 5,
+            "penitents": 5,
+            "mire": 5
+          }
+        }
+      }
+    ],
+    "flag_callbacks": [
+      {
+        "flag": "envoy_gift_vane",
+        "en": "Vane’s purse was long spent. Vane, I suspected, had kept the receipt.",
+        "fr": "La bourse de Vane était dépensée depuis longtemps. Vane, je le soupçonnais, avait gardé le reçu."
+      },
+      {
+        "flag": "envoy_gift_morrow",
+        "en": "Morrow’s whetstone was in my pack; it had kept my edge all the way from the Spire.",
+        "fr": "La pierre à aiguiser de Morrow était dans mon sac ; elle avait entretenu mon fil depuis la Flèche."
+      },
+      {
+        "flag": "envoy_gift_tallis",
+        "en": "Tallis’s oil had closed a wound of mine on the Spire road. Lamps, it turned out, were not all she had.",
+        "fr": "L’huile de Tallis avait refermé une de mes plaies sur la route de la Flèche. Elle n’avait pas que des lampes, finalement."
+      },
+      {
+        "flag": "envoys_refused",
+        "en": "I had sent all three envoys home with their gifts. None of their masters had forgotten it, in either direction.",
+        "fr": "J’avais renvoyé les trois émissaires avec leurs présents. Aucun de leurs maîtres ne l’avait oublié, dans un sens ou dans l’autre."
+      },
+      {
+        "flag": "vote_read",
+        "en": "The Tribunal’s vote, which I had read by steam at Wrack’s End, had been cast for Vane.",
+        "fr": "Le vote du Tribunal, que j’avais lu à la vapeur à Bout-du-Varech, était pour Vane."
+      },
+      {
+        "flag": "vote_refused",
+        "en": "The Tribunal’s vote had gone out to the envoy’s ship without me. I had not been sorry.",
+        "fr": "Le vote du Tribunal était parti vers le navire de l’émissaire sans moi. Je ne l’avais pas regretté."
+      },
+      {
+        "flag": "knife_kept",
+        "en": "The frozen pilgrim’s knife was in my coat, the Order’s mark on top and the hooded lantern underneath.",
+        "fr": "Le couteau du pèlerin gelé était dans mon manteau, la marque de l’Ordre dessus et la lanterne encapuchonnée dessous."
+      },
+      {
+        "flag": "knife_to_tallis",
+        "en": "Maud Tallis had taken the knife from me on the Rimewell road, looked at both its marks, and thanked me for her life the way you thank someone for directions.",
+        "fr": "Maud Tallis m’avait pris le couteau des mains sur la route de Puits-de-Givre, en avait regardé les deux marques, et m’avait dit merci pour sa vie comme on dit merci pour un renseignement."
+      },
+      {
+        "flag": "open_hand_5",
+        "en": "And I had read the Reliquary’s roll. Whoever took the Throne would inherit the Reliquary’s crime with it, and the Reliquary’s interest in my blood.",
+        "fr": "Et j’avais lu le rouleau du Reliquaire. Qui prendrait le Trône hériterait avec lui du crime du Reliquaire, et de l’intérêt du Reliquaire pour mon sang."
+      },
+      {
+        "flag": "vote_carried",
+        "en": "I had rowed the Tribunal’s vote out to Candlehold’s envoy with its seal unbroken. Whatever it said, it was said, and I had not looked.",
+        "fr": "J’avais porté à la rame le vote du Tribunal à l’émissaire de Candlehold, son sceau intact. Quoi qu’il dît, c’était dit, et je n’avais pas regardé.",
+        "unlessFlags": [
+          "vote_read"
         ]
       }
     ]

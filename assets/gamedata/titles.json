@@ -628,5 +628,41 @@
         "value": 2
       }
     ]
+  },
+  "drawer": {
+    "id": "drawer",
+    "name": "Drawer",
+    "name_fr": "Main qui trace",
+    "line": "Something old answered your hand on the Spire, and your hand answered back.",
+    "line_fr": "Quelque chose d’ancien a répondu à votre main sur la Flèche, et votre main lui a répondu.",
+    "faction": "open_hand",
+    "source": "story",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "maxMana",
+        "value": 1
+      }
+    ]
+  },
+  "last_of_the_open_hand": {
+    "id": "last_of_the_open_hand",
+    "name": "Last of the Open Hand",
+    "name_fr": "Dernière Main Ouverte",
+    "line": "The clan that never was has one member left, and it is you.",
+    "line_fr": "Le clan qui n’a jamais été compte encore un membre, et c’est vous.",
+    "faction": "open_hand",
+    "source": "story",
+    "negative": false,
+    "effects": [
+      {
+        "kind": "allyDamagePercent",
+        "value": 3
+      },
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      }
+    ]
   }
 }

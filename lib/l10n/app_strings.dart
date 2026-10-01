@@ -9401,6 +9401,168 @@ const Map<String, Map<AppLanguage, String>> _strings = {
     AppLanguage.fr:
         '{name}\u00a0: {tier}. Cette boutique refuse de commercer avec vous.',
   },
+  // The clan story (v1.195): politics on choices, the coast's events, the
+  // Open Hand.
+  'politics_hint_mark_friend': {
+    AppLanguage.en: '{name}: friend',
+    AppLanguage.fr: '{name}\u00a0: amitié',
+  },
+  'politics_hint_mark_foe': {
+    AppLanguage.en: '{name}: foe',
+    AppLanguage.fr: '{name}\u00a0: inimitié',
+  },
+  'politics_hint_mark_none': {
+    AppLanguage.en: '{name}: no mark',
+    AppLanguage.fr: '{name}\u00a0: aucune marque',
+  },
+  'politics_hints_setting_title': {
+    AppLanguage.en: 'Show what choices do to the clans',
+    AppLanguage.fr: 'Montrer l’effet des choix sur les clans',
+  },
+  'politics_hints_setting_desc': {
+    AppLanguage.en:
+        'A muted line under a choice that moves the clans, such as “Vigil +5 · Dominion −5”. Hidden consequences stay hidden.',
+    AppLanguage.fr:
+        'Une ligne discrète sous un choix qui fait bouger les clans, comme «\u00a0Veille +5 · Dominion −5\u00a0». Les conséquences cachées restent cachées.',
+  },
+  'standing_cause_event': {
+    AppLanguage.en: 'News from the coast',
+    AppLanguage.fr: 'Nouvelles de la côte',
+  },
+  'offer_source_story': {
+    AppLanguage.en: 'From the story',
+    AppLanguage.fr: 'De l’histoire',
+  },
+  'patron_kind_lost': {
+    AppLanguage.en: 'Lost clan',
+    AppLanguage.fr: 'Clan perdu',
+  },
+  'coast_news_title': {
+    AppLanguage.en: 'News from the coast',
+    AppLanguage.fr: 'Nouvelles de la côte',
+  },
+  'coast_news_noted': {
+    AppLanguage.en: 'Noted',
+    AppLanguage.fr: 'Noté',
+  },
+  'coast_news_more': {
+    AppLanguage.en: '{n} more in the journal',
+    AppLanguage.fr: '{n}\u00a0de plus dans le journal',
+  },
+  'coast_news_chip': {
+    AppLanguage.en: 'News ({n})',
+    AppLanguage.fr: 'Nouvelles ({n})',
+  },
+  'coast_news_when': {
+    AppLanguage.en: 'Chapter {c}, day {d}',
+    AppLanguage.fr: 'Chapitre {c}, jour {d}',
+  },
+  'journal_news_tab': {
+    AppLanguage.en: 'News',
+    AppLanguage.fr: 'Nouvelles',
+  },
+  'journal_news_empty': {
+    AppLanguage.en:
+        'No news from the coast yet. The clans move whether you are there or not; what they do is written here.',
+    AppLanguage.fr:
+        'Aucune nouvelle de la côte pour l’instant. Les clans bougent que vous soyez là ou non\u00a0; ce qu’ils font s’écrit ici.',
+  },
+  'clans_events_title': {
+    AppLanguage.en: 'The coast moves',
+    AppLanguage.fr: 'La côte bouge',
+  },
+  'clans_events_none': {
+    AppLanguage.en: 'No politics events in the data.',
+    AppLanguage.fr: 'Aucun événement politique dans les données.',
+  },
+  'clans_event_fired': {
+    AppLanguage.en: 'Fired: chapter {c}, day {d} · variant {v}',
+    AppLanguage.fr: 'Survenu\u00a0: chapitre {c}, jour {d} · variante {v}',
+  },
+  'clans_event_waiting': {
+    AppLanguage.en: 'Not yet',
+    AppLanguage.fr: 'Pas encore',
+  },
+  'clans_event_fire_now': {
+    AppLanguage.en: 'Fire now',
+    AppLanguage.fr: 'Déclencher',
+  },
+  'clans_event_fired_notice': {
+    AppLanguage.en: '“{name}” fired.',
+    AppLanguage.fr: '«\u00a0{name}\u00a0» est survenu.',
+  },
+  'clans_event_by_story': {
+    AppLanguage.en: 'Fired by the story',
+    AppLanguage.fr: 'Déclenché par l’histoire',
+  },
+  'clans_event_trigger_chapter': {
+    AppLanguage.en: 'chapter {n}',
+    AppLanguage.fr: 'chapitre {n}',
+  },
+  'clans_event_trigger_day': {
+    AppLanguage.en: 'day {n}',
+    AppLanguage.fr: 'jour {n}',
+  },
+  'clans_event_trigger_flag': {
+    AppLanguage.en: 'flag {f}',
+    AppLanguage.fr: 'drapeau {f}',
+  },
+  'clans_event_or': {
+    AppLanguage.en: 'or',
+    AppLanguage.fr: 'ou',
+  },
+  'open_hand_unknown_name': {
+    AppLanguage.en: 'A clan with no name',
+    AppLanguage.fr: 'Un clan sans nom',
+  },
+  'open_hand_unknown_line': {
+    AppLanguage.en:
+        'A grey cloth, a giant figure with its hands open. Nobody will say whose.',
+    AppLanguage.fr:
+        'Un tissu gris, une silhouette géante aux mains ouvertes. Personne ne veut dire à qui il était.',
+  },
+  'open_hand_stage': {
+    AppLanguage.en: 'Remembrance {n}/{max}',
+    AppLanguage.fr: 'Souvenir {n}/{max}',
+  },
+  'open_hand_stage_none': {
+    AppLanguage.en: 'Not remembered yet',
+    AppLanguage.fr: 'Pas encore de souvenir',
+  },
+  'open_hand_banner_raised': {
+    AppLanguage.en: 'Banner raised',
+    AppLanguage.fr: 'Bannière levée',
+  },
+  'open_hand_edit_hint': {
+    AppLanguage.en:
+        'No standing: the remembrance stage, from the flags open_hand_1 to open_hand_6.',
+    AppLanguage.fr:
+        'Pas de réputation\u00a0: le stade du souvenir, d’après les drapeaux open_hand_1 à open_hand_6.',
+  },
+  'offer_own_hand_name': {
+    AppLanguage.en: 'Your own hand',
+    AppLanguage.fr: 'Votre propre main',
+  },
+  'offer_own_hand_greeting': {
+    AppLanguage.en:
+        'No clan comes. Your hand moves of itself, and the old blood draws.',
+    AppLanguage.fr:
+        'Aucun clan ne vient. Votre main bouge d’elle-même, et le vieux sang trace.',
+  },
+  'politics_editor_label': {
+    AppLanguage.en: 'Politics (JSON)',
+    AppLanguage.fr: 'Politique (JSON)',
+  },
+  'politics_on_enter_label': {
+    AppLanguage.en: 'Politics on entering (JSON)',
+    AppLanguage.fr: 'Politique à l’entrée (JSON)',
+  },
+  'politics_editor_help': {
+    AppLanguage.en:
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+    AppLanguage.fr:
+        '{"standing": {"vigil": 5}, "marks": {"inquisition": "foe"}, "relations": [{"a": "mire", "b": "penitents", "steps": 1}], "offerFrom": "penitents", "intrigue": {"id": "hooded_lantern", "stage": 2}, "remembrance": 3, "event": "id", "hidden": true}',
+  },
 };
 
 /// Translates the raw English [PlayerSession.alignmentLabel] value

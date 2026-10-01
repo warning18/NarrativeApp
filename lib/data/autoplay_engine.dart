@@ -11,9 +11,11 @@ import '../models/ally_state.dart'
     show equipmentBonusFor, equipmentScalingBonusFor;
 import '../models/story_node.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/story_providers.dart';
 import 'chapter_loop.dart';
 import 'chapter_spine.dart';
+import 'politics_events.dart' show choicePoliticsKey, enterPoliticsKey;
 import 'story_repository.dart';
 import 'zone_gating.dart';
 
@@ -385,6 +387,26 @@ Future<bool> _simulateFight({
   return true;
 }
 
+/// The politics [choice] carries from [fromNodeId] (v1.195), applied as a
+/// tap applies them: once.
+Future<void> _applyPolitics(WidgetRef ref, StoryData story, String fromNodeId,
+    StoryChoice choice) async {
+  if (!choice.hasPolitics) return;
+  final index = story.nodeFor(fromNodeId)?.choices.indexOf(choice) ?? -1;
+  if (index < 0) return;
+  await applyStoryPoliticsNow(ref, choice.politics!,
+      nodeId: fromNodeId, key: choicePoliticsKey(fromNodeId, index));
+}
+
+/// The politics scene [nodeId] carries on entry (v1.195), once.
+Future<void> _applyEnterPolitics(
+    WidgetRef ref, StoryData story, String nodeId) async {
+  final politics = story.nodeFor(nodeId)?.politicsOnEnter;
+  if (politics == null || politics.isEmpty) return;
+  await applyStoryPoliticsNow(ref, politics,
+      nodeId: nodeId, key: enterPoliticsKey(nodeId));
+}
+
 /// Walks the shortest choice-path from the player's current story position
 /// to [targetNodeId], applying each step's real effects — gold/alignment/
 /// heal/flags/quest-progress, shop/quest unlocks, achievement checks, and a
@@ -484,6 +506,7 @@ Future<AutoplayResult> autoplayToNode(
         approvalMods: choice.approvalMods,
       );
     }
+    await _applyPolitics(ref, story, fromNodeId, choice);
     if (choice.hasUnlocks) {
       await sessionNotifier.unlockContent(
         shopId: choice.unlockShopId,
@@ -497,6 +520,7 @@ Future<AutoplayResult> autoplayToNode(
     }
 
     playNotifier.choose(choice.nextId);
+    await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;
   }
 
@@ -754,6 +778,7 @@ Future<AutoplayResult> _playTowardChapter(
         approvalMods: choice.approvalMods,
       );
     }
+    await _applyPolitics(ref, story, currentNodeId, choice);
     if (choice.hasUnlocks) {
       await sessionNotifier.unlockContent(
         shopId: choice.unlockShopId,
@@ -767,6 +792,7 @@ Future<AutoplayResult> _playTowardChapter(
     }
 
     playNotifier.choose(choice.nextId);
+    await _applyEnterPolitics(ref, story, choice.nextId);
     stepsApplied += 1;
   }
 

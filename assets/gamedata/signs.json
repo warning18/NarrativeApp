@@ -1444,5 +1444,131 @@
       "value": 40,
       "fights": 3
     }
+  },
+  "open_hand_strike_first_line": {
+    "id": "open_hand_strike_first_line",
+    "patron": "open_hand",
+    "slot": "strike",
+    "name": "The First Line",
+    "name_fr": "Le Premier Trait",
+    "flavour": "Drawn in one stroke without lifting the hand, the way the Open Hand drew everything: it cuts the way it was drawn.",
+    "flavour_fr": "Tracé d’un seul geste sans lever la main, comme la Main Ouverte traçait tout : il tranche comme il a été tracé.",
+    "effects": [
+      {
+        "kind": "strikeKeyword",
+        "keyword": "steady"
+      },
+      {
+        "kind": "strikeDamagePercent",
+        "value": 8
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "open_hand_guard_raised_hands": {
+    "id": "open_hand_guard_raised_hands",
+    "patron": "open_hand",
+    "slot": "guard",
+    "name": "Raised Hands",
+    "name_fr": "Mains levées",
+    "flavour": "The giant on the grey holds its hands up and open; whatever comes at you meets the palms first.",
+    "flavour_fr": "Le géant du gris lève les mains, ouvertes ; tout ce qui vient sur vous rencontre d’abord les paumes.",
+    "effects": [
+      {
+        "kind": "guardBlockPercent",
+        "value": 9
+      },
+      {
+        "kind": "guardFlat",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "open_hand_mend_drawn_shut": {
+    "id": "open_hand_mend_drawn_shut",
+    "patron": "open_hand",
+    "slot": "mend",
+    "name": "Drawn Shut",
+    "name_fr": "Tracé fermé",
+    "flavour": "The Seal was never sewn. It was drawn shut, line over line, and a wound can be drawn shut the same way.",
+    "flavour_fr": "Le Sceau n’a jamais été cousu. On l’a fermé d’un trait sur l’autre, et une plaie se ferme de la même façon.",
+    "effects": [
+      {
+        "kind": "mendPercent",
+        "value": 9
+      },
+      {
+        "kind": "mendShield",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "open_hand_spell_old_blood": {
+    "id": "open_hand_spell_old_blood",
+    "patron": "open_hand",
+    "slot": "spell",
+    "name": "Old Blood",
+    "name_fr": "Sang ancien",
+    "flavour": "A drop of your own blood in the ink, and the sign answers as if it had been waiting for you.",
+    "flavour_fr": "Une goutte de votre propre sang dans l’encre, et le signe répond comme s’il vous attendait.",
+    "effects": [
+      {
+        "kind": "spellDamagePercent",
+        "value": 9
+      },
+      {
+        "kind": "manaFlat",
+        "value": 1
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "open_hand_passive_what_is_drawn": {
+    "id": "open_hand_passive_what_is_drawn",
+    "patron": "open_hand",
+    "slot": "passive",
+    "name": "What Is Drawn, Holds",
+    "name_fr": "Ce qui est tracé tient",
+    "flavour": "The clan’s motto, drawn small inside your collar, where nobody reads it but you.",
+    "flavour_fr": "La devise du clan, tracée en petit à l’intérieur de votre col, là où personne ne la lit que vous.",
+    "effects": [
+      {
+        "kind": "partyStartBlock",
+        "value": 1
+      },
+      {
+        "kind": "maxHealth",
+        "value": 9
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
+  },
+  "open_hand_passive_never_was": {
+    "id": "open_hand_passive_never_was",
+    "patron": "open_hand",
+    "slot": "passive",
+    "name": "The Clan That Never Was",
+    "name_fr": "Le clan qui n’a jamais été",
+    "flavour": "Struck from every record, and harder to find for it: blows go looking for you and come back empty-handed.",
+    "flavour_fr": "Rayé de tous les registres, et d’autant plus difficile à trouver : les coups vous cherchent et reviennent bredouilles.",
+    "effects": [
+      {
+        "kind": "dodgeChance",
+        "value": 2
+      },
+      {
+        "kind": "critChance",
+        "value": 2
+      }
+    ],
+    "requiresPatrons": [],
+    "pact": null
   }
 }

@@ -20,9 +20,11 @@ import '../data/journey_rules.dart';
 import '../data/recurring_encounters.dart';
 import '../data/road_events.dart';
 import '../data/encounter_text.dart';
+import '../data/factions.dart' show CoastNews;
 import '../data/map_themes.dart';
 import '../data/narration_clips.dart';
 import '../data/narration_tokens.dart';
+import '../data/politics_events.dart';
 import '../data/port_helpers.dart';
 import '../data/camp_state.dart';
 import '../data/quest_hints.dart';
@@ -40,6 +42,7 @@ import '../providers/aftermath_provider.dart';
 import '../providers/app_mode_provider.dart';
 import '../providers/camp_presence_provider.dart';
 import '../providers/chapter_loop_provider.dart';
+import '../providers/clans_provider.dart';
 import '../providers/combat_active_provider.dart';
 import '../providers/combat_settings_provider.dart';
 import '../providers/discovery_provider.dart';
@@ -50,6 +53,7 @@ import '../providers/elevenlabs_tts_provider.dart';
 import '../providers/home_tab_provider.dart';
 import '../providers/map_theme_provider.dart';
 import '../providers/player_session_provider.dart';
+import '../providers/politics_provider.dart';
 import '../providers/road_random_provider.dart';
 import '../providers/remark_provider.dart';
 import '../providers/story_providers.dart';
@@ -249,17 +253,25 @@ class _StoryView extends ConsumerWidget {
       final offered = await ref
           .read(playerSessionProvider.notifier)
           .grantChapterOffer(next);
+      // The coast moved while the party was away (v1.195): the events the
+      // new chapter brings, told on its card. (Gone from the screen, the
+      // next day's tick fires them, see HomeShell.)
+      if (!context.mounted) return;
+      final news = await runCoastEvents(ref, chapter: next);
       if (!context.mounted) return;
       final loop = ref
           .read(chapterLoopsProvider)
           .where((l) => l.chapter == next)
           .firstOrNull;
       if (loop == null || loop.title.isEmpty) return;
+      final lang = ref.read(appLanguageProvider);
       showChapterCard(context,
           number: loop.label.isEmpty ? '$next' : loop.label,
           title: loop.title,
           colour: InkColors.of(context).ember,
-          note: offered ? tr(ref, 'offer_chapter_note') : null);
+          note: offered ? tr(ref, 'offer_chapter_note') : null,
+          newsTitle: trFor(lang, 'coast_news_title'),
+          news: chapterCardNews(news, lang));
     });
 
     // Kept loaded for the party's reactions to a choice (see approval.dart),
@@ -1386,6 +1398,15 @@ Future<void> _selectChoice({
       await showApprovalReactions(context, ref, reactions);
     }
   }
+  // What the choice does to the coast (v1.195), once: taken again, or
+  // after going back, it moves nothing.
+  if (choice.hasPolitics && !skipRewardEffects && !isExcursion) {
+    final index = storyChoiceIndex(story, currentNodeId, choice);
+    if (index >= 0) {
+      await applyStoryPoliticsNow(ref, choice.politics!,
+          nodeId: currentNodeId, key: choicePoliticsKey(currentNodeId, index));
+    }
+  }
   if (choice.hasUnlocks) {
     final enemyIds = resolvedEnemyIds.toSet();
     await ref.read(playerSessionProvider.notifier).unlockContent(
@@ -1623,10 +1644,14 @@ Future<void> _arriveAt(WidgetRef ref, StoryData story, String nodeId) async {
 /// [_arriveAt]).
 Future<void> _readThrough(WidgetRef ref, StoryData story) async {
   final play = ref.read(storyPlayProvider.notifier);
+  // The scene arrived at moves the coast first, once (v1.195).
+  await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (ref.read(appModeProvider) == AppMode.edit) return;
   final french = ref.read(appLanguageProvider) == AppLanguage.fr;
   final preludes = <ScenePrelude>[];
   for (var i = 0; i < maxPassThrough; i++) {
+    // Each scene read through on the way moves it too.
+    await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
     final session = ref.read(playerSessionProvider);
     final node = story.nodeFor(ref.read(storyPlayProvider).currentNodeId);
     if (node == null) break;
@@ -1645,11 +1670,49 @@ Future<void> _readThrough(WidgetRef ref, StoryData story) async {
           .read(playerSessionProvider.notifier)
           .applyChoiceEffects(flagsToAdd: way.flagsToAdd);
     }
+    if (way.hasPolitics) {
+      final index = storyChoiceIndex(story, node.id, way);
+      if (index >= 0) {
+        await applyStoryPoliticsNow(ref, way.politics!,
+            nodeId: node.id, key: choicePoliticsKey(node.id, index));
+      }
+    }
     play.choose(way.nextId);
   }
+  await applyEnterPolitics(ref, ref.read(storyPlayProvider).currentNodeId);
   if (preludes.isNotEmpty) {
     ref.read(pendingPreludeProvider.notifier).state = preludes;
   }
+}
+
+/// The news a chapter's card tells, in [lang]: the first
+/// [chapterCardNewsShown], then how many more the journal keeps.
+List<String> chapterCardNews(List<CoastNews> news, AppLanguage lang) {
+  final lines = [
+    for (final n in news)
+      if (n.textFor(lang).isNotEmpty) n.textFor(lang),
+  ];
+  if (lines.length <= chapterCardNewsShown) return lines;
+  return [
+    ...lines.take(chapterCardNewsShown),
+    trFor(lang, 'coast_news_more')
+        .replaceAll('{n}', '${lines.length - chapterCardNewsShown}'),
+  ];
+}
+
+/// News lines a chapter's card has room for.
+const int chapterCardNewsShown = 3;
+
+/// [choice]'s place among [nodeId]'s choices (the key its politics are
+/// remembered under, see choicePoliticsKey), -1 when it is none of them.
+int storyChoiceIndex(StoryData story, String nodeId, StoryChoice choice) {
+  final choices = story.nodeFor(nodeId)?.choices ?? const <StoryChoice>[];
+  final same = choices.indexWhere((c) => identical(c, choice));
+  if (same >= 0) return same;
+  return choices.indexWhere((c) =>
+      c.nextId == choice.nextId &&
+      c.text == choice.text &&
+      c.textFr == choice.textFr);
 }
 
 /// What the road holds on the way on from [fromNodeId] in [chapter]: an
@@ -2571,12 +2634,22 @@ class _HubChoiceCard extends ConsumerWidget {
         : roster == null
             ? null
             : tr(ref, 'choice_fight_roster').replaceAll('{roster}', roster);
+    final hint = isExcursion ? '' : choicePoliticsHint(ref, choice);
 
     return Card(
       child: ListTile(
         leading: Icon(_hubIconFor(choice)),
         title: Text(label),
-        subtitle: subtitle != null ? Text(subtitle) : null,
+        subtitle: subtitle == null && hint.isEmpty
+            ? null
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (subtitle != null) Text(subtitle),
+                  if (hint.isNotEmpty) _PoliticsHintLine(hint: hint),
+                ],
+              ),
         trailing: Icon(locked ? Icons.lock_outline : Icons.chevron_right),
         onTap: locked
             ? null
@@ -2783,6 +2856,51 @@ class _ChoiceButton extends ConsumerWidget {
               ref.watch(localizedDbProvider(questsSchema)).value ?? const {}),
         );
 
+    final hint = isExcursion ? '' : choicePoliticsHint(ref, choice);
+    final Widget content = roster != null && !choice.hasAbilityCheck
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.sports_martial_arts, size: 16),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(label),
+                    Text(
+                      tr(ref, 'choice_fight_roster')
+                          .replaceAll('{roster}', roster),
+                      style: Theme.of(context).textTheme.labelSmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : choice.hasAbilityCheck
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.casino_outlined, size: 16),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      '$label '
+                      '(${tr(ref, '${choice.checkAbility}_label')} '
+                      'DC ${choice.checkDC ?? 10})',
+                    ),
+                  ),
+                ],
+              )
+            : _ChoiceLabel(
+                label: label,
+                choice: choice,
+                locked: locked,
+                workAhead: workAhead,
+              );
+
     return ElevatedButton(
       style: inkChoiceStyle(context),
       onPressed: locked
@@ -2799,52 +2917,60 @@ class _ChoiceButton extends ConsumerWidget {
               ),
       child: Align(
         alignment: Alignment.centerLeft,
-        child: roster != null && !choice.hasAbilityCheck
-            ? Row(
+        child: hint.isEmpty
+            ? content
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.sports_martial_arts, size: 16),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(label),
-                        Text(
-                          tr(ref, 'choice_fight_roster')
-                              .replaceAll('{roster}', roster),
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ],
-                    ),
-                  ),
+                  content,
+                  const SizedBox(height: 4),
+                  _PoliticsHintLine(hint: hint),
                 ],
-              )
-            : choice.hasAbilityCheck
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.casino_outlined, size: 16),
-                      const SizedBox(width: 6),
-                      Flexible(
-                        child: Text(
-                          '$label '
-                          '(${tr(ref, '${choice.checkAbility}_label')} '
-                          'DC ${choice.checkDC ?? 10})',
-                        ),
-                      ),
-                    ],
-                  )
-                : _ChoiceLabel(
-                    label: label,
-                    choice: choice,
-                    locked: locked,
-                    workAhead: workAhead,
-                  ),
+              ),
       ),
     );
   }
+}
+
+/// What a choice moves among the clans (v1.195, see politicsHint), for the
+/// muted line under it: '' when the setting is off, or the choice moves
+/// nothing it may say.
+String choicePoliticsHint(WidgetRef ref, StoryChoice choice) {
+  final politics = choice.politics;
+  if (politics == null || !politics.hasHint) return '';
+  if (!ref.watch(politicsHintsEnabledProvider)) return '';
+  return politicsHint(
+      politics, ref.watch(clanDataProvider), ref.watch(appLanguageProvider));
+}
+
+/// The muted line under a choice: "Vigil +5 · Dominion −5".
+class _PoliticsHintLine extends StatelessWidget {
+  const _PoliticsHintLine({required this.hint});
+
+  final String hint;
+
+  @override
+  Widget build(BuildContext context) => Opacity(
+        opacity: 0.7,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.flag_outlined, size: 12),
+            const SizedBox(width: 4),
+            Flexible(
+              child: Text(
+                hint,
+                key: const Key('politics_hint'),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelSmall
+                    ?.copyWith(fontStyle: FontStyle.italic),
+              ),
+            ),
+          ],
+        ),
+      );
 }
 
 /// A plain choice's text, with what it costs or brings underneath as

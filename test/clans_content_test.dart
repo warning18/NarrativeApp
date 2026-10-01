@@ -61,12 +61,18 @@ void main() {
     'penitents'
   ];
 
-  test('twelve factions: six clans, the Choir and the Pit, four tribes', () {
-    expect(data.clans.map((f) => f.id), clanIds);
+  test(
+      'thirteen factions: six clans, the Choir and the Pit, four tribes '
+      'and the Open Hand', () {
+    // The Open Hand (v1.195) is the dead clan, of kind `lost`: no clan
+    // among the six, whatever kind the parser reads it as.
+    expect(factionsDb['open_hand']['kind'], 'lost');
+    expect(
+        data.clans.map((f) => f.id).where((id) => id != 'open_hand'), clanIds);
     expect(data.otherworld.map((f) => f.id), ['choir', 'pit']);
     expect(data.tribes.map((f) => f.id),
         unorderedEquals(['giants', 'oni', 'tidekin', 'kindly']));
-    expect(data.factions, hasLength(12));
+    expect(data.factions, hasLength(13));
     // The note on the Sworn boons' new kinds is no faction.
     expect(factionsDb['_newKinds'], isA<List>());
     expect(data.factions.keys.where((id) => id.startsWith('_')), isEmpty);
@@ -105,7 +111,11 @@ void main() {
       for (final k in factionsDb['_newKinds'] as List)
         (k as Map)['kind'].toString(),
     };
-    for (final clan in data.clans) {
+    // The Open Hand has none of these: it is remembered, not joined.
+    final lost = data.faction('open_hand')!;
+    expect([lost.subclans, lost.sponsors, lost.objects], everyElement(isEmpty));
+    expect(lost.sworn, isNull);
+    for (final clan in data.clans.where((c) => c.id != 'open_hand')) {
       final id = clan.id;
       expect(clan.subclans, isNotEmpty, reason: id);
       for (final s in clan.subclans) {
@@ -203,7 +213,7 @@ void main() {
   test('titles: real factions and sources, known effects', () {
     expect(data.titles.length, greaterThanOrEqualTo(30));
     final source = RegExp(
-        r'^(offer|quest|intrigue|tier:(known|trusted|sworn)|mark:foe:[a-z_]+)$');
+        r'^(offer|quest|intrigue|story|tier:(known|trusted|sworn)|mark:foe:[a-z_]+)$');
     for (final t in data.titles.values) {
       final id = t.id;
       expect(titlesDb[id]['id'], id);
@@ -315,6 +325,7 @@ void main() {
         'story',
         'edit',
         'sworn_cap',
+        'event',
       ])
         'standing_cause_$cause',
     ];

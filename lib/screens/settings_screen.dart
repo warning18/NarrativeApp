@@ -400,6 +400,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   .read(walkCompanionEnabledProvider.notifier)
                   .setEnabled(value),
             ),
+            SwitchListTile(
+              key: const Key('politics_hints_setting'),
+              contentPadding: EdgeInsets.zero,
+              title: Text(tr(ref, 'politics_hints_setting_title')),
+              subtitle: Text(tr(ref, 'politics_hints_setting_desc')),
+              value: ref.watch(politicsHintsEnabledProvider),
+              onChanged: (value) => ref
+                  .read(politicsHintsEnabledProvider.notifier)
+                  .setEnabled(value),
+            ),
             const SizedBox(height: 12),
             TextField(
               controller: _companionNameController,

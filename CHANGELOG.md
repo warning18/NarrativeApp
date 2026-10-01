@@ -8,6 +8,67 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.195.0+226]
+
+The clans now move with the story. You come from a dead clan, the Open Hand,
+and you find out who they were one chapter at a time. Your choices shift
+the clans' standing, and the coast changes whether you are there or not.
+
+### Added
+- **The Open Hand** (« la Main Ouverte »), the clan the player comes from.
+  They were drawers who held the Seal whole on this coast until the
+  Reliquary and the Inquisition cut it and burned them, nine years before
+  the first night. They are remembered in six stages, one per chapter:
+  1. **The cloth (ch1):** a figure with raised, open hands on the heirloom.
+  2. **The name (ch2):** an old sign-painter on the Wharf sees the hand and
+     goes white. You can buy his silence or let him talk.
+  3. **The blood answers (ch3):** the High Warden's standard answers the
+     cloth and you draw for the first time. You let it be seen or hide it,
+     and the Inquisition, the Penitents and the Vigil take note.
+  4. **The ledger (ch4):** the Hollow Court's oldest page names the clan,
+     the Unmaking, and the children given to the Wickwardens. In chapter 5,
+     the Last Lantern's keeper turns out to be one of them.
+  5. **The truth (ch5):** the Reliquary's own record of the Unmaking and of
+     the rite that tore the coast. Tell the coast or keep it.
+  6. **The banner (ch6):** raise the heirloom on the Hollow Shore, or keep
+     it furled. Clans at Trusted or above send someone to stand under it.
+
+  The endings change with the banner, the truth and who stood under it.
+  From stage 3, offers can bring a fourth card, **"Your own hand"**, with
+  six Open Hand signs. It moves no clan's standing. Once the banner is
+  raised it always comes, and the Dominion hunts it (−2 each time).
+  Two titles: **Drawer** (« Main qui trace ») and **Last of the Open
+  Hand** (« Dernière Main Ouverte »). The codex shows how far you've
+  remembered.
+- **Choices move the clans.** 37 existing choices and the new scenes carry
+  politics: standing (through the ripple), sub-clan friend and foe marks,
+  relations between clans, intrigue stages, offers and events. A muted line
+  under the choice says what it does, such as "Vigil +5 · Dominion −5".
+  Hidden consequences stay hidden, and a setting turns the line off.
+- **News from the coast** (« Nouvelles de la côte »). 20 events happen on
+  their own at a chapter, a day or a flag. Each has variants decided by
+  your flags, standings and relations: the Lantern-Bearer's death, the
+  Inquisition's raids, the Order and the Inquisition quarrelling, the
+  Throne going to the claimant you backed, the Dominion splitting if the
+  truth was told, and who comes to the last battle. News shows on the
+  chapter card (three lines each), as a "News (n)" chip at camp, and in
+  full in a "News" tab in the journal.
+- **Two intrigues in the story, from Clue to Choice:**
+  - **The Hooded Lantern:** the Inquisition isn't closing the tear; it
+    wants your blood for the rite. It ends in the flagship's log, which
+    you can send to the Order or sell to the legate.
+  - **The Dying Lantern-Bearer:** envoys from three claimants, a sealed
+    vote, a knife meant for Tallis, and the Admiralty's vote for you to
+    cast. You back Morrow, Vane or Tallis, and the Throne follows.
+- **Edit Mode:** the Politics tab lists every event with "Fire now", after
+  the coast's history, and the Evolution log names each event that moved
+  the clans.
+
+### Changed
+- The 12 new scenes are on the world map, each in its place's list.
+- Save data keeps the events already fired, the news, and which story
+  choices already applied their politics, so nothing applies twice.
+
 ## [1.194.0+225]
 
 Skill points are gone: the clans now come to you. At each level-up, after a

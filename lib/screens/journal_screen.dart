@@ -14,6 +14,7 @@ import '../providers/story_providers.dart';
 import '../theme/stitched_ink.dart';
 import '../tutorial/guide_tour.dart';
 import '../tutorial/tutorial_topics.dart';
+import '../widgets/coast_news.dart';
 
 /// [entry]'s opening line with the reader's name and people filled in.
 String _personal(String text, PlayerSession session, bool french) =>
@@ -32,7 +33,8 @@ String _chapterTitle(int chapter, AppLanguage lang) => chapter == 0
 /// The story so far, newest first and grouped by chapter: each scene's
 /// opening line and the choice that left it. A second page, What changed,
 /// lists the echoes met on the way: a later scene's line with the earlier
-/// choice that earned it (see echoes.dart).
+/// choice that earned it (see echoes.dart). A third, News (v1.195), keeps
+/// the news from the coast (see coast_news.dart).
 class JournalScreen extends ConsumerWidget {
   const JournalScreen({super.key});
 
@@ -105,7 +107,7 @@ class JournalScreen extends ConsumerWidget {
     return TutorialTrigger(
       topic: TutorialTopic.journal,
       child: DefaultTabController(
-        length: 2,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             title: Text(tr(ref, 'journal_title')),
@@ -114,6 +116,9 @@ class JournalScreen extends ConsumerWidget {
               Tab(
                   key: const ValueKey('journal_changed_tab'),
                   text: tr(ref, 'journal_changed_title')),
+              Tab(
+                  key: const ValueKey('journal_news_tab'),
+                  text: tr(ref, 'journal_news_tab')),
             ]),
           ),
           body: TabBarView(children: [
@@ -124,6 +129,7 @@ class JournalScreen extends ConsumerWidget {
                     children: children,
                   ),
             const _WhatChanged(),
+            const CoastNewsList(),
           ]),
         ),
       ),

@@ -105,6 +105,11 @@ enum OfferSource {
 
   /// Edit Mode.
   edit,
+
+  /// A story choice's or a politics event's `offerFrom` (v1.195): its
+  /// faction always comes; [OfferTicket.detail] is the cause to log
+  /// (`story:<node>`, `event:<id>`).
+  story,
 }
 
 OfferSource offerSourceNamed(String? name) =>
@@ -586,7 +591,7 @@ Map<GiftKind, int> availableGiftKinds(String factionId, OfferContext c,
   if (faction == null) return const {};
   final signs = offerableSigns(factionId, signs: c.signs, held: c.heldSigns);
   final hasSign = signs.regular.isNotEmpty || signs.duos.isNotEmpty;
-  if (faction.kind == PatronKind.otherworld) {
+  if (faction.kind == PatronKind.otherworld || faction.isLost) {
     return {if (hasSign) GiftKind.sign: 1};
   }
   final bonus = better ? 1 : 0;
@@ -871,8 +876,28 @@ ClanOffer? drawOffer(OfferTicket ticket, OfferContext c, Random random) {
       greetingIndex: random.nextInt(4),
     ));
   }
+  // The dead clan: "Your own hand", a fourth card (see ownHandComes).
+  final hand = c.data.openHand;
+  if (hand != null &&
+      !taken.contains(hand.id) &&
+      suitors.isNotEmpty &&
+      ownHandComes(c.flags, random)) {
+    final own = drawSuitor(hand.id, c, random);
+    if (own != null) suitors.add(own);
+  }
   if (suitors.isEmpty) return null;
   return ClanOffer(ticket: ticket, suitors: suitors);
+}
+
+/// Whether "Your own hand" (the Open Hand, v1.195) takes a fourth place in
+/// an offer, with [flags] held: always from the last remembrance stage
+/// with the banner raised; at [ownHandChance] from [ownHandFromStage];
+/// never before. [random] is only drawn on when it is a chance.
+bool ownHandComes(Iterable<String> flags, Random random) {
+  final stage = openHandStageFrom(flags);
+  if (stage >= openHandStages && bannerRaisedIn(flags)) return true;
+  if (stage < ownHandFromStage) return false;
+  return random.nextDouble() < ownHandChance;
 }
 
 /// Whether anyone at all could come now (an offer waiting with nobody to
@@ -897,6 +922,7 @@ String offerCause(OfferTicket ticket, OfferGift gift) =>
       OfferSource.chapter => 'chapter:${ticket.detail}',
       OfferSource.quest => 'quest:${ticket.detail}',
       OfferSource.intrigue => 'intrigue:${ticket.detail}',
+      OfferSource.story when ticket.detail.isNotEmpty => ticket.detail,
       _ => 'offer:${gift.id}',
     };
 
@@ -907,7 +933,11 @@ String offerCause(OfferTicket ticket, OfferGift gift) =>
 int leanOf(Suitor suitor, ClanData data) {
   if (suitor.isWayfarer) return 0;
   final faction = data.faction(suitor.factionId);
-  if (faction == null || faction.kind == PatronKind.otherworld) return 0;
+  if (faction == null ||
+      faction.kind == PatronKind.otherworld ||
+      faction.isLost) {
+    return 0;
+  }
   final voice = data.subclan(suitor.subclanId);
   if (voice != null && voice.lean != 0) return voice.lean;
   return faction.lean;
@@ -915,21 +945,31 @@ int leanOf(Suitor suitor, ClanData data) {
 
 /// What taking [suitor] for [ticket] would move, faction by faction: the
 /// card's "+6 Compact · +1.5 Mire · −3 Penitents". Empty for the
-/// Wayfarer.
+/// Wayfarer; for "Your own hand" (a lost clan), nothing, or once the
+/// banner is raised in [flags] the Dominion's [ownHandBannerCost].
 Map<String, double> suitorPreview(
   Suitor suitor,
   OfferTicket ticket, {
   required PoliticsState politics,
   required ClanData data,
-}) =>
-    suitor.isWayfarer
-        ? const {}
-        : standingPreview(politics, suitor.factionId, standingGainFor(ticket),
-            data: data);
+  Iterable<String> flags = const [],
+}) {
+  if (suitor.isWayfarer) return const {};
+  if (data.faction(suitor.factionId)?.isLost ?? false) {
+    return bannerRaisedIn(flags)
+        ? standingPreview(politics, 'dominion', ownHandBannerCost, data: data)
+        : const {};
+  }
+  return standingPreview(politics, suitor.factionId, standingGainFor(ticket),
+      data: data);
+}
 
 /// What taking [suitor] does to the politics: the standing gain with its
 /// ripple, the voicing sub-clan marked a friend, both logged under
-/// [offerCause]; and the alignment nudge ([leanOf]).
+/// [offerCause]; and the alignment nudge ([leanOf]). "Your own hand" (a
+/// lost clan) moves no standing -- choosing yourself over the clans --
+/// except, once the banner is raised in [flags], the Dominion's
+/// [ownHandBannerCost]: they hunt the drawers.
 ({PoliticsState politics, StandingResult standing, int alignment})
     acceptPolitics(
   Suitor suitor,
@@ -938,6 +978,7 @@ Map<String, double> suitorPreview(
   required ClanData data,
   int chapter = 0,
   int day = 0,
+  Iterable<String> flags = const [],
 }) {
   if (suitor.isWayfarer) {
     return (
@@ -947,6 +988,13 @@ Map<String, double> suitorPreview(
     );
   }
   final cause = offerCause(ticket, suitor.gift);
+  if (data.faction(suitor.factionId)?.isLost ?? false) {
+    final standing = bannerRaisedIn(flags)
+        ? applyStandingChange(politics, 'dominion', ownHandBannerCost, cause,
+            data: data, chapter: chapter, day: day)
+        : StandingResult(state: politics);
+    return (politics: standing.state, standing: standing, alignment: 0);
+  }
   final standing = applyStandingChange(
       politics, suitor.factionId, standingGainFor(ticket), cause,
       data: data, chapter: chapter, day: day);
@@ -964,16 +1012,24 @@ Map<String, double> suitorPreview(
 /// What [politics] says of [held] titles: every tier title whose tier the
 /// character has reached with its faction (kept once earned), and the
 /// mark titles (`mark:<mark>:<sub-clan>`, "the Marked") held only while
-/// the mark stands. Returns the titles held after, and those [gained] and
-/// [lost].
+/// the mark stands; with [flags], the Open Hand's remembrance titles
+/// (v1.195, see remembranceTitlesFor), kept once earned. Returns the
+/// titles held after, and those [gained] and [lost].
 ({List<String> held, List<String> gained, List<String> lost}) titlesEarned(
   List<String> held,
   PoliticsState politics,
-  ClanData data,
-) {
+  ClanData data, {
+  Iterable<String> flags = const [],
+}) {
   final next = [...held];
   final gained = <String>[];
   final lost = <String>[];
+  for (final id in remembranceTitlesFor(flags, data)) {
+    if (!next.contains(id)) {
+      next.add(id);
+      gained.add(id);
+    }
+  }
   for (final title in data.titles.values) {
     final source = title.source;
     if (source.startsWith('tier:')) {

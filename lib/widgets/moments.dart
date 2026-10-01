@@ -333,24 +333,30 @@ class _AchievementToastState extends State<_AchievementToast>
 
 /// A new chapter opens like a page: its number and name over the
 /// chapter's colour, inked in across the screen, for a moment, with a
-/// [note] under them when there is one (the clans' offer it brings). It
-/// lets taps through: the story goes on under it.
+/// [note] under them when there is one (the clans' offer it brings), and
+/// the [news] from the coast the chapter brings (v1.195) under
+/// [newsTitle] -- the card stays longer for each. It lets taps through:
+/// the story goes on under it.
 Future<void> showChapterCard(BuildContext context,
     {required String number,
     required String title,
     required Color colour,
-    String? note}) {
+    String? note,
+    String newsTitle = '',
+    List<String> news = const []}) {
   if (_still(context)) return Future.value();
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) return Future.value();
   final done = Completer<void>();
   late OverlayEntry entry;
   entry = OverlayEntry(
-    builder: (_) => _ChapterCard(
+    builder: (_) => ChapterCard(
       number: number,
       title: title,
       colour: colour,
       note: note,
+      newsTitle: newsTitle,
+      news: news,
       onDone: () {
         entry.remove();
         done.complete();
@@ -361,13 +367,27 @@ Future<void> showChapterCard(BuildContext context,
   return done.future;
 }
 
-class _ChapterCard extends StatefulWidget {
-  const _ChapterCard({
+/// How long the chapter card stays: a moment, and longer for each piece
+/// of news it tells (at most [_chapterCardLongest]).
+Duration chapterCardDuration(int newsCount) {
+  final ms = 2400 + 2600 * newsCount;
+  return Duration(
+      milliseconds: ms.clamp(2400, _chapterCardLongest.inMilliseconds));
+}
+
+const Duration _chapterCardLongest = Duration(milliseconds: 10400);
+
+/// The chapter's title card (see [showChapterCard]).
+class ChapterCard extends StatefulWidget {
+  const ChapterCard({
+    super.key,
     required this.number,
     required this.title,
     required this.colour,
     required this.onDone,
     this.note,
+    this.newsTitle = '',
+    this.news = const [],
   });
 
   final String number;
@@ -375,16 +395,18 @@ class _ChapterCard extends StatefulWidget {
   final Color colour;
   final VoidCallback onDone;
   final String? note;
+  final String newsTitle;
+  final List<String> news;
 
   @override
-  State<_ChapterCard> createState() => _ChapterCardState();
+  State<ChapterCard> createState() => _ChapterCardState();
 }
 
-class _ChapterCardState extends State<_ChapterCard>
+class _ChapterCardState extends State<ChapterCard>
     with SingleTickerProviderStateMixin {
   late final AnimationController _t = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 2400),
+    duration: chapterCardDuration(widget.news.length),
   )
     ..addStatusListener((s) {
       if (s == AnimationStatus.completed) widget.onDone();
@@ -448,6 +470,41 @@ class _ChapterCardState extends State<_ChapterCard>
                               style: theme.textTheme.bodyMedium?.copyWith(
                                   color: widget.colour,
                                   fontStyle: FontStyle.italic),
+                            ),
+                          ),
+                        ],
+                        if (widget.news.isNotEmpty) ...[
+                          const SizedBox(height: 16),
+                          Opacity(
+                            opacity: ink,
+                            child: Column(
+                              key: const ValueKey('chapter_card_news'),
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (widget.newsTitle.isNotEmpty)
+                                  Text(
+                                    widget.newsTitle.toUpperCase(),
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                        color: widget.colour, letterSpacing: 2),
+                                  ),
+                                for (final line in widget.news)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    // Three lines at most: the journal
+                                    // keeps the whole of it.
+                                    child: Text(
+                                      line,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                              fontFamily: InkFonts.prose,
+                                              fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                         ],
