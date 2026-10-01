@@ -53,6 +53,24 @@ extension _FightRewards on _FightScreenState {
       final defeated = _enemies.where((e) => !e.isAlive).toList();
       var goldGain = 0;
       var xpGain = 0;
+      // The last fall feeds a kill-heal sign before the health is saved.
+      final signLog = <_LogEntry>[];
+      _feedSignKills(signLog, ref.read(appLanguageProvider));
+      // Signs (see signs.dart): a boss beaten brings one to choose; a
+      // hunt's quarry leaves a drop of Titan's Blood, an Elite sometimes.
+      final bossBeaten = !widget.modifiers.isTest &&
+          (widget.modifiers.isZoneBoss ||
+              defeated.any((e) =>
+                  !e.fled &&
+                  (isBossEnemy(e.enemyId, e.data) ||
+                      e.phases.isNotEmpty ||
+                      zoneBossEnemyIds.contains(e.enemyId))));
+      final titanBlood = widget.modifiers.isTest
+          ? 0
+          : widget.modifiers.isHunt ||
+                  (_isElite && _random.nextDouble() < eliteTitanBloodChance)
+              ? 1
+              : 0;
       // An Elite always drops its trophy on top of the spoils chest -- the
       // guaranteed "that was worth it" payoff for the harder fight, on top
       // of the reward multiplier applied per enemy and the chest's own
@@ -168,9 +186,10 @@ extension _FightRewards on _FightScreenState {
       final chest = rollLootBox(lootContext, items, _random);
       loot.addAll(chest.itemIds);
       goldGain += chest.gold;
-      // Plunderer and Quick Study (level-up perks) add their share.
-      goldGain = _perks.scaleGold(goldGain);
-      xpGain = _perks.scaleXp(xpGain);
+      // Plunderer and Quick Study (level-up perks) add their share, and so
+      // do the signs (a pact's curse takes some gold back while it runs).
+      goldGain = _signs.scaleGold(_perks.scaleGold(goldGain));
+      xpGain = _signs.scaleXp(_perks.scaleXp(xpGain));
 
       final lang = ref.read(appLanguageProvider);
       final chestBanter =
@@ -202,12 +221,15 @@ extension _FightRewards on _FightScreenState {
       // A potion drunk from the chest heals before the health is saved;
       // its charge is spent below, once the loot has been granted.
       final drinks = spoils.drinkItemIds.length;
-      final hpAfterSpoils = min(
-          player.maxHealth,
-          player.currentHealth +
-              drinks * (potionHealAmount + _perks.potionBonus));
+      final hpAfterSpoils = min(player.maxHealth,
+          player.currentHealth + drinks * (potionHealAmount + _potionBonus));
+      // A sign that mends the party after a won fight.
+      final signHeal = _signs.afterFightHeal(player.maxHealth);
       final leveledUp = await notifier.applyCombatResult(
-        hpAfter: hpAfterSpoils,
+        hpAfter: min(player.maxHealth, hpAfterSpoils + signHeal),
+        signPicks: bossBeaten ? 1 : 0,
+        titanBlood: titanBlood,
+        pactFight: !widget.modifiers.isTest,
         enemyIds: defeated.map((e) => e.enemyId).toList(),
         goldGain: goldGain,
         xpGain: xpGain,
@@ -239,7 +261,9 @@ extension _FightRewards on _FightScreenState {
         final hpAfter = member.isKnockedOut
             ? (member.maxHealth * _reviveHealthFraction).round()
             : member.currentHealth;
-        await notifier.applyAllyCombatResult(member.id, hpAfter: hpAfter);
+        await notifier.applyAllyCombatResult(member.id,
+            hpAfter: min(member.maxHealth,
+                hpAfter + _signs.afterFightHeal(member.maxHealth)));
       }
       final newlyUnlockedAchievement = anyAllyRevived
           ? await notifier.unlockAchievement('ally_revival')
@@ -297,10 +321,27 @@ extension _FightRewards on _FightScreenState {
             ),
           );
         }
+        _log.addAll(signLog);
+        if (signHeal > 0) {
+          _log.add(_LogEntry(
+              trFor(lang, 'sign_log_after_fight')
+                  .replaceAll('{n}', '${_signs.afterFightHealPercent}'),
+              _LogKind.playerHeal));
+        }
+        if (bossBeaten) {
+          _log.add(_LogEntry(trFor(lang, 'sign_log_offer'), _LogKind.victory));
+        }
+        if (titanBlood > 0) {
+          _log.add(
+              _LogEntry(trFor(lang, 'sign_log_titan_blood'), _LogKind.victory));
+        }
       });
       if (leveledUp) {
+        // The level-up dialog opens the sign offer once it closes.
         final newLevel = ref.read(playerSessionProvider).level;
         showLevelUpDialog(context, ref, newLevel: newLevel);
+      } else if (bossBeaten) {
+        showSignOfferIfWaiting(context, ref);
       }
       _update(() => _settled = true);
     } else {
@@ -315,8 +356,11 @@ extension _FightRewards on _FightScreenState {
           if (isBossEnemy(e.enemyId, e.data)) e.enemyId,
       ];
       if (bossIds.isNotEmpty) await notifier.recordBossDefeat(bossIds);
+      // A pact runs its fight down, won or lost.
       await notifier.applyCombatResult(
-          hpAfter: player.maxHealth, manaAfter: _maxMana);
+          hpAfter: player.maxHealth,
+          manaAfter: _maxMana,
+          pactFight: !widget.modifiers.isTest);
       if (!mounted) return;
       _update(() {
         _log.add(_LogEntry(
@@ -447,6 +491,7 @@ extension _FightRewards on _FightScreenState {
             lostItemIds: result.lostItemIds,
             xpEarned: result.xpEarnedThisRun,
             skillsLost: result.skillsLost,
+            signsLost: result.signsLost,
             nodesVisited: nodesVisited,
             killerName: _enemies.isEmpty ? '' : _enemies.first.displayName,
             narrationSeed: _random.nextInt(1 << 20),

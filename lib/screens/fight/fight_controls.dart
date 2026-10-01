@@ -341,12 +341,12 @@ extension _FightControls on _FightScreenState {
     Map<String, dynamic> items,
   ) {
     final lang = ref.watch(appLanguageProvider);
-    final enabled = _mana >= spell.manaCost && !_rolling && !_over;
+    final enabled = _mana >= _spellCost(spell) && !_rolling && !_over;
     final color = spellEffectColor(spell.effect);
     return Padding(
       padding: const EdgeInsets.only(right: 6),
       child: Tooltip(
-        message: '${spell.nameFor(lang)} · ${spell.manaCost} '
+        message: '${spell.nameFor(lang)} · ${_spellCost(spell)} '
             '${tr(ref, 'mana_label')}\n${spell.descriptionFor(lang)}',
         child: InkWell(
           onTap: enabled ? () => _castSpell(spell, skills, items) : null,
@@ -374,7 +374,7 @@ extension _FightControls on _FightScreenState {
                         color: color),
                   ),
                   const SizedBox(width: 5),
-                  for (var i = 0; i < spell.manaCost; i++)
+                  for (var i = 0; i < _spellCost(spell); i++)
                     Container(
                       width: 5,
                       height: 5,
@@ -419,7 +419,7 @@ extension _FightControls on _FightScreenState {
                     ),
                     const Icon(manaIcon, size: 16, color: manaColor),
                     const SizedBox(width: 2),
-                    Text('${spell.manaCost}',
+                    Text('${_spellCost(spell)}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, color: manaColor)),
                   ],

@@ -31,6 +31,7 @@ import '../data/chapter_loop.dart';
 import '../data/journey_rules.dart';
 import '../providers/chapter_loop_provider.dart' show reachedChapterProvider;
 import '../data/perks.dart';
+import '../data/signs.dart';
 import '../data/contracts.dart' show ContractTally;
 import '../data/story_repository.dart';
 import '../gamedata/db_schema.dart';
@@ -52,6 +53,7 @@ import '../utils/game_icons.dart';
 import '../utils/pixel_icons/game_pixel_icons.dart';
 import '../widgets/immersive_notice.dart';
 import '../widgets/level_up_dialog.dart';
+import '../widgets/sign_offer_dialog.dart';
 import '../widgets/spoils_chest_dialog.dart';
 import 'death_screen.dart';
 
@@ -338,6 +340,22 @@ class _FightScreenState extends ConsumerState<FightScreen>
   /// The player's level-up perks (see perks.dart), read at party build.
   PerkEffects _perks = PerkEffects.none;
 
+  /// The player's signs (see signs.dart), read at party build like the
+  /// perks, and the signs table for their names in the log.
+  SignEffects _signs = SignEffects.none;
+  Map<String, SignDef> _signDefs = const {};
+
+  /// Health a running pact's curse took before the fight began, for the
+  /// opening log.
+  int _signStartCurseTaken = 0;
+
+  /// A Defend face the player played this round arms the guard signs
+  /// (retaliation, the guard's statuses) for the enemies' turn after it.
+  bool _signGuardArmed = false;
+
+  /// Enemies whose fall a kill-heal sign has already fed on.
+  final Set<String> _signKillsFed = {};
+
   /// Hits needed for a surge: [_momentumThreshold], less a Battle Rhythm
   /// perk.
   int get _momentumNeeded => max(1, _momentumThreshold - _perks.momentumDrop);
@@ -459,6 +477,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final itemSetsAsync = ref.watch(localizedDbProvider(itemSetsSchema));
     final housesAsync = ref.watch(localizedDbProvider(housesSchema));
     final skillTreesAsync = ref.watch(gameDbProvider(skillTreesSchema));
+    final signsAsync = ref.watch(gameDbProvider(signsSchema));
     final session = ref.watch(playerSessionProvider);
     _companionsAutoAim = ref.watch(companionAutoTargetProvider);
 
@@ -473,6 +492,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
     final itemSetsDb = itemSetsAsync.value;
     final houses = housesAsync.value;
     final skillTrees = skillTreesAsync.value;
+    final signsDb = signsAsync.value;
 
     if (dice == null ||
         skills == null ||
@@ -484,7 +504,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
         spellsDb == null ||
         itemSetsDb == null ||
         houses == null ||
-        skillTrees == null) {
+        skillTrees == null ||
+        signsDb == null) {
       final error = diceAsync.error ??
           skillsAsync.error ??
           itemsAsync.error ??
@@ -495,7 +516,8 @@ class _FightScreenState extends ConsumerState<FightScreen>
           spellsAsync.error ??
           itemSetsAsync.error ??
           housesAsync.error ??
-          skillTreesAsync.error;
+          skillTreesAsync.error ??
+          signsAsync.error;
       return Scaffold(
         appBar: AppBar(
           title: Text('${tr(ref, 'fight_prefix')}: ${_battleTitle()}'),
@@ -510,7 +532,7 @@ class _FightScreenState extends ConsumerState<FightScreen>
 
     _itemSets = parseItemSets(itemSetsDb);
     _ensurePartyBuilt(session, companions, races, professions, gameConfig,
-        items, _itemSets, houses, dice, skillTrees, skills);
+        items, _itemSets, houses, dice, skillTrees, skills, signsDb);
     _spells = parseSpells(spellsDb);
 
     // Once the fight has begun, back is no way out of it: a fight in
