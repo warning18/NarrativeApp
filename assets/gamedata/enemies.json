@@ -4439,5 +4439,526 @@
     "encounterText_fr": [
       "Un bras épais comme le grand mât glisse par-dessus le bastingage et tâte le pont en quête de quelque chose à saisir."
     ]
+  },
+  "claimant_vane": {
+    "enemyName": "Aurel Vane, Inquisitor-General",
+    "enemyName_fr": "Aurel Vane, Inquisiteur général",
+    "maxHealth": 365,
+    "damage": 33,
+    "guile": 12,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Fire"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 20
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 30
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_smite",
+        "condition": "Chance",
+        "requiredElement": "Fire",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "hex_of_ill_luck",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "edict_of_silence",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "The Hooded Lantern",
+        "nameFr": "La Lanterne encapuchonnée",
+        "message": "Vane unhoods the Lantern. Where the flame should be an eye opens, and it is looking at your blood.",
+        "messageFr": "Vane découvre la Lanterne. Là où devrait être la flamme, un œil s’ouvre, et il regarde votre sang.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 30,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Pyre",
+        "nameFr": "Le Bûcher",
+        "message": "Vane sets the Hall’s hangings alight and walks into the fire as if he owned it.",
+        "messageFr": "Vane met le feu aux tentures de la Salle et entre dans les flammes comme si elles lui appartenaient.",
+        "damageMultiplier": 1.15,
+        "healPercent": 8,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "zealot_martyrdom",
+            "condition": "Chance",
+            "requiredElement": "Fire",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Inquisitor-General, who wanted the tear for a door and your blood for its key, holding the Lantern Hall with the Hooded Lantern in his hand.",
+    "description_fr": "L’Inquisiteur général, qui voulait la déchirure pour en faire une porte et votre sang pour en faire la clef, et qui tient la Salle de la Lanterne, la Lanterne encapuchonnée à la main.",
+    "encounterText": [
+      "Under the First Lantern, Aurel Vane lets the Hooded Lantern swing on its chain, and the Hall’s hangings begin to burn."
+    ],
+    "encounterText_fr": [
+      "Sous la Première Lanterne, Aurel Vane laisse la Lanterne encapuchonnée se balancer au bout de sa chaîne, et les tentures de la Salle se mettent à brûler."
+    ]
+  },
+  "claimant_morrow": {
+    "enemyName": "Hesk Morrow, Grand Master",
+    "enemyName_fr": "Hesk Morrow, Grand Maître",
+    "maxHealth": 420,
+    "damage": 31,
+    "guile": 9,
+    "weakTo": [
+      "Electricity"
+    ],
+    "resists": [
+      "Earth"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "sword_t10",
+        "dropRate": 20
+      },
+      {
+        "itemID": "shield_t10",
+        "dropRate": 15
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "heavy_windup",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "guard_break",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "brace",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 20,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      },
+      {
+        "skillID": "second_wind",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 35,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 0
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "Sword and Lantern",
+        "nameFr": "Épée et Lanterne",
+        "message": "Morrow lifts the Order’s lantern on his sword, and every knight along the walls answers it.",
+        "messageFr": "Morrow lève la lanterne de l’Ordre au bout de son épée, et chaque chevalier le long des murs lui répond.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "rallying_cry",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 25,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Third That Fell",
+        "nameFr": "Le tiers tombé",
+        "message": "He fights now for the third of his Order buried on this coast, and he fights like all of them.",
+        "messageFr": "Il se bat désormais pour le tiers de son Ordre enterré sur cette côte, et il se bat comme eux tous.",
+        "damageMultiplier": 1.15,
+        "healPercent": 10,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "heavy_windup",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Grand Master of the Order of the Vigilant Flame, grey in a war he has been losing for thirty-nine years, who wants the tear shut by the sword.",
+    "description_fr": "Le Grand Maître de l’Ordre de la Flamme vigilante, devenu gris dans une guerre qu’il perd depuis trente-neuf ans, qui veut la déchirure fermée par l’épée.",
+    "encounterText": [
+      "At the top of the stair Hesk Morrow sets his feet, his lantern hung from his sword, and does not step aside."
+    ],
+    "encounterText_fr": [
+      "En haut de l’escalier, Hesk Morrow ancre ses appuis, la lanterne pendue à l’épée, et ne s’écarte pas."
+    ]
+  },
+  "claimant_tallis": {
+    "enemyName": "Maud Tallis, Eldest Wickwarden",
+    "enemyName_fr": "Maud Tallis, Aînée des Garde-Mèches",
+    "maxHealth": 385,
+    "damage": 29,
+    "guile": 11,
+    "weakTo": [
+      "Void"
+    ],
+    "resists": [
+      "Light"
+    ],
+    "xpReward": 220,
+    "goldReward": 160,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "cleric_holy_light",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "radiant_judgment",
+        "condition": "Chance",
+        "requiredElement": "Light",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "bind_wounds",
+        "condition": "OnLowHealth",
+        "requiredElement": "None",
+        "chance": 50,
+        "healthThreshold": 40,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      }
+    ],
+    "minChapter": 7,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 60,
+        "name": "The First Lantern",
+        "nameFr": "La Première Lanterne",
+        "message": "Tallis lifts the First Lantern from its iron. Six hundred years of light come into the Hall at once.",
+        "messageFr": "Tallis soulève la Première Lanterne de son fer. Six cents ans de lumière entrent dans la Salle d’un coup.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "cleric_sanctuary",
+            "condition": "Chance",
+            "requiredElement": "None",
+            "chance": 25,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 3
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "Every Lamp on the Cliff",
+        "nameFr": "Toutes les lampes de la falaise",
+        "message": "Down the cliff, lamp after lamp is lit, and every one is a prayer for her.",
+        "messageFr": "Le long de la falaise, on allume lampe après lampe, et chacune est une prière pour elle.",
+        "damageMultiplier": 1.1,
+        "healPercent": 12,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "radiant_judgment",
+            "condition": "Chance",
+            "requiredElement": "Light",
+            "chance": 40,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Eldest of the Wickwardens, keeper of the First Lantern, who wanted the dying stopped and was given a Throne instead.",
+    "description_fr": "L’Aînée des Garde-Mèches, gardienne de la Première Lanterne, qui voulait qu’on cesse de mourir et à qui l’on a donné un Trône à la place.",
+    "encounterText": [
+      "Maud Tallis holds the First Lantern in both hands, and the lamps down the cliff brighten all at once."
+    ],
+    "encounterText_fr": [
+      "Maud Tallis tient la Première Lanterne à deux mains, et les lampes de la falaise s’avivent toutes à la fois."
+    ]
+  },
+  "tear_herald": {
+    "enemyName": "The Tear-Herald",
+    "enemyName_fr": "Le Héraut de la Déchirure",
+    "maxHealth": 392,
+    "damage": 31,
+    "guile": 12,
+    "weakTo": [
+      "Light"
+    ],
+    "resists": [
+      "Void"
+    ],
+    "xpReward": 260,
+    "goldReward": 190,
+    "lootTable": [
+      {
+        "itemID": "staff_t10",
+        "dropRate": 15
+      },
+      {
+        "itemID": "potion_major",
+        "dropRate": 40
+      }
+    ],
+    "skillMoves": [
+      {
+        "skillID": "void_blast",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 35,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 3
+      },
+      {
+        "skillID": "glass_reflection",
+        "condition": "Chance",
+        "requiredElement": "None",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      },
+      {
+        "skillID": "disorienting_pulse",
+        "condition": "Chance",
+        "requiredElement": "Void",
+        "chance": 25,
+        "healthThreshold": 0,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 1
+      },
+      {
+        "skillID": "void_drain",
+        "condition": "OnLowHealth",
+        "requiredElement": "Void",
+        "chance": 50,
+        "healthThreshold": 50,
+        "attackCountRequirement": 0,
+        "playerPatternThreshold": 0,
+        "blockThreshold": 0,
+        "priority": 2
+      }
+    ],
+    "minChapter": 8,
+    "packEligible": false,
+    "hunterAlignment": "",
+    "hunterTier": 0,
+    "phases": [
+      {
+        "healthThreshold": 65,
+        "name": "A Face for Every Banner",
+        "nameFr": "Un visage par bannière",
+        "message": "The Herald puts on the faces of your Host’s dead, one for every banner on the sand.",
+        "messageFr": "Le Héraut revêt les visages des morts de votre Ost, un pour chaque bannière sur le sable.",
+        "damageMultiplier": 1.1,
+        "healPercent": 0,
+        "cleanse": true,
+        "addMoves": [
+          {
+            "skillID": "manifestation_many_faces",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      },
+      {
+        "healthThreshold": 30,
+        "name": "The Tear Answers",
+        "nameFr": "La déchirure répond",
+        "message": "Behind the Herald the tear widens to answer the crowning, and the Herald drinks from it.",
+        "messageFr": "Derrière le Héraut, la déchirure s’élargit pour répondre au couronnement, et le Héraut y boit.",
+        "damageMultiplier": 1.15,
+        "healPercent": 8,
+        "cleanse": false,
+        "addMoves": [
+          {
+            "skillID": "void_gathering",
+            "condition": "Chance",
+            "requiredElement": "Void",
+            "chance": 35,
+            "healthThreshold": 0,
+            "attackCountRequirement": 0,
+            "playerPatternThreshold": 0,
+            "blockThreshold": 0,
+            "priority": 4
+          }
+        ],
+        "replaceMoves": false
+      }
+    ],
+    "description": "The Sovereign’s answer to the crowning: a herald of the tear, taller than the reflections and wearing all their faces at once, with a crude copy of your banner sewn on its chest.",
+    "description_fr": "La réponse du Souverain au couronnement : un héraut de la déchirure, plus grand que les reflets et portant tous leurs visages à la fois, une copie grossière de votre bannière cousue sur la poitrine.",
+    "encounterText": [
+      "The Herald turns every face it wears toward the Throne, and cries your name."
+    ],
+    "encounterText_fr": [
+      "Le Héraut tourne vers le Trône tous les visages qu’il porte, et crie votre nom."
+    ]
   }
 }

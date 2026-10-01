@@ -339,6 +339,36 @@ const Map<String, Map<String, String>> _acksEn = {
         'know what the ones who had sailed with me would think of the '
         'answer, which is not something I would have said a year ago.',
   },
+  // Walking the Host's lines the night before the last battle (v1.196).
+  '7800_lines': {
+    '*': ' The company walked beside me through the Host, and every '
+        'banner we passed knew their faces better than mine.',
+    'kelda': ' Kelda walked the lines the way she walks a wall, counting. '
+        '"Enough," she said at the end. "Not enough to be sure. Enough to '
+        'hold." From Kelda it was a blessing.',
+    'grosh': ' Grosh stopped at the Vigil\'s fire and stood a long time '
+        'with the spears of the Last Watch, and when he came back he said '
+        'only that they had kept his place on the wall.',
+    'vess': ' Vess walked with her hood down through the whole Host, '
+        'tear-marked and not hiding it, and nobody in it said a word. '
+        '"A year ago they would have burned me," she said. "Now they move '
+        'their fires."',
+    'liora': ' Liora sang over three of the Host\'s wounded on the way '
+        'round, the old fen way, and would not let me thank her. "It is a '
+        'remedy," she said. "You do not thank a remedy."',
+    'sable': ' Sable had already sold the Herald\'s tabard twice, to two '
+        'different captains, and was working out how to deliver it. "If '
+        'we lose," she said, "nobody collects."',
+    'maren': ' Maren knelt by the Penitents\' cloth of names and read '
+        'them under her breath, all of them, and then asked me, quietly, '
+        'to remember hers if it came to that.',
+    'tobin': ' Tobin lit a lamp at every banner we passed, and by the end '
+        'of the line the whole cove was a cliff of lights. "Somebody has '
+        'to," he said. "Might as well be someone who makes them."',
+    'malrik': ' Malrik looked at the Host from end to end and whistled. '
+        '"I was born on a brig," he said. "I never thought I would see a '
+        'fleet that was on my side."',
+  },
 };
 
 const Map<String, Map<String, String>> _acksFr = {
@@ -679,6 +709,37 @@ const Map<String, Map<String, String>> _acksFr = {
     '*': " La question m'appartenait, mais je découvris que je voulais "
         "savoir ce que ceux qui avaient navigué avec moi penseraient de la "
         "réponse, ce que je n'aurais pas dit un an plus tôt.",
+  },
+  '7800_lines': {
+    '*': ' La compagnie marcha à mes côtés à travers l’Ost, et chaque '
+        'bannière que nous croisions connaissait mieux leurs visages que le '
+        'mien.',
+    'kelda': ' Kelda parcourut les rangs comme elle parcourt un mur, en '
+        'comptant. « Assez, dit-elle à la fin. Pas assez pour gagner à coup '
+        'sûr. Assez pour tenir. » Venant de Kelda, c’était une bénédiction.',
+    'grosh': ' Grosh s’arrêta au feu de la Veille et resta longtemps avec '
+        'les lances de la Dernière Veille, et à son retour il dit seulement '
+        'qu’on lui avait gardé sa place sur le mur.',
+    'vess': ' Vess traversa tout l’Ost capuchon baissé, marquée de la '
+        'déchirure et sans s’en cacher, et personne n’y dit un mot. « Il y '
+        'a un an, ils m’auraient brûlée, dit-elle. Maintenant, ils déplacent '
+        'leurs feux. »',
+    'liora': ' Liora chanta sur trois blessés de l’Ost en chemin, à la '
+        'vieille manière du marais, et refusa que je la remercie. « C’est un '
+        'remède, dit-elle. On ne remercie pas un remède. »',
+    'sable': ' Sable avait déjà vendu deux fois la cotte du Héraut, à deux '
+        'capitaines différents, et cherchait comment la livrer. « Si nous '
+        'perdons, dit-elle, personne ne vient réclamer. »',
+    'maren': ' Maren s’agenouilla près de l’étoffe des noms des Pénitents '
+        'et les lut à mi-voix, tous, puis me demanda, tout bas, de me '
+        'souvenir du sien s’il le fallait.',
+    'tobin': ' Tobin alluma une lampe à chaque bannière que nous croisions, '
+        'et au bout des rangs la crique entière était une falaise de '
+        'lumières. « Il faut bien que quelqu’un le fasse, dit-il. Autant '
+        'que ce soit quelqu’un qui les fabrique. »',
+    'malrik': ' Malrik regarda l’Ost d’un bout à l’autre et siffla. « Je '
+        'suis né sur un brick, dit-il. Je n’aurais jamais cru voir une '
+        'flotte qui soit de mon côté. »',
   },
 };
 

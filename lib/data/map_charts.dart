@@ -109,6 +109,8 @@ const _continental = ChartGeography(
     'anchorage': Offset(224, 22),
     'greyhithe': Offset(212, 36),
     'wreck': Offset(242, 10),
+    'candlehold': Offset(40, 20),
+    'battle': Offset(196, 12),
   },
   lands: [
     [
@@ -173,6 +175,8 @@ const _archipelago = ChartGeography(
     'anchorage': Offset(234, 20),
     'greyhithe': Offset(209, 29),
     'wreck': Offset(223, 38),
+    'candlehold': Offset(46, 15),
+    'battle': Offset(244, 24),
   },
   lands: [
     // Alster.
@@ -219,6 +223,15 @@ const _archipelago = ChartGeography(
       Offset(246, 166),
       Offset(226, 168),
       Offset(214, 146),
+    ],
+    // Candlehold's cliff, across the water from Alster.
+    [
+      Offset(20, 6),
+      Offset(60, 4),
+      Offset(78, 12),
+      Offset(70, 24),
+      Offset(36, 26),
+      Offset(18, 18),
     ],
     // The Hollow Shore.
     [
@@ -275,6 +288,8 @@ const _delta = ChartGeography(
     'anchorage': Offset(200, 135),
     'greyhithe': Offset(210, 124),
     'wreck': Offset(217, 167),
+    'candlehold': Offset(190, 14),
+    'battle': Offset(244, 160),
   },
   lands: [
     [
