@@ -8,6 +8,57 @@ and the version it bumped `pubspec.yaml` to). Format loosely follows
 History before v1.23.1 predates per-PR versioning in this repository and
 isn't reconstructable from git history alone.
 
+## [1.193.0+224]
+
+The coast's clans arrive, from "The Grey Shroud" design: the Lantern Dominion
+and five clans, 29 sub-clans, your standing with each, and politics that can
+change. In Edit Mode, a new "Clans & Politics" screen shows it all.
+
+### Added
+- **The factions:**
+  - **the Lantern Dominion** (« le Dominion de la Lanterne », eight Houses);
+  - **the Grey Vigil** (« la Veille Grise »);
+  - **the Cinder Compact** (« le Pacte des Cendres »);
+  - **the Mire Courts** (« les Cours du Marais »);
+  - **the Salt Crows** (« les Corneilles de Sel »);
+  - **the Ashen Penitents** (« les Pénitents de Cendre »).
+
+  Each clan has its motto, sub-clans and favours, its sponsored skill branches,
+  its objects and its Sworn boon. The Choir and the Pit (angels and devils)
+  and the four hidden tribes are factions too. The Dominion's House of
+  choristers is now "the Cantors of the Flame", since "the Choir" is the
+  angels.
+- **Standing** from −100 to +100 with each faction, in seven tiers: Hunted,
+  Hostile, Wary, Unknown, Known, Trusted, Sworn. The Dominion starts at −10.
+  - **The ripple:** a clan's allies gain a quarter of what you gain with it,
+    and its rivals lose half of it.
+  - **Sworn:** only one faction can be Sworn at a time. Swearing costs each of
+    its rivals 20, and they stop at Known while you stay sworn.
+  - **Marks:** each sub-clan counts you a friend, nothing or a foe.
+  - Every change is logged with its cause, chapter and day.
+- **Relations between the clans,** on a seven-step scale from blood feud to
+  allies, starting from the design's table. They can move, and each move is
+  logged with a snapshot per chapter. The design's 12-event history and its 8
+  intrigues are in the data.
+- **Prices follow your tier** in the six clan shops: from +40% when they are
+  hostile to −25% when you are sworn. A clan that hunts you won't trade.
+- **Edit Mode: "Clans & Politics"**, the scales button beside the map button.
+  It has four tabs:
+  - **Standing:** a card per faction with its meter, sub-clan marks and
+    sliders, plus the Choir ↔ Pit bar.
+  - **Politics:** the relations table, with a chapter slider and the history.
+  - **Evolution:** a chart of your standing over time, and both logs.
+  - **Intrigues:** where each plot stands.
+- **A Clans section on the Character tab** shows your standing with each clan.
+
+### Changed
+- Signs now come from the real factions. The placeholder clans (the
+  Standard, the Painted, the Stone-marked, the Inked, the Lettered) are gone:
+  their signs went to the Dominion, the Mire, the Compact, the Crows and the
+  Penitents. The Vigil gets 7 new signs of its own, and the
+  "three clans a life" limit is gone.
+- The Patrons codex is now the Clans codex.
+
 ## [1.192.0+223]
 
 A new way to grow, Hades-style: **Signs**. Factions draw power on you, three
