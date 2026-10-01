@@ -71,7 +71,8 @@ void main() {
     });
 
     test('a road step crosses the map, a move within a place does not', () {
-      expect(isRoadStep('2001', '2005'), isTrue);
+      expect(isRoadStep('2005', '2010'), isTrue);
+      expect(isRoadStep('2001', '2005'), isFalse);
       expect(isRoadStep('5003', '5004'), isFalse);
       expect(isRoadStep('2015', '2015'), isFalse);
       expect(isRoadStep('2015', 'no_such_scene'), isFalse);
