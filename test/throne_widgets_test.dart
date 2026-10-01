@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:narrative_data_app/data/factions.dart';
+import 'package:narrative_data_app/data/throne.dart';
 import 'package:narrative_data_app/gamedata/db_schema.dart';
 import 'package:narrative_data_app/l10n/app_locale.dart';
 import 'package:narrative_data_app/models/story_politics.dart';
@@ -142,6 +143,33 @@ void main() {
     expect(find.text('4 in the Host'), findsOneWidget);
     expect(find.text('Mustered in chapter 8, day 1'), findsOneWidget);
     expect(find.text(data.faction('compact')!.host!.line), findsOneWidget);
+    expect(tester.takeException(), isNull, reason: 'fits 360 px');
+    Navigator.of(tester.element(find.byKey(const Key('host_sheet')))).pop();
+    await tester.pumpAndSettle();
+
+    // The Open Hand's House, the Fishbasket Line, on its card.
+    await tester.runAsync(() => container
+            .read(gameDbProvider(subclansSchema).notifier)
+            .upsertRecord('fishbasket_line', {
+          'id': 'fishbasket_line',
+          'clan': 'open_hand',
+          'name': 'The Fishbasket Line',
+          'name_fr': 'La Lignée des Paniers',
+        }));
+    // The session moves at once; its save follows in the test's own time.
+    notifier.setOpenHandStage(2, data: container.read(clanDataProvider));
+    notifier.setSubclanMark('fishbasket_line', SubclanMark.friend,
+        data: container.read(clanDataProvider), cause: 'edit');
+    await _settle(tester);
+    expect(
+        find.descendant(
+            of: find.byKey(const Key('lost_clan_card_open_hand')),
+            matching: find.byKey(const Key('subclan_square_fishbasket_line'))),
+        findsOneWidget);
+    expect(
+        rungFor('open_hand', container.read(playerSessionProvider).politics,
+            container.read(clanDataProvider)),
+        rungHouse);
     expect(tester.takeException(), isNull, reason: 'fits 360 px');
   });
 

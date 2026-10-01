@@ -605,8 +605,9 @@ class _Coast {
 
   /// [id] taken as the claim: the last one renounced (its standing
   /// [renounceCost] down, logged `renounce:<id>`), the flag `claim_<id>`
-  /// the only claim flag held, and its standing raised to the Sworn tier
-  /// with the banner (see raiseToClaim, logged `claim`).
+  /// the only faction's claim flag held (the story's own `claim_` flags
+  /// stay), and its standing raised to the Sworn tier with the banner (see
+  /// raiseToClaim, logged `claim`).
   void claim(String id) {
     final previous = politics.claim;
     if (previous != id) {
@@ -620,7 +621,13 @@ class _Coast {
       }
       politics = politics.copyWith(claim: id);
     }
-    flags.removeWhere((f) => f.startsWith('claim_') && f != claimFlag(id));
+    // The other factions' claim flags go; the story's own claim_ flags
+    // (7500's claim_kept) stay.
+    final others = {
+      for (final other in [...data.factions.keys, previous])
+        if (other.isNotEmpty && other != id) claimFlag(other),
+    };
+    flags.removeWhere(others.contains);
     addFlag(claimFlag(id));
     final raised = raiseToClaim(politics, id, 'claim',
         data: data, chapter: world.chapter, day: world.day);
@@ -641,12 +648,16 @@ class _Coast {
   /// [id] crowned: on the Throne, its flags set (any other winner's
   /// dropped) and its throne titles given.
   void crown(String id) {
-    if (politics.throneWinner != id) {
+    final previous = politics.throneWinner;
+    if (previous != id) {
       politics = politics.copyWith(throneWinner: id);
       log('throne', id);
     }
-    flags.removeWhere(
-        (f) => f.startsWith('throne_winner_') && f != throneWinnerFlag(id));
+    final others = {
+      for (final other in [...data.factions.keys, previous])
+        if (other.isNotEmpty && other != id) throneWinnerFlag(other),
+    };
+    flags.removeWhere(others.contains);
     addFlag(throneWinnerFlag(id));
     addFlag(onThroneFlag);
     for (final title in throneTitlesOf(id, data)) {
@@ -661,7 +672,7 @@ class _Coast {
         hostFor(politics: politics, data: data, signPatrons: world.signPatrons)
             .musteredOn(world.chapter, world.day);
     politics = politics.copyWith(host: host);
-    flags.removeWhere(isHostFlag);
+    flags.removeWhere((f) => isMusterFlag(f, data.factions.keys));
     hostFlagsFor(host).forEach(addFlag);
     log('muster', host.banner);
     mustered = true;

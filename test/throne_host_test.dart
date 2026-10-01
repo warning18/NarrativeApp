@@ -6,12 +6,14 @@
 // fight, a choice's gate).
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:narrative_data_app/combat/encounter.dart';
 import 'package:narrative_data_app/combat/spells.dart';
 import 'package:narrative_data_app/data/factions.dart';
+import 'package:narrative_data_app/data/offers.dart';
 import 'package:narrative_data_app/data/signs.dart';
 import 'package:narrative_data_app/data/sim_combat.dart';
 import 'package:narrative_data_app/data/sim_growth.dart';
@@ -126,6 +128,49 @@ void main() {
               ['open_hand', 'vigil', 'penitents', 'tidekin', 'kindly'], 6),
           inInclusiveRange(22, 34));
     });
+  });
+
+  test(
+      'an offer from the lost clan (offerFrom "open_hand") comes, or '
+      'passes quietly', () {
+    final signs = parseSigns(_gamedata('signs.json'));
+    const ticket =
+        OfferTicket(source: OfferSource.story, factionId: 'open_hand');
+    final random = Random(2);
+    for (var i = 0; i < 20; i++) {
+      final offer = drawOffer(
+          ticket,
+          OfferContext(
+              data: data,
+              politics: PoliticsState.empty,
+              signs: signs,
+              flags: const []),
+          random);
+      expect(offer, isNotNull);
+      final hands =
+          offer!.suitors.where((s) => s.factionId == 'open_hand').toList();
+      if (signs.values.any((s) => s.patronId == 'open_hand')) {
+        expect(hands, hasLength(1));
+        expect(hands.single.subclanId, isEmpty, reason: 'no House voices it');
+      }
+    }
+    // With every one of its signs held, it brings nothing, and nothing
+    // breaks.
+    final held = [
+      for (final s in signs.values)
+        if (s.patronId == 'open_hand') HeldSign(signId: s.id),
+    ];
+    expect(
+        () => drawOffer(
+            ticket,
+            OfferContext(
+                data: data,
+                politics: PoliticsState.empty,
+                signs: signs,
+                heldSigns: held,
+                flags: const []),
+            random),
+        returnsNormally);
   });
 
   group('a hostFight choice', () {

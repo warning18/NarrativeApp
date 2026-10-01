@@ -368,6 +368,8 @@ class LostClanCard extends ConsumerWidget {
     final raised = bannerRaisedIn(flags);
     final notifier = ref.read(playerSessionProvider.notifier);
     final gold = standingTierTextColor(context, StandingTier.sworn);
+    final data = ref.watch(clanDataProvider);
+    final politics = ref.watch(politicsProvider);
     return Card(
       key: Key('lost_clan_card_${faction.id}'),
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -405,6 +407,23 @@ class LostClanCard extends ConsumerWidget {
                 child: Text(trFor(lang, 'open_hand_banner_raised'),
                     style: theme.textTheme.labelSmall?.copyWith(color: gold)),
               ),
+            // Its House (v1.196: the Fishbasket Line), the first rung of
+            // its climb; Edit Mode taps its mark round.
+            if (data.subclansOf(faction.id).isNotEmpty) ...[
+              const SizedBox(height: 4),
+              SubclanSquares(
+                subclans: data.subclansOf(faction.id),
+                politics: politics,
+                language: lang,
+                onTap: editable
+                    ? (s) => notifier.setSubclanMark(
+                        s.id, nextSubclanMark(politics.markOf(s.id)),
+                        data: data,
+                        cause: 'edit',
+                        chapter: ref.read(reachedChapterProvider))
+                    : null,
+              ),
+            ],
             if (editable) ...[
               const SizedBox(height: 4),
               Text(trFor(lang, 'open_hand_edit_hint'),

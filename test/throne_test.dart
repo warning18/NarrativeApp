@@ -378,6 +378,33 @@ void main() {
           }).hasPolitics,
           isTrue);
     });
+
+    test('the story\'s own flags beside the climb\'s stay', () {
+      // 7500's claim_kept, a story's host_arrived: not the engine's.
+      final change = _apply({
+        'claim': 'compact',
+        'throneWinner': 'compact',
+        'muster': true,
+      }, flags: const [
+        'claim_kept',
+        'claim_vigil',
+        'throne_winner_known',
+        'throne_winner_vigil',
+        'host_arrived',
+        'host_vigil',
+        'host_houses_4',
+      ]);
+      expect(change.flags,
+          containsAll(['claim_kept', 'throne_winner_known', 'host_arrived']));
+      for (final gone in [
+        'claim_vigil',
+        'throne_winner_vigil',
+        'host_vigil',
+        'host_houses_4',
+      ]) {
+        expect(change.flags, isNot(contains(gone)), reason: gone);
+      }
+    });
   });
 
   group('the gate conditions', () {

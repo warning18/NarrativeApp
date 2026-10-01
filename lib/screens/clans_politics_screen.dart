@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../data/chapter_spine.dart' show chapterSpines;
 import '../data/factions.dart';
 import '../data/offers.dart' show OfferSource;
 import '../data/politics_events.dart';
@@ -339,12 +340,14 @@ class _PoliticsTabState extends ConsumerState<_PoliticsTab> {
       max(1, reached),
       ...politics.relationSnapshots.keys,
     ].reduce(max);
-    // Up to the story's last chapter (chapters.json), or the latest the
-    // relations moved in.
-    final storyEnd = ref
-        .watch(chapterLoopsProvider)
-        .fold<int>(1, (most, loop) => max(most, loop.chapter));
-    final last = max(storyEnd, latest);
+    // Up to the story's last chapter (chapters.json; the spine's while it
+    // has not loaded), or the latest the relations moved in; the slider
+    // needs two chapters at least.
+    final loops = ref.watch(chapterLoopsProvider);
+    final storyEnd = loops.isNotEmpty
+        ? loops.fold<int>(1, (most, loop) => max(most, loop.chapter))
+        : chapterSpines.fold<int>(1, (most, spine) => max(most, spine.chapter));
+    final last = max(2, max(storyEnd, latest));
     final chapter = (_chapter ?? last).clamp(1, last);
     final now = chapter >= latest;
     final steps = now

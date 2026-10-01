@@ -267,8 +267,13 @@ List<String> hostFlagsFor(Host host) => [
       if (host.size > 0) hostSizeFlag(host.size),
     ];
 
-/// Whether [flag] is one a muster sets (a muster again replaces them).
-bool isHostFlag(String flag) => flag.startsWith('host_');
+final RegExp _hostCount = RegExp(r'^host_(houses|size)_\d+$');
+
+/// Whether [flag] is one a muster sets -- a contingent of [factionIds] or
+/// a count -- which a muster again replaces; the story's other `host_`
+/// flags stay.
+bool isMusterFlag(String flag, Iterable<String> factionIds) =>
+    _hostCount.hasMatch(flag) || factionIds.any((id) => flag == hostFlag(id));
 
 /// The titles the coronation of [factionId] gives (titles.json `source`
 /// `throne:<id>`).

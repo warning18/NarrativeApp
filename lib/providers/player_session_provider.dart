@@ -25,7 +25,14 @@ import '../data/quest_objectives.dart' show killTargetsOf;
 import '../data/signs.dart';
 import '../data/skill_tree.dart' show branchMasteryEssenceCost;
 import '../data/throne.dart'
-    show clanQuestSteps, clanStepFlag, isHostFlag, onThroneFlag;
+    show
+        claimFlag,
+        clanQuestSteps,
+        clanStepFlag,
+        isMusterFlag,
+        onThroneFlag,
+        pledgedFlag,
+        throneWinnerFlag;
 import '../models/ally_state.dart';
 import '../models/story_politics.dart';
 
@@ -2519,16 +2526,21 @@ class PlayerSessionNotifier extends StateNotifier<PlayerSession> {
   }
 
   /// Edit Mode: the climb undone -- no claim, nobody on the Throne, no
-  /// pledge, no Host -- with the flags they set (`claim_*`, `pledged_*`,
-  /// `throne_winner_*`, `on_throne`, `host_*`). Standing, marks and the
-  /// clan quest steps stay.
+  /// pledge, no Host -- with the flags they set for each faction
+  /// (`claim_<id>`, `pledged_<id>`, `throne_winner_<id>`, `host_<id>`),
+  /// `on_throne` and the Host's counts. Standing, marks, the clan quest
+  /// steps and the story's own flags stay.
   Future<void> clearThroneForEdit({required ClanData data}) async {
-    bool climbFlag(String f) =>
-        f.startsWith('claim_') ||
-        f.startsWith('pledged_') ||
-        f.startsWith('throne_winner_') ||
-        f == onThroneFlag ||
-        isHostFlag(f);
+    final ids = data.factions.keys;
+    final climb = {
+      for (final id in ids) ...[
+        claimFlag(id),
+        pledgedFlag(id),
+        throneWinnerFlag(id),
+      ],
+      onThroneFlag,
+    };
+    bool climbFlag(String f) => climb.contains(f) || isMusterFlag(f, ids);
     state = _withTitles(
         state.copyWith(
           politics: state.politics.copyWith(
